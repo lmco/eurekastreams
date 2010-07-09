@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/tx
+      http://www.springframework.org/schema/tx/spring-tx.xsd
+	  http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.0.xsd">
+
+    <!-- the connection factor to the running JMS server -->
+	<bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory" lazy-init="false">
+        <property name="brokerURL" value="${eureka.queue.jms.connstr}" />
+	</bean>
+
+    <!-- the creation of the queue object to submit async. tasks to -->
+    <bean id="eurekaActivityQueue" class="org.apache.activemq.command.ActiveMQQueue" lazy-init="false">
+        <constructor-arg value="${eureka.queue.activity.queuename}" />
+    </bean>
+
+   <!-- the message producer -->   
+    <bean id="queueTaskHandler" class="org.eurekastreams.commons.task.QueueTaskHandler" lazy-init="false">
+        <property name="connectionFactory" ref="connectionFactory" />
+        <property name="queue" ref="eurekaActivityQueue" />
+    </bean>
+
+</beans>
+

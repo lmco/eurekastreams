@@ -1,0 +1,300 @@
+/*
+ * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+ /**
+ * IE only CSS fixes.
+ * Included with conditional comments.
+ */
+ 
+.tab-container .gwt-MenuBar
+{
+	float: right;
+}
+
+div.tab-container
+{
+	margin-top: 12px;
+}
+
+/**
+ * Solves weird scroll bar in directory search.
+ */
+html
+{
+	overflow-x: hidden;
+}
+
+.tab input
+{
+    position: relative;
+    top: -1px;
+}
+
+.gadget-zone-chrome-title-bar .gwt-MenuBar-horizontal
+{
+	padding-right: 5px;
+}
+
+.follow-me-btn
+{
+	margin-top: 70px !important;
+}
+
+.header-bar .main-nav
+{
+	margin-left: 0;
+}
+
+.directory .search-panel
+{
+	margin-top: 20px;
+}
+
+body .layout-container table.dragdrop-dropTarget-engage
+{
+}
+
+body .stream-message-item .message-metadata div
+{
+	margin-right: 0;
+}
+
+body .stream-message-item .message-metadata a
+{
+	margin-left: 5px;
+}
+
+body .thumbnail-selector-controls
+{
+	padding-top: 5px;
+}
+
+
+body .attach-link .add-button-submit
+{
+	top: -3px;
+}
+
+body .post-to-stream textarea
+{
+	padding-bottom: 0;
+}
+
+body div.portal-boundary div.layout-container
+{
+ 	top: 0;
+}
+
+.gallery-master .search-list
+{
+	top: 0;
+}
+
+.gallery-master .options-panel
+{
+	padding-bottom: 10px;
+}
+
+.stream-container > .layout-container > div > div.post-to-stream-container+div
+{
+	position: static !important;
+}
+
+body .option-title
+{
+	padding-top: 3px;
+}
+
+body .gallery-search-results-list .options
+{
+	margin-left: 0;
+	margin-top: 5px;
+}
+
+
+body .gallery-search-results-list .options-panel .pager-container
+{
+	top: -10px;
+}
+
+body .stream-list-item .filter-label
+{
+	float: left;
+}
+
+body .stream-list-item .tab-menu
+{
+	float: left;
+}
+
+body .post-to-stream-container .small textarea
+{
+	margin-bottom: 10px;
+}
+
+body .post-to .yui-ac-container
+{
+    position: absolute;
+    left: 0;
+    margin-top: 9px;
+}
+
+body .profile-page-container .post-to .yui-ac-container
+{
+    margin-left: -150px;	
+}
+
+
+.post-to > span
+{
+	position: relative;
+	bottom: 8px;
+}
+
+.post-to > .stream-scope
+{
+	top: 5px;
+}
+
+.search-list .input
+{
+	position: relative;
+	z-index: 10;
+}
+
+body .post-to ul
+{
+	position: relative;
+	z-index: 1000;
+}
+
+
+.stream .stream-container .shadow-container
+{
+	z-index: 900;
+}
+
+.stream .stream-container  *
+{
+	position: relative;
+}
+
+.stream .stream-container > *
+{
+	z-index: 1;
+}
+
+.stream .stream-container > * > *
+{
+	z-index: 2;
+}
+
+.stream .stream-container > * > * > *
+{
+	z-index: 3;
+}
+
+.stream .stream-container > * > * > * > *
+{
+	z-index: 4;
+}
+
+.stream .stream-container > * > * > * > * > *
+{
+	z-index: 5;
+}
+
+.stream .stream-container > * > * > * > * > * > *
+{
+    z-index: 6;
+}
+
+.stream .stream-container > * > * > * > * > * > * > *
+{
+    z-index: 7;
+}
+
+.stream .stream-container > * > * > * > * > * > * > * > *
+{
+    z-index: 8;
+}
+
+.stream .stream-container > * > * > * > * > * > * > * > * > *
+{
+    z-index: 9;
+}
+
+.stream .stream-container > * > * > * > * > * > * > * > * > * > *
+{
+    z-index: 10;
+}
+
+.stream .stream-container > * > * > * > * > * > * > * > * > * > * > *
+{
+    z-index: 11;
+}
+
+.stream .stream-container .layout-container .stream-search-composite
+{
+    z-index: 1;	
+}
+
+.terms-of-service-modal .modal-content-panel
+{
+	overflow: auto;
+	padding-bottom: 10px;
+}
+
+body .org-tree 
+{
+	margin-left: 0;
+}
+
+.org-tree .org-name
+{
+	position: relative;
+	top: -15px;
+	margin-bottom: -15px;
+}
+
+.org-tree .no-children .org-name
+{
+	top: 0;
+	margin-bottom: 0;
+
+}
+
+.org-lookup-form-element .form-instructions
+{
+	margin-bottom: -15px;
+	position: relative;
+	top: -15px;
+}
+
+.settings-header
+{
+	margin-top: 40px;
+}
+
+.org-lookup-form-element .form-instructions
+{
+	margin-top: 20px;
+}
+
+.stream-view-dialog-body .form-element:first-child .form-instructions
+{
+	display: none;
+}

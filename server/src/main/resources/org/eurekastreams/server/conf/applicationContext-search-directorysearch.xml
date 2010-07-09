@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/tx
+      http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!--
+		*******************************************************************************
+
+		Config for directory searching, requires
+		applicationContext-search.xml.
+
+		*******************************************************************************
+	-->
+
+	<!--
+		Query Parser Builder to build thread-unsafe QueryParserser, using the
+		TextStemmerAnalyzer on the search request since we've indexed the
+		fields stemmed.
+	-->
+	<bean id="directorySearchQueryParserBuilder" class="org.eurekastreams.commons.search.QueryParserBuilder"
+		scope="prototype">
+		<constructor-arg value="nothing" />
+		<constructor-arg>
+			<bean class="org.eurekastreams.commons.search.analysis.TextStemmerAnalyzer" />
+		</constructor-arg>
+	</bean>
+
+
+	<bean id="cachedModelViewDirectoryResultTransformer"
+		class="org.eurekastreams.server.search.directory.CachedModelViewResultTransformer">
+		<property name="getOrgsByIdsMapper" ref="bulkOrganizationsMapper" />
+		<property name="getDomainGroupsByIdsMapper" ref="bulkDomainGroupsMapper" />
+		<property name="getPeopleByIdsMapper" ref="bulkPeopleMapper" />
+	</bean>
+
+	<!--
+		Parent bean for Search Request Builder.
+	-->
+	<bean id="directorySearchRequestBuilderTemplate" abstract="true"
+		class="org.eurekastreams.commons.search.ProjectionSearchRequestBuilder">
+		<property name="resultTransformer" ref="cachedModelViewDirectoryResultTransformer" />
+		<property name="queryParserBuilder" ref="directorySearchQueryParserBuilder" />
+		<property name="advancedQueryParserBuilder" ref="directorySearchQueryParserBuilder" />
+	</bean>
+
+	<!--
+		Search Request Builder - searching organizations
+	-->
+	<bean id="organizationSearchRequestBuilder" scope="prototype"
+		parent="directorySearchRequestBuilderTemplate">
+		<property name="resultTypes" ref="searchResultTypesOrganization" />
+	</bean>
+
+	<!--
+		Search Request Builder - searching people
+	-->
+	<bean id="personSearchRequestBuilder" scope="prototype"
+		parent="directorySearchRequestBuilderTemplate">
+		<property name="resultTypes" ref="searchResultTypesPeople" />
+	</bean>
+
+	<!--
+		Search Request Builder - searching groups
+	-->
+	<bean id="groupSearchRequestBuilder" scope="prototype"
+		parent="directorySearchRequestBuilderTemplate">
+		<property name="resultTypes" ref="searchResultTypesGroups" />
+	</bean>
+
+
+	<!--
+		Search Request Builder - searching organizations, people, and groups
+	-->
+	<bean id="orgGroupPersonSearchRequestBuilder" scope="prototype"
+		parent="directorySearchRequestBuilderTemplate">
+		<property name="resultTypes" ref="searchResultTypesOrgsGroupsPeople" />
+	</bean>
+	
+	<!--
+		Search Request Builder - searching people and groups
+	-->
+	<bean id="groupPersonSearchRequestBuilder" scope="prototype"
+		parent="directorySearchRequestBuilderTemplate">
+		<property name="resultTypes" ref="searchResultTypesGroupsPeople" />
+	</bean>
+
+	<!--
+		Field Match Determiner - checks Search explanations to find which
+		fields matched
+	-->
+	<bean id="fieldMatchDeterminer"
+		class="org.eurekastreams.commons.search.explanation.FieldMatchDeterminer">
+		<property name="fieldsToAnalyze">
+			<bean class="java.util.ArrayList" scope="singleton">
+				<constructor-arg>
+					<list>
+						<value>biography</value>
+						<value>overview</value>
+						<value>capabilities</value>
+						<value>overview</value>
+						<value>jobs</value>
+						<value>background</value>
+						<value>education</value>
+					</list>
+				</constructor-arg>
+			</bean>
+		</property>
+		<property name="searchAnalyzer">
+			<bean class="org.eurekastreams.commons.search.analysis.TextStemmerAnalyzer" />
+		</property>
+	</bean>
+
+	<!--
+		Strategy used to bump up a field in a specifically-formatted Lucene
+		search query, throwing an exception if asked to boost a field not in
+		its list of allowed fields.
+	-->
+	<bean id="searchFieldBooster" class="org.eurekastreams.commons.search.LuceneFieldBooster">
+		<property name="allowableBoostFields">
+			<bean class="java.util.ArrayList" scope="singleton">
+				<constructor-arg>
+					<list>
+						<value>biography</value>
+						<value>overview</value>
+						<value>capabilities</value>
+						<value>overview</value>
+						<value>jobs</value>
+						<value>background</value>
+						<value>education</value>
+						<value>location</value>
+					</list>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+
+	<!--
+		************* * Lucene Query Builders for Directory Search
+		*************
+	-->
+
+
+	<!--
+		Strategy to build a Lucene query for searching the directory, changing
+		the query based on whether a root organization was passed in, whether
+		the user is logged in, and whether a field should be boosted - for
+		Organizations.
+	-->
+	<bean id="directorySearchLuceneQueryBuilderForOrgs"
+		class="org.eurekastreams.server.service.actions.strategies.directory.DirectorySearchLuceneQueryBuilder">
+		<constructor-arg value="name:(%1$s)^2 overview:(%1$s) description:(%1$s) capabilities:(%1$s)" />
+		<constructor-arg ref="searchFieldBooster" />
+		<constructor-arg value="50" />
+		<constructor-arg ref="orgIdGetter" />	
+	</bean>
+
+	<!--
+		Strategy to build a Lucene query for searching the directory, changing
+		the query based on whether a root organization was passed in, whether
+		the user is logged in, and whether a field should be boosted - for
+		People.
+	-->
+	<bean id="directorySearchLuceneQueryBuilderForPeople"
+		class="org.eurekastreams.server.service.actions.strategies.directory.DirectorySearchLuceneQueryBuilder">
+		<constructor-arg
+			value="(+lastName:(%1$s) +preferredName:(%1$s))^10 lastName:(%1$s)^8 title:(%1$s)^5 preferredName:(%1$s)^4 overview:(%1$s)^2 description:(%1$s)^2 biography:(%1$s)^2 jobs:(%1$s)^2 background:(%1$s)^2 education:(%1$s) location:(%1$s)" />
+		<constructor-arg ref="searchFieldBooster" />
+		<constructor-arg value="50" />
+		<constructor-arg ref="orgIdGetter" />
+	</bean>
+
+	<!--
+		Strategy to build a Lucene query for searching the directory, changing
+		the query based on whether a root organization was passed in, whether
+		the user is logged in, and whether a field should be boosted - for
+		Groups.
+	-->
+	<bean id="directorySearchLuceneQueryBuilderForGroups"
+		class="org.eurekastreams.server.service.actions.strategies.directory.DirectorySearchLuceneQueryBuilder">
+		<constructor-arg
+			value="+(+(name:(%1$s)^2 overview:(%1$s) description:(%1$s) capabilities:(%1$s))) -(isPending:true)" />
+		<constructor-arg ref="searchFieldBooster" />
+		<constructor-arg value="50" />
+		<constructor-arg ref="orgIdGetter" />
+	</bean>
+
+	<!--
+		Strategy to build a Lucene query for searching the directory, changing
+		the query based on whether a root organization was passed in, whether
+		the user is logged in, and whether a field should be boosted - for
+		Orgs, People, and Groups.
+	-->
+	<bean id="directorySearchLuceneQueryBuilderForOrgsPeopleGroups"
+		class="org.eurekastreams.server.service.actions.strategies.directory.DirectorySearchLuceneQueryBuilder">
+		<constructor-arg
+			value="+(+((+lastName:(%1$s) +preferredName:(%1$s))^10 lastName:(%1$s)^8 name:(%1$s)^6 title:(%1$s)^5 preferredName:(%1$s)^4 overview:(%1$s)^2 description:(%1$s)^2 biography:(%1$s)^2 jobs:(%1$s)^2 background:(%1$s)^2 capabilities:(%1$s)^2 education:(%1$s) location:(%1$s))) -(isPending:true)" />
+		<constructor-arg ref="searchFieldBooster" />
+		<constructor-arg value="50" />
+		<constructor-arg ref="orgIdGetter" />
+	</bean>
+
+</beans>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+    <ModulePrefs title="YouTube" description="This plugin imports video published from any publically available YouTube user account. To configure, enter the YouTube account user name." thumbnail="http://localhost:8080/style/images/youTubeIconSmall.png" title_url="http://eurekastreams.org" author="Eureka Framework" screenshot="http://localhost:8080/style/images/youTubeIconLarge.png" author_email="support@eurekastreams.org">
+        <Require feature="views" />
+        <Require feature="eurekastreams-streamplugin"/>
+    </ModulePrefs>
+<UserPref name="updateFrequency" datatype="hidden" default_value="30" />
+<UserPref name="objectType" datatype="hidden" default_value="BOOKMARK" />
+ <Content type="html" view="default, profile, canvas">
+    <![CDATA[
+        <script type="text/javascript">
+            eurekastreams.streamplugin.addUrlValidator("User Name", "feed", "", 
+                "", 
+                "Please enter a valid YouTube user name.", "function(value) { if(value=='') { return ''; } else { return 'http://gdata.youtube.com/feeds/base/users/' + value + '/uploads?alt=rss'; }}");
+ 
+        eurekastreams.streamplugin.registerGetFeedCallback(
+            "function() { return $wnd.gwt_getFormValue('feed'); }");
+        </script>
+    ]]>
+ </Content>
+</Module>

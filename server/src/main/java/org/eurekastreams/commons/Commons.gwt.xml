@@ -1,0 +1,9 @@
+<module><!--This file needs to be here.-->
+	<source path="model" />
+	<source path="formatting" />
+	<source path="exceptions" />
+	<source path="search/modelview" />
+
+	<!-- Inherit the core Web Toolkit stuff.  -->
+	<inherits name='com.google.gwt.user.User' />
+</module>

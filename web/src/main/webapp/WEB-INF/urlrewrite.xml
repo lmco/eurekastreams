@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE urlrewrite 
+    PUBLIC "-//tuckey.org//DTD UrlRewrite 3.0//EN" 
+    "http://tuckey.org/res/dtds/urlrewrite3.0.dtd">
+
+<urlrewrite>
+
+	<rule>
+		<name>IB: Convert from /action: to Application HTML</name>
+		<from>^/actions/(.*)$</from>
+		<to last="true">/index.html</to>
+	</rule>
+	
+	<rule>
+		<name>IB: Convert from /requestaccess to Application HTML</name>
+		<from>^/requestaccess(.*)$</from>
+		<to last="true">/index.html</to>
+	</rule>
+
+	<rule>
+		<name>IB: Convert from /directory to Application HTML</name>
+		<from>^/directory(.*)$</from>
+		<to last="true">/index.html</to>
+	</rule>
+	
+	<rule>
+		<name>IB: Convert from /setup to Application HTML</name>
+		<from>^/setup(.*)$</from>
+		<to last="true">/index.html</to>
+	</rule>
+
+	<rule>
+		<name>IB: Convert from /gallery to Application HTML</name>
+		<from>^/gallery(.*)$</from>
+		<to last="true">/index.html</to>
+	</rule>
+
+	<rule>
+		<name>IB: Convert from /channels to Application HTML</name>
+		<from>^/activity(.*)$</from>
+		<to last="true">/index.html</to>
+	</rule>
+	<rule>
+		<name>IB: Convert from /settings to Application HTML</name>
+		<from>^/settings(.*)$</from>
+		<to last="true">/index.html</to>
+	</rule>
+	<rule>
+		<name>IB: Convert from /people to Application HTML</name>
+		<from>^/people/(.*)$</from>
+		<to last="true">/index.html</to>
+	</rule>
+	<rule>
+		<name>IB: Convert from /organizations to Application HTML</name>
+		<from>^/organizations/(.*)$</from>
+		<to last="true">/index.html</to>
+	</rule>
+
+	<rule>
+		<name>IB: Convert from /groups to Application HTML</name>
+		<from>^/groups/(.*)$</from>
+		<to last="true">/index.html</to>
+	</rule>
+	
+	<rule>
+		<name>IB: Convert from /authorize to Application HTML</name>
+		<from>^/authorize(.*)$</from>
+		<to last="true">/index.html</to>
+	</rule>
+	<!--
+		<rule> <name>IB: Redirect from / to Eureka Streams Application</name>
+		<note>This rule is to be at the bottom since it is called the
+		least</note> <from>^/$</from> <to last="true">Application.html</to>
+		</rule>
+	-->
+</urlrewrite>

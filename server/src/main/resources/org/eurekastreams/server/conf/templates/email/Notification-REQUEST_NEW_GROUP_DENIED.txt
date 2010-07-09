@@ -1,0 +1,4 @@
+Your request to create the $(aux.name) group has been denied.
+
+Thank You,
+Eureka Streams

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+      http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+      
+    <bean id="ldapTemplates" class="java.util.HashMap">
+        <constructor-arg>
+            <map>
+                <entry key="none" value-ref="ldapTemplateExample" />
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="baseLdapTemplate" class="org.springframework.ldap.core.LdapTemplate"
+        abstract="true">
+        <property name="base" value="dc=none,dc=none,dc=none" />
+        <property name="userDn" value="${eureka.security.ldap.userdn}" />
+        <property name="password" value="${eureka.security.ldap.password}" />
+    </bean>
+
+    <bean id="ldapTemplateExample" scope="singleton"
+        class="org.springframework.ldap.core.LdapTemplate">
+        <constructor-arg>
+            <bean class="org.springframework.ldap.core.support.LdapContextSource"
+                parent="baseLdapTemplate">
+                <property name="urls"
+                    value="ldaps://ldap.example.com" />
+            </bean>
+        </constructor-arg>
+    </bean>
+    
+    <bean id="personLdapMapper"
+        class="org.eurekastreams.server.service.actions.strategies.ldap.LdapToPersonMapper">
+        <property name="accountAttrib" value="none" />
+        <property name="firstNameAttrib" value="none" />
+        <property name="lastNameAttrib" value="none" />
+        <property name="orgAttrib" value="none" />
+        <property name="titleAttrib" value="none" />
+        <property name="fullNameAttrib" value="none" />
+        <property name="emailAttrib" value="none" />
+    </bean>
+
+    <bean id="groupLdapMapper"
+        class="org.eurekastreams.server.service.actions.strategies.ldap.MembershipCriteriaToPersonMapper">
+        <constructor-arg ref="ldapTemplates" />
+        <constructor-arg type="java.lang.String" value="none" />
+        <constructor-arg ref="ldapTemplateExample" />
+        <constructor-arg ref="personLookupStrategyLdapAttrib"/>
+        <constructor-arg ref="findGroupByAttrib"/>
+        <property name="objectClassAttrib" value="none" />
+        <property name="personObjectClassAttribValue" value="none" />
+        <property name="groupObjectClassAttribValue" value="none" />
+        <property name="memberAttrib" value="none" />
+    </bean>
+    
+    <!-- Constructs a query where results will contain matches of the conjunction of 
+    each filter object supplied in the filter list.  -->
+    <bean id="findPersonByAttrib"
+        class="org.eurekastreams.server.service.actions.strategies.ldap.filters.FindByAttrib">
+        <constructor-arg>
+            <list>
+                <bean class="org.springframework.ldap.filter.EqualsFilter">
+                    <constructor-arg value="none"/>
+                    <constructor-arg value="none"/>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+   <!-- Constructs a query where results will contain matches of the conjunction of 
+    each filter object supplied in the filter list.  -->
+    <bean id="findGroupByAttrib"
+        class="org.eurekastreams.server.service.actions.strategies.ldap.filters.FindByAttrib">
+        <constructor-arg>
+            <list>
+                <bean class="org.springframework.ldap.filter.EqualsFilter">
+                    <constructor-arg value="none"/>
+                    <constructor-arg value="none"/>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+    
+    <!-- Constructs a query where results match the filter conjunction of the list of
+    filter objects. -->
+    <bean id="findGroup"
+        class="org.eurekastreams.server.service.actions.strategies.ldap.filters.FindGroup">
+        <constructor-arg>
+            <list>
+                <bean class="org.springframework.ldap.filter.EqualsFilter">
+                    <constructor-arg value="none"/>
+                    <constructor-arg value="none"/>
+                </bean>
+            </list>
+        </constructor-arg>
+        <constructor-arg value="cn" />
+    </bean>    
+    
+    
+      
+        
+</beans>

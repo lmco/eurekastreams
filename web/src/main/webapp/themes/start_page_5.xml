@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Theme>
+  <Title>Lockheed Martin Through the Years</Title>
+  <Description>Lockheed Martin Through the Years</Description>
+  <AuthorName>Eureka Streams</AuthorName>
+  <AuthorEmail>support@eurekastreams.org</AuthorEmail>
+	<HeaderBackground>
+		<HeaderBackgroundColor>white</HeaderBackgroundColor>
+		<HeaderForegroundColor>white</HeaderForegroundColor>
+		<HeaderBackgroundImage>/style/images/Start_page_5.jpg</HeaderBackgroundImage>
+	</HeaderBackground>
+	<ActiveTabBorderColor>#786546</ActiveTabBorderColor>
+	<ActiveTabForegroundColor>#433527</ActiveTabForegroundColor>
+	<InactiveTabBackgroundColor>#3d3425</InactiveTabBackgroundColor>
+	<InactiveTabBorderColor>#786546</InactiveTabBorderColor>
+	<InactiveTabForegroundColor>white</InactiveTabForegroundColor>
+	<GadgetTitleBackgroundColor>#a9916a</GadgetTitleBackgroundColor>
+	<GadgetTitleForegroundColor>white</GadgetTitleForegroundColor>
+	<GadgetBorderColor>#746853</GadgetBorderColor>
+	<PageBackground>
+		<PageBackgroundColor>#e6e1d0</PageBackgroundColor>
+		<PageBackgroundImage/>
+	</PageBackground>
+</Theme>
+

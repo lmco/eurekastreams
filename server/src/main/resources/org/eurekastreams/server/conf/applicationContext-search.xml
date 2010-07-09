@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/tx
+      http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!--
+		*******************************************************************************
+
+		Base configuration for search-related actions.
+
+		*******************************************************************************
+	-->
+
+	<bean id="searchResultFieldsForMessages" class="java.util.ArrayList" scope="singleton">
+		<constructor-arg>
+			<list>
+				<value>id</value>
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<!--
+		Search result types of Organization - singleton for reuse
+	-->
+	<bean id="searchResultTypesOrganization" class="java.util.ArrayList"
+		scope="singleton">
+		<constructor-arg>
+			<list>
+				<value>org.eurekastreams.server.domain.Organization</value>
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<!--
+		Search result types of Person - singleton for reuse
+	-->
+	<bean id="searchResultTypesPeople" class="java.util.ArrayList"
+		scope="singleton">
+		<constructor-arg>
+			<list>
+				<value>org.eurekastreams.server.domain.Person</value>
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<!--
+		Search result types of Group - singleton for reuse
+	-->
+	<bean id="searchResultTypesGroups" class="java.util.ArrayList"
+		scope="singleton">
+		<constructor-arg>
+			<list>
+				<value>org.eurekastreams.server.domain.DomainGroup</value>
+			</list>
+		</constructor-arg>
+	</bean>
+	
+	<!--
+		Search result types of Person/Group
+	-->
+	<bean id="searchResultTypesGroupsPeople" class="java.util.ArrayList"
+		scope="singleton">
+		<constructor-arg>
+			<list>
+				<value>org.eurekastreams.server.domain.Person</value>
+				<value>org.eurekastreams.server.domain.DomainGroup</value>
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<!--
+		Search result types of Person/Group/Organization
+	-->
+	<bean id="searchResultTypesOrgsGroupsPeople" class="java.util.ArrayList"
+		scope="singleton">
+		<constructor-arg>
+			<list>
+				<value>org.eurekastreams.server.domain.Person</value>
+				<value>org.eurekastreams.server.domain.DomainGroup</value>
+				<value>org.eurekastreams.server.domain.Organization</value>
+			</list>
+		</constructor-arg>
+	</bean>
+
+</beans>

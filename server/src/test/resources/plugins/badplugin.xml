@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+    <ModulePrefs title="RSS" thumbnail="http://localhost:8080/style/images/eureka-gadget-placeholder.png" title_url="http://eurekastreams.org" author="Eureka Framework">
+        <Require feature="views" />
+        <Require feature="NOTeurekastreams-streamplugin"/>
+    </ModulePrefs>
+<UserPref name="updateFrequency" datatype="hidden" default_value="NOTAVALIDVALUE" />
+<UserPref name="objectType" datatype="hidden" default_value="NONOTAVALIDVALUE" />
+ <Content type="html" view="default, profile, canvas">
+ 	<![CDATA[
+        <script type="text/javascript">
+        	eurekastreams.streamplugin.addUrlValidator("Public RSS / Atom URL:", "feed", "", 
+        	"example: http://dailynews.com/topstories.rss", 
+        	"Please enter a valid URL", function(value) { return value; });
+ 
+			eurekastreams.streamplugin.registerGetFeedCallback(function() { 
+				return eurekastreams.streamplugin.getFormValue('feed'); });
+        </script>
+ 	]]>
+ </Content>
+</Module>

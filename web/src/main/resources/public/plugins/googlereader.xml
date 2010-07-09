@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+    <ModulePrefs title="Google Reader" description="This plugin imports the items you share from Google Reader. To share all of your shared items:&lt;ol&gt;&lt;li&gt;Go to your &lt;a href=&quot;http://www.google.com/reader/view/user/-/state/com.google/broadcast&quot; target=&quot;_blank&quot;&gt;Google Reader Shared Items&lt;/a&gt; page and clicking on the &quot;sharing setting&quot; link&lt;li&gt;Click on the link &quot;Preview your shared items page in a new window.&quot;, which can be found under the section &quot;Your Shared Items page&quot;.&lt;li&gt;Once this page is displayed, right click on the Atom feed link (on the right hand side of the page) and copy the URL.&lt;li&gt;Paste it into the &quot;Shared Items URL&quot; input box below.&lt;/ol&gt;If you use folders or tags you can share only those items that use that folder or tag:&lt;ol&gt;&lt;li&gt;Go to your Google Reader settings page.&lt;li&gt;Click on folders and tags tab.&lt;li&gt;Right click on the link &quot;view public page&quot; and copy the URL (you may need to make a folder or tag public if it set to private).&lt;li&gt;Paste it into the &quot;Shared Items URL&quot; input box below.&lt;/ol&gt;" thumbnail="http://localhost:8080/style/images/googleReaderIconSmall.png" title_url="http://eurekastreams.org" author="Eureka Framework" screenshot="http://localhost:8080/style/images/googleReaderIconLarge.png" author_email="support@eurekastreams.org">
+        <Require feature="views" />
+        <Require feature="eurekastreams-streamplugin"/>
+    </ModulePrefs>
+<UserPref name="updateFrequency" datatype="hidden" default_value="30" />
+<UserPref name="objectType" datatype="hidden" default_value="BOOKMARK" />
+ <Content type="html" view="default, profile, canvas">
+    <![CDATA[
+        <script type="text/javascript">
+            eurekastreams.streamplugin.addUrlValidator("Shared Items URL", "feed", "", 
+                "See the instructions above for help in finding your shared items URL.", 
+                "Please enter a valid URL.", "function(value) { return value.replace('reader/shared/','reader/public/atom/'); }");
+ 
+        eurekastreams.streamplugin.registerGetFeedCallback(
+            "function() { return $wnd.gwt_getFormValue('feed'); }");
+        </script>
+    ]]>
+ </Content>
+</Module>

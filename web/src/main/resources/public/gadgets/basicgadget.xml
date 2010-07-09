@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+ <ModulePrefs title="Basic Gadget" description="This is a sample gadget to test functionality" thumbnail="http://localhost:8080/style/images/eureka-gadget-placeholder.png" 
+            title_url="http://eurekastreams.org" author="Eureka Framework" author_email="support@eurekastreams.org">
+   <Require feature="opensocial-0.8"></Require>
+   <Require feature="osapi"></Require>
+   <Require feature="dynamic-height"></Require>
+   <Require feature="settitle"></Require>
+   <Require feature="opensocial-data"></Require>
+   <Require feature="opensocial-data-context"></Require>
+   <Require feature="opensocial-templates">
+        <Param name="client">true</Param>
+   </Require>
+   <Require feature="xmlutil"></Require>
+   <Require feature="views"></Require>
+   <Require feature="samplefeature"></Require>
+   <Require feature="eurekastreams-checklist"></Require>
+   <Optional feature="content-rewrite">
+        <Param name="include-tags"></Param>
+   </Optional>
+ </ModulePrefs>
+ <UserPref name="testSetting" display_name="Test Setting" datatype="string" default_value="test value"/>
+ <UserPref name="testSettingAgain" display_name="Test Setting Again" datatype="string" default_value="test value again" required="true"/>
+ <UserPref name="testHiddenSetting" datatype="hidden" default_value=""/>
+ <UserPref name="testEnum" datatype="enum" default_value="0">
+    <EnumValue value="0" display_value="Option 0"/>
+    <EnumValue value="1" display_value="Option 1"/>
+    <EnumValue value="2" display_value="Option 2"/>
+ </UserPref>
+ <UserPref name="testBoolean" datatype="bool" default_value="true"/>
+ <Content type="html">
+   <![CDATA[  
+        <!-- Currently unused, but an example of how to work with a simple inline template with Data Pipelining -->
+        <script type="text/os-data" xmlns:os="http://ns.opensocial.org/2008/markup">
+            <os:ViewerRequest key="databindviewer"/>
+            <os:OwnerRequest key="databindowner"/>
+            <os:PersonAppDataRequest key="ownerdata" userId="@owner" appId="@app"/>
+        </script>
+        <script type="text/os-template" tag="uos:HelloWorld" xmlns:uos="http://eurekastreams.org">
+            <div align="center">
+            </div>
+            <b>Hello ${databindviewer.displayName}</b><br>
+            <marquee width="75%" height=15 behavior=scroll direction=left loop=infinit bgcolor=yellow>
+                <blink><b><font color="red">Welcome</font> <font color="green">to</font> 
+                <font color="blue">${databindowner.displayName}'s</font> <font color="purple">gadget</font></b></blink><br>
+            </marquee><br>
+            <b>Owner id is ${databindowner.id}</b><br>
+            <!-- This line is aweful ownerdata.2.name1 to access the owner's name1 field in this app data???? -->
+            <b>Owner Data Key=name1 value=${ownerdata.2.name1}</b><br>
+            <b>Owner Data Key=Bio value=${databindowner.aboutMe}</b><br>
+        </script>
+        <script type="text/os-template" tag="uos:HelloWorldOSAPI" xmlns:uos="http://eurekastreams.org">
+            <div align="center">
+            </div>
+            <b>Hello ${Top.Viewer.displayName}</b><br>
+            <marquee width="75%" height=15 behavior=scroll direction=left loop=infinit bgcolor=yellow>
+                <blink><b><font color="red">Welcome</font> <font color="green">to</font> 
+                <font color="blue">${Top.Owner.displayName}'s</font> <font color="purple">gadget</font></b></blink><br>
+            </marquee><br>
+            <b>Owner id is ${Top.Owner.id}</b><br>
+            <b>Viewer id is ${Top.Viewer.id}</b><br>
+            <b>Owner Bio is ${Top.Owner.aboutMe}</b><br>
+        </script>
+        <script type="text/os-template" tag="uos:BasicWorld" xmlns:uos="http://eurekastreams.org">
+            Hello Steve
+        </script>
+        <input type="button" value="Load Template with OSAPI" onClick="getosapiData('uos:HelloWorldOSAPI'); return false;"/><br>
+        <input type="button" value="Load Template with OpenSocial Call" onClick="getOpensocialData('uos:HelloWorld'); return false;"/><br>
+        <input type="button" value="Update App Data" onClick="updateAppData(); return false;"/><br>
+        <input type="button" value="Delete App Data" onClick="deleteAppData(); return false;"/><br>
+        <input type="button" value="Use Sample Feature" onClick="eurekastreams.samplefeature.initsamplefeature(); return false;"/><br>
+        <input type="button" value="Use Sample Feature Container Test" onClick="eurekastreams.samplefeature.testSampleFeatureContainer(); return false;"/><br>
+        <input type="button" value="Get App Id" onClick="getCurrentGadgetsAppId()"/><br>
+        <input type="button" value="Complete Task" onClick="eurekastreams.checklist.completeTask('TaskA', true);"/><br>
+        <input type="button" value="Uncomplete Task" onClick="eurekastreams.checklist.completeTask('TaskA', false);"/><br>
+        <input type="button" value="Change Title" onClick="gadgets.window.setTitle('This title is better');"/><br>
+        <input type="button" value="Post Activity" onClick="postActivity();"/><br>
+        <div id="canvasbutton"><input type="button" value="Switch to Canvas" onClick="gadgets.views.requestNavigateTo('canvas', 'movetocanvas'); return false;"/><br></div>
+        <div id="homebutton"><input type="button" value="Switch to Home" onClick="gadgets.views.requestNavigateTo('home', 'movetohome'); return false;"/><br></div>
+        AppData Key:   name1<br>
+        AppData Value: <input type="text" id="appDataValue" value="value1"/><br>
+        <div>Here is the template content below:</div>
+        <div id="renderhere"></div>
+        <script type="text/javascript">
+            if( gadgets.views.getCurrentView().getName() == 'canvas')
+            {
+                document.getElementById('canvasbutton').style.visibility = 'hidden';
+                document.getElementById('homebutton').style.visibility = '';
+            }
+            else
+            {
+                document.getElementById('canvasbutton').style.visibility = '';
+                document.getElementById('homebutton').style.visibility = 'hidden';            
+            }
+            gadgets.log('View Params: ' + gadgets.json.stringify(gadgets.views.getParams()));
+                    
+            //Init checklist task
+            var tasks = new Array();
+            tasks[0] = {};
+            tasks[0].name = "TaskA";
+            tasks[0].description = "TaskA - Description";
+            eurekastreams.checklist.registerTasks(tasks);
+            
+            function getCurrentGadgetsAppId()
+            {
+                alert('calling the getAppId method');
+                eurekastreams.core.getAppId(function(result)
+                {
+                    alert('Got AppId: ' + result);
+                });
+            }
+            
+            
+            function switchToCanvasView()
+            {
+                gadgets.views.requestNavigateTo('canvas');
+            }
+            
+            function render(data, templatename)
+            {
+                var helloWorldTemplate = opensocial.template.getTemplate(templatename);
+                helloWorldTemplate.renderInto(document.getElementById("renderhere"), data);
+                gadgets.window.adjustHeight();
+            }
+            
+            function updateAppData()
+            {
+                alert('About to update');
+                var req = opensocial.newDataRequest();
+                req.add(req.newUpdatePersonAppDataRequest(opensocial.IdSpec.PersonId.VIEWER, 
+                  'name1', 
+                  document.getElementById('appDataValue').value));
+                req.send(function(result){
+                    if(!result.hadError())
+                    {
+                        getOpensocialData('HelloWorld');
+                    }
+                    else
+                    {
+                        alert('error occurred retrieving data: ' + result.getErrorMessage());
+                    }
+                });
+            }
+            
+			function postActivity() 
+			{
+			  var title = 'awesome activity that everyone needs to know about';
+			  var params = {};
+			  params[opensocial.Activity.Field.TITLE] = title;
+			  var activity = opensocial.newActivity(params)
+			  opensocial.requestCreateActivity(activity, opensocial.CreateActivityPriority.HIGH, function() 
+			  	{
+			  		alert('we posted the awesome activity');
+			  	});
+			}
+			
+            function deleteAppData()
+            {
+                alert('About to delete - performing an update will restore this value');
+                var req = opensocial.newDataRequest();
+                req.add(req.newRemovePersonAppDataRequest(opensocial.IdSpec.PersonId.VIEWER, 'name1'));
+                req.send(function(result){
+                    if(!result.hadError())
+                    {
+                        getOpensocialData('HelloWorld');
+                    }
+                    else
+                    {
+                        alert('error occurred retrieving data: ' + result.getErrorMessage());
+                    }
+                });
+            }
+            
+            /*
+            This function retrieves the data with the old style opensocial requests
+            */
+            function getOpensocialData(templatename)
+            {
+               var req = opensocial.newDataRequest();
+               req.add(req.newFetchPersonRequest(opensocial.IdSpec.PersonId.VIEWER), 'databindviewer');
+               req.add(req.newFetchPersonRequest(opensocial.IdSpec.PersonId.OWNER), 'databindowner');
+               
+               var friendspec = opensocial.newIdSpec({userId : 'VIEWER', groupId : 'FRIENDS'});
+               req.add(req.newFetchPeopleRequest(friendspec), 'viewerfriends');
+               
+               var selfspec = opensocial.newIdSpec({userId : 'VIEWER', groupId : 'SELF'});
+               req.add(req.newFetchPeopleRequest(selfspec), 'viewerself');
+               
+               req.add(req.newFetchPersonAppDataRequest(opensocial.newIdSpec({userId : 'VIEWER'}),
+                 'name1'), 'viewerdata');
+               req.add(req.newFetchPersonAppDataRequest(opensocial.newIdSpec({userId : 'OWNER'}),
+                 'name1'), 'ownerdata');
+               req.add(req.newFetchActivitiesRequest(opensocial.newIdSpec({userId : 'OWNER', groupId : 'SELF'})),
+                 'ownerActivities');
+               req.send(function(result){
+                    if (!result.hadError())
+                    {
+                        render(result, templatename);
+                    }
+                    else
+                    {
+                        alert('error occurred retrieving data: ' + result.getErrorMessage());
+                    }
+                });
+            }
+            
+            /*
+            This function retrieves the data with the new lightweight api.
+            */
+            function getosapiData(templatename)
+            {
+               var batchRequest = osapi.newBatch().
+                    add("Viewer", osapi.people.getViewer()).
+                    add("Owner", osapi.people.getOwner()).
+                    add("viewerfriends", osapi.people.getViewerFriends()).
+                    add("ownerfriends", osapi.people.getOwnerFriends()).
+                    add("owneractivities", osapi.activities.get({userId : '@owner', groupId : '@self'})).
+                    add("viewerdata", osapi.appdata.get({userId : '@viewer', groupId : '@self', appId: '@app'})).
+                    add("ownerdata", osapi.appdata.get({userId : '@owner', groupId : '@self', appId: '@app'}));
+                    
+               batchRequest.execute(function(result) {
+                    if(!result.error)
+                    {
+                        render(result, templatename);
+                    }
+                    else
+                    {
+                        alert('There was an error retrieving the data for this gadget.');
+                    }
+               });
+            }
+            
+            //Pick an approach to start with, you could do either.
+            gadgets.util.registerOnLoadHandler(function(){ getosapiData('uos:HelloWorldOSAPI'); });
+            //gadgets.util.registerOnLoadHandler(function(){ getOpensocialData('uos:HelloWorld'); });
+        </script>
+   ]]>
+  </Content>
+</Module>

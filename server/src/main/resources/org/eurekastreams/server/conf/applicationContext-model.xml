@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/tx
+      http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- Required bean for the Model imported resource -->  
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver" />
+        <property name="url" value="${eureka.db.connstr}/${eureka.db.dbname}" />
+        <property name="username" value="${eureka.db.username}" />
+        <property name="password" value="${eureka.db.password}" />
+    </bean>
+
+	<bean id="queryOptimizer" class="org.eurekastreams.commons.hibernate.QueryOptimizer" />
+	
+	<!-- Cache of organization hierarchies by id -->
+	<bean id="organizationHierarchyCache"
+		class="org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCache">
+		<property name="cache" ref="memcachedCache" />
+		<property name="getOrganizationsByShortNames" ref="bulkOrganizationsByShortNameMapper" />
+		<property name="getRecursiveChildOrgIdsMapper" ref="getRecursiveChildOrgIdsMapper" />
+		<property name="getRecursiveParentOrgIdsMapper" ref="getRecursiveParentOrgIdsMapper" />
+		<property name="getDirectChildOrgIdsMapper" ref="getDirectOrgIdsMapper" />
+		<property name="getOrganizationsByShortNamesMapper" ref="bulkOrganizationsByShortNameMapper" />
+	</bean>
+
+	<bean id="descendantOrgStrategy"
+		class="org.eurekastreams.server.persistence.strategies.DescendantOrganizationStrategy">
+		<property name="queryOptimizer" ref="queryOptimizer" />
+	</bean>
+
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="showSql" value="${eureka.model.showsql}" />
+				<property name="generateDdl" value="false" />
+				<property name="databasePlatform" value="org.hibernate.dialect.PostgreSQLDialect" />
+			</bean>
+		</property>
+		<property name="jpaPropertyMap" ref="hibernatePropertyMap"/>
+	</bean>
+
+	<bean id="jpaGroupMapper" class="org.eurekastreams.server.persistence.DomainGroupMapper">
+		<constructor-arg ref="queryOptimizer" />
+		<property name="descendantOrgStrategy" ref="descendantOrgStrategy" />
+		<constructor-arg ref="removeDomainGroupFromCacheMapper" />
+	</bean>
+	<bean id="jpaOrganizationMapper" class="org.eurekastreams.server.persistence.OrganizationMapper">
+		<constructor-arg ref="queryOptimizer" />
+		<property name="descendantOrgStrategy" ref="descendantOrgStrategy" />
+	</bean>
+	<bean id="jpaPersonMapper" class="org.eurekastreams.server.persistence.PersonMapper">
+		<constructor-arg ref="queryOptimizer" />
+		<constructor-arg ref="removePersonFromCacheMapper" />
+		<property name="descendantOrgStrategy" ref="descendantOrgStrategy" />
+	</bean>
+	<bean id="jpaBackgroundMapper" class="org.eurekastreams.server.persistence.BackgroundMapper">
+		<constructor-arg ref="queryOptimizer" />
+		<constructor-arg ref="jpaPersonMapper" />
+	</bean>
+	<bean id="jpaPortalPageMapper" class="org.eurekastreams.server.persistence.TabGroupMapper">
+		<constructor-arg ref="queryOptimizer" />
+	</bean>
+	<bean id="jpaTabMapper" class="org.eurekastreams.server.persistence.TabMapper">
+		<constructor-arg ref="queryOptimizer" />
+	</bean>
+	<bean id="jpaGadgetMapper" class="org.eurekastreams.server.persistence.GadgetMapper">
+		<constructor-arg ref="queryOptimizer" />
+	</bean>
+	<bean id="jpaThemeMapper" class="org.eurekastreams.server.persistence.ThemeMapper">
+		<constructor-arg ref="queryOptimizer" />
+	</bean>
+	<bean id="jpaGadgetDefinitionMapper" class="org.eurekastreams.server.persistence.GadgetDefinitionMapper">
+		<constructor-arg ref="queryOptimizer" />
+	</bean>
+	<bean id="jpaPluginDefinitionMapper" class="org.eurekastreams.server.persistence.PluginDefinitionMapper">
+        <constructor-arg ref="queryOptimizer" />
+    </bean>
+	<bean id="jpaPersistentLoginMapper" class="org.eurekastreams.server.persistence.PersistentLoginMapper">
+		<constructor-arg ref="queryOptimizer" />
+	</bean>
+	<bean id="jpaAppDataMapper" class="org.eurekastreams.server.persistence.AppDataMapper">
+		<constructor-arg ref="queryOptimizer" />
+	</bean>
+	<bean id="jpaJobMapper" class="org.eurekastreams.server.persistence.JobMapper">
+		<constructor-arg ref="queryOptimizer" />
+		<constructor-arg ref="jpaPersonMapper" />
+	</bean>
+	<bean id="jpaTaskMapper" class="org.eurekastreams.server.persistence.TaskMapper">
+		<constructor-arg ref="queryOptimizer" />
+	</bean>
+	<bean id="jpaRecommendationMapper" class="org.eurekastreams.server.persistence.RecommendationMapper">
+		<constructor-arg ref="queryOptimizer" />
+	</bean>
+	<bean id="jpaGalleryItemCategoryMapper" class="org.eurekastreams.server.persistence.GalleryItemCategoryMapper">
+		<constructor-arg ref="queryOptimizer" />
+	</bean>
+	<bean id="jpaEnrollmentMapper" class="org.eurekastreams.server.persistence.EnrollmentMapper">
+		<constructor-arg ref="queryOptimizer" />
+		<constructor-arg ref="jpaPersonMapper" />
+	</bean>
+	<bean id="jpaOAuthConsumerMapper" class="org.eurekastreams.server.persistence.OAuthConsumerMapper">
+		<constructor-arg ref="queryOptimizer" />
+	</bean>
+	<bean id="jpaOAuthTokenMapper" class="org.eurekastreams.server.persistence.OAuthTokenMapper">
+		<constructor-arg ref="queryOptimizer" />
+	</bean>
+	<bean id="jpaOAuthEntryMapper" class="org.eurekastreams.server.persistence.OAuthEntryMapper">
+		<constructor-arg ref="queryOptimizer" />
+	</bean>
+
+	<bean
+		class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean name="gadgetMetaDataHttpFetcher"
+		class="org.eurekastreams.server.service.opensocial.gadgets.spec.GadgetMetaDataHttpFetcher">
+		<property name="currentAppContextBaseUrl" value="${eureka.web.baseurl}" />
+	</bean>
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+</beans>

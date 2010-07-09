@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Theme>
+  <Title>Green Hills</Title>
+  <Description>Green Hills</Description>
+  <AuthorName>Eureka Streams</AuthorName>
+  <AuthorEmail>support@eurekastreams.org</AuthorEmail>
+	<HeaderBackground>
+		<HeaderBackgroundColor>white</HeaderBackgroundColor>
+		<HeaderForegroundColor>white</HeaderForegroundColor>
+		<HeaderBackgroundImage>/style/images/Start_page_1.jpg</HeaderBackgroundImage>
+	</HeaderBackground>
+	<ActiveTabBorderColor>#A4A5A9</ActiveTabBorderColor>
+	<ActiveTabForegroundColor>#313007</ActiveTabForegroundColor>
+	<InactiveTabBackgroundColor>#505657</InactiveTabBackgroundColor>
+	<InactiveTabBorderColor>#2e3131i</InactiveTabBorderColor>
+	<InactiveTabForegroundColor>white</InactiveTabForegroundColor>
+	<GadgetTitleBackgroundColor>#2e4523</GadgetTitleBackgroundColor>
+	<GadgetTitleForegroundColor>white</GadgetTitleForegroundColor>
+	<GadgetBorderColor>#313007</GadgetBorderColor>
+	<PageBackground>
+		<PageBackgroundColor>#e6e1d0</PageBackgroundColor>
+		<PageBackgroundImage/>
+	</PageBackground>
+</Theme>

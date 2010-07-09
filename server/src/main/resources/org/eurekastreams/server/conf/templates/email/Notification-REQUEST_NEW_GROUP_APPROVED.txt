@@ -1,0 +1,9 @@
+Your request to create the $(aux.name) group has been approved.
+
+Please click on the link below to go to your group stream page, 
+click the checklist button in the lower left hand corner, 
+and complete your group's profile.
+$(eureka.web.baseurl)#$(aux.page)/$(aux.uniqueid)
+
+Thank You,
+Eureka Streams

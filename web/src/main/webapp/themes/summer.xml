@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Theme>
+  <Title>Summer</Title>
+  <Description>Summer Description</Description>
+  <AuthorName>Phil Plait</AuthorName>
+  <AuthorEmail>phil.plait@awesome.com</AuthorEmail>
+	<HeaderBackground>
+		<HeaderBackgroundColor>#DDDDBB</HeaderBackgroundColor>
+		<HeaderForegroundColor>#DDDDBB</HeaderForegroundColor>
+		<HeaderBackgroundImage Center="true">
+			http://www.laketravisrentals.net/themes/summerocean/summerocean_headerimagecenter07.jpg
+		</HeaderBackgroundImage>
+	</HeaderBackground>
+	<InactiveTabBorderColor>transparent</InactiveTabBorderColor>
+	<InactiveTabBackgroundColor>#ADD6F7</InactiveTabBackgroundColor>
+	<InactiveTabForegroundColor>white</InactiveTabForegroundColor>
+	<ActiveTabBorderColor>black</ActiveTabBorderColor>
+	<ActiveTabForegroundColor>black</ActiveTabForegroundColor>
+	<GadgetTitleBackgroundColor>#ADD6F7</GadgetTitleBackgroundColor>
+	<GadgetTitleForegroundColor>#333333</GadgetTitleForegroundColor>
+	<GadgetBorderColor>#ADD6F7</GadgetBorderColor>
+	<PageBackground>
+		<PageBackgroundColor>#DDDDBB</PageBackgroundColor>
+		<PageBackgroundImage RepeatY="true" RepeatX="true">
+			http://www.fireflyforest.com/iridias_stuff/images/back/sandy/granulab.gif
+		</PageBackgroundImage>
+	</PageBackground>
+</Theme>
+

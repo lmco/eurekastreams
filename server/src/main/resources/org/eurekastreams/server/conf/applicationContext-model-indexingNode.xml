@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:jms="http://www.springframework.org/schema/jms"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/tx
+      http://www.springframework.org/schema/tx/spring-tx.xsd
+     http://www.springframework.org/schema/jms 
+     http://www.springframework.org/schema/jms/spring-jms.xsd
+     http://activemq.apache.org/schema/core 
+     http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+    <!-- Hook up the Indexing JMS Queue -->
+    <bean id="mdbSearchController" class="org.eurekastreams.server.search.indexing.MDBSearchController" />
+    <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="${eureka.queue.jms.connstr}" />
+    </bean>
+    
+    <jms:listener-container connection-factory="connectionFactory">
+        <jms:listener destination="${eureka.queue.hibernatesearch.queuename}" ref="mdbSearchController" />
+    </jms:listener-container>
+
+    <!-- Hibernate configuration for the indexing node -->
+    <bean id="hibernatePropertyMap" class="java.util.HashMap">
+        <constructor-arg>
+            <map>
+                <!-- Cache is currently turned off -->
+                <entry key="hibernate.cache.use_second_level_cache" value="false" />
+                <entry key="hibernate.cache.use_query_cache" value="false" />
+
+                <entry key="hibernate.cache.provider_class" value="net.sf.ehcache.hibernate.SingletonEhCacheProvider" />
+                <entry key="net.sf.ehcache.configurationResourceName" value="/WEB-INF/ehcache.xml" />
+                <entry key="hibernate.show_sql" value="false" />
+                <entry key="hibernate.use_sql_comments" value="false" />
+                <entry key="hibernate.format_sql" value="false" />
+                <entry key="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+
+                <entry key="hibernate.search.worker.execution" value="async" />
+                <entry key="hibernate.search.worker.thread_pool.size" value="5" />
+
+                <!-- Master search index copy -->
+                <entry key="hibernate.search.default.sourceBase" value="${eureka.hibernatesearch.sourcebase.dir}/lucene-index-eureka-MASTER-COPY" />
+
+                <!-- Copy the index diffs to the copy every 60 seconds -->
+                <!-- TODO: change this value per entity type -->
+                <entry key="hibernate.search.default.refresh" value="60" />
+
+                <!-- MASTER CONFIG -->
+                <entry key="hibernate.search.default.directory_provider"
+                    value="org.hibernate.search.store.FSMasterDirectoryProvider" />
+                <entry key="hibernate.search.default.indexBase" value="${eureka.hibernatesearch.indexbase.dir}/lucene-index-eureka-MASTER" />
+                
+            </map>
+        </constructor-arg>
+    </bean>
+
+</beans>

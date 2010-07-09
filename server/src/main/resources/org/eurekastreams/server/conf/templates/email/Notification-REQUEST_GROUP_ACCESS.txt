@@ -1,0 +1,16 @@
+$(actor.name) requested to join the $(dest.name) private group.  As a coordinator, 
+you have the ability to approve or deny this person access.
+
+If you would like to grant this user access to your group, please visit the group profile Admin tab.
+We also recommend that you please send the user an email stating your decision regarding their request.
+
+To see the membership request follow this link to the group Admin tab:
+$(eureka.web.baseurl)#groups/$(dest.uniqueid)?tab=Admin
+
+Thank You,
+Eureka Streams
+
+--- 
+
+Emails you receive from Eureka Streams can be managed from your notification settings page:
+$(eureka.web.baseurl)#settings?tab=Notifications

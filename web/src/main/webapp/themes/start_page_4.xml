@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Theme>
+  <Title>Green Blocks</Title>
+  <Description>Green Blocks</Description>
+  <AuthorName>Eureka Streams</AuthorName>
+  <AuthorEmail>support@eurekastreams.org</AuthorEmail>
+	<HeaderBackground>
+		<HeaderBackgroundColor>white</HeaderBackgroundColor>
+		<HeaderForegroundColor>white</HeaderForegroundColor>
+		<HeaderBackgroundImage>/style/images/Start_page_4.jpg</HeaderBackgroundImage>
+	</HeaderBackground>
+	<ActiveTabBorderColor>#162d23</ActiveTabBorderColor>
+	<ActiveTabForegroundColor>white</ActiveTabForegroundColor>
+	<InactiveTabBackgroundColor>#355749</InactiveTabBackgroundColor>
+	<InactiveTabBorderColor>#162d23</InactiveTabBorderColor>
+	<InactiveTabForegroundColor>white</InactiveTabForegroundColor>
+	<GadgetTitleBackgroundColor>#5a8675</GadgetTitleBackgroundColor>
+	<GadgetTitleForegroundColor>white</GadgetTitleForegroundColor>
+	<GadgetBorderColor>#355749</GadgetBorderColor>
+	<PageBackground>
+		<PageBackgroundColor>#a4d1c1</PageBackgroundColor>
+		<PageBackgroundImage/>
+	</PageBackground>
+</Theme>

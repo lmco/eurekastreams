@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Theme>
+  <Title>Blue Plasma</Title>
+  <Description>Blue Plasma</Description>  
+  <AuthorName>Eureka Streams</AuthorName>
+  <AuthorEmail>support@eurekastreams.org</AuthorEmail>
+	<HeaderBackground>
+		<HeaderBackgroundColor>white</HeaderBackgroundColor>
+		<HeaderForegroundColor>white</HeaderForegroundColor>
+		<HeaderBackgroundImage>/style/images/Start_page_2.jpg</HeaderBackgroundImage>
+	</HeaderBackground>
+	<ActiveTabBorderColor>#A4A5A9</ActiveTabBorderColor>
+	<ActiveTabForegroundColor>#1b3248</ActiveTabForegroundColor>
+	<InactiveTabBackgroundColor>#497c9e</InactiveTabBackgroundColor>
+	<InactiveTabBorderColor>#2e3131i</InactiveTabBorderColor>
+	<InactiveTabForegroundColor>white</InactiveTabForegroundColor>
+	<GadgetTitleBackgroundColor>#67a0d6</GadgetTitleBackgroundColor>
+	<GadgetTitleForegroundColor>#0a1f32</GadgetTitleForegroundColor>
+	<GadgetBorderColor>#45627d</GadgetBorderColor>
+	<PageBackground>
+		<PageBackgroundColor>#dedede</PageBackgroundColor>
+		<PageBackgroundImage/>
+	</PageBackground>
+</Theme>

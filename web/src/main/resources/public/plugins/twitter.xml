@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+    <ModulePrefs title="Twitter" description="This plugin imports tweets published from any publically available Twitter user account. To configure, enter the Twitter account user name." thumbnail="http://localhost:8080/style/images/twitterIconSmall.png" title_url="http://eurekastreams.org" author="Eureka Framework" screenshot="http://localhost:8080/style/images/twitterIconLarge.png" author_email="support@eurekastreams.org">
+        <Require feature="views" />
+        <Require feature="eurekastreams-streamplugin"/>
+    </ModulePrefs>
+<UserPref name="updateFrequency" datatype="hidden" default_value="30" />
+<UserPref name="objectType" datatype="hidden" default_value="NOTE" />
+ <Content type="html" view="default, profile, canvas">
+    <![CDATA[
+        <script type="text/javascript">
+            eurekastreams.streamplugin.addUrlValidator("User Name:", "feed", "", 
+                "", 
+                "Please enter a valid Twitter user name.", "function(value) { if(value=='') { return ''; } else { return 'http://twitter.com/statuses/user_timeline/' + value + '.rss'; }}");
+ 
+        eurekastreams.streamplugin.registerGetFeedCallback(
+            "function() { return $wnd.gwt_getFormValue('feed'); }");
+        </script>
+    ]]>
+ </Content>
+</Module>

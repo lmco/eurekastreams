@@ -1,0 +1,895 @@
+<dataset>
+
+	<!--
+		** SKELETON OBJECTS ** <Person id="" version="1" accountId=""
+		firstName="" lastName="" preferredName="" /> <Tab id="" version="1"
+		tabName="" tabIndex="" tabGroupId="", deleted="", dateDeleted=""/>
+		<TabGroup id="" version="1" tabGroupType_id="" personId=""/>
+		<TabGroupType id="" version="1" name=""/> <GadgetDefinition id=""
+		version="1" url=""/> <Gadget id="" version="1" zoneNumber=""
+		gadgetDefinitionId="" zoneIndex="" />
+	-->
+
+	<StreamView id="5000" version="0" name="Following" type="PEOPLEFOLLOW"/>
+	<StreamView id="5001" version="0" name="ParentOrg" type="PARENTORG"/>
+	<StreamView id="5002" version="0" name="Everyone" type="EVERYONE"/>
+	<StreamView id="5003" version="0" name="Starred" type="STARRED"/>
+		
+	<StreamView id="4896" version="1117" name="Someone" />
+	
+	<!-- Org StreamViews -->	
+	<StreamView id="1" version="1117" name="TstOrgName" />
+	<StreamView id="2" version="1117" name="Child1OrgName" />
+	<StreamView id="3" version="1117" name="Child2OrgName" />
+	
+	<!-- Person StreamViews -->
+	<StreamView id="4" version="1117" name="smithers" />
+	<StreamView id="5" version="1117" name="fordp" />
+	<StreamView id="6" version="1117" name="fordp2" />
+	<StreamView id="7" version="1117" name="csagan" />
+	<StreamView id="8" version="1117" name="mrburns" />
+	
+	<!-- DomainGroup StreamViews -->
+	<StreamView id="9"  name="group1" version="1" />
+	<StreamView id="10" name="group2" version="1" />
+	<StreamView id="11" name="group3" version="1" />
+	<StreamView id="12" name="group4" version="1" />
+	<StreamView id="13" name="group5" version="1" />
+	<StreamView id="14" name="pendinggroup" version="1" />
+	<StreamView id="15" name="pendinggroup2" version="1" />
+	<StreamView id="16" name="pendinggroup3" version="1" />
+	
+	<!-- Custom StreamViews -->
+	<StreamView id="17" version="1117" name="smithers custom compositeStream" />
+	<StreamView id="18" version="1117" name="orphaned compositeStream" />
+	<StreamView id="19" version="1117" name="non-orphaned compositeStream" />
+			
+	<StreamSearch id="1" version="0" streamview_id="5002"
+		name="streamSearch1" />
+	<StreamSearch id="2" version="0" streamview_id="4896"
+		name="streamSearch2" />
+	<StreamSearch id="3" version="0" streamview_id="19"
+		name="something" />
+
+	<!-- Gadget Categories -->
+	<GalleryItemCategory id="4565" name="News" version="3467"
+		galleryItemType="GADGET" />
+	<GalleryItemCategory id="4327" name="Weather"
+		version="3468" galleryItemType="GADGET" />
+	<GalleryItemCategory id="6968" name="Entertainment"
+		version="3469" galleryItemType="GADGET" />
+
+	<GalleryItemCategory id="4566" name="City" version="3467"
+		galleryItemType="THEME" />
+	<GalleryItemCategory id="4328" name="Seasonal"
+		version="3470" galleryItemType="THEME" />
+	<GalleryItemCategory id="6969" name="Business"
+		version="3471" galleryItemType="THEME" />
+
+    <GalleryItemCategory id="1234" name="All"
+        version="3471" galleryItemType="PLUGIN" />
+
+    <!-- PLUGIN  -->
+    <PluginDefinition id="1" version="1" updateFrequency="9" showInGallery="true" url="http://www.google1.com"
+        uuid="568d4fp2-7dec-11d0-a765-00a0c91e6bf8" created="2009-01-01 12:00:00.000" numberOfUsers="0" pluginCategoryId="1234"/>
+    <PluginDefinition id="2" version="1" updateFrequency="20" showInGallery="true" url="http://www.google2.com" uuid="568d4fki-7dec-11d0-a765-00a0c91e6bf8"
+        created="2009-01-01 12:00:00.000"
+        numberOfUsers="0" pluginCategoryId="1234"/>
+    <PluginDefinition id="3" version="1" updateFrequency="30" showInGallery="true" url="http://www.google3.com" uuid="568d4hye-7dec-11d0-a765-00a0c91e6bf8"
+        created="2009-01-01 12:00:00.000"
+        numberOfUsers="0" pluginCategoryId="1234"/>
+    
+    <Feed id="1" version="1" pending="false" url="http://www.google1.com"
+        updated="1000" updateFrequency="10" streamPluginId="1" title="sometitle" />
+    <Feed id="2" version="1" pending="true" url="http://www.google2.com"
+        updated="1000" updateFrequency="10" streamPluginId="1" title="sometitle" />
+    <Feed id="3" version="1" pending="false" url="http://www.google3.com"
+        updated="1000" updateFrequency="60" streamPluginId="2" title="sometitle" />
+    <Feed id="4" version="1" pending="false" url="http://www.google4.com"
+        updated="1000" streamPluginId="3" title="sometitle" />
+    <Feed id="5" version="1" pending="false" url="http://www.google5.com"
+        updated="1000" updateFrequency="30" streamPluginId="1" title="sometitle" />
+        
+	<!-- Gadget Definitions -->
+	<GadgetDefinition id="1831" version="4673"
+		url="http://www.google.com" uuid="129d4fae-7dec-11d0-a765-00a0c91e6bf6"
+		gadgetCategoryId="4565" created="2008-01-01 12:00:00.000"
+		showInGallery="true" numberOfUsers="1" />
+	<GadgetDefinition id="4789" version="5099"
+		url="http://www.example.com" uuid="568d4fae-7dec-11d0-a765-00a0c91e6bf6"
+		gadgetCategoryId="4327" created="2008-01-01 12:00:00.000"
+		showInGallery="true" numberOfUsers="4" />
+	<GadgetDefinition id="4790" version="5100"
+		url="http://www.example.com" uuid="568d4fae-7dec-11d0-a765-00a0c91e6bf7"
+		gadgetCategoryId="4565" created="2009-01-01 12:00:00.000"
+		showInGallery="true" numberOfUsers="3" />
+	<GadgetDefinition id="4791" version="5101"
+		url="http://www.example.com" uuid="568d4fae-7dec-11d0-a765-00a0c91e6bf8"
+		gadgetCategoryId="4327" created="2009-01-01 12:00:00.000"
+		showInGallery="true" numberOfUsers="2" />
+
+	<Task id="88443" version="1" gadgetDefinitionId="1831" name="task1"
+		description="doesntchange" />
+	<Task id="88444" version="1" gadgetDefinitionId="1831" name="task2"
+		description="orig" />
+	<Task id="88445" version="1" gadgetDefinitionId="1831" name="task3"
+		description="deleteme" />
+
+	<!--
+		TabTemplates that truly are templates (type is set)These should not be
+		associated with tab group.
+	-->
+	<TabTemplate id="5555" version="1" tabName="Welcome" type="WELCOME"
+		tabLayout="TWOCOLUMN" deleted="false" />
+	<TabTemplate id="6666" version="1" tabName="About" type="ORG_ABOUT"
+		tabLayout="TWOCOLUMN" deleted="false" />
+	<TabTemplate id="7777" version="1" tabName="About" type="PERSON_ABOUT"
+		tabLayout="TWOCOLUMN" deleted="false" />
+	<TabTemplate id="8888" version="1" tabName="Applications"
+		type="APP" tabLayout="TWOCOLUMN" deleted="false" />
+
+
+	<TabGroup id="4231" version="5783" />
+	<TabTemplate id="1097" version="1" tabName="Ford Tab 1"
+		tabLayout="TWOCOLUMN" deleted="false" />
+	<TabTemplate id="1787" version="1" tabName="Ford Tab 2"
+		tabLayout="TWOCOLUMNLEFTWIDE" deleted="false" />
+	<TabTemplate id="3253" version="1" tabName="Ford Tab 3"
+		tabLayout="THREECOLUMN" deleted="false" />
+	<Tab id="1097" version="1277" tabIndex="0" templateId="1097"
+		tabGroupId="4231" deleted="false" dateDeleted="2009-01-01 12:00:00.000" />
+	<Tab id="1787" version="3571" tabIndex="1" templateId="1787"
+		tabGroupId="4231" deleted="false" dateDeleted="2009-01-01 12:00:00.000" />
+	<Tab id="3253" version="2099" tabIndex="2" templateId="3253"
+		tabGroupId="4231" deleted="false" dateDeleted="2009-01-01 12:00:00.000" />
+
+
+
+	<!--
+		Note: tabIndex is omitted here, so it's set to null. Deleted tabs
+		don't have a tabIndex.
+	-->
+	<TabTemplate id="3187" version="1" tabName="Ford Tab 4"
+		tabLayout="THREECOLUMNRIGHTWIDEHEADER" deleted="true" dateDeleted="2000-01-01 12:00:00.000" />
+	<Tab id="3187" version="2837" tabIndex="1" templateId="3187"
+		tabGroupId="4231" deleted="true" dateDeleted="2000-01-01 12:00:00.000" />
+
+
+	<!-- Tab Group Themes -->
+	<!-- Tab Group Themes -->
+	<Theme id="102" version="1133" cssFile="generated.css"
+		uuid="f81d4fae-7dec-11d0-a765-00a0c91e6bf6" themeUrl="http://www.eurekastreams.org/theme.xml"
+		description="Test Theme 102 Description" bannerId="banner id"
+		authorName="mortimer Snerd" authorEmail="vswatter@gmail.com" name="Test Theme"
+		themeCategoryId="4566" numberOfUsers="100" created="2008-01-01 12:00:00.000" />
+		
+    <!-- Core StreamScopes -->
+    <StreamScope id="50000" scopeType="PERSONS_FOLLOWED_STREAMS" uniqueKey="follow" version="1" />
+    <StreamScope id="50001" scopeType="PERSONS_PARENT_ORGANIZATION" uniqueKey="parentorg" version="1" />
+    <StreamScope id="50002" scopeType="ALL" uniqueKey="everyone" version="1" />
+    <StreamScope id="50003" scopeType="STARRED" uniqueKey="starred" version="1" />
+    
+	<!-- Person StreamScopes -->
+	<StreamScope id="87433" scopeType="PERSON" uniqueKey="smithers" version="1" />
+	<StreamScope id="1" scopeType="PERSON" uniqueKey="fordp" version="1" />
+	<StreamScope id="2" scopeType="PERSON" uniqueKey="fordp2" version="1" />
+	<StreamScope id="3" scopeType="PERSON" uniqueKey="csagan" version="1" />
+	<StreamScope id="4" scopeType="PERSON" uniqueKey="mrburns" version="1" />
+	
+	<!-- DomainGroup StreamScopes -->
+	<StreamScope id="874" scopeType="GROUP" uniqueKey="group1" version="1" />
+	<StreamScope id="875" scopeType="GROUP" uniqueKey="group2" version="1" />
+	<StreamScope id="876" scopeType="GROUP" uniqueKey="group3" version="1" />
+	<StreamScope id="877" scopeType="GROUP" uniqueKey="group4" version="1" />
+	<StreamScope id="878" scopeType="GROUP" uniqueKey="group5" version="1" />
+	<StreamScope id="879" scopeType="GROUP" uniqueKey="pendinggroup" version="1" />
+	<StreamScope id="880" scopeType="GROUP" uniqueKey="pendinggroup2" version="1" />
+	<StreamScope id="881" scopeType="GROUP" uniqueKey="pendinggroup3" version="1" />
+	
+	<!-- Organization StreamScopes -->
+	<StreamScope id="837433" scopeType="ORGANIZATION" uniqueKey="tstorgname" version="1" />
+	<StreamScope id="8374533" scopeType="ORGANIZATION" uniqueKey="child1orgname" version="1" />
+	<StreamScope id="9374533" scopeType="ORGANIZATION" uniqueKey="child2orgname" version="1" />		
+	
+	<!-- Other StreamScopes -->
+	<StreamScope id="347" scopeType="PERSONS_PARENT_ORGANIZATION" uniqueKey="fordp" version="1" />
+	<StreamScope id="3452" scopeType="PERSONS_FOLLOWED_STREAMS" uniqueKey="fordp" version="1" />
+	
+	<!-- StreamView_StreamScope associations for core -->
+    <StreamView_StreamScope StreamView_id="5000" includedScopes_id="50000" />
+    <StreamView_StreamScope StreamView_id="5001" includedScopes_id="50001" />
+    <StreamView_StreamScope StreamView_id="5002" includedScopes_id="50002" />
+    <StreamView_StreamScope StreamView_id="5003" includedScopes_id="50003" />
+    	
+	<!-- StreamView_StreamScope associations for orgs -->
+	<StreamView_StreamScope StreamView_id="1" includedScopes_id="837433" />
+	<StreamView_StreamScope StreamView_id="2" includedScopes_id="8374533" />
+	<StreamView_StreamScope StreamView_id="3" includedScopes_id="9374533" />
+	
+	<!-- StreamView_StreamScope associations for people -->
+	<StreamView_StreamScope StreamView_id="4" includedScopes_id="87433" />
+	<StreamView_StreamScope StreamView_id="5" includedScopes_id="1" />
+	<StreamView_StreamScope StreamView_id="6" includedScopes_id="2" />
+	<StreamView_StreamScope StreamView_id="7" includedScopes_id="3" />
+	<StreamView_StreamScope StreamView_id="8" includedScopes_id="4" />
+	
+	<!-- StreamView_StreamScope associations for domainGroups -->
+	<StreamView_StreamScope StreamView_id="9" includedScopes_id="874" />
+	<StreamView_StreamScope StreamView_id="10" includedScopes_id="875" />
+	<StreamView_StreamScope StreamView_id="11" includedScopes_id="876" />
+	<StreamView_StreamScope StreamView_id="12" includedScopes_id="877" />
+	<StreamView_StreamScope StreamView_id="13" includedScopes_id="878" />
+	<StreamView_StreamScope StreamView_id="14" includedScopes_id="879" />
+	<StreamView_StreamScope StreamView_id="15" includedScopes_id="880" />
+	<StreamView_StreamScope StreamView_id="16" includedScopes_id="881" />
+	
+	<StreamView_StreamScope StreamView_id="17" includedScopes_id="87433" />
+	<StreamView_StreamScope StreamView_id="18" includedScopes_id="87433" />
+	<StreamView_StreamScope StreamView_id="19" includedScopes_id="87433" />
+
+	<Organization id="5" version="1" description="Mission Statement"
+		name="Test Organization Name" allUsersCanCreateGroups="true"
+		shortName="tstorgname" url="http://www.TestOrganizationName.com"
+		parentOrganizationId="5" 
+		childOrganizationCount="2" descendantGroupCount="5"
+		descendantEmployeeCount="2" employeeFollowerCount="0" bannerId="Foo"
+		updatesCount="6" streamScopeId="837433"
+		entityStreamViewId="1"/>
+	<Organization id="6" version="1" description="Child 1 Mission Statement"
+		name="Child 1 Organization Name" allUsersCanCreateGroups="false"
+		shortName="child1orgname" url="http://www.Child_1_OrganizationName.com"
+		parentOrganizationId="5" 
+		childOrganizationCount="0" descendantGroupCount="0"
+		descendantEmployeeCount="0" employeeFollowerCount="2" bannerId="Bar"
+		updatesCount="61" streamScopeId="8374533"
+		entityStreamViewId="2"/>
+	<Organization id="7" version="1" description="Child_2_Mission Statement"
+		name="Child 2 Organization Name" allUsersCanCreateGroups="true"
+		shortName="child2orgname" url="http://www.Child_2_OrganizationName.com"
+		parentOrganizationId="5" 
+		childOrganizationCount="0" descendantGroupCount="2"
+		descendantEmployeeCount="0" employeeFollowerCount="0"
+		updatesCount="51" streamScopeId="9374533"
+		entityStreamViewId="3"/>
+	<!--
+		I want to set up orgs so that getChildOrganizations() returns a
+		different result from getDescendantOrganizations(), but when I set Org
+		id=8's parentOrganizationId to 6 or 7, I get a data integrity error.
+		It's fine if I set it to 5.
+	-->
+	<!--
+		<Organization id="8" version="1" description="Child_3_Mission
+		Statement" name="Child 3 Organization Name" shortName="Child3OrgName"
+		url="http://www.Child_3_OrganizationName.com" themeId="102"
+		parentOrganizationId="5" />
+	-->
+
+	<!-- **************************************** -->
+	<!-- Ford Prefect - Tab Group with three tabs -->
+	<Person id="42" version="1117" accountId="fordp" firstName="Ford"
+		middleName="X" lastName="Prefect" preferredName="Volgon-Swatter"
+		email="vswatter@gmail.com" workPhone="6105551212" title="towel carrier"
+		jobDescription="skljk klsdjlsdlsj lkj" location="99999" followersCount="0"
+		followingCount="0" groupsCount="0" parentOrganizationId="5" themeId="103"
+		startTabGroupId="4231" avatarId="sdfsdsd" profileTabGroupId="4231"
+		openSocialId="2d359911-0977-418a-9490-57e8252b1a42" dateAdded="2009-01-01 05:54:54"
+		updatesCount="5" streamViewHiddenLineIndex="1" streamScopeId="1"
+		streamSearchHiddenLineIndex="2" commentable="true" streamPostable="true" accountlocked="false"
+		entityStreamViewId="5" groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
+	<Person id="142" version="1117" accountId="fordp2" firstName="Ford"
+		middleName="X" lastName="Prefect" preferredName="Volgon-Vwatter"
+		email="vswatter@gmail.com" workPhone="6105551212" title="towel carrier"
+		jobDescription="skljk klsdjlsdlsj lkj" location="99999" followersCount="0"
+		followingCount="0" groupsCount="0" parentOrganizationId="6" themeId="102"
+		startTabGroupId="4231" avatarId="sdfsd" profileTabGroupId="4231"
+		openSocialId="2d359911-0977-418a-9490-57e8252b1142" dateAdded="2009-01-01 05:54:54"
+		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="2"
+		streamSearchHiddenLineIndex="2" commentable="true" streamPostable="false" accountlocked="false"
+		entityStreamViewId="6" groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
+
+	<FeedSubscriber id="1" version="1" feedId="1" entityId="42" type="PERSON"  />
+	<FeedSubscriber id="2" version="1" feedId="2" entityId="42" type="PERSON"  />
+	<FeedSubscriber id="3" version="1" feedId="3" entityId="42" type="PERSON"  />
+	<FeedSubscriber id="4" version="1" feedId="5" entityId="42" type="PERSON"  />
+	<FeedSubscriber id="5" version="1" feedId="2" entityId="142" type="PERSON"  />
+	<FeedSubscriber id="6" version="1" feedId="1" entityId="142" type="PERSON"  />
+	<FeedSubscriber id="7" version="1" feedId="4" entityId="142" type="PERSON"  />
+	<FeedSubscriber id="8" version="1" feedId="1" entityId="8" type="GROUP"  />
+	<FeedSubscriber id="9" version="1" feedId="2" entityId="8" type="GROUP"  />
+	<FeedSubscriber id="10" version="1" feedId="3" entityId="6" type="GROUP"  />
+
+	<Person_StreamView person_Id="42" streamViews_Id="5002"
+		streamviewindex="0" />
+	<Person_StreamView person_Id="42" streamViews_Id="4896"
+		streamviewindex="1" />
+		
+	<!-- add EVERYONE compositeStream to smithers collection of compositeStreams -->
+	<Person_StreamView person_Id="98" streamViews_Id="5002"
+		streamviewindex="0" />
+	<Person_StreamView person_Id="98" streamViews_Id="17"
+		streamviewindex="1" />
+
+	<Person_StreamSearch person_Id="42"
+		streamSearches_Id="1" streamSearchindex="0" />
+	<Person_StreamSearch person_Id="42"
+		streamSearches_Id="2" streamSearchindex="1" />
+
+	<Person_RelatedOrganization personId="42"
+		organizationId="5" />
+	<Person_RelatedOrganization personId="42"
+		organizationId="6" />
+
+	<Person_RelatedOrganization personId="142"
+		organizationId="6" />
+	<Person_RelatedOrganization personId="142"
+		organizationId="5" />
+
+	<Person_Task taskId="88445" personId="42" />
+
+
+	<Theme id="103" version="1134" cssFile="generated1.css"
+		uuid="f81d4fae-7dec-11d0-a765-00a0c91e6bf7" themeUrl="http://www.eurekastreams.org/theme1.xml"
+		description="Test Theme 103 Description" bannerId="banner id" name="Test Theme"
+		authorId="42" themeCategoryId="4328" authorName="mortimer Snerd"
+		authorEmail="vswatter@gmail.com" numberOfUsers="0"
+		created="2008-01-01 12:00:00.000" />
+
+	<Theme id="104" version="1135" cssFile="generated2.css"
+		uuid="f81d4fae-7dec-11d0-a765-00a0c91e6bf8" themeUrl="http://www.eurekastreams.org/theme2.xml"
+		description="Test Theme 104 Description" bannerId="banner id" name="Test Theme"
+		authorId="42" themeCategoryId="4566" authorName="mortimer Snerd"
+		authorEmail="vswatter@gmail.com" numberOfUsers="56"
+		created="2009-01-01 12:00:00.000" />
+
+	<Theme id="105" version="1136" cssFile="generated3.css"
+		uuid="f81d4fae-7dec-11d0-a765-00a0c91e6bf9" themeUrl="http://www.eurekastreams.org/theme3.xml"
+		description="Test Theme 105 Description" bannerId="banner id" name="Test Theme"
+		authorId="142" themeCategoryId="4328" authorName="mortimer Snerd"
+		authorEmail="vswatter@gmail.com" numberOfUsers="23"
+		created="2009-01-01 12:00:00.000" />
+
+	<Background id="1042" personId="42" version="1117" />
+	<BackgroundItem id="120" version="0" backgroundType="SKILL"
+		name="skill_1" />
+	<BackgroundItem id="121" version="0" backgroundType="SKILL"
+		name="skill_2" />
+	<BackgroundItem id="122" version="0" backgroundType="SKILL"
+		name="skill_3" />
+	<BackgroundItem id="126" version="0" backgroundType="HONOR"
+		name="honor_1" />
+	<BackgroundItem id="127" version="0" backgroundType="HONOR"
+		name="honor_2" />
+	<BackgroundItem id="128" version="0" backgroundType="HONOR"
+		name="honor_3" />
+	<!-- Duplicate honor so we can test for distinct results.  -->
+	<BackgroundItem id="129" version="0" backgroundType="HONOR"
+		name="honor_3" />
+	<BackgroundItem id="130" version="0" backgroundType="CAPABILITY"
+		name="org_cap_1" />
+	<BackgroundItem id="131" version="0" backgroundType="CAPABILITY"
+		name="org_cap_2" />
+	<BackgroundItem id="132" version="0" backgroundType="CAPABILITY"
+		name="org_cap_3" />
+	<BackgroundItem id="133" version="0" backgroundType="CAPABILITY"
+		name="org_cap_3" />
+	<BackgroundItem id="134" version="0" backgroundType="SCHOOL_NAME"
+		name="school_name_1" />
+	<BackgroundItem id="135" version="0" backgroundType="AREA_OF_STUDY"
+		name="area_of_study_1" />
+	<BackgroundItem id="136" version="0" backgroundType="ACTIVITY_OR_SOCIETY"
+		name="activity_1" />
+
+	<BackgroundItem id="4743" version="0" backgroundtype="INTEREST"
+		name="Earthlings" />
+	<Background_Interests Background_Id="1042"
+		interestIndex="0" BackgroundItem_Id="4743" />
+
+	<Organization_Capability OrganizationId="6"
+		capabilityId="130" />
+
+	<Job id="2042" personId="42" version="1117" companyName="Example"
+		industry="Aerospace" title="Engineer" datefrom="2008-01-01 12:00:00.000"
+		dateTo="2009-01-01 12:00:00.000" description="this that and the other thing" />
+
+	<Job id="2043" personId="142" version="1117" companyName="Example"
+		industry="Aerospace" title="Engineer" datefrom="2008-01-01 12:00:00.000"
+		dateTo="2009-01-01 12:00:00.000" description="this that and the other thing" />
+
+	<Job id="2044" personId="142" version="1117" companyName="example2"
+		industry="Retail" title="Sweeper" datefrom="2007-01-01 12:00:00.000"
+		dateTo="2008-01-01 12:00:00.000" description="I'm a lumberjack and I'm okay" />
+
+	<Enrollment id="2042" personId="42" version="1117"
+		schoolNameId="134" degree="BS Computer Science" graddate="2008-01-01 12:00:00.000"
+		additionalDetails="this that and the other thing" />
+
+	<Enrollment_Activities Enrollment_id="2042"
+		BackgroundItem_Id="136" activitiesIndex="0" />
+	<Enrollment_AreasOfStudy Enrollment_id="2042"
+		BackgroundItem_Id="135" areasOfStudyIndex="0" />
+
+	<Organization_Leaders Organization_id="5"
+		leaders_id="42" />
+	<Organization_Leaders Organization_id="5"
+		leaders_id="142" />
+
+	<Organization_Coordinators Organization_id="5"
+		coordinators_id="42" />
+	<Organization_Coordinators Organization_id="5"
+		coordinators_id="99" />
+
+	<Organization_Coordinators Organization_id="6"
+		coordinators_id="99" />
+	<Organization_Coordinators Organization_id="6"
+		coordinators_id="142" />
+
+	<Organization_Coordinators Organization_id="7"
+		coordinators_id="99" />
+	<Organization_Coordinators Organization_id="7"
+		coordinators_id="142" />
+
+
+
+	<!-- Three Gadgets in Ford's 1st tab - two in zone 1, 1 in zone 3 -->
+	<!-- * mix up the IDs to test sort * -->
+
+	<Gadget id="5039" version="3467" gadgetDefinitionId="1831"
+		ownerId="4507" zoneNumber="0" zoneIndex="0" tabTemplateId="1097"
+		deleted="false" dateDeleted="2009-01-01 12:00:00.000" minimized="false" />
+
+	<Gadget id="6863" version="3413" gadgetDefinitionId="1831"
+		ownerId="98" zoneNumber="0" zoneIndex="1" tabTemplateId="1097"
+		deleted="false" dateDeleted="2009-01-01 12:00:00.000" minimized="false" />
+	<Gadget id="4969" version="4391" gadgetDefinitionId="4789"
+		ownerId="98" zoneNumber="2" zoneIndex="0" tabTemplateId="1097"
+		deleted="false" dateDeleted="2009-01-01 12:00:00.000" minimized="false" />
+
+	<!-- Four Gadgets in Ford's 3rd tab - three in zone 1, 1 in zone 2, 3 in zone 3 -->
+	<!-- * mix up the IDs to test sort * -->
+    <!--  Only a few gadgets have user prefs set on them, the others don't have
+        the field so that they show up as null -->
+
+	<Gadget id="7841" version="6203" gadgetDefinitionId="1831"
+		ownerId="98" zoneNumber="0" zoneIndex="0" tabTemplateId="3253"
+		deleted="false" dateDeleted="2009-01-01 12:00:00.000" minimized="false" 
+        gadgetUserPref="pref1:'value1',pref2:'value2'}"/>
+	<Gadget id="5749" version="5623" gadgetDefinitionId="4789"
+		ownerId="99" zoneNumber="0" zoneIndex="1" tabTemplateId="3253"
+		deleted="false" dateDeleted="2009-01-01 12:00:00.000" minimized="false" 
+        gadgetUserPref="{pref1:'othervalue1',pref2:'othervalue2'}"/>
+	<Gadget id="7879" version="6907" gadgetDefinitionId="4790"
+		ownerId="99" zoneNumber="0" zoneIndex="2" tabTemplateId="3253"
+		deleted="false" dateDeleted="2009-01-01 12:00:00.000" minimized="false" />
+	<Gadget id="7753" version="7159" gadgetDefinitionId="4789"
+		ownerId="4507" zoneNumber="1" zoneIndex="0" tabTemplateId="3253"
+		deleted="false" dateDeleted="2009-01-01 12:00:00.000" minimized="false" />
+	<Gadget id="3754" version="4825" gadgetDefinitionId="4789"
+		ownerId="4507" zoneNumber="1" zoneIndex="1" tabTemplateId="3253"
+		deleted="true" dateDeleted="2009-01-01 12:00:00.000" minimized="false" />
+    <Gadget id="3759" version="4821" gadgetDefinitionId="4789"
+        ownerId="4507" zoneNumber="2" zoneIndex="0" tabTemplateId="3253"
+        deleted="false" dateDeleted="2009-01-01 12:00:00.000" minimized="false" />
+    <Gadget id="3751" version="4820" gadgetDefinitionId="4789"
+        ownerId="4507" zoneNumber="2" zoneIndex="1" tabTemplateId="3253"
+        deleted="false" dateDeleted="2009-01-01 12:00:00.000" minimized="false" />
+    <Gadget id="3781" version="4819" gadgetDefinitionId="4789"
+        ownerId="4507" zoneNumber="2" zoneIndex="2" tabTemplateId="3253"
+        deleted="false" dateDeleted="2009-01-01 12:00:00.000" minimized="false" />
+                
+    <NotificationFilterPreference version="1" personId="42" notifierType="email" notificationCategory="FOLLOW_PERSON" />
+    <NotificationFilterPreference version="1" personId="42" notifierType="email" notificationCategory="FOLLOW_GROUP" />
+    
+	<!-- *********************************** -->
+	<!-- Carl Sagan - Tab Group with one tabs -->
+	<Person id="4507" version="1117" accountId="csagan" firstName="Carl"
+		middleName="winslow" lastName="Sagan" preferredName="B-and-B" email="csagan@gmail.com"
+		workPhone="6105551212" title="billionth" location="99999"
+		overview="skljk klsdjlsdlsj lkj2" followersCount="0" followingCount="0"
+		groupsCount="1" parentOrganizationId="7" themeId="102"
+		startTabGroupId="5393" avatarId="abcdefg" profileTabGroupId="5393"
+		openSocialId="2d359911-0977-418a-9490-57e8252b4507" dateAdded="2009-01-01 05:54:54"
+		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="3" 
+		streamSearchHiddenLineIndex="2" commentable="true" streamPostable="true" accountlocked="false"
+		entityStreamViewId="7" groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
+		
+	<Person_RelatedOrganization personId="4507" organizationId="7" />
+
+	<Person id="98" version="4" accountId="smithers" firstName="W"
+		middleName="Mr" lastName="Smithers" preferredName="Smithers" email="smithers@gmail.com"
+		workPhone="6105551212" title="lickspittle" location="99999"
+		jobDescription="skljk klsdjlsdlsj lkj5" followersCount="0" followingCount="1"
+		groupsCount="1" parentOrganizationId="7" themeId="102"
+		startTabGroupId="4231" avatarId="heynow" profileTabGroupId="4231"
+		openSocialId="2d359911-0977-418a-9490-57e8252b1a98" dateAdded="2009-01-01 05:54:54"
+		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="87433" 
+		streamSearchHiddenLineIndex="2" commentable="true" streamPostable="true" accountlocked="false"
+		entityStreamViewId="4" groupstreamhiddenlineindex="3" optOutVideoIds="6;"/>
+
+	<Person id="99" version="5" accountId="mrburns" firstName="Monty"
+		middleName="Mr." lastName="Burns" preferredName="Mr.Burns" email="mrburns@gmail.com"
+		workPhone="6105551212" title="Master of All" location="99999"
+		jobDescription="skljk klsdjlsdlsj lkj" followersCount="1" followingCount="0"
+		groupsCount="1" parentOrganizationId="7" themeId="102"
+		startTabGroupId="4231" profileTabGroupId="4231" avatarId="foofoo"
+		openSocialId="2d359911-0977-418a-9490-57e8252b1a99" dateAdded="2009-01-01 05:54:54"
+		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="4" 
+		streamSearchHiddenLineIndex="2" commentable="true" streamPostable="true" accountlocked="false"
+		entityStreamViewId="8" groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
+
+    <NotificationFilterPreference version="1" personId="99" notifierType="email" notificationCategory="COMMENT" />
+
+	<!--
+		SMithers has three related organizations including the parent
+		organization
+	-->
+	<Person_RelatedOrganization personId="98"
+		organizationId="5" />
+	<Person_RelatedOrganization personId="98"
+		organizationId="6" />
+	<Person_RelatedOrganization personId="98"
+		organizationId="7" />
+
+	<!--
+		MrBurnes has two related organizations but not the parent
+		organizations; an orphaned person
+	-->
+	<Person_RelatedOrganization personId="99"
+		organizationId="6" />
+	<Person_RelatedOrganization personId="99"
+		organizationId="5" />
+
+    <!--
+       All people follow themselves first
+    -->
+    <Follower followerId="42" followingId="42" />
+    <Follower followerId="99" followingId="99" />
+    <Follower followerId="98" followingId="98" />
+    <Follower followerId="142" followingId="142" />
+    <Follower followerId="4507" followingId="4507" />
+    
+	<Follower followerId="98" followingId="99" />
+	<Follower followerId="142" followingId="98" />
+	<Follower followerId="99" followingId="98" />
+
+	<TabGroup id="5393" version="4549" />
+	<TabTemplate id="4703" version="1" tabName="Carl's First"
+		tabLayout="TWOCOLUMN" deleted="false" />
+	<Tab id="4703" version="3821" tabIndex="0" templateId="4703"
+		tabGroupId="5393" deleted="false" dateDeleted="2009-01-01 12:00:00.000" />
+
+	<PersistentLogin id="696" version="111" accountId="mrburns"
+		tokenValue="abc123" tokenExpirationDate="123456" />
+
+	<!--
+		One Gadget in Carl's tab to test that things work with just one gadget
+		- in zone 1
+	-->
+	<Gadget id="1513" version="3467" gadgetDefinitionId="1831"
+		zoneNumber="1" zoneIndex="0" tabTemplateId="4703" deleted="false"
+		dateDeleted="2009-01-01 12:00:00.000" minimized="false" />
+
+	<!-- ************************************ -->
+	<!--  Test Application Data -->
+	<AppData id="3497" version="123" personId="4507"
+		gadgetDefinitionId="4789" />
+	<AppDataValue id="5371" version="378" name="viewcount"
+		value="2" appDataId="3497" />
+	<AppDataValue id="6137" version="436" name="question1answer"
+		value="true" appDataId="3497" />
+
+	<Recommendation id="1" version="1" date="2009-01-01"
+		subjectOpenSocialId="2d359911-0977-418a-9490-57e8252b1a99"
+		authorOpenSocialId="2d359911-0977-418a-9490-57e8252b1a98" text="recommendation 1" />
+
+	<Recommendation id="2" version="1" date="2009-01-02"
+		subjectOpenSocialId="2d359911-0977-418a-9490-57e8252b1a99"
+		authorOpenSocialId="2d359911-0977-418a-9490-57e8252b4507" text="recommendation 2" />
+
+	<Recommendation id="3" version="1" date="2009-01-03"
+		subjectOpenSocialId="2d359911-0977-418a-9490-57e8252b4507"
+		authorOpenSocialId="2d359911-0977-418a-9490-57e8252b1142" text="recommendation 3" />
+
+
+
+	<DomainGroup id="1" version="1" description="Group_1_Mission Statement"
+		updatesCount="5" name="E Group 1 Name" shortName="group1" publicgroup="true"
+		followersCount="3" parentOrganizationId="7"
+		dateAdded="2009-02-01 05:54:54" isPending="false" 
+		createdById="42" streamScopeId="874" commentable="true" streamPostable="true"
+		entityStreamViewId="9" />
+
+	<DomainGroup id="2" version="1" description="Group_2_Mission Statement"
+		updatesCount="5" name="D Group 1 Name" shortName="group2" publicgroup="true"
+		followersCount="1" parentOrganizationId="7" 
+		dateAdded="2009-01-01 05:54:54" isPending="false" 
+		createdById="42" streamScopeId="875" commentable="true" streamPostable="true"
+		entityStreamViewId="10" />
+
+	<DomainGroup id="3" version="1" description="Group_3_Mission Statement"
+		updatesCount="8" name="C Group 1 Name" shortName="group3" publicgroup="true"
+		followersCount="10" parentOrganizationId="6" 
+		dateAdded="2009-04-01 05:54:54" isPending="false" 
+		createdById="42" streamScopeId="876" commentable="true" streamPostable="true"
+		entityStreamViewId="11" />
+
+	<DomainGroup id="4" version="1" description="Group_4_Mission Statement"
+		updatesCount="8" name="BGroup 1 Name" shortName="group4" publicgroup="true"
+		followersCount="1" parentOrganizationId="6" 
+		dateAdded="2009-05-01 05:54:54" isPending="false" 
+		createdById="42" streamScopeId="877" commentable="true" streamPostable="true"
+		entityStreamViewId="12" />
+
+	<DomainGroup id="5" version="1" description="Group_5_Mission Statement"
+		updatesCount="8" name="A Group 1 Name" shortName="group5" publicgroup="true"
+		followersCount="0" parentOrganizationId="5" 
+		dateAdded="2008-01-01 05:54:54" isPending="false" 
+		createdById="42" streamScopeId="878"  commentable="true" streamPostable="true"
+		entityStreamViewId="13"/>
+
+	<DomainGroup id="6" version="1" description="Group_6_Mission Statement"
+		updatesCount="8" name="Pending Group" shortName="pendinggroup" publicgroup="true"
+		followersCount="0" parentOrganizationId="5" 
+		dateAdded="2008-01-01 05:54:54" isPending="true" 
+		createdById="42" streamScopeId="879" commentable="true" streamPostable="true"
+		entityStreamViewId="14" />
+		
+	<DomainGroup id="7" version="1" description="Group_7_Mission Statement"
+		updatesCount="8" name="Pending Group 2" shortName="pendinggroup2" publicgroup="true"
+		followersCount="0" parentOrganizationId="6" 
+		dateAdded="2008-01-01 05:54:55" isPending="true" 
+		createdById="42" streamScopeId="880" commentable="true" streamPostable="true"
+		entityStreamViewId="15" />
+		
+	<DomainGroup id="8" version="1" description="Group_8_Mission Statement"
+		updatesCount="8" name="Pending Group 3" shortName="pendinggroup3" publicgroup="true"
+		followersCount="0" parentOrganizationId="5" 
+		dateAdded="2008-01-01 05:54:56" isPending="true" 
+		createdById="4507" streamScopeId="881" commentable="true" streamPostable="true"
+		entityStreamViewId="16" />
+	
+
+	<!-- Smithers and Burns follow group 1 -->
+	<GroupFollower followerId="99" followingId="1" groupstreamindex="0" />
+	<GroupFollower followerId="98" followingId="1" groupstreamindex="0" />
+	
+	<!-- Fordp follows groups 1, 2, and 3 -->
+	<GroupFollower followerId="42" followingId="1" groupstreamindex="0" />
+	<GroupFollower followerId="42" followingId="2" groupstreamindex="1" />
+	<GroupFollower followerId="42" followingId="3" groupstreamindex="2" />
+
+	<!-- Smithers and Ford are coordinators for Group 1 -->
+	<Group_Coordinators DomainGroup_id="1"
+		coordinators_id="98" />
+	<Group_Coordinators DomainGroup_id="1"
+		coordinators_id="42" />
+
+
+	<!-- Sagan follows group 2 -->
+	<GroupFollower followerId="4507" followingId="2" groupstreamindex="0" />
+
+	<!-- FordP2 is a coordinator for group 2 -->
+	<Group_Coordinators DomainGroup_id="2"
+		coordinators_id="142" />
+
+	<!-- csagan requested membership in group 8 -->
+	<GroupMembershipRequests groupId="8" personId="4507" />
+	
+	<GroupMembershipRequests groupId="6" personId="142" />
+	<GroupMembershipRequests groupId="6" personId="4507" />
+
+	<!-- Stream information -->
+
+	<StreamItemId id="999" version="1" />
+	<StreamItemId id="1000" version="1" />
+	<StreamItemId id="1001" version="1" />
+	<StreamItemId id="1002" version="1" />
+	<StreamItemId id="1003" version="1" />
+	<StreamItemId id="1004" version="1" />
+	<StreamItemId id="1005" version="1" />
+	<StreamItemId id="1006" version="1" />
+	<StreamItemId id="1007" version="1" />
+	<StreamItemId id="1008" version="1" />
+	<StreamItemId id="1009" version="1" />
+	<StreamItemId id="1010" version="1" />
+	<StreamItemId id="1011" version="1" />
+		
+	<Activity id="6789" version="1" actorId="smithers" actorType="PERSON" baseObject="" baseObjectType="NOTE" 
+		openSocialId="123" postedTime="2009-10-27 06:54:00" updated="2009-10-27 06:55:00"
+		verb="POST" recipientParentOrgId="7" streamScopeId="87433" isDestinationStreamPublic="true" originalActorId="smithers" 
+		originalActorType="PERSON" flagged="true" />
+	
+	<Activity id="6790" version="1" actorId="smithers" actorType="PERSON" baseObject="" baseObjectType="NOTE"
+		openSocialId="456" postedTime="2009-10-27 06:55:00" updated="2009-10-27 06:56:00"
+		verb="POST" recipientParentOrgId="7" streamScopeId="87433" isDestinationStreamPublic="true" 
+		flagged="false" />
+		
+    <Activity id="6791" version="1" actorId="fordp" actorType="PERSON" baseObject="" baseObjectType="NOTE"
+        openSocialId="789" postedTime="2009-10-27 06:56:00" updated="2009-10-27 06:56:00"
+        verb="POST" recipientParentOrgId="6" streamScopeId="2" isDestinationStreamPublic="true" originalActorId="smithers" 
+		originalActorType="PERSON" flagged="false" />
+    
+    <Activity id="6792" version="1" actorId="fordp2" actorType="PERSON" baseObject="" baseObjectType="NOTE"
+        openSocialId="012" postedTime="2009-10-27 06:57:00" updated="2009-10-27 06:56:00"
+        verb="POST" recipientParentOrgId="5" streamScopeId="1" isDestinationStreamPublic="true" originalActorId="csagan" 
+		originalActorType="PERSON" flagged="false" />
+        
+    <!-- smithers posts a note to group1 stream -->
+    <Activity id="6793" version="1" actorId="smithers" actorType="PERSON" baseObject="" baseObjectType="NOTE"
+        openSocialId="234" postedTime="2010-01-27 06:58:00" updated="2010-01-27 06:58:00"
+        verb="POST" recipientParentOrgId="5" streamScopeId="874" isDestinationStreamPublic="true" originalActorId="smithers" 
+		originalActorType="PERSON" flagged="false" />
+
+	<Comment id="1" version="0" body="mr burns comment to smithers 1" 
+		timesent="2009-09-04 07:00:00" authorpersonid="99" activityid="6789" />
+	<Comment id="2" version="0" body="mr burns comment to smithers 2" 
+		timesent="2009-09-05 07:00:00" authorpersonid="99" activityid="6789" />
+	<Comment id="3" version="0" body="mr burns comment to smithers 3" 
+		timesent="2009-09-06 07:00:00" authorpersonid="99" activityid="6789" />
+		
+	<Comment id="4" version="0" body="ford to ford2" 
+		timesent="2009-09-06 07:00:00" authorpersonid="42" activityid="6792" />
+
+	<Comment id="5" version="0" body="sdlfkjds" timesent="2009-09-06 07:00:00" 
+		authorpersonid="42" activityid="6790" />
+	<Comment id="6" version="0" body="sdlfkjds" timesent="2009-09-06 07:00:00" 
+		authorpersonid="99" activityid="6790" />
+	<Comment id="7" version="0" body="sdlfkjds" timesent="2009-09-06 07:00:00" 
+		authorpersonid="42" activityid="6790" />
+		
+	<Comment id="8" version="0" body="sdlfkjds" timesent="2009-09-06 07:00:00" 
+		authorpersonid="42" activityid="6791" />
+		
+	<Comment id="9" version="0" body="smithers commenting on his own group post" timesent="2009-10-27 06:56:00"
+		authorpersonid="98" activityid="6793"/>
+	<Comment id="10" version="0" body="burns commenting on smithers group post" timesent="2009-10-27 06:56:00"
+		authorpersonid="99" activityid="6793"/>
+		
+	<OAuthConsumer id="100" version="1" consumerKey="key0"
+		consumerSecret="secret0" signatureMethod="HMAC-SHA1"
+		serviceProviderName="provider0" gadgetUrl="http://localhost:4040/some/path/gadget0.xml" />
+
+	<OAuthConsumer id="101" version="1" consumerKey="key1"
+		consumerSecret="secret1" signatureMethod="HMAC-SHA1"
+		serviceProviderName="provider1" gadgetUrl="http://localhost:4040/some/path/gadget1.xml" />
+
+	<OAuthConsumer id="102" version="1" consumerKey="key2"
+		consumerSecret="secret2" signatureMethod="HMAC-SHA1"
+		serviceProviderName="provider2" gadgetUrl="http://localhost:4040/some/path/gadget2.xml" />
+
+	<OAuthConsumer id="103" version="1" consumerKey="key3"
+		consumerSecret="secret3" signatureMethod="HMAC-SHA1"
+		serviceProviderName="provider3" gadgetUrl="http://localhost:4040/some/path/gadget3.xml" />
+
+	<OAuthConsumer id="104" version="1" consumerKey="key4"
+		consumerSecret="secret4" signatureMethod="HMAC-SHA1"
+		serviceProviderName="provider4" gadgetUrl="http://localhost:4040/some/path/gadget4.xml" />
+
+	<!--
+		A token that expired on 1/1/2000. This has to be first since dbunit
+		won't pick up the optional tokenExpireMillis attribute otherwise.
+	-->
+	<OAuthToken id="107" version="1" consumerId="104" viewerId="123"
+		ownerId="456" accessToken="accessToken4" tokenSecret="accessSecret4"
+		tokenExpireMillis="946702800000" />
+
+	<OAuthToken id="104" version="1" consumerId="101" viewerId="123"
+		ownerId="456" accessToken="accesstoken1" tokenSecret="accesssecret1" />
+
+	<OAuthToken id="105" version="1" consumerId="100" viewerId="123"
+		ownerId="456" accessToken="accesstoken2" tokenSecret="accesssecret2" />
+
+	<OAuthToken id="106" version="1" consumerId="103" viewerId="123"
+		ownerId="456" accessToken="accesstoken3" tokenSecret="accesssecret3" />
+
+	<OAuthToken id="108" version="1" consumerId="102" viewerId="123"
+		ownerId="456" accessToken="accesstoken4" tokenSecret="accesssecret1" />
+		
+	<OAuthDomainEntry id="101" version="1" appId="application1" authorized="false" callbackToken="" callbackTokenAttempts="0"
+		callbackUrl="http://localhost:8080/gadgets/oauthcallback" consumerId="101" container="container1"
+		domain="domain1" issueTime="2009-09-14 09:11:36.157" oauthVersion="1.0" token="token1"
+		tokenSecret="tokensecret1" type="REQUEST" userId="" callbackUrlSigned="true" />
+
+	<OAuthDomainEntry id="102" version="1" appId="application2" authorized="false" callbackToken="" callbackTokenAttempts="0"
+		callbackUrl="http://localhost:8080/gadgets/oauthcallback" consumerId="101" container="container2"
+		domain="domain2" issueTime="2009-09-14 09:11:36.157" oauthVersion="1.0" token="token2"
+		tokenSecret="tokensecret2" type="REQUEST" userId="" callbackUrlSigned="true" />
+
+	<OAuthDomainEntry id="103" version="1" appId="application3" authorized="false" callbackToken="" callbackTokenAttempts="0"
+		callbackUrl="http://localhost:8080/gadgets/oauthcallback" consumerId="101" container="container3"
+		domain="domain3" issueTime="2009-09-14 09:11:36.157" oauthVersion="1.0" token="token3"
+		tokenSecret="tokensecret3" type="REQUEST" userId=""  callbackUrlSigned="true"/>
+		
+	
+
+	<!-- StreamView 883 has one scope - messages posted to group1's wall -->
+	<StreamView id="883" name="Group 1 Posts" version="1" />	
+	<StreamView_StreamScope StreamView_id="883" includedScopes_id="874" />
+
+	<!-- StreamView 938 has one scope - messages posted on smithers' wall-->
+	<StreamView id="938" name="Posts on Monty's Wall" version="1" />	
+	<StreamView_StreamScope StreamView_id="938" includedScopes_id="87433" />
+
+    <!-- StreamView 187 has one scope - messages posted on mrburns' wall-->
+    <StreamView id="187" name="Posts on Burns' Wall" version="1" />    
+    <StreamView_StreamScope StreamView_id="187" includedScopes_id="4" />
+    
+	<!-- StreamView 9383 has one scope - anything under org 5 -->
+	<StreamView id="9383" name="Posts under org 5" version="1" />	
+	<StreamView_StreamScope StreamView_id="9383" includedScopes_id="837433" />
+
+	<!-- StreamView 93833 has one scope - anything under org 6 -->
+	<StreamView id="93833" name="Posts under org 6" version="1" />	
+	<StreamView_StreamScope StreamView_id="93833" includedScopes_id="8374533" />
+
+	<!-- StreamView 913833 has one scope - anything under org 7 -->
+	<StreamView id="913833" name="Posts under org 7" version="1" />	
+	<StreamView_StreamScope StreamView_id="913833" includedScopes_id="9374533" />
+
+	<StreamView id="382" name="heyNow" version="1" />	
+	<StreamView_StreamScope StreamView_id="382" includedScopes_id="837433" />
+	<StreamView_StreamScope StreamView_id="382" includedScopes_id="874" />
+	<StreamView_StreamScope StreamView_id="382" includedScopes_id="347" />
+
+	<StreamView id="400" name="heyNow" version="1" />
+	<StreamView_StreamScope StreamView_id="400" includedScopes_id="837433" />
+	<StreamView_StreamScope StreamView_id="400" includedScopes_id="874" />
+
+	<StreamView id="401" name="People Ford's Following (none)" version="1" />	
+	<StreamView_StreamScope StreamView_id="401" includedScopes_id="3452" />
+		
+	<!-- Mr burns "stars" activity -->	
+	<StarredActivity personId="99" activityId="6789" />	
+	
+	<!-- various starred activities -->
+	<StarredActivity personId="142" activityId="6789" />
+	<StarredActivity personId="42" activityId="6790" />
+	<StarredActivity personId="142" activityId="6790" />
+	<StarredActivity personId="98" activityId="6789" />
+	<StarredActivity personId="42" activityId="6789" />
+	
+	<SystemSettings id="1001" version="1122" siteLabel="some site label" 
+		termsOfService="some terms of service" isTosDisplayedEverySession="false" tosPromptInterval="1" 
+		contentWarningText="some content warning" contentExpiration="1" sendWelcomeEmails="true" />
+	<MembershipCriteria id="11" version="2" criteria="testCriterion1" systemSettingsId="1001" />
+	<MembershipCriteria id="12" version="2" criteria="testCriterion2" systemSettingsId="1001" />
+	
+	<ApplicationAlertNotification id="1" version="1" notificationDate="2009-12-12 10:54:06.000" isRead="false" 
+		recipientId="99" notificationtype="POST_TO_PERSONAL_STREAM" 
+		actorName="Ford Prefect" actorAccountId="fordp"
+		activityId="1" activityType="NOTE" 
+		destinationType="PERSON" destinationUniqueId="smithers" destinationName="Mr Smithers"
+		auxiliaryType="NOTSET" auxiliaryUniqueId="" auxiliaryName="" />
+
+	<ApplicationAlertNotification id="2" version="1" notificationDate="2010-01-03 15:23:19.000" isRead="true" 
+		recipientId="99" notificationtype="POST_TO_PERSONAL_STREAM"
+		actorName="Mr Smithers" actorAccountId="smithers"
+		activityId="2" activityType="NOTE" 
+		destinationType="PERSON" destinationUniqueId="smithers" destinationName="Mr Smithers"
+		auxiliaryType="NOTSET" auxiliaryUniqueId="" auxiliaryName="" />
+
+	<ApplicationAlertNotification id="3" version="1" notificationDate="2010-02-21 12:07:17.000" isRead="false"
+		recipientId="99" notificationtype="FOLLOW_PERSON"
+		actorName="Ford Prefect" actorAccountId="fordp"
+		destinationType="PERSON" destinationUniqueId="smithers" destinationName="Mr Smithers"
+		auxiliaryType="NOTSET" auxiliaryUniqueId="" auxiliaryName="" />
+
+	<ApplicationAlertNotification id="4" version="1" notificationDate="2010-02-23 11:06:29.000" isRead="false"
+		recipientId="98" notificationtype="POST_TO_PERSONAL_STREAM"
+		actorName="Mr. Burns" actorAccountId="burns"
+		activityId="4" activityType="NOTE" 
+		destinationType="PERSON" destinationUniqueId="smithers" destinationName="Mr Smithers"
+		auxiliaryType="NOTSET" auxiliaryUniqueId="" auxiliaryName="" />
+		
+	<TutorialVideo id="1" version="1" dialogtitle="Dialog Title 1" innercontent="Inner Content 1" 
+	   innercontenttitle="Inner Content Title 1" page="START" videoheight="600" videourl="http://google.com"
+	   videowidth="200" /> 
+	   
+	<TutorialVideo id="2" version="1" dialogtitle="Dialog Title 2" innercontent="Inner Content 2" 
+       innercontenttitle="Inner Content Title 2" page="START" videoheight="600" videourl="http://google.com"
+       videowidth="200" /> 
+       
+    <TutorialVideo id="3" version="1" dialogtitle="Dialog Title 3" innercontent="Inner Content 3" 
+       innercontenttitle="Inner Content Title 3" page="START" videoheight="600" videourl="http://google.com"
+       videowidth="200" /> 
+
+</dataset>

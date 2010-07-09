@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+    <ModulePrefs title="Activity App" thumbnail="http://localhost:8080/style/images/eureka-gadget-placeholder.png" title_url="http://eurekastreams.org" author="Eureka Framework" author_email="support@eurekastreams.org">
+        <Require feature="opensocial-0.9" />
+        <Require feature="views" />
+        <Require feature="dynamic-height" />
+        <Require feature="opensocial-templates">
+            <Param name="client">true</Param>
+        </Require>
+        <Require feature="opensocial-data"/>
+        <Require feature="opensocial-data-context"/>
+        <Require feature="settitle" />
+        <Require feature="eurekastreams-core" />
+        <Require feature="xmlutil"/>
+        <Optional feature="content-rewrite">
+        	<Param name="include-tags"/>
+        </Optional>
+    </ModulePrefs>
+ <UserPref name="filterId" datatype="hidden" default_value="0" />
+ <UserPref name="filterType"  datatype="hidden"  default_value="compositestream" />
+ <UserPref name="streamType"  datatype="hidden"  default_value="" />
+ <UserPref name="shortName"  datatype="hidden"  default_value="" />
+ <UserPref name="searchId" datatype="hidden" default_value="0" />
+ <UserPref name="gadgetTitle" datatype="hidden" default_value="Activity App"/>
+
+    <Content type="html" view="canvas">
+    <![CDATA[
+        <style type="text/css">
+        .stream-message-item .message-body
+        {
+            width: 570px ! important;
+            display: block;
+        }
+        </style>
+    ]]>
+    </Content>
+    
+ 
+    <Content type="html" view="default, profile, canvas">
+    <![CDATA[
+        <script type="text/javascript" src="http://localhost:8080/scripts/external-js-min.js"></script>
+        <link type="text/css" rel="stylesheet" href="http://localhost:8080/style/core.css" type="text/css" />
+        
+        <style type="text/css">
+	           .avatar
+                {
+                    clear:left;
+                    float:left;
+                    position: absolute;
+                }
+                .activity-footer
+                {
+                	color: #666666;
+                	padding-right:0px;
+                	padding-top:10px;
+                	text-align:right;
+                }
+                .activity-footer a
+                {
+                	text-decoration: none;
+                }
+                .message-metadata
+                {
+                	color: #666  !important;
+                    *clear:left  !important;
+                }
+
+                .message-metadata > div 
+                {
+                    clear:left  !important;
+		        }
+                .blank-activity
+                {
+                	border-bottom: 1px solid #BBB;
+                	color: #666666;
+                	font-size: 16px;
+                	font-weight: bold;
+                	margin-left:10px;
+                	margin-right:10px;
+                	padding-bottom:10px;
+                	padding-top:10px;
+                	text-align:center;
+                }
+		.message-link
+		{
+			font-size:11px !important;
+		}
+		.stream-message-item
+		{
+			padding-bottom: 10px !important;
+			padding-top: 10px !important;
+			margin: 0 !important;
+			font-style: normal !important;
+            clear: both;			
+            border-bottom:1px solid #CCCCCC;
+		}
+
+		.stream-message-item .description
+		{
+		  overflow: visible ! important;
+		}
+		
+		.message-container
+		{
+			font-style: normal !important;
+			margin-top: -5px;
+		}
+		.description
+		{
+			padding-left: 10px !important;
+		}
+		body
+		{
+			background-color:white;
+			width:auto;
+		}
+		a:link.timestamp, a:visited.timestamp, a:active.timestamp
+		{
+			color:#666666
+		}
+		.error
+		{
+			font-size:14pt;
+			font-weight:bold;
+		}
+		.error-details
+		{
+			margin-left:30px;
+			color:#666666
+		}
+		.message-container strong
+		{
+		  display:block;
+		}
+        </style>
+    	
+        <script type="text/javascript">
+            
+            function init()
+            {
+                var prefs_ = new gadgets.Prefs();
+
+                var cleanTitle = gadgets.util.unescapeString(prefs_.getString("gadgetTitle"));
+                gadgets.window.setTitle(cleanTitle);
+                
+        		var activityJSON = opensocial.data.DataContext.getDataSet("activityDataSet");
+
+                if (activityJSON.code == "404")
+                {
+                    var streamType = prefs_.getString("streamType");
+                    var niceType = "Stream";
+                    
+                    if (streamType == "streamsearch")
+                    {
+                    	niceType = "Saved Search";
+                    }
+                    if (streamType == "compositestream")
+                    {
+                    	niceType = "List";
+                    }
+                    else if (streamType == "groupstream")
+                    {
+                    	niceType = "Group";
+                    }
+                    
+                    var message = "The '" + cleanTitle + "' " + niceType + " has been removed from the Activity page.  This gadget will no longer display content. Please remove from your start page.";
+                    var jsonMsg = {'message' : message};
+                	opensocial.template.getTemplate('uos:errorTemplate').renderInto(document.getElementById('activity-view'), jsonMsg);
+                }
+                else if(activityJSON.content.activities.length == 0)
+                {
+                	activityJSON.footer = getFooter(prefs_);
+                	opensocial.template.getTemplate('uos:blankTemplate').renderInto(document.getElementById('activity-view'), activityJSON);
+                }
+                else
+                {
+                    activityJSON.content.footer = getFooter(prefs_);
+                	opensocial.template.getTemplate('uos:viewTemplate').renderInto(document.getElementById('activity-view'), activityJSON.content);
+                    jQuery('.message-body').each(function() {
+                        $(this).text($(this).text().replace('%EUREKA:ACTORNAME%', $(this).siblings().find('a').text()));
+                    });
+                }
+                setTimeout('gadgets.window.adjustHeight()',500);                                
+            }
+            
+            gadgets.util.registerOnLoadHandler(init);
+				
+		// Had to move this into a function since the gadget xml didn't want to validate with the addition
+		// of the ampersand and a second parameter
+		function activityNav(activityId)
+		{
+		      var prefs_ = new gadgets.Prefs();
+		      var streamType = prefs_.getString("streamType");
+              var filterId = prefs_.getString("filterId");
+              var shortName = prefs_.getString("shortName");
+              var searchId = prefs_.getString("searchId");
+              switch(streamType)
+              {
+                case "compositestream":
+                    eurekastreams.core.navigate("activity?activityId=" + activityId + "&showComment=true&listId=" + filterId + "&viewId=" + filterId);
+                    break;
+                case "streamsearch":
+                    eurekastreams.core.navigate("activity?activityId=" + activityId + "&showComment=true&searchId=" + filterId + "&streamSearch=" + shortName + "&viewId=" + searchId);
+                    break;
+                case "groupstream":
+                    eurekastreams.core.navigate("groups/" + shortName);
+                    break;
+                case "personstream":
+                    eurekastreams.core.navigate("people/" + shortName);
+                    break;
+                case "orgstream":
+                    eurekastreams.core.navigate("organizations/" + shortName);
+                    break;
+                default:
+                    return "";
+              }
+			
+		}
+		
+		function getFooter(prefs_)
+		{
+		      var streamType = prefs_.getString("streamType");
+		      var filterId = prefs_.getString("filterId");
+		      var shortName = prefs_.getString("shortName");
+		      var searchId = prefs_.getString("searchId");
+		      switch(streamType)
+		      {
+		      	case "compositestream":
+		      		return "activity?listId=" + filterId + "&viewId=" + filterId;
+		      	case "streamsearch":
+		      		return "activity?searchId=" + filterId + "&streamSearch=" + shortName + "&viewId=" + searchId;
+		      	case "groupstream":
+		      		return "groups/" + shortName;
+		      	case "personstream":
+		      		return "people/" + shortName;
+		      	case "orgstream":
+		      		return "organizations/" + shortName;
+		      	default:
+		      		return "";
+		      }
+		}
+		</script>
+
+		<script type="text/os-data" xmlns:os="http://ns.opensocial.org/2008/markup" >
+            		<os:OwnerRequest key="databindowner" />
+			<os:HttpRequest refreshInterval="0"  key="activityDataSet" href="http://localhost:8080/resources/${UserPrefs.filterType}/${UserPrefs.filterId}/owner/${databindowner.id}" />
+		</script>		
+
+		
+        <script type="text/os-template" xmlns:os="http://eurekastreams.org" tag="uos:viewTemplate">
+			<div class="stream-message-item list-item DEFAULT" repeat="${activities}"> 
+			  <div class="avatar">
+			  	<img class="gwt-Image avatar-image avatar-image-VerySmall" src="http://localhost:8080${actorAvatarPath}" />
+			  </div>
+			  <div class="description">
+			  	<div class="message-container DEFAULT">
+				  	<strong if="${actorUniqueIdentifier == destinationUniqueIdentifier}">
+						 <a href="javascript:eurekastreams.core.navigate('people/${actorUniqueIdentifier}')">${actorDisplayName}</a>
+					</strong>
+				  	<strong if="${actorUniqueIdentifier != destinationUniqueIdentifier}">
+						 <a href="javascript:eurekastreams.core.navigate('people/${actorUniqueIdentifier}')">${actorDisplayName}</a>
+						 to
+						 <span if="${destinationType == 'PERSON'}"><a href="javascript:eurekastreams.core.navigate('people/${destinationUniqueIdentifier}')">${destinationDisplayName}</a></span>
+						 <span if="${destinationType == 'GROUP'}"><a href="javascript:eurekastreams.core.navigate('groups/${destinationUniqueIdentifier}')">${destinationDisplayName}</a></span>
+					</strong>
+			  		<span class="message-body" id="activity-body-${activityId}">${content}</span>
+					<!-- TODO: MODULARIZE THIS!!!! -->			  		
+					<div if="${baseObjectType == 'BOOKMARK'}">
+			  		  <div if="${thumbnail != null && thumbnail != ''}" class="message-link has-thumbnail">
+			  		  	<div> <img class="thumbnail" src="${thumbnail}" /> </div>
+			  		  	<div> <a class="title" href="${targetUrl}" target="_blank">${targetTitle}</a> </div>
+			  		  	<div class="meta-description">${description}</div>
+			  		  </div>
+			  		  <div if="${thumbnail == null || thumbnail == ''}" class="message-link">
+			  		  	<div> <a class="title" href="${targetUrl}" target="_blank">${targetTitle}</a> </div>
+			  		  	<div class="meta-description">${description}</div>
+			  		  </div>
+			  		</div>
+			  	   
+			  	</div>
+			  	<div class="message-metadata">
+			  	  	<div if="${verb == 'SHARE'}" style="white-space:nowrap">
+						Posted by <a href="javascript:eurekastreams.core.navigate('people/${originalActorUniqueIdentifier}')">${originalActorDisplayName}</a>
+					</div>
+			  		<div style="display:block; white-space:nowrap">
+				  		<a class="timestamp" href="javascript:activityNav('${activityId}')">${postedTimeAgo}</a>
+				  		 • 
+						<a href="javascript:activityNav('${activityId}')">
+							<span if="${commentCount == '1'}">1 comment</span>
+							<span if="${commentCount != '1'}">${commentCount} comments</span>
+						</a>
+					</div>
+				</div>
+			  </div>
+	        </div>
+            <div class="activity-footer">
+            	<a href="javascript:eurekastreams.core.navigate('${footer}')">Go to Stream</a>
+            </div>
+		</script>
+
+        <script type="text/os-template" xmlns:os="http://ns.opensocial.org/2008/markup" xmlns:os="http://eurekastreams.org" tag="uos:errorTemplate">
+            <div class="error">Content no longer valid</div>
+            <div class="error-details">${message}</div>
+        </script>
+        
+        <script type="text/os-template" xmlns:os="http://ns.opensocial.org/2008/markup" xmlns:os="http://eurekastreams.org" tag="uos:blankTemplate">
+            <div class="blank-activity">
+                No current activity
+            </div>
+            <div class="activity-footer">
+            	<a href="javascript:eurekastreams.core.navigate('${footer}')">Go to Stream</a>
+            </div>
+        </script>
+        
+        <!-- Template that is always rendered, all other templates are positioned in 
+        this template using template api calls. -->
+        <script type="text/os-template" xmlns:os="http://ns.opensocial.org/2008/markup">
+            <div id="activity-view"></div>
+        </script>
+    ]]>
+    </Content>
+    
+    
+</Module>

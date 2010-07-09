@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<feature>
+  <name>samplefeature</name>
+  <gadget>
+    <script src="samplefeature.js"/>
+  </gadget>
+  <container>
+    <script src="samplefeaturecontainer.js"/>
+  </container>
+</feature>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/tx
+      http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!--
+		Initialize the SynonymMapFactory with its Singleton SynonymMap
+	-->
+	<bean class="org.eurekastreams.commons.search.analysis.SynonymMapFactory"
+		factory-method="inform" scope="singleton">
+		<constructor-arg>
+			<bean class="org.eurekastreams.commons.io.ResourceInputStream" scope="singleton">
+				<constructor-arg value="/wordnet_synonyms.pl" />
+			</bean>
+		</constructor-arg>
+	</bean>
+
+</beans>

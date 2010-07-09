@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/tx
+      http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!--
+		Inject the DomainGroupMapper into the DomainGroupPeopleIdClassBridge
+		so it can go to the database to get the follower and coordinator
+		Person IDs
+	-->
+	<bean
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass"
+			value="org.eurekastreams.server.search.bridge.DomainGroupPeopleIdClassBridge" />
+		<property name="targetMethod" value="setDomainGroupMapper" />
+		<property name="arguments">
+			<list>
+				<ref bean="jpaGroupMapper" />
+			</list>
+		</property>
+	</bean>
+	
+	
+	<!-- Give the OrgIdHierarchyFieldBridge the org cache -->
+	<bean
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass"
+			value="org.eurekastreams.server.search.bridge.OrgIdHierarchyFieldBridge" />
+		<property name="targetMethod" value="setOrganizationHierarchyCache" />
+		<property name="arguments">
+			<list>
+				<ref bean="organizationHierarchyCache" />
+			</list>
+		</property>
+	</bean>
+	
+	
+	<!--
+		Inject the ActivityRecipientClassBridge with the person cache
+	-->
+	<bean
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass"
+			value="org.eurekastreams.server.search.bridge.ActivityRecipientClassBridge" />
+		<property name="targetMethod" value="setGetPeopleByAccountIds" />
+		<property name="arguments">
+			<list>
+				<ref bean="bulkPeopleByAccountIdMapper" />
+			</list>
+		</property>
+	</bean>
+	
+	<!--
+		Inject the ActivityRecipientClassBridge with the domain group cache
+	-->
+	<bean
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass"
+			value="org.eurekastreams.server.search.bridge.ActivityRecipientClassBridge" />
+		<property name="targetMethod" value="setGetDomainGroupsByShortNames" />
+		<property name="arguments">
+			<list>
+				<ref bean="bulkDomainGroupsByShortNameMapper" />
+			</list>
+		</property>
+	</bean>
+</beans>

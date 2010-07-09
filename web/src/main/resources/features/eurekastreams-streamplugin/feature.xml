@@ -1,0 +1,9 @@
+<feature>
+    <name>eurekastreams-streamplugin</name>
+    <gadget>
+        <script src="streamplugin.js"/>
+    </gadget>
+    <container>
+        <script src="streamplugincontainer.js"/>
+    </container>
+</feature>

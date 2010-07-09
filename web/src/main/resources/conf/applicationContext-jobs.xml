@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/tx
+      http://www.springframework.org/schema/tx/spring-tx.xsd">
+      
+    <!--  Gadget Definition Indexing class bean -->
+    <bean id="gadgetDefIndexTask" class="org.eurekastreams.server.service.tasks.GadgetDefinitionReindexTask">
+        <constructor-arg ref="jpaGadgetDefinitionMapper" />
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.service.actions.strategies.galleryitem.GadgetDefinitionPopulator">
+				<constructor-arg>
+					<ref bean="gadgetMetaDataHttpFetcher" />
+				</constructor-arg>
+			</bean>
+		</constructor-arg>
+    </bean>    
+    
+    <!--  Plugin Definition Meta Update class bean -->
+    <bean id="pluginMetaUpdateTask" class="org.eurekastreams.server.service.tasks.PluginDefinitionMetaUpdateTask">
+        <constructor-arg ref="jpaPluginDefinitionMapper" />
+        <constructor-arg ref="pluginDefinitionPopulator"/>
+    </bean>      
+      
+        <!--  Gadget Definition Index Task using the Transactional Task Runner -->
+    <bean id="gadgetDefIndexTransactionalTask" class="org.eurekastreams.commons.scheduling.TransactionalTaskRunner">
+        <constructor-arg ref="gadgetDefIndexTask" />
+        <constructor-arg value="execute" />
+    </bean>
+    
+   <!--  Plugin Definition Meta Update using the Transactional Task Runner -->
+    <bean id="pluginDefUpdateTransactionalTask" class="org.eurekastreams.commons.scheduling.TransactionalTaskRunner">
+        <constructor-arg ref="pluginMetaUpdateTask" />
+        <constructor-arg value="execute" />
+    </bean>
+	
+	<!-- Job Definitions -->
+	<!-- Pull feeds from internet, commit to database and queue the changes in memcached -->
+    <bean id="refreshFeedsJob" class="org.eurekastreams.commons.scheduling.ActionSubmitterJob">
+        <constructor-arg value="refreshFeedsAction" />
+        <constructor-arg ref="taskHandler" />
+    </bean>
+    
+    <!-- Propogate feed changes to denormalized lists in memcached -->
+    <bean id="addBufferedActivitiesToCacheJob" class="org.eurekastreams.commons.scheduling.ActionSubmitterJob">
+        <constructor-arg value="insertBufferedActivitiesAction" />
+        <constructor-arg ref="taskHandler" />
+    </bean> 
+    
+	<!-- Memebership Refresh -->
+    <bean id="membershipRefreshJob" class="org.eurekastreams.commons.scheduling.ActionSubmitterJob">
+        <constructor-arg value="refreshMembershipAction" />
+        <constructor-arg ref="taskHandler" />
+    </bean>
+    
+    <!-- Gadget Def User Count Refresh -->
+    <bean id="gadgetDefUserCountRefreshJob" class="org.eurekastreams.commons.scheduling.ActionSubmitterJob">
+        <constructor-arg value="updateGadgetDefinitionCountAction" />
+        <constructor-arg ref="taskHandler" />
+    </bean>
+    
+    <!-- Application Alert Cleanup -->
+    <bean id="applicationAlertCleanupJob" class="org.eurekastreams.commons.scheduling.ActionSubmitterJob">
+        <constructor-arg value="deleteOldApplicationAlerts" />
+        <constructor-arg ref="taskHandler" />
+    </bean>
+
+    <!-- Expired Activities Cleanup -->
+    <bean id="expiredActivitiesCleanupJob" class="org.eurekastreams.commons.scheduling.ActionSubmitterJob">
+        <constructor-arg value="deleteExpiredActivities" />
+        <constructor-arg ref="taskHandler" />
+    </bean>
+
+    <bean id="gadgetDefIndexJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+       <property name="targetObject" ref="gadgetDefIndexTransactionalTask" />
+       <property name="targetMethod" value="runTransactionalTask" />
+       <property name="concurrent" value="false" />
+    </bean>
+    
+    <bean id="pluginDefMetaUpdateJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+       <property name="targetObject" ref="pluginDefUpdateTransactionalTask" />
+       <property name="targetMethod" value="runTransactionalTask" />
+       <property name="concurrent" value="false" />
+    </bean>
+    
+	<!-- Cache warming job -->
+   	<bean id="cacheInitializationJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.cache.CacheInitializer" />
+		</property>
+		<property name="targetMethod" value="initializeCache" />
+		<property name="arguments">
+			<list>
+				<ref bean="taskHandler" />
+			</list>
+		</property>
+	</bean>
+    
+    <!-- Define Jobs Triggers -->
+    <!-- this is intended to run every day at 1:00am -->
+    <bean id="membershipRefreshJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="membershipRefreshJob" />
+        <property name="cronExpression" value="0 0 1 * * ?" />
+    </bean>
+
+    <!-- this is intended to run every day at 2:00am -->
+    <bean id="gadgetDefUserCountRefreshJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="gadgetDefUserCountRefreshJob" />
+        <property name="cronExpression" value="0 0 2 * * ?" />
+    </bean>
+    
+    <!-- this is intended to run every day at 2:30am -->
+    <bean id="applicationAlertCleanupJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="applicationAlertCleanupJob" />
+        <property name="cronExpression" value="0 30 2 * * ?" />
+    </bean>
+
+        <!-- this is intended to run every day at 3:00am -->
+    <bean id="gadgetDefUserIndexJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="gadgetDefIndexJob" />
+        <property name="cronExpression" value="0 0 3 * * ?" />
+    </bean>
+    
+     <!-- this is intended to run every day at 4:00am -->
+    <bean id="pluginDefUserIndexJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="pluginDefMetaUpdateJob" />
+        <property name="cronExpression" value="0 0 4 * * ?" />
+    </bean>
+    
+    <!-- this is intended to run every day at 3:30am -->
+    <bean id="expiredActivitiesCleanupJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="expiredActivitiesCleanupJob" />
+        <property name="cronExpression" value="0 30 3 * * ?" />
+    </bean>
+
+	<!-- run cache warming once at startup only -->
+	<bean id="cacheInitializationTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+		<property name="jobDetail" ref="cacheInitializationJob" />
+		<property name="repeatCount" value="0" />
+	</bean>
+	
+    <!-- refresh feeds from the internet every 5 minutes -->
+    <bean id="refreshFeedsJobTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="refreshFeedsJob" />
+        <!-- repeat every 5 minutes (300,000 milliseconds) -->
+        <property name="repeatInterval" value="${eureka.jobs.refreshFeedsJobTrigger.repeatInterval}"/>
+    </bean> 
+    
+    <!-- take any feeds that have been stored in the database and memcached and propogate
+         them to denormalized memcached lists -->
+    <bean id="addBufferedActivitiesToCacheJobTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="addBufferedActivitiesToCacheJob" />
+        <!-- delay initial run by 2.5minutes (150,000 milliseconds) -->
+        <property name="startDelay" value="${eureka.jobs.addBufferedActivitiesToCacheJobTrigger.startDelay}"/>
+        <!-- repeat every 5 minutes (300,000 milliseconds) -->
+        <property name="repeatInterval" value="${eureka.jobs.addBufferedActivitiesToCacheJobTrigger.repeatInterval}"/>
+    </bean> 	
+
+    <!-- Scheduler -->
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+				<ref bean="cacheInitializationTrigger" />
+                <ref bean="addBufferedActivitiesToCacheJobTrigger" />
+                <ref bean="refreshFeedsJobTrigger" />				
+				<ref bean="applicationAlertCleanupJobTrigger" />
+                <ref bean="membershipRefreshJobTrigger" />
+                <ref bean="gadgetDefUserCountRefreshJobTrigger" />
+                <ref bean="expiredActivitiesCleanupJobTrigger" />
+				<ref bean="pluginDefUserIndexJobTrigger" />
+            </list> 
+        </property>
+    </bean>	
+    
+</beans>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	<appender name="console" class="org.apache.log4j.ConsoleAppender">
+		<param name="Target" value="System.out" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%-5p %c - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="file" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="./log.txt" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="50" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%-5p %c - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="actionFile" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="./action.log.txt" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="50" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%-5p %c - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="springFile" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="./spring.log.txt" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="50" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%-5p %c - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="cacheFile" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="./cache.log.txt" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="50" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%-5p %c - %m%n" />
+		</layout>
+	</appender>
+
+	<!-- Set level to "off" to not see spring output in logs-->
+	<logger name="org.springframework">
+		<level value="debug" />
+		<appender-ref ref="springFile" />
+	</logger>
+
+	<logger name="org.unity.os.gwtrpcexample.server.ActionRPCServiceImpl">
+		<level value="all" />
+		<appender-ref ref="actionFile" />
+	</logger>
+
+	<logger name="org.unity.os.gwtrpcexample.actions">
+		<level value="all" />
+		<appender-ref ref="actionFile" />
+	</logger>
+	
+	<logger name="org.eurekastreams.server.persistence.mappers.cache">
+		<level value="all" />
+		<appender-ref ref="cacheFile"/>
+	</logger>
+
+	<root>
+		<priority value="all" />
+		<appender-ref ref="file" />
+	</root>
+
+</log4j:configuration>

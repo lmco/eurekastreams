@@ -1,0 +1,968 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+    <ModulePrefs title="Bookmarks" thumbnail="http://localhost:8080/style/images/bookmarksGadgetThumbnail.png" title_url="http://eurekastreams.org" author="Eureka Framework"
+        description="App to store custom bookmarks and search predefined bookmarks." author_email="support@eurekastreams.org">
+        <Require feature="opensocial-0.8" />
+        <Require feature="osapi" />
+        <Require feature="views" />
+        <Require feature="dynamic-height" />
+        <Require feature="opensocial-templates">
+            <Param name="client">true</Param>
+        </Require>
+        <Require feature="opensocial-data"/>
+        <Require feature="opensocial-data-context"/>
+        <Require feature="settitle" />
+        <Require feature="eurekastreams-core" />
+        <Require feature="xmlutil"/>
+        <Optional feature="content-rewrite">
+            <Param name="include-tags"/>
+        </Optional>
+    </ModulePrefs>
+
+    <Content type="html" view="default, profile, canvas">
+    <![CDATA[
+        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        
+        <script type="text/javascript" src="http://localhost:8080/scripts/external-js-min.js" ></script>
+        
+        <style type="text/css">
+            body
+            {
+                background-color:white;
+                width:auto;
+                font-family: "Lucida Sans Unicode", "Lucida Sans", "Verdana", "Tahoma","Geneva", "Kalimati", sans-serif ! important;
+                margin:0px;
+            }
+            a
+            {
+                text-decoration:none;
+            }
+            a:link,a:visited,a:active,a
+            {
+                color: #0066CC;
+            }
+            a:hover
+            {
+                color: #0066CC;
+                text-decoration:none;
+            }
+            ol
+            {
+               list-style-type: none;
+               padding-left: 0px;
+               margin:0px;
+            }
+            li
+            {
+                padding:0px;
+                margin:0px;
+            }
+            p.description
+            {
+                color:#666;
+                font-size:12px;
+                margin:0px;
+                padding-bottom:10px;
+                padding-top:10px;
+            }
+            .header-plus
+            {
+                background:url("/style/images/plus-icon.png") no-repeat scroll 0 3px transparent;
+                height:15px;
+                width:10px;
+                display:inline-block;
+                *display:inline;
+                *position:absolute;
+                *margin-left:-15px;
+                zoom:1;                
+            }
+            .plus
+            {
+                background:url("/style/images/plus-icon.png") no-repeat scroll 0 0 transparent;
+                height:10px;
+                width:10px;
+                padding-right:5px;
+                display:inline-block;
+                *display:inline;
+                *position:absolute;
+                *margin-left:-15px;
+                *margin-top:3px;
+                zoom:1;                
+            }
+        </style>
+        
+        <script type="text/javascript">
+            
+            var linksJSON = {};
+            var bookmarksJSON = {};
+            var bookmarksDisplayJSON = {};
+            var viewerJSON = {};
+            
+            function displayNotification()
+            {
+                eurekastreams.core.triggerShowNotificationEvent("Link saved to bookmarks");
+            }
+            
+            /**
+            * Simple sorting callback for the JSON Links Array used in this gadget.
+            */
+            function sortLinksJSONArray(a, b){return a.title.toLowerCase() > b.title.toLowerCase()}
+            
+            /**
+            * Simple comparison callback for the JSON Links Array used in this gadget.
+            **/
+            function compareLinksJSONArray(a, b){return a.title.toLowerCase() == b.title.toLowerCase()}
+            
+            /**
+            * Test to be sure that an inputted url is a valid url.
+            */
+            function isUrl(s) 
+            {
+                var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+                return regexp.test(s);
+            }
+
+            /**
+            * Add the passed in title and url to the user's bookmarks after validating them.
+            */
+            function addUrl(escapedTitle, url, callback)
+            {
+                if(escapedTitle == null || escapedTitle.length <= 0 ||
+                    url == null || url.length <= 0)
+                {
+                    alert('Title and URL are required');
+                } 
+                else if(!isUrl(url))
+                {
+                    alert('You must supply a valid url (example: http://www.example.com)');
+                }
+                else
+                {   
+                    var bookmarksUpdate = {"title":escapedTitle, "url":url};
+                    var bookmarksDisplayUpdate = {"title":escapedTitle, "url":url, "unescapedTitle":gadgets.util.unescapeString(escapedTitle)};
+                    
+                    bookmarksJSON.bookmarks.push(bookmarksUpdate);
+                    bookmarksJSON.bookmarks = bookmarksJSON.bookmarks.sort(sortLinksJSONArray);
+                    
+                    bookmarksDisplayJSON.bookmarks.push(bookmarksDisplayUpdate);
+                    bookmarksDisplayJSON.bookmarks = bookmarksDisplayJSON.bookmarks.sort(sortLinksJSONArray); 
+                    
+                    //save the link back to the app data store.
+                    var req = opensocial.newDataRequest();
+                    req.add(req.newUpdatePersonAppDataRequest(opensocial.IdSpec.PersonId.VIEWER, 'bookmarks', gadgets.json.stringify(bookmarksJSON.bookmarks)));
+                    req.send(function(response)
+                    {
+                        if(response.hadError())
+                        {
+                            alert('Error occurred saving bookmark');
+                        }
+                        else
+                        {
+                            $("li:contains('" + escapedTitle + "')").children(".add-bookmark").html("Added");
+                            if(callback != null)
+                            {
+                                callback();
+                            } 
+                        }    
+                    });
+                }
+            }
+
+            /**
+            * Retrieve the data from the DataContext and initialize/parse appropriately.
+            */
+            function getData()
+            {
+                viewerJSON = opensocial.data.DataContext.getDataSet("databindviewer");
+                bookmarksJSON.bookmarks = opensocial.data.DataContext.getDataSet("bookmarksDataSet")[viewerJSON.id].bookmarks;
+                if(bookmarksJSON.bookmarks == null)
+                {
+                    gadgets.log("No bookmarks stored for the current user.");
+                    bookmarksJSON.bookmarks = [];
+                    bookmarksDisplayJSON.bookmarks = [];
+                }
+                else
+                {
+                    gadgets.log("Retrieved bookmarksJSON " + gadgets.json.stringify(gadgets.json.parse(bookmarksJSON.bookmarks)));
+                    bookmarksJSON.bookmarks = gadgets.json.parse(bookmarksJSON.bookmarks);
+                    
+                    //All of the strings are escaped into the db, they have to be unescaped and added to the bookmarksDisplayJSON dataset
+                    //so that the opensocial template can loop through the dataset.  I am doing a copy of the array element references
+                    //here which is more efficient than a deep copy.  It should still be fine to a reference copy as long as there are 
+                    //two distinct arrays.
+                    bookmarksDisplayJSON.bookmarks = bookmarksJSON.bookmarks.slice(0);
+                    var arrLength = bookmarksDisplayJSON.bookmarks.length;
+                    for(var index=0; index<arrLength; index++)
+                    {
+                        bookmarksDisplayJSON.bookmarks[index].unescapedTitle = gadgets.util.unescapeString(bookmarksDisplayJSON.bookmarks[index].title); 
+                    }
+                    gadgets.log("assembled bookmarksDisplayJSON " + gadgets.json.stringify(bookmarksDisplayJSON.bookmarks));
+                }
+            }
+            
+            /**
+            * Retrieve the links dataset from the OpenSocial Data Pipelining Context and call
+            * the view initialization.
+            */
+            function init()
+            {
+                linksJSON = opensocial.data.DataContext.getDataSet("linksDataSet");
+                linksJSON.content.links = linksJSON.content.links.sort(sortLinksJSONArray);
+                getData();
+                initView();
+            }
+            
+            gadgets.util.registerOnLoadHandler(init);
+        </script>
+        
+        <script type="text/os-data" xmlns:os="http://ns.opensocial.org/2008/markup" >
+            <os:ViewerRequest key="databindviewer"/>
+            <os:PersonAppDataRequest key="bookmarksDataSet" userId="@viewer" appId="@app"/>
+            <os:HttpRequest refreshInterval="0"  key="linksDataSet" href="http://localhost:8080/org/eurekastreams/gadgets/bookmarklinks.json" />
+        </script>
+        
+    ]]>
+    </Content>
+    <Content type="html" view="default, profile">
+    <![CDATA[
+        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        <style type="text/css">
+            .add-header
+            {
+                border-bottom: 1px solid #BBB;
+                padding-top:10px;
+                margin-bottom:5px;
+            }
+            .add-header h2
+            {
+                color:#666;
+                font-size:14px;
+                font-weight:bold;
+                margin:0px;
+                padding:0px;
+                display:inline;                
+            }
+            .insert
+            {
+                background-color:#DDD
+            }
+            .input-label
+            {
+                margin:0px;
+                font-size:12px;
+                font-weight:bold;
+            }
+            .required
+            {
+                margin:0px;
+                text-align:right;
+                font-size:11px;
+                color:#666;
+            }
+            .input
+            {
+                padding-left:5px;
+                padding-right:5px;
+                padding-bottom:10px;
+                margin-right:5px;
+            }
+            .input input
+            {
+                width:100%;
+            }
+            .input-buttons
+            {
+                padding-left:5px;
+                padding-bottom:10px;
+            }
+            .add-button a
+            {
+                display:block;
+                background:url("/style/images/addBtnLarge.png") no-repeat scroll 0 0 transparent;
+                height:25px;
+                width:77px;
+                overflow:hidden;
+                text-indent:-1000em;
+                font-size:12px;
+            }
+            .add-button
+            {
+                display:inline-block;
+                *display:inline;
+                zoom:1;
+                height:25px;
+                width:77px;
+            }
+            .cancel-button
+            {
+                display:inline-block;
+                *display:inline;
+                font-size:12px;
+                margin-left:87px;
+                position:absolute;
+                margin-top:-19px;
+                overflow:hidden;
+                *margin-left:10px;
+                *position:relative;
+                zoom:1;
+                
+            }
+            .mybookmarks
+            {
+                border-bottom: 1px solid #BBB;
+                padding-top:10px;
+                margin-bottom:5px;
+                padding-bottom:5px;
+            }
+            .mybookmarks h2
+            {
+                color:#666;
+                font-size:14px;
+                font-weight:bold;
+                margin:0px;
+                padding:0px;
+                display:inline;                
+            }
+            .search-results
+            {
+                border-bottom: 1px solid #BBB;
+                padding-top:10px;
+                margin-bottom:5px;
+                padding-bottom:5px;
+            }
+            .search-results h2
+            {
+                color:#666;
+                font-size:14px;
+                font-weight:bold;
+                margin:0px;
+                padding:0px;
+                display:inline;                
+            }
+            .search-results .heading-button a
+            {
+                background:url("/style/images/modalCloseBtnSmall.png") no-repeat scroll 0 0 transparent;
+                text-indent:-1000em;
+                overflow:hidden;
+                display:block;
+                height:21px;
+                width:21px;
+            }
+            .no-search-results
+            {
+                font-size:12px;
+                margin:0px;
+            }
+            .heading-button
+            {
+                display:inline;
+                float:right;
+                font-size:12px;
+                *margin-top:-21px;
+            }
+            .bookmarks
+            {
+                font-size:12px;
+            }
+            .bookmarks li
+            {
+                padding-bottom:5px;
+                padding-top:5px;
+                display:block;
+                *display:inline-block;
+                zoom:1;
+            }
+            .search
+            {
+                background-color:#DDD;
+                padding:5px;
+            }
+            .search-input input
+            {
+                width:200px;
+                height:20px;
+                border-top: solid 1px #BBB;
+                border-bottom: solid 1px #BBB;
+                border-left: solid 1px #BBB;
+                border-right:0px;
+                font-family: "Lucida Sans Unicode", "Lucida Sans", "Verdana", "Tahoma","Geneva", "Kalimati", sans-serif ! important;
+                color:#BBB;
+                padding-left:5px;
+                *display:block;
+                zoom:1;
+            }
+            
+            .search-criteria
+            {
+                display:inline-block;
+                *display:inline;
+                zoom:1;
+                vertical-align:top;
+                width:200px;
+            }
+            .search-button
+            {
+                display:inline-block;
+                *display:inline;
+                zoom:1;
+                *margin-top:1px;
+            }
+            
+            .search-button a
+            {
+                display:block;
+                font-size:11px;
+                overflow:hidden;
+                text-indent:-1000em;
+                width:24px;
+                height:22px;
+                background:url("/style/images/activityStreamSearchBtn.png") no-repeat scroll 0 0 transparent;
+                border-bottom: 1px solid #BBB;
+                border-top: 1px solid #BBB;
+                border-right: 1px solid #BBB;
+            }
+            .browse
+            {
+                font-size:12px;
+            }
+            .add-bookmark
+            {
+                display:inline-block;
+                *display:inline;
+                zoom:1;
+                font-size:11px;
+                visibility: hidden;
+            }
+            li
+            {
+                border-bottom: 1px solid #FFF;
+            }
+            li:hover
+            {
+                border-bottom: 1px solid #BBB;
+            }
+            li:hover .bookmark a
+            {
+                color:#F4BD00;
+            }
+            li:hover .add-bookmark
+            {
+                visibility: visible;
+            }
+            .bookmark
+            {
+                display:block;
+                float:none;
+                padding-right:40px;
+            }
+            li:hover .delete-bookmark
+            {
+                display:inline-block;
+                *display:inline;
+                zoom:1;
+            }
+            .delete-bookmark
+            {
+                display:none;
+                margin-top:-15px;
+                height:15px;
+                float:right;
+                width:15px;
+            }
+            .delete-bookmark a
+            {
+                display:block;
+                font-size:11px;
+                overflow:hidden;
+                text-indent:-1000em;
+                background:url("/style/images/trashBtnActive.png") no-repeat scroll 0 0 transparent;
+            }
+            .add-bookmark
+            {
+                float:right;
+                width:40px;
+                margin-top:-15px;
+                text-align:right;
+            }
+            .add-bookmark a
+            {
+                display:inline-block;
+                *display:inline;
+                zoom:1;
+                font-size:11px;
+            }
+        </style>
+        <script type="text/javascript">
+        
+            /**
+            * Straight forward approach to removing duplicates from a JSON Array.
+            */
+            function removeDuplicateElements(arrayName)
+            {
+                var newArray=new Array();
+                label:for(var i=0; i<arrayName.length;i++ )
+                {  
+                    for(var j=0; j<newArray.length;j++ )
+                    {
+                      if(compareLinksJSONArray(newArray[j],arrayName[i])) 
+                      continue label;
+                    }
+                    newArray[newArray.length] = arrayName[i];
+                }
+                return newArray;
+            }
+      
+            /**
+            * Search the combined MyBookmarks as well as the default bookmarks list.
+            */
+            function searchBookmarks()
+            {
+                //push the two bookmark lists together.
+                var combinedList = {};
+                var resultsList = {};
+                resultsList.links = [];
+                combinedList.links = linksJSON.content.links.concat(bookmarksJSON.bookmarks);
+                if($('#search-criteria').val() == null || $('#search-criteria').val() <= 0 || $('#search-criteria').val() == 'Search all Bookmarks')
+                {
+                    alert('You must supply search criteria');
+                }
+                else
+                { 
+                    var pattern = $('#search-criteria').val();
+                    var regExpObj = new RegExp(pattern, 'ig');
+                    var arrLen = combinedList.links.length;
+                    for(var i=0; i<arrLen; i++)
+                    {
+                        //gadgets.log("Testing link.url" + gadgets.json.stringify(combinedList.links[i].url) + " link.title: " + gadgets.json.stringify(combinedList.links[i].title) + " pattern: " + pattern);
+                        if(isUrl(combinedList.links[i].url) && combinedList.links[i].title.match(regExpObj))
+                        {
+                            var matchedLink = combinedList.links[i];
+                            matchedLink.unescapedTitle = gadgets.util.unescapeString(matchedLink.title);
+                            //gadgets.log("matched title: " + matchedLink.title)
+                            resultsList.links.push(matchedLink);
+                        }
+                    }
+                    $('#bookmarks-view').html('');
+                    $('#mybookmarks-panel').hide();
+                    resultsList.links = removeDuplicateElements(resultsList.links);
+                    resultsList.links = resultsList.links.sort(sortLinksJSONArray);
+                    opensocial.template.getTemplate('uos:searchResultsTemplate').renderInto(document.getElementById('bookmarks-view'), resultsList);
+                    setTimeout('gadgets.window.adjustHeight()',500);
+                }
+            }
+            
+            /**
+            * Remove a bookmark from the My Bookmarks list.
+            */
+            function deleteBookmark(index)
+            {
+                gadgets.log("Remove item at index: " + index);
+                if(index < bookmarksJSON.bookmarks.length)
+                {
+                    bookmarksJSON.bookmarks.splice(index, 1);
+                    bookmarksDisplayJSON.bookmarks.splice(index, 1);
+                    var req = opensocial.newDataRequest();
+                    req.add(req.newUpdatePersonAppDataRequest(opensocial.IdSpec.PersonId.VIEWER, 'bookmarks', gadgets.json.stringify(bookmarksJSON.bookmarks)));
+                    req.send(function(response)
+                    {
+                        if(response.hadError())
+                        {
+                            alert('Error occurred removing bookmark');
+                        }
+                        else
+                        {
+                            updateBookmarkDisplay();
+                        }    
+                    });
+                }
+                else
+                {
+                    alert('Invalid index to delete.');
+                }
+                
+            }
+            
+            function clearSearchBox()
+            {
+                $('#search-criteria').val('');
+                $('#search-criteria').css('font-style', 'normal');
+                $('#search-criteria').css('color', '#666');
+            }
+            
+            function resetSearchBox()
+            {
+                $('#search-criteria').val('Search all Bookmarks');
+                $('#search-criteria').css('color', '#BBB');
+                $('#bookmarks-view').html('');
+                gadgets.window.adjustHeight();
+            }
+            
+            /**
+            * Close the search results and return the default display.
+            */
+            function closeSearchResults()
+            {
+                $('#mybookmarks-panel').show();
+                resetSearchBox();
+                updateBookmarkDisplay();
+            }
+            
+            /**
+            * Validate the inputs, push them onto the existing JSON dataset, sort the dataset and then store to AppData.
+            */
+            function addUrlFromInput()
+            {
+                addUrl(gadgets.util.escapeString($('#title-input').val()), $('#url-input').val(), notifyAndUpdateDisplay);
+            }
+                        
+            /**
+            * Cancels adding a url which hides the insert panel and shows the default search panel.
+            */
+            function cancelAddUrl()
+            {
+                $("#insert-panel").hide();
+                $("#search-panel").show();
+                gadgets.window.adjustHeight();
+            }
+            
+            /**
+            * Notify of new bookmark addition and refresh the display.
+            */
+            function notifyAndUpdateDisplay()
+            {
+            	eurekastreams.core.triggerShowNotificationEvent("New bookmark added");
+            	updateBookmarkDisplay();
+            }
+            
+            /**
+            * This method hides the add button and displays the 
+            */
+            function displayInsertPanel()
+            {
+                $("#search-panel").hide();
+                $("#title-input").val('');
+                $("#url-input").val('');
+                $("#insert-panel").show();
+                gadgets.window.adjustHeight();
+            }
+            
+            /**
+            * Refresh the bookmark display.
+            */
+            function updateBookmarkDisplay()
+            {
+                if(bookmarksJSON.bookmarks.length == 0)
+                {
+                    opensocial.template.getTemplate('uos:emptyBookmarksTemplate').renderInto(document.getElementById('bookmarks-view'));
+                }
+                else
+                {
+                    opensocial.template.getTemplate('uos:bookmarksTemplate').renderInto(document.getElementById('bookmarks-view'), bookmarksDisplayJSON);
+                }
+                $("#search-panel").show();
+                $('#search-criteria').keypress(function(event){
+                    if(event.keyCode =='13')
+                    {
+                        javascript:searchBookmarks();
+                    }
+                });
+                $("#insert-panel").hide();
+                setTimeout('gadgets.window.adjustHeight()',250);
+            }
+                        
+            /**
+            * Base Init Method
+            */
+            function initView()
+            {
+                updateBookmarkDisplay();                
+            }
+                        
+        </script>
+        <div id="search-panel" class="search">
+            <div class="search-input">
+                <div class="search-criteria">
+                    <input type="text" id="search-criteria" value="Search all Bookmarks" onClick="javascript:clearSearchBox();"/>
+                </div>
+                <div class="search-button">
+                    <a id="search-button" href="javascript:searchBookmarks();">Search</a>
+                </div>
+            </div>
+            <div class="browse">
+                <a href="javascript:gadgets.views.requestNavigateTo('canvas');">Browse IS&amp;GS Bookmarks</a>
+            </div>
+        </div>
+        
+        <div id="insert-panel" class="insert" style="display:none;">
+            <div class="add-header">
+                <h2>Add Bookmark</h2>
+            </div>
+            
+            <div class="input">
+                <p class="input-label">Title</p>
+                <input type="text" id="title-input" value="" maxlength="50"/>
+                <p class="required">required</p>
+            </div>
+            
+            <div class="input">
+                <p class="input-label">URL</p>
+                <span><input type="text" id="url-input" value=""/></span>
+                <p class="required">required</p>
+            </div>
+            
+            <div class="input-buttons">
+                <div class="add-button"><a href="javascript:addUrlFromInput();">Add</a></div>
+                <div class="cancel-button"><a href="javascript:cancelAddUrl();">Cancel</a></div>
+            </div>
+        </div>
+        
+        <div id="mybookmarks-panel" class="mybookmarks">
+            <h2>My Bookmarks</h2>
+            <div class="heading-button"><span class="plus"></span><a href="javascript:displayInsertPanel();">Add</a></div>
+        </div>
+        <div id="bookmarks-view" class="bookmarks-view"></div>
+        
+        <script type="text/os-template" xmlns:os="http://ns.opensocial.org/2008/markup" xmlns:uos="http://eurekastreams.org" tag="uos:searchResultsTemplate">
+            <div class="search-results">
+                <h2>Search Results</h2>
+                <div class="heading-button"><a href="javascript:closeSearchResults();">Close</a></div>
+            </div>
+            <ol if="${links.length>0}" class="bookmarks">
+                <li repeat="${links}">
+                    <div class="bookmark">
+                        <a target="blank" href="${url}">${unescapedTitle}</a>
+                    </div>
+                    <div class="add-bookmark">
+                        <span class="plus"></span><a href="javascript:addUrl('${title}','${url}',displayNotification);"> Add</a>
+                    </div>
+                </li>
+            </ol>
+            <p if="${links.length==0}" class="no-search-results">No Search Results.</p>
+        </script>
+        
+        <script type="text/os-template" xmlns:os="http://ns.opensocial.org/2008/markup" xmlns:uos="http://eurekastreams.org" tag="uos:bookmarksTemplate">
+            <ol class="bookmarks">
+                <li repeat="${bookmarks}">
+                    <div class="bookmark"><a target="blank" href="${url}">${unescapedTitle}</a></div>
+                    <div class="delete-bookmark"><a href="javascript:deleteBookmark(${Context.Index});">Remove</a></div>
+                </li>
+            </ol>
+        </script>
+        
+        <script type="text/os-template" xmlns:os="http://ns.opensocial.org/2008/markup" xmlns:uos="http://eurekastreams.org" tag="uos:emptyBookmarksTemplate">
+            <p class="description">Click "add" to enter a new bookmark or select a bookmark from a list of <a href="javascript:gadgets.views.requestNavigateTo('canvas');">IS&amp;GS bookmarks</a>.</p>
+        </script>
+    ]]>
+    </Content>
+    <Content type="html" view="canvas">
+    <![CDATA[
+        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        <style type="text/css">
+            .links-display
+            {
+                width:690px;
+                margin-left:145px;
+            }
+            h2
+            {
+                color:#666;
+                font-size:18px;
+                font-weight:normal;
+                margin:0px;
+                padding:0px;
+            }
+            .links-header
+            {
+                border-top: 1px solid #BBBBBB;
+                border-bottom: 1px solid #BBBBBB;
+                line-height: 18px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                font-weight:bold;
+            }
+            .links-header li
+            {
+                display: inline;
+            }
+            .links-header li a
+            {
+                font-size:14px;
+                padding-left:20px;
+            }
+            .links-header li a:hover
+            {
+                color:#F4BD00;
+            }
+            .links-header li a.first
+            {
+                padding-left:0px;
+            }
+            .links-view
+            {
+                padding-left:10px;
+            }
+            .links-view li
+            {
+                padding-top:5px;
+                padding-bottom:5px;
+                padding-left:10px;
+            }
+            .link-item
+            {
+                padding-left:10px;
+                display:block;
+                border-bottom: 1px solid #FFF;
+                *display:inline-block;
+                zoom:1;
+            }
+            .index-bar .index
+            {
+                background-color:#CCCCCC;
+                padding-left:3px;
+                margin-left:-20px;
+            }
+            .index
+            {
+                padding:3px;
+            }
+            .index-letter
+            {
+                display:inline;
+                color:#666;
+                font-weight:bold;
+                padding-left:10px;
+            }
+            .index-top
+            {
+                float:right;
+                *margin-top:-19px;
+            }
+            ol.link-index
+            {
+                padding-top:3px;
+                padding-bottom:3px;
+            }
+            ol.links
+            {
+                padding-left:10px;
+                font-size:12px;
+            }
+            
+            .bookmark
+            {
+                display:block;
+                float:none;
+                padding-right:150px;
+            }
+            .add-bookmark
+            {
+                font-size:11px;
+                float:right;
+                margin-top:-15px;
+                display:inline-block;
+                *display:inline;
+                zoom:1;
+                visibility:hidden;
+                            
+            }
+
+            .links li.link-item:hover
+            {
+                border-bottom: 1px solid #BBB;
+            }
+            .links li.link-item:hover .bookmark a
+            {
+                color:#F4BD00;
+            }
+            .links li.link-item:hover .add-bookmark
+            {
+                visibility:visible;
+            }
+        </style>
+        
+        <script type="text/javascript">
+            var linksIndexJSON = {};
+            
+            /**
+            * Assemble a dataset of just the header links to reduce the number of dom elements on the page.
+            */
+            function prepareHeader()
+            {
+                var headerString = "";
+                headerString += "<ol class=\'link-index\'>";
+                for(var index=0;index<linksJSON.content.links.length;index++)
+                {
+                    if(linksJSON.content.links[index].title == linksJSON.content.links[index].url)
+                    {
+                        headerString +=  "<li><a ";
+                        if(linksJSON.content.links[index].title == 'A')
+                        {
+                            headerString += "class=\'first\' ";
+                        }
+                        headerString += "href=\"javascript:displayLinksByLetter(\'" + linksJSON.content.links[index].url + "\');\">" + linksJSON.content.links[index].title + "</a></li>";
+                    } 
+                }
+                headerString += "</ol>";
+                return headerString;
+            }
+            
+            function displayLinksByLetter(letter)
+            {
+                $("#links-view").html(getLinksByLetter(letter));
+                gadgets.window.adjustHeight();
+            }
+            
+            function getLinksByLetter(letter)
+            {
+                var linksString = "";
+                linksString += "<ol class=\'links\'>";
+                var regExpObj = new RegExp('^[' + letter + ']', 'ig')
+                linksString += "<li class=\'index-bar\'><div class=\'index\'><div class=\'index-letter\'>" + letter + "</div></div></li>";
+                for(var index=0;index<linksJSON.content.links.length;index++)
+                {
+                    if(linksJSON.content.links[index].title.match(regExpObj))
+                    {
+                        if(linksJSON.content.links[index].title != linksJSON.content.links[index].url)
+                        {
+                            linksString += "<li class=\'link-item\'><div class=\'bookmark\'><a target=\'blank\' href=\'" + linksJSON.content.links[index].url + "\'>" + linksJSON.content.links[index].title + "</a></div>" +
+                                "<div class=\'add-bookmark\'><span class=\'plus\'></span><a href=\"javascript:addUrl(\'" + linksJSON.content.links[index].title + "\',\'" + 
+                                linksJSON.content.links[index].url + "\',displayNotification);\">" + 
+                                " Add</a></div></li>";
+                        } 
+                        
+                    }
+                }
+                linksString += "</ol>";
+                return linksString;
+            }
+            
+            /**
+            * Base Init Method
+            */
+            function initView()
+            {
+                if(linksJSON.content.links.length > 0)
+                {
+                    $("#links-header").html(prepareHeader());
+                    $("#links-view").html(getLinksByLetter('A'));
+                }
+                else
+                {
+                    alert('Error occurred retrieving links for this gadget.');
+                }
+                setTimeout('gadgets.window.adjustHeight()',500);
+            }
+                        
+        </script>
+
+        <div class="links-display">
+            <a name="top"></a>
+            <h2>Browse Bookmarks</h2>
+            <p class="description">This list contains popular IS&GS bookmarks.</p>
+            <div id="links-header" class="links-header"></div>
+            <div id="links-view" class="links-view"></div>
+        </div>
+    ]]>
+    </Content>
+    
+</Module>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/tx
+      http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="proxyStore" class="net.sf.gilead.core.store.stateless.StatelessProxyStore" />
+
+	<bean id="persistenceUtil" class="net.sf.gilead.core.hibernate.HibernateJpaUtil">
+		<property name="entityManagerFactory" ref="entityManagerFactory"/>
+	</bean>
+
+	<bean id="persistentBeanManager" class="net.sf.gilead.core.PersistentBeanManager">
+		<property name="proxyStore" ref="proxyStore"/>
+		<property name="persistenceUtil" ref="persistenceUtil"/>
+	</bean>
+
+</beans>

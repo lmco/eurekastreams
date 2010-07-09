@@ -1,0 +1,691 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/tx
+      http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+	<bean id="getPrivateGroupIdsCoordinatedByPerson" 
+		class="org.eurekastreams.server.persistence.mappers.GetPrivateGroupIdsCoordinatedByPerson"/>
+		
+    <bean id="getOrganizationLeaderIdsByOrgId" 
+       class="org.eurekastreams.server.persistence.mappers.cache.GetOrganizationLeaderIdsByOrgId">
+       <property name="cache" ref="testCache" />
+    </bean>
+	
+	<bean id="getOrganizationTreeDTOMapper"
+		class="org.eurekastreams.server.persistence.mappers.GetOrganizationTreeDTO">
+		<property name="cache" ref="testCache" />
+		<property name="getOrganizationsByIdMapper" ref="bulkOrganizationsMapper" />
+	</bean>
+	
+	<bean id="domainGroupBannerMapper" class="org.eurekastreams.server.persistence.mappers.DomainGroupBannerMapper"/>
+
+	<bean id="organizationBannerMapper" class="org.eurekastreams.server.persistence.mappers.OrganizationBannerMapper"/>
+
+	<bean id="getRefreshableFeedsMapper"
+		class="org.eurekastreams.server.persistence.mappers.GetRefreshableFeedsMapper" />
+
+	<bean id="setRefreshableFeedsAsPendingMapper"
+		class="org.eurekastreams.server.persistence.mappers.SetRefreshableFeedsAsPending" />
+
+    <bean id="deleteByIdMapper" class="org.eurekastreams.server.persistence.mappers.DeleteByIdMapper" />
+		
+    <bean id="getFeedSubscriptionsByEntity"
+        class="org.eurekastreams.server.persistence.mappers.db.GetFeedSubscriptionsByEntity" />
+                        
+    <bean id="getAllPluginsMapper"
+        class="org.eurekastreams.server.persistence.mappers.db.GetAllPluginsMapper" />
+        
+    <bean id="getFeedByUrlOrCreateMapper"
+        class="org.eurekastreams.server.persistence.mappers.db.GetFeedByUrlOrCreateMapper" />
+        
+    <bean id="getFeedSubscriberOrCreateMapper"
+        class="org.eurekastreams.server.persistence.mappers.db.GetFeedSubscriberOrCreateMapper" />    		
+	
+    <bean id="deleteImage"
+        class="org.eurekastreams.server.persistence.mappers.db.DeleteImage" />
+    
+    <bean id="getImageByIdentifier"
+        class="org.eurekastreams.server.persistence.mappers.db.GetImageByIdentifier" />
+		
+	<bean id="getRootOrganizationIdAndShortNameMapper"
+		class="org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName" />
+
+	<bean id="getRecursiveChildOrgIdsMapper"
+		class="org.eurekastreams.server.persistence.mappers.GetRecursiveChildOrgIds">
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="getRecursiveParentOrgIdsMapper"
+		class="org.eurekastreams.server.persistence.mappers.GetRecursiveParentOrgIds">
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="getDirectOrgIdsMapper"
+		class="org.eurekastreams.server.persistence.mappers.GetDirectChildOrgIds">
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="findUserStreamViewById"
+		class="org.eurekastreams.server.persistence.mappers.FindUserStreamViewById">
+		<property name="queryOptimizer" ref="queryOptimizer" />
+	</bean>
+	
+	<bean id="getPersonIdsWithStarredActivity"
+		class="org.eurekastreams.server.persistence.mappers.stream.GetPersonIdsWithStarredActivity">
+		<property name="queryOptimizer" ref="queryOptimizer" />
+	</bean>
+	
+	<bean id="getStreamViewByType"	class="org.eurekastreams.server.persistence.mappers.GetStreamViewByType" />
+
+	<bean id="getGadgetUserPrefMapper"
+		class="org.eurekastreams.server.persistence.mappers.opensocial.GetGadgetUserPrefMapper" />
+
+	<bean id="findUserStreamSearchById"
+		class="org.eurekastreams.server.persistence.mappers.FindUserStreamSearchById">
+		<property name="queryOptimizer" ref="queryOptimizer" />
+	</bean>
+
+	<bean id="commentDTOPopulator"
+		class="org.eurekastreams.server.persistence.mappers.cache.cachedfieldpopulators.CommentDTOPopulator">
+		<constructor-arg ref="bulkPeopleMapper" />
+	</bean>
+
+	<bean id="findSystemSettings"
+		class="org.eurekastreams.server.persistence.mappers.FindSystemSettings">
+		<property name="queryOptimizer" ref="queryOptimizer" />
+	</bean>
+
+    <bean id="getFollowedStreamViewByUser"
+        class="org.eurekastreams.server.persistence.mappers.GetFollowedStreamViewByUser">
+        <property name="queryOptimizer" ref="queryOptimizer" />
+    </bean>
+   
+	<bean id="insertStarredActivity"
+		class="org.eurekastreams.server.persistence.mappers.InsertStarredActivity">
+		<constructor-arg ref="getStarredActivityIds" />
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="updateSystemSettings" class="org.eurekastreams.server.persistence.mappers.UpdateMapper">
+	</bean>
+
+	<bean id="deleteStarredActivity" class="org.eurekastreams.server.persistence.mappers.DeleteStarredActivity">
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="testCache"
+		class="org.eurekastreams.server.persistence.mappers.cache.testhelpers.SimpleMemoryCache" />
+
+	<bean id="bulkActivitiesMapper"
+		class="org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper">
+		<property name="starredActivitiesMapper" ref="getStarredActivityIds" />
+		<property name="streamMapper" ref="getStreamsByIds" />
+		<property name="peopleMapper" ref="bulkPeopleByAccountIdMapper" />
+		<property name="commentIdListDAO" ref="getOrderedCommentIdsByActivityId" />
+		<property name="commentsByIdDAO" ref="getCommentsById" />
+		<property name="commentDeletePropertySetter" ref="commentDeletePropertyStrategy" />
+		<property name="activityDeletePropertySetter" ref="activityDeletePropertyStrategy" />		
+		<property name="cache" ref="testCache" />
+	</bean>
+	
+	<bean id="getOrgCoordinatorIdsFromDB" 
+		class="org.eurekastreams.server.persistence.mappers.db.GetOrgCoordinatorIds"/>
+		
+    <bean id="getTutorialVideosFromDB" 
+        class="org.eurekastreams.server.persistence.mappers.db.GetTutorialVideos"/>
+        
+    <bean id="getPrivateGroupIdsUnderOrganizationsFromDB" 
+    	class="org.eurekastreams.server.persistence.mappers.db.GetPrivateGroupIdsUnderOrganizations"/>
+        
+    <bean id="getOrgIdsDirectlyCoordinatedByPersonFromDB" 
+    	class="org.eurekastreams.server.persistence.mappers.cache.GetOrgIdsDirectlyCoordinatedByPerson">
+    	<property name="cache" ref="testCache" />
+   	</bean>
+    
+    <bean id="getOrgCoordinators" class="org.eurekastreams.server.persistence.mappers.GetOrgCoordinators">
+    	<constructor-arg ref="getOrgCoordinatorIdsFromDB"/>
+    	<property name="cache" ref="testCache" />
+    </bean>
+    
+    <bean id="getRecursiveOrgCoordinators"
+		class="org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators">
+		<constructor-arg ref="organizationHierarchyCache" />
+		<constructor-arg ref="getOrgCoordinators" />
+		<constructor-arg value="true" />
+		<constructor-arg ref="bulkPeopleByAccountIdMapper"/>
+		<constructor-arg ref="testCache" />
+	</bean>
+	
+	<bean id="getRecursiveOrgCoordinatorsDownStream"
+		class="org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators">
+		<constructor-arg ref="organizationHierarchyCache" />
+		<constructor-arg ref="getOrgCoordinators" />
+		<constructor-arg value="false" />
+		<constructor-arg ref="bulkPeopleByAccountIdMapper"/>
+		<constructor-arg ref="testCache" />
+	</bean>
+	
+	<bean id="getAllPersonIdsWhoHaveGroupCoordinatorAccess"
+		class="org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess">
+		<constructor-arg ref="getCoordinatorIdsByGroupId"/>
+		<constructor-arg ref="bulkDomainGroupsMapper"/>
+		<constructor-arg ref="bulkOrganizationsByShortNameMapper"/>
+		<constructor-arg ref="getRecursiveOrgCoordinators"/>
+		<constructor-arg ref="bulkPeopleByAccountIdMapper"/>
+		<constructor-arg ref="testCache" />
+	</bean>
+
+	<bean id="compositeStreamActivityIdsMapper"
+		class="org.eurekastreams.server.persistence.mappers.stream.CompositeStreamActivityIdsMapper">
+		<constructor-arg ref="bulkCompositeStreamsMapper" />
+		<property name="compositeStreamLoaders">
+			<map>
+				<entry key="EVERYONE">
+					<bean class="org.eurekastreams.server.persistence.mappers.stream.CompositeStreamLoaderAll" >
+						<property name="cache" ref="testCache" />
+					</bean>
+				</entry>
+				<entry key="PARENTORG">
+					<bean
+						class="org.eurekastreams.server.persistence.mappers.stream.CompositeStreamLoaderParentOrg">
+						<constructor-arg ref="bulkPeopleMapper" />
+						<constructor-arg ref="bulkOrganizationsMapper" />
+						<property name="cache" ref="testCache" />
+						<property name="organizationHierarchyCache" ref="organizationHierarchyCache" />
+					</bean>
+				</entry>
+				<entry key="PEOPLEFOLLOW">
+					<bean
+						class="org.eurekastreams.server.persistence.mappers.stream.CompositeStreamLoaderFollowed">
+						<constructor-arg ref="bulkPeopleMapper" />
+						<constructor-arg ref="bulkDomainGroupsMapper" />
+						<constructor-arg ref="getFollowedPersonIds" />
+						<constructor-arg ref="getFollowedGroupIds" />
+						<property name="cache" ref="testCache" />
+					</bean>
+				</entry>
+				<entry key="STARRED">
+					<bean
+						class="org.eurekastreams.server.persistence.mappers.stream.CompositeStreamLoaderStarred">
+						<constructor-arg ref="getStarredActivityIds" />
+						<property name="cache" ref="testCache" />
+					</bean>
+				</entry>
+				<entry key="NOTSET">
+					<bean
+						class="org.eurekastreams.server.persistence.mappers.stream.CompositeStreamLoaderCustom">
+						<property name="cache" ref="testCache" />
+						<property name="organizationHierarchyCache" ref="organizationHierarchyCache" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="commentDeletePropertyStrategy"
+		class="org.eurekastreams.server.persistence.strategies.CommentDeletePropertyStrategy">
+		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+		<constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
+		<constructor-arg ref="getRecursiveOrgCoordinators" />
+	</bean>
+	
+	<bean id="activityDeletePropertyStrategy"
+		class="org.eurekastreams.server.persistence.strategies.ActivityDeletePropertyStrategy">
+		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+		<constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
+		<constructor-arg ref="getRecursiveOrgCoordinators" />
+	</bean>
+	
+	<bean id="personQueryStrategy" class="org.eurekastreams.server.persistence.strategies.PersonQueryStrategy" />
+	
+	<bean id="domainGroupQueryStrategy" class="org.eurekastreams.server.persistence.strategies.DomainGroupQueryStrategy" />
+
+	<bean id="addCachedCompositeStreamMapper"
+		class="org.eurekastreams.server.persistence.mappers.stream.AddCachedCompositeStream">
+		<constructor-arg ref="userCompositeStreamIdsMapper" />
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="addCachedCompositeStreamSearchMapper"
+		class="org.eurekastreams.server.persistence.mappers.stream.AddCachedCompositeStreamSearch">
+		<constructor-arg ref="userCompositeStreamSearchIdsMapper" />
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="deleteCachedCompositeStreamById"
+		class="org.eurekastreams.server.persistence.mappers.stream.DeleteCachedCompositeStreamById">
+		<constructor-arg ref="userCompositeStreamIdsMapper" />
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="deleteCachedCompositeStreamSearchById"
+		class="org.eurekastreams.server.persistence.mappers.stream.DeleteCachedCompositeStreamSearchById">
+		<constructor-arg ref="userCompositeStreamSearchIdsMapper" />
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="updateCachedCompositeStream"
+		class="org.eurekastreams.server.persistence.mappers.stream.UpdateCachedCompositeStream">
+		<property name="cache" ref="testCache" />
+	</bean>
+	<bean id="updateCachedCompositeStreamSearch"
+		class="org.eurekastreams.server.persistence.mappers.stream.UpdateCachedCompositeStreamSearch">
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="compositeStreamLoaderAll"
+		class="org.eurekastreams.server.persistence.mappers.stream.CompositeStreamLoaderAll">
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="compositeStreamLoaderStarred"
+		class="org.eurekastreams.server.persistence.mappers.stream.CompositeStreamLoaderStarred">
+		<constructor-arg ref="getStarredActivityIds" />
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="compositeStreamLoaderParentOrg"
+		class="org.eurekastreams.server.persistence.mappers.stream.CompositeStreamLoaderParentOrg">
+		<constructor-arg ref="bulkPeopleMapper" />
+		<constructor-arg ref="bulkOrganizationsMapper" />
+		<property name="organizationHierarchyCache" ref="organizationHierarchyCache"/>
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="compositeStreamLoaderFollowed"
+		class="org.eurekastreams.server.persistence.mappers.stream.CompositeStreamLoaderFollowed">
+		<constructor-arg ref="bulkPeopleMapper" />
+		<constructor-arg ref="bulkDomainGroupsMapper" />
+		<constructor-arg ref="getFollowedPersonIds" />
+		<constructor-arg ref="getFollowedGroupIds" />
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="compositeStreamLoaderCustom"
+		class="org.eurekastreams.server.persistence.mappers.stream.CompositeStreamLoaderCustom">
+		<property name="cache" ref="testCache" />
+		<property name="organizationHierarchyCache" ref="organizationHierarchyCache" />
+	</bean>
+
+	<bean id="getFollowedPersonIds"
+		class="org.eurekastreams.server.persistence.mappers.stream.GetFollowedPersonIds">
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="getCoordinatorIdsByGroupId"
+		class="org.eurekastreams.server.persistence.mappers.stream.GetCoordinatorIdsByGroupId">
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="getFollowedGroupIds"
+		class="org.eurekastreams.server.persistence.mappers.stream.GetFollowedGroupIds">
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="reorderFollowedGroupIds"
+		class="org.eurekastreams.server.persistence.mappers.stream.ReorderFollowedGroupIds">
+		<property name="cache" ref="testCache" />
+	</bean>	
+
+	<bean id="bulkPeopleMapper"
+		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds">
+		<constructor-arg ref="personQueryStrategy" />
+		<constructor-arg ref="getRelatedOrganizationIdsByPersonId" />
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="bulkPeopleByAccountIdMapper"
+		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds">
+		<property name="cache" ref="testCache" />
+		<property name="bulkPeopleMapper" ref="bulkPeopleMapper" />
+	</bean>
+
+	<bean id="bulkPeopleByOpenSocialIdMapper"
+		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds">
+		<property name="cache" ref="testCache" />
+		<property name="bulkPeopleMapper" ref="bulkPeopleMapper" />
+	</bean>
+
+	<bean id="bulkOrganizationsMapper"
+		class="org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds">
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="bulkOrganizationsByShortNameMapper"
+		class="org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames">
+		<property name="cache" ref="testCache" />
+		<property name="bulkOrganizationsMapper" ref="bulkOrganizationsMapper" />
+	</bean>
+
+	<bean id="bulkDomainGroupsMapper"
+		class="org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds">
+		<constructor-arg ref="domainGroupQueryStrategy"/>
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="bulkDomainGroupsByShortNameMapper"
+		class="org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames">
+		<property name="cache" ref="testCache" />
+		<property name="bulkDomainGroupsMapper" ref="bulkDomainGroupsMapper" />
+	</bean>
+
+	<bean id="getStreamScopeProxyById"
+		class="org.eurekastreams.server.persistence.mappers.GetStreamScopeProxyById" />
+
+	<bean id="getStreamScopeById"
+		class="org.eurekastreams.server.persistence.mappers.GetStreamScopeById" />
+
+
+	<bean id="userCompositeStreamIdsMapper"
+		class="org.eurekastreams.server.persistence.mappers.stream.UserCompositeStreamIdsMapper">
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="bulkCompositeStreamsMapper"
+		class="org.eurekastreams.server.persistence.mappers.stream.BulkCompositeStreamsMapper">
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="userCompositeStreamSearchIdsMapper"
+		class="org.eurekastreams.server.persistence.mappers.stream.UserCompositeStreamSearchIdsMapper">
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="bulkCompositeStreamSearchesMapper"
+		class="org.eurekastreams.server.persistence.mappers.stream.BulkCompositeStreamSearchesMapper">
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="getFollowerIds"
+		class="org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds">
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="getGroupFollowerIds"
+		class="org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds">
+		<property name="cache" ref="testCache" />
+	</bean>
+
+
+	<bean id="getStarredActivityIds"
+		class="org.eurekastreams.server.persistence.mappers.stream.GetStarredActivityIds">
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="getStreamsByIds"
+		class="org.eurekastreams.server.persistence.mappers.stream.GetStreamsByIds">
+		<property name="cache" ref="testCache" />
+		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+	</bean>
+
+
+	<bean id="getOrderedCommentIdsByActivityId"
+		class="org.eurekastreams.server.persistence.mappers.stream.GetOrderedCommentIdsByActivityId">
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="getCommentsById"
+		class="org.eurekastreams.server.persistence.mappers.stream.GetCommentsById">
+		<constructor-arg ref="commentDTOPopulator" />
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="deleteActivityComment"
+		class="org.eurekastreams.server.persistence.mappers.stream.DeleteActivityComment">
+		<constructor-arg ref="getCommentsById" />
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="insertActivityComment"
+		class="org.eurekastreams.server.persistence.mappers.stream.InsertActivityComment">
+		<constructor-arg ref="commentDTOPopulator" />
+		<property name="cache" ref="testCache" />
+	</bean>
+	
+	<bean id="deleteActivity"
+		class="org.eurekastreams.server.persistence.mappers.stream.DeleteActivity">
+		<constructor-arg ref="bulkActivitiesMapper" />
+		<constructor-arg ref="userCompositeStreamIdsMapper" />
+		<constructor-arg ref="bulkCompositeStreamsMapper" />
+		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+		<constructor-arg ref="getOrderedCommentIdsByActivityId" />
+		<property name="cache" ref="testCache" />
+	</bean>
+	
+	<bean id="deleteActivityCacheUpdate"
+		class="org.eurekastreams.server.persistence.mappers.stream.DeleteActivityCacheUpdate">
+		<constructor-arg ref="getFollowerIds" />
+		<constructor-arg ref="getGroupFollowerIds" />
+		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+		<property name="cache" ref="testCache" />
+	</bean>
+
+    <bean id="getCompositeStreamIdsByAssociatedActivity"
+        class="org.eurekastreams.server.persistence.mappers.cache.GetCompositeStreamIdsByAssociatedActivity">
+        <constructor-arg ref="getFollowerIds" />
+        <constructor-arg ref="getGroupFollowerIds" />
+        <constructor-arg ref="bulkCompositeStreamsMapper" />
+        <constructor-arg ref="bulkPeopleByAccountIdMapper" />
+        <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+        <constructor-arg ref="getRecursiveParentOrgIdsMapper" />
+        <constructor-arg ref="bulkOrganizationsMapper" />
+        <constructor-arg ref="bulkOrganizationsByShortNameMapper" />
+    </bean>	
+	
+	<bean id="postCachedActivity"
+		class="org.eurekastreams.server.persistence.mappers.stream.PostCachedActivity">
+		<constructor-arg ref="getFollowerIds" />
+		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="getRecursiveParentOrgIdsMapper" />
+		<constructor-arg ref="bulkOrganizationsMapper" />
+		<constructor-arg ref="bulkCompositeStreamsMapper" />
+		<constructor-arg ref="bulkOrganizationsByShortNameMapper" />
+		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+		<property name="cache" ref="testCache" />
+	</bean>
+	
+	<bean id="postActivityUpdateStreamsByActorMapper"
+	   class="org.eurekastreams.server.persistence.mappers.cache.PostActivityUpdateStreamsByActorMapper">
+	   <constructor-arg ref="userCompositeStreamIdsMapper" />
+	   <constructor-arg ref="bulkCompositeStreamsMapper" />
+	   <constructor-arg ref="bulkPeopleByAccountIdMapper" />
+	   <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+	   <constructor-arg ref="bulkOrganizationsByShortNameMapper" />
+	   <property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="updateCachedOrganizationName"
+		class="org.eurekastreams.server.persistence.UpdateCachedOrganizationName">
+		<property name="cache" ref="testCache"/>
+	</bean>
+
+	<!-- Organization Hierarchy Cache Loader -->
+	<bean id="organizationCacheLoader"
+		class="org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCacheLoader">
+		<property name="cache" ref="testCache" />
+		<property name="organizationMapper" ref="bulkOrganizationsMapper" />
+	</bean>
+
+	<bean id="orgParentHierarchyCacheCleaner" class="org.eurekastreams.server.persistence.mappers.cache.OrgParentHierarchyCacheCleaner">
+		<property name="cache" ref="testCache" />
+		<property name="getRecursiveParentOrgIdsMapper" ref="getRecursiveParentOrgIdsMapper"/>
+	</bean>
+
+	<!--
+		Domain Group Cache Loader - will be injected into actions/mappers that
+		need to update the cache
+	-->
+	<bean id="domainGroupCacheLoader"
+		class="org.eurekastreams.server.persistence.mappers.cache.DomainGroupCacheLoader">
+		<constructor-arg ref="domainGroupQueryStrategy"/>
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.persistence.mappers.cache.RemoveDomainGroupFromCacheMapper">
+				<property name="cache" ref="testCache" />
+			</bean>
+		</constructor-arg>
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<!-- Person Cache Loader -->
+	<bean id="personCacheLoader"
+		class="org.eurekastreams.server.persistence.mappers.cache.PersonCacheLoader">
+		<constructor-arg ref="personQueryStrategy" />
+		<constructor-arg ref="getRelatedOrganizationIdsByPersonId"/>
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.persistence.mappers.cache.RemovePersonFromCacheMapper">
+				<property name="cache" ref="testCache" />
+			</bean>
+		</constructor-arg>
+        <property name="cache" ref="testCache" />
+	</bean>
+
+	<!-- Stream Cache Loader -->
+	<bean id="streamCacheLoader"
+		class="org.eurekastreams.server.persistence.mappers.cache.StreamCacheLoader">
+		<property name="cache" ref="testCache" />
+		<constructor-arg ref="getStreamsByIds" />
+		<constructor-arg ref="compositeStreamActivityIdsMapper" />
+		<constructor-arg ref="followedActivityIdsLoader" />
+	</bean>
+	
+	<bean id="followedActivityIdsLoader" class="org.eurekastreams.server.persistence.mappers.cache.FollowedActivityIdsLoaderImpl" />
+    
+    <bean id="getStreamByPersonOwnerId"
+        class="org.eurekastreams.server.persistence.mappers.stream.GetStreamByOwnerId">
+        <constructor-arg value="PERSON" />
+    </bean>
+    
+    <bean id="getStreamByGroupOwnerId"
+        class="org.eurekastreams.server.persistence.mappers.stream.GetStreamByOwnerId">
+        <constructor-arg value="GROUP" />
+    </bean>
+    
+    <!-- Cache Mapper for adding cached user activity to cached list -->
+    <bean id="addCachedPersonActivityToList" 
+        class="org.eurekastreams.server.persistence.mappers.cache.AddCachedActivityToList">
+        <property name="cache" ref="testCache" />
+        <constructor-arg ref="compositeStreamActivityIdsMapper" />
+        <constructor-arg ref="bulkActivitiesMapper" />
+        <constructor-arg ref="getStreamByPersonOwnerId" />
+        <constructor-arg>
+            <bean class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+              <property name="staticField">
+                <value>org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM</value>
+              </property>
+            </bean>
+        </constructor-arg>
+    </bean>    
+    
+    <bean id="getCompositeStreamById"
+        class="org.eurekastreams.server.persistence.mappers.cache.GetCompositeStreamById">
+        <property name="cache" ref="testCache"/>
+    </bean>
+    
+    <bean id="updaterStrategy" class="org.eurekastreams.server.service.actions.strategies.ReflectiveUpdater"/>
+    
+    <bean id="isRootOrgCoordinatorStrategy" class="org.eurekastreams.server.action.authorization.IsRootOrganizationCoordinator">
+        <constructor-arg ref="getRootOrganizationIdAndShortNameMapper" />
+        <constructor-arg ref="getOrgCoordinators" />
+    </bean>
+    
+    <bean id="insertMapper" class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
+
+	<bean id="findByIdMapper" class="org.eurekastreams.server.persistence.mappers.FindByIdMapper">
+		<property name="queryOptimizer" ref="queryOptimizer" />
+	</bean>
+	
+	<bean id="getCommentorIdsByActivityId" class="org.eurekastreams.server.persistence.mappers.db.GetCommentorIdsByActivityId" />
+	
+	<bean id="applicationAlertNotifier" class="org.eurekastreams.server.action.execution.notification.ApplicationAlertNotifier">
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
+		</constructor-arg>
+		<constructor-arg ref="syncUnreadApplicationAlertCountCacheByUserId" />
+	</bean>
+	
+	<bean id="getNotificationFilterPreferencesByPersonId" class="org.eurekastreams.server.persistence.mappers.db.GetNotificationFilterPreferencesByPersonId" />
+
+	<bean id="setUserNotificationFilterPreferences" class="org.eurekastreams.server.persistence.mappers.db.SetUserNotificationFilterPreferences" />
+
+    <bean id="getNotificationFilterPreferencesByPeopleIds" 
+    	class="org.eurekastreams.server.persistence.mappers.db.GetNotificationFilterPreferencesByPeopleIds" />
+	
+	<bean id="setAllApplicationAlertsAsReadByUserId"
+		class="org.eurekastreams.server.persistence.mappers.db.SetAllApplicationAlertsAsReadByUserId" />
+	
+	<bean id="getApplicationAlertsByUserId"
+		class="org.eurekastreams.server.persistence.mappers.db.GetApplicationAlertsByUserId" />
+	
+	<bean id="deleteApplicationAlertsByDate"
+		class="org.eurekastreams.server.persistence.mappers.db.DeleteApplicationAlertsByDate" />
+	
+	<bean id="getUserIdsWithUnreadApplicationAlertsByDate"
+		class="org.eurekastreams.server.persistence.mappers.db.GetUserIdsWithUnreadApplicationAlertsByDate" />
+	
+	<bean id="syncUnreadApplicationAlertCountCacheByUserId"
+		class="org.eurekastreams.server.persistence.mappers.cache.SyncUnreadApplicationAlertCountCacheByUserId">
+		<property name="cache" ref="testCache" />
+	</bean>
+
+	<bean id="populatePeopleWithSkeletonRelatedOrgsCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.PopulatePeopleWithSkeletonRelatedOrgsCacheMapper">
+		<constructor-arg ref="bulkOrganizationsMapper" />
+		<constructor-arg ref="bulkPeopleMapper" />
+	</bean>
+	
+	<bean id="deleteGroupActivity" class="org.eurekastreams.server.persistence.mappers.db.DeleteGroupActivity" />
+	
+	<bean id="deleteActivities" class="org.eurekastreams.server.persistence.mappers.db.DeleteActivities" />
+	
+	<bean id="removeGroupFollowers" class="org.eurekastreams.server.persistence.mappers.db.RemoveGroupFollowers" />
+	
+	<bean id="deleteGroupSubscriptions" class="org.eurekastreams.server.persistence.mappers.db.DeleteAllFeedSubscriberByEntityTypeAndId" />
+	
+	<bean id="deleteGroup" class="org.eurekastreams.server.persistence.mappers.db.DeleteGroup" >
+		<constructor-arg ref="findByIdMapper" />
+		<constructor-arg ref="jpaOrganizationMapper" />
+		<constructor-arg>
+		      <bean class="org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder" />
+		</constructor-arg>
+		<constructor-arg ref="getRecursiveParentOrgIdsMapper" />
+	</bean>
+
+	<bean id="getRelatedOrganizationIdsByPersonId" class="org.eurekastreams.server.persistence.mappers.GetRelatedOrganizationIdsByPersonId" />
+	
+	<bean id="getExpiredActivities" class="org.eurekastreams.server.persistence.mappers.db.GetExpiredActivities" />
+	
+	<bean id="getListsContainingActivities" 
+		class="org.eurekastreams.server.persistence.mappers.db.GetListsContainingActivities" />
+	
+	<bean id="removeExpiredActivities"
+		class="org.eurekastreams.server.persistence.mappers.cache.RemoveExpiredActivities">
+		<property name="cache" ref="testCache" />
+	</bean>
+	
+	<bean id="removeIdsFromLists"
+		class="org.eurekastreams.server.persistence.mappers.cache.RemoveIdsFromLists">
+		<property name="cache" ref="testCache" />
+	</bean>
+	
+	<bean id="getFlaggedActivitiesForOrganizationMapper" class="org.eurekastreams.server.persistence.mappers.stream.GetFlaggedActivitiesForOrganization">
+		<constructor-arg ref="bulkActivitiesMapper"/>
+	</bean>
+	
+	<bean id="updateNotificationsOnNameChangeMapper" class="org.eurekastreams.server.persistence.mappers.db.UpdateNotificationsOnNameChangeMapper" />
+	
+	<bean id="deleteStreamViewAndRelatedSearches" class="org.eurekastreams.server.persistence.mappers.stream.DeleteStreamViewAndRelatedSearches" />
+
+	<bean id="insertRequestForGroupMembershipMapper" class="org.eurekastreams.server.persistence.mappers.db.InsertRequestForGroupMembership" />
+
+	<bean id="deleteRequestForGroupMembershipMapper" class="org.eurekastreams.server.persistence.mappers.db.DeleteRequestForGroupMembership" />
+
+	<bean id="getRequestsForGroupMembershipMapper" class="org.eurekastreams.server.persistence.mappers.db.GetRequestsForGroupMembershipByGroup" />
+</beans>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Theme>
+  <Title>Eureka - the rush of discovery</Title>
+  <Description>Default theme for the Eureka Framework</Description>
+  <AuthorName>Eureka Streams</AuthorName>
+  <AuthorEmail>support@eurekastreams.org</AuthorEmail>
+	<HeaderBackground>
+		<HeaderBackgroundColor>white</HeaderBackgroundColor>
+		<HeaderForegroundColor>white</HeaderForegroundColor>
+		<HeaderBackgroundImage>/style/images/default-banner-eureka.png</HeaderBackgroundImage>
+	</HeaderBackground>
+	<ActiveTabBorderColor>#F4BD00</ActiveTabBorderColor>
+	<ActiveTabForegroundColor>#333333</ActiveTabForegroundColor>
+	<InactiveTabBackgroundColor>#31393B</InactiveTabBackgroundColor>
+	<InactiveTabBorderColor>#01172C</InactiveTabBorderColor>
+	<InactiveTabForegroundColor>white</InactiveTabForegroundColor>
+	<GadgetTitleBackgroundColor>#333333</GadgetTitleBackgroundColor>
+	<GadgetTitleForegroundColor>white</GadgetTitleForegroundColor>
+	<GadgetBorderColor>#01172C</GadgetBorderColor>
+	<PageBackground>
+		<PageBackgroundColor>#ffea9f</PageBackgroundColor>
+		<PageBackgroundImage/>
+	</PageBackground>
+</Theme>

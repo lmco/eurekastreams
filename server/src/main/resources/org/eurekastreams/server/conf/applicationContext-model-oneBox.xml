@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/tx
+      http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="hibernatePropertyMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map>
+				<!-- Cache is currently turned off -->
+				<entry key="hibernate.cache.use_second_level_cache" value="false" />
+				<entry key="hibernate.cache.use_query_cache" value="false" />
+
+				<entry key="hibernate.cache.provider_class" value="net.sf.ehcache.hibernate.SingletonEhCacheProvider" />
+				<entry key="net.sf.ehcache.configurationResourceName" value="/WEB-INF/ehcache.xml" />
+				<entry key="hibernate.show_sql" value="false" />
+				<entry key="hibernate.use_sql_comments" value="false" />
+				<entry key="hibernate.format_sql" value="false" />
+				<entry key="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+
+				<!--
+					Lucene Indexing Options - duplicate calls for different versions of
+					hibernate
+				-->
+				<entry key="hibernate.worker.execution" value="async" />
+				<entry key="hibernate.worker.thread_pool.size" value="5" />
+				<entry key="hibernate.search.worker.execution" value="async" />
+				<entry key="hibernate.search.worker.thread_pool.size" value="5" />
+
+				<!--
+					Lucene directory provider - we're using a composite of filesystem
+					and RAM.
+				-->
+				<entry key="hibernate.search.default.directory_provider"
+					value="org.hibernate.search.store.FSDirectoryProvider" />
+
+				<!--
+					Location of the lucene filesystem index - this will need to change
+					to something most likely in /var
+				-->
+				<entry key="hibernate.search.default.indexBase" value="${eureka.hibernatesearch.indexbase.dir}/lucene-index-eureka-ONEBOX" />
+
+				<!--
+					How many updates/deletes need to occur before the search index is
+					automatically optimized.
+				-->
+				<entry key="hibernate.search.default.optimizeroperation_limit.max"
+					value="10" />
+			</map>
+		</constructor-arg>
+	</bean>
+
+</beans>

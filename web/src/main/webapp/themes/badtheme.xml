@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  A theme that doesn't validate, used for tests -->
+<Them4e>
+  <Hea4derBackground>
+    <He3aderBackgroundColor>white</HeaderBackgroundColor>
+    <Hea12derBackgroundImage>sadfdsafdsaf</HeaderBackgroundImage>
+  </HeaderBackground>
+  <TabBackgroundColor>#126ABC</TabBackgroundColor>
+  <TabBorderColor>black</TabBorderColor>
+  <TabForegroundColor>white</TabForegroundColor>
+  <GadgetTitleBackgroundColor>transparent</GadgetTitleBackgroundColor>
+  <GadgetTitleForegroundColor>#333333</GadgetTitleForegroundColor>
+  <GadgetBorderColor>#cccccc</GadgetBorderColor>
+  <PageBackground>
+    <PageBackgroundColor>transparent</PageBackgroundColor>
+    <PageBackgroundImage RepeatY="true" RepeatX="true">htt//eurekastreams.org/styles/page-bg.png</PageBackgroundImage>
+  </PageBackground>
+  <Title>Bad Theme</Title>
+  <Description>Bad Theme</Description>
+  <AuthorName>Phil Plait</AuthorName>
+  <AuthorEmail>phil.plait@awesome.com</AuthorEmail>
+</Theme>

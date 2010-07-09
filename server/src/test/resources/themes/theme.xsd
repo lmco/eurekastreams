@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="Theme">
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="HeaderBackground">
+					<xs:complexType>
+						<xs:all>
+							<xs:element name="HeaderBackgroundColor" type="xs:string" />
+							<xs:element name="HeaderForegroundColor" type="xs:string" />
+							<xs:element name="HeaderBackgroundImage">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="Center" type="xs:boolean"
+												default="false" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+						</xs:all>
+					</xs:complexType>
+				</xs:element>
+
+				<xs:element name="Title" type="xs:string" />
+				<xs:element name="Description" type="xs:string" />
+				<xs:element name="AuthorName" type="xs:string" />
+				<xs:element name="AuthorEmail" type="xs:string" />
+
+				<xs:element name="ActiveTabBorderColor" type="xs:string" />
+				<xs:element name="ActiveTabForegroundColor" type="xs:string" />
+				<xs:element name="InactiveTabBackgroundColor" type="xs:string" />
+				<xs:element name="InactiveTabBorderColor" type="xs:string" />
+				<xs:element name="InactiveTabForegroundColor" type="xs:string" />
+				<xs:element name="GadgetTitleBackgroundColor" type="xs:string" />
+				<xs:element name="GadgetTitleForegroundColor" type="xs:string" />
+				<xs:element name="GadgetBorderColor" type="xs:string" />
+				<xs:element name="PageBackground">
+					<xs:complexType>
+						<xs:all>
+							<xs:element name="PageBackgroundColor" type="xs:string" />
+							<xs:element name="PageBackgroundImage">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="RepeatX" type="xs:boolean"
+												default="false" />
+											<xs:attribute name="RepeatY" type="xs:boolean"
+												default="false" />
+
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+						</xs:all>
+					</xs:complexType>
+				</xs:element>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

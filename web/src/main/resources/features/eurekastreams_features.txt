@@ -1,0 +1,6 @@
+# Eureka Streams Container Specific Features
+
+features/samplefeature/feature.xml
+features/eurekastreams-checklist/feature.xml
+features/eurekastreams-core/feature.xml
+features/eurekastreams-streamplugin/feature.xml

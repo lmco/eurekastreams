@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+    <ModulePrefs title="Web Feed" description="Use this plugin to import the content from any RSS or ATOM feed as activity into your stream.  Please Note: this plugin will only work with public feeds.  Feeds that require a user name and password cannot be imported." thumbnail="http://localhost:8080/style/images/feedIconSmall.png" title_url="http://eurekastreams.org" author="Eureka Framework" screenshot="http://localhost:8080/style/images/feedIconLarge.png" author_email="support@eurekastreams.org">
+        <Require feature="views" />
+        <Require feature="eurekastreams-streamplugin"/>
+    </ModulePrefs>
+<UserPref name="updateFrequency" datatype="hidden" default_value="30" />
+<UserPref name="objectType" datatype="hidden" default_value="BOOKMARK" />
+ <Content type="html" view="default, profile, canvas">
+    <![CDATA[
+        <script type="text/javascript">
+            eurekastreams.streamplugin.addUrlValidator("Public RSS / Atom URL", "feed", "", 
+                "Example: http://dailynews.com/topstories.rss", 
+                "Please enter a valid URL.", "function(value) { return value; }");
+ 
+        eurekastreams.streamplugin.registerGetFeedCallback(
+            "function() { return $wnd.gwt_getFormValue('feed'); }");
+        </script>
+    ]]>
+ </Content>
+</Module>

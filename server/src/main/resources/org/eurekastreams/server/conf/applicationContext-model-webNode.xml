@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/tx
+      http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="hibernatePropertyMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map>
+				<!-- Cache is currently turned off -->
+				<entry key="hibernate.cache.use_second_level_cache" value="false" />
+				<entry key="hibernate.cache.use_query_cache" value="false" />
+
+				<entry key="hibernate.show_sql" value="false" />
+				<entry key="hibernate.use_sql_comments" value="false" />
+				<entry key="hibernate.format_sql" value="false" />
+				<entry key="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+
+				<!-- Worker setup - takes care of sending changed entities off for indexing -->
+				<entry key="hibernate.search.worker.backend" value="jms" />
+				<entry key="hibernate.search.worker.jndi.java.naming.factory.initial" 
+					value="org.apache.activemq.jndi.ActiveMQInitialContextFactory" />
+				<entry key="hibernate.search.worker.jndi.url" value="${eureka.queue.jms.connstr}" />
+				<entry key="hibernate.search.worker.jms.connection_factory" value="ConnectionFactory" />
+				<entry key="hibernate.search.worker.jms.queue" value="${eureka.queue.hibernatesearch.queuename.dynamic}" />
+				<entry key="hibernate.search.worker.execution" value="async" />
+				<entry key="hibernate.search.worker.thread_pool.size" value="5" />
+
+				<!-- Master search index copy -->
+				<entry key="hibernate.search.default.sourceBase" value="${eureka.hibernatesearch.sourcebase.dir}/lucene-index-eureka-MASTER-COPY" />
+
+				<!-- Refresh with the master server every XX seconds -->
+				<entry key="hibernate.search.default.refresh" value="${eureka.hibernatesearch.slave.refresh.seconds}" />
+
+				<!-- SLAVE CONFIG -->
+				<entry key="hibernate.search.default.directory_provider"
+					value="org.hibernate.search.store.FSSlaveDirectoryProvider" />
+				<entry key="hibernate.search.default.indexBase" value="${eureka.hibernatesearch.indexbase.dir}/lucene-index-eureka-SLAVE" />				
+			</map>
+		</constructor-arg>
+	</bean>
+
+</beans>

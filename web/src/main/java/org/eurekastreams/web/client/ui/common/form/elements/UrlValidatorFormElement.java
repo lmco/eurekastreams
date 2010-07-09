@@ -1,0 +1,248 @@
+/*
+ * Copyright (c) 2010 Lockheed Martin Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.eurekastreams.web.client.ui.common.form.elements;
+
+import java.io.Serializable;
+
+import org.eurekastreams.commons.client.ActionRequestImpl;
+import org.eurekastreams.web.client.ui.Session;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.Label;
+
+/**
+ * User types whatever they want into the textbox. The command is used to transform what they type into an RSS/ATOM feed
+ * url endpoint (in case you want them to only type part of the URL, like a username). Control Can then check if the
+ * feed is valid and shows the feed title.
+ *
+ */
+public class UrlValidatorFormElement extends BasicTextBoxFormElement
+{
+    /**
+     * The inferface for the generate url command.
+     *
+     */
+    public interface GenerateUrlCommand
+    {
+        /**
+         * Generate the url.
+         *
+         * @param value
+         *            the value they typed.
+         * @return the url.
+         */
+        String generateUrl(final String value);
+    }
+
+    /**
+     * This.
+     */
+    private UrlValidatorFormElement thisBuffered;
+    /**
+     * The general url command.
+     */
+    private GenerateUrlCommand generateUrlCommand;
+    /**
+     * The processing spinner.
+     */
+    private Label processingSpinny = new Label("");
+
+    /**
+     * Error label.
+     */
+    private Label errorLabel = new Label("Error importing feed");
+    /**
+     * Error box.
+     */
+    private FlowPanel errorBox;
+    /**
+     * Import button.
+     */
+    private Hyperlink importBtn;
+
+    /**
+     * Url panel.
+     */
+    private FlowPanel urlPanel = new FlowPanel();
+    /**
+     * Url label.
+     */
+    private Label urlLabel = new Label();
+
+    /**
+     * Am I in a failed on uninited state?
+     */
+    private boolean failed = true;
+
+    /**
+     * Value form element.
+     */
+    private ValueOnlyFormElement originalValueFormElement;
+
+    /**
+     * Gets the value. If the feed has failed or not been verified, return null.
+     *
+     * @return value.
+     */
+    @Override
+    public Serializable getValue()
+    {
+        if (super.getValue().equals("") || failed)
+        {
+            return "";
+        }
+        return generateUrlCommand.generateUrl((String) super.getValue());
+    }
+
+    /**
+     * Get the original value the user typed in in a form element.
+     *
+     * @return the form element.
+     */
+    public ValueOnlyFormElement getOriginalValueFormElement()
+    {
+        return originalValueFormElement;
+    }
+
+    /**
+     * Get original value..
+     *
+     * @return original value.
+     */
+    private String getOriginalValue()
+    {
+        return (String) super.getValue();
+    }
+
+    /**
+     * Default constructor.
+     *
+     * @param labelVal
+     *            the label.
+     * @param inKey
+     *            the key.
+     * @param value
+     *            the value.
+     * @param inInstructions
+     *            the instructions.
+     * @param required
+     *            whether its required.
+     * @param inGenerateUrlCommand
+     *            generate url command.
+     */
+    public UrlValidatorFormElement(final String labelVal, final String inKey, final String value,
+            final String inInstructions, final boolean required, final GenerateUrlCommand inGenerateUrlCommand)
+    {
+        super(labelVal, inKey, value, inInstructions, required);
+        thisBuffered = this;
+        originalValueFormElement = new ValueOnlyFormElement(inKey + "original", value);
+
+        this.addStyleName("url-validator");
+
+        generateUrlCommand = inGenerateUrlCommand;
+
+        Hyperlink closeUrlPanel = new Hyperlink("Delete", History.getToken());
+        closeUrlPanel.addStyleName("small-x");
+        closeUrlPanel.addClickHandler(new ClickHandler()
+        {
+
+            public void onClick(final ClickEvent event)
+            {
+                urlPanel.setVisible(false);
+                getTextBox().setVisible(true);
+                getTextBox().setText("");
+                importBtn.setVisible(true);
+                failed = true;
+            }
+        });
+
+        urlPanel.addStyleName("url-panel");
+        urlPanel.setVisible(false);
+        urlLabel.setStyleName("url-label");
+        urlPanel.add(closeUrlPanel);
+        urlPanel.add(urlLabel);
+        this.insert(urlPanel, 3);
+
+        importBtn = new Hyperlink("import", History.getToken());
+        importBtn.addStyleName("import-button");
+        importBtn.addStyleName("form-upload-button");
+        importBtn.addStyleName("form-button");
+        this.insert(importBtn, 4);
+        processingSpinny.setVisible(false);
+        processingSpinny.addStyleName("form-submit-spinny");
+        this.insert(processingSpinny, 5);
+
+        errorBox = new FlowPanel();
+        errorBox.addStyleName("form-error-box");
+        errorLabel.addStyleName("error");
+        errorBox.add(errorLabel);
+        errorBox.setVisible(false);
+        this.insert(errorBox, 0);
+
+        importBtn.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent event)
+            {
+                importUrl();
+            }
+        });
+    }
+
+    /**
+     * Import the URL.
+     */
+    public void importUrl()
+    {
+        failed = false;
+        importBtn.setVisible(false);
+        processingSpinny.setVisible(true);
+
+        Session.getInstance().getActionProcessor().makeRequest(
+                new ActionRequestImpl<String>("getFeedTitleAction", getValue()), new AsyncCallback<String>()
+                {
+                    /* implement the async call back methods */
+                    public void onFailure(final Throwable caught)
+                    {
+                        importBtn.setVisible(true);
+                        processingSpinny.setVisible(false);
+                        errorBox.setVisible(true);
+                        requiredLabel.setVisible(true);
+                        instructions.setVisible(true);
+                        failed = true;
+                        thisBuffered.onError("");
+                    }
+
+                    public void onSuccess(final String result)
+                    {
+                        originalValueFormElement.setValue(getOriginalValue());
+                        importBtn.setVisible(false);
+                        requiredLabel.setVisible(false);
+                        instructions.setVisible(false);
+                        processingSpinny.setVisible(false);
+                        errorBox.setVisible(false);
+                        urlPanel.setVisible(true);
+                        getTextBox().setVisible(false);
+                        urlLabel.setText(result);
+                        thisBuffered.onSuccess();
+                    }
+                });
+    }
+}

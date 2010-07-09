@@ -1,0 +1,85 @@
+
+	div.banner-container
+	{
+		background: 
+			white 
+			url(/style/images/Start_page_1.jpg)
+			repeat;
+			
+      	        border-bottom: 1px solid #A4A5A9; 		
+	}
+
+        .themeable .site-labeling
+        {
+            color: white;
+        }
+
+	.themeable div.tab, .themeable div.new-tab-button
+	{ 
+	      background-color: #505657;
+	      border-color:  #2e3131i;	      
+	}
+
+        .themeable .configure-tab
+	{ 
+	      background-color: #505657;
+	      border-color: white;
+        }
+
+        .themeable .configure-tab a
+        {
+	      color: white;
+        }
+
+	.themeable div.tab-container div.active
+	{
+		background-color: #e6e1d0;
+	}
+
+	.themeable div.tab-container div.active
+	{
+      	border-top: 1px solid #A4A5A9; 
+      	border-left: 1px solid #A4A5A9; 
+      	border-right: 1px solid #A4A5A9; 
+      	border-bottom:1px solid #e6e1d0;	      
+	}
+	
+	.themeable div.tab-container div.active div div.gwt-Label
+	{
+      	color: #313007; 
+	}
+
+	.themeable div.layout-container
+	{
+      	border-color: #A4A5A9;
+	}
+	.themeable div.tab div div.gwt-Label, .themeable div.new-tab-button a
+	{
+	      color: white;
+	}
+	
+	.themeable .gadget-zone
+	{ 
+	      border: 1px solid #313007 ! important;
+	}
+
+	.themeable .gadget-zone-chrome-title-bar
+	{ 
+	      background-color: #2e4523;
+	}
+	
+	.themeable .gadget-zone-chrome-title-bar-title-button
+	{ 
+	      color: white;
+	}
+
+	.themeable .main-contents
+	{
+		background: 
+			#e6e1d0 
+			url()
+			no-repeat
+			 0 125px;
+	}
+
+	

@@ -1,0 +1,202 @@
+<html>
+<head>
+<title>Gadget testing container</title>
+<link rel="stylesheet" href="/gadgets/files/container/gadgets.css">
+<style type="text/css">
+  body {
+    font-family: arial, sans-serif;
+  }
+
+  #headerDiv {
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: #e5ecf9;
+    color: #3366cc;
+    font-size: larger;
+    font-weight: bold;
+  }
+
+  .subTitle {
+    font-size: smaller;
+    float: right;
+  }
+
+  .gadgets-gadget-chrome {
+    width: 60%;
+    float: none;
+    margin: auto;
+  }
+
+  .gadgets-gadget {
+    width: 100%;
+  }
+
+</style>
+
+<script type="text/javascript" src="/gadgets/js/core:rpc?debug=1"></script>
+<script type="text/javascript" src="/gadgets/files/container/cookies.js"></script>
+<script type="text/javascript" src="/gadgets/files/container/util.js"></script>
+<script type="text/javascript" src="/gadgets/files/container/gadgets.js"></script>
+<script type="text/javascript">
+
+gadgets.Gadget.prototype.render = function(chrome) {
+	  if (chrome) {
+	    var gadget = this;
+	    this.getContent(function(content) {
+	      chrome.innerHTML = content;
+	      //window.frames[gadget.getIframeId()].location = gadget.getIframeUrl();
+	      for(var i=0; i<window.frames.length; i++)
+	      {
+		      if(window.frames[i].name==gadget.getIframeId())
+		      {
+			      window.frames[i].location = gadget.getIframeUrl();
+			      break;
+		      }
+	      } 
+	    });
+	  }
+	};
+	
+
+//Setup a namespace for my code so that I can hide functions
+//from the rest of the javascript.
+if(!eurekastreamssamplecontainer) var eurekastreamssamplecontainer = {};
+
+(function(){
+	var parentUrl = document.location.href;
+	var baseUrl = parentUrl.substring(0, parentUrl.indexOf('eurekastreamssamplecontainer.html'));
+	var gadgetUrlMatches = /[?&]url=((?:[^#&]+|&amp;)+)/.exec(parentUrl);
+	var gadgetUrl = (gadgetUrlMatches)
+	    ? gadgetUrlMatches[1]
+	    : baseUrl + 'Eureka StreamsHelloWorld.xml';
+	var gadgetUrlCookie = 'eurekastreamsContainerGadgetUrl';
+	var viewerId = "3";
+	var ownerId = "3";
+	var appId = "1";
+
+	var viewMatches = /[?&]view=((?:[^#&]+|&amp;)+)/.exec(parentUrl);
+	var current_view = (viewMatches)
+	    ? viewMatches[1]
+	    : "default";
+	    
+	function generateSecureToken() {
+	  
+	   var fields = [ownerId, viewerId, appId, "shindig", gadgetUrl, "0", "default"];
+	   for (var i = 0; i < fields.length; i++) {
+	     // escape each field individually, for metachars in URL
+	     fields[i] = escape(fields[i]);
+	   }
+	   return fields.join(":");
+	}
+
+	function requestGadgetMetaData(opt_callback) {
+	   var request = {
+	     context: {
+	       country: "default",
+	       language: "default",
+	       view: current_view,
+	       container: "default"
+	     },
+	     gadgets: [{
+	       url: gadgetUrl,
+	       moduleId: appId
+	     }]
+	   };
+	
+	   sendRequestToServer("/gadgets/metadata", "POST",
+	       gadgets.json.stringify(request), opt_callback, true);
+	 }
+
+	function sendRequestToServer(url, method, opt_postParams, opt_callback, opt_excludeSecurityToken) {
+	   // TODO: Should re-use the jsoncontainer code somehow
+	   opt_postParams = opt_postParams || {};
+	
+	   var makeRequestParams = {
+	     "CONTENT_TYPE" : "JSON",
+	     "METHOD" : method,
+	     "POST_DATA" : opt_postParams};
+	
+	   if (!opt_excludeSecurityToken) {
+	     url = socialDataPath + url + "?st=" + gadget.secureToken;
+	   }
+	
+	   gadgets.io.makeNonProxiedRequest(url,
+	     function(data) {
+	       data = data.data;
+	       if (opt_callback) {
+	           opt_callback(data);
+	       }
+	     },
+	     makeRequestParams
+	   );
+	 };
+
+	function generateGadgets() {
+		// TODO: The gadget.js file should really have a clearGadgets method
+		gadgets.container.view_ = current_view;
+		gadgets.container.gadgets_ = {};
+		gadget = gadgets.container.createGadget(
+		    {'specUrl': gadgetUrl, 'title': 'Test Gadget'});
+		gadget.setServerBase('/gadgets/');
+		gadget.secureToken = escape(generateSecureToken());
+		gadgets.container.addGadget(gadget);
+		gadgets.container.layoutManager.setGadgetChromeIds(['gadget-chrome']);
+		gadgets.container.renderGadgets();
+	}
+
+	function refreshGadgets()
+	{
+	    for (var gadget in gadgets.container.gadgets_) {
+		  var newtitle = 'Test Gadget';
+		  var specUrl = gadgetUrl;
+		  gadgets.container.gadgets_[gadget].title = newtitle;
+		  gadgets.container.gadgets_[gadget].specUrl = specUrl;
+		  gadgets.container.gadgets_[gadget].secureToken = escape(generateSecureToken());
+		}
+		gadgets.container.renderGadgets();
+	}
+
+	
+	eurekastreamssamplecontainer.inititall = function()
+	{
+		document.getElementById('gadgetUrl').value = gadgetUrl;
+		document.getElementById('viewerId').value = viewerId;
+		document.getElementById('ownerId').value = ownerId;
+		document.getElementById('appId').value = appId;
+
+		requestGadgetMetaData(generateGadgets);
+	};
+
+	eurekastreamssamplecontainer.refreshGadget = function()
+	{
+		gadgetUrl = document.getElementById('gadgetUrl').value;
+		viewerId = document.getElementById('viewerId').value;
+		ownerId = document.getElementById('ownerId').value;
+		appId = document.getElementById('appId').value;
+
+		requestGadgetMetaData(refreshGadgets);
+	};
+	
+})();
+</script>
+</head>
+<body onLoad="eurekastreamssamplecontainer.inititall();">
+  <div id="headerDiv">
+    <div style="float:left">Gadget testing container</div>
+    <div class="subTitle">
+      Displaying gadget: <input type="text" size="75" id="gadgetUrl"/>
+      <br/>
+      <br/>
+      <br/>
+      Viewer id: <input type="text" size="20" id="viewerId"/>
+      Owner id: <input type="text" size="20" id="ownerId"/>
+      App id: <input type="text" size="10" id="appId"/>
+    </div>
+    <div><input type="button" value="Refresh Gadget Contents" onClick="eurekastreamssamplecontainer.refreshGadget();"/></div>
+    <div style="clear:both; height: 1px;">&nbsp;</div>
+  </div>
+
+  <div id="gadgetState" style="font-size:smaller"></div>
+  <div id="gadget-chrome" class="gadgets-gadget-chrome"></div>
+</body>
+</html>

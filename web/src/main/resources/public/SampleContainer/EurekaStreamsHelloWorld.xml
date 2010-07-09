@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+ <ModulePrefs title="Social Hello World">
+   <Require feature="opensocial-0.7"></Require>
+   <Require feature="dynamic-height"></Require>
+ </ModulePrefs>
+ <Content type="html">
+   <![CDATA[
+   <style type="text/css">
+     #helloworlds {
+       margin: 20px;
+       font-family: arial, sans-serif;
+       width: 310px;
+     }
+
+     div.person img {
+       margin-bottom: 10px;
+     }
+
+     div.bubble {
+       background-image: url(/gadgets/files/samplecontainer/examples/bubble.gif);
+       background-repeat: no-repeat;
+       width: 202px;
+       height: 66px;
+       padding: 12px 0px 0px 12px;
+       font-weight: bold;
+       font-size: 18px;
+       float: right;
+     }
+
+     .c0 { color: #008000; }
+     .c1 { color: #FF8A00; }
+     .c2 { color: #7777CC; }
+     .c3 { color: #008000; }
+     .c4 { color: #CC0000; }
+     .c5 { color: #73A6FF; }
+
+     div.name {
+       width: 150px;
+       text-align: right;
+       font-weight: normal;
+       font-size: 12px;
+       color: #999;
+       position:relative;
+       top: 10px;
+       right: -35px;
+     }
+   </style>
+
+   <script type="text/javascript">
+     var viewerCount;
+
+     var allPeople, viewerFriendData;
+     var viewerKey, ownerKey;
+     
+     function render(data) {
+       var viewer = data.get('viewer').getData();
+       var owner = data.get('owner').getData();
+       var ownerData = data.get('ownerdata').getData();
+       var viewerData = data.get('viewerdata').getData();
+       var ownerKey = document.getElementById('ownerKey').value;
+       var viewerKey = document.getElementById('viewerKey').value;       
+       var ownerValue = ownerData[owner.getId()] && ownerData[owner.getId()][ownerKey] ? ownerData[owner.getId()][ownerKey] : 'value not found';
+       var viewerValue = viewerData[viewer.getId()] && viewerData[viewer.getId()][viewerKey] ? viewerData[viewer.getId()][viewerKey] : 'value not found';
+       var html = '';
+
+       //html += '<div class="person">';
+       //html += '<div class="name">' + allPeople[i].getDisplayName() + ' (' + count + ') ' + allPeople[i].getField(opensocial.Person.Field.GENDER).getDisplayValue();
+       //html += '</div></div>';
+
+       html += '<div>Hello Open Social</div>';
+       html += '<div>Hello ' + viewer.getDisplayName() + '</div>';
+       html += '<div>Welcome to ' + owner.getDisplayName() + ' Gadget</div>';
+       html += '<div>Application Data - Owner key: ' + ownerKey + ' value: ' + ownerValue + '</div>';
+       html += '<div>Application Data - Viewer key: ' + viewerKey + ' value: ' + viewerValue + '</div>';
+       document.getElementById('helloworlds').innerHTML = html;
+
+       gadgets.window.adjustHeight();
+     }
+
+     function getCount(data) {
+       return data && data['count'] ? Number(data['count']) : 0;
+     }
+
+     var opts = {};
+     opts[opensocial.DataRequest.PeopleRequestFields.FIRST] =  0;
+     opts[opensocial.DataRequest.PeopleRequestFields.MAX] = 40;
+     opts[opensocial.DataRequest.PeopleRequestFields.PROFILE_DETAILS] =
+                     [opensocial.Person.Field.AGE,
+                     opensocial.Person.Field.NAME,
+                     opensocial.Person.Field.GENDER,
+                     opensocial.Person.Field.PROFILE_URL,
+                     opensocial.Person.Field.THUMBNAIL_URL,
+                     opensocial.Person.Field.STATUS];
+     opts[opensocial.DataRequest.PeopleRequestFields.SORT_ORDER] = opensocial.DataRequest.SortOrder.NAME;
+
+
+
+     function initData() {
+       var req = opensocial.newDataRequest();
+       req.add(req.newFetchPersonRequest('VIEWER', opts), 'viewer');
+       req.add(req.newFetchPersonRequest('OWNER', opts), 'owner');
+       req.add(req.newFetchPersonAppDataRequest('VIEWER', document.getElementById('viewerKey').value), 'viewerdata');
+       req.add(req.newFetchPersonAppDataRequest('OWNER', document.getElementById('ownerKey').value), 'ownerdata');
+       req.send(render);
+     }
+
+     gadgets.util.registerOnLoadHandler(initData);
+   </script>
+   <div style="margin-bottom: 1em">
+     <input type="button" value="Get Application Data" onclick="initData(); return false;"/>
+   </div>
+   <div>Owner Key</div><div><input type="text" id="ownerKey" value="name1"/></div>
+   <div>Viewer Key</div><div><input type="text" id="viewerKey" value="name3"/></div>
+   <div id="helloworlds" style="margin: 4px">
+   </div>
+  ]]>
+  </Content>
+</Module>

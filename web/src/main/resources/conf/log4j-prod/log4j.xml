@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	<appender name="console" class="org.apache.log4j.ConsoleAppender">
+		<param name="Target" value="System.out" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ISO8601} %-5p %c - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="file" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${log.home}/log.txt" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="50" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ISO8601} %-5p %c - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="actionFile" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${log.home}/action.log.txt" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="50" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ISO8601} %-5p %c - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="restletFile" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${log.home}/restlet.log.txt" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="50" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ISO8601} %-5p %c - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="springFile" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${log.home}/spring.log.txt" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="50" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ISO8601} %-5p %c - %m%n" />
+		</layout>
+	</appender>
+	
+	<appender name="springSecurityFile" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${log.home}/springSecurity.log.txt" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="50" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ISO8601} %-5p %c - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="LdapFile" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${log.home}/ldap.log.txt" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="50" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ISO8601} %-5p %c - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="sqlFile" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${log.home}/sql.log.txt" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="50" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d{ISO8601}] %-5p %c - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="jobsFile" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${log.home}/job.log.txt" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="50" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d{ISO8601}] %-5p %c - %m%n" />
+		</layout>
+	</appender>
+
+	<!-- Hibernate Second-Level Cache Logging -->
+	<appender name="secondLevelCacheFile" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${log.home}/hibernateCache.log.txt" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="50" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d{ISO8601}] %-5p %c - %m%n" />
+		</layout>
+	</appender>
+
+	<!-- Hibernate/Lucene Search -->
+	<appender name="searchLogFile" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${log.home}/search.log.txt" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="50" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d{ISO8601}] %-5p %c - %m%n" />
+		</layout>
+	</appender>
+
+	<!-- Custom cache logging -->
+	<appender name="customCacheFile" class="org.apache.log4j.RollingFileAppender">
+     <param name="File" value="${log.home}/cache.log.txt"/>
+     <param name="Append" value="true"/>
+     <param name="MaxFileSize" value="5MB"/>
+     <param name="MaxBackupIndex" value="50"/>
+    <layout class="org.apache.log4j.PatternLayout">
+          <param name="ConversionPattern" value="%-5p %c - %m%n"/>
+    </layout>
+  </appender>
+  
+  <appender name="luceneDirectoryProviders" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${log.home}/luceneDirectoryProviders.log.txt" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="50" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d{ISO8601}] %-5p %c - %m%n" />
+		</layout>
+	</appender>
+
+	<!-- Logger for Hibernate Search bootstrapping/reindexing -->
+	<appender name="searchIndexing" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${log.home}/searchIndexing.log.txt" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="50" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ISO8601}&#09;%m%n" />
+		</layout>
+	</appender>
+
+  <!-- Parseable log file for action timing -->
+	<appender name="actionTimer" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${log.home}/actionTimer.log.txt" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="50" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ISO8601}&#09;%m%n" />
+		</layout>
+	</appender>
+
+	<!-- Logger for how long each action takes -->
+	<logger name="org.eurekastreams.commons.server.ActionExecutor-actionTimer"
+		additivity="false">
+		<level value="info" />
+		<appender-ref ref="actionTimer" />
+	</logger>
+  
+  <!-- Logger for Lucene DirectoryProviders -->
+	<logger name="org.hibernate.search.store.FSSlaveDirectoryProvider" additivity="false">
+		<level value="all" />
+		<appender-ref ref="luceneDirectoryProviders"/>
+	</logger>
+	<logger name="org.hibernate.search.store.FSMasterDirectoryProvider" additivity="false">
+		<level value="all" />
+		<appender-ref ref="luceneDirectoryProviders"/>
+	</logger>
+  
+  	<!-- Logger for Hibernate Search Indexing -->
+	<logger name="org.eurekastreams.commons.search.bootstrap" additivity="true">
+		<level value="all"/>
+		<appender-ref ref="searchIndexing"/>
+	</logger>
+	<logger name="org.eurekastreams.commons.search.bridge" additivity="true">
+		<level value="all"/>
+		<appender-ref ref="searchIndexing"/>
+	</logger>
+	<logger name="org.eurekastreams.server.search.bridge" additivity="true">
+		<level value="all"/>
+		<appender-ref ref="searchIndexing"/>
+	</logger>
+  
+	<!-- Set level to "off" to not see spring output in logs-->
+	<logger name="org.springframework">
+		<level value="warn" />
+		<appender-ref ref="springFile" />
+	</logger>
+	
+	<logger name="org.springframework.security" additivity="false">
+		<level value="warn" />
+		<appender-ref ref="springSecurityFile" />
+	</logger>
+		
+	<logger name="org.eurekastreams.commons.server.ActionRPCServiceImpl">
+		<level value="warn" />
+		<appender-ref ref="actionFile" />
+	</logger>
+
+    <logger name="org.eurekastreams.server.action">
+        <level value="warn" />
+        <appender-ref ref="actionFile" />
+    </logger>
+    
+    <logger name="org.eurekastreams.commons.action">
+        <level value="warn" />
+        <appender-ref ref="actionFile" />
+    </logger>
+    
+    <logger name="org.eurekastreams.commons.server">
+        <level value="warn" />
+        <appender-ref ref="actionFile" />
+    </logger>
+    
+	<logger name="org.eurekastreams.server.service.actions">
+		<level value="warn" />
+		<appender-ref ref="actionFile" />
+	</logger>
+
+	<logger name="org.eurekastreams.server.service.restlets">
+		<level value="warn" />
+		<appender-ref ref="restletFile" />
+	</logger>
+
+	<logger name="org.eurekastreams.server.service.tasks">
+		<level value="warn" />
+		<appender-ref ref="jobsFile" />
+	</logger>
+
+	<logger
+		name="org.eurekastreams.server.service.actions.strategies.ldap.MembershipCriteriaToPersonMapper">
+		<level value="warn" />
+		<appender-ref ref="LdapFile" />
+	</logger>
+
+	<!-- Second-Level Cache Logging -->
+	<logger name="org.hibernate.cache.NonstrictReadWriteCache"
+		additivity="true">
+		<level value="warn" />
+		<appender-ref ref="secondLevelCacheFile" />
+	</logger>
+	<logger name="org.hibernate.SQL" additivity="false">
+		<level value="warn" />
+		<appender-ref ref="secondLevelCacheFile" />
+		<appender-ref ref="sqlFile" />
+	</logger>
+	
+	<!-- Custom Cache Logging -->
+	<logger name="org.eurekastreams.server.persistence.mappers.cache" additivity="true">
+		<level value="warn"/>
+		<appender-ref ref="customCacheFile" />
+	</logger>
+
+	<!-- Hibernate/Lucene Search -->
+	<logger name="org.eurekastreams.commons.search.ProjectionSearchRequestBuilder"
+		additivity="true">
+		<level value="warn" />
+		<appender-ref ref="searchLogFile" />
+	</logger>
+
+	<!-- keep some chatty logs quiet -->
+	<logger name="org.hibernate" additivity="false">
+		<level value="warn" />
+	</logger>
+	<logger name="net.sf.gilead" additivity="true">
+		<level value="error" />
+	</logger>
+
+	<!-- Allow all security scoping messages for debugging -->
+	<logger name="org.eurekastreams.server.search.stream.SearchResultListScoper" additivity="true">
+		<level value="warn" />
+	</logger>
+	
+
+	<root>
+		<priority value="warn" />
+		<appender-ref ref="file" />
+	</root>
+
+</log4j:configuration>

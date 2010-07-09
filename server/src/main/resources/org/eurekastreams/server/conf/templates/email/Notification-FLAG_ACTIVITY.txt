@@ -1,0 +1,12 @@
+$(actor.name) flagged a $(activity.type) in the $(dest.name) organization.
+
+To see the flagged activity follow this link to the organization Admin tab:
+$(eureka.web.baseurl)#$(dest.page)/$(dest.uniqueid)?tab=Admin
+
+Thank You,
+Eureka Streams
+
+--- 
+
+Emails you receive from Eureka Streams can be managed from your notification settings page:
+$(eureka.web.baseurl)#settings?tab=Notifications

@@ -1,0 +1,24 @@
+<module>
+	<inherits name='com.google.gwt.user.User' />
+	<inherits name='com.allen_sauer.gwt.dnd.gwt-dnd' />
+	<inherits name="com.google.gwt.json.JSON" />
+	<inherits name='net.sf.gilead.Adapter4Gwt15' />
+	<inherits name="org.eurekastreams.server.Domain" />
+	<inherits name="org.eurekastreams.commons.ActionRPCService" />
+	
+	<!-- Browser-sensitive code should use the 'user.agent' property -->
+<!--      <set-property name="user.agent" value="ie6,ie8,gecko,gecko1_8,safari,opera"/> -->
+    <set-property name="user.agent" value="ie6,ie8,gecko1_8"/>    
+	
+
+	<!-- Sets up the Action RPC service -->
+	<servlet path="/gwt_rpc" class="org.eurekastreams.commons.server.ActionRPCServiceImpl" />
+
+	<!-- Specify the app entry point class.                         -->
+	<entry-point class='org.eurekastreams.web.client.ui.pages.master.ApplicationEntryPoint' />
+
+	<!-- Sets up the binder generator for the magic binding class -->
+	<generate-with class="org.eurekastreams.web.rebind.HashedBindableGenerator">
+		<when-type-assignable class="org.eurekastreams.web.client.ui.Bindable" />
+	</generate-with>
+</module>

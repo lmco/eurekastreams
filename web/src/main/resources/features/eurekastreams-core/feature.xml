@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<feature>
+  <name>eurekastreams-core</name>
+  <gadget>
+    <script src="core.js"/>
+  </gadget>
+</feature>

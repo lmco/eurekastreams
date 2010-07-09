@@ -1,0 +1,13 @@
+$(actor.name) joined the $(dest.name) group.
+
+To see $(actor.name)'s profile follow this link:
+$(eureka.web.baseurl)#people/$(actor.accountid)
+
+Thank You,
+Eureka Streams
+
+--- 
+
+Emails you receive from Eureka Streams can be managed from your notification settings page:
+$(eureka.web.baseurl)#settings?tab=Notifications
+

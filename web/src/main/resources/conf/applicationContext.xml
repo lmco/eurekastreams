@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/tx
+      http://www.springframework.org/schema/tx/spring-tx.xsd
+      http://www.springframework.org/schema/context
+      http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+	<context:property-placeholder location="classpath:conf/eurekastreams-server.properties"/>
+	
+	<!-- Include common resources -->
+	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-model.xml" />
+	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-mappers.xml" />
+	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search.xml" />
+	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search-directorybrowsing.xml" />
+	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search-directorysearch.xml" />
+	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-framework-ldap.xml" />
+	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-framework-actions.xml" />
+	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-framework-servletcontextaware-actions.xml" />
+	
+	<!-- alias used on all actions that submit an async action -->
+	<!--
+		can be of value: 
+			nullTaskHandler // does not execute the action, only logs 
+			inlineTaskHandler // executes the task inline (non-async)
+			queueTaskHandler // submits the task to the Queue 
+		// must have the applicationContext-jms.xml file active
+	-->
+	<alias alias="taskHandler" name="inlineTaskHandler" />
+	
+	
+	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-gilead.xml" />
+    <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-security-preauth.xml" />
+	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-restlets.xml" />
+	
+    <!-- Initialize Class and Field Bridges with singleton setters -->
+    <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search-bridges-initialization.xml" />
+
+	<!-- A the index technique to use -->
+    <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-model-oneBox.xml" />
+    
+    <!-- memcached client bean -->
+    <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-memcached.xml" />          
+    
+    <!-- Setup the bean, queue, and connection to the JMS queue implementation  -->
+    <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-jms.xml" />
+    
+    <!-- The Quartz scheduled jobs -->
+    <import resource="applicationContext-jobs.xml" />
+    		
+</beans>

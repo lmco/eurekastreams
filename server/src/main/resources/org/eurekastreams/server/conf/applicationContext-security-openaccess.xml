@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+     http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+     http://www.springframework.org/schema/security 
+     http://www.springframework.org/schema/security/spring-security-2.0.4.xsd">
+                
+    <http>
+        <form-login login-page="/no_credentials.html" default-target-url="/login_success.html" always-use-default-target="true"/>     
+        <http-basic />
+        <anonymous />
+        <intercept-url pattern="/index.html" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/login_disabled.html" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/no_credentials.html" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/style/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/scripts/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/org.eurekastreams.web.Application.nocache.js" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/*.cache.html" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/favicon.ico" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/gwt-dnd.css" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/resources/autocomplete/entities/**" access="ROLE_USER"/>
+        <intercept-url pattern="/resources/**" access="ROLE_ANONYMOUS, ROLE_USER"/> 
+        <intercept-url pattern="/themes/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/social/**" access="ROLE_ANONYMOUS, ROLE_USER"/>   
+        <intercept-url pattern="/gadgets/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/org/eurekastreams/gadgets/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/**" access="ROLE_USER"/>
+        <!-- key MUST match key in persistentLoginService -->
+        <remember-me services-ref="persistentLoginService" key="595"/>
+        <logout />
+    </http>       
+
+    <beans:bean id="openAccessAuthProvider"
+        class="org.eurekastreams.server.service.security.openaccess.OpenAccessAuthenticationProvider">
+        <custom-authentication-provider />
+        <beans:property name="userDetailsService">
+            <beans:ref bean="userDetailsService" />
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="authorityProvider" class="org.eurekastreams.server.service.security.userdetails.AuthorityProviderImpl" />
+    
+    <beans:bean id="userDetailsService" class="org.eurekastreams.server.service.security.userdetails.UserDetailsServiceImpl">
+        <beans:constructor-arg ref="jpaPersonMapper" />
+        <beans:constructor-arg ref="persistentLoginRepository" />
+        <beans:constructor-arg ref="authorityProvider" />
+        <beans:constructor-arg>
+    		<beans:bean class="org.eurekastreams.server.service.security.userdetails.TermsOfServiceAcceptanceStrategyImpl">
+		    	<beans:constructor-arg>    	
+		    		<beans:ref bean="findSystemSettings"/>
+		    	</beans:constructor-arg>
+		    </beans:bean>
+    	</beans:constructor-arg>
+    	<beans:property name="authenticationType" value="FORM" />
+    </beans:bean> 
+    
+    <beans:bean id="persistentLoginRepository" class="org.eurekastreams.server.service.security.persistentlogin.PersistentLoginRepositoryImpl">
+        <beans:constructor-arg>     
+            <beans:ref bean="jpaPersistentLoginMapper"/>
+        </beans:constructor-arg>
+    </beans:bean>
+    
+    <beans:bean id="persistentLoginService" class="org.eurekastreams.server.service.security.persistentlogin.PersistentLoginService" >    
+        <beans:constructor-arg value="595" />
+        <beans:constructor-arg>     
+            <beans:ref bean="userDetailsService"/>
+        </beans:constructor-arg>
+        <beans:constructor-arg>     
+            <beans:ref bean="persistentLoginRepository"/>
+        </beans:constructor-arg>
+        <!-- <beans:property name="alwaysRemember" value="true" /> -->
+    </beans:bean>       
+    
+</beans:beans>

@@ -1,0 +1,836 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+    <ModulePrefs title="White House.gov Blog Feed" title_url="http://www.whitehouse.gov/blog/"
+        thumbnail="http://localhost:8080/style/images/WhiteHouseThumbnail.png"
+        author="Eureka Framework" author_email="support@eurekastreams.org"
+        description="White House.gov Blog Feed">
+        <Require feature="opensocial-0.9" />
+        <Require feature="views" />
+        <Require feature="dynamic-height" />
+        <Require feature="settitle" />
+        <Require feature="setprefs" />
+        <Require feature="eurekastreams-core" />
+        <Optional feature="content-rewrite">
+            <Param name="include-tags" />
+        </Optional>
+    </ModulePrefs>
+    <UserPref name="feed_url" display_name="Feed URL:"
+        datatype="hidden" default_value="http://www.whitehouse.gov/feed/blog" />
+    <UserPref name="feedImage" datatype="hidden"
+        default_value="http://localhost:8080/style/images/gadgetHeaderWhitehouseblog.png" />
+    <UserPref name="feedImageTitle" datatype="hidden"
+        default_value="White House.gov Blog Feed" />
+    <UserPref name="feedImageUrl" datatype="hidden"
+        default_value="http://www.whitehouse.gov/blog/" />
+    <Content type="html" view="profile, default, home, canvas">
+        <![CDATA[
+        <link type="text/css" rel="stylesheet" href="http://localhost:8080/style/core.css" type="text/css" />
+      
+        <!--This is shared view code -->
+        <style>  
+            .content_div
+            { 
+                background-color: #FFFFFF;
+            } 
+            
+            .story
+            {
+                border-bottom: 1px solid #CCCCCC;
+                padding:10px 0px;
+                width:100%;
+            }
+            
+            .story_description
+            {
+                float:left;
+            }
+            
+            .story_content
+            {
+                float:left;
+                font-size:12px;
+            }
+            
+            div.title a{
+                font-weight:bold;
+            }
+            
+            a{
+                color: #0000CC;
+                font-size:12px;
+                text-decoration:none;
+            }
+            
+            a:link, a:visited, a:active
+            {
+                color: #0066cc;
+    
+            }
+            
+            a:hover{
+                color:#F4BD00;
+            }
+            
+            .hidden
+            {
+                display:none
+            }
+            
+            .title
+            {
+                margin-bottom:5px;
+                margin-top:2px;
+            }
+            
+            .viewMore
+            {
+                color: #0066cc;
+                float:right;
+                font-size:11px;
+                cursor:pointer;
+                padding-bottom:4px;
+            }
+            
+            .feed-header
+            {
+                border-bottom: 1px solid #CCCCCC;
+                padding-bottom:10px;
+            }
+            
+            .feed-image
+            {
+                padding-bottom: 10px;
+            }
+            
+            .time-stamp
+            {
+                color: #666666;
+                font-size: 11px;
+            }
+            
+            .time-stamp a
+            {
+                font-size: 11px;
+            }
+                        
+            body
+            {
+                width: auto;
+                font-size:12px;
+                padding: 0;
+                margin: 0;
+                background-color: #FFFFFF;
+            }
+                    
+            .clear
+            {
+              clear:both;
+            }
+        
+        </style>
+  
+        <script>
+            var prefs_ = new gadgets.Prefs();
+            var summaries_ = true;
+            var summaryLength_ = 150;
+            var feedTitle_ = "";
+            var feedUrl_ = prefs_.getString("feed_url");
+            var feedImage_ = prefs_.getString("feedImage");
+            var feedImageTitle_ = prefs_.getString("feedImageTitle");
+            var feedImageUrl_ = prefs_.getString("feedImageUrl");
+            var ownerId_;
+            var viewerId_;
+            var viewerName_;
+            var viewerIsCreator_;
+            var moduleId_;
+            var feedPlacementDiv_ = "content_div";
+            var problemLoadingFeedMessage_ = "There was a problem loading the feed.";
+            var gadgetNotConfigured_ = "Edit the settings to configure the feed for display.";
+            var friendReqList_ = "";
+      
+            /**
+            * Main init method, this method gets called first.
+            */
+            function init()
+            {
+               getData();
+               gadgets.window.adjustHeight();
+            }
+            
+            gadgets.util.registerOnLoadHandler(init);
+        
+            /**
+             * Entity methods
+             */ 
+            function getFeedReaderJson()
+            {
+                return {"feedTitle":feedTitle_, "id":"0","openSocialId":ownerId_,"moduleId":moduleId_,"url":feedUrl_,"date":"12/31/1999"};
+            }
+          
+            /**
+             *  Utility methods
+             */
+            function encodeHTML(htmlString)
+            {
+                //This will remove all html tags
+                htmlString= htmlString.replace(/<\/?\w+((\s+(\w|\w[\w-]*\w)(\s*=\s*(?:\".*?\"|'.*?'|[^'\">\s]+))?)+\s*|\s*)\/?>/ig, "");
+                //this is a fail safe to encode anything else that might be harmful.  We do not encode & because we expect the source to encode things and encoding uses &.
+                htmlString= htmlString.replace(/</g, "&lt;");
+                htmlString= htmlString.replace(/>/g, "&gt;");
+                htmlString= htmlString.replace(/"/g, "&quot;");
+                
+                return htmlString
+            }
+            
+            function cutSummary(summary)
+            {
+                if (summary == null)
+                {
+                    summary="";
+                }   
+            
+                trimString=encodeHTML(summary);
+                
+                if (trimString.length > summaryLength_)
+                {
+                    trimString = trimString.substring(0, summaryLength_);
+                    trimString+="...";
+                }
+                
+                return trimString;
+            };
+
+            /**
+            * Gadget methods
+            */  
+        
+            function showMore()
+            {
+                gadgets.views.requestNavigateTo('canvas');
+            };
+    
+            /**
+             * Retrieve the parsed feed data from the container.
+             */ 
+            function getFeedData()
+            {  
+                var params = {};  
+                params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.FEED;  
+                params[gadgets.io.RequestParameters.NUM_ENTRIES] = new Number(entriesLimit_);  
+                params[gadgets.io.RequestParameters.GET_SUMMARIES] = summaries_; 
+                gadgets.io.makeRequest(feedUrl_, writeFeedData, params);
+            };
+        
+            /**
+            *  Starts the saving process. 
+            */
+            function saveFeed()
+            {
+                var url = "http://localhost:8080/resources/feedreader/" + ownerId_ + "/" + moduleId_ + "/";
+                var params={};
+                params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
+                params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
+                params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.NONE;
+                params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 0;
+                gadgets.io.makeRequest(url, saveReturn, params);
+            };
+          
+            /**
+             *  handles the request to either save a feed or update an existing one. 
+             */
+            function saveReturn(results) 
+            {
+                var params={};
+                
+                params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.NONE;
+                params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 0;
+                params[gadgets.io.RequestParameters.POST_DATA] = gadgets.json.stringify(getFeedReaderJson());
+                var url = "http://localhost:8080/resources/feedreader/" + ownerId_ + "/" + moduleId_ + "/";
+                //successful response code
+                if (results.rc == 200)
+                {
+                    if (results.data.id == undefined && (feedTitle_ != "" && feedTitle_ != "''"))
+                    {
+                    params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.POST;         
+                    gadgets.io.makeRequest(url, saveSuccess, params);
+                    }
+                    else if(results.data.id) 
+                    {
+                    //NOTE: (="''") is for IE, IE puts ' around blank strings.
+                    if(feedTitle_ != "" && feedTitle_ != "''")
+                    {
+                        if(results.data.feedTitle != feedTitle_)
+                        {
+                            params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.PUT;
+                            gadgets.io.makeRequest(url, saveSuccess, params);
+                        }
+                    }
+                    else
+                    {
+                        params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.DELETE;
+                        gadgets.io.makeRequest(url, saveSuccess, params);
+                    }       
+                    }                    
+                }
+            };
+            
+            /**
+             * This method is provided as a default way to handle success or failures of request.
+            */
+            function saveSuccess(results)
+            {
+              //successful response code
+              if (results.rc == 200)
+              {
+                //do nothing
+              }
+            };
+            
+            /**
+             *  This method retrieves the display header for the feed data passed in.
+             */
+            function getFeedHeader(feed)
+            {
+                var html = "";
+                var feedDescription="";
+
+                if(feed.Description!=null){feedDescription=feed.Description}
+                
+                // Display the feed title and description
+                feedTitle_ = feed.Title;
+                html += "<div class='feed-header'>" 
+                if (feedImage_ != null)
+                {
+                    html += "<div class='feed-image'>"
+                    if (feedImageUrl_ != null)
+                    {
+                        html += "<a href='" + feedImageUrl_ + "' target='_blank'";
+                        if (feedImageTitle_ != null)
+                        {
+                            html += " alt='" + feedImageTitle_ + "'";
+                        }
+                        html += ">";
+                    }
+                    html += "<img src='" + feedImage_ + "' style='border-style:none;'/>"
+                    if (feedImageUrl_ != null)
+                    {
+                        html += "</a>";
+                    }
+                    html += "</div>";
+                }
+                html += feedDescription + "</div>";
+
+                return html;
+            }
+            
+            
+            /**
+             *  This method handles the initial retrieving of data.
+             */
+            function sharedGetData()
+            {
+                moduleId_ = eurekastreams.core.getModuleId();
+                var req = opensocial.newDataRequest();
+                req.add(req.newFetchPersonRequest(opensocial.IdSpec.PersonId.VIEWER), 'viewer');
+                req.add(req.newFetchPersonRequest(opensocial.IdSpec.PersonId.OWNER), 'owner');
+                var friendspec = opensocial.newIdSpec({userId : 'VIEWER', groupId : 'FRIENDS'});
+                req.add(req.newFetchPeopleRequest(friendspec), 'viewerFriends');
+
+                req.send(processOpenSocialDataCallback);
+            };
+             
+             /*
+             * This function retrieves the data with the old style opensocial requests
+             */
+            function processOpenSocialDataCallback(result)
+            {
+                
+                if (result.get('owner').hadError())
+                {
+                    displayErrorMessage(basicErrorMessage);
+                    gadgets.error(ownerErrorMessage);
+                }
+                else
+                {
+                    var viewerFriends = result.get('viewerFriends').getData();
+                    viewerFriends.each(function(person){
+                        friendReqList_ += "'" + person.getId() + "',";
+                    });
+                    friendReqList_ = friendReqList_.substring(0, friendReqList_.length - 1);                        
+
+                    ownerId_ = result.get('owner').getData().getId();
+                    if (!result.get('viewer').hadError())
+                    {
+                        viewerId_ = result.get('viewer').getData().getId();
+                    }
+
+                    viewerName_=result.get('viewer').getData().fields_.name.fields_.formatted;
+                    viewerIsCreator_ = (viewerId_ && ownerId_);
+                    render();
+                }
+            };
+
+            function postFeedItemAsBookmark(title, url, obj)
+            {
+               obj.className = "hidden";
+               obj.nextSibling.className = "";
+               var params = {};
+               params[opensocial.Activity.Field.TITLE] = " ";
+               params[opensocial.Activity.Field.TEMPLATE_PARAMS] = {};
+               params[opensocial.Activity.Field.TEMPLATE_PARAMS]["baseObjectType"] = "BOOKMARK";
+               params[opensocial.Activity.Field.TEMPLATE_PARAMS]["targetUrl"] = url;
+               params[opensocial.Activity.Field.TEMPLATE_PARAMS]["targetTitle"] = title;
+               params[opensocial.Activity.Field.TEMPLATE_PARAMS]["description"] = "";
+               params[opensocial.Activity.Field.TEMPLATE_PARAMS]["thumbnail"] = "";
+               var activity = opensocial.newActivity(params);
+               opensocial.requestCreateActivity(activity, opensocial.CreateActivityPriority.HIGH, 
+                   function(result) 
+                   {
+                   	   if(!result.hadError())
+                   	   {
+                   	       obj.nextSibling.innerHTML = "Shared";
+                   	       eurekastreams.core.triggerShowNotificationEvent("News Item Shared");
+                   	   }
+                   	   else
+                   	   {
+                   	       obj.className = "";
+                   	       obj.nextSibling.className = "hidden";
+                   	       eurekastreams.core.triggerShowNotificationEvent("Error Sharing News Item");
+                   	   }
+                   }
+               );
+            }
+      </script>
+      
+      <div id="content_div" class="content_div"></div>
+  
+      ]]>
+    </Content>
+
+    <Content type="html" view="profile, default, home">
+    <![CDATA[
+        <script type="text/javascript">
+        var entriesLimit_ = 5;
+
+        /**
+         *This method renders the gadgets via JS
+         */ 
+        function render()
+        {
+            if(feedUrl_ == "" || feedUrl_ == null)
+            {
+                document.getElementById("content_div").innerHTML = "<div class='notConfig'>" + gadgetNotConfigured_ + "</div>";
+                saveFeed();
+                gadgets.window.adjustHeight();
+            }
+            else
+            {
+                getFeedData();
+            }
+            
+            setTimeout("gadgets.window.adjustHeight()",3000);
+        };
+        
+        function getData()
+        {
+            sharedGetData();
+        };
+              
+        /**
+         *  handles the writing of feed data. 
+         */
+        function writeFeedData(obj) 
+        {
+            //successful response code 
+            if (obj.rc == 200)
+            {       
+                // obj.data contains the feed data
+                var feed = obj.data;
+                var html = "";
+                
+                html += getFeedHeader(feed);
+                
+                // Display the feed title
+                feedTitle_ = feed.Title;
+                gadgets.window.setTitle(feedTitle_);
+                // Access the data for a given entry
+                if (feed.Entry)
+                {
+                    for (var i = 0; i < feed.Entry.length; i++)
+                    {
+                        var milliseconds = (feed.Entry[i].Date); 
+                        var date = new Date(milliseconds); 
+                        var cleanEntryTitle = feed.Entry[i].Title.replace(/'/g, "\\'"); 
+                        cleanEntryTitle = cleanEntryTitle.replace(/\"/g, "&#34;");
+                        //TODO This should be done as a template 
+                        html += "<div class='story'>" +
+                            "<div class='story_description'>" +
+                            <!-- pic goes here once we figure that one out -->
+                            "</div>" +
+                            "<div class='story_content'>" +
+                                "<div class='title'>" +
+                                    "<a target='_blank' href='" + feed.Entry[i].Link + "'>" +
+                                    feed.Entry[i].Title +
+                                    "</a> " +
+                                "</div>"  +
+                                cutSummary(feed.Entry[i].Summary) +
+                            "</div>" +
+                            "<div class='clear'></div>" +
+                            "<div class='time-stamp'>" +
+                                eurekastreams.core.getTimeAgo(date) +
+								" • <a title=\"Share to my stream\" href=\"javascript:void(0)\" onClick=\"postFeedItemAsBookmark('" +
+							    cleanEntryTitle +
+							    "', '" +
+							    feed.Entry[i].Link +
+							    "', this)\">" +
+							    "Share</a><span class='hidden'>Sharing...</span>" +
+                            "</div>" +
+                        "</div>" +
+                        "<div style='clear:both;'></div>";
+                    }
+                    html+="<div class='viewMore' onClick='showMore();'>view more</div>";
+                }        
+                document.getElementById(feedPlacementDiv_).innerHTML = html;
+            }
+            else
+            {
+                document.getElementById(feedPlacementDiv_).innerHTML = problemLoadingFeedMessage_;
+            }
+            saveFeed();
+            gadgets.window.adjustHeight();
+        };
+        </script>
+    ]]>
+    </Content>
+
+    <Content type="html" view="canvas">
+    <![CDATA[
+      <script type="text/javascript">
+     
+        var entriesLimit_ = 100;
+        
+        /**
+         * This method renders the gadgets via JS
+         */ 
+        function render()
+        {
+            if(feedUrl_ == "" || feedUrl_ == null)
+            {
+                document.getElementById("content_div").innerHTML = gadgetNotConfigured_;
+                saveFeed();
+            }
+            else
+            {
+                getFeedData();
+            }
+            getPopularData(document.getElementById('followingSelector'), false);
+            gadgets.window.adjustHeight();
+        };
+        
+        function getData()
+        {
+            sharedGetData();
+        };
+
+        var popDiv="popularFeed_div";
+        var currentPopularFeedButton=null;
+        var noFeedsFollowing="No feeds found for people you are following.";
+        
+        function getPopularData(button, all)
+        {  
+            var params = {};  
+            
+            params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
+            params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.NONE;
+            params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 0;
+            var url = "";       
+            
+            toggleFeeds(button);
+            
+            if(all)
+            {
+                document.getElementById('popFeedHeader').innerHTML="Feeds from all employees";
+                params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
+                url="http://localhost:8080/resources/feedreader/";
+            }
+            else
+            {
+                document.getElementById('popFeedHeader').innerHTML="Feeds from employees you are following";
+                params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.POST;
+                params[gadgets.io.RequestParameters.POST_DATA] = friendReqList_;
+                url="http://localhost:8080/resources/feedreader/";
+            }
+            
+            gadgets.io.makeRequest(url, writePopularData, params);
+        };
+    
+        /**
+         *  handles the writing of feed data. 
+         */
+        function writePopularData(obj) 
+        {
+            //handle success code    
+            if (obj.rc == 200)
+            {       
+                // obj.data contains the feed data
+                var feed = obj.data;
+                var html = "";
+                
+                // Access the data for a given entry            
+                if (feed.length!=0) 
+                {
+                    for (var i = 0; i < feed.length; i++) 
+                    {
+                        html += "<div class='popularStory'>" +
+                            "<div class='story_content'>" +
+                                "<div class='title'>" +
+                                    "<a target='_blank' href='" + feed[i].url + "'>" +
+                                        feed[i].feedTitle +
+                                    "</a> " +
+                                "</div>" + 
+                            "</div>" + 
+                            "<div style='clear:both;'></div>" + 
+                            "<div class='time-stamp'>" +
+                                peopleCount(feed[i].COUNT) +
+                            "</div>" +
+                        "</div>" +
+                        "<div class='clear'></div>";
+                    }
+                }
+                else
+                {
+                    html = noFeedsFollowing;
+                }     
+                document.getElementById(popDiv).innerHTML = html;
+            }
+            else
+            {
+                document.getElementById(popDiv).innerHTML = problemLoadingFeedMessage_;
+            }
+            gadgets.window.adjustHeight();
+        };
+
+        function toggleFeeds(button)
+        {
+            if(currentPopularFeedButton != null)
+            {
+                swapClasses(currentPopularFeedButton, 'activeButton', 'inactiveButton');
+            }
+            currentPopularFeedButton=button;
+            swapClasses(button, "inactiveButton","activeButton" );
+        }
+        
+        function peopleCount(peopleNumber)
+        {
+            if (peopleNumber == 1)
+            {
+                return "1 person";
+            }
+            else{
+                return peopleNumber + " people" ;
+            } 
+        }
+
+        function swapClasses(object, oldClass, newClass)
+        {
+            object.className=object.className.replace(oldClass, newClass);
+        };
+
+        /**
+         *  handles the writing of feed data. 
+         */
+        function writeFeedData(obj) 
+        { 
+            //successful response code
+            if (obj.rc == 200)
+            {       
+                // obj.data contains the feed data
+                var feed = obj.data;
+                var html = "";
+                
+                html += getFeedHeader(feed);
+                
+                // Set the feed Title
+                feedTitle_ = feed.Title;
+                gadgets.window.setTitle(feedTitle_);
+                
+                // Access the data for a given entry
+                if (feed.Entry) 
+                {
+                    for (var i = 0; i < feed.Entry.length; i++) 
+                    {              
+                        var milliseconds = (feed.Entry[i].Date); 
+                        var date = new Date(milliseconds); 
+                        var cleanEntryTitle = feed.Entry[i].Title.replace(/'/g, "\\'"); 
+                        cleanEntryTitle = cleanEntryTitle.replace(/\"/g, "&#34;");
+                        
+                        html += "<div class='story'>" +
+                                    "<div class='story_description'>" + 
+                                    <!-- pic goes here once we figure that one out -->
+                                    "</div>" +
+                                    "<div class='story_content'>" +
+                                        "<div class='title'>" +
+                                            "<a target='_blank' href='" + feed.Entry[i].Link + "'>" +
+                                                feed.Entry[i].Title +
+                                            "</a> " +
+                                        "</div>" +
+                                        feed.Entry[i].Summary + 
+                                    "</div>" +
+                                    "<div class='clear'></div>" +
+                                    "<div class='time-stamp'>" + 
+                                        eurekastreams.core.getTimeAgo(date) +
+										" • <a title=\"Share to my stream\" href=\"javascript:void(0)\" onClick=\"postFeedItemAsBookmark('" +
+									    cleanEntryTitle +
+									    "', '" +
+									    feed.Entry[i].Link +
+									    "', this)\">" +
+									    "Share</a><span class='hidden'>Sharing...</span>" +
+                                    "</div>" +
+                                "</div>" +
+                                "<div style='clear:both;'></div>";
+                    }
+                }        
+                document.getElementById(feedPlacementDiv_).innerHTML = html;
+                //This is a hack until we figure out how to caught on finish load;
+                setTimeout("gadgets.window.adjustHeight()",5000);
+            }
+            else
+            {
+                document.getElementById(feedPlacementDiv_).innerHTML = problemLoadingFeedMessage_;
+            }
+            saveFeed();
+            gadgets.window.adjustHeight();
+        };
+      </script>
+      
+      <style>
+        .popularStory
+        {
+            border-top: 1px solid #CCCCCC;
+            padding-top:5px;
+            width:100%;
+            margin-bottom:5px;
+        }
+        
+        .popFeedHeader
+        {
+            margin-bottom:5px;
+            color: #666666;
+            font-style:italic;
+        }
+        
+        .popularFeeds
+        {
+            float:right;
+            width:30%;
+            border:1px solid #CCCCCC;
+            margin:10px 15px 5px;
+            padding: 10px 15px;
+        }
+        
+        .content_div
+        { 
+            float:left;
+            width:60%;
+        } 
+        
+        .popTitle
+        {
+            font-weight:bold;
+        }
+              
+          
+        /**
+         * Options Panel
+         */
+        .popTypeSelector
+        {
+            margin-top:5px;
+            list-style: none;
+            padding-left: 0;
+            display: inline-block;
+            *display: inline;
+            zoom: 1;
+            margin: 5px 0;
+        }
+        
+        .popTypeSelector li
+        {
+            display: inline-block;
+            *display: inline;
+            zoom: 1;
+            height: 22px;
+            margin-right: 10px;
+        }
+        
+        .popTypeSelector li div
+        {
+            height: 22px;
+            padding-left: 5px;
+            background: transparent url(http://localhost:8080/style/images/rounded-corners-22-left-FFFFFF.png) no-repeat left center;
+            float:left;
+        }
+        
+        
+        
+        .popTypeSelector li div a
+        {
+            *width:1px;
+            color: #333;
+            text-decoration: none;
+        }
+        
+        a.selector
+        {
+            height: 19px;
+            padding-top: 3px;
+            display: block;
+            background: transparent url(http://localhost:8080/style/images/rounded-corners-22-right-FFFFFF.png) no-repeat right center;
+            padding-right: 5px;
+            cursor: pointer;
+        }
+        
+        .popTypeSelector li div:hover
+        {
+            background-color: #FFF1C1;
+        }
+        
+        .popTypeSelector-title
+        {
+            margin-left: 6px;
+        }
+        
+        body .popTypeSelector li .option-title:hover
+        {
+            background-color: transparent;
+        }
+        
+        .popTypeSelector li .activeButton
+        {
+            background-color: #FFE488;
+        }
+    </style>
+  
+    <div id='popularFeeds' class='popularFeeds'>
+        <div class='popTitle'>Popular Subscriptions</div>
+        <ul class='popTypeSelector'  id='popTypeSelector'>
+            <li>
+                <div id='followingSelector' class='activeButton' onClick="getPopularData(this, false)" >
+                    <a class='selector'>Following</a>
+                </div>
+            </li>
+            <li>
+                <div id='everyoneSelector' class='inactiveButton' onClick="getPopularData(this, true)">
+                    <a class='selector'>Everyone</a>
+                </div>
+            </li>
+        </ul>
+        <div class='clear'></div>
+        <div class='popFeedHeader' id='popFeedHeader'></div>
+        <div class='clear'></div>
+        <div id='popularFeed_div' class='popularFeed_div'></div>
+    </div>
+
+    ]]>
+    </Content>
+</Module>

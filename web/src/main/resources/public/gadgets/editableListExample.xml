@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+	<ModulePrefs title="Editable List Example">
+		<Require feature="opensocial-0.8"></Require>
+		<Require feature="dynamic-height"></Require>
+		<Require feature="opensocial-data"></Require>
+		<Require feature="opensocial-data-context"></Require>
+		<Require feature="opensocial-templates"></Require>
+		<Require feature="xmlutil"></Require>
+		<Optional feature="content-rewrite">
+			<Param name="include-tags"></Param>
+		</Optional>
+	</ModulePrefs>
+	<Content type="html">
+   <![CDATA[  
+   
+   		<!-- ---------------------------------------------------------- -->
+   		<!-- THIS IS A SAMPLE GADGET DO NOT CODE REVIEW THIS PART.-->
+   		<!-- ---------------------------------------------------------- -->
+   		
+        <script type="text/os-template" name="myViewTemplate" xmlns:uos="http://eurekastreams.org" autoUpdate="true">
+            <p style="margin-top:0">${firstName} <strong>${lastName}</strong></p>
+        </script>
+        
+        <script type="text/os-template" name="myAddTemplate" xmlns:uos="http://eurekastreams.org" autoUpdate="true">
+            <input type="text" name="firstName" id="firstName" size="25" /><br />
+            <input type="text" name="lastName" id="lastName" size="25" />
+        </script>
+        
+        <script type="text/os-template" name="myEditTemplate" xmlns:uos="http://eurekastreams.org" autoUpdate="true">
+            <input type="text" name="firstName" id="firstName" size="25" value="${firstName}" /><br />
+            <input type="text" name="lastName" id="lastName" size="25" value="${lastName}" />
+        </script>
+        
+        
+        <div id="myListHere" style="margin:20px;"></div>
+        
+        <script type="text/javascript">
+        	function create(item)
+        	{
+        		if(item.firstName!="") 
+        		{
+        			item.authorId = "6";
+        			return item;
+        		}
+        		
+        		return { "validationErrors" : [
+        					"First Name is required.",
+        					"more errors here"
+        				]};
+        	}
+        	function read()
+        	{
+        		return [
+        				{
+        					firstName : "Anthony",
+        					lastName : "Romano",
+        					authorId : "4"
+        				},
+        				{
+        					firstName : "StepVhen",
+        					lastName : "Terlecki",
+        					authorId : "6"
+        				}
+        			];
+        	}
+        	function update(item)
+        	{
+        		return item;
+        	}
+        	function del(index)
+        	{
+        		return "";
+        	}
+        
+            var config = { title : "Work History Example",
+            			   createCallback : "create",
+            			   createTemplateTag : "myAddTemplate",
+            			   readCallback : "read",
+            			   readTemplateTag : "myViewTemplate",
+            			   updateCallback : "update",
+            			   updateTemplateTag : "myEditTemplate",
+            			   deleteCallback : "del",
+            			   deletePrompt : "Are you surre you wanna delete me bro?",
+            			   creatable : "all",
+            			   updatable : "owner",
+            			   deletable : "owner",
+            			   ownerId : "5",
+            			   viewerId : "5" };
+            			   
+            			   
+            gadgets.util.registerOnLoadHandler(function()
+            {
+            	opensocial.template.getTemplate("editableList").renderInto(document.getElementById("myListHere"),config);
+            	bootstrap(config);
+            });
+	   
+        </script>
+        
+  
+        <!-- END SAMPLE GADGET. BEGIN CODE REVIEWING AFTER THIS LINE. -->
+        
+        <!-- ---------------------------------------------------------- -->
+        <!-- BEGIN THE LIBRARY. THIS IS INLINE FOR NOW. --> 
+        <!-- ---------------------------------------------------------- -->     
+        
+        <link rel="stylesheet" type="text/css" href="/style/core.css" />
+        <style type="text/css">
+        	.form-submit-button
+        	{
+        		margin-left:100px;
+        	}
+        	.editable-list-header
+        	{
+        		border-bottom:2px solid #CCC;
+        	}
+        	.editable-list-header h1
+        	{
+        		font-size:11pt;
+        		font-weight:bold;
+        		display:inline-block;
+        		margin-bottom:2px;
+        	}
+        	.top
+        	{
+        		display:inline-block;
+        		float:right;
+        		margin-top:-25px;
+        	}
+        	#add-template-block
+        	{
+        		border-bottom:1px solid #CCC;
+        		margin-top:20px;
+        	}
+        	#list > div
+        	{
+        		border-bottom:1px solid #CCC;
+        		margin-top:20px;
+        	}
+        	
+        	.edit-buttons
+        	{
+        		float:right;
+        	}
+        	.edit-button
+        	{
+        		margin-right:10px;
+        	}
+        	.form-error-box
+        	{
+        		margin-left:100px;
+        		font-size:10pt;
+        	}
+        </style>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+        <script type="text/os-template" name="editableList" xmlns:uos="http://eurekastreams.org" autoUpdate="true">
+        	<div class='editable-list-header'>
+        		<h1>${title}</h1>
+        		<div class="top" id="top-buttons">
+        			<div class="edit-button"><a style="display:none" id="edit-list-button" href='javascript:clickOnListEdit();'>edit</a></div>
+        			<div class="add-button"><a style="display:none" id="add-button" href='javascript:clickOnListAdd();'>add</a></div>
+        		</div>
+        		<div class="top">
+        			<div class="done-button" id="done-button" style="display:none"><a href='javascript:clickOnListDone();'>done</a></div>
+        		</div>
+        	</div>
+        	
+        	<div id="validation-errors"></div>
+        	<div style="display:none" id="add-template-block"></div>
+        	<div id="list"></div>
+        </script>
+        
+        <script type="text/javascript">
+        	var data = {};
+        	var config;
+        	
+        	// This function would go away when we have templating working and instead would be inline.
+        	function bootstrap(inConfig)
+        	{
+        		config = inConfig;
+        		data = eval(config.readCallback + "();");
+        		
+        		determineAddButtonDisplay();
+        		determineEditButtonDisplay();
+        		
+				renderList();
+            }
+            
+            // Render all the data in the list.
+            function renderList()
+            {
+            	var listDiv = document.getElementById("list");
+            	listDiv.innerHTML = "";
+            	
+            	for(var i=0;i<data.length;i++)
+        		{
+        			renderReadTemplate(i);
+            	}
+            }
+            
+            // Determine whether or not we should show or hide the add button.
+            function determineAddButtonDisplay()
+            {
+            	if(config.creatable=="all" || (config.creatable=="owner" && config.ownerId == config.viewerId))
+            	{
+            		$("#add-button").show();
+            	}
+            	else
+            	{
+            		$("#add-button").hide();
+            	}
+            }
+            
+            // Detemine whether or not we should show or hide the edit button.
+            function determineEditButtonDisplay()
+            {
+            	if(((config.updatable=="all" || (config.updatable=="owner" && config.ownerId == config.viewerId)) ||
+            		(config.deletable=="all" || (config.deletable=="owner" && config.ownerId == config.viewerId))) &&
+            		data.length > 0 ||
+            		determineIfAnyItemsAreEditable())
+            	{
+            		$("#edit-list-button").show();
+            	}
+            	else
+            	{
+            		$("#edit-list-button").hide();
+            	}
+            }
+            
+            // Determine if any items inside the list are editable or deletable.
+            function determineIfAnyItemsAreEditable()
+            {
+            	for(var i=0;i<data.length;i++)
+        		{
+        			if(determineIfItemIsEditableOrDeletable(i, config.updatable) ||
+        			   determineIfItemIsEditableOrDeletable(i, config.deletable))
+        			{
+        				return true;
+        			}
+            	}
+            	
+            	return false;
+            }
+            
+            // Determine if a single item is editable or deletable.
+   			function determineIfItemIsEditableOrDeletable(i, prop)
+   			{
+   				if(data[i].authorId == null)
+        		{
+        			data[i].authorId = config.ownerId;
+        		}
+        			
+        		if(prop=="all" || (config.ownerId == config.viewerId || data[i].authorId == config.viewerId) && 
+        			prop=="owner")
+        		{
+        			return true;
+        		}
+   			}
+   			
+   			// Validate a server response and show the error if it fails.
+            function validate(response)
+            {
+            	var valErrDiv = document.getElementById("validation-errors");
+            	if(response.validationErrors != null)
+            	{
+            		$("#validation-errors").show();
+            		var html = "<div class='form-error-box'>";
+            		for(var i=0;i<response.validationErrors.length;i++)
+            		{
+            			html += "<div>" + response.validationErrors[i] + "</div>";
+            		}
+            		html += "</div>";
+            		valErrDiv.innerHTML = html;
+            		
+            		return false;
+            	}
+            	
+            	$("#validation-errors").hide();
+            	return true;
+            }
+            
+            // Render the view (read) template for a particular list item.
+            function renderReadTemplate(i)
+            {
+            	var listDiv = document.getElementById("list");
+            	var div = document.getElementById("list-item-" + i);
+            	
+            	if(div==null)
+            	{
+            		var divTag = document.createElement("div");
+        			divTag.id = "list-item-" + i;
+        			listDiv.appendChild(divTag);
+            	}
+            	
+            	var div = document.getElementById("list-item-" + i);
+            	
+            	var html = "<span class='edit-buttons' style='display:none'>";
+            	
+            	if(determineIfItemIsEditableOrDeletable(i,config.updatable))
+            	{
+            		html += "<div class='edit-button'><a href='javascript:clickOnEditItem("+i+");'>edit</a></div>";
+            	}
+            	
+            	if(determineIfItemIsEditableOrDeletable(i,config.deletable))
+            	{
+            		html += "<div class='form-button form-small-delete-button'><a href='javascript:clickOnDeleteItem("+i+");'>remove</a></div>";
+            	}
+            	
+            	html += "</span><div id='list-item-"+i+"-content'></div>";
+            	div.innerHTML = html;
+            	opensocial.template.getTemplate(config.readTemplateTag).renderInto(document.getElementById("list-item-"+i+"-content"),data[i]);
+            }
+            
+            // Event that gets fired off when a user clicks on the edit button at the top of the list.
+            function clickOnListEdit()
+            {
+            	$("#top-buttons").hide();
+            	$("#done-button").show();
+            	$(".edit-buttons").show();
+            }
+            
+            // Event that gets fired off when the user clicks on the done button at the top of the list.
+            function clickOnListDone()
+            {
+            	$("#top-buttons").show();
+            	$("#done-button").hide();
+            	$(".edit-buttons").hide();
+            }
+            
+            // Event that gets fired off when the user clicks on the add button at the top of the list.
+            function clickOnListAdd()
+            {
+            	var addDiv = document.getElementById("add-template-block");
+            	// Add the template
+            	opensocial.template.getTemplate(config.createTemplateTag).renderInto(addDiv,null);
+            	// Add some buttons
+            	addDiv.innerHTML += "<div><div class='form-submit-button'><a href='javascript:clickOnSubmitOnAdd();'>submit</a></div><div class='form-cancel-button'><a href='javascript:clickOnCancelOnAdd();'>cancel</a></div></div>";
+            	// Hide the top buttons
+            	$("#top-buttons").hide();
+            	$("#add-template-block").show();
+            }
+            
+            // Event that gets fired off when the user clicks on the edit button for a particular item.
+            function clickOnEditItem(index)
+            {
+            	var itemDiv = document.getElementById("list-item-" + index);
+            	// Add the template
+            	opensocial.template.getTemplate(config.updateTemplateTag).renderInto(itemDiv,data[index]);
+            	// Add some buttons
+            	itemDiv.innerHTML += "<div><div class='form-submit-button'><a href='javascript:clickOnSubmitOnEditItem("+index+");'>submit</a></div><div class='form-cancel-button'><a href='javascript:clickOnCancelOnEditItem("+index+")'>cancel</a></div></div>";
+            	// Hide the top buttons
+            	$("#top-buttons").hide();
+            	$(".edit-buttons").hide();
+            	$("#done-button").hide();
+            }
+            
+            // Event that gets fired when the user clicks on the delete button for a particular item.
+            function clickOnDeleteItem(index)
+            {
+            	if(confirm(config.deletePrompt))
+            	{
+            		clickOnYesOnDelete(index);
+            	}
+            }
+            
+            // Event that gets fired off when the user cancels editing an item.
+            function clickOnCancelOnEditItem(index)
+            {
+            	renderReadTemplate(index);
+            	// Show all the edit buttons again
+            	$(".edit-buttons").show();
+            	$("#validation-errors").hide();
+            	$("#done-button").show();
+            }
+            
+            // Event that gets fired when a user cancels adding an item.
+            function clickOnCancelOnAdd()
+            {
+            	var addDiv = document.getElementById("add-template-block");
+            	addDiv.innerHTML = "";
+            	$("#top-buttons").show();
+            	$("#validation-errors").hide();
+            	$("#add-template-block").hide();
+            }
+            
+            // Event that gets fired when the user clicks submit on an item while editing.
+            function clickOnSubmitOnEditItem(index)
+            {
+        		newItem = new Object();
+            	
+            	$("#list-item-"+index+" :input").each(function(idx, item) {
+            		eval("newItem."+ $(item).attr('id') +" = '"+ $(item).val() +"'");
+            	});
+        				
+        				
+            	response = eval(config.updateCallback + "(newItem);");
+            	
+            	if(validate(response))
+            	{
+            		data[index] = response;
+            		clickOnCancelOnEditItem(index);
+            	}
+            }
+            
+            // Event that gets fired when the user clicks submit on an item while adding.
+            function clickOnSubmitOnAdd()
+            {
+            	newItem = new Object();
+            	
+            	$("#add-template-block :input").each(function(idx, item) {
+            		eval("newItem."+ $(item).attr('id') +" = '"+ $(item).val() +"'");
+            	});
+            	
+            	response = eval(config.createCallback + "(newItem);");
+            	
+            	if(validate(response))
+            	{
+            		data[data.length] = response;
+        			
+            		renderReadTemplate(data.length-1);
+            		var addDiv = document.getElementById("add-template-block");
+            		addDiv.innerHTML = "";
+            		$("#top-buttons").show();
+            		$("#add-template-block").hide();
+            		determineEditButtonDisplay()
+            	}
+            }
+            
+            // Event that gets fired if the user clicks OK to deleting an item.
+            function clickOnYesOnDelete(index)
+            {
+            	response = eval(config.deleteCallback + "("+index+");");
+
+            	if(validate(response))
+            	{
+            		var listDiv = document.getElementById("list");
+            		data.splice(index,1);
+            		
+            		var div = document.getElementById("list-item-" + index);
+            		listDiv.removeChild(div);
+            		determineEditButtonDisplay();
+            		renderList();
+            		clickOnListEdit();
+            	}
+            	
+            	
+            }
+        </script>
+   ]]>
+	</Content>
+</Module>
