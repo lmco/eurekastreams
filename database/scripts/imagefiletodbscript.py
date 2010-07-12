@@ -4,7 +4,7 @@ import os, glob
 # Run the script with python
 # Run the generated sql script as such psql -f migrationscript.sql dbname
 
-rootdir='/home/ACCT04/romanoa1/photomig'
+rootdir='/tmp/photomig'
 w = open('./migrationscript.sql', 'w')
 def get_blob(value):
 	return value and ''.join(['\\\\%03o' % ord(c) for c in value])

@@ -106,7 +106,7 @@ public class MembershipCriteriaToPersonMapperTest
             {
                 oneOf(contextMock).getDn();
                 will(returnValue(
-                        new DistinguishedName("CN=blah.whatever.foo,CN=Users,DC=acct04,DC=us,DC=example,DC=com")));
+                        new DistinguishedName("CN=blah.whatever.foo,CN=Users,DC=domainacct,DC=us,DC=example,DC=com")));
 
                 // due to logging statements
                 allowing(ldapTemplateMock).getContextSource();
@@ -162,7 +162,7 @@ public class MembershipCriteriaToPersonMapperTest
             {
                 oneOf(contextMock).getDn();
                 will(returnValue(
-                        new DistinguishedName("CN=blah.whatever.foo,CN=Users,DC=acct04,DC=us,DC=example,DC=com")));
+                        new DistinguishedName("CN=blah.whatever.foo,CN=Users,DC=domainacct,DC=us,DC=example,DC=com")));
 
                 // due to logging statements
                 allowing(defaultldapTemplateMock).getContextSource();

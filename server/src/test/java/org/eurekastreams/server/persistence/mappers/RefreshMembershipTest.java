@@ -159,7 +159,7 @@ public class RefreshMembershipTest
     /**
      * Test group name.
      */
-    static final String TEST_GROUP = "acct04\\ipe.usecure.smp.team";
+    static final String TEST_GROUP = "domainacct\\ipe.usecure.smp.team";
 
     /**
      * Test attribute name.

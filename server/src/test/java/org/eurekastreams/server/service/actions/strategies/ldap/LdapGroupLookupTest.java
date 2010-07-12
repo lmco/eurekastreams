@@ -79,7 +79,7 @@ public class LdapGroupLookupTest
     {
         HashMap<String, LdapTemplate> templates = new HashMap<String, LdapTemplate>();
 
-        templates.put("acct04", templateMock);
+        templates.put("domainacct", templateMock);
 
         sut = new LdapGroupLookup(templates, filterCreatorMock);
     }
@@ -142,7 +142,7 @@ public class LdapGroupLookupTest
             }
         });
 
-        sut.groupExists("acct04\\name exists");
+        sut.groupExists("domainacct\\name exists");
         context.assertIsSatisfied();
     }
 }
