@@ -40,7 +40,7 @@ public class PersonPanel extends FlowPanel
 {
     /**
      * Constructor.
-     *
+     * 
      * @param inPerson
      *            to display
      * @param showFollowers
@@ -56,7 +56,7 @@ public class PersonPanel extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param person
      *            to display
      * @param showFollowers
@@ -85,11 +85,10 @@ public class PersonPanel extends FlowPanel
         Widget org;
         if (makeLinkable)
         {
-            String nameUrl =
-                    Session.getInstance().generateUrl(new CreateUrlRequest(Page.PEOPLE, person.getAccountId()));
-            String orgUrl =
-                    Session.getInstance().generateUrl(
-                            new CreateUrlRequest(Page.ORGANIZATIONS, person.getParentOrganizationShortName()));
+                        String nameUrl = Session.getInstance().generateUrl(
+                    new CreateUrlRequest(Page.PEOPLE, person.getAccountId()));
+            String orgUrl = Session.getInstance().generateUrl(
+                    new CreateUrlRequest(Page.ORGANIZATIONS, person.getParentOrganizationShortName()));
             name = new Hyperlink(person.getDisplayName(), nameUrl);
             org = new Hyperlink(person.getParentOrganizationName(), orgUrl);
         }
@@ -153,15 +152,14 @@ public class PersonPanel extends FlowPanel
                 infoPanel.add(email);
             }
         }
-        
+
         this.add(infoPanel);
 
     }
-    
 
     /**
      * Adds a separator (dot).
-     *
+     * 
      * @param panel
      *            Panel to put the separator in.
      */

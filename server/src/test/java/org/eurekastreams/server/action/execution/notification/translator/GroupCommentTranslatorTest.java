@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.eurekastreams.server.domain.NotificationDTO;
@@ -33,8 +34,6 @@ import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Tests the group comment notification translator.
@@ -119,7 +118,6 @@ public class GroupCommentTranslatorTest
      * Test the translator.
      */
     @Test
-    @SuppressWarnings("unchecked")
     public void testTranslateWithoutCoordinators()
     {
         sut = new GroupCommentTranslator(commentorsMapper, activitiesMapper, null);

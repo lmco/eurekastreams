@@ -70,6 +70,5 @@ public class PersonalProfileSettingsPanel extends SettingsPanel
         panel.add(portalPageContainer);
         panel.addStyleName("profile-page");
 
-
     }
 }

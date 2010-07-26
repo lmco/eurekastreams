@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eurekastreams.commons.search.modelview.ModelView;
+import org.eurekastreams.server.domain.ActivityRestrictionEntity;
 import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.Followable;
 import org.eurekastreams.server.domain.HasEmail;
@@ -30,7 +31,7 @@ import org.eurekastreams.server.domain.HasEmail;
 /**
  * A lightweight view of a Person containing everything needed for display of a search result of an Person.
  */
-public class PersonModelView extends ModelView implements Serializable, HasEmail, Followable
+public class PersonModelView extends ModelView implements Serializable, HasEmail, Followable, ActivityRestrictionEntity
 {
     /**
      * Serial version uid.

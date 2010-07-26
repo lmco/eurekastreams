@@ -69,6 +69,9 @@ public class PersonFollowersModel extends BaseModel implements Fetchable<GetFoll
         {
             public void onSuccess(final Integer response)
             {
+                // clear following model 
+                CurrentUserPersonFollowingStatusModel.getInstance().clearCache();
+                
                 Session.getInstance().getEventBus().notifyObservers(new InsertedPersonFollowerResponseEvent(response));
             }
         });
@@ -83,6 +86,9 @@ public class PersonFollowersModel extends BaseModel implements Fetchable<GetFoll
         {
             public void onSuccess(final Integer response)
             {
+                // clear following model 
+                CurrentUserPersonFollowingStatusModel.getInstance().clearCache();
+                
                 Session.getInstance().getEventBus().notifyObservers(new DeletedPersonFollowersResponseEvent(response));
             }
         });

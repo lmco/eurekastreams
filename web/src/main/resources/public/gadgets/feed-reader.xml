@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
 	<ModulePrefs title="Feed Reader" title_url="http://eurekastreams.org"
-		thumbnail="http://localhost:8080/style/images/FeedReaderThumbnail.png"
-		author="Eureka Framework" author_email="support@eurekastreams.org" 
+		thumbnail="${build.web.baseurl}/style/images/FeedReaderThumbnail.png"
+		author="Eureka Streams" author_email="support@eurekastreams.org" 
 		description="The Feed Reader App displays either ATOM or RSS/RSS 2.0 feeds.  This app also allows viewers to see popular feeds from the user that the Owner is following as well as across Eureka. ">
 		<Require feature="opensocial-0.9" />
 		<Require feature="views" />
@@ -18,7 +18,7 @@
 		default_value="" />
 	<Content type="html" view="profile, default, home, canvas">
         <![CDATA[
-        <link type="text/css" rel="stylesheet" href="http://localhost:8080/style/core.css" type="text/css" />
+        <link type="text/css" rel="stylesheet" href="${build.web.baseurl}/style/core.css" type="text/css" />
       
         <!--This is shared view code -->
         <style>  
@@ -217,7 +217,7 @@
             */
             function saveFeed()
             {
-                var url = "http://localhost:8080/resources/feedreader/" + ownerId_ + "/" + moduleId_ + "/";
+                var url = "${build.web.baseurl}/resources/feedreader/" + ownerId_ + "/" + moduleId_ + "/";
                 var params={};
                 params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
                 params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
@@ -236,7 +236,7 @@
                 params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.NONE;
                 params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 0;
                 params[gadgets.io.RequestParameters.POST_DATA] = gadgets.json.stringify(getFeedReaderJson());
-                var url = "http://localhost:8080/resources/feedreader/" + ownerId_ + "/" + moduleId_ + "/";
+                var url = "${build.web.baseurl}/resources/feedreader/" + ownerId_ + "/" + moduleId_ + "/";
                 //successful response code
                 if (results.rc == 200)
                 {
@@ -542,14 +542,14 @@
             {
             	document.getElementById('popFeedHeader').innerHTML="Popular feeds from all employees";
             	params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
-            	url="http://localhost:8080/resources/feedreader/";
+            	url="${build.web.baseurl}/resources/feedreader/";
             }
             else
             {
             	document.getElementById('popFeedHeader').innerHTML="Popular feeds from employees you are following";
             	params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.POST;
             	params[gadgets.io.RequestParameters.POST_DATA] = friendReqList_;
-            	url="http://localhost:8080/resources/feedreader/";
+            	url="${build.web.baseurl}/resources/feedreader/";
             }
             
             gadgets.io.makeRequest(url, writePopularData, params);
@@ -759,7 +759,7 @@
         {
         	height: 22px;
         	padding-left: 5px;
-        	background: transparent url(http://localhost:8080/style/images/rounded-corners-22-left-FFFFFF.png) no-repeat left center;
+        	background: transparent url(${build.web.baseurl}/style/images/rounded-corners-22-left-FFFFFF.png) no-repeat left center;
         	float:left;
         }
         
@@ -777,7 +777,7 @@
         	height: 19px;
         	padding-top: 3px;
         	display: block;
-        	background: transparent url(http://localhost:8080/style/images/rounded-corners-22-right-FFFFFF.png) no-repeat right center;
+        	background: transparent url(${build.web.baseurl}/style/images/rounded-corners-22-right-FFFFFF.png) no-repeat right center;
         	padding-right: 5px;
         	cursor: pointer;
         }

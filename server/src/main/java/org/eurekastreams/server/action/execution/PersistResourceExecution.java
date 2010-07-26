@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
@@ -27,6 +28,7 @@ import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.PersonMapper;
@@ -35,7 +37,7 @@ import org.eurekastreams.server.service.actions.strategies.UpdaterStrategy;
 
 /**
  * Persist a resource.
- *
+ * 
  * @param <T>
  *            the type of resource to persist
  */
@@ -50,13 +52,13 @@ public class PersistResourceExecution<T> implements TaskHandlerExecutionStrategy
      * the person creator factory. the PersistResourceAction class depends on an object of the same type, but spring
      * wouldn't allow me to instantiate an object of the same type that it is currently instantiating, so i get around
      * that by using the factory.
-     *
+     * 
      */
     private CreatePersonActionFactory factory;
 
     /**
      * the person mapper.
-     *
+     * 
      */
     private PersonMapper personMapper;
 
@@ -72,7 +74,7 @@ public class PersistResourceExecution<T> implements TaskHandlerExecutionStrategy
 
     /**
      * Constructor.
-     *
+     * 
      * @param inPersonMapper
      *            The PersonMapper.
      * @param inFactory
@@ -131,13 +133,24 @@ public class PersistResourceExecution<T> implements TaskHandlerExecutionStrategy
         }
         catch (Exception e)
         {
+            if (e instanceof ValidationException)
+            {
+                ValidationException ve = (ValidationException) e;
+                Set<Entry<String, String>> errors = ve.getErrors().entrySet();
+                StringBuffer b = new StringBuffer();
+                for (Entry<String, String> entry : errors)
+                {
+                    b.append(entry.getKey() + ":" + entry.getValue() + " ");
+                }
+                log.error(b.toString());
+            }
             throw new ExecutionException(e);
         }
     }
 
     /**
      * Returns a set of people that are created in DB is needed.
-     *
+     * 
      * @param inActionContext
      *            the action context
      * @param requestedPersons

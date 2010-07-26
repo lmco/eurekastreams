@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-    <ModulePrefs title="Web Feed" description="Use this plugin to import the content from any RSS or ATOM feed as activity into your stream.  Please Note: this plugin will only work with public feeds.  Feeds that require a user name and password cannot be imported." thumbnail="http://localhost:8080/style/images/feedIconSmall.png" title_url="http://eurekastreams.org" author="Eureka Framework" screenshot="http://localhost:8080/style/images/feedIconLarge.png" author_email="support@eurekastreams.org">
+    <ModulePrefs title="Web Feed" description="Use this plugin to import the content from any RSS or ATOM feed as activity into your stream.  Please Note: this plugin will only work with public feeds.  Feeds that require a user name and password cannot be imported." 
+    	thumbnail="${build.web.baseurl}/style/images/feedIconSmall.png" 
+    	title_url="http://eurekastreams.org" 
+    	author="Eureka Streams" 
+    	screenshot="${build.web.baseurl}/style/images/feedIconLarge.png" 
+    	author_email="support@eurekastreams.org">
         <Require feature="views" />
         <Require feature="eurekastreams-streamplugin"/>
     </ModulePrefs>

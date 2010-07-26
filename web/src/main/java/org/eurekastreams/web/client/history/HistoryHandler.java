@@ -23,6 +23,8 @@ import java.util.Map.Entry;
 
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.PreSwitchedHistoryViewEvent;
+import org.eurekastreams.web.client.events.PreventHistoryChangeEvent;
 import org.eurekastreams.web.client.events.SwitchedHistoryViewEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
@@ -70,6 +72,16 @@ public class HistoryHandler implements ValueChangeHandler<String>
     private boolean fireValueChange = true;
 
     /**
+     * Should we stop the history change?.
+     */
+    private boolean interruptHistoryChange = false;
+
+    /**
+     * The previous token.
+     */
+    private String previousToken = "";
+
+    /**
      * Default Constructor.
      */
     public HistoryHandler()
@@ -78,23 +90,34 @@ public class HistoryHandler implements ValueChangeHandler<String>
         {
             public void update(final UpdateHistoryEvent event)
             {
+                previousToken = History.getToken();
                 onValueChange(getHistoryToken(event.getRequest()));
                 fireValueChange = false;
                 jsniFacade.setHistoryToken(getHistoryToken(event.getRequest()), true);
 
                 // in case setting the history token above doesn't cause onValueChange to be called, reset
                 // fireValueChange so it will work properly next time around
-                    fireValueChange = true;
+                fireValueChange = true;
             }
         });
 
+        Session.getInstance().getEventBus().addObserver(PreventHistoryChangeEvent.class,
+                new Observer<PreventHistoryChangeEvent>()
+                {
+                    public void update(final PreventHistoryChangeEvent event)
+                    {
+                        interruptHistoryChange = true;
+                    }
+                });
         History.addValueChangeHandler(this);
 
     }
 
     /**
      * On Value Change.
-     * @param historyToken the history token.
+     *
+     * @param historyToken
+     *            the history token.
      */
     private void onValueChange(final String historyToken)
     {
@@ -102,7 +125,7 @@ public class HistoryHandler implements ValueChangeHandler<String>
         {
             List<String> originalViews = views;
             Page originalPage = page;
-
+            HashMap<String, String> originalValues = values;
             values.clear();
 
             if (historyToken.contains("?"))
@@ -150,13 +173,36 @@ public class HistoryHandler implements ValueChangeHandler<String>
             // The view has updated.
             if (viewUpdated || originalPage != page)
             {
-                // Put the original events back into the event bus, wiping out all the events specific to the prior
-                // page.
-                Session.getInstance().getEventBus().restoreBufferedObservers();
-                // Clear all temporary timer jobs.
-                Session.getInstance().getTimer().clearTempJobs();
-                // Tell listeners the URL has indicated a page/view change.
-                Session.getInstance().getEventBus().notifyObservers(new SwitchedHistoryViewEvent(page, views));
+                // Let developers know we're about to switch the view. Prep for it if necessary. If you want us
+                // to stop, throw a PreventHistoryChangeEvent and we'll set the boolean to stop it from going.
+                Session.getInstance().getEventBus().notifyObservers(new PreSwitchedHistoryViewEvent(page, views));
+
+                // We're all clear. Go ahead. These are the events you're looking for.
+                if (!interruptHistoryChange)
+                {
+                    // Put the original events back into the event bus, wiping out all the events specific to the prior
+                    // page.
+                    Session.getInstance().getEventBus().restoreBufferedObservers();
+                    // Clear all temporary timer jobs.
+                    Session.getInstance().getTimer().clearTempJobs();
+                    // Tell listeners the URL has indicated a page/view change.
+
+                    Session.getInstance().getEventBus().notifyObservers(new SwitchedHistoryViewEvent(page, views));
+                }
+                // A developer has halted the process. He probably sees something he needs to alert the user
+                // of before they switch the page. Roll everything back.
+                else
+                {
+                    views = originalViews;
+                    page = originalPage;
+                    values = originalValues;
+
+                    interruptHistoryChange = false;
+                    fireValueChange = false;
+                    jsniFacade.setHistoryToken(previousToken, true);
+                    fireValueChange = true;
+                    return;
+                }
             }
 
             Session.getInstance().getEventBus().notifyObservers(new UpdatedHistoryParametersEvent(values));
@@ -279,6 +325,7 @@ public class HistoryHandler implements ValueChangeHandler<String>
 
     /**
      * Gets the views.
+     *
      * @return the views.
      */
     public List<String> getViews()

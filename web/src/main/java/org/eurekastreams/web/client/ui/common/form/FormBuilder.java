@@ -16,12 +16,17 @@
 package org.eurekastreams.web.client.ui.common.form;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.PreSwitchedHistoryViewEvent;
+import org.eurekastreams.web.client.events.PreventHistoryChangeEvent;
+import org.eurekastreams.web.client.events.SubmitFormIfChangedEvent;
 import org.eurekastreams.web.client.events.data.ValidationExceptionResponseEvent;
+import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.BaseModel;
 import org.eurekastreams.web.client.model.Insertable;
 import org.eurekastreams.web.client.model.Updateable;
@@ -70,6 +75,11 @@ public class FormBuilder extends FlowPanel implements Bindable
     private Command onCancelCommand;
 
     /**
+     * The base model.
+     */
+    private BaseModel baseModel;
+
+    /**
      * The method.
      */
     private Method method;
@@ -111,7 +121,12 @@ public class FormBuilder extends FlowPanel implements Bindable
      * The data of the form.
      */
     private List<FormElement> data = new LinkedList<FormElement>();
-    
+
+    /**
+     * The original values of the form, to see if anything has changed.
+     */
+    private HashMap<String, Serializable> originalValues = new HashMap<String, Serializable>();
+
     /**
      * Did the user add a "last form element".
      */
@@ -129,6 +144,7 @@ public class FormBuilder extends FlowPanel implements Bindable
      */
     public FormBuilder(final String title, final BaseModel inBaseModel, final Method inMethod)
     {
+        baseModel = inBaseModel;
         method = inMethod;
         submitButton.addStyleName("form-submit-button");
         cancelButton.addStyleName("form-cancel-button");
@@ -165,24 +181,7 @@ public class FormBuilder extends FlowPanel implements Bindable
         {
             public void onClick(final ClickEvent event)
             {
-                processingSpinny.setVisible(true);
-                fadePanel.setVisible(true);
-                submitButton.setVisible(false);
-
-                HashMap<String, Serializable> dataValues = new HashMap<String, Serializable>();
-                for (FormElement element : data)
-                {
-                    dataValues.put(element.getKey(), element.getValue());
-                }
-
-                if (method.equals(Method.INSERT))
-                {
-                    ((Insertable) inBaseModel).insert(dataValues);
-                }
-                else
-                {
-                    ((Updateable) inBaseModel).update(dataValues);
-                }
+                submit();
             }
         });
 
@@ -200,37 +199,130 @@ public class FormBuilder extends FlowPanel implements Bindable
         Session.getInstance().getEventBus().addObserver(ValidationExceptionResponseEvent.class,
                 new Observer<ValidationExceptionResponseEvent>()
                 {
-            public void update(final ValidationExceptionResponseEvent event)
-            {
-                errorBox.clear();
-                resetSubmitButton();
+                    public void update(final ValidationExceptionResponseEvent event)
+                    {
+                        List<String> errors = new ArrayList<String>();
 
-                String errorBoxText = new String("Please correct the following errors:<ul>");
+                        for (FormElement element : data)
+                        {
+                            String error = event.getResponse().getErrors().get(element.getKey());
+                            if (error != null)
+                            {
+                                errors.add(error);
+                            }
+                        }
 
-                for (FormElement element : data)
+                        if (errors.size() > 0)
+                        {
+                            errorBox.clear();
+                            resetSubmitButton();
+
+                            String errorBoxText = new String("Please correct the following errors:<ul>");
+
+                            for (FormElement element : data)
+                            {
+                                String error = event.getResponse().getErrors().get(element.getKey());
+                                if (error != null)
+                                {
+                                    errorBox.setVisible(true);
+                                    errorBoxText += "<li>" + error + "</li>";
+                                    element.onError(error);
+                                }
+                                else
+                                {
+                                    element.onSuccess();
+                                }
+                            }
+
+                            errorBoxText += "</ul>";
+                            errorBox.add(new HTML(errorBoxText));
+                            Window.scrollTo(0, 0);
+                        }
+
+
+                    }
+
+                });
+
+        Session.getInstance().getEventBus().addObserver(PreSwitchedHistoryViewEvent.class,
+                new Observer<PreSwitchedHistoryViewEvent>()
                 {
-                    String error = event.getResponse().getErrors().get(element.getKey());
-                    if (error != null)
-                    {
-                        errorBox.setVisible(true);
-                        errorBoxText += "<li>" + error + "</li>";
-                        element.onError(error);
-                    }
-                    else
-                    {
-                        element.onSuccess();
-                    }
-                }
 
-                errorBoxText += "</ul>";
-                errorBox.add(new HTML(errorBoxText));
-                Window.scrollTo(0, 0);
-            }
+                    public void update(final PreSwitchedHistoryViewEvent arg1)
+                    {
+                        if (hasFormChanged())
+                        {
+                            if (new WidgetJSNIFacadeImpl().confirm(
+                                    "The form has been changed. Do you wish to save changes?"))
+                            {
+                                Session.getInstance().getEventBus().notifyObservers(new PreventHistoryChangeEvent());
+                                Session.getInstance().getEventBus().notifyObservers(new SubmitFormIfChangedEvent());
+                            }
+                        }
+                    }
+                });
 
+        Session.getInstance().getEventBus().addObserver(SubmitFormIfChangedEvent.class,
+                new Observer<SubmitFormIfChangedEvent>()
+                {
+
+                    public void update(final SubmitFormIfChangedEvent arg1)
+                    {
+                        if (hasFormChanged())
+                        {
+                            submit();
+                        }
+                    }
                 });
 
     }
 
+    /**
+     * Has the form changed?
+     *
+     * @return has the form changed?
+     */
+    private boolean hasFormChanged()
+    {
+        boolean changed = false;
+
+        for (FormElement element : data)
+        {
+            if (originalValues.containsKey(element.getKey()) && originalValues.get(element.getKey()) != null
+                    && !originalValues.get(element.getKey()).equals(element.getValue()))
+            {
+                changed = true;
+            }
+        }
+
+        return changed;
+    }
+
+    /**
+     * Submit the form.
+     */
+    private void submit()
+    {
+        processingSpinny.setVisible(true);
+        fadePanel.setVisible(true);
+        submitButton.setVisible(false);
+
+        HashMap<String, Serializable> dataValues = new HashMap<String, Serializable>();
+        for (FormElement element : data)
+        {
+            dataValues.put(element.getKey(), element.getValue());
+            originalValues.put(element.getKey(), element.getValue());
+        }
+
+        if (method.equals(Method.INSERT))
+        {
+            ((Insertable) baseModel).insert(dataValues);
+        }
+        else
+        {
+            ((Updateable) baseModel).update(dataValues);
+        }
+    }
 
     /**
      * Happens on success of the form.
@@ -315,12 +407,15 @@ public class FormBuilder extends FlowPanel implements Bindable
         }
 
         data.add(element);
+        originalValues.put(element.getKey(), element.getValue());
     }
-    
+
     /**
-     * Adds a "last form element". This is a form element that will ALWAYS stay at the bottom of the form
-     * Regardless of others added.
-     * @param element the element.
+     * Adds a "last form element". This is a form element that will ALWAYS stay at the bottom of the form Regardless of
+     * others added.
+     *
+     * @param element
+     *            the element.
      */
     public void addLastFormElement(final FormElement element)
     {
@@ -332,11 +427,14 @@ public class FormBuilder extends FlowPanel implements Bindable
         }
 
         data.add(element);
+        originalValues.put(element.getKey(), element.getValue());
     }
 
     /**
      * Gets the form value from the key.
-     * @param key the key.
+     *
+     * @param key
+     *            the key.
      * @return the value.
      */
     public Serializable getFormValue(final String key)
@@ -352,7 +450,6 @@ public class FormBuilder extends FlowPanel implements Bindable
         return null;
     }
 
-    
     /**
      * Adds a form divider.
      */

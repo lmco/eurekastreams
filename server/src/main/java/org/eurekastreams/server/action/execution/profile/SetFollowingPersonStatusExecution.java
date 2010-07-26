@@ -47,17 +47,10 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
  */
 public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
-
     /**
      * Local log instance.
      */
     private final Log logger = LogFactory.make();
-
-    /**
-     * perf logger.
-     */
-    private final Log timeLog = org.apache.commons.logging.LogFactory
-            .getLog("org.eurekastreams.commons.server.ActionExecutor-actionTimer");
 
     /**
      * Local instance of the Person mapper.
@@ -181,31 +174,9 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
         case NOTFOLLOWING:
             logger.trace("Remove new following from the list of following.");
 
-            Long start = null;
-            Long end = null;
-
-            if (timeLog.isInfoEnabled())
-            {
-                start = System.currentTimeMillis();
-            }
-
             mapper.removeFollower(followerResult.getEntityId(), targetResult.getEntityId());
 
-            if (timeLog.isInfoEnabled())
-            {
-                end = System.currentTimeMillis();
-                timeLog.info("** remove follower: " + (end - start));
-                start = end;
-            }
-
             removeCachedFollowerMapper.execute(followerResult.getEntityId(), targetResult.getEntityId());
-
-            if (timeLog.isInfoEnabled())
-            {
-                end = System.currentTimeMillis();
-                timeLog.info("** remove cached follower: " + (end - start));
-                start = end;
-            }
 
             // Update the cache list of followers' activities by removing the activities for the
             // entity being unfollowed.
@@ -213,12 +184,6 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
                     compositeStreamId, followerResult.getEntityId(), targetResult.getEntityId());
             removeCachedActivitiesMapper.execute(removeRequest);
 
-            if (timeLog.isInfoEnabled())
-            {
-                end = System.currentTimeMillis();
-                timeLog.info("** following user's cached activities from cached following list: " + (end - start));
-                start = end;
-            }
             break;
         default:
             // do nothing.

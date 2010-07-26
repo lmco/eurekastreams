@@ -19,13 +19,14 @@ import java.util.Date;
 import java.util.Map;
 
 import org.eurekastreams.commons.search.modelview.ModelView;
+import org.eurekastreams.server.domain.ActivityRestrictionEntity;
 import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.Followable;
 
 /**
  * ModelView for DomainGroup.
  */
-public class DomainGroupModelView extends ModelView implements Followable
+public class DomainGroupModelView extends ModelView implements Followable, ActivityRestrictionEntity
 {
     /**
      * The serial version id.

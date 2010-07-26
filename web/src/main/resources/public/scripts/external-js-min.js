@@ -1490,8 +1490,8 @@ gadgets.Container.prototype.userPrefStore =
 
 gadgets.IfrGadget.prototype.GADGET_IFRAME_PREFIX_ = 'remote_iframe_';
 
-gadgets.IfrGadget.prototype.CONTAINER = 'eureka';
-gadgets.IfrGadget.prototype.BASE_URL = 'http://localhost:8081';
+gadgets.IfrGadget.prototype.CONTAINER = "${build.gadget.container.name}";
+gadgets.IfrGadget.prototype.BASE_URL = "${build.web.grbaseurl}";
 gadgets.IfrGadget.prototype.debug = 0;
 gadgets.IfrGadget.prototype.caja = 0;
 gadgets.IfrGadget.prototype.cssClassGadget = 'gadgets-gadget';
@@ -1567,7 +1567,7 @@ gadgets.Container.prototype.getGadgets = function(){
 };
 
 gadgets.Container.prototype.gadgetIFrameUrlRefreshing = function(gadget) {
-    document.getElementById(gadget.getIframeId()).src = "http://localhost:8080/style/images/wait-spinner.gif";
+    document.getElementById(gadget.getIframeId()).src = "${build.web.baseurl}/style/images/wait-spinner.gif";
 };
 
 gadgets.Container.prototype.refreshGadgetIFrameUrl = function(gadget, opt_viewParams) {

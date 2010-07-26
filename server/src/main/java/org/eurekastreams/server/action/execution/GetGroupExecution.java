@@ -29,6 +29,7 @@ import org.eurekastreams.server.domain.RestrictedDomainGroup;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper;
+import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
 
 /**
  * Retrieve a DomainGroup based on its short name.
@@ -53,7 +54,13 @@ public class GetGroupExecution implements ExecutionStrategy<PrincipalActionConte
     /**
      * Strategy to retrieve the banner id if it is not directly configured.
      */
+    @SuppressWarnings("unchecked")
     private GetBannerIdByParentOrganizationStrategy getBannerIdStrategy;
+    
+    /**
+     * Mapper to get followers for a group.
+     */
+    private GetGroupFollowerIds groupFollowerIdsMapper;
 
     /**
      * Constructor.
@@ -66,17 +73,22 @@ public class GetGroupExecution implements ExecutionStrategy<PrincipalActionConte
      *            Mapper to get all person ids that have group coordinator access for a given group.
      * @param inGetBannerIdStrategy
      *            Instance of the {@link GetBannerIdByParentOrganizationStrategy}.
+     * @param inGroupFollowerIdsMapper
+     *            Instance of the {@link GetGroupFollowerIds}.
      */
+    @SuppressWarnings("unchecked")
     public GetGroupExecution(
             final DomainGroupMapper inMapper,
             final PopulateOrgChildWithSkeletonParentOrgsCacheMapper inPopulateOrgChildWithSkeletonParentOrgsCacheMapper,
             final GetAllPersonIdsWhoHaveGroupCoordinatorAccess inGroupCoordinatorIdsDAO,
-            final GetBannerIdByParentOrganizationStrategy inGetBannerIdStrategy)
+            final GetBannerIdByParentOrganizationStrategy inGetBannerIdStrategy,
+            final GetGroupFollowerIds inGroupFollowerIdsMapper)
     {
         mapper = inMapper;
         populateOrgChildWithSkeletonParentOrgsCacheMapper = inPopulateOrgChildWithSkeletonParentOrgsCacheMapper;
         groupCoordinatorIdsDAO = inGroupCoordinatorIdsDAO;
         getBannerIdStrategy = inGetBannerIdStrategy;
+        groupFollowerIdsMapper = inGroupFollowerIdsMapper;
     }
 
     /**
@@ -157,10 +169,28 @@ public class GetGroupExecution implements ExecutionStrategy<PrincipalActionConte
     private boolean isAccessPermitted(final Principal inPrincipal, final DomainGroupEntity inGroup)
     {
         // if group is public or user is coordinator recursively or follower, return true, otherwise false.
-        // TODO: should be using cached mapper for determining if user is following group or not.
         return (inGroup.isPublicGroup()
-                || groupCoordinatorIdsDAO.execute(inGroup.getId()).contains(inPrincipal.getId()) || mapper.isFollowing(
-                inPrincipal.getAccountId(), inGroup.getShortName()));
+                || groupCoordinatorIdsDAO.execute(inGroup.getId()).contains(inPrincipal.getId())
+                || isUserFollowingGroup(inPrincipal.getId(), inGroup.getId()));
 
+    }
+    
+    /**
+     * Checks to see if user is following a group.
+     * 
+     * @param userId
+     *            the user id being checked.
+     * @param groupId
+     *            the group being checked.
+     * @return true if user is a follower, false otherwise.
+     */
+    private boolean isUserFollowingGroup(final long userId, final long groupId)
+    {
+        List<Long> ids = groupFollowerIdsMapper.execute(groupId);
+        if (ids.contains(userId))
+        {
+            return true;
+        }
+        return false;
     }
 }

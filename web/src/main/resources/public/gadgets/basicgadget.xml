@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
- <ModulePrefs title="Basic Gadget" description="This is a sample gadget to test functionality" thumbnail="http://localhost:8080/style/images/eureka-gadget-placeholder.png" 
+ <ModulePrefs title="Basic Gadget" description="This is a sample gadget to test functionality" thumbnail="${build.web.baseurl}/style/images/eureka-gadget-placeholder.png" 
             title_url="http://eurekastreams.org" author="Eureka Framework" author_email="support@eurekastreams.org">
    <Require feature="opensocial-0.8"></Require>
    <Require feature="osapi"></Require>

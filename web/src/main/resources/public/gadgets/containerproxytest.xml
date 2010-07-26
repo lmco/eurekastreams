@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
  <ModulePrefs title="Container Proxy Test" description="Testing OAuth proxy support through the container to a third party endpoint." 
- thumbnail="http://localhost:8080/style/images/eureka-gadget-placeholder.png" title_url="http://eurekastreams.org"
+ thumbnail="${build.web.baseurl}/style/images/eureka-gadget-placeholder.png" title_url="http://eurekastreams.org"
             author="Eureka Framework" author_email="support@eurekastreams.org">
    <Require feature="opensocial-0.9"></Require>
    <Require feature="locked-domain"></Require>

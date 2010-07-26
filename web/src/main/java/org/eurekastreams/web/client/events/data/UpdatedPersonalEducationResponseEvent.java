@@ -31,5 +31,4 @@ public class UpdatedPersonalEducationResponseEvent extends BaseDataResponseEvent
     {
         super(inResponse);
     }
-
 }

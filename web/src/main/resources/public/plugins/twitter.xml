@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-    <ModulePrefs title="Twitter" description="This plugin imports tweets published from any publically available Twitter user account. To configure, enter the Twitter account user name." thumbnail="http://localhost:8080/style/images/twitterIconSmall.png" title_url="http://eurekastreams.org" author="Eureka Framework" screenshot="http://localhost:8080/style/images/twitterIconLarge.png" author_email="support@eurekastreams.org">
+    <ModulePrefs title="Twitter" description="This plugin imports tweets published from any publically available Twitter user account. To configure, enter the Twitter account user name." 
+    	thumbnail="${build.web.baseurl}/style/images/twitterIconSmall.png" 
+    	title_url="http://eurekastreams.org" author="Eureka Streams" 
+    	screenshot="${build.web.baseurl}/style/images/twitterIconLarge.png" author_email="support@eurekastreams.org">
         <Require feature="views" />
         <Require feature="eurekastreams-streamplugin"/>
     </ModulePrefs>

@@ -95,7 +95,7 @@ public class LdapPersonLookupTest
     {
         HashMap<String, LdapTemplate> templates = new HashMap<String, LdapTemplate>();
 
-        templates.put("domainacct", templateMock);
+        templates.put("domainname", templateMock);
 
         sut = new LdapPersonLookup(templates, ldapToPersonMapperMock, peopleAppenderMock, filterCreatorMock,
                 ldapSearchStrategyMock);
@@ -169,7 +169,7 @@ public class LdapPersonLookupTest
             }
         });
 
-        sut.findPeople("domainacct\\name exists", 0).size();
+        sut.findPeople("domainname\\name exists", 0).size();
         context.assertIsSatisfied();
     }
 }

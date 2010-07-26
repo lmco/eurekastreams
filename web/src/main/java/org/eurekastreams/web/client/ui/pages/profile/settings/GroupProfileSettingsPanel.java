@@ -58,6 +58,7 @@ public class GroupProfileSettingsPanel extends SettingsPanel
     {
         super(panel, "Configure Profile");
         this.clearContentPanel();
+        
         this.setPreviousPage(new CreateUrlRequest(Page.GROUPS, groupName), "< Return to Profile");
         panel.addStyleName("group-profile-settings-panel");
 

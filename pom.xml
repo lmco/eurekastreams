@@ -5,7 +5,7 @@
     <groupId>org.eurekastreams</groupId>
     <artifactId>eurekastreams-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-M2-SNAPSHOT</version>
+    <version>0.9-SNAPSHOT</version>
     <name>Eureka Streams Parent</name>
     <url>http://maven.apache.org</url>
     <dependencies>
@@ -18,7 +18,10 @@
     </dependencies>
     <modules>
         <module>server</module>
+        <module>taskqueueprocessor</module>
         <module>web</module>
+        <module>sharedresources</module>
+        <module>database</module>
     </modules>
     <pluginRepositories>
         <pluginRepository>
@@ -29,6 +32,49 @@
             </releases>
         </pluginRepository>
     </pluginRepositories>
+    <properties>
+        <gwtVersion>1.7.0</gwtVersion>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+        <build.web.grbaseurl>http://localhost:8081</build.web.grbaseurl>
+        <build.web.baseurl>http://localhost:8080</build.web.baseurl>
+        <build.gwt.modulename>org.eurekastreams.web.ApplicationDev</build.gwt.modulename>
+        <build.gadget.container.name>eureka</build.gadget.container.name>
+        <build.gadget.container.protocol>http://</build.gadget.container.protocol>
+        <build.gadget.shindig.version>3.3</build.gadget.shindig.version>
+        <build.analytics.hostname>http://analytics.example.com</build.analytics.hostname>
+        <build.analytics.siteid>-1</build.analytics.siteid>
+        <build.email.smtphost>smtp.example.com</build.email.smtphost>
+        <build.email.smtpport>25</build.email.smtpport>
+        <build.email.address.support>sysadmin@example.com</build.email.address.support>
+        <build.spring.security>preauth</build.spring.security>
+        <build.security.jaas.forcehttps>false</build.security.jaas.forcehttps>
+        <build.security.ldap.connstr>ldaps://ldap.example.com/dc=com?sAMAccountName?sub?(objectClass=*)</build.security.ldap.connstr>
+        <build.security.ldap.userdn>CN=sysadmin\\, sysadmin,DC=example,DC=com</build.security.ldap.userdn>
+        <build.security.ldap.password>examplepassword</build.security.ldap.password>
+        <build.system.nodetype>oneBox</build.system.nodetype>
+        <build.system.jobscheduler><![CDATA[<import resource="applicationContext-jobs.xml" />]]></build.system.jobscheduler>
+        <build.system.proxyhost>proxy.example.com</build.system.proxyhost>
+        <build.system.proxyport>8080</build.system.proxyport>
+        <build.system.proxyset>false</build.system.proxyset>
+        <build.system.nonproxyhosts>*.example.com</build.system.nonproxyhosts>
+        <build.db.dbname>eurekastreams</build.db.dbname>
+        <build.db.dbuser>eurekastreams</build.db.dbuser>
+        <build.db.servername>127.0.0.1</build.db.servername>
+        <build.cache.servernames>localhost:11211</build.cache.servernames>
+        <build.lucene.indexdir>/tmp</build.lucene.indexdir>
+        <build.lucene.sourcedir>/tmp</build.lucene.sourcedir>
+        <build.lucene.slave.refresh>60</build.lucene.slave.refresh>
+        <build.jms.servername>localhost</build.jms.servername>
+        <build.jms.taskhandler>inlineTaskHandler</build.jms.taskhandler>
+        <build.queue.activity.name>queue/eurekaActivity</build.queue.activity.name>
+        <build.queue.hibernatesearch.name>queue/hibernateSearch</build.queue.hibernatesearch.name>
+        <build.log.showsql>true</build.log.showsql>
+        <build.report.clover.licenseurl>http://example.com/clover.license</build.report.clover.licenseurl>
+        <build.report.checkstyle.rulesurl>http://example.com/checkstylerules.xml</build.report.checkstyle.rulesurl>
+        <build.maven.sharedresources.artifactid>eurekastreams-sharedresources</build.maven.sharedresources.artifactid>
+        <build.maven.sharedresources.version>0.9-SNAPSHOT</build.maven.sharedresources.version>
+        <build.maven.snapshotrepo>http://example.com/content/repositories/snapshots</build.maven.snapshotrepo>
+    </properties>
     <build>
         <plugins>
             <plugin>
@@ -250,5 +296,127 @@
                 </plugins>
             </reporting>
         </profile>
+        <profile>
+            <id>checkstyle.report</id>
+            <activation>
+                <property>
+                    <name>reports</name>
+                </property>
+            </activation>
+            <reporting>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <version>2.4</version>
+                        <configuration>
+                            <configLocation>${build.report.checkstyle.rulesurl}</configLocation>
+                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </reporting>
+        </profile>
+        <profile>
+            <id>clover.report</id>
+            <activation>
+                <property>
+                    <name>clover</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.atlassian.maven.plugins</groupId>
+                        <artifactId>maven-clover2-plugin</artifactId>
+                        <version>2.6.3</version>
+                        <configuration>
+                            <licenseLocation>${build.report.clover.licenseurl}</licenseLocation>
+                            <!--
+                                historical reporting - save the Clover
+                                snapshot between clean builds and only
+                                have one for multimodule projects
+                            -->
+                            <snapshot>${user.home}/.clover/${groupId}/${version}/clover.snapshot</snapshot>
+                            <historyDir>${user.home}/.clover/${groupId}/${artifactId}/${version}/</historyDir>
+                            <generateHistorical>true</generateHistorical>
+                            <!-- needed for multi-module project -->
+                            <singleCloverDatabase>true</singleCloverDatabase>
+                            <!-- set coverage requirement -->
+                            <targetPercentage>90%</targetPercentage>
+                             <failOnViolation>true</failOnViolation>
+                             <!-- This excludes files from code coverage -->
+                             <excludes>
+                                  <exclude>org/eurekastreams/server/domain/**</exclude>
+				                  <exclude>**/*Test.java</exclude>
+				                  <exclude>**/*Fake.java</exclude>
+				                  <exclude>**/*Setup.java</exclude>
+				                  <exclude>**/*Support.java</exclude>
+				                  <exclude>**/*AsyncCallbackProxy.java</exclude>
+				                  <exclude>**/*DTO.java</exclude>
+				                  <exclude>**/*Request.java</exclude>
+				                  <exclude>**/*Response.java</exclude>
+				                  <exclude>**/GetStreamViewByType.java</exclude>
+				                  <exclude>**/MemcachedCache.java</exclude>
+						          <exclude>**/*GuiceModule.java</exclude>
+				                  <exclude>org/eurekastreams/taskqueueprocessor/console/MainApp.java</exclude>
+								  <exclude>org/eurekastreams/performancedatacreator/console/MainApp.java</exclude>
+								  <exclude>org/eurekastreams/server/service/actions/strategies/URLFetcher.java</exclude>
+								  <exclude>org/eurekastreams/server/service/actions/strategies/ImageWriter.java</exclude>
+								  <exclude>org/eurekastreams/server/service/actions/CreatePersonActionFactory.java</exclude>
+								  <exclude>org/eurekastreams/server/service/actions/strategies/galleryitem/*Factory.java</exclude>
+								  <exclude>org/eurekastreams/server/service/servlets/*Servlet.java</exclude>
+								  <exclude>org/eurekastreams/server/service/opensocial/config/ContainerPropertiesModule.java</exclude>
+								  <exclude>org/eurekastreams/server/service/opensocial/config/OAuthModule.java</exclude>
+		                          <exclude>org/eurekastreams/server/service/opensocial/gadgets/spec/*Fetcher.java</exclude>
+								  <exclude>org/eurekastreams/server/service/restlets/WritableResource.java</exclude>
+								  <exclude>org/eurekastreams/server/service/restlets/FeedReaderWritableResource.java</exclude>
+		                          <exclude>org/eurekastreams/server/service/restlets/GadgetUserPrefsResource.java</exclude>
+                                  <!--  Commons exclusions -->
+                                  <exclude>**/*Test.java</exclude>
+                                  <exclude>**/*Fake.java</exclude>
+                                  <exclude>**/*MockSupport.java</exclude>
+                                  <exclude>**/*MessageConsumer.java</exclude>
+                                  <exclude>**/*MessageProducer.java</exclude>
+                                  <exclude>**/*Request.java</exclude>
+                                  <!-- this exclusion is included because all this class does is
+                                  wrap the spring job bean with some default values and is problematic
+                                  to test given the parent class implementation from Spring. -->
+                                  <exclude>**/ActionSubmitterJob.java</exclude>
+                                  <exclude>**/ActionExecutorFactory.java</exclude>
+                                  <exclude>**/ServiceAction.java</exclude>
+                                  <exclude>**/ServiceActionContext.java</exclude>
+                                  <exclude>**/AsyncAction.java</exclude>
+                                  <exclude>**/AsyncActionContext.java</exclude>
+                                  <exclude>**/TaskHandlerActionContext.java</exclude>
+                                  <exclude>**/TaskHandlerAsyncAction.java</exclude>
+                                  <exclude>**/TaskHandlerServiceAction.java</exclude>
+                                  <exclude>**/SessionException.java</exclude>
+                                  <exclude>**/DefaultAuthorization.java</exclude>
+                                  <exclude>**/DefaultPrincipal.java</exclude>
+                                  <exclude>**/DefaultPrincipalPopulator.java</exclude>
+
+                            </excludes>
+                             <contextFilters>private,iflog</contextFilters>
+                             <statementContexts>
+                                  <iflog>if \(log\.is.*</iflog>
+                             </statementContexts>
+                         </configuration>
+                         <executions>
+                             <execution>
+                                 <id>clover</id>
+                                 <phase>test</phase>
+                                 <goals>
+                                     <goal>instrument-test</goal>
+                                     <goal>clover</goal>
+                                     <goal>check</goal>
+                                     <goal>save-history</goal>
+                                 </goals>
+                             </execution>
+                         </executions>
+                     </plugin>
+                 </plugins>
+             </build>
+         </profile>
      </profiles>	
 </project>

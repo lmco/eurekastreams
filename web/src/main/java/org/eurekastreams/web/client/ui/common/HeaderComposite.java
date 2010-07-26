@@ -89,7 +89,7 @@ public class HeaderComposite extends Composite
         HorizontalULPanel userNav;
         FlowPanel panel = new FlowPanel();
         FlowPanel navPanel = new FlowPanel();
-
+        
         Anchor externalLink = new Anchor("Eureka Streams", "http://www.eurekastreams.org", "_blank");
         externalLink.addStyleName("nav-bar-button");
 

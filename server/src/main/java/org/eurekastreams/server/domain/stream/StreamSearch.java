@@ -42,59 +42,71 @@ public class StreamSearch extends DomainEntity implements Serializable, StreamFi
      * Serial Version id.
      */
     private static final long serialVersionUID = -1115288887068723696L;
-    
+
     /**
      * The streamView to search.
      */
     @ManyToOne(fetch = FetchType.EAGER)
     @Basic(optional = false)
     private StreamView streamView;
-    
+
     /**
-     * Private reference back to the person for queries originating with
-     * the StreamSearch.
+     * Private reference back to the person for queries originating with the StreamSearch.
      */
-    @SuppressWarnings("unused")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable(name = "person_streamsearch",
-        joinColumns = @JoinColumn(name = "streamsearches_id"),
-        inverseJoinColumns = @JoinColumn(name = "person_id")
-    )
+    @JoinTable(name = "person_streamsearch", joinColumns = @JoinColumn(name = "streamsearches_id"),
+    // line break
+    inverseJoinColumns = @JoinColumn(name = "person_id"))
     private Person person;
 
-    
+    /**
+     * Get the owner of this stream search.
+     *
+     * @return the owner of the stream search
+     */
+    public Person getPerson()
+    {
+        return person;
+    }
+
     /**
      * Keywords to use for search.
      */
-    @Cascade({ org.hibernate.annotations.CascadeType.ALL })
+    @Cascade(
+    // line break
+    { org.hibernate.annotations.CascadeType.ALL })
     @CollectionOfElements(targetElement = String.class, fetch = FetchType.EAGER)
     private Set<String> keywords;
-    
+
     /**
      * Name of StreamSearch.
      */
     @Basic(optional = false)
     private String name;
-    
+
     /**
      * Constructor for ORM.
      */
     @SuppressWarnings("unused")
     private StreamSearch()
     {
-        //no-op.
+        // no-op.
     }
-    
+
     /**
      * Constructor.
-     * @param inName The name of the StreamSearch.
-     * @param inStreamView The {@link StreamView}.
-     * @param inKeywords The set of keywords to use for search.
+     *
+     * @param inName
+     *            The name of the StreamSearch.
+     * @param inStreamView
+     *            The {@link StreamView}.
+     * @param inKeywords
+     *            The set of keywords to use for search.
      */
     public StreamSearch(final String inName, final StreamView inStreamView, final Set<String> inKeywords)
     {
         streamView = inStreamView;
-        keywords = inKeywords;  
+        keywords = inKeywords;
         name = inName;
     }
 
@@ -107,7 +119,8 @@ public class StreamSearch extends DomainEntity implements Serializable, StreamFi
     }
 
     /**
-     * @param inStreamView the streamView to set
+     * @param inStreamView
+     *            the streamView to set
      */
     public void setStreamView(final StreamView inStreamView)
     {
@@ -123,7 +136,8 @@ public class StreamSearch extends DomainEntity implements Serializable, StreamFi
     }
 
     /**
-     * @param inKeywords the keywords to set
+     * @param inKeywords
+     *            the keywords to set
      */
     public void setKeywords(final Set<String> inKeywords)
     {
@@ -132,25 +146,28 @@ public class StreamSearch extends DomainEntity implements Serializable, StreamFi
 
     /**
      * Sets the name of the search.
-     * @param inName the name.
+     *
+     * @param inName
+     *            the name.
      */
     public void setName(final String inName)
     {
         this.name = inName;
     }
-    
+
     /**
      * Gets the name of the search.
+     *
      * @return the name.
      */
     public String getName()
     {
         return this.name;
     }
-    
+
     /**
      * Gets the list of keywords as a space-delimited string.
-     * 
+     *
      * @return the list of keywords in string format.
      */
     public String getKeywordsAsString()

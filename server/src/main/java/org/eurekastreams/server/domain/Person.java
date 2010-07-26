@@ -78,7 +78,7 @@ import org.hibernate.validator.NotEmpty;
 @Entity
 @Indexed
 public class Person extends DomainEntity implements Serializable, AvatarEntity, Followable, OrganizationChild,
-        ActivityRestrictionEntity, HasEmail, Bannerable
+        HasEmail, Bannerable
 {
     // ///////////////////////////////////////////////////////////////////
     // VALIDATION

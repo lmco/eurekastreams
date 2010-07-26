@@ -15,14 +15,19 @@
  */
 package org.eurekastreams.server.action.authorization.profile;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
-import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators;
+import org.eurekastreams.server.persistence.mappers.stream.GetCoordinatorIdsByGroupId;
+import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
+import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -46,9 +51,19 @@ public class GetFollowersAuthorizationStrategyTest
     };
 
     /**
-     * The mapper that will check security stuff.
+     * Mocked GetCoordinatorIdsByGroupId.
      */
-    private final DomainGroupMapper groupMapperMock = context.mock(DomainGroupMapper.class);
+    private GetCoordinatorIdsByGroupId coordMapper = context.mock(GetCoordinatorIdsByGroupId.class);
+    
+    /**
+     * Mocked GetGroupFollowerIds.
+     */
+    private GetGroupFollowerIds groupFollowerIdsMapper = context.mock(GetGroupFollowerIds.class);
+    
+    /**
+     * Mocked GetDomainGroupsByShortNames.
+     */
+    private GetDomainGroupsByShortNames groupMapper = context.mock(GetDomainGroupsByShortNames.class);
 
     /** Fixture: org permission checker. */
     private GetRecursiveOrgCoordinators orgPermChecker = context.mock(GetRecursiveOrgCoordinators.class);
@@ -71,7 +86,7 @@ public class GetFollowersAuthorizationStrategyTest
     /**
      * The mapper that will check security stuff.
      */
-    private final DomainGroup groupMock = context.mock(DomainGroup.class);
+    private final DomainGroupModelView groupMock = context.mock(DomainGroupModelView.class);
 
     /**
      * System under test.
@@ -79,27 +94,17 @@ public class GetFollowersAuthorizationStrategyTest
     private GetFollowersAuthorizationStrategy sut;
 
     /**
-     * Org short name.
+     * Group short name.
      */
     private static final String GROUP_SHORT_NAME = "groupname";
 
     /**
-     * current user.
+     * Group short name.
      */
-    private static final String CURRENT_USER = "currentuser";
+    private static final long GROUP_ID = 1234L;
 
     /** Test data. */
     private static final long CURRENT_USER_ID = 2468L;
-
-    /**
-     * Start index.
-     */
-    private static final Integer START_INDEX = 382;
-
-    /**
-     * End index.
-     */
-    private static final Integer END_INDEX = 391;
 
     /**
      * Person entity type.
@@ -115,16 +120,12 @@ public class GetFollowersAuthorizationStrategyTest
     private static final long PARENT_ORG_ID = 97531L;
 
     /**
-     * request to authorize.
-     */
-    // private GetPendingGroupsRequest request = new GetPendingGroupsRequest(orgShortName, startIndex, endIndex);
-    /**
      * Set up the SUT.
      */
     @Before
     public void setup()
     {
-        sut = new GetFollowersAuthorizationStrategy(groupMapperMock, orgPermChecker);
+        sut = new GetFollowersAuthorizationStrategy(coordMapper, groupFollowerIdsMapper, groupMapper, orgPermChecker);
 
         context.checking(new Expectations()
         {
@@ -132,11 +133,11 @@ public class GetFollowersAuthorizationStrategyTest
                 allowing(actionContext).getPrincipal();
                 will(returnValue(principal));
 
-                allowing(principal).getAccountId();
-                will(returnValue(CURRENT_USER));
-
                 allowing(principal).getId();
                 will(returnValue(CURRENT_USER_ID));
+
+                allowing(groupMock).getId();
+                will(returnValue(GROUP_ID));
             }
         });
     }
@@ -182,8 +183,8 @@ public class GetFollowersAuthorizationStrategyTest
                 oneOf(getFollowersRequest).getEntityType();
                 will(returnValue(GROUP_ENTITY_TYPE));
 
-                oneOf(groupMapperMock).findByShortName(GROUP_SHORT_NAME);
-                will(returnValue(groupMock));
+                oneOf(groupMapper).execute(Collections.singletonList(GROUP_SHORT_NAME));
+                will(returnValue(Collections.singletonList(groupMock)));
             }
         });
     }
@@ -202,14 +203,14 @@ public class GetFollowersAuthorizationStrategyTest
         context.checking(new Expectations()
         {
             {
-                oneOf(groupMock).isPublicGroup();
+                oneOf(groupMock).isPublic();
                 will(returnValue(false));
 
-                oneOf(groupMock).isCoordinator(CURRENT_USER);
-                will(returnValue(false));
+                oneOf(coordMapper).execute(GROUP_ID);
+                will(returnValue(new ArrayList<Long>()));
 
-                oneOf(groupMapperMock).isFollowing(CURRENT_USER, GROUP_SHORT_NAME);
-                will(returnValue(true));
+                oneOf(groupFollowerIdsMapper).execute(GROUP_ID);
+                will(returnValue(Collections.singletonList(CURRENT_USER_ID)));
             }
         });
 
@@ -230,7 +231,7 @@ public class GetFollowersAuthorizationStrategyTest
         context.checking(new Expectations()
         {
             {
-                oneOf(groupMock).isPublicGroup();
+                oneOf(groupMock).isPublic();
                 will(returnValue(true));
             }
         });
@@ -253,11 +254,11 @@ public class GetFollowersAuthorizationStrategyTest
         context.checking(new Expectations()
         {
             {
-                oneOf(groupMock).isPublicGroup();
+                oneOf(groupMock).isPublic();
                 will(returnValue(false));
 
-                oneOf(groupMock).isCoordinator(CURRENT_USER);
-                will(returnValue(true));
+                oneOf(coordMapper).execute(GROUP_ID);
+                will(returnValue(Collections.singletonList(CURRENT_USER_ID)));
             }
         });
 
@@ -279,17 +280,17 @@ public class GetFollowersAuthorizationStrategyTest
         context.checking(new Expectations()
         {
             {
-                oneOf(groupMock).isPublicGroup();
+                oneOf(groupMock).isPublic();
                 will(returnValue(false));
 
-                oneOf(groupMock).isCoordinator(CURRENT_USER);
-                will(returnValue(false));
+                oneOf(coordMapper).execute(GROUP_ID);
+                will(returnValue(new ArrayList<Long>()));
 
-                allowing(groupMock).getParentOrgId();
+                allowing(groupMock).getParentOrganizationId();
                 will(returnValue(PARENT_ORG_ID));
 
-                oneOf(groupMapperMock).isFollowing(CURRENT_USER, GROUP_SHORT_NAME);
-                will(returnValue(false));
+                oneOf(groupFollowerIdsMapper).execute(GROUP_ID);
+                will(returnValue(new ArrayList<Long>()));
 
                 oneOf(orgPermChecker).isOrgCoordinatorRecursively(CURRENT_USER_ID, PARENT_ORG_ID);
                 will(returnValue(true));
@@ -314,16 +315,16 @@ public class GetFollowersAuthorizationStrategyTest
         context.checking(new Expectations()
         {
             {
-                oneOf(groupMock).isPublicGroup();
+                oneOf(groupMock).isPublic();
                 will(returnValue(false));
 
-                oneOf(groupMock).isCoordinator(CURRENT_USER);
-                will(returnValue(false));
+                oneOf(coordMapper).execute(GROUP_ID);
+                will(returnValue(new ArrayList<Long>()));
 
-                oneOf(groupMapperMock).isFollowing(CURRENT_USER, GROUP_SHORT_NAME);
-                will(returnValue(false));
+                oneOf(groupFollowerIdsMapper).execute(GROUP_ID);
+                will(returnValue(new ArrayList<Long>()));
 
-                allowing(groupMock).getParentOrgId();
+                allowing(groupMock).getParentOrganizationId();
                 will(returnValue(PARENT_ORG_ID));
 
                 oneOf(orgPermChecker).isOrgCoordinatorRecursively(CURRENT_USER_ID, PARENT_ORG_ID);

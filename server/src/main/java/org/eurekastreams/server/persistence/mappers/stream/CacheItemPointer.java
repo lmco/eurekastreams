@@ -17,10 +17,10 @@ package org.eurekastreams.server.persistence.mappers.stream;
 
 /**
  * Simple object to hold the pointerId and itemId for cached data that needs to be indexed by more than just the entity
- * id. For instance, a person object can be found in the cache by key Per:123 or PerAcct:jhstephe. The latter is an
+ * id. For instance, a person object can be found in the cache by key Per:123 or PerAcct:accountid. The latter is an
  * example of an item pointer. The contents of that key in the cache just point to the actual entityId-based key
  * Per:123. This means that two cache reads are required to get the actual object when using item pointers.
- * 
+ *
  */
 public class CacheItemPointer
 {
@@ -36,7 +36,7 @@ public class CacheItemPointer
 
     /**
      * Gets the pointerId.
-     * 
+     *
      * @return the pointer Id.
      */
     public String getPointerId()
@@ -46,7 +46,7 @@ public class CacheItemPointer
 
     /**
      * Sets the pointer Id.
-     * 
+     *
      * @param inPointerId
      *            the pointerId to set.
      */
@@ -57,7 +57,7 @@ public class CacheItemPointer
 
     /**
      * Gets the itemId.
-     * 
+     *
      * @return the item Id.
      */
     public long getItemId()
@@ -67,7 +67,7 @@ public class CacheItemPointer
 
     /**
      * Sets the item Id.
-     * 
+     *
      * @param inItemId
      *            the itemId to set.
      */

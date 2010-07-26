@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+	 http://www.springframework.org/schema/jms 
+	 http://www.springframework.org/schema/jms/spring-jms.xsd">
+
+    <!-- Eureka Activity Queue Consumer -->
+    <bean id="asyncActionProcessorMDB" class="org.eurekastreams.commons.messaging.AsyncActionProcessorMDB">
+        <property name="taskExecutor" ref="taskActionExecutor" />
+    </bean>
+
+    <!-- Eureka Lucene Search Master Indexer -->
+    <bean id="mdbSearchController" class="org.eurekastreams.server.search.indexing.MDBSearchController" />
+    
+    <!-- given the connection factory, start the listener container and wire up the queue beans -->
+    <jms:listener-container connection-factory="connectionFactory" concurrency="16" prefetch="5" client-id="tqp-1">
+        <jms:listener destination="queue/eurekaActivity" ref="asyncActionProcessorMDB" />
+    </jms:listener-container>
+    
+
+</beans>

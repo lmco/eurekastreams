@@ -21,9 +21,9 @@
   <ModulePrefs title="Demo 3-legged OAuth to Shindig">
     <OAuth>
       <Service name="shindig">
-        <Request url="http://localhost:8080/resources/oauth/requestToken" />
-        <Access url="http://localhost:8080/resources/oauth/accessToken" />
-        <Authorization url="http://localhost:8080/authorize" />
+        <Request url="${build.web.baseurl}/resources/oauth/requestToken" />
+        <Access url="${build.web.baseurl}/resources/oauth/accessToken" />
+        <Authorization url="${build.web.baseurl}/authorize" />
       </Service>
     </OAuth>
     <Require feature="oauthpopup" />
@@ -43,7 +43,7 @@
     </div>
 
     <div id="approval" style="display: none">
-      <img src="http://localhost:8080/gadgets/files/samplecontainer/examples/new.gif">
+      <img src="${build.web.baseurl}/gadgets/files/samplecontainer/examples/new.gif">
       <a href="#" id="personalize">Personalize this gadget</a>
     </div>
 
@@ -72,7 +72,7 @@
       }
 
       function fetchData() {
-        var url = "http://localhost:8080/social/rest/people/jhstephe";
+        var url = "${build.web.baseurl}/social/rest/people/testuser";
         var params = {};
         params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.TEXT;
         params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;

@@ -17,14 +17,21 @@ package org.eurekastreams.server.action.execution.profile;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.action.request.profile.GetCurrentUserFollowingStatusRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
-import org.eurekastreams.server.persistence.DomainGroupMapper;
-import org.eurekastreams.server.persistence.PersonMapper;
+import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
+import org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds;
+import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
+import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -57,16 +64,26 @@ public class GetCurrentUserFollowingStatusExecutionTest
      * Principal mock.
      */
     private Principal principal = context.mock(Principal.class);
-
+    
     /**
-     * PersonMapper used to retrieve person from the db.
+     * Group follower mapper mock.
      */
-    private PersonMapper personMapper = context.mock(PersonMapper.class);
-
+    private GetGroupFollowerIds getGroupFollowerIds = context.mock(GetGroupFollowerIds.class);
+    
     /**
-     * GroupMapper used to retrieve a group if that's the target type.
+     * Person follower mapper mock.
      */
-    private DomainGroupMapper groupMapper = context.mock(DomainGroupMapper.class);
+    private GetFollowerIds getFollowerIds = context.mock(GetFollowerIds.class);
+    
+    /**
+     * Group by shortname mapper mock.
+     */
+    private GetDomainGroupsByShortNames getDomainGroupsByShortNames = context.mock(GetDomainGroupsByShortNames.class);
+    
+    /**
+     * Person by account id mapper mock.
+     */
+    private GetPeopleByAccountIds getPeopleByAccountIds = context.mock(GetPeopleByAccountIds.class);
 
     /**
      * Mocked request object.
@@ -90,13 +107,14 @@ public class GetCurrentUserFollowingStatusExecutionTest
     private GetCurrentUserFollowingStatusExecution sut;
 
     /**
-     * Current user person object stored in ExtendedUserDetails.
-     */
-    // private Person userPerson = context.mock(Person.class);
-    /**
      * Account Id for the current user.
      */
     private static final String CURRENT_USER = "currentuser";
+
+    /**
+     * Id for the current user.
+     */
+    private static final long CURRENT_USER_ID = 123;
 
     /**
      * Open social Id for the target user.
@@ -109,14 +127,20 @@ public class GetCurrentUserFollowingStatusExecutionTest
     private static final String TARGET_USER = "targetuser";
 
     /**
-     * Account Id for the org whose profile is being viewed.
+     * Id for the user whose profile is being viewed.
+     */
+    private static final long TARGET_USER_ID = 456;
+
+    /**
+     * Account Id for the group whose profile is being viewed.
      */
     private static final String TARGET_GROUP = "targetgroup";
 
     /**
-     * Mapper to get people by open social ids.
+     * Id for the group whose profile is being viewed.
      */
-    // private GetPeopleByOpenSocialIds getPeopleByOpenSocialIdsMapper;
+    private static final long TARGET_GROUP_ID = 789;
+
     /**
      * Current user model view mock.
      */
@@ -128,8 +152,8 @@ public class GetCurrentUserFollowingStatusExecutionTest
     @Before
     public void setup()
     {
-        sut = new GetCurrentUserFollowingStatusExecution(personMapper, groupMapper, getPeopleByOpenSocialIdsMapper,
-                openSocialRegEx);
+        sut = new GetCurrentUserFollowingStatusExecution(getPeopleByOpenSocialIdsMapper, openSocialRegEx,
+                getGroupFollowerIds, getFollowerIds, getDomainGroupsByShortNames, getPeopleByAccountIds);
     }
 
     /**
@@ -140,6 +164,7 @@ public class GetCurrentUserFollowingStatusExecutionTest
      *             exception.
      */
     @Test
+    @SuppressWarnings("unchecked")
     public void testOpenSocialEntityIdIsPersonNotSameIsFollowing() throws Exception
     {
         context.checking(new Expectations()
@@ -154,6 +179,9 @@ public class GetCurrentUserFollowingStatusExecutionTest
                 oneOf(principal).getAccountId();
                 will(returnValue(CURRENT_USER));
 
+                oneOf(principal).getId();
+                will(returnValue(CURRENT_USER_ID));
+
                 oneOf(getCurrentUserFollowingStatusRequest).getFollowedEntityId();
                 will(returnValue(TARGET_USER_OPENSOCIAL_ID));
 
@@ -166,8 +194,13 @@ public class GetCurrentUserFollowingStatusExecutionTest
                 oneOf(targetUser).getAccountId();
                 will(returnValue(TARGET_USER));
 
-                oneOf(personMapper).isFollowing(CURRENT_USER, TARGET_USER);
-                will(returnValue(true));
+                PersonModelView target = new PersonModelView();
+                target.setEntityId(TARGET_USER_ID);
+                oneOf(getPeopleByAccountIds).execute(with(any(List.class)));
+                will(returnValue(Collections.singletonList(target)));
+                
+                oneOf(getFollowerIds).execute(TARGET_USER_ID);
+                will(returnValue(Collections.singletonList(CURRENT_USER_ID)));
             }
         });
 
@@ -183,6 +216,7 @@ public class GetCurrentUserFollowingStatusExecutionTest
      *             exception.
      */
     @Test
+    @SuppressWarnings("unchecked")
     public void testAccountIdEntityIdIsPersonNotSameIsFollowing() throws Exception
     {
         context.checking(new Expectations()
@@ -197,14 +231,22 @@ public class GetCurrentUserFollowingStatusExecutionTest
                 oneOf(principal).getAccountId();
                 will(returnValue(CURRENT_USER));
 
+                oneOf(principal).getId();
+                will(returnValue(CURRENT_USER_ID));
+
                 oneOf(getCurrentUserFollowingStatusRequest).getFollowedEntityId();
                 will(returnValue(TARGET_USER));
 
                 oneOf(getCurrentUserFollowingStatusRequest).getEntityType();
                 will(returnValue(EntityType.PERSON));
 
-                oneOf(personMapper).isFollowing(CURRENT_USER, TARGET_USER);
-                will(returnValue(true));
+                PersonModelView target = new PersonModelView();
+                target.setEntityId(TARGET_USER_ID);
+                oneOf(getPeopleByAccountIds).execute(with(any(List.class)));
+                will(returnValue(Collections.singletonList(target)));
+                
+                oneOf(getFollowerIds).execute(TARGET_USER_ID);
+                will(returnValue(Collections.singletonList(CURRENT_USER_ID)));
             }
         });
 
@@ -220,6 +262,7 @@ public class GetCurrentUserFollowingStatusExecutionTest
      *             exception.
      */
     @Test
+    @SuppressWarnings("unchecked")
     public void testShortNameEntityIdIsGroupNotSameIsFollowing() throws Exception
     {
         context.checking(new Expectations()
@@ -234,14 +277,22 @@ public class GetCurrentUserFollowingStatusExecutionTest
                 oneOf(principal).getAccountId();
                 will(returnValue(CURRENT_USER));
 
+                oneOf(principal).getId();
+                will(returnValue(CURRENT_USER_ID));
+
                 oneOf(getCurrentUserFollowingStatusRequest).getFollowedEntityId();
                 will(returnValue(TARGET_GROUP));
 
                 oneOf(getCurrentUserFollowingStatusRequest).getEntityType();
                 will(returnValue(EntityType.GROUP));
 
-                oneOf(groupMapper).isFollowing(CURRENT_USER, TARGET_GROUP);
-                will(returnValue(true));
+                DomainGroupModelView target = new DomainGroupModelView();
+                target.setEntityId(TARGET_GROUP_ID);
+                oneOf(getDomainGroupsByShortNames).execute(with(any(List.class)));
+                will(returnValue(Collections.singletonList(target)));
+                
+                oneOf(getGroupFollowerIds).execute(TARGET_GROUP_ID);
+                will(returnValue(Collections.singletonList(CURRENT_USER_ID)));
             }
         });
 
@@ -270,6 +321,9 @@ public class GetCurrentUserFollowingStatusExecutionTest
                 oneOf(principal).getAccountId();
                 will(returnValue(CURRENT_USER));
 
+                oneOf(principal).getId();
+                will(returnValue(CURRENT_USER_ID));
+
                 oneOf(getCurrentUserFollowingStatusRequest).getFollowedEntityId();
                 will(returnValue(TARGET_USER_OPENSOCIAL_ID));
 
@@ -296,6 +350,7 @@ public class GetCurrentUserFollowingStatusExecutionTest
      *             exception.
      */
     @Test
+    @SuppressWarnings("unchecked")
     public void testOpenSocialEntityIdIsPersonNotSameNotFollowed() throws Exception
     {
         context.checking(new Expectations()
@@ -310,6 +365,9 @@ public class GetCurrentUserFollowingStatusExecutionTest
                 oneOf(principal).getAccountId();
                 will(returnValue(CURRENT_USER));
 
+                oneOf(principal).getId();
+                will(returnValue(CURRENT_USER_ID));
+
                 oneOf(getCurrentUserFollowingStatusRequest).getFollowedEntityId();
                 will(returnValue(TARGET_USER_OPENSOCIAL_ID));
 
@@ -322,8 +380,14 @@ public class GetCurrentUserFollowingStatusExecutionTest
                 oneOf(targetUser).getAccountId();
                 will(returnValue(TARGET_USER));
 
-                oneOf(personMapper).isFollowing(CURRENT_USER, TARGET_USER);
-                will(returnValue(false));
+                PersonModelView target = new PersonModelView();
+                target.setEntityId(TARGET_USER_ID);
+                oneOf(getPeopleByAccountIds).execute(with(any(List.class)));
+                will(returnValue(Collections.singletonList(target)));
+                
+                oneOf(getFollowerIds).execute(TARGET_USER_ID);
+                will(returnValue(new ArrayList<PersonModelView>()));
+
             }
         });
 
@@ -351,6 +415,9 @@ public class GetCurrentUserFollowingStatusExecutionTest
 
                 oneOf(principal).getAccountId();
                 will(returnValue(CURRENT_USER));
+
+                oneOf(principal).getId();
+                will(returnValue(CURRENT_USER_ID));
 
                 oneOf(getCurrentUserFollowingStatusRequest).getFollowedEntityId();
                 will(returnValue(TARGET_USER_OPENSOCIAL_ID));

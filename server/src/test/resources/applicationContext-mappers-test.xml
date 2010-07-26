@@ -688,4 +688,7 @@
 	<bean id="deleteRequestForGroupMembershipMapper" class="org.eurekastreams.server.persistence.mappers.db.DeleteRequestForGroupMembership" />
 
 	<bean id="getRequestsForGroupMembershipMapper" class="org.eurekastreams.server.persistence.mappers.db.GetRequestsForGroupMembershipByGroup" />
+	
+	<bean id="increaseOrgEmployeeCount" class="org.eurekastreams.server.persistence.mappers.db.IncreaseOrgEmployeeCount" />
+
 </beans>

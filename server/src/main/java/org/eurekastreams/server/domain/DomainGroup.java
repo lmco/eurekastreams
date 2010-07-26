@@ -74,7 +74,7 @@ import org.hibernate.validator.Size;
 // whitespace analyzer and custom class bridge to use JPA to get the ids rather than load extra objects
 analyzer = @Analyzer(impl = WhitespaceAnalyzer.class), impl = DomainGroupPeopleIdClassBridge.class)
 public class DomainGroup extends DomainEntity implements AvatarEntity, Followable, OrganizationChild,
-        DomainGroupEntity, CompositeEntity, ActivityRestrictionEntity
+        DomainGroupEntity, CompositeEntity
 {
     /**
      * Serial version uid.

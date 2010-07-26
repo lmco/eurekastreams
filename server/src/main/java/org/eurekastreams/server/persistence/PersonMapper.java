@@ -43,12 +43,6 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
     private static Log logger = LogFactory.getLog(PersonMapper.class);
 
     /**
-     * perf logger.
-     */
-    private final Log timeLog = org.apache.commons.logging.LogFactory
-            .getLog("org.eurekastreams.commons.server.ActionExecutor-actionTimer");
-
-    /**
      * Mapper to remove a person from cache.
      */
     private RemovePersonFromCacheMapper removePersonFromCacheMapper;
@@ -155,14 +149,6 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
      */
     public void addFollower(final long followerId, final long followingId)
     {
-        Long start = null;
-        Long end = null;
-
-        if (timeLog.isInfoEnabled())
-        {
-            start = System.currentTimeMillis();
-        }
-
         Query q = getEntityManager().createQuery(
                 "FROM Follower where followerId=:followerId and followingId=:followingId").setParameter("followerId",
                 followerId).setParameter("followingId", followingId);
@@ -173,55 +159,20 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
             return;
         }
 
-        if (timeLog.isInfoEnabled())
-        {
-            end = System.currentTimeMillis();
-            timeLog.info("** check if already following: " + (end - start));
-            start = end;
-        }
-
         // add follower
         getEntityManager().persist(new Follower(followerId, followingId));
-
-        if (timeLog.isInfoEnabled())
-        {
-            end = System.currentTimeMillis();
-            timeLog.info("** persist follower row in DB: " + (end - start));
-            start = end;
-        }
 
         // now update the counts for persons subtracting 1 for themselves.
         getEntityManager().createQuery(
                 "update versioned Person set followingCount = following.size - 1 where id=:followerId").setParameter(
                 "followerId", followerId).executeUpdate();
 
-        if (timeLog.isInfoEnabled())
-        {
-            end = System.currentTimeMillis();
-            timeLog.info("** update followingCount value for follower: " + (end - start));
-            start = end;
-        }
-
         getEntityManager().createQuery(
                 "update versioned Person set followersCount = followers.size - 1 where id=:followingId").setParameter(
                 "followingId", followingId).executeUpdate();
 
-        if (timeLog.isInfoEnabled())
-        {
-            end = System.currentTimeMillis();
-            timeLog.info("** update followersCount value for followed: " + (end - start));
-            start = end;
-        }
-
         getEntityManager().flush();
         getEntityManager().clear();
-
-        if (timeLog.isInfoEnabled())
-        {
-            end = System.currentTimeMillis();
-            timeLog.info("** flush and clear context: " + (end - start));
-            start = end;
-        }
 
         // reindex the following in the search index
 
@@ -231,23 +182,8 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
         Person followingEntity = findById(followingId);
 
         getFullTextSession().index(followingEntity);
-
-        if (timeLog.isInfoEnabled())
-        {
-            end = System.currentTimeMillis();
-            timeLog.info("** index follower entity: " + (end - start));
-            start = end;
-        }
-
         // persist to refresh the cache for this person
         removePersonFromCacheMapper.execute(followingEntity);
-
-        if (timeLog.isInfoEnabled())
-        {
-            end = System.currentTimeMillis();
-            timeLog.info("** remove from cache followed entity: " + (end - start));
-            start = end;
-        }
     }
 
     /**
@@ -452,14 +388,20 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
             }
         }
 
-        logger.debug("Finding people by openSocialIds: " + osIdSet);
+        if (logger.isDebugEnabled())
+        {
+            logger.debug("Finding people by openSocialIds: " + osIdSet);
+        }
 
         Query q = getEntityManager().createQuery("From Person where openSocialId IN (:osIds)").setParameter("osIds",
                 openSocialIds);
 
         List<Person> people = q.getResultList();
 
-        logger.debug("Retrieved " + people.size() + " results from opensocialids: " + osIdSet);
+        if (logger.isDebugEnabled())
+        {
+            logger.debug("Retrieved " + people.size() + " results from opensocialids: " + osIdSet);
+        }
 
         return people;
     }

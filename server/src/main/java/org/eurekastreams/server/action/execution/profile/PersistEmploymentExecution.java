@@ -41,6 +41,10 @@ import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
  */
 public class PersistEmploymentExecution implements ExecutionStrategy<ServiceActionContext>
 {
+    /**
+     * One day in milliseconds, used to alleviate time zone issues.
+     */
+    private static final long DAY_IN_MILLISECONDS = 86400000L;
 
     /**
      * Person Mapper to lookup current user.
@@ -104,11 +108,11 @@ public class PersistEmploymentExecution implements ExecutionStrategy<ServiceActi
 
         try
         {
-            startDate = df.parse(datearray[0]);
+            startDate = new Date(df.parse(datearray[0]).getTime() + DAY_IN_MILLISECONDS);
 
             if (datearray.length == 2)
             {
-                endDate = df.parse(datearray[1]);
+                endDate = new Date(df.parse(datearray[1]).getTime() + DAY_IN_MILLISECONDS);
             }
 
         }

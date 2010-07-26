@@ -214,7 +214,7 @@ public class GadgetPanel extends FlowPanel
         {
             public void onClick(final ClickEvent event)
             {
-                if (new WidgetJSNIFacadeImpl().confirm("Are you sure you want to delete this gadget?"))
+                if (new WidgetJSNIFacadeImpl().confirm("Are you sure you want to delete this app?"))
                 {
                     GadgetModel.getInstance().delete(gadgetData.getId());
                 }

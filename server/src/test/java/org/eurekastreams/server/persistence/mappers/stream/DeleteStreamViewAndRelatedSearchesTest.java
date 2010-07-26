@@ -20,7 +20,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.persistence.mappers.requests.PersonAndStreamViewIdRequest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -34,6 +36,16 @@ public class DeleteStreamViewAndRelatedSearchesTest extends MapperTest
      */
     @Autowired
     private DeleteStreamViewAndRelatedSearches sut;
+
+    /**
+     * The person id that owns the stream view with a search.
+     */
+    private static final long STREAM_VIEW_WITH_SEARCH_OWNER_ID = 142L;
+
+    /**
+     * The person id that owns the stream view without a search.
+     */
+    private static final long STREAM_VIEW_WITHOUT_SEARCH_OWNER_ID = 99L;
 
     /**
      * Id of the streamview.
@@ -51,13 +63,27 @@ public class DeleteStreamViewAndRelatedSearchesTest extends MapperTest
     private static final long SEARCH_ID = 3;
 
     /**
+     * Test execute with a stream view that doesn't exist.
+     */
+    @Test
+    public void testExecuteWithNoStreamView()
+    {
+        final long invalidStreamViewId = 293882L;
+
+        Person p = getEntityManager().find(Person.class, STREAM_VIEW_WITHOUT_SEARCH_OWNER_ID);
+        assertTrue(sut.execute(new PersonAndStreamViewIdRequest(p, invalidStreamViewId)));
+    }
+
+    /**
      * Test execute with just a streamview.
      */
     @Test
     @SuppressWarnings("unchecked")
     public void testExecute()
     {
-        assertTrue(sut.execute(STREAMVIEW_ID));
+        Person p = getEntityManager().find(Person.class, STREAM_VIEW_WITHOUT_SEARCH_OWNER_ID);
+
+        assertTrue(sut.execute(new PersonAndStreamViewIdRequest(p, STREAMVIEW_ID)));
 
         List<Long> results = getEntityManager().createQuery("from StreamView where id = :id").setParameter("id",
                 STREAMVIEW_ID).getResultList();
@@ -71,7 +97,9 @@ public class DeleteStreamViewAndRelatedSearchesTest extends MapperTest
     @SuppressWarnings("unchecked")
     public void testExecuteWithSearch()
     {
-        assertTrue(sut.execute(STREAMVIEW_ID_WITH_SEARCH));
+        Person p = getEntityManager().find(Person.class, STREAM_VIEW_WITH_SEARCH_OWNER_ID);
+
+        assertTrue(sut.execute(new PersonAndStreamViewIdRequest(p, STREAMVIEW_ID_WITH_SEARCH)));
 
         List<Long> results = getEntityManager().createQuery("from StreamView where id = :id").setParameter("id",
                 STREAMVIEW_ID_WITH_SEARCH).getResultList();

@@ -3,13 +3,13 @@
 	<parent>
 		<artifactId>eurekastreams-parent</artifactId>
 		<groupId>org.eurekastreams</groupId>
-		<version>1.0-M2-SNAPSHOT</version>
+		<version>0.9-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.eurekastreams</groupId>
 	<artifactId>eurekastreams-server</artifactId>
 	<name>Eureka Streams Server</name>
-	<version>1.0-M2-SNAPSHOT</version>
+	<version>0.9-SNAPSHOT</version>
 	<url>http://maven.apache.org</url>
 	<dependencies>
         <dependency>
@@ -60,25 +60,25 @@
 		<dependency>
 			<groupId>org.apache.shindig</groupId>
 			<artifactId>shindig-server</artifactId>
-			<version>3.3</version>
+			<version>${build.gadget.shindig.version}</version>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.shindig</groupId>
 			<artifactId>shindig-social-api</artifactId>
-			<version>3.3</version>
+			<version>${build.gadget.shindig.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.shindig</groupId>
 			<artifactId>shindig-common</artifactId>
-			<version>3.3</version>
+			<version>${build.gadget.shindig.version}</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.shindig</groupId>
 			<artifactId>shindig-gadgets</artifactId>
-			<version>3.3</version>
+			<version>${build.gadget.shindig.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.mail</groupId>
@@ -409,4 +409,13 @@
 			</resource>
 		</resources>
 	</build>
+
+   <distributionManagement>
+   <!-- Declare the snapshot repository to deploy the eurekastreams-server.jar file to -->
+     <snapshotRepository>
+       <id>snapshots</id>
+       <name>Snapshots</name>
+       <url>${build.maven.snapshotrepo}</url>
+     </snapshotRepository>
+   </distributionManagement>	
 </project>

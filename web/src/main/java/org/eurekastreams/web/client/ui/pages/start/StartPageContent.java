@@ -87,6 +87,11 @@ public class StartPageContent extends FlowPanel
     private Hyperlink settings = new Hyperlink("Configure", "");
 
     /**
+     * The tabs.
+     */
+    private List<Tab> tabDomainObjects = null;
+
+    /**
      * Primary constructor for the StartPageContent widget.
      */
     public StartPageContent()
@@ -103,6 +108,7 @@ public class StartPageContent extends FlowPanel
                     public void update(final GotStartPageTabsResponseEvent event)
                     {
                         final List<Tab> tabsResponse = event.getResponse().getTabs(TabGroupType.START);
+                        tabDomainObjects = tabsResponse;
                         final Set<GadgetDefinition> gadgetDefs = new HashSet<GadgetDefinition>();
 
                         // Apply the theme.
@@ -181,6 +187,12 @@ public class StartPageContent extends FlowPanel
                                     }
                                 });
 
+                        HashMap<String, String> params = new HashMap<String, String>();
+                        params.put("tab", Long.toString(tabDomainObjects.get(0).getId()));
+                        params.put("galleryTab", "Apps");
+                        settings.setTargetHistoryToken(Session.getInstance().generateUrl(
+                                new CreateUrlRequest(Page.GALLERY, params)));
+
                         // Respond to history changes.
                         Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
                                 new Observer<UpdatedHistoryParametersEvent>()
@@ -194,6 +206,7 @@ public class StartPageContent extends FlowPanel
                                         {
                                             HashMap<String, String> params = new HashMap<String, String>();
                                             params.put("tab", event.getParameters().get("tab"));
+
                                             params.put("galleryTab", "Apps");
                                             settings.setTargetHistoryToken(Session.getInstance().generateUrl(
                                                     new CreateUrlRequest(Page.GALLERY, params)));

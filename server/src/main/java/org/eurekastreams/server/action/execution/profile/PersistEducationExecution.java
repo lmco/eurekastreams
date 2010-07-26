@@ -46,6 +46,10 @@ import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
  */
 public class PersistEducationExecution implements ExecutionStrategy<ServiceActionContext>
 {
+    /**
+     * One day in milliseconds, used to alleviate time zone issues.
+     */
+    private static final long DAY_IN_MILLISECONDS = 86400000L;
 
     /**
      * Person Mapper to lookup current user.
@@ -104,6 +108,7 @@ public class PersistEducationExecution implements ExecutionStrategy<ServiceActio
                     && !formdata.get(PersistEducationValidation.GRADDATE_KEY).equals(""))
             {
                 gradDate = df.parse(String.valueOf(formdata.get(PersistEducationValidation.GRADDATE_KEY)));
+                gradDate = new Date(gradDate.getTime() + DAY_IN_MILLISECONDS);
             }
         }
         catch (ParseException e)

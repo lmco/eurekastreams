@@ -15,8 +15,6 @@
  */
 package org.eurekastreams.web.client.ui.pages.stream;
 
-import java.util.HashMap;
-
 import org.eurekastreams.server.domain.stream.GroupStreamDTO;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
@@ -27,13 +25,11 @@ import org.eurekastreams.web.client.events.StreamViewsLoadedEvent;
 import org.eurekastreams.web.client.events.SwitchedToGroupStreamEvent;
 import org.eurekastreams.web.client.events.SwitchedToSavedSearchEvent;
 import org.eurekastreams.web.client.events.SwitchedToStreamViewEvent;
-import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.UserLoggedInEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserGroupStreamsResponseEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserStreamSearchesResponseEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserStreamViewsResponseEvent;
-import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.GroupStreamListModel;
 import org.eurekastreams.web.client.model.StreamSearchListModel;
 import org.eurekastreams.web.client.model.StreamViewListModel;
@@ -208,13 +204,7 @@ public class StreamContent extends Composite
 
                         if (selectFirstView)
                         {
-                            HashMap<String, String> params = new HashMap<String, String>();
-                            params.put("viewId", String.valueOf(event.getResponse().getStreamFilters().get(0).getId()));
-                            params.put("listId", String.valueOf(event.getResponse().getStreamFilters().get(0).getId()));
-
-                            Session.getInstance().getEventBus().notifyObservers(
-                                    new UpdateHistoryEvent(new CreateUrlRequest(params, true)));
-
+                            viewListWidget.activateFilter(event.getResponse().getStreamFilters().get(0));
                         }
                         Session.getInstance().getEventBus().notifyObservers(
                                 new StreamViewsLoadedEvent(event.getResponse().getStreamFilters()));

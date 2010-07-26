@@ -100,7 +100,7 @@ public class DocumentationHelpPanel extends FlowPanel
     private FlowPanel buildTourPanel()
     {
         FlowPanel panel = new FlowPanel();
-        Anchor imageBlockPanel = new Anchor("", "http://eurekastreams.org/tours/reputation");
+        Anchor imageBlockPanel = new Anchor("", "http://eurekastreams.org/tours/reputation", "_blank");
         imageBlockPanel.addStyleName("getting-started-help-image-box");
 
         FlowPanel textPanel = new FlowPanel();
@@ -109,7 +109,7 @@ public class DocumentationHelpPanel extends FlowPanel
         panel.add(imageBlockPanel);
         panel.add(textPanel);
 
-        Anchor header = new Anchor("Tour", "http://eurekastreams.org/tours/reputation");
+        Anchor header = new Anchor("Tour", "http://eurekastreams.org/tours/reputation", "_blank");
         header.addStyleName("display-name");
         Label content = new Label("Learn how Eureka Streams can help you: build your reputation and career, "
                 + "enhance your team’s or community’s communication, and create your own personalized experience.");
@@ -129,7 +129,7 @@ public class DocumentationHelpPanel extends FlowPanel
     private FlowPanel buildGettingStartedPanel()
     {
         FlowPanel panel = new FlowPanel();
-        Anchor imageBlockPanel = new Anchor("", "http://eurekastreams.org/getting-started");
+        Anchor imageBlockPanel = new Anchor("", "http://eurekastreams.org/getting-started", "_blank");
         imageBlockPanel.addStyleName("instructional-videos-help-image-box");
 
         FlowPanel textPanel = new FlowPanel();
@@ -138,7 +138,7 @@ public class DocumentationHelpPanel extends FlowPanel
         panel.add(imageBlockPanel);
         panel.add(textPanel);
 
-        Anchor header = new Anchor("Getting Started Videos", "http://eurekastreams.org/getting-started");
+        Anchor header = new Anchor("Getting Started Videos", "http://eurekastreams.org/getting-started", "_blank");
         header.addStyleName("display-name");
         Label content = new Label("View short video overviews showing you how to get "
                 + "started with of the primary features and functions of Eureka Streams");
@@ -158,7 +158,7 @@ public class DocumentationHelpPanel extends FlowPanel
     private FlowPanel buildFaqsPanel()
     {
         FlowPanel panel = new FlowPanel();
-        Anchor imageBlockPanel = new Anchor("", "http://eurekastreams.org/faqs");
+        Anchor imageBlockPanel = new Anchor("", "http://eurekastreams.org/faqs", "_blank");
         imageBlockPanel.addStyleName("faqs-help-image-box ");
 
         FlowPanel textPanel = new FlowPanel();
@@ -167,7 +167,7 @@ public class DocumentationHelpPanel extends FlowPanel
         panel.add(imageBlockPanel);
         panel.add(textPanel);
 
-        Anchor header = new Anchor("FAQs", "http://eurekastreams.org/faqs");
+        Anchor header = new Anchor("FAQs", "http://eurekastreams.org/faqs", "_blank");
         header.addStyleName("display-name");
         Label content = new Label("Get answers to some of the most frequently asked questions about Eureka Streams.");
 

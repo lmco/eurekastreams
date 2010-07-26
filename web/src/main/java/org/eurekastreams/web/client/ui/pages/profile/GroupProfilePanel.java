@@ -16,7 +16,6 @@
 package org.eurekastreams.web.client.ui.pages.profile;
 
 import org.eurekastreams.commons.client.ActionProcessor;
-import org.eurekastreams.server.action.request.profile.GetCurrentUserFollowingStatusRequest;
 import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
 import org.eurekastreams.server.action.request.profile.GetRequestForGroupMembershipRequest;
 import org.eurekastreams.server.domain.DomainGroup;
@@ -46,7 +45,6 @@ import org.eurekastreams.web.client.events.data.GotRequestForGroupMembershipResp
 import org.eurekastreams.web.client.events.data.InsertedGroupMemberResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedRequestForGroupMembershipResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
-import org.eurekastreams.web.client.model.CurrentUserPersonFollowingStatusModel;
 import org.eurekastreams.web.client.model.GroupCoordinatorsModel;
 import org.eurekastreams.web.client.model.GroupMembersModel;
 import org.eurekastreams.web.client.model.GroupMembershipRequestModel;
@@ -176,7 +174,6 @@ public class GroupProfilePanel extends FlowPanel
                         new CreateUrlRequest(Page.GROUP_SETTINGS, accountId)));
 
         ActionProcessor inProcessor = Session.getInstance().getActionProcessor();
-        inProcessor.setQueueRequests(true);
 
         about = new GroupAboutPanel(accountId);
         portalPageContainer.addStyleName("profile-page-container");
@@ -204,10 +201,6 @@ public class GroupProfilePanel extends FlowPanel
                 });
 
         GroupModel.getInstance().fetch(accountId, false);
-        CurrentUserPersonFollowingStatusModel.getInstance().fetch(
-                new GetCurrentUserFollowingStatusRequest(accountId, EntityType.GROUP), false);
-        inProcessor.setQueueRequests(false);
-        inProcessor.fireQueuedRequests();
     }
 
     /**
@@ -218,6 +211,9 @@ public class GroupProfilePanel extends FlowPanel
      */
     public void setEntity(final DomainGroupEntity inGroup)
     {
+        ActionProcessor inProcessor = Session.getInstance().getActionProcessor();
+        inProcessor.setQueueRequests(true);
+
         if (inGroup == null)
         {
             showInvalidGroupMessage();
@@ -338,6 +334,9 @@ public class GroupProfilePanel extends FlowPanel
 
         eventBus.notifyObservers(StreamReinitializeRequestEvent.getEvent());
         GroupModel.getInstance().authorize(inGroup.getShortName(), true);
+        
+        inProcessor.setQueueRequests(false);
+        inProcessor.fireQueuedRequests();
     }
 
     /**
@@ -541,6 +540,7 @@ public class GroupProfilePanel extends FlowPanel
      *
      * @return The tab.
      */
+    @SuppressWarnings("unchecked")
     private SimpleTab buildAdminTab()
     {
         final EventBus eventBus = Session.getInstance().getEventBus();

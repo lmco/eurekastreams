@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-    <ModulePrefs title="Delicious" description="This plugin imports bookmarks from any publically available Delicious user account. To configure, enter the Delicious account user name." thumbnail="http://localhost:8080/style/images/deliciousIconSmall.png" title_url="http://eurekastreams.org" author="Eureka Framework" screenshot="http://localhost:8080/style/images/deliciousIconLarge.png" author_email="support@eurekastreams.org">
+    <ModulePrefs title="Delicious" description="This plugin imports bookmarks from any publically available Delicious user account. To configure, enter the Delicious account user name." 
+    	thumbnail="${build.web.baseurl}/style/images/deliciousIconSmall.png" title_url="http://eurekastreams.org" author="Eureka Streams" 
+    	screenshot="${build.web.baseurl}/style/images/deliciousIconLarge.png" author_email="support@eurekastreams.org">
         <Require feature="views" />
         <Require feature="eurekastreams-streamplugin"/>
     </ModulePrefs>

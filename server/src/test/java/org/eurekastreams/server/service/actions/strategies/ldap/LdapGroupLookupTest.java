@@ -79,14 +79,14 @@ public class LdapGroupLookupTest
     {
         HashMap<String, LdapTemplate> templates = new HashMap<String, LdapTemplate>();
 
-        templates.put("domainacct", templateMock);
+        templates.put("domainname", templateMock);
 
         sut = new LdapGroupLookup(templates, filterCreatorMock);
     }
 
     /**
      * Tests looking up group.
-     * 
+     *
      * @throws NamingException
      *             shouldn't be thrown here.
      */
@@ -105,7 +105,7 @@ public class LdapGroupLookupTest
                 will(returnValue(contextSourceUrls));
 
                 oneOf(filterCreatorMock).getFilter("sAMAccountName=name exists");
-                
+
                 oneOf(templateMock).search(with(any(String.class)), with(any(String.class)),
                         with(any(SearchControls.class)), with(any(AttributesMapper.class)));
             }
@@ -117,7 +117,7 @@ public class LdapGroupLookupTest
 
     /**
      * Tests looking up group with a domain.
-     * 
+     *
      * @throws NamingException
      *             shouldn't be thrown here.
      */
@@ -136,13 +136,13 @@ public class LdapGroupLookupTest
                 will(returnValue(contextSourceUrls));
 
                 oneOf(filterCreatorMock).getFilter("sAMAccountName=name exists");
-                
+
                 oneOf(templateMock).search(with(any(String.class)), with(any(String.class)),
                         with(any(SearchControls.class)), with(any(AttributesMapper.class)));
             }
         });
 
-        sut.groupExists("domainacct\\name exists");
+        sut.groupExists("domainname\\name exists");
         context.assertIsSatisfied();
     }
 }

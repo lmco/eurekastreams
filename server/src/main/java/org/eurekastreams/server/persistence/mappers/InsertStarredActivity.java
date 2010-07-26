@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.persistence.mappers;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,8 +25,6 @@ import org.eurekastreams.server.domain.stream.StarredActivity;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetStarredActivityIds;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Insert entry into StarredActivity table.

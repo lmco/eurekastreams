@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-    <ModulePrefs title="YouTube" description="This plugin imports video published from any publically available YouTube user account. To configure, enter the YouTube account user name." thumbnail="http://localhost:8080/style/images/youTubeIconSmall.png" title_url="http://eurekastreams.org" author="Eureka Framework" screenshot="http://localhost:8080/style/images/youTubeIconLarge.png" author_email="support@eurekastreams.org">
+    <ModulePrefs title="YouTube" description="This plugin imports video published from any publically available YouTube user account. To configure, enter the YouTube account user name." 
+    thumbnail="${build.web.baseurl}/style/images/youTubeIconSmall.png" title_url="http://eurekastreams.org" author="Eureka Streams" 
+    screenshot="${build.web.baseurl}/style/images/youTubeIconLarge.png" author_email="support@eurekastreams.org">
         <Require feature="views" />
         <Require feature="eurekastreams-streamplugin"/>
     </ModulePrefs>

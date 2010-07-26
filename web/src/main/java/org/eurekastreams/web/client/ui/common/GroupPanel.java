@@ -74,7 +74,8 @@ public class GroupPanel extends FlowPanel
         Widget org;
         if (makeLinkable)
         {
-            String nameUrl = Session.getInstance().generateUrl(new CreateUrlRequest(Page.GROUPS, group.getShortName()));
+            String nameUrl = Session.getInstance().generateUrl(
+                    new CreateUrlRequest(Page.GROUPS, group.getShortName()));
             String orgUrl = Session.getInstance().generateUrl(
                     new CreateUrlRequest(Page.ORGANIZATIONS, group.getParentOrganizationShortName()));
             name = new Hyperlink(group.getName(), nameUrl);

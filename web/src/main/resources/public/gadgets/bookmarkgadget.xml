@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-    <ModulePrefs title="Bookmarks" thumbnail="http://localhost:8080/style/images/bookmarksGadgetThumbnail.png" title_url="http://eurekastreams.org" author="Eureka Framework"
+    <ModulePrefs title="Bookmarks" thumbnail="${build.web.baseurl}/style/images/bookmarksGadgetThumbnail.png" title_url="http://eurekastreams.org" author="Eureka Streams"
         description="App to store custom bookmarks and search predefined bookmarks." author_email="support@eurekastreams.org">
         <Require feature="opensocial-0.8" />
         <Require feature="osapi" />
@@ -23,7 +23,7 @@
     <![CDATA[
         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
         
-        <script type="text/javascript" src="http://localhost:8080/scripts/external-js-min.js" ></script>
+        <script type="text/javascript" src="${build.web.baseurl}/scripts/external-js-min.js" ></script>
         
         <style type="text/css">
             body
@@ -218,7 +218,7 @@
         <script type="text/os-data" xmlns:os="http://ns.opensocial.org/2008/markup" >
             <os:ViewerRequest key="databindviewer"/>
             <os:PersonAppDataRequest key="bookmarksDataSet" userId="@viewer" appId="@app"/>
-            <os:HttpRequest refreshInterval="0"  key="linksDataSet" href="http://localhost:8080/org/eurekastreams/gadgets/bookmarklinks.json" />
+            <os:HttpRequest refreshInterval="0"  key="linksDataSet" href="${build.web.baseurl}/org/eurekastreams/gadgets/bookmarklinks.json" />
         </script>
         
     ]]>

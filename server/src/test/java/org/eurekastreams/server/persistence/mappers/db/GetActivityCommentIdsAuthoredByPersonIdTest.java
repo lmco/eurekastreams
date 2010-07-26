@@ -17,13 +17,12 @@ package org.eurekastreams.server.persistence.mappers.db;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Before;
 import org.junit.Test;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Test fixture for GetActivityCommentIdsAuthoredByPersonId.

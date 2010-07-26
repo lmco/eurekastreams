@@ -223,7 +223,7 @@ public class GadgetMetaDataPanel extends FlowPanel
         title.addStyleName("title");
         dataPanel.add(title);
         dataPanel.add(new HTML(metaData.getDescription()));
-        Anchor titleUrl = new Anchor(metaData.getTitleUrl(), metaData.getTitleUrl());
+        Anchor titleUrl = new Anchor(metaData.getTitleUrl(), metaData.getTitleUrl(), "_blank");
         titleUrl.addStyleName("gadget-title-url");
 
         dataPanel.add(titleUrl);

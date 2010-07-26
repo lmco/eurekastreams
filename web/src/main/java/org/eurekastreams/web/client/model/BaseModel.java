@@ -128,6 +128,9 @@ public abstract class BaseModel
         {
             public void onFailure(final Throwable caught)
             {
+                cachedRequests.remove(actionKey);
+                cachedData.remove(actionKey);
+
                 if (caught instanceof ValidationException)
                 {
                     Session.getInstance().getEventBus().notifyObservers(

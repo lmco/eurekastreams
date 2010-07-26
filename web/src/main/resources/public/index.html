@@ -14,28 +14,28 @@
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
     <script type="text/javascript" src="/gadgets/js/core:rpc:?container=eureka"></script>
     <script type="text/javascript" src="/gadgets/js/samplefeature:eurekastreams-checklist:eurekastreams-streamplugin?c=1&container=eureka"></script>
-    <script type="text/javascript" language="javascript" src="/org.eurekastreams.web.Application.nocache.js?${timestamp}"></script>
+    <script type="text/javascript" language="javascript" src="/${build.gwt.modulename}.nocache.js?${timestamp}"></script>
 	<script type="text/javascript" src="/scripts/external-js-min.js?${timestamp}"></script>
 	
 
         
 	<!-- Start Piwik Tag -->
 	<script type="text/javascript">
-	var siteid="${eureka.anaylitics.siteid}";
-	var pkBaseURL=${eureka.analytics.hostname};
+	var siteid="${build.analytics.siteid}";
+	var pkBaseURL="${build.analytics.hostname}";
 	if(siteid > 0)
 	{
 		document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
 	}
 	</script><script type="text/javascript">
-	if(siteid > 0)
+	try {
+	if(Piwik != null)
 	{
-		try {
 		var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", siteid);
 		piwikTracker.trackPageView();
 		piwikTracker.enableLinkTracking();
-		} catch( err ) {}
 	}
+	} catch( err ) {}
 	</script>
 	<!-- End Piwik Tag -->
         

@@ -1,0 +1,527 @@
+/*
+ * Copyright (c) 2010 Lockheed Martin Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.eurekastreams.server.action.execution.settings;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.action.request.SetPersonLockedStatusRequest;
+import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.domain.SystemSettings;
+import org.eurekastreams.server.persistence.mappers.FindSystemSettings;
+import org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName;
+import org.eurekastreams.server.persistence.mappers.db.GetPersonIdsByLockedStatus;
+import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.Test;
+
+/**
+ * Test for RefreshPeopleExecution.
+ * 
+ */
+public class RefreshPeopleExecutionTest
+{
+    /** Used for mocking objects. */
+    private JUnit4Mockery context = new JUnit4Mockery()
+    {
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
+
+    /**
+     * Source of person information for users.
+     */
+    private PersonSource source = context.mock(PersonSource.class);
+
+    /**
+     * Action key for create action to be called for new user.
+     */
+    private String createPersonActionKey = null;
+
+    /**
+     * Action key for set status action to be called for users.
+     */
+    private String lockPersonActionKey = null;
+
+    /**
+     * {@link GetNonLockedPersonIds}.
+     */
+    private GetPersonIdsByLockedStatus personIdsByLockedStatusDAO = context.mock(GetPersonIdsByLockedStatus.class);
+
+    /**
+     * {@link GetRootOrganizationIdAndShortName}.
+     */
+    private GetRootOrganizationIdAndShortName rootOrgIdDAO = context.mock(GetRootOrganizationIdAndShortName.class);
+
+    /**
+     * The settings mapper.
+     */
+    private FindSystemSettings settingsMapper = context.mock(FindSystemSettings.class);
+
+    /**
+     * Person.
+     */
+    private Person person1 = context.mock(Person.class, "person1");
+
+    /**
+     * Person.
+     */
+    private Person person2 = context.mock(Person.class, "person2");
+
+    /**
+     * Person.
+     */
+    private Person person3 = context.mock(Person.class, "person3");
+
+    /**
+     * {@link SystemSettings}.
+     */
+    private SystemSettings settings = context.mock(SystemSettings.class);
+
+    /**
+     * {@link TaskHandlerActionContext}.
+     */
+    private TaskHandlerActionContext actionContext = context.mock(TaskHandlerActionContext.class);
+
+    /**
+     * System under test.
+     */
+    private RefreshPeopleExecution sut = new RefreshPeopleExecution(source, "create", "lock",
+            personIdsByLockedStatusDAO, rootOrgIdDAO, settingsMapper);
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testCreate()
+    {
+        final Set<Person> people = new HashSet<Person>();
+        final List<UserActionRequest> list = new ArrayList<UserActionRequest>();
+
+        people.add(person1);
+        people.add(person2);
+        people.add(person3);
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(source).getPeople();
+                will(returnValue(people));
+
+                allowing(personIdsByLockedStatusDAO).execute(false);
+                will(returnValue(new ArrayList<String>()));
+
+                allowing(personIdsByLockedStatusDAO).execute(true);
+                will(returnValue(new ArrayList<String>()));
+
+                allowing(settingsMapper).execute(null);
+                will(returnValue(settings));
+
+                allowing(settings).getSendWelcomeEmails();
+                will(returnValue(false));
+
+                allowing(rootOrgIdDAO).getRootOrganizationId();
+                will(returnValue(1L));
+
+                allowing(person3).getAccountId();
+                will(returnValue("p3"));
+
+                allowing(person2).getAccountId();
+                will(returnValue("p2"));
+
+                allowing(person1).getAccountId();
+                will(returnValue("p1"));
+
+                allowing(person3).getDisplayName();
+                will(returnValue("p3"));
+
+                allowing(person2).getDisplayName();
+                will(returnValue("p2"));
+
+                allowing(person1).getDisplayName();
+                will(returnValue("p1"));
+
+                allowing(actionContext).getUserActionRequests();
+                will(returnValue(list));
+            }
+        });
+
+        sut.execute(actionContext);
+
+        // should be 3 creates and a action to adjust org count.
+        assertEquals(4, list.size());
+        assertEquals("create", list.get(0).getActionKey());
+        assertEquals("increaseOrgEmployeeCountAction", list.get(3).getActionKey());
+
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Same as above test, only create disabled so should have no actions in queue list.
+     */
+    @Test
+    public void testCreateWithCreateDisabled()
+    {
+        RefreshPeopleExecution tempSut = new RefreshPeopleExecution(source, "", "lock", personIdsByLockedStatusDAO,
+                rootOrgIdDAO, settingsMapper);
+
+        final Set<Person> people = new HashSet<Person>();
+        final List<UserActionRequest> list = new ArrayList<UserActionRequest>();
+
+        people.add(person1);
+        people.add(person2);
+        people.add(person3);
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(source).getPeople();
+                will(returnValue(people));
+
+                allowing(personIdsByLockedStatusDAO).execute(false);
+                will(returnValue(new ArrayList<String>()));
+
+                allowing(personIdsByLockedStatusDAO).execute(true);
+                will(returnValue(new ArrayList<String>()));
+
+                allowing(settingsMapper).execute(null);
+                will(returnValue(settings));
+
+                allowing(settings).getSendWelcomeEmails();
+                will(returnValue(false));
+
+                allowing(rootOrgIdDAO).getRootOrganizationId();
+                will(returnValue(1L));
+
+                allowing(person3).getAccountId();
+                will(returnValue("p3"));
+
+                allowing(person2).getAccountId();
+                will(returnValue("p2"));
+
+                allowing(person1).getAccountId();
+                will(returnValue("p1"));
+
+                allowing(person3).getDisplayName();
+                will(returnValue("p3"));
+
+                allowing(person2).getDisplayName();
+                will(returnValue("p2"));
+
+                allowing(person1).getDisplayName();
+                will(returnValue("p1"));
+
+                allowing(actionContext).getUserActionRequests();
+                will(returnValue(list));
+            }
+        });
+
+        tempSut.execute(actionContext);
+
+        assertEquals(0, list.size());
+
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testUnlock()
+    {
+        final Set<Person> people = new HashSet<Person>();
+        final ArrayList<String> unlocked = new ArrayList(Arrays.asList("p1", "p2"));
+        final ArrayList<String> locked = new ArrayList(Arrays.asList("p3"));
+        final List<UserActionRequest> list = new ArrayList<UserActionRequest>();
+
+        people.add(person1);
+        people.add(person2);
+        people.add(person3);
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(source).getPeople();
+                will(returnValue(people));
+
+                allowing(personIdsByLockedStatusDAO).execute(false);
+                will(returnValue(unlocked));
+
+                allowing(personIdsByLockedStatusDAO).execute(true);
+                will(returnValue(locked));
+
+                allowing(settingsMapper).execute(null);
+                will(returnValue(settings));
+
+                allowing(settings).getSendWelcomeEmails();
+                will(returnValue(false));
+
+                allowing(rootOrgIdDAO).getRootOrganizationId();
+                will(returnValue(1L));
+
+                allowing(person3).getAccountId();
+                will(returnValue("p3"));
+
+                allowing(person2).getAccountId();
+                will(returnValue("p2"));
+
+                allowing(person1).getAccountId();
+                will(returnValue("p1"));
+
+                allowing(person3).getDisplayName();
+                will(returnValue("p3"));
+
+                allowing(person2).getDisplayName();
+                will(returnValue("p2"));
+
+                allowing(person1).getDisplayName();
+                will(returnValue("p1"));
+
+                allowing(actionContext).getUserActionRequests();
+                will(returnValue(list));
+            }
+        });
+
+        sut.execute(actionContext);
+
+        assertEquals(1, list.size());
+
+        UserActionRequest uar = list.get(0);
+        SetPersonLockedStatusRequest splsr = (SetPersonLockedStatusRequest) uar.getParams();
+
+        assertEquals("lock", uar.getActionKey());
+        assertEquals(false, splsr.getLockedStatus());
+
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Same as above test, only lock/unlock disabled so should have no actions in queue list.
+     */
+    @Test
+    public void testUnlockWithUnlockDisabled()
+    {
+        RefreshPeopleExecution tempSut = new RefreshPeopleExecution(source, "create", "", personIdsByLockedStatusDAO,
+                rootOrgIdDAO, settingsMapper);
+
+        final Set<Person> people = new HashSet<Person>();
+        final ArrayList<String> unlocked = new ArrayList(Arrays.asList("p1", "p2"));
+        final ArrayList<String> locked = new ArrayList(Arrays.asList("p3"));
+        final List<UserActionRequest> list = new ArrayList<UserActionRequest>();
+
+        people.add(person1);
+        people.add(person2);
+        people.add(person3);
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(source).getPeople();
+                will(returnValue(people));
+
+                allowing(personIdsByLockedStatusDAO).execute(false);
+                will(returnValue(unlocked));
+
+                allowing(personIdsByLockedStatusDAO).execute(true);
+                will(returnValue(locked));
+
+                allowing(settingsMapper).execute(null);
+                will(returnValue(settings));
+
+                allowing(settings).getSendWelcomeEmails();
+                will(returnValue(false));
+
+                allowing(rootOrgIdDAO).getRootOrganizationId();
+                will(returnValue(1L));
+
+                allowing(person3).getAccountId();
+                will(returnValue("p3"));
+
+                allowing(person2).getAccountId();
+                will(returnValue("p2"));
+
+                allowing(person1).getAccountId();
+                will(returnValue("p1"));
+
+                allowing(person3).getDisplayName();
+                will(returnValue("p3"));
+
+                allowing(person2).getDisplayName();
+                will(returnValue("p2"));
+
+                allowing(person1).getDisplayName();
+                will(returnValue("p1"));
+
+                allowing(actionContext).getUserActionRequests();
+                will(returnValue(list));
+            }
+        });
+
+        tempSut.execute(actionContext);
+
+        assertEquals(0, list.size());
+
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testLock()
+    {
+        final Set<Person> people = new HashSet<Person>();
+        final ArrayList<String> unlocked = new ArrayList(Arrays.asList("p1", "p2", "p3"));
+        final ArrayList<String> locked = new ArrayList();
+        final List<UserActionRequest> list = new ArrayList<UserActionRequest>();
+
+        people.add(person1);
+        people.add(person2);
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(source).getPeople();
+                will(returnValue(people));
+
+                allowing(personIdsByLockedStatusDAO).execute(false);
+                will(returnValue(unlocked));
+
+                allowing(personIdsByLockedStatusDAO).execute(true);
+                will(returnValue(locked));
+
+                allowing(settingsMapper).execute(null);
+                will(returnValue(settings));
+
+                allowing(settings).getSendWelcomeEmails();
+                will(returnValue(false));
+
+                allowing(rootOrgIdDAO).getRootOrganizationId();
+                will(returnValue(1L));
+
+                allowing(person3).getAccountId();
+                will(returnValue("p3"));
+
+                allowing(person2).getAccountId();
+                will(returnValue("p2"));
+
+                allowing(person1).getAccountId();
+                will(returnValue("p1"));
+
+                allowing(person3).getDisplayName();
+                will(returnValue("p3"));
+
+                allowing(person2).getDisplayName();
+                will(returnValue("p2"));
+
+                allowing(person1).getDisplayName();
+                will(returnValue("p1"));
+
+                allowing(actionContext).getUserActionRequests();
+                will(returnValue(list));
+            }
+        });
+
+        sut.execute(actionContext);
+
+        assertEquals(1, list.size());
+
+        UserActionRequest uar = list.get(0);
+        SetPersonLockedStatusRequest splsr = (SetPersonLockedStatusRequest) uar.getParams();
+
+        assertEquals("lock", uar.getActionKey());
+        assertEquals(true, splsr.getLockedStatus());
+
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Same as above test, only lock/unlock disabled so should have no actions in queue list.
+     */
+    @Test
+    public void testLockWithLockDisabled()
+    {
+        RefreshPeopleExecution tempSut = new RefreshPeopleExecution(source, "create", "", personIdsByLockedStatusDAO,
+                rootOrgIdDAO, settingsMapper);
+
+        final Set<Person> people = new HashSet<Person>();
+        final ArrayList<String> unlocked = new ArrayList(Arrays.asList("p1", "p2", "p3"));
+        final ArrayList<String> locked = new ArrayList();
+        final List<UserActionRequest> list = new ArrayList<UserActionRequest>();
+
+        people.add(person1);
+        people.add(person2);
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(source).getPeople();
+                will(returnValue(people));
+
+                allowing(personIdsByLockedStatusDAO).execute(false);
+                will(returnValue(unlocked));
+
+                allowing(personIdsByLockedStatusDAO).execute(true);
+                will(returnValue(locked));
+
+                allowing(settingsMapper).execute(null);
+                will(returnValue(settings));
+
+                allowing(settings).getSendWelcomeEmails();
+                will(returnValue(false));
+
+                allowing(rootOrgIdDAO).getRootOrganizationId();
+                will(returnValue(1L));
+
+                allowing(person3).getAccountId();
+                will(returnValue("p3"));
+
+                allowing(person2).getAccountId();
+                will(returnValue("p2"));
+
+                allowing(person1).getAccountId();
+                will(returnValue("p1"));
+
+                allowing(person3).getDisplayName();
+                will(returnValue("p3"));
+
+                allowing(person2).getDisplayName();
+                will(returnValue("p2"));
+
+                allowing(person1).getDisplayName();
+                will(returnValue("p1"));
+
+                allowing(actionContext).getUserActionRequests();
+                will(returnValue(list));
+            }
+        });
+
+        tempSut.execute(actionContext);
+
+        assertEquals(0, list.size());
+
+        context.assertIsSatisfied();
+    }
+}

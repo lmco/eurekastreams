@@ -28,6 +28,8 @@ import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.InlineHyperlink;
 import com.google.gwt.user.client.ui.Panel;
 
+import java.util.HashMap;
+
 /**
  * Displays an avatar and makes it link to the proper item's profile page.
  */
@@ -35,7 +37,7 @@ public class AvatarLinkPanel extends Composite
 {
     /**
      * Constructor.
-     *
+     * 
      * @param entityType
      *            Type of entity the avatar belongs to.
      * @param entityUniqueId
@@ -65,7 +67,10 @@ public class AvatarLinkPanel extends Composite
             // this should never happen
             return;
         }
-        String linkUrl = Session.getInstance().generateUrl(new CreateUrlRequest(page, entityUniqueId));
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("tab", "Stream");
+
+        String linkUrl = Session.getInstance().generateUrl(new CreateUrlRequest(page, entityUniqueId, params));
 
         Hyperlink link = new InlineHyperlink("", linkUrl);
         main.add(link);
@@ -74,7 +79,7 @@ public class AvatarLinkPanel extends Composite
 
     /**
      * Constructor.
-     *
+     * 
      * @param entityId
      *            the entity ID.
      * @param entityUniqueId
@@ -94,7 +99,7 @@ public class AvatarLinkPanel extends Composite
 
     /**
      * Constructor.
-     *
+     * 
      * @param entityId
      *            the entity ID.
      * @param entityUniqueId

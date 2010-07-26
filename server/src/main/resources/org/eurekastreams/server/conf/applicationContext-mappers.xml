@@ -1070,4 +1070,12 @@
 	<bean id="getRequestsForGroupMembershipMapper" class="org.eurekastreams.server.persistence.mappers.db.GetRequestsForGroupMembershipByGroup" />
 	
 	<bean id="updateGadgetsWithNewTabLayoutMapper" class="org.eurekastreams.server.persistence.mappers.db.UpdateGadgetsWithNewTabLayoutMapper" />
+	
+	<bean id="getOrganizationProxyById" class="org.eurekastreams.server.persistence.mappers.db.GetOrganizationProxyById" />
+	
+	<bean id="getPersonIdsByLockedStatus" class="org.eurekastreams.server.persistence.mappers.db.GetPersonIdsByLockedStatus" />
+	
+	<bean id="setPersonLockedStatus" class="org.eurekastreams.server.persistence.mappers.db.SetPersonLockedStatus" />
+	
+	<bean id="increaseOrgEmployeeCount" class="org.eurekastreams.server.persistence.mappers.db.IncreaseOrgEmployeeCount" />
 </beans>

@@ -16,6 +16,7 @@
 package org.eurekastreams.web.client.ui.pages.profile.widgets;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.commons.client.ActionRequestImpl;
@@ -151,10 +152,13 @@ public class BreadcrumbPanel extends FlowPanel
 
         this.clear();
 
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("tab", "Stream");
+        
         for (BreadcrumbDTO crumb : breadcrumbs)
         {
             Hyperlink crumbLink = new Hyperlink(crumb.getText(), Session.getInstance().generateUrl(
-                    new CreateUrlRequest(crumb.getPage(), crumb.getView())));
+                    new CreateUrlRequest(crumb.getPage(), crumb.getView(), params)));
             crumbLink.addStyleName("breadcrumb-link");
             this.add(crumbLink);
 

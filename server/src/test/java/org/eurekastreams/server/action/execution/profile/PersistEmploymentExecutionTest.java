@@ -16,13 +16,8 @@
 
 package org.eurekastreams.server.action.execution.profile;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 
 import org.eurekastreams.commons.actions.context.Principal;
@@ -169,18 +164,6 @@ public class PersistEmploymentExecutionTest extends MapperTest
         });
         Job job = (Job) sut.execute(currentContext);
         context.assertIsSatisfied();
-        DateFormat df = new SimpleDateFormat("MM/yyyy");
-
-        Date startDate;
-        Date endDate;
-
-        startDate = df.parse("08/2008");
-
-        endDate = df.parse("09/2009");
-
-        assertEquals(startDate, job.getDateFrom());
-
-        assertEquals(endDate, job.getDateTo());
     }
 
     /**

@@ -16,7 +16,6 @@
 package org.eurekastreams.web.client.ui.pages.profile;
 
 import org.eurekastreams.commons.client.ActionProcessor;
-import org.eurekastreams.server.action.request.profile.GetCurrentUserFollowingStatusRequest;
 import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
 import org.eurekastreams.server.domain.BackgroundItemType;
 import org.eurekastreams.server.domain.EntityType;
@@ -40,7 +39,6 @@ import org.eurekastreams.web.client.events.data.GotPersonalEmploymentResponseEve
 import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedPersonFollowerResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
-import org.eurekastreams.web.client.model.CurrentUserPersonFollowingStatusModel;
 import org.eurekastreams.web.client.model.PersonFollowersModel;
 import org.eurekastreams.web.client.model.PersonFollowingModel;
 import org.eurekastreams.web.client.model.PersonJoinedGroupsModel;
@@ -163,7 +161,6 @@ public class PersonalProfilePanel extends FlowPanel
         RootPanel.get().addStyleName("profile");
 
         ActionProcessor inProcessor = Session.getInstance().getActionProcessor();
-        inProcessor.setQueueRequests(true);
         about = new AboutPanel(accountId);
         portalPageContainer.addStyleName("profile-page-container");
         profileSettingsLink.addStyleName("configure-tab");
@@ -194,10 +191,6 @@ public class PersonalProfilePanel extends FlowPanel
                 });
 
         PersonalInformationModel.getInstance().fetch(accountId, false);
-        CurrentUserPersonFollowingStatusModel.getInstance().fetch(
-                new GetCurrentUserFollowingStatusRequest(accountId, EntityType.PERSON), false);
-        inProcessor.setQueueRequests(false);
-        inProcessor.fireQueuedRequests();
     }
 
     /**
@@ -208,6 +201,9 @@ public class PersonalProfilePanel extends FlowPanel
      */
     public void setEntity(final Person inPerson)
     {
+        ActionProcessor inProcessor = Session.getInstance().getActionProcessor();
+        inProcessor.setQueueRequests(true);
+
         person = inPerson;
         leftBarPanel.clear();
         portalPageContainer.clear();
@@ -301,6 +297,8 @@ public class PersonalProfilePanel extends FlowPanel
             Session.getInstance().getEventBus().notifyObservers(StreamReinitializeRequestEvent.getEvent());
         }
 
+        inProcessor.setQueueRequests(false);
+        inProcessor.fireQueuedRequests();
     }
 
     /**
@@ -340,8 +338,6 @@ public class PersonalProfilePanel extends FlowPanel
                         {
                             checklistPanel.setTaskComplete(biographyTask);
                         }
-                        Session.getInstance().getEventBus().removeObserver(GotPersonalBiographyResponseEvent.class,
-                                this);
                     }
                 });
 
@@ -354,8 +350,6 @@ public class PersonalProfilePanel extends FlowPanel
                         {
                             checklistPanel.setTaskComplete(educationTask);
                         }
-                        Session.getInstance().getEventBus().removeObserver(GotPersonalEducationResponseEvent.class,
-                                this);
                     }
                 });
 
@@ -368,15 +362,16 @@ public class PersonalProfilePanel extends FlowPanel
                         {
                             checklistPanel.setTaskComplete(workHistoryTask);
                         }
-                        Session.getInstance().getEventBus().removeObserver(GotPersonalEmploymentResponseEvent.class,
-                                this);
                     }
                 });
 
+        Session.getInstance().getActionProcessor().setQueueRequests(true);
         PersonalBiographyModel.getInstance().fetch(person.getAccountId(), true);
         PersonalEducationModel.getInstance().fetch(person.getId(), true);
         PersonalEmploymentModel.getInstance().fetch(person.getId(), true);
         PersonalStreamSettingsModel.getInstance().fetch(person.getAccountId(), true);
+        Session.getInstance().getActionProcessor().setQueueRequests(false);
+        Session.getInstance().getActionProcessor().fireQueuedRequests();
     }
 
     /**

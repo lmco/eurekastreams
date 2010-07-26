@@ -80,23 +80,25 @@ public class UnseenActivityNotificationPanel extends FlowPanel
                         }
                         else if (Session.getInstance().getParameterValue("streamSearch") == null)
                         {
-                            Session.getInstance().getTimer().unPauseJob("getUnseenActivityJob");
+                            Session.getInstance().getTimer().pauseJob("getUnseenActivityJob");
                             Session.getInstance().getTimer().changeFetchable("getUnseenActivityJob",
                                     UnseenActivityCountForViewModel.getInstance());
                             Session.getInstance().getTimer().changeRequest(
                                     "getUnseenActivityJob",
                                     new GetActivitiesByCompositeStreamRequest(event.getStreamId(), event
                                             .getLatestActivity()));
+                            Session.getInstance().getTimer().unPauseJob("getUnseenActivityJob");
                         }
                         else
                         {
-                            Session.getInstance().getTimer().unPauseJob("getUnseenActivityJob");
+                            Session.getInstance().getTimer().pauseJob("getUnseenActivityJob");
                             Session.getInstance().getTimer().changeFetchable("getUnseenActivityJob",
                                     UnseenActivityCountForSearchModel.getInstance());
                             Session.getInstance().getTimer().changeRequest(
                                     "getUnseenActivityJob",
                                     new GetStreamSearchResultsRequest(event.getStreamId(), Session.getInstance()
                                             .getParameterValue("streamSearch"), event.getLatestActivity()));
+                            Session.getInstance().getTimer().unPauseJob("getUnseenActivityJob");
                         }
 
                     }

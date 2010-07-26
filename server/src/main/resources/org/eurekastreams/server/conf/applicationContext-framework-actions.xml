@@ -148,6 +148,94 @@
         <constructor-arg value="true" />
     </bean>
     
+    <bean id="updateMembershipTaskHandler" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+        <!-- Validation -->
+        <constructor-arg ref="noValidationStrategy" />
+        <!-- Authorization -->
+        <constructor-arg ref="currentUserRootOrgCoordinatorAuthorization" />
+        <!-- Execution -->
+        <constructor-arg> 
+            <bean class="org.eurekastreams.server.action.execution.QueueAsynchActionExecution">
+                <constructor-arg value="clientInvokedRefreshMembershipAction" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="true" />
+    </bean>
+    
+    <!-- Similar to refreshMembershipAction, but hooked up to client button and to allows for different "refresh" functionality
+    than the quartz job, which invokes refreshMembershipAction-->
+    <bean id="clientInvokedRefreshMembershipAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+        <constructor-arg ref="noValidationStrategy" />        
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.settings.RefreshPeopleExecution">
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.action.execution.settings.PersonSourceLDAP">
+                        <constructor-arg ref="findSystemSettings" />
+                        <constructor-arg ref="personLookupStrategyMembershipCriteria" />
+                        <constructor-arg ref="personLookupStrategyLdapAttrib" />
+                    </bean>
+                </constructor-arg>
+                <constructor-arg value="createPersonAction"/>
+                <!-- NOTE: Set value below to "setPersonLockedStatusAction" or "" to enable/disable locking/unlocking  -->  
+                <constructor-arg value="setPersonLockedStatusAction"/>          
+                <constructor-arg ref="getPersonIdsByLockedStatus"/>
+                <constructor-arg ref="getRootOrganizationIdAndShortNameMapper"/>  
+                <constructor-arg ref="findSystemSettings" />              
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="true" />        
+    </bean>
+    
+    <bean id="refreshMembershipAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+        <constructor-arg ref="noValidationStrategy" />        
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.settings.RefreshPeopleExecution">
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.action.execution.settings.PersonSourceLDAP">
+                        <constructor-arg ref="findSystemSettings" />
+                        <constructor-arg ref="personLookupStrategyMembershipCriteria" />
+                        <constructor-arg ref="personLookupStrategyLdapAttrib" />
+                    </bean>
+                </constructor-arg>
+                <constructor-arg value="createPersonAction"/>
+                <!-- NOTE: Set value below to "setPersonLockedStatusAction" or "" to enable/disable locking/unlocking  -->  
+                <constructor-arg value=""/>          
+                <constructor-arg ref="getPersonIdsByLockedStatus"/>
+                <constructor-arg ref="getRootOrganizationIdAndShortNameMapper"/>  
+                <constructor-arg ref="findSystemSettings" />              
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="true" />        
+    </bean>    
+    
+    <bean id="createPersonAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+        <constructor-arg ref="noValidationStrategy" />        
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.settings.CreatePersonExecution">
+                <constructor-arg ref="createPersonActionFactory" />
+                <constructor-arg ref="jpaPersonMapper" />
+                <!-- email action ref -->
+                <constructor-arg value="sendWelcomeEmail"/> 
+                <constructor-arg ref="getOrganizationProxyById"/>            
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="false" />        
+    </bean>
+    
+    <bean id="setPersonLockedStatusAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />        
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.settings.SetPersonLockedStatusExecution">
+                <constructor-arg ref="setPersonLockedStatus" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />        
+    </bean>
+    
 	<bean id="deleteGroupExecution" class="org.eurekastreams.server.action.execution.profile.DeleteGroupFromDBExecution">
 		<constructor-arg ref="deleteGroupActivity" />
 		<constructor-arg ref="removeGroupFollowers" />
@@ -195,6 +283,30 @@
         <constructor-arg value="true" />
     </bean>    
 	
+    <bean id="increaseOrgEmployeeCountAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.IncreaseOrgEmployeeCountExecution">
+                <constructor-arg ref="increaseOrgEmployeeCount" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+    </bean>
+    
+   	<bean id="sendWelcomeEmail" class="org.eurekastreams.commons.actions.async.AsyncAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.action.execution.SendWelcomeEmailExecution">
+					<constructor-arg ref="emailerFactory" />
+					<constructor-arg type="java.lang.String" value="${eureka.web.baseurl}" />
+					<constructor-arg type="java.lang.String" value="Welcome to Eureka Streams" />
+					<constructor-arg type="java.lang.String" value="Congratulations! You have just been given access to Eureka Streams. Eureka streams enables knowledge workers to make informed, timely decisions by finding relevant colleagues and groups, following their stream of activity, and engaging in conversation.&lt;br/&gt;&lt;a href='$(url)'&gt;Set up your profile&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;Thank you,&lt;br/&gt;Eureka Product Team" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="true" />
+	</bean>
+
 	<bean id="passThruRequestTransformer" class="org.eurekastreams.server.action.request.transformer.PassThruRequestTransformer"/>
 	
 	<bean id="deleteEmployment" class="org.eurekastreams.commons.actions.service.ServiceAction">
@@ -267,7 +379,7 @@
 		<constructor-arg value="true" />
 	</bean>
 
-	<bean id="refreshMembershipAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
+	<bean id="refreshPeopleAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
 		<constructor-arg ref="noValidationStrategy" />
 		<constructor-arg>
 			<bean
@@ -277,6 +389,18 @@
 		</constructor-arg>
 		<constructor-arg value="false" />
 	</bean>
+	
+    <bean id="submitRefreshPeopleAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="currentUserRootOrgCoordinatorAuthorization" />
+        <constructor-arg> 
+            <bean class="org.eurekastreams.server.action.execution.QueueAsynchActionExecution">
+                <constructor-arg value="refreshPeopleAction" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+        <constructor-arg ref="taskHandler" />
+    </bean>
         
 	<bean id="addMembershipCriteria" class="org.eurekastreams.commons.actions.service.ServiceAction">
 		<constructor-arg ref="noValidationStrategy" />
@@ -321,15 +445,14 @@
                 <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
                 <constructor-arg ref="getGroupFollowerIds" />
                 <constructor-arg ref="personActorStrategy" />
-                <constructor-arg ref="jpaPersonMapper" />
-                <constructor-arg ref="jpaGroupMapper" />
-                <constructor-arg  ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
+                <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.service.actions.strategies.activity.ActivityDTOFromParamsStrategyByCommentDTO">
                         <constructor-arg ref="bulkActivitiesMapper"/>
                     </bean>
                 </constructor-arg>
                 <constructor-arg value="COMMENT" />
+                <constructor-arg ref="bulkPeopleByAccountIdMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg>
@@ -800,6 +923,7 @@
                         <constructor-arg value="DomainGroup" />
                     </bean>
                 </constructor-arg>
+                <constructor-arg ref="getGroupFollowerIds" />
 			</bean>
 		</constructor-arg>
 		<constructor-arg value="true" />
@@ -989,7 +1113,9 @@
 		<constructor-arg ref="noValidationStrategy" />
 		<constructor-arg>
 			<bean class="org.eurekastreams.server.action.authorization.profile.GetFollowersAuthorizationStrategy">
-				<constructor-arg ref="jpaGroupMapper" />
+				<constructor-arg ref="getCoordinatorIdsByGroupId" />
+				<constructor-arg ref="getGroupFollowerIds" />
+				<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 				<constructor-arg ref="getRecursiveOrgCoordinators"/>
 			</bean>
 		</constructor-arg>
@@ -1011,7 +1137,9 @@
 		<constructor-arg ref="noValidationStrategy" />
 		<constructor-arg>
 			<bean class="org.eurekastreams.server.action.authorization.profile.GetFollowersAuthorizationStrategy">
-				<constructor-arg ref="jpaGroupMapper" />
+				<constructor-arg ref="getCoordinatorIdsByGroupId" />
+				<constructor-arg ref="getGroupFollowerIds" />
+				<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 				<constructor-arg ref="getRecursiveOrgCoordinators"/>
 			</bean>
 		</constructor-arg>
@@ -1031,18 +1159,12 @@
 		<constructor-arg>
 			<bean
 				class="org.eurekastreams.server.action.execution.profile.GetCurrentUserFollowingStatusExecution">
-				<constructor-arg>
-					<ref bean="jpaPersonMapper" />
-				</constructor-arg>
-				<constructor-arg>
-					<ref bean="jpaGroupMapper" />
-				</constructor-arg>
-				<constructor-arg>
-					<ref bean="bulkPeopleByOpenSocialIdMapper" />
-				</constructor-arg>
-				<constructor-arg>
-					<ref bean="openSocialRegEx" />
-				</constructor-arg>
+				<constructor-arg ref="bulkPeopleByOpenSocialIdMapper" />
+				<constructor-arg ref="openSocialRegEx" />
+				<constructor-arg ref="getGroupFollowerIds" />
+				<constructor-arg ref="getFollowerIds" />
+				<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+				<constructor-arg ref="bulkPeopleByAccountIdMapper" />
 			</bean>
 		</constructor-arg>
 		<constructor-arg value="true" />
@@ -2207,8 +2329,8 @@
 		class="org.eurekastreams.server.service.actions.strategies.links.ConnectionFacade">
 		<property name="userAgent" value="Mozilla/4.76" />
 		<property name="connectionTimeOut" value="6000" />
-		<property name="proxyHost" value="" />
-		<property name="proxyPort" value="8080" />
+		<property name="proxyHost" value="${eureka.proxy.host}" />
+		<property name="proxyPort" value="${eureka.proxy.port}" />
 		<property name="redirectCodes">
 			<list>
 				<bean class="java.lang.Integer">
@@ -2301,8 +2423,6 @@
 				<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 				<constructor-arg ref="getGroupFollowerIds" />
 				<constructor-arg ref="personActorStrategy" />
-				<constructor-arg ref="jpaPersonMapper" />
-				<constructor-arg ref="jpaGroupMapper" />
 				<constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
 				<constructor-arg>
 					<bean
@@ -2311,6 +2431,7 @@
 					</bean>
 				</constructor-arg>
 				<constructor-arg value="VIEW" />
+				<constructor-arg ref="bulkPeopleByAccountIdMapper" />
 			</bean>
 		</constructor-arg>
 		<constructor-arg>
@@ -2409,8 +2530,6 @@
 				<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 				<constructor-arg ref="getGroupFollowerIds" />
 				<constructor-arg ref="personActorStrategy" />
-				<constructor-arg ref="jpaPersonMapper" />
-				<constructor-arg ref="jpaGroupMapper" />
 				<constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
 				<constructor-arg>
 					<bean
@@ -2419,6 +2538,7 @@
 					</bean>
 				</constructor-arg>
 				<constructor-arg value="VIEW" />
+				<constructor-arg ref="bulkPeopleByAccountIdMapper" />
 			</bean>
 		</constructor-arg>
 		<constructor-arg>
@@ -2480,7 +2600,7 @@
 
 		
 	<bean id="flaggedActivityNotificationEmailBuilder" parent="baseTemplateEmailBuilder">
-		<constructor-arg value="$(actor.name) flagged a $(activity.type) in the $(dest.name) organization" />
+		<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) flagged a $(activity.type) in the $(dest.name) organization" />
 		<constructor-arg>
 			<bean parent="baseResourceContentLoader">
 				<constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-FLAG_ACTIVITY.txt" />
@@ -2503,7 +2623,7 @@
 					<map>
 						<entry key="POST_TO_PERSONAL_STREAM">
 							<bean parent="baseTemplateEmailBuilder">
-								<constructor-arg value="$(actor.name) posted a $(activity.type) to your stream" />
+								<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) posted a $(activity.type) to your stream" />
 								<constructor-arg>
 									<bean parent="baseResourceContentLoader">
 										<constructor-arg
@@ -2520,7 +2640,7 @@
 						</entry>
 						<entry key="FOLLOW_PERSON">
 							<bean parent="baseTemplateEmailBuilder">
-								<constructor-arg value="$(actor.name) is following you" />
+								<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) is following your stream" />
 								<constructor-arg>
 									<bean parent="baseResourceContentLoader">
 										<constructor-arg
@@ -2537,7 +2657,7 @@
 						</entry>
 						<entry key="COMMENT_TO_PERSONAL_STREAM">
 							<bean parent="baseTemplateEmailBuilder">
-								<constructor-arg value="$(actor.name) commented on a $(activity.type) in your stream" />
+								<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) commented on a $(activity.type) in your stream" />
 								<constructor-arg>
 									<bean parent="baseResourceContentLoader">
 										<constructor-arg
@@ -2554,7 +2674,7 @@
 						</entry>
 						<entry key="COMMENT_TO_PERSONAL_POST">
 							<bean parent="baseTemplateEmailBuilder">
-								<constructor-arg value="$(actor.name) commented on your $(activity.type)" />
+								<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) commented on your $(activity.type)" />
 								<constructor-arg>
 									<bean parent="baseResourceContentLoader">
 										<constructor-arg
@@ -2571,7 +2691,7 @@
 						</entry>
 						<entry key="COMMENT_TO_COMMENTED_POST">
 							<bean parent="baseTemplateEmailBuilder">
-								<constructor-arg value="$(actor.name) also commented on $(aux.name)'s $(activity.type)" />
+								<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) also commented on $(aux.name)'s $(activity.type)" />
 								<constructor-arg>
 									<bean parent="baseResourceContentLoader">
 										<constructor-arg
@@ -2588,7 +2708,7 @@
 						</entry>
 						<entry key="POST_TO_GROUP_STREAM">
 							<bean parent="baseTemplateEmailBuilder">
-								<constructor-arg value="$(actor.name) posted a $(activity.type) to the $(dest.name) stream" />
+								<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) posted a $(activity.type) to the $(dest.name) stream" />
 								<constructor-arg>
 									<bean parent="baseResourceContentLoader">
 										<constructor-arg
@@ -2605,7 +2725,7 @@
 						</entry>
 						<entry key="COMMENT_TO_GROUP_STREAM">
 							<bean parent="baseTemplateEmailBuilder">
-								<constructor-arg value="$(actor.name) commented on a $(activity.type) in the $(dest.name) stream" />
+								<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) commented on a $(activity.type) in the $(dest.name) stream" />
 								<constructor-arg>
 									<bean parent="baseResourceContentLoader">
 										<constructor-arg
@@ -2622,7 +2742,7 @@
 						</entry>
 						<entry key="FOLLOW_GROUP">
 							<bean parent="baseTemplateEmailBuilder">
-								<constructor-arg value="$(actor.name) joined the $(dest.name) group" />
+								<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) joined the $(dest.name) group" />
 								<constructor-arg>
 									<bean parent="baseResourceContentLoader">
 										<constructor-arg
@@ -2641,7 +2761,7 @@
 						<entry key="FLAG_GROUP_ACTIVITY" value-ref="flaggedActivityNotificationEmailBuilder" />
 						<entry key="REQUEST_NEW_GROUP">
 							<bean parent="baseTemplateEmailBuilder">
-								<constructor-arg value="The $(aux.name) group is pending approval in the $(dest.name) organization" />
+								<constructor-arg value="$(eureka.notification.email.subjectprefix)The $(aux.name) group is pending approval in the $(dest.name) organization" />
 								<constructor-arg>
 									<bean parent="baseResourceContentLoader">
 										<constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_NEW_GROUP.txt" />
@@ -2656,7 +2776,7 @@
 						</entry>
 						<entry key="REQUEST_NEW_GROUP_APPROVED">
 							<bean parent="baseTemplateEmailBuilder">
-								<constructor-arg value="Pending group request for the $(aux.name) group has been approved" />
+								<constructor-arg value="$(eureka.notification.email.subjectprefix)Pending group request for the $(aux.name) group has been approved" />
 								<constructor-arg>
 									<bean parent="baseResourceContentLoader">
 										<constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_NEW_GROUP_APPROVED.txt" />
@@ -2671,7 +2791,7 @@
 						</entry>
 						<entry key="REQUEST_NEW_GROUP_DENIED">
 							<bean parent="baseTemplateEmailBuilder">
-								<constructor-arg value="Pending group request for the $(aux.name) group has been denied" />
+								<constructor-arg value="$(eureka.notification.email.subjectprefix)Pending group request for the $(aux.name) group has been denied" />
 								<constructor-arg>
 									<bean parent="baseResourceContentLoader">
 										<constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_NEW_GROUP_DENIED.txt" />
@@ -2686,7 +2806,7 @@
 						</entry>
 						<entry key="REQUEST_GROUP_ACCESS">
 							<bean parent="baseTemplateEmailBuilder">
-								<constructor-arg value="$(actor.name) requested to join the $(dest.name) private group" />
+								<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) requested to join the $(dest.name) private group" />
 								<constructor-arg>
 									<bean parent="baseResourceContentLoader">
 										<constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS.txt" />
@@ -3293,16 +3413,6 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
-    </bean>
-
-    <bean id="updateMembershipTaskHandler" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="currentUserRootOrgCoordinatorAuthorization" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.settings.UpdateMembershipExecution"/>
-        </constructor-arg>
-        <constructor-arg value="false" />
-        <constructor-arg ref="taskHandler" />
     </bean>
     
     <bean id="createPersonActionFactory" class="org.eurekastreams.server.action.execution.CreatePersonActionFactory">

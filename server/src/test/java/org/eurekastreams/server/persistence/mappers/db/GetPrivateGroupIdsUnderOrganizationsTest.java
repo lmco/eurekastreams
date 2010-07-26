@@ -19,14 +19,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Test fixture for GetPrivateGroupIdsUnderOrganizations.
@@ -52,7 +51,6 @@ public class GetPrivateGroupIdsUnderOrganizationsTest extends MapperTest
      * Test execute with a single org id with all public groups.
      */
     @Test
-    @SuppressWarnings("unchecked")
     public void testExecuteWithOrgsHavingAllPublicGroups()
     {
         final Long rootOrgId = 5L;
@@ -65,7 +63,6 @@ public class GetPrivateGroupIdsUnderOrganizationsTest extends MapperTest
      * Test execute with a single org id and one public, one private group.
      */
     @Test
-    @SuppressWarnings("unchecked")
     public void testExecuteSingleOrgAndMixedPublicPrivateGroups()
     {
         getEntityManager().createQuery(

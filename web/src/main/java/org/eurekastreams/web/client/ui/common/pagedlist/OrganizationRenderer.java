@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Render an org model view.
- *
+ * 
  */
 public class OrganizationRenderer implements ItemRenderer<OrganizationModelView>
 {
@@ -50,7 +50,8 @@ public class OrganizationRenderer implements ItemRenderer<OrganizationModelView>
         FlowPanel organizationAbout = new FlowPanel();
         organizationAbout.addStyleName("connection-item-info");
 
-        String url = Session.getInstance().generateUrl(new CreateUrlRequest(Page.ORGANIZATIONS, org.getShortName()));
+        String url = Session.getInstance().generateUrl(
+                new CreateUrlRequest(Page.ORGANIZATIONS, org.getShortName()));
         Hyperlink orgTitleLink = new Hyperlink(org.getName(), url);
         orgTitleLink.addStyleName("organization-title");
         organizationAbout.add(orgTitleLink);
@@ -64,19 +65,19 @@ public class OrganizationRenderer implements ItemRenderer<OrganizationModelView>
 
         FlowPanel orgMetaData = new FlowPanel();
         orgMetaData.addStyleName("connection-item-followers");
-        
+
         orgMetaData.add(new InlineLabel("Emp: "));
         InlineLabel descendentEmpLabel = new InlineLabel("" + org.getDescendantEmployeeCount());
         descendentEmpLabel.addStyleName("connection-item-followers-data");
         orgMetaData.add(descendentEmpLabel);
         insertActionSeparator(orgMetaData);
-        
+
         orgMetaData.add(new InlineLabel("Groups: "));
         InlineLabel descendentGroupLabel = new InlineLabel("" + org.getDescendantGroupCount());
         descendentGroupLabel.addStyleName("connection-item-followers-data");
         orgMetaData.add(descendentGroupLabel);
         insertActionSeparator(orgMetaData);
-        
+
         orgMetaData.add(new InlineLabel("Sub Orgs: "));
         InlineLabel childOrgLabel = new InlineLabel("" + org.getChildOrganizationCount());
         childOrgLabel.addStyleName("connection-item-followers-data");
@@ -88,11 +89,10 @@ public class OrganizationRenderer implements ItemRenderer<OrganizationModelView>
 
         return orgPanel;
     }
-    
 
     /**
      * Adds a separator (dot).
-     *
+     * 
      * @param panel
      *            Panel to put the separator in.
      */

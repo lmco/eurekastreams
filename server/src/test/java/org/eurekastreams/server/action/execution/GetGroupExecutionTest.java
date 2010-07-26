@@ -19,7 +19,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,6 +35,7 @@ import org.eurekastreams.server.domain.RestrictedDomainGroup;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper;
+import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -123,6 +126,12 @@ public class GetGroupExecutionTest
      */
     private GetBannerIdByParentOrganizationStrategy getBannerIdMapperMock = context
             .mock(GetBannerIdByParentOrganizationStrategy.class);
+    
+    /**
+     * {@link GetGroupFollowerIds}.
+     */
+    private GetGroupFollowerIds getGroupFollowerIdsMapper = context
+            .mock(GetGroupFollowerIds.class);
 
     /**
      * Set up the SUT.
@@ -131,7 +140,7 @@ public class GetGroupExecutionTest
     public void setup()
     {
         sut = new GetGroupExecution(mapper, orgChildSkeletonParentOrgPopulator,
-                getAllPersonIdsWhoHaveGroupCoordinatorAccess, getBannerIdMapperMock);
+                getAllPersonIdsWhoHaveGroupCoordinatorAccess, getBannerIdMapperMock, getGroupFollowerIdsMapper);
     }
 
     /**
@@ -315,8 +324,8 @@ public class GetGroupExecutionTest
                 allowing(coordinatorIds).contains(USER_ID);
                 will(returnValue(false));
 
-                oneOf(mapper).isFollowing(USERNAME, GROUP_SHORT_NAME);
-                will(returnValue(true));
+                oneOf(getGroupFollowerIdsMapper).execute(GROUP_ID);
+                will(returnValue(Collections.singletonList(USER_ID)));
 
                 oneOf(group).getCapabilities();
 
@@ -382,8 +391,8 @@ public class GetGroupExecutionTest
                 allowing(group).getShortName();
                 will(returnValue(GROUP_SHORT_NAME));
 
-                oneOf(mapper).isFollowing(USERNAME, GROUP_SHORT_NAME);
-                will(returnValue(false));
+                oneOf(getGroupFollowerIdsMapper).execute(GROUP_ID);
+                will(returnValue(new ArrayList<Long>()));
 
                 // for cloning the group to a restricted group
                 allowing(group).getId();

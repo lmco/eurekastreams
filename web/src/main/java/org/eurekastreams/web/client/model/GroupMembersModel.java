@@ -71,7 +71,10 @@ public class GroupMembersModel extends BaseModel implements Fetchable<GetFollowe
             {
                 // the user added could have been one who made a membership request, so clear the request model
                 GroupMembershipRequestModel.getInstance().clearCache();
-
+                
+                // clear following model 
+                CurrentUserPersonFollowingStatusModel.getInstance().clearCache();
+                
                 Session.getInstance().getEventBus().notifyObservers(new InsertedGroupMemberResponseEvent(response));
             }
         });
@@ -86,6 +89,9 @@ public class GroupMembersModel extends BaseModel implements Fetchable<GetFollowe
         {
             public void onSuccess(final Integer response)
             {
+                // clear following model 
+                CurrentUserPersonFollowingStatusModel.getInstance().clearCache();
+                
                 Session.getInstance().getEventBus().notifyObservers(new DeletedGroupMemberResponseEvent(response));
             }
         });

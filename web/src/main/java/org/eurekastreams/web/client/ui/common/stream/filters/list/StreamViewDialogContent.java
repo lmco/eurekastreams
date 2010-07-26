@@ -183,7 +183,7 @@ public class StreamViewDialogContent implements DialogContent
                 public void onClick(final ClickEvent event)
                 {
                     WidgetJSNIFacade jSNIFacade = new WidgetJSNIFacadeImpl();
-                    if (jSNIFacade.confirm("Gadgets based on this list will need to be manually deleted from the "
+                    if (jSNIFacade.confirm("Apps based on this list will need to be manually deleted from the "
                             + "Start Page. Saved Searches based on this list will be automatically deleted. Are "
                             + "you sure you want to delete this list?"))
                     {

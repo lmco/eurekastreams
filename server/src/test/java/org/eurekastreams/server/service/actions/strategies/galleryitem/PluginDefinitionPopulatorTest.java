@@ -18,6 +18,7 @@ package org.eurekastreams.server.service.actions.strategies.galleryitem;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -32,8 +33,6 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
-
-import edu.emory.mathcs.backport.java.util.LinkedList;
 
 /**
  * Tests the create person strategy.
@@ -80,6 +79,7 @@ public class PluginDefinitionPopulatorTest
      * @throws Exception
      *             shouldn't happen.
      */
+    @SuppressWarnings("unchecked")
     @Test
     public final void testExecuteEmpty() throws Exception
     {
@@ -105,6 +105,7 @@ public class PluginDefinitionPopulatorTest
      * @throws Exception
      *             shouldn't happen.
      */
+    @SuppressWarnings("unchecked")
     @Test(expected = ValidationException.class)
     public final void testExecuteFileNotFound() throws Exception
     {
@@ -124,7 +125,7 @@ public class PluginDefinitionPopulatorTest
         }
         catch (ValidationException ve)
         {
-            assertTrue(ve.getErrors().get("url").equals(sut.CANT_FIND_PLUGIN));
+            assertTrue(ve.getErrors().get("url").equals(PluginDefinitionPopulator.CANT_FIND_PLUGIN));
             throw ve;
         }
         context.assertIsSatisfied();
@@ -136,15 +137,13 @@ public class PluginDefinitionPopulatorTest
      * @throws Exception
      *             expected.
      */
+    @SuppressWarnings("unchecked")
     @Test(expected = ValidationException.class)
     public final void testExecuteException() throws Exception
     {
-        final List<GadgetMetaDataDTO> metaData = new ArrayList<GadgetMetaDataDTO>();
-
         context.checking(new Expectations()
         {
             {
-
                 oneOf(fetcher).getGadgetsMetaData(with(any(Map.class)));
                 will(throwException(new Exception()));
             }
@@ -260,8 +259,8 @@ public class PluginDefinitionPopulatorTest
         catch (ValidationException ve)
         {
             assertTrue(ve.getErrors().size() == 1);
-            assertTrue(ve.getErrors().get("url").equals(
-                    sut.UPDATE_FREQUENCY_ERROR + sut.OBJECTTYPE_ERROR + sut.FEATURE_ERROR));
+            assertTrue(ve.getErrors().get("url").equals(PluginDefinitionPopulator.UPDATE_FREQUENCY_ERROR
+                    + PluginDefinitionPopulator.OBJECTTYPE_ERROR + PluginDefinitionPopulator.FEATURE_ERROR));
             throw ve;
         }
 

@@ -4,13 +4,13 @@
     <parent>
         <artifactId>eurekastreams-parent</artifactId>
         <groupId>org.eurekastreams</groupId>
-        <version>1.0-M2-SNAPSHOT</version>
+        <version>0.9-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.eurekastreams</groupId>
     <artifactId>eurekastreams-web</artifactId>
     <packaging>war</packaging>
-    <version>0.9-M2-SNAPSHOT</version>
+    <version>0.9-SNAPSHOT</version>
     <name>Eureka Streams Web</name>
 
     <repositories>
@@ -20,16 +20,6 @@
             <url>http://maven.restlet.org</url>
         </repository>
     </repositories>
-
-    <!--  convenience to define GWT version in one place -->
-    <properties>
-        <gwtVersion>1.7.0</gwtVersion>
-        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-        <eureka.grhostname>http://localhost:8081</eureka.grhostname>
-        <eureka.analytics.hostname>http://analytics.example.com</eureka.analytics.hostname>
-        <eureka.email.smtphost>smtp.example.com</eureka.email.smtphost>
-    </properties>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -195,7 +185,7 @@
         <dependency>
             <groupId>org.eurekastreams</groupId>
             <artifactId>eurekastreams-server</artifactId>
-            <version>1.0-M2-SNAPSHOT</version>
+            <version>0.9-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jmock</groupId>
@@ -234,25 +224,25 @@
         <dependency>
             <groupId>org.apache.shindig</groupId>
             <artifactId>shindig-server</artifactId>
-            <version>3.3</version>
+            <version>${build.gadget.shindig.version}</version>
             <type>war</type>
         </dependency>
         <dependency>
             <groupId>org.apache.shindig</groupId>
             <artifactId>shindig-social-api</artifactId>
-            <version>3.3</version>
+            <version>${build.gadget.shindig.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.shindig</groupId>
             <artifactId>shindig-common</artifactId>
-            <version>3.3</version>
+            <version>${build.gadget.shindig.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.shindig</groupId>
             <artifactId>shindig-gadgets</artifactId>
-            <version>3.3</version>
+            <version>${build.gadget.shindig.version}</version>
         </dependency>
         <dependency>
             <groupId>caja</groupId>
@@ -297,7 +287,6 @@
             <artifactId>activation</artifactId>
             <version>1.1.1</version>
         </dependency>
-
         <dependency>
             <groupId>spy</groupId>
             <artifactId>memcached</artifactId>
@@ -307,6 +296,22 @@
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-core</artifactId>
             <version>5.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>${build.maven.sharedresources.artifactid}</artifactId>
+            <version>${build.maven.sharedresources.version}</version>
+            <classifier>resources</classifier>
+            <type>zip</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>eurekastreams-database</artifactId>
+            <version>${project.version}</version>
+            <classifier>resources</classifier>
+            <type>zip</type>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>
@@ -362,7 +367,7 @@
                     <contextPath>/</contextPath>
                     <webXml>${project.build.directory}/${project.build.finalName}/org.eurekastreams.web.Application/WEB-INF/web.xml</webXml>
                     <requestLog  implementation="org.mortbay.jetty.NCSARequestLog">
-			            <filename>target/jetty-access.log</filename>
+			            <filename>${project.build.directory}/jetty-access.log</filename>
 			            <retainDays>1</retainDays>
 			            <append>true</append>
 			            <extended>false</extended>
@@ -375,73 +380,12 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <configuration>
                     <encoding>UTF-8</encoding>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+					<delimiters>
+					   <delimiter>${*}</delimiter>
+					</delimiters>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>copy-db-resources</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>target/db</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>../database</directory>
-                                    <excludes>
-                                        <exclude>datapopulation/**</exclude>
-                                        <exclude>schema/*/*.*</exclude>
-                                    </excludes>
-                                </resource>
-                            </resources>
-                            <overwrite>true</overwrite>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-rpmscripts-resources</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>target/rpmscripts</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/main/scripts</directory>
-                                </resource>
-                            </resources>
-                            <overwrite>true</overwrite>
-                        </configuration>
-                    </execution>                    
-                </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <configuration>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>copy-rpmscripts-resources</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>target/scripts</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/main/scripts</directory>
-                                    <excludes/>
-                                </resource>
-                            </resources>
-                            <overwrite>true</overwrite>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -458,26 +402,98 @@
                             <arguments>
                                 <argument>-R</argument>
                                 <argument>755</argument>
-                                <argument>target/db</argument>
+                                <argument>${project.build.directory}/classes/db</argument>
                             </arguments>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                  <execution>
+                    <id>unpack-dependency-resources</id>
+                    <goals>
+                      <goal>unpack-dependencies</goal>
+                    </goals>
+                    <phase>generate-resources</phase>
+                    <configuration>
+                     <artifactItems>
+                        <artifactItem>
+                            <groupId>${project.gorupId}</groupId>
+                            <artifactId>eurekastreams-database</artifactId>
+                            <version>${project.version}</version>
+                            <type>zip</type>
+                            <overWrite>false</overWrite>
+                            <outputDirectory>${project.build.directory}/databaseresources</outputDirectory>
+                        </artifactItem>
+                        <artifactItem>
+                            <groupId>${project.gorupId}</groupId>
+                            <artifactId>${build.maven.sharedresources.artifactid}</artifactId>
+                            <version>${build.maven.sharedresources.version}</version>
+                            <type>zip</type>
+                            <overWrite>false</overWrite>
+                            <outputDirectory>${project.build.directory}/sharedresources</outputDirectory>
+                        </artifactItem>
+                     </artifactItems>
+                     <outputDirectory>${project.build.directory}/unpackedresources</outputDirectory>
+                     <includeGroupIds>${project.groupId}</includeGroupIds>
+                     <includeTypes>zip</includeTypes>
+                     <includeScopes>provided</includeScopes>
+                     <excludeTransitive>true</excludeTransitive>
+                    </configuration>
+                  </execution>
+                </executions>
+              </plugin>
         </plugins>
         <resources>
             <resource>
                 <targetPath>features</targetPath>
                 <directory>${basedir}/src/main/resources/features</directory>
+                <filtering>true</filtering>
             </resource>
             <resource>
                 <targetPath>conf</targetPath>
                 <directory>${basedir}/src/main/resources/conf</directory>
+                <filtering>true</filtering>
             </resource>
             <resource>
                 <targetPath>public</targetPath>
                 <directory>${basedir}/src/main/resources/public</directory>
                 <filtering>true</filtering>
+            </resource>
+            <resource>
+                <targetPath>db</targetPath>
+                <directory>${project.build.directory}/unpackedresources/schema</directory>
+                <excludes>
+                    <exclude>*/*.*</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <targetPath>db</targetPath>
+                <directory>${project.build.directory}/unpackedresources/migration</directory>
+            </resource>
+                        <resource>
+                <targetPath>db</targetPath>
+                <directory>${project.build.directory}/unpackedresources/scripts</directory>
+                <excludes>
+                    <exclude>**</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>${project.build.directory}/unpackedresources</directory>
+                <excludes>
+                    <exclude>datapopulation/**</exclude>
+                    <exclude>schema/**</exclude>
+                    <exclude>scripts/**</exclude>
+                    <exclude>migration/**</exclude>
+                </excludes>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <targetPath>scripts</targetPath>
+                <directory>${basedir}/src/main/scripts</directory>
             </resource>
         </resources>
     </build>
@@ -511,21 +527,6 @@
             BUILDTYPE - this value will be examined to determine which profile to activate
                      or enable a particular profile upon absense of this environment variable
                      values can be: int, uat, perf, prod
-            NODETYPE - this value will be examined to determine which profile to activate
-                     values can be: webnode,indexingnode
-            INSTALL - if exists, the postinstall.sh scripts will be changed to no perform a database deployment the RPM.
-            DBNAME - if exists, this value is used to replace the database name
-            DBUSER - if exists, this value is used to replace the database username
-            CACHESERVERNAMES - if exists, this is the value used for the memcache server connection
-            INDEXLUCENEDIR - if exists, this value is used as the base directory to put the index directory and files
-                         This directory is to be absolute with a leading /
-            SOURCELUCENEDIR - if exists, this value is used as the base directory to read the indexed diff files             
-            GRWEBPORT - if exists, this value is used to run the gadget renderer in jetty 
-            WEBPORT - if exists, this value is used to run the web application in jetty
-            DBSERVERNAME  - if exists, this value is used as the server name for the database server
-            JMSSERVERNAME - if exists, this value is used as the JMS server name for the async job submissions
-            ACTIVITYQNAME - if exists, this value is used as the queue name for the submission of async actions
-            SEARCHQNAME - if exists, this value is used as the queue name for the submission of index entries
 
         Platform:
             windows
@@ -543,28 +544,9 @@
                     <name>ldap-security</name>
                 </property>
             </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>bakersoftware</groupId>
-                        <artifactId>maven-replacer-plugin</artifactId>
-                        <version>0.0.9</version>
-                        <executions>
-                            <execution>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/conf/applicationContext.xml</file>
-                                    <token>applicationContext-security-preauth.xml</token>
-                                    <value>applicationContext-security-ldap.xml</value>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
+            <properties>
+            	<build.spring.security>ldap</build.spring.security>
+            </properties>
         </profile>
         <profile>
             <id>Pre-auth Spring Security</id>
@@ -573,28 +555,9 @@
                     <name>preauth-security</name>
                 </property>
             </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>bakersoftware</groupId>
-                        <artifactId>maven-replacer-plugin</artifactId>
-                        <version>0.0.9</version>
-                        <executions>
-                            <execution>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/conf/applicationContext.xml</file>
-                                    <token>applicationContext-security-preauth.xml</token>
-                                    <value>applicationContext-security-preauth.xml</value>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
+            <properties>
+            	<build.spring.security>preauth</build.spring.security>
+            </properties>
         </profile>
         <profile>
             <id>JAAS Spring Security</id>
@@ -603,28 +566,9 @@
                     <name>jaas-security</name>
                 </property>
             </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>bakersoftware</groupId>
-                        <artifactId>maven-replacer-plugin</artifactId>
-                        <version>0.0.9</version>
-                        <executions>
-                            <execution>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/conf/applicationContext.xml</file>
-                                    <token>applicationContext-security-preauth.xml</token>
-                                    <value>applicationContext-security-jaas.xml</value>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
+			<properties>
+            	<build.spring.security>jaas</build.spring.security>
+            </properties>
         </profile>        
         <profile>
             <id>Open Access Spring Security</id>
@@ -633,28 +577,9 @@
                     <name>openaccess-security</name>
                 </property>
             </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>bakersoftware</groupId>
-                        <artifactId>maven-replacer-plugin</artifactId>
-                        <version>0.0.9</version>
-                        <executions>
-                            <execution>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/conf/applicationContext.xml</file>
-                                    <token>applicationContext-security-preauth.xml</token>
-                                    <value>applicationContext-security-openaccess.xml</value>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
+			<properties>
+            	<build.spring.security>openaccess</build.spring.security>
+            </properties>
         </profile>        
         <profile>
             <id>Kerberos JAAS Spring Security</id>
@@ -663,265 +588,10 @@
                     <name>kerb-security</name>
                 </property>
             </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>bakersoftware</groupId>
-                        <artifactId>maven-replacer-plugin</artifactId>
-                        <version>0.0.9</version>
-                        <executions>
-                            <execution>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/conf/applicationContext.xml</file>
-                                    <token>applicationContext-security-preauth.xml</token>
-                                    <value>applicationContext-security-jaas.xml</value>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
+            <properties>
+            	<build.spring.security>jaas</build.spring.security>
+            </properties>
         </profile>
-        <profile>
-            <id>Adjust the gadget definition XML document for environment URLs</id>
-            <activation>
-                <property>
-                    <name>deployto-envname</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>bakersoftware</groupId>
-                        <artifactId>maven-replacer-plugin</artifactId>
-                        <version>0.0.9</version>
-                        <executions>
-                            <execution>
-                                <id>Checklist Web DeployTo Environment Replacement</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/features/eurekastreams-checklist/checklist.js</file>
-                                    <token>http://localhost:8080</token>
-                                    <value>${deployto-envname}</value>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>Bookmark Gadget Replacement</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/public/gadgets/bookmarkgadget.xml</file>
-                                    <token>http://localhost:8080</token>
-                                    <value>${deployto-envname}</value>
-                                </configuration>
-                            </execution>
-							<execution>
-                                <id>Activity Gadget Deployto Replacement</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/public/gadgets/activitygadget.xml</file>
-                                    <token>http://localhost:8080</token>
-                                    <value>${deployto-envname}</value>
-                                </configuration>
-                            </execution>
-							<execution>
-								<id>>Basic  Gadget Deployto Replacement</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/public/gadgets/basicgadget.xml</file>
-                                    <token>http://localhost:8080</token>
-                                    <value>${deployto-envname}</value>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>OAuth Test Gadget Deployto Replacement on Container Proxy File</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/public/gadgets/containerproxytest.xml</file>
-                                    <token>http://localhost:8080</token>
-                                    <value>${deployto-envname}</value>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>OAuth Test Gadget Deployto Replacement on Opensocial Container Proxy File</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/public/gadgets/opensocialcontainertest.xml</file>
-                                    <token>http://localhost:8080</token>
-                                    <value>${deployto-envname}</value>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>Base Feed Reader Replace</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/public/gadgets/feed-reader.xml</file>
-                                    <token>http://localhost:8080</token>
-                                    <value>${deployto-envname}</value>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>Washington Technology Feed Reader Replace</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/public/gadgets/washtech-feed-reader.xml</file>
-                                    <token>http://localhost:8080</token>
-                                    <value>${deployto-envname}</value>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>White House Blog Feed Reader Replace</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/public/gadgets/whitehouseblog-feed-reader.xml</file>
-                                    <token>http://localhost:8080</token>
-                                    <value>${deployto-envname}</value>
-                                </configuration>
-                            </execution>    
-                            <execution>
-                                <id>Delicious Plugin Replace</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/public/plugins/delicious.xml</file>
-                                    <token>http://localhost:8080</token>
-                                    <value>${deployto-envname}</value>
-                                </configuration>
-                            </execution>                                                      
-                            <execution>
-                                <id>Google Reader Plugin Replace</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/public/plugins/googlereader.xml</file>
-                                    <token>http://localhost:8080</token>
-                                    <value>${deployto-envname}</value>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>RSS Plugin Replace</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/public/plugins/rss.xml</file>
-                                    <token>http://localhost:8080</token>
-                                    <value>${deployto-envname}</value>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>Twitter Plugin Replace</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/public/plugins/twitter.xml</file>
-                                    <token>http://localhost:8080</token>
-                                    <value>${deployto-envname}</value>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>YouTube Plugin Replace</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/public/plugins/youtube.xml</file>
-                                    <token>http://localhost:8080</token>
-                                    <value>${deployto-envname}</value>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>JavaScript Web DeployTo Environment Replacement</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/public/scripts/external-js-min.js</file>
-                                    <token>http://localhost:8080</token>
-                                    <value>${deployto-envname}</value>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>JSON Web DeployTo Environment Replacement</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/conf/eurekastreams_container.js</file>
-                                    <token>http://localhost:8080</token>
-                                    <value>${deployto-envname}</value>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>Guice Container Web DeployTo Environment Replacement</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/conf/eurekastreams.properties</file>
-                                    <token>eureka.container.baseurl=http://localhost:8080</token>
-                                    <value>eureka.container.baseurl=${deployto-envname}</value>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>Properties Web DeployTo Environment Replacement</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/conf/eurekastreams-server.properties</file>
-                                    <token>eureka.web.baseurl=http://localhost:8080</token>
-                                    <value>eureka.web.baseurl=${deployto-envname}</value>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-                
         <profile>
             <id>Enable the JMS queuing</id>
             <activation>
@@ -929,29 +599,9 @@
                     <name>EnableJMS</name>
                 </property>
             </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>bakersoftware</groupId>
-                        <artifactId>maven-replacer-plugin</artifactId>
-                        <version>0.0.9</version>
-                        <executions>
-                            <execution>
-                                <id>asyncactionsubmitterreplacement</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/conf/applicationContext.xml</file>
-                                    <token>alias="taskHandler" name="inlineTaskHandler"</token>
-                                    <value>alias="taskHandler" name="queueTaskHandler"</value>
-                                </configuration>
-                            </execution>
-                        </executions>                        
-                    </plugin>
-                </plugins>
-            </build>
+            <properties>
+                <build.jms.taskhandler>queueTaskHandler</build.jms.taskhandler>
+            </properties>
         </profile>
         <profile>
             <id>gwt-no-clover</id>
@@ -969,17 +619,18 @@
                         <executions>
                             <execution>
                                 <configuration>
-                                    <module>org.eurekastreams.web.Application</module>
+                                    <module>${build.gwt.modulename}</module>
                                     <logLevel>INFO</logLevel>
                                     <extraJvmArgs>-Xmx1024m</extraJvmArgs>
                                     <gwtVersion>${gwtVersion}</gwtVersion>
-                                    <webXmlServletPathAsIs>true</webXmlServletPathAsIs>
                                     <mergedWebXml>${project.build.directory}/web.xml</mergedWebXml>
+                                    <webXmlServletPathAsIs>true</webXmlServletPathAsIs>
                                     <runTarget>Application.html</runTarget>
                                     <noServer>true</noServer>
                                     <port>8080</port>
                                     <hostedWebapp>ROOT</hostedWebapp>
                                     <style>${GWTCompileStyle}</style>
+                                    <localWorkers>1</localWorkers>
                                 </configuration>
                                 <goals>
                                     <goal>compile</goal>
@@ -1001,15 +652,15 @@
                         <configuration>
                             <webResources>
                                 <resource>
-                                    <directory>target/classes/public/gadgets</directory>
+                                    <directory>${project.build.directory}/classes/public/gadgets</directory>
                                     <targetPath>org/eurekastreams/gadgets</targetPath>
                                 </resource>
                                 <resource>
-                                    <directory>target/classes/public</directory>
+                                    <directory>${project.build.directory}/classes/public</directory>
                                     <targetPath></targetPath>
                                 </resource>
                                 <resource>
-                                    <directory>target/classes/conf</directory>
+                                    <directory>${project.build.directory}/classes/conf</directory>
                                     <targetPath>WEB-INF/classes/conf</targetPath>
                                     <includes>
                                         <include>log4j.xml</include>
@@ -1041,8 +692,93 @@
                                 </overlay>
                             </overlays>
 
-                            <webappDirectory>${project.build.directory}/${project.build.finalName}/org.eurekastreams.web.Application</webappDirectory>
+                            <webappDirectory>${project.build.directory}/${project.build.finalName}/${build.gwt.modulename}</webappDirectory>
 
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>clover.report</id>
+            <activation>
+                <property>
+                    <name>clover</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>gwt-maven-plugin</artifactId>
+                        <version>1.1</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <configuration>
+                                    <gwtVersion>${gwtVersion}</gwtVersion>
+                                </configuration>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.atlassian.maven.plugins</groupId>
+                        <artifactId>maven-clover2-plugin</artifactId>
+                        <configuration>
+                            <licenseLocation>${build.report.clover.licenseurl}</licenseLocation>
+                            <!--
+                                save the Clover snapshot between clean
+                                builds and only have one for multimodule
+                                projects
+                            -->
+                            <snapshot>${user.home}/.clover/${groupId}/${version}/clover.snapshot</snapshot>
+                            <!-- needed for test optimization across a multi-module project -->
+                            <singleCloverDatabase>true</singleCloverDatabase>
+                            <!-- This excludes file from code coverage -->
+                            <excludes>
+                                <exclude>**/*Request.java</exclude>
+                                <exclude>**/*Test.java</exclude>
+                                <exclude>**/*Fake.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Facade.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/Session.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Composite.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Renderer.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Pager.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Notifier.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Widget.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Content.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*EntryPoint.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Panel.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*FormElement.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*FormBuilder.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Factory.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Dialog.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Notification.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Icon.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Tab.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Event.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Carousel.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*CarouselStructure.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*MockSupport.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*LayoutStrategy.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*UploadStrategy.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Handler.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/GadgetMetaData*.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/PropertyMapper.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/ClickableMenuItem.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/dragging/**/*.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*JSNIFacadeImpl.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*GalleryRenderer.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/StreamSearchLinkBuilder.java</exclude>
+                                <exclude>org/eurekastreams/web/client/AnonymousClassInterceptor.java</exclude>
+                                <exclude>org/eurekastreams/web/rebind/HashedBindableGenerator.java</exclude>
+                                <exclude>org/eurekastreams/web/**/*GuiceModule.java</exclude>
+                                <!-- Exclude the model until a technique for testing the model is developed. -->
+                                <exclude>org/eurekastreams/web/client/model/**/*Model.java</exclude>
+                            </excludes>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -1068,7 +804,7 @@
                                     <goal>copy-resources</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>target/rpmscripts</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/rpmscripts</outputDirectory>
                                     <resources>
                                         <resource>
                                             <directory>src/main/scripts/nodatabaseinstall</directory>
@@ -1124,7 +860,7 @@
                                     <groupname>root</groupname>
                                     <sources>
                                         <source>
-                                            <location>target/ROOT.war</location>
+                                            <location>${project.build.directory}/ROOT.war</location>
                                         </source>
                                     </sources>
                                 </mapping>
@@ -1135,23 +871,29 @@
                                     <groupname>root</groupname>
                                     <sources>
                                         <source>
-                                            <location>target/db</location>
+                                            <location>${project.build.directory}/classes/db</location>
                                         </source>
                                     </sources>
                                 </mapping>
                             </mappings>
                             <requires>
                             </requires>
-                            <preinstallScript>${project.build.directory}/rpmscripts/preinstall.sh</preinstallScript>
-                            <!--
-                                <installScript>src/main/scripts/install.sh</installScript>
-                            -->
-                            <postinstallScript>${project.build.directory}/rpmscripts/postinstall.sh</postinstallScript>
-                            <preremoveScript>${project.build.directory}/rpmscripts/preremove.sh</preremoveScript>
-                            <!--
-                                <removeScript>/src/main/scripts/remove</removeScript>
-                            -->
-                            <postremoveScript>${project.build.directory}/rpmscripts/postremove.sh</postremoveScript>
+			                    <preinstallScriptlet>
+			                        <scriptFile>${project.build.directory}/classes/scripts/preinstall.sh</scriptFile>
+			                        <fileEncoding>utf-8</fileEncoding>
+			                     </preinstallScriptlet>
+			                    <postinstallScriptlet>
+			                        <scriptFile>${project.build.directory}/classes/scripts/postinstall.sh</scriptFile>
+			                        <fileEncoding>utf-8</fileEncoding>
+			                    </postinstallScriptlet>
+			                    <preremoveScriptlet>
+			                        <scriptFile>${project.build.directory}/classes/scripts/preremove.sh</scriptFile>
+			                        <fileEncoding>utf-8</fileEncoding>                    
+			                    </preremoveScriptlet>
+			                    <postremoveScriptlet>
+			                        <scriptFile>${project.build.directory}/classes/scripts/postremove.sh</scriptFile>
+			                        <fileEncoding>utf-8</fileEncoding>                    
+			                    </postremoveScriptlet>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -1167,6 +909,19 @@
             <properties>
                 <GWTCompileStyle>PRETTY</GWTCompileStyle>
             </properties>
+        </profile>
+        <profile>
+            <id>buildtype.dev</id>
+            <activation>
+                <property>
+                    <name>env.BUILDTYPE</name>
+                    <value>dev</value>
+                </property>
+            </activation>
+            <properties>
+                <GWTCompileStyle>PRETTY</GWTCompileStyle>
+                <build.web.grhostname>${env.DEVGRHOSTNAME}</build.web.grhostname>
+            </properties>
             <build>            
                 <plugins>
                     <plugin>
@@ -1180,12 +935,195 @@
                                     <goal>copy-resources</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>target/db/schema</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/classes/db/schema</outputDirectory>
                                     <resources>
                                         <resource>
-                                            <directory>../database/schema</directory>
+                                            <directory>${project.build.directory}/unpackedresources/schema/dev</directory>
                                             <includes>
                                                 <include>*.sql</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                    <overwrite>true</overwrite>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>copy-WAR</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${env.HOME}/tomcat/webapps</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.build.directory}</directory>
+                                            <includes>
+                                                <include>ROOT.war</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                    <overwrite>true</overwrite>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>buildtype.int</id>
+            <activation>
+                <property>
+                    <name>env.BUILDTYPE</name>
+                    <value>int</value>
+                </property>
+            </activation>
+            <properties>
+                <GWTCompileStyle>PRETTY</GWTCompileStyle>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-resources</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/classes/db/schema</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.build.directory}/unpackedresources/schema/int</directory>
+                                            <includes>
+                                                <include>*.sql</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                    <overwrite>true</overwrite>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>buildtype.uat</id>
+            <activation>
+                <property>
+                    <name>env.BUILDTYPE</name>
+                    <value>uat</value>
+                </property>
+            </activation>
+            <properties>
+                <GWTCompileStyle>OBF</GWTCompileStyle>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-resources</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/classes/db/schema</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.build.directory}/unpackedresources/schema/uat</directory>
+                                            <includes>
+                                                <include>*.sql</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                    <overwrite>true</overwrite>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>buildtype.perf</id>
+            <activation>
+                <property>
+                    <name>env.BUILDTYPE</name>
+                    <value>perf</value>
+                </property>
+            </activation>
+            <properties>
+                <GWTCompileStyle>OBF</GWTCompileStyle>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-resources</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/classes/conf</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.build.directory}/classes/conf/log4j-prod</directory>
+                                            <includes>
+                                                <include>log4j.xml</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                    <overwrite>false</overwrite>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>buildtype.prod</id>
+            <activation>
+                <property>
+                    <name>env.BUILDTYPE</name>
+                    <value>prod</value>
+                </property>
+            </activation>
+            <properties>
+                <GWTCompileStyle>OBF</GWTCompileStyle>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-resources</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/classes/conf</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.build.directory}/classes/conf/log4j-prod</directory>
+                                            <includes>
+                                                <include>log4j.xml</include>
                                             </includes>
                                         </resource>
                                     </resources>
@@ -1205,365 +1143,11 @@
                     <value>webnode</value>
                 </property>
             </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>bakersoftware</groupId>
-                        <artifactId>maven-replacer-plugin</artifactId>
-                        <version>0.0.9</version>
-                        <executions>
-                            <execution>
-                                <id>applicationcontextoneboxtowebnodereplacement</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/conf/applicationContext.xml</file>
-                                    <token>applicationContext-model-oneBox.xml</token>
-                                    <value>applicationContext-model-webNode.xml</value>
-                                </configuration>
-                            </execution>                        
-                            <execution>
-                                <id>applicationcontextcontaineroneboxtowebnodereplacement</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/conf/applicationContext-container.xml</file>
-                                    <token>applicationContext-model-oneBox.xml</token>
-                                    <value>applicationContext-model-webNode.xml</value>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>Application Context Remove Job Execution Replacement</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/conf/applicationContext.xml</file>
-                                    <token><![CDATA[<import resource="applicationContext-jobs.xml" />]]></token>
-                                    <value><![CDATA[<!-- No job scheduler -->]]></value>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>       
-        <profile>
-            <id>Update config for databasename</id>
-            <activation>
-                <property>
-                    <name>env.DBNAME</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>bakersoftware</groupId>
-                        <artifactId>maven-replacer-plugin</artifactId>
-                        <version>0.0.9</version>
-                        <executions>
-                            <execution>
-                                <id>applicationcontextmodeldbnamereplace</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/conf/eurekastreams-server.properties</file>
-                                    <token>eureka.db.dbname=eurekastreams</token>
-                                    <value>eureka.db.dbname=${env.DBNAME}</value>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
+            <properties>
+                <build.system.nodetype>webNode</build.system.nodetype>
+                <build.system.jobscheduler><![CDATA[<!-- No job scheduler -->]]></build.system.jobscheduler>
+            </properties>
         </profile>
-        <profile>
-            <id>Update config for database username</id>
-            <activation>
-                <property>
-                    <name>env.DBUSER</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>bakersoftware</groupId>
-                        <artifactId>maven-replacer-plugin</artifactId>
-                        <version>0.0.9</version>
-                        <executions>
-                            <execution>
-                                <id>applicationcontextmodeldbuserreplace</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/conf/eurekastreams-server.properties</file>
-                                    <token>eureka.db.username=eurekastreams</token>
-                                    <value>eureka.db.username=${env.DBUSER}</value>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>Update config for cache connection string</id>
-            <activation>
-                <property>
-                    <name>env.CACHESERVERNAMES</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>bakersoftware</groupId>
-                        <artifactId>maven-replacer-plugin</artifactId>
-                        <version>0.0.9</version>
-                        <executions>
-                            <execution>
-                                <id>applicationcontextmemcachedreplace</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/conf/eurekastreams-server.properties</file>
-                                    <token>eureka.cache.memcacche.connstr=localhost:11211</token>
-                                    <value>eureka.cache.memcacche.connstr=${env.CACHESERVERNAMES}</value>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>Application Context Lucene Index Directory Replacement</id>
-            <activation>
-                <property>
-                    <name>env.INDEXLUCENEDIR</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>bakersoftware</groupId>
-                        <artifactId>maven-replacer-plugin</artifactId>
-                        <version>0.0.9</version>
-                        <executions>
-                            <execution>
-                                <id>Application Context Lucene Index Directory Replacement</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/conf/eurekastreams-server.properties</file>
-                                    <token>eureka.hibernatesearch.indexbase.dir=/tmp</token>
-                                    <value>eureka.hibernatesearch.indexbase.dir=${env.INDEXLUCENEDIR}</value>
-                                </configuration>
-                            </execution>        
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>Application Context Lucene Source Directory Replacement</id>
-            <activation>
-                <property>
-                    <name>env.SOURCELUCENEDIR</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>bakersoftware</groupId>
-                        <artifactId>maven-replacer-plugin</artifactId>
-                        <version>0.0.9</version>
-                        <executions>
-                            <execution>
-                                <id>Application Context Search Queue Name Replacement</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/conf/eurekastreams-server.properties</file>
-                                    <token>eureka.hibernatesearch.sourcebase.dir=/tmp</token>
-                                    <value>eureka.hibernatesearch.sourcebase.dir=${env.SOURCELUCENEDIR}</value>
-                                </configuration>
-                            </execution>        
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>        
-        <profile>
-            <id>Update config for gadget renderer port</id>
-            <activation>
-                <property>
-                    <name>env.DEVGRHOSTNAME</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>bakersoftware</groupId>
-                        <artifactId>maven-replacer-plugin</artifactId>
-                        <version>0.0.9</version>
-                        <executions>
-                            <execution>
-                                <id>Gadget Renderer Hostname Replacement</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/public/scripts/external-js-min.js</file>
-                                    <token>http://localhost:8081</token>
-                                    <value>${env.DEVGRHOSTNAME}</value>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>Update config for database server name</id>
-            <activation>
-                <property>
-                    <name>env.DBSERVERNAME</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>bakersoftware</groupId>
-                        <artifactId>maven-replacer-plugin</artifactId>
-                        <version>0.0.9</version>
-                        <executions>
-                            <execution>
-                                <id>Application Context Model Database Server Name Replacement</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/conf/eurekastreams-server.properties</file>
-                                    <token>eureka.db.connstr=jdbc:postgresql://127.0.0.1:5432</token>
-                                    <value>eureka.db.connstr=jdbc:postgresql://${env.DBSERVERNAME}:5432</value>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>Update config for JMS server name</id>
-            <activation>
-                <property>
-                    <name>env.JMSSERVERNAME</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>bakersoftware</groupId>
-                        <artifactId>maven-replacer-plugin</artifactId>
-                        <version>0.0.9</version>
-                        <executions>
-                            <execution>
-                                <id>Application Context JMS Server Name Replacement</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/conf/eurekastreams-server.properties</file>
-                                    <token>eureka.queue.jms.connstr=tcp://localhost:61616</token>
-                                    <value>eureka.queue.jms.connstr=tcp://${env.JMSSERVERNAME}:61616</value>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>Update config for activity queue name</id>
-            <activation>
-                <property>
-                    <name>env.ACTIVITYQNAME</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>bakersoftware</groupId>
-                        <artifactId>maven-replacer-plugin</artifactId>
-                        <version>0.0.9</version>
-                        <executions>
-                            <execution>
-                                <id>Application Context JMS Activity Queue Name Replacement</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/conf/eurekastreams-server.properties</file>
-                                    <token>eureka.queue.activity.queuename=queue/eurekaActivity</token>
-                                    <value>eureka.queue.activity.queuename=${env.ACTIVITYQNAME}</value>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>        
-        <profile>
-            <id>Update config for search queue name</id>
-            <activation>
-                <property>
-                    <name>env.SEARCHQNAME</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>bakersoftware</groupId>
-                        <artifactId>maven-replacer-plugin</artifactId>
-                        <version>0.0.9</version>
-                        <executions>
-                            <execution>
-                                <id>Application Context Model WebNode Search Queue Name Replacement</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>replace</goal>
-                                </goals>
-                                <configuration>
-                                    <file>${project.build.directory}/classes/conf/eurekastreams-server.properties</file>
-                                    <token>eureka.queue.hibernatesearch.queuename.dynamic=dynamicQueues/queue/hibernateSearch</token>
-                                    <value>eureka.queue.hibernatesearch.queuename.dynamic=dynamicQueues/${env.SEARCHQNAME}</value>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>        
-
         <profile>
             <id>gwt-dev-windows</id>
             <properties>

@@ -7,3 +7,7 @@ $(eureka.web.baseurl)#$(aux.page)/$(aux.uniqueid)
 
 Thank You,
 Eureka Streams
+
+---
+
+To find out more information, visit $(eureka.infosite.url)

@@ -16,18 +16,24 @@
 package org.eurekastreams.server.action.execution.profile;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
-import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
+import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.profile.GetCurrentUserFollowingStatusRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
-import org.eurekastreams.server.persistence.DomainGroupMapper;
-import org.eurekastreams.server.persistence.FollowMapper;
-import org.eurekastreams.server.persistence.PersonMapper;
+import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
+import org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds;
+import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
+import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Action to determine if current user has Follower relationship with another user.
@@ -41,19 +47,29 @@ public class GetCurrentUserFollowingStatusExecution implements ExecutionStrategy
     private Log log = LogFactory.make();
 
     /**
-     * PersonMapper used to retrieve person from the db.
-     */
-    private PersonMapper personMapper = null;
-
-    /**
-     * GroupMapper used to retrieve a group if that's the target type.
-     */
-    private DomainGroupMapper groupMapper = null;
-
-    /**
      * Mapper that looks-to/loads cache with people modelviews by open social id.
      */
     private GetPeopleByOpenSocialIds getPeopleByOpenSocialIdsMapper;
+
+    /**
+     * Mapper to get followers of a group.
+     */
+    private GetGroupFollowerIds groupFollowerIdsMapper;
+
+    /**
+     * Mapper to get followers of a person.
+     */
+    private GetFollowerIds followerIdsMapper;
+
+    /**
+     * Mapper to get a group by shortname.
+     */
+    private GetDomainGroupsByShortNames groupsByNameMapper;
+
+    /**
+     * Mapper to get person by account id.
+     */
+    private GetPeopleByAccountIds peopleByAccountMapper;
 
     /**
      * A Regex pattern to match OpenSocial ids used by the local container.
@@ -63,24 +79,30 @@ public class GetCurrentUserFollowingStatusExecution implements ExecutionStrategy
     /**
      * Constructor that sets up the mapper.
      * 
-     * @param inPersonMapper
-     *            - instance of PersonMapper
-     * @param inGroupMapper
-     *            - instance of GroupMapper
-     * 
      * @param inGetPeopleByOpenSocialIdsMapper
-     *            - instance of GetPeopleByOpenSocialIdsMapper
+     *            instance of GetPeopleByOpenSocialIdsMapper
      * @param inPattern
      *            the pattern for matching open social ids.
+     * @param inGroupFollowerIdsMapper
+     *            instance of GetGroupFollowerIds.
+     * @param inGollowerIdsMapper
+     *            instance of GetFollowerIds.
+     * @param inGroupsByNameMapper
+     *            instance of GetDomainGroupsByShortNames.
+     * @param inPeopleByAccountMapper
+     *            instance of GetPeopleByAccountIds.
      */
-    public GetCurrentUserFollowingStatusExecution(final PersonMapper inPersonMapper,
-            final DomainGroupMapper inGroupMapper, final GetPeopleByOpenSocialIds inGetPeopleByOpenSocialIdsMapper,
-            final String inPattern)
+    public GetCurrentUserFollowingStatusExecution(final GetPeopleByOpenSocialIds inGetPeopleByOpenSocialIdsMapper,
+            final String inPattern, final GetGroupFollowerIds inGroupFollowerIdsMapper,
+            final GetFollowerIds inGollowerIdsMapper, final GetDomainGroupsByShortNames inGroupsByNameMapper,
+            final GetPeopleByAccountIds inPeopleByAccountMapper)
     {
-        personMapper = inPersonMapper;
-        groupMapper = inGroupMapper;
         getPeopleByOpenSocialIdsMapper = inGetPeopleByOpenSocialIdsMapper;
         openSocialPattern = inPattern;
+        groupFollowerIdsMapper = inGroupFollowerIdsMapper;
+        followerIdsMapper = inGollowerIdsMapper;
+        groupsByNameMapper = inGroupsByNameMapper;
+        peopleByAccountMapper = inPeopleByAccountMapper;
     }
 
     /**
@@ -98,7 +120,9 @@ public class GetCurrentUserFollowingStatusExecution implements ExecutionStrategy
                 .getParams();
 
         // get the user's account id.
-        final String accountId = inActionContext.getPrincipal().getAccountId();
+        final Principal principal = inActionContext.getPrincipal();
+        final String accountId = principal.getAccountId();
+        final Long userId = principal.getId();
 
         // the followed entity's account id.
         String followedEntityId = inRequest.getFollowedEntityId();
@@ -124,44 +148,65 @@ public class GetCurrentUserFollowingStatusExecution implements ExecutionStrategy
             return Follower.FollowerStatus.DISABLED;
         }
 
-        FollowMapper followMapper = pickFollowMapper(entityType);
-
         Follower.FollowerStatus status = Follower.FollowerStatus.DISABLED;
 
-        if (null != followMapper)
+        if (EntityType.PERSON == entityType)
         {
-            status = followMapper.isFollowing(accountId, followedEntityId) ? Follower.FollowerStatus.FOLLOWING
-                    : Follower.FollowerStatus.NOTFOLLOWING;
+            status = isUserFollowingUser(userId, followedEntityId);
+        }
+        else if (EntityType.GROUP == entityType)
+        {
+            status = isUserFollowingGroup(userId, followedEntityId);
         }
 
         return status;
     }
 
     /**
-     * @param inGetPeopleByOpenSocialIdsMapper
-     *            the getPeopleByOpenSocialIdsMapper to set
-     */
-    // public void setGetPeopleByOpenSocialIdsMapper(final GetPeopleByOpenSocialIds inGetPeopleByOpenSocialIdsMapper)
-    // {
-    // this.getPeopleByOpenSocialIdsMapper = inGetPeopleByOpenSocialIdsMapper;
-    // }
-    /**
-     * Pick one of the mappers based on the entity type we're looking at.
+     * Checks to see if a user is following a group.
      * 
-     * @param type
-     *            the type of the target entity
-     * @return a mapper or null
+     * @param userId
+     *            id of the user that is being checked as a follower.
+     * @param groupShortName
+     *            id of the group being checked for followers.
+     * @return FollowerStatus of the user.
      */
-    private FollowMapper pickFollowMapper(final EntityType type)
+    private Follower.FollowerStatus isUserFollowingGroup(final long userId, final String groupShortName)
     {
-        if (EntityType.PERSON == type)
+        List<DomainGroupModelView> groups = groupsByNameMapper.execute(Collections.singletonList(groupShortName));
+        if (groups.size() > 0)
         {
-            return personMapper;
+            long groupId = groups.get(0).getEntityId();
+            List<Long> ids = groupFollowerIdsMapper.execute(groupId);
+            if (ids.contains(userId))
+            {
+                return Follower.FollowerStatus.FOLLOWING;
+            }
         }
-        else if (EntityType.GROUP == type)
+        return Follower.FollowerStatus.NOTFOLLOWING;
+    }
+
+    /**
+     * Checks to see if a user is following another user.
+     * 
+     * @param userId
+     *            id of the user that is being checked as a follower.
+     * @param personAccountId
+     *            id of the user being checked for followers
+     * @return FollowerStatus of the user.
+     */
+    private Follower.FollowerStatus isUserFollowingUser(final long userId, final String personAccountId)
+    {
+        List<PersonModelView> people = peopleByAccountMapper.execute(Collections.singletonList(personAccountId));
+        if (people.size() > 0)
         {
-            return groupMapper;
+            long followingUserId = people.get(0).getEntityId();
+            List<Long> ids = followerIdsMapper.execute(followingUserId);
+            if (ids.contains(userId))
+            {
+                return Follower.FollowerStatus.FOLLOWING;
+            }
         }
-        return null;
+        return Follower.FollowerStatus.NOTFOLLOWING;
     }
 }

@@ -45,33 +45,33 @@ public class EntitiesByPrefixResource extends WritableResource
     /**
      * Logger.
      */
-    private Log log = LogFactory.getLog(BackgroundResource.class); 
-    
+    private Log log = LogFactory.getLog(BackgroundResource.class);
+
     /**
      * Mapper for getting followed entities.
      */
     private SearchPeopleAndGroupsByPrefix entitiesDAO;
-    
+
     /**
-     * The key used in the JSON string. 
+     * The key used in the JSON string.
      */
-    protected static final String ENTITIES_KEY = "entities"; 
-    
+    protected static final String ENTITIES_KEY = "entities";
+
     /**
-     * The key used in the JSON string. 
+     * The key used in the JSON string.
      */
     protected static final String NAME_KEY = "displayName";
-    
+
     /**
-     * The key used in the JSON string. 
+     * The key used in the JSON string.
      */
-    protected static final String TYPE_KEY = "entityType"; 
-    
+    protected static final String TYPE_KEY = "entityType";
+
     /**
-     * The key used in the JSON string. 
+     * The key used in the JSON string.
      */
-    protected static final String UNIQUEID_KEY = "uniqueId"; 
-    
+    protected static final String UNIQUEID_KEY = "uniqueId";
+
     /**
      * StreamScopeId for returned entity.
      */
@@ -80,22 +80,22 @@ public class EntitiesByPrefixResource extends WritableResource
     /**
      * The characters to search with.
      */
-    private String targetString;    
-    
+    private String targetString;
+
     /**
-     * The key used in the JSON string. 
+     * The key used in the JSON string.
      */
-    public static final String ITEM_NAMES_KEY = "itemNames"; 
-    
+    public static final String ITEM_NAMES_KEY = "itemNames";
+
     /**
      * Setter.
-     * 
+     *
      * @param inEntitiesDAO
      *            The mapper.
      */
     public void setEntitiesDAO(final SearchPeopleAndGroupsByPrefix inEntitiesDAO)
     {
-        entitiesDAO = inEntitiesDAO;        
+        entitiesDAO = inEntitiesDAO;
     }
 
     /**
@@ -108,13 +108,13 @@ public class EntitiesByPrefixResource extends WritableResource
     protected void initParams(final Request request)
     {
         Map<String, Object> attributes = request.getAttributes();
-        targetString = (String) attributes.get("query");
+        targetString = ((String) attributes.get("query")).replace("%20", " ");
     }
 
 
     /**
      * Handle GET requests.
-     * 
+     *
      * @param variant
      *            the variant to be retrieved.
      * @throws ResourceException
@@ -134,15 +134,15 @@ public class EntitiesByPrefixResource extends WritableResource
 	            //TODO: find out if this is correct to send back as "null".
 	            return new StringRepresentation("");
 	        }
-	        
+
 	        //get current user accountId
 	        String acctId = SecurityContextHolder.getContext().getAuthentication().getName();
-	        
+
 	        List<DisplayEntityModelView> results = entitiesDAO.execute(
-	                new GetEntitiesByPrefixRequest(acctId.trim().toLowerCase(), targetString));        
-	        
+	                new GetEntitiesByPrefixRequest(acctId.trim().toLowerCase(), targetString));
+
 	        JSONObject json = new JSONObject();
-	
+
 	        JSONArray jsonEntities = new JSONArray();
 	        for (DisplayEntityModelView femv : results)
 	        {
@@ -150,7 +150,7 @@ public class EntitiesByPrefixResource extends WritableResource
 	        }
 	        json.put(ENTITIES_KEY, jsonEntities);
 	        log.debug("EntitiesByPrefixResource: json =   " + json.toString());
-	
+
 	        Representation rep = new StringRepresentation(json.toString(), MediaType.APPLICATION_JSON);
 	        rep.setExpirationDate(new Date(0L));
 	        return rep;
@@ -175,7 +175,7 @@ public class EntitiesByPrefixResource extends WritableResource
         jsonEntityObject.put(TYPE_KEY, femv.getType().toString());
         jsonEntityObject.put(UNIQUEID_KEY, femv.getUniqueKey());
         jsonEntityObject.put(STREAMSCOPEID_KEY, femv.getStreamScopeId());
-        
+
         return jsonEntityObject;
     }
 

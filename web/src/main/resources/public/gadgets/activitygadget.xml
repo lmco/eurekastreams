@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-    <ModulePrefs title="Activity App" thumbnail="http://localhost:8080/style/images/eureka-gadget-placeholder.png" title_url="http://eurekastreams.org" author="Eureka Framework" author_email="support@eurekastreams.org">
+    <ModulePrefs title="Activity App" thumbnail="${build.web.baseurl}/style/images/eureka-gadget-placeholder.png" title_url="http://eurekastreams.org" author="Eureka Streams" author_email="support@eurekastreams.org">
         <Require feature="opensocial-0.9" />
         <Require feature="views" />
         <Require feature="dynamic-height" />
@@ -38,8 +38,8 @@
  
     <Content type="html" view="default, profile, canvas">
     <![CDATA[
-        <script type="text/javascript" src="http://localhost:8080/scripts/external-js-min.js"></script>
-        <link type="text/css" rel="stylesheet" href="http://localhost:8080/style/core.css" type="text/css" />
+        <script type="text/javascript" src="${build.web.baseurl}/scripts/external-js-min.js"></script>
+        <link type="text/css" rel="stylesheet" href="${build.web.baseurl}/style/core.css" type="text/css" />
         
         <style type="text/css">
 	           .avatar
@@ -203,13 +203,13 @@
                     eurekastreams.core.navigate("activity?activityId=" + activityId + "&showComment=true&searchId=" + filterId + "&streamSearch=" + shortName + "&viewId=" + searchId);
                     break;
                 case "groupstream":
-                    eurekastreams.core.navigate("groups/" + shortName);
+                    eurekastreams.core.navigate("groups/" + shortName + "/?tab=Stream&showComment=true&activityId=" + activityId);
                     break;
                 case "personstream":
-                    eurekastreams.core.navigate("people/" + shortName);
+                    eurekastreams.core.navigate("people/" + shortName + "/?tab=Stream&showComment=true&activityId=" + activityId);
                     break;
                 case "orgstream":
-                    eurekastreams.core.navigate("organizations/" + shortName);
+                    eurekastreams.core.navigate("organizations/" + shortName + "/?tab=Stream&showComment=true&activityId=" + activityId);
                     break;
                 default:
                     return "";
@@ -243,14 +243,14 @@
 
 		<script type="text/os-data" xmlns:os="http://ns.opensocial.org/2008/markup" >
             		<os:OwnerRequest key="databindowner" />
-			<os:HttpRequest refreshInterval="0"  key="activityDataSet" href="http://localhost:8080/resources/${UserPrefs.filterType}/${UserPrefs.filterId}/owner/${databindowner.id}" />
+			<os:HttpRequest refreshInterval="0"  key="activityDataSet" href="${build.web.baseurl}/resources/${UserPrefs.filterType}/${UserPrefs.filterId}/owner/${databindowner.id}" />
 		</script>		
 
 		
         <script type="text/os-template" xmlns:os="http://eurekastreams.org" tag="uos:viewTemplate">
 			<div class="stream-message-item list-item DEFAULT" repeat="${activities}"> 
 			  <div class="avatar">
-			  	<img class="gwt-Image avatar-image avatar-image-VerySmall" src="http://localhost:8080${actorAvatarPath}" />
+			  	<img class="gwt-Image avatar-image avatar-image-VerySmall" src="${build.web.baseurl}${actorAvatarPath}" />
 			  </div>
 			  <div class="description">
 			  	<div class="message-container DEFAULT">

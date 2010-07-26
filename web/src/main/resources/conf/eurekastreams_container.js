@@ -1,30 +1,30 @@
 //Container configuration
-{"gadgets.container" : ["eureka"],
+{"gadgets.container" : ["${build.gadget.container.name}"],
 	// jsUriTemplate will have %host% and %js% substituted.
 	// No locked domain special cases, but jsUriTemplate must
 	// never conflict with a lockedDomainSuffix.
-	"gadgets.jsUriTemplate" : "http://%host%/gadgets/js/%js%",
+	"gadgets.jsUriTemplate" : "${build.gadget.container.protocol}%host%/gadgets/js/%js%",
 
 	// Config param to load Opensocial data for social
 	// preloads in data pipelining.  %host% will be
 	// substituted with the current host.
-	"gadgets.osDataUri" : "http://%host%/social/rpc",
+	"gadgets.osDataUri" : "${build.gadget.container.protocol}%host%/social/rpc",
 	
 	"gadgets.features" : {
 		"core.io" : {
 		    // Note: /proxy is an open proxy. Be careful how you expose this!
-		    "proxyUrl" : "http://%host%/gadgets/proxy?refresh=%refresh%&url=%url%%rewriteMime%",
-		    "jsonProxyUrl" : "http://%host%/gadgets/makeRequest"
+		    "proxyUrl" : "${build.gadget.container.protocol}%host%/gadgets/proxy?refresh=%refresh%&url=%url%%rewriteMime%",
+		    "jsonProxyUrl" : "${build.gadget.container.protocol}%host%/gadgets/makeRequest"
 	  	},
 		"rpc" : {
-			"parentRelayUrl" : "http://localhost:8080/gadgets/files/container/rpc_relay.html"
+			"parentRelayUrl" : "${build.web.baseurl}/gadgets/files/container/rpc_relay.html"
 		},
 		"opensocial" : {
 		    // Path to fetch opensocial data from
 		    // Must be on the same domain as the gadget rendering server
-		    "path" : "http://%host%/social/rpc",
+		    "path" : "${build.gadget.container.protocol}%host%/social/rpc",
 		    // Path to issue invalidate calls
-		    "invalidatePath" : "http://%host%/gadgets/api/rpc",
+		    "invalidatePath" : "${build.gadget.container.protocol}%host%/gadgets/api/rpc",
 		    "domain" : "shindig",
 		    "enableCaja" : false,
 		    "supportedFields" : {
@@ -34,10 +34,10 @@
 		},
 		"osapi" : {
 		    // The endpoints to query for available JSONRPC/REST services
-		    "endPoints" : [ "http://%host%/social/rpc", "http://%host%/gadgets/api/rpc" ]                   
+		    "endPoints" : [ "${build.gadget.container.protocol}%host%/social/rpc", "${build.gadget.container.protocol}%host%/gadgets/api/rpc" ]                   
 		},
 		"eurekastreams-checklist" : {
-			"parentBaseUrl" : "http://localhost:8080"
+			"parentBaseUrl" : "${build.web.baseurl}"
 		}
 	}
 }

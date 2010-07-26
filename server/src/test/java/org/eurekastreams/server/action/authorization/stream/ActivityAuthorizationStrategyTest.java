@@ -15,8 +15,8 @@
  */
 package org.eurekastreams.server.action.authorization.stream;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,19 +24,17 @@ import java.util.Set;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.AuthorizationException;
-import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
-import org.eurekastreams.server.persistence.DomainGroupMapper;
-import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
+import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.ActivityInteractionType;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityDTOFromParamsStrategy;
 import org.eurekastreams.server.service.actions.strategies.activity.ActorRetrievalStrategy;
@@ -65,6 +63,11 @@ public class ActivityAuthorizationStrategyTest
      * Groups by shortName DAO.
      */
     private GetDomainGroupsByShortNames groupByShortNameDAO = context.mock(GetDomainGroupsByShortNames.class);
+    
+    /**
+     * People by account id DAO.
+     */
+    private GetPeopleByAccountIds personByAccountDAO = context.mock(GetPeopleByAccountIds.class);
 
     /**
      * Group follower ids DAO.
@@ -102,6 +105,11 @@ public class ActivityAuthorizationStrategyTest
     private final DomainGroupModelView groupDTO = context.mock(DomainGroupModelView.class);
 
     /**
+     * PersonModelView.
+     */
+    private final PersonModelView personDTO = context.mock(PersonModelView.class);
+
+    /**
      * Actor retrieval strategy mock.
      */
     private final ActorRetrievalStrategy actorRetrievalStrat = context.mock(ActorRetrievalStrategy.class);
@@ -137,16 +145,6 @@ public class ActivityAuthorizationStrategyTest
     private ActivityAuthorizationStrategy sut;
 
     /**
-     * A person Mapper mock.
-     */
-    private final PersonMapper personMapperMock = context.mock(PersonMapper.class);
-
-    /**
-     * A domain group Mock.
-     */
-    private final DomainGroupMapper groupMapperMock = context.mock(DomainGroupMapper.class);
-
-    /**
      * The Mock for getting all coordinators.
      */
     private final GetAllPersonIdsWhoHaveGroupCoordinatorAccess coordinatorMapperMock = context
@@ -155,18 +153,9 @@ public class ActivityAuthorizationStrategyTest
     /**
      * Mock instance of {@link ActivityDTOFromParamsStrategy} for retrieving the activity dto from the params.
      */
+    @SuppressWarnings("unchecked")
     private final ActivityDTOFromParamsStrategy activityDTOStrategyMock = context
             .mock(ActivityDTOFromParamsStrategy.class);
-
-    /**
-     * A real person object to use.
-     */
-    private Person realPersonObject;
-
-    /**
-     * A real group object to use.
-     */
-    private DomainGroup realGroupObject;
 
     /**
      * Activity id.
@@ -180,8 +169,8 @@ public class ActivityAuthorizationStrategyTest
     public void setUp()
     {
         sut = new ActivityAuthorizationStrategy(groupByShortNameDAO, groupFollowersDAO, actorRetrievalStrat,
-                personMapperMock, groupMapperMock, coordinatorMapperMock, activityDTOStrategyMock,
-                ActivityInteractionType.POST);
+                coordinatorMapperMock, activityDTOStrategyMock,
+                ActivityInteractionType.POST, personByAccountDAO);
 
         context.checking(new Expectations()
         {
@@ -193,9 +182,6 @@ public class ActivityAuthorizationStrategyTest
                 will(returnValue(activityId));
             }
         });
-
-        realPersonObject = new Person("IOwnThis", "I", "Own", "This", "Stream");
-        realGroupObject = new DomainGroup("This is the group", streamDTOUniqueId, realPersonObject);
     }
 
     /**
@@ -204,6 +190,7 @@ public class ActivityAuthorizationStrategyTest
      * @throws Exception
      *             - on error.
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testExecutePersonStreamRecipient() throws Exception
     {
@@ -228,11 +215,14 @@ public class ActivityAuthorizationStrategyTest
                 oneOf(streamDTO).getUniqueIdentifier();
                 will(returnValue("IOwnThis"));
 
-                oneOf(personMapperMock).findByAccountId("IOwnThis");
-                will(returnValue(realPersonObject));
-
+                oneOf(personByAccountDAO).execute(Collections.singletonList("IOwnThis"));
+                will(returnValue(Collections.singletonList(personDTO)));
+                
                 oneOf(actorRetrievalStrat).getActorAccountId(userPrincipal, activityDTO);
                 will(returnValue(ACTOR_ACCOUNT_ID));
+                
+                oneOf(personDTO).isStreamPostable();
+                will(returnValue(true));
             }
         });
 
@@ -246,10 +236,10 @@ public class ActivityAuthorizationStrategyTest
      * @throws Exception
      *             - on error.
      */
+    @SuppressWarnings("unchecked")
     @Test(expected = AuthorizationException.class)
     public void testExecutePersonStreamRecipientWithError() throws Exception
     {
-        final Serializable[] params = { activityDTO };
         final List<StreamScope> streamScopes = new ArrayList<StreamScope>(1);
         streamScopes.add(streamScope);
 
@@ -271,7 +261,7 @@ public class ActivityAuthorizationStrategyTest
                 oneOf(streamDTO).getUniqueIdentifier();
                 will(returnValue("IOwnThis"));
 
-                oneOf(personMapperMock).findByAccountId("IOwnThis");
+                oneOf(personByAccountDAO).execute(Collections.singletonList("IOwnThis"));
                 will(throwException(new Exception()));
             }
         });
@@ -290,8 +280,6 @@ public class ActivityAuthorizationStrategyTest
     @Test
     public void testExecutePublicGroupStreamRecipient() throws Exception
     {
-
-        final Serializable[] params = { activityDTO };
         final List<StreamScope> streamScopes = new ArrayList<StreamScope>(1);
         streamScopes.add(streamScope);
 
@@ -313,25 +301,26 @@ public class ActivityAuthorizationStrategyTest
                 oneOf(actorRetrievalStrat).getActorId(userPrincipal, activityDTO);
                 will(returnValue(personId));
 
-                oneOf(coordinatorMapperMock).execute(0L);
-
                 oneOf(streamDTO).getUniqueIdentifier();
                 will(returnValue(streamDTOUniqueId));
 
                 oneOf(groupByShortNameDAO).execute(with(any(ArrayList.class)));
                 will(returnValue(groupDTOs));
 
+                oneOf(groupDTO).getId();
+                will(returnValue(groupId));
+
+                oneOf(coordinatorMapperMock).execute(groupId);
+                will(returnValue(new HashSet<Long>()));
+                
                 oneOf(groupDTO).isPublic();
+                will(returnValue(true));
+
+                oneOf(groupDTO).isStreamPostable();
                 will(returnValue(true));
 
                 oneOf(activityDTO).getDestinationStream();
                 will(returnValue(streamDTO));
-
-                oneOf(streamDTO).getUniqueIdentifier();
-                will(returnValue(streamDTOUniqueId));
-
-                oneOf(groupMapperMock).findByShortName(streamDTOUniqueId);
-                will(returnValue(realGroupObject));
             }
         });
 
@@ -349,7 +338,6 @@ public class ActivityAuthorizationStrategyTest
     @Test(expected = AuthorizationException.class)
     public void testExecutePrivateGroupStreamRecipientIsNotFollowerOrCoordinator() throws Exception
     {
-        final Serializable[] params = { activityDTO };
         final List<StreamScope> streamScopes = new ArrayList<StreamScope>(1);
         streamScopes.add(streamScope);
 
@@ -392,6 +380,9 @@ public class ActivityAuthorizationStrategyTest
                 oneOf(groupByShortNameDAO).execute(with(any(ArrayList.class)));
                 will(returnValue(groupDTOs));
 
+                oneOf(groupDTO).getId();
+                will(returnValue(groupId));
+
                 oneOf(groupDTO).isPublic();
                 will(returnValue(false));
 
@@ -404,10 +395,10 @@ public class ActivityAuthorizationStrategyTest
                 oneOf(groupFollowersDAO).execute(groupId);
                 will(returnValue(new ArrayList<Long>(0)));
 
-                oneOf(groupMapperMock).findByShortName(streamDTOUniqueId);
-                will(returnValue(realGroupObject));
-
-                oneOf(coordinatorMapperMock).execute(0L);
+                oneOf(coordinatorMapperMock).execute(groupId);
+                
+                oneOf(groupDTO).getId();
+                will(returnValue(groupId));
 
                 oneOf(actorRetrievalStrat).getActorId(userPrincipal, activityDTO);
                 will(returnValue(personId));
@@ -428,8 +419,6 @@ public class ActivityAuthorizationStrategyTest
     @Test
     public void testExecutePrivateGroupStreamRecipientIsFollower() throws Exception
     {
-
-        final Serializable[] params = { activityDTO };
         final List<StreamScope> streamScopes = new ArrayList<StreamScope>(1);
         streamScopes.add(streamScope);
 
@@ -454,10 +443,7 @@ public class ActivityAuthorizationStrategyTest
                 oneOf(streamDTO).getUniqueIdentifier();
                 will(returnValue(streamDTOUniqueId));
 
-                oneOf(groupMapperMock).findByShortName(streamDTOUniqueId);
-                will(returnValue(realGroupObject));
-
-                oneOf(coordinatorMapperMock).execute(0L);
+                oneOf(coordinatorMapperMock).execute(groupId);
 
                 oneOf(actorRetrievalStrat).getActorId(userPrincipal, activityDTO);
                 will(returnValue(personId));
@@ -465,17 +451,20 @@ public class ActivityAuthorizationStrategyTest
                 oneOf(activityDTO).getDestinationStream();
                 will(returnValue(streamDTO));
 
-                oneOf(streamDTO).getUniqueIdentifier();
-                will(returnValue(streamDTOUniqueId));
-
                 oneOf(groupByShortNameDAO).execute(with(any(ArrayList.class)));
                 will(returnValue(groupDTOs));
+
+                oneOf(groupDTO).getId();
+                will(returnValue(groupId));
 
                 oneOf(groupDTO).isPublic();
                 will(returnValue(false));
 
-                oneOf(groupDTO).getEntityId();
+                oneOf(groupDTO).getId();
                 will(returnValue(groupId));
+
+                oneOf(groupDTO).isStreamPostable();
+                will(returnValue(true));
 
                 oneOf(groupFollowersDAO).execute(groupId);
                 will(returnValue(followers));
@@ -496,7 +485,6 @@ public class ActivityAuthorizationStrategyTest
     @Test
     public void testExecutePrivateGroupStreamRecipientIsCoordinator() throws Exception
     {
-        final Serializable[] params = { activityDTO };
         final List<StreamScope> streamScopes = new ArrayList<StreamScope>(1);
         streamScopes.add(streamScope);
 
@@ -524,13 +512,7 @@ public class ActivityAuthorizationStrategyTest
                 oneOf(streamDTO).getUniqueIdentifier();
                 will(returnValue(streamDTOUniqueId));
 
-                oneOf(streamDTO).getUniqueIdentifier();
-                will(returnValue(streamDTOUniqueId));
-
-                oneOf(groupMapperMock).findByShortName(streamDTOUniqueId);
-                will(returnValue(realGroupObject));
-
-                oneOf(coordinatorMapperMock).execute(0L);
+                oneOf(coordinatorMapperMock).execute(groupId);
                 will(returnValue(coordinators));
 
                 oneOf(actorRetrievalStrat).getActorId(userPrincipal, activityDTO);
@@ -541,6 +523,9 @@ public class ActivityAuthorizationStrategyTest
 
                 oneOf(groupDTO).isPublic();
                 will(returnValue(false));
+
+                oneOf(groupDTO).getId();
+                will(returnValue(groupId));
             }
         });
 
@@ -551,6 +536,7 @@ public class ActivityAuthorizationStrategyTest
     /**
      * Test method to test the case where retrieving the activity dto fails.
      */
+    @SuppressWarnings("unchecked")
     @Test(expected = AuthorizationException.class)
     public void testFailedActivityDTOParamsRetrieval()
     {

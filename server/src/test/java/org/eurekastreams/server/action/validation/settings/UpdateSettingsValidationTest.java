@@ -30,8 +30,6 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 
-// blah import edu.emory.mathcs.backport.java.util.Arrays;
-
 /**
  * Test the validator.
  */

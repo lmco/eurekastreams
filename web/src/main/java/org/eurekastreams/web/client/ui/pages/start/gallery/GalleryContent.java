@@ -174,14 +174,14 @@ public class GalleryContent extends SettingsPanel
 
         galleryPortalContainer.add(portalPage);
         portalPage.init();
-        
+
         setUpEvents();
 
         StartTabsModel.getInstance().fetch(null, true);
         GadgetDefinitionCategoriesModel.getInstance().fetch(null, true);
         ThemeDefinitionCategoriesModel.getInstance().fetch(null, true);
     }
-    
+
     /**
      * Set up all events.
      */
@@ -309,14 +309,14 @@ public class GalleryContent extends SettingsPanel
             public void update(final ThemeChangedEvent arg1)
             {
                 String text = "Theme has been applied";
-                
+
                 // since a refresh happens in IE7 when navigating to the start page, show the notification
                 // by passing in a notification url parameter
                 if (MasterComposite.getUserAgent().contains("msie 7"))
                 {
                     Map<String, String> parameters = new HashMap<String, String>();
                     parameters.put(UINotifier.NOTIFICATION_PARAM, text);
-                    
+
                     Session.getInstance().getEventBus().notifyObservers(
                             new UpdateHistoryEvent(new CreateUrlRequest(Page.START, "", parameters)));
                 }
@@ -325,9 +325,9 @@ public class GalleryContent extends SettingsPanel
                 {
                     Session.getInstance().getEventBus().notifyObservers(
                             new UpdateHistoryEvent(new CreateUrlRequest(Page.START)));
-                    
-                    Session.getInstance().getEventBus().notifyObservers(new ShowNotificationEvent(
-                            new Notification(text)));
+
+                    Session.getInstance().getEventBus().notifyObservers(
+                            new ShowNotificationEvent(new Notification(text)));
                 }
             }
         });
@@ -356,6 +356,8 @@ public class GalleryContent extends SettingsPanel
                         Session.getInstance().getEventBus().notifyObservers(
                                 new UpdateHistoryEvent(new CreateUrlRequest(Page.GALLERY, gadgetParams)));
                         gadgetTab.reload();
+                        Session.getInstance().getEventBus().notifyObservers(
+                                new ShowNotificationEvent(new Notification("Your app has been successfully added")));
                     }
                 });
 
@@ -367,6 +369,8 @@ public class GalleryContent extends SettingsPanel
                         Session.getInstance().getEventBus().notifyObservers(
                                 new UpdateHistoryEvent(new CreateUrlRequest(Page.GALLERY, gadgetParams)));
                         gadgetTab.reload();
+                        Session.getInstance().getEventBus().notifyObservers(
+                                new ShowNotificationEvent(new Notification("Your app has been successfully saved")));
                     }
                 });
 
@@ -378,6 +382,8 @@ public class GalleryContent extends SettingsPanel
                         Session.getInstance().getEventBus().notifyObservers(
                                 new UpdateHistoryEvent(new CreateUrlRequest(Page.GALLERY, themeParams)));
                         themeTab.reload();
+                        Session.getInstance().getEventBus().notifyObservers(
+                                new ShowNotificationEvent(new Notification("Your theme has been successfully added")));
                     }
 
                 });
@@ -389,6 +395,8 @@ public class GalleryContent extends SettingsPanel
                         Session.getInstance().getEventBus().notifyObservers(
                                 new UpdateHistoryEvent(new CreateUrlRequest(Page.GALLERY, themeParams)));
                         themeTab.reload();
+                        Session.getInstance().getEventBus().notifyObservers(
+                                new ShowNotificationEvent(new Notification("Your theme has been successfully saved")));
                     }
                 });
 
@@ -512,11 +520,7 @@ public class GalleryContent extends SettingsPanel
             form.setSubmitButtonClass("form-update-button");
         }
 
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("tab", Session.getInstance().getParameterValue("tab"));
-        params.put("galleryTab", "Themes");
-
-        form.setOnCancelHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.GALLERY, params)));
+        form.setOnCancelHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.GALLERY, urlParams)));
         form.addFormElement(new ValueOnlyFormElement("id", id));
         form.addWidget(new HTML("<em class='gallery-upload-note'><strong>Please Note:</strong><br />"
                 + "Please be sure your XML file includes the required fields. You will not be able to upload the XML "
@@ -577,11 +581,7 @@ public class GalleryContent extends SettingsPanel
             form.setSubmitButtonClass("form-update-button");
         }
 
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("tab", Session.getInstance().getParameterValue("tab"));
-        params.put("galleryTab", "Apps");
-
-        form.setOnCancelHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.GALLERY, params)));
+        form.setOnCancelHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.GALLERY, urlParams)));
         form.addFormElement(new ValueOnlyFormElement("id", id));
         form.addWidget(new HTML("<em class='gallery-upload-note'><strong>Please Note:</strong><br />"
                 + "Please be sure your XML file includes the required fields. You will not be able to upload the XML "

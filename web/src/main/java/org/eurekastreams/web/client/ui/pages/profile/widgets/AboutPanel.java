@@ -16,6 +16,7 @@
 package org.eurekastreams.web.client.ui.pages.profile.widgets;
 
 import java.util.List;
+import java.util.HashMap;
 
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Organization;
@@ -115,8 +116,11 @@ public class AboutPanel extends FlowPanel
 
             for (Organization relatedOrg : relatedOrgs)
             {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("tab", "Stream");
+                
                 Hyperlink orgLink = new Hyperlink(relatedOrg.getName(), Session.getInstance().generateUrl(
-                        new CreateUrlRequest(Page.ORGANIZATIONS, relatedOrg.getShortName())));
+                        new CreateUrlRequest(Page.ORGANIZATIONS, relatedOrg.getShortName(), params)));
                 orgLink.addStyleName("profile-org");
                 this.add(orgLink);
             }

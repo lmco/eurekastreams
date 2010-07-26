@@ -30,18 +30,18 @@
 			queueTaskHandler // submits the task to the Queue 
 		// must have the applicationContext-jms.xml file active
 	-->
-	<alias alias="taskHandler" name="inlineTaskHandler" />
+	<alias alias="taskHandler" name="${build.jms.taskhandler}" />
 	
 	
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-gilead.xml" />
-    <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-security-preauth.xml" />
+    <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-security-${build.spring.security}.xml" />
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-restlets.xml" />
 	
     <!-- Initialize Class and Field Bridges with singleton setters -->
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-search-bridges-initialization.xml" />
 
 	<!-- A the index technique to use -->
-    <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-model-oneBox.xml" />
+    <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-model-${build.system.nodetype}.xml" />
     
     <!-- memcached client bean -->
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-memcached.xml" />          
@@ -50,6 +50,6 @@
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-jms.xml" />
     
     <!-- The Quartz scheduled jobs -->
-    <import resource="applicationContext-jobs.xml" />
+    ${build.system.jobscheduler}
     		
 </beans>

@@ -21,6 +21,7 @@ import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
+import org.eurekastreams.server.persistence.mappers.requests.PersonAndStreamViewIdRequest;
 import org.eurekastreams.server.persistence.mappers.stream.DeleteCachedCompositeStreamById;
 import org.eurekastreams.server.persistence.mappers.stream.DeleteStreamViewAndRelatedSearches;
 
@@ -39,7 +40,7 @@ public class DeleteStreamViewExecution implements ExecutionStrategy<PrincipalAct
      * The mapper to handle deletion of the composite stream.
      */
     private DeleteCachedCompositeStreamById deleteCachedCompositeStreamById;
-    
+
     /**
      * The mapper to handle deletion of the streamview and related searches.
      */
@@ -92,8 +93,8 @@ public class DeleteStreamViewExecution implements ExecutionStrategy<PrincipalAct
                 findPersonById.flush();
 
                 deleteCachedCompositeStreamById.execute(actionContext.getPrincipal().getId(), streamViewId);
-                
-                deleteStreamViewAndSearches.execute(streamViewId);
+
+                deleteStreamViewAndSearches.execute(new PersonAndStreamViewIdRequest(p, streamViewId));
 
                 return new Boolean(true);
             }

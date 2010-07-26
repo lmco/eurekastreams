@@ -1,0 +1,54 @@
+#!/bin/bash
+## BEGIN INIT INFO
+# Provides: taskqueueprocessor
+# chkconfig: 345 21 21
+# Description: Starts the taskqueueprocessor daemon
+# Long-Description: The taskqueueprocessor loads a Spring context that creates
+#           a JMS listener container and loads message driven beans
+#           in this container
+## END INIT INFO
+
+prog=taskqueueprocessor
+
+PIDFILE=/var/run/$prog/$prog.pid
+PATH=/opt/$prog/bin:$PATH
+RETVAL=0
+OPTIONS="--pid-file=$PIDFILE"
+
+case "$1" in
+    start)
+        if [ -f "$PIDFILE" ]; then
+           checkpid `cat $PIDFILE` && return 0
+        fi
+        echo -n $"Starting $prog: "
+        daemon --user=root $prog ${OPTIONS}
+        RETVAL=$?
+        [ $RETVAL -eq "0" ] && touch /var/lock/subsys/$prog
+        echo
+
+        ;;
+
+    stop)
+        [ -f /var/lock/subsys/$prog ] || return 0
+        echo -n "Killing $prog: "
+        killproc $prog
+        echo
+        rm -f /var/lock/subsys/$prog
+        RETVAL=0
+        
+        ;;
+
+    restart)
+        stop
+        start
+        
+        ;;
+
+    *)
+        echo $"Usage: $0 {start|stop|restart}"
+        RETVAL=3
+
+        ;;
+esac
+
+exit $RETVAL

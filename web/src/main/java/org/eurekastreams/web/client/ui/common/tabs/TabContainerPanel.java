@@ -18,9 +18,7 @@ package org.eurekastreams.web.client.ui.common.tabs;
 import java.util.HashMap;
 
 import org.eurekastreams.web.client.events.Observer;
-import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
-import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 
 import com.allen_sauer.gwt.dnd.client.DragHandler;
@@ -33,7 +31,7 @@ import com.google.gwt.user.client.ui.IndexedPanel;
 
 /**
  * Manages tabs. Stores the state in the history. Supports dragging and droppin.
- *
+ * 
  */
 public class TabContainerPanel extends AbsolutePanel
 {
@@ -92,7 +90,7 @@ public class TabContainerPanel extends AbsolutePanel
 
     /**
      * Constructor specifiying the key, or the history token key associated with this tab container.
-     *
+     * 
      * @param inKey
      *            the history token key.
      */
@@ -114,19 +112,19 @@ public class TabContainerPanel extends AbsolutePanel
      */
     public void init()
     {
+        if (null != firstTab)
+        {
+            activateTab(firstTab);
+        }
+
         Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
                 new Observer<UpdatedHistoryParametersEvent>()
                 {
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
-                        if (event.getParameters().get(key) != null)
+                        if (null != event.getParameters().get(key))
                         {
                             switchToTab(event.getParameters().get(key));
-                        }
-                        else
-                        {
-                            Session.getInstance().getEventBus().notifyObservers(
-                                    new UpdateHistoryEvent(new CreateUrlRequest(key, firstTab, false)));
                         }
                     }
                 }, true);
@@ -134,7 +132,7 @@ public class TabContainerPanel extends AbsolutePanel
 
     /**
      * Make the tabs draggable. Just give me a draghandler so I know what to do when its over.
-     *
+     * 
      * @param dragHandler
      *            the draghandler.
      * @param dropController
@@ -153,7 +151,7 @@ public class TabContainerPanel extends AbsolutePanel
 
     /**
      * Get the tab drop zone. May be necessary for making drop controllers.
-     *
+     * 
      * @return the tab drop zone.
      */
     public IndexedPanel getTabDropZone()
@@ -163,7 +161,7 @@ public class TabContainerPanel extends AbsolutePanel
 
     /**
      * Switch to a tab by it's unique identifier.
-     *
+     * 
      * @param identifier
      *            the tab's identifier.
      */
@@ -184,7 +182,7 @@ public class TabContainerPanel extends AbsolutePanel
 
     /**
      * Selects and activates a given tab, if possible.
-     *
+     * 
      * @param tab
      *            the tab name/identifier to activate
      */
@@ -204,7 +202,7 @@ public class TabContainerPanel extends AbsolutePanel
 
     /**
      * Add a tab.
-     *
+     * 
      * @param tab
      *            the tab.
      */
@@ -215,7 +213,7 @@ public class TabContainerPanel extends AbsolutePanel
 
     /**
      * Insert a tab. Like add a tab only with an index.
-     *
+     * 
      * @param tab
      *            the tab.
      * @param index
@@ -240,7 +238,7 @@ public class TabContainerPanel extends AbsolutePanel
 
     /**
      * Gets the number of tabs.
-     *
+     * 
      * @return the tabs.
      */
     public int getSize()
@@ -250,7 +248,7 @@ public class TabContainerPanel extends AbsolutePanel
 
     /**
      * Remove a tab by identifier.
-     *
+     * 
      * @param identifier
      *            the identifier.
      */
@@ -262,7 +260,7 @@ public class TabContainerPanel extends AbsolutePanel
 
     /**
      * Gets a tab.
-     *
+     * 
      * @param index
      *            the index.
      * @return the tab.
