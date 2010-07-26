@@ -363,9 +363,9 @@
                     <webAppConfig>
                         <contextPath>/</contextPath>
                     </webAppConfig>
-                    <webAppSourceDirectory>${project.build.directory}/${project.build.finalName}/org.eurekastreams.web.Application</webAppSourceDirectory>
+                    <webAppSourceDirectory>${project.build.directory}/${project.build.finalName}/${build.gwt.modulename}</webAppSourceDirectory>
                     <contextPath>/</contextPath>
-                    <webXml>${project.build.directory}/${project.build.finalName}/org.eurekastreams.web.Application/WEB-INF/web.xml</webXml>
+                    <webXml>${project.build.directory}/${project.build.finalName}/${build.gwt.modulename}/WEB-INF/web.xml</webXml>
                     <requestLog  implementation="org.mortbay.jetty.NCSARequestLog">
 			            <filename>${project.build.directory}/jetty-access.log</filename>
 			            <retainDays>1</retainDays>
