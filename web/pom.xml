@@ -402,7 +402,7 @@
                             <arguments>
                                 <argument>-R</argument>
                                 <argument>755</argument>
-                                <argument>${project.build.directory}/classes/db</argument>
+                                <argument>${project.build.directory}/classes/db/scripts</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -464,22 +464,19 @@
                 <filtering>true</filtering>
             </resource>
             <resource>
-                <targetPath>db</targetPath>
+                <targetPath>db/schema</targetPath>
                 <directory>${project.build.directory}/unpackedresources/schema</directory>
                 <excludes>
                     <exclude>*/*.*</exclude>
                 </excludes>
             </resource>
             <resource>
-                <targetPath>db</targetPath>
+                <targetPath>db/migration</targetPath>
                 <directory>${project.build.directory}/unpackedresources/migration</directory>
             </resource>
                         <resource>
-                <targetPath>db</targetPath>
+                <targetPath>db/scripts</targetPath>
                 <directory>${project.build.directory}/unpackedresources/scripts</directory>
-                <excludes>
-                    <exclude>**</exclude>
-                </excludes>
             </resource>
             <resource>
                 <directory>${project.build.directory}/unpackedresources</directory>
@@ -938,7 +935,7 @@
                                     <outputDirectory>${project.build.directory}/classes/db/schema</outputDirectory>
                                     <resources>
                                         <resource>
-                                            <directory>${project.build.directory}/unpackedresources/schema/dev</directory>
+                                            <directory>${project.build.directory}/unpackedresources/database/schema/dev</directory>
                                             <includes>
                                                 <include>*.sql</include>
                                             </includes>
@@ -998,7 +995,7 @@
                                     <outputDirectory>${project.build.directory}/classes/db/schema</outputDirectory>
                                     <resources>
                                         <resource>
-                                            <directory>${project.build.directory}/unpackedresources/schema/int</directory>
+                                            <directory>${project.build.directory}/unpackedresources/database/schema/int</directory>
                                             <includes>
                                                 <include>*.sql</include>
                                             </includes>
@@ -1039,7 +1036,7 @@
                                     <outputDirectory>${project.build.directory}/classes/db/schema</outputDirectory>
                                     <resources>
                                         <resource>
-                                            <directory>${project.build.directory}/unpackedresources/schema/uat</directory>
+                                            <directory>${project.build.directory}/unpackedresources/database/schema/uat</directory>
                                             <includes>
                                                 <include>*.sql</include>
                                             </includes>
