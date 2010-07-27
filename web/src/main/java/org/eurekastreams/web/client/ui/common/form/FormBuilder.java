@@ -133,6 +133,11 @@ public class FormBuilder extends FlowPanel implements Bindable
     private boolean addedLastFormElement = false;
 
     /**
+     * Is the form inactive.
+     */
+    private boolean inactive = false;
+
+    /**
      * Default constructor.
      *
      * @param title
@@ -189,6 +194,7 @@ public class FormBuilder extends FlowPanel implements Bindable
         {
             public void onClick(final ClickEvent arg0)
             {
+                inactive = true;
                 if (onCancelCommand != null)
                 {
                     onCancelCommand.execute();
@@ -288,14 +294,16 @@ public class FormBuilder extends FlowPanel implements Bindable
 
         for (FormElement element : data)
         {
-            if (originalValues.containsKey(element.getKey()) && originalValues.get(element.getKey()) != null
+            if (originalValues.containsKey(element.getKey()) && (originalValues.get(element.getKey()) != null
                     && !originalValues.get(element.getKey()).equals(element.getValue()))
+                    || (element.getValue() != null
+                            && !element.getValue().equals(originalValues.get(element.getKey()))))
             {
                 changed = true;
             }
         }
 
-        return changed;
+        return changed && !inactive;
     }
 
     /**
