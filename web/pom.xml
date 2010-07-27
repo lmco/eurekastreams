@@ -714,6 +714,7 @@
                                 <phase>package</phase>
                                 <configuration>
                                     <gwtVersion>${gwtVersion}</gwtVersion>
+                                    <module>${build.gwt.modulename}</module>
                                 </configuration>
                                 <goals>
                                     <goal>compile</goal>
