@@ -29,17 +29,17 @@ public class JSNICommandFormElement implements FormElement
 	 * The key.
 	 */
 	private String key;
-	
+
 	/**
 	 * javascript command name.
 	 */
 	private static String jSNICommand;
-	
+
 	/**
 	 * Return the key.
 	 * @return the key.
 	 */
-	public String getKey() 
+	public String getKey()
 	{
 		return key;
 	}
@@ -48,11 +48,11 @@ public class JSNICommandFormElement implements FormElement
 	 * Get the value.
 	 * @return the value.
 	 */
-	public Serializable getValue() 
+	public Serializable getValue()
 	{
 		return runJSNICommand(jSNICommand);
 	}
-	
+
 	/**
 	 * The javascript itself.
 	 * @param commandName the command name to execute.
@@ -60,7 +60,19 @@ public class JSNICommandFormElement implements FormElement
 	 */
 	private static native String runJSNICommand(final String commandName)
     /*-{
-     	 return $wnd[commandName]();
+         if ($wnd[commandName] != null)
+         {
+            try
+            {
+                return $wnd[commandName]();
+            }
+            catch(ex)
+            {
+                return "";
+            }
+         }
+
+     	 return "";
     }-*/;
 
 	/**
@@ -73,12 +85,12 @@ public class JSNICommandFormElement implements FormElement
 		key = inKey;
 		jSNICommand = inJSNICommand;
 	}
-	
+
 	/**
 	 * What COULD I do here?
 	 * @param errMessage the message that I'll do nothing with...
 	 */
-	public void onError(final String errMessage) 
+	public void onError(final String errMessage)
 	{
 		// Nothing cause I'm hidden
 	}
@@ -86,7 +98,7 @@ public class JSNICommandFormElement implements FormElement
 	/**
 	 * What COULD I do here?
 	 */
-	public void onSuccess() 
+	public void onSuccess()
 	{
 		// Nothing cause I'm hidden.
 	}
