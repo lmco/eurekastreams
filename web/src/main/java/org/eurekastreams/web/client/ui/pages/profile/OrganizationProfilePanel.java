@@ -277,7 +277,7 @@ public class OrganizationProfilePanel extends FlowPanel
                     }
                 });
 
-        OrganizationModel.getInstance().authorize(org.getShortName(), true);
+        OrganizationModel.getInstance().authorize(org.getShortName(), false);
 
         portalPage.init();
         portalPage.setStyleName("profile-gadgets-container");
