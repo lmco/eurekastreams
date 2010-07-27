@@ -3,8 +3,22 @@ package org.eurekastreams.server.service.actions.strategies.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Collides (AND) two lists using Interpolation Search to find common items.
+ */
 public class InterpolationListCollider implements ListCollider
 {
+    /**
+     * Collide (AND) two lists and return the results.
+     * 
+     * Behavior is undefined if sorted list is unsorted. Unchecked in method for performance reasons.
+     * 
+     * @param sorted
+     *            sorted list.
+     * @param unsorted
+     *            unsorted list.
+     * @return common items.
+     */
     public List<Long> collide(final List<Long> sorted, final List<Long> unsorted)
     {
         final ArrayList<Long> commonItems = new ArrayList<Long>();
@@ -20,6 +34,15 @@ public class InterpolationListCollider implements ListCollider
         return commonItems;
     }
 
+    /**
+     * Classis interpolation search, but list is expected to be sorted descending, instead of ascending.
+     * 
+     * @param sorted
+     *            sorted list.
+     * @param toFind
+     *            the item to find.
+     * @return true toFind exists in the sorted list, false otherwise.
+     */
     private boolean contains(final List<Long> sorted, final Long toFind)
     {
         int low = 0;

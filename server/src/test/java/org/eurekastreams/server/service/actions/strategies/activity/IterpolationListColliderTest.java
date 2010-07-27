@@ -91,6 +91,14 @@ public class IterpolationListColliderTest
         collideTest(sorted, unsorted);
     }
 
+    /**
+     * Helpder method, tests against apache commons intersection.
+     * 
+     * @param sorted
+     *            the sorted list.
+     * @param unsorted
+     *            the unsorted list.
+     */
     @SuppressWarnings("unchecked")
     private static final void collideTest(Long[] sorted, Long[] unsorted)
     {
