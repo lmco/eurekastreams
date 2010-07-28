@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,30 +22,30 @@ import org.eurekastreams.server.persistence.mappers.requests.CurrentDateInMinute
 /**
  * Set all the feeds that will be updated to pending so they aren't updated more
  * than once.
- * 
+ *
  */
 public class SetRefreshableFeedsAsPending extends
-		BaseArgDomainMapper<CurrentDateInMinutesRequest, Boolean> 
+		BaseArgDomainMapper<CurrentDateInMinutesRequest, Boolean>
 {
 
 	/**
 	 * Execute. Refer to GetRefreshableFeedsMapper for an explanation of this
 	 * WHERE logic.
-	 * 
+	 *
 	 * @param inRequest
 	 *            request holding the current date in minutes.
 	 * @return true.
 	 */
 	@Override
-	public Boolean execute(final CurrentDateInMinutesRequest inRequest) 
+	public Boolean execute(final CurrentDateInMinutesRequest inRequest)
 	{
 		Query q = getEntityManager().createQuery(
-				"UPDATE Feed SET pending = true WHERE id in "
+				"UPDATE Feed SET updated = :currentTimeInMinutes WHERE id in "
 						+ "(SELECT id FROM Feed WHERE ((updateFrequency "
 						+ "is not null and updated + updateFrequency "
 						+ "< :currentTimeInMinutes) or (updateFrequency "
 						+ "is null and updated + streamPlugin.updateFrequency"
-						+ "< :currentTimeInMinutes)) and pending = false)")
+						+ "< :currentTimeInMinutes)))")
 				.setParameter("currentTimeInMinutes",
 						inRequest.getCurrentDateInMinutes());
 

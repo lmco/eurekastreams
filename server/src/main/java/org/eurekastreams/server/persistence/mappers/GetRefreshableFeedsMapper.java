@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,10 @@ import org.eurekastreams.server.persistence.mappers.requests.CurrentDateInMinute
 
 /**
  * Gets the feeds that need to be refreshed.
- * 
+ *
  */
 public class GetRefreshableFeedsMapper extends
-		ReadMapper<CurrentDateInMinutesRequest, List<Feed>> 
+		ReadMapper<CurrentDateInMinutesRequest, List<Feed>>
 {
 	/**
 	 * Complicated logic here, but doing it all in SQL makes this faster. So,
@@ -38,7 +38,7 @@ public class GetRefreshableFeedsMapper extends
 	 * the interval is blank (the feed does not have it set) then refer to the
 	 * plugin's interval (which is required and set up by the installation of
 	 * the plugin). Ignore feeds that are pending to avoid race conditions.
-	 * 
+	 *
 	 * @param inRequest
 	 *            the request holding the current time in minutes. This is
 	 *            passed in so that when we call the setPending mapper we don't
@@ -48,7 +48,7 @@ public class GetRefreshableFeedsMapper extends
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Feed> execute(final CurrentDateInMinutesRequest inRequest) 
+	public List<Feed> execute(final CurrentDateInMinutesRequest inRequest)
 	{
 		Query q = getEntityManager()
 				.createQuery(
@@ -56,11 +56,11 @@ public class GetRefreshableFeedsMapper extends
 								+ "is not null and f.updated + f.updateFrequency "
 								+ "< :currentTimeInMinutes) or (f.updateFrequency "
 								+ "is null and f.updated + f.streamPlugin.updateFrequency"
-								+ "< :currentTimeInMinutes)) and pending = false")
+								+ "< :currentTimeInMinutes))")
 				.setParameter("currentTimeInMinutes",
 						inRequest.getCurrentDateInMinutes());
 
-		return (List<Feed>) q.getResultList();
+		return q.getResultList();
 	}
 
 }

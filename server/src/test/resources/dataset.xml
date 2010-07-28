@@ -81,7 +81,7 @@
     
     <Feed id="1" version="1" pending="false" url="http://www.google1.com"
         updated="1000" updateFrequency="10" streamPluginId="1" title="sometitle" />
-    <Feed id="2" version="1" pending="true" url="http://www.google2.com"
+    <Feed id="2" version="1" pending="false" url="http://www.google2.com"
         updated="1000" updateFrequency="10" streamPluginId="1" title="sometitle" />
     <Feed id="3" version="1" pending="false" url="http://www.google3.com"
         updated="1000" updateFrequency="60" streamPluginId="2" title="sometitle" />
