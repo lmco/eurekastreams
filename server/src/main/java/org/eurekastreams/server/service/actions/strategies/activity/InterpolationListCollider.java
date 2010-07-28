@@ -32,9 +32,11 @@ public class InterpolationListCollider implements ListCollider
      *            sorted list.
      * @param unsorted
      *            unsorted list.
+     * @param maxResults
+     *            the max results to find.
      * @return common items.
      */
-    public List<Long> collide(final List<Long> sorted, final List<Long> unsorted)
+    public List<Long> collide(final List<Long> sorted, final List<Long> unsorted, final int maxResults)
     {
         final ArrayList<Long> commonItems = new ArrayList<Long>();
 
@@ -43,6 +45,12 @@ public class InterpolationListCollider implements ListCollider
             if (contains(sorted, item))
             {
                 commonItems.add(item);
+
+                if (commonItems.size() == maxResults)
+                {
+                    // break loop and return
+                    return commonItems;
+                }
             }
         }
 

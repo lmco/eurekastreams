@@ -27,11 +27,13 @@ public interface ListCollider
      * 
      * Behavior is undefined if sorted list is unsorted. Unchecked in method for performance reasons.
      * 
-     * @param sorted
-     *            sorted list.
-     * @param unsorted
-     *            unsorted list.
+     * @param listA
+     *            a list.
+     * @param listB
+     *            b list.
+     * @param maxResults
+     *            max results to return.
      * @return common items.
      */
-    List<Long> collide(final List<Long> sorted, final List<Long> unsorted);
+    List<Long> collide(final List<Long> listA, final List<Long> listB, final int maxResults);
 }
