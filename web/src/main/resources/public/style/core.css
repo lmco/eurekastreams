@@ -6874,6 +6874,8 @@ div.close-button a:hover {
 	padding-top: 0;
 	clear: both;
 	padding-bottom: 0px;
+	width: auto;
+	padding-left: 30px;
 }
 
 .login-content-container>div {
