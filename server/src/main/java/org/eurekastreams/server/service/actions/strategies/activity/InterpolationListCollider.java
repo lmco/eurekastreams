@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2010 Lockheed Martin Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.eurekastreams.server.service.actions.strategies.activity;
 
 import java.util.ArrayList;
@@ -35,7 +50,7 @@ public class InterpolationListCollider implements ListCollider
     }
 
     /**
-     * Classis interpolation search, but list is expected to be sorted descending, instead of ascending.
+     * Classic interpolation search, but list is expected to be sorted descending, instead of ascending.
      * 
      * @param sorted
      *            sorted list.
@@ -45,6 +60,15 @@ public class InterpolationListCollider implements ListCollider
      */
     private boolean contains(final List<Long> sorted, final Long toFind)
     {
+        if (sorted.size() == 0)
+        {
+            return false;
+        }
+        else if (sorted.size() == 1)
+        {
+            return toFind.equals(sorted.get(0));
+        }
+
         int low = 0;
         int high = sorted.size() - 1;
         int mid;
@@ -54,18 +78,19 @@ public class InterpolationListCollider implements ListCollider
             mid = (int) (low + ((toFind - sorted.get(low)) * (high - low)) / (sorted.get(high) - sorted.get(low)));
 
             if (sorted.get(mid) < toFind)
+            {
                 high = mid - 1;
+            }
             else if (sorted.get(mid) > toFind)
-                // Repetition of the comparison code is forced by syntax limitations.
+            {
                 low = mid + 1;
+            }
             else
+            {
                 return true;
+            }
         }
 
-        if (sorted.get(high) == toFind)
-            return true;
-        else
-            return false; // Not found
-
+        return (sorted.get(high) == toFind);
     }
 }
