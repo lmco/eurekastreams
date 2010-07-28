@@ -66,8 +66,9 @@ public class GetRefreshableFeedsMapperTest extends MapperTest
         CurrentDateInMinutesRequest request = new CurrentDateInMinutesRequest(TIME1011);
         List<Feed> results = sut.execute(request);
 
-        assertTrue(results.size() == 1);
+        assertTrue(results.size() == 2);
         assertTrue(results.get(0).getId() == 1L);
+        assertTrue(results.get(1).getId() == 2L);
         assertTrue(results.get(0).getUrl().equals("http://www.google1.com"));
     }
 
@@ -81,10 +82,11 @@ public class GetRefreshableFeedsMapperTest extends MapperTest
         CurrentDateInMinutesRequest request = new CurrentDateInMinutesRequest(TIME1031);
         List<Feed> results = sut.execute(request);
 
-        assertTrue(results.size() == 3);
+        assertTrue(results.size() == 4);
         assertTrue(results.get(0).getId() == 1L);
-        assertTrue(results.get(1).getId() == 4L);
-        assertTrue(results.get(2).getId() == 5L);
+        assertTrue(results.get(1).getId() == 2L);
+        assertTrue(results.get(2).getId() == 4L);
+        assertTrue(results.get(3).getId() == 5L);
     }
 
     /**
@@ -96,11 +98,12 @@ public class GetRefreshableFeedsMapperTest extends MapperTest
         CurrentDateInMinutesRequest request = new CurrentDateInMinutesRequest(TIME1061);
         List<Feed> results = sut.execute(request);
 
-        assertTrue(results.size() == 4);
+        assertTrue(results.size() == 5);
         assertTrue(results.get(0).getId() == 1L);
-        assertTrue(results.get(1).getId() == 3L);
-        assertTrue(results.get(2).getId() == 4L);
-        assertTrue(results.get(3).getId() == 5L);
+        assertTrue(results.get(1).getId() == 2L);
+        assertTrue(results.get(2).getId() == 3L);
+        assertTrue(results.get(3).getId() == 4L);
+        assertTrue(results.get(4).getId() == 5L);
     }
 
     /**

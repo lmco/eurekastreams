@@ -72,11 +72,11 @@ public class SetRefreshableFeedsAsPendingTest extends MapperTest
         Query q = getEntityManager().createQuery("FROM Feed");
         List<Feed> results = q.getResultList();
 
-        assertTrue(results.get(0).getPending());
-        assertTrue(results.get(1).getPending());
-        assertFalse(results.get(2).getPending());
-        assertFalse(results.get(3).getPending());
-        assertFalse(results.get(4).getPending());
+        assertTrue(results.get(0).getLastUpdated() == TIME1011);
+        assertTrue(results.get(1).getLastUpdated() == TIME1011);
+        assertFalse(results.get(2).getLastUpdated() == TIME1011);
+        assertFalse(results.get(3).getLastUpdated() == TIME1011);
+        assertFalse(results.get(4).getLastUpdated() == TIME1011);
     }
 
     /**
@@ -94,11 +94,11 @@ public class SetRefreshableFeedsAsPendingTest extends MapperTest
 
         List<Feed> results = q.getResultList();
 
-        assertTrue(results.get(0).getPending());
-        assertTrue(results.get(1).getPending());
-        assertFalse(results.get(2).getPending());
-        assertTrue(results.get(3).getPending());
-        assertTrue(results.get(4).getPending());
+        assertTrue(results.get(0).getLastUpdated() == TIME1031);
+        assertTrue(results.get(1).getLastUpdated() == TIME1031);
+        assertFalse(results.get(2).getLastUpdated() == TIME1031);
+        assertTrue(results.get(3).getLastUpdated() == TIME1031);
+        assertTrue(results.get(4).getLastUpdated() == TIME1031);
     }
 
     /**
@@ -115,11 +115,11 @@ public class SetRefreshableFeedsAsPendingTest extends MapperTest
 
         List<Feed> results = q.getResultList();
 
-        assertTrue(results.get(0).getPending());
-        assertTrue(results.get(1).getPending());
-        assertTrue(results.get(2).getPending());
-        assertTrue(results.get(3).getPending());
-        assertTrue(results.get(4).getPending());
+        assertTrue(results.get(0).getLastUpdated() == TIME1061);
+        assertTrue(results.get(1).getLastUpdated() == TIME1061);
+        assertTrue(results.get(2).getLastUpdated() == TIME1061);
+        assertTrue(results.get(3).getLastUpdated() == TIME1061);
+        assertTrue(results.get(4).getLastUpdated() == TIME1061);
     }
 
     /**
@@ -136,11 +136,11 @@ public class SetRefreshableFeedsAsPendingTest extends MapperTest
 
         List<Feed> results = q.getResultList();
 
-        assertFalse(results.get(0).getPending());
-        assertTrue(results.get(1).getPending());
-        assertFalse(results.get(2).getPending());
-        assertFalse(results.get(3).getPending());
-        assertFalse(results.get(4).getPending());
+        assertFalse(results.get(0).getLastUpdated() == TIME1005);
+        assertFalse(results.get(1).getLastUpdated() == TIME1005);
+        assertFalse(results.get(2).getLastUpdated() == TIME1005);
+        assertFalse(results.get(3).getLastUpdated() == TIME1005);
+        assertFalse(results.get(4).getLastUpdated() == TIME1005);
     }
 
 }
