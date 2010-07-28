@@ -333,8 +333,8 @@ public class GroupProfilePanel extends FlowPanel
         portalPageContainer.add(portalPage);
 
         eventBus.notifyObservers(StreamReinitializeRequestEvent.getEvent());
-        GroupModel.getInstance().authorize(inGroup.getShortName(), true);
-        
+        GroupModel.getInstance().authorize(inGroup.getShortName(), false);
+
         inProcessor.setQueueRequests(false);
         inProcessor.fireQueuedRequests();
     }
