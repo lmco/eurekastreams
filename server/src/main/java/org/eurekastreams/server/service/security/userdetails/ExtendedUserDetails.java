@@ -23,36 +23,24 @@ import org.springframework.security.userdetails.UserDetails;
 /**
  * Interface that extends Spring's UserDetails interface to allow access to
  * Person and PersistentLogin object.
- * 
+ *
  */
 public interface ExtendedUserDetails extends UserDetails
 {
     /**
      * Getter for Person object.
-     * 
+     *
      * @return the Person object if available, null if not.
      */
     Person getPerson();
 
     /**
      * Getter for PersistentLoginObject.
-     * 
+     *
      * @return the PersistentLogin information if available, null if not.
      */
     PersistentLogin getPersistentLogin();
-    
-    /**
-     * Return ToS acceptance flag.
-     * @return ToS acceptance flag.
-     */
-    boolean getToSAcceptance();
-    
-    /**
-     * Set ToS acceptance flag.
-     * @param inToSAcceptance boolean indicating user ToS acceptance.
-     */
-    void setToSAcceptance(boolean inToSAcceptance);
-    
+
     /**
      * Get Authentication type for user.
      * @return Authentication type for user.

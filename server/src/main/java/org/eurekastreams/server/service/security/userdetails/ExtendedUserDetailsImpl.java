@@ -24,7 +24,7 @@ import org.springframework.util.Assert;
 /**
  * UserDetails implementation that extends Spring's UserDetails to allow access
  * to Person and PersistentLogin object.
- * 
+ *
  */
 @SuppressWarnings("serial")
 public class ExtendedUserDetailsImpl implements ExtendedUserDetails
@@ -38,17 +38,12 @@ public class ExtendedUserDetailsImpl implements ExtendedUserDetails
      * The PersistentLogin object.
      */
     private PersistentLogin persistentLogin = null;
-    
+
     /**
      * Granted authorities for authenticated user.
      */
     private GrantedAuthority[] grantedAuthorities = null;
-    
-    /**
-     * flag indicating if user has accepted ToS.
-     */
-    private boolean tosAcceptance = false;
-    
+
     /**
      * Authentication type.
      */
@@ -56,40 +51,35 @@ public class ExtendedUserDetailsImpl implements ExtendedUserDetails
 
     /**
      * Constructor.
-     * 
+     *
      * @param inPerson
      *            The person object.
      * @param inLogin
      *            The PersistentLogin object.
      * @param inGrantedAuthorities
      *            The granted authorities for the user.
-     * @param inToSAcceptance
-     *            flag indicating user's ToS acceptance.
      * @param inAuthenticationType
      *            Authentication type.
-     * 
+     *
      */
     public ExtendedUserDetailsImpl(final Person inPerson,
             final PersistentLogin inLogin,
             final GrantedAuthority[] inGrantedAuthorities,
-            final Boolean inToSAcceptance,
             final AuthenticationType inAuthenticationType)
     {
         Assert.notNull(inPerson);
         person = inPerson;
         persistentLogin = inLogin;
-        grantedAuthorities = (inGrantedAuthorities == null) 
+        grantedAuthorities = (inGrantedAuthorities == null)
             ? new GrantedAuthority[0] : inGrantedAuthorities;
-        tosAcceptance = (inToSAcceptance == null) 
-            ? false : inToSAcceptance;
         authenticationType = (inAuthenticationType == null)
             ? AuthenticationType.NOTSET : inAuthenticationType;
-        
+
     }
 
     /**
      * Getter for PersistentLogin.
-     * 
+     *
      * @return The PersistentLogin object.
      */
     public PersistentLogin getPersistentLogin()
@@ -99,7 +89,7 @@ public class ExtendedUserDetailsImpl implements ExtendedUserDetails
 
     /**
      * Getter for Person.
-     * 
+     *
      * @return The person object.
      */
     public Person getPerson()
@@ -109,17 +99,17 @@ public class ExtendedUserDetailsImpl implements ExtendedUserDetails
 
     /**
      * Getter for GrantedAuthorities.
-     * 
+     *
      * @return The GrantedAuthorities array.
      */
     public GrantedAuthority[] getAuthorities()
     {
-        return grantedAuthorities;                
+        return grantedAuthorities;
     }
 
     /**
      * Getter for password.
-     * 
+     *
      * @return always null.
      */
     public String getPassword()
@@ -129,7 +119,7 @@ public class ExtendedUserDetailsImpl implements ExtendedUserDetails
 
     /**
      * Getter for username.
-     * 
+     *
      * @return The person object's accountId or null if person is null
      */
     public String getUsername()
@@ -139,7 +129,7 @@ public class ExtendedUserDetailsImpl implements ExtendedUserDetails
 
     /**
      * Determine accountNonExpired value.
-     * 
+     *
      * @return accountNonExpired boolean value.
      */
     public boolean isAccountNonExpired()
@@ -149,7 +139,7 @@ public class ExtendedUserDetailsImpl implements ExtendedUserDetails
 
     /**
      * Determine accountNonExpired value.
-     * 
+     *
      * @return accountNonLocked boolean value.
      */
     public boolean isAccountNonLocked()
@@ -159,7 +149,7 @@ public class ExtendedUserDetailsImpl implements ExtendedUserDetails
 
     /**
      * Determine credentialsNonExpired value.
-     * 
+     *
      * @return credentialsNonExpired boolean value.
      */
     public boolean isCredentialsNonExpired()
@@ -169,30 +159,12 @@ public class ExtendedUserDetailsImpl implements ExtendedUserDetails
 
     /**
      * Determine enabled value.
-     * 
+     *
      * @return enabled boolean value.
      */
     public boolean isEnabled()
     {
         return !person.isAccountLocked();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean getToSAcceptance()
-    {
-        return tosAcceptance;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setToSAcceptance(final boolean inToSAcceptance)
-    {
-       tosAcceptance = inToSAcceptance;
     }
 
     /**

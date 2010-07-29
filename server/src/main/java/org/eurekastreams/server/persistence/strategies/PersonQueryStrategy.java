@@ -60,6 +60,7 @@ public class PersonQueryStrategy
         fields.add(getColumn("commentable"));
         fields.add(getColumn("streamPostable"));
         fields.add(getColumn("groupStreamHiddenLineIndex"));
+        fields.add(getColumn("lastAcceptedTermsOfService"));
         fields.add(Projections.property("streamViewHiddenLineIndex").as("compositeStreamHiddenLineIndex"));
         fields.add(Projections.property("streamSearchHiddenLineIndex").as("compositeStreamSearchHiddenLineIndex"));
         fields.add(Projections.property("po.id").as("parentOrganizationId"));
