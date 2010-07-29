@@ -144,6 +144,11 @@ public class PersonModelViewTest
     private static final String EMAIL = "somebody@somewhere.com";
 
     /**
+     * The date the user last accepted terms of service.
+     */
+    private static Date lastAcceptedTermsOfService = new Date();
+
+    /**
      * Setup method.
      */
     @Before
@@ -193,6 +198,7 @@ public class PersonModelViewTest
         sut.setCommentable(commentable);
         sut.setStreamPostable(streamPostable);
         sut.setRelatedOrganizationIds(relatedOrganizationIds);
+        sut.setLastAcceptedTermsOfService(lastAcceptedTermsOfService);
 
         // check new state
         assertAll(sut);
@@ -239,6 +245,7 @@ public class PersonModelViewTest
         p.put("commentable", commentable);
         p.put("streamPostable", streamPostable);
         p.put("relatedOrganizationIds", relatedOrganizationIds);
+        p.put("lastAcceptedTermsOfService", lastAcceptedTermsOfService);
 
         PersonModelView sut = new PersonModelView();
 
@@ -280,6 +287,7 @@ public class PersonModelViewTest
         assertEquals(ModelView.UNINITIALIZED_INTEGER_VALUE, sut.getUpdatesCount());
         assertEquals(ModelView.UNINITIALIZED_LONG_VALUE, sut.getStreamId());
         assertEquals(ModelView.UNINITIALIZED_LONG_VALUE, sut.getCompositeStreamId());
+        assertEquals(ModelView.UNINITIALIZED_DATE_VALUE, sut.getLastAcceptedTermsOfService());
         assertEquals(false, sut.getTosAcceptance());
         assertEquals(AuthenticationType.NOTSET, sut.getAuthenticationType());
         assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getEmail());
@@ -313,6 +321,7 @@ public class PersonModelViewTest
         assertEquals(EMAIL, sut.getEmail());
         assertEquals(commentable, sut.isCommentable());
         assertEquals(streamPostable, sut.isStreamPostable());
+        assertEquals(lastAcceptedTermsOfService, sut.getLastAcceptedTermsOfService());
         assertArrayEquals(relatedOrganizationIds.toArray(), sut.getRelatedOrganizationIds().toArray());
 
         assertEquals(sut.getEntityId(), sut.getId());

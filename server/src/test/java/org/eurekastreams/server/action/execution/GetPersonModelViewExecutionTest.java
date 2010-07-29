@@ -17,6 +17,7 @@ package org.eurekastreams.server.action.execution;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Date;
 import java.util.HashSet;
 
 import org.eurekastreams.commons.actions.context.Principal;
@@ -28,6 +29,7 @@ import org.eurekastreams.server.search.modelview.AuthenticationType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.server.service.security.userdetails.ExtendedUserDetails;
+import org.eurekastreams.server.service.security.userdetails.TermsOfServiceAcceptanceStrategy;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -106,6 +108,12 @@ public class GetPersonModelViewExecutionTest
     private GetRecursiveOrgCoordinators orgCoordinatorDAOUp = context.mock(GetRecursiveOrgCoordinators.class, "up");
 
     /**
+     * Terms of service acceptance strategy.
+     */
+    private TermsOfServiceAcceptanceStrategy toSAcceptanceStrategy = context
+            .mock(TermsOfServiceAcceptanceStrategy.class);
+
+    /**
      * User account id for tests.
      */
     private String accountId = "accountid";
@@ -113,8 +121,8 @@ public class GetPersonModelViewExecutionTest
     /**
      * System under test.
      */
-    private GetPersonModelViewExecution sut =
-        new GetPersonModelViewExecution(orgCoordinatorDAO, orgCoordinatorDAOUp, rootOrgDAO, personDAO);
+    private GetPersonModelViewExecution sut = new GetPersonModelViewExecution(orgCoordinatorDAO, orgCoordinatorDAOUp,
+            rootOrgDAO, personDAO, toSAcceptanceStrategy);
 
     /**
      * Pre-test setup.
@@ -148,6 +156,9 @@ public class GetPersonModelViewExecutionTest
         retPerson.setEntityId(4L);
         retPerson.setRoles(new HashSet<Role>());
 
+        final Date personLastAcceptedTOSDate = new Date();
+        retPerson.setLastAcceptedTermsOfService(personLastAcceptedTOSDate);
+
         context.checking(new Expectations()
         {
             {
@@ -163,22 +174,20 @@ public class GetPersonModelViewExecutionTest
                 oneOf(authentication).getPrincipal();
                 will(returnValue(userDetails));
 
-                oneOf(userDetails).getToSAcceptance();
-                will(returnValue(true));
-
                 oneOf(userDetails).getAuthenticationType();
                 will(returnValue(AuthenticationType.NOTSET));
 
                 oneOf(personDAO).fetchUniqueResult(accountId);
                 will(returnValue(retPerson));
 
+                oneOf(toSAcceptanceStrategy).isValidTermsOfServiceAcceptanceDate(with(personLastAcceptedTOSDate));
+                will(returnValue(true));
+
                 allowing(rootOrgDAO).getRootOrganizationId();
                 will(returnValue(0L));
 
                 oneOf(orgCoordinatorDAO).isOrgCoordinatorRecursively(4L, 0L);
                 will(returnValue(true));
-
-
 
                 oneOf(orgCoordinatorDAOUp).isOrgCoordinatorRecursively(4L, 0L);
                 will(returnValue(true));
@@ -207,6 +216,8 @@ public class GetPersonModelViewExecutionTest
         final PersonModelView retPerson = new PersonModelView();
         retPerson.setRoles(new HashSet<Role>());
         retPerson.setEntityId(4L);
+        final Date personLastAcceptedTOSDate = new Date();
+        retPerson.setLastAcceptedTermsOfService(personLastAcceptedTOSDate);
 
         context.checking(new Expectations()
         {
@@ -223,14 +234,14 @@ public class GetPersonModelViewExecutionTest
                 oneOf(authentication).getPrincipal();
                 will(returnValue(userDetails));
 
-                oneOf(userDetails).getToSAcceptance();
-                will(returnValue(false));
-
                 oneOf(userDetails).getAuthenticationType();
                 will(returnValue(AuthenticationType.FORM));
 
                 oneOf(personDAO).fetchUniqueResult(accountId);
                 will(returnValue(retPerson));
+
+                oneOf(toSAcceptanceStrategy).isValidTermsOfServiceAcceptanceDate(with(personLastAcceptedTOSDate));
+                will(returnValue(false));
 
                 allowing(rootOrgDAO).getRootOrganizationId();
                 will(returnValue(0L));

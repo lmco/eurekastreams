@@ -92,13 +92,6 @@
     	<beans:constructor-arg ref="jpaPersonMapper" />
     	<beans:constructor-arg ref="persistentLoginRepository" />
     	<beans:constructor-arg ref="authorityProvider" />
-    	<beans:constructor-arg>
-    		<beans:bean class="org.eurekastreams.server.service.security.userdetails.TermsOfServiceAcceptanceStrategyImpl">
-		    	<beans:constructor-arg>    	
-		    		<beans:ref bean="findSystemSettings"/>
-		    	</beans:constructor-arg>
-		    </beans:bean>
-    	</beans:constructor-arg>
     	<beans:property name="authenticationType" value="FORM" />
     </beans:bean>    
     

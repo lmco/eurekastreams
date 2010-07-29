@@ -22,8 +22,6 @@ import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.PersonMapper;
-import org.eurekastreams.server.service.security.userdetails.ExtendedUserDetails;
-import org.springframework.security.context.SecurityContextHolder;
 
 /**
  * Accept the terms of service for current user.
@@ -37,7 +35,7 @@ public class AcceptTermsOfServiceExecution implements ExecutionStrategy<Principa
 
     /**
      * Constructor.
-     * 
+     *
      * @param inPersonMapper
      *            person mapper.
      */
@@ -48,7 +46,7 @@ public class AcceptTermsOfServiceExecution implements ExecutionStrategy<Principa
 
     /**
      * Accept ToS for current user.
-     * 
+     *
      * @param inActionContext
      *            {@link PrincipalActionContext}.
      * @return returns null.
@@ -56,12 +54,11 @@ public class AcceptTermsOfServiceExecution implements ExecutionStrategy<Principa
     @Override
     public Serializable execute(final PrincipalActionContext inActionContext)
     {
-        ((ExtendedUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-                .setToSAcceptance(true);
-
         Person person = personMapper.findByAccountId(inActionContext.getPrincipal().getAccountId());
         person.setLastAcceptedTermsOfService(new Date());
 
+        // note: this will kill the cache entry for the person, which will cause a fresh initialize into the cache on
+        // first request
         personMapper.flush();
 
         return null;

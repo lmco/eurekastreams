@@ -23,6 +23,7 @@ import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.server.service.security.userdetails.ExtendedUserDetails;
+import org.eurekastreams.server.service.security.userdetails.TermsOfServiceAcceptanceStrategy;
 import org.springframework.security.context.SecurityContextHolder;
 
 /**
@@ -52,6 +53,11 @@ public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalA
     private GetPeopleByAccountIds peopleMapper = null;
 
     /**
+     * Terms of service acceptance strategy.
+     */
+    private TermsOfServiceAcceptanceStrategy toSAcceptanceStrategy;
+
+    /**
      * Constructor that sets up the mapper.
      *
      * @param inRecursiveOrgMapperDownTree
@@ -65,19 +71,22 @@ public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalA
      */
     public GetPersonModelViewExecution(final GetRecursiveOrgCoordinators inRecursiveOrgMapperDownTree,
             final GetRecursiveOrgCoordinators inRecursiveOrgMapperUpTree,
-            final GetRootOrganizationIdAndShortName inRootOrgMapper, final GetPeopleByAccountIds inPeopleMapper)
+            final GetRootOrganizationIdAndShortName inRootOrgMapper, final GetPeopleByAccountIds inPeopleMapper,
+            final TermsOfServiceAcceptanceStrategy inToSAcceptanceStrategy)
     {
         rootOrgMapper = inRootOrgMapper;
         recursiveOrgMapperDownTree = inRecursiveOrgMapperDownTree;
         recursiveOrgMapperUpTree = inRecursiveOrgMapperUpTree;
         peopleMapper = inPeopleMapper;
+        toSAcceptanceStrategy = inToSAcceptanceStrategy;
     }
 
     /**
      * Get current user's {@link PersonModelView}. This includes setting the ToSAcceptance and authentication type
      * properties.
      *
-     * @param inActionContext action context.
+     * @param inActionContext
+     *            action context.
      * @return {@link PersonModelView}.
      */
     @Override
@@ -86,20 +95,21 @@ public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalA
         PersonModelView person = peopleMapper.fetchUniqueResult(inActionContext.getPrincipal().getAccountId());
 
         // TODO: fill out other roles here as necessary
-        if (recursiveOrgMapperDownTree.isOrgCoordinatorRecursively(person.getEntityId(),
-                rootOrgMapper.getRootOrganizationId()))
+        if (recursiveOrgMapperDownTree.isOrgCoordinatorRecursively(person.getEntityId(), rootOrgMapper
+                .getRootOrganizationId()))
         {
             person.getRoles().add((Role.ORG_COORDINATOR));
         }
-        if (recursiveOrgMapperUpTree.isOrgCoordinatorRecursively(person.getEntityId(),
-                rootOrgMapper.getRootOrganizationId()))
+        if (recursiveOrgMapperUpTree.isOrgCoordinatorRecursively(person.getEntityId(), rootOrgMapper
+                .getRootOrganizationId()))
         {
             person.getRoles().add((Role.ROOT_ORG_COORDINATOR));
         }
 
         ExtendedUserDetails userDetails = (ExtendedUserDetails) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
-        person.setTosAcceptance(userDetails.getToSAcceptance());
+        person.setTosAcceptance(toSAcceptanceStrategy.isValidTermsOfServiceAcceptanceDate(person
+                .getLastAcceptedTermsOfService()));
         person.setAuthenticationType(userDetails.getAuthenticationType());
         return person;
     }

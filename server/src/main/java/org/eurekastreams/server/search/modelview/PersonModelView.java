@@ -34,9 +34,10 @@ import org.eurekastreams.server.domain.HasEmail;
 public class PersonModelView extends ModelView implements Serializable, HasEmail, Followable, ActivityRestrictionEntity
 {
     /**
-     * Serial version uid.
+     * Serial version uuid.
      */
-    private static final long serialVersionUID = 2983075094531996189L;
+    private static final long serialVersionUID = -4695870818188965332L;
+
     /**
      * The key for the title.
      */
@@ -234,6 +235,11 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     private List<Long> relatedOrganizationIds;
 
     /**
+     * The date the current user last accepted the terms of service.
+     */
+    private Date lastAcceptedTermsOfService = UNINITIALIZED_DATE_VALUE;
+
+    /**
      * Get the name of this entity.
      *
      * @return the name of this entity
@@ -376,6 +382,10 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
         if (properties.containsKey("relatedOrganizationIds"))
         {
             setRelatedOrganizationIds((List<Long>) properties.get("relatedOrganizationIds"));
+        }
+        if (properties.containsKey("lastAcceptedTermsOfService"))
+        {
+            setLastAcceptedTermsOfService((Date) properties.get("lastAcceptedTermsOfService"));
         }
     }
 
@@ -893,5 +903,26 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     public String getUniqueId()
     {
         return accountId;
+    }
+
+    /**
+     * Get the last date the person accepted the terms of service.
+     *
+     * @return the last date the person accepted the terms of service
+     */
+    public Date getLastAcceptedTermsOfService()
+    {
+        return lastAcceptedTermsOfService;
+    }
+
+    /**
+     * Set the last date the person accepted the terms of service.
+     *
+     * @param inLastAcceptedTermsOfService
+     *            the last date the person accepted the terms of service.
+     */
+    public void setLastAcceptedTermsOfService(final Date inLastAcceptedTermsOfService)
+    {
+        lastAcceptedTermsOfService = inLastAcceptedTermsOfService;
     }
 }

@@ -19,7 +19,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.search.modelview.AuthenticationType;
@@ -41,31 +40,24 @@ import org.springframework.security.userdetails.UsernameNotFoundException;
 public class UserDetailsServiceImplTest
 {
     /**
-     * Context for building mock objects. 
+     * Context for building mock objects.
      */
     private final Mockery context = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
         }
-    }; 
-    
-    /**
-     * TermsOfServiceAcceptanceStrategy mock.
-     */
-    private final TermsOfServiceAcceptanceStrategy tosStrategyMock = 
-        context.mock(TermsOfServiceAcceptanceStrategy.class);
-    
-    
+    };
+
     /**
      * Test constructor rejects null PersonMapper.
      */
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorNullPersonMapper()
-    {                
-        new UserDetailsServiceImpl(null, null, null, tosStrategyMock);              
+    {
+        new UserDetailsServiceImpl(null, null, null);
     }
-    
+
     /**
      * Test mappers are called correctly and non-null is returned.
      */
@@ -73,28 +65,25 @@ public class UserDetailsServiceImplTest
     public void testLoadUserByUsername()
     {
         final PersonMapper personMapper = context.mock(PersonMapper.class);
-        final PersistentLoginRepository loginRepo = context.mock(PersistentLoginRepository.class);                
-        
+        final PersistentLoginRepository loginRepo = context.mock(PersistentLoginRepository.class);
+
         context.checking(new Expectations()
         {
             {
                 oneOf(personMapper).findByAccountId(with("username"));
-                
+
                 oneOf(loginRepo).getPersistentLogin(with("username"));
-                
-                oneOf(tosStrategyMock).isValidTermsOfServiceAcceptanceDate(with(any(Date.class)));
-                will(returnValue(true));
             }
         });
-        
-        UserDetailsServiceImpl sut = new UserDetailsServiceImpl(personMapper, loginRepo, null, tosStrategyMock);
+
+        UserDetailsServiceImpl sut = new UserDetailsServiceImpl(personMapper, loginRepo, null);
         sut.setAuthenticationType(AuthenticationType.FORM);
         ExtendedUserDetails result = (ExtendedUserDetails) sut.loadUserByUsername("username");
         assertNotNull("Should return UserDetailsObject", result);
         assertEquals(AuthenticationType.FORM, result.getAuthenticationType());
-        context.assertIsSatisfied();        
+        context.assertIsSatisfied();
     }
-    
+
     /**
      * Test mappers are called correctly and non-null is returned.
      */
@@ -106,69 +95,66 @@ public class UserDetailsServiceImplTest
         final AuthorityProvider authProvider = context.mock(AuthorityProvider.class);
         final ArrayList<GrantedAuthority> auths = new ArrayList<GrantedAuthority>();
         auths.add(context.mock(GrantedAuthority.class));
-        
+
         context.checking(new Expectations()
         {
             {
-                oneOf(personMapper).findByAccountId(with("username")); 
-                
-                oneOf(loginRepo).getPersistentLogin(with("username")); 
-                
+                oneOf(personMapper).findByAccountId(with("username"));
+
+                oneOf(loginRepo).getPersistentLogin(with("username"));
+
                 oneOf(authProvider).loadAuthoritiesByUsername("username");
-                will(returnValue(auths));               
-                
-                oneOf(tosStrategyMock).isValidTermsOfServiceAcceptanceDate(with(any(Date.class)));
-                will(returnValue(true));
+                will(returnValue(auths));
             }
         });
-        
-        UserDetailsServiceImpl sut = new UserDetailsServiceImpl(personMapper, loginRepo, authProvider, tosStrategyMock);
+
+        UserDetailsServiceImpl sut = new UserDetailsServiceImpl(personMapper, loginRepo, authProvider);
         UserDetails result = sut.loadUserByUsername("username");
-        assertNotNull("Should return UserDetailsObject", result); 
+        assertNotNull("Should return UserDetailsObject", result);
         assertEquals(1, result.getAuthorities().length);
-        context.assertIsSatisfied();        
+        context.assertIsSatisfied();
     }
-    
+
     /**
      * Test that expected exception is tossed if mappers throw exception.
      */
     @Test(expected = DataRetrievalFailureException.class)
     public void testLoadUserByUsernameDataException()
     {
-        final PersonMapper personMapper = context.mock(PersonMapper.class);                     
-        
+        final PersonMapper personMapper = context.mock(PersonMapper.class);
+
         context.checking(new Expectations()
         {
             {
                 oneOf(personMapper).findByAccountId(with("username"));
-                will(throwException(new Exception()));                
+                will(throwException(new Exception()));
             }
         });
-        
-        UserDetailsServiceImpl sut = new UserDetailsServiceImpl(personMapper, null, null, tosStrategyMock);
+
+        UserDetailsServiceImpl sut = new UserDetailsServiceImpl(personMapper, null, null);
         sut.loadUserByUsername("username");
-        context.assertIsSatisfied();        
+        context.assertIsSatisfied();
     }
-    
+
     /**
      * Test that expected exception is tossed if username not found in data store.
      */
     @Test(expected = UsernameNotFoundException.class)
     public void testLoadUserByUsernamePersonNotFound()
     {
-        final PersonMapper personMapper = context.mock(PersonMapper.class);                     
-        
+        final PersonMapper personMapper = context.mock(PersonMapper.class);
+
         context.checking(new Expectations()
         {
             {
                 oneOf(personMapper).findByAccountId(with("username"));
-                will(returnValue(null));                
+                will(returnValue(null));
             }
         });
-        
-        UserDetailsServiceImpl sut = new UserDetailsServiceImpl(personMapper, null, null, tosStrategyMock);
+
+        UserDetailsServiceImpl sut = new UserDetailsServiceImpl(personMapper, null, null);
         sut.loadUserByUsername("username");
-        context.assertIsSatisfied();        
+        context.assertIsSatisfied();
     }
 
 }

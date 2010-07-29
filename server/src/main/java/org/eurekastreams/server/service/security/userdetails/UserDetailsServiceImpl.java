@@ -34,20 +34,18 @@ import org.springframework.security.userdetails.UsernameNotFoundException;
 import org.springframework.util.Assert;
 
 /**
- * Custom implementation of Spring's UserDetailsService interface. Loads user
- * details from data store. Currently returns ExtendedUserDetails object that
- * encapsulates Person and PersistentLogin information (plus the standard
- * UserDetails stuff).
- * 
+ * Custom implementation of Spring's UserDetailsService interface. Loads user details from data store. Currently returns
+ * ExtendedUserDetails object that encapsulates Person and PersistentLogin information (plus the standard UserDetails
+ * stuff).
+ *
  */
 public class UserDetailsServiceImpl implements UserDetailsService
 {
     /**
      * Logger.
      */
-    private static Log log = LogFactory
-            .getLog(JaasAuthenticationProviderWrapper.class);	
-	
+    private static Log log = LogFactory.getLog(JaasAuthenticationProviderWrapper.class);
+
     /**
      * Mapper for Person information.
      */
@@ -57,17 +55,12 @@ public class UserDetailsServiceImpl implements UserDetailsService
      * Mapper for PersistentLoginInformation.
      */
     private PersistentLoginRepository loginRepository;
-    
+
     /**
      * The AuthorityProvider for this service to use.
      */
     private AuthorityProvider authorityProvider;
-    
-    /**
-     * The Terms of Service acceptance strategy to use.
-     */
-    private TermsOfServiceAcceptanceStrategy tosAcceptanceStrategy;
-    
+
     /**
      * Authentication type.
      */
@@ -75,32 +68,26 @@ public class UserDetailsServiceImpl implements UserDetailsService
 
     /**
      * Constructor.
-     * 
+     *
      * @param inPersonMapper
      *            The PersonMapper.
      * @param inPersistentLoginRepository
      *            The PersistentLoginMapper.
      * @param inAuthorityProvider
      *            The AuthorityProvider to use.
-     * @param inToSAcceptanceStrategy
-     *            TermsOfServiceAcceptanceStrategy to use.
      */
     public UserDetailsServiceImpl(final PersonMapper inPersonMapper,
-            final PersistentLoginRepository inPersistentLoginRepository,
-            final AuthorityProvider inAuthorityProvider,
-            final TermsOfServiceAcceptanceStrategy inToSAcceptanceStrategy)
+            final PersistentLoginRepository inPersistentLoginRepository, final AuthorityProvider inAuthorityProvider)
     {
         Assert.notNull(inPersonMapper);
-        Assert.notNull(inToSAcceptanceStrategy);
         personMapper = inPersonMapper;
         loginRepository = inPersistentLoginRepository;
         authorityProvider = inAuthorityProvider;
-        tosAcceptanceStrategy = inToSAcceptanceStrategy;
     }
 
     /**
      * Returns populated UserDetails object for user.
-     * 
+     *
      * @param username
      *            The username.
      * @return Populated UserDetails object for user.
@@ -110,48 +97,38 @@ public class UserDetailsServiceImpl implements UserDetailsService
         Person person = null;
         PersistentLogin login = null;
         List<GrantedAuthority> authorities = null;
-        boolean isValidToSAcceptance = false;
         try
         {
             person = personMapper.findByAccountId(username);
-            login = (loginRepository == null) 
-                ? null : loginRepository.getPersistentLogin(username);
-            authorities = (authorityProvider == null)
-                ? new ArrayList<GrantedAuthority>(0)
-                : authorityProvider.loadAuthoritiesByUsername(username);
-            isValidToSAcceptance = (person == null)
-                ? isValidToSAcceptance
-                : tosAcceptanceStrategy.isValidTermsOfServiceAcceptanceDate(
-                    person.getLastAcceptedTermsOfService()); 
+            login = (loginRepository == null) ? null : loginRepository.getPersistentLogin(username);
+            authorities = (authorityProvider == null) ? new ArrayList<GrantedAuthority>(0) : authorityProvider
+                    .loadAuthoritiesByUsername(username);
         }
         catch (Exception e)
         {
-        	String errorMessage = "Error loading user details for: " 
-        		+ username;
-        	log.error(errorMessage + " " + e.getMessage());
-        	
-            throw new DataRetrievalFailureException(
-            		errorMessage, e);
+            String errorMessage = "Error loading user details for: " + username;
+            log.error(errorMessage + " " + e.getMessage());
+
+            throw new DataRetrievalFailureException(errorMessage, e);
         }
 
         if (person == null)
         {
-        	String errorMessage = "User not found: " + username;
-        	log.error(errorMessage);
+            String errorMessage = "User not found: " + username;
+            log.error(errorMessage);
             throw new UsernameNotFoundException(errorMessage);
         }
-                
-        return new ExtendedUserDetailsImpl(person, login, 
-                authorities.toArray(new GrantedAuthority[authorities.size()]), 
-                isValidToSAcceptance,
-                authenticationType);
+
+        return new ExtendedUserDetailsImpl(person, login,
+                authorities.toArray(new GrantedAuthority[authorities.size()]), authenticationType);
     }
 
     /**
-     * @param inAuthenticationType the authenticationType to set
+     * @param inAuthenticationType
+     *            the authenticationType to set
      */
     public void setAuthenticationType(final AuthenticationType inAuthenticationType)
     {
         authenticationType = inAuthenticationType;
-    }    
+    }
 }

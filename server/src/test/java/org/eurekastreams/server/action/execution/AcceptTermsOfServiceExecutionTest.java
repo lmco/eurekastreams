@@ -26,16 +26,11 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.security.Authentication;
-import org.springframework.security.context.SecurityContext;
-import org.springframework.security.context.SecurityContextHolder;
 
 /**
  * Test for AcceptTermsOfServiceExecution class.
- * 
+ *
  */
 public class AcceptTermsOfServiceExecutionTest
 {
@@ -70,42 +65,8 @@ public class AcceptTermsOfServiceExecutionTest
     private Principal actionContextPrincipal = context.mock(Principal.class);
 
     /**
-     * Original {@link SecurityContext}.
-     */
-    private SecurityContext originalSecurityContext;
-
-    /**
-     * {@link SecurityContext} mock.
-     */
-    private SecurityContext securityContext = context.mock(SecurityContext.class);
-
-    /**
-     * {@link Authentication} mock.
-     */
-    private Authentication authentication = context.mock(Authentication.class);
-
-    /**
-     * Pre-test setup.
-     */
-    @Before
-    public void setUp()
-    {
-        originalSecurityContext = SecurityContextHolder.getContext();
-        SecurityContextHolder.setContext(securityContext);
-    }
-
-    /**
-     * Post-test clean-up.
-     */
-    @After
-    public void tearDown()
-    {
-        SecurityContextHolder.setContext(originalSecurityContext);
-    }
-
-    /**
      * Test performing the action.
-     * 
+     *
      * @throws Exception
      *             not expected.
      */
@@ -121,15 +82,6 @@ public class AcceptTermsOfServiceExecutionTest
         context.checking(new Expectations()
         {
             {
-                // get userDetails and set ToS acceptance.
-                oneOf(securityContext).getAuthentication();
-                will(returnValue(authentication));
-
-                oneOf(authentication).getPrincipal();
-                will(returnValue(userMock));
-
-                oneOf(userMock).setToSAcceptance(true);
-
                 // get user's account id
                 allowing(actionContext).getPrincipal();
                 will(returnValue(actionContextPrincipal));
