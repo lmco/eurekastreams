@@ -68,17 +68,19 @@ public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalA
      *            root org mapper.
      * @param inPeopleMapper
      *            - instance of PersonMapper
+     * @param inTosAcceptanceStrategy
+     *            the strategy to check if the user's terms of service acceptance is current
      */
     public GetPersonModelViewExecution(final GetRecursiveOrgCoordinators inRecursiveOrgMapperDownTree,
             final GetRecursiveOrgCoordinators inRecursiveOrgMapperUpTree,
             final GetRootOrganizationIdAndShortName inRootOrgMapper, final GetPeopleByAccountIds inPeopleMapper,
-            final TermsOfServiceAcceptanceStrategy inToSAcceptanceStrategy)
+            final TermsOfServiceAcceptanceStrategy inTosAcceptanceStrategy)
     {
         rootOrgMapper = inRootOrgMapper;
         recursiveOrgMapperDownTree = inRecursiveOrgMapperDownTree;
         recursiveOrgMapperUpTree = inRecursiveOrgMapperUpTree;
         peopleMapper = inPeopleMapper;
-        toSAcceptanceStrategy = inToSAcceptanceStrategy;
+        toSAcceptanceStrategy = inTosAcceptanceStrategy;
     }
 
     /**
