@@ -307,7 +307,7 @@ public class IterpolationListColliderTest
     }
 
     /**
-     * Helpder method, tests against apache commons intersection.
+     * Helper method, tests against apache commons intersection.
      * 
      * @param sorted
      *            the sorted list.
