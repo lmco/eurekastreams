@@ -63,9 +63,14 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
     private Log log = LogFactory.getLog(GetActivitiesByRequestExecution.class);
 
     /**
-     * Data sources.
+     * Data source that MUST provide results in descending order of ID.
      */
-    private List<DataSource> dataSources;
+    private DataSource descendingOrderdataSource;
+
+    /**
+     * Data source that MUST provide results in the order they will be given to the user.
+     */
+    private DataSource sortedDataSource;
 
     /**
      * AND collider.
@@ -106,13 +111,15 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
      * @param inGetVisibleGroupsForUserMapper to get which groups youre a member of.
      * @param inBatchPageSizeMultiplier the back size multiplier.
      */
-    public GetActivitiesByRequestExecution(final List<DataSource> inDataSources,
+    public GetActivitiesByRequestExecution(final DataSource inDescendingOrderdataSource,
+            final DataSource inSortedDataSource,
             final BulkActivitiesMapper inBulkActivitiesMapper, final List<ActivityFilter> inFilters,
             final ListCollider inAndCollider,
             final GetPrivateCoordinatedAndFollowedGroupIdsForUser inGetVisibleGroupsForUserMapper,
             final float inBatchPageSizeMultiplier)
     {
-        dataSources = inDataSources;
+        descendingOrderdataSource = inDescendingOrderdataSource;
+        sortedDataSource = inSortedDataSource;
         andCollider = inAndCollider;
         bulkActivitiesMapper = inBulkActivitiesMapper;
         filters = inFilters;
@@ -180,17 +187,22 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
             batchSize *= batchPageSizeMultiplier;
 
             request.put("count", batchSize);
-            List<List<Long>> dataSets = new ArrayList<List<Long>>();
+            List<Long> descendingOrderDataSet = descendingOrderdataSource.fetch(request);
+            List<Long> sortedDataSet = sortedDataSource.fetch(request);
 
-            for (DataSource ds : dataSources)
+            if (descendingOrderDataSet != null && sortedDataSet != null)
             {
-                dataSets.add(ds.fetch(request));
+                allKeys = andCollider.collide(descendingOrderDataSet, sortedDataSet, batchSize);
+            }
+            else if (descendingOrderDataSet != null)
+            {
+                allKeys = descendingOrderDataSet;
+            }
+            else if (sortedDataSet != null)
+            {
+                allKeys = sortedDataSet;
             }
 
-            for (List<Long> dataSet : dataSets)
-            {
-                allKeys = andCollider.collide(dataSet, allKeys, batchSize);
-            }
 
             // build a list of activity ids to fetch for this page, and
             // increment the start index for next page

@@ -172,10 +172,6 @@ public class GetActivitiesByRequestExecutionTest
      */
     private DataSource luceneDS = context.mock(DataSource.class, "lucene");
 
-    /**
-     * Data sources.
-     */
-    private List<DataSource> dataSources = new ArrayList<DataSource>();
 
     /**
      * AND Collider.
@@ -197,10 +193,7 @@ public class GetActivitiesByRequestExecutionTest
         List<ActivityFilter> filters = new LinkedList<ActivityFilter>();
         filters.add(filterMock);
 
-        dataSources.add(memcacheDS);
-        dataSources.add(luceneDS);
-
-        sut = new GetActivitiesByRequestExecution(dataSources, bulkMapper, filters, andCollider,
+        sut = new GetActivitiesByRequestExecution(memcacheDS, luceneDS, bulkMapper, filters, andCollider,
                 getVisibleGroupsForUserMapper, 2.0f);
 
         // set the activity ids
@@ -303,10 +296,7 @@ public class GetActivitiesByRequestExecutionTest
                 oneOf(luceneDS).fetch(with(any(JSONObject.class)));
                 will(returnValue(luceneIds));
 
-                oneOf(andCollider).collide(with(equalInternally(memcacheIds)), with(any(List.class)),
-                        with(equalInternally(THENUMBERTWENTY)));
-                will(returnValue(memcacheIds));
-                oneOf(andCollider).collide(with(equalInternally(luceneIds)), with(equalInternally(memcacheIds)),
+                oneOf(andCollider).collide(with(equalInternally(memcacheIds)), with(equalInternally(luceneIds)),
                         with(equalInternally(THENUMBERTWENTY)));
 
                 oneOf(bulkMapper).execute(with(any(ArrayList.class)), with(any(String.class)));
@@ -371,8 +361,6 @@ public class GetActivitiesByRequestExecutionTest
         {
             {
 
-                ArrayList<Long> luceneIds = new ArrayList<Long>();
-
                 allowing(actionContext).getPrincipal();
                 will(returnValue(principal));
 
@@ -389,27 +377,13 @@ public class GetActivitiesByRequestExecutionTest
                 will(returnValue(batch1Request));
 
                 oneOf(luceneDS).fetch(with(any(JSONObject.class)));
-                will(returnValue(luceneIds));
-
-                oneOf(andCollider).collide(with(equalInternally(batch1Request)), with(any(List.class)),
-                        with(equalInternally(4)));
-                will(returnValue(batch1Request));
-                oneOf(andCollider).collide(with(equalInternally(luceneIds)), with(equalInternally(batch1Request)),
-                        with(equalInternally(4)));
-                will(returnValue(batch1Request));
+                will(returnValue(null));
 
                 oneOf(memcacheDS).fetch(with(any(JSONObject.class)));
                 will(returnValue(batch2Request));
 
                 oneOf(luceneDS).fetch(with(any(JSONObject.class)));
-                will(returnValue(luceneIds));
-
-                oneOf(andCollider).collide(with(equalInternally(batch2Request)), with(any(List.class)),
-                        with(equalInternally(8)));
-                will(returnValue(batch2Request));
-                oneOf(andCollider).collide(with(equalInternally(luceneIds)), with(equalInternally(batch2Request)),
-                        with(equalInternally(8)));
-                will(returnValue(batch2Request));
+                will(returnValue(null));
 
                 // requesting the first batch
                 oneOf(bulkMapper).execute(with(batch1Request), with(personAccountId));
@@ -482,8 +456,6 @@ public class GetActivitiesByRequestExecutionTest
         context.checking(new Expectations()
         {
             {
-                ArrayList<Long> luceneIds = new ArrayList<Long>();
-
                 allowing(actionContext).getPrincipal();
                 will(returnValue(principal));
 
@@ -497,16 +469,9 @@ public class GetActivitiesByRequestExecutionTest
                 will(returnValue(request));
 
                 oneOf(memcacheDS).fetch(with(any(JSONObject.class)));
-                will(returnValue(batch1Request));
+                will(returnValue(null));
 
                 oneOf(luceneDS).fetch(with(any(JSONObject.class)));
-                will(returnValue(luceneIds));
-
-                oneOf(andCollider).collide(with(equalInternally(batch1Request)), with(any(List.class)),
-                        with(equalInternally(6)));
-                will(returnValue(batch1Request));
-                oneOf(andCollider).collide(with(equalInternally(luceneIds)), with(equalInternally(batch1Request)),
-                        with(equalInternally(6)));
                 will(returnValue(batch1Request));
 
                 allowing(person).getAccountId();
