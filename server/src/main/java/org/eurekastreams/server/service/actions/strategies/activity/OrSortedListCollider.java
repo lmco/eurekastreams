@@ -36,6 +36,15 @@ public class OrSortedListCollider implements ListCollider
      */
     public List<Long> collide(final List<Long> listA, final List<Long> listB, final int maxResults)
     {
+        if (listA.size() == 0)
+        {
+            return listB;
+        }
+        else if (listB.size() == 0)
+        {
+            return listA;
+        }
+
         List<Long> results = new ArrayList<Long>();
 
         int aIndex = 0;

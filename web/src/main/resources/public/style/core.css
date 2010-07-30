@@ -14214,3 +14214,22 @@ body .url-validator .required-form-label {
 .authenticated  .removable-person:hover .connection-item-name {
 	border-bottom: 1px solid #CCC;
 }
+
+/******************************************************************************
+ * Advanced Search
+ *****************************************************************************/
+
+.advanced-search .content {
+	text-align: center;
+}
+
+.advanced-search textarea {
+	width: 500px;
+	height: 100px;
+	margin: 30px auto 5px;
+	display: block;;	
+}
+
+.advanced-search .content .stream {
+	text-align: left;	
+}

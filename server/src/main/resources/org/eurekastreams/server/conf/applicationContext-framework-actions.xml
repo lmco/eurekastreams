@@ -567,7 +567,8 @@
 				class="org.eurekastreams.server.action.execution.stream.DeleteExpiredActivitiesExecution">
 				<constructor-arg ref="findSystemSettings" />
 				<constructor-arg ref="getExpiredActivities" />
-				<!-- Chunk size for breaking expired activities into smaller pieces for processing -->
+				<!-- Chunk size for breaking expired activities into smaller pieces for processing
+-->
 				<constructor-arg type="int" value="1000" />
 			</bean>
 		</constructor-arg>
@@ -583,7 +584,8 @@
                 class="org.eurekastreams.server.action.execution.stream.DeleteExpiredActivitiesExecution">
                 <constructor-arg ref="findSystemSettings" />
                 <constructor-arg ref="getExpiredActivities" />
-                <!-- Chunk size for breaking expired activities into smaller pieces for processing -->
+                <!-- Chunk size for breaking expired activities into smaller pieces for processing
+-->
                 <constructor-arg type="int" value="1000" />
             </bean>
         </constructor-arg>
@@ -1563,7 +1565,56 @@
                 -->
                 <constructor-arg type="float" value="2.0" />
     </bean>
+    
+    <bean id="getActivitiesByRequestExecutor" 
+    		class="org.eurekastreams.server.action.execution.stream.GetActivitiesByRequestExecution">
+            <constructor-arg>
+				<bean
+					class="org.eurekastreams.server.service.actions.strategies.activity.datasources.MemcachedDataSource">
+		            <constructor-arg>
+						<map>
+							<entry key="followedBy">
+								<bean 
+									class="org.eurekastreams.server.service.actions.strategies.activity.datasources.FollowedByKeyGenerator">
+									<constructor-arg ref="bulkPeopleByAccountIdMapper" />	
+								</bean>
+							</entry>
+						</map>		            
+		            </constructor-arg>
+		            <constructor-arg>
+						<bean
+							class="org.eurekastreams.server.service.actions.strategies.activity.OrSortedListCollider" />            
+		            </constructor-arg>		            
+		            <constructor-arg ref="memcachedCache" />								
+				</bean>            
+            </constructor-arg>
+            <constructor-arg>
+				<bean
+					class="org.eurekastreams.server.service.actions.strategies.activity.datasources.NullDataSource" />            
+            </constructor-arg>
+    		<constructor-arg ref="bulkActivitiesMapper" />
+                <constructor-arg>
+                    <list>
+                        <ref bean="canCommentFilter" />
+                        <ref bean="canShareFilter" />
+                    </list>
+                </constructor-arg>
+            <constructor-arg>
+				<bean
+					class="org.eurekastreams.server.service.actions.strategies.activity.InterpolationListCollider" />            
+            </constructor-arg>
+    		<constructor-arg
+                    ref="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper" />
+            <constructor-arg type="float" value="2.0" />
+    </bean>
             
+	<bean id="getActivitiesByRequest" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg ref="getActivitiesByRequestExecutor" />
+		<constructor-arg value="true" />
+	</bean>
+	            
 	<bean id="getActivitiesByCompositeStream" class="org.eurekastreams.commons.actions.service.ServiceAction">
 		<constructor-arg ref="noValidationStrategy" />
 		<constructor-arg ref="noAuthorizationStrategy" />
@@ -2853,7 +2904,8 @@
 				<constructor-arg ref="getCommentorIdsByActivityId" />
 				<constructor-arg ref="bulkActivitiesMapper" />
 				<constructor-arg><null /></constructor-arg>
-				<!-- Replace above with <constructor-arg ref="getCoordinatorIdsByGroupId" /> to notify group coordinators when comments are posted to group streams. -->
+				<!-- Replace above with <constructor-arg ref="getCoordinatorIdsByGroupId" /> to notify group coordinators when comments are posted to group streams.
+-->
 			</bean>
 		</entry>
 		<entry key="GROUP_STREAM_POST">

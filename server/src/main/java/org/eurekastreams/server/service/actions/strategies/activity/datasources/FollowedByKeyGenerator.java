@@ -48,7 +48,6 @@ public class FollowedByKeyGenerator implements MemcachedKeyGenerator
      * @param request the JSON request object.
      * @return the key for followed by.
      */
-    @Override
     public List<String> getKeys(final JSONObject request)
     {
         Long id = personMapper.fetchUniqueResult(request.getString("followedBy")).getId();

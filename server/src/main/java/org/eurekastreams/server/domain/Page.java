@@ -29,6 +29,10 @@ public enum Page implements Serializable
      */
     ACTION("actions"),
     /**
+     * Advanced Search.
+     */
+    ADVANCED_SEARCH("advancedsearch"),
+    /**
      * Search.
      */
     SEARCH("search"),

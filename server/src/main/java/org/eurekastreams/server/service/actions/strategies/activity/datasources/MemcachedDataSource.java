@@ -74,7 +74,6 @@ public class MemcachedDataSource implements DataSource
      *            the JSON request from the user.
      * @return the list of activity longs.
      */
-    @Override
     public List<Long> fetch(final JSONObject request)
     {
         boolean unHandled = false;
