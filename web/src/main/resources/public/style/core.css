@@ -12704,14 +12704,26 @@ body .dragdrop-proxy {
 
 .access-denied {
 	background-color: #EEEEEE;
-	background-image: url(images/eureka-logo-lg.png);
-	background-position: 50px 20px;
+	padding: 30px;
+	width: 600px;
+	margin: 0 auto;
+	position: relative;
+	top: 150px;
+	overflow: auto;
+	color: #666;
+}
+
+.access-denied .eureka-logo-small {
+	background-image: url(images/poweredByEurekaStreams.png);
+	background-position: -90px 0;
 	background-repeat: no-repeat;
-	padding: 40px;
-	padding-bottom: 20px;
-	padding-top: 140px;
-	width: 390px;
-	margin: 50px auto;
+	height: 37px;
+	margin-bottom: 10px;
+}
+
+.access-denied strong
+{
+	font-size: 14px;	
 }
 
 .access-denied .notice {
@@ -12722,14 +12734,18 @@ body .dragdrop-proxy {
 	border: 1px solid #BBBBBB;
 	padding: 10px;
 	padding-left: 40px;
+	width: 220px;
+	float: right;
+	margin-top: 20px;
 }
 
 .access-denied .login-content-container {
 	margin-left: 0px;
 }
 
-.access-denied .gwt-HTML {
-	color: #666;
+.access-denied > .gwt-HTML {
+	width: 270px;
+	float: left;
 }
 
 .avatar-hidden-original {
