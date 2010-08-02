@@ -128,7 +128,6 @@ public class ApplicationEntryPoint implements EntryPoint
             loadPerson();
             master = new MasterComposite();
 
-
             EventBus.getInstance().addObserver(FormLoginCompleteEvent.class, new Observer<FormLoginCompleteEvent>()
             {
 
@@ -230,7 +229,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Shows the ToS modal.
-     *
+     * 
      */
     private void displayToS()
     {
@@ -244,7 +243,7 @@ public class ApplicationEntryPoint implements EntryPoint
                         {
 
                             TermsOfServiceDialogContent tosDialog = new TermsOfServiceDialogContent(
-                                    new TermsOfServiceDTO(event.getResponse().getTermsOfService()));
+                                    new TermsOfServiceDTO(event.getResponse().getTermsOfService()), false);
 
                             final Dialog dialog = new Dialog(tosDialog);
                             dialog.setBgVisible(true);
@@ -268,7 +267,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires off a gadget change state event.
-     *
+     * 
      * @param id
      *            the gadget id
      * @param view
@@ -284,8 +283,11 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires of the UpdateGadgetPrefsEvent when called from the gadget container.
-     * @param inId - id of the gadget being updated.
-     * @param inPrefs - updated preferences for the gadget.
+     * 
+     * @param inId
+     *            - id of the gadget being updated.
+     * @param inPrefs
+     *            - updated preferences for the gadget.
      */
     public static void updateGadgetPrefs(final int inId, final String inPrefs)
     {

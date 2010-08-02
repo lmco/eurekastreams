@@ -15,6 +15,16 @@
  */
 package org.eurekastreams.web.client.ui.common;
 
+import org.eurekastreams.server.domain.TermsOfServiceDTO;
+import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.data.GotSystemSettingsResponseEvent;
+import org.eurekastreams.web.client.model.SystemSettingsModel;
+import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.dialog.Dialog;
+import org.eurekastreams.web.client.ui.common.dialog.tos.TermsOfServiceDialogContent;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -39,6 +49,33 @@ public class FooterComposite extends Composite
         FlowPanel panel = new FlowPanel();
 
         FlowPanel navPanel = new FlowPanel();
+
+        Anchor termsOfService = new Anchor("Terms of Service");
+
+        termsOfService.addClickHandler(new ClickHandler()
+        {
+            public void onClick(ClickEvent arg0)
+            {
+                Session.getInstance().getEventBus().addObserver(GotSystemSettingsResponseEvent.class,
+                        new Observer<GotSystemSettingsResponseEvent>()
+                        {
+                            public void update(final GotSystemSettingsResponseEvent event)
+                            {
+                                TermsOfServiceDialogContent tosDialog = new TermsOfServiceDialogContent(
+                                        new TermsOfServiceDTO(event.getResponse().getTermsOfService()), true);
+
+                                final Dialog dialog = new Dialog(tosDialog);
+                                dialog.setBgVisible(true);
+                                dialog.center();
+                                dialog.getContent().show();
+                            }
+                        });
+
+                SystemSettingsModel.getInstance().fetch(null, true);
+            }
+        });
+
+        navPanel.add(termsOfService);
 
         Anchor poweredBy = new Anchor("", "http://www.eurekastreams.org", "_blank");
         poweredBy.addStyleName("powered-by-eureka");

@@ -21,12 +21,12 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.Bindable;
 import org.eurekastreams.web.client.ui.HistoryState;
 import org.eurekastreams.web.client.ui.Session;
-import org.eurekastreams.web.client.ui.common.dialog.login.LoginDialogContent;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * Access denied page.
@@ -47,25 +47,29 @@ public class AccessDeniedContent extends Composite implements Bindable
 
         FlowPanel panel = new FlowPanel();
         panel.addStyleName("access-denied");
-        panel
-                .add(new HTML(
-                        "<strong>The Rush of Discovery</strong><p>Make informed decisions by "
-                                + "finding relavant colleagues and groups, following their streams of "
-                                + "activity, and engaging in conversations.</p>"));
-        LoginDialogContent loginDialogContent = new LoginDialogContent();
 
-        panel.add(loginDialogContent.getBody());
+        Label logo = new Label();
+        logo.addStyleName("eureka-logo-small");
+        panel.add(logo);
+
+        panel.add(new HTML("<strong>Informed decisions powered by real-time streams of information</strong>"
+                + "<p>Eureka Streams enables knowledge workers to make informed decisions by finding "
+                + "relevant colleagues and groups, following their stream of activity, "
+                + "and engaging in conversation.</p>"));
+
+        // Turning this off for now based on conversation with LMB
+        // LoginDialogContent loginDialogContent = new LoginDialogContent();
+        // panel.add(loginDialogContent.getBody());
 
         FlowPanel accessDeniedPanel = new FlowPanel();
         accessDeniedPanel.addStyleName("notice");
-        accessDeniedPanel.add(new HTML(
-                "You do not have access to the system at this time. Send us "
-                        + "a request to ask for access."));
+        accessDeniedPanel.add(new HTML("You do not currently have access to Eureka Streams, " + ""
+                + "to request access please contact "
+                + "<a href='mailto:support@eurekastreams.org?subject=Request%20Access'>our product support team</a>"));
         panel.add(accessDeniedPanel);
         initWidget(panel);
 
-        Session.getInstance().getEventBus().addObserver(
-                FormLoginCompleteEvent.class,
+        Session.getInstance().getEventBus().addObserver(FormLoginCompleteEvent.class,
                 new Observer<FormLoginCompleteEvent>()
                 {
                     public void update(final FormLoginCompleteEvent arg1)
