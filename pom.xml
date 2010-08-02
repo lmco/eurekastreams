@@ -137,7 +137,7 @@
         <build.queue.hibernatesearch.name>queue/hibernateSearch</build.queue.hibernatesearch.name>
         <build.log.showsql>true</build.log.showsql>
         <build.report.clover.licenseurl>http://example.com/clover.license</build.report.clover.licenseurl>
-        <build.report.checkstyle.rulesurl>http://example.com/checkstylerules.xml</build.report.checkstyle.rulesurl>
+        <build.report.checkstyle.rulesurl>http://dev.eurekastreams.org/conf/checkstyle/eurekastreams_eclipse-cs5.0_rules-forcheckin_latest.xml</build.report.checkstyle.rulesurl>
         <build.maven.sharedresources.artifactid>eurekastreams-sharedresources</build.maven.sharedresources.artifactid>
         <build.maven.sharedresources.version>0.9-SNAPSHOT</build.maven.sharedresources.version>
         <build.maven.snapshotrepo>http://example.com/content/repositories/snapshots</build.maven.snapshotrepo>
@@ -153,6 +153,24 @@
                     <memmax>2048m</memmax>
                 </configuration>
             </plugin>
+			<plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-checkstyle-plugin</artifactId>
+               <version>2.4</version>
+               <executions>
+               	<execution>
+                 <configuration>
+                     <configLocation>${build.report.checkstyle.rulesurl}</configLocation>
+                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                     <failsOnError>true</failsOnError>
+                 </configuration>
+                 <phase>package</phase>
+                 <goals>
+                 	<goal>checkstyle</goal>
+                 </goals>
+               	</execution>
+               </executions>
+           </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -170,7 +188,7 @@
                   <forkMode>once</forkMode>
                   <argLine>-Xms256m -Xmx1024m -XX:PermSize=128m -XX:MaxPermSize=512m</argLine>
                 </configuration>
-           </plugin>            
+           </plugin>    
         </plugins>
     </build>
 

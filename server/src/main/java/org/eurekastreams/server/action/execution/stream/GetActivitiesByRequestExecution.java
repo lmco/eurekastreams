@@ -104,7 +104,8 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
 
     /**
      * Default constructor.
-     * @param inDataSources the data sources to fetch from.
+     * @param inDescendingOrderdataSource the data sources to fetch the sorted descending data from.
+     * @param inSortedDataSource the data sources to fetch the sorted data from.
      * @param inBulkActivitiesMapper the bulk activity mapper to get activity from.
      * @param inFilters the filters.
      * @param inAndCollider the and collider to merge results.

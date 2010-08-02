@@ -27,7 +27,7 @@ public interface MemcachedKeyGenerator
 {
     /**
      * Get the keys given a parameter.
-     * @param requestString request.
+     * @param request request.
      * @return the list of keys.
      */
     List<String> getKeys(JSONObject request);
