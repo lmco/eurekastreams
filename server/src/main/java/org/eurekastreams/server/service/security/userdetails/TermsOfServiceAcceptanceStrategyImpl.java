@@ -18,29 +18,32 @@ package org.eurekastreams.server.service.security.userdetails;
 import java.util.Date;
 
 import org.eurekastreams.server.domain.SystemSettings;
-import org.eurekastreams.server.persistence.mappers.FindSystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 
 /**
  * Strategy for determining validity of ToS acceptance date.
  *
  */
 public class TermsOfServiceAcceptanceStrategyImpl implements TermsOfServiceAcceptanceStrategy
-{    
+{
     /**
      * The system settings mapper.
      */
-    private FindSystemSettings systemSettingsDAO;
+    private DomainMapper<MapperRequest, SystemSettings> systemSettingsDAO;
 
     /**
      * The number of milliseconds in a day.
      */
     private static final long MILLISECONDS_IN_A_DAY = 86400000L;
-    
+
     /**
      * Constructor.
-     * @param inSystemSettingsDAO DAO for getting SystemSettings.
+     *
+     * @param inSystemSettingsDAO
+     *            DAO for getting SystemSettings.
      */
-    public TermsOfServiceAcceptanceStrategyImpl(final FindSystemSettings inSystemSettingsDAO)
+    public TermsOfServiceAcceptanceStrategyImpl(final DomainMapper<MapperRequest, SystemSettings> inSystemSettingsDAO)
     {
         systemSettingsDAO = inSystemSettingsDAO;
     }
@@ -51,16 +54,16 @@ public class TermsOfServiceAcceptanceStrategyImpl implements TermsOfServiceAccep
     @Override
     public boolean isValidTermsOfServiceAcceptanceDate(final Date inDateLastAccepted)
     {
-        //grab system settings.
+        // grab system settings.
         SystemSettings settings = systemSettingsDAO.execute(null);
-        
-        //short circuit if no ToS to display.
+
+        // short circuit if no ToS to display.
         if (null == settings.getTermsOfService())
         {
             return true;
         }
-        
-        //short circuit if ToS is required every session.
+
+        // short circuit if ToS is required every session.
         if (inDateLastAccepted == null || settings.getIsTosDisplayedEverySession())
         {
             return false;
@@ -68,7 +71,7 @@ public class TermsOfServiceAcceptanceStrategyImpl implements TermsOfServiceAccep
 
         long validFor = MILLISECONDS_IN_A_DAY * settings.getTosPromptInterval();
         Date now = new Date();
-        
+
         return validFor >= (now.getTime() - inDateLastAccepted.getTime());
     }
 }

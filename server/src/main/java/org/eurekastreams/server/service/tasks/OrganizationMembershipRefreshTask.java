@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,24 +24,26 @@ import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.MembershipCriteria;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverser;
 import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
-import org.eurekastreams.server.persistence.mappers.FindSystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.eurekastreams.server.service.actions.strategies.OrganizationPopulator;
 
 /**
  * The OrganizationMembershipFreshTask class is responsible for re-assessing the membership criteria of an organization
  * and either add members, remove members, or leave members in place.
- * 
+ *
  * The logic of the refreshMembership method is a pre-order tree traversal starting at the root organization. Since the
  * root organization is a container (has no membership criteria), no populate is called and the child organizations are
  * retrieved.
- * 
+ *
  * As the current implemented logic is in the OrganizationPopulator exiting people in the system are moved from their
  * existing organization into the organization including int the call to populate; this logic will change in the future.
- * 
+ *
  */
 
 public class OrganizationMembershipRefreshTask
@@ -85,7 +87,7 @@ public class OrganizationMembershipRefreshTask
     /**
      * The settings mapper.
      */
-    private FindSystemSettings settingsMapper;
+    private DomainMapper<MapperRequest, SystemSettings> settingsMapper;
 
     /**
      * No parameter constructor to make Spring happy.
@@ -97,7 +99,7 @@ public class OrganizationMembershipRefreshTask
 
     /**
      * Constructor for the class.
-     * 
+     *
      * @param inOrganizationMapper
      *            The organization mapper.
      * @param inOrganizationPopulator
@@ -106,12 +108,13 @@ public class OrganizationMembershipRefreshTask
      *            The person mapper.
      * @param inOrganizationTraverserBuilder
      *            The organization traverser builder.
-     * @param inSettingsMapper the settings mapper.
+     * @param inSettingsMapper
+     *            the settings mapper.
      */
     public OrganizationMembershipRefreshTask(final OrganizationMapper inOrganizationMapper,
             final OrganizationPopulator inOrganizationPopulator, final PersonMapper inPersonMapper,
             final OrganizationHierarchyTraverserBuilder inOrganizationTraverserBuilder,
-            final FindSystemSettings inSettingsMapper)
+            final DomainMapper<MapperRequest, SystemSettings> inSettingsMapper)
     {
         this.organizationMapper = inOrganizationMapper;
         this.organizationPopulator = inOrganizationPopulator;
@@ -127,7 +130,7 @@ public class OrganizationMembershipRefreshTask
     /**
      * The main method called from <code>execute</code>. This is a recursive method performing a preorder tree traversal
      * on the organization structure.
-     * 
+     *
      * @throws Exception
      *             The exception
      */
@@ -137,19 +140,19 @@ public class OrganizationMembershipRefreshTask
 
         for (MembershipCriteria criterion : membershipCriteria)
         {
-           organizationPopulator.populate(criterion.getCriteria(), rootOrganization, null);
+            organizationPopulator.populate(criterion.getCriteria(), rootOrganization, null);
         }
     }
 
     /**
      * The main method of the class, this method gets executed to satisfy the job.
-     * 
+     *
      * The method will obtain the root organization and loop on the child organizations For each child organization, the
      * method will be invoked
-     * 
+     *
      * @throws Exception
      *             The exception
-     * 
+     *
      */
     public void execute() throws Exception
     {

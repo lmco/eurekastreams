@@ -24,12 +24,13 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.MembershipCriteria;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.SystemSettings;
-import org.eurekastreams.server.persistence.mappers.FindSystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.eurekastreams.server.service.actions.strategies.PersonLookupStrategy;
 
 /**
  * LDAP source for user information.
- * 
+ *
  */
 public class PersonSourceLDAP implements PersonSource
 {
@@ -41,7 +42,7 @@ public class PersonSourceLDAP implements PersonSource
     /**
      * The settings mapper.
      */
-    private FindSystemSettings settingsMapper;
+    private DomainMapper<MapperRequest, SystemSettings> settingsMapper;
 
     /**
      * Group lookup strategy.
@@ -55,7 +56,7 @@ public class PersonSourceLDAP implements PersonSource
 
     /**
      * Constructor.
-     * 
+     *
      * @param inSettingsMapper
      *            mapper to get system settings.
      * @param inGroupLookupStrategy
@@ -63,7 +64,7 @@ public class PersonSourceLDAP implements PersonSource
      * @param inAttributeLookupStrategy
      *            person lookup mapper.
      */
-    public PersonSourceLDAP(final FindSystemSettings inSettingsMapper,
+    public PersonSourceLDAP(final DomainMapper<MapperRequest, SystemSettings> inSettingsMapper,
             final PersonLookupStrategy inGroupLookupStrategy, final PersonLookupStrategy inAttributeLookupStrategy)
     {
         settingsMapper = inSettingsMapper;

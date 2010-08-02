@@ -42,6 +42,7 @@ import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.eurekastreams.server.service.actions.strategies.EmailerFactory;
 import org.eurekastreams.server.service.actions.strategies.PersonLookupStrategy;
 import org.eurekastreams.server.service.actions.strategies.ReflectiveUpdater;
@@ -64,7 +65,7 @@ public class RefreshMembership extends BaseDomainMapper
     /**
      * The settings mapper.
      */
-    private FindSystemSettings settingsMapper;
+    private DomainMapper<MapperRequest, SystemSettings> settingsMapper;
 
     /**
      * OrganizationMapper object.
@@ -140,9 +141,9 @@ public class RefreshMembership extends BaseDomainMapper
      * @param inBaseUrl
      *            the base url of the system.
      */
-    public RefreshMembership(final FindSystemSettings inSettingsMapper, final OrganizationMapper inOrganizationMapper,
-            final PersonMapper inPersonMapper, final PersonLookupStrategy inGroupLookupStrategy,
-            final PersonLookupStrategy inAttributeLookupStrategy,
+    public RefreshMembership(final DomainMapper<MapperRequest, SystemSettings> inSettingsMapper,
+            final OrganizationMapper inOrganizationMapper, final PersonMapper inPersonMapper,
+            final PersonLookupStrategy inGroupLookupStrategy, final PersonLookupStrategy inAttributeLookupStrategy,
             final CreatePersonActionFactory inCreatePersonActionFactory, final EmailerFactory inEmailerFactory,
             final String inBaseUrl)
     {
@@ -206,62 +207,65 @@ public class RefreshMembership extends BaseDomainMapper
             {
                 try
                 {
-                String accountId = person.getAccountId();
-                Person existingPerson = personMapper.findByAccountId(accountId);
+                    String accountId = person.getAccountId();
+                    Person existingPerson = personMapper.findByAccountId(accountId);
 
-                if (existingPerson == null)
-                {
-                    // The person does not yet exist
-                    logger.info("New user found, adding to database: " + accountId);
-                    final HashMap<String, Serializable> personData = person.getProperties(Boolean.FALSE);
-                    if (rootOrganization == null)
+                    if (existingPerson == null)
                     {
-                        rootOrganization = organizationMapper.getRootOrganization();
+                        // The person does not yet exist
+                        logger.info("New user found, adding to database: " + accountId);
+                        final HashMap<String, Serializable> personData = person.getProperties(Boolean.FALSE);
+                        if (rootOrganization == null)
+                        {
+                            rootOrganization = organizationMapper.getRootOrganization();
+                        }
+                        personData.put("organization", rootOrganization);
+
+                        Person newPerson = (Person) persistResourceExecution
+                                .execute(new TaskHandlerActionContext<PrincipalActionContext>(
+                                        new PrincipalActionContext()
+                                        {
+                                            private static final long serialVersionUID = 9196683601970713330L;
+
+                                            @Override
+                                            public Principal getPrincipal()
+                                            {
+                                                throw new
+                                                // line break
+                                                RuntimeException("No principal available for this execution.");
+                                            }
+
+                                            @Override
+                                            public Serializable getParams()
+                                            {
+                                                return personData;
+                                            }
+
+                                            @Override
+                                            public Map<String, Object> getState()
+                                            {
+                                                return null;
+                                            }
+                                        }, null));
+
+                        validPeopleIds.add(newPerson.getId());
+
+                        // Send email notification if necessary
+                        if (shouldSendEmail)
+                        {
+                            notifyUser(newPerson.getEmail(), newPerson.getAccountId());
+                        }
                     }
-                    personData.put("organization", rootOrganization);
-
-                    Person newPerson = (Person) persistResourceExecution
-                            .execute(new TaskHandlerActionContext<PrincipalActionContext>(new PrincipalActionContext()
-                            {
-                                private static final long serialVersionUID = 9196683601970713330L;
-
-                                @Override
-                                public Principal getPrincipal()
-                                {
-                                    throw new RuntimeException("No principal available for this execution.");
-                                }
-
-                                @Override
-                                public Serializable getParams()
-                                {
-                                    return personData;
-                                }
-
-                                @Override
-                                public Map<String, Object> getState()
-                                {
-                                    return null;
-                                }
-                            }, null));
-
-                    validPeopleIds.add(newPerson.getId());
-
-                    // Send email notification if necessary
-                    if (shouldSendEmail)
+                    else
                     {
-                        notifyUser(newPerson.getEmail(), newPerson.getAccountId());
-                    }
-                }
-                else
-                {
-                    validPeopleIds.add(existingPerson.getId());
+                        validPeopleIds.add(existingPerson.getId());
 
-                    if (existingPerson.isAccountLocked())
-                    {
-                        logger.info("Unlocking account for user: " + accountId);
-                        existingPerson.setAccountLocked(false);
+                        if (existingPerson.isAccountLocked())
+                        {
+                            logger.info("Unlocking account for user: " + accountId);
+                            existingPerson.setAccountLocked(false);
+                        }
                     }
-                }
                 }
                 catch (Exception e)
                 {

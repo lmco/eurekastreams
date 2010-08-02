@@ -42,23 +42,37 @@ public class IterpolationListColliderTest
     /**
      * 1000 item sorted list location.
      */
-    private static final String ITEMS_1000_SORTED_FILE = "src/test/resources/List.1280321312726.sorted.1000.step0.iterations1.index1-2000";
+    private static final String ITEMS_1000_SORTED_FILE = 
+    	"src/test/resources/List.1280321312726.sorted.1000.step0.iterations1.index1-2000";
 
     /**
      * 1000 item unsorted list location.
      */
-    private static final String ITEMS_1000_UNSORTED_FILE = "src/test/resources/List.1280321446257.unsorted.1000.step0.iterations1.index1-2000";
+    private static final String ITEMS_1000_UNSORTED_FILE = 
+    	"src/test/resources/List.1280321446257.unsorted.1000.step0.iterations1.index1-2000";
 
     /**
      * 100 item sorted list location.
      */
-    private static final String ITEMS_100_SORTED_FILE = "src/test/resources/List.1280320787414.sorted.100.step0.iterations1.index1-1000";
+    private static final String ITEMS_100_SORTED_FILE = 
+    	"src/test/resources/List.1280320787414.sorted.100.step0.iterations1.index1-1000";
 
     /**
      * 100 item unsorted list location.
      */
-    private static final String ITEMS_100_UNSORTED_FILE = "src/test/resources/List.1280320908654.unsorted.100.step0.iterations1.index1-1000";
+    private static final String ITEMS_100_UNSORTED_FILE = 
+    	"src/test/resources/List.1280320908654.unsorted.100.step0.iterations1.index1-1000";
 
+    /**
+     * Collider test size.
+     */
+    private static final int ONE_HUNDRED = 100;
+    
+    /**
+     * Collider test size.
+     */
+    private static final int ONE_THOUSAND = 1000;
+    
     /**
      * Test collision miss where item is too high.
      */
@@ -181,7 +195,7 @@ public class IterpolationListColliderTest
         Long[] sorted = { 5L, 4L, 2L, 1L };
         Long[] unsorted = { 3L };
 
-        collideTest(sorted, unsorted, 100);
+        collideTest(sorted, unsorted, ONE_HUNDRED);
     }
 
     /**
@@ -190,10 +204,11 @@ public class IterpolationListColliderTest
     @Test
     public final void testCollisionSparseList()
     {
-        final Long[] sorted = { 1000L, 900L, 899L, 898L, 897L, 896L, 895L, 799L, 501L, 500L, 499L, 5L, 4L, 3L, 2L, 1L };
+        final Long[] sorted = 
+        { 1000L, 900L, 899L, 898L, 897L, 896L, 895L, 799L, 501L, 500L, 499L, 5L, 4L, 3L, 2L, 1L };
         final Long[] unsorted = { 1L, 1000L, 600L, 502L, 3L, 2L, 2500L, 999L, 899L, 895L, 894L, 900L, 901L };
 
-        collideTest(sorted, unsorted, 100);
+        collideTest(sorted, unsorted, ONE_HUNDRED);
     }
 
     /**
@@ -205,7 +220,7 @@ public class IterpolationListColliderTest
     @Test
     public final void testCollision100x10() throws FileNotFoundException
     {
-        final Long[] sorted = fileToList(ITEMS_100_SORTED_FILE, 100);
+        final Long[] sorted = fileToList(ITEMS_100_SORTED_FILE, ONE_HUNDRED);
 
         // Method that generates array does it the ascending, switch to descending.
         ArrayUtils.reverse(sorted);
@@ -213,7 +228,7 @@ public class IterpolationListColliderTest
         // Contains some known items in the list.
         final Long[] unsorted = { 508L, 25L, 251L, 413L, 500L, 795L, 1L, 990L, 2L };
 
-        collideTest(sorted, unsorted, 100);
+        collideTest(sorted, unsorted, ONE_HUNDRED);
     }
 
     /**
@@ -225,14 +240,14 @@ public class IterpolationListColliderTest
     @Test
     public final void testCollision100x100() throws FileNotFoundException
     {
-        final Long[] sorted = fileToList(ITEMS_100_SORTED_FILE, 100);
+        final Long[] sorted = fileToList(ITEMS_100_SORTED_FILE, ONE_HUNDRED);
 
         // Method that generates array does it the ascending, switch to descending.
         ArrayUtils.reverse(sorted);
 
-        final Long[] unsorted = fileToList(ITEMS_100_UNSORTED_FILE, 100);
+        final Long[] unsorted = fileToList(ITEMS_100_UNSORTED_FILE, ONE_HUNDRED);
 
-        collideTest(sorted, unsorted, 100);
+        collideTest(sorted, unsorted, ONE_HUNDRED);
     }
 
     /**
@@ -244,14 +259,14 @@ public class IterpolationListColliderTest
     @Test
     public final void testCollision1000x1000() throws FileNotFoundException
     {
-        final Long[] sorted = fileToList(ITEMS_1000_SORTED_FILE, 1000);
+        final Long[] sorted = fileToList(ITEMS_1000_SORTED_FILE, ONE_THOUSAND);
 
         // Method that generates array does it the ascending, switch to descending.
         ArrayUtils.reverse(sorted);
 
-        final Long[] unsorted = fileToList(ITEMS_1000_UNSORTED_FILE, 1000);
+        final Long[] unsorted = fileToList(ITEMS_1000_UNSORTED_FILE, ONE_THOUSAND);
 
-        collideTest(sorted, unsorted, 1000);
+        collideTest(sorted, unsorted, ONE_THOUSAND);
     }
 
     /**
@@ -263,14 +278,14 @@ public class IterpolationListColliderTest
     @Test
     public final void testCollision1000x1000SameList() throws FileNotFoundException
     {
-        final Long[] sorted = fileToList(ITEMS_1000_SORTED_FILE, 1000);
+        final Long[] sorted = fileToList(ITEMS_1000_SORTED_FILE, ONE_THOUSAND);
 
         // Method that generates array does it the ascending, switch to descending.
         ArrayUtils.reverse(sorted);
 
         Long[] unsorted = sorted;
 
-        collideTest(sorted, unsorted, 1000);
+        collideTest(sorted, unsorted, ONE_THOUSAND);
 
     }
 

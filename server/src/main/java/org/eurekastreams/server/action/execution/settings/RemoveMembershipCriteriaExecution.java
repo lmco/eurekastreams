@@ -25,8 +25,9 @@ import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.MembershipCriteria;
 import org.eurekastreams.server.domain.SystemSettings;
-import org.eurekastreams.server.persistence.mappers.FindSystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.UpdateMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.eurekastreams.server.service.actions.strategies.UpdaterStrategy;
 
 /**
@@ -41,15 +42,15 @@ public class RemoveMembershipCriteriaExecution implements ExecutionStrategy<Acti
 
     /**
      * The system settings update mapper.
-     * 
+     *
      */
     private UpdateMapper<SystemSettings> updateMapper;
 
     /**
      * The system settings finder mapper.
-     * 
+     *
      */
-    private FindSystemSettings finder;
+    private DomainMapper<MapperRequest, SystemSettings> finder;
 
     /**
      * The strategy used to update the system settings.
@@ -58,7 +59,7 @@ public class RemoveMembershipCriteriaExecution implements ExecutionStrategy<Acti
 
     /**
      * Constructor.
-     * 
+     *
      * @param inFinder
      *            The finder mapper.
      * @param inUpdater
@@ -66,8 +67,8 @@ public class RemoveMembershipCriteriaExecution implements ExecutionStrategy<Acti
      * @param inUpdateMapper
      *            The update mapper.
      */
-    public RemoveMembershipCriteriaExecution(final FindSystemSettings inFinder, final UpdaterStrategy inUpdater,
-            final UpdateMapper<SystemSettings> inUpdateMapper)
+    public RemoveMembershipCriteriaExecution(final DomainMapper<MapperRequest, SystemSettings> inFinder,
+            final UpdaterStrategy inUpdater, final UpdateMapper<SystemSettings> inUpdateMapper)
     {
         finder = inFinder;
         updater = inUpdater;
@@ -76,7 +77,7 @@ public class RemoveMembershipCriteriaExecution implements ExecutionStrategy<Acti
 
     /**
      * This action removes the specified membership criteria from the system settings.
-     * 
+     *
      * @param inActionContext
      *            {@link ActionContext}.
      * @return {@link SystemSettings}.

@@ -18,34 +18,35 @@ package org.eurekastreams.server.action.execution;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.server.domain.SystemSettings;
-import org.eurekastreams.server.persistence.mappers.FindSystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 
 /**
  * Gets the system settings.
- * 
+ *
  */
 public class GetSystemSettingsExecution implements ExecutionStrategy<ActionContext>
 {
     /**
      * the SystemSettings mapper.
-     * 
+     *
      */
-    private FindSystemSettings systemSettingsDAO;
+    private DomainMapper<MapperRequest, SystemSettings> systemSettingsDAO;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inSystemSettingsDAO
      *            used to look up the system settings.
      */
-    public GetSystemSettingsExecution(final FindSystemSettings inSystemSettingsDAO)
+    public GetSystemSettingsExecution(final DomainMapper<MapperRequest, SystemSettings> inSystemSettingsDAO)
     {
         systemSettingsDAO = inSystemSettingsDAO;
     }
 
     /**
      * Return system settings.
-     * 
+     *
      * @param inActionContext
      *            the {@link ActionContext}.
      * @return {@link SystemSettings}

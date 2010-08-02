@@ -28,9 +28,10 @@ import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.SetPersonLockedStatusRequest;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.SystemSettings;
-import org.eurekastreams.server.persistence.mappers.FindSystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName;
 import org.eurekastreams.server.persistence.mappers.db.GetPersonIdsByLockedStatus;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -38,7 +39,7 @@ import org.junit.Test;
 
 /**
  * Test for RefreshPeopleExecution.
- * 
+ *
  */
 public class RefreshPeopleExecutionTest
 {
@@ -78,7 +79,7 @@ public class RefreshPeopleExecutionTest
     /**
      * The settings mapper.
      */
-    private FindSystemSettings settingsMapper = context.mock(FindSystemSettings.class);
+    private DomainMapper<MapperRequest, SystemSettings> settingsMapper = context.mock(DomainMapper.class);
 
     /**
      * Person.

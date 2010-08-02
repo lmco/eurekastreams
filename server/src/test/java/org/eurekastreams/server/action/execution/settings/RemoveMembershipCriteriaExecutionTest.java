@@ -24,8 +24,9 @@ import java.util.Map;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.server.domain.MembershipCriteria;
 import org.eurekastreams.server.domain.SystemSettings;
-import org.eurekastreams.server.persistence.mappers.FindSystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.UpdateMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.eurekastreams.server.service.actions.strategies.UpdaterStrategy;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -36,7 +37,7 @@ import org.junit.Test;
 
 /**
  * Test for RemoveMembershipCriteriaExecution class.
- * 
+ *
  */
 public class RemoveMembershipCriteriaExecutionTest
 {
@@ -53,7 +54,7 @@ public class RemoveMembershipCriteriaExecutionTest
     /**
      * The finder to be used by the action.
      */
-    private FindSystemSettings findSystemSettings = context.mock(FindSystemSettings.class);
+    private DomainMapper<MapperRequest, SystemSettings> findSystemSettings = context.mock(DomainMapper.class);
 
     /**
      * The object update strategy to be used by the action.
@@ -91,7 +92,7 @@ public class RemoveMembershipCriteriaExecutionTest
 
     /**
      * Test action.
-     * 
+     *
      * @throws Exception
      *             not expected
      */

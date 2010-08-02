@@ -6,7 +6,8 @@
       http://www.springframework.org/schema/tx
       http://www.springframework.org/schema/tx/spring-tx.xsd">
       
-   	<!-- Wire up the entity updaters for person, domain group, organization - handles onPostUpdate, onPostPersist -->
+   	<!-- Wire up the entity updaters for person, domain group, organization - handles onPostUpdate, onPostPersist
+-->
    	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
 		<property name="targetObject">
 			<bean class="org.eurekastreams.server.persistence.mappers.cache.CacheInitializer" />
@@ -93,9 +94,56 @@
 		<property name="queryOptimizer" ref="queryOptimizer" />
 	</bean>
 
-	<bean id="findSystemSettings"
-		class="org.eurekastreams.server.persistence.mappers.FindSystemSettings">
-		<property name="queryOptimizer" ref="queryOptimizer" />
+	<bean id="findSystemSettings" class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapper">
+		<!-- Chained data mapper to look in cache, falling back to database, then updating cache
+-->
+		<constructor-arg>
+			<!-- List of ReadMapperDataSources -->
+			<list>
+				<bean class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapperDataSource">
+					<!-- Cache data source - read and refresh -->
+					
+					<constructor-arg>
+						<bean class="org.eurekastreams.server.persistence.mappers.cache.FindSystemSettingsCacheDomainMapperImpl">
+							<property name="cache" ref="memcachedCache" />
+						</bean>
+					</constructor-arg>
+					<constructor-arg>
+						<bean class="org.eurekastreams.server.persistence.mappers.cache.RefreshSystemSettingsCacheMapperImpl">
+							<property name="cache" ref="memcachedCache" />
+						</bean>
+					</constructor-arg>
+				</bean>
+				
+				<bean class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapperDataSource">
+					<!-- Database data source - not a refresher, just a reader -->
+					
+					<constructor-arg>
+						<bean class="org.eurekastreams.server.persistence.mappers.db.FindSystemSettingsDbDomainMapperImpl">
+							<property name="queryOptimizer" ref="queryOptimizer" />
+						</bean>
+					</constructor-arg>
+				</bean>
+			</list>
+		</constructor-arg>
+	</bean>
+	
+	<bean id="findSystemSettingsFromDatabase" class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapper">
+		<!-- Mapper to get the system settings straight from the database - needed for updating it. -->
+		<constructor-arg>
+			<!-- List of ReadMapperDataSources -->
+			<list>
+				<bean class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapperDataSource">
+					<!-- Database data source - not a refresher, just a reader -->
+					
+					<constructor-arg>
+						<bean class="org.eurekastreams.server.persistence.mappers.db.FindSystemSettingsDbDomainMapperImpl">
+							<property name="queryOptimizer" ref="queryOptimizer" />
+						</bean>
+					</constructor-arg>
+				</bean>
+			</list>
+		</constructor-arg>
 	</bean>
 	
 	<bean id="getTutorialVideos"
@@ -1039,6 +1087,10 @@
 	
 	<bean id="removeIdsFromLists"
 		class="org.eurekastreams.server.persistence.mappers.cache.RemoveIdsFromLists">
+		<property name="cache" ref="memcachedCache" />
+	</bean>
+	
+	<bean id="deleteSystemSettingsCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.DeleteSystemSettingsCacheMapper">
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 	

@@ -94,11 +94,6 @@
 		<constructor-arg ref="bulkPeopleMapper" />
 	</bean>
 
-	<bean id="findSystemSettings"
-		class="org.eurekastreams.server.persistence.mappers.FindSystemSettings">
-		<property name="queryOptimizer" ref="queryOptimizer" />
-	</bean>
-
     <bean id="getFollowedStreamViewByUser"
         class="org.eurekastreams.server.persistence.mappers.GetFollowedStreamViewByUser">
         <property name="queryOptimizer" ref="queryOptimizer" />
@@ -111,6 +106,11 @@
 	</bean>
 
 	<bean id="updateSystemSettings" class="org.eurekastreams.server.persistence.mappers.UpdateMapper">
+	</bean>
+
+	<bean id="findSystemSettingsDbDomainMapper"
+		class="org.eurekastreams.server.persistence.mappers.db.FindSystemSettingsDbDomainMapperImpl">
+		<property name="queryOptimizer" ref="queryOptimizer" />
 	</bean>
 
 	<bean id="deleteStarredActivity" class="org.eurekastreams.server.persistence.mappers.DeleteStarredActivity">

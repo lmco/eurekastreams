@@ -32,6 +32,7 @@ import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.eurekastreams.server.service.actions.strategies.EmailerFactory;
 import org.eurekastreams.server.service.actions.strategies.PersonLookupStrategy;
 import org.eurekastreams.server.service.actions.strategies.ReflectiveUpdater;
@@ -66,7 +67,7 @@ public class RefreshMembershipTest
     /**
      * Find system settings mapper.
      */
-    private final FindSystemSettings settingsMapper = context.mock(FindSystemSettings.class);
+    private final DomainMapper<MapperRequest, SystemSettings> settingsMapper = context.mock(DomainMapper.class);
 
     /**
      * The mock Organization Mapper to use.

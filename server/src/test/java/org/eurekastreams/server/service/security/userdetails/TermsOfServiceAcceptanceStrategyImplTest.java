@@ -21,7 +21,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.eurekastreams.server.domain.SystemSettings;
-import org.eurekastreams.server.persistence.mappers.FindSystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -34,38 +35,38 @@ import org.junit.Test;
  *
  */
 public class TermsOfServiceAcceptanceStrategyImplTest
-{    
-    
+{
+
     /**
-     * Context for building mock objects. 
+     * Context for building mock objects.
      */
     private final Mockery context = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
         }
-    };   
+    };
 
     /**
      * The system settings mapper mock.
      */
-    private final FindSystemSettings systemSettingsDAO = context.mock(FindSystemSettings.class);
-    
+    private final DomainMapper<MapperRequest, SystemSettings> systemSettingsDAO = context.mock(DomainMapper.class);
+
     /**
      * SystemSettings mock.
      */
     private final SystemSettings systemSettings = context.mock(SystemSettings.class);
-    
+
     /**
      * System under test.
      */
     private TermsOfServiceAcceptanceStrategyImpl sut;
-    
+
     /**
      * The number of milliseconds in a day.
      */
     private static final long MILLISECONDS_IN_A_DAY = 86400000L;
-    
+
     /**
      * Setup method.
      */
@@ -74,130 +75,128 @@ public class TermsOfServiceAcceptanceStrategyImplTest
     {
         sut = new TermsOfServiceAcceptanceStrategyImpl(systemSettingsDAO);
     }
-    
+
     /**
      * Test the isValidTermsOfServiceAcceptanceDate method will null ToS.
      */
     @Test
     public void testIsValidTermsOfServiceAcceptanceDateNoToS()
-    {        
+    {
         context.checking(new Expectations()
         {
             {
                 oneOf(systemSettingsDAO).execute(null);
                 will(returnValue(systemSettings));
-                
+
                 oneOf(systemSettings).getTermsOfService();
                 will(returnValue(null));
             }
         });
-        
+
         assertTrue(sut.isValidTermsOfServiceAcceptanceDate(new Date()));
-        context.assertIsSatisfied();        
+        context.assertIsSatisfied();
     }
-    
+
     /**
      * Test the isValidTermsOfServiceAcceptanceDate method with null Input date.
      */
     @Test
     public void testIsValidTermsOfServiceAcceptanceDateNullInputDate()
-    {        
+    {
         context.checking(new Expectations()
         {
             {
                 oneOf(systemSettingsDAO).execute(null);
                 will(returnValue(systemSettings));
-                
+
                 oneOf(systemSettings).getTermsOfService();
                 will(returnValue("ToS"));
             }
         });
-        
+
         assertTrue(!sut.isValidTermsOfServiceAcceptanceDate(null));
         context.assertIsSatisfied();
     }
-    
+
     /**
-     * Test the isValidTermsOfServiceAcceptanceDate method with show on every 
-     * session flag returning true.
+     * Test the isValidTermsOfServiceAcceptanceDate method with show on every session flag returning true.
      */
     @Test
     public void testIsValidTermsOfServiceAcceptanceDateShowEverySession()
-    {        
+    {
         context.checking(new Expectations()
         {
             {
                 oneOf(systemSettingsDAO).execute(null);
                 will(returnValue(systemSettings));
-                
+
                 oneOf(systemSettings).getTermsOfService();
                 will(returnValue("ToS"));
-                
+
                 oneOf(systemSettings).getIsTosDisplayedEverySession();
                 will(returnValue(true));
             }
         });
-        
+
         assertTrue(!sut.isValidTermsOfServiceAcceptanceDate(new Date()));
         context.assertIsSatisfied();
     }
-    
+
     /**
-     * Test the isValidTermsOfServiceAcceptanceDate method with date
-     * check passing.
+     * Test the isValidTermsOfServiceAcceptanceDate method with date check passing.
      */
     @Test
     public void testIsValidTermsOfServiceAcceptanceDateCheckDatePass()
-    {        
+    {
         context.checking(new Expectations()
         {
             {
                 oneOf(systemSettingsDAO).execute(null);
                 will(returnValue(systemSettings));
-                
+
                 oneOf(systemSettings).getTermsOfService();
                 will(returnValue("ToS"));
-                
+
                 oneOf(systemSettings).getIsTosDisplayedEverySession();
                 will(returnValue(false));
-                
+
                 oneOf(systemSettings).getTosPromptInterval();
                 will(returnValue(1));
             }
         });
-        
+
         assertTrue(sut.isValidTermsOfServiceAcceptanceDate(new Date()));
         context.assertIsSatisfied();
     }
-    
+
     /**
      * Test the isValidTermsOfServiceAcceptanceDate method with date check failing.
      */
     @Test
     public void testIsValidTermsOfServiceAcceptanceDateCheckDateFail()
-    {        
+    {
         context.checking(new Expectations()
         {
             {
                 oneOf(systemSettingsDAO).execute(null);
                 will(returnValue(systemSettings));
-                
+
                 oneOf(systemSettings).getTermsOfService();
                 will(returnValue("ToS"));
-                
+
                 oneOf(systemSettings).getIsTosDisplayedEverySession();
                 will(returnValue(false));
-                
+
                 oneOf(systemSettings).getTosPromptInterval();
                 will(returnValue(1));
             }
         });
-        
-        //Create date representing 2 days ago.
+
+        // Create date representing 2 days ago.
         Date lastAcceptedDate = new Date(Calendar.getInstance().getTimeInMillis() - (2 * MILLISECONDS_IN_A_DAY));
-        
+
         assertTrue(!sut.isValidTermsOfServiceAcceptanceDate(lastAcceptedDate));
         context.assertIsSatisfied();
     }
-    
+
 }

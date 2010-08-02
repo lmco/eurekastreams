@@ -22,7 +22,8 @@ import java.util.List;
 import org.eurekastreams.server.domain.MembershipCriteria;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.SystemSettings;
-import org.eurekastreams.server.persistence.mappers.FindSystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.eurekastreams.server.service.actions.strategies.PersonLookupStrategy;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -31,7 +32,7 @@ import org.junit.Test;
 
 /**
  * Test for PersonSourceLDAP.
- * 
+ *
  */
 public class PersonSourceLDAPTest
 {
@@ -46,7 +47,7 @@ public class PersonSourceLDAPTest
     /**
      * The settings mapper.
      */
-    private FindSystemSettings settingsMapper = context.mock(FindSystemSettings.class);
+    private DomainMapper<MapperRequest, SystemSettings> settingsMapper = context.mock(DomainMapper.class);
 
     /**
      * Group lookup strategy.

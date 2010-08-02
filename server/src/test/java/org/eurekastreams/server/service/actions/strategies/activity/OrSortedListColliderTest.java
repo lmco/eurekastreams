@@ -29,12 +29,36 @@ import org.junit.Test;
  */
 public class OrSortedListColliderTest
 {
-
     /**
      * System under test.
      */
     private static ListCollider collider = new OrSortedListCollider();
 
+    /**
+     * Collider test max results.
+     */
+    private static final int MAX_RESULTS_TWELVE = 12;
+    
+    /**
+     * Collider test max results.
+     */
+    private static final int MAX_RESULTS_ONE = 1;
+    
+    /**
+     * Collider test dataset id.
+     */
+    private static final Long ID_TEN = 10L;
+    
+    /**
+     * Collider test dataset id.
+     */
+    private static final Long ID_ELEVEN = 11L;
+    
+    /**
+     * Collider test max results.
+     */
+    public static final int MAX_RESULTS_FIVE = 5;
+    
     /**
      * Test a collision with empty lists.
      */
@@ -44,7 +68,7 @@ public class OrSortedListColliderTest
         Long[] a = { };
         Long[] b = { };
 
-        collideTest(a, b, 1);
+        collideTest(a, b, MAX_RESULTS_ONE);
     }
 
     /**
@@ -56,7 +80,7 @@ public class OrSortedListColliderTest
         Long[] a = { };
         Long[] b = { 1L };
 
-        collideTest(a, b, 1);
+        collideTest(a, b, MAX_RESULTS_ONE);
     }
 
     /**
@@ -68,7 +92,7 @@ public class OrSortedListColliderTest
         Long[] a = { 1L };
         Long[] b = { };
 
-        collideTest(a, b, 1);
+        collideTest(a, b, MAX_RESULTS_ONE);
     }
 
     /**
@@ -80,7 +104,7 @@ public class OrSortedListColliderTest
         Long[] a = { 5L, 4L, 2L, 1L };
         Long[] b = { 6L };
 
-        collideTest(a, b, 5);
+        collideTest(a, b, MAX_RESULTS_FIVE);
     }
 
     /**
@@ -92,7 +116,7 @@ public class OrSortedListColliderTest
         Long[] a = { 6L };
         Long[] b = { 5L, 4L, 2L, 1L };
 
-        collideTest(a, b, 5);
+        collideTest(a, b, MAX_RESULTS_FIVE);
     }
 
     /**
@@ -101,10 +125,10 @@ public class OrSortedListColliderTest
     @Test
     public final void testCollisionSameSize()
     {
-        Long[] a = { 10L, 8L, 6L, 4L, 2L, 0L  };
-        Long[] b = { 11L, 9L, 7L, 5L, 3L, 1L };
+        Long[] a = { ID_TEN, 8L, 6L, 4L, 2L, 0L  };
+        Long[] b = { ID_ELEVEN, 9L, 7L, 5L, 3L, 1L };
 
-        collideTest(a, b, 12);
+        collideTest(a, b, MAX_RESULTS_TWELVE);
     }
 
     /**
@@ -113,10 +137,10 @@ public class OrSortedListColliderTest
     @Test
     public final void testCollisionSameSizeReverse()
     {
-        Long[] a = { 11L, 9L, 7L, 5L, 3L, 1L };
-        Long[] b = { 10L, 8L, 6L, 4L, 2L, 0L  };
+        Long[] a = { ID_ELEVEN, 9L, 7L, 5L, 3L, 1L };
+        Long[] b = { ID_TEN, 8L, 6L, 4L, 2L, 0L  };
 
-        collideTest(a, b, 12);
+        collideTest(a, b, MAX_RESULTS_TWELVE);
     }
 
     /**

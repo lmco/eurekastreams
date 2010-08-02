@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 
 /**
  * Mapper used for updating DomainEntities.
- * 
+ *
  * @param <TDomainEntityType>
  *            Type of DomainEntity.
  */
@@ -29,8 +29,31 @@ public class UpdateMapper<TDomainEntityType extends DomainEntity> extends
         BaseArgDomainMapper<PersistenceRequest, Boolean>
 {
     /**
+     * Additional updater to use, or ignore if null.
+     */
+    private DomainMapper<PersistenceRequest, Boolean> wrappedUpdater;
+
+    /**
+     * Empty constructor when no wrapped updater.
+     */
+    public UpdateMapper()
+    {
+    }
+
+    /**
+     * Constructor with a wrapped updater to call after calling self.
+     *
+     * @param inWrappedUpdater
+     *            the updater to call after self
+     */
+    public UpdateMapper(final DomainMapper<PersistenceRequest, Boolean> inWrappedUpdater)
+    {
+        wrappedUpdater = inWrappedUpdater;
+    }
+
+    /**
      * Updates the DomainEntity.
-     * 
+     *
      * @param inRequest
      *            The MapperRequest.
      * @return true.
@@ -38,6 +61,10 @@ public class UpdateMapper<TDomainEntityType extends DomainEntity> extends
     public Boolean execute(final PersistenceRequest inRequest)
     {
         flush();
+        if (wrappedUpdater != null)
+        {
+            wrappedUpdater.execute(inRequest);
+        }
         return true;
     }
 }

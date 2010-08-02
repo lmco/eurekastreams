@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.service.actions.strategies.activity.datasources;
-
-import java.util.List;
-
-import net.sf.json.JSONObject;
+package org.eurekastreams.server.persistence.mappers;
 
 /**
- * Memcache Key Generator -- ran for each parameter that memcache supports.
+ * Interface used in chaining datasources - if a datasource can't find the data, but one downstream can, an
+ * implementation of this interface is responsible for updating that datasource with the data found downstream.
  *
+ * @param <DataSourceType>
+ *            the type of data this data source deals with
  */
-public interface MemcachedKeyGenerator
+public interface RefreshDataSourceMapper<DataSourceType>
 {
     /**
-     * Get the keys given a parameter.
-     * @param request request.
-     * @return the list of keys.
+     * Refresh the data source with the input data.
+     *
+     * @param data
+     *            the data to update the data source with
      */
-    List<String> getKeys(JSONObject request);
+    void refresh(final DataSourceType data);
 }

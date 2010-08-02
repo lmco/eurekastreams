@@ -25,9 +25,10 @@ import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.MembershipCriteria;
 import org.eurekastreams.server.domain.SystemSettings;
-import org.eurekastreams.server.persistence.mappers.FindSystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.InsertMapper;
 import org.eurekastreams.server.persistence.mappers.UpdateMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 import org.eurekastreams.server.service.actions.strategies.UpdaterStrategy;
 
@@ -49,7 +50,7 @@ public class AddMembershipCriteriaExecution implements ExecutionStrategy<ActionC
     /**
      * The system settings finder mapper.
      */
-    private FindSystemSettings finder;
+    private DomainMapper<MapperRequest, SystemSettings> finder;
 
     /**
      * The strategy used to set the system settings.
@@ -63,7 +64,7 @@ public class AddMembershipCriteriaExecution implements ExecutionStrategy<ActionC
 
     /**
      * Constructor.
-     * 
+     *
      * @param inFinder
      *            mapper that finds the system settings.
      * @param inUpdater
@@ -73,8 +74,9 @@ public class AddMembershipCriteriaExecution implements ExecutionStrategy<ActionC
      * @param inCriteriaMapper
      *            The criteria insert mapper.
      */
-    public AddMembershipCriteriaExecution(final FindSystemSettings inFinder, final UpdaterStrategy inUpdater,
-            final UpdateMapper<SystemSettings> inUpdateMapper, final InsertMapper<MembershipCriteria> inCriteriaMapper)
+    public AddMembershipCriteriaExecution(final DomainMapper<MapperRequest, SystemSettings> inFinder,
+            final UpdaterStrategy inUpdater, final UpdateMapper<SystemSettings> inUpdateMapper,
+            final InsertMapper<MembershipCriteria> inCriteriaMapper)
     {
 
         finder = inFinder;
@@ -85,7 +87,7 @@ public class AddMembershipCriteriaExecution implements ExecutionStrategy<ActionC
 
     /**
      * This action updates the system settings with a new membership criterion.
-     * 
+     *
      * @param inActionContext
      *            {@link ActionContext}.
      * @return {@link SystemSettings}.
