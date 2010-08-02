@@ -19,7 +19,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.domain.TermsOfServiceDTO;
-import org.eurekastreams.server.persistence.mappers.FindSystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -28,7 +29,7 @@ import org.junit.Test;
 
 /**
  * Test for GetTermsOfServiceExecution class.
- * 
+ *
  */
 public class GetTermsOfServiceExecutionTest
 {
@@ -45,7 +46,7 @@ public class GetTermsOfServiceExecutionTest
     /**
      * The settings mapper.
      */
-    private FindSystemSettings settingsMapperMock = context.mock(FindSystemSettings.class);
+    private DomainMapper<MapperRequest, SystemSettings> settingsMapperMock = context.mock(DomainMapper.class);
 
     /**
      * System under test.
@@ -64,7 +65,7 @@ public class GetTermsOfServiceExecutionTest
 
     /**
      * Test performAction method.
-     * 
+     *
      */
     @Test
     public final void textExecute()

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,16 @@ package org.eurekastreams.server.service.tasks;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eurekastreams.server.domain.Organization;
+import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.domain.SystemSettings;
+import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverser;
+import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder;
+import org.eurekastreams.server.persistence.OrganizationMapper;
+import org.eurekastreams.server.persistence.PersonMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
+import org.eurekastreams.server.service.actions.strategies.OrganizationPopulator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.Sequence;
@@ -25,18 +35,10 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
-import org.eurekastreams.server.domain.Organization;
-import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverser;
-import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder;
-import org.eurekastreams.server.persistence.OrganizationMapper;
-import org.eurekastreams.server.persistence.PersonMapper;
-import org.eurekastreams.server.persistence.mappers.FindSystemSettings;
-import org.eurekastreams.server.service.actions.strategies.OrganizationPopulator;
 
 /**
  * Tests the Organization Membership Refresh class.
- * 
+ *
  */
 public class OrganizationMembershipRefreshTaskTest
 {
@@ -81,7 +83,7 @@ public class OrganizationMembershipRefreshTaskTest
     /**
      * Find system settings mapper.
      */
-    private final FindSystemSettings settingsMapper = context.mock(FindSystemSettings.class);
+    private final DomainMapper<MapperRequest, SystemSettings> settingsMapper = context.mock(DomainMapper.class);
 
     /**
      * The mock org mapper to be used by the action.
@@ -140,7 +142,7 @@ public class OrganizationMembershipRefreshTaskTest
     private List<Organization> relatedOrganizationsMock = context.mock(List.class);
 
     /**
-     * 
+     *
      * @throws Exception
      *             not expected
      */
@@ -198,9 +200,9 @@ public class OrganizationMembershipRefreshTaskTest
                 // Purging each person of their related organizations
                 oneOf(personMapperMock).purgeRelatedOrganizations();
 
-
                 oneOf(settingsMapper).execute(null);
-                
+                will(returnValue(new SystemSettings()));
+
                 oneOf(organizationMapperMock).updateOrganizationStatistics(organizationTraverser);
             }
         });
@@ -216,7 +218,7 @@ public class OrganizationMembershipRefreshTaskTest
     /**
      * This test has a person assigned to the Root organization with no related organizations. This person will not have
      * any operations performed on them.
-     * 
+     *
      * @throws Exception
      *             not expected to occur.
      */
@@ -231,7 +233,7 @@ public class OrganizationMembershipRefreshTaskTest
             {
                 oneOf(personMapperMock).findOrphanedPeople();
                 will(returnValue(orphanedPeople));
-                
+
                 oneOf(person1Mock).setAccountLocked(true);
 
                 oneOf(personMapperMock).flush();

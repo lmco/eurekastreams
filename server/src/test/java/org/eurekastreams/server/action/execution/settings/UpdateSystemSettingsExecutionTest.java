@@ -22,8 +22,9 @@ import java.util.HashMap;
 
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.server.domain.SystemSettings;
-import org.eurekastreams.server.persistence.mappers.FindSystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.UpdateMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.eurekastreams.server.service.actions.strategies.UpdaterStrategy;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -33,7 +34,7 @@ import org.junit.Test;
 
 /**
  * Test class for UpdateSystemSettingsExecution.
- * 
+ *
  */
 public class UpdateSystemSettingsExecutionTest
 {
@@ -47,15 +48,15 @@ public class UpdateSystemSettingsExecutionTest
 
     /**
      * {@link UpdateMapper}.
-     * 
+     *
      */
     private UpdateMapper<SystemSettings> updateMapper = context.mock(UpdateMapper.class);
 
     /**
      * {@link FindSystemSettings}.
-     * 
+     *
      */
-    private FindSystemSettings finder = context.mock(FindSystemSettings.class);
+    private DomainMapper<MapperRequest, SystemSettings> finder = context.mock(DomainMapper.class);
 
     /**
      * {@link UpdaterStrategy}.

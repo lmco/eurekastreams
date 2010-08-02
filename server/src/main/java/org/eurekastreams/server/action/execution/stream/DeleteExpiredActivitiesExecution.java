@@ -25,16 +25,17 @@ import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.domain.SystemSettings;
-import org.eurekastreams.server.persistence.mappers.FindSystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetExpiredActivities;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 
 import com.ibm.icu.util.Calendar;
 
 /**
  * This execution strategy performs a cleanup of expired activites from the system based on the system setting for the
  * number of days before content/activity is considered old or expired. Once the expired activities are found, they are
- * batched and then each batch is submitted to the DeleteActivitiesByIds async action which then proceeds with
- * the cleanup by batches.
+ * batched and then each batch is submitted to the DeleteActivitiesByIds async action which then proceeds with the
+ * cleanup by batches.
  *
  */
 public class DeleteExpiredActivitiesExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
@@ -47,7 +48,7 @@ public class DeleteExpiredActivitiesExecution implements TaskHandlerExecutionStr
     /**
      * Mapper to get the current system settings.
      */
-    private FindSystemSettings settingsMapper;
+    private DomainMapper<MapperRequest, SystemSettings> settingsMapper;
 
     /**
      * Mapper to get a list of all expired activities.
@@ -69,7 +70,7 @@ public class DeleteExpiredActivitiesExecution implements TaskHandlerExecutionStr
      * @param inChunkSize
      *            the number of activities to include in a single processing chunk.
      */
-    public DeleteExpiredActivitiesExecution(final FindSystemSettings inSettingsMapper,
+    public DeleteExpiredActivitiesExecution(final DomainMapper<MapperRequest, SystemSettings> inSettingsMapper,
             final GetExpiredActivities inExpiredActivitiesMapper, final int inChunkSize)
     {
         settingsMapper = inSettingsMapper;

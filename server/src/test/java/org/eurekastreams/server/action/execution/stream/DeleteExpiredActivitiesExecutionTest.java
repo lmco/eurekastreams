@@ -28,10 +28,11 @@ import org.eurekastreams.server.action.request.DeleteFromSearchIndexRequest;
 import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.persistence.mappers.DeleteFromSearchIndex;
-import org.eurekastreams.server.persistence.mappers.FindSystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.RemoveExpiredActivities;
 import org.eurekastreams.server.persistence.mappers.db.GetExpiredActivities;
 import org.eurekastreams.server.persistence.mappers.db.GetListsContainingActivities;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -64,7 +65,7 @@ public class DeleteExpiredActivitiesExecutionTest
     /**
      * {@link FindSystemSettings} mock.
      */
-    private FindSystemSettings settingsMapper = context.mock(FindSystemSettings.class);
+    private DomainMapper<MapperRequest, SystemSettings> settingsMapper = context.mock(DomainMapper.class);
 
     /**
      * {@link GetExpiredActivities} mock.

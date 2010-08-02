@@ -29,8 +29,9 @@ import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
-import org.eurekastreams.server.persistence.mappers.FindSystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 
 /**
  * Create the root organization.
@@ -61,7 +62,7 @@ public class CreateRootOrganizationExecution implements TaskHandlerExecutionStra
     /**
      * System settings mapper.
      */
-    private final FindSystemSettings settingMapper;
+    private final DomainMapper<MapperRequest, SystemSettings> settingMapper;
 
     /**
      * Constructor.
@@ -79,7 +80,7 @@ public class CreateRootOrganizationExecution implements TaskHandlerExecutionStra
     public CreateRootOrganizationExecution(final GetRootOrganizationIdAndShortName inGetRootOrganizationidMapper,
             final TaskHandlerExecutionStrategy<PrincipalActionContext> inOrgPersisterExecutionStrategy,
             final OrganizationMapper inOrgMapper, final PersonMapper inPersonMapper,
-            final FindSystemSettings inSettingsMapper)
+            final DomainMapper<MapperRequest, SystemSettings> inSettingsMapper)
     {
         getRootOrganizationIdMapper = inGetRootOrganizationidMapper;
         orgPersisterExecutionStrategy = inOrgPersisterExecutionStrategy;
@@ -122,7 +123,7 @@ public class CreateRootOrganizationExecution implements TaskHandlerExecutionStra
 
             systemSettings.setMembershipCriteria(criteria);
 
-            settingMapper.flush();
+            orgMapper.flush();
         }
         else
         {

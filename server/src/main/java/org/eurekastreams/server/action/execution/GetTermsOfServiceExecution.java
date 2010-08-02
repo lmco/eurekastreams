@@ -19,7 +19,8 @@ import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.domain.TermsOfServiceDTO;
-import org.eurekastreams.server.persistence.mappers.FindSystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 
 /**
  * Get the terms of service.
@@ -29,22 +30,22 @@ public class GetTermsOfServiceExecution implements ExecutionStrategy<ActionConte
     /**
      * The system settings mapper.
      */
-    private FindSystemSettings settingsMapper;
+    private DomainMapper<MapperRequest, SystemSettings> settingsMapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inSettingsMapper
      *            the settings. mapper.
      */
-    public GetTermsOfServiceExecution(final FindSystemSettings inSettingsMapper)
+    public GetTermsOfServiceExecution(final DomainMapper<MapperRequest, SystemSettings> inSettingsMapper)
     {
         settingsMapper = inSettingsMapper;
     }
 
     /**
      * Get Terms of Service.
-     * 
+     *
      * @param inActionContext
      *            the {@link ActionContext}.
      * @return Terms of Service.
