@@ -30,13 +30,14 @@ import org.eurekastreams.server.action.request.IncreaseOrgEmployeeCountRequest;
 import org.eurekastreams.server.action.request.SetPersonLockedStatusRequest;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.SystemSettings;
-import org.eurekastreams.server.persistence.mappers.FindSystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName;
 import org.eurekastreams.server.persistence.mappers.db.GetPersonIdsByLockedStatus;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 
 /**
  * Use {@link PersonSource} to create/lock/unlock user accounts.
- * 
+ *
  */
 public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<ActionContext>
 {
@@ -73,12 +74,12 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
     /**
      * The settings mapper.
      */
-    private FindSystemSettings settingsMapper;
+    private DomainMapper<MapperRequest, SystemSettings> settingsMapper;
 
     /**
      * Constructor. Set inRefreshPersonActionKey to empty string or null and only personSource will be called, No
      * UserActionRequests will be created and queued.
-     * 
+     *
      * @param inSource
      *            {@link PersonSource}.
      * @param inCreatePersonActionKey
@@ -94,7 +95,8 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
      */
     public RefreshPeopleExecution(final PersonSource inSource, final String inCreatePersonActionKey,
             final String inLockUserAccountActionKey, final GetPersonIdsByLockedStatus inGetPersonIdsByLockedStatus,
-            final GetRootOrganizationIdAndShortName inRootOrgIdDAO, final FindSystemSettings inSettingsMapper)
+            final GetRootOrganizationIdAndShortName inRootOrgIdDAO,
+            final DomainMapper<MapperRequest, SystemSettings> inSettingsMapper)
     {
         source = inSource;
         createPersonActionKey = inCreatePersonActionKey;
@@ -106,7 +108,7 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
 
     /**
      * Get updated info for all users of system and generate UserActionRequests to refresh them.
-     * 
+     *
      * @param inActionContext
      *            {@link TaskHandlerActionContext}.
      * @return null.

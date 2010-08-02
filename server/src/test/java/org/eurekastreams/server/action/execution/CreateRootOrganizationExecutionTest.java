@@ -33,8 +33,9 @@ import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
-import org.eurekastreams.server.persistence.mappers.FindSystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -44,7 +45,7 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link CreateRootOrganizationExecution} class.
- * 
+ *
  */
 public class CreateRootOrganizationExecutionTest
 {
@@ -82,7 +83,7 @@ public class CreateRootOrganizationExecutionTest
     /**
      * Settings mapper.
      */
-    private final FindSystemSettings settingsMapper = context.mock(FindSystemSettings.class);
+    private final DomainMapper<MapperRequest, SystemSettings> settingsMapper = context.mock(DomainMapper.class);
 
     /**
      * Mocked isntance of {@link TaskHandlerExecutionStrategy}.
@@ -117,7 +118,7 @@ public class CreateRootOrganizationExecutionTest
 
     /**
      * Test performing the action when a root org exists.
-     * 
+     *
      * @throws Exception
      *             ExecutionException may be thrown.
      */
@@ -139,7 +140,7 @@ public class CreateRootOrganizationExecutionTest
 
     /**
      * Tests performing the action without a root org in the system.
-     * 
+     *
      * @throws Exception
      *             not expected.
      */
@@ -202,7 +203,7 @@ public class CreateRootOrganizationExecutionTest
 
                 oneOf(settings).setMembershipCriteria((List<MembershipCriteria>) fields.get("ldapGroups"));
 
-                oneOf(settingsMapper).flush();
+                oneOf(orgMapper).flush();
             }
         });
 

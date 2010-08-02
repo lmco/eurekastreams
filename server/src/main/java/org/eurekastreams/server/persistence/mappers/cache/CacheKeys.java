@@ -50,7 +50,7 @@ public final class CacheKeys
     public static final String CORE_STREAMVIEW_ID_PARENTORG = "CoreParentOrg";
 
     /**
-     * Cache key for buffered activities  not yet added to cache or lists.
+     * Cache key for buffered activities not yet added to cache or lists.
      */
     public static final String BUFFERED_ACTIVITIES = "BufferedActivites:";
 
@@ -213,4 +213,9 @@ public final class CacheKeys
      * Key for the count of unread notifications for a user.
      */
     public static final String UNREAD_APPLICATION_ALERT_COUNT_BY_USER = "UnreadAlerts:";
+
+    /**
+     * Key for system settings.
+     */
+    public static final String SYSTEM_SETTINGS = "SystemSettings";
 }

@@ -22,13 +22,14 @@ import javax.persistence.EntityManager;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
+import org.jmock.Sequence;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
 /**
  * Test class for UpdateMapper class.
- * 
+ *
  */
 public class UpdateMapperTest
 {
@@ -66,4 +67,33 @@ public class UpdateMapperTest
         context.assertIsSatisfied();
     }
 
+    /**
+     * Test execute method with a wrapped updater.
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testExecuteWithWrappedUpdater()
+    {
+        final Sequence sequence = context.sequence("sequence-name");
+        final EntityManager entityManager = context.mock(EntityManager.class);
+        final PersistenceRequest req = context.mock(PersistenceRequest.class);
+        final UpdateMapper wrappedUpdater = context.mock(UpdateMapper.class);
+
+        UpdateMapper sut = new UpdateMapper(wrappedUpdater);
+        sut.setEntityManager(entityManager);
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(entityManager).flush();
+                inSequence(sequence);
+
+                oneOf(wrappedUpdater).execute(req);
+                inSequence(sequence);
+            }
+        });
+
+        assertTrue(sut.execute(req));
+        context.assertIsSatisfied();
+    }
 }

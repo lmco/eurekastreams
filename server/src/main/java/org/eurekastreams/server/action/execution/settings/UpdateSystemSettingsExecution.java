@@ -23,8 +23,9 @@ import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.SystemSettings;
-import org.eurekastreams.server.persistence.mappers.FindSystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.UpdateMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.eurekastreams.server.service.actions.strategies.UpdaterStrategy;
 
 /**
@@ -39,15 +40,15 @@ public class UpdateSystemSettingsExecution implements ExecutionStrategy<ActionCo
 
     /**
      * the update mapper.
-     * 
+     *
      */
     private UpdateMapper<SystemSettings> updateMapper;
 
     /**
      * the finder mapper.
-     * 
+     *
      */
-    private FindSystemSettings finder;
+    private DomainMapper<MapperRequest, SystemSettings> finder;
 
     /**
      * the strategy used to set the resource's properties.
@@ -56,7 +57,7 @@ public class UpdateSystemSettingsExecution implements ExecutionStrategy<ActionCo
 
     /**
      * Constructor.
-     * 
+     *
      * @param inFinder
      *            mapper that finds the system settings.
      * @param inUpdater
@@ -64,17 +65,18 @@ public class UpdateSystemSettingsExecution implements ExecutionStrategy<ActionCo
      * @param inupdateMapper
      *            The update mapper.
      */
-    public UpdateSystemSettingsExecution(final FindSystemSettings inFinder, final UpdaterStrategy inUpdater,
-            final UpdateMapper<SystemSettings> inupdateMapper)
+    public UpdateSystemSettingsExecution(final DomainMapper<MapperRequest, SystemSettings> inFinder,
+            final UpdaterStrategy inUpdater, final UpdateMapper<SystemSettings> inupdateMapper)
     {
         finder = inFinder;
         updater = inUpdater;
         updateMapper = inupdateMapper;
+
     }
 
     /**
      * This method updates the system settings.
-     * 
+     *
      * @param inActionContext
      *            {@link ActionContext}.
      * @return {@link SystemSettings}.
@@ -95,7 +97,7 @@ public class UpdateSystemSettingsExecution implements ExecutionStrategy<ActionCo
         // set the properties on the system settings
         updater.setProperties(systemSettings, fields);
 
-        // persist the organization
+        // persist the settings
         updateMapper.execute(null);
 
         return systemSettings;

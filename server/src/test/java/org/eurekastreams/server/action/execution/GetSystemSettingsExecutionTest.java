@@ -18,7 +18,8 @@ package org.eurekastreams.server.action.execution;
 import static junit.framework.Assert.assertEquals;
 
 import org.eurekastreams.server.domain.SystemSettings;
-import org.eurekastreams.server.persistence.mappers.FindSystemSettings;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -28,7 +29,7 @@ import org.junit.Test;
 
 /**
  * Test for GetSystemSettingsExecution class.
- * 
+ *
  */
 public class GetSystemSettingsExecutionTest
 {
@@ -50,7 +51,7 @@ public class GetSystemSettingsExecutionTest
     /**
      * Mocked mapper for the action to look up the SystemSettings.
      */
-    private FindSystemSettings systemSettingDAO = context.mock(FindSystemSettings.class);
+    private DomainMapper<MapperRequest, SystemSettings> systemSettingDAO = context.mock(DomainMapper.class);
 
     /**
      * Mocked mapper for the SystemSettings.
@@ -68,7 +69,7 @@ public class GetSystemSettingsExecutionTest
 
     /**
      * Check that the action correctly returns the system settings.
-     * 
+     *
      */
     @Test
     public final void testExecute()
