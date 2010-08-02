@@ -164,9 +164,9 @@
                      <includeTestSourceDirectory>true</includeTestSourceDirectory>
                      <failsOnError>true</failsOnError>
                  </configuration>
-                 <phase>package</phase>
+                 <phase>test</phase>
                  <goals>
-                 	<goal>checkstyle</goal>
+                     <goal>checkstyle</goal>
                  </goals>
                	</execution>
                </executions>
