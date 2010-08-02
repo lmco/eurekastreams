@@ -15,11 +15,20 @@
  */
 package org.eurekastreams.server.service.actions.strategies.activity.datasources;
 
+import java.util.List;
+
+import net.sf.json.JSONObject;
+
 /**
  * Sorted Data Source interface.
  *
  */
 public interface SortedDataSource
 {
-	//TODO:Fill in interface details.
+    /**
+     * Fetch activities.
+     * @param request the JSON request.
+     * @return the activity IDs.
+     */
+    List<Long> fetch(JSONObject request);
 }

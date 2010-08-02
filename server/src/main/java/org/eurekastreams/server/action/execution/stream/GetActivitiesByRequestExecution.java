@@ -33,7 +33,8 @@ import org.eurekastreams.server.persistence.mappers.cache.GetPrivateCoordinatedA
 import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
 import org.eurekastreams.server.service.actions.strategies.activity.ListCollider;
-import org.eurekastreams.server.service.actions.strategies.activity.datasources.DataSource;
+import org.eurekastreams.server.service.actions.strategies.activity.datasources.DescendingOrderDataSource;
+import org.eurekastreams.server.service.actions.strategies.activity.datasources.SortedDataSource;
 
 /**
  * Action to get a page of activities for a given request.
@@ -65,12 +66,12 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
     /**
      * Data source that MUST provide results in descending order of ID.
      */
-    private DataSource descendingOrderdataSource;
+    private DescendingOrderDataSource descendingOrderdataSource;
 
     /**
      * Data source that MUST provide results in the order they will be given to the user.
      */
-    private DataSource sortedDataSource;
+    private SortedDataSource sortedDataSource;
 
     /**
      * AND collider.
@@ -112,8 +113,8 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
      * @param inGetVisibleGroupsForUserMapper to get which groups youre a member of.
      * @param inBatchPageSizeMultiplier the back size multiplier.
      */
-    public GetActivitiesByRequestExecution(final DataSource inDescendingOrderdataSource,
-            final DataSource inSortedDataSource,
+    public GetActivitiesByRequestExecution(final DescendingOrderDataSource inDescendingOrderdataSource,
+            final SortedDataSource inSortedDataSource,
             final BulkActivitiesMapper inBulkActivitiesMapper, final List<ActivityFilter> inFilters,
             final ListCollider inAndCollider,
             final GetPrivateCoordinatedAndFollowedGroupIdsForUser inGetVisibleGroupsForUserMapper,

@@ -37,7 +37,8 @@ import org.eurekastreams.server.persistence.mappers.cache.GetPrivateCoordinatedA
 import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
 import org.eurekastreams.server.service.actions.strategies.activity.ListCollider;
-import org.eurekastreams.server.service.actions.strategies.activity.datasources.DataSource;
+import org.eurekastreams.server.service.actions.strategies.activity.datasources.DescendingOrderDataSource;
+import org.eurekastreams.server.service.actions.strategies.activity.datasources.SortedDataSource;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -165,12 +166,12 @@ public class GetActivitiesByRequestExecutionTest
     /**
      * Memcache data source.
      */
-    private DataSource memcacheDS = context.mock(DataSource.class, "memcache");
+    private DescendingOrderDataSource memcacheDS = context.mock(DescendingOrderDataSource.class, "memcache");
 
     /**
      * Lucene Data source.
      */
-    private DataSource luceneDS = context.mock(DataSource.class, "lucene");
+    private SortedDataSource luceneDS = context.mock(SortedDataSource.class, "lucene");
 
 
     /**

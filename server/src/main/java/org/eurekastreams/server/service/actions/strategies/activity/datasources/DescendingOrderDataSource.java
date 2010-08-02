@@ -20,17 +20,15 @@ import java.util.List;
 import net.sf.json.JSONObject;
 
 /**
- * Temporary code.  Used in place of LuceneDataSource until it's done.
+ * A data source to find activity.
+ *
  */
-public class NullDataSource implements SortedDataSource
+public interface DescendingOrderDataSource
 {
     /**
-     * Temporary code.
-     * @param request the request.
-     * @return null;
+     * Fetch activities.
+     * @param request the JSON request.
+     * @return the activity IDs.
      */
-    public List<Long> fetch(final JSONObject request)
-    {
-        return null;
-    }
+    List<Long> fetch(JSONObject request);
 }

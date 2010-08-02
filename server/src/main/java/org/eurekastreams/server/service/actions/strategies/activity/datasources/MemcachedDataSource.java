@@ -29,7 +29,7 @@ import org.eurekastreams.server.service.actions.strategies.activity.ListCollider
  * Gets activity IDs from memcache based on the query.
  *
  */
-public class MemcachedDataSource implements DataSource
+public class MemcachedDataSource implements DescendingOrderDataSource
 {
     /**
      * A map of search params and key generators.
