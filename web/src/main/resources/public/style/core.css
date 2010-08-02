@@ -7749,6 +7749,10 @@ div.layout-container table.dragdrop-dropTarget {
 	width: 500px;
 }
 
+.read-only-tos {
+	padding-bottom: 20px;
+}
+	
 .terms-of-service-modal .modal-content-panel {
 	padding: 0 10px;
 }

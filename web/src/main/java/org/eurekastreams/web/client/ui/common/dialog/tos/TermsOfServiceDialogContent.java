@@ -72,8 +72,10 @@ public class TermsOfServiceDialogContent implements DialogContent
      * 
      * @param inTos
      *            the terms of service.
+     * @param readOnly
+     *            if the TOS modal is read only.
      */
-    public TermsOfServiceDialogContent(final TermsOfServiceDTO inTos)
+    public TermsOfServiceDialogContent(final TermsOfServiceDTO inTos, final boolean readOnly)
     {
         tos = inTos;
 
@@ -97,10 +99,17 @@ public class TermsOfServiceDialogContent implements DialogContent
 
         confirmCheckBox = new CheckBox("I have read and understand the terms of service.");
         confirmCheckBox.addStyleName("confirm-checkbox");
-        body.add(confirmCheckBox);
 
-        body.add(acceptTos);
-        body.add(cancelTos);
+        if (!readOnly)
+        {
+            body.add(confirmCheckBox);
+            body.add(acceptTos);
+            body.add(cancelTos);
+        }
+        else
+        {
+            body.addStyleName("read-only-tos");
+        }
 
         final TermsOfServiceDialogModel model = new TermsOfServiceDialogModel(Session.getInstance(), EventBus
                 .getInstance());
