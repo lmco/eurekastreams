@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Page for Stream.
- *
+ * 
  */
 public class StreamContent extends Composite
 {
@@ -108,8 +108,13 @@ public class StreamContent extends Composite
     private FlowPanel searchContainer = new FlowPanel();
 
     /**
+     * The stream view list panel.
+     */
+    private FilterListPanel streanViewListWidget = null;
+
+    /**
      * Default constructor.
-     *
+     * 
      */
     public StreamContent()
     {
@@ -160,9 +165,9 @@ public class StreamContent extends Composite
 
         RootPanel.get().addStyleName("stream");
 
-        //Label activityHeader = new Label("Activity");
-        //activityHeader.addStyleName("directory-header");
-        //panel.add(activityHeader);
+        // Label activityHeader = new Label("Activity");
+        // activityHeader.addStyleName("directory-header");
+        // panel.add(activityHeader);
         panel.addStyleName("stream-page-container");
         streamPanel.addStyleName("stream-container");
 
@@ -186,6 +191,11 @@ public class StreamContent extends Composite
                                 && event.getParameters().get("streamSearch") == null)
                         {
                             selectFirstView = true;
+
+                            if (null != streanViewListWidget)
+                            {
+                                streanViewListWidget.activateFilter(streanViewListWidget.getViews().get(0));
+                            }
                         }
                     }
 
@@ -197,14 +207,14 @@ public class StreamContent extends Composite
 
                     public void update(final GotCurrentUserStreamViewsResponseEvent event)
                     {
-                        FilterListPanel viewListWidget = new FilterListPanel(event.getResponse().getStreamFilters(),
-                                event.getResponse().getHiddenLineIndex(), new StreamViewRenderer(), false);
+                        streanViewListWidget = new FilterListPanel(event.getResponse().getStreamFilters(), event
+                                .getResponse().getHiddenLineIndex(), new StreamViewRenderer(), false);
 
-                        listContainer.add(viewListWidget);
+                        listContainer.add(streanViewListWidget);
 
                         if (selectFirstView)
                         {
-                            viewListWidget.activateFilter(event.getResponse().getStreamFilters().get(0));
+                            streanViewListWidget.activateFilter(event.getResponse().getStreamFilters().get(0));
                         }
                         Session.getInstance().getEventBus().notifyObservers(
                                 new StreamViewsLoadedEvent(event.getResponse().getStreamFilters()));

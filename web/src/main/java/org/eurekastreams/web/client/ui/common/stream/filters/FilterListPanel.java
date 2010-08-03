@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Shows a list of views.
- *
+ * 
  */
 public class FilterListPanel extends FlowPanel
 {
@@ -97,9 +97,14 @@ public class FilterListPanel extends FlowPanel
     private Integer hiddenLineIndex;
 
     /**
+     * The views.
+     */
+    private List<StreamFilter> views;
+
+    /**
      * Default constructor.
-     *
-     * @param views
+     * 
+     * @param inViews
      *            the views.
      * @param inHiddenLineIndex
      *            the hidden line index.
@@ -108,9 +113,10 @@ public class FilterListPanel extends FlowPanel
      * @param readOnly
      *            flag indicating if this panel has no writable properties requiring a DialogContent.
      */
-    public FilterListPanel(final List<StreamFilter> views, final Integer inHiddenLineIndex,
+    public FilterListPanel(final List<StreamFilter> inViews, final Integer inHiddenLineIndex,
             final FilterRenderStrategy inRenderer, final boolean readOnly)
     {
+        views = inViews;
         hiddenLineIndex = inHiddenLineIndex;
         renderer = inRenderer;
 
@@ -244,7 +250,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * hides the text on the hidden line if its the last one.
-     *
+     * 
      * @param inHiddenLineIndex
      *            the hidden line index.
      */
@@ -266,7 +272,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Switch to a filter.
-     *
+     * 
      * @param filter
      *            the filter.
      */
@@ -283,7 +289,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Activate a filter.
-     *
+     * 
      * @param filter
      *            the filter.
      */
@@ -306,7 +312,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Adds a filter.
-     *
+     * 
      * @param filter
      *            the filter.
      */
@@ -340,9 +346,10 @@ public class FilterListPanel extends FlowPanel
     {
         ((FilterPanel) panel.getWidget(0)).updateHistory();
     }
+
     /**
      * Removes a filter.
-     *
+     * 
      * @param filter
      *            the filter.
      */
@@ -363,7 +370,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Updates the filter.
-     *
+     * 
      * @param filter
      *            the filter.
      */
@@ -402,7 +409,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Get drop panel.
-     *
+     * 
      * @return the drop panel.
      */
     public VerticalPanel getDropPanel()
@@ -412,7 +419,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Gets the hidden line.
-     *
+     * 
      * @return the hidden line.
      */
     public Integer getHiddenLineIndex()
@@ -430,5 +437,14 @@ public class FilterListPanel extends FlowPanel
         showMore.setText("show less");
         showMore.addStyleName("show-less");
     }
-
+    
+    /**
+     * Get the views.
+     * 
+     * @return the views.
+     */
+    public List<StreamFilter> getViews()
+    {
+        return views;
+    }
 }

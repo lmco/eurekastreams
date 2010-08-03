@@ -6548,6 +6548,19 @@ div.banner-container {
 	height: 59px;
 }
 
+.footer-nav .terms-of-service-link {
+	background-image:url("images/footerTermsOfService.png");
+	background-repeat:no-repeat;
+	display:block;
+	height:7px;
+	left:10px;
+	overflow:hidden;
+	position:relative;
+	text-indent:-1000em;
+	top:32px;
+	width:102px;
+}
+
 .footer-nav .powered-by-eureka {
 	background-image: url(images/poweredByEurekaStreams.png);
 	height: 37px;

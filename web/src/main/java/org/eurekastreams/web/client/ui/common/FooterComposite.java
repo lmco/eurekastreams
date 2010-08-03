@@ -18,7 +18,6 @@ package org.eurekastreams.web.client.ui.common;
 import org.eurekastreams.server.domain.TermsOfServiceDTO;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.GotSystemSettingsResponseEvent;
-import org.eurekastreams.web.client.model.SystemSettingsModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.tos.TermsOfServiceDialogContent;
@@ -31,7 +30,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * This class creates the Composite for the main footer displayed on the page.
- *
+ * 
  */
 public class FooterComposite extends Composite
 {
@@ -40,6 +39,11 @@ public class FooterComposite extends Composite
      * The Site Labeling Panel.
      */
     FlowPanel siteLabeling = new FlowPanel();
+
+    /**
+     * ToS Dialog.
+     */
+    private Dialog dialog;
 
     /**
      * Primary constructor for the FooterComposite Widget.
@@ -51,27 +55,27 @@ public class FooterComposite extends Composite
         FlowPanel navPanel = new FlowPanel();
 
         Anchor termsOfService = new Anchor("Terms of Service");
+        termsOfService.addStyleName("terms-of-service-link");
+
+        Session.getInstance().getEventBus().addObserver(GotSystemSettingsResponseEvent.class,
+                new Observer<GotSystemSettingsResponseEvent>()
+                {
+                    public void update(final GotSystemSettingsResponseEvent event)
+                    {
+                        TermsOfServiceDialogContent tosDialog = new TermsOfServiceDialogContent(new TermsOfServiceDTO(
+                                event.getResponse().getTermsOfService()), true);
+
+                        dialog = new Dialog(tosDialog);
+                    }
+                });
 
         termsOfService.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent arg0)
             {
-                Session.getInstance().getEventBus().addObserver(GotSystemSettingsResponseEvent.class,
-                        new Observer<GotSystemSettingsResponseEvent>()
-                        {
-                            public void update(final GotSystemSettingsResponseEvent event)
-                            {
-                                TermsOfServiceDialogContent tosDialog = new TermsOfServiceDialogContent(
-                                        new TermsOfServiceDTO(event.getResponse().getTermsOfService()), true);
-
-                                final Dialog dialog = new Dialog(tosDialog);
-                                dialog.setBgVisible(true);
-                                dialog.center();
-                                dialog.getContent().show();
-                            }
-                        });
-
-                SystemSettingsModel.getInstance().fetch(null, true);
+                dialog.setBgVisible(true);
+                dialog.center();
+                dialog.getContent().show();
             }
         });
 
@@ -92,7 +96,7 @@ public class FooterComposite extends Composite
 
     /**
      * Sets Site labeling.
-     *
+     * 
      * @param siteLabelingTxt
      *            The text for Site Labeling.
      */
