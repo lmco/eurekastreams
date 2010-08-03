@@ -44,7 +44,6 @@ import org.eurekastreams.web.client.ui.common.notifier.UINotifier;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 
@@ -242,12 +241,6 @@ public class MasterComposite extends Composite implements Bindable
                 {
                     public void update(final SwitchedHistoryViewEvent event)
                     {
-                        if (pageHasBeenLoaded && getUserAgent().contains("msie 7")
-                                && event.getPage().equals(Page.START))
-                        {
-                            Location.reload();
-                            return;
-                        }
                         mainContents.remove(banner);
                         notifier.setVisible(false);
                         contentPanel.clear();
