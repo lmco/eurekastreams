@@ -336,6 +336,42 @@
 			ref="buildActivityStreamSearchStringForUserMapper" />
 	</bean>
 
+	<bean id="luceneActivityDataSource" 
+		class="org.eurekastreams.server.service.actions.strategies.activity.datasources.LuceneDataSource">
+		<!-- DataSource for searching activities -->
+		
+		<constructor-arg>
+			<bean class="org.eurekastreams.commons.search.ProjectionSearchRequestBuilder">
+					<property name="resultFields">
+						<list>
+							<value>id</value>
+						</list>
+					</property>
+					<property name="resultTypes">
+						<list>
+							<value>org.eurekastreams.server.domain.stream.Activity
+							</value>
+						</list>
+					</property>
+					<property name="queryParserBuilder">
+						<bean class="org.eurekastreams.commons.search.QueryParserBuilder">
+							<constructor-arg value="content" />
+							<constructor-arg>
+								<bean
+									class="org.eurekastreams.commons.search.analysis.HashTagTextStemmerSearchAnalyzer" />
+							</constructor-arg>
+						</bean>
+					</property>
+					<property name="resultTransformer">
+						<bean
+							class="org.eurekastreams.commons.hibernate.SingleFieldResultTransformer">
+							<property name="fieldName" value="id" />
+						</bean>
+					</property>
+				</bean>
+		</constructor-arg>
+	</bean>
+	
 	<bean id="memcachedCache"
 		class="org.eurekastreams.server.persistence.mappers.cache.MemcachedCache">
 		<constructor-arg ref="memcachedClient" />

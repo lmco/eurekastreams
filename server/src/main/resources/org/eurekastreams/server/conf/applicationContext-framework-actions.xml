@@ -1591,10 +1591,7 @@
 		            <constructor-arg ref="memcachedCache" />								
 				</bean>            
             </constructor-arg>
-            <constructor-arg>
-				<bean
-					class="org.eurekastreams.server.service.actions.strategies.activity.datasources.NullDataSource" />            
-            </constructor-arg>
+            <constructor-arg ref="luceneActivityDataSource" />
     		<constructor-arg ref="bulkActivitiesMapper" />
                 <constructor-arg>
                     <list>

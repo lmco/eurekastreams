@@ -20,6 +20,8 @@ import java.util.List;
 
 import net.sf.json.JSONObject;
 
+import org.apache.commons.logging.Log;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 
@@ -30,13 +32,20 @@ import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds
 public class FollowedByKeyGenerator implements MemcachedKeyGenerator
 {
     /**
+     * Logger.
+     */
+    private Log log = LogFactory.make();
+
+    /**
      * Person mapper.
      */
     private GetPeopleByAccountIds personMapper;
 
     /**
      * Default constructor.
-     * @param inPersonMapper person mapper.
+     *
+     * @param inPersonMapper
+     *            person mapper.
      */
     public FollowedByKeyGenerator(final GetPeopleByAccountIds inPersonMapper)
     {
@@ -45,15 +54,24 @@ public class FollowedByKeyGenerator implements MemcachedKeyGenerator
 
     /**
      * Get the keys for followed by.
-     * @param request the JSON request object.
+     *
+     * @param request
+     *            the JSON request object.
      * @return the key for followed by.
      */
     public List<String> getKeys(final JSONObject request)
     {
-        Long id = personMapper.fetchUniqueResult(request.getString("followedBy")).getId();
+        String accountId = request.getString("followedBy");
+
+        log.info("Looking for cache key for activities followed by " + accountId);
+
+        Long id = personMapper.fetchUniqueResult(accountId).getId();
+
+        String cacheKey = CacheKeys.ACTIVITIES_BY_FOLLOWING + id;
+        log.info("User id for account id " + accountId + " is " + id + " - cache key: " + cacheKey);
 
         List<String> returned = new ArrayList<String>();
-        returned.add(CacheKeys.ACTIVITIES_BY_FOLLOWING + id);
+        returned.add(cacheKey);
         return returned;
     }
 
