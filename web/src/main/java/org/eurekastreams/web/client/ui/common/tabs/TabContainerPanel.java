@@ -126,6 +126,10 @@ public class TabContainerPanel extends AbsolutePanel
                         {
                             switchToTab(event.getParameters().get(key));
                         }
+                        else
+                        {
+                            switchToTab(firstTab);
+                        }
                     }
                 }, true);
     }
