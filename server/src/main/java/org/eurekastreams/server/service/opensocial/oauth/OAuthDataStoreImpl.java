@@ -40,9 +40,11 @@ import org.eurekastreams.server.persistence.OAuthConsumerMapper;
 import org.eurekastreams.server.persistence.OAuthEntryMapper;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 /**
- * 
+ * {@link OAuthDataStore} implementation that is used during both 2 and 3-legged OAuth 
+ * authorizations from Shindig.  These methods are called 
  */
 public class OAuthDataStoreImpl implements OAuthDataStore
 {
@@ -69,9 +71,7 @@ public class OAuthDataStoreImpl implements OAuthDataStore
     /**
      * The local service provider.
      */
-    private static final OAuthServiceProvider SERVICE_PROVIDER = new OAuthServiceProvider(
-            "http://localhost:8080/resources/oauth/requestToken", "http://localhost:8080/resources/oauth/authorize",
-            "http://localhost:8080/resources/oauth/accessToken");
+    private final OAuthServiceProvider serviceProvider;
     
     /**
      * Number of digits to create for the random callback token.
@@ -88,7 +88,7 @@ public class OAuthDataStoreImpl implements OAuthDataStore
      */
     public OAuthDataStoreImpl()
     {
-
+    	serviceProvider = null;
     }
 
     /**
@@ -120,6 +120,9 @@ public class OAuthDataStoreImpl implements OAuthDataStore
 
     /**
      * Constructor.
+     * @param inRequestTokenUrl - Url for retrieving the request token
+     * @param inAuthorizeUrl - Url for authorizing the user.
+     * @param inAccessTokenUrl - Url for retrieving the access token.
      * @param inEntryMapper
      *          the oauth entry mapper.
      * @param inConsumerMapper
@@ -128,12 +131,16 @@ public class OAuthDataStoreImpl implements OAuthDataStore
      *          the transaction manager.
      */
     @Inject
-    public OAuthDataStoreImpl(final OAuthEntryMapper inEntryMapper, final OAuthConsumerMapper inConsumerMapper,
+    public OAuthDataStoreImpl(@Named("eureka.oauth.requesttokenurl") final String inRequestTokenUrl, 
+    		@Named("eureka.oauth.authorizeurl") final String inAuthorizeUrl, 
+    		@Named("eureka.oauth.accesstokenurl") final String inAccessTokenUrl, 
+    		final OAuthEntryMapper inEntryMapper, final OAuthConsumerMapper inConsumerMapper,
             final PlatformTransactionManager inTransMgr)
     {
-        setEntryMapper(inEntryMapper);
-        setConsumerMapper(inConsumerMapper);
-        setTransMgr(inTransMgr);
+    	serviceProvider = new OAuthServiceProvider(inRequestTokenUrl, inAuthorizeUrl, inAccessTokenUrl);
+    	entryMapper = inEntryMapper;
+    	consumerMapper = inConsumerMapper;
+    	transMgr = inTransMgr;
     }
 
     /**
@@ -321,7 +328,7 @@ public class OAuthDataStoreImpl implements OAuthDataStore
             consumer = new OAuthConsumer(
                     mappedConsumer.getCallbackURL(), 
                     consumerKey, 
-                    mappedConsumer.getConsumerSecret(), SERVICE_PROVIDER);
+                    mappedConsumer.getConsumerSecret(), serviceProvider);
         }
         catch (Exception ex)
         {
