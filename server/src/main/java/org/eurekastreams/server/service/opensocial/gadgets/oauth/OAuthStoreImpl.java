@@ -34,7 +34,6 @@ import com.google.inject.Inject;
 
 /**
  * Implementation of OAuthStore that uses mappers to retrieve and persist OAuth tokens and consumers.
- * This implementation covers Shindig's role as an OAuth Proxy for Gadgets wishing to use external OAuth resources.
  */
 public class OAuthStoreImpl implements OAuthStore
 {

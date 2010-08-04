@@ -91,9 +91,7 @@ public class OAuthDataStoreTest
     @Before
     public void setUp()
     {
-        sut = new OAuthDataStoreImpl("http://localhost:8080/resources/requesttoken", 
-        		"http://localhost:8080/resources/authorize", 
-        		"http://localhost:8080/resources/accesstoken", entryMapper, consumerMapper, transactionManager);
+        sut = new OAuthDataStoreImpl(entryMapper, consumerMapper, transactionManager);
     }
 
     /**

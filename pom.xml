@@ -34,8 +34,12 @@
     </pluginRepositories>
 	<repositories>
 	  <repository>
-	    <id>Eureka Streams Dependency Repo</id>
-	    <url>http://maven.eurekastreams.org</url>
+	    <id>apache snapshots</id>
+	    <url>https://repository.apache.org/content/repositories/snapshots</url>
+	  </repository>
+	  <repository>
+	    <id>codehaus snapshots</id>
+	    <url>http://snapshots.repository.codehaus.org/org/codehaus</url>
 	  </repository>
 	  <repository>
 	    <id>Dev.Java.Net</id>
@@ -94,14 +98,6 @@
                <enabled>false</enabled>
            </snapshots>
           </repository>
-	  <repository>
-	    <id>apache snapshots</id>
-	    <url>https://repository.apache.org/content/repositories/snapshots</url>
-	  </repository>
-	  <repository>
-	    <id>codehaus snapshots</id>
-	    <url>http://snapshots.repository.codehaus.org/org/codehaus</url>
-	  </repository>
 	</repositories>
     <properties>
         <gwtVersion>1.7.0</gwtVersion>
