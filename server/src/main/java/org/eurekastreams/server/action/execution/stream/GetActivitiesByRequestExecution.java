@@ -180,9 +180,9 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
 
 
         // paging loop
+        startingIndex = 0;
         do
         {
-            startingIndex = 0;
             allKeys.clear();
             // multiply the batch size by the multiplier to avoid extra cache
             // hits
