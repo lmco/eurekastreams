@@ -20,6 +20,7 @@ import static org.junit.Assert.assertSame;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -267,9 +268,12 @@ public class GetActivitiesByCompositeStreamExecutionTest
                 allowing(actionContext).getParams();
                 will(returnValue(request));
 
+                oneOf(actionContext).getState();
+                will(returnValue(new HashMap<String, Object>()));
+                
                 oneOf(idMapper).execute(with(any(Long.class)), with(any(Long.class)));
                 will(returnValue(activityIds));
-
+                
                 oneOf(bulkMapper).execute(with(any(ArrayList.class)), with(any(String.class)));
                 will(returnValue(activities));
 
@@ -346,6 +350,9 @@ public class GetActivitiesByCompositeStreamExecutionTest
 
                 allowing(actionContext).getParams();
                 will(returnValue(request));
+
+                oneOf(actionContext).getState();
+                will(returnValue(new HashMap<String, Object>()));
 
                 oneOf(idMapper).execute(with(any(Long.class)), with(any(Long.class)));
                 will(returnValue(allActivityIds));
@@ -436,6 +443,9 @@ public class GetActivitiesByCompositeStreamExecutionTest
 
                 allowing(actionContext).getParams();
                 will(returnValue(request));
+
+                oneOf(actionContext).getState();
+                will(returnValue(new HashMap<String, Object>()));
 
                 oneOf(idMapper).execute(with(any(Long.class)), with(any(Long.class)));
                 will(returnValue(allActivityIds));
