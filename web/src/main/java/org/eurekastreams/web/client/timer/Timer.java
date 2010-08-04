@@ -26,7 +26,7 @@ import org.eurekastreams.web.client.ui.TimerFactory;
 import org.eurekastreams.web.client.ui.TimerHandler;
 
 /**
- * Controls timer jobs going back to the server. Bundles HTTP requests for optimizations. TODO: Add mouse handling.
+ * Controls timer jobs going back to the server. Bundles HTTP requests for optimizations.
  *
  */
 public class Timer
@@ -99,7 +99,7 @@ public class Timer
                         {
                             if (fetchables.containsKey(job) && !pausedJobs.contains(job))
                             {
-                                fetchables.get(job).fetch(requests.get(job), false);
+                        	fetchables.get(job).fetch(requests.get(job), false);
                             }
                         }
                         catch (Exception ex)
@@ -117,6 +117,7 @@ public class Timer
         {
             jobs.get(numOfMinutes).add(jobKey);
             requests.put(jobKey, request);
+            fetchables.put(jobKey, fetchable); 
         }
     }
 
