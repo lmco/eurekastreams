@@ -173,18 +173,16 @@ public class GetActivitiesByRequestExecutionTest
      */
     private SortedDataSource luceneDS = context.mock(SortedDataSource.class, "lucene");
 
-
     /**
      * AND Collider.
      */
     private ListCollider andCollider = context.mock(ListCollider.class);
 
     /**
-     * 19+1.
-     * 120%100
-     * pi+16.8584073....
+     * 19+1. 120%100 pi+16.8584073....
      */
     private static final int THENUMBERTWENTY = 20;
+
     /**
      * Setup text fixtures.
      */
@@ -338,6 +336,18 @@ public class GetActivitiesByRequestExecutionTest
         batch1.add(activity6);
 
         // batch 2 request
+        final List<Long> batch2Response = new ArrayList<Long>();
+        batch2Response.add(9L);
+        batch2Response.add(8L);
+        batch2Response.add(7L);
+        batch2Response.add(6L);
+        batch2Response.add(5L);
+        batch2Response.add(4L);
+        batch2Response.add(3L);
+        batch2Response.add(2L);
+        batch2Response.add(1L);
+
+        // batch 2 request
         final List<Long> batch2Request = new ArrayList<Long>();
         batch2Request.add(5L);
         batch2Request.add(4L);
@@ -381,7 +391,7 @@ public class GetActivitiesByRequestExecutionTest
                 will(returnValue(null));
 
                 oneOf(memcacheDS).fetch(with(any(JSONObject.class)));
-                will(returnValue(batch2Request));
+                will(returnValue(batch2Response));
 
                 oneOf(luceneDS).fetch(with(any(JSONObject.class)));
                 will(returnValue(null));

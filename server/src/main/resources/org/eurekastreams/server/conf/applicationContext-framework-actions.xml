@@ -1623,7 +1623,11 @@
 	</bean>
 	            
 	<bean id="getActivitiesByCompositeStream" class="org.eurekastreams.commons.actions.service.ServiceAction">
-		<constructor-arg ref="noValidationStrategy" />
+        <constructor-arg >
+          <bean class="org.eurekastreams.server.action.validation.stream.GetActivitiesByCompositeStreamIdValidation">
+              <constructor-arg ref="compositeStreamActivityIdsMapper"/>
+          </bean>
+        </constructor-arg>
 		<constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg ref="getActivitesByCompositeStreamExecutor" />
 		<constructor-arg value="true" />

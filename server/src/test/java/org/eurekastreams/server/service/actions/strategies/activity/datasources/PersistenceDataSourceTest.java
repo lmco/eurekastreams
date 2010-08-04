@@ -16,6 +16,7 @@
 package org.eurekastreams.server.service.actions.strategies.activity.datasources;
 
 import static org.eurekastreams.commons.test.IsEqualInternally.equalInternally;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -132,11 +133,9 @@ public class PersistenceDataSourceTest
     {
         ((JSONObject) request.get("query")).put("keywords", "eureka");
 
-
         sut.fetch(request);
         context.assertIsSatisfied();
     }
-
 
     /**
      * Following w/o keywords. Call the appropriate generator and trim to 10 results.
@@ -168,8 +167,8 @@ public class PersistenceDataSourceTest
     }
 
     /**
-     * Following with a keyword. Were eventually going to collide with lucene so call the
-     * appropriate generator and DO NOT trim the results.
+     * Following with a keyword. Were eventually going to collide with lucene so call the appropriate generator and DO
+     * NOT trim the results.
      */
     @Test
     public void fetchForFollowingWithKeyword()
@@ -190,6 +189,7 @@ public class PersistenceDataSourceTest
 
                 oneOf(orCollider).collide(with(any(List.class)),
                         with(any(List.class)), with(equalInternally(MAXITEMS)));
+
             }
         });
 
@@ -197,4 +197,15 @@ public class PersistenceDataSourceTest
         context.assertIsSatisfied();
     }
 
+    /**
+     * Following with a keyword and no handled query terms - should return null.
+     */
+    @Test
+    public void fetchForEveryoneWithKeyword()
+    {
+        ((JSONObject) request.get("query")).put("keywords", "eureka");
+
+        assertNull(sut.fetch(request));
+        context.assertIsSatisfied();
+    }
 }
