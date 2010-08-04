@@ -41,7 +41,7 @@ public class RefreshSystemSettingsCacheMapperImplTest
         SystemSettings settings = new SystemSettings();
 
         // perform system under test
-        sut.refresh(settings);
+        sut.refresh(null, settings);
 
         // make sure the settings were stored in cache
         assertSame(settings, cache.get(CacheKeys.SYSTEM_SETTINGS));
