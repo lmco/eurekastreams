@@ -49,8 +49,14 @@ public class AdvancedSearchContent extends FlowPanel
      */
     private long lastSeenId = 0L;
 
+    /**
+     * Error label.
+     */
     private Label error = new Label("");
 
+    /**
+     * Stream panel.
+     */
     private StreamListPanel stream = new StreamListPanel(new StreamMessageItemRenderer(true));
 
     /**
@@ -96,6 +102,12 @@ public class AdvancedSearchContent extends FlowPanel
         });
     }
 
+    /**
+     * Perform a search.
+     * 
+     * @param json
+     *            the json request.
+     */
     private void performSearch(final String json)
     {
         Session.getInstance().getActionProcessor().makeRequest(
