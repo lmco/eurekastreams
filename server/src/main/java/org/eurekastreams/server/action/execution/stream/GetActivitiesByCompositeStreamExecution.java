@@ -121,6 +121,7 @@ public class GetActivitiesByCompositeStreamExecution implements ExecutionStrateg
      * @return paged set of activities for a compositeStream.
      */
     @Override
+    @SuppressWarnings("unchecked")
     public Serializable execute(final PrincipalActionContext inActionContext)
     {
         // get the user's accountId
@@ -133,13 +134,23 @@ public class GetActivitiesByCompositeStreamExecution implements ExecutionStrateg
         GetActivitiesByCompositeStreamRequest inRequest = (GetActivitiesByCompositeStreamRequest) inActionContext
                 .getParams();
 
-        // Gets the list of activity ids for this composite stream
-        if (log.isTraceEnabled())
+        List<Long> allKeys;
+        
+        // Get the list of activity ids from the context state, if possible (should be set by validation strategy)
+        if (inActionContext.getState().containsKey("activityIds"))
         {
-            log.trace("Loading list of activity ids for composite stream with id #" + inRequest.getCompositeStreamId()
-                    + ", person id #" + userEntityId);
+            allKeys = (List<Long>) inActionContext.getState().get("activityIds");
         }
-        List<Long> allKeys = idsMapper.execute(inRequest.getCompositeStreamId(), userEntityId);
+        else
+        {
+            // Gets the list of activity ids for this composite stream
+            if (log.isTraceEnabled())
+            {
+                log.trace("Loading list of activity ids for composite stream with id #"
+                        + inRequest.getCompositeStreamId() + ", person id #" + userEntityId);
+            }
+            allKeys = idsMapper.execute(inRequest.getCompositeStreamId(), userEntityId);
+        }
 
         // the list of activities to return
         List<ActivityDTO> results = new ArrayList<ActivityDTO>();
