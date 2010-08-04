@@ -35,8 +35,14 @@ public class PersistenceDataSource implements DescendingOrderDataSource
      */
     private HashMap<String, DomainMapper<Object, List<Long>>> memcacheKeyGens;
 
+    /**
+     * Transformers.
+     */
     private HashMap<String, PersistenceDataSourceRequestTransformer> transformers;
 
+    /**
+     * Everyone mapper.
+     */
     private DomainMapper<Object, List<Long>> everyoneMapper;
     /**
      * The or collider.
@@ -52,12 +58,12 @@ public class PersistenceDataSource implements DescendingOrderDataSource
     /**
      * Default constructor.
      *
+     * @param inEveryoneMapper the everyoneMapper
      * @param inMemcacheKeyGens
      *            the key generators.
+     * @param inTransformers the transformers.
      * @param inOrCollider
      *            collider.
-     * @param inCache
-     *            cache.
      */
     public PersistenceDataSource(final DomainMapper<Object, List<Long>> inEveryoneMapper,
             final HashMap<String, DomainMapper<Object, List<Long>>> inMemcacheKeyGens,

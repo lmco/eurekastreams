@@ -51,9 +51,14 @@ public class PersistenceDataSourceTest
     /**
      * A map of search params and key generators.
      */
-    private HashMap<String, DomainMapper<Object, List<Long>>> mappers = new HashMap<String, DomainMapper<Object, List<Long>>>();
+    private HashMap<String, DomainMapper<Object, List<Long>>> mappers =
+        new HashMap<String, DomainMapper<Object, List<Long>>>();
 
-    private HashMap<String, PersistenceDataSourceRequestTransformer> transformers = new HashMap<String, PersistenceDataSourceRequestTransformer>();
+    /**
+     * Transformers.
+     */
+    private HashMap<String, PersistenceDataSourceRequestTransformer> transformers =
+        new HashMap<String, PersistenceDataSourceRequestTransformer>();
     /**
      * The or collider.
      */
@@ -65,9 +70,16 @@ public class PersistenceDataSourceTest
      */
     private DomainMapper<Object, List<Long>> followedMapper = context.mock(DomainMapper.class);
 
+    /**
+     * Everyone mapper.
+     */
     private DomainMapper<Object, List<Long>> everyoneMapper = context.mock(DomainMapper.class, "everyone");
 
-    private PersistenceDataSourceRequestTransformer transformer = context.mock(PersistenceDataSourceRequestTransformer.class);
+    /**
+     * Follow transformer.
+     */
+    private PersistenceDataSourceRequestTransformer transformer =
+        context.mock(PersistenceDataSourceRequestTransformer.class);
 
     /**
      * System under test.

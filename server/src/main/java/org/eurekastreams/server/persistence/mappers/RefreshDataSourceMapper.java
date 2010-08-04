@@ -21,12 +21,14 @@ package org.eurekastreams.server.persistence.mappers;
  *
  * @param <DataSourceType>
  *            the type of data this data source deals with
+ * @param <Request> the request object (in case we need it).
  */
 public interface RefreshDataSourceMapper<Request, DataSourceType>
 {
     /**
      * Refresh the data source with the input data.
      *
+     * @param request the request object.
      * @param data
      *            the data to update the data source with
      */
