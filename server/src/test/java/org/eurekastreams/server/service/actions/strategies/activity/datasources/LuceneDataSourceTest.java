@@ -23,6 +23,7 @@ import java.util.List;
 
 import net.sf.json.JSONObject;
 
+import org.apache.lucene.search.Sort;
 import org.eurekastreams.commons.search.ProjectionSearchRequestBuilder;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.jmock.Expectations;
@@ -73,6 +74,85 @@ public class LuceneDataSourceTest
 
                 oneOf(ftq).getResultList();
                 will(returnValue(results));
+
+                oneOf(builder).setPaging(ftq, 0, pageSize);
+            }
+        });
+
+        assertSame(results, sut.fetch(request));
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test execute method with search keywords, sorting by relevance.
+     */
+    @Test
+    public void testExecuteWithKeywordsSortByRelevance()
+    {
+        final ProjectionSearchRequestBuilder builder = context.mock(ProjectionSearchRequestBuilder.class);
+        LuceneDataSource sut = new LuceneDataSource(builder);
+
+        final JSONObject request = new JSONObject();
+        final JSONObject query = new JSONObject();
+        final int pageSize = 388;
+
+        request.put("count", pageSize);
+        query.put("keywords", "hithere:(foo)");
+        query.put("sortBy", "relevance");
+        request.put("query", query);
+
+        final FullTextQuery ftq = context.mock(FullTextQuery.class);
+        final List<Long> results = new ArrayList<Long>();
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(builder).buildQueryFromNativeSearchString("hithere(foo)");
+                will(returnValue(ftq));
+
+                oneOf(ftq).getResultList();
+                will(returnValue(results));
+
+                oneOf(builder).setPaging(ftq, 0, pageSize);
+            }
+        });
+
+        assertSame(results, sut.fetch(request));
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test execute method with search keywords, sorting by date.
+     */
+    @Test
+    public void testExecuteWithKeywordsSortByDate()
+    {
+        final ProjectionSearchRequestBuilder builder = context.mock(ProjectionSearchRequestBuilder.class);
+        LuceneDataSource sut = new LuceneDataSource(builder);
+
+        final JSONObject request = new JSONObject();
+        final JSONObject query = new JSONObject();
+        final int pageSize = 388;
+
+        request.put("count", pageSize);
+        query.put("keywords", "hithere:(foo)");
+        query.put("sortBy", "date");
+        request.put("query", query);
+
+        final FullTextQuery ftq = context.mock(FullTextQuery.class);
+        final List<Long> results = new ArrayList<Long>();
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(builder).buildQueryFromNativeSearchString("hithere(foo)");
+                will(returnValue(ftq));
+
+                oneOf(ftq).getResultList();
+                will(returnValue(results));
+
+                // unfortunately it's difficult to check for the correct type of sort
+                oneOf(ftq).setSort(with(any(Sort.class)));
 
                 oneOf(builder).setPaging(ftq, 0, pageSize);
             }
