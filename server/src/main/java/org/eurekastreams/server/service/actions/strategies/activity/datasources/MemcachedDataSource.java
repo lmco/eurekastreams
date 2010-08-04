@@ -105,6 +105,11 @@ public class MemcachedDataSource implements DescendingOrderDataSource
                     unHandled = true;
                 }
             }
+            if (returnedDataSets.size() == 0)
+            {
+                // if the query isn't empty, but we don't handle any of it, return null, stating such
+                return null;
+            }
         }
 
         List<Long> returned = new ArrayList<Long>();
