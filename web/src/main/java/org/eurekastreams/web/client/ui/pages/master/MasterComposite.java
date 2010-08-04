@@ -31,9 +31,7 @@ import org.eurekastreams.web.client.events.data.GotSystemSettingsResponseEvent;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.SystemSettingsModel;
 import org.eurekastreams.web.client.model.TutorialVideoModel;
-import org.eurekastreams.web.client.ui.Bindable;
 import org.eurekastreams.web.client.ui.PeriodicEventManager;
-import org.eurekastreams.web.client.ui.PropertyMapper;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.FooterComposite;
 import org.eurekastreams.web.client.ui.common.HeaderComposite;
@@ -41,7 +39,6 @@ import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.optoutvideo.OptOutableVideoDialogContent;
 import org.eurekastreams.web.client.ui.common.notifier.UINotifier;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.Composite;
@@ -50,7 +47,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 /**
  * A "Master" page, has a header and a footer and content.
  */
-public class MasterComposite extends Composite implements Bindable
+public class MasterComposite extends Composite
 {
     /**
      * Panel to use.
@@ -90,11 +87,6 @@ public class MasterComposite extends Composite implements Bindable
      * The composite representing the content.
      */
     Composite contentComposite;
-
-    /**
-     * The controller.
-     */
-    private final MasterCompositeController myController;
 
     /**
      * The header panel.
@@ -160,15 +152,6 @@ public class MasterComposite extends Composite implements Bindable
 
         notifier.addStyleName("master-notifier");
         panel.add(notifier);
-
-        myController =
-                new MasterCompositeController(this, actionProcessor, new WidgetJSNIFacadeImpl(), Session
-                        .getInstance(), Session.getInstance().getEventBus());
-
-        PropertyMapper mapper =
-                new PropertyMapper(GWT.create(MasterComposite.class), GWT.create(MasterCompositeController.class));
-
-        mapper.bind(this, myController);
 
         mainContents.addStyleName("main-contents");
         mainContents.add(headerPanel);
