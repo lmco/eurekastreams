@@ -33,7 +33,7 @@ public class PersistenceDataSource implements DescendingOrderDataSource
     /**
      * A map of search params and key generators.
      */
-    private HashMap<String, DomainMapper<Object, List<Long>>> memcacheKeyGens;
+    private HashMap<String, DomainMapper<Object, List<Long>>> mappers;
 
     /**
      * Transformers.
@@ -59,19 +59,19 @@ public class PersistenceDataSource implements DescendingOrderDataSource
      * Default constructor.
      *
      * @param inEveryoneMapper the everyoneMapper
-     * @param inMemcacheKeyGens
-     *            the key generators.
+     * @param inMappers
+     *            the mappers .
      * @param inTransformers the transformers.
      * @param inOrCollider
      *            collider.
      */
     public PersistenceDataSource(final DomainMapper<Object, List<Long>> inEveryoneMapper,
-            final HashMap<String, DomainMapper<Object, List<Long>>> inMemcacheKeyGens,
+            final HashMap<String, DomainMapper<Object, List<Long>>> inMappers,
             final HashMap<String, PersistenceDataSourceRequestTransformer> inTransformers,
             final ListCollider inOrCollider)
     {
         everyoneMapper = inEveryoneMapper;
-        memcacheKeyGens = inMemcacheKeyGens;
+        mappers = inMappers;
         transformers = inTransformers;
         orCollider = inOrCollider;
     }
@@ -99,7 +99,7 @@ public class PersistenceDataSource implements DescendingOrderDataSource
             {
 
 
-                DomainMapper<Object, List<Long>> mapper = memcacheKeyGens.get(objParam);
+                DomainMapper<Object, List<Long>> mapper = mappers.get(objParam);
 
                 if (mapper != null)
                 {
