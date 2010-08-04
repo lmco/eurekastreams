@@ -118,6 +118,9 @@
         <build.security.ldap.connstr>ldaps://ldap.example.com/dc=com?sAMAccountName?sub?(objectClass=*)</build.security.ldap.connstr>
         <build.security.ldap.userdn>CN=sysadmin\\, sysadmin,DC=example,DC=com</build.security.ldap.userdn>
         <build.security.ldap.password>examplepassword</build.security.ldap.password>
+        <build.oauth.requesttokenurl>http://localhost:8080/resources/oauth/requestToken</build.oauth.requesttokenurl>
+        <build.oauth.authorizeurl>http://localhost:8080/resources/oauth/authorize</build.oauth.authorizeurl>
+        <build.oauth.accesstokenurl>http://localhost:8080/resources/oauth/accesstoken</build.oauth.accesstokenurl>
         <build.system.nodetype>oneBox</build.system.nodetype>
         <build.system.jobscheduler><![CDATA[<import resource="applicationContext-jobs.xml" />]]></build.system.jobscheduler>
         <build.system.proxyhost>proxy.example.com</build.system.proxyhost>
@@ -164,7 +167,7 @@
                      <includeTestSourceDirectory>true</includeTestSourceDirectory>
                      <failsOnError>true</failsOnError>
                  </configuration>
-                 <phase>test</phase>
+                 <phase>validate</phase>
                  <goals>
                      <goal>checkstyle</goal>
                  </goals>
