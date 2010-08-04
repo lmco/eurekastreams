@@ -7765,6 +7765,12 @@ div.layout-container table.dragdrop-dropTarget {
 .read-only-tos {
 	padding-bottom: 20px;
 }
+
+body .read-only-tos .explanation
+{
+	visibility: hidden;
+	padding: 0;
+}
 	
 .terms-of-service-modal .modal-content-panel {
 	padding: 0 10px;
