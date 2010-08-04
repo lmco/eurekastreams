@@ -20,7 +20,10 @@ import org.eurekastreams.server.action.request.stream.GetStreamSearchResultsRequ
 import org.eurekastreams.web.client.events.MessageStreamUpdateEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.StreamReinitializeRequestEvent;
+import org.eurekastreams.web.client.events.UserActiveEvent;
+import org.eurekastreams.web.client.events.UserInactiveEvent;
 import org.eurekastreams.web.client.events.data.GotUnseenActivitiesCountResponseEvent;
+import org.eurekastreams.web.client.model.MouseActivityModel;
 import org.eurekastreams.web.client.model.UnseenActivityCountForSearchModel;
 import org.eurekastreams.web.client.model.UnseenActivityCountForViewModel;
 import org.eurekastreams.web.client.ui.Session;
@@ -33,7 +36,7 @@ import com.google.gwt.user.client.ui.HTML;
 
 /**
  * Unseen notifications panel.
- *
+ * 
  */
 public class UnseenActivityNotificationPanel extends FlowPanel
 {
@@ -114,13 +117,13 @@ public class UnseenActivityNotificationPanel extends FlowPanel
                             thisBuffered.setVisible(true);
                             if (ev.getResponse() == 1)
                             {
-                                unseenActivityCount.setHTML("<div><strong>"
-                                        + ev.getResponse().toString() + "</strong> new update</div>");
+                                unseenActivityCount.setHTML("<div><strong>" + ev.getResponse().toString()
+                                        + "</strong> new update</div>");
                             }
                             else
                             {
-                                unseenActivityCount.setHTML("<div><strong>"
-                                        + ev.getResponse().toString() + "</strong> new updates</div>");
+                                unseenActivityCount.setHTML("<div><strong>" + ev.getResponse().toString()
+                                        + "</strong> new updates</div>");
                             }
 
                         }
@@ -131,9 +134,30 @@ public class UnseenActivityNotificationPanel extends FlowPanel
                     }
                 });
 
-        Session.getInstance().getTimer().addTimerJob("getUnseenActivityJob", 1,
-                UnseenActivityCountForViewModel.getInstance(),
-                new GetActivitiesByCompositeStreamRequest(0L, 0L), false);
+        // runs a job to detect mouse movement changes once a minute, triggering a timeout after 5 mins of inactivity
+        Session.getInstance().getTimer().addTimerJob("getMouseActivityJob", 1, MouseActivityModel.getInstance(), 5,
+                false);
 
+        Session.getInstance().getTimer()
+                .addTimerJob("getUnseenActivityJob", 1, UnseenActivityCountForViewModel.getInstance(),
+                        new GetActivitiesByCompositeStreamRequest(0L, 0L), false);
+
+        // user is inactive - pauses the job that gets new activity counts
+        Session.getInstance().getEventBus().addObserver(UserInactiveEvent.class, new Observer<UserInactiveEvent>()
+        {
+            public void update(final UserInactiveEvent ev)
+            {
+                Session.getInstance().getTimer().pauseJob("getUnseenActivityJob");
+            }
+        });
+
+        // user is active - unpauses the job that gets new activity counts
+        Session.getInstance().getEventBus().addObserver(UserActiveEvent.class, new Observer<UserActiveEvent>()
+        {
+            public void update(final UserActiveEvent ev)
+            {
+                Session.getInstance().getTimer().unPauseJob("getUnseenActivityJob");
+            }
+        });
     }
 }

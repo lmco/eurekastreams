@@ -16,14 +16,11 @@
 package org.eurekastreams.web.client.ui.pages.master;
 
 import org.eurekastreams.commons.client.ActionProcessor;
-import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacade;
 import org.eurekastreams.web.client.ui.Bindable;
 import org.eurekastreams.web.client.ui.Session;
 
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
@@ -83,37 +80,5 @@ public class MasterCompositeController implements Bindable
         jsniFacade = inJsniFacade;
         session = inSession;
         eventBus = inEventBus;
-    }
-
-    /**
-     * Set the session keep-alive timer.
-     *
-     * @param inSessionKeepAliveTimer
-     *            the timer to use to keep the session alive
-     */
-    public void setTimer(final Timer inSessionKeepAliveTimer)
-    {
-        final int tenMinutes = 600000;
-        inSessionKeepAliveTimer.scheduleRepeating(tenMinutes);
-    }
-
-    /**
-     * Make a request to the server to keep the user's session alive.
-     */
-    protected void keepAlive()
-    {
-        processor.makeRequest(new ActionRequestImpl<Boolean>("keepSessionAlive", null),
-                new AsyncCallback<Boolean>()
-                {
-                    /* implement the async call back methods */
-                    public void onFailure(final Throwable caught)
-                    {
-                    }
-
-                    public void onSuccess(final Boolean result)
-                    {
-                    }
-                });
-
     }
 }
