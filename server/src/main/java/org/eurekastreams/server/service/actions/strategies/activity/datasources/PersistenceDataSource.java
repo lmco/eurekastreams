@@ -21,28 +21,34 @@ import java.util.List;
 
 import net.sf.json.JSONObject;
 
-import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
-import org.eurekastreams.server.persistence.mappers.cache.MemcachedCache;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.service.actions.strategies.activity.ListCollider;
 
 /**
  * Gets activity IDs from memcache based on the query.
  *
  */
-public class MemcachedDataSource implements DescendingOrderDataSource
+public class PersistenceDataSource implements DescendingOrderDataSource
 {
     /**
      * A map of search params and key generators.
      */
-    private HashMap<String, MemcachedKeyGenerator> memcacheKeyGens;
+    private HashMap<String, DomainMapper<Object, List<Long>>> memcacheKeyGens;
+
+    /**
+     * Transformers.
+     */
+    private HashMap<String, PersistenceDataSourceRequestTransformer> transformers;
+
+    /**
+     * Everyone mapper.
+     */
+    private DomainMapper<Object, List<Long>> everyoneMapper;
     /**
      * The or collider.
      */
     private ListCollider orCollider;
-    /**
-     * memcache.
-     */
-    private MemcachedCache cache;
+
 
     /**
      * The max we want this data source to return.
@@ -52,19 +58,22 @@ public class MemcachedDataSource implements DescendingOrderDataSource
     /**
      * Default constructor.
      *
+     * @param inEveryoneMapper the everyoneMapper
      * @param inMemcacheKeyGens
      *            the key generators.
+     * @param inTransformers the transformers.
      * @param inOrCollider
      *            collider.
-     * @param inCache
-     *            cache.
      */
-    public MemcachedDataSource(final HashMap<String, MemcachedKeyGenerator> inMemcacheKeyGens,
-            final ListCollider inOrCollider, final MemcachedCache inCache)
+    public PersistenceDataSource(final DomainMapper<Object, List<Long>> inEveryoneMapper,
+            final HashMap<String, DomainMapper<Object, List<Long>>> inMemcacheKeyGens,
+            final HashMap<String, PersistenceDataSourceRequestTransformer> inTransformers,
+            final ListCollider inOrCollider)
     {
+        everyoneMapper = inEveryoneMapper;
         memcacheKeyGens = inMemcacheKeyGens;
+        transformers = inTransformers;
         orCollider = inOrCollider;
-        cache = inCache;
     }
 
     /**
@@ -82,22 +91,26 @@ public class MemcachedDataSource implements DescendingOrderDataSource
         if (request.getJSONObject("query").size() == 0)
         {
             // get everyone list
-            Long everyoneId = (Long) cache.get(CacheKeys.CORE_STREAMVIEW_ID_EVERYONE);
-            returnedDataSets.add(cache.getList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + everyoneId));
+            returnedDataSets.add(everyoneMapper.execute(null));
         }
         else
         {
             for (Object objParam : request.getJSONObject("query").keySet())
             {
-                MemcachedKeyGenerator keyGen = memcacheKeyGens.get(objParam);
 
-                if (keyGen != null)
+
+                DomainMapper<Object, List<Long>> mapper = memcacheKeyGens.get(objParam);
+
+                if (mapper != null)
                 {
-                    List<String> keys = keyGen.getKeys(request.getJSONObject("query"));
-
-                    for (String key : keys)
+                    if (transformers.containsKey(objParam) && transformers.get(objParam) != null)
                     {
-                        returnedDataSets.add(cache.getList(key));
+                        returnedDataSets.add(mapper.execute(
+                                transformers.get(objParam).transform(request.getJSONObject("query"))));
+                    }
+                    else
+                    {
+                        returnedDataSets.add(mapper.execute(request.getJSONObject("query")));
                     }
                 }
                 else

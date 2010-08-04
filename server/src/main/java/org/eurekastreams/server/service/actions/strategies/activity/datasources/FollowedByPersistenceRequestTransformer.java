@@ -15,21 +15,17 @@
  */
 package org.eurekastreams.server.service.actions.strategies.activity.datasources;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 
 /**
- * Generate the memcached key for followed by.
+ * Turn followedBy;jsmith to his DB id.
  *
  */
-public class FollowedByKeyGenerator implements MemcachedKeyGenerator
+public class FollowedByPersistenceRequestTransformer implements PersistenceDataSourceRequestTransformer
 {
     /**
      * Logger.
@@ -47,32 +43,26 @@ public class FollowedByKeyGenerator implements MemcachedKeyGenerator
      * @param inPersonMapper
      *            person mapper.
      */
-    public FollowedByKeyGenerator(final GetPeopleByAccountIds inPersonMapper)
+    public FollowedByPersistenceRequestTransformer(final GetPeopleByAccountIds inPersonMapper)
     {
         personMapper = inPersonMapper;
     }
 
+
     /**
-     * Get the keys for followed by.
-     *
-     * @param request
-     *            the JSON request object.
-     * @return the key for followed by.
+     * Transform JSON to Long.
+     * @param request the JSON request.
+     * @return the DB id of the user.
      */
-    public List<String> getKeys(final JSONObject request)
+    @Override
+    public Long transform(final JSONObject request)
     {
         String accountId = request.getString("followedBy");
 
         log.info("Looking for cache key for activities followed by " + accountId);
 
-        Long id = personMapper.fetchUniqueResult(accountId).getId();
+        return personMapper.fetchUniqueResult(accountId).getId();
 
-        String cacheKey = CacheKeys.ACTIVITIES_BY_FOLLOWING + id;
-        log.info("User id for account id " + accountId + " is " + id + " - cache key: " + cacheKey);
-
-        List<String> returned = new ArrayList<String>();
-        returned.add(cacheKey);
-        return returned;
     }
 
 }

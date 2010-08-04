@@ -20,6 +20,8 @@ import java.util.List;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.search.ProjectionSearchRequestBuilder;
 import org.hibernate.search.jpa.FullTextQuery;
@@ -61,13 +63,14 @@ public class LuceneDataSource implements SortedDataSource
     @SuppressWarnings("unchecked")
     public List<Long> fetch(final JSONObject inRequest)
     {
-        if (!inRequest.getJSONObject("query").containsKey("keywords"))
+        JSONObject jsonQuery = inRequest.getJSONObject("query");
+        if (!jsonQuery.containsKey("keywords"))
         {
             log.info("No search term found");
             return null;
         }
 
-        String luceneQuery = inRequest.getJSONObject("query").getString("keywords");
+        String luceneQuery = jsonQuery.getString("keywords");
 
         // remove semicolons, which can be used to search other fields
         luceneQuery = luceneQuery.replace(":", "");
@@ -75,6 +78,20 @@ public class LuceneDataSource implements SortedDataSource
         log.info("Lucene keywords: " + luceneQuery);
 
         FullTextQuery query = searchRequestBuilder.buildQueryFromNativeSearchString(luceneQuery);
+
+        String sortBy = jsonQuery.containsKey("sortBy") ? jsonQuery.getString("sortBy") : "relevance";
+        if ("relevance".equals(sortBy))
+        {
+            // no-op
+            log.info("Sorting search results by relevance");
+        }
+        else
+        {
+            // date
+            log.info("Sorting by id, descending");
+            query.setSort(new Sort(new SortField("id", true)));
+        }
+
         searchRequestBuilder.setPaging(query, 0, inRequest.getInt("count"));
 
         List<Long> activityIds = query.getResultList();

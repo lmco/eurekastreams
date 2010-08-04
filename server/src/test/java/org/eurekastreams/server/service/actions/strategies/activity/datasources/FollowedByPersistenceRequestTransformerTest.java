@@ -16,12 +16,8 @@
 package org.eurekastreams.server.service.actions.strategies.activity.datasources;
 
 import static junit.framework.Assert.assertEquals;
-
-import java.util.List;
-
 import net.sf.json.JSONObject;
 
-import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
@@ -33,7 +29,7 @@ import org.junit.Test;
  * Testing the followed by key gen.
  *
  */
-public class FollowedByKeyGeneratorTest
+public class FollowedByPersistenceRequestTransformerTest
 {
     /**
      * Mocking context.
@@ -53,14 +49,15 @@ public class FollowedByKeyGeneratorTest
     /**
      * System under test.
      */
-    private FollowedByKeyGenerator sut = new FollowedByKeyGenerator(personMapper);
+    private FollowedByPersistenceRequestTransformer sut = new FollowedByPersistenceRequestTransformer(personMapper);
 
     /**
      * Passing in an empty request triggers a return on everyone list.
      */
     @Test
-    public void getKeys()
+    public void transform()
     {
+        final Long id = 7L;
         JSONObject request = new JSONObject();
         request.put("followedBy", "shawkings");
 
@@ -72,13 +69,13 @@ public class FollowedByKeyGeneratorTest
                 will(returnValue(person));
 
                 oneOf(person).getId();
-                will(returnValue(7L));
+                will(returnValue(id));
             }
         });
 
-        List<String> keys = sut.getKeys(request);
+        Long result = sut.transform(request);
         context.assertIsSatisfied();
 
-        assertEquals(keys.get(0), CacheKeys.ACTIVITIES_BY_FOLLOWING + "7");
+        assertEquals(id, result);
     }
 }

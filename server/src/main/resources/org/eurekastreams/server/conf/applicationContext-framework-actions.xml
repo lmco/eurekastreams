@@ -1573,22 +1573,29 @@
     		class="org.eurekastreams.server.action.execution.stream.GetActivitiesByRequestExecution">
             <constructor-arg>
 				<bean
-					class="org.eurekastreams.server.service.actions.strategies.activity.datasources.MemcachedDataSource">
+					class="org.eurekastreams.server.service.actions.strategies.activity.datasources.PersistenceDataSource">
+					<constructor-arg ref="getEveryoneActivity" />
 		            <constructor-arg>
 						<map>
 							<entry key="followedBy">
-								<bean 
-									class="org.eurekastreams.server.service.actions.strategies.activity.datasources.FollowedByKeyGenerator">
-									<constructor-arg ref="bulkPeopleByAccountIdMapper" />	
-								</bean>
+								<ref bean="getFollowedByActivities" />
 							</entry>
 						</map>		            
 		            </constructor-arg>
+		             <constructor-arg>
+                        <map>
+                            <entry key="followedBy">
+                                <bean 
+                                    class="org.eurekastreams.server.service.actions.strategies.activity.datasources.FollowedByPersistenceRequestTransformer">
+                                    <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
+                                </bean>
+                            </entry>
+                        </map>                  
+                    </constructor-arg>
 		            <constructor-arg>
 						<bean
 							class="org.eurekastreams.server.service.actions.strategies.activity.OrSortedListCollider" />            
-		            </constructor-arg>		            
-		            <constructor-arg ref="memcachedCache" />								
+		            </constructor-arg>		            						
 				</bean>            
             </constructor-arg>
             <constructor-arg ref="luceneActivityDataSource" />

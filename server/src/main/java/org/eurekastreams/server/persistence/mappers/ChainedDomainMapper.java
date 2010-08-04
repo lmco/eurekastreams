@@ -82,14 +82,15 @@ public class ChainedDomainMapper<Request, Response> implements DomainMapper<Requ
                 // found the response - see if there's anyone up the chain that would like it
                 for (int refreshIndex = readIndex - 1; refreshIndex >= 0; refreshIndex--)
                 {
-                    RefreshDataSourceMapper<Response> refreshMapper = mappers.get(refreshIndex).getRefreshMapper();
+                    RefreshDataSourceMapper<Request, Response> refreshMapper =
+                        mappers.get(refreshIndex).getRefreshMapper();
                     if (refreshMapper != null)
                     {
                         log.info("While walking up the mapper chain, refreshing mapper at index #" + refreshIndex
                                 + " - " + refreshMapper.toString());
 
                         // found someone that can do something about it - give them the update
-                        refreshMapper.refresh(response);
+                        refreshMapper.refresh(inRequest, response);
                     }
                 }
 

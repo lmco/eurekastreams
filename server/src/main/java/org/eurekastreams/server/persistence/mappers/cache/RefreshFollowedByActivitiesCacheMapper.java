@@ -15,35 +15,28 @@
  */
 package org.eurekastreams.server.persistence.mappers.cache;
 
-import org.apache.commons.logging.Log;
-import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.server.domain.SystemSettings;
+import java.util.List;
+
 import org.eurekastreams.server.persistence.mappers.RefreshDataSourceMapper;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
- * Cache refresher for SystemSettings.
+ * Refresh the followed by activities.
+ *
  */
-public class RefreshSystemSettingsCacheMapperImpl extends CachedDomainMapper implements
-        RefreshDataSourceMapper<Object, SystemSettings>
+public class RefreshFollowedByActivitiesCacheMapper extends CachedDomainMapper implements
+RefreshDataSourceMapper<Long, List<Long>>
 {
-    /**
-     * Logger.
-     */
-    private final Log log = LogFactory.make();
 
     /**
-     * Refresh the SystemSettings cache with the input value.
-     *
-     * @param request nothing.
-     * @param inSystemSettings
-     *            the system settings to update cache with
+     * Refresh.
+     * @param request the person being followed.
+     * @param data the data.
      */
     @Override
-    public void refresh(final Object request, final SystemSettings inSystemSettings)
+    public void refresh(final Long request, final List<Long> data)
     {
-        log.info("Updating SystemSettings in cache from " + inSystemSettings);
-
-        getCache().set(CacheKeys.SYSTEM_SETTINGS, inSystemSettings);
+        getCache().setList(CacheKeys.ACTIVITIES_BY_FOLLOWING + request, data);
     }
+
 }
