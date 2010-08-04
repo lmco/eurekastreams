@@ -4140,9 +4140,12 @@
 
     <bean name="oauthDataStore"
         class="org.eurekastreams.server.service.opensocial.oauth.OAuthDataStoreImpl">
-        <property name="entryMapper" ref="jpaOAuthEntryMapper" />
-        <property name="consumerMapper" ref="jpaOAuthConsumerMapper" />
-        <property name="transMgr" ref="transactionManager" />
+        <constructor-arg value="${eureka.web.baseurl}/resources/oauth/requestToken"/>
+        <constructor-arg value="${eureka.web.baseurl}/resources/oauth/authorize"/>
+        <constructor-arg value="${eureka.web.baseurl}/resources/oauth/accessToken"/>
+        <constructor-arg ref="jpaOAuthEntryMapper" />
+        <constructor-arg ref="jpaOAuthConsumerMapper" />
+        <constructor-arg ref="transactionManager" />
     </bean>
 
     <bean id="emailerFactory"
