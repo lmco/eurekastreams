@@ -60,18 +60,18 @@ public class ChainedDomainMapperTest
     /**
      * First domain mapper.
      */
-    private RefreshDataSourceMapper<Object> firstRefreshMapper = context.mock(RefreshDataSourceMapper.class, "firstRM");
+    private RefreshDataSourceMapper<Object, Object> firstRefreshMapper = context.mock(RefreshDataSourceMapper.class, "firstRM");
 
     /**
      * First domain mapper.
      */
-    private RefreshDataSourceMapper<Object> secondRefreshMapper = context.mock(RefreshDataSourceMapper.class,
+    private RefreshDataSourceMapper<Object, Object> secondRefreshMapper = context.mock(RefreshDataSourceMapper.class,
             "secondRM");
 
     /**
      * First domain mapper.
      */
-    private RefreshDataSourceMapper<Object> thirdRefreshMapper = context.mock(RefreshDataSourceMapper.class, "thirdRM");
+    private RefreshDataSourceMapper<Object, Object> thirdRefreshMapper = context.mock(RefreshDataSourceMapper.class, "thirdRM");
 
     /**
      * Test execute with 3 mappers and no refresh mappers, and no results.
@@ -228,9 +228,9 @@ public class ChainedDomainMapperTest
                 inSequence(sequence);
                 will(returnValue(response));
 
-                oneOf(secondRefreshMapper).refresh(response);
+                oneOf(secondRefreshMapper).refresh(request, response);
 
-                oneOf(firstRefreshMapper).refresh(response);
+                oneOf(firstRefreshMapper).refresh(request, response);
             }
         });
 
@@ -277,7 +277,7 @@ public class ChainedDomainMapperTest
                 inSequence(sequence);
                 will(returnValue(response));
 
-                oneOf(secondRefreshMapper).refresh(response);
+                oneOf(secondRefreshMapper).refresh(request, response);
             }
         });
 

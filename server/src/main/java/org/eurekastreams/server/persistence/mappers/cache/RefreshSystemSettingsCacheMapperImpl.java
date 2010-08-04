@@ -25,7 +25,7 @@ import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
  * Cache refresher for SystemSettings.
  */
 public class RefreshSystemSettingsCacheMapperImpl extends CachedDomainMapper implements
-        RefreshDataSourceMapper<SystemSettings>
+        RefreshDataSourceMapper<Object, SystemSettings>
 {
     /**
      * Logger.
@@ -39,7 +39,7 @@ public class RefreshSystemSettingsCacheMapperImpl extends CachedDomainMapper imp
      *            the system settings to update cache with
      */
     @Override
-    public void refresh(final SystemSettings inSystemSettings)
+    public void refresh(final Object request, final SystemSettings inSystemSettings)
     {
         log.info("Updating SystemSettings in cache from " + inSystemSettings);
 

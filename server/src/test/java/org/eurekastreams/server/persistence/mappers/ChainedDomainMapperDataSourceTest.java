@@ -45,7 +45,7 @@ public class ChainedDomainMapperDataSourceTest
     /**
      * Mocked RefreshDataSourceMapper.
      */
-    final RefreshDataSourceMapper<Object> refreshMapper = context.mock(RefreshDataSourceMapper.class);
+    final RefreshDataSourceMapper<Object, Object> refreshMapper = context.mock(RefreshDataSourceMapper.class);
 
     /**
      * Test constructor with 2 args.
