@@ -35,6 +35,9 @@
 	<repositories>
 	  <repository>
 	    <id>Eureka Streams Dependency Repo</id>
+	    <snapshots>
+	    	<enabled>false</enabled>
+	    </snapshots>
 	    <url>http://maven.eurekastreams.org</url>
 	  </repository>
 	  <repository>
