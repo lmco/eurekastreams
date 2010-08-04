@@ -13,22 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.service.actions.strategies.activity.datasources;
+package org.eurekastreams.server.persistence.mappers.cache;
 
 import java.util.List;
 
-import net.sf.json.JSONObject;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
- * A data source to find activity.
+ * Generate the memcached key for followed by.
  *
  */
-public interface DataSource
+public class GetFollowedByActivityCacheMapper extends CachedDomainMapper implements DomainMapper<Long, List<Long>>
 {
     /**
-     * Fetch activities.
-     * @param request the JSON request.
-     * @return the activity IDs.
+     * Get the keys for followed by.
+     * @param inRequest the JSON request object.
+     * @return the key for followed by.
      */
-    List<Long> fetch(JSONObject request);
+    @Override
+    public List<Long> execute(final Long inRequest)
+    {
+        return getCache().getList(CacheKeys.ACTIVITIES_BY_FOLLOWING + inRequest);
+    }
+
 }

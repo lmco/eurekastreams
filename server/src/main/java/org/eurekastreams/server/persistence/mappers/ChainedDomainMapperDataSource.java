@@ -29,7 +29,7 @@ public class ChainedDomainMapperDataSource<Request, Response>
     /**
      * Mapper responsible for updating the data source with content found downstream in the list of data sources.
      */
-    private RefreshDataSourceMapper<Response> refreshMapper;
+    private RefreshDataSourceMapper<Request, Response> refreshMapper;
 
     /**
      * Mapper responsible for fetching the data.
@@ -45,7 +45,7 @@ public class ChainedDomainMapperDataSource<Request, Response>
      *            mapper responsible for updating the data source
      */
     public ChainedDomainMapperDataSource(final DomainMapper<Request, Response> inDomainMapper,
-            final RefreshDataSourceMapper<Response> inRefreshMapper)
+            final RefreshDataSourceMapper<Request, Response> inRefreshMapper)
     {
         domainMapper = inDomainMapper;
         refreshMapper = inRefreshMapper;
@@ -67,7 +67,7 @@ public class ChainedDomainMapperDataSource<Request, Response>
      *
      * @return the mapper responsible for updating the data source
      */
-    public RefreshDataSourceMapper<Response> getRefreshMapper()
+    public RefreshDataSourceMapper<Request, Response> getRefreshMapper()
     {
         return refreshMapper;
     }
@@ -78,7 +78,7 @@ public class ChainedDomainMapperDataSource<Request, Response>
      * @param inRefreshMapper
      *            the mapper responsible for updating the data source
      */
-    public void setRefreshMapper(final RefreshDataSourceMapper<Response> inRefreshMapper)
+    public void setRefreshMapper(final RefreshDataSourceMapper<Request, Response> inRefreshMapper)
     {
         refreshMapper = inRefreshMapper;
     }

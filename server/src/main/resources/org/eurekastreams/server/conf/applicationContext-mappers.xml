@@ -214,7 +214,88 @@
 		class="org.eurekastreams.server.persistence.mappers.DeleteStarredActivity">
 		<property name="cache" ref="memcachedCache" />
 	</bean>
+	
+     <bean id="getEveryoneActivityCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.GetEveryoneActivityCacheMapper">
+       <property name="cache" ref="memcachedCache" />
+    </bean>
+    <bean id="getEveryoneStreamIdCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.GetEveryoneStreamIdCacheMapper">
+       <property name="cache" ref="memcachedCache" />
+    </bean>
+    <bean id="refreshEveryoneActivityCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.RefreshEveryoneActivityCacheMapper">
+       <property name="cache" ref="memcachedCache" />
+    </bean>
+    <bean id="refreshEveryoneStreamIdCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.RefreshEveryoneStreamIdCacheMapper">
+       <property name="cache" ref="memcachedCache" />
+    </bean>
+    <bean id="getEveryoneActivityDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetEveryoneActivityDbMapper">
+    </bean>
+    <bean id="getEveryoneStreamIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetEveryoneStreamIdDbMapper">
+    </bean>
+    
+    
+    <bean id="getEveryoneActivityChain" class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapper">
+        <constructor-arg>
+            <list>
+                <bean class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapperDataSource">
+                    <constructor-arg ref="getEveryoneActivityCacheMapper" />
+                    <constructor-arg ref="refreshEveryoneActivityCacheMapper" />
+                </bean>
+                <bean class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapperDataSource">      
+                    <constructor-arg ref="getEveryoneActivityDbMapper" />
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+    
+        
+    <bean id="getEveryoneStreamIdChain" class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapper">
+        <constructor-arg>
+            <list>
+                <bean class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapperDataSource">
+                    <constructor-arg ref="getEveryoneStreamIdCacheMapper" />
+                    <constructor-arg ref="refreshEveryoneStreamIdCacheMapper" />
+                </bean>
+                <bean class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapperDataSource">      
+                    <constructor-arg ref="getEveryoneStreamIdDbMapper" />
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+    
+    
+    <bean id="getEveryoneActivity" class="org.eurekastreams.server.persistence.mappers.GetEveryoneActivityMapper">
+        <constructor-arg ref="getEveryoneStreamIdChain" />
+        <constructor-arg ref="getEveryoneActivityChain" />
+    </bean>
+    
 
+    
+
+    <bean id="getFollowedByActivityCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.GetFollowedByActivityCacheMapper">
+       <property name="cache" ref="memcachedCache" />
+    </bean>
+    <bean id="refreshFollowedByActivitiesCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.RefreshFollowedByActivitiesCacheMapper">
+       <property name="cache" ref="memcachedCache" />
+    </bean>
+    <bean id="getFollowedByActivitiesDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFollowedByActivitiesDbMapper">
+        <constructor-arg ref="followedActivityIdsLoader" />
+        <constructor-arg value="10" />
+    </bean>
+    
+    <bean id="getFollowedByActivities" class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapper">
+        <constructor-arg>
+            <list>
+                <bean class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapperDataSource">
+                    <constructor-arg ref="getFollowedByActivityCacheMapper" />
+                    <constructor-arg ref="refreshFollowedByActivitiesCacheMapper" />
+                </bean>
+                <bean class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapperDataSource">      
+                    <constructor-arg ref="getFollowedByActivitiesDbMapper" />
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+    
 	<!-- Organization Hierarchy Cache Loader -->
 	<bean id="organizationCacheLoader"
 		class="org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCacheLoader">

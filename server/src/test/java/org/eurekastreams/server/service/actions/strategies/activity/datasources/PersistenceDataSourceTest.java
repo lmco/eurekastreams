@@ -24,8 +24,7 @@ import java.util.List;
 
 import net.sf.json.JSONObject;
 
-import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
-import org.eurekastreams.server.persistence.mappers.cache.MemcachedCache;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.service.actions.strategies.activity.ListCollider;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -37,7 +36,7 @@ import org.junit.Test;
  * Memcache data source test.
  *
  */
-public class MemcachedDataSourceTest
+public class PersistenceDataSourceTest
 {
     /**
      * Mocking context.
@@ -52,25 +51,40 @@ public class MemcachedDataSourceTest
     /**
      * A map of search params and key generators.
      */
-    private HashMap<String, MemcachedKeyGenerator> memcacheKeyGens = new HashMap<String, MemcachedKeyGenerator>();
+    private HashMap<String, DomainMapper<Object, List<Long>>> mappers =
+        new HashMap<String, DomainMapper<Object, List<Long>>>();
+
+    /**
+     * Transformers.
+     */
+    private HashMap<String, PersistenceDataSourceRequestTransformer> transformers =
+        new HashMap<String, PersistenceDataSourceRequestTransformer>();
     /**
      * The or collider.
      */
     private ListCollider orCollider = context.mock(ListCollider.class);
-    /**
-     * memcache.
-     */
-    private MemcachedCache cache = context.mock(MemcachedCache.class);
+
 
     /**
      * Key gens.
      */
-    private MemcachedKeyGenerator followKeyGen = context.mock(MemcachedKeyGenerator.class);
+    private DomainMapper<Object, List<Long>> followedMapper = context.mock(DomainMapper.class);
+
+    /**
+     * Everyone mapper.
+     */
+    private DomainMapper<Object, List<Long>> everyoneMapper = context.mock(DomainMapper.class, "everyone");
+
+    /**
+     * Follow transformer.
+     */
+    private PersistenceDataSourceRequestTransformer transformer =
+        context.mock(PersistenceDataSourceRequestTransformer.class);
 
     /**
      * System under test.
      */
-    private MemcachedDataSource sut;
+    private PersistenceDataSource sut;
 
     /**
      * Request object.
@@ -96,8 +110,9 @@ public class MemcachedDataSourceTest
         request.put("count", COUNT);
         request.put("query", new JSONObject());
 
-        memcacheKeyGens.put("followedBy", followKeyGen);
-        sut = new MemcachedDataSource(memcacheKeyGens, orCollider, cache);
+        mappers.put("followedBy", followedMapper);
+        transformers.put("followedBy", transformer);
+        sut = new PersistenceDataSource(everyoneMapper, mappers, transformers, orCollider);
     }
 
     /**
@@ -106,14 +121,14 @@ public class MemcachedDataSourceTest
     @Test
     public void fetchForEveryone()
     {
+
         context.checking(new Expectations()
         {
             {
-                oneOf(cache).get(CacheKeys.CORE_STREAMVIEW_ID_EVERYONE);
-                will(returnValue(1L));
+                List<Long> everyoneIds = new ArrayList<Long>();
 
-                oneOf(cache).getList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + "1");
-
+                oneOf(everyoneMapper).execute(null);
+                will(returnValue(everyoneIds));
                 oneOf(orCollider).collide(with(any(List.class)), with(any(List.class)), with(equalInternally(COUNT)));
             }
         });
@@ -148,10 +163,12 @@ public class MemcachedDataSourceTest
         context.checking(new Expectations()
         {
             {
-                oneOf(followKeyGen).getKeys(with(any(JSONObject.class)));
+                oneOf(transformer).transform(with(any(JSONObject.class)));
+                will(returnValue(2L));
+                oneOf(followedMapper).execute(2L);
                 will(returnValue(keys));
 
-                oneOf(cache).getList("FOLLOWED:shawkings");
+
 
                 oneOf(orCollider).collide(with(any(List.class)), with(any(List.class)), with(equalInternally(COUNT)));
             }
@@ -177,13 +194,14 @@ public class MemcachedDataSourceTest
         context.checking(new Expectations()
         {
             {
-                oneOf(followKeyGen).getKeys(with(any(JSONObject.class)));
+                oneOf(transformer).transform(with(any(JSONObject.class)));
+                will(returnValue(2L));
+                oneOf(followedMapper).execute(2L);
                 will(returnValue(keys));
 
-                oneOf(cache).getList("FOLLOWED:shawkings");
+                oneOf(orCollider).collide(with(any(List.class)),
+                        with(any(List.class)), with(equalInternally(MAXITEMS)));
 
-                oneOf(orCollider)
-                        .collide(with(any(List.class)), with(any(List.class)), with(equalInternally(MAXITEMS)));
             }
         });
 

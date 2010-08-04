@@ -13,22 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.service.actions.strategies.activity.datasources;
+package org.eurekastreams.server.persistence.mappers.cache;
 
-import java.util.List;
-
-import net.sf.json.JSONObject;
+import org.eurekastreams.server.persistence.mappers.RefreshDataSourceMapper;
+import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
- * Memcache Key Generator -- ran for each parameter that memcache supports.
+ * Refresh the everyone stream id.
  *
  */
-public interface MemcachedKeyGenerator
+public class RefreshEveryoneStreamIdCacheMapper extends CachedDomainMapper implements
+RefreshDataSourceMapper<Object, Long>
 {
+
     /**
-     * Get the keys given a parameter.
-     * @param request request.
-     * @return the list of keys.
+     * Refresh the everyone stream id.
+     * @param request nothing.
+     * @param data the id.
+     *
      */
-    List<String> getKeys(JSONObject request);
+    @Override
+    public void refresh(final Object request, final Long data)
+    {
+        getCache().set(CacheKeys.CORE_STREAMVIEW_ID_EVERYONE, data);
+    }
+
 }
