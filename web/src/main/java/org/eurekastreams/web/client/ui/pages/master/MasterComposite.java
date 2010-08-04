@@ -43,7 +43,6 @@ import org.eurekastreams.web.client.ui.common.notifier.UINotifier;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -178,16 +177,8 @@ public class MasterComposite extends Composite implements Bindable
         contentPanel.addStyleName("content");
         panel.add(mainContents);
 
-        myController.setTimer(new Timer()
-        {
-            @Override
-            public void run()
-            {
-                myController.keepAlive();
-            }
-        });
-
         initWidget(panel);
+        
         Session.getInstance().getEventBus().addObserver(GetTutorialVideoResponseEvent.class,
                 new Observer<GetTutorialVideoResponseEvent>()
                 {
