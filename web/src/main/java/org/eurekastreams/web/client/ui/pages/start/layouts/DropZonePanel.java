@@ -20,9 +20,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eurekastreams.server.domain.Page;
+import org.eurekastreams.server.domain.TabGroupType;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
+import org.eurekastreams.web.client.events.data.GotStartPageTabsResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.start.GadgetPanel;
@@ -51,7 +53,7 @@ public class DropZonePanel extends VerticalPanel
 
     /**
      * Create a 33% width drop zone column.
-     *
+     * 
      * @param inZoneNumber
      *            the zone number for the panel.
      * @return the created drop zone
@@ -67,7 +69,7 @@ public class DropZonePanel extends VerticalPanel
 
     /**
      * Create a 66% width drop zone column.
-     *
+     * 
      * @param inZoneNumber
      *            the zone number for the panel.
      * @return the created drop zone
@@ -82,7 +84,7 @@ public class DropZonePanel extends VerticalPanel
 
     /**
      * Create a 50% width drop zone column.
-     *
+     * 
      * @param inZoneNumber
      *            the zone number for the panel.
      * @return the created drop zone
@@ -97,7 +99,7 @@ public class DropZonePanel extends VerticalPanel
 
     /**
      * Create a 25% width drop zone column.
-     *
+     * 
      * @param inZoneNumber
      *            the zone number for the panel.
      * @return the created drop zone
@@ -112,7 +114,7 @@ public class DropZonePanel extends VerticalPanel
 
     /**
      * Create a 100% width drop zone row.
-     *
+     * 
      * @param inZoneNumber
      *            the zone number for the panel.
      * @return the created drop zone
@@ -153,11 +155,20 @@ public class DropZonePanel extends VerticalPanel
                         }
                     }
                 }, true);
+
+        Session.getInstance().getEventBus().addObserver(GotStartPageTabsResponseEvent.class,
+                new Observer<GotStartPageTabsResponseEvent>()
+                {
+                    public void update(final GotStartPageTabsResponseEvent event)
+                    {
+                        tabId = Long.toString(event.getResponse().getTabs(TabGroupType.START).get(0).getId());
+                    }
+                }, true);
     }
 
     /**
      * How many gadgets do we have?
-     *
+     * 
      * @return the number of gadgets.
      */
     public int getVisibleGadgetCount()
@@ -176,9 +187,11 @@ public class DropZonePanel extends VerticalPanel
     }
 
     /**
-     * Retrieve the position of the current gadget based on visible widgets.
-     * (Deleted gadgets are hidden and can throw off the position).
-     * @param target - widget for which the locatin is to be determined.
+     * Retrieve the position of the current gadget based on visible widgets. (Deleted gadgets are hidden and can throw
+     * off the position).
+     * 
+     * @param target
+     *            - widget for which the locatin is to be determined.
      * @return location.
      */
     public int getVisibleGadgetPosition(final Widget target)
@@ -199,9 +212,10 @@ public class DropZonePanel extends VerticalPanel
 
         return count;
     }
+
     /**
      * Insert a Gadget.
-     *
+     * 
      * @param gadget
      *            the gadget to insert.
      */
@@ -214,8 +228,11 @@ public class DropZonePanel extends VerticalPanel
 
     /**
      * Insert a gadget with index.
-     * @param gadget the gadget panel.
-     * @param index the index.
+     * 
+     * @param gadget
+     *            the gadget panel.
+     * @param index
+     *            the index.
      */
     public void insertGadget(final GadgetPanel gadget, final int index)
     {
@@ -226,7 +243,7 @@ public class DropZonePanel extends VerticalPanel
 
     /**
      * Set the space.
-     *
+     * 
      * @param inSpacer
      *            the spacer.
      */
@@ -254,7 +271,7 @@ public class DropZonePanel extends VerticalPanel
 
     /**
      * Getter for the gadget zones.
-     *
+     * 
      * @return the gadget zones.
      */
 
@@ -265,7 +282,7 @@ public class DropZonePanel extends VerticalPanel
 
     /**
      * Set the zone number.
-     *
+     * 
      * @param inZoneNumber
      *            the zone number.
      */
@@ -276,7 +293,7 @@ public class DropZonePanel extends VerticalPanel
 
     /**
      * Get thje zone numebr.
-     *
+     * 
      * @return the zone number.
      */
     public Integer getZoneNumber()
