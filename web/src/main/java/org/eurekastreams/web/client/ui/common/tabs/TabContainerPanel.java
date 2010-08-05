@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IndexedPanel;
 
 /**
- * Manages tabs. Stores the state in the history. Supports dragging and droppin.
+ * Manages tabs. Stores the state in the history. Supports dragging and dropping.
  * 
  */
 public class TabContainerPanel extends AbsolutePanel
