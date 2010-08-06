@@ -248,7 +248,8 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
                         activity.setAppType(EntityType.PLUGIN);
                         activity.setAppId(feed.getPlugin().getId());
                         activity.setAppSource(feed.getUrl());
-                        final Map<String, GeneralGadgetDefinition> gadgetDefs = new HashMap<String, GeneralGadgetDefinition>();
+                        final Map<String, GeneralGadgetDefinition> gadgetDefs =
+                            new HashMap<String, GeneralGadgetDefinition>();
                         gadgetDefs.put(feed.getPlugin().getUrl(), feed.getPlugin());
                         try
                         {
