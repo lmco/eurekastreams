@@ -64,7 +64,7 @@ public class LuceneDataSource implements SortedDataSource
     public List<Long> fetch(final JSONObject inRequest)
     {
         JSONObject jsonQuery = inRequest.getJSONObject("query");
-        if (!jsonQuery.containsKey("keywords"))
+        if (!jsonQuery.containsKey("keywords") && !jsonQuery.containsKey("sort"))
         {
             log.info("No search term found");
             return null;

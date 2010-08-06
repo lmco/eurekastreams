@@ -42,7 +42,7 @@ public class RefreshSystemSettingsCacheMapperImpl extends CachedDomainMapper imp
     @Override
     public void refresh(final Object request, final SystemSettings inSystemSettings)
     {
-        log.info("Updating SystemSettings in cache from " + inSystemSettings);
+        log.info("Updating SystemSettings in cache");
 
         getCache().set(CacheKeys.SYSTEM_SETTINGS, inSystemSettings);
     }

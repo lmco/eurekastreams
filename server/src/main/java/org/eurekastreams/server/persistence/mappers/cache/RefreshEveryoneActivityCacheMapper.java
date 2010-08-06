@@ -22,8 +22,6 @@ import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
  * Refresh the everyone activity list.
- * @author romanoa1
- *
  */
 public class RefreshEveryoneActivityCacheMapper extends CachedDomainMapper implements
 RefreshDataSourceMapper<Long, List<Long>>

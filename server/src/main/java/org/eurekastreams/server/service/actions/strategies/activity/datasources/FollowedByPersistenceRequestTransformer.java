@@ -48,10 +48,11 @@ public class FollowedByPersistenceRequestTransformer implements PersistenceDataS
         personMapper = inPersonMapper;
     }
 
-
     /**
      * Transform JSON to Long.
-     * @param request the JSON request.
+     *
+     * @param request
+     *            the JSON request.
      * @return the DB id of the user.
      */
     @Override
@@ -59,7 +60,10 @@ public class FollowedByPersistenceRequestTransformer implements PersistenceDataS
     {
         String accountId = request.getString("followedBy");
 
-        log.info("Looking for cache key for activities followed by " + accountId);
+        if (log.isTraceEnabled())
+        {
+            log.trace("Looking for cache key for activities followed by " + accountId);
+        }
 
         return personMapper.fetchUniqueResult(accountId).getId();
 

@@ -125,7 +125,7 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
         andCollider = inAndCollider;
         bulkActivitiesMapper = inBulkActivitiesMapper;
         filters = inFilters;
-        batchPageSizeMultiplier = inBatchPageSizeMultiplier;
+        batchPageSizeMultiplier = inBatchPageSizeMultiplier <= 0 ? 1 : inBatchPageSizeMultiplier;
         getVisibleGroupsForUserMapper = inGetVisibleGroupsForUserMapper;
     }
 

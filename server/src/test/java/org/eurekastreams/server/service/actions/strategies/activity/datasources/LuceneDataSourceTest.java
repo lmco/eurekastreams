@@ -163,10 +163,10 @@ public class LuceneDataSourceTest
     }
 
     /**
-     * Test execute method without search keywords.
+     * Test execute method without search keywords or sort.
      */
     @Test
-    public void testExecuteWithoutKeywords()
+    public void testExecuteWithoutKeywordsAndWithoutSort()
     {
         final ProjectionSearchRequestBuilder builder = context.mock(ProjectionSearchRequestBuilder.class);
         LuceneDataSource sut = new LuceneDataSource(builder);
@@ -174,4 +174,6 @@ public class LuceneDataSourceTest
         assertNull(sut.fetch(new JSONObject()));
         context.assertIsSatisfied();
     }
+
+    // TODO: try with sort, try with keywords separately
 }
