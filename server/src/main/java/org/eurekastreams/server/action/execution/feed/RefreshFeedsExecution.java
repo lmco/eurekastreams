@@ -20,9 +20,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.time.StopWatch;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
@@ -37,14 +34,8 @@ import org.eurekastreams.server.persistence.mappers.requests.CurrentDateInMinute
  * Feed refresh task. Get the feeds that need to be updated. Pop an action on the queue. Set them as pending.
  *
  */
-@SuppressWarnings("unchecked")
 public class RefreshFeedsExecution implements TaskHandlerExecutionStrategy<ActionContext>
 {
-    /**
-     * Instance of the logger.
-     */
-    private final Log perfLog = LogFactory.getLog("activityPerformance");
-
     /**
      * For converting milliseconds to minutes.
      */
@@ -58,11 +49,6 @@ public class RefreshFeedsExecution implements TaskHandlerExecutionStrategy<Actio
      */
     private SetRefreshableFeedsAsPending setFeedsAsPendingMapper;
 
-
-    /**
-     * Logger.
-     */
-    private Log log = LogFactory.getLog(RefreshFeedsExecution.class);
 
     /**
      * Default constructor.
@@ -96,9 +82,6 @@ public class RefreshFeedsExecution implements TaskHandlerExecutionStrategy<Actio
     @Override
     public Serializable execute(final TaskHandlerActionContext<ActionContext> inActionContext)
     {
-        StopWatch swEntireOp = new StopWatch();
-        swEntireOp.start();
-
         CurrentDateInMinutesRequest request = new CurrentDateInMinutesRequest(new Date().getTime()
                 / (MILLISECONDSINMINUTE));
 
@@ -116,12 +99,6 @@ public class RefreshFeedsExecution implements TaskHandlerExecutionStrategy<Actio
                         new UserActionRequest("refreshFeedAction", null, new RefreshFeedRequest(id)));
         }
 
-        if (perfLog.isInfoEnabled())
-        {
-            perfLog.info("RefreshFeedsAction - Added [" + feedIds.size() + "] feeds to task processor\n" + "["
-                    + swEntireOp.getTime() + "] milliseconds to complete entire operation.\n" + "thread id ["
-                    + Thread.currentThread().getId() + "]\n");
-        }
         return null;
     }
 }

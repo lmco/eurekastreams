@@ -27,13 +27,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.StopWatch;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.feed.RefreshFeedRequest;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.EntityType;
@@ -68,15 +66,10 @@ import com.sun.syndication.feed.synd.SyndFeed;
  * Goes out to the interwebs, grabs a feed, parses it, stores it in DB and queues it up to be stored in cache. The
  * reason for the queueing is so I don't update the same exact list 100s of times instead of once. This cuts down by
  * multiple orders of magnitude
- *
+ * 
  */
 public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 {
-    /**
-     * Instance of the logger.
-     */
-    private final Log perfLog = LogFactory.getLog("activityPerformance");
-
     /**
      * The number of milliseconds in a minute.
      */
@@ -105,7 +98,7 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
     /**
      * Logger.
      */
-    private Log log = LogFactory.getLog(RefreshFeedExecution.class);
+    private Log log = LogFactory.make();
 
     /**
      * Standard feed mappers.
@@ -158,7 +151,7 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inStandardFeedMappers
      *            Standard feed mappers.
      * @param inSpecificUrlMappers
@@ -177,7 +170,8 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
      *            find feed.
      * @param inMetaDataFetcher
      *            fetcher.
-     * @param inUpdateFeedMapper updateMapper.
+     * @param inUpdateFeedMapper
+     *            updateMapper.
      */
     public RefreshFeedExecution(final HashMap<BaseObjectType, ObjectMapper> inStandardFeedMappers,
             final List<SpecificUrlObjectMapper> inSpecificUrlMappers,
@@ -200,41 +194,26 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 
     /**
      * {@inheritDoc}.
-     *
+     * 
      * Grab all the feeds, set them as pending, and fire off an async job. to refresh each one.
      */
-	public Serializable execute(final ActionContext inActionContext)
-			throws ExecutionException
+    public Serializable execute(final ActionContext inActionContext) throws ExecutionException
     {
-        StopWatch swEntireOp = new StopWatch();
-        swEntireOp.start();
-
-        boolean foundSpecificMapper = false; Long updateFrequency = null;
-
+        boolean foundSpecificMapper = false;
+        Long updateFrequency = null;
         List<Activity> insertedActivities = new LinkedList<Activity>();
         ArrayList<Long> insertedActivityIds = new ArrayList<Long>();
-
-        StopWatch sw = new StopWatch();
-        sw.start();
 
         RefreshFeedRequest request = (RefreshFeedRequest) inActionContext.getParams();
         Feed feed = feedFinder.execute(new FindByIdRequest("Feed", request.getFeedId()));
         Date lastPostDate = feed.getLastPostDate();
-        long msToGetFeedFromDatabase = sw.getTime();
-        long msToGetFeedFromNetwork = 0;
         ArrayList<Long> people = new ArrayList<Long>();
-        long msToGetPeople = 0;
         ArrayList<Long> groups = new ArrayList<Long>();
-        long msToGetGroups = 0;
-        long msToAddActivitiesToBuffer = 0;
-        long msToAddActivitiesToDatabase = 0;
         try
         {
             URL feedUrl = new URL(feed.getUrl());
-            sw.reset();
             SyndFeed syndFeed = feedFetcherFactory.getSyndicatedFeed(feedUrl);
             SyModuleImpl syMod = (SyModuleImpl) syndFeed.getModule(SyModule.URI);
-            msToGetFeedFromNetwork = sw.getTime();
 
             if (syMod != null)
             {
@@ -269,8 +248,7 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
                         activity.setAppType(EntityType.PLUGIN);
                         activity.setAppId(feed.getPlugin().getId());
                         activity.setAppSource(feed.getUrl());
-                        final Map<String, GeneralGadgetDefinition> gadgetDefs =
-                            new HashMap<String, GeneralGadgetDefinition>();
+                        final Map<String, GeneralGadgetDefinition> gadgetDefs = new HashMap<String, GeneralGadgetDefinition>();
                         gadgetDefs.put(feed.getPlugin().getUrl(), feed.getPlugin());
                         try
                         {
@@ -315,7 +293,6 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 
                             if (feedSubscriber.getEntityType().equals(EntityType.PERSON))
                             {
-                                sw.reset();
                                 Person person = personFinder.execute(new FindByIdRequest("Person", feedSubscriber
                                         .getEntityId()));
                                 activityForIndividual.setActorType(EntityType.PERSON);
@@ -323,12 +300,10 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
                                 activityForIndividual.setRecipientParentOrg(person.getParentOrganization());
                                 activityForIndividual.setRecipientStreamScope(person.getStreamScope());
                                 activityForIndividual.setIsDestinationStreamPublic(true);
-                                msToGetPeople += sw.getTime();
                                 people.add(person.getId());
                             }
                             else if (feedSubscriber.getEntityType().equals(EntityType.GROUP))
                             {
-                                sw.reset();
                                 DomainGroup group = groupFinder.execute(new FindByIdRequest("DomainGroup",
                                         feedSubscriber.getEntityId()));
 
@@ -337,7 +312,6 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
                                 activityForIndividual.setRecipientParentOrg(group.getParentOrganization());
                                 activityForIndividual.setRecipientStreamScope(group.getStreamScope());
                                 activityForIndividual.setIsDestinationStreamPublic(group.isPublicGroup());
-                                msToGetGroups += sw.getTime();
                                 groups.add(group.getId());
                             }
                             insertedActivities.add(activityForIndividual);
@@ -351,30 +325,26 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
                 }
             }
 
-            //updateFeedMapper.execute(new PersistenceRequest<Feed>(feed));
+            // updateFeedMapper.execute(new PersistenceRequest<Feed>(feed));
             Collections.reverse(insertedActivities);
             if (insertedActivities.size() > 0)
             {
-                sw.reset();
                 for (Activity activity : insertedActivities)
                 {
                     activityDBInserter.execute(new PersistenceRequest<Activity>(activity));
                     insertedActivityIds.add(activity.getId());
                 }
                 Collections.reverse(insertedActivityIds);
-                msToAddActivitiesToDatabase = sw.getTime();
-                sw.reset();
 
-                //TODO: this is not performant; fix
+                // TODO: this is not performant; fix
                 if (cache.get(CacheKeys.BUFFERED_ACTIVITIES) == null)
                 {
-                        cache.setList(CacheKeys.BUFFERED_ACTIVITIES, insertedActivityIds);
+                    cache.setList(CacheKeys.BUFFERED_ACTIVITIES, insertedActivityIds);
                 }
                 else
                 {
-                        cache.addToTopOfList(CacheKeys.BUFFERED_ACTIVITIES, insertedActivityIds);
+                    cache.addToTopOfList(CacheKeys.BUFFERED_ACTIVITIES, insertedActivityIds);
                 }
-                msToAddActivitiesToBuffer = sw.getTime();
             }
         }
         catch (Exception ex)
@@ -389,29 +359,12 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
             feed.setPending(false);
         }
 
-        if (perfLog.isInfoEnabled())
-        {
-            perfLog.info("RefreshFeedAction - Refreshed feed " + feed.getUrl() + "\n"
-                    + "[" + swEntireOp.getTime() + "] milliseconds to complete entire operation.\n"
-                    + "thread id [" + Thread.currentThread().getId() + "]\n"
-                    + "[" + insertedActivityIds.size() + "] activity Ids.\n"
-                    + "[" + msToGetFeedFromDatabase + "] milliseconds to get feed from database.\n"
-                    + "[" + msToGetFeedFromNetwork + "] milliseconds to get feed from network.\n"
-                    + "[" + msToGetPeople + "] milliseconds to get ["
-                        + people.size() + "] people.\n"
-                    + "[" + msToGetGroups + "] milliseconds to set ["
-                        + groups.size() + "] groups.\n"
-                    + "[" + msToAddActivitiesToDatabase + "] milliseconds to add activities to database.\n"
-                    + "[" + msToAddActivitiesToBuffer + "] milliseconds to add activities to buffer.\n"
-                    + "Ids are [" + StringUtils.join(insertedActivityIds.toArray(), ',') + "].");
-        }
-
         return null;
     }
 
     /**
      * Get the update frequeuncy in minutes given the period and frequency.
-     *
+     * 
      * @param updatePeriod
      *            Period, hourly, daily, weekly, etc.
      * @param updateFrequency
@@ -445,5 +398,4 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
         // default to hourly.
         return updateFrequency * MINS_IN_HOUR;
     }
-
 }

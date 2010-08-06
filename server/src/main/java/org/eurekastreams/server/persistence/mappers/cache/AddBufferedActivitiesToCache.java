@@ -19,10 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.StopWatch;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamView;
 import org.eurekastreams.server.domain.stream.StreamView.Type;
@@ -36,11 +32,6 @@ import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
  */
 public class AddBufferedActivitiesToCache extends CachedDomainMapper
 {
-    /**
-     * Instance of the logger.
-     */
-    private final Log perfLog = LogFactory.getLog("activityPerformance");
-
     /**
      * The bulk activities mapper.
      */
@@ -87,18 +78,8 @@ public class AddBufferedActivitiesToCache extends CachedDomainMapper
      */
     public Boolean execute()
     {
-        StopWatch swEntireOp = new StopWatch();
-        swEntireOp.start();
-
-        StopWatch sw = new StopWatch();
-
-        sw.start();
         List<Long> activityIds = cache.setListCAS(CacheKeys.BUFFERED_ACTIVITIES, null);
-        long msToGetList = sw.getTime();
-
-        sw.reset();
         List<ActivityDTO> activites = bulkActivitiesMapper.execute(activityIds, null);
-        long msToGetActivityDTOs = sw.getTime();
 
         HashMap<Long, ArrayList<Long>> activitesByCompositeStream = new HashMap<Long, ArrayList<Long>>();
         HashMap<Long, ArrayList<Long>> activitesByFollower = new HashMap<Long, ArrayList<Long>>();
@@ -138,8 +119,6 @@ public class AddBufferedActivitiesToCache extends CachedDomainMapper
             }
         }
 
-        long msToSetCompositeActivities = 0;
-        sw.reset();
         for (Long compositeId : activitesByCompositeStream.keySet())
         {
             ArrayList<Long> ids = activitesByCompositeStream.get(compositeId);
@@ -147,10 +126,7 @@ public class AddBufferedActivitiesToCache extends CachedDomainMapper
              CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + compositeId,
              ids);
         }
-        msToSetCompositeActivities = sw.getTime();
 
-        long msToSetFollowerActivities = 0;
-        sw.reset();
         for (Long compositeId : activitesByFollower.keySet())
         {
             ArrayList<Long> ids = activitesByFollower.get(compositeId);
@@ -158,37 +134,6 @@ public class AddBufferedActivitiesToCache extends CachedDomainMapper
              CacheKeys.ACTIVITIES_BY_FOLLOWING + compositeId,
              ids);
         }
-        msToSetFollowerActivities = sw.getTime();
-
-        if (perfLog.isInfoEnabled())
-        {
-            List<Long> toLogActivityIds = new ArrayList<Long>();
-            if (activityIds != null)
-            {
-                toLogActivityIds = activityIds;
-            }
-
-            perfLog.info("AddBufferedActivitiesToCache action - Added feed items to denormalized activity streams\n"
-                    + "[" + swEntireOp.getTime() + "] milliseconds to complete entire operation.\n"
-                    + "[" + toLogActivityIds.size() + "] activity Ids.\n"
-                    + "[" + msToGetList + "] milliseconds to pull from cache.\n"
-                    + "[" + msToGetActivityDTOs + "] milliseconds to get from database.\n"
-                    + "[" + msToSetCompositeActivities + "] milliseconds to set ["
-                        + activitesByCompositeStream.size() + "] composite streams to add activities to.\n"
-                    + "[" + msToSetFollowerActivities + "] milliseconds to set ["
-                        + activitesByFollower.size() + "] follower streams to add activities to.\n"
-                    + "Ids are [" + StringUtils.join(toLogActivityIds.toArray(), ',') + "].");
-
-            StringBuilder compositeStreamIds = new StringBuilder();
-            for (Long streamViewId : activitesByCompositeStream.keySet())
-            {
-                compositeStreamIds.append(streamViewId + ", ");
-            }
-            perfLog.info("Added buffered activities to the following composite streams: "
-                    + compositeStreamIds.toString());
-        }
-
-
 
         return true;
     }

@@ -108,7 +108,10 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
         CreateNotificationsRequest currentRequest =
                 (CreateNotificationsRequest) inActionContext.getActionContext().getParams();
 
-        logger.info("Generating notifications for " + currentRequest.getType());
+        if (logger.isInfoEnabled())
+        {
+            logger.info("Generating notifications for " + currentRequest.getType());
+        }
         NotificationTranslator translator = translators.get(currentRequest.getType());
         if (translator == null)
         {
