@@ -169,6 +169,8 @@
 			             <systemProperty>http.proxyPort=${build.system.proxyport}</systemProperty>
 			             <systemProperty>http.proxySet=${build.system.proxyset}</systemProperty>
 			             <systemProperty>http.nonProxyHosts=${build.system.nonproxyhosts}</systemProperty>
+			             <systemProperty>https.proxyHost=${build.system.proxyhost}</systemProperty>
+			             <systemProperty>https.proxyPort=${build.system.proxyport}</systemProperty>
 			         </systemProperties>
 			     </defaultJvmSettings>
 		         <programs>
