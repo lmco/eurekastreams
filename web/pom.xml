@@ -772,7 +772,7 @@
                                     <goal>copy-resources</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>${project.build.directory}/rpmscripts</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/classes/scripts</outputDirectory>
                                     <resources>
                                         <resource>
                                             <directory>src/main/scripts/nodatabaseinstall</directory>
