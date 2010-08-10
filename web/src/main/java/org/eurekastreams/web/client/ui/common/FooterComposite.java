@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * This class creates the Composite for the main footer displayed on the page.
- * 
+ *
  */
 public class FooterComposite extends Composite
 {
@@ -54,7 +54,7 @@ public class FooterComposite extends Composite
 
         termsOfService.addClickHandler(new ClickHandler()
         {
-            public void onClick(ClickEvent arg0)
+            public void onClick(final ClickEvent arg0)
             {
                 Session.getInstance().getEventBus().addObserver(GotSystemSettingsResponseEvent.class,
                         new Observer<GotSystemSettingsResponseEvent>()
@@ -92,7 +92,7 @@ public class FooterComposite extends Composite
 
     /**
      * Sets Site labeling.
-     * 
+     *
      * @param siteLabelingTxt
      *            The text for Site Labeling.
      */
