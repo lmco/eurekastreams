@@ -228,11 +228,18 @@
 		<property name="modifiable" value="true" />
 	</bean>
 	
-		<bean name="feedReaderCollectionResource" class="org.eurekastreams.server.service.restlets.FeedReaderCollectionResource"
+	<bean name="feedReaderCollectionResource" class="org.eurekastreams.server.service.restlets.FeedReaderCollectionResource"
 		scope="prototype">
 		<property name="entityMapper" ref="jpaFeedReaderMapper" />
 		<property name="modifiable" value="true" />
 	</bean>	
+	
+	<bean name="streamResource" class="org.eurekastreams.server.service.restlets.StreamResource">
+		<constructor-arg ref="getActivitiesByRequest" />
+		<constructor-arg ref="serviceActionController" />
+		<constructor-arg ref="openSocialPrincipalPopulator" />
+	</bean>
+	
 	
 	<!-- The router maps URLs to resources. -->
 	<bean name="restletRouter" class="org.restlet.ext.spring.SpringRouter">
@@ -426,6 +433,18 @@
                 <entry key="/streamsearch/{id}/owner/{openSocialId}">
                 	<bean class="org.restlet.ext.spring.SpringFinder">
                 		<lookup-method name="createResource" bean="compositeStreamSearchEntryResource" />
+                	</bean>
+                </entry>
+                
+                <entry key="/stream/{openSocialId}/{json}">
+                	<bean class="org.restlet.ext.spring.SpringFinder">
+                		<lookup-method name="createResource" bean="streamResource" />
+                	</bean>
+                </entry>
+
+                <entry key="/stream/{openSocialId}/{json}/{callback}">
+                	<bean class="org.restlet.ext.spring.SpringFinder">
+                		<lookup-method name="createResource" bean="streamResource" />
                 	</bean>
                 </entry>
 			</map>
