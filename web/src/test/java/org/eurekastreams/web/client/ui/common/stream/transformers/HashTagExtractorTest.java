@@ -117,7 +117,6 @@ public class HashTagExtractorTest
     public void testExtractNullWhenStartingIndexPastContentLength()
     {
         String content = "Did you know that #potatoes are made of #frenchfries?";
-        System.out.println(sut.extract(content, 9 + 5 + 9));
         assertNull(sut.extract(content, 9 * 5 + 8)); // 53
         assertNull(sut.extract(content, 9 * 5 + 9)); // 54
         assertNull(sut.extract(content, 9 * 9 * 9)); // 729

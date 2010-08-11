@@ -13,28 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.mappers.cache;
-
-import org.eurekastreams.server.persistence.mappers.chained.RefreshStrategy;
-import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
+package org.eurekastreams.server.persistence.mappers.chained;
 
 /**
- * Refresh the everyone stream id.
+ * Result combiner that returns one of the results that's not null.
+ *
+ * @param <T>
+ *            the type of response to handle
  */
-public class RefreshEveryoneStreamIdCacheMapper extends CachedDomainMapper implements RefreshStrategy<Object, Long>
+public class NonNullResultsCombiner<T> implements ResultsCombinerStrategy<T>
 {
     /**
-     * Refresh the everyone stream id.
+     * Return the first non-null value.
      *
-     * @param request
-     *            nothing.
-     * @param data
-     *            the id.
+     * @param inResponse1
+     *            the first response to return if not null
+     * @param inResponse2
+     *            the second response to return if not null
+     * @return inResponse1 if not null, else inResponse2
      */
     @Override
-    public void refresh(final Object request, final Long data)
+    public T combine(final T inResponse1, final T inResponse2)
     {
-        getCache().set(CacheKeys.CORE_STREAMVIEW_ID_EVERYONE, data);
+        return inResponse1 != null ? inResponse1 : inResponse2;
     }
-
 }

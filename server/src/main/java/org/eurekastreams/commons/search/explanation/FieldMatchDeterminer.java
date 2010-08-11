@@ -140,7 +140,7 @@ public class FieldMatchDeterminer
                 while ((token = stream.next(token)) != null)
                 {
                     String tokenizedKeyword = token.term();
-                    System.out.println("Tokenized keyword: " + tokenizedKeyword);
+                    log.info("Tokenized keyword: " + tokenizedKeyword);
                     tokenizedKeywords.put(tokenizedKeyword, keyword);
                 }
             }

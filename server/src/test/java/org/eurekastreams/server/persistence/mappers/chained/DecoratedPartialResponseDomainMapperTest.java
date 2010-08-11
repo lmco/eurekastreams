@@ -74,7 +74,7 @@ public class DecoratedPartialResponseDomainMapperTest
         final Object request = new Object();
         final Object response = new Object();
         final PartialMapperResponse<Object, Object> partialResponse = new PartialMapperResponse<Object, Object>(
-                response, null);
+                response);
 
         context.checking(new Expectations()
         {

@@ -30,7 +30,9 @@ public class GetEveryoneStreamIdDbMapper extends BaseDomainMapper implements Dom
 
     /**
      * Get the everyone stream view id.
-     * @param inRequest nothing.
+     *
+     * @param inRequest
+     *            nothing.
      * @return the stream view id.
      */
     @Override
@@ -38,7 +40,7 @@ public class GetEveryoneStreamIdDbMapper extends BaseDomainMapper implements Dom
     {
         String everyoneQueryString = "SELECT id from StreamView where type = :type";
         Query everyoneQuery = getEntityManager().createQuery(everyoneQueryString).setParameter("type",
-        StreamView.Type.EVERYONE);
+                StreamView.Type.EVERYONE);
         return (Long) everyoneQuery.getSingleResult();
     }
 

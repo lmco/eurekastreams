@@ -41,7 +41,7 @@ public class GetFollowedByActivitiesTest extends CachedMapperTest
      */
     @Autowired
     @Qualifier("getFollowedByActivities")
-    private ChainedDomainMapper<Long, List<Long>> getFollowedByActivities;
+    private DomainMapper<Long, List<Long>> getFollowedByActivities;
 
     /**
      * Test getFollowedActivityIds method.

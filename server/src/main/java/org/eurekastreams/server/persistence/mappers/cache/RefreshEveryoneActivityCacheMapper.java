@@ -17,14 +17,14 @@ package org.eurekastreams.server.persistence.mappers.cache;
 
 import java.util.List;
 
-import org.eurekastreams.server.persistence.mappers.RefreshDataSourceMapper;
+import org.eurekastreams.server.persistence.mappers.chained.RefreshStrategy;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
  * Refresh the everyone activity list.
  */
 public class RefreshEveryoneActivityCacheMapper extends CachedDomainMapper implements
-RefreshDataSourceMapper<Long, List<Long>>
+RefreshStrategy<Long, List<Long>>
 {
 
     /**

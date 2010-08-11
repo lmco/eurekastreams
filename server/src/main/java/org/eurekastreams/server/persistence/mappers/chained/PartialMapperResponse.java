@@ -36,7 +36,12 @@ public class PartialMapperResponse<Request, Response>
     private Response response;
 
     /**
-     * Constructor.
+     * Whether we have an unhandled request.
+     */
+    private boolean hasUnandledRequest = false;
+
+    /**
+     * Constructor - response that was fetched, and a request to pass on.
      *
      * @param inResponse
      *            the respnonse that was found by the mapper
@@ -46,6 +51,18 @@ public class PartialMapperResponse<Request, Response>
     public PartialMapperResponse(final Response inResponse, final Request inUnhandledRequest)
     {
         unhandledRequest = inUnhandledRequest;
+        response = inResponse;
+        hasUnandledRequest = true;
+    }
+
+    /**
+     * Constructor - no follow-up unhandled request.
+     *
+     * @param inResponse
+     *            the respnonse that was found by the mapper
+     */
+    public PartialMapperResponse(final Response inResponse)
+    {
         response = inResponse;
     }
 
@@ -74,8 +91,8 @@ public class PartialMapperResponse<Request, Response>
      *
      * @return whether the request was completely satisfied with the mapper.
      */
-    public boolean hasCompleteResponse()
+    public boolean hasUnhandledRequest()
     {
-        return unhandledRequest == null;
+        return hasUnandledRequest;
     }
 }

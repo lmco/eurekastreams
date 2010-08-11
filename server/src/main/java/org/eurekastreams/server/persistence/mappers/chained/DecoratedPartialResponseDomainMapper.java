@@ -91,19 +91,26 @@ public class DecoratedPartialResponseDomainMapper<Request, Response> implements 
     public Response execute(final Request request)
     {
         PartialMapperResponse<Request, Response> partialResponse = partialMapper.execute(request);
-        if (partialResponse.hasCompleteResponse())
+        if (!partialResponse.hasUnhandledRequest())
         {
             // has full response
             if (log.isInfoEnabled())
             {
-                log.info("Found complete response with " + partialMapper.getClass());
+                log.info("Found complete response with partial response mapper - " + partialMapper.getClass());
             }
             return partialResponse.getResponse();
         }
 
         if (log.isInfoEnabled())
         {
-            log.info("Found partial response with " + partialMapper.getClass());
+            if (partialResponse.getResponse() != null)
+            {
+                log.info("Found partial response with partial response mapper - " + partialMapper.getClass());
+            }
+            else
+            {
+                log.info("Found no response with partial response mapper - " + partialMapper.getClass());
+            }
         }
 
         Response decoratedResponse = null;
@@ -111,7 +118,7 @@ public class DecoratedPartialResponseDomainMapper<Request, Response> implements 
         {
             if (log.isInfoEnabled())
             {
-                log.info("Trying to complete response with " + decoratedMapper.getClass());
+                log.info("Trying to complete response with decorated mapper - " + decoratedMapper.getClass());
             }
 
             // get the response from the next mapper in the chain
@@ -123,6 +130,7 @@ public class DecoratedPartialResponseDomainMapper<Request, Response> implements 
 
         // we don't have anywhere else to go - consider it a null response from decorated mapper - let the combiner
         // decide what to do
+        log.info("Combining partial response mapper and decorated mapper responses.");
         return resultsCombiner.combine(partialResponse.getResponse(), decoratedResponse);
 
     }

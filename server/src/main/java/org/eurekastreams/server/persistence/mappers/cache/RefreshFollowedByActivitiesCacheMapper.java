@@ -17,7 +17,7 @@ package org.eurekastreams.server.persistence.mappers.cache;
 
 import java.util.List;
 
-import org.eurekastreams.server.persistence.mappers.RefreshDataSourceMapper;
+import org.eurekastreams.server.persistence.mappers.chained.RefreshStrategy;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
@@ -25,18 +25,19 @@ import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
  *
  */
 public class RefreshFollowedByActivitiesCacheMapper extends CachedDomainMapper implements
-RefreshDataSourceMapper<Long, List<Long>>
+        RefreshStrategy<Long, List<Long>>
 {
-
     /**
      * Refresh.
-     * @param request the person being followed.
-     * @param data the data.
+     *
+     * @param request
+     *            the person being followed.
+     * @param data
+     *            the data.
      */
     @Override
     public void refresh(final Long request, final List<Long> data)
     {
         getCache().setList(CacheKeys.ACTIVITIES_BY_FOLLOWING + request, data);
     }
-
 }
