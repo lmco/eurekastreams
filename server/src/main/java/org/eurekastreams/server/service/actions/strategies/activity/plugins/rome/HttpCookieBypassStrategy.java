@@ -17,12 +17,20 @@ package org.eurekastreams.server.service.actions.strategies.activity.plugins.rom
 
 import java.io.IOException;
 import java.net.URL;
-import java.net.URLConnection;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpConnectionManager;
+import org.apache.commons.httpclient.HttpMethodRetryHandler;
+import org.apache.commons.httpclient.SimpleHttpConnectionManager;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.params.HttpClientParams;
+import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.xml.sax.SAXException;
 
 import com.sun.syndication.feed.synd.SyndFeed;
@@ -70,25 +78,49 @@ public class HttpCookieBypassStrategy implements PluginFeedFetcherStrategy
      * 
      * @param inFeedURL
      *            the Url for the feed to feed in.
+     * @param inTimeout
+     *            the timeout period to wait for the feed to return (in ms).
      * @return a Syndicated Feed.
      * @throws FeedException if Exception.
      * @throws ParserConfigurationException if Exception.
      * @throws SAXException if Exception.
      * @throws IOException if Exception.
      */
-    public SyndFeed execute(final URL inFeedURL) throws IOException, ParserConfigurationException,
+    public SyndFeed execute(final URL inFeedURL, final int inTimeout) throws IOException, ParserConfigurationException,
             FeedException, SAXException
     {
-        URLConnection urlConn = inFeedURL.openConnection();
-        urlConn.setRequestProperty("Cookie", cookieToSet);
-        urlConn.connect();
+        HttpConnectionManagerParams managerParams = new HttpConnectionManagerParams();
+        managerParams.setSoTimeout(inTimeout);
+        managerParams.setConnectionTimeout(inTimeout);
+        
+        HttpConnectionManager manager = new SimpleHttpConnectionManager();
+        manager.setParams(managerParams);
+        
+        HttpClientParams params = new HttpClientParams();
+        params.setConnectionManagerTimeout(inTimeout);
+        params.setSoTimeout(inTimeout);
+        
+        HttpClient client = new HttpClient(params, manager);
+        HttpMethodRetryHandler retryHandler = new DefaultHttpMethodRetryHandler(1, true);
+        client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, retryHandler);
+        
+        GetMethod get = new GetMethod(inFeedURL.toString());
+        get.setRequestHeader("Cookie", cookieToSet);
+        try
+        {
+            client.executeMethod(get);
+            
+            DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+            domFactory.setNamespaceAware(true);
+            DocumentBuilder builder = domFactory.newDocumentBuilder();
 
-        DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-        domFactory.setNamespaceAware(true);
-        DocumentBuilder builder = domFactory.newDocumentBuilder();
-
-        SyndFeedInput input = new SyndFeedInput();
-        return input.build(builder.parse(urlConn.getInputStream()));
+            SyndFeedInput input = new SyndFeedInput();
+            return input.build(builder.parse(get.getResponseBodyAsStream()));
+        }
+        finally
+        {
+            get.releaseConnection();
+        }
     }
 
 }
