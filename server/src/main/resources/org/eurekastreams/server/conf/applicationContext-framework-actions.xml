@@ -1228,7 +1228,8 @@
             <list>
                 <ref bean="twitterCookieBypassStrategy"/>
             </list>
-        </constructor-arg>            
+        </constructor-arg>
+        <constructor-arg type="int" value="${eureka.feeds.httptimeout}" />            
     </bean>	
 	
     <bean id="getFeedTitle" class="org.eurekastreams.server.action.execution.feed.GetTitleFromFeedExecution">

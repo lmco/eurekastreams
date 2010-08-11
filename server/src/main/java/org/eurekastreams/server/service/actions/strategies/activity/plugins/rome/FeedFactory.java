@@ -19,14 +19,16 @@ import java.net.URL;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
+import org.apache.commons.httpclient.HttpMethodRetryHandler;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.eurekastreams.commons.logging.LogFactory;
 
 import com.sun.syndication.feed.synd.SyndFeed;
-import com.sun.syndication.fetcher.FeedFetcher;
 import com.sun.syndication.fetcher.impl.FeedFetcherCache;
 import com.sun.syndication.fetcher.impl.HashMapFeedInfoCache;
-import com.sun.syndication.fetcher.impl.HttpURLFeedFetcher;
+import com.sun.syndication.fetcher.impl.HttpClientFeedFetcher;
 
 /**
  * Create a FeedFetcher object, needed for testing, but probably a good practice either way.
@@ -38,20 +40,28 @@ public class FeedFactory
     /**
      * Logger.
      */
-    private Log logger = LogFactory.getLog(FeedFactory.class);
+    private Log logger = LogFactory.make();
 
     /**
      * List of strategies.
      */
     List<PluginFeedFetcherStrategy> siteStratagies;
+    
+    /**
+     * The connection timeout (in milliseconds).
+     */
+    int timeout;
 
     /**
      * @param inSiteStratagies
      *            the list of strategies.
+     * @param inTimeout
+     *            the connection timeout (in ms).
      */
-    public FeedFactory(final List<PluginFeedFetcherStrategy> inSiteStratagies)
+    public FeedFactory(final List<PluginFeedFetcherStrategy> inSiteStratagies, final int inTimeout)
     {
         siteStratagies = inSiteStratagies;
+        timeout = inTimeout;
     }
 
     /**
@@ -74,7 +84,7 @@ public class FeedFactory
                     logger.debug("Feed being fetched from special site" + inFeedURL);
                 }
 
-                return ps.execute(inFeedURL);
+                return ps.execute(inFeedURL, timeout);
             }
         }
 
@@ -85,10 +95,13 @@ public class FeedFactory
 
         FeedFetcherCache feedInfoCache = HashMapFeedInfoCache.getInstance();
 
-        FeedFetcher feedFetcher = new HttpURLFeedFetcher(feedInfoCache);
+        HttpClientFeedFetcher feedFetcher = new HttpClientFeedFetcher(feedInfoCache);
+        HttpMethodRetryHandler retryHandler = new DefaultHttpMethodRetryHandler(1, true);
+
+        feedFetcher.getHttpClientParams().setParameter(HttpMethodParams.RETRY_HANDLER, retryHandler);
+        feedFetcher.setConnectTimeout(timeout);
+        feedFetcher.setReadTimeout(timeout);
 
         return feedFetcher.retrieveFeed(inFeedURL);
-
     }
-
 }
