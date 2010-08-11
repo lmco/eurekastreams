@@ -124,8 +124,27 @@ public class DecoratedPartialResponseDomainMapper<Request, Response> implements 
             // get the response from the next mapper in the chain
             decoratedResponse = decoratedMapper.execute(partialResponse.getUnhandledRequest());
 
+            if (log.isInfoEnabled())
+            {
+                if (decoratedResponse != null)
+                {
+                    log.info("Found response with decorated response mapper - " + decoratedMapper.getClass());
+                }
+                else
+                {
+                    log.info("Found no response with decorated response mapper - " + decoratedMapper.getClass());
+                }
+            }
+
             // refresh this datasource
             refreshStrategy.refresh(partialResponse.getUnhandledRequest(), decoratedResponse);
+        }
+        else
+        {
+            if (log.isInfoEnabled())
+            {
+                log.info("No decorated mapper to try.");
+            }
         }
 
         // we don't have anywhere else to go - consider it a null response from decorated mapper - let the combiner
