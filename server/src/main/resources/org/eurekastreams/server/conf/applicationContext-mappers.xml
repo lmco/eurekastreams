@@ -84,6 +84,13 @@
         <property name="getPeopleByIdsMapper" ref="bulkPeopleMapper" />
     </bean>	
 	
+	<bean id="activityOrCombiner" class="org.eurekastreams.server.persistence.mappers.chained.ListColliderAdapter">
+	    <constructor-arg>
+	    	<bean class="org.eurekastreams.server.service.actions.strategies.activity.OrSortedListCollider" />
+	    </constructor-arg>
+	    <constructor-arg value="10000" />
+	</bean>
+	
 	<bean id="getOrganizationLeaderIdsByOrgId" 
 	   class="org.eurekastreams.server.persistence.mappers.cache.GetOrganizationLeaderIdsByOrgId">
 	   <property name="cache" ref="memcachedCache" />
@@ -94,9 +101,65 @@
 		<property name="queryOptimizer" ref="queryOptimizer" />
 	</bean>
 
+	<bean id="bulkEntityStreamIdsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.persistence.mappers.cache.BulkEntityStreamIdsMapper">
+				<property name="cache" ref="memcachedCache" />
+			</bean>
+		</constructor-arg>
+		
+		<constructor-arg>
+			<!-- Database mapper to fall back on if not found in cache -->
+			<bean class="org.eurekastreams.server.persistence.mappers.db.BulkEntityStreamIdsDbMapper" />
+		</constructor-arg>
+		
+		<constructor-arg >
+			<ref bean="activityOrCombiner" />
+		</constructor-arg>
+		
+		<constructor-arg>
+			<!-- Cache refresher -->
+			<bean class="org.eurekastreams.server.persistence.mappers.cache.BulkEntityStreamIdsRefresher">
+				<property name="cache" ref="memcachedCache" />
+			</bean>
+		</constructor-arg>
+	</bean>
+	
+	<bean id="bulkActivityStreamsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.persistence.mappers.cache.BulkActivityStreamsMapper">
+				<property name="cache" ref="memcachedCache" />
+				<property name="maxItems" value="10000" />
+				<property name="orCollider" > 
+					<bean class="org.eurekastreams.server.service.actions.strategies.activity.OrSortedListCollider" /> 
+				</property>
+			</bean>
+		</constructor-arg>
+		
+		<constructor-arg>
+			<!-- Database mapper to fall back on if not found in cache -->
+			<bean class="org.eurekastreams.server.persistence.mappers.db.BulkActivityStreamsDbMapper">
+				<property name="maxItems" value="10000" />
+			</bean>
+		</constructor-arg>
+		
+		<constructor-arg >
+			<ref bean="activityOrCombiner" />
+		</constructor-arg>
+		
+		<constructor-arg>
+			<!-- Cache refresher -->
+			<bean class="org.eurekastreams.server.persistence.mappers.cache.BulkActivityStreamsRefresher">
+				<property name="cache" ref="memcachedCache" />
+			</bean>
+		</constructor-arg>
+	</bean>
+
+
 	<bean id="findSystemSettings" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<constructor-arg>
-			<!-- Wrap the System Settings cache mapper with a partial mapper wrapper -->
+			<!-- Wrap the System Settings cache mapper with a partial mapper wrapper
+-->
 			<bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
 				<constructor-arg>
 					<!-- Cache mapper to get the system settings -->
@@ -129,7 +192,8 @@
 	
 
  	<bean id="findSystemSettingsFromDatabase" class="org.eurekastreams.server.persistence.mappers.db.FindSystemSettingsDbDomainMapperImpl">
-		<!-- Mapper to get the system settings straight from the database - needed for updating it. -->
+		<!-- Mapper to get the system settings straight from the database - needed for updating it.
+-->
 		<property name="queryOptimizer" ref="queryOptimizer" />
 	</bean>
 	

@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.service.restlets;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Date;
 
@@ -33,6 +34,7 @@ import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
+import org.restlet.data.Status;
 import org.restlet.resource.Representation;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.StringRepresentation;
@@ -48,11 +50,6 @@ public class StreamResource extends SmpResource
      * Open Social Id. TODO: this should be eliminated when we have OAuth.
      */
     private String openSocialId;
-
-    /**
-     * filter fetcher strategy.
-     */
-    private StreamFilterFetcher filterFetcher;
 
     /**
      * JSON.
@@ -121,12 +118,24 @@ public class StreamResource extends SmpResource
      * @throws ResourceException
      *             the exception.
      */
+    @SuppressWarnings("unchecked")
     @Override
     public Representation represent(final Variant variant) throws ResourceException
     {
+        String decodedJson;
+        try
+        {
+            decodedJson = URLDecoder.decode(jsonRequest, "UTF-8");
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            throw new ResourceException(Status.CLIENT_ERROR_EXPECTATION_FAILED,
+                    "Unable to parse JSON Request from URL.");
+        }
+
         // Create the actionContext
-        PrincipalActionContext ac = new ServiceActionContext(URLDecoder.decode(jsonRequest), principalPopulator
-                .getPrincipal(openSocialId));
+        PrincipalActionContext ac = 
+            new ServiceActionContext(decodedJson, principalPopulator.getPrincipal(openSocialId));
 
         PagedSet<ActivityDTO> activities = (PagedSet<ActivityDTO>) serviceActionController.execute(
                 (ServiceActionContext) ac, action);
