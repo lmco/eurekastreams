@@ -1586,7 +1586,7 @@
 							<entry key="recipient">
 								<ref bean="bulkActivityStreamsMapper" />
 							</entry>
-							<entry key="saved">
+							<entry key="savedBy">
 								<ref bean="getStarredActivityIds" />
 							</entry>							
 						</map>
@@ -1607,9 +1607,11 @@
                                     <constructor-arg ref="bulkEntityStreamIdsMapper" />   
                                 </bean>
                             </entry>
-                            <entry key="saved">
+                            <entry key="savedBy">
                                 <bean 
-                                    class="org.eurekastreams.server.service.actions.strategies.activity.datasources.SavedActivityPersistenceRequestTransformer" />
+                                    class="org.eurekastreams.server.service.actions.strategies.activity.datasources.SavedActivityPersistenceRequestTransformer">
+                                    <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
+                                </bean>
                             </entry>                            
                         </map>                  
                     </constructor-arg>

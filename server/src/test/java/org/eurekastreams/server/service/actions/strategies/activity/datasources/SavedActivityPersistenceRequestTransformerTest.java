@@ -18,6 +18,12 @@ package org.eurekastreams.server.service.actions.strategies.activity.datasources
 import junit.framework.Assert;
 import net.sf.json.JSONObject;
 
+import org.eurekastreams.commons.exceptions.AuthorizationException;
+import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,9 +33,24 @@ import org.junit.Test;
 public class SavedActivityPersistenceRequestTransformerTest
 {
     /**
+     * Context for building mock objects.
+     */
+    private final Mockery context = new JUnit4Mockery()
+    {
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
+
+    /**
      * System under test.
      */
     private SavedActivityPersistenceRequestTransformer sut;
+
+    /**
+     * Person mapper mock.
+     */
+    private GetPeopleByAccountIds personMapper = context.mock(GetPeopleByAccountIds.class);
 
     /**
      * Setup test fixtures.
@@ -37,17 +58,53 @@ public class SavedActivityPersistenceRequestTransformerTest
     @Before
     public void setUP()
     {
-        sut = new SavedActivityPersistenceRequestTransformer();
+        sut = new SavedActivityPersistenceRequestTransformer(personMapper);
     }
 
     /**
      * Tests the transformation.
      */
     @Test
-    public void transformTest()
+    public void transformTestMatchingId()
     {
         final Long entityId = 10L;
+        final String entityAcctName = "acctName";
+        
+        final JSONObject jsonReq = new JSONObject();
+        jsonReq.accumulate("savedBy", entityAcctName);
 
-        Assert.assertEquals(entityId, sut.transform(new JSONObject(), entityId));
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(personMapper).fetchId(entityAcctName);
+                will(returnValue(entityId));
+            }
+        });
+
+        Assert.assertEquals(entityId, sut.transform(jsonReq, entityId));
     }
+    
+    /**
+     * Tests the transformation.
+     */
+    @Test(expected=AuthorizationException.class)
+    public void transformTestNotMatchingId()
+    {
+        final Long entityId = 10L;
+        final String entityAcctName = "acctName";
+        
+        final JSONObject jsonReq = new JSONObject();
+        jsonReq.accumulate("savedBy", entityAcctName);
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(personMapper).fetchId(entityAcctName);
+                will(returnValue(entityId - 1L));
+            }
+        });
+
+        Assert.assertEquals(entityId, sut.transform(jsonReq, entityId));
+    }
+
 }

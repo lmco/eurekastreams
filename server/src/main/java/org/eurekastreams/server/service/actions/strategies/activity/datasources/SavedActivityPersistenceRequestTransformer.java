@@ -19,11 +19,31 @@ import java.io.Serializable;
 
 import net.sf.json.JSONObject;
 
+import org.eurekastreams.commons.exceptions.AuthorizationException;
+import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+
 /**
  * Transforms JSON request to saved activity request.
  */
 public class SavedActivityPersistenceRequestTransformer implements PersistenceDataSourceRequestTransformer
 {
+
+    /**
+     * Person mapper.
+     */
+    private GetPeopleByAccountIds personMapper;
+
+    /**
+     * Default constructor.
+     * 
+     * @param inPersonMapper
+     *            person mapper.
+     */
+    public SavedActivityPersistenceRequestTransformer(final GetPeopleByAccountIds inPersonMapper)
+    {
+        personMapper = inPersonMapper;
+    }
+
     /**
      * Transforms the request.
      * 
@@ -35,7 +55,17 @@ public class SavedActivityPersistenceRequestTransformer implements PersistenceDa
      */
     public Serializable transform(final JSONObject request, final Long userEntityId)
     {
-        return userEntityId;
-    }
+        String accountId = request.getString("savedBy");
 
+        Long requestAccountId = personMapper.fetchId(accountId);
+
+        if (userEntityId.equals(requestAccountId))
+        {
+            return userEntityId;
+        }
+        else
+        {
+            throw new AuthorizationException("Insufficent priveledges to access stream.");
+        }
+    }
 }
