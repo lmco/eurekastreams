@@ -34,9 +34,11 @@ public interface PluginFeedFetcherStrategy
     /**
      * @param inFeedURL
      *            the url to create a SyndFeed From.
+     * @param inTimeout
+     *            the period of time to wait for a response from the feed.
      * @return a Syndicated Feed.
      * @throws Exception
      *             if an error occurs.
      */
-    SyndFeed execute(URL inFeedURL) throws Exception;
+    SyndFeed execute(URL inFeedURL, int inTimeout) throws Exception;
 }
