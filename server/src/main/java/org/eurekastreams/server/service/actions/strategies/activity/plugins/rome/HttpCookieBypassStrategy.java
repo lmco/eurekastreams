@@ -52,7 +52,7 @@ public class HttpCookieBypassStrategy implements PluginFeedFetcherStrategy
      * The key=value pair of the cookie to set.
      */
     String cookieToSet;
-
+    
     /**
      * @param inSiteUrlRegEx
      *            The url RegEx.
@@ -78,6 +78,10 @@ public class HttpCookieBypassStrategy implements PluginFeedFetcherStrategy
      * 
      * @param inFeedURL
      *            the Url for the feed to feed in.
+     * @param inProxyHost
+     *            host name to use (if desires) for proxying http requests.
+     * @param inProxyPort
+     *            port for http proxy server.
      * @param inTimeout
      *            the timeout period to wait for the feed to return (in ms).
      * @return a Syndicated Feed.
@@ -86,9 +90,11 @@ public class HttpCookieBypassStrategy implements PluginFeedFetcherStrategy
      * @throws SAXException if Exception.
      * @throws IOException if Exception.
      */
-    public SyndFeed execute(final URL inFeedURL, final int inTimeout) throws IOException, ParserConfigurationException,
+    public SyndFeed execute(final URL inFeedURL, final String inProxyHost, final String inProxyPort,
+            final int inTimeout) throws IOException, ParserConfigurationException,
             FeedException, SAXException
     {
+        // TODO - refactor this; it's the same code (minus the cookie setting) that's in FeedFactory 
         HttpConnectionManagerParams managerParams = new HttpConnectionManagerParams();
         managerParams.setSoTimeout(inTimeout);
         managerParams.setConnectionTimeout(inTimeout);
@@ -104,6 +110,11 @@ public class HttpCookieBypassStrategy implements PluginFeedFetcherStrategy
         HttpMethodRetryHandler retryHandler = new DefaultHttpMethodRetryHandler(1, true);
         client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, retryHandler);
         
+        if (!inProxyHost.isEmpty())
+        {
+            client.getHostConfiguration().setProxy(inProxyHost, Integer.parseInt(inProxyPort));
+        }
+
         GetMethod get = new GetMethod(inFeedURL.toString());
         get.setRequestHeader("Cookie", cookieToSet);
         try

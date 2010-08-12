@@ -1229,6 +1229,8 @@
                 <ref bean="twitterCookieBypassStrategy"/>
             </list>
         </constructor-arg>
+        <constructor-arg value="${eureka.proxy.host}" />
+        <constructor-arg value="${eureka.proxy.port}" />
         <constructor-arg type="int" value="${eureka.feeds.httptimeout}" />            
     </bean>	
 	
