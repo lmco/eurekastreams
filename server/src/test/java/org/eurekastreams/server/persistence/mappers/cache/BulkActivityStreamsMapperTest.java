@@ -209,7 +209,7 @@ public class BulkActivityStreamsMapperTest
 
         PartialMapperResponse<List<Long>, List<Long>> response = sut.execute(request);
 
-        Assert.assertTrue(response.hasUnhandledRequest());
+        Assert.assertFalse(response.hasUnhandledRequest());
 
         context.assertIsSatisfied();
     }

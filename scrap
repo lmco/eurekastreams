@@ -1,0 +1,2 @@
+checkstyle grep results for errors
+cat server/target/checkstyle-result.xml | grep severity=\"error\" -B 1
