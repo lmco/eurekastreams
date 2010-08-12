@@ -72,9 +72,11 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
      * 
      * @param request
      *            the request.
+     * @param userEntityId
+     *            the user entity ID.
      * @return a list of entity stream IDs.
      */
-    public ArrayList<Long> transform(final JSONObject request)
+    public ArrayList<Long> transform(final JSONObject request, final Long userEntityId)
     {
         JSONArray recipients = request.getJSONArray("recipient");
 

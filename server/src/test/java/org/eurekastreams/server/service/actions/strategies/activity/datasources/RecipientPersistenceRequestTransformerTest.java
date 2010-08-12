@@ -114,7 +114,7 @@ public class RecipientPersistenceRequestTransformerTest
             }
         });
 
-        sut.transform(request);
+        sut.transform(request, 0L);
 
         context.assertIsSatisfied();
     }
@@ -136,6 +136,6 @@ public class RecipientPersistenceRequestTransformerTest
 
         request.accumulate("recipient", recipientArr);
 
-        sut.transform(request);
+        sut.transform(request, 0L);
     }
 }

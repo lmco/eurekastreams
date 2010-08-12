@@ -133,7 +133,7 @@ public class PersistenceDataSourceTest
             }
         });
 
-        sut.fetch(request);
+        sut.fetch(request, 0L);
         context.assertIsSatisfied();
     }
 
@@ -145,7 +145,7 @@ public class PersistenceDataSourceTest
     {
         ((JSONObject) request.get("query")).put("keywords", "eureka");
 
-        sut.fetch(request);
+        sut.fetch(request, 0L);
         context.assertIsSatisfied();
     }
 
@@ -163,18 +163,16 @@ public class PersistenceDataSourceTest
         context.checking(new Expectations()
         {
             {
-                oneOf(transformer).transform(with(any(JSONObject.class)));
+                oneOf(transformer).transform(with(any(JSONObject.class)), with(equal(0L)));
                 will(returnValue(2L));
                 oneOf(followedMapper).execute(2L);
                 will(returnValue(keys));
-
-
 
                 oneOf(orCollider).collide(with(any(List.class)), with(any(List.class)), with(equalInternally(COUNT)));
             }
         });
 
-        sut.fetch(request);
+        sut.fetch(request, 0L);
         context.assertIsSatisfied();
     }
 
@@ -194,7 +192,7 @@ public class PersistenceDataSourceTest
         context.checking(new Expectations()
         {
             {
-                oneOf(transformer).transform(with(any(JSONObject.class)));
+                oneOf(transformer).transform(with(any(JSONObject.class)), with(equal(0L)));
                 will(returnValue(2L));
                 oneOf(followedMapper).execute(2L);
                 will(returnValue(keys));
@@ -205,7 +203,7 @@ public class PersistenceDataSourceTest
             }
         });
 
-        sut.fetch(request);
+        sut.fetch(request, 0L);
         context.assertIsSatisfied();
     }
 
@@ -217,7 +215,7 @@ public class PersistenceDataSourceTest
     {
         ((JSONObject) request.get("query")).put("keywords", "eureka");
 
-        assertNull(sut.fetch(request));
+        assertNull(sut.fetch(request, 0L));
         context.assertIsSatisfied();
     }
 }

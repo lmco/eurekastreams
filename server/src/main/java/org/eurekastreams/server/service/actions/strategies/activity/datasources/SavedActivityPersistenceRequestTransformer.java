@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,27 @@
  */
 package org.eurekastreams.server.service.actions.strategies.activity.datasources;
 
-import java.util.List;
+import java.io.Serializable;
 
 import net.sf.json.JSONObject;
 
 /**
- * Sorted Data Source interface.
- * 
+ * Transforms JSON request to saved activity request.
  */
-public interface SortedDataSource
+public class SavedActivityPersistenceRequestTransformer implements PersistenceDataSourceRequestTransformer
 {
     /**
-     * Fetch activities.
+     * Transforms the request.
      * 
      * @param request
      *            the JSON request.
      * @param userEntityId
      *            the user entity ID.
-     * @return the activity IDs.
+     * @return the request for the saved activity mapper.
      */
-    List<Long> fetch(JSONObject request, Long userEntityId);
+    public Serializable transform(final JSONObject request, final Long userEntityId)
+    {
+        return userEntityId;
+    }
+
 }

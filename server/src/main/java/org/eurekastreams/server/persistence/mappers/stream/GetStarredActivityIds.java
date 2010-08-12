@@ -21,12 +21,13 @@ import java.util.List;
 import javax.persistence.Query;
 
 import org.eurekastreams.server.domain.stream.StarredActivity;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 
 /**
  * Gets a list of starred activity ids for a given user.
  */
-public class GetStarredActivityIds extends CachedDomainMapper
+public class GetStarredActivityIds extends CachedDomainMapper implements DomainMapper<Long, List<Long>>
 {
     /**
      * Looks in the cache for starred activities. If data is not cached, goes to database.
@@ -36,7 +37,7 @@ public class GetStarredActivityIds extends CachedDomainMapper
      * @return the list of follower ids.
      */
     @SuppressWarnings("unchecked")
-    public List<Long> execute(final long userId)
+    public List<Long> execute(final Long userId)
     {
         String key = CacheKeys.STARRED_BY_PERSON_ID + userId;
 

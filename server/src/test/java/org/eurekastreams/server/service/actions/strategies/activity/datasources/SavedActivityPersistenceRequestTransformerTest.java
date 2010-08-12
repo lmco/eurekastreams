@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,39 @@
  */
 package org.eurekastreams.server.service.actions.strategies.activity.datasources;
 
-import java.util.List;
-
+import junit.framework.Assert;
 import net.sf.json.JSONObject;
 
+import org.junit.Before;
+import org.junit.Test;
+
 /**
- * Sorted Data Source interface.
- * 
+ * Saved activity transformer test.
  */
-public interface SortedDataSource
+public class SavedActivityPersistenceRequestTransformerTest
 {
     /**
-     * Fetch activities.
-     * 
-     * @param request
-     *            the JSON request.
-     * @param userEntityId
-     *            the user entity ID.
-     * @return the activity IDs.
+     * System under test.
      */
-    List<Long> fetch(JSONObject request, Long userEntityId);
+    private SavedActivityPersistenceRequestTransformer sut;
+
+    /**
+     * Setup test fixtures.
+     */
+    @Before
+    public void setUP()
+    {
+        sut = new SavedActivityPersistenceRequestTransformer();
+    }
+
+    /**
+     * Tests the transformation.
+     */
+    @Test
+    public void transformTest()
+    {
+        final Long entityId = 10L;
+
+        Assert.assertEquals(entityId, sut.transform(new JSONObject(), entityId));
+    }
 }

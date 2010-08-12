@@ -43,7 +43,7 @@ public class LuceneDataSource implements SortedDataSource
 
     /**
      * Constructor.
-     *
+     * 
      * @param inSearchRequestBuilder
      *            the search request builder
      */
@@ -54,14 +54,16 @@ public class LuceneDataSource implements SortedDataSource
 
     /**
      * Fetch a page of search results, using the keywords in the input JSON request.
-     *
+     * 
      * @param inRequest
      *            the JSON request containing query->keywords
+     * @param userEntityId
+     *            the user entity ID.
      * @return the activity ids
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<Long> fetch(final JSONObject inRequest)
+    public List<Long> fetch(final JSONObject inRequest, final Long userEntityId)
     {
         JSONObject jsonQuery = inRequest.getJSONObject("query");
         if (!jsonQuery.containsKey("keywords") && !jsonQuery.containsKey("sort"))

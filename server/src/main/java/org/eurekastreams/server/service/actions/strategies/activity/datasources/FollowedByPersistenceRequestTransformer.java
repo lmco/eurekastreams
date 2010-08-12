@@ -23,7 +23,7 @@ import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds
 
 /**
  * Turn followedBy;jsmith to his DB id.
- *
+ * 
  */
 public class FollowedByPersistenceRequestTransformer implements PersistenceDataSourceRequestTransformer
 {
@@ -39,7 +39,7 @@ public class FollowedByPersistenceRequestTransformer implements PersistenceDataS
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inPersonMapper
      *            person mapper.
      */
@@ -50,13 +50,15 @@ public class FollowedByPersistenceRequestTransformer implements PersistenceDataS
 
     /**
      * Transform JSON to Long.
-     *
+     * 
      * @param request
      *            the JSON request.
+     * @param userEntityId
+     *            the user entity ID.
      * @return the DB id of the user.
      */
     @Override
-    public Long transform(final JSONObject request)
+    public Long transform(final JSONObject request, final Long userEntityId)
     {
         String accountId = request.getString("followedBy");
 

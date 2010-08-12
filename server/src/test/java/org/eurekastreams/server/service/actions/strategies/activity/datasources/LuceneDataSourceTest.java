@@ -79,7 +79,7 @@ public class LuceneDataSourceTest
             }
         });
 
-        assertSame(results, sut.fetch(request));
+        assertSame(results, sut.fetch(request, 0L));
         context.assertIsSatisfied();
     }
 
@@ -117,7 +117,7 @@ public class LuceneDataSourceTest
             }
         });
 
-        assertSame(results, sut.fetch(request));
+        assertSame(results, sut.fetch(request, 0L));
         context.assertIsSatisfied();
     }
 
@@ -158,7 +158,7 @@ public class LuceneDataSourceTest
             }
         });
 
-        assertSame(results, sut.fetch(request));
+        assertSame(results, sut.fetch(request, 0L));
         context.assertIsSatisfied();
     }
 
@@ -171,7 +171,7 @@ public class LuceneDataSourceTest
         final ProjectionSearchRequestBuilder builder = context.mock(ProjectionSearchRequestBuilder.class);
         LuceneDataSource sut = new LuceneDataSource(builder);
 
-        assertNull(sut.fetch(new JSONObject()));
+        assertNull(sut.fetch(new JSONObject(), 0L));
         context.assertIsSatisfied();
     }
 

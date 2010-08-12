@@ -21,14 +21,18 @@ import net.sf.json.JSONObject;
 
 /**
  * A data source to find activity.
- *
+ * 
  */
 public interface DescendingOrderDataSource
 {
     /**
      * Fetch activities.
-     * @param request the JSON request.
+     * 
+     * @param request
+     *            the JSON request.
+     * @param userEntityId
+     *            the user entity ID.
      * @return the activity IDs.
      */
-    List<Long> fetch(JSONObject request);
+    List<Long> fetch(JSONObject request, Long userEntityId);
 }
