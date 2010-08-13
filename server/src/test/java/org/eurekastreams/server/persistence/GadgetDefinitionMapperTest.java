@@ -74,17 +74,17 @@ public class GadgetDefinitionMapperTest extends DomainEntityMapperTest
     @Test
     public void testDBUnityDataSet()
     {
-        String exampleGadgetUrl = "http://www.example.com";
-        String googleGadgetUrl = "http://www.google.com";
+        String gadgetUrl1 = "http://www.example.com/gadget1.xml";
+        String gadgetUrl2 = "http://www.example.com/gadget2.xml";
 
-        GadgetDefinition googleGadgetDefinition = jpaGadgetDefinitionMapper.findById(googleGadgetDefinitionId);
+        GadgetDefinition googleGadgetDefinition = jpaGadgetDefinitionMapper.findById(gadgetDefinitionId1);
 
-        GadgetDefinition exampleGadgetDefinition = jpaGadgetDefinitionMapper.findById(exampleGadgetDefinitionId);
+        GadgetDefinition exampleGadgetDefinition = jpaGadgetDefinitionMapper.findById(gadgetDefinitionId2);
 
-        assertEquals("DB Unit database not correct for Google gadget " + googleGadgetDefinitionId, googleGadgetUrl,
+        assertEquals("DB Unit database not correct for gadget " + gadgetDefinitionId1, gadgetUrl1,
                 googleGadgetDefinition.getUrl());
 
-        assertEquals("DB Unit database not correct for Example gadget " + exampleGadgetDefinitionId, exampleGadgetUrl,
+        assertEquals("DB Unit database not correct for Example gadget " + gadgetDefinitionId2, gadgetUrl2,
                 exampleGadgetDefinition.getUrl());
     }
 
@@ -254,7 +254,7 @@ public class GadgetDefinitionMapperTest extends DomainEntityMapperTest
     @Test
     public void findByUrlWithExistingUrl()
     {
-        GadgetDefinition gd = jpaGadgetDefinitionMapper.findByUrl("http://www.google.com");
+        GadgetDefinition gd = jpaGadgetDefinitionMapper.findByUrl("http://www.example.com/gadget1.xml");
 
         assertNotNull("Did not find the gadget def", gd);
     }

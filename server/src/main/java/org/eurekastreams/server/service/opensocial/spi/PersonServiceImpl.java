@@ -40,15 +40,11 @@ import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
-import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.commons.server.service.ServiceActionController;
-import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
+import org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper;
 import org.eurekastreams.server.action.request.opensocial.GetPeopleByOpenSocialIdsRequest;
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -56,7 +52,7 @@ import com.google.inject.name.Named;
 /**
  * This class is the Eureka Streams implementation of the Shindig interface for retrieving OpenSocial information about
  * People.
- *
+ * 
  */
 public class PersonServiceImpl implements PersonService
 {
@@ -78,7 +74,7 @@ public class PersonServiceImpl implements PersonService
     /**
      * Principal populator.
      */
-    private OpenSocialPrincipalPopulator principalPopulator;
+    private PrincipalPopulatorTransWrapper principalPopulator;
 
     /**
      * Instance of the GetPersonAction that is used to process Person requests.
@@ -91,13 +87,8 @@ public class PersonServiceImpl implements PersonService
     private String containerBaseUrl;
 
     /**
-     * Platform Transaction Manager for retrieving the OpenSocial Principal Object.
-     */
-    private PlatformTransactionManager transMgr;
-
-    /**
      * Basic constructor for the PersonService implementation.
-     *
+     * 
      * @param inGetPersonAction
      *            - this is the GetPersonAction that is injected into this class with Spring. By injecting with spring
      *            we can maintain the transaction nature of the Actions even in Shindig where Guice is used to wire up
@@ -106,36 +97,31 @@ public class PersonServiceImpl implements PersonService
      *            - this is the GetPeopleAction that is injected into this class with Spring. This action is used to
      *            retrieve multiple person objects in a single request.
      * @param inOpenSocialPrincipalPopulator
-     *            {@link OpenSocialPrincipalPopulator}.
+     *            {@link PrincipalPopulatorTransWrapper}.
      * @param inServiceActionController
      *            {@link ServiceActionController}.
      * @param inContainerBaseUrl
      *            - string that contains the base url for the container to be used when generating links for an
      *            opensocial person.
-     * @param inTransMgr
-     *            - transaction manager for the opensocial populator.
      */
     @Inject
     public PersonServiceImpl(@Named("getPersonNoContext") final ServiceAction inGetPersonAction,
             @Named("getPeopleByOpenSocialIds") final ServiceAction inGetPeopleAction,
-            final OpenSocialPrincipalPopulator inOpenSocialPrincipalPopulator,
+            final PrincipalPopulatorTransWrapper inOpenSocialPrincipalPopulator,
             final ServiceActionController inServiceActionController,
-            @Named("eureka.container.baseurl") final String inContainerBaseUrl,
-            final PlatformTransactionManager inTransMgr)
+            @Named("eureka.container.baseurl") final String inContainerBaseUrl)
     {
         getPersonAction = inGetPersonAction;
         getPeopleAction = inGetPeopleAction;
         containerBaseUrl = inContainerBaseUrl;
         principalPopulator = inOpenSocialPrincipalPopulator;
         serviceActionController = inServiceActionController;
-        transMgr = inTransMgr;
-
     }
 
     /**
-     * This is the implementation method to retrieve a number
-     * of people generally associated with a group or by a set of userids.
-     *
+     * This is the implementation method to retrieve a number of people generally associated with a group or by a set of
+     * userids.
+     * 
      * @param userIds
      *            - set of userids to retrieve.
      * @param groupId
@@ -146,9 +132,9 @@ public class PersonServiceImpl implements PersonService
      *            - fields to retrieve with these users.
      * @param token
      *            - security token for this request.
-     *
+     * 
      * @return instance of person
-     *
+     * 
      */
     @SuppressWarnings("unchecked")
     public Future<RestfulCollection<Person>> getPeople(final Set<UserId> userIds, final GroupId groupId,
@@ -171,10 +157,10 @@ public class PersonServiceImpl implements PersonService
 
             GetPeopleByOpenSocialIdsRequest currentRequest = new GetPeopleByOpenSocialIdsRequest(userIdList, groupId
                     .getType().toString().toLowerCase());
-            ServiceActionContext currentContext = new ServiceActionContext(currentRequest, getOpenSocialPrincipal(token
-                    .getViewerId()));
+            ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalPopulator
+                    .getPrincipal(token.getViewerId()));
 
-            LinkedList<org.eurekastreams.server.domain.Person> people =
+            LinkedList<org.eurekastreams.server.domain.Person> people = 
                 (LinkedList<org.eurekastreams.server.domain.Person>) serviceActionController
                     .execute(currentContext, getPeopleAction);
 
@@ -197,14 +183,14 @@ public class PersonServiceImpl implements PersonService
     /**
      * This is the implementation of the getPerson method specified by Shindig. This is how Shindig's OpenSocial api
      * will interact with our database.
-     *
+     * 
      * @param id
      *            - userid making the request.
      * @param fields
      *            - set of fields to be retrieved with this request.
      * @param token
      *            - token that goes with this request.
-     *
+     * 
      * @return instance of Person object
      */
     public Future<Person> getPerson(final UserId id, final Set<String> fields, final SecurityToken token)
@@ -227,7 +213,7 @@ public class PersonServiceImpl implements PersonService
             log.debug("User id requested is: " + openSocialId);
 
             // Get Principal object for current user.
-            Principal currentUserPrincipal = getOpenSocialPrincipal(openSocialId);
+            Principal currentUserPrincipal = principalPopulator.getPrincipal(openSocialId);
 
             // Create the actionContext
             PrincipalActionContext ac = new ServiceActionContext(currentUserPrincipal.getAccountId(),
@@ -257,7 +243,7 @@ public class PersonServiceImpl implements PersonService
 
     /**
      * Helper method that converts a passed in eurekastreams Person object into a Shindig Person object.
-     *
+     * 
      * @param inPerson
      *            - eurekastreams person to be converted.
      * @return converted person object.
@@ -277,33 +263,4 @@ public class PersonServiceImpl implements PersonService
                 + generator.getSmallAvatarUrl(inPerson.getId(), inPerson.getAvatarId()));
         return osPerson;
     }
-
-    /**
-     * This is a helper class for retrieving the opensocial id and encapsulate the transaction code.
-     *
-     * @param inOpenSocialId
-     *            - string based opensocial id to retrieve hte principal object for.
-     * @return - Principal object based on the opensocial id passed in.
-     */
-    private Principal getOpenSocialPrincipal(final String inOpenSocialId)
-    {
-        DefaultTransactionDefinition transDef = new DefaultTransactionDefinition();
-        transDef.setReadOnly(true);
-        TransactionStatus currentStatus = transMgr.getTransaction(transDef);
-        Principal currentUserPrincipal = null;
-        try
-        {
-            // Get Principal object for current user.
-            currentUserPrincipal = principalPopulator.getPrincipal(inOpenSocialId);
-            transMgr.commit(currentStatus);
-        }
-        catch (Exception ex)
-        {
-            transMgr.rollback(currentStatus);
-            throw new AuthorizationException("Error occurred retrieving principal for opensocial id.", ex);
-        }
-
-        return currentUserPrincipal;
-    }
-
 }

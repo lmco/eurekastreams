@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+  <ModulePrefs title="Demo 2-legged OAuth to Shindig">
+  </ModulePrefs>
+  <Content type="html">
+      <![CDATA[
+
+    <style>
+    #main {
+        margin: 0px;
+        padding: 0px;
+        font-size: small;
+    }
+    </style>
+
+    <div id="main" style="display: none">
+    </div>
+
+    <div id="approval" style="display: none">
+      <img src="${build.web.baseurl}/gadgets/files/samplecontainer/examples/new.gif">
+      <a href="#" id="personalize">Personalize this gadget</a>
+    </div>
+
+    <div id="waiting" style="display: none">
+      Please click
+      <a href="#" id="approvaldone">I've approved access</a>
+      once you've approved access to your data.
+    </div>
+
+    <script type="text/javascript">
+      function $(x) {
+        return document.getElementById(x);
+      }
+
+      function showOneSection(toshow) {
+        var sections = [ 'main', 'approval', 'waiting' ];
+        for (var i=0; i < sections.length; ++i) {
+          var s = sections[i];
+          var el = $(s);
+          if (s === toshow) {
+            el.style.display = "block";
+          } else {
+            el.style.display = "none";
+          }
+        }
+      }
+
+      function fetchData() {
+        var url = "http://oauth-sandbox.sevengoslings.net/two_legged";
+        var params = {};
+        params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.TEXT;
+        params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
+        params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.GET;
+        params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "shindig";
+        params[gadgets.io.RequestParameters.OAUTH_USE_TOKEN] = "never";
+
+        gadgets.io.makeRequest(url, function (response) {
+          if (response.oauthApprovalUrl) {
+            var onOpen = function() {
+              showOneSection('waiting');
+            };
+            var onClose = function() {
+              fetchData();
+            };
+            var popup = new gadgets.oauth.Popup(response.oauthApprovalUrl,
+                null, onOpen, onClose);
+            $('personalize').onclick = popup.createOpenerOnClick();
+            $('approvaldone').onclick = popup.createApprovedOnClick();
+            showOneSection('approval');
+          } else if (response.data) {
+            $('main').appendChild(document.createTextNode(response.data));
+            showOneSection('main');
+          } else {
+            var whoops = document.createTextNode(
+                'OAuth error: ' + response.oauthError + ': ' +
+                response.oauthErrorText);
+            $('main').appendChild(whoops);
+            showOneSection('main');
+          }
+        }, params);
+      }
+
+      gadgets.util.registerOnLoadHandler(fetchData);
+    </script>
+        ]]>
+  </Content>
+</Module>

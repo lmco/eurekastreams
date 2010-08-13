@@ -40,15 +40,14 @@ public class OAuthConsumerMapperTest extends DomainEntityMapperTest
     @Test
     public void testInsert()
     {
-        OAuthConsumer consumer =
-                new OAuthConsumer("provider", "http://localhost:4040/some/path/gadget.xml", "key", "secret",
-                        "HMCA-SHA1");
+        OAuthConsumer consumer = new OAuthConsumer("provider", "http://www.example.com/gadget1.xml", "key", "secret",
+                "HMCA-SHA1");
         jpaOAuthConsumerMapper.insert(consumer);
         long consumerId = consumer.getId();
         jpaOAuthConsumerMapper.getEntityManager().clear();
 
-        assertTrue("Inserting an OAuthConsumer did not get a positive id.", jpaOAuthConsumerMapper
-                .findById(consumerId).getId() > 0);
+        assertTrue("Inserting an OAuthConsumer did not get a positive id.", jpaOAuthConsumerMapper.findById(consumerId)
+                .getId() > 0);
     }
 
     /**
@@ -57,11 +56,11 @@ public class OAuthConsumerMapperTest extends DomainEntityMapperTest
     @Test
     public void testFindConsumerByServiceNameAndGadgetUrl()
     {
-        OAuthConsumer consumer =
-                jpaOAuthConsumerMapper.findConsumerByServiceNameAndGadgetUrl("provider1",
-                        "http://localhost:4040/some/path/gadget1.xml");
+        OAuthConsumer consumer = jpaOAuthConsumerMapper.findConsumerByServiceNameAndGadgetUrl("provider1",
+                "http://www.example.com/gadget2.xml");
 
-        assertTrue("No Consumer found for serviceName of 'provider1' and gadget url of /some/path/gadget1.xml",
+        assertTrue(
+              "No Consumer found for serviceName of 'provider1' and gadget url of http://www.example.com/gadget1.xml",
                 consumer != null);
 
         // verify loaded attributes of consumer
@@ -76,9 +75,8 @@ public class OAuthConsumerMapperTest extends DomainEntityMapperTest
     @Test
     public void testNullFindConsumerByServiceNameAndGadgetUrl()
     {
-        OAuthConsumer consumer =
-                jpaOAuthConsumerMapper.findConsumerByServiceNameAndGadgetUrl("providerX",
-                        "http://localhost:4040/some/path/gadgetX.xml");
+        OAuthConsumer consumer = jpaOAuthConsumerMapper.findConsumerByServiceNameAndGadgetUrl("providerX",
+                "http://localhost:4040/some/path/gadgetX.xml");
 
         assertTrue("Consumer found for serviceName of 'providerX' and gadget url of /some/path/gadgetX.xml",
                 consumer == null);

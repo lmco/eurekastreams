@@ -15,8 +15,25 @@
  */
 package org.eurekastreams.server.service.opensocial.core.config;
 
-import org.apache.shindig.social.core.config.SocialApiGuiceModule;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.shindig.auth.AnonymousAuthenticationHandler;
+import org.apache.shindig.auth.AuthenticationHandler;
+import org.apache.shindig.common.servlet.ParameterFetcher;
+import org.apache.shindig.protocol.DataServiceServletFetcher;
+import org.apache.shindig.protocol.conversion.BeanConverter;
+import org.apache.shindig.protocol.conversion.BeanJsonConverter;
+import org.apache.shindig.protocol.conversion.BeanXStreamConverter;
+import org.apache.shindig.protocol.conversion.xstream.XStreamConfiguration;
+import org.apache.shindig.social.core.oauth.AuthenticationHandlerProvider;
+import org.apache.shindig.social.core.util.BeanXStreamAtomConverter;
+import org.apache.shindig.social.core.util.xstream.XStream081Configuration;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
+import org.apache.shindig.social.opensocial.service.ActivityHandler;
+import org.apache.shindig.social.opensocial.service.AppDataHandler;
+import org.apache.shindig.social.opensocial.service.MessageHandler;
+import org.apache.shindig.social.opensocial.service.PersonHandler;
 import org.apache.shindig.social.opensocial.spi.ActivityService;
 import org.apache.shindig.social.opensocial.spi.AppDataService;
 import org.apache.shindig.social.opensocial.spi.MessageService;
@@ -26,6 +43,7 @@ import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
 import org.eurekastreams.commons.server.service.ServiceActionController;
 import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
+import org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper;
 import org.eurekastreams.server.service.opensocial.oauth.OAuthDataStoreImpl;
 import org.eurekastreams.server.service.opensocial.oauth.SocialRealm;
 import org.eurekastreams.server.service.opensocial.spi.ActivityServiceImpl;
@@ -36,22 +54,53 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.inject.AbstractModule;
+import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 import com.google.inject.spring.SpringIntegration;
 
 /**
- * Guice module to wire up Eureka Streams implementatino of Shindig OpenSocial endpoints.
+ * Guice module to wire up Eureka Streams implementation of Shindig OpenSocial endpoints.
  * 
  */
-public class SocialAPIGuiceModule extends SocialApiGuiceModule
+public class SocialAPIGuiceModule extends AbstractModule
 {
+    /**
+     * Configuration value for the Service Expiration.
+     */
+    private static final Long SERVICE_EXPIRATION_IN_MINS = 60L;
+    
     /**
      * Override method to configure the guice injection.
      */
     @Override
     protected void configure()
     {
-        super.configure();
+        bind(ParameterFetcher.class).annotatedWith(Names.named("DataServiceServlet")).to(
+                DataServiceServletFetcher.class);
+
+        bind(Boolean.class).annotatedWith(Names.named(AnonymousAuthenticationHandler.ALLOW_UNAUTHENTICATED))
+                .toInstance(Boolean.FALSE);
+        bind(XStreamConfiguration.class).to(XStream081Configuration.class);
+        bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.xml")).to(
+                BeanXStreamConverter.class);
+        bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.json")).to(
+                BeanJsonConverter.class);
+        bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.atom")).to(
+                BeanXStreamAtomConverter.class);
+
+        bind(new TypeLiteral<List<AuthenticationHandler>>()
+        {
+        }).toProvider(AuthenticationHandlerProvider.class);
+
+        bind(new TypeLiteral<Set<Object>>()
+        {
+        }).annotatedWith(Names.named("org.apache.shindig.social.handlers")).toInstance(getHandlers());
+
+        bind(Long.class).annotatedWith(Names.named("org.apache.shindig.serviceExpirationDurationMinutes")).toInstance(
+                SERVICE_EXPIRATION_IN_MINS);
+
         ApplicationContext appContext = new ClassPathXmlApplicationContext(
                 "classpath*:conf/applicationContext-container.xml");
         bind(BeanFactory.class).toInstance(appContext);
@@ -90,5 +139,36 @@ public class SocialAPIGuiceModule extends SocialApiGuiceModule
                                 "postPersonActivityServiceActionTaskHandler"));
         bind(OpenSocialPrincipalPopulator.class).toProvider(
                 SpringIntegration.fromSpring(OpenSocialPrincipalPopulator.class, "openSocialPrincipalPopulator"));
+        bind(PrincipalPopulatorTransWrapper.class).toProvider(
+                SpringIntegration.fromSpring(PrincipalPopulatorTransWrapper.class,
+                        "openSocialPrincipalPopulatorTransWrapper"));
+
+        // OAuthDataStoreImpl wirings
+        bind(ServiceAction.class).annotatedWith(Names.named("createOAuthRequestToken")).toProvider(
+                SpringIntegration.fromSpring(ServiceAction.class, "createOAuthRequestToken"));
+        bind(ServiceAction.class).annotatedWith(Names.named("authorizeOAuthToken")).toProvider(
+                SpringIntegration.fromSpring(ServiceAction.class, "oauthAuthorize"));
+        bind(ServiceAction.class).annotatedWith(Names.named("updateRequestToAccessToken")).toProvider(
+                SpringIntegration.fromSpring(ServiceAction.class, "updateRequestToAccessToken"));
+        bind(ServiceAction.class).annotatedWith(Names.named("getOAuthEntryByToken")).toProvider(
+                SpringIntegration.fromSpring(ServiceAction.class, "getOAuthEntryByToken"));
+        bind(ServiceAction.class).annotatedWith(Names.named("disableOAuthToken")).toProvider(
+                SpringIntegration.fromSpring(ServiceAction.class, "disableOAuthToken"));
+        bind(ServiceAction.class).annotatedWith(Names.named("removeOAuthToken")).toProvider(
+                SpringIntegration.fromSpring(ServiceAction.class, "removeOAuthToken"));
+        bind(ServiceAction.class).annotatedWith(Names.named("getOAuthConsumerByConsumerKey")).toProvider(
+                SpringIntegration.fromSpring(ServiceAction.class, "getOAuthConsumerByConsumerKey"));
+        bind(ServiceAction.class).annotatedWith(Names.named("getSecurityTokenForConsumerRequest")).toProvider(
+                SpringIntegration.fromSpring(ServiceAction.class, "getSecurityTokenForConsumerRequest"));
+    }
+
+    /**
+     * Hook to provide a Set of request handlers. Subclasses may override to add or replace additional handlers.
+     * @return retrieve a list of handlers for the OpenSocial API handlers.
+     */
+    protected Set<Object> getHandlers()
+    {
+        return ImmutableSet.<Object> of(ActivityHandler.class, AppDataHandler.class, PersonHandler.class,
+                MessageHandler.class);
     }
 }

@@ -18,10 +18,9 @@ package org.eurekastreams.server.action.execution.opensocial;
 import java.io.IOException;
 
 import net.oauth.OAuth;
-import net.oauth.OAuthProblemException;
 
 import org.apache.commons.logging.Log;
-import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
+import org.apache.shindig.common.crypto.Crypto;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
@@ -38,68 +37,25 @@ public class OAuthAuthorizeExecution implements ExecutionStrategy<PrincipalActio
     /**
      * Logger.
      */
-    private Log log = LogFactory.make();    
-    
-    /**
-     * The oauth data store to communicate with.
-     */
-    private OAuthDataStore dataStore;
+    private Log log = LogFactory.make();
     
     /**
      * The mapper used for retrieving OAuthEntries from the db.
      */
-    private OAuthEntryMapper oauthEntryMapper;
-
-    /**
-     * Setter.
-     * 
-     * @param inDataStore
-     *            the dataStore to set
-     */
-    public void setDataStore(final OAuthDataStore inDataStore)
-    {
-        dataStore = inDataStore;
-    }
-
-    /**
-     * Setter for the OAuthEntryMapper.
-     * @param inMapper 
-     *           the mapper to set.
-     */
-    public void setOAuthEntryMapper(final OAuthEntryMapper inMapper)
-    {
-        oauthEntryMapper = inMapper;
-    }
+    private final OAuthEntryMapper oauthEntryMapper;
     
     /**
-     * Default constructor.
+     * Number of digits to create for the random callback token.
      */
-    public OAuthAuthorizeExecution()
-    {
-        //left blank for GWT serialization requirements.
-    }
+    private static final int CALLBACK_TOKEN_LENGTH = 6;
     
     /**
      * Constructor.
-     * @param inDataStore
-     *          the datastore.
      * @param inOAuthEntryMapper - mapper for the OauthEntry.
      */
-    public OAuthAuthorizeExecution(final OAuthDataStore inDataStore, final OAuthEntryMapper inOAuthEntryMapper)
+    public OAuthAuthorizeExecution(final OAuthEntryMapper inOAuthEntryMapper)
     {
-        dataStore = inDataStore;
         oauthEntryMapper = inOAuthEntryMapper;
-    }
-
-    /**
-     * REMOVE THIS - ONLY HERE TO MAKE SPRING HAPPY WHILE I AM WAITING TO CHECK IN THE OUATH STUFF.
-     * @param inDataStore
-     *          the datastore.
-     */
-    public OAuthAuthorizeExecution(final OAuthDataStore inDataStore)
-    {
-        dataStore = inDataStore;
-        oauthEntryMapper = null;
     }
     
     /**
@@ -119,12 +75,17 @@ public class OAuthAuthorizeExecution implements ExecutionStrategy<PrincipalActio
         
         try
         {
-            dataStore.authorizeToken(tokenEntry, accountId);
+            OAuthDomainEntry dto = oauthEntryMapper.findEntry(token);
+            dto.setAuthorized(true);
+            if (dto.isCallbackUrlSigned())
+            {
+                dto.setCallbackToken(Crypto.getRandomDigits(CALLBACK_TOKEN_LENGTH));
+            }
         }
-        catch (OAuthProblemException oape)
+        catch (Exception ex)
         {
-            log.error("An OAuth problem has occured.", oape);
-            throw new ExecutionException(oape);
+            log.error("An error occurred authorizing the OAuth token.", ex);
+            throw new ExecutionException(ex);
         }
         
         OAuthDomainEntry currentEntry = oauthEntryMapper.findEntry(tokenEntry.token);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,320 +15,248 @@
  */
 package org.eurekastreams.server.service.opensocial.oauth;
 
-import java.util.Date;
-import java.util.UUID;
-
 import net.oauth.OAuthConsumer;
 import net.oauth.OAuthProblemException;
-import net.oauth.OAuthServiceProvider;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.shindig.auth.AuthenticationMode;
 import org.apache.shindig.auth.SecurityToken;
-import org.apache.shindig.common.crypto.Crypto;
-import org.apache.shindig.social.core.oauth.OAuthSecurityToken;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
-import org.apache.shindig.social.opensocial.oauth.OAuthEntry.Type;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.eurekastreams.server.domain.OAuthDomainEntry;
-import org.eurekastreams.server.persistence.OAuthConsumerMapper;
-import org.eurekastreams.server.persistence.OAuthEntryMapper;
+import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
+import org.eurekastreams.commons.actions.service.ServiceAction;
+import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.logging.LogFactory;
+import org.eurekastreams.commons.server.service.ServiceActionController;
+import org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper;
+import org.eurekastreams.server.action.request.opensocial.CreateOAuthRequestTokenRequest;
+import org.eurekastreams.server.action.response.opensocial.SecurityTokenResponse;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 /**
- * {@link OAuthDataStore} implementation that is used during both 2 and 3-legged OAuth 
- * authorizations from Shindig.  These methods are called 
+ * {@link OAuthDataStore} implementation that is used during both 2 and 3-legged OAuth authorizations from Shindig.
+ * These methods are called
  */
 public class OAuthDataStoreImpl implements OAuthDataStore
 {
     /**
      * Local instance of logger.
      */
-    private final Log logger = LogFactory.getLog(OAuthDataStoreImpl.class);
-    
-    /**
-     * Instance of OAuth entry mapper injected by spring.
-     */
-    private OAuthEntryMapper entryMapper;
+    private Log logger = LogFactory.make();
 
     /**
-     * Instance of OAuth consumer mapper injected by spring.
+     * Instance of the {@link ServiceActionController} for this class.
      */
-    private OAuthConsumerMapper consumerMapper;
+    @Inject
+    private ServiceActionController actionController;
 
     /**
-     * Instance of the transaction manager injected by spring for mapper calls.
+     * Instance of the {@link PrincipalPopulatorTransWrapper} for the OpenSocialPrincipalPopulator.
      */
-    private PlatformTransactionManager transMgr = null;
+    @Inject
+    private PrincipalPopulatorTransWrapper principalPopulator;
 
     /**
-     * The local service provider.
+     * Instance of the CreateOauthRequestToken Service Action.
      */
-    private final OAuthServiceProvider serviceProvider;
-    
-    /**
-     * Number of digits to create for the random callback token.
-     */
-    private static final int CALLBACK_TOKEN_LENGTH = 6;
+    private final ServiceAction createOAuthRequestTokenAction;
 
     /**
-     * Maximum attempts to attempt to authorize a request token. 
+     * Instance of the AuthorizeOAuthToken Service Action.
      */
-    private static final int CALLBACK_TOKEN_ATTEMPTS = 5;
+    private final ServiceAction authorizeOAuthTokenAction;
 
     /**
-     * Default constructor. Empty but necessary for spring.
+     * Instance of the UpdateRequestToAccessToken Service Action.
      */
-    public OAuthDataStoreImpl()
-    {
-    	serviceProvider = null;
-    }
+    private final ServiceAction updateRequestToAccessTokenAction;
 
     /**
-     * @param inEntryMapper
-     *            the entryMapper to set
+     * Instance of the GetOAuthEntryByToken Service Action.
      */
-    public void setEntryMapper(final OAuthEntryMapper inEntryMapper)
-    {
-        entryMapper = inEntryMapper;
-    }
+    private final ServiceAction getOAuthEntryByTokenAction;
 
     /**
-     * @param inConsumerMapper
-     *            the consumerMapper to set
+     * Instance of the DisableOAuthToken Service Action.
      */
-    public void setConsumerMapper(final OAuthConsumerMapper inConsumerMapper)
-    {
-        consumerMapper = inConsumerMapper;
-    }
+    private final ServiceAction disableOAuthTokenAction;
 
     /**
-     * @param inTransMgr
-     *            the transMgr to set
+     * Instance of the RemoveOAuthToken Service Action.
      */
-    public void setTransMgr(final PlatformTransactionManager inTransMgr)
-    {
-        transMgr = inTransMgr;
-    }
+    private final ServiceAction removeOAuthTokenAction;
+
+    /**
+     * Instance of the GetOauthConsumerByConsumerKeyAction Service Action.
+     */
+    private final ServiceAction getOAuthConsumerByConsumerKeyAction;
+
+    /**
+     * Instance of the GetSecurityToken For Conumer Request Service Action.
+     */
+    private final ServiceAction getSecurityTokenForConsumerRequestAction;
 
     /**
      * Constructor.
-     * @param inRequestTokenUrl - Url for retrieving the request token
-     * @param inAuthorizeUrl - Url for authorizing the user.
-     * @param inAccessTokenUrl - Url for retrieving the access token.
-     * @param inEntryMapper
-     *          the oauth entry mapper.
-     * @param inConsumerMapper
-     *          the oauth consumer mapper.
-     * @param inTransMgr
-     *          the transaction manager.
+     * 
+     * @param inCreateOAuthRequestTokenAction
+     *            - instance of {@link ServiceAction} for CreateOAuthRequestToken Service Action.
+     * @param inAuthorizeOAuthTokenAction
+     *            - instance of {@link ServiceAction} for OAuthAuthorize.
+     * @param inUpdateRequestToAccessTokenAction
+     *            - instance of UpdateRequestToAccessToken {@link ServiceAction}.
+     * @param inGetOAuthEntryByTokenAction
+     *            - instance of GetOAuthEntryByToken {@link ServiceAction}.
+     * @param inDisableOAuthTokenAction
+     *            - instance of DisableOAuthToken {@link ServiceAction}.
+     * @param inRemoveOAuthTokenAction
+     *            - instance of RemoveOAuthToken {@link ServiceAction}.
+     * @param inGetOAuthConsumerByConsumerKeyAction
+     *            - instance of GetOAuthConsumerByConsumerKey {@link ServiceAction}.
+     * @param inGetSecurityTokenForConsumerRequestAction
+     *            - instance of GetSecurityTokenForConsumerRequest {@link ServiceAction}.
      */
     @Inject
-    public OAuthDataStoreImpl(@Named("eureka.oauth.requesttokenurl") final String inRequestTokenUrl, 
-    		@Named("eureka.oauth.authorizeurl") final String inAuthorizeUrl, 
-    		@Named("eureka.oauth.accesstokenurl") final String inAccessTokenUrl, 
-    		final OAuthEntryMapper inEntryMapper, final OAuthConsumerMapper inConsumerMapper,
-            final PlatformTransactionManager inTransMgr)
+    public OAuthDataStoreImpl(
+            @Named("createOAuthRequestToken") final ServiceAction inCreateOAuthRequestTokenAction,
+            @Named("authorizeOAuthToken") final ServiceAction inAuthorizeOAuthTokenAction,
+            @Named("updateRequestToAccessToken") final ServiceAction inUpdateRequestToAccessTokenAction,
+            @Named("getOAuthEntryByToken") final ServiceAction inGetOAuthEntryByTokenAction,
+            @Named("disableOAuthToken") final ServiceAction inDisableOAuthTokenAction,
+            @Named("removeOAuthToken") final ServiceAction inRemoveOAuthTokenAction,
+            @Named("getOAuthConsumerByConsumerKey") final ServiceAction inGetOAuthConsumerByConsumerKeyAction,
+            @Named("getSecurityTokenForConsumerRequest") final ServiceAction 
+                inGetSecurityTokenForConsumerRequestAction)
     {
-    	serviceProvider = new OAuthServiceProvider(inRequestTokenUrl, inAuthorizeUrl, inAccessTokenUrl);
-    	entryMapper = inEntryMapper;
-    	consumerMapper = inConsumerMapper;
-    	transMgr = inTransMgr;
+        createOAuthRequestTokenAction = inCreateOAuthRequestTokenAction;
+        authorizeOAuthTokenAction = inAuthorizeOAuthTokenAction;
+        updateRequestToAccessTokenAction = inUpdateRequestToAccessTokenAction;
+        getOAuthEntryByTokenAction = inGetOAuthEntryByTokenAction;
+        disableOAuthTokenAction = inDisableOAuthTokenAction;
+        removeOAuthTokenAction = inRemoveOAuthTokenAction;
+        getOAuthConsumerByConsumerKeyAction = inGetOAuthConsumerByConsumerKeyAction;
+        getSecurityTokenForConsumerRequestAction = inGetSecurityTokenForConsumerRequestAction;
+    }
+
+    /**
+     * Setter.
+     * 
+     * @param inServiceActionController
+     *            - instance of the {@link ServiceActionController}.
+     */
+    public void setServiceActionController(final ServiceActionController inServiceActionController)
+    {
+        actionController = inServiceActionController;
+    }
+
+    /**
+     * Setter.
+     * 
+     * @param inPrincipalPopulatorTransWrapper
+     *            - instance of {@link PrincipalPopulatorTransWrapper}.
+     */
+    public void setPrincipalPopulatorTransWrapper(final PrincipalPopulatorTransWrapper inPrincipalPopulatorTransWrapper)
+    {
+        principalPopulator = inPrincipalPopulatorTransWrapper;
     }
 
     /**
      * Creates a request token for a new OAuth request.
+     * 
      * @param consumerKey
-     *          the consumer key for this request.
+     *            the consumer key for this request.
      * @param oauthVersion
-     *          the version of the oauth protocol used in this request.
+     *            the version of the oauth protocol used in this request.
      * @param signedCallbackUrl
-     *          the callback url (needed for OAuth 1.0 A).
+     *            the callback url (needed for OAuth 1.0 A).
      * @return the entry containing the new token.
      * @throws OAuthProblemException
-     *          thrown when token could not be persisted. 
+     *             thrown when token could not be persisted.
      */
     public OAuthEntry generateRequestToken(final String consumerKey, final String oauthVersion,
             final String signedCallbackUrl) throws OAuthProblemException
     {
-        DefaultTransactionDefinition transDef = new DefaultTransactionDefinition();
-        transDef.setName("RequestTokenTransaction");
-        transDef.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-        TransactionStatus transStatus = transMgr.getTransaction(transDef);
-
         try
         {
-            OAuthEntry entry = new OAuthEntry();
-            entry.appId = consumerKey;
-            entry.consumerKey = consumerKey;
-            entry.domain = "samplecontainer.com";
-            entry.container = "default";
-
-            entry.token = UUID.randomUUID().toString();
-            entry.tokenSecret = UUID.randomUUID().toString();
-
-            entry.type = OAuthEntry.Type.REQUEST;
-            entry.issueTime = new Date();
-            entry.oauthVersion = oauthVersion;
-            if (signedCallbackUrl != null)
-            {
-                entry.callbackUrlSigned = true;
-                entry.callbackUrl = signedCallbackUrl;
-            }
-
-            OAuthDomainEntry dto = convertToEntryDTO(entry);
-            entryMapper.insert(dto);
-            transMgr.commit(transStatus);
-            return entry;
+            CreateOAuthRequestTokenRequest currentRequest = new CreateOAuthRequestTokenRequest(consumerKey,
+                    oauthVersion, signedCallbackUrl);
+            ServiceActionContext currentContext = new ServiceActionContext(currentRequest, null);
+            return (OAuthEntry) actionController.execute(currentContext, createOAuthRequestTokenAction);
         }
         catch (Exception ex)
         {
             logger.error("Error occurred persisting request token information", ex);
-            transMgr.rollback(transStatus);
             throw new OAuthProblemException("Unable to persist request token information");
         }
     }
 
     /**
      * Authorize the access token.
+     * 
      * @param entry
-     *          the entry to authorize.
+     *            the entry to authorize.
      * @param userId
-     *          the user making the request.
+     *            the user making the request.
      * @throws OAuthProblemException
-     *          thrown when the token could not be persisted.
+     *             thrown when the token could not be persisted.
      */
     public void authorizeToken(final OAuthEntry entry, final String userId) throws OAuthProblemException
     {
-        DefaultTransactionDefinition transDef = new DefaultTransactionDefinition();
-        transDef.setName("AuthorizeTokenTransaction");
-        transDef.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-        TransactionStatus transStatus = transMgr.getTransaction(transDef);
-
         try
         {
-            OAuthDomainEntry dto = entryMapper.findEntry(entry.token);
-            dto.setAuthorized(true);
-            if (dto.isCallbackUrlSigned())
-            {
-                dto.setCallbackToken(Crypto.getRandomDigits(CALLBACK_TOKEN_LENGTH));
-            }
-            transMgr.commit(transStatus);
+            ServiceActionContext currentContext = new ServiceActionContext(entry.token, principalPopulator
+                    .getPrincipal(entry.userId));
+            actionController.execute(currentContext, authorizeOAuthTokenAction);
         }
-        catch (Exception ex)
+        catch (ExecutionException ex)
         {
-            logger.error("Error occurred persisting authorization token information", ex);
-            transMgr.rollback(transStatus);
-            throw new OAuthProblemException("Unable to persist token authorization information");
+            logger.error("Error occurred authorizing token", ex);
+            throw new OAuthProblemException("Unable to authorize token");
         }
     }
 
     /**
-     * Authorize the access token with an OAuthDomainEntry passed in.
-     * @param inEntry - OAuthDomainEntry representating the OAuth token.
-     * @param userId - Userid requesting the authorization.
-     * @throws OAuthProblemException - if errors occur.
-     */
-    public void authorizeToken(final OAuthDomainEntry inEntry, final String userId) throws OAuthProblemException
-    {
-        authorizeToken(convertToEntry(inEntry), userId);
-    }
-    
-    /**
      * Exchange a request token for an access token.
+     * 
      * @param entry
-     *          the entry to authorize.
+     *            the entry to authorize.
      * @return the entry with the access token.
      * @throws OAuthProblemException
-     *          thrown when the token could not be persisted.
+     *             thrown when the token could not be persisted.
      */
     public OAuthEntry convertToAccessToken(final OAuthEntry entry) throws OAuthProblemException
     {
-        DefaultTransactionDefinition transDef = new DefaultTransactionDefinition();
-        transDef.setName("AccessTokenTransaction");
-        transDef.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-        TransactionStatus transStatus = transMgr.getTransaction(transDef);
-
         try
         {
-            OAuthEntry accessEntry = new OAuthEntry(entry);
-
-            accessEntry.token = UUID.randomUUID().toString();
-            accessEntry.tokenSecret = UUID.randomUUID().toString();
-
-            accessEntry.type = OAuthEntry.Type.ACCESS;
-            accessEntry.issueTime = new Date();
-
-            entryMapper.delete(entry.token);
-            entryMapper.insert(convertToEntryDTO(accessEntry));
-            transMgr.commit(transStatus);
-
-            return accessEntry;
+            ServiceActionContext currentContext = new ServiceActionContext(entry, principalPopulator
+                    .getPrincipal(entry.userId));
+            return (OAuthEntry) actionController.execute(currentContext, updateRequestToAccessTokenAction);
         }
         catch (Exception ex)
         {
-            logger.error("Error occurred persisting access token information", ex);
-            transMgr.rollback(transStatus);
-            throw new OAuthProblemException("Unable to persist access token information");
+            logger.error("Error occurred converting request token to access token", ex);
+            throw new OAuthProblemException("Unable to convert request token to access token");
         }
     }
 
     /**
      * Return the consumer for a given key.
+     * 
      * @param consumerKey
-     *          the key.
+     *            the key.
      * @return the found consumer.
      * @throws OAuthProblemException
-     *          thrown when there was a problem retrieving the consumer information.
+     *             thrown when there was a problem retrieving the consumer information.
      */
     public OAuthConsumer getConsumer(final String consumerKey) throws OAuthProblemException
     {
-        //TODO - finish
-        // Serializable[] params = {consumerKey};
-        // org.eurekastreams.server.domain.OAuthConsumer currentConsumer = null;
-        // OAuthConsumer oauthConsumer = null;
-        // try
-        // {
-        // //Retrieve the model OAuthConsumer and convert to net.oauth.OAuthConsumer.
-        // currentConsumer =
-        // oauthConsumerAction.performAction(new NoCurrentUserDetails(), params);
-        // oauthConsumer = new OAuthConsumer(
-        // currentConsumer.getCallbackUrl(),
-        // currentConsumer.getConsumerKey(),
-        // currentConsumer.getConsumerSecret(),
-        // new OAuthServiceProvider (
-        // oauthSP.getRequestUrl(),
-        // oauthSP.getAuthorizeUrl(),
-        // oauthSP.getAccessUrl()));
-        // //Set consumer properties here. The sample uses gadget properties of the ModulePrefs.
-        // }
-        // catch (Exception ex)
-        // {
-        //            
-        // throw new OAuthProblemException(
-        // "Error occurred retrieving OAuthConsumer with the provided key.");
-        // }
-        // return oauthConsumer;
-
-        // return null;
-        
         OAuthConsumer consumer = null;
-        
+
         try
         {
-            org.eurekastreams.server.domain.OAuthConsumer mappedConsumer = 
-                consumerMapper.findConsumerByConsumerKey(consumerKey);
-            consumer = new OAuthConsumer(
-                    mappedConsumer.getCallbackURL(), 
-                    consumerKey, 
-                    mappedConsumer.getConsumerSecret(), serviceProvider);
+            ServiceActionContext currentContext = new ServiceActionContext(consumerKey, null);
+            consumer = (OAuthConsumer) actionController.execute(currentContext, getOAuthConsumerByConsumerKeyAction);
         }
         catch (Exception ex)
         {
@@ -340,147 +268,99 @@ public class OAuthDataStoreImpl implements OAuthDataStore
 
     /**
      * Get an entry for a specific oauth token.
+     * 
      * @param oauthToken
-     *          the token.
+     *            the token.
      * @return the associated entry.
      */
     public OAuthEntry getEntry(final String oauthToken)
     {
-        OAuthDomainEntry dto = entryMapper.findEntry(oauthToken);
-        if (dto == null)
+        OAuthEntry entry = null;
+        try
         {
-            return null;
+            ServiceActionContext currentContext = new ServiceActionContext(oauthToken, null);
+            entry = (OAuthEntry) actionController.execute(currentContext, getOAuthEntryByTokenAction);
         }
-        return this.convertToEntry(dto);
+        catch (Exception ex)
+        {
+            logger.error("Error occurred retrieving OAuthEntry based on the token.", ex);
+        }
+
+        return entry;
     }
 
     /**
      * Marks a token as disabled.
+     * 
      * @param entry
-     *          the OAuthEntry to disable.
+     *            the OAuthEntry to disable.
      */
     public void disableToken(final OAuthEntry entry)
     {
-        DefaultTransactionDefinition transDef = new DefaultTransactionDefinition();
-        transDef.setName("DisableTokenTransaction");
-        transDef.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-        TransactionStatus transStatus = transMgr.getTransaction(transDef);
-
         try
         {
-            OAuthDomainEntry dto = entryMapper.findEntry(entry.token);
-            dto.setCallbackTokenAttempts(dto.getCallbackTokenAttempts() + 1);
-            if (!dto.isCallbackUrlSigned() || dto.getCallbackTokenAttempts() >= CALLBACK_TOKEN_ATTEMPTS)
-            {
-                dto.setType(OAuthEntry.Type.DISABLED.toString());
-            }
-
-            transMgr.commit(transStatus);
+            ServiceActionContext currentContext = new ServiceActionContext(entry.token, null);
+            actionController.execute(currentContext, disableOAuthTokenAction);
         }
         catch (Exception ex)
         {
             logger.error("Error occurred disabling token.", ex);
-            transMgr.rollback(transStatus);
         }
     }
 
     /**
      * Deletes a token.
+     * 
      * @param entry
-     *          the OAuthEntry to remove.
+     *            the OAuthEntry to remove.
      */
     public void removeToken(final OAuthEntry entry)
     {
-        DefaultTransactionDefinition transDef = new DefaultTransactionDefinition();
-        transDef.setName("RemoveTokenTransaction");
-        transDef.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-        TransactionStatus transStatus = transMgr.getTransaction(transDef);
-
         try
         {
-            entryMapper.delete(entry.token);
-            transMgr.commit(transStatus);
+            ServiceActionContext currentContext = new ServiceActionContext(entry.token, null);
+            actionController.execute(currentContext, removeOAuthTokenAction);
         }
         catch (Exception ex)
         {
             logger.error("Error occurred removing token.", ex);
-            transMgr.rollback(transStatus);
         }
     }
 
     /**
      * Return the proper security token for a 2 legged oauth request that has been validated for the given consumerKey.
-     * App specific checks like making sure the requested user has the app installed should take place in this method.
+     * App specific checks like making sure the requested user has the app installed are handled by the authorization
+     * strategy of the ServiceAction being executed.
+     * 
      * @param consumerKey
-     *          the consumer making the oauth request.
+     *            the consumer making the oauth request.
      * @param userId
-     *          the userId for this request.
+     *            the userId for this request.
      * @return the found securitytoken.
      * @throws OAuthProblemException
-     *          thrown when the consumer key was not found.
+     *             thrown when the consumer key was not found.
      */
     public SecurityToken getSecurityTokenForConsumerRequest(final String consumerKey, final String userId)
             throws OAuthProblemException
     {
-        // TODO finish?
-        String domain = "samplecontainer.com";
-        String container = "default";
-
-        return new OAuthSecurityToken(userId, null, consumerKey, domain, container,
-                AuthenticationMode.OAUTH_CONSUMER_REQUEST.name());
-    }
-
-    /**
-     * Maps an entry to an entry data transfer object.
-     * @param entry
-     *          the entry to convert.
-     * @return the converted entry dto.
-     */
-    private OAuthDomainEntry convertToEntryDTO(final OAuthEntry entry)
-    {
-        OAuthDomainEntry dto = new OAuthDomainEntry();
-        dto.setAppId(entry.appId);
-        dto.setAuthorized(entry.authorized);
-        dto.setCallbackToken(entry.callbackToken);
-        dto.setCallbackTokenAttempts(entry.callbackTokenAttempts);
-        dto.setCallbackUrl(entry.callbackUrl);
-        dto.setCallbackUrlSigned(entry.callbackUrlSigned);
-        dto.setConsumer(consumerMapper.findConsumerByConsumerKey(entry.consumerKey));
-        dto.setContainer(entry.container);
-        dto.setDomain(entry.domain);
-        dto.setIssueTime(entry.issueTime);
-        dto.setOauthVersion(entry.oauthVersion);
-        dto.setToken(entry.token);
-        dto.setTokenSecret(entry.tokenSecret);
-        dto.setType(entry.type.toString());
-        dto.setUserId(entry.userId);
-        return dto;
-    }
-
-    /**
-     * Maps an entry dto to an entry.
-     * @param dto
-     *          the dto to convert.
-     * @return the converted entry.
-     */
-    private OAuthEntry convertToEntry(final OAuthDomainEntry dto)
-    {
-        OAuthEntry entry = new OAuthEntry();
-        entry.appId = dto.getAppId();
-        entry.authorized = dto.isAuthorized();
-        entry.callbackToken = dto.getCallbackToken();
-        entry.callbackTokenAttempts = dto.getCallbackTokenAttempts();
-        entry.callbackUrl = dto.getCallbackUrl();
-        entry.callbackUrlSigned = dto.isCallbackUrlSigned();
-        entry.consumerKey = dto.getConsumer().getConsumerKey();
-        entry.container = dto.getContainer();
-        entry.domain = dto.getDomain();
-        entry.issueTime = dto.getIssueTime();
-        entry.oauthVersion = dto.getOauthVersion();
-        entry.token = dto.getToken();
-        entry.tokenSecret = dto.getTokenSecret();
-        entry.type = Type.valueOf(dto.getType());
-        entry.userId = dto.getUserId();
-        return entry;
+        logger.debug("Retrieving Security Token based on Consumer Request for consumer key: " + consumerKey
+                + " and userId: " + userId);
+        SecurityTokenResponse response = null;
+        try
+        {
+            // Currently, this supports two legged oauth with "reverse call home" where the server hosting an
+            // application
+            // wishes to request information about a user that has their application installed on their start page.
+            ServiceActionContext currentContext = new ServiceActionContext(consumerKey, principalPopulator
+                    .getPrincipal(userId));
+            response = (SecurityTokenResponse) actionController.execute(currentContext,
+                    getSecurityTokenForConsumerRequestAction);
+        }
+        catch (Exception ex)
+        {
+            logger.error("Error occurred retrieving security token for Consumer Request.", ex);
+            throw new OAuthProblemException("Error occurred retrieving security token for Consumer Request.");
+        }
+        return response != null ? response.getSecurityToken() : null;
     }
 }

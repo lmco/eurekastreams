@@ -92,19 +92,19 @@
         
 	<!-- Gadget Definitions -->
 	<GadgetDefinition id="1831" version="4673"
-		url="http://www.google.com" uuid="129d4fae-7dec-11d0-a765-00a0c91e6bf6"
+		url="http://www.example.com/gadget1.xml" uuid="129d4fae-7dec-11d0-a765-00a0c91e6bf6"
 		gadgetCategoryId="4565" created="2008-01-01 12:00:00.000"
 		showInGallery="true" numberOfUsers="1" />
 	<GadgetDefinition id="4789" version="5099"
-		url="http://www.example.com" uuid="568d4fae-7dec-11d0-a765-00a0c91e6bf6"
+		url="http://www.example.com/gadget2.xml" uuid="568d4fae-7dec-11d0-a765-00a0c91e6bf6"
 		gadgetCategoryId="4327" created="2008-01-01 12:00:00.000"
 		showInGallery="true" numberOfUsers="4" />
 	<GadgetDefinition id="4790" version="5100"
-		url="http://www.example.com" uuid="568d4fae-7dec-11d0-a765-00a0c91e6bf7"
+		url="http://www.example.com/gadget3.xml" uuid="568d4fae-7dec-11d0-a765-00a0c91e6bf7"
 		gadgetCategoryId="4565" created="2009-01-01 12:00:00.000"
 		showInGallery="true" numberOfUsers="3" />
 	<GadgetDefinition id="4791" version="5101"
-		url="http://www.example.com" uuid="568d4fae-7dec-11d0-a765-00a0c91e6bf8"
+		url="http://www.example.com/gadget4.xml" uuid="568d4fae-7dec-11d0-a765-00a0c91e6bf8"
 		gadgetCategoryId="4327" created="2009-01-01 12:00:00.000"
 		showInGallery="true" numberOfUsers="2" />
 
@@ -568,7 +568,7 @@
 		One Gadget in Carl's tab to test that things work with just one gadget
 		- in zone 1
 	-->
-	<Gadget id="1513" version="3467" gadgetDefinitionId="1831"
+	<Gadget id="1513" version="3467" gadgetDefinitionId="4789"
 		zoneNumber="1" zoneIndex="0" tabTemplateId="4703" deleted="false"
 		dateDeleted="2009-01-01 12:00:00.000" minimized="false" />
 
@@ -758,24 +758,24 @@
 		
 	<OAuthConsumer id="100" version="1" consumerKey="key0"
 		consumerSecret="secret0" signatureMethod="HMAC-SHA1"
-		serviceProviderName="provider0" gadgetUrl="http://localhost:4040/some/path/gadget0.xml" />
+		serviceProviderName="provider0" gadgetUrl="http://www.example.com/gadget1.xml" />
 
 	<OAuthConsumer id="101" version="1" consumerKey="key1"
 		consumerSecret="secret1" signatureMethod="HMAC-SHA1"
-		serviceProviderName="provider1" gadgetUrl="http://localhost:4040/some/path/gadget1.xml" />
+		serviceProviderName="provider1" gadgetUrl="http://www.example.com/gadget2.xml" />
 
 	<OAuthConsumer id="102" version="1" consumerKey="key2"
 		consumerSecret="secret2" signatureMethod="HMAC-SHA1"
-		serviceProviderName="provider2" gadgetUrl="http://localhost:4040/some/path/gadget2.xml" />
+		serviceProviderName="provider2" gadgetUrl="http://www.example.com/gadget3.xml" />
 
 	<OAuthConsumer id="103" version="1" consumerKey="key3"
 		consumerSecret="secret3" signatureMethod="HMAC-SHA1"
-		serviceProviderName="provider3" gadgetUrl="http://localhost:4040/some/path/gadget3.xml" />
+		serviceProviderName="provider3" gadgetUrl="http://www.example.com/gadget4.xml" />
 
 	<OAuthConsumer id="104" version="1" consumerKey="key4"
 		consumerSecret="secret4" signatureMethod="HMAC-SHA1"
-		serviceProviderName="provider4" gadgetUrl="http://localhost:4040/some/path/gadget4.xml" />
-
+		serviceProviderName="provider4" gadgetUrl="http://www.example.com/gadget4.xml" />
+		
 	<!--
 		A token that expired on 1/1/2000. This has to be first since dbunit
 		won't pick up the optional tokenExpireMillis attribute otherwise.
