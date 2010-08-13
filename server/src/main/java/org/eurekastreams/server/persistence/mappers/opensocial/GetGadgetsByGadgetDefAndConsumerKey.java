@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.server.persistence.mappers.opensocial;
 
+import java.util.List;
+
 import javax.persistence.Query;
 
 import org.eurekastreams.server.persistence.mappers.ReadMapper;
@@ -33,6 +35,7 @@ public class GetGadgetsByGadgetDefAndConsumerKey extends ReadMapper<GetGadgetsBy
      * app associated with the consumerkey supplied in the request.
      */
     @Override
+    @SuppressWarnings("unchecked")
     public Long execute(final GetGadgetsByGadgetDefAndConsumerKeyRequest inRequest)
     {
         String consumerKey = inRequest.getConsumerKey();
@@ -41,7 +44,15 @@ public class GetGadgetsByGadgetDefAndConsumerKey extends ReadMapper<GetGadgetsBy
                 "select gd.id from GadgetDefinition gd, OAuthConsumer oc "
                         + "where gd.url = oc.gadgetUrl and oc.consumerKey =:consumerKey").setParameter("consumerKey",
                 consumerKey);
-        Long gadgetDefId = (Long) gadgetDefIdQuery.getSingleResult();
+        
+        List<Long> results = gadgetDefIdQuery.getResultList();
+        
+        if (results.size() == 0)
+        {
+            return 0L;
+        }
+        
+        Long gadgetDefId = (Long) results.get(0);
         Query gadgetCountQuery = getEntityManager().createQuery(
                 "select count(ga.id) from Gadget ga, Tab tab, Person p "
                         + "where ga.template.id = tab.template.id and p.startTabGroup.id = tab.tabGroup.id "
