@@ -782,5 +782,7 @@
 	<bean id="getRequestsForGroupMembershipMapper" class="org.eurekastreams.server.persistence.mappers.db.GetRequestsForGroupMembershipByGroup" />
 	
 	<bean id="increaseOrgEmployeeCount" class="org.eurekastreams.server.persistence.mappers.db.IncreaseOrgEmployeeCount" />
+	
+	<bean id="getGadgetsByGadgetDefAndConsumerKey" class="org.eurekastreams.server.persistence.mappers.opensocial.GetGadgetsByGadgetDefAndConsumerKey" />
 
 </beans>

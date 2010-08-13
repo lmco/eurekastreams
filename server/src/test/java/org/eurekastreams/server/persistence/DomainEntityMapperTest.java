@@ -38,12 +38,12 @@ public abstract class DomainEntityMapperTest
     /**
      * The GadgetDefinition ID for "http://www.google.com".
      */
-    final long googleGadgetDefinitionId = 1831L;
+    final long gadgetDefinitionId1 = 1831L;
 
     /**
      * The GadgetDefinition ID for "http://www.example.com".
      */
-    final long exampleGadgetDefinitionId = 4789L;
+    final long gadgetDefinitionId2 = 4789L;
 
     /**
      * The tabGroupId for Ford's start page.

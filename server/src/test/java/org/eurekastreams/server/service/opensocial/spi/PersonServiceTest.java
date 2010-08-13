@@ -35,20 +35,17 @@ import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.exceptions.GeneralException;
 import org.eurekastreams.commons.server.service.ServiceActionController;
-import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
-import org.eurekastreams.server.service.actions.TransactionManagerFake;
+import org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
  * This class performs the test for the implementation of the Shindig PersonService interface.
- *
+ * 
  */
 public class PersonServiceTest
 {
@@ -137,7 +134,8 @@ public class PersonServiceTest
     /**
      * Principal populator.
      */
-    private final OpenSocialPrincipalPopulator principalPopulator = context.mock(OpenSocialPrincipalPopulator.class);
+    private final PrincipalPopulatorTransWrapper principalPopulator = context
+            .mock(PrincipalPopulatorTransWrapper.class);
 
     /**
      * {@link Principal}.
@@ -151,35 +149,18 @@ public class PersonServiceTest
             .mock(org.eurekastreams.server.domain.Person.class);
 
     /**
-     * Mock of the TransactionManagerFake for testing.
-     */
-    private final TransactionManagerFake transMgrMock = context.mock(TransactionManagerFake.class);
-
-    /**
-     * instance of a TransactionDefinition.
-     */
-    private DefaultTransactionDefinition transDef = null;
-
-    /**
-     * Mocked instance of a TransactionStatus.
-     */
-    private TransactionStatus transStatus = context.mock(TransactionStatus.class);
-
-    /**
      * Prepare the test.
      */
     @Before
     public void setUp()
     {
-        sut = new PersonServiceImpl(getPersonAction, getPeopleAction, principalPopulator,
-                serviceActionController, BASE_URL, transMgrMock);
-        transDef = new DefaultTransactionDefinition();
-        transDef.setReadOnly(true);
+        sut = new PersonServiceImpl(getPersonAction, getPeopleAction, principalPopulator, serviceActionController,
+                BASE_URL);
     }
 
     /**
      * Test the getPerson method in the PersonService implementation.
-     *
+     * 
      * @throws Exception
      *             - covers all exceptions
      */
@@ -194,13 +175,8 @@ public class PersonServiceTest
         context.checking(new Expectations()
         {
             {
-                allowing(transMgrMock).getTransaction(transDef);
-                will(returnValue(transStatus));
-
                 allowing(principalPopulator).getPrincipal(USERID_ONE);
                 will(returnValue(principal));
-
-                allowing(transMgrMock).commit(transStatus);
 
                 allowing(principal).getAccountId();
                 will(returnValue(testPersonAccountId));
@@ -244,7 +220,7 @@ public class PersonServiceTest
 
     /**
      * Test forcing an Exception.
-     *
+     * 
      * @throws Exception
      *             - covers all exceptions.
      */
@@ -254,13 +230,8 @@ public class PersonServiceTest
         context.checking(new Expectations()
         {
             {
-                allowing(transMgrMock).getTransaction(transDef);
-                will(returnValue(transStatus));
-
                 allowing(principalPopulator).getPrincipal(USERID_ONE);
                 will(returnValue(principal));
-
-                allowing(transMgrMock).commit(transStatus);
 
                 allowing(principal).getAccountId();
                 will(returnValue("foo"));
@@ -278,7 +249,7 @@ public class PersonServiceTest
 
     /**
      * currentUser Test forcing a NumberFormatException.
-     *
+     * 
      * @throws Exception
      *             - covers all exceptions.
      */
@@ -288,13 +259,9 @@ public class PersonServiceTest
         context.checking(new Expectations()
         {
             {
-                allowing(transMgrMock).getTransaction(transDef);
-                will(returnValue(transStatus));
 
                 allowing(principalPopulator).getPrincipal(USERID_ONE);
                 will(returnValue(principal));
-
-                allowing(transMgrMock).commit(transStatus);
 
                 allowing(principal).getAccountId();
                 will(returnValue("foo"));
@@ -312,7 +279,7 @@ public class PersonServiceTest
 
     /**
      * Test forcing a NumberFormatException.
-     *
+     * 
      * @throws Exception
      *             - covers all exceptions.
      */
@@ -324,9 +291,10 @@ public class PersonServiceTest
 
     /**
      * Test stub for unimplemented method. This is necessary for code coverage and because all methods for Shindig need
-     * to be implemented to not cause runtime errors even though we don't currently have implementations for all methods
+     * to be implemented to not cause runtime errors even though we don't currently have implementations 
+     * for all methods
      * yet.
-     *
+     * 
      * @throws Exception
      *             - covers all exceptions
      */
@@ -342,13 +310,9 @@ public class PersonServiceTest
         context.checking(new Expectations()
         {
             {
-                allowing(transMgrMock).getTransaction(transDef);
-                will(returnValue(transStatus));
 
                 allowing(principalPopulator).getPrincipal(with(any(String.class)));
                 will(returnValue(principal));
-
-                allowing(transMgrMock).commit(transStatus);
 
                 allowing(principal).getAccountId();
 
@@ -369,7 +333,7 @@ public class PersonServiceTest
     /**
      * This test exercises the GetPeople method of the OpenSocial implementation in Shindig. This test throws an
      * exception to test error handling.
-     *
+     * 
      * @throws Exception
      *             - on unhandled errors.
      */
@@ -384,13 +348,9 @@ public class PersonServiceTest
         context.checking(new Expectations()
         {
             {
-                allowing(transMgrMock).getTransaction(transDef);
-                will(returnValue(transStatus));
 
                 allowing(principalPopulator).getPrincipal(with(any(String.class)));
                 will(returnValue(principal));
-
-                allowing(transMgrMock).commit(transStatus);
 
                 allowing(principal).getAccountId();
 
