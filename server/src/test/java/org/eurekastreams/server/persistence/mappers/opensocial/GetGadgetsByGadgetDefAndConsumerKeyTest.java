@@ -94,4 +94,16 @@ public class GetGadgetsByGadgetDefAndConsumerKeyTest extends MapperTest
         Long returnValue = sut.execute(request);
         assertEquals(new Long(0), returnValue);
     }
+
+    /**
+     * This test verifies that the mapper returns zero gadget count when the supplied consumer key is invalid.
+     */
+    @Test
+    public void testFailureWithInvalidConsumerKey()
+    {
+        GetGadgetsByGadgetDefAndConsumerKeyRequest request = new GetGadgetsByGadgetDefAndConsumerKeyRequest(
+                "badkey", USER_2);
+        Long returnValue = sut.execute(request);
+        assertEquals(new Long(0), returnValue);
+    }
 }
