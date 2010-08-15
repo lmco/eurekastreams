@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.web.client.ui.common.stream.transformers;
+package org.eurekastreams.server.domain.strategies;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;

@@ -18,7 +18,9 @@ package org.eurekastreams.server.domain.stream;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Basic;
@@ -34,6 +36,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import org.eurekastreams.commons.model.DomainEntity;
 import org.eurekastreams.commons.search.analysis.HashTagTextStemmerIndexingAnalyzer;
@@ -74,6 +77,19 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
      * Serial version.
      */
     private static final long serialVersionUID = -1989543127268664861L;
+
+    /**
+     * Hashtags on this activity.
+     */
+    @ManyToMany
+    @JoinTable(name = "Activity_HashTags",
+    // join columns
+    joinColumns = { @JoinColumn(table = "Activity", name = "activityId") },
+    // inverse join columns
+    inverseJoinColumns = { @JoinColumn(table = "HashTag", name = "hashTagId") },
+    // unique constraints
+    uniqueConstraints = { @UniqueConstraint(columnNames = { "activityId", "hashTagId" }) })
+    private Set<HashTag> hashTags;
 
     /**
      * App type.
@@ -121,9 +137,8 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
     private EntityType actorType;
 
     /**
-     * Original actor unique id. This comes into play with shared activities.
-     * When user creates activity with verb share, the "sharer" is the actor,
-     * but we want to capture the original actor (author) of the activity being
+     * Original actor unique id. This comes into play with shared activities. When user creates activity with verb
+     * share, the "sharer" is the actor, but we want to capture the original actor (author) of the activity being
      * shared,
      */
     @Basic(optional = true)
@@ -566,8 +581,7 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
      * @param inIsDestinationStreamPublic
      *            whether the activity's destination stream is public
      */
-    public void setIsDestinationStreamPublic(
-            final Boolean inIsDestinationStreamPublic)
+    public void setIsDestinationStreamPublic(final Boolean inIsDestinationStreamPublic)
     {
         this.isDestinationStreamPublic = inIsDestinationStreamPublic;
     }
@@ -591,98 +605,143 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
 
     /**
      * Clone support for creating bulk activities from this one.
+     *
      * @return the cloned object.
      */
     @Override
     public Object clone()
     {
-    	Activity clone = new Activity();
-    	clone.annotation = this.annotation;
-    	clone.baseObject = this.baseObject;
-    	clone.baseObjectType = this.baseObjectType;
-    	clone.isDestinationStreamPublic = this.isDestinationStreamPublic;
-    	clone.actorId = this.actorId;
-    	clone.actorType = this.actorType;
-    	clone.location = this.location;
-    	clone.mood = this.mood;
-    	clone.openSocialId = this.openSocialId;
-    	clone.originalActivityId = this.originalActivityId;
-    	clone.originalActorId = this.originalActorId;
-    	clone.originalActorType = this.originalActorType;
-    	clone.postedTime = this.postedTime;
-    	clone.recipientParentOrg = this.recipientParentOrg;
-    	clone.recipientStreamScope = this.recipientStreamScope;
-    	clone.updated = this.updated;
-    	clone.usersWhoStarred = this.usersWhoStarred;
-    	clone.verb = this.verb;
-    	clone.appId = this.appId;
-    	clone.appName = this.appName;
-    	clone.appSource = this.appSource;
-    	clone.appType = this.appType;
-    	return clone;
+        Activity clone = new Activity();
+        clone.annotation = this.annotation;
+        clone.baseObject = this.baseObject;
+        clone.baseObjectType = this.baseObjectType;
+        clone.isDestinationStreamPublic = this.isDestinationStreamPublic;
+        clone.actorId = this.actorId;
+        clone.actorType = this.actorType;
+        clone.location = this.location;
+        clone.mood = this.mood;
+        clone.openSocialId = this.openSocialId;
+        clone.originalActivityId = this.originalActivityId;
+        clone.originalActorId = this.originalActorId;
+        clone.originalActorType = this.originalActorType;
+        clone.postedTime = this.postedTime;
+        clone.recipientParentOrg = this.recipientParentOrg;
+        clone.recipientStreamScope = this.recipientStreamScope;
+        clone.updated = this.updated;
+        clone.usersWhoStarred = this.usersWhoStarred;
+        clone.verb = this.verb;
+        clone.appId = this.appId;
+        clone.appName = this.appName;
+        clone.appSource = this.appSource;
+        clone.appType = this.appType;
+        return clone;
     }
 
-	/**
-	 * @param inAppType the appType to set
-	 */
-	public void setAppType(final EntityType inAppType)
-	{
-		appType = inAppType;
-	}
+    /**
+     * @param inAppType
+     *            the appType to set
+     */
+    public void setAppType(final EntityType inAppType)
+    {
+        appType = inAppType;
+    }
 
-	/**
-	 * @return the appType
-	 */
-	public EntityType getAppType()
-	{
-		return appType;
-	}
+    /**
+     * @return the appType
+     */
+    public EntityType getAppType()
+    {
+        return appType;
+    }
 
-	/**
-	 * @param inAppName the appName to set
-	 */
-	public void setAppName(final String inAppName)
-	{
-		appName = inAppName;
-	}
+    /**
+     * @param inAppName
+     *            the appName to set
+     */
+    public void setAppName(final String inAppName)
+    {
+        appName = inAppName;
+    }
 
-	/**
-	 * @return the appName
-	 */
-	public String getAppName()
-	{
-		return appName;
-	}
+    /**
+     * @return the appName
+     */
+    public String getAppName()
+    {
+        return appName;
+    }
 
-	/**
-	 * @param inAppId the appId to set
-	 */
-	public void setAppId(final Long inAppId)
-	{
-		appId = inAppId;
-	}
+    /**
+     * @param inAppId
+     *            the appId to set
+     */
+    public void setAppId(final Long inAppId)
+    {
+        appId = inAppId;
+    }
 
-	/**
-	 * @return the appId
-	 */
-	public Long getAppId()
-	{
-		return appId;
-	}
+    /**
+     * @return the appId
+     */
+    public Long getAppId()
+    {
+        return appId;
+    }
 
-	/**
-	 * @param inAppSource the appSource to set
-	 */
-	public void setAppSource(final String inAppSource)
-	{
-		appSource = inAppSource;
-	}
+    /**
+     * @param inAppSource
+     *            the appSource to set
+     */
+    public void setAppSource(final String inAppSource)
+    {
+        appSource = inAppSource;
+    }
 
-	/**
-	 * @return the appSource
-	 */
-	public String getAppSource()
-	{
-		return appSource;
-	}
+    /**
+     * @return the appSource
+     */
+    public String getAppSource()
+    {
+        return appSource;
+    }
+
+    /**
+     * Get the hashtags.
+     *
+     * @return the hashtags
+     */
+    public Set<HashTag> getHashTags()
+    {
+        if (hashTags == null)
+        {
+            hashTags = new HashSet<HashTag>();
+        }
+        return hashTags;
+    }
+
+    /**
+     * Set the hashtags.
+     *
+     * @param inHashTags
+     *            the hashtags
+     */
+    protected void setHashTags(final Set<HashTag> inHashTags)
+    {
+        hashTags = inHashTags;
+    }
+
+    /**
+     * Add a hashtag.
+     *
+     * @param inHashTag
+     *            the hashtag to add
+     */
+    public void addHashTag(final HashTag inHashTag)
+    {
+        if (hashTags == null)
+        {
+            setHashTags(new HashSet<HashTag>());
+        }
+        hashTags.add(inHashTag);
+    }
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.web.client.ui.common.stream.transformers;
+package org.eurekastreams.server.domain.strategies;
 
 /**
  * Extract hashtags from a body of text, recognizing when the hash is part of a url, or parentheses.
