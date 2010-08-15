@@ -34,4 +34,16 @@ public class HashTagTest
         ht.setContent("content");
         assertEquals("content", ht.getContent());
     }
+
+    /**
+     * Test the constructor with the hash tag content.
+     */
+    @Test
+    public void testLoadedConstructor()
+    {
+        assertEquals("#test", new HashTag("test").getContent());
+        assertEquals("#test", new HashTag("#test").getContent());
+        assertEquals("#test", new HashTag("TEst").getContent());
+        assertEquals("#test", new HashTag("#TEst").getContent());
+    }
 }

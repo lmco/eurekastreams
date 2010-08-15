@@ -40,6 +40,31 @@ public class HashTag extends DomainEntity implements Serializable
     private String content;
 
     /**
+     * Empty constructor.
+     */
+    public HashTag()
+    {
+    }
+
+    /**
+     * Constructor taking the content.
+     *
+     * @param inContent
+     *            the content of the hashtag
+     */
+    public HashTag(final String inContent)
+    {
+        if (!inContent.startsWith("#"))
+        {
+            content = "#" + inContent.toLowerCase();
+        }
+        else
+        {
+            content = inContent.toLowerCase();
+        }
+    }
+
+    /**
      * Get the content of the hashtag, including the #.
      *
      * @return the content of the hashtag, including the #
