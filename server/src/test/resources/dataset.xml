@@ -1,14 +1,9 @@
 <dataset>
-
-	<!--
-		** SKELETON OBJECTS ** <Person id="" version="1" accountId=""
-		firstName="" lastName="" preferredName="" /> <Tab id="" version="1"
-		tabName="" tabIndex="" tabGroupId="", deleted="", dateDeleted=""/>
-		<TabGroup id="" version="1" tabGroupType_id="" personId=""/>
-		<TabGroupType id="" version="1" name=""/> <GadgetDefinition id=""
-		version="1" url=""/> <Gadget id="" version="1" zoneNumber=""
-		gadgetDefinitionId="" zoneIndex="" />
-	-->
+	
+	<HashTag id="1" content="#foo" version="1" />
+	<HashTag id="2" content="#bar" version="1" />
+	<HashTag id="3" content="#development" version="1" />
+	<HashTag id="4" content="#java" version="1" />
 
 	<StreamView id="5000" version="0" name="Following" type="PEOPLEFOLLOW"/>
 	<StreamView id="5001" version="0" name="ParentOrg" type="PARENTORG"/>
@@ -897,5 +892,6 @@
     <TutorialVideo id="3" version="1" dialogtitle="Dialog Title 3" innercontent="Inner Content 3" 
        innercontenttitle="Inner Content Title 3" page="START" videoheight="600" videourl="http://google.com"
        videowidth="200" /> 
+	
 
 </dataset>
