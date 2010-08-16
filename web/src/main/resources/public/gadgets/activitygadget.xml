@@ -163,7 +163,7 @@
                     	niceType = "Group";
                     }
                     
-                    var message = "The '" + cleanTitle + "' " + niceType + " has been removed from the Activity page.  This gadget will no longer display content. Please remove from your start page.";
+                    var message = "The '" + cleanTitle + "' " + niceType + " has been removed from the Activity page.  This app will no longer display content. Please remove from your start page.";
                     var jsonMsg = {'message' : message};
                 	opensocial.template.getTemplate('uos:errorTemplate').renderInto(document.getElementById('activity-view'), jsonMsg);
                 }
