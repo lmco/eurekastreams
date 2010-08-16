@@ -19,6 +19,8 @@ import java.io.Serializable;
 
 import net.sf.json.JSONObject;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 
@@ -27,6 +29,10 @@ import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds
  */
 public class SavedActivityPersistenceRequestTransformer implements PersistenceDataSourceRequestTransformer
 {
+    /**
+     * Logger.
+     */
+    private Log log = LogFactory.getLog(SavedActivityPersistenceRequestTransformer.class);
 
     /**
      * Person mapper.
@@ -65,6 +71,7 @@ public class SavedActivityPersistenceRequestTransformer implements PersistenceDa
         }
         else
         {
+            log.debug("User was: " + userEntityId + " Request from: " + requestAccountId);
             throw new AuthorizationException("Insufficent priveledges to access stream.");
         }
     }
