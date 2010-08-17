@@ -50,115 +50,112 @@ import org.eurekastreams.server.service.opensocial.spi.ActivityServiceImpl;
 import org.eurekastreams.server.service.opensocial.spi.AppDataServiceImpl;
 import org.eurekastreams.server.service.opensocial.spi.MessageServiceImpl;
 import org.eurekastreams.server.service.opensocial.spi.PersonServiceImpl;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.inject.AbstractModule;
+import com.google.inject.Binder;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 import com.google.inject.spring.SpringIntegration;
 
 /**
- * Guice module to wire up Eureka Streams implementation of Shindig OpenSocial endpoints.
- * 
+ * Wire up Eureka Streams implementation of Shindig OpenSocial endpoints in Guice.
+ *
  */
-public class SocialAPIGuiceModule extends AbstractModule
+public class SocialAPIGuiceConfigurator implements SpringGuiceConfigurator
 {
     /**
      * Configuration value for the Service Expiration.
      */
     private static final Long SERVICE_EXPIRATION_IN_MINS = 60L;
-    
+
     /**
-     * Override method to configure the guice injection.
+     * {@inheritDoc}
      */
     @Override
-    protected void configure()
+    public void configure(final Binder inBinder, final ApplicationContext inAppContext)
     {
-        bind(ParameterFetcher.class).annotatedWith(Names.named("DataServiceServlet")).to(
+        inBinder.bind(ParameterFetcher.class).annotatedWith(Names.named("DataServiceServlet")).to(
                 DataServiceServletFetcher.class);
 
-        bind(Boolean.class).annotatedWith(Names.named(AnonymousAuthenticationHandler.ALLOW_UNAUTHENTICATED))
+        inBinder.bind(Boolean.class).annotatedWith(Names.named(AnonymousAuthenticationHandler.ALLOW_UNAUTHENTICATED))
                 .toInstance(Boolean.FALSE);
-        bind(XStreamConfiguration.class).to(XStream081Configuration.class);
-        bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.xml")).to(
+        inBinder.bind(XStreamConfiguration.class).to(XStream081Configuration.class);
+        inBinder.bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.xml")).to(
                 BeanXStreamConverter.class);
-        bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.json")).to(
+        inBinder.bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.json")).to(
                 BeanJsonConverter.class);
-        bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.atom")).to(
+        inBinder.bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.atom")).to(
                 BeanXStreamAtomConverter.class);
 
-        bind(new TypeLiteral<List<AuthenticationHandler>>()
+        inBinder.bind(new TypeLiteral<List<AuthenticationHandler>>()
         {
         }).toProvider(AuthenticationHandlerProvider.class);
 
-        bind(new TypeLiteral<Set<Object>>()
+        inBinder.bind(new TypeLiteral<Set<Object>>()
         {
         }).annotatedWith(Names.named("org.apache.shindig.social.handlers")).toInstance(getHandlers());
 
-        bind(Long.class).annotatedWith(Names.named("org.apache.shindig.serviceExpirationDurationMinutes")).toInstance(
+        inBinder.bind(Long.class).annotatedWith(Names.named("org.apache.shindig.serviceExpirationDurationMinutes"))
+                .toInstance(
                 SERVICE_EXPIRATION_IN_MINS);
 
-        ApplicationContext appContext = new ClassPathXmlApplicationContext(
-                "classpath*:conf/applicationContext-container.xml");
-        bind(BeanFactory.class).toInstance(appContext);
+        inBinder.bind(ActivityService.class).to(ActivityServiceImpl.class);
+        inBinder.bind(AppDataService.class).to(AppDataServiceImpl.class);
+        inBinder.bind(PersonService.class).to(PersonServiceImpl.class);
+        inBinder.bind(MessageService.class).to(MessageServiceImpl.class);
 
-        bind(ActivityService.class).to(ActivityServiceImpl.class);
-        bind(AppDataService.class).to(AppDataServiceImpl.class);
-        bind(PersonService.class).to(PersonServiceImpl.class);
-        bind(MessageService.class).to(MessageServiceImpl.class);
+        inBinder.bind(OAuthDataStore.class).to(OAuthDataStoreImpl.class);
 
-        bind(OAuthDataStore.class).to(OAuthDataStoreImpl.class);
+        inBinder.requestStaticInjection(SocialRealm.class);
 
-        requestStaticInjection(SocialRealm.class);
-
-        bind(ServiceAction.class).annotatedWith(Names.named("getPersonNoContext")).toProvider(
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getPersonNoContext")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "getPersonNoContext"));
 
-        bind(ServiceAction.class).annotatedWith(Names.named("getPeopleByOpenSocialIds")).toProvider(
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getPeopleByOpenSocialIds")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "getPeopleByOpenSocialIds"));
-        bind(ServiceAction.class).annotatedWith(Names.named("getAppData")).toProvider(
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getAppData")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "getAppData"));
-        bind(ServiceAction.class).annotatedWith(Names.named("updateAppData")).toProvider(
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("updateAppData")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "updateAppData"));
-        bind(ServiceAction.class).annotatedWith(Names.named("deleteAppData")).toProvider(
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("deleteAppData")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "deleteAppData"));
-        bind(TaskHandlerAction.class).annotatedWith(Names.named("deleteUserActivities")).toProvider(
+        inBinder.bind(TaskHandlerAction.class).annotatedWith(Names.named("deleteUserActivities")).toProvider(
                 SpringIntegration.fromSpring(TaskHandlerAction.class, "deleteUserActivities"));
 
         // ActivityServiceImpl wirings
-        bind(ServiceAction.class).annotatedWith(Names.named("getUserActivities")).toProvider(
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getUserActivities")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "getUserActivities"));
-        bind(ServiceActionController.class).toProvider(
+        inBinder.bind(ServiceActionController.class).toProvider(
                 SpringIntegration.fromSpring(ServiceActionController.class, "serviceActionController"));
-        bind(TaskHandlerServiceAction.class).annotatedWith(Names.named("postPersonActivityServiceActionTaskHandler"))
+        inBinder.bind(TaskHandlerServiceAction.class).annotatedWith(
+                Names.named("postPersonActivityServiceActionTaskHandler"))
                 .toProvider(
                         SpringIntegration.fromSpring(TaskHandlerServiceAction.class,
                                 "postPersonActivityServiceActionTaskHandler"));
-        bind(OpenSocialPrincipalPopulator.class).toProvider(
+        inBinder.bind(OpenSocialPrincipalPopulator.class).toProvider(
                 SpringIntegration.fromSpring(OpenSocialPrincipalPopulator.class, "openSocialPrincipalPopulator"));
-        bind(PrincipalPopulatorTransWrapper.class).toProvider(
+        inBinder.bind(PrincipalPopulatorTransWrapper.class).toProvider(
                 SpringIntegration.fromSpring(PrincipalPopulatorTransWrapper.class,
                         "openSocialPrincipalPopulatorTransWrapper"));
 
         // OAuthDataStoreImpl wirings
-        bind(ServiceAction.class).annotatedWith(Names.named("createOAuthRequestToken")).toProvider(
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("createOAuthRequestToken")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "createOAuthRequestToken"));
-        bind(ServiceAction.class).annotatedWith(Names.named("authorizeOAuthToken")).toProvider(
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("authorizeOAuthToken")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "oauthAuthorize"));
-        bind(ServiceAction.class).annotatedWith(Names.named("updateRequestToAccessToken")).toProvider(
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("updateRequestToAccessToken")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "updateRequestToAccessToken"));
-        bind(ServiceAction.class).annotatedWith(Names.named("getOAuthEntryByToken")).toProvider(
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getOAuthEntryByToken")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "getOAuthEntryByToken"));
-        bind(ServiceAction.class).annotatedWith(Names.named("disableOAuthToken")).toProvider(
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("disableOAuthToken")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "disableOAuthToken"));
-        bind(ServiceAction.class).annotatedWith(Names.named("removeOAuthToken")).toProvider(
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("removeOAuthToken")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "removeOAuthToken"));
-        bind(ServiceAction.class).annotatedWith(Names.named("getOAuthConsumerByConsumerKey")).toProvider(
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getOAuthConsumerByConsumerKey")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "getOAuthConsumerByConsumerKey"));
-        bind(ServiceAction.class).annotatedWith(Names.named("getSecurityTokenForConsumerRequest")).toProvider(
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getSecurityTokenForConsumerRequest"))
+                .toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "getSecurityTokenForConsumerRequest"));
     }
 

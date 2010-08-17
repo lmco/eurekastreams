@@ -455,7 +455,8 @@
 				                  <exclude>**/*Response.java</exclude>
 				                  <exclude>**/GetStreamViewByType.java</exclude>
 				                  <exclude>**/MemcachedCache.java</exclude>
-						          <exclude>**/*GuiceModule.java</exclude>
+									<exclude>**/*GuiceModule.java</exclude>
+									<exclude>**/*GuiceConfigurator.java</exclude>
 				                  <exclude>org/eurekastreams/taskqueueprocessor/console/MainApp.java</exclude>
 								  <exclude>org/eurekastreams/performancedatacreator/console/MainApp.java</exclude>
 								  <exclude>org/eurekastreams/server/service/actions/strategies/URLFetcher.java</exclude>
