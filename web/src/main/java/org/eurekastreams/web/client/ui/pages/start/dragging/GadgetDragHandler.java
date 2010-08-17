@@ -40,9 +40,12 @@ public class GadgetDragHandler implements DragHandler
 
     /**
      * Default constructor.
+     * @param inTabId the tab id.
      */
-    public GadgetDragHandler()
+    public GadgetDragHandler(final Long inTabId)
     {
+        tabId = inTabId;
+
         Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
                 new Observer<UpdatedHistoryParametersEvent>()
                 {

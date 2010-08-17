@@ -154,7 +154,7 @@ public class StartPageTabContent extends FlowPanel
     public void renderGadgetContainer(final Tab inTab)
     {
         rendered = false;
-        gadgetDragHandler = new GadgetDragHandler();
+        gadgetDragHandler = new GadgetDragHandler(inTab.getId());
         gadgetDragController = new GadgetDragController(RootPanel.get(), false);
         gadgetDragController.setBehaviorConstrainedToBoundaryPanel(false);
         gadgetDragController.setBehaviorMultipleSelection(false);
