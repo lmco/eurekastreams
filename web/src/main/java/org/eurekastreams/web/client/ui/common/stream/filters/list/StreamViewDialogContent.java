@@ -87,6 +87,11 @@ public class StreamViewDialogContent implements DialogContent
      * The view.
      */
     private StreamView view;
+    
+    /**
+     * The form.
+    */
+    private FormBuilder form;
 
     /**
      * Default constructor.
@@ -135,8 +140,9 @@ public class StreamViewDialogContent implements DialogContent
     {
         body.clear();
 
-        final FormBuilder form = new FormBuilder("Organize streams into custom lists", StreamViewModel.getInstance(),
+        form = new FormBuilder("Organize streams into custom lists", StreamViewModel.getInstance(),
                 mode);
+        form.turnOffChangeCheck();
         form.addStyleName("stream-view-dialog-body");
 
         Session.getInstance().getEventBus().addObserver(StreamViewCreatedEvent.class,

@@ -246,7 +246,7 @@ public class StreamSearchDialogContent implements DialogContent
         {
             form = new FormBuilder(PROFILE_TITLE, StreamSearchModel.getInstance(viewName), method);
         }
-
+        form.turnOffChangeCheck();
         form.addStyleName("stream-search-dialog-body");
 
         if (mode.equals(Mode.EDIT))

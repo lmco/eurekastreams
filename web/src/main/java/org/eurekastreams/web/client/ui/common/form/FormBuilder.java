@@ -284,6 +284,14 @@ public class FormBuilder extends FlowPanel implements Bindable
     }
 
     /**
+     * Make it so we don't prompt.
+     */
+    public void turnOffChangeCheck()
+    {
+        inactive = true;
+    }
+
+    /**
      * Has the form changed?
      *
      * @return has the form changed?
