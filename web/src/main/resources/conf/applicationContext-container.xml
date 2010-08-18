@@ -23,7 +23,7 @@
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-framework-ldap.xml" />
 	
 	<!-- Extension point for other projects to tie in. -->
-	<import resource="classpath*:**/conf/external/container/*.xml" />
+	<import resource="classpath*:/conf/external/container/*.xml" />
 	
 	<!-- alias used on all actions that submit an async action -->
 	<!--
