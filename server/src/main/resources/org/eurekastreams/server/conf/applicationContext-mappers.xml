@@ -5,7 +5,15 @@
       http://www.springframework.org/schema/beans/spring-beans.xsd
       http://www.springframework.org/schema/tx
       http://www.springframework.org/schema/tx/spring-tx.xsd">
-      
+
+	<!-- **** Beans useful for multiple mappers (particularly in chained mappers) **** -->
+	  
+	<!-- Results combiner - just returns the first non-null value -->
+	<bean id="nonNullResultsCombiner" class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
+	  
+	  
+	<!-- ****  **** -->
+	
    	<!-- Wire up the entity updaters for person, domain group, organization - handles onPostUpdate, onPostPersist
 -->
    	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
