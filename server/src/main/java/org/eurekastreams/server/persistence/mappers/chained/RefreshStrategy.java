@@ -30,8 +30,8 @@ public interface RefreshStrategy<Request, Response>
      *
      * @param request
      *            the request that generated the response
-     * @param respose
+     * @param response
      *            the response to feed back into the data source
      */
-    void refresh(final Request request, final Response respose);
+    void refresh(final Request request, final Response response);
 }
