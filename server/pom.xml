@@ -471,7 +471,7 @@
    <distributionManagement>
    <!-- Declare the snapshot repository to deploy the eurekastreams-server.jar file to -->
      <snapshotRepository>
-       <id>snapshots</id>
+       <id>smpsnapshots</id>
        <name>Snapshots</name>
        <url>${build.maven.snapshotrepo}</url>
      </snapshotRepository>
