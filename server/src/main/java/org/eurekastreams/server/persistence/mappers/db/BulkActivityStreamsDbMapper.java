@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,10 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.service.actions.strategies.activity.ListCollider;
 
 /**
  * Bulk maps activity streams from the database.
@@ -30,32 +26,10 @@ import org.eurekastreams.server.service.actions.strategies.activity.ListCollider
 public class BulkActivityStreamsDbMapper extends BaseArgDomainMapper<List<Long>, List<Long>> implements
         DomainMapper<List<Long>, List<Long>>
 {
-
-    /**
-     * Logger instance.
-     */
-    private Log log = LogFactory.getLog(BulkActivityStreamsDbMapper.class);
-    
-    /**
-     * Or collider, used to cross the streams.
-     */
-    private ListCollider orCollider = null;
-
     /**
      * Max items to return.
      */
     private int maxItems = 0;
-
-    /**
-     * Set the Or collider.
-     * 
-     * @param inOrCollider
-     *            the collider.
-     */
-    public void setOrCollider(final ListCollider inOrCollider)
-    {
-        orCollider = inOrCollider;
-    }
 
     /**
      * Set the max items to return.
@@ -78,17 +52,10 @@ public class BulkActivityStreamsDbMapper extends BaseArgDomainMapper<List<Long>,
     @SuppressWarnings("unchecked")
     public List<Long> execute(final List<Long> inRequest)
     {
-        List<Long> items = new ArrayList<Long>();
+        String query = "SELECT id FROM Activity WHERE recipientStreamScope.id IN (:streamIds) ORDER BY id";
 
-        for (Long id : inRequest)
-        {
-            log.debug("Looking up stream in DB: " + id);
-            String query = "SELECT id FROM Activity WHERE recipientStreamScope.id = :streamId ORDER BY id";
-            items = orCollider.collide(items, getEntityManager().createQuery(query).setParameter("streamId", id)
-                    .getResultList(), maxItems);
-        }
-
-        return items;
+        return getEntityManager().createQuery(query).setParameter("streamIds", inRequest).setMaxResults(maxItems)
+                .getResultList();
     }
 
 }

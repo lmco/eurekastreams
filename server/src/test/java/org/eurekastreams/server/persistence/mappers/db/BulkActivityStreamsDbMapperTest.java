@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,6 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.eurekastreams.server.persistence.mappers.MapperTest;
-import org.eurekastreams.server.service.actions.strategies.activity.ListCollider;
-import org.eurekastreams.server.service.actions.strategies.activity.OrSortedListCollider;
-import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.integration.junit4.JUnit4Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,21 +33,7 @@ public class BulkActivityStreamsDbMapperTest extends MapperTest
      * System under test.
      */
     private BulkActivityStreamsDbMapper sut = null;
-    /**
-     * Context for building mock objects.
-     */
-    private final Mockery context = new JUnit4Mockery()
-    {
-        {
-            setImposteriser(ClassImposteriser.INSTANCE);
-        }
-    };
 
-    /**
-     * Mock collider.
-     */
-    private ListCollider colliderMock = context.mock(ListCollider.class);
-    
     /**
      * Max items.
      */
@@ -68,52 +48,24 @@ public class BulkActivityStreamsDbMapperTest extends MapperTest
         sut = new BulkActivityStreamsDbMapper();
         sut.setEntityManager(getEntityManager());
         sut.setMaxItems(MAX_ITEMS);
-        sut.setOrCollider(colliderMock);
     }
 
     /**
-     * Executes a test with a mock collider.
-     */
-    @Test
-    public void testWithResultsWithColliderMock()
-    {
-        final List<Long> request = new ArrayList<Long>();
-        request.add(1L);
-        request.add(2L);
-
-        context.checking(new Expectations()
-        {
-            {
-                exactly(2).of(colliderMock).collide(with(any(List.class)), with(any(List.class)),
-                        with(equal(MAX_ITEMS)));
-            }
-        });
-
-        sut.execute(request);
-
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Executes a test with a real collider.
-     * Verifies correct results.
+     * Executes a test with a real collider. Verifies correct results.
      */
     @Test
     public void testWithResultsWithRealCollider()
     {
-        sut.setOrCollider(new OrSortedListCollider());
 
         final int expectedSize = 2;
-        
+
         final List<Long> request = new ArrayList<Long>();
         request.add(1L);
         request.add(2L);
 
         List<Long> results = sut.execute(request);
-        
-        Assert.assertEquals(expectedSize, results.size());
 
-        sut.setOrCollider(colliderMock);
+        Assert.assertEquals(expectedSize, results.size());
     }
 
     /**
@@ -122,17 +74,13 @@ public class BulkActivityStreamsDbMapperTest extends MapperTest
     @Test
     public void testWithoutResults()
     {
-        sut.setOrCollider(new OrSortedListCollider());
-        
         final int expectedSize = 0;
-        
+
         final List<Long> request = new ArrayList<Long>();
         request.add(0L);
 
         List<Long> results = sut.execute(request);
 
         Assert.assertEquals(expectedSize, results.size());
-
-        sut.setOrCollider(colliderMock);
     }
 }

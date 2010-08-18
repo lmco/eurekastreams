@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.persistence.Query;
-
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -39,38 +37,54 @@ public class BulkEntityStreamIdsDbMapper extends BaseArgDomainMapper<Map<Long, E
      *            a map of requests request containing the id of the entity, and the EntityType.
      * @return the entity stream ID corresponding to each entity.
      */
+    @SuppressWarnings("unchecked")
     public List<Long> execute(final Map<Long, EntityType> request)
     {
-        List<Long> ids = new ArrayList<Long>();
+        List<Long> personIds = new ArrayList<Long>();
+        List<Long> groupIds = new ArrayList<Long>();
+        List<Long> orgIds = new ArrayList<Long>();
 
         for (Entry<Long, EntityType> entry : request.entrySet())
         {
             switch (entry.getValue())
             {
             case PERSON:
-                Query personQuery = getEntityManager().createQuery(
-                        "select entityStreamView.id from Person p where p.id =:personId").setParameter("personId",
-                        entry.getKey());
-                ids.add((Long) personQuery.getSingleResult());
+                personIds.add(entry.getKey());
                 break;
             case GROUP:
-                Query groupQuery = getEntityManager().createQuery(
-                        "select entityStreamView.id from DomainGroup dg where dg.id =:domainGroupId").setParameter(
-                        "domainGroupId", entry.getKey());
-                ids.add((Long) groupQuery.getSingleResult());
+                groupIds.add(entry.getKey());
                 break;
             case ORGANIZATION:
-                Query orgQuery = getEntityManager().createQuery(
-                        "select entityStreamView.id from Organization o where o.id =:orgId").setParameter(
-                        "orgId", entry.getKey());
-                ids.add((Long) orgQuery.getSingleResult());
+                orgIds.add(entry.getKey());
                 break;
             default:
                 throw new RuntimeException("Unhandled type.");
             }
         }
 
-        return ids;
-    }
+        List<Long> entIds = new ArrayList<Long>();
 
+        if (personIds.size() > 0)
+        {
+            entIds.addAll(getEntityManager().createQuery(
+                    "select entityStreamView.id from Person p where p.id IN (:personIds)").setParameter("personIds",
+                    personIds).getResultList());
+        }
+
+        if (groupIds.size() > 0)
+        {
+            entIds.addAll(getEntityManager().createQuery(
+                    "select entityStreamView.id from DomainGroup dg where dg.id IN (:domainGroupIds)").setParameter(
+                    "domainGroupIds", groupIds).getResultList());
+        }
+        
+        if (orgIds.size() > 0)
+        {
+            entIds.addAll(getEntityManager().createQuery(
+                    "select entityStreamView.id from Organization o where o.id IN (:orgIds)").setParameter("orgIds",
+                    orgIds).getResultList());
+        }
+        
+        return entIds;
+    }
 }

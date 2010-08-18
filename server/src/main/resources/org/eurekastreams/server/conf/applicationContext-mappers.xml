@@ -130,9 +130,6 @@
 			<bean class="org.eurekastreams.server.persistence.mappers.cache.BulkActivityStreamsMapper">
 				<property name="cache" ref="memcachedCache" />
 				<property name="maxItems" value="10000" />
-				<property name="orCollider" > 
-					<bean class="org.eurekastreams.server.service.actions.strategies.activity.OrSortedListCollider" /> 
-				</property>
 			</bean>
 		</constructor-arg>
 		

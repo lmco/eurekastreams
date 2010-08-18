@@ -71,7 +71,7 @@ public class StreamCacheLoaderTest extends CachedMapperTest
         assertNull(cache.getList(CacheKeys.STARRED_BY_PERSON_ID + "42"));
         assertNull(cache.getList(CacheKeys.STARRED_BY_PERSON_ID + "98"));
         assertNull(cache.getList(CacheKeys.STARRED_BY_PERSON_ID + "142"));
-
+        
         assertNull(cache.get(CacheKeys.STREAM_BY_ID + "4"));
         assertNull(cache.get(CacheKeys.STREAM_BY_ID + "878"));
         assertNull(cache.get(CacheKeys.STREAM_BY_ID + "837433"));
@@ -138,6 +138,22 @@ public class StreamCacheLoaderTest extends CachedMapperTest
         List<Long> personalStream2 = cache.getList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + "8");
         assertNotNull(personalStream2);
         assertEquals(0, personalStream2.size());
+        
+        // Entity Streams
+        assertNotNull(cache.get(CacheKeys.PERSON_ENTITITY_STREAM_VIEW_ID + "42"));
+        assertNotNull(cache.get(CacheKeys.PERSON_ENTITITY_STREAM_VIEW_ID + "142"));
+        assertNotNull(cache.get(CacheKeys.PERSON_ENTITITY_STREAM_VIEW_ID + "4507"));
+        assertNotNull(cache.get(CacheKeys.PERSON_ENTITITY_STREAM_VIEW_ID + "98"));
+        assertNotNull(cache.get(CacheKeys.PERSON_ENTITITY_STREAM_VIEW_ID + "99"));
+        
+        assertNotNull(cache.get(CacheKeys.GROUP_ENTITITY_STREAM_VIEW_ID + "1"));
+        assertNotNull(cache.get(CacheKeys.GROUP_ENTITITY_STREAM_VIEW_ID + "2"));
+        assertNotNull(cache.get(CacheKeys.GROUP_ENTITITY_STREAM_VIEW_ID + "3"));
+        assertNotNull(cache.get(CacheKeys.GROUP_ENTITITY_STREAM_VIEW_ID + "4"));
+        assertNotNull(cache.get(CacheKeys.GROUP_ENTITITY_STREAM_VIEW_ID + "5"));
+        assertNotNull(cache.get(CacheKeys.GROUP_ENTITITY_STREAM_VIEW_ID + "6"));
+        assertNotNull(cache.get(CacheKeys.GROUP_ENTITITY_STREAM_VIEW_ID + "7"));
+        assertNotNull(cache.get(CacheKeys.GROUP_ENTITITY_STREAM_VIEW_ID + "8"));
 
         //List<Long> orgStream = (List<Long>) cache.get(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + "3");
         //assertNotNull(orgStream);
