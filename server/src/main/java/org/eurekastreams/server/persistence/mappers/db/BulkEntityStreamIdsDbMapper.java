@@ -59,6 +59,12 @@ public class BulkEntityStreamIdsDbMapper extends BaseArgDomainMapper<Map<Long, E
                         "domainGroupId", entry.getKey());
                 ids.add((Long) groupQuery.getSingleResult());
                 break;
+            case ORGANIZATION:
+                Query orgQuery = getEntityManager().createQuery(
+                        "select entityStreamView.id from Organization o where o.id =:orgId").setParameter(
+                        "orgId", entry.getKey());
+                ids.add((Long) orgQuery.getSingleResult());
+                break;
             default:
                 throw new RuntimeException("Unhandled type.");
             }

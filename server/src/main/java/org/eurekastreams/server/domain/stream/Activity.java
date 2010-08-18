@@ -44,6 +44,8 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.bridge.ActivityContentClassBridge;
+import org.eurekastreams.server.search.bridge.ActivityInterestingClassBridge;
+import org.eurekastreams.server.search.bridge.ActivityLastCommentIdClassBridge;
 import org.eurekastreams.server.search.bridge.ActivityRecipientClassBridge;
 import org.eurekastreams.server.search.bridge.IsActivityPublicClassBridge;
 import org.eurekastreams.server.search.bridge.OrgIdHierarchyFieldBridge;
@@ -68,6 +70,12 @@ import org.hibernate.search.annotations.Store;
         @ClassBridge(index = Index.UN_TOKENIZED,
         // new line
         name = "recipient", store = Store.NO, impl = ActivityRecipientClassBridge.class),
+        @ClassBridge(index = Index.UN_TOKENIZED,
+        // new line
+        name = "interesting", store = Store.YES, impl = ActivityInterestingClassBridge.class),
+        @ClassBridge(index = Index.UN_TOKENIZED,
+        // new line
+        name = "commentdate", store = Store.NO, impl = ActivityLastCommentIdClassBridge.class),
         @ClassBridge(index = Index.TOKENIZED, name = "isPublic", store = Store.NO,
         // new line
         impl = IsActivityPublicClassBridge.class) })
@@ -279,7 +287,7 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
 
     /**
      * The open social id of the activity.
-     *
+     * 
      * @param inOpenSocialId
      *            the activity open social id to set
      */
@@ -290,7 +298,7 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
 
     /**
      * Get the open social id of the activity.
-     *
+     * 
      * @return the open social id of the activity
      */
     public String getOpenSocialId()
@@ -300,7 +308,7 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
 
     /**
      * The date updated setter.
-     *
+     * 
      * @param inUpdated
      *            the date updated to set
      */
@@ -311,7 +319,7 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
 
     /**
      * Get the date updated.
-     *
+     * 
      * @return the date updated
      */
     public Date getUpdated()
@@ -321,7 +329,7 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
 
     /**
      * The time posted setter.
-     *
+     * 
      * @param inPostedTime
      *            the time posted to set
      */
@@ -332,7 +340,7 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
 
     /**
      * Get the time posted.
-     *
+     * 
      * @return the time posted
      */
     public Date getPostedTime()
@@ -342,7 +350,7 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
 
     /**
      * The base object setter.
-     *
+     * 
      * @param inBaseObject
      *            the template params to set
      */
@@ -353,7 +361,7 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
 
     /**
      * The base object getter.
-     *
+     * 
      * @return base object hashmap.
      */
     public HashMap<String, String> getBaseObject()
@@ -567,7 +575,7 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
 
     /**
      * Get whether the activity's destination stream is public.
-     *
+     * 
      * @return whether the activity's destination stream is public
      */
     public Boolean getIsDestinationStreamPublic()
@@ -577,7 +585,7 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
 
     /**
      * Set whether the activity's destination stream is public.
-     *
+     * 
      * @param inIsDestinationStreamPublic
      *            whether the activity's destination stream is public
      */
@@ -605,7 +613,7 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
 
     /**
      * Clone support for creating bulk activities from this one.
-     *
+     * 
      * @return the cloned object.
      */
     @Override
@@ -707,7 +715,7 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
 
     /**
      * Get the hashtags.
-     *
+     * 
      * @return the hashtags
      */
     public Set<HashTag> getHashTags()
@@ -721,7 +729,7 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
 
     /**
      * Set the hashtags.
-     *
+     * 
      * @param inHashTags
      *            the hashtags
      */
@@ -732,7 +740,7 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
 
     /**
      * Add a hashtag.
-     *
+     * 
      * @param inHashTag
      *            the hashtag to add
      */

@@ -1596,7 +1596,8 @@
                                 <bean 
                                     class="org.eurekastreams.server.service.actions.strategies.activity.datasources.RecipientPersistenceRequestTransformer">
                                     <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
-                                    <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />   
+                                    <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+                                    <constructor-arg ref="bulkOrganizationsByShortNameMapper" />
                                     <constructor-arg ref="bulkEntityStreamIdsMapper" />   
                                 </bean>
                             </entry>

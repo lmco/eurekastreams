@@ -86,7 +86,7 @@ public class PostActivityCommentExecution implements TaskHandlerExecutionStrateg
 
         long personId = inActionContext.getActionContext().getPrincipal().getId();
         long activityId = inRequest.getActivityId();
-
+        
         CommentDTO results = insertCommentDAO.execute(new InsertActivityCommentRequest(personId, activityId, inRequest
                 .getBody()));
 

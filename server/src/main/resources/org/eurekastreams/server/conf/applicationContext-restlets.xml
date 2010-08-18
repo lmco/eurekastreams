@@ -253,6 +253,7 @@
 			<list>
 				<value>keywords</value>
 				<value>followedBy</value>
+				<value>sortBy</value>
 				<value>savedBy</value>
 			</list>
 		</constructor-arg>

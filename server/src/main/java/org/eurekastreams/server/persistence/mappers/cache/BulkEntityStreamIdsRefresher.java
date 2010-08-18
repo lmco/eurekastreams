@@ -50,6 +50,9 @@ public class BulkEntityStreamIdsRefresher extends CachedDomainMapper implements
             case GROUP:
                 getCache().set(CacheKeys.GROUP_ENTITITY_STREAM_VIEW_ID + entry.getKey(), data.get(i));
                 break;
+            case ORGANIZATION:
+                getCache().set(CacheKeys.ORG_ENTITITY_STREAM_VIEW_ID + entry.getKey(), data.get(i));
+                break;
             default:
                 throw new RuntimeException("Unhandled type.");
             }

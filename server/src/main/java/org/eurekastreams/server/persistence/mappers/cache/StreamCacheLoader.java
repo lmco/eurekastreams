@@ -23,6 +23,7 @@ import javax.persistence.Query;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.DomainGroup;
+import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.StarredActivity;
 import org.eurekastreams.server.domain.stream.StreamSearch;
@@ -134,6 +135,11 @@ public class StreamCacheLoader extends CachedDomainMapper
         log.info("Querying and building person activity id list cache");
         stepStart = System.currentTimeMillis();
         queryPersonActivityIdLists();
+        log.info("Done: " + (System.currentTimeMillis() - stepStart) + " ms.");
+        
+        log.info("Querying and building organization activity id list cache");
+        stepStart = System.currentTimeMillis();
+        queryOrganizationActivityIdLists();
         log.info("Done: " + (System.currentTimeMillis() - stepStart) + " ms.");
 
         log.info("Querying and group person activity id list cache");
@@ -251,6 +257,41 @@ public class StreamCacheLoader extends CachedDomainMapper
             // Caches the following stream for this user
             List<Long> followedActivityIds = followedActivityIdListLoader.getFollowedActivityIds(personId, MAX_RESULTS);
             getCache().setList(CacheKeys.ACTIVITIES_BY_FOLLOWING + personId, followedActivityIds);
+        }
+    }
+    
+
+    /**
+     * Query the database for ids of entity streams of organizations.
+     */
+    private void queryOrganizationActivityIdLists()
+    {
+        getHibernateSession().clear();
+        getEntityManager().clear();
+
+        Criteria criteria = getHibernateSession().createCriteria(Organization.class);
+
+        // page the data
+        criteria.setFetchSize(FETCH_SIZE);
+        criteria.setCacheMode(CacheMode.IGNORE);
+        ScrollableResults scroll = criteria.scroll(ScrollMode.FORWARD_ONLY);
+
+        // loop through the results and store in cache
+        long recordCounter = 0;
+        while (scroll.next())
+        {
+            if (++recordCounter % FETCH_SIZE == 0)
+            {
+                log.info("Loading " + recordCounter + "th organizationg stream info");
+            }
+
+            Organization org = (Organization) scroll.get(0);
+
+            // Caches the stream for this group
+            log.info("Caching stream for organization " + org.getId());
+
+            getCache()
+                    .set(CacheKeys.ORG_ENTITITY_STREAM_VIEW_ID + org.getId(), org.getEntityStreamView().getId());
         }
     }
 

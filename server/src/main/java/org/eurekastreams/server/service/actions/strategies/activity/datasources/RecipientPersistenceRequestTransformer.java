@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import net.sf.json.JSONObject;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
+import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 
 /**
@@ -49,21 +50,29 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
     private GetDomainGroupsByShortNames groupMapper;
 
     /**
+     * Org mapper for getting entity ID from short name.
+     */
+    private GetOrganizationsByShortNames orgMapper;
+
+    /**
      * Constructor.
      * 
      * @param inPersonMapper
      *            the person mapper.
      * @param inGroupMapper
      *            the group mapper.
+     * @param inOrgMapper
+     *            the org mapper.
      * @param inStreamIdMapper
      *            the stream mapper.
      */
     public RecipientPersistenceRequestTransformer(final GetPeopleByAccountIds inPersonMapper,
-            final GetDomainGroupsByShortNames inGroupMapper,
+            final GetDomainGroupsByShortNames inGroupMapper, final GetOrganizationsByShortNames inOrgMapper,
             final DomainMapper<Map<Long, EntityType>, List<Long>> inStreamIdMapper)
     {
         personMapper = inPersonMapper;
         groupMapper = inGroupMapper;
+        orgMapper = inOrgMapper;
         streamIdMapper = inStreamIdMapper;
     }
 
@@ -94,6 +103,9 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
                 break;
             case GROUP:
                 mapperRequest.put(groupMapper.fetchId(req.getString("name")), type);
+                break;
+            case ORGANIZATION:
+                mapperRequest.put(orgMapper.fetchId(req.getString("name")), type);
                 break;
             default:
                 throw new RuntimeException("Unhandled type.");

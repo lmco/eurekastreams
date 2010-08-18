@@ -18,6 +18,8 @@ package org.eurekastreams.server.persistence.mappers.db;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.service.actions.strategies.activity.ListCollider;
@@ -28,6 +30,12 @@ import org.eurekastreams.server.service.actions.strategies.activity.ListCollider
 public class BulkActivityStreamsDbMapper extends BaseArgDomainMapper<List<Long>, List<Long>> implements
         DomainMapper<List<Long>, List<Long>>
 {
+
+    /**
+     * Logger instance.
+     */
+    private Log log = LogFactory.getLog(BulkActivityStreamsDbMapper.class);
+    
     /**
      * Or collider, used to cross the streams.
      */
@@ -74,6 +82,7 @@ public class BulkActivityStreamsDbMapper extends BaseArgDomainMapper<List<Long>,
 
         for (Long id : inRequest)
         {
+            log.debug("Looking up stream in DB: " + id);
             String query = "SELECT id FROM Activity WHERE recipientStreamScope.id = :streamId ORDER BY id";
             items = orCollider.collide(items, getEntityManager().createQuery(query).setParameter("streamId", id)
                     .getResultList(), maxItems);

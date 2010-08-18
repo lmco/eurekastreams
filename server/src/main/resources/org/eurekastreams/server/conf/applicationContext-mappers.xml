@@ -480,6 +480,14 @@
 			ref="buildActivityStreamSearchStringForUserMapper" />
 	</bean>
 
+	<bean id="everyoneActivityResultsQueryBuilder" class="org.eurekastreams.commons.search.QueryParserBuilder"
+		scope="prototype">
+		<constructor-arg value="_hibernate_class" />
+		<constructor-arg>
+			<bean class="org.apache.lucene.analysis.WhitespaceAnalyzer" />
+		</constructor-arg>
+	</bean>
+
 	<bean id="luceneActivityDataSource" 
 		class="org.eurekastreams.server.service.actions.strategies.activity.datasources.LuceneDataSource">
 		<!-- DataSource for searching activities -->
@@ -514,6 +522,28 @@
 					</property>
 				</bean>
 		</constructor-arg>
+		<constructor-arg>
+			<bean class="org.eurekastreams.commons.search.ProjectionSearchRequestBuilder">
+					<property name="resultFields">
+						<list>
+							<value>id</value>
+						</list>
+					</property>
+					<property name="resultTypes">
+						<list>
+							<value>org.eurekastreams.server.domain.stream.Activity
+							</value>
+						</list>
+					</property>
+					<property name="queryParserBuilder" ref="everyoneActivityResultsQueryBuilder" />
+					<property name="resultTransformer">
+						<bean
+							class="org.eurekastreams.commons.hibernate.SingleFieldResultTransformer">
+							<property name="fieldName" value="id" />
+						</bean>
+					</property>
+				</bean>
+		</constructor-arg>		
 	</bean>
 	
 	<bean id="memcachedCache"

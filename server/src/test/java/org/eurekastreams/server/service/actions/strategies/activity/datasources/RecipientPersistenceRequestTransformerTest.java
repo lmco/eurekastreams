@@ -25,6 +25,7 @@ import net.sf.json.JSONObject;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
+import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -63,6 +64,11 @@ public class RecipientPersistenceRequestTransformerTest
     private GetDomainGroupsByShortNames groupMapper = context.mock(GetDomainGroupsByShortNames.class);
 
     /**
+     * Org mapper mock.
+     */
+    private GetOrganizationsByShortNames orgMapper = context.mock(GetOrganizationsByShortNames.class);
+
+    /**
      * System under test.
      */
     private RecipientPersistenceRequestTransformer sut;
@@ -73,7 +79,7 @@ public class RecipientPersistenceRequestTransformerTest
     @Before
     public void setUp()
     {
-        sut = new RecipientPersistenceRequestTransformer(personMapper, groupMapper, streamIdMapper);
+        sut = new RecipientPersistenceRequestTransformer(personMapper, groupMapper, orgMapper, streamIdMapper);
     }
 
     /**
@@ -86,6 +92,7 @@ public class RecipientPersistenceRequestTransformerTest
 
         final String personName = "personName";
         final String groupName = "groupName";
+        final String orgName = "orgName";
 
         final JSONObject personObj = new JSONObject();
         personObj.accumulate("type", "PERSON");
@@ -95,9 +102,15 @@ public class RecipientPersistenceRequestTransformerTest
         groupObj.accumulate("type", "GROUP");
         groupObj.accumulate("name", groupName);
 
+        final JSONObject orgObj = new JSONObject();
+        orgObj.accumulate("type", "ORGANIZATION");
+        orgObj.accumulate("name", orgName);
+
+        
         JSONArray recipientArr = new JSONArray();
         recipientArr.add(personObj);
         recipientArr.add(groupObj);
+        recipientArr.add(orgObj);
 
         request.accumulate("recipient", recipientArr);
 
@@ -108,6 +121,7 @@ public class RecipientPersistenceRequestTransformerTest
             {
                 oneOf(personMapper).fetchId(personName);
                 oneOf(groupMapper).fetchId(groupName);
+                oneOf(orgMapper).fetchId(orgName);
 
                 oneOf(streamIdMapper).execute(with(any(Map.class)));
                 will(returnValue(retVal));
