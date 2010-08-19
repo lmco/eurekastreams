@@ -172,8 +172,8 @@
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.execution.settings.PersonSourceLDAP">
                         <constructor-arg ref="findSystemSettings" />
-                        <constructor-arg ref="personLookupStrategyMembershipCriteria" />
-                        <constructor-arg ref="personLookupStrategyLdapAttrib" />
+                        <constructor-arg ref="ldapPersonLookupViaLdapGroupMembership" />
+                        <constructor-arg ref="ldapPersonLookupViaAttributeQuery" />
                     </bean>
                 </constructor-arg>
                 <constructor-arg value="createPersonAction"/>
@@ -195,8 +195,8 @@
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.execution.settings.PersonSourceLDAP">
                         <constructor-arg ref="findSystemSettings" />
-                        <constructor-arg ref="personLookupStrategyMembershipCriteria" />
-                        <constructor-arg ref="personLookupStrategyLdapAttrib" />
+                        <constructor-arg ref="ldapPersonLookupViaLdapGroupMembership" />
+                        <constructor-arg ref="ldapPersonLookupViaAttributeQuery" />
                     </bean>
                 </constructor-arg>
                 <constructor-arg value="createPersonAction"/>
@@ -378,29 +378,6 @@
 		</constructor-arg>
 		<constructor-arg value="true" />
 	</bean>
-
-	<bean id="refreshPeopleAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
-		<constructor-arg ref="noValidationStrategy" />
-		<constructor-arg>
-			<bean
-				class="org.eurekastreams.server.action.execution.settings.RefreshMembershipExecution">
-				<constructor-arg ref="refreshMembershipMapper" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg value="false" />
-	</bean>
-	
-    <bean id="submitRefreshPeopleAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="currentUserRootOrgCoordinatorAuthorization" />
-        <constructor-arg> 
-            <bean class="org.eurekastreams.server.action.execution.QueueAsynchActionExecution">
-                <constructor-arg value="refreshPeopleAction" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-        <constructor-arg ref="taskHandler" />
-    </bean>
         
 	<bean id="addMembershipCriteria" class="org.eurekastreams.commons.actions.service.ServiceAction">
 		<constructor-arg ref="noValidationStrategy" />
@@ -1484,8 +1461,8 @@
 		<constructor-arg ref="noAuthorizationStrategy" />
 		<constructor-arg>
 			<bean
-				class="org.eurekastreams.server.action.execution.GroupLookupExecution">
-				<constructor-arg ref="groupLookupStrategyLdap" />
+				class="org.eurekastreams.server.action.execution.VerifyLdapGroupExecution">
+				<constructor-arg ref="findLdapGroupByCnNameMapper" />
 			</bean>
 		</constructor-arg>
 		<constructor-arg value="true" />
@@ -1500,7 +1477,7 @@
 				<constructor-arg>
 					<bean
 						class="org.eurekastreams.server.action.execution.PersonLookupUtilityStrategy">
-						<constructor-arg ref="personLookupStrategyLdapAttrib" />
+						<constructor-arg ref="ldapPersonLookupViaAttributeQuery" />
 						<constructor-arg
 							ref="populateOrgChildWithSkeletonParentOrgsCacheMapper" />
 					</bean>
@@ -1519,7 +1496,7 @@
 				<constructor-arg>
 					<bean
 						class="org.eurekastreams.server.action.execution.PersonLookupUtilityStrategy">
-						<constructor-arg ref="personLookupStrategyMembershipCriteria" />
+						<constructor-arg ref="ldapPersonLookupViaLdapGroupMembership" />
 						<constructor-arg
 							ref="populateOrgChildWithSkeletonParentOrgsCacheMapper" />
 					</bean>
@@ -3846,103 +3823,24 @@
 		<constructor-arg value="false" />
 		<constructor-arg ref="taskHandler" />
 	</bean>
-
-    <bean id="personLookupStrategyLdap"
-        class="org.eurekastreams.server.service.actions.strategies.ldap.LdapPersonLookup">
-        <constructor-arg>
-            <ref bean="ldapTemplates" />
-        </constructor-arg>
-        <constructor-arg
-            type="org.springframework.ldap.core.CollectingNameClassPairCallbackHandler">
-            <ref bean="personHandler" />
-        </constructor-arg>
-        <constructor-arg
-            type="org.eurekastreams.server.service.actions.strategies.ldap.PeopleAppender">
-            <ref bean="personLdapMapper" />
-        </constructor-arg>
-        <constructor-arg
-            type="org.eurekastreams.server.service.actions.strategies.ldap.filters.FilterCreator">
-            <ref bean="findPersonByCn" />
-        </constructor-arg>
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.service.actions.strategies.ldap.PagedLdapSearchStrategy"/>
-        </constructor-arg>
+    
+    <bean id="personLookupStrategy" class="org.eurekastreams.server.service.actions.strategies.DomainPersonLookup">
+        <constructor-arg ref="jpaPersonMapper"/>            
     </bean>
-
-    <bean id="groupLookupStrategyLdap"
-    	class="org.eurekastreams.server.service.actions.strategies.ldap.LdapGroupLookup">
-    	<constructor-arg ref="ldapTemplates" />
-    	<constructor-arg ref="findGroupByAttrib" />
+    
+    <bean id="ldapPersonLookupViaAttribute" class="org.eurekastreams.server.service.actions.strategies.ldap.PersonLookupViaAttribute">
+        <constructor-arg ref="findPersonByCnWildcardMapper"/>
     </bean>
-
-    <bean id="personLookupStrategyLdapAttrib"
-        class="org.eurekastreams.server.service.actions.strategies.ldap.LdapPersonLookup">
-        <constructor-arg>
-            <ref bean="ldapTemplates" />
-        </constructor-arg>
-        <constructor-arg
-            type="org.springframework.ldap.core.CollectingNameClassPairCallbackHandler">
-            <ref bean="personHandler" />
-        </constructor-arg>
-        <constructor-arg
-            type="org.eurekastreams.server.service.actions.strategies.ldap.PeopleAppender">
-            <ref bean="personLdapMapper" />
-        </constructor-arg>
-        <constructor-arg
-            type="org.eurekastreams.server.service.actions.strategies.ldap.filters.FilterCreator">
-            <ref bean="findPersonByAttrib" />
-        </constructor-arg>
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.service.actions.strategies.ldap.PagedLdapSearchStrategy"/>
-        </constructor-arg>
+    
+    <bean id="ldapPersonLookupViaAttributeQuery" class="org.eurekastreams.server.service.actions.strategies.ldap.PersonLookupViaAttribute">
+        <constructor-arg ref="findPersonByProvidedLdapQueryMapper"/>
     </bean>
-
-    <bean id="personLookupStrategyMembershipCriteria"
-        class="org.eurekastreams.server.service.actions.strategies.ldap.LdapPersonLookup">
-        <constructor-arg>
-            <ref bean="ldapTemplates" />
-        </constructor-arg>
-        <constructor-arg
-            type="org.springframework.ldap.core.CollectingNameClassPairCallbackHandler">
-            <ref bean="groupHandler" />
-        </constructor-arg>
-        <constructor-arg
-            type="org.eurekastreams.server.service.actions.strategies.ldap.PeopleAppender">
-            <ref bean="groupLdapMapper" />
-        </constructor-arg>
-        <constructor-arg
-            type="org.eurekastreams.server.service.actions.strategies.ldap.filters.FilterCreator">
-            <ref bean="findGroup" />
-        </constructor-arg>
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.service.actions.strategies.ldap.PagedLdapSearchStrategy"/>
-        </constructor-arg>
-    </bean>
-
-    <bean id="personHandler"
-        class="org.springframework.ldap.core.AttributesMapperCallbackHandler">
-        <constructor-arg>
-            <ref bean="personLdapMapper" />
-        </constructor-arg>
-    </bean>
-
-    <bean id="groupHandler"
-        class="org.springframework.ldap.core.ContextMapperCallbackHandler">
-        <constructor-arg>
-            <ref bean="groupLdapMapper" />
-        </constructor-arg>
-    </bean>
-
-    <bean id="findPersonByCn"
-        class="org.eurekastreams.server.service.actions.strategies.ldap.filters.FindByCn">
-        <constructor-arg ref="findPersonByAttrib"/>
-    </bean>
-
-    <bean id="personLookupStrategy"
-        class="org.eurekastreams.server.service.actions.strategies.DomainPersonLookup">
-        <constructor-arg>
-            <ref bean="jpaPersonMapper" />
-        </constructor-arg>
+           
+    <bean id="ldapPersonLookupViaLdapGroupMembership" class="org.eurekastreams.server.service.actions.strategies.ldap.PersonLookupViaMembership">
+        <constructor-arg ref="findLdapGroupByCnNameMapper"/>       
+        <constructor-arg ref="findLdapGroupByLdapGroupMembershipMapper"/>       
+        <constructor-arg ref="findPersonByDirectLdapGroupMembershipMapper"/>       
+        <constructor-arg ref="baseLdapPath"/>        
     </bean>
 
     <bean id="multiSourcePersonLookupStrategy"
@@ -3951,10 +3849,10 @@
             <ref bean="personLookupStrategy" />
         </constructor-arg>
         <constructor-arg>
-            <ref bean="personLookupStrategyLdap" />
+            <ref bean="ldapPersonLookupViaAttribute" />
         </constructor-arg>
-    </bean>
-
+    </bean>       
+    
     <bean id="groupCreator"
         class="org.eurekastreams.server.service.actions.strategies.GroupCreator">
         <constructor-arg ref="jpaGroupMapper" />
@@ -4023,14 +3921,14 @@
         <constructor-arg>
             <bean
                 class="org.eurekastreams.server.action.execution.PersonLookupUtilityStrategy">
-                <constructor-arg ref="personLookupStrategyMembershipCriteria" />
+                <constructor-arg ref="ldapPersonLookupViaLdapGroupMembership" />
                 <constructor-arg ref="populateOrgChildWithSkeletonParentOrgsCacheMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg>
             <bean
                 class="org.eurekastreams.server.action.execution.PersonLookupUtilityStrategy">
-                <constructor-arg ref="personLookupStrategyLdapAttrib" />
+                <constructor-arg ref="ldapPersonLookupViaAttributeQuery" />
                 <constructor-arg ref="populateOrgChildWithSkeletonParentOrgsCacheMapper" />
             </bean>
         </constructor-arg>

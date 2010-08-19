@@ -250,7 +250,7 @@
 	</logger>
 
 	<logger
-		name="org.eurekastreams.server.service.actions.strategies.ldap.MembershipCriteriaToPersonMapper">
+		name="org.eurekastreams.server.persistence.mappers.ldap">
 		<level value="all" />
 		<appender-ref ref="LdapFile" />
 	</logger>
