@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.service.actions.strategies.ldap;
+package org.eurekastreams.server.persistence.mappers.ldap.callback;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
