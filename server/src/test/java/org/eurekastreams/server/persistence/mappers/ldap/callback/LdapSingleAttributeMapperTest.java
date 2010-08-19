@@ -22,13 +22,11 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 
-import org.eurekastreams.server.persistence.mappers.ldap.callback.LdapSingleAttributeMapper;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
-
 
 /**
  * Tests LdapSingleAttributeMapper.
@@ -60,7 +58,7 @@ public class LdapSingleAttributeMapperTest
 
     /**
      * Setup before each test.
-     *
+     * 
      * @throws NamingException
      *             Shouldn't.
      */
@@ -84,7 +82,7 @@ public class LdapSingleAttributeMapperTest
 
     /**
      * Tests mapping.
-     *
+     * 
      * @throws NamingException
      *             Shouldn't.
      */
@@ -100,7 +98,7 @@ public class LdapSingleAttributeMapperTest
 
     /**
      * Tests mapping.
-     *
+     * 
      * @throws NamingException
      *             Shouldn't.
      */
@@ -116,7 +114,7 @@ public class LdapSingleAttributeMapperTest
 
     /**
      * Tests mapping.
-     *
+     * 
      * @throws NamingException
      *             Shouldn't.
      */
