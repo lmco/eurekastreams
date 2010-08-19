@@ -356,9 +356,13 @@
                 <configuration>
                     <encoding>UTF-8</encoding>
                     <useDefaultDelimiters>false</useDefaultDelimiters>
-					<delimiters>
-					   <delimiter>${*}</delimiter>
-					</delimiters>
+                    <delimiters>
+                       <delimiter>${*}</delimiter>
+                    </delimiters>
+                    <nonFilteredFileExtensions>
+                       <nonFilteredFileExtension>pdf</nonFilteredFileExtension>
+                       <nonFilteredFileExtension>swf</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
                 </configuration>
             </plugin>
             <plugin>
