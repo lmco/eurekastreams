@@ -107,8 +107,8 @@
 	  </repository>
 	</repositories>
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!--<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding> -->
         <gwtVersion>1.7.0</gwtVersion>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <build.web.grbaseurl>http://localhost:8081</build.web.grbaseurl>
