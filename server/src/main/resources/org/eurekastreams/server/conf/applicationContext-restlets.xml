@@ -238,6 +238,25 @@
 		<constructor-arg ref="getActivitiesByRequest" />
 		<constructor-arg ref="serviceActionController" />
 		<constructor-arg ref="openSocialPrincipalPopulator" />
+		<constructor-arg>
+			<list>
+				<value>minId</value>
+				<value>maxId</value>
+			</list>
+		</constructor-arg>
+		<constructor-arg>
+			<list>
+				<value>recipient</value>
+			</list>
+		</constructor-arg>
+		<constructor-arg>
+			<list>
+				<value>keywords</value>
+				<value>followedBy</value>
+				<value>sortBy</value>
+				<value>savedBy</value>
+			</list>
+		</constructor-arg>
 	</bean>
 	
 	
@@ -436,13 +455,13 @@
                 	</bean>
                 </entry>
                 
-                <entry key="/stream/{openSocialId}/{json}">
+                <entry key="/stream/{openSocialId}/query">
                 	<bean class="org.restlet.ext.spring.SpringFinder">
                 		<lookup-method name="createResource" bean="streamResource" />
                 	</bean>
                 </entry>
 
-                <entry key="/stream/{openSocialId}/{json}/{callback}">
+                <entry key="/stream/{openSocialId}/callback/{callback}/query">
                 	<bean class="org.restlet.ext.spring.SpringFinder">
                 		<lookup-method name="createResource" bean="streamResource" />
                 	</bean>

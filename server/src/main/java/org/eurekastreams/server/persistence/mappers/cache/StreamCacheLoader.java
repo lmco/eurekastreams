@@ -23,6 +23,7 @@ import javax.persistence.Query;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.DomainGroup;
+import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.StarredActivity;
 import org.eurekastreams.server.domain.stream.StreamSearch;
@@ -73,7 +74,7 @@ public class StreamCacheLoader extends CachedDomainMapper
 
     /**
      * Constructor.
-     *
+     * 
      * @param inStreamsMapper
      *            streams mapper to set.
      * @param inActivityIdsMapper
@@ -135,6 +136,11 @@ public class StreamCacheLoader extends CachedDomainMapper
         stepStart = System.currentTimeMillis();
         queryPersonActivityIdLists();
         log.info("Done: " + (System.currentTimeMillis() - stepStart) + " ms.");
+        
+        log.info("Querying and building organization activity id list cache");
+        stepStart = System.currentTimeMillis();
+        queryOrganizationActivityIdLists();
+        log.info("Done: " + (System.currentTimeMillis() - stepStart) + " ms.");
 
         log.info("Querying and group person activity id list cache");
         stepStart = System.currentTimeMillis();
@@ -145,7 +151,7 @@ public class StreamCacheLoader extends CachedDomainMapper
     }
 
     /**
-     * Cache the Core StreamView types.  This excludes the everyone streamview id, because that streamview is already
+     * Cache the Core StreamView types. This excludes the everyone streamview id, because that streamview is already
      * warmed in the Everyone section.
      */
     private void queryCoreStreamViews()
@@ -155,15 +161,15 @@ public class StreamCacheLoader extends CachedDomainMapper
 
         Query coreStreamViewIdsQuery = getEntityManager().createQuery("SELECT id from StreamView where type =:type");
 
-        //Cache the static PARENTORG streamview type.
+        // Cache the static PARENTORG streamview type.
         coreStreamViewIdsQuery.setParameter("type", Type.PARENTORG);
         getCache().set(CacheKeys.CORE_STREAMVIEW_ID_PARENTORG, coreStreamViewIdsQuery.getSingleResult());
 
-        //Cache the static PEOPLEFOLLOW streamview type.
+        // Cache the static PEOPLEFOLLOW streamview type.
         coreStreamViewIdsQuery.setParameter("type", Type.PEOPLEFOLLOW);
         getCache().set(CacheKeys.CORE_STREAMVIEW_ID_PEOPLEFOLLOW, coreStreamViewIdsQuery.getSingleResult());
 
-        //Cache the static STARRED streamview type.
+        // Cache the static STARRED streamview type.
         coreStreamViewIdsQuery.setParameter("type", Type.STARRED);
         getCache().set(CacheKeys.CORE_STREAMVIEW_ID_STARRED, coreStreamViewIdsQuery.getSingleResult());
     }
@@ -242,12 +248,50 @@ public class StreamCacheLoader extends CachedDomainMapper
             // Caches the personal stream for this user
             log.info("Caching personal stream for user " + personId);
             List<Long> activities = getActivities(person.getAccountId());
-            getCache().setList(
-            		CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + person.getEntityStreamView().getId(), activities);
+            getCache().setList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + person.getEntityStreamView().getId(),
+                    activities);
+
+            getCache().set(CacheKeys.PERSON_ENTITITY_STREAM_VIEW_ID + person.getId(),
+                    person.getEntityStreamView().getId());
 
             // Caches the following stream for this user
             List<Long> followedActivityIds = followedActivityIdListLoader.getFollowedActivityIds(personId, MAX_RESULTS);
             getCache().setList(CacheKeys.ACTIVITIES_BY_FOLLOWING + personId, followedActivityIds);
+        }
+    }
+    
+
+    /**
+     * Query the database for ids of entity streams of organizations.
+     */
+    private void queryOrganizationActivityIdLists()
+    {
+        getHibernateSession().clear();
+        getEntityManager().clear();
+
+        Criteria criteria = getHibernateSession().createCriteria(Organization.class);
+
+        // page the data
+        criteria.setFetchSize(FETCH_SIZE);
+        criteria.setCacheMode(CacheMode.IGNORE);
+        ScrollableResults scroll = criteria.scroll(ScrollMode.FORWARD_ONLY);
+
+        // loop through the results and store in cache
+        long recordCounter = 0;
+        while (scroll.next())
+        {
+            if (++recordCounter % FETCH_SIZE == 0)
+            {
+                log.info("Loading " + recordCounter + "th organizationg stream info");
+            }
+
+            Organization org = (Organization) scroll.get(0);
+
+            // Caches the stream for this group
+            log.info("Caching stream for organization " + org.getId());
+
+            getCache()
+                    .set(CacheKeys.ORG_ENTITITY_STREAM_VIEW_ID + org.getId(), org.getEntityStreamView().getId());
         }
     }
 
@@ -280,14 +324,17 @@ public class StreamCacheLoader extends CachedDomainMapper
             // Caches the stream for this group
             log.info("Caching stream for group " + group.getId());
             List<Long> activities = getActivities(group.getShortName());
-            getCache().setList(
-            		CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + group.getEntityStreamView().getId(), activities);
+            getCache().setList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + group.getEntityStreamView().getId(),
+                    activities);
+
+            getCache()
+                    .set(CacheKeys.GROUP_ENTITITY_STREAM_VIEW_ID + group.getId(), group.getEntityStreamView().getId());
         }
     }
 
     /**
      * Gets activities for a given stream (person or group).
-     *
+     * 
      * @param uniqueKey
      *            the accountId or shortName.
      * @return the list of activity ids.

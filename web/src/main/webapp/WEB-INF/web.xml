@@ -26,7 +26,7 @@
 		<param-value>
 			org.eurekastreams.server.service.opensocial.config.ContainerPropertiesModule:
 			org.apache.shindig.gadgets.DefaultGuiceModule:
-            org.eurekastreams.server.service.opensocial.core.config.SocialAPIGuiceModule:
+            org.eurekastreams.server.service.opensocial.core.config.SpringContextGuiceModule:
             org.eurekastreams.server.service.opensocial.config.OAuthModule:
 			org.apache.shindig.common.cache.ehcache.EhCacheModule 
     </param-value>

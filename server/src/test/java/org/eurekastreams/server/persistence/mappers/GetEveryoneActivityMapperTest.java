@@ -60,6 +60,7 @@ public class GetEveryoneActivityMapperTest extends CachedMapperTest
        List<Long> ids = sut.execute(null);
 
        List<Long> allIds = cache.getList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + ORG_3_TEST_ID);
+
        assertNotNull(allIds);
        assertEquals(5, allIds.size());
 
@@ -91,6 +92,7 @@ public class GetEveryoneActivityMapperTest extends CachedMapperTest
 
        List<Long> allIds = cache.getList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + 1L);
        assertNotNull(allIds);
+       System.out.println(allIds);
        assertEquals(1, allIds.size());
 
        assertEquals(ids, allIds);

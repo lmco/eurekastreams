@@ -26,19 +26,19 @@ public class GetEveryoneActivityMapper implements DomainMapper<Object, List<Long
     /**
      * Get the stream id mapper.
      */
-    private ChainedDomainMapper<Object, Long> getEveryoneStreamIdMapper;
+    private DomainMapper<Object, Long> getEveryoneStreamIdMapper;
     /**
      * Get the actual activities.
      */
-    private ChainedDomainMapper<Long, List<Long>> getEveryoneActivityMapper;
+    private DomainMapper<Long, List<Long>> getEveryoneActivityMapper;
 
     /**
      * Default constructor.
      * @param inGetEvenyoneStreamIdMapper the id mapper.
      * @param inGetEveryoneActivityMapper the activity mapper.
      */
-    public GetEveryoneActivityMapper(final ChainedDomainMapper<Object, Long> inGetEvenyoneStreamIdMapper,
-            final ChainedDomainMapper<Long, List<Long>> inGetEveryoneActivityMapper)
+    public GetEveryoneActivityMapper(final DomainMapper<Object, Long> inGetEvenyoneStreamIdMapper,
+            final DomainMapper<Long, List<Long>> inGetEveryoneActivityMapper)
     {
         getEveryoneStreamIdMapper = inGetEvenyoneStreamIdMapper;
         getEveryoneActivityMapper = inGetEveryoneActivityMapper;

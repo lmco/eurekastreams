@@ -26,7 +26,7 @@ import org.eurekastreams.server.service.actions.strategies.activity.ListCollider
 
 /**
  * Gets activity IDs from memcache based on the query.
- *
+ * 
  */
 public class PersistenceDataSource implements DescendingOrderDataSource
 {
@@ -49,7 +49,6 @@ public class PersistenceDataSource implements DescendingOrderDataSource
      */
     private ListCollider orCollider;
 
-
     /**
      * The max we want this data source to return.
      */
@@ -57,11 +56,13 @@ public class PersistenceDataSource implements DescendingOrderDataSource
 
     /**
      * Default constructor.
-     *
-     * @param inEveryoneMapper the everyoneMapper
+     * 
+     * @param inEveryoneMapper
+     *            the everyoneMapper
      * @param inMappers
      *            the mappers .
-     * @param inTransformers the transformers.
+     * @param inTransformers
+     *            the transformers.
      * @param inOrCollider
      *            collider.
      */
@@ -78,12 +79,14 @@ public class PersistenceDataSource implements DescendingOrderDataSource
 
     /**
      * Given the request, give me back all the results relevant from memcache.
-     *
+     * 
      * @param request
      *            the JSON request from the user.
+     * @param userEntityId
+     *            the user entity ID.
      * @return the list of activity longs.
      */
-    public List<Long> fetch(final JSONObject request)
+    public List<Long> fetch(final JSONObject request, final Long userEntityId)
     {
         boolean unHandled = false;
         List<List<Long>> returnedDataSets = new ArrayList<List<Long>>();
@@ -98,15 +101,14 @@ public class PersistenceDataSource implements DescendingOrderDataSource
             for (Object objParam : request.getJSONObject("query").keySet())
             {
 
-
                 DomainMapper<Object, List<Long>> mapper = mappers.get(objParam);
 
                 if (mapper != null)
                 {
                     if (transformers.containsKey(objParam) && transformers.get(objParam) != null)
                     {
-                        returnedDataSets.add(mapper.execute(
-                                transformers.get(objParam).transform(request.getJSONObject("query"))));
+                        returnedDataSets.add(mapper.execute(transformers.get(objParam).transform(
+                                request.getJSONObject("query"), userEntityId)));
                     }
                     else
                     {

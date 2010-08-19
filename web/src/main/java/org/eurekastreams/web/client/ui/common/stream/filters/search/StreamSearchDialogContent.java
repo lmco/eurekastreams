@@ -51,13 +51,13 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Dialog for search streams.
- * 
+ *
  */
 public class StreamSearchDialogContent implements DialogContent
 {
     /**
      * Mode of the dialog.
-     * 
+     *
      */
     public enum Mode
     {
@@ -172,7 +172,7 @@ public class StreamSearchDialogContent implements DialogContent
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inSearch
      *            the search.
      * @param inViews
@@ -195,7 +195,7 @@ public class StreamSearchDialogContent implements DialogContent
 
     /**
      * Constructor for create, i.e. doesnt take in a view.
-     * 
+     *
      * @param inViews
      *            the views.
      */
@@ -208,7 +208,7 @@ public class StreamSearchDialogContent implements DialogContent
 
     /**
      * Constructor for saving a search from a search.
-     * 
+     *
      * @param inName
      *            the name.
      * @param inKeywords
@@ -247,6 +247,7 @@ public class StreamSearchDialogContent implements DialogContent
             form = new FormBuilder(PROFILE_TITLE, StreamSearchModel.getInstance(viewName), method);
         }
 
+        form.turnOffChangeCheck();
         form.addStyleName("stream-search-dialog-body");
 
         if (mode.equals(Mode.EDIT))
@@ -337,7 +338,7 @@ public class StreamSearchDialogContent implements DialogContent
 
     /**
      * The command to call to close the dialog.
-     * 
+     *
      * @param command
      *            the close command.
      */
@@ -358,7 +359,7 @@ public class StreamSearchDialogContent implements DialogContent
 
     /**
      * Gets the body panel.
-     * 
+     *
      * @return the body.
      */
     public Widget getBody()
@@ -368,7 +369,7 @@ public class StreamSearchDialogContent implements DialogContent
 
     /**
      * Gets the CSS name.
-     * 
+     *
      * @return the class.
      */
     public String getCssName()
@@ -378,7 +379,7 @@ public class StreamSearchDialogContent implements DialogContent
 
     /**
      * Gets the title.
-     * 
+     *
      * @return the title.
      */
     public String getTitle()

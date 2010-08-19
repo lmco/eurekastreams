@@ -15,22 +15,21 @@
  */
 package org.eurekastreams.server.persistence.mappers.cache;
 
-import org.eurekastreams.server.persistence.mappers.RefreshDataSourceMapper;
+import org.eurekastreams.server.persistence.mappers.chained.RefreshStrategy;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
  * Refresh the everyone stream id.
- *
  */
-public class RefreshEveryoneStreamIdCacheMapper extends CachedDomainMapper implements
-RefreshDataSourceMapper<Object, Long>
+public class RefreshEveryoneStreamIdCacheMapper extends CachedDomainMapper implements RefreshStrategy<Object, Long>
 {
-
     /**
      * Refresh the everyone stream id.
-     * @param request nothing.
-     * @param data the id.
      *
+     * @param request
+     *            nothing.
+     * @param data
+     *            the id.
      */
     @Override
     public void refresh(final Object request, final Long data)

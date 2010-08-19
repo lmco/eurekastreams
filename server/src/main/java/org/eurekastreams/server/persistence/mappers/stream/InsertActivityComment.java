@@ -25,10 +25,12 @@ import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.cache.cachedfieldpopulators.CommentDTOPopulator;
 import org.eurekastreams.server.persistence.mappers.requests.InsertActivityCommentRequest;
 import org.eurekastreams.server.search.modelview.CommentDTO;
+import org.hibernate.Session;
+import org.hibernate.search.Search;
 
 /**
  * Mapper for inserting a new comment for an activity.
- *
+ * 
  */
 public class InsertActivityComment extends BaseArgCachedDomainMapper<InsertActivityCommentRequest, CommentDTO>
 {
@@ -36,28 +38,34 @@ public class InsertActivityComment extends BaseArgCachedDomainMapper<InsertActiv
      * The CommentDTOPopulator instance.
      */
     private CommentDTOPopulator commentDTOPopulator;
-    
+
     /**
      * Constructor.
-     * @param inCommentDTOPopulator The CommentDTOPopulator.
+     * 
+     * @param inCommentDTOPopulator
+     *            The CommentDTOPopulator.
      */
     public InsertActivityComment(final CommentDTOPopulator inCommentDTOPopulator)
     {
-        commentDTOPopulator = inCommentDTOPopulator;        
+        commentDTOPopulator = inCommentDTOPopulator;
     }
 
     /**
      * Inserts the comment for an activity.
-     * @param inRequest The request object for inserting a comment.
+     * 
+     * @param inRequest
+     *            The request object for inserting a comment.
      * @return The commentDTO object representing the inserted comment.
      */
     @SuppressWarnings("unchecked")
     @Override
     public CommentDTO execute(final InsertActivityCommentRequest inRequest)
     {
+        final Activity activity = (Activity) getHibernateSession().load(Activity.class, inRequest.getActivityId());
+        
         // create comment and persist to DB.
         Comment comment = new Comment((Person) getHibernateSession().load(Person.class, inRequest.getUserId()), 
-                (Activity) getHibernateSession().load(Activity.class, inRequest.getActivityId()), 
+                activity, 
                 inRequest.getContent().trim());
         
         getEntityManager().persist(comment);
@@ -100,7 +108,8 @@ public class InsertActivityComment extends BaseArgCachedDomainMapper<InsertActiv
         
         commentDTO.setDeletable(true);
 
+        Search.getFullTextSession((Session) getEntityManager().getDelegate()).index(activity);
+        
         return commentDTO;
     }
-
 }

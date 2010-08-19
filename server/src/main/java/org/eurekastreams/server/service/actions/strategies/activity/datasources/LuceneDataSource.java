@@ -42,55 +42,78 @@ public class LuceneDataSource implements SortedDataSource
     private ProjectionSearchRequestBuilder searchRequestBuilder;
 
     /**
+     * Search builder to retrieve all activity.
+     */
+    private ProjectionSearchRequestBuilder everyActivityRequestBuilder;
+
+    /**
      * Constructor.
-     *
+     * 
      * @param inSearchRequestBuilder
      *            the search request builder
+     * @param inEveryActivityRequestBuilder
+     *            search builder to retreive all activity.
      */
-    public LuceneDataSource(final ProjectionSearchRequestBuilder inSearchRequestBuilder)
+    public LuceneDataSource(final ProjectionSearchRequestBuilder inSearchRequestBuilder,
+            final ProjectionSearchRequestBuilder inEveryActivityRequestBuilder)
     {
         searchRequestBuilder = inSearchRequestBuilder;
+        everyActivityRequestBuilder = inEveryActivityRequestBuilder;
     }
 
     /**
      * Fetch a page of search results, using the keywords in the input JSON request.
-     *
+     * 
      * @param inRequest
      *            the JSON request containing query->keywords
+     * @param userEntityId
+     *            the user entity ID.
      * @return the activity ids
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<Long> fetch(final JSONObject inRequest)
+    public List<Long> fetch(final JSONObject inRequest, final Long userEntityId)
     {
         JSONObject jsonQuery = inRequest.getJSONObject("query");
-        if (!jsonQuery.containsKey("keywords") && !jsonQuery.containsKey("sort"))
+        if (!jsonQuery.containsKey("keywords") && !jsonQuery.containsKey("sortBy"))
         {
             log.info("No search term found");
             return null;
         }
 
-        String luceneQuery = jsonQuery.getString("keywords");
+        String luceneQuery = "";
+
+        if (jsonQuery.containsKey("keywords"))
+        {
+            luceneQuery = jsonQuery.getString("keywords");
+        }
 
         // remove semicolons, which can be used to search other fields
         luceneQuery = luceneQuery.replace(":", "");
 
         log.info("Lucene keywords: " + luceneQuery);
 
-        FullTextQuery query = searchRequestBuilder.buildQueryFromNativeSearchString(luceneQuery);
+        FullTextQuery query = null;
 
-        String sortBy = jsonQuery.containsKey("sortBy") ? jsonQuery.getString("sortBy") : "relevance";
-        if ("relevance".equals(sortBy))
+        if (luceneQuery.length() == 0)
         {
-            // no-op
-            log.info("Sorting search results by relevance");
+            log.info("Returning all activity");
+            query = everyActivityRequestBuilder
+                    .buildQueryFromNativeSearchString("org.eurekastreams.server.domain.stream.Activity");
         }
         else
         {
+            query = searchRequestBuilder.buildQueryFromNativeSearchString(luceneQuery);
+        }
+
+        if (jsonQuery.containsKey("sortBy") && !"relevance".equals(jsonQuery.getString("sortBy")))
+        {
             // date
             log.info("Sorting by id, descending");
-            query.setSort(new Sort(new SortField("id", true)));
+            query.setSort(new Sort(new SortField(jsonQuery.getString("sortBy"), true)));
         }
+
+        log.debug("Native Lucene Query: " + query.toString());
 
         searchRequestBuilder.setPaging(query, 0, inRequest.getInt("count"));
 

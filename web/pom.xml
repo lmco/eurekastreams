@@ -45,6 +45,11 @@
             <artifactId>jetty-ajp</artifactId>
             <version>6.1.0</version>
         </dependency>
+		<dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty-sslengine</artifactId>
+            <version>6.1.11</version>
+        </dependency>
         <dependency>
             <groupId>org.tuckey</groupId>
             <artifactId>urlrewrite</artifactId>
@@ -356,9 +361,13 @@
                 <configuration>
                     <encoding>UTF-8</encoding>
                     <useDefaultDelimiters>false</useDefaultDelimiters>
-					<delimiters>
-					   <delimiter>${*}</delimiter>
-					</delimiters>
+                    <delimiters>
+                       <delimiter>${*}</delimiter>
+                    </delimiters>
+                    <nonFilteredFileExtensions>
+                       <nonFilteredFileExtension>pdf</nonFilteredFileExtension>
+                       <nonFilteredFileExtension>swf</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
                 </configuration>
             </plugin>
             <plugin>
@@ -1156,4 +1165,9 @@
             </activation>
         </profile>
     </profiles>
+    <properties>
+    <!--    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding> -->
+    </properties>
+
 </project>

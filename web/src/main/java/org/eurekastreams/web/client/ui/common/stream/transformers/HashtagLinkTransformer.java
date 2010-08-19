@@ -15,6 +15,9 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.transformers;
 
+import org.eurekastreams.server.domain.strategies.HashTagExtractor;
+import org.eurekastreams.server.domain.strategies.Substring;
+
 /**
  * Transform valid hashtags into stream searches for the current stream.
  */

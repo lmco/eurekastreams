@@ -35,47 +35,52 @@
     </bean>
 	<bean id="getEveryoneActivityDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetEveryoneActivityDbMapper">
     </bean>
-	<bean id="getEveryoneStreamIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetEveryoneStreamIdDbMapper">
-    </bean>
+	<bean id="getEveryoneStreamIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetEveryoneStreamIdDbMapper" />
 	
-	
-	<bean id="getEveryoneActivityChain" class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapper">
-        <constructor-arg>
-            <list>
-                <bean class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapperDataSource">
-                    <constructor-arg ref="getEveryoneActivityCacheMapper" />
-                    <constructor-arg ref="refreshEveryoneActivityCacheMapper" />
-                </bean>
-                <bean class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapperDataSource">      
-                    <constructor-arg ref="getEveryoneActivityDbMapper" />
-                </bean>
-            </list>
-        </constructor-arg>
-    </bean>
-    
-        
-    <bean id="getEveryoneStreamIdChain" class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapper">
-        <constructor-arg>
-            <list>
-                <bean class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapperDataSource">
-                    <constructor-arg ref="getEveryoneStreamIdCacheMapper" />
-                    <constructor-arg ref="refreshEveryoneStreamIdCacheMapper" />
-                </bean>
-                <bean class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapperDataSource">      
-                    <constructor-arg ref="getEveryoneStreamIdDbMapper" />
-                </bean>
-            </list>
-        </constructor-arg>
-    </bean>
-	
+	<bean id="getEveryoneActivityChain" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		<constructor-arg>
+			<!-- Wrap the cache mapper with a partial mapper wrapper -->
+			<bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+				<constructor-arg ref="getEveryoneActivityCacheMapper" />
+			</bean>
+		</constructor-arg>
+		
+		<!-- Database mapper to fall back on if not found in cache -->
+		<constructor-arg ref="getEveryoneActivityDbMapper" />
+		
+		<constructor-arg>
+			<!-- Results combiner - just returns the first non-null value -->
+			<bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner"/>
+		</constructor-arg>
+		
+		<!-- Cache refresher -->
+		<constructor-arg ref="refreshEveryoneActivityCacheMapper" />
+	</bean>
+
+    <bean id="getEveryoneStreamIdChain" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		<constructor-arg>
+			<!-- Wrap the cache mapper with a partial mapper wrapper -->
+			<bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+				<constructor-arg ref="getEveryoneStreamIdCacheMapper" />
+			</bean>
+		</constructor-arg>
+		
+		<!-- Database mapper to fall back on if not found in cache -->
+		<constructor-arg ref="getEveryoneStreamIdDbMapper" />
+		
+		<constructor-arg>
+			<!-- Results combiner - just returns the first non-null value -->
+			<bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner"/>
+		</constructor-arg>
+		
+		<!-- Cache refresher -->
+		<constructor-arg ref="refreshEveryoneStreamIdCacheMapper" />
+	</bean>
 	
     <bean id="getEveryoneActivity" class="org.eurekastreams.server.persistence.mappers.GetEveryoneActivityMapper">
         <constructor-arg ref="getEveryoneStreamIdChain" />
         <constructor-arg ref="getEveryoneActivityChain" />
     </bean>
-                
-                
-                    
 
     <bean id="getFollowedByActivityCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.GetFollowedByActivityCacheMapper">
        <property name="cache" ref="testCache" />
@@ -88,19 +93,26 @@
         <constructor-arg value="10" />
     </bean>
     
-    <bean id="getFollowedByActivities" class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapper">
-        <constructor-arg>
-            <list>
-                <bean class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapperDataSource">
-                    <constructor-arg ref="getFollowedByActivityCacheMapper" />
-                    <constructor-arg ref="refreshFollowedByActivitiesCacheMapper" />
-                </bean>
-                <bean class="org.eurekastreams.server.persistence.mappers.ChainedDomainMapperDataSource">      
-                    <constructor-arg ref="getFollowedByActivitiesDbMapper" />
-                </bean>
-            </list>
-        </constructor-arg>
-    </bean>
+    <bean id="getFollowedByActivities" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		<constructor-arg>
+			<!-- Wrap the cache mapper with a partial mapper wrapper -->
+			<bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+				<constructor-arg ref="getFollowedByActivityCacheMapper" />
+			</bean>
+		</constructor-arg>
+		
+		<!-- Database mapper to fall back on if not found in cache -->
+		<constructor-arg ref="getFollowedByActivitiesDbMapper" />
+		
+		<constructor-arg>
+			<!-- Results combiner - just returns the first non-null value -->
+			<bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner"/>
+		</constructor-arg>
+		
+		<!-- Cache refresher -->
+		<constructor-arg ref="refreshFollowedByActivitiesCacheMapper" />
+	</bean>
+    
 	<bean id="domainGroupBannerMapper" class="org.eurekastreams.server.persistence.mappers.DomainGroupBannerMapper"/>
 
 	<bean id="organizationBannerMapper" class="org.eurekastreams.server.persistence.mappers.OrganizationBannerMapper"/>
@@ -770,5 +782,7 @@
 	<bean id="getRequestsForGroupMembershipMapper" class="org.eurekastreams.server.persistence.mappers.db.GetRequestsForGroupMembershipByGroup" />
 	
 	<bean id="increaseOrgEmployeeCount" class="org.eurekastreams.server.persistence.mappers.db.IncreaseOrgEmployeeCount" />
+	
+	<bean id="getGadgetsByGadgetDefAndConsumerKey" class="org.eurekastreams.server.persistence.mappers.opensocial.GetGadgetsByGadgetDefAndConsumerKey" />
 
 </beans>

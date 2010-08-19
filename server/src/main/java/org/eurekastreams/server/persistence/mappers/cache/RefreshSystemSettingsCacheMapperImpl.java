@@ -18,14 +18,14 @@ package org.eurekastreams.server.persistence.mappers.cache;
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.SystemSettings;
-import org.eurekastreams.server.persistence.mappers.RefreshDataSourceMapper;
+import org.eurekastreams.server.persistence.mappers.chained.RefreshStrategy;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
  * Cache refresher for SystemSettings.
  */
 public class RefreshSystemSettingsCacheMapperImpl extends CachedDomainMapper implements
-        RefreshDataSourceMapper<Object, SystemSettings>
+        RefreshStrategy<Object, SystemSettings>
 {
     /**
      * Logger.
@@ -35,7 +35,8 @@ public class RefreshSystemSettingsCacheMapperImpl extends CachedDomainMapper imp
     /**
      * Refresh the SystemSettings cache with the input value.
      *
-     * @param request nothing.
+     * @param request
+     *            nothing.
      * @param inSystemSettings
      *            the system settings to update cache with
      */

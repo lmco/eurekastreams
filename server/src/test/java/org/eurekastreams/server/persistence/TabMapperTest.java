@@ -103,8 +103,8 @@ public class TabMapperTest extends DomainEntityMapperTest
                 fordTab1.getTabLayout());
         assertEquals("DBUnit not setup as expected - ford's second tab isnt' of type TWOCOLUMNLEFTWIDE",
                 Layout.TWOCOLUMNLEFTWIDE, fordTab2.getTabLayout());
-        assertEquals("DBUnit not setup as expected - ford's third tab isnt' of type THREECOLUMN",
-                Layout.THREECOLUMN, fordTab3.getTabLayout());
+        assertEquals("DBUnit not setup as expected - ford's third tab isnt' of type THREECOLUMN", Layout.THREECOLUMN,
+                fordTab3.getTabLayout());
     }
 
     /**
@@ -133,14 +133,14 @@ public class TabMapperTest extends DomainEntityMapperTest
         // ** test gadget definitions
         String message = "A gadget in Ford's first tab has an unexpected gadget url";
         // 2 google gadgets
-        assertEquals(message, "http://www.google.com", tab1Map.get(fordsFirstTabFirstGadgetId).getGadgetDefinition()
-                .getUrl());
-        assertEquals(message, "http://www.google.com", tab1Map.get(fordsFirstTabSecondGadgetId).getGadgetDefinition()
-                .getUrl());
+        assertEquals(message, "http://www.example.com/gadget1.xml", tab1Map.get(fordsFirstTabFirstGadgetId)
+                .getGadgetDefinition().getUrl());
+        assertEquals(message, "http://www.example.com/gadget1.xml", tab1Map.get(fordsFirstTabSecondGadgetId)
+                .getGadgetDefinition().getUrl());
 
         // 1 example gadget
-        assertEquals(message, "http://www.example.com", tab1Map.get(fordsFirstTabThirdGadgetId).getGadgetDefinition()
-                .getUrl());
+        assertEquals(message, "http://www.example.com/gadget2.xml", tab1Map.get(fordsFirstTabThirdGadgetId)
+                .getGadgetDefinition().getUrl());
 
         // ** test zoneNumbers
         message = "A gadget in Ford's first tab has an unexpected zoneNumber";
@@ -179,22 +179,22 @@ public class TabMapperTest extends DomainEntityMapperTest
         String message = "A gadget in Ford's third tab has an unexpected gadget url";
 
         // 2 google gadgets
-        assertEquals(message, "http://www.google.com", tab3Map.get(fordsThirdTabFirstGadgetId).getGadgetDefinition()
-                .getUrl());
-        assertEquals(message, "http://www.example.com", tab3Map.get(fordsThirdTabThirdGadgetId).getGadgetDefinition()
-                .getUrl());
+        assertEquals(message, "http://www.example.com/gadget1.xml", tab3Map.get(fordsThirdTabFirstGadgetId)
+                .getGadgetDefinition().getUrl());
+        assertEquals(message, "http://www.example.com/gadget3.xml", tab3Map.get(fordsThirdTabThirdGadgetId)
+                .getGadgetDefinition().getUrl());
 
         // 4 example gadgets
-        assertEquals(message, "http://www.example.com", tab3Map.get(fordsThirdTabSecondGadgetId).getGadgetDefinition()
-                .getUrl());
-        assertEquals(message, "http://www.example.com", tab3Map.get(fordsThirdTabFourthGadgetId).getGadgetDefinition()
-                .getUrl());
-        assertEquals(message, "http://www.example.com", tab3Map.get(fordsThirdTabFifthGadgetId).getGadgetDefinition()
-                .getUrl());
-        assertEquals(message, "http://www.example.com", tab3Map.get(fordsThirdTabSixthGadgetId).getGadgetDefinition()
-                .getUrl());
-        assertEquals(message, "http://www.example.com", tab3Map.get(fordsThirdTabSeventhGadgetId).getGadgetDefinition()
-                .getUrl());
+        assertEquals(message, "http://www.example.com/gadget2.xml", tab3Map.get(fordsThirdTabSecondGadgetId)
+                .getGadgetDefinition().getUrl());
+        assertEquals(message, "http://www.example.com/gadget2.xml", tab3Map.get(fordsThirdTabFourthGadgetId)
+                .getGadgetDefinition().getUrl());
+        assertEquals(message, "http://www.example.com/gadget2.xml", tab3Map.get(fordsThirdTabFifthGadgetId)
+                .getGadgetDefinition().getUrl());
+        assertEquals(message, "http://www.example.com/gadget2.xml", tab3Map.get(fordsThirdTabSixthGadgetId)
+                .getGadgetDefinition().getUrl());
+        assertEquals(message, "http://www.example.com/gadget2.xml", tab3Map.get(fordsThirdTabSeventhGadgetId)
+                .getGadgetDefinition().getUrl());
 
         // ** test zoneNumbers
         message = "A gadget in Ford's first tab has an unexpected zoneNumber";
@@ -266,7 +266,8 @@ public class TabMapperTest extends DomainEntityMapperTest
             public void execute()
             {
                 assertNotNull(g);
-                junit.framework.Assert.assertEquals("http://www.google.com", g.getGadgetDefinition().getUrl());
+                junit.framework.Assert.assertEquals("http://www.example.com/gadget1.xml", g.getGadgetDefinition()
+                        .getUrl());
 
             }
         };
@@ -463,7 +464,7 @@ public class TabMapperTest extends DomainEntityMapperTest
     /**
      * This test deletes a record and then ensures that the record still remains in the database so that it can be
      * undeleted.
-     *
+     * 
      * @throws GadgetDeletionException
      *             thrown on error during gadget deletion.
      */
@@ -489,7 +490,7 @@ public class TabMapperTest extends DomainEntityMapperTest
     /**
      * Verify the configurable time window for permanent deletion of a gadget - for a gadgets that's still within the
      * window.
-     *
+     * 
      * @throws GadgetDeletionException
      *             thrown on exception deleting the tab.
      */
@@ -526,7 +527,7 @@ public class TabMapperTest extends DomainEntityMapperTest
 
     /**
      * Test deleting the first gadget in a collection leaves the collection with the other gadgets intact.
-     *
+     * 
      * @throws GadgetDeletionException
      *             thrown on error during tab deletion.
      */
@@ -554,7 +555,7 @@ public class TabMapperTest extends DomainEntityMapperTest
 
     /**
      * Verify the configurable time window for permanent deletion of a Gadget - for a gadget that's outside the window.
-     *
+     * 
      * @throws GadgetDeletionException
      *             thrown on exception deleting the gadget.
      */
@@ -600,7 +601,7 @@ public class TabMapperTest extends DomainEntityMapperTest
 
     /**
      * This test verifies that deleted items expire and are purged from the database after a period of time.
-     *
+     * 
      * @throws GadgetDeletionException
      *             thrown on error during gadget deletion.
      */
@@ -614,7 +615,8 @@ public class TabMapperTest extends DomainEntityMapperTest
                 "select gadgetDefinition from Gadget where id = :gadgetId and deleted = true").setParameter("gadgetId",
                 fordsDeletedGadgetId).getSingleResult();
 
-        assertEquals("Could not find the already-deleted gadget", "http://www.example.com", gadgetDefinition.getUrl());
+        assertEquals("Could not find the already-deleted gadget", "http://www.example.com/gadget2.xml",
+                gadgetDefinition.getUrl());
 
         // delete an item other than the one that is already deleted.
         jpaTabMapper.deleteGadget(jpaGadgetMapper.findById(fordsActiveGadgetId));
@@ -631,7 +633,7 @@ public class TabMapperTest extends DomainEntityMapperTest
 
     /**
      * This test is trying to undelete the gadget that is designated as delete in the DBUnity Test Database.
-     *
+     * 
      * @throws GadgetUndeletionException
      *             thrown during gadget undeletion.
      */
@@ -648,14 +650,15 @@ public class TabMapperTest extends DomainEntityMapperTest
                 new Long(fordsDeletedGadgetId)).getSingleResult();
         assertEquals(false, deletedFlag.booleanValue());
 
-        assertEquals("The gadget url of the undeleted gadget was not as expected.", "http://www.example.com",
-                jpaGadgetMapper.findById(fordsDeletedGadgetId).getGadgetDefinition().getUrl());
+        assertEquals("The gadget url of the undeleted gadget was not as expected.",
+                "http://www.example.com/gadget2.xml", jpaGadgetMapper.findById(fordsDeletedGadgetId)
+                        .getGadgetDefinition().getUrl());
 
     }
 
     /**
      * Test that undeleting a gadget restores the gadget to its original position and bumps the other gadgets back one.
-     *
+     * 
      * @throws GadgetUndeletionException
      *             thrown on error during gadget undeletion.
      */
@@ -693,7 +696,7 @@ public class TabMapperTest extends DomainEntityMapperTest
 
     /**
      * Test that undeleting a gadget that's not deleted throws a GadgetUndeleteException.
-     *
+     * 
      * @throws GadgetUndeletionException
      *             thrown on error during gadget undeletion.
      */

@@ -51,7 +51,7 @@ public class AppDataMapperTest extends DomainEntityMapperTest
     /**
      * Url to use when creating local instances of GadgetDefinition.
      */
-    private final String testGadgetDefinitionUrl = "http://www.example.com";
+    private final String testGadgetDefinitionUrl = "http://www.example.com/gadget2.xml";
 
     /**
      * test application id.

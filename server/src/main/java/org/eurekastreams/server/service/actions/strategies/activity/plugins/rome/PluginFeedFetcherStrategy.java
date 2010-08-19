@@ -34,9 +34,15 @@ public interface PluginFeedFetcherStrategy
     /**
      * @param inFeedURL
      *            the url to create a SyndFeed From.
+     * @param inProxyHost
+     *            host name to use (if desires) for proxying http requests.
+     * @param inProxyPort
+     *            port for http proxy server.
+     * @param inTimeout
+     *            the period of time to wait for a response from the feed.
      * @return a Syndicated Feed.
      * @throws Exception
      *             if an error occurs.
      */
-    SyndFeed execute(URL inFeedURL) throws Exception;
+    SyndFeed execute(URL inFeedURL, String inProxyHost, String inProxyPort, int inTimeout) throws Exception;
 }

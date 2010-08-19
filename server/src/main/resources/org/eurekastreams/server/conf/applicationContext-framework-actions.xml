@@ -54,6 +54,11 @@
         <constructor-arg ref="bulkPeopleByAccountIdMapper" /> 
     </bean>
     
+    <bean id="openSocialPrincipalPopulatorTransWrapper" class="org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper">
+        <constructor-arg ref="openSocialPrincipalPopulator" />
+        <constructor-arg ref="transactionManager" /> 
+    </bean>
+    
     <bean id="serviceActionController" class="org.eurekastreams.commons.server.service.ServiceActionController">
         <constructor-arg ref="transactionManager"/>
     </bean>
@@ -95,18 +100,6 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean> 
-    
-	<bean id="oauthAuthorize" class="org.eurekastreams.commons.actions.service.ServiceAction">
-		<constructor-arg ref="noValidationStrategy" />
-		<constructor-arg ref="noAuthorizationStrategy" />
-		<constructor-arg>
-			<bean
-				class="org.eurekastreams.server.action.execution.opensocial.OAuthAuthorizeExecution">
-				<constructor-arg ref="oauthDataStore" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg value="true" />
-	</bean>	    
 	
     <bean id="authorizeUpdateGroup" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <!-- Validation -->
@@ -1205,7 +1198,10 @@
             <list>
                 <ref bean="twitterCookieBypassStrategy"/>
             </list>
-        </constructor-arg>            
+        </constructor-arg>
+        <constructor-arg value="${eureka.proxy.host}" />
+        <constructor-arg value="${eureka.proxy.port}" />
+        <constructor-arg type="int" value="${eureka.feeds.httptimeout}" />            
     </bean>	
 	
     <bean id="getFeedTitle" class="org.eurekastreams.server.action.execution.feed.GetTitleFromFeedExecution">
@@ -1557,7 +1553,13 @@
 							<entry key="followedBy">
 								<ref bean="getFollowedByActivities" />
 							</entry>
-						</map>		            
+							<entry key="recipient">
+								<ref bean="bulkActivityStreamsMapper" />
+							</entry>
+							<entry key="savedBy">
+								<ref bean="getStarredActivityIds" />
+							</entry>							
+						</map>
 		            </constructor-arg>
 		             <constructor-arg>
                         <map>
@@ -1567,6 +1569,21 @@
                                     <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
                                 </bean>
                             </entry>
+                            <entry key="recipient">
+                                <bean 
+                                    class="org.eurekastreams.server.service.actions.strategies.activity.datasources.RecipientPersistenceRequestTransformer">
+                                    <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
+                                    <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+                                    <constructor-arg ref="bulkOrganizationsByShortNameMapper" />
+                                    <constructor-arg ref="bulkEntityStreamIdsMapper" />   
+                                </bean>
+                            </entry>
+                            <entry key="savedBy">
+                                <bean 
+                                    class="org.eurekastreams.server.service.actions.strategies.activity.datasources.SavedActivityPersistenceRequestTransformer">
+                                    <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
+                                </bean>
+                            </entry>                            
                         </map>                  
                     </constructor-arg>
 		            <constructor-arg>
@@ -4043,16 +4060,133 @@
         </constructor-arg>
     </bean>
 
+    <!-- ****************************** -->
+    <!-- OAuth Action configuration     -->
+    <!-- ****************************** -->
+    
     <bean name="oauthDataStore"
         class="org.eurekastreams.server.service.opensocial.oauth.OAuthDataStoreImpl">
-        <constructor-arg value="${eureka.web.baseurl}/resources/oauth/requestToken"/>
-        <constructor-arg value="${eureka.web.baseurl}/resources/oauth/authorize"/>
-        <constructor-arg value="${eureka.web.baseurl}/resources/oauth/accessToken"/>
-        <constructor-arg ref="jpaOAuthEntryMapper" />
-        <constructor-arg ref="jpaOAuthConsumerMapper" />
-        <constructor-arg ref="transactionManager" />
+        <property name="serviceActionController" ref="serviceActionController" />
+        <property name="principalPopulatorTransWrapper" ref="openSocialPrincipalPopulatorTransWrapper" />
+        <constructor-arg ref="createOAuthRequestToken" />
+        <constructor-arg ref="oauthAuthorize" />
+        <constructor-arg ref="updateRequestToAccessToken" />
+        <constructor-arg ref="getOAuthEntryByToken" />
+        <constructor-arg ref="disableOAuthToken" />
+        <constructor-arg ref="removeOAuthToken" />
+        <constructor-arg ref="getOAuthConsumerByConsumerKey" />
+        <constructor-arg ref="getSecurityTokenForConsumerRequest" />
     </bean>
 
+	<bean id="oauthAuthorize" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.action.execution.opensocial.OAuthAuthorizeExecution">
+				<constructor-arg ref="jpaOAuthEntryMapper" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="false" />
+	</bean>	
+
+	<bean id="oauthEntryConversionStrat" class="org.eurekastreams.server.action.execution.opensocial.OAuthEntryConversionStrategy">
+		<constructor-arg ref="jpaOAuthConsumerMapper" />
+	</bean>
+	
+	<bean id="createOAuthRequestToken" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.action.execution.opensocial.CreateOAuthRequestTokenExecution">
+				<constructor-arg value="${eureka.oauth.domain}" />
+				<constructor-arg value="${eureka.oauth.container}" />
+				<constructor-arg ref="jpaOAuthEntryMapper" />
+				<constructor-arg ref="oauthEntryConversionStrat" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="false" />
+	</bean>	
+	
+	<bean id="updateRequestToAccessToken" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.action.execution.opensocial.UpdateRequestToAccessTokenExecution">
+				<constructor-arg ref="jpaOAuthEntryMapper" />
+				<constructor-arg ref="oauthEntryConversionStrat" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="false" />
+	</bean>	
+
+	<bean id="getOAuthEntryByToken" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.action.execution.opensocial.GetOAuthEntryByTokenExecution">
+				<constructor-arg ref="jpaOAuthEntryMapper" />
+				<constructor-arg ref="oauthEntryConversionStrat" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="true" />
+	</bean>	
+	
+	<bean id="disableOAuthToken" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.action.execution.opensocial.DisableOAuthTokenExecution">
+				<constructor-arg ref="jpaOAuthEntryMapper" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="false" />
+	</bean>	
+	
+	<bean id="removeOAuthToken" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.action.execution.opensocial.RemoveOAuthTokenExecution">
+				<constructor-arg ref="jpaOAuthEntryMapper" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="false" />
+	</bean>	
+	
+	<bean id="getOAuthConsumerByConsumerKey" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.action.execution.opensocial.GetOAuthConsumerByConsumerKeyExecution">
+				<constructor-arg ref="jpaOAuthConsumerMapper" />
+				<constructor-arg value="${eureka.oauth.requesttokenurl}" />
+				<constructor-arg value="${eureka.oauth.authorizeurl}" />
+				<constructor-arg value="${eureka.oauth.accesstokenurl}" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="true" />
+	</bean>
+	
+		<bean id="getSecurityTokenForConsumerRequest" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.action.execution.opensocial.GetSecurityTokenForConsumerRequestExecution">
+				<constructor-arg value="${eureka.oauth.domain}" />
+				<constructor-arg value="${eureka.oauth.container}" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="true" />
+	</bean>
+		
     <bean id="emailerFactory"
         class="org.eurekastreams.server.service.actions.strategies.EmailerFactory">
         <constructor-arg value="smtp" />

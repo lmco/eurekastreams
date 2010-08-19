@@ -16,11 +16,17 @@
             <groupId>rome</groupId>
             <artifactId>rome</artifactId>
             <version>1.0</version>
-        </dependency> 
+        </dependency>
         <dependency>
             <groupId>rome</groupId>
             <artifactId>rome-fetcher</artifactId>
             <version>1.0</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>xerces</groupId>
+            		<artifactId>xercesImpl</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency> 
         <dependency>
             <groupId>rome</groupId>
@@ -457,10 +463,15 @@
 		</resources>
 	</build>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
    <distributionManagement>
    <!-- Declare the snapshot repository to deploy the eurekastreams-server.jar file to -->
      <snapshotRepository>
-       <id>snapshots</id>
+       <id>smpsnapshots</id>
        <name>Snapshots</name>
        <url>${build.maven.snapshotrepo}</url>
      </snapshotRepository>

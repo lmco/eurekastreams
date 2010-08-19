@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Dialog content for creating or editing a stream view.
- * 
+ *
  */
 public class StreamViewDialogContent implements DialogContent
 {
@@ -89,8 +89,13 @@ public class StreamViewDialogContent implements DialogContent
     private StreamView view;
 
     /**
+     * Form Builder.
+     */
+    private FormBuilder form;
+
+    /**
      * Default constructor.
-     * 
+     *
      * @param inViewId
      *            the view id.
      */
@@ -120,7 +125,7 @@ public class StreamViewDialogContent implements DialogContent
 
     /**
      * Constructor for create, i.e. doesnt take in a view.
-     * 
+     *
      */
     public StreamViewDialogContent()
     {
@@ -135,8 +140,9 @@ public class StreamViewDialogContent implements DialogContent
     {
         body.clear();
 
-        final FormBuilder form = new FormBuilder("Organize streams into custom lists", StreamViewModel.getInstance(),
+        form = new FormBuilder("Organize streams into custom lists", StreamViewModel.getInstance(),
                 mode);
+        form.turnOffChangeCheck();
         form.addStyleName("stream-view-dialog-body");
 
         Session.getInstance().getEventBus().addObserver(StreamViewCreatedEvent.class,
@@ -199,7 +205,7 @@ public class StreamViewDialogContent implements DialogContent
 
     /**
      * The command to call to close the dialog.
-     * 
+     *
      * @param command
      *            the close command.
      */
@@ -218,7 +224,7 @@ public class StreamViewDialogContent implements DialogContent
 
     /**
      * Gets the body panel.
-     * 
+     *
      * @return the body.
      */
     public Widget getBody()
@@ -228,7 +234,7 @@ public class StreamViewDialogContent implements DialogContent
 
     /**
      * Gets the CSS name.
-     * 
+     *
      * @return the class.
      */
     public String getCssName()
@@ -238,7 +244,7 @@ public class StreamViewDialogContent implements DialogContent
 
     /**
      * Gets the title.
-     * 
+     *
      * @return the title.
      */
     public String getTitle()

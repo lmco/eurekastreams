@@ -218,4 +218,25 @@ public final class CacheKeys
      * Key for system settings.
      */
     public static final String SYSTEM_SETTINGS = "SystemSettings";
+
+    /**
+     * Holds pointer to composite stream for recipient person.
+     */
+    public static final String PERSON_ENTITITY_STREAM_VIEW_ID = "PrEntStream:";
+
+    /**
+     * Holds pointer to composite stream for recipient group.
+     */
+    public static final String GROUP_ENTITITY_STREAM_VIEW_ID = "GrEntStream:";
+
+    /**
+     * Holds pointer to composite stream for recipient organization.
+     */
+    public static final String ORG_ENTITITY_STREAM_VIEW_ID = "OrEntStream:";
+    
+    /**
+     * Key for HashTag by lowercased content.
+     */
+    public static final String HASH_TAG_BY_LOWERCASED_CONTENT = "HT:";
+
 }

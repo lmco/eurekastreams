@@ -189,8 +189,8 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
             batchSize *= batchPageSizeMultiplier;
 
             request.put("count", batchSize);
-            List<Long> descendingOrderDataSet = descendingOrderdataSource.fetch(request);
-            List<Long> sortedDataSet = sortedDataSource.fetch(request);
+            List<Long> descendingOrderDataSet = descendingOrderdataSource.fetch(request, userEntityId);
+            List<Long> sortedDataSet = sortedDataSource.fetch(request, userEntityId);
 
             if (descendingOrderDataSet != null && sortedDataSet != null)
             {

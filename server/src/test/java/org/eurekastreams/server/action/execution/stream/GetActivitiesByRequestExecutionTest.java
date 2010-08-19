@@ -48,7 +48,7 @@ import org.junit.Test;
 
 /**
  * Test for GetActivitiesByCompositeStreamExecution class.
- *
+ * 
  */
 public class GetActivitiesByRequestExecutionTest
 {
@@ -252,7 +252,7 @@ public class GetActivitiesByRequestExecutionTest
 
     /**
      * Perform action test with one item in the list.
-     *
+     * 
      * @throws Exception
      *             on failure.
      */
@@ -289,10 +289,10 @@ public class GetActivitiesByRequestExecutionTest
                 allowing(actionContext).getParams();
                 will(returnValue(request));
 
-                oneOf(memcacheDS).fetch(with(any(JSONObject.class)));
+                oneOf(memcacheDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
                 will(returnValue(memcacheIds));
 
-                oneOf(luceneDS).fetch(with(any(JSONObject.class)));
+                oneOf(luceneDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
                 will(returnValue(luceneIds));
 
                 oneOf(andCollider).collide(with(equalInternally(memcacheIds)), with(equalInternally(luceneIds)),
@@ -384,16 +384,16 @@ public class GetActivitiesByRequestExecutionTest
                 allowing(actionContext).getParams();
                 will(returnValue(request));
 
-                oneOf(memcacheDS).fetch(with(any(JSONObject.class)));
+                oneOf(memcacheDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
                 will(returnValue(batch1Request));
 
-                oneOf(luceneDS).fetch(with(any(JSONObject.class)));
+                oneOf(luceneDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
                 will(returnValue(null));
 
-                oneOf(memcacheDS).fetch(with(any(JSONObject.class)));
+                oneOf(memcacheDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
                 will(returnValue(batch2Response));
 
-                oneOf(luceneDS).fetch(with(any(JSONObject.class)));
+                oneOf(luceneDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
                 will(returnValue(null));
 
                 // requesting the first batch
@@ -479,10 +479,10 @@ public class GetActivitiesByRequestExecutionTest
                 allowing(actionContext).getParams();
                 will(returnValue(request));
 
-                oneOf(memcacheDS).fetch(with(any(JSONObject.class)));
+                oneOf(memcacheDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
                 will(returnValue(null));
 
-                oneOf(luceneDS).fetch(with(any(JSONObject.class)));
+                oneOf(luceneDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
                 will(returnValue(batch1Request));
 
                 allowing(person).getAccountId();

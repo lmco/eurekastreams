@@ -19,14 +19,23 @@ import java.net.URL;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpConnectionManager;
+import org.apache.commons.httpclient.HttpMethodRetryHandler;
+import org.apache.commons.httpclient.SimpleHttpConnectionManager;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.params.HttpClientParams;
+import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.eurekastreams.commons.logging.LogFactory;
 
 import com.sun.syndication.feed.synd.SyndFeed;
-import com.sun.syndication.fetcher.FeedFetcher;
-import com.sun.syndication.fetcher.impl.FeedFetcherCache;
-import com.sun.syndication.fetcher.impl.HashMapFeedInfoCache;
-import com.sun.syndication.fetcher.impl.HttpURLFeedFetcher;
+import com.sun.syndication.io.SyndFeedInput;
 
 /**
  * Create a FeedFetcher object, needed for testing, but probably a good practice either way.
@@ -38,20 +47,45 @@ public class FeedFactory
     /**
      * Logger.
      */
-    private Log logger = LogFactory.getLog(FeedFactory.class);
+    private Log logger = LogFactory.make();
 
     /**
      * List of strategies.
      */
     List<PluginFeedFetcherStrategy> siteStratagies;
+    
+    /**
+     * The connection timeout (in milliseconds).
+     */
+    int timeout;
+    
+    /**
+     * Proxy hostname.
+     */
+    String proxyHost;
+    
+    /**
+     * Proxy port.
+     */
+    String proxyPort;
 
     /**
      * @param inSiteStratagies
      *            the list of strategies.
+     * @param inProxyHost
+     *            the http proxy hostname (if necessary).
+     * @param inProxyPort
+     *            the http proxy port.
+     * @param inTimeout
+     *            the connection timeout (in ms).
      */
-    public FeedFactory(final List<PluginFeedFetcherStrategy> inSiteStratagies)
+    public FeedFactory(final List<PluginFeedFetcherStrategy> inSiteStratagies, final String inProxyHost,
+            final String inProxyPort, final int inTimeout)
     {
         siteStratagies = inSiteStratagies;
+        proxyHost = inProxyHost;
+        proxyPort = inProxyPort;
+        timeout = inTimeout;
     }
 
     /**
@@ -74,7 +108,7 @@ public class FeedFactory
                     logger.debug("Feed being fetched from special site" + inFeedURL);
                 }
 
-                return ps.execute(inFeedURL);
+                return ps.execute(inFeedURL, proxyHost, proxyPort, timeout);
             }
         }
 
@@ -83,12 +117,43 @@ public class FeedFactory
             logger.debug("Feed being fetched from normal site" + inFeedURL);
         }
 
-        FeedFetcherCache feedInfoCache = HashMapFeedInfoCache.getInstance();
+        HttpConnectionManagerParams managerParams = new HttpConnectionManagerParams();
+        managerParams.setSoTimeout(timeout);
+        managerParams.setConnectionTimeout(timeout);
+        
+        HttpConnectionManager manager = new SimpleHttpConnectionManager();
+        manager.setParams(managerParams);
+        
+        HttpClientParams params = new HttpClientParams();
+        params.setConnectionManagerTimeout(timeout);
+        params.setSoTimeout(timeout);
+        
+        HttpClient client = new HttpClient(params, manager);
+        HttpMethodRetryHandler retryHandler = new DefaultHttpMethodRetryHandler(1, true);
+        client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, retryHandler);
+        
+        if (!proxyHost.isEmpty())
+        {
+            client.getHostConfiguration().setProxy(proxyHost, Integer.parseInt(proxyPort));
+        }
+        
+        GetMethod get = new GetMethod(inFeedURL.toString());
 
-        FeedFetcher feedFetcher = new HttpURLFeedFetcher(feedInfoCache);
+        try
+        {
+            client.executeMethod(get);
+            
+            DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+            domFactory.setNamespaceAware(true);
+            DocumentBuilder builder = domFactory.newDocumentBuilder();
 
-        return feedFetcher.retrieveFeed(inFeedURL);
+            SyndFeedInput input = new SyndFeedInput();
+            return input.build(builder.parse(get.getResponseBodyAsStream()));
+        }
+        finally
+        {
+            get.releaseConnection();
+        }
 
     }
-
 }

@@ -73,7 +73,7 @@ public class FollowedByPersistenceRequestTransformerTest
             }
         });
 
-        Long result = sut.transform(request);
+        Long result = sut.transform(request, 0L);
         context.assertIsSatisfied();
 
         assertEquals(id, result);

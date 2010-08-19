@@ -16,6 +16,7 @@
 package org.eurekastreams.server.persistence.mappers.chained;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -43,24 +44,25 @@ public class PartialMapperResponseTest
      * Test hasCompleteResponse when response is incomplete.
      */
     @Test
-    public void testHasCompleteResponseOnIncomplete()
+    public void testHasUnhandledRequestOnIncomplete()
     {
         Object request = null;
         Object response = new Object();
         PartialMapperResponse<Object, Object> sut = new PartialMapperResponse<Object, Object>(response, request);
-        assertTrue(sut.hasCompleteResponse());
+        assertTrue(sut.hasUnhandledRequest());
+        assertSame(request, sut.getUnhandledRequest());
     }
 
     /**
      * Test hasCompleteResponse when response is complete.
      */
     @Test
-    public void testHasCompleteResponseOnComplete()
+    public void testHasUnhandledRequestOnComplete()
     {
-        Object request = new Object();
         Object response = new Object();
-        PartialMapperResponse<Object, Object> sut = new PartialMapperResponse<Object, Object>(response, request);
-        assertFalse(sut.hasCompleteResponse());
+        PartialMapperResponse<Object, Object> sut = new PartialMapperResponse<Object, Object>(response);
+        assertFalse(sut.hasUnhandledRequest());
+        assertNull(sut.getUnhandledRequest());
     }
 
 }

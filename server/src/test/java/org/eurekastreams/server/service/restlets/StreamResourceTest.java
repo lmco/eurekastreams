@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.Assert;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -80,19 +83,33 @@ public class StreamResourceTest
     /**
      * System under test.
      */
-    private StreamResource sut = new StreamResource(action, serviceActionController, principalPopulator);
+    private StreamResource sut = null;
 
     /**
      * Results.
      */
     private PagedSet<ActivityDTO> results = null;
-    
+
     /**
      * Setup.
      */
     @Before
     public void setUp()
     {
+        final List<String> globalWords = new ArrayList<String>();
+        globalWords.add("minId");
+        globalWords.add("maxId");
+
+        final List<String> multipleEntityWords = new ArrayList<String>();
+        multipleEntityWords.add("recipient");
+
+        final List<String> otherWords = new ArrayList<String>();
+        otherWords.add("keywords");
+        otherWords.add("followedBy");
+
+        sut = new StreamResource(action, serviceActionController, principalPopulator, globalWords, multipleEntityWords,
+                otherWords);
+
         ActivityDTO activity = new ActivityDTO();
         StreamEntityDTO actor = new StreamEntityDTO();
         actor.setAvatarId("actorAvatarId");
@@ -135,14 +152,15 @@ public class StreamResourceTest
     {
         // callback in attributes, JSONP response
         final String callback = "callback";
-        final String jsonReq ="{query:{}}";
-        final String osId = "guid"; 
-        
+        final String jsonReq = "";
+        final String osId = "guid";
+        sut.setPathOverride("/resources/stream/guid/callback/test/query/keywords/test");
+
         final Request request = context.mock(Request.class);
         final Map<String, Object> attributes = new HashMap<String, Object>();
-        attributes.put("callback", callback);
-        attributes.put("json", jsonReq);
+        attributes.put("query", jsonReq);
         attributes.put("openSocialId", osId);
+        attributes.put("callback", callback);
 
         context.checking(new Expectations()
         {
@@ -164,19 +182,20 @@ public class StreamResourceTest
         // Confirm JSONP
         assertTrue(actual.getText().startsWith(callback + "("));
         assertTrue(actual.getText().endsWith(")"));
-        
+
         String jsonText = actual.getText();
-        // remove functino call and open paran in the beginning
+        // remove function call and open parenthesis in the beginning
         jsonText = jsonText.substring((callback + "(").length());
-        // remove close paran at the end.
+        // remove close parenthesis at the end.
         jsonText = jsonText.substring(0, jsonText.length() - 1);
 
         JSONObject json = JSONObject.fromObject(jsonText);
+        assertEquals("OK", json.getString("status"));
         JSONArray activityArray = json.getJSONArray("activities");
 
         assertNotNull("Activity array is null and should not be", activityArray);
         assertEquals("Activity array should contain 1 item and does not", 1, activityArray.size());
-        
+
         assertEquals("actorDisplayName", activityArray.getJSONObject(0).getString("actorDisplayName"));
         assertEquals("actorUniqueId", activityArray.getJSONObject(0).getString("actorUniqueIdentifier"));
         assertEquals("PERSON", activityArray.getJSONObject(0).getString("actorType"));
@@ -187,7 +206,7 @@ public class StreamResourceTest
         assertEquals("SHARE", activityArray.getJSONObject(0).getString("verb"));
         assertEquals("NOTE", activityArray.getJSONObject(0).getString("baseObjectType"));
         assertEquals("my content", activityArray.getJSONObject(0).getString("content"));
-        
+
         context.assertIsSatisfied();
     }
 
@@ -198,15 +217,16 @@ public class StreamResourceTest
      *             exception.
      */
     @Test
-    public void represent() throws Exception
+    public void representTest() throws Exception
     {
         // no callback in attributes, JSON response
-        final String jsonReq ="{query:{}}";
-        final String osId = "guid"; 
-        
+        final String query = "";
+        final String osId = "guid";
+        sut.setPathOverride("/resources/stream/guid/query/keywords/test");
+
         final Request request = context.mock(Request.class);
         final Map<String, Object> attributes = new HashMap<String, Object>();
-        attributes.put("json", jsonReq);
+        attributes.put("query", query);
         attributes.put("openSocialId", osId);
 
         context.checking(new Expectations()
@@ -225,13 +245,15 @@ public class StreamResourceTest
         sut.initParams(request);
 
         Representation actual = sut.represent(null);
-        
-        JSONObject json = JSONObject.fromObject(actual.getText());
-        JSONArray activityArray = json.getJSONArray("activities");
 
+        JSONObject json = JSONObject.fromObject(actual.getText());
+        assertEquals("OK", json.getString("status"));
+
+        JSONArray activityArray = json.getJSONArray("activities");
+        
         assertNotNull("Activity array is null and should not be", activityArray);
         assertEquals("Activity array should contain 1 item and does not", 1, activityArray.size());
-        
+
         assertEquals("actorDisplayName", activityArray.getJSONObject(0).getString("actorDisplayName"));
         assertEquals("actorUniqueId", activityArray.getJSONObject(0).getString("actorUniqueIdentifier"));
         assertEquals("PERSON", activityArray.getJSONObject(0).getString("actorType"));
@@ -242,7 +264,108 @@ public class StreamResourceTest
         assertEquals("SHARE", activityArray.getJSONObject(0).getString("verb"));
         assertEquals("NOTE", activityArray.getJSONObject(0).getString("baseObjectType"));
         assertEquals("my content", activityArray.getJSONObject(0).getString("content"));
+
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test representing as JSON with a bad request.
+     * 
+     * @throws Exception
+     *             exception.
+     */
+    @Test
+    public void representTestBadParse() throws Exception
+    {
+        // no callback in attributes, JSON response
+        final String query = "";
+        final String osId = "guid";
+        sut.setPathOverride("/resources/stream/guid/query/keywords/test");
+
+        final Request request = context.mock(Request.class);
+        final Map<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put("query", query);
+        attributes.put("openSocialId", osId);
+
+        context.checking(new Expectations()
+        {
+            {
+                exactly(3).of(request).getAttributes();
+                will(returnValue(attributes));
+
+                oneOf(principalPopulator).getPrincipal("guid");
+
+                oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)), with(equal(action)));
+                will(throwException(new Exception("Something went wrong")));
+            }
+        });
+
+        sut.initParams(request);
+
+        Representation actual = sut.represent(null);
+
+        JSONObject json = JSONObject.fromObject(actual.getText());
+        
+        assertTrue(json.getString("status").startsWith("Error"));
         
         context.assertIsSatisfied();
+    }
+    
+    /**
+     * Test representing as JSON with a service exception.
+     * 
+     * @throws Exception
+     *             exception.
+     */
+    @Test
+    public void representTestServiceException() throws Exception
+    {
+        // no callback in attributes, JSON response
+        final String query = "";
+        final String osId = "guid";
+        sut.setPathOverride("/resources/stream/guid/query/unrecognized/test");
+
+        final Request request = context.mock(Request.class);
+        final Map<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put("query", query);
+        attributes.put("openSocialId", osId);
+
+        context.checking(new Expectations()
+        {
+            {
+                exactly(3).of(request).getAttributes();
+                will(returnValue(attributes));
+            }
+        });
+
+        sut.initParams(request);
+
+        Representation actual = sut.represent(null);
+
+        JSONObject json = JSONObject.fromObject(actual.getText());
+        
+        assertTrue(json.getString("status").startsWith("Error"));
+        
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Tests parsing a large request.
+     * 
+     * @throws UnsupportedEncodingException
+     *             bad request.
+     */
+    @Test
+    public void parseLargeRequestTest() throws UnsupportedEncodingException
+    {
+
+        String expected = "{\"query\":{\"keywords\":\"test\",\"followedBy\":\"p1\","
+                + "\"recipient\":[{\"name\":\"p1\",\"type\":\"PERSON\"},{\"name\":\"p2\""
+                + ",\"type\":\"PERSON\"},{\"name\":\"g1\",\"type\":\"GROUP\"}]}"
+                + ",\"maxId\":\"20\",\"minId\":\"10\"}";
+        JSONObject req = sut.parseRequest("/resources/stream/guid/query/recipient/" + "PERSON:p1,PERSON:p2,GROUP:g1/"
+                + "followedBy/p1/keywords/test/minId/10/maxId/20");
+
+        Assert.assertEquals(expected, req.toString());
     }
 }

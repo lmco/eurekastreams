@@ -21,14 +21,18 @@ import net.sf.json.JSONObject;
 
 /**
  * Persistence data source transformer. Turn the JSON into something more mapper appropriate.
- *
+ * 
  */
 public interface PersistenceDataSourceRequestTransformer
 {
     /**
      * JSON -> request object.
-     * @param request the JSON.
+     * 
+     * @param request
+     *            the JSON.
+     * @param userEntityId
+     *            the user entity ID.
      * @return the request object.
      */
-    Serializable transform(JSONObject request);
+    Serializable transform(JSONObject request, Long userEntityId);
 }

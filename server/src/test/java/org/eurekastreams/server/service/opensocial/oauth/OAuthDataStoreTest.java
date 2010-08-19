@@ -15,24 +15,23 @@
  */
 package org.eurekastreams.server.service.opensocial.oauth;
 
-import static junit.framework.Assert.assertNotNull;
+import net.oauth.OAuthConsumer;
 import net.oauth.OAuthProblemException;
 
-import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
+import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
+import org.eurekastreams.commons.actions.service.ServiceAction;
+import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.server.service.ServiceActionController;
+import org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper;
+import org.eurekastreams.server.action.response.opensocial.SecurityTokenResponse;
+import org.eurekastreams.server.domain.OAuthDomainEntry;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.eurekastreams.server.domain.OAuthDomainEntry;
-import org.eurekastreams.server.persistence.OAuthConsumerMapper;
-import org.eurekastreams.server.persistence.OAuthEntryMapper;
 
 /**
  * This class is a test stub for the OAuth implementation of the OpenSocial Gadget Container.
@@ -71,19 +70,63 @@ public class OAuthDataStoreTest
     };
 
     /**
-     * The mock consumer mapper.
+     * The mock {@link ServiceActionController}.
      */
-    private OAuthConsumerMapper consumerMapper = context.mock(OAuthConsumerMapper.class);
+    private ServiceActionController serviceActionControllerMock = context.mock(ServiceActionController.class);
 
     /**
-     * The mock entry mapper.
+     * The mock {@link PrincipalPopulatorTransWrapper}.
      */
-    private OAuthEntryMapper entryMapper = context.mock(OAuthEntryMapper.class);
+    private PrincipalPopulatorTransWrapper principalPopulator = context.mock(PrincipalPopulatorTransWrapper.class);
 
     /**
-     * The mock transaction manager.
+     * Instance of the CreateOauthRequestToken Service Action.
      */
-    private PlatformTransactionManager transactionManager = context.mock(PlatformTransactionManager.class);
+    private ServiceAction createOAuthRequestTokenAction = context.mock(ServiceAction.class,
+            "createOAuthRequestTokenAction");
+
+    /**
+     * Instance of the AuthorizeOAuthToken Service Action.
+     */
+    private ServiceAction authorizeOAuthTokenAction = context.mock(ServiceAction.class, "authorizeOAuthTokenAction");
+
+    /**
+     * Instance of the UpdateRequestToAccessToken Service Action.
+     */
+    private ServiceAction updateRequestToAccessTokenAction = context.mock(ServiceAction.class,
+            "updateRequestToAccessTokenAction");
+
+    /**
+     * Instance of the GetOAuthEntryByToken Service Action.
+     */
+    private ServiceAction getOAuthEntryByTokenAction = context.mock(ServiceAction.class, "getOAuthEntryByTokenAction");
+
+    /**
+     * Instance of the DisableOAuthToken Service Action.
+     */
+    private ServiceAction disableOAuthTokenAction = context.mock(ServiceAction.class, "disableOAuthTokenAction");
+
+    /**
+     * Instance of the RemoveOAuthToken Service Action.
+     */
+    private ServiceAction removeOAuthTokenAction = context.mock(ServiceAction.class, "removeOAuthTokenAction");
+
+    /**
+     * Mocked instnace of the ServiceActionContext.
+     */
+    private ServiceActionContext serviceActionContextMock = context.mock(ServiceActionContext.class);
+
+    /**
+     * Instance of the RemoveOAuthToken Service Action.
+     */
+    private ServiceAction getOAuthConsumerByConsumerKeyAction = context.mock(ServiceAction.class,
+            "getOAuthConsumerByConsumerKeyAction");
+
+    /**
+     * Instance of the GetSecurity Tocken for Consumer Request Service Action.
+     */
+    private ServiceAction getSecurityTokenForConsumerRequestAction = context.mock(ServiceAction.class,
+            "getSecurityTokenForConsumerRequestAction");
 
     /**
      * Set up the system to test.
@@ -91,9 +134,11 @@ public class OAuthDataStoreTest
     @Before
     public void setUp()
     {
-        sut = new OAuthDataStoreImpl("http://localhost:8080/resources/requesttoken", 
-        		"http://localhost:8080/resources/authorize", 
-        		"http://localhost:8080/resources/accesstoken", entryMapper, consumerMapper, transactionManager);
+        sut = new OAuthDataStoreImpl(createOAuthRequestTokenAction, createOAuthRequestTokenAction,
+                createOAuthRequestTokenAction, getOAuthEntryByTokenAction, disableOAuthTokenAction,
+                removeOAuthTokenAction, getOAuthConsumerByConsumerKeyAction, getSecurityTokenForConsumerRequestAction);
+        sut.setPrincipalPopulatorTransWrapper(principalPopulator);
+        sut.setServiceActionController(serviceActionControllerMock);
     }
 
     /**
@@ -105,21 +150,17 @@ public class OAuthDataStoreTest
     @Test
     public void testGenerateRequestToken() throws Exception
     {
+        final OAuthEntry entry = new OAuthEntry();
         context.checking(new Expectations()
         {
             {
-                oneOf(transactionManager).getTransaction(with(any(DefaultTransactionDefinition.class)));
-
-                oneOf(consumerMapper).findConsumerByConsumerKey(with(any(String.class)));
-                will(returnValue(new org.eurekastreams.server.domain.OAuthConsumer("", "", "", "", "")));
-
-                oneOf(entryMapper).insert(with(any(OAuthDomainEntry.class)));
-                oneOf(transactionManager).commit(with(any(TransactionStatus.class)));
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
+                will(returnValue(entry));
             }
         });
 
-        OAuthEntry actual = sut.generateRequestToken("key", "1.0", "http://localhost:8080/gadgets/oauthcallback");
-        assertNotNull("OAuthEntry was not found", actual);
+        sut.generateRequestToken("key", "1.0", "http://localhost:8080/gadgets/oauthcallback");
         context.assertIsSatisfied();
     }
 
@@ -135,16 +176,9 @@ public class OAuthDataStoreTest
         context.checking(new Expectations()
         {
             {
-                oneOf(transactionManager).getTransaction(with(any(DefaultTransactionDefinition.class)));
-
-                oneOf(consumerMapper).findConsumerByConsumerKey(with(any(String.class)));
-                will(returnValue(new org.eurekastreams.server.domain.OAuthConsumer("", "", "", "", "")));
-
-                oneOf(entryMapper).insert(with(any(OAuthDomainEntry.class)));
-                oneOf(transactionManager).commit(with(any(TransactionStatus.class)));
-                will(throwException(new Exception()));
-
-                oneOf(transactionManager).rollback(with(any(TransactionStatus.class)));
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
+                will(throwException(new ExecutionException()));
             }
         });
 
@@ -164,16 +198,13 @@ public class OAuthDataStoreTest
         context.checking(new Expectations()
         {
             {
-                oneOf(transactionManager).getTransaction(with(any(DefaultTransactionDefinition.class)));
-
-                oneOf(entryMapper).findEntry(with(any(String.class)));
-                will(returnValue(testEntryDto));
-
-                oneOf(transactionManager).commit(with(any(TransactionStatus.class)));
+                oneOf(principalPopulator).getPrincipal(with(any(String.class)));
+                
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
             }
         });
         sut.authorizeToken(testEntry, TEST_ARG1);
-        assertNotNull(testEntry);
         context.assertIsSatisfied();
     }
 
@@ -189,15 +220,11 @@ public class OAuthDataStoreTest
         context.checking(new Expectations()
         {
             {
-                oneOf(transactionManager).getTransaction(with(any(DefaultTransactionDefinition.class)));
-
-                oneOf(entryMapper).findEntry(with(any(String.class)));
-                will(returnValue(testEntry));
-
-                oneOf(transactionManager).commit(with(any(TransactionStatus.class)));
-                will(throwException(new Exception()));
-
-                oneOf(transactionManager).rollback(with(any(TransactionStatus.class)));
+                oneOf(principalPopulator).getPrincipal(with(any(String.class)));
+                
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
+                will(throwException(new ExecutionException()));
             }
         });
         sut.authorizeToken(testEntry, TEST_ARG1);
@@ -213,22 +240,19 @@ public class OAuthDataStoreTest
     @Test
     public void testConvertToAccessToken() throws Exception
     {
+        final OAuthEntry entry = new OAuthEntry();
         context.checking(new Expectations()
         {
             {
-                oneOf(transactionManager).getTransaction(with(any(DefaultTransactionDefinition.class)));
-
-                oneOf(consumerMapper).findConsumerByConsumerKey(with(any(String.class)));
-                will(returnValue(new org.eurekastreams.server.domain.OAuthConsumer("", "", "", "", "")));
-
-                oneOf(entryMapper).delete(with(any(String.class)));
-                oneOf(entryMapper).insert(with(any(OAuthDomainEntry.class)));
-                oneOf(transactionManager).commit(with(any(TransactionStatus.class)));
+                oneOf(principalPopulator).getPrincipal(with(any(String.class)));
+                
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
+                will(returnValue(entry));
             }
         });
 
-        OAuthEntry actual = sut.convertToAccessToken(testEntry);
-        Assert.assertTrue(actual.type == OAuthEntry.Type.ACCESS);
+        sut.convertToAccessToken(testEntry);
         context.assertIsSatisfied();
     }
 
@@ -244,16 +268,11 @@ public class OAuthDataStoreTest
         context.checking(new Expectations()
         {
             {
-                oneOf(transactionManager).getTransaction(with(any(DefaultTransactionDefinition.class)));
-
-                oneOf(consumerMapper).findConsumerByConsumerKey(with(any(String.class)));
-                will(returnValue(new org.eurekastreams.server.domain.OAuthConsumer("", "", "", "", "")));
-
-                oneOf(entryMapper).delete(with(any(String.class)));
-                oneOf(entryMapper).insert(with(any(OAuthDomainEntry.class)));
-                oneOf(transactionManager).commit(with(any(TransactionStatus.class)));
-                will(throwException(new Exception()));
-                oneOf(transactionManager).rollback(with(any(TransactionStatus.class)));
+                oneOf(principalPopulator).getPrincipal(with(any(String.class)));
+                
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
+                will(throwException(new ExecutionException()));
             }
         });
 
@@ -270,16 +289,16 @@ public class OAuthDataStoreTest
     @Test
     public void testGetConsumer() throws Exception
     {
-        final org.eurekastreams.server.domain.OAuthConsumer testConsumer = 
-            new org.eurekastreams.server.domain.OAuthConsumer("", "", "", "", "");
+        final OAuthConsumer consumer = new OAuthConsumer(null, null, null, null);
         context.checking(new Expectations()
         {
             {
-                oneOf(consumerMapper).findConsumerByConsumerKey(with(any(String.class)));
-                will(returnValue(testConsumer));
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
+                will(returnValue(consumer));
             }
         });
-        
+
         sut.getConsumer(TEST_ARG1);
         context.assertIsSatisfied();
     }
@@ -296,14 +315,16 @@ public class OAuthDataStoreTest
         context.checking(new Expectations()
         {
             {
-                oneOf(consumerMapper).findConsumerByConsumerKey(with(any(String.class)));
-                will(throwException(new Exception()));
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
+                will(throwException(new ExecutionException()));
             }
         });
-        
+
         sut.getConsumer(TEST_ARG1);
         context.assertIsSatisfied();
     }
+
     /**
      * Test of GetEntry.
      * 
@@ -313,18 +334,16 @@ public class OAuthDataStoreTest
     @Test
     public void testGetEntry() throws Exception
     {
+        final OAuthEntry entry = new OAuthEntry();
         context.checking(new Expectations()
         {
             {
-                testEntryDto.setConsumer(new org.eurekastreams.server.domain.OAuthConsumer("", "", "", "", ""));
-                testEntryDto.setType("REQUEST");
-
-                oneOf(entryMapper).findEntry(with(any(String.class)));
-                will(returnValue(testEntryDto));
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
+                will(returnValue(entry));
             }
         });
-        OAuthEntry actual = sut.getEntry(TEST_ARG1);
-        Assert.assertTrue(actual != null);
+        sut.getEntry(TEST_ARG1);
         context.assertIsSatisfied();
     }
 
@@ -340,12 +359,12 @@ public class OAuthDataStoreTest
         context.checking(new Expectations()
         {
             {
-                oneOf(entryMapper).findEntry(with(any(String.class)));
-                will(returnValue(null));
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
+                will(throwException(new ExecutionException()));
             }
         });
-        OAuthEntry actual = sut.getEntry(TEST_ARG1);
-        Assert.assertTrue(actual == null);
+        sut.getEntry(TEST_ARG1);
         context.assertIsSatisfied();
     }
 
@@ -361,12 +380,8 @@ public class OAuthDataStoreTest
         context.checking(new Expectations()
         {
             {
-                oneOf(transactionManager).getTransaction(with(any(DefaultTransactionDefinition.class)));
-
-                oneOf(entryMapper).findEntry(with(any(String.class)));
-                will(returnValue(testEntryDto));
-
-                oneOf(transactionManager).commit(with(any(TransactionStatus.class)));
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
             }
         });
 
@@ -386,14 +401,9 @@ public class OAuthDataStoreTest
         context.checking(new Expectations()
         {
             {
-                oneOf(transactionManager).getTransaction(with(any(DefaultTransactionDefinition.class)));
-
-                oneOf(entryMapper).findEntry(with(any(String.class)));
-                will(returnValue(testEntryDto));
-
-                oneOf(transactionManager).commit(with(any(TransactionStatus.class)));
-                will(throwException(new Exception()));
-                oneOf(transactionManager).rollback(with(any(TransactionStatus.class)));
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
+                will(throwException(new ExecutionException()));
             }
         });
 
@@ -413,9 +423,8 @@ public class OAuthDataStoreTest
         context.checking(new Expectations()
         {
             {
-                oneOf(transactionManager).getTransaction(with(any(DefaultTransactionDefinition.class)));
-                oneOf(entryMapper).delete(with(any(String.class)));
-                oneOf(transactionManager).commit(with(any(TransactionStatus.class)));
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
             }
         });
 
@@ -435,11 +444,9 @@ public class OAuthDataStoreTest
         context.checking(new Expectations()
         {
             {
-                oneOf(transactionManager).getTransaction(with(any(DefaultTransactionDefinition.class)));
-                oneOf(entryMapper).delete(with(any(String.class)));
-                oneOf(transactionManager).commit(with(any(TransactionStatus.class)));
-                will(throwException(new Exception()));
-                oneOf(transactionManager).rollback(with(any(TransactionStatus.class)));
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
+                will(throwException(new ExecutionException()));
             }
         });
 
@@ -456,7 +463,41 @@ public class OAuthDataStoreTest
     @Test
     public void testGetSecurityTokenForConsumerRequest() throws Exception
     {
-        SecurityToken actual = sut.getSecurityTokenForConsumerRequest(TEST_ARG1, TEST_ARG1);
-        Assert.assertTrue(actual != null);
+        final SecurityTokenResponse response = new SecurityTokenResponse(null);
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(principalPopulator).getPrincipal(TEST_ARG1);
+                
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
+                will(returnValue(response));
+            }
+        });
+        sut.getSecurityTokenForConsumerRequest(TEST_ARG1, TEST_ARG1);
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test of failing GetSecurityTokenForConsumerRequest.
+     * 
+     * @throws Exception
+     *             on error.
+     */
+    @Test(expected = OAuthProblemException.class)
+    public void testGetSecurityTokenForConsumerRequestFailure() throws Exception
+    {
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(principalPopulator).getPrincipal(TEST_ARG1);
+                
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
+                will(throwException(new ExecutionException()));
+            }
+        });
+        sut.getSecurityTokenForConsumerRequest(TEST_ARG1, TEST_ARG1);
+        context.assertIsSatisfied();
     }
 }
