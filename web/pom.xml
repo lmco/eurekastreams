@@ -280,7 +280,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>${build.maven.sharedresources.artifactid}</artifactId>
-            <version>${build.maven.sharedresources.version}</version>
+            <version>1.0-SNAPSHOT</version>
             <classifier>resources</classifier>
             <type>zip</type>
             <scope>provided</scope>
@@ -415,7 +415,7 @@
                         <artifactItem>
                             <groupId>${project.gorupId}</groupId>
                             <artifactId>${build.maven.sharedresources.artifactid}</artifactId>
-                            <version>${build.maven.sharedresources.version}</version>
+                            <version>1.0-SNAPSHOT</version>
                             <type>zip</type>
                             <overWrite>false</overWrite>
                             <outputDirectory>${project.build.directory}/sharedresources</outputDirectory>
