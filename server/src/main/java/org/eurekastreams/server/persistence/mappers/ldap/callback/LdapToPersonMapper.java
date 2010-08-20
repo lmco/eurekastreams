@@ -23,7 +23,6 @@ import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.springframework.ldap.core.AttributesMapper;
-import org.springframework.ldap.core.LdapTemplate;
 
 /**
  * Translates a LDAP record to a Person object.
@@ -208,16 +207,5 @@ public class LdapToPersonMapper implements AttributesMapper
     public void setSupportEmail(final String inSupportEmail)
     {
         this.supportEmail = inSupportEmail;
-    }
-
-    /**
-     * Set default LdapTemplate to use. Inherited from PeopleAppender but not used in this case.
-     * 
-     * @param inLdapTemplate
-     *            The LdapTemplate to use.
-     */
-    public void setDefaultLdapTemplate(final LdapTemplate inLdapTemplate)
-    {
-        // not needed here, do nothing.
     }
 }
