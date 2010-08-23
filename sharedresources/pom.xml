@@ -2,13 +2,13 @@
   <parent>
     <artifactId>eurekastreams-parent</artifactId>
     <groupId>org.eurekastreams</groupId>
-    <version>0.9-SNAPSHOT</version>
+    <version>0.9.1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.eurekastreams</groupId>
   <artifactId>eurekastreams-sharedresources</artifactId>
   <name>Eureka Streams Shared Resources</name>
-  <version>0.9-SNAPSHOT</version>
+  <version>0.9.1-SNAPSHOT</version>
   <url>http://maven.apache.org</url>
   <packaging>pom</packaging>
  <build>
