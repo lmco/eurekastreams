@@ -154,7 +154,9 @@ public class GalleryContent extends SettingsPanel
         panel.addStyleName("gallery-master");
 
         addGadget.addStyleName("add-gadget");
-        addTheme.addStyleName("add-theme");
+        addGadget.setVisible(false);
+	addTheme.addStyleName("add-theme");
+	addTheme.setVisible(false);
 
         panel.add(galleryPortalContainer);
         panel.add(galleryAddOrEditContainer);
