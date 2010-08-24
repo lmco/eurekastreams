@@ -83,7 +83,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
      * Maximum email length.
      */
     private static final int MAX_EMAIL = 50;
-    
+
     /**
      * Maximum content warning length.
      */
@@ -147,7 +147,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
      * The membership refresh button.
      */
     private Label membershipRefreshButton;
-    
+
     /**
      * Scopes.
      */
@@ -209,6 +209,9 @@ public class SystemSettingsPanelComposite extends FlowPanel
 
                         public void onSuccess(final SystemSettings systemSettings)
                         {
+                            // TODO: Refactor to use the new client models
+                            SystemSettingsModel.getInstance().clearCache();
+
                             Session.getInstance().getEventBus().notifyObservers(
                                     new ShowNotificationEvent(new Notification("Access List Saved")));
                             History.newItem(History.getToken());
@@ -231,6 +234,9 @@ public class SystemSettingsPanelComposite extends FlowPanel
 
                     public void onSuccess(final SystemSettings systemSettings)
                     {
+                        // TODO: Refactor to use the new client models
+                        SystemSettingsModel.getInstance().clearCache();
+
                         Session.getInstance().getEventBus().notifyObservers(
                                 new ShowNotificationEvent(new Notification("Item Deleted")));
                         History.newItem(History.getToken());
