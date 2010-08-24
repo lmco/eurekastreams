@@ -193,7 +193,7 @@ public class GetActivitiesByRequestExecutionTest
         filters.add(filterMock);
 
         sut = new GetActivitiesByRequestExecution(memcacheDS, luceneDS, bulkMapper, filters, andCollider,
-                getVisibleGroupsForUserMapper, 2.0f);
+                getVisibleGroupsForUserMapper, 2.0f, null);
 
         // set the activity ids
         activity1Public.setId(1L);

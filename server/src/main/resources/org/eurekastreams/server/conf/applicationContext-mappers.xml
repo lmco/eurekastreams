@@ -109,6 +109,33 @@
 		<property name="queryOptimizer" ref="queryOptimizer" />
 	</bean>
 
+	<bean id="bulkFilterPrivateActivityMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.persistence.mappers.cache.BulkFilterPrivateActivityMapper">
+				<property name="cache" ref="memcachedCache" />
+			</bean>
+		</constructor-arg>
+		
+		<constructor-arg>
+			<!-- Database mapper to fall back on if not found in cache -->
+			<bean class="org.eurekastreams.server.persistence.mappers.db.BulkFilterPrivateActivityDbMapper">
+				<property name="streamMapper" ref="getStreamsByIds" />
+			</bean>
+		</constructor-arg>
+		
+		<constructor-arg >
+			<ref bean="activityOrCombiner" />
+		</constructor-arg>
+		
+		<constructor-arg>
+			<!-- Cache refresher -->
+			<bean class="org.eurekastreams.server.persistence.mappers.cache.BulkFilterPrivateActivityRefresher">
+				<property name="cache" ref="memcachedCache" />
+			</bean>
+		</constructor-arg>
+	</bean>
+
+
 	<bean id="bulkEntityStreamIdsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<constructor-arg>
 			<bean class="org.eurekastreams.server.persistence.mappers.cache.BulkEntityStreamIdsMapper">
