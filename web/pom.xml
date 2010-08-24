@@ -165,7 +165,7 @@
         <dependency>
             <groupId>org.eurekastreams</groupId>
             <artifactId>eurekastreams-server</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jmock</groupId>
@@ -1128,6 +1128,7 @@
             <properties>
                 <build.system.nodetype>webNode</build.system.nodetype>
                 <build.system.jobscheduler><![CDATA[<!-- No job scheduler -->]]></build.system.jobscheduler>
+                <build.jms.taskhandler>queueTaskHandler</build.jms.taskhandler>
             </properties>
         </profile>
         <profile>
