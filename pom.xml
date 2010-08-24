@@ -5,7 +5,7 @@
     <groupId>org.eurekastreams</groupId>
     <artifactId>eurekastreams-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.9-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
     <name>Eureka Streams Parent</name>
     <url>http://maven.apache.org</url>
     <dependencies>
@@ -108,7 +108,7 @@
 	</repositories>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding> 
         <gwtVersion>1.7.0</gwtVersion>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <build.web.grbaseurl>http://localhost:8081</build.web.grbaseurl>
@@ -151,7 +151,7 @@
         <build.report.clover.licenseurl>http://example.com/clover.license</build.report.clover.licenseurl>
         <build.report.checkstyle.rulesurl>http://dev.eurekastreams.org/conf/checkstyle/eurekastreams_eclipse-cs5.0_rules-forcheckin_latest.xml</build.report.checkstyle.rulesurl>
         <build.maven.sharedresources.artifactid>eurekastreams-sharedresources</build.maven.sharedresources.artifactid>
-        <build.maven.sharedresources.version>0.9-SNAPSHOT</build.maven.sharedresources.version>
+        <build.maven.sharedresources.version>1.0-SNAPSHOT</build.maven.sharedresources.version>
         <build.maven.snapshotrepo>http://example.com/content/repositories/snapshots</build.maven.snapshotrepo>
     </properties>
     <build>

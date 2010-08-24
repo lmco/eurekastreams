@@ -4,13 +4,13 @@
     <parent>
         <artifactId>eurekastreams-parent</artifactId>
         <groupId>org.eurekastreams</groupId>
-        <version>0.9-SNAPSHOT</version>
+        <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.eurekastreams</groupId>
     <artifactId>eurekastreams-web</artifactId>
     <packaging>war</packaging>
-    <version>0.9-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
     <name>Eureka Streams Web</name>
 
     <repositories>
@@ -165,7 +165,7 @@
         <dependency>
             <groupId>org.eurekastreams</groupId>
             <artifactId>eurekastreams-server</artifactId>
-            <version>0.9-SNAPSHOT</version>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jmock</groupId>
@@ -361,9 +361,13 @@
                 <configuration>
                     <encoding>UTF-8</encoding>
                     <useDefaultDelimiters>false</useDefaultDelimiters>
-					<delimiters>
-					   <delimiter>${*}</delimiter>
-					</delimiters>
+                    <delimiters>
+                       <delimiter>${*}</delimiter>
+                    </delimiters>
+                    <nonFilteredFileExtensions>
+                       <nonFilteredFileExtension>pdf</nonFilteredFileExtension>
+                       <nonFilteredFileExtension>swf</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
                 </configuration>
             </plugin>
             <plugin>
@@ -411,7 +415,7 @@
                         <artifactItem>
                             <groupId>${project.gorupId}</groupId>
                             <artifactId>${build.maven.sharedresources.artifactid}</artifactId>
-                            <version>${build.maven.sharedresources.version}</version>
+                            <version>1.0-SNAPSHOT</version>
                             <type>zip</type>
                             <overWrite>false</overWrite>
                             <outputDirectory>${project.build.directory}/sharedresources</outputDirectory>
@@ -1162,8 +1166,8 @@
         </profile>
     </profiles>
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <!--    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding> -->
     </properties>
 
 </project>
