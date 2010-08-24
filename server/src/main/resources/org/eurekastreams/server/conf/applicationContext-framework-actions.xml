@@ -378,10 +378,13 @@
 		<constructor-arg>
 			<bean
 				class="org.eurekastreams.server.action.execution.settings.AddMembershipCriteriaExecution">
-				<constructor-arg ref="findSystemSettings" />
+				<constructor-arg ref="findSystemSettingsFromDatabase" />
 				<constructor-arg ref="updaterStrategy" />
 				<constructor-arg>
-					<bean class="org.eurekastreams.server.persistence.mappers.UpdateMapper" />
+					<bean class="org.eurekastreams.server.persistence.mappers.UpdateMapper">
+						<!-- Wrapped updater to clear the SystemSettings cache -->
+						<constructor-arg ref="deleteSystemSettingsCacheMapper" />
+					</bean>
 				</constructor-arg>
 				<constructor-arg>
 					<bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
@@ -397,10 +400,13 @@
 		<constructor-arg>
 			<bean
 				class="org.eurekastreams.server.action.execution.settings.RemoveMembershipCriteriaExecution">
-				<constructor-arg ref="findSystemSettings" />
+				<constructor-arg ref="findSystemSettingsFromDatabase" />
 				<constructor-arg ref="updaterStrategy" />
 				<constructor-arg>
-					<bean class="org.eurekastreams.server.persistence.mappers.UpdateMapper" />
+					<bean class="org.eurekastreams.server.persistence.mappers.UpdateMapper">
+						<!-- Wrapped updater to clear the SystemSettings cache -->
+						<constructor-arg ref="deleteSystemSettingsCacheMapper" />
+					</bean>
 				</constructor-arg>
 			</bean>
 		</constructor-arg>
