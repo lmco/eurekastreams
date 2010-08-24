@@ -502,7 +502,7 @@
                          <executions>
                              <execution>
                                  <id>clover</id>
-                                 <phase>test</phase>
+                                 <phase>verify</phase>
                                  <goals>
                                      <goal>instrument-test</goal>
                                      <goal>clover</goal>

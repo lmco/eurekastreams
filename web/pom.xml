@@ -1123,6 +1123,7 @@
             <properties>
                 <build.system.nodetype>webNode</build.system.nodetype>
                 <build.system.jobscheduler><![CDATA[<!-- No job scheduler -->]]></build.system.jobscheduler>
+                <build.jms.taskhandler>queueTaskHandler</build.jms.taskhandler>
             </properties>
         </profile>
         <profile>
