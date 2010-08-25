@@ -102,7 +102,7 @@
     		<activation>
     			<property>
     				<name>env.NODETYPE</name>
-    				<value>webNode</value>
+    				<value>webnode</value>
     			</property>
     		</activation>
 			<build>
