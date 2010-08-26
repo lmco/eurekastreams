@@ -42,7 +42,11 @@ public class LdapGroupDnLdapTemplateRetriever extends BaseLdapTemplateRetriever
     }
 
     /**
-     * {@inheritDoc}.
+     * Uses specified template key to return an LdapTemplate used to make query.
+     * 
+     * @param inLdapLookupRequest
+     *            {@link LdapLookupRequest}.
+     * @return LdapTemplate based on provided template key, or default template if none found.
      */
     @Override
     protected LdapTemplate retrieveLdapTemplate(final LdapLookupRequest inLdapLookupRequest)

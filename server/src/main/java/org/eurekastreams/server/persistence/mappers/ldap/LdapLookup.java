@@ -86,7 +86,14 @@ public class LdapLookup<Type> implements DomainMapper<LdapLookupRequest, List<Ty
     }
 
     /**
-     * {@inheritDoc}
+     * Execute an ldap query based on {@link LdapLookupRequest} parameters and this DAO's configuration.
+     * LdapLookupRequest is used for search upper bound, the {@link LdapTemplate}, and the search string. The rest of
+     * ldap query functionality is determined by DAO configuration.
+     * 
+     * @param inRequest
+     *            {@link LdapLookupRequest}.
+     * @return List of objects found as as result of ldap query.
+     * 
      */
     @Override
     public List<Type> execute(final LdapLookupRequest inRequest)

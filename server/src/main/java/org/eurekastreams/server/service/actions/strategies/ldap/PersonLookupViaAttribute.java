@@ -46,7 +46,14 @@ public class PersonLookupViaAttribute implements PersonLookupStrategy
     }
 
     /**
-     * {@inheritDoc}.
+     * Returns a list of people from on ldap lookup based on an attribute value provided by user. Ldap attribute to
+     * value search results are base entirely on the {@link LdapLookup} DAO passed into this strategy.
+     * 
+     * @param inSearchString
+     *            the value to be matched to an ldap attribue.
+     * @param inResultsUpperBound
+     *            Max number of results.
+     * @return List of Person objects.
      */
     @Override
     public List<Person> findPeople(final String inSearchString, final int inResultsUpperBound)
