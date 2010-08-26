@@ -85,8 +85,6 @@ public class PagedLdapSearchStrategy implements LdapSearchStrategy
                     + inEncodedFilter);
         }
 
-        boolean test = logger.isTraceEnabled();
-
         do
         {
             // Although the SearchControls object contains a limit on the max results for the

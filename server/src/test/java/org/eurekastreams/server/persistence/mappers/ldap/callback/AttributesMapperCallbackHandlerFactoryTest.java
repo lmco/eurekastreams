@@ -54,8 +54,5 @@ public class AttributesMapperCallbackHandlerFactoryTest
 
         CollectingNameClassPairCallbackHandler result = sut.getCallbackHandler();
         assertNotNull(result);
-
-        context.assertIsSatisfied();
-
     }
 }

@@ -49,7 +49,13 @@ public class SearchStringLdapTemplateRetriever extends BaseLdapTemplateRetriever
     }
 
     /**
-     * {@inheritDoc}.
+     * Uses specified search string and/or template key to return an LdapTemplate used to make query. If search string
+     * contains domain, that is used to try to find LdapTemplate, if not, template key is used to attempt to find it, if
+     * neither is present or results in a LdapTemplate being found, default template is used.
+     * 
+     * @param inLdapLookupRequest
+     *            {@link LdapLookupRequest}.
+     * @return {@link LdapTemplate} based on {@link LdapLookupRequest}, or default if none found.
      */
     @Override
     protected LdapTemplate retrieveLdapTemplate(final LdapLookupRequest inLdapLookupRequest)
@@ -63,6 +69,7 @@ public class SearchStringLdapTemplateRetriever extends BaseLdapTemplateRetriever
         {
             String[] domainQueryArr = searchString.split("\\\\");
 
+            // Example: "domain\attribute=foo" will give domain of "domain" and searchString of "attribute=foo".
             String domain = domainQueryArr[0];
             searchString = domainQueryArr[1];
 

@@ -46,6 +46,15 @@ public class VerifyLdapGroupExecution implements ExecutionStrategy<ActionContext
         groupMapper = inGroupMapper;
     }
 
+    /**
+     * Verifies that given ldap query resolves to a real group.
+     * 
+     * @param inActionContext
+     *            {@link ActionContext}.
+     * @return True if group exists, false otherwise.
+     * @throws ExecutionException
+     *             on error.
+     */
     @Override
     public Boolean execute(final ActionContext inActionContext) throws ExecutionException
     {

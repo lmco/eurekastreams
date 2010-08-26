@@ -83,7 +83,14 @@ public class PersonLookupViaMembership implements PersonLookupStrategy
     }
 
     /**
-     * {@inheritDoc}.
+     * Returns a list of people based on membership of provided ldap group. Returns all people in given group and
+     * subgroups recursively.
+     * 
+     * @param inSearchString
+     *            the value to be matched to an ldap attribue.
+     * @param inResultsUpperBound
+     *            Max number of results.
+     * @return List of Person objects.
      */
     @Override
     public List<Person> findPeople(final String inSearchString, final int inResultsUpperBound)
