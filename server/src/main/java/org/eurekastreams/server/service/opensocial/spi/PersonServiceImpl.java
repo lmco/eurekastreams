@@ -40,7 +40,7 @@ import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
-import org.eurekastreams.commons.server.service.ServiceActionController;
+import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper;
 import org.eurekastreams.server.action.request.opensocial.GetPeopleByOpenSocialIdsRequest;
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
@@ -69,7 +69,7 @@ public class PersonServiceImpl implements PersonService
     /**
      * Service Action Controller.
      */
-    private ServiceActionController serviceActionController;
+    private ActionController serviceActionController;
 
     /**
      * Principal populator.
@@ -99,7 +99,7 @@ public class PersonServiceImpl implements PersonService
      * @param inOpenSocialPrincipalPopulator
      *            {@link PrincipalPopulatorTransWrapper}.
      * @param inServiceActionController
-     *            {@link ServiceActionController}.
+     *            {@link ActionController}.
      * @param inContainerBaseUrl
      *            - string that contains the base url for the container to be used when generating links for an
      *            opensocial person.
@@ -108,7 +108,7 @@ public class PersonServiceImpl implements PersonService
     public PersonServiceImpl(@Named("getPersonNoContext") final ServiceAction inGetPersonAction,
             @Named("getPeopleByOpenSocialIds") final ServiceAction inGetPeopleAction,
             final PrincipalPopulatorTransWrapper inOpenSocialPrincipalPopulator,
-            final ServiceActionController inServiceActionController,
+            final ActionController inServiceActionController,
             @Named("eureka.container.baseurl") final String inContainerBaseUrl)
     {
         getPersonAction = inGetPersonAction;
@@ -160,9 +160,9 @@ public class PersonServiceImpl implements PersonService
             ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalPopulator
                     .getPrincipal(token.getViewerId()));
 
-            LinkedList<org.eurekastreams.server.domain.Person> people = 
-                (LinkedList<org.eurekastreams.server.domain.Person>) serviceActionController
-                    .execute(currentContext, getPeopleAction);
+            LinkedList<org.eurekastreams.server.domain.Person> people = // \n
+            (LinkedList<org.eurekastreams.server.domain.Person>) serviceActionController.execute(currentContext,
+                    getPeopleAction);
 
             log.debug("Retrieved " + people.size() + " people from action");
 

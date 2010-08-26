@@ -32,7 +32,7 @@ import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.commons.formatting.DateFormatter;
-import org.eurekastreams.commons.server.service.ServiceActionController;
+import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.PagedSet;
@@ -73,7 +73,7 @@ public class StreamResource extends SmpResource
     /**
      * Service Action Controller.
      */
-    private ServiceActionController serviceActionController;
+    private ActionController serviceActionController;
 
     /**
      * Principal populator.
@@ -116,7 +116,7 @@ public class StreamResource extends SmpResource
      * @param inAction
      *            the action.
      * @param inServiceActionController
-     *            {@link ServiceActionController} used to execute action.
+     *            {@link ActionController} used to execute action.
      * @param inPrincipalPopulator
      *            {@link PrincipalPopulator} used to create principal via open social id.
      * @param inGlobalKeywords
@@ -127,7 +127,7 @@ public class StreamResource extends SmpResource
      *            the other keywords.
      */
     @SuppressWarnings("unchecked")
-    public StreamResource(final ServiceAction inAction, final ServiceActionController inServiceActionController,
+    public StreamResource(final ServiceAction inAction, final ActionController inServiceActionController,
             final PrincipalPopulator inPrincipalPopulator, final List<String> inGlobalKeywords,
             final List<String> inMultipleEntityKeywords, final List<String> inKeywords)
     {

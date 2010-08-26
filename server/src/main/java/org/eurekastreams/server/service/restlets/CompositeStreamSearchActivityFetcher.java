@@ -17,7 +17,7 @@ package org.eurekastreams.server.service.restlets;
 
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
-import org.eurekastreams.commons.server.service.ServiceActionController;
+import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
 import org.eurekastreams.server.action.request.stream.GetStreamSearchResultsRequest;
 import org.eurekastreams.server.domain.PagedSet;
@@ -30,7 +30,7 @@ import org.restlet.resource.ResourceException;
 
 /**
  * Fetcher for stream searches.
- *
+ * 
  */
 public class CompositeStreamSearchActivityFetcher implements StreamFilterFetcher
 {
@@ -45,9 +45,9 @@ public class CompositeStreamSearchActivityFetcher implements StreamFilterFetcher
     private final OpenSocialPrincipalPopulator principalPopulator;
 
     /**
-     * Local instance of the {@link ServiceActionController}.
+     * Local instance of the {@link ActionController}.
      */
-    private final ServiceActionController serviceActionController;
+    private final ActionController serviceActionController;
 
     /**
      * Find by ID Mapper to find the search.
@@ -56,20 +56,20 @@ public class CompositeStreamSearchActivityFetcher implements StreamFilterFetcher
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inAction
      *            the action.
      * @param inPrincipalPopulator
      *            instance of {@link OpenSocialPrincipalPopulator} for this restlet.
      * @param inServiceActionController
-     *            instance of the {@link ServiceActionController} for this restlet.
+     *            instance of the {@link ActionController} for this restlet.
      * @param inFindByIdMapper
      *            the find mapper.
      */
     @SuppressWarnings("unchecked")
     public CompositeStreamSearchActivityFetcher(final ServiceAction inAction,
-            final OpenSocialPrincipalPopulator inPrincipalPopulator,
-            final ServiceActionController inServiceActionController, final FindByIdMapper inFindByIdMapper)
+            final OpenSocialPrincipalPopulator inPrincipalPopulator, final ActionController inServiceActionController,
+            final FindByIdMapper inFindByIdMapper)
     {
         action = inAction;
         principalPopulator = inPrincipalPopulator;
@@ -79,7 +79,7 @@ public class CompositeStreamSearchActivityFetcher implements StreamFilterFetcher
 
     /**
      * Get the activities.
-     *
+     * 
      * @param id
      *            the id of the composite stream.
      * @param openSocialId
@@ -96,7 +96,7 @@ public class CompositeStreamSearchActivityFetcher implements StreamFilterFetcher
     {
         FindByIdRequest findByIdRequest = new FindByIdRequest("StreamSearch", id);
         StreamSearch search = findByIdMapper.execute(findByIdRequest);
-        
+
         if (search == null)
         {
             throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND);

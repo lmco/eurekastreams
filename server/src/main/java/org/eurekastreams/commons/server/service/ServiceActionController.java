@@ -37,30 +37,30 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
  * This class provides the business logic that controls the execution of a {@link ServiceAction}.
- *
+ * 
  * Transaction management, and Validation, Authorization, and Execution strategy sequences are also controlled in here.
- *
+ * 
  * In the case of a {@link TaskHandlerAction}, the List of UserActionRequest objects are collected and submitted through
  * the action. This is necessary, because UserActionRequest submissions to the queue through JMS is currently not
  * covered under the configured transaction strategy. When distributed transactions are available within EurekaStreams
  * this behavior will change.
- *
+ * 
  * The order of execution for the strategies contained within the {@link ServiceAction} is controlled by this class and
  * executed in the following order:
- *
+ * 
  * ValidationStrategy AuthorizationStrategy ExecutionStrategy
- *
+ * 
  * Optionally:
- *
+ * 
  * submitAsyncRequests will be called in the case of a {@link TaskHandlerAction}.
- *
+ * 
  * Exception handling also occurs within this controller. - {@link GeneralException} will be thrown when an unwrapped
  * exception is encountered. - {@link ValidationException} will be logged and passed to the client when encountered. -
  * {@link AuthorizationException} will be logged and passed to the client when encountered. - {@link ExecutionException}
  * will be logged and passed to the client when encountered.
- *
+ * 
  */
-public class ServiceActionController
+public class ServiceActionController implements ActionController
 {
     /**
      * Local instance of the logger.
@@ -74,7 +74,7 @@ public class ServiceActionController
 
     /**
      * Constructor.
-     *
+     * 
      * @param inTransMgr
      *            - instance of the {@link PlatformTransactionManager} configured for this controller.
      */
@@ -85,13 +85,13 @@ public class ServiceActionController
 
     /**
      * Execute the supplied {@link ServiceAction} with the given {@link ServiceActionContext}.
-     *
+     * 
      * @param inServiceActionContext
      *            - instance of the {@link ServiceActionContext} with which to execution the {@link ServiceAction}.
      * @param inServiceAction
      *            - instance of the {@link ServiceAction} to execute.
      * @return - results from the execution of the ServiceAction.
-     *
+     * 
      *         - GeneralException - when an unexpected error occurs. - ValidationException - when a
      *         {@link ValidationException} occurs. - AuthorizationException - when an {@link AuthorizationException}
      *         occurs. - ExecutionException - when an {@link ExecutionException} occurs.
@@ -144,13 +144,13 @@ public class ServiceActionController
 
     /**
      * This method executes a {@link TaskHandlerAction} with the supplied {@link ServiceActionContext}.
-     *
+     * 
      * @param inServiceActionContext
      *            - instance of the {@link ServiceActionContext} associated with this request.
      * @param inTaskHandlerAction
      *            - instance of the {@link TaskHandlerAction}.
      * @return - results of the execution.
-     *
+     * 
      *         - GeneralException - when an unexpected error occurs. - ValidationException - when a
      *         {@link ValidationException} occurs. - AuthorizationException - when an {@link AuthorizationException}
      *         occurs. - ExecutionException - when an {@link ExecutionException} occurs.
@@ -163,9 +163,8 @@ public class ServiceActionController
         transDef.setName(inTaskHandlerAction.toString());
         transDef.setReadOnly(inTaskHandlerAction.isReadOnly());
         TransactionStatus transStatus = transMgr.getTransaction(transDef);
-        TaskHandlerActionContext<ServiceActionContext> taskHandlerContext =
-            new TaskHandlerActionContext<ServiceActionContext>(
-                inServiceActionContext, new ArrayList<UserActionRequest>());
+        TaskHandlerActionContext<ServiceActionContext> taskHandlerContext = // \n
+        new TaskHandlerActionContext<ServiceActionContext>(inServiceActionContext, new ArrayList<UserActionRequest>());
         try
         {
             inTaskHandlerAction.getValidationStrategy().validate(inServiceActionContext);
@@ -222,7 +221,7 @@ public class ServiceActionController
 
     /**
      * Helper class that encapsulates transaction rollback when an exception is encountered.
-     *
+     * 
      * @param inTransStatus
      *            - instance of the {@link TransactionStatus} to go along with the currect block.
      */

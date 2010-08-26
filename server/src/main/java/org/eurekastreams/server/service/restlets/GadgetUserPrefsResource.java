@@ -23,7 +23,7 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.commons.server.service.ServiceActionController;
+import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.action.request.start.GadgetUserPrefActionRequest;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
@@ -34,10 +34,9 @@ import org.restlet.resource.StringRepresentation;
 import org.restlet.resource.Variant;
 
 /**
- * This class provides the resource endpoint for retrieving Gadget user preferences. This rest
- * endpoint acts only as a transport for the action, so the test for the action covers the functionality of this
- * RESTlet.
- *
+ * This class provides the resource endpoint for retrieving Gadget user preferences. This rest endpoint acts only as a
+ * transport for the action, so the test for the action covers the functionality of this RESTlet.
+ * 
  */
 public class GadgetUserPrefsResource extends WritableResource
 {
@@ -80,7 +79,7 @@ public class GadgetUserPrefsResource extends WritableResource
     /**
      * Service Action Controller.
      */
-    private ServiceActionController serviceActionController;
+    private ActionController serviceActionController;
 
     /**
      * Action for updating the User Prefs.
@@ -150,7 +149,7 @@ public class GadgetUserPrefsResource extends WritableResource
 
     /**
      * Handle PUT requests.
-     *
+     * 
      * @param entity
      *            the resource's new representation
      * @throws ResourceException
@@ -200,7 +199,7 @@ public class GadgetUserPrefsResource extends WritableResource
 
     /**
      * Set the getGadgetUserPrefs service action.
-     *
+     * 
      * @param inGetGadgetUserPrefsServiceAction
      *            the getGadgetUserPrefs service action
      */
@@ -211,18 +210,18 @@ public class GadgetUserPrefsResource extends WritableResource
 
     /**
      * Set the service action controller.
-     *
+     * 
      * @param inServiceActionController
      *            the service action controller
      */
-    public void setServiceActionController(final ServiceActionController inServiceActionController)
+    public void setServiceActionController(final ActionController inServiceActionController)
     {
         serviceActionController = inServiceActionController;
     }
 
     /**
      * Set the updateGadgetUserPreferences action.
-     *
+     * 
      * @param inUpdateGadgetUserPrefsAction
      *            the updateGadgetUserPreferences action
      */

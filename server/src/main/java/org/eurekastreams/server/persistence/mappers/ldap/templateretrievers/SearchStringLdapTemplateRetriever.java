@@ -89,8 +89,11 @@ public class SearchStringLdapTemplateRetriever extends BaseLdapTemplateRetriever
                         + "Attempting search on default template");
             }
 
-            log.debug("Domain specified, searching only on "
-                    + ((LdapContextSource) result.getContextSource()).getUrls()[0] + " for : " + searchString);
+            if (log.isDebugEnabled())
+            {
+                log.debug("Domain specified, searching only on "
+                        + ((LdapContextSource) result.getContextSource()).getUrls()[0] + " for : " + searchString);
+            }
         }
         else
         {
@@ -106,10 +109,12 @@ public class SearchStringLdapTemplateRetriever extends BaseLdapTemplateRetriever
                 result = getDefaultLdapTemplate();
             }
 
-            log.debug("No domain specified, searching only on "
-                    + ((LdapContextSource) result.getContextSource()).getUrls()[0] + " for : " + searchString);
+            if (log.isDebugEnabled())
+            {
+                log.debug("No domain specified, searching only on "
+                        + ((LdapContextSource) result.getContextSource()).getUrls()[0] + " for : " + searchString);
+            }
         }
         return result;
     }
-
 }

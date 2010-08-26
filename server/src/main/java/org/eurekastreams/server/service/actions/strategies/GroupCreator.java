@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
+import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.DefaultPrincipal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
@@ -28,7 +29,6 @@ import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
-import org.eurekastreams.server.action.execution.profile.SetFollowingGroupStatusExecution;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusByGroupCreatorRequest;
@@ -83,7 +83,7 @@ public class GroupCreator extends GroupPersister
     /**
      * Strategy for adding group followers (coordinators are automatically added as followers/members).
      */
-    private SetFollowingGroupStatusExecution followStrategy;
+    private TaskHandlerExecutionStrategy followStrategy;
 
     /**
      * used to lookup person creating the group.
@@ -92,7 +92,7 @@ public class GroupCreator extends GroupPersister
 
     /**
      * Constructor.
-     *
+     * 
      * @param inGroupMapper
      *            The Group Mapper
      * @param inOrgMapper
@@ -106,11 +106,10 @@ public class GroupCreator extends GroupPersister
      * @param inFollowStrategy
      *            used to automatically add coordinators as group followers/members.
      */
-    public GroupCreator(final DomainGroupMapper inGroupMapper,
-            final OrganizationMapper inOrgMapper, final PersonMapper inPersonMapper,
-            final OrganizationHierarchyTraverserBuilder inOrgTraverserBuilder,
+    public GroupCreator(final DomainGroupMapper inGroupMapper, final OrganizationMapper inOrgMapper,
+            final PersonMapper inPersonMapper, final OrganizationHierarchyTraverserBuilder inOrgTraverserBuilder,
             final OrganizationHierarchyCache inOrganizationHierarchyCache,
-            final SetFollowingGroupStatusExecution inFollowStrategy)
+            final TaskHandlerExecutionStrategy inFollowStrategy)
     {
         super(inGroupMapper, inOrgMapper);
 
@@ -122,7 +121,7 @@ public class GroupCreator extends GroupPersister
 
     /**
      * Returns DomainGroup base on id passed in inFields.
-     *
+     * 
      * @param inActionContext
      *            The action context.
      * @param inFields
@@ -162,7 +161,7 @@ public class GroupCreator extends GroupPersister
 
     /**
      * Persists new group object.
-     *
+     * 
      * @param inGroup
      *            The group.
      * @param inFields
@@ -222,26 +221,23 @@ public class GroupCreator extends GroupPersister
         // Make all coordinators follow/join the new group
         for (Person coordinator : inGroup.getCoordinators())
         {
-            SetFollowingStatusByGroupCreatorRequest currentRequest =
-                    new SetFollowingStatusByGroupCreatorRequest(coordinator.getId(), inGroup.getId(),
-                            Follower.FollowerStatus.FOLLOWING);
-            ServiceActionContext currentContext =
-                    new ServiceActionContext(currentRequest, new DefaultPrincipal(creatorUserName, inActionContext
-                            .getActionContext().getPrincipal().getOpenSocialId(), inActionContext.getActionContext()
-                            .getPrincipal().getId()));
+            SetFollowingStatusByGroupCreatorRequest currentRequest = new SetFollowingStatusByGroupCreatorRequest(
+                    coordinator.getId(), inGroup.getId(), Follower.FollowerStatus.FOLLOWING);
+            ServiceActionContext currentContext = new ServiceActionContext(currentRequest, new DefaultPrincipal(
+                    creatorUserName, inActionContext.getActionContext().getPrincipal().getOpenSocialId(),
+                    inActionContext.getActionContext().getPrincipal().getId()));
             TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext =
             // line break
-                    new TaskHandlerActionContext<PrincipalActionContext>(currentContext, inActionContext
-                            .getUserActionRequests());
+            new TaskHandlerActionContext<PrincipalActionContext>(currentContext, inActionContext
+                    .getUserActionRequests());
             followStrategy.execute(currentTaskHandlerActionContext);
         }
 
         // trigger notification if group will be pending approval
         if (isPending)
         {
-            CreateNotificationsRequest request =
-                    new CreateNotificationsRequest(RequestType.REQUEST_NEW_GROUP, inActionContext.getActionContext()
-                            .getPrincipal().getId(), parentOrg.getId(), inGroup.getId());
+            CreateNotificationsRequest request = new CreateNotificationsRequest(RequestType.REQUEST_NEW_GROUP,
+                    inActionContext.getActionContext().getPrincipal().getId(), parentOrg.getId(), inGroup.getId());
             inActionContext.getUserActionRequests().add(
                     new UserActionRequest("createNotificationsAction", null, request));
         }
@@ -251,7 +247,7 @@ public class GroupCreator extends GroupPersister
     // isCoordinator method to recursively look.
     /**
      * Get whiter the user is a coordinator for this org or it's sub orgs.
-     *
+     * 
      * @param org
      *            The org object you are currently on.
      * @param accountId

@@ -22,7 +22,7 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.PrincipalPopulator;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
-import org.eurekastreams.commons.server.service.ServiceActionController;
+import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.action.request.stream.GetActivitiesByCompositeStreamRequest;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
@@ -45,13 +45,13 @@ public class GroupStreamActivityFetcher implements StreamFilterFetcher
     /**
      * Service Action Controller.
      */
-    private ServiceActionController serviceActionController;
+    private ActionController serviceActionController;
 
     /**
      * Principal populator.
      */
     private PrincipalPopulator principalPopulator;
-    
+
     /**
      * Mapper to get domain group model view by group id.
      */
@@ -63,15 +63,14 @@ public class GroupStreamActivityFetcher implements StreamFilterFetcher
      * @param inAction
      *            the action.
      * @param inServiceActionController
-     *            {@link ServiceActionController} used to execute action.
+     *            {@link ActionController} used to execute action.
      * @param inPrincipalPopulator
      *            {@link PrincipalPopulator} used to create principal via open social id.
      * @param inGroupMapper
      *            {@link GetDomainGroupsByIds} used to find the group's composite stream id.
      */
-    public GroupStreamActivityFetcher(final ServiceAction inAction,
-            final ServiceActionController inServiceActionController, final PrincipalPopulator inPrincipalPopulator,
-            final GetDomainGroupsByIds inGroupMapper)
+    public GroupStreamActivityFetcher(final ServiceAction inAction, final ActionController inServiceActionController,
+            final PrincipalPopulator inPrincipalPopulator, final GetDomainGroupsByIds inGroupMapper)
     {
         action = inAction;
         serviceActionController = inServiceActionController;
@@ -96,16 +95,16 @@ public class GroupStreamActivityFetcher implements StreamFilterFetcher
     public PagedSet<ActivityDTO> getActivities(final Long id, final String openSocialId, final int maxCount)
             throws Exception
     {
-        // finds the composite stream id for the group. 
+        // finds the composite stream id for the group.
         List<DomainGroupModelView> groups = groupMapper.execute(Arrays.asList(id));
-        
+
         if (groups == null || groups.size() == 0)
         {
             throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND);
         }
 
         long streamId = groups.get(0).getCompositeStreamId();
-        
+
         // create the request
         GetActivitiesByCompositeStreamRequest request = new GetActivitiesByCompositeStreamRequest(streamId, maxCount);
         request.setMaxActivityId(Long.MAX_VALUE);

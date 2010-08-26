@@ -90,7 +90,7 @@ public class GetPendingGroupsExecutionStrategyTest
 
             /**
              * Get the request params.
-             *
+             * 
              * @return the request param
              */
             @Override
@@ -101,13 +101,25 @@ public class GetPendingGroupsExecutionStrategyTest
 
             /**
              * Get the map.
-             *
+             * 
              * @return the map.
              */
             @Override
             public Map<String, Object> getState()
             {
                 return new HashMap<String, Object>();
+            }
+
+            @Override
+            public String getActionId()
+            {
+                return null;
+            }
+
+            @Override
+            public void setActionId(final String inActionId)
+            {
+
             }
         });
 

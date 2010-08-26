@@ -201,6 +201,18 @@ public class PersistResourceExecution<T> implements TaskHandlerExecutionStrategy
                             {
                                 return null;
                             }
+
+                            @Override
+                            public String getActionId()
+                            {
+                                return null;
+                            }
+
+                            @Override
+                            public void setActionId(final String inActionId)
+                            {
+
+                            }
                         }, inActionContext.getUserActionRequests()));
             }
             verifiedPersons.add(verfiedCoordinator);

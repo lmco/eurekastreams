@@ -103,8 +103,8 @@ public class ReviewPendingGroupExecutionTest
     /**
      * Mock used to update privategroupcoordinatorcache.
      */
-    private AddPrivateGroupIdToCachedCoordinatorAccessList addPrivateGroupIdToCachedListMock =
-            context.mock(AddPrivateGroupIdToCachedCoordinatorAccessList.class);
+    private AddPrivateGroupIdToCachedCoordinatorAccessList addPrivateGroupIdToCachedListMock = context
+            .mock(AddPrivateGroupIdToCachedCoordinatorAccessList.class);
 
     /**
      * A username for tests.
@@ -150,8 +150,8 @@ public class ReviewPendingGroupExecutionTest
     /**
      * The organization hierarchy traverser builder.
      */
-    private final OrganizationHierarchyTraverserBuilder orgTraverserBuilder =
-            context.mock(OrganizationHierarchyTraverserBuilder.class);
+    private final OrganizationHierarchyTraverserBuilder orgTraverserBuilder = context
+            .mock(OrganizationHierarchyTraverserBuilder.class);
 
     /**
      * Org traverser built by the org traverser builder.
@@ -163,21 +163,20 @@ public class ReviewPendingGroupExecutionTest
 
     /**
      * Set up the SUT.
-     *
+     * 
      * @throws MalformedURLException
      *             won't happen
      */
     @Before
     public void setup() throws MalformedURLException
     {
-        sut =
-                new ReviewPendingGroupExecution(groupMapper, emailNotifier, addPrivateGroupIdToCachedListMock,
-                        orgMapperMock, orgTraverserBuilder, deleteGroupExecution);
+        sut = new ReviewPendingGroupExecution(groupMapper, emailNotifier, addPrivateGroupIdToCachedListMock,
+                orgMapperMock, orgTraverserBuilder, deleteGroupExecution);
     }
 
     /**
      * Test a valid case where the coordinator approves.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -218,7 +217,7 @@ public class ReviewPendingGroupExecutionTest
 
     /**
      * Test a valid case where the coordinator approves.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -262,7 +261,7 @@ public class ReviewPendingGroupExecutionTest
 
     /**
      * Test a valid case where the coordinator denies the new group.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -272,8 +271,8 @@ public class ReviewPendingGroupExecutionTest
         final ReviewPendingGroupRequest request = new ReviewPendingGroupRequest(GROUP_SHORTNAME, false);
 
         setupCommonExpectations();
-        final AnonymousClassInterceptor<TaskHandlerActionContext<ActionContext>> intCtx =
-                new AnonymousClassInterceptor<TaskHandlerActionContext<ActionContext>>();
+        final AnonymousClassInterceptor<TaskHandlerActionContext<ActionContext>> intCtx = // \n
+        new AnonymousClassInterceptor<TaskHandlerActionContext<ActionContext>>();
         context.checking(new Expectations()
         {
             {
@@ -293,7 +292,7 @@ public class ReviewPendingGroupExecutionTest
 
     /**
      * Executes the SUT with the proper action context setup.
-     *
+     * 
      * @param request
      *            The request to pass.
      * @return List with any async requests made by the SUT.
@@ -326,6 +325,18 @@ public class ReviewPendingGroupExecutionTest
             {
                 return mockedPrincipal;
             }
+
+            @Override
+            public String getActionId()
+            {
+                return null;
+            }
+
+            @Override
+            public void setActionId(final String inActionId)
+            {
+
+            }
         }, asyncRequests));
 
         return asyncRequests;
@@ -333,7 +344,7 @@ public class ReviewPendingGroupExecutionTest
 
     /**
      * Set up expectations that are common to multiple tests.
-     *
+     * 
      * @throws Exception
      *             Shouldn't.
      */

@@ -32,7 +32,7 @@ import org.junit.Test;
 
 /**
  * This class is responsible for testing the RefreshCachedCompositeStreamExecution.
- *
+ * 
  */
 public class RefreshCachedCompositeStreamExecutionTest
 {
@@ -80,7 +80,7 @@ public class RefreshCachedCompositeStreamExecutionTest
 
     /**
      * Test the execution of the action.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
@@ -116,6 +116,18 @@ public class RefreshCachedCompositeStreamExecutionTest
             public Map<String, Object> getState()
             {
                 return null;
+            }
+
+            @Override
+            public String getActionId()
+            {
+                return null;
+            }
+
+            @Override
+            public void setActionId(final String inActionId)
+            {
+
             }
         });
 

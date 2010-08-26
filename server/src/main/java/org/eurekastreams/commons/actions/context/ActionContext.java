@@ -20,23 +20,37 @@ import java.util.Map;
 
 /**
  * This is the context of the action. Each execution of an action has a unique context described by this interface.
- *
+ * 
  */
 public interface ActionContext extends Serializable
 {
     /**
      * Retrieve the parameters of the current action execution.
-     *
+     * 
      * @return instance of the parameters for the current action execution.
      */
     Serializable getParams();
 
     /**
      * Retrieve the execution state of the Action. This is an instance maintained by the controller to allow state to be
-     * passed between the ValidationStrategy, AuthorizationStrategy and ExecutionStrategy
-     * instances.
-     *
+     * passed between the ValidationStrategy, AuthorizationStrategy and ExecutionStrategy instances.
+     * 
      * @return instance of the state for the current execution.
      */
     Map<String, Object> getState();
+
+    /**
+     * Retrieve the action id.
+     * 
+     * @return The action id.
+     */
+    String getActionId();
+
+    /**
+     * Set the action id.
+     * 
+     * @param inActionId
+     *            The action id.
+     */
+    void setActionId(String inActionId);
 }

@@ -37,7 +37,7 @@ import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
 import org.eurekastreams.commons.model.DomainEntity;
 import org.eurekastreams.commons.server.NoCurrentUserDetails;
-import org.eurekastreams.commons.server.service.ServiceActionController;
+import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.action.request.profile.SaveImageRequest;
 import org.eurekastreams.server.service.actions.strategies.HashGeneratorStrategy;
 import org.eurekastreams.server.service.security.userdetails.ExtendedUserDetails;
@@ -49,7 +49,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  * The abstract servlet class for uploading an image.
- *
+ * 
  * @param <T>
  *            the type of domain entity this class maps
  */
@@ -68,7 +68,7 @@ public abstract class UploadImageServlet<T extends DomainEntity> extends HttpSer
 
     /**
      * Uploads the image.
-     *
+     * 
      * @param request
      *            the request
      * @param response
@@ -103,9 +103,7 @@ public abstract class UploadImageServlet<T extends DomainEntity> extends HttpSer
                 return;
             }
 
-
             // Save the File
-
 
             Object actionBean = getAction(request);
 
@@ -114,7 +112,7 @@ public abstract class UploadImageServlet<T extends DomainEntity> extends HttpSer
             if (actionBean instanceof ServiceAction || actionBean instanceof TaskHandlerServiceAction)
             {
                 SaveImageRequest currentRequest = new SaveImageRequest(uploadItem, domainEntity.getId(), imageId);
-                ServiceActionController serviceActionController = (ServiceActionController) springContext
+                ActionController serviceActionController = (ActionController) springContext
                         .getBean("serviceActionController");
                 DefaultPrincipal principal = new DefaultPrincipal(userDetails.getUsername(),
                         ((ExtendedUserDetails) userDetails).getPerson().getOpenSocialId(),
@@ -123,8 +121,7 @@ public abstract class UploadImageServlet<T extends DomainEntity> extends HttpSer
 
                 if (actionBean instanceof ServiceAction)
                 {
-                    newDomainEntity = (T) serviceActionController.execute(currentContext,
-                            (ServiceAction) actionBean);
+                    newDomainEntity = (T) serviceActionController.execute(currentContext, (ServiceAction) actionBean);
                 }
                 else
                 {
@@ -151,7 +148,7 @@ public abstract class UploadImageServlet<T extends DomainEntity> extends HttpSer
 
     /**
      * Gets the file item.
-     *
+     * 
      * @param request
      *            the request
      * @return the file item
@@ -190,7 +187,7 @@ public abstract class UploadImageServlet<T extends DomainEntity> extends HttpSer
 
     /**
      * Gets uesr details.
-     *
+     * 
      * @return the uesr details
      */
     private UserDetails getUserDetails()
@@ -216,7 +213,7 @@ public abstract class UploadImageServlet<T extends DomainEntity> extends HttpSer
 
     /**
      * Gets the domain entity.
-     *
+     * 
      * @param inName
      *            the name used to find the domain entity
      * @param request
@@ -227,11 +224,9 @@ public abstract class UploadImageServlet<T extends DomainEntity> extends HttpSer
      */
     protected abstract T getDomainEntity(String inName, HttpServletRequest request) throws ServletException;
 
-
-
     /**
      * Gets the file path string.
-     *
+     * 
      * @param inImageId
      *            the domain entity id
      * @return the file path string
@@ -240,14 +235,16 @@ public abstract class UploadImageServlet<T extends DomainEntity> extends HttpSer
 
     /**
      * Gets the action.
-     * @param request the request.
+     * 
+     * @param request
+     *            the request.
      * @return the action
      */
     protected abstract Object getAction(HttpServletRequest request);
 
     /**
      * Gets the response string.
-     *
+     * 
      * @param inDomainEntity
      *            the domain entity
      * @return the response string

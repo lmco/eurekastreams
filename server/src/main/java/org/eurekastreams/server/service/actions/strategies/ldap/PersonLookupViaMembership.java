@@ -107,7 +107,10 @@ public class PersonLookupViaMembership implements PersonLookupStrategy
             }
         }
 
-        log.info("Found " + personBucket.size() + " unique people from searching " + allGroups.size() + " groups.");
+        if (log.isInfoEnabled())
+        {
+            log.info("Found " + personBucket.size() + " unique people from searching " + allGroups.size() + " groups.");
+        }
 
         return new ArrayList<Person>(personBucket.values());
     }
