@@ -131,6 +131,7 @@ public class PersistenceDataSource implements DescendingOrderDataSource
 
         for (List<Long> dataSet : returnedDataSets)
         {
+
             Integer maxCount = request.getInt("count");
 
             if (unHandled)

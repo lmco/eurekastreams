@@ -58,21 +58,16 @@ public class BulkEntityStreamIdsDbMapperTest extends MapperTest
         final Long groupId = 1L;
         final Long groupExpectedEntityStreamId = 9L;
 
-        final Long orgId = 5L;
-        final Long orgExpectedEntityStreamId = 1L;
-
         final Map<Long, EntityType> request = new HashMap<Long, EntityType>();
 
         request.put(personId, EntityType.PERSON);
         request.put(groupId, EntityType.GROUP);
-        request.put(orgId, EntityType.ORGANIZATION);
 
         List<Long> results = sut.execute(request);
 
-        assertEquals(3, results.size());
+        assertEquals(2, results.size());
         assertEquals(personExpectedEntityStreamId, results.get(0));
         assertEquals(groupExpectedEntityStreamId, results.get(1));
-        assertEquals(orgExpectedEntityStreamId, results.get(2));
     }
 
     /**
@@ -141,43 +136,6 @@ public class BulkEntityStreamIdsDbMapperTest extends MapperTest
         final Map<Long, EntityType> request = new HashMap<Long, EntityType>();
 
         request.put(groupId, EntityType.GROUP);
-
-        List<Long> results =  sut.execute(request);
-
-        assertEquals(0, results.size());
-    }
-
-    /**
-     * Tests mapping with an org.
-     */
-    @Test
-    public void testExecuteForOrg()
-    {
-        final Long orgId = 5L;
-        final Long expectedEntityStreamId = 1L;
-
-        final Map<Long, EntityType> request = new HashMap<Long, EntityType>();
-
-        request.put(orgId, EntityType.ORGANIZATION);
-
-        List<Long> results = sut.execute(request);
-
-        assertEquals(1, results.size());
-        assertEquals(expectedEntityStreamId, results.get(0));
-    }
-    
-
-    /**
-     * Tests mapping for an org with no results.
-     */
-    @Test
-    public void testExecuteForOrgNoResults()
-    {
-        final Long orgId = 0L;
-
-        final Map<Long, EntityType> request = new HashMap<Long, EntityType>();
-
-        request.put(orgId, EntityType.ORGANIZATION);
 
         List<Long> results =  sut.execute(request);
 

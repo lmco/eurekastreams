@@ -42,7 +42,6 @@ public class BulkEntityStreamIdsDbMapper extends BaseArgDomainMapper<Map<Long, E
     {
         List<Long> personIds = new ArrayList<Long>();
         List<Long> groupIds = new ArrayList<Long>();
-        List<Long> orgIds = new ArrayList<Long>();
 
         for (Entry<Long, EntityType> entry : request.entrySet())
         {
@@ -53,9 +52,6 @@ public class BulkEntityStreamIdsDbMapper extends BaseArgDomainMapper<Map<Long, E
                 break;
             case GROUP:
                 groupIds.add(entry.getKey());
-                break;
-            case ORGANIZATION:
-                orgIds.add(entry.getKey());
                 break;
             default:
                 throw new RuntimeException("Unhandled type.");
@@ -76,13 +72,6 @@ public class BulkEntityStreamIdsDbMapper extends BaseArgDomainMapper<Map<Long, E
             entIds.addAll(getEntityManager().createQuery(
                     "select entityStreamView.id from DomainGroup dg where dg.id IN (:domainGroupIds)").setParameter(
                     "domainGroupIds", groupIds).getResultList());
-        }
-        
-        if (orgIds.size() > 0)
-        {
-            entIds.addAll(getEntityManager().createQuery(
-                    "select entityStreamView.id from Organization o where o.id IN (:orgIds)").setParameter("orgIds",
-                    orgIds).getResultList());
         }
         
         return entIds;

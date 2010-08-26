@@ -13,26 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.service.actions.strategies.activity.datasources;
+package org.eurekastreams.server.search.factories;
 
-import java.util.List;
-
-import net.sf.json.JSONObject;
+import org.eurekastreams.commons.hibernate.ModelViewFactory;
+import org.eurekastreams.server.domain.stream.ActivitySecurityDTO;
 
 /**
- * A data source to find activity.
- * 
+ * Activity Security DTO factory.
  */
-public interface DescendingOrderDataSource
+public class ActivitySecurityDTOFactory extends ModelViewFactory<ActivitySecurityDTO>
 {
     /**
-     * Fetch activities.
+     * Build a new Activity Security DTO.
      * 
-     * @param request
-     *            the JSON request.
-     * @param userEntityId
-     *            the user entity ID.
-     * @return the activity IDs.
+     * @return a new Activity Security DTO
      */
-    List<Long> fetch(final JSONObject request, final Long userEntityId);
+    @Override
+    public ActivitySecurityDTO buildModelView()
+    {
+        return new ActivitySecurityDTO();
+    }
+
 }

@@ -17,6 +17,7 @@ package org.eurekastreams.server.action.execution.stream;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -29,9 +30,9 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.domain.stream.ActivitySecurityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.GetPrivateCoordinatedAndFollowedGroupIdsForUser;
-import org.eurekastreams.server.persistence.mappers.requests.BulkFilterPrivateActivityMapperRequest;
 import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
 import org.eurekastreams.server.service.actions.strategies.activity.ListCollider;
@@ -63,7 +64,7 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
     /**
      * Activity filter.
      */
-    private DomainMapper<BulkFilterPrivateActivityMapperRequest, List<Long>> securityFilter;
+    private DomainMapper<List<Long>, Collection<ActivitySecurityDTO>> securityMapper;
 
     /**
      * Logger.
@@ -99,11 +100,6 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
      * Mapper to get the list of group ids that includes private groups the current user can see activity for.
      */
     private GetPrivateCoordinatedAndFollowedGroupIdsForUser getVisibleGroupsForUserMapper;
-    /**
-     * Multiplier for how many times the batch size we should request. This is multiplied by the previous batch size
-     * each round.
-     */
-    private final float batchPageSizeMultiplier;
 
     /**
      * Max activities if none is specified.
@@ -125,26 +121,22 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
      *            the and collider to merge results.
      * @param inGetVisibleGroupsForUserMapper
      *            to get which groups youre a member of.
-     * @param inBatchPageSizeMultiplier
-     *            the back size multiplier.
-     * @param inSecurityFilter
-     *            the security filter;
+     * @param inSecurityMapper
+     *            the security mapper;
      */
     public GetActivitiesByRequestExecution(final DescendingOrderDataSource inDescendingOrderdataSource,
             final SortedDataSource inSortedDataSource, final BulkActivitiesMapper inBulkActivitiesMapper,
             final List<ActivityFilter> inFilters, final ListCollider inAndCollider,
             final GetPrivateCoordinatedAndFollowedGroupIdsForUser inGetVisibleGroupsForUserMapper,
-            final float inBatchPageSizeMultiplier,
-            final DomainMapper<BulkFilterPrivateActivityMapperRequest, List<Long>> inSecurityFilter)
+            final DomainMapper<List<Long>, Collection<ActivitySecurityDTO>> inSecurityMapper)
     {
         descendingOrderdataSource = inDescendingOrderdataSource;
         sortedDataSource = inSortedDataSource;
         andCollider = inAndCollider;
         bulkActivitiesMapper = inBulkActivitiesMapper;
         filters = inFilters;
-        batchPageSizeMultiplier = inBatchPageSizeMultiplier <= 0 ? 1 : inBatchPageSizeMultiplier;
         getVisibleGroupsForUserMapper = inGetVisibleGroupsForUserMapper;
-        securityFilter = inSecurityFilter;
+        securityMapper = inSecurityMapper;
     }
 
     @Override
@@ -178,10 +170,6 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
         // current page
         int startingIndex = 0;
 
-        // the batch size for each page - increases with every page with
-        // batchPageSizeMultiplier
-        int batchSize = maxResults;
-
         // the list of activities to return
         List<Long> results = new ArrayList<Long>();
 
@@ -191,19 +179,27 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
         // necessary
         GroupIdSetWrapper accessibleGroupIdsSetWrapper = new GroupIdSetWrapper(userEntityId);
 
+        // The pass.
+        int pass = 0;
+        int batchSize = 0;
+        
         // paging loop
         startingIndex = 0;
+        
         do
         {
             allKeys.clear();
+            
             // multiply the batch size by the multiplier to avoid extra cache
             // hits
-            batchSize *= batchPageSizeMultiplier;
+            batchSize = maxResults * (int) (Math.pow(2, pass));
 
             request.put("count", batchSize);
-            List<Long> descendingOrderDataSet = descendingOrderdataSource.fetch(request, userEntityId);
-            List<Long> sortedDataSet = sortedDataSource.fetch(request, userEntityId);
+            
+            final List<Long> descendingOrderDataSet = descendingOrderdataSource.fetch(request, userEntityId);
 
+            final List<Long> sortedDataSet = sortedDataSource.fetch(request, userEntityId);
+            
             if (descendingOrderDataSet != null && sortedDataSet != null)
             {
                 allKeys = andCollider.collide(descendingOrderDataSet, sortedDataSet, batchSize);
@@ -241,12 +237,26 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
                         + thisBatchStartIndex);
             }
 
-            results = securityFilter.execute(new BulkFilterPrivateActivityMapperRequest(page, accessibleGroupIdsSetWrapper.getPermissionedGroupIds()));
+            Collection<ActivitySecurityDTO> securityDTOs = securityMapper.execute(page);
+
+            for (ActivitySecurityDTO actSec : securityDTOs)
+            {
+                if (!actSec.isDestinationStreamPublic()
+                        && !accessibleGroupIdsSetWrapper.getPermissionedGroupIds().contains(
+                                actSec.getDestinationEntityId()))
+                {
+                    page.remove(actSec.getId());
+                }
+            }
+            
+            results.addAll(page);
+            
+            pass++;
         }
         while (results.size() < maxResults && allKeys.size() >= batchSize);
 
         List<ActivityDTO> dtoResults = bulkActivitiesMapper.execute(results, userAccountId);
-        
+
         // execute filter strategies.
         for (ActivityFilter filter : filters)
         {
@@ -257,11 +267,11 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
         {
             log.trace("Returning " + results.size() + " activities.");
         }
-        
+
         // the results list
         PagedSet<ActivityDTO> pagedSet = new PagedSet<ActivityDTO>();
         pagedSet.setPagedSet(dtoResults);
-        
+
         return pagedSet;
     }
 

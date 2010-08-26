@@ -116,7 +116,7 @@ public class LuceneDataSource implements SortedDataSource
         log.debug("Native Lucene Query: " + query.toString());
 
         searchRequestBuilder.setPaging(query, 0, inRequest.getInt("count"));
-
+        
         List<Long> activityIds = query.getResultList();
         if (log.isInfoEnabled())
         {
