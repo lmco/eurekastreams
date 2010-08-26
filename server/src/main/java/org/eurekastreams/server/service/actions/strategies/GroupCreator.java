@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,22 +16,22 @@
 package org.eurekastreams.server.service.actions.strategies;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.context.DefaultPrincipal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
-import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.execution.profile.SetFollowingGroupStatusExecution;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusByGroupCreatorRequest;
+import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.domain.Organization;
@@ -51,11 +51,6 @@ import org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyC
  */
 public class GroupCreator extends GroupPersister
 {
-    /**
-     * Logger.
-     */
-    private static Log log = LogFactory.make();
-
     /**
      * Key value for organization shortName.
      */
@@ -106,9 +101,8 @@ public class GroupCreator extends GroupPersister
      * @param inFollowStrategy
      *            used to automatically add coordinators as group followers/members.
      */
-    public GroupCreator(final DomainGroupMapper inGroupMapper,
-            final OrganizationMapper inOrgMapper, final PersonMapper inPersonMapper,
-            final OrganizationHierarchyTraverserBuilder inOrgTraverserBuilder,
+    public GroupCreator(final DomainGroupMapper inGroupMapper, final OrganizationMapper inOrgMapper,
+            final PersonMapper inPersonMapper, final OrganizationHierarchyTraverserBuilder inOrgTraverserBuilder,
             final OrganizationHierarchyCache inOrganizationHierarchyCache,
             final SetFollowingGroupStatusExecution inFollowStrategy)
     {
@@ -156,6 +150,9 @@ public class GroupCreator extends GroupPersister
         groupView.setIncludedScopes(defaultScopeList);
         group.setStreamScope(groupScope);
         group.setEntityStreamView(groupView);
+
+        // set the capabilities as a new list to avoid search indexing problems
+        group.setCapabilities(new ArrayList<BackgroundItem>());
 
         return group;
     }
@@ -222,26 +219,23 @@ public class GroupCreator extends GroupPersister
         // Make all coordinators follow/join the new group
         for (Person coordinator : inGroup.getCoordinators())
         {
-            SetFollowingStatusByGroupCreatorRequest currentRequest =
-                    new SetFollowingStatusByGroupCreatorRequest(coordinator.getId(), inGroup.getId(),
-                            Follower.FollowerStatus.FOLLOWING);
-            ServiceActionContext currentContext =
-                    new ServiceActionContext(currentRequest, new DefaultPrincipal(creatorUserName, inActionContext
-                            .getActionContext().getPrincipal().getOpenSocialId(), inActionContext.getActionContext()
-                            .getPrincipal().getId()));
+            SetFollowingStatusByGroupCreatorRequest currentRequest = new SetFollowingStatusByGroupCreatorRequest(
+                    coordinator.getId(), inGroup.getId(), Follower.FollowerStatus.FOLLOWING);
+            ServiceActionContext currentContext = new ServiceActionContext(currentRequest, new DefaultPrincipal(
+                    creatorUserName, inActionContext.getActionContext().getPrincipal().getOpenSocialId(),
+                    inActionContext.getActionContext().getPrincipal().getId()));
             TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext =
             // line break
-                    new TaskHandlerActionContext<PrincipalActionContext>(currentContext, inActionContext
-                            .getUserActionRequests());
+            new TaskHandlerActionContext<PrincipalActionContext>(currentContext, inActionContext
+                    .getUserActionRequests());
             followStrategy.execute(currentTaskHandlerActionContext);
         }
 
         // trigger notification if group will be pending approval
         if (isPending)
         {
-            CreateNotificationsRequest request =
-                    new CreateNotificationsRequest(RequestType.REQUEST_NEW_GROUP, inActionContext.getActionContext()
-                            .getPrincipal().getId(), parentOrg.getId(), inGroup.getId());
+            CreateNotificationsRequest request = new CreateNotificationsRequest(RequestType.REQUEST_NEW_GROUP,
+                    inActionContext.getActionContext().getPrincipal().getId(), parentOrg.getId(), inGroup.getId());
             inActionContext.getUserActionRequests().add(
                     new UserActionRequest("createNotificationsAction", null, request));
         }

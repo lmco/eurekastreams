@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,6 +17,8 @@ package org.eurekastreams.server.search.bridge;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.Enrollment;
 import org.hibernate.search.bridge.StringBridge;
@@ -27,8 +29,13 @@ import org.hibernate.search.bridge.StringBridge;
 public class EducationListStringBridge implements StringBridge
 {
     /**
+     * Logger.
+     */
+    private final Log log = LogFactory.make();
+
+    /**
      * Convert the input List&lt;Enrollment&gt; into a searchable String.
-     * 
+     *
      * @param listObj
      *            the List&lt;Enrollment&gt; to convert
      * @return a string concatenation of company name, description, industry, and title for all jobs passed in.
@@ -43,31 +50,38 @@ public class EducationListStringBridge implements StringBridge
         }
 
         StringBuilder sb = new StringBuilder();
-        for (Enrollment school : (List<Enrollment>) listObj)
+        try
         {
-            // note: the extra space in the beginning here is for easier unit testing
-            sb.append(" ");
-            sb.append(school.getSchoolName());
-            sb.append(" ");
-            sb.append(school.getDegree());
-            sb.append(" ");
-
-            for (BackgroundItem area : school.getAreasOfStudy())
+            for (Enrollment school : (List<Enrollment>) listObj)
             {
-                sb.append(area.getName());
+                // note: the extra space in the beginning here is for easier unit testing
+                sb.append(" ");
+                sb.append(school.getSchoolName());
+                sb.append(" ");
+                sb.append(school.getDegree());
+                sb.append(" ");
+
+                for (BackgroundItem area : school.getAreasOfStudy())
+                {
+                    sb.append(area.getName());
+                    sb.append(" ");
+                }
+
+                for (BackgroundItem activity : school.getActivities())
+                {
+                    sb.append(activity.getName());
+                    sb.append(" ");
+                }
+
+                sb.append(school.getAdditionalDetails());
                 sb.append(" ");
             }
-
-            for (BackgroundItem activity : school.getActivities())
-            {
-                sb.append(activity.getName());
-                sb.append(" ");
-            }
-
-            sb.append(school.getAdditionalDetails());
-            sb.append(" ");
         }
-        
+        catch (Exception ex)
+        {
+            log.info("Error iterating through the list of enrollments - most likely because it's null, "
+                    + "but not detectable because it's a lazy-loaded collection. ", ex);
+        }
         return sb.toString();
     }
 }
