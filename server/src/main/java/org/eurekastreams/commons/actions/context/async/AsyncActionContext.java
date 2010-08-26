@@ -24,7 +24,7 @@ import org.eurekastreams.commons.actions.context.ActionContext;
 /**
  * ServiceAction implementation of the ActionContext this class implements ActionContext, but also adds the Principal as
  * well.
- *
+ * 
  */
 public class AsyncActionContext implements ActionContext
 {
@@ -45,8 +45,13 @@ public class AsyncActionContext implements ActionContext
     private Map<String, Object> state;
 
     /**
+     * Action id.
+     */
+    private String actionId;
+
+    /**
      * Constructor.
-     *
+     * 
      * @param inParams
      *            - instance of the params to execute the action with.
      */
@@ -72,5 +77,32 @@ public class AsyncActionContext implements ActionContext
     public Map<String, Object> getState()
     {
         return state;
+    }
+
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public String getActionId()
+    {
+        return actionId;
+    }
+
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public void setActionId(final String inActionId)
+    {
+        actionId = inActionId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString()
+    {
+        return this.getClass().getSimpleName() + " actionId: ***" + actionId + "***";
     }
 }

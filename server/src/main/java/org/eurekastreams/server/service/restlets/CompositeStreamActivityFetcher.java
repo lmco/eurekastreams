@@ -19,7 +19,7 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.PrincipalPopulator;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
-import org.eurekastreams.commons.server.service.ServiceActionController;
+import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.action.request.stream.GetActivitiesByCompositeStreamRequest;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
@@ -43,13 +43,13 @@ public class CompositeStreamActivityFetcher implements StreamFilterFetcher
     /**
      * Service Action Controller.
      */
-    private ServiceActionController serviceActionController;
+    private ActionController serviceActionController;
 
     /**
      * Principal populator.
      */
     private PrincipalPopulator principalPopulator;
-    
+
     /**
      * Find by ID Mapper to find the stream.
      */
@@ -61,7 +61,7 @@ public class CompositeStreamActivityFetcher implements StreamFilterFetcher
      * @param inAction
      *            the action.
      * @param inServiceActionController
-     *            {@link ServiceActionController} used to execute action.
+     *            {@link ActionController} used to execute action.
      * @param inPrincipalPopulator
      *            {@link PrincipalPopulator} used to create principal via open social id.
      * @param inFindByIdMapper
@@ -69,7 +69,7 @@ public class CompositeStreamActivityFetcher implements StreamFilterFetcher
      */
     @SuppressWarnings("unchecked")
     public CompositeStreamActivityFetcher(final ServiceAction inAction,
-            final ServiceActionController inServiceActionController, final PrincipalPopulator inPrincipalPopulator,
+            final ActionController inServiceActionController, final PrincipalPopulator inPrincipalPopulator,
             final FindByIdMapper inFindByIdMapper)
     {
         action = inAction;
@@ -98,7 +98,7 @@ public class CompositeStreamActivityFetcher implements StreamFilterFetcher
         // checks to see if composite stream is still valid
         FindByIdRequest findByIdRequest = new FindByIdRequest("StreamView", id);
         StreamView stream = findByIdMapper.execute(findByIdRequest);
-        
+
         if (stream == null)
         {
             throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND);

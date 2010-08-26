@@ -156,7 +156,7 @@ public class BulkActivitiesMapper extends CachedDomainMapper
     /**
      * Looks in cache for the necessary activity DTOs and returns them if found. Otherwise, makes a database call, puts
      * them in cache, and returns them.
-     *
+     * 
      * @param activityIds
      *            the list of ids that should be found.
      * @param userName
@@ -180,6 +180,7 @@ public class BulkActivitiesMapper extends CachedDomainMapper
         {
             stringKeys.add(CacheKeys.ACTIVITY_BY_ID + key);
         } // Finds activities in the cache.
+
         Map<String, ActivityDTO> activities = (Map<String, ActivityDTO>) (Map<String, ? >) getCache().multiGet(
                 stringKeys); // Determines if any of the activities were missing from the cache
         List<Long> uncachedActivityKeys = new ArrayList<Long>();
@@ -192,6 +193,8 @@ public class BulkActivitiesMapper extends CachedDomainMapper
         }
         if (uncachedActivityKeys.size() != 0)
         { // One or more of the activities were missing in the cache so go to the database
+            log.info("Looking for uncached activitys with ids: " + uncachedActivityKeys.toString());
+
             Map<String, ActivityDTO> activityMap = new HashMap<String, ActivityDTO>();
             Criteria criteria = getHibernateSession().createCriteria(Activity.class);
             ProjectionList fields = Projections.projectionList();
@@ -288,6 +291,7 @@ public class BulkActivitiesMapper extends CachedDomainMapper
             activities.putAll(activityMap);
         }
         List<ActivityDTO> results = new ArrayList<ActivityDTO>();
+
         if (activities.size() != 0) // gets starred activities
         {
             List<String> thisUser = new ArrayList<String>();
@@ -298,6 +302,7 @@ public class BulkActivitiesMapper extends CachedDomainMapper
             {
                 starred = starredActivitiesMapper.execute(thisPerson.get(0).getEntityId());
             }
+
             // Puts the activities in the same order as they were passed in.
             Date currentServerDate = new Date();
             for (long id : activityIds)
@@ -315,19 +320,22 @@ public class BulkActivitiesMapper extends CachedDomainMapper
                     {
                         activity.getLastComment().setServerDateTime(currentServerDate);
                     }
+
                     activityDeletePropertySetter.execute(userName, activity);
+
                     setCommentDeletable(userName, activity);
                     results.add(activity);
                 }
             }
         }
+
         return results;
     }
 
     /**
      * Looks in cache for the necessary activity DTO and returns it if found. Otherwise, makes a database call, puts
      * them in cache, and returns it.
-     *
+     * 
      * @param activityId
      *            id that should be found.
      * @param userName
@@ -342,7 +350,7 @@ public class BulkActivitiesMapper extends CachedDomainMapper
 
     /**
      * Load the first/last comments of an activity if present, also sets the comment count.
-     *
+     * 
      * @param userName
      *            Username of current user.
      * @param activity
@@ -387,7 +395,7 @@ public class BulkActivitiesMapper extends CachedDomainMapper
 
     /**
      * If activity has comments, determine if current user can delete them and set deletable property accordingly.
-     *
+     * 
      * @param userName
      *            The current user's username.
      * @param activity

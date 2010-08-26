@@ -34,5 +34,5 @@ public interface DescendingOrderDataSource
      *            the user entity ID.
      * @return the activity IDs.
      */
-    List<Long> fetch(JSONObject request, Long userEntityId);
+    List<Long> fetch(final JSONObject request, final Long userEntityId);
 }

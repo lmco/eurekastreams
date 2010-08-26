@@ -77,7 +77,7 @@ public class OrganizationPopulator
 
     /**
      * The organization populator constructor.
-     *
+     * 
      * @param inOrganizationMapper
      *            The organization mapper.
      * @param inPersonMapper
@@ -106,7 +106,7 @@ public class OrganizationPopulator
 
     /**
      * Create a new person.
-     *
+     * 
      * @param persistResourceExecution
      *            the resource persister for person
      * @param inPerson
@@ -149,6 +149,18 @@ public class OrganizationPopulator
                     {
                         return null;
                     }
+
+                    @Override
+                    public String getActionId()
+                    {
+                        return null;
+                    }
+
+                    @Override
+                    public void setActionId(final String inActionId)
+                    {
+
+                    }
                 }, inActionContext.getUserActionRequests()));
 
         log.debug("Adding person: " + inPerson.getAccountId());
@@ -156,7 +168,7 @@ public class OrganizationPopulator
 
     /**
      * Given the person already exists, assess the person to see if they should be moved.
-     *
+     * 
      * @param inExistingPerson
      *            The person object.
      * @param inOrganization
@@ -210,7 +222,7 @@ public class OrganizationPopulator
     }
 
     /**
-     *
+     * 
      * @param ldapQuery
      *            The ldap query string.
      * @param inOrganization

@@ -1562,8 +1562,14 @@
 							<entry key="recipient">
 								<ref bean="bulkActivityStreamsMapper" />
 							</entry>
+							<entry key="organization">
+								<ref bean="parentOrgActivityIdMapper" />
+							</entry>							
 							<entry key="savedBy">
 								<ref bean="getStarredActivityIds" />
+							</entry>							
+							<entry key="parentOrg">
+								<ref bean="parentOrgActivityIdMapper" />
 							</entry>							
 						</map>
 		            </constructor-arg>
@@ -1580,13 +1586,24 @@
                                     class="org.eurekastreams.server.service.actions.strategies.activity.datasources.RecipientPersistenceRequestTransformer">
                                     <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
                                     <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-                                    <constructor-arg ref="bulkOrganizationsByShortNameMapper" />
                                     <constructor-arg ref="bulkEntityStreamIdsMapper" />   
                                 </bean>
                             </entry>
+                            <entry key="organization">
+                                <bean 
+                                    class="org.eurekastreams.server.service.actions.strategies.activity.datasources.OrgPersistenceRequestTransformer">
+                                    <constructor-arg ref="bulkOrganizationsByShortNameMapper" />   
+                                </bean>
+                            </entry>                            
                             <entry key="savedBy">
                                 <bean 
                                     class="org.eurekastreams.server.service.actions.strategies.activity.datasources.SavedActivityPersistenceRequestTransformer">
+                                    <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
+                                </bean>
+                            </entry>                            
+                            <entry key="parentOrg">
+                                <bean 
+                                    class="org.eurekastreams.server.service.actions.strategies.activity.datasources.ParentOrgPersistenceRequestTransformer">
                                     <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
                                 </bean>
                             </entry>                            
@@ -1600,19 +1617,19 @@
             </constructor-arg>
             <constructor-arg ref="luceneActivityDataSource" />
     		<constructor-arg ref="bulkActivitiesMapper" />
-                <constructor-arg>
-                    <list>
-                        <ref bean="canCommentFilter" />
-                        <ref bean="canShareFilter" />
-                    </list>
-                </constructor-arg>
+            <constructor-arg>
+                <list>
+                    <ref bean="canCommentFilter" />
+                    <ref bean="canShareFilter" />
+                </list>
+            </constructor-arg>
             <constructor-arg>
 				<bean
 					class="org.eurekastreams.server.service.actions.strategies.activity.InterpolationListCollider" />            
             </constructor-arg>
     		<constructor-arg
                     ref="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper" />
-            <constructor-arg type="float" value="2.0" />
+            <constructor-arg ref="bulkActivitySecurityMapper" />
     </bean>
             
 	<bean id="getActivitiesByRequest" class="org.eurekastreams.commons.actions.service.ServiceAction">

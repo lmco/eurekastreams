@@ -41,6 +41,7 @@ import org.apache.shindig.social.opensocial.spi.PersonService;
 import org.eurekastreams.commons.actions.TaskHandlerAction;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
+import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.commons.server.service.ServiceActionController;
 import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
 import org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper;
@@ -60,7 +61,7 @@ import com.google.inject.spring.SpringIntegration;
 
 /**
  * Wire up Eureka Streams implementation of Shindig OpenSocial endpoints in Guice.
- *
+ * 
  */
 public class SocialAPIGuiceConfigurator implements SpringGuiceConfigurator
 {
@@ -97,8 +98,7 @@ public class SocialAPIGuiceConfigurator implements SpringGuiceConfigurator
         }).annotatedWith(Names.named("org.apache.shindig.social.handlers")).toInstance(getHandlers());
 
         inBinder.bind(Long.class).annotatedWith(Names.named("org.apache.shindig.serviceExpirationDurationMinutes"))
-                .toInstance(
-                SERVICE_EXPIRATION_IN_MINS);
+                .toInstance(SERVICE_EXPIRATION_IN_MINS);
 
         inBinder.bind(ActivityService.class).to(ActivityServiceImpl.class);
         inBinder.bind(AppDataService.class).to(AppDataServiceImpl.class);
@@ -126,13 +126,12 @@ public class SocialAPIGuiceConfigurator implements SpringGuiceConfigurator
         // ActivityServiceImpl wirings
         inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getUserActivities")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "getUserActivities"));
-        inBinder.bind(ServiceActionController.class).toProvider(
+        inBinder.bind(ActionController.class).toProvider(
                 SpringIntegration.fromSpring(ServiceActionController.class, "serviceActionController"));
         inBinder.bind(TaskHandlerServiceAction.class).annotatedWith(
-                Names.named("postPersonActivityServiceActionTaskHandler"))
-                .toProvider(
-                        SpringIntegration.fromSpring(TaskHandlerServiceAction.class,
-                                "postPersonActivityServiceActionTaskHandler"));
+                Names.named("postPersonActivityServiceActionTaskHandler")).toProvider(
+                SpringIntegration.fromSpring(TaskHandlerServiceAction.class,
+                        "postPersonActivityServiceActionTaskHandler"));
         inBinder.bind(OpenSocialPrincipalPopulator.class).toProvider(
                 SpringIntegration.fromSpring(OpenSocialPrincipalPopulator.class, "openSocialPrincipalPopulator"));
         inBinder.bind(PrincipalPopulatorTransWrapper.class).toProvider(
@@ -154,13 +153,13 @@ public class SocialAPIGuiceConfigurator implements SpringGuiceConfigurator
                 SpringIntegration.fromSpring(ServiceAction.class, "removeOAuthToken"));
         inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getOAuthConsumerByConsumerKey")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "getOAuthConsumerByConsumerKey"));
-        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getSecurityTokenForConsumerRequest"))
-                .toProvider(
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getSecurityTokenForConsumerRequest")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "getSecurityTokenForConsumerRequest"));
     }
 
     /**
      * Hook to provide a Set of request handlers. Subclasses may override to add or replace additional handlers.
+     * 
      * @return retrieve a list of handlers for the OpenSocial API handlers.
      */
     protected Set<Object> getHandlers()

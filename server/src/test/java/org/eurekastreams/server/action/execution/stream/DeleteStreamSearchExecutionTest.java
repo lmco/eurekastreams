@@ -38,7 +38,7 @@ import org.junit.Test;
 
 /**
  * Test for DeleteStreamSearchExecution.
- *
+ * 
  */
 public class DeleteStreamSearchExecutionTest
 {
@@ -168,7 +168,7 @@ public class DeleteStreamSearchExecutionTest
 
     /**
      * Build a principal action context for testing the person id and stream search id.
-     *
+     * 
      * @return a principal action context for testing with the person id and stream search id.
      */
     private PrincipalActionContext buildPrincipalActionContext()
@@ -187,6 +187,18 @@ public class DeleteStreamSearchExecutionTest
             public Serializable getParams()
             {
                 return streamSearchId;
+            }
+
+            @Override
+            public String getActionId()
+            {
+                return null;
+            }
+
+            @Override
+            public void setActionId(final String inActionId)
+            {
+
             }
 
             @Override

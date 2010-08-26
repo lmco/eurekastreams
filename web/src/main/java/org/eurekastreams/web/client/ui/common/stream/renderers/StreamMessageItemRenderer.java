@@ -531,10 +531,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
                 if (new WidgetJSNIFacadeImpl().confirm("Are you sure you want to delete this activity?"))
                 {
                     buttonsPanel.addStyleName("wait-active");
-                    if (singleView)
-                    {
-                        setupDeleteFadeout(msg, mainPanel);
-                    }
+                    setupDeleteFadeout(msg, mainPanel);
                     ActivityModel.getInstance().delete(msg.getId());
                 }
             }

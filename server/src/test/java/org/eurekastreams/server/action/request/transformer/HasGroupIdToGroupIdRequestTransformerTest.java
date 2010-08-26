@@ -48,6 +48,18 @@ public class HasGroupIdToGroupIdRequestTransformerTest
             {
                 return null;
             }
+
+            @Override
+            public String getActionId()
+            {
+                return null;
+            }
+
+            @Override
+            public void setActionId(final String inActionId)
+            {
+
+            }
         };
 
         Serializable result = new HasGroupIdToGroupIdRequestTransformer().transform(ctx);

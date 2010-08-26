@@ -139,6 +139,18 @@ public class CreatePersonExecution implements TaskHandlerExecutionStrategy<Actio
                     {
                         return null;
                     }
+
+                    @Override
+                    public String getActionId()
+                    {
+                        return null;
+                    }
+
+                    @Override
+                    public void setActionId(final String inActionId)
+                    {
+
+                    }
                 }, null));
         log.info("Added to database: " + inPerson.getAccountId());
 

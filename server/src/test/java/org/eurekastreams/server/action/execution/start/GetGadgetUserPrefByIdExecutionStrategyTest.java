@@ -66,7 +66,7 @@ public class GetGadgetUserPrefByIdExecutionStrategyTest
 
     /**
      * Test a successful run of the action.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
@@ -101,6 +101,18 @@ public class GetGadgetUserPrefByIdExecutionStrategyTest
             public Map<String, Object> getState()
             {
                 return null;
+            }
+
+            @Override
+            public String getActionId()
+            {
+                return null;
+            }
+
+            @Override
+            public void setActionId(final String inActionId)
+            {
+
             }
 
         });

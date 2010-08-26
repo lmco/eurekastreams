@@ -74,7 +74,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * The content page for the gallery.
- * 
+ *
  */
 public class GalleryContent extends SettingsPanel
 {
@@ -143,7 +143,7 @@ public class GalleryContent extends SettingsPanel
 
     /**
      * Default constructor.
-     * 
+     *
      */
     public GalleryContent()
     {
@@ -154,7 +154,9 @@ public class GalleryContent extends SettingsPanel
         panel.addStyleName("gallery-master");
 
         addGadget.addStyleName("add-gadget");
+        addGadget.setVisible(false);
         addTheme.addStyleName("add-theme");
+        addTheme.setVisible(false);
 
         panel.add(galleryPortalContainer);
         panel.add(galleryAddOrEditContainer);
@@ -412,7 +414,7 @@ public class GalleryContent extends SettingsPanel
 
     /**
      * What happens after we get the start tabs (for the theme).
-     * 
+     *
      * @param event
      *            the event.
      */
@@ -483,7 +485,7 @@ public class GalleryContent extends SettingsPanel
 
     /**
      * Render the create or edit screen for a theme.
-     * 
+     *
      * @param categories
      *            the params from the history token.
      */
@@ -543,7 +545,7 @@ public class GalleryContent extends SettingsPanel
 
     /**
      * Render the create or edit screen for a gadget.
-     * 
+     *
      * @param categories
      *            the params from the history token.
      */

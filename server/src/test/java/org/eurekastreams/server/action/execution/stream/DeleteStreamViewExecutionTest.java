@@ -40,7 +40,7 @@ import org.junit.Test;
 
 /**
  * Test for DeleteStreamViewExecution class.
- *
+ * 
  */
 public class DeleteStreamViewExecutionTest
 {
@@ -75,12 +75,12 @@ public class DeleteStreamViewExecutionTest
      */
     private DeleteCachedCompositeStreamById deleteCachedCompositeStreamById = context
             .mock(DeleteCachedCompositeStreamById.class);
-    
+
     /**
      * Delete streamview mock.
      */
-    private DeleteStreamViewAndRelatedSearches deleteStreamview = 
-        context.mock(DeleteStreamViewAndRelatedSearches.class);
+    private DeleteStreamViewAndRelatedSearches deleteStreamview = context
+            .mock(DeleteStreamViewAndRelatedSearches.class);
 
     /**
      * System under test.
@@ -129,7 +129,7 @@ public class DeleteStreamViewExecutionTest
                 oneOf(findByIdDAO).flush();
 
                 oneOf(deleteCachedCompositeStreamById).execute(personId, streamViewId);
-                
+
                 oneOf(deleteStreamview);
             }
         });
@@ -211,7 +211,7 @@ public class DeleteStreamViewExecutionTest
 
     /**
      * Build a principal action context for testing the person id and stream search id.
-     *
+     * 
      * @return a principal action context for testing with the person id and stream search id.
      */
     private PrincipalActionContext buildPrincipalActionContext()
@@ -257,6 +257,18 @@ public class DeleteStreamViewExecutionTest
                         return null;
                     }
                 };
+            }
+
+            @Override
+            public String getActionId()
+            {
+                return null;
+            }
+
+            @Override
+            public void setActionId(final String inActionId)
+            {
+
             }
         };
     }

@@ -23,6 +23,7 @@ import java.util.Set;
 import javax.persistence.PersistenceException;
 
 import org.apache.commons.logging.Log;
+import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.DefaultPrincipal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
@@ -30,7 +31,6 @@ import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
-import org.eurekastreams.server.action.execution.profile.SetFollowingGroupStatusExecution;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusByGroupCreatorRequest;
 import org.eurekastreams.server.domain.DomainFormatUtility;
 import org.eurekastreams.server.domain.DomainGroup;
@@ -76,7 +76,7 @@ public class GroupUpdater extends GroupPersister
     /**
      * Strategy for adding group followers (coordinators are automatically added as followers/members).
      */
-    private SetFollowingGroupStatusExecution followStrategy;
+    private TaskHandlerExecutionStrategy followStrategy;
 
     /**
      * Mapper to clear the existing coordinators and followers search text.
@@ -109,7 +109,7 @@ public class GroupUpdater extends GroupPersister
             final OrganizationMapper inOrgMapper,
             final GetAllPersonIdsWhoHaveGroupCoordinatorAccess inAccessCheckerMapper,
             final ClearPrivateGroupIdsViewableByCoordinatorCacheOnGroupUpdate // \n
-            inClearActivityStreamSearchStringForUsersMapper, final SetFollowingGroupStatusExecution inFollowStrategy,
+            inClearActivityStreamSearchStringForUsersMapper, final TaskHandlerExecutionStrategy inFollowStrategy,
             final OrganizationHierarchyTraverserBuilder inOrgTraverserBuilder)
     {
         super(inGroupMapper, inOrgMapper);

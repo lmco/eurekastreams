@@ -51,5 +51,8 @@
     
     <!-- The Quartz scheduled jobs -->
     ${build.system.jobscheduler}
+    
+    <!-- AOP support  -->
+    <import resource="classpath:conf/applicationContext-aop.xml" />
     		
 </beans>

@@ -26,7 +26,7 @@ import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
 import org.eurekastreams.commons.client.ActionRequest;
-import org.eurekastreams.commons.server.service.ServiceActionController;
+import org.eurekastreams.commons.server.service.ActionController;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.userdetails.UserDetails;
 
@@ -42,11 +42,6 @@ public class ActionExecutor
      * Logger.
      */
     private Log log = LogFactory.getLog(ActionExecutor.class);
-
-    /**
-     * Logger.
-     */
-    private Log actionPerformanceLog = LogFactory.getLog(ActionExecutor.class.getCanonicalName() + "-actionTimer");
 
     /**
      * The context from which this service can load action beans.
@@ -75,9 +70,9 @@ public class ActionExecutor
     private PrincipalPopulator principalPopulator;
 
     /**
-     * Instance of {@link ServiceActionController} used within this executor.
+     * Instance of {@link ActionController} used within this executor.
      */
-    private ServiceActionController serviceActionController;
+    private ActionController serviceActionController;
 
     /**
      * Constructor for the executor class.
@@ -99,7 +94,7 @@ public class ActionExecutor
 
         persistentBeanManager = (PersistentBeanManager) springContext.getBean("persistentBeanManager");
         principalPopulator = (PrincipalPopulator) springContext.getBean("principalPopulator");
-        serviceActionController = (ServiceActionController) springContext.getBean("serviceActionController");
+        serviceActionController = (ActionController) springContext.getBean("serviceActionController");
     }
 
     /**
@@ -110,12 +105,6 @@ public class ActionExecutor
     @SuppressWarnings("unchecked")
     public ActionRequest execute()
     {
-        Long start = null;
-        if (actionPerformanceLog.isInfoEnabled())
-        {
-            start = System.currentTimeMillis();
-        }
-
         log.debug("Starting Action: " + actionRequest.getActionKey());
 
         String userName = getUserName();
@@ -142,6 +131,7 @@ public class ActionExecutor
 
                 ServiceActionContext actionContext = new ServiceActionContext(actionParameter, principalPopulator
                         .getPrincipal(userDetails.getUsername()));
+                actionContext.setActionId(actionRequest.getActionKey());
                 result = serviceActionController.execute(actionContext, action);
             }
             else if (springBean instanceof TaskHandlerServiceAction)
@@ -153,6 +143,7 @@ public class ActionExecutor
 
                 ServiceActionContext actionContext = new ServiceActionContext(actionParameter, principalPopulator
                         .getPrincipal(userDetails.getUsername()));
+                actionContext.setActionId(actionRequest.getActionKey());
                 result = serviceActionController.execute(actionContext, action);
             }
             else
@@ -181,13 +172,6 @@ public class ActionExecutor
         actionRequest.setParam(null);
 
         log.debug("Finished Action: " + actionRequest.getActionKey());
-
-        if (actionPerformanceLog.isInfoEnabled())
-        {
-            String logMessage = userName + "\t" + actionRequest.getActionKey() + "\t"
-                    + (System.currentTimeMillis() - start);
-            actionPerformanceLog.info(logMessage);
-        }
 
         return actionRequest;
     }

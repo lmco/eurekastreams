@@ -26,7 +26,7 @@ import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.commons.server.service.ServiceActionController;
+import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper;
 import org.eurekastreams.server.action.request.opensocial.CreateOAuthRequestTokenRequest;
 import org.eurekastreams.server.action.response.opensocial.SecurityTokenResponse;
@@ -46,10 +46,10 @@ public class OAuthDataStoreImpl implements OAuthDataStore
     private Log logger = LogFactory.make();
 
     /**
-     * Instance of the {@link ServiceActionController} for this class.
+     * Instance of the {@link ActionController} for this class.
      */
     @Inject
-    private ServiceActionController actionController;
+    private ActionController actionController;
 
     /**
      * Instance of the {@link PrincipalPopulatorTransWrapper} for the OpenSocialPrincipalPopulator.
@@ -118,16 +118,14 @@ public class OAuthDataStoreImpl implements OAuthDataStore
      *            - instance of GetSecurityTokenForConsumerRequest {@link ServiceAction}.
      */
     @Inject
-    public OAuthDataStoreImpl(
-            @Named("createOAuthRequestToken") final ServiceAction inCreateOAuthRequestTokenAction,
+    public OAuthDataStoreImpl(@Named("createOAuthRequestToken") final ServiceAction inCreateOAuthRequestTokenAction,
             @Named("authorizeOAuthToken") final ServiceAction inAuthorizeOAuthTokenAction,
             @Named("updateRequestToAccessToken") final ServiceAction inUpdateRequestToAccessTokenAction,
             @Named("getOAuthEntryByToken") final ServiceAction inGetOAuthEntryByTokenAction,
             @Named("disableOAuthToken") final ServiceAction inDisableOAuthTokenAction,
             @Named("removeOAuthToken") final ServiceAction inRemoveOAuthTokenAction,
             @Named("getOAuthConsumerByConsumerKey") final ServiceAction inGetOAuthConsumerByConsumerKeyAction,
-            @Named("getSecurityTokenForConsumerRequest") final ServiceAction 
-                inGetSecurityTokenForConsumerRequestAction)
+            @Named("getSecurityTokenForConsumerRequest") final ServiceAction inGetSecurityTokenForConsumerRequestAction)
     {
         createOAuthRequestTokenAction = inCreateOAuthRequestTokenAction;
         authorizeOAuthTokenAction = inAuthorizeOAuthTokenAction;
@@ -143,9 +141,9 @@ public class OAuthDataStoreImpl implements OAuthDataStore
      * Setter.
      * 
      * @param inServiceActionController
-     *            - instance of the {@link ServiceActionController}.
+     *            - instance of the {@link ActionController}.
      */
-    public void setServiceActionController(final ServiceActionController inServiceActionController)
+    public void setServiceActionController(final ActionController inServiceActionController)
     {
         actionController = inServiceActionController;
     }

@@ -63,7 +63,7 @@ public class UpdatePersonExecution implements TaskHandlerExecutionStrategy<Princ
     /**
      * Persist Resource Execution strategy configured for a person.
      */
-    private final PersistResourceExecution<Person> personPersister;
+    private final TaskHandlerExecutionStrategy personPersister;
 
     /**
      * The organization hierarchy traverser builder - needed because this class is reused by all threads, we can't share
@@ -86,7 +86,7 @@ public class UpdatePersonExecution implements TaskHandlerExecutionStrategy<Princ
      *            {@link OrganizationHierarchyTraverserBuilder}.
      */
     public UpdatePersonExecution(final OrganizationMapper inOrgMapper, final PersonMapper inPersonMapper,
-            final PersistResourceExecution<Person> inPersonPersister, final BackgroundMapper inBackgroundMapper,
+            final TaskHandlerExecutionStrategy inPersonPersister, final BackgroundMapper inBackgroundMapper,
             final OrganizationHierarchyTraverserBuilder inOrgTraverserBuilder)
     {
         orgMapper = inOrgMapper;
