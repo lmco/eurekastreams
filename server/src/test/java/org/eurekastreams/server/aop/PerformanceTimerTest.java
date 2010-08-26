@@ -45,7 +45,7 @@ public class PerformanceTimerTest
     private ProceedingJoinPoint pjp = context.mock(ProceedingJoinPoint.class);
 
     /**
-     * {@link Signature};
+     * {@link Signature}.
      */
     private Signature signature = context.mock(Signature.class);
 
@@ -62,7 +62,7 @@ public class PerformanceTimerTest
     /**
      * Test.
      * 
-     * @throws Throwable
+     * @throws Throwable - exception on error.
      */
     @Test
     public void test() throws Throwable
