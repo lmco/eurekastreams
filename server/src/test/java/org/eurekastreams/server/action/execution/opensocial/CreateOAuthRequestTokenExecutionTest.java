@@ -32,7 +32,7 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link CreateOAuthRequestTokenExecution} class.
- * 
+ *
  */
 public class CreateOAuthRequestTokenExecutionTest
 {
@@ -116,12 +116,12 @@ public class CreateOAuthRequestTokenExecutionTest
                 will(returnValue(request));
 
                 oneOf(oauthConversionStrat).convertToEntryDTO(with(any(OAuthEntry.class)));
-                
+
                 oneOf(entryMapper).insert(with(any(OAuthDomainEntry.class)));
             }
         });
 
-        OAuthEntry results = (OAuthEntry) sut.execute(actionContext);
+        OAuthEntry results = sut.execute(actionContext);
         assertNotNull(results);
         assertEquals(results.callbackUrl, TEST_CALLBACK_URL);
         assertEquals(results.consumerKey, TEST_CONSUMER_KEY);
@@ -133,7 +133,7 @@ public class CreateOAuthRequestTokenExecutionTest
         assertEquals(results.domain, TEST_OAUTH_DOMAIN);
         assertEquals(results.callbackUrl, TEST_CALLBACK_URL);
         assertEquals(results.callbackUrlSigned, true);
-        
+
         context.assertIsSatisfied();
     }
 }
