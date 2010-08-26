@@ -27,6 +27,9 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * Tests the bulk activity security refresher.
+ */
 public class BulkActivitySecurityRefresherTest
 {
     /**

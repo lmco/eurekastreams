@@ -28,6 +28,9 @@ import org.eurekastreams.server.persistence.strategies.DescendantOrganizationStr
  */
 public class OrgActivityIdsDbMapper extends BaseArgDomainMapper<Long, List<Long>>
 {
+    /**
+     * Strategy for finding descentents.
+     */
     private DescendantOrganizationStrategy descendantOrganizationStrategy = null;
 
     /**
@@ -57,11 +60,11 @@ public class OrgActivityIdsDbMapper extends BaseArgDomainMapper<Long, List<Long>
     }
 
     /**
-     * @param descendantOrganizationStrategy
+     * @param inDescendantOrganizationStrategy
      *            the descendantOrganizationStrategy to set
      */
-    public void setDescendantOrganizationStrategy(DescendantOrganizationStrategy descendantOrganizationStrategy)
+    public void setDescendantOrganizationStrategy(final DescendantOrganizationStrategy inDescendantOrganizationStrategy)
     {
-        this.descendantOrganizationStrategy = descendantOrganizationStrategy;
+        this.descendantOrganizationStrategy = inDescendantOrganizationStrategy;
     }
 }

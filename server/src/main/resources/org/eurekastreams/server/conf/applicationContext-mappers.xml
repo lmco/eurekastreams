@@ -210,7 +210,7 @@
 		<constructor-arg>
 			<!-- Database mapper to fall back on if not found in cache -->
 			<bean class="org.eurekastreams.server.persistence.mappers.db.OrgActivityIdsDbMapper">
-				<property name="maxItems" value="10000" />
+				<property name="descendantOrganizationStrategy" ref="descendantOrgStrategy" />
 			</bean>
 		</constructor-arg>
 		

@@ -29,6 +29,9 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Tests the org activity ids DB mapper.
+ */
 public class OrgActivityIdsDbMapperTest extends MapperTest
 {
     /**

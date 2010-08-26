@@ -28,6 +28,9 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * Tests the org actitivyt IDs refresher.
+ */
 public class OrgActivityIdsRefresherTest
 {
     /**
@@ -78,7 +81,7 @@ public class OrgActivityIdsRefresherTest
         final List<Long> activities = new ArrayList<Long>();
         activities.add(7L);
         activities.add(8L);
-        activities.add(10L);
+        activities.add(9L);
 
         final OrganizationModelView org = CONTEXT.mock(OrganizationModelView.class);
 
