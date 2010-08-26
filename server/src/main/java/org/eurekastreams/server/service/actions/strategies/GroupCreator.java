@@ -16,22 +16,22 @@
 package org.eurekastreams.server.service.actions.strategies;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.context.DefaultPrincipal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
-import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.execution.profile.SetFollowingGroupStatusExecution;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusByGroupCreatorRequest;
+import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.domain.Organization;
@@ -51,11 +51,6 @@ import org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyC
  */
 public class GroupCreator extends GroupPersister
 {
-    /**
-     * Logger.
-     */
-    private static Log log = LogFactory.make();
-
     /**
      * Key value for organization shortName.
      */
@@ -156,6 +151,9 @@ public class GroupCreator extends GroupPersister
         groupView.setIncludedScopes(defaultScopeList);
         group.setStreamScope(groupScope);
         group.setEntityStreamView(groupView);
+
+        // set the capabilities as a new list to avoid search indexing problems
+        group.setCapabilities(new ArrayList<BackgroundItem>());
 
         return group;
     }

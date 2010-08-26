@@ -61,10 +61,6 @@
 	    <url>http://maven-plugins.sourceforge.net/repository</url>
 	  </repository>
 	  <repository>
-	    <id>oauth</id>
-	    <url>http://oauth.googlecode.com/svn/code/maven</url>
-	  </repository>
-	  <repository>
 	    <id>plexus snapshots</id>
 	    <url>http://oss.repository.sonatype.org/content/repositories</url>
 	  </repository>
@@ -72,31 +68,34 @@
 	    <id>restlet</id>
 	    <url>http://maven.restlet.org/</url>
 	  </repository>
-          <repository>
-            <id>caja</id>
-            <url>http://google-caja.googlecode.com/svn/maven</url>
-          </repository>
-          <repository>
-            <id>oauth</id>
-            <url>http://oauth.googlecode.com/svn/code/maven</url>
-          </repository>
-          <repository>
-            <id>guice</id>
-            <url>http://guice-maven.googlecode.com/svn/trunk/</url>
-          </repository>
-          <repository>
-            <id>gilead</id>
-            <url>https://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo</url>
-          </repository>
-          <repository>
-            <id>spy</id>
-            <name>Spy Repository</name>
-            <layout>default</layout>
-            <url>http://bleu.west.spy.net/~dustin/m2repo/</url>
-            <snapshots>
-               <enabled>false</enabled>
-           </snapshots>
-          </repository>
+      <repository>
+        <id>caja</id>
+        <url>http://google-caja.googlecode.com/svn/maven</url>
+      </repository>
+      <repository>
+        <id>oauth</id>
+        <url>http://oauth.googlecode.com/svn/code/maven</url>
+      </repository>
+      <repository>
+        <id>guice</id>
+        <url>http://guice-maven.googlecode.com/svn/trunk/</url>
+      </repository>
+      <repository>
+        <id>gilead</id>
+        <url>https://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo</url>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+      </repository>
+      <repository>
+        <id>spy</id>
+        <name>Spy Repository</name>
+        <layout>default</layout>
+        <url>http://bleu.west.spy.net/~dustin/m2repo/</url>
+        <snapshots>
+           <enabled>false</enabled>
+        </snapshots>
+      </repository>
 	  <repository>
 	    <id>apache snapshots</id>
 	    <url>https://repository.apache.org/content/repositories/snapshots</url>
