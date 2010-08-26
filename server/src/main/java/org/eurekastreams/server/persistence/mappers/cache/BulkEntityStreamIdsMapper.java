@@ -53,9 +53,6 @@ public class BulkEntityStreamIdsMapper extends CachedDomainMapper implements
             case GROUP:
                 keys.put(CacheKeys.GROUP_ENTITITY_STREAM_VIEW_ID + entry.getKey(), entry.getKey());
                 break;
-            case ORGANIZATION:
-                keys.put(CacheKeys.ORG_ENTITITY_STREAM_VIEW_ID + entry.getKey(), entry.getKey());
-                break;
             default:
                 throw new RuntimeException("Unhandled type.");
             }

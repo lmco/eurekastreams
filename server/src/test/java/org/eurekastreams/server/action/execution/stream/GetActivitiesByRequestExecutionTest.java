@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -32,7 +33,9 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.domain.stream.ActivitySecurityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.GetPrivateCoordinatedAndFollowedGroupIdsForUser;
 import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
@@ -174,9 +177,31 @@ public class GetActivitiesByRequestExecutionTest
     private SortedDataSource luceneDS = context.mock(SortedDataSource.class, "lucene");
 
     /**
+     * Security mapper.
+     */
+
+    private DomainMapper<List<Long>, Collection<ActivitySecurityDTO>> securityMapper = context.mock(DomainMapper.class,
+            "securitymapper");
+
+    /**
      * AND Collider.
      */
     private ListCollider andCollider = context.mock(ListCollider.class);
+
+    /**
+     * The activity DTOs.
+     */
+    private ArrayList<ActivityDTO> activityDTOs;
+
+    /**
+     * Security for the activity DTOs.
+     */
+    private ArrayList<ActivitySecurityDTO> secResults;
+
+    /**
+     * 10.
+     */
+    private static final int THENUMBERTEN = 10;
 
     /**
      * 19+1. 120%100 pi+16.8584073....
@@ -193,7 +218,7 @@ public class GetActivitiesByRequestExecutionTest
         filters.add(filterMock);
 
         sut = new GetActivitiesByRequestExecution(memcacheDS, luceneDS, bulkMapper, filters, andCollider,
-                getVisibleGroupsForUserMapper, 2.0f);
+                getVisibleGroupsForUserMapper, securityMapper);
 
         // set the activity ids
         activity1Public.setId(1L);
@@ -230,6 +255,8 @@ public class GetActivitiesByRequestExecutionTest
 
         // for the private activities, set the destination streams
         StreamEntityDTO destinationStream = new StreamEntityDTO();
+        destinationStream.setDestinationEntityId(1L);
+
         destinationStream.setDestinationEntityId(personPrivateGroup);
         activity2.setDestinationStream(destinationStream);
         activity3Public.setDestinationStream(destinationStream);
@@ -248,6 +275,32 @@ public class GetActivitiesByRequestExecutionTest
         allActivityIds.add(3L);
         allActivityIds.add(2L);
         allActivityIds.add(1L);
+
+        activityDTOs = new ArrayList<ActivityDTO>();
+        activityDTOs.add(activity9Public); // public
+        activityDTOs.add(activity8);
+        activityDTOs.add(activity7);
+        activityDTOs.add(activity6);
+        activityDTOs.add(activity5);
+        activityDTOs.add(activity4);
+        activityDTOs.add(activity3Public);
+        activityDTOs.add(activity2);
+        activityDTOs.add(activity1Public);
+
+        secResults = new ArrayList<ActivitySecurityDTO>();
+
+        for (ActivityDTO activity : activityDTOs)
+        {
+            ActivitySecurityDTO secDTO = new ActivitySecurityDTO();
+
+            secDTO.setId(activity.getId());
+            secDTO.setDestinationEntityId(activity.getDestinationStream().getDestinationEntityId());
+            secDTO.setDestinationStreamId(activity.getDestinationStream().getId());
+            secDTO.setDestinationStreamPublic(activity.getIsDestinationStreamPublic());
+
+            secResults.add(secDTO);
+        }
+
     }
 
     /**
@@ -275,102 +328,11 @@ public class GetActivitiesByRequestExecutionTest
                 dto.setPostedTime(new Date());
                 dto.setIsDestinationStreamPublic(true);
 
+                ArrayList<Long> combinedIds = new ArrayList<Long>();
+                combinedIds.add(2L);
+
                 ArrayList<ActivityDTO> activities = new ArrayList<ActivityDTO>();
                 activities.add(dto);
-
-                allowing(actionContext).getPrincipal();
-                will(returnValue(principal));
-
-                allowing(principal).getAccountId();
-                will(returnValue(personAccountId));
-
-                allowing(principal).getId();
-
-                allowing(actionContext).getParams();
-                will(returnValue(request));
-
-                oneOf(memcacheDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
-                will(returnValue(memcacheIds));
-
-                oneOf(luceneDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
-                will(returnValue(luceneIds));
-
-                oneOf(andCollider).collide(with(equalInternally(memcacheIds)), with(equalInternally(luceneIds)),
-                        with(equalInternally(THENUMBERTWENTY)));
-
-                oneOf(bulkMapper).execute(with(any(ArrayList.class)), with(any(String.class)));
-                will(returnValue(activities));
-
-                allowing(filterMock).filter(activities, personAccountId);
-                will(returnValue(activities));
-            }
-        });
-
-        PagedSet<ActivityDTO> results = (PagedSet<ActivityDTO>) sut.execute(actionContext);
-
-        context.assertIsSatisfied();
-        assertEquals(1, results.getPagedSet().size());
-    }
-
-    /**
-     * Test executing a page of data where the user needs two batches to get a full page of activities he can see.
-     */
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testPerformActionRequiringTwoBatches()
-    {
-        final String request = "{ \"count\": 2, \"maxId\": 2817 }";
-
-        // batch 1 request
-        final List<Long> batch1Request = new ArrayList<Long>();
-        batch1Request.add(9L);
-        batch1Request.add(8L);
-        batch1Request.add(7L);
-        batch1Request.add(6L);
-
-        // batch size is 2, so we'll get 4
-        final List<ActivityDTO> batch1 = new ArrayList<ActivityDTO>();
-        batch1.add(activity9Public); // public
-        batch1.add(activity8);
-        batch1.add(activity7);
-        batch1.add(activity6);
-
-        // batch 2 request
-        final List<Long> batch2Response = new ArrayList<Long>();
-        batch2Response.add(9L);
-        batch2Response.add(8L);
-        batch2Response.add(7L);
-        batch2Response.add(6L);
-        batch2Response.add(5L);
-        batch2Response.add(4L);
-        batch2Response.add(3L);
-        batch2Response.add(2L);
-        batch2Response.add(1L);
-
-        // batch 2 request
-        final List<Long> batch2Request = new ArrayList<Long>();
-        batch2Request.add(5L);
-        batch2Request.add(4L);
-        batch2Request.add(3L);
-        batch2Request.add(2L);
-        batch2Request.add(1L);
-
-        // batch size is 4 at this point, so we'll get 8, but that hits the end
-        // of the list
-        final List<ActivityDTO> batch2 = new ArrayList<ActivityDTO>();
-        batch2.add(activity5);
-        batch2.add(activity4);
-        batch2.add(activity3Public); // public
-        batch2.add(activity2);
-        batch2.add(activity1Public); // public
-
-        final List<ActivityDTO> expectedResults = new ArrayList<ActivityDTO>();
-        expectedResults.add(activity9Public);
-        expectedResults.add(activity3Public);
-
-        context.checking(new Expectations()
-        {
-            {
 
                 allowing(actionContext).getPrincipal();
                 will(returnValue(principal));
@@ -385,37 +347,141 @@ public class GetActivitiesByRequestExecutionTest
                 will(returnValue(request));
 
                 oneOf(memcacheDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
-                will(returnValue(batch1Request));
+                will(returnValue(memcacheIds));
 
                 oneOf(luceneDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
+                will(returnValue(luceneIds));
+
+                oneOf(andCollider).collide(with(equalInternally(memcacheIds)), with(equalInternally(luceneIds)),
+                        with(equalInternally(THENUMBERTEN)));
+                will(returnValue(combinedIds));
+
+                oneOf(securityMapper).execute(combinedIds);
+                will(returnValue(secResults));
+
+                oneOf(bulkMapper).execute(with(any(ArrayList.class)), with(any(String.class)));
+                will(returnValue(activities));
+
+                allowing(filterMock).filter(activities, personAccountId);
+                will(returnValue(activities));
+                
+
+                oneOf(getVisibleGroupsForUserMapper).execute(personId);
+                will(returnValue(new HashSet<Long>()));                
+            }
+        });
+
+        PagedSet<ActivityDTO> results = (PagedSet<ActivityDTO>) sut.execute(actionContext);
+
+        context.assertIsSatisfied();
+        assertEquals(1, results.getPagedSet().size());
+    }
+
+    /**
+     * Test executing a page of data where the user needs three batches to get a full page of activities he can see.
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testPerformActionRequiringMultipleBatches()
+    {
+        final String request = "{ \"count\": 2, \"maxId\": 2817 }";
+
+        final List<ActivityDTO> expectedResults = new ArrayList<ActivityDTO>();
+        expectedResults.add(activity9Public);
+        expectedResults.add(activity3Public);
+
+        final List<Long> expectedResultsIds = new ArrayList<Long>();
+        expectedResultsIds.add(activity9Public.getId());
+        expectedResultsIds.add(activity3Public.getId());
+
+        final ArrayList<Long> activityIdsFirstPass = new ArrayList<Long>();
+        activityIdsFirstPass.add(allActivityIds.get(0));
+        activityIdsFirstPass.add(allActivityIds.get(1));
+
+        final ArrayList<ActivitySecurityDTO> activitySecurityFirstPass = new ArrayList<ActivitySecurityDTO>();
+        activitySecurityFirstPass.add(secResults.get(0));
+        activitySecurityFirstPass.add(secResults.get(1));
+
+        final ArrayList<Long> activityIdsSecondPass = new ArrayList<Long>();
+        activityIdsSecondPass.add(allActivityIds.get(0));
+        activityIdsSecondPass.add(allActivityIds.get(1));
+        activityIdsSecondPass.add(allActivityIds.get(2));
+        activityIdsSecondPass.add(allActivityIds.get(3));
+
+        final ArrayList<Long> activityIdsSecondPassNewItems = new ArrayList<Long>();
+        activityIdsSecondPassNewItems.add(allActivityIds.get(2));
+        activityIdsSecondPassNewItems.add(allActivityIds.get(3));
+
+        final ArrayList<ActivitySecurityDTO> activitySecuritySecondPass = new ArrayList<ActivitySecurityDTO>();
+        activitySecuritySecondPass.add(secResults.get(2));
+        activitySecuritySecondPass.add(secResults.get(3));
+
+        final ArrayList<Long> activityIdsThirdPass = new ArrayList<Long>();
+        activityIdsThirdPass.add(allActivityIds.get(0));
+        activityIdsThirdPass.add(allActivityIds.get(1));
+        activityIdsThirdPass.add(allActivityIds.get(2));
+        activityIdsThirdPass.add(allActivityIds.get(3));
+        activityIdsThirdPass.add(allActivityIds.get(4));
+        activityIdsThirdPass.add(allActivityIds.get(5));
+        activityIdsThirdPass.add(allActivityIds.get(6));
+        activityIdsThirdPass.add(allActivityIds.get(7));
+
+        final ArrayList<Long> activityIdsThirdPassNewItems = new ArrayList<Long>();
+        activityIdsThirdPassNewItems.add(allActivityIds.get(4));
+        activityIdsThirdPassNewItems.add(allActivityIds.get(5));
+        activityIdsThirdPassNewItems.add(allActivityIds.get(6));
+        activityIdsThirdPassNewItems.add(allActivityIds.get(7));
+
+        final ArrayList<ActivitySecurityDTO> activitySecurityThirdPass = new ArrayList<ActivitySecurityDTO>();
+        activitySecurityThirdPass.add(secResults.get(4));
+        activitySecurityThirdPass.add(secResults.get(5));
+        activitySecurityThirdPass.add(secResults.get(6));
+        activitySecurityThirdPass.add(secResults.get(7));
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(actionContext).getPrincipal();
+                will(returnValue(principal));
+
+                allowing(principal).getAccountId();
+                will(returnValue(personAccountId));
+
+                allowing(principal).getId();
+                will(returnValue(personId));
+
+                allowing(actionContext).getParams();
+                will(returnValue(request));
+
+                allowing(luceneDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
                 will(returnValue(null));
 
                 oneOf(memcacheDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
-                will(returnValue(batch2Response));
+                will(returnValue(activityIdsFirstPass));
 
-                oneOf(luceneDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
-                will(returnValue(null));
+                oneOf(securityMapper).execute(activityIdsFirstPass);
+                will(returnValue(activitySecurityFirstPass));
 
-                // requesting the first batch
-                oneOf(bulkMapper).execute(with(batch1Request), with(personAccountId));
-                will(returnValue(batch1));
+                oneOf(memcacheDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
+                will(returnValue(activityIdsSecondPass));
 
-                // run through the filters on batch 1
-                allowing(filterMock).filter(batch1, personAccountId);
-                will(returnValue(batch1));
+                oneOf(securityMapper).execute(activityIdsSecondPassNewItems);
+                will(returnValue(activitySecuritySecondPass));
 
-                // requesting the second batch
-                oneOf(bulkMapper).execute(with(batch2Request), with(personAccountId));
-                will(returnValue(batch2));
+                oneOf(memcacheDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
+                will(returnValue(activityIdsThirdPass));
 
-                // run through the filters on batch 2
-                allowing(filterMock).filter(expectedResults, personAccountId);
-                will(returnValue(batch2));
+                oneOf(securityMapper).execute(activityIdsThirdPassNewItems);
+                will(returnValue(activitySecurityThirdPass));
 
-                // at some point, we need the action to get the list of groups
-                // the user can see activity for
                 oneOf(getVisibleGroupsForUserMapper).execute(personId);
                 will(returnValue(new HashSet<Long>()));
+
+                oneOf(bulkMapper).execute(with(expectedResultsIds), with(personAccountId));
+                will(returnValue(expectedResults));
+
+                allowing(filterMock).filter(with(expectedResults), with(personAccountId));
+                will(returnValue(expectedResults));
             }
         });
 
@@ -438,32 +504,30 @@ public class GetActivitiesByRequestExecutionTest
     {
         final String request = "{ \"count\": 3, \"maxId\": 7 }";
 
-        // batch 1 request
-        final List<Long> batch1Request = new ArrayList<Long>();
-        batch1Request.add(6L);
-        batch1Request.add(5L);
-        batch1Request.add(4L);
-        batch1Request.add(3L);
-        batch1Request.add(2L);
-        batch1Request.add(1L);
-
-        // batch size is 2, so we'll get 4
-        final List<ActivityDTO> batch1 = new ArrayList<ActivityDTO>();
-        batch1.add(activity6); // private, but user has access
-        batch1.add(activity5); // private, but user has access
-        batch1.add(activity4); // private, but user has access
-        batch1.add(activity3Public); // public
-        batch1.add(activity2); // private, but user has access
-        batch1.add(activity1Public); // public
+        final HashSet<Long> usersGroups = new HashSet<Long>();
+        usersGroups.add(personPrivateGroup);
 
         final List<ActivityDTO> expectedResults = new ArrayList<ActivityDTO>();
         expectedResults.add(activity6);
         expectedResults.add(activity5);
         expectedResults.add(activity4);
 
-        final HashSet<Long> usersGroups = new HashSet<Long>();
-        usersGroups.add(personPrivateGroup);
+        final List<Long> expectedResultsIds = new ArrayList<Long>();
+        expectedResultsIds.add(activity6.getId());
+        expectedResultsIds.add(activity5.getId());
+        expectedResultsIds.add(activity4.getId());
 
+        final ArrayList<Long> activityIds = new ArrayList<Long>();
+        activityIds.add(allActivityIds.get(3));
+        activityIds.add(allActivityIds.get(4));
+        activityIds.add(allActivityIds.get(5));
+
+
+        final ArrayList<ActivitySecurityDTO> activitySecurity = new ArrayList<ActivitySecurityDTO>();
+        activitySecurity.add(secResults.get(3));
+        activitySecurity.add(secResults.get(4));
+        activitySecurity.add(secResults.get(5));
+        
         context.checking(new Expectations()
         {
             {
@@ -479,27 +543,23 @@ public class GetActivitiesByRequestExecutionTest
                 allowing(actionContext).getParams();
                 will(returnValue(request));
 
-                oneOf(memcacheDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
+                allowing(luceneDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
                 will(returnValue(null));
 
-                oneOf(luceneDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
-                will(returnValue(batch1Request));
+                oneOf(memcacheDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
+                will(returnValue(activityIds));
 
-                allowing(person).getAccountId();
-                will(returnValue(personAccountId));
+                oneOf(securityMapper).execute(activityIds);
+                will(returnValue(activitySecurity));
 
-                // requesting the first batch
-                oneOf(bulkMapper).execute(with(batch1Request), with(personAccountId));
-                will(returnValue(batch1));
-
-                // run through the filters on batch 1
-                allowing(filterMock).filter(expectedResults, personAccountId);
-                will(returnValue(batch1));
-
-                // at some point, we need the action to get the list of groups
-                // the user can see activity for
                 oneOf(getVisibleGroupsForUserMapper).execute(personId);
                 will(returnValue(usersGroups));
+
+                oneOf(bulkMapper).execute(with(expectedResultsIds), with(personAccountId));
+                will(returnValue(expectedResults));
+
+                allowing(filterMock).filter(with(expectedResults), with(personAccountId));
+                will(returnValue(expectedResults));
             }
         });
 

@@ -165,7 +165,7 @@
         <dependency>
             <groupId>org.eurekastreams</groupId>
             <artifactId>eurekastreams-server</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jmock</groupId>
@@ -610,7 +610,7 @@
                                     <noServer>true</noServer>
                                     <port>8080</port>
                                     <hostedWebapp>ROOT</hostedWebapp>
-                                    <style>${GWTCompileStyle}</style>
+                                    <style>${build.gwt.compile.style}</style>
                                     <localWorkers>1</localWorkers>
                                 </configuration>
                                 <goals>
@@ -882,28 +882,13 @@
             </build>
         </profile>
         <profile>
-            <id>buildtype.default</id>
+            <id>Dev Environment Web Build Config</id>
             <activation>
                 <property>
-                    <name>!env.BUILDTYPE</name>
-                </property>
-            </activation>
-            <properties>
-                <GWTCompileStyle>PRETTY</GWTCompileStyle>
-            </properties>
-        </profile>
-        <profile>
-            <id>buildtype.dev</id>
-            <activation>
-                <property>
-                    <name>env.BUILDTYPE</name>
+                    <name>buildtype</name>
                     <value>dev</value>
                 </property>
             </activation>
-            <properties>
-                <GWTCompileStyle>PRETTY</GWTCompileStyle>
-                <build.web.grhostname>${env.DEVGRHOSTNAME}</build.web.grhostname>
-            </properties>
             <build>            
                 <plugins>
                     <plugin>
@@ -954,16 +939,13 @@
             </build>
         </profile>
         <profile>
-            <id>buildtype.int</id>
+            <id>Int Environment Web Build Config</id>
             <activation>
                 <property>
-                    <name>env.BUILDTYPE</name>
+                    <name>buildtype</name>
                     <value>int</value>
                 </property>
             </activation>
-            <properties>
-                <GWTCompileStyle>PRETTY</GWTCompileStyle>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -995,16 +977,13 @@
             </build>
         </profile>
         <profile>
-            <id>buildtype.uat</id>
+            <id>Uat Environment Web Build Config</id>
             <activation>
                 <property>
-                    <name>env.BUILDTYPE</name>
+                    <name>buildtype</name>
                     <value>uat</value>
                 </property>
             </activation>
-            <properties>
-                <GWTCompileStyle>OBF</GWTCompileStyle>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -1036,16 +1015,13 @@
             </build>
         </profile>
         <profile>
-            <id>buildtype.perf</id>
+            <id>Perf Environment Web Build Config</id>
             <activation>
                 <property>
-                    <name>env.BUILDTYPE</name>
+                    <name>buildtype</name>
                     <value>perf</value>
                 </property>
             </activation>
-            <properties>
-                <GWTCompileStyle>OBF</GWTCompileStyle>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -1077,16 +1053,13 @@
             </build>
         </profile>
         <profile>
-            <id>buildtype.prod</id>
+            <id>Prod Environment Web Build Config</id>
             <activation>
                 <property>
-                    <name>env.BUILDTYPE</name>
+                    <name>buildtype</name>
                     <value>prod</value>
                 </property>
             </activation>
-            <properties>
-                <GWTCompileStyle>OBF</GWTCompileStyle>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -1128,6 +1101,7 @@
             <properties>
                 <build.system.nodetype>webNode</build.system.nodetype>
                 <build.system.jobscheduler><![CDATA[<!-- No job scheduler -->]]></build.system.jobscheduler>
+                <build.jms.taskhandler>queueTaskHandler</build.jms.taskhandler>
             </properties>
         </profile>
         <profile>
