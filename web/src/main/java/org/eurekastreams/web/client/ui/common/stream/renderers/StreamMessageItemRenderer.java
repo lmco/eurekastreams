@@ -463,6 +463,15 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
             star.addStyleName("action-link");
             actionsPanel.add(star);
         }
+        
+        // Like
+        if (verbRenderer.getAllowLike())
+        {
+            insertActionSeparator(actionsPanel);
+            Widget like = new LikeWidget(msg.isLiked(), msg.getLikeCount(), msg.getEntityId());
+            like.addStyleName("action-link");
+            actionsPanel.add(like);
+        } 
 
         return actionsPanel;
     }

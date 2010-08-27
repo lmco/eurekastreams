@@ -846,6 +846,17 @@
 	<StarredActivity personId="98" activityId="6789" />
 	<StarredActivity personId="42" activityId="6789" />
 	
+		<!-- Mr burns "stars" activity -->	
+	<LikedActivity personId="99" activityId="6789" />	
+	
+	<!-- various starred activities -->
+	<LikedActivity personId="142" activityId="6789" />
+	<LikedActivity personId="42" activityId="6790" />
+	<LikedActivity personId="142" activityId="6790" />
+	<LikedActivity personId="98" activityId="6789" />
+	<LikedActivity personId="42" activityId="6789" />
+	
+	
 	<SystemSettings id="1001" version="1122" siteLabel="some site label" 
 		termsOfService="some terms of service" isTosDisplayedEverySession="false" tosPromptInterval="1" 
 		contentWarningText="some content warning" contentExpiration="1" sendWelcomeEmails="true" 

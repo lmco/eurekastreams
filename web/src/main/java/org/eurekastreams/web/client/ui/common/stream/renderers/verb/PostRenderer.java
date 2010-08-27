@@ -112,6 +112,16 @@ public class PostRenderer implements VerbRenderer
     }
 
     /**
+     * Should the verb allow liking.
+     *
+     * @return the value.
+     */
+    public boolean getAllowLike()
+    {
+        return state.equals(State.DEFAULT);
+    }
+    
+    /**
      * Get the avatar.
      *
      * @return the avatar.

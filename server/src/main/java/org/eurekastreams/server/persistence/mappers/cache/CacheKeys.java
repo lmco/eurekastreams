@@ -17,7 +17,7 @@ package org.eurekastreams.server.persistence.mappers.cache;
 
 /**
  * Collection of Cache keys.
- *
+ * 
  */
 public final class CacheKeys
 {
@@ -228,7 +228,7 @@ public final class CacheKeys
      * Holds pointer to composite stream for recipient group.
      */
     public static final String GROUP_ENTITITY_STREAM_VIEW_ID = "GrEntStream:";
-    
+
     /**
      * Key for HashTag by lowercased content.
      */
@@ -238,5 +238,10 @@ public final class CacheKeys
      * Key for activity security information.
      */
     public static final String ACTIVITY_SECURITY_BY_ID = "ActSec:";
+
+    /**
+     * Activity liked by a person.
+     */
+    public static final String LIKED_BY_PERSON_ID = "PerLike:";
 
 }

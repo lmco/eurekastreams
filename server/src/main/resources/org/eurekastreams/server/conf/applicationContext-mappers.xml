@@ -338,6 +338,18 @@
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 	
+	<bean id="insertLikedActivity"
+		class="org.eurekastreams.server.persistence.mappers.InsertLikedActivity">
+		<constructor-arg ref="getLikedActivityIds" />
+		<property name="cache" ref="memcachedCache" />
+	</bean>
+
+	<bean id="deleteLikedActivity"
+		class="org.eurekastreams.server.persistence.mappers.DeleteLikedActivity">
+		<property name="cache" ref="memcachedCache" />
+	</bean>
+	
+	
      <bean id="getEveryoneActivityCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.GetEveryoneActivityCacheMapper">
        <property name="cache" ref="memcachedCache" />
     </bean>
@@ -873,6 +885,11 @@
 
 	<bean id="getStarredActivityIds"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetStarredActivityIds">
+		<property name="cache" ref="memcachedCache" />
+	</bean>
+	
+	<bean id="getLikedActivityIds"
+		class="org.eurekastreams.server.persistence.mappers.stream.GetLikedActivityIds">
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 
