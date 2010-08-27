@@ -143,24 +143,23 @@
 			<param name="ConversionPattern" value="%d{ISO8601}&#09;%m%n" />
 		</layout>
 	</appender>
-
-  <!-- Parseable log file for action timing -->
-	<appender name="actionTimer" class="org.apache.log4j.RollingFileAppender">
-		<param name="File" value="${log.home}/actionTimer.log.txt" />
-		<param name="Append" value="true" />
-		<param name="MaxFileSize" value="5MB" />
-		<param name="MaxBackupIndex" value="50" />
-		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%d{ISO8601}&#09;%m%n" />
-		</layout>
-	</appender>
-
-	<!-- Logger for how long each action takes -->
-	<logger name="org.eurekastreams.commons.server.ActionExecutor-actionTimer"
-		additivity="false">
-		<level value="info" />
-		<appender-ref ref="actionTimer" />
-	</logger>
+	
+	<!-- aop perf timer log appender -->
+    <appender name="performanceLog" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="${log.home}/performance.log.txt" />
+        <param name="Append" value="true" />
+        <param name="MaxFileSize" value="5MB" />
+        <param name="MaxBackupIndex" value="50" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} %-5p %m%n" />
+        </layout>
+    </appender>
+    
+    <!-- aop perf timer log -->
+    <logger name="perf.timer" additivity="false">
+        <level value="info" />
+        <appender-ref ref="performanceLog" />
+    </logger>	
   
   <!-- Logger for Lucene DirectoryProviders -->
 	<logger name="org.hibernate.search.store.FSSlaveDirectoryProvider" additivity="false">
@@ -233,7 +232,7 @@
 	</logger>
 
 	<logger
-		name="org.eurekastreams.server.service.actions.strategies.ldap.MembershipCriteriaToPersonMapper">
+		name="org.eurekastreams.server.persistence.mappers.ldap">
 		<level value="warn" />
 		<appender-ref ref="LdapFile" />
 	</logger>

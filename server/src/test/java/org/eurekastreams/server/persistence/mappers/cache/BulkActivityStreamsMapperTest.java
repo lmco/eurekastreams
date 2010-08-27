@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -41,7 +41,7 @@ public class BulkActivityStreamsMapperTest
     /**
      * Context for building mock objects.
      */
-    private final Mockery context = new JUnit4Mockery()
+    private static final Mockery CONTEXT = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -51,17 +51,17 @@ public class BulkActivityStreamsMapperTest
     /**
      * System under test.
      */
-    private BulkActivityStreamsMapper sut;
+    private static BulkActivityStreamsMapper sut;
 
     /**
      * Cache mock.
      */
-    private Cache cacheMock = context.mock(Cache.class);
+    private static Cache cacheMock = CONTEXT.mock(Cache.class);
 
     /**
      * Collider mock.
      */
-    private ListCollider colliderMock = context.mock(ListCollider.class);
+    private static ListCollider colliderMock = CONTEXT.mock(ListCollider.class);
 
     /**
      * Max items to return.
@@ -71,8 +71,8 @@ public class BulkActivityStreamsMapperTest
     /**
      * Setup test fixtures.
      */
-    @Before
-    public final void setUp()
+    @BeforeClass
+    public static final void setUp()
     {
         sut = new BulkActivityStreamsMapper();
         sut.setCache(cacheMock);
@@ -100,7 +100,7 @@ public class BulkActivityStreamsMapperTest
             results.put(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + itemId, new ArrayList<Long>());
         }
 
-        context.checking(new Expectations()
+        CONTEXT.checking(new Expectations()
         {
             {
                 oneOf(cacheMock).multiGetList(with(any(Collection.class)));
@@ -115,7 +115,7 @@ public class BulkActivityStreamsMapperTest
 
         Assert.assertFalse(response.hasUnhandledRequest());
 
-        context.assertIsSatisfied();
+        CONTEXT.assertIsSatisfied();
     }
 
     /**
@@ -135,7 +135,7 @@ public class BulkActivityStreamsMapperTest
         results.put(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + request.get(0), new ArrayList<Long>());
         results.put(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + request.get(request.size() - 1), new ArrayList<Long>());
 
-        context.checking(new Expectations()
+        CONTEXT.checking(new Expectations()
         {
             {
                 oneOf(cacheMock).multiGetList(with(any(Collection.class)));
@@ -150,7 +150,7 @@ public class BulkActivityStreamsMapperTest
 
         Assert.assertTrue(response.hasUnhandledRequest());
 
-        context.assertIsSatisfied();
+        CONTEXT.assertIsSatisfied();
     }
 
     /**
@@ -168,7 +168,7 @@ public class BulkActivityStreamsMapperTest
 
         final Map<String, ArrayList<Long>> results = new HashMap<String, ArrayList<Long>>();
 
-        context.checking(new Expectations()
+        CONTEXT.checking(new Expectations()
         {
             {
                 oneOf(cacheMock).multiGetList(with(any(Collection.class)));
@@ -183,7 +183,7 @@ public class BulkActivityStreamsMapperTest
 
         Assert.assertTrue(response.hasUnhandledRequest());
 
-        context.assertIsSatisfied();
+        CONTEXT.assertIsSatisfied();
     }
 
     /**
@@ -196,7 +196,7 @@ public class BulkActivityStreamsMapperTest
 
         final Map<String, ArrayList<Long>> results = new HashMap<String, ArrayList<Long>>();
 
-        context.checking(new Expectations()
+        CONTEXT.checking(new Expectations()
         {
             {
                 oneOf(cacheMock).multiGetList(with(any(Collection.class)));
@@ -211,6 +211,6 @@ public class BulkActivityStreamsMapperTest
 
         Assert.assertFalse(response.hasUnhandledRequest());
 
-        context.assertIsSatisfied();
+        CONTEXT.assertIsSatisfied();
     }
 }

@@ -149,7 +149,7 @@ public class ReviewPendingGroupAuthorizationStrategyTest
 
     /**
      * Setup is the same except for results.
-     *
+     * 
      * @param success
      *            If the authorization should be successful.
      */
@@ -176,7 +176,7 @@ public class ReviewPendingGroupAuthorizationStrategyTest
 
     /**
      * Get the principal action context.
-     *
+     * 
      * @return the principal action context.
      */
     private PrincipalActionContext getPrincipalActionContext()
@@ -190,7 +190,7 @@ public class ReviewPendingGroupAuthorizationStrategyTest
 
             /**
              * State - none.
-             *
+             * 
              * @return the state
              */
             @Override
@@ -201,7 +201,7 @@ public class ReviewPendingGroupAuthorizationStrategyTest
 
             /**
              * Params - none.
-             *
+             * 
              * @return the params
              */
             @Override
@@ -212,13 +212,25 @@ public class ReviewPendingGroupAuthorizationStrategyTest
 
             /**
              * User principal.
-             *
+             * 
              * @return the user principal
              */
             @Override
             public Principal getPrincipal()
             {
                 return userPrincipal;
+            }
+
+            @Override
+            public String getActionId()
+            {
+                return null;
+            }
+
+            @Override
+            public void setActionId(final String inActionId)
+            {
+
             }
         };
     }

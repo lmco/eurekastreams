@@ -110,7 +110,7 @@ public class GetActivityByIdExecutionStrategyTest
 
     /**
      * Perform execute.
-     *
+     * 
      * @throws Exception
      *             on failure.
      */
@@ -163,7 +163,7 @@ public class GetActivityByIdExecutionStrategyTest
 
     /**
      * Perform execute.
-     *
+     * 
      * @throws Exception
      *             on failure.
      */
@@ -202,7 +202,7 @@ public class GetActivityByIdExecutionStrategyTest
 
     /**
      * Build the principal action context for testing.
-     *
+     * 
      * @return the principal action context for testing
      */
     private PrincipalActionContext buildActionContext()
@@ -248,6 +248,18 @@ public class GetActivityByIdExecutionStrategyTest
             public Map<String, Object> getState()
             {
                 return null;
+            }
+
+            @Override
+            public String getActionId()
+            {
+                return null;
+            }
+
+            @Override
+            public void setActionId(final String inActionId)
+            {
+
             }
         };
     }

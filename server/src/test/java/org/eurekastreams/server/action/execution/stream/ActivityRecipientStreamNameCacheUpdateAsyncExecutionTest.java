@@ -110,6 +110,18 @@ public class ActivityRecipientStreamNameCacheUpdateAsyncExecutionTest
             {
                 return null;
             }
+
+            @Override
+            public String getActionId()
+            {
+                return null;
+            }
+
+            @Override
+            public void setActionId(final String inActionId)
+            {
+
+            }
         };
 
         context.checking(new Expectations()

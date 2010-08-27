@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.server.persistence.mappers.cache;
 
+import org.apache.commons.logging.Log;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.stream.HashTag;
 import org.eurekastreams.server.persistence.mappers.chained.RefreshStrategy;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
@@ -24,6 +26,11 @@ import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
  */
 public class HashTagCacheRefreshStrategy extends CachedDomainMapper implements RefreshStrategy<String, HashTag>
 {
+    /**
+     * Logger.
+     */
+    private final Log log = LogFactory.make();
+
     /**
      * Refresh the cache with the input content and hash tag.
      *
@@ -44,6 +51,8 @@ public class HashTagCacheRefreshStrategy extends CachedDomainMapper implements R
         {
             content = inContent.toLowerCase();
         }
+
+        log.info("Caching hashtag: " + content);
         getCache().set(CacheKeys.HASH_TAG_BY_LOWERCASED_CONTENT + content, inHashTag);
     }
 

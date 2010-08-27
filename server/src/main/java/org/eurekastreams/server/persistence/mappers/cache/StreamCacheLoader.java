@@ -135,7 +135,7 @@ public class StreamCacheLoader extends CachedDomainMapper
         stepStart = System.currentTimeMillis();
         queryPersonActivityIdLists();
         log.info("Done: " + (System.currentTimeMillis() - stepStart) + " ms.");
-
+        
         log.info("Querying and group person activity id list cache");
         stepStart = System.currentTimeMillis();
         queryGroupActivityIdLists();
@@ -253,7 +253,7 @@ public class StreamCacheLoader extends CachedDomainMapper
             getCache().setList(CacheKeys.ACTIVITIES_BY_FOLLOWING + personId, followedActivityIds);
         }
     }
-
+    
     /**
      * Query the database for ids of activity on various lists of group activity ids.
      */

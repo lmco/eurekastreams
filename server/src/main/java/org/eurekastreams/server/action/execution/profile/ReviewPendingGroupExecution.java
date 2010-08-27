@@ -79,11 +79,11 @@ public class ReviewPendingGroupExecution implements TaskHandlerExecutionStrategy
     private final OrganizationHierarchyTraverserBuilder orgTraverserBuilder;
 
     /** Execution strategy for deleting a group. */
-    private DeleteGroupFromDBExecution deleteGroupExecution;
+    private TaskHandlerExecutionStrategy deleteGroupExecution;
 
     /**
      * Constructor.
-     *
+     * 
      * @param inGroupMapper
      *            the group mapper to use to find the domain group.
      * @param inEmailNotifier
@@ -100,7 +100,7 @@ public class ReviewPendingGroupExecution implements TaskHandlerExecutionStrategy
     public ReviewPendingGroupExecution(final DomainGroupMapper inGroupMapper, final Notifier inEmailNotifier,
             final AddPrivateGroupIdToCachedCoordinatorAccessList inAddPrivateGroupIdToCachedListMapper,
             final OrganizationMapper inOrgMapper, final OrganizationHierarchyTraverserBuilder inOrgTraverserBuilder,
-            final DeleteGroupFromDBExecution inDeleteGroupExecution)
+            final TaskHandlerExecutionStrategy inDeleteGroupExecution)
     {
         groupMapper = inGroupMapper;
         addPrivateGroupIdToCachedListMapper = inAddPrivateGroupIdToCachedListMapper;
@@ -112,7 +112,7 @@ public class ReviewPendingGroupExecution implements TaskHandlerExecutionStrategy
 
     /**
      * Execute the action, approving or declining the DomainGroup request.
-     *
+     * 
      * @param inActionContext
      *            the action context containing the principal and request
      * @return true on success
@@ -148,8 +148,8 @@ public class ReviewPendingGroupExecution implements TaskHandlerExecutionStrategy
             }
             else
             {
-                TaskHandlerActionContext<ActionContext> childContext =
-                        new TaskHandlerActionContext<ActionContext>(new ActionContext()
+                TaskHandlerActionContext<ActionContext> childContext = new TaskHandlerActionContext<ActionContext>(
+                        new ActionContext()
                         {
                             public Serializable getParams()
                             {
@@ -159,6 +159,18 @@ public class ReviewPendingGroupExecution implements TaskHandlerExecutionStrategy
                             public Map<String, Object> getState()
                             {
                                 return null;
+                            }
+
+                            @Override
+                            public String getActionId()
+                            {
+                                return null;
+                            }
+
+                            @Override
+                            public void setActionId(final String inActionId)
+                            {
+
                             }
                         }, inActionContext.getUserActionRequests());
                 deleteGroupExecution.execute(childContext);
@@ -174,7 +186,7 @@ public class ReviewPendingGroupExecution implements TaskHandlerExecutionStrategy
 
     /**
      * Notify the group's coordinators of the decision.
-     *
+     * 
      * @param inActionContext
      *            Context (needed for async actions).
      * @param group
@@ -209,7 +221,7 @@ public class ReviewPendingGroupExecution implements TaskHandlerExecutionStrategy
 
     /**
      * Update an organization's stats.
-     *
+     * 
      * @param inOrganizaiton
      *            the org to update.
      */

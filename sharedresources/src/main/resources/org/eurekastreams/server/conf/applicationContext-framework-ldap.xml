@@ -13,10 +13,14 @@
             </map>
         </constructor-arg>
     </bean>
+    
+    <bean id="baseLdapPath" class="java.lang.String">
+        <constructor-arg value="dc=none,dc=none,dc=none"/>
+    </bean>
 
     <bean id="baseLdapTemplate" class="org.springframework.ldap.core.LdapTemplate"
         abstract="true">
-        <property name="base" value="dc=none,dc=none,dc=none" />
+        <property name="base" ref="baseLdapPath" />
         <property name="userDn" value="${eureka.security.ldap.userdn}" />
         <property name="password" value="${eureka.security.ldap.password}" />
     </bean>
@@ -32,7 +36,7 @@
         </constructor-arg>
     </bean>
     
-    <bean id="personLdapMapper"
+    <bean id="ldapToPersonMapper"
         class="org.eurekastreams.server.service.actions.strategies.ldap.LdapToPersonMapper">
         <property name="accountAttrib" value="none" />
         <property name="firstNameAttrib" value="none" />
@@ -43,23 +47,12 @@
         <property name="emailAttrib" value="none" />
     </bean>
 
-    <bean id="groupLdapMapper"
-        class="org.eurekastreams.server.service.actions.strategies.ldap.MembershipCriteriaToPersonMapper">
-        <constructor-arg ref="ldapTemplates" />
-        <constructor-arg type="java.lang.String" value="none" />
-        <constructor-arg ref="ldapTemplateExample" />
-        <constructor-arg ref="personLookupStrategyLdapAttrib"/>
-        <constructor-arg ref="findGroupByAttrib"/>
-        <property name="objectClassAttrib" value="none" />
-        <property name="personObjectClassAttribValue" value="none" />
-        <property name="groupObjectClassAttribValue" value="none" />
-        <property name="memberAttrib" value="none" />
-    </bean>
+    <bean id="ldapToLdapGroupMapper" class="org.eurekastreams.server.persistence.mappers.ldap.callback.LdapToLdapGroupMapper" />
     
-    <!-- Constructs a query where results will contain matches of the conjunction of 
+     <!-- Constructs a query where results will contain matches of the conjunction of 
     each filter object supplied in the filter list.  -->
-    <bean id="findPersonByAttrib"
-        class="org.eurekastreams.server.service.actions.strategies.ldap.filters.FindByAttrib">
+    <bean id="findPersonByAttributeQueryFilter"
+        class="org.eurekastreams.server.persistence.mappers.ldap.filters.FindByAttributeQuery">
         <constructor-arg>
             <list>
                 <bean class="org.springframework.ldap.filter.EqualsFilter">
@@ -72,8 +65,8 @@
 
    <!-- Constructs a query where results will contain matches of the conjunction of 
     each filter object supplied in the filter list.  -->
-    <bean id="findGroupByAttrib"
-        class="org.eurekastreams.server.service.actions.strategies.ldap.filters.FindByAttrib">
+    <bean id="findGroupByAttributeQueryFilter"
+        class="org.eurekastreams.server.persistence.mappers.ldap.filters.FindByAttributeQuery">
         <constructor-arg>
             <list>
                 <bean class="org.springframework.ldap.filter.EqualsFilter">
@@ -82,24 +75,52 @@
                 </bean>
             </list>
         </constructor-arg>
+    </bean>   
+    
+    <bean id="findLdapGroupByCnFilter" class="org.eurekastreams.server.persistence.mappers.ldap.filters.FindByAttribute">
+        <constructor-arg value="none"/>
+        <constructor-arg ref="findGroupByAttributeQueryFilter"/>
+        <constructor-arg value="true"/>
     </bean>
     
-    <!-- Constructs a query where results match the filter conjunction of the list of
-    filter objects. -->
-    <bean id="findGroup"
-        class="org.eurekastreams.server.service.actions.strategies.ldap.filters.FindGroup">
-        <constructor-arg>
-            <list>
-                <bean class="org.springframework.ldap.filter.EqualsFilter">
-                    <constructor-arg value="none"/>
-                    <constructor-arg value="none"/>
-                </bean>
-            </list>
-        </constructor-arg>
-        <constructor-arg value="cn" />
-    </bean>    
+    <bean id="findPersonByCnWildcardFilter" class="org.eurekastreams.server.persistence.mappers.ldap.filters.FindByAttribute">
+        <constructor-arg value="none"/>
+        <constructor-arg ref="findPersonByAttributeQueryFilter"/>
+        <constructor-arg value="false"/>
+    </bean>
     
+    <bean id="findLdapGroupByMembershipFilter" class="org.eurekastreams.server.persistence.mappers.ldap.filters.FindByAttribute">
+        <constructor-arg value="none"/>
+        <constructor-arg ref="findGroupByAttributeQueryFilter"/>
+        <constructor-arg value="true"/>
+    </bean>
     
-      
+   <bean id="findPersonByMembershipFilter" class="org.eurekastreams.server.persistence.mappers.ldap.filters.FindByAttribute">
+        <constructor-arg value="none"/>
+        <constructor-arg ref="findPersonByAttributeQueryFilter"/>
+        <constructor-arg value="true"/>
+    </bean>   
+    
+    <bean id="searchStringLdapTemplateRetriever" class="org.eurekastreams.server.persistence.mappers.ldap.templateretrievers.SearchStringLdapTemplateRetriever">
+        <constructor-arg ref="ldapTemplates"/>
+        <constructor-arg ref="ldapTemplateExample" />
+    </bean> 
+    
+    <bean id="ldapGroupDnLdapTemplateRetriever" class="org.eurekastreams.server.persistence.mappers.ldap.templateretrievers.LdapGroupDnLdapTemplateRetriever">
+        <constructor-arg ref="ldapTemplates"/>
+        <constructor-arg ref="ldapTemplateExample" />
+    </bean>   
+    
+    <bean id="ldapToPersonCallbackFactory" class="org.eurekastreams.server.persistence.mappers.ldap.callback.AttributesMapperCallbackHandlerFactory">
+        <constructor-arg ref="ldapToPersonMapper"/>            
+    </bean>
+    
+    <bean id="ldapToLdapGroupCallbackFactory" class="org.eurekastreams.server.persistence.mappers.ldap.callback.ContextMapperCallbackHandlerFactory">
+        <constructor-arg ref="ldapToLdapGroupMapper"/>           
+    </bean>  
+        
+    <bean id="pagedLdapSearchStrategy" class="org.eurekastreams.server.persistence.mappers.ldap.PagedLdapSearchStrategy" />
+    
+    <bean id="defaultLdapSearchStrategy" class="org.eurekastreams.server.persistence.mappers.ldap.DefaultLdapSearchStrategy" />              
         
 </beans>

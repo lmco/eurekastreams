@@ -228,10 +228,15 @@ public final class CacheKeys
      * Holds pointer to composite stream for recipient group.
      */
     public static final String GROUP_ENTITITY_STREAM_VIEW_ID = "GrEntStream:";
-
+    
     /**
      * Key for HashTag by lowercased content.
      */
     public static final String HASH_TAG_BY_LOWERCASED_CONTENT = "HT:";
+
+    /**
+     * Key for activity security information.
+     */
+    public static final String ACTIVITY_SECURITY_BY_ID = "ActSec:";
 
 }

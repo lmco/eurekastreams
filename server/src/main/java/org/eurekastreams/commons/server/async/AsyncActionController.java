@@ -37,34 +37,33 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
  * This class provides the business logic that controls the execution of an {@link AsyncAction}.
- *
+ * 
  * Transaction management, Validation, and Execution strategy sequences are also controlled in here.
- *
+ * 
  * Note: Authorization strategies are explicitly excluded from execution. This helps draw a line between the Service and
  * Async sides of actions.
- *
+ * 
  * In the case of a {@link TaskHandlerAction}, the List of UserActionRequest objects are collected and submitted through
  * the action. This is necessary, because UserActionRequest submissions to the queue through JMS is currently not
  * covered under the configured transaction strategy. When distributed transactions are available within EurekaStreams
  * this behavior will change.
- *
+ * 
  * The order of execution for the strategies contained within the {@link AsyncAction} is controlled by this class and
  * executed in the following order:
- *
+ * 
  * ValidationStrategy ExecutionStrategy
- *
+ * 
  * Optionally:
- *
- * In the case of a {@link TaskHandlerAction}, UserActionRequests will be gathered from the TaskHandlerContext passed
- * to the TaskHandlerExecutionStrategy and submitted to the configured TaskHandler of the action.
- *
+ * 
+ * In the case of a {@link TaskHandlerAction}, UserActionRequests will be gathered from the TaskHandlerContext passed to
+ * the TaskHandlerExecutionStrategy and submitted to the configured TaskHandler of the action.
+ * 
  * Exception handling also occurs within this controller. - {@link GeneralException} will be thrown when an unwrapped
  * exception is encountered. - {@link ValidationException} will be logged and passed to the client when encountered. -
- *  {@link ExecutionException}
- * will be logged and passed to the client when encountered.
- *
+ * {@link ExecutionException} will be logged and passed to the client when encountered.
+ * 
  */
-public class AsyncActionController
+public class AsyncActionController implements AsynchronousActionController
 {
     /**
      * Local instance of the logger.
@@ -78,7 +77,7 @@ public class AsyncActionController
 
     /**
      * Constructor for the AsyncActionController.
-     *
+     * 
      * @param inTransMgr
      *            - instance of the {@link PlatformTransactionManager} for this controller.
      */
@@ -89,13 +88,13 @@ public class AsyncActionController
 
     /**
      * Execute the supplied {@link AsyncAction} with the given {@link AsyncActionContext}.
-     *
+     * 
      * @param inAsyncActionContext
      *            - instance of the {@link AsyncActionContext} with which to execution the {@link AsyncAction}.
      * @param inAsyncAction
      *            - instance of the {@link AsyncAction} to execute.
      * @return - results from the execution of the AsyncAction.
-     *
+     * 
      *         - GeneralException - when an unexpected error occurs. - ValidationException - when a
      *         {@link ValidationException} occurs. - ExecutionException - when an {@link ExecutionException} occurs.
      */
@@ -140,13 +139,13 @@ public class AsyncActionController
 
     /**
      * This method executes a {@link TaskHandlerAction} with the supplied {@link AsyncActionContext}.
-     *
+     * 
      * @param inAsyncActionContext
      *            - instance of the {@link AsyncActionContext} associated with this request.
      * @param inTaskHandlerAction
      *            - instance of the {@link TaskHandlerAction}.
      * @return - results of the execution.
-     *
+     * 
      *         - GeneralException - when an unexpected error occurs. - ValidationException - when a
      *         {@link ValidationException} occurs. - ExecutionException - when an {@link ExecutionException} occurs.
      */
@@ -193,7 +192,7 @@ public class AsyncActionController
             throw new GeneralException(ex);
         }
 
-        //Submit the TaskRequests gathered from the execution strategy into the TaskHandlerContext to the TaskHandler.
+        // Submit the TaskRequests gathered from the execution strategy into the TaskHandlerContext to the TaskHandler.
         try
         {
             TaskHandler currentTaskHandler = inTaskHandlerAction.getTaskHandler();
@@ -213,7 +212,7 @@ public class AsyncActionController
 
     /**
      * Helper class that encapsulates transaction rollback when an exception is encountered.
-     *
+     * 
      * @param inTransStatus
      *            - instance of the {@link TransactionStatus} to go along with the currect block.
      */

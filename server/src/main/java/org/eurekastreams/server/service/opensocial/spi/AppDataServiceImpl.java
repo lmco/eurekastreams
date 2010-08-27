@@ -34,7 +34,7 @@ import org.apache.shindig.social.opensocial.spi.SocialSpiException;
 import org.apache.shindig.social.opensocial.spi.UserId;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
-import org.eurekastreams.commons.server.service.ServiceActionController;
+import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
 import org.eurekastreams.server.action.request.opensocial.DeleteAppDataRequest;
 import org.eurekastreams.server.action.request.opensocial.GetAppDataRequest;
@@ -64,7 +64,7 @@ public class AppDataServiceImpl implements AppDataService
     /**
      * Local instance of the ServiceActionController to submit service actions through.
      */
-    private ServiceActionController serviceActionController;
+    private ActionController serviceActionController;
 
     /**
      * Local instance of the {@link OpenSocialPrincipalPopulator} for setting up the {@link ServiceActionContext}.
@@ -75,7 +75,7 @@ public class AppDataServiceImpl implements AppDataService
      * Instance of the service action for updating data.
      */
     private ServiceAction updateDataAction;
-    
+
     /**
      * Instance of the service action for deleting data.
      */
@@ -101,9 +101,9 @@ public class AppDataServiceImpl implements AppDataService
      */
     @Inject
     public AppDataServiceImpl(@Named("getAppData") final ServiceAction inGetAppDataAction,
-            final ServiceActionController inServiceActionController,
+            final ActionController inServiceActionController,
             final OpenSocialPrincipalPopulator inOpenSocialPrincipalPopulator,
-            @Named("updateAppData") final ServiceAction inUpdateAction, 
+            @Named("updateAppData") final ServiceAction inUpdateAction,
             @Named("deleteAppData") final ServiceAction inDeleteAction)
     {
         getAppDataAction = inGetAppDataAction;
@@ -137,17 +137,17 @@ public class AppDataServiceImpl implements AppDataService
 
         try
         {
-        String userOpenSocialId = userId.getUserId(token);
+            String userOpenSocialId = userId.getUserId(token);
 
-        // create the request
-        DeleteAppDataRequest params = new DeleteAppDataRequest(Long.parseLong(appId), userOpenSocialId, fields);
+            // create the request
+            DeleteAppDataRequest params = new DeleteAppDataRequest(Long.parseLong(appId), userOpenSocialId, fields);
 
-        // create the context
-        ServiceActionContext context = new ServiceActionContext(params, openSocialPrincipalPopulator
-                .getPrincipal(userOpenSocialId));
+            // create the context
+            ServiceActionContext context = new ServiceActionContext(params, openSocialPrincipalPopulator
+                    .getPrincipal(userOpenSocialId));
 
-        // Execute action via service action controller to perform the update.
-        serviceActionController.execute(context, deleteDataAction);
+            // Execute action via service action controller to perform the update.
+            serviceActionController.execute(context, deleteDataAction);
         }
         catch (Exception e)
         {

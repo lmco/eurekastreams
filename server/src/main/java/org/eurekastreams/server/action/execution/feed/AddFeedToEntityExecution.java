@@ -19,12 +19,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 import org.eurekastreams.commons.actions.Action;
+import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
-import org.eurekastreams.server.action.execution.stream.PostActivityExecutionStrategy;
 import org.eurekastreams.server.action.request.feed.DeleteFeedSubscriptionRequest;
 import org.eurekastreams.server.action.request.stream.PostActivityRequest;
 import org.eurekastreams.server.domain.EntityType;
@@ -45,7 +45,7 @@ import org.eurekastreams.server.service.actions.strategies.activity.plugins.GetE
 /**
  * Adds a feed to a user or group. Also handles updates, since the conf settings are cleared and reset regardless and
  * the mappers handle finding and creating for me. Booya.
- *
+ * 
  */
 public class AddFeedToEntityExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
@@ -71,7 +71,7 @@ public class AddFeedToEntityExecution implements TaskHandlerExecutionStrategy<Pr
     /**
      * Get the title for a feed.
      */
-    private GetTitleFromFeedExecution getTitleFromFeed;
+    private ExecutionStrategy getTitleFromFeed;
 
     /**
      * Delete the existing feed sub is this is an edit.
@@ -86,11 +86,11 @@ public class AddFeedToEntityExecution implements TaskHandlerExecutionStrategy<Pr
     /**
      * The get activity executor.
      */
-    private PostActivityExecutionStrategy postActivityExecutor;
+    private TaskHandlerExecutionStrategy postActivityExecutor;
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inUpdateMapper
      *            update mapper.
      * @param inGetMapper
@@ -105,13 +105,15 @@ public class AddFeedToEntityExecution implements TaskHandlerExecutionStrategy<Pr
      *            delete feed sub mapper.
      * @param inType
      *            entity type.
-     * @param inPostActivityExecutor post executor.
+     * @param inPostActivityExecutor
+     *            post executor.
      */
+    @SuppressWarnings("unchecked")
     public AddFeedToEntityExecution(final UpdateMapper<Feed> inUpdateMapper,
             final GetFeedByUrlOrCreateMapper inGetMapper, final GetEntityIdForFeedSubscription inGetEntityId,
             final GetFeedSubscriberOrCreateMapper inGetFeedSubscriberMapper,
-            final GetTitleFromFeedExecution inGetTitleFromFeed, final Action inDeleteFeedSub, final EntityType inType,
-            final PostActivityExecutionStrategy inPostActivityExecutor)
+            final ExecutionStrategy inGetTitleFromFeed, final Action inDeleteFeedSub, final EntityType inType,
+            final TaskHandlerExecutionStrategy inPostActivityExecutor)
     {
         updateMapper = inUpdateMapper;
         getMapper = inGetMapper;
@@ -125,7 +127,7 @@ public class AddFeedToEntityExecution implements TaskHandlerExecutionStrategy<Pr
 
     /**
      * Perform action.
-     *
+     * 
      * @param context
      *            The ActionContext for this execution
      * @return Serializable result
@@ -170,8 +172,8 @@ public class AddFeedToEntityExecution implements TaskHandlerExecutionStrategy<Pr
         }
         if (values.containsKey("EUREKA:FEEDSUBID"))
         {
-            ServiceActionContext deleteAC = new ServiceActionContext(new DeleteFeedSubscriptionRequest(
-                    (Long) values.get("EUREKA:FEEDSUBID"), group), context.getActionContext().getPrincipal());
+            ServiceActionContext deleteAC = new ServiceActionContext(new DeleteFeedSubscriptionRequest((Long) values
+                    .get("EUREKA:FEEDSUBID"), group), context.getActionContext().getPrincipal());
 
             deleteFeedSub.getExecutionStrategy().execute(deleteAC);
         }
@@ -183,7 +185,7 @@ public class AddFeedToEntityExecution implements TaskHandlerExecutionStrategy<Pr
         // Perhaps a new request object needs to be created? Moving on for now.
         ServiceActionContext getFeedContext = new ServiceActionContext(values.get("EUREKA:FEEDURL"), context
                 .getActionContext().getPrincipal());
-        String title = getTitleFromFeed.execute(getFeedContext);
+        String title = (String) getTitleFromFeed.execute(getFeedContext);
 
         // Find or create the feed.
         GetFeedByUrlRequest request = new GetFeedByUrlRequest((Long) values.get("EUREKA:PLUGINID"), (String) values
@@ -227,8 +229,8 @@ public class AddFeedToEntityExecution implements TaskHandlerExecutionStrategy<Pr
         activity.setVerb(ActivityVerb.POST);
 
         postActivityExecutor.execute(new TaskHandlerActionContext<PrincipalActionContext>(new ServiceActionContext(
-                new PostActivityRequest(activity), context.getActionContext().getPrincipal()),
-                context.getUserActionRequests()));
+                new PostActivityRequest(activity), context.getActionContext().getPrincipal()), context
+                .getUserActionRequests()));
 
         updateMapper.execute(new PersistenceRequest<Feed>(feed));
         return Boolean.TRUE;

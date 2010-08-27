@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,11 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.persistence.NoResultException;
 
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
@@ -47,6 +45,30 @@ public class BulkEntityStreamIdsDbMapperTest extends MapperTest
         sut = new BulkEntityStreamIdsDbMapper();
         sut.setEntityManager(getEntityManager());
     }
+    
+    /**
+     * Tests executing with multiple result types.
+     */
+    @Test
+    public void testExecute()
+    {
+        final Long personId = 42L;
+        final Long personExpectedEntityStreamId = 5L;
+        
+        final Long groupId = 1L;
+        final Long groupExpectedEntityStreamId = 9L;
+
+        final Map<Long, EntityType> request = new HashMap<Long, EntityType>();
+
+        request.put(personId, EntityType.PERSON);
+        request.put(groupId, EntityType.GROUP);
+
+        List<Long> results = sut.execute(request);
+
+        assertEquals(2, results.size());
+        assertEquals(personExpectedEntityStreamId, results.get(0));
+        assertEquals(groupExpectedEntityStreamId, results.get(1));
+    }
 
     /**
      * Tests mapping with a person.
@@ -70,7 +92,7 @@ public class BulkEntityStreamIdsDbMapperTest extends MapperTest
     /**
      * Tests mapping person with no results.
      */
-    @Test(expected = NoResultException.class)
+    @Test
     public void testExecuteForPersonNoResults()
     {
         final Long personId = 0L;
@@ -79,7 +101,9 @@ public class BulkEntityStreamIdsDbMapperTest extends MapperTest
 
         request.put(personId, EntityType.PERSON);
 
-        sut.execute(request);
+        List<Long> results =  sut.execute(request);
+
+        assertEquals(0, results.size());
     }
 
     /**
@@ -104,7 +128,7 @@ public class BulkEntityStreamIdsDbMapperTest extends MapperTest
     /**
      * Tests mapping for a group with no results.
      */
-    @Test(expected = NoResultException.class)
+    @Test
     public void testExecuteForGroupNoResults()
     {
         final Long groupId = 0L;
@@ -113,9 +137,11 @@ public class BulkEntityStreamIdsDbMapperTest extends MapperTest
 
         request.put(groupId, EntityType.GROUP);
 
-        sut.execute(request);
-    }
+        List<Long> results =  sut.execute(request);
 
+        assertEquals(0, results.size());
+    }
+    
     /**
      * Tests mapping an unhandled type.
      */

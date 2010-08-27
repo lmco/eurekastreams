@@ -79,8 +79,8 @@ public class SendGroupAccessRequestExecutionTest
     private final DomainGroup groupMock = context.mock(DomainGroup.class);
 
     /** Mapper. */
-    private InsertRequestForGroupMembership insertMembershipRequestMapper =
-            context.mock(InsertRequestForGroupMembership.class);
+    private InsertRequestForGroupMembership insertMembershipRequestMapper = context
+            .mock(InsertRequestForGroupMembership.class);
 
     /**
      * Subject under test.
@@ -98,15 +98,14 @@ public class SendGroupAccessRequestExecutionTest
 
     /**
      * Call the execute method and make sure it produces what it should.
-     *
+     * 
      * @throws Exception
      *             should not occur
      */
     @Test
     public final void testPerformAction() throws Exception
     {
-        final RequestForGroupMembershipRequest mapperRqst =
-                new RequestForGroupMembershipRequest(GROUP_ID, USER_ID);
+        final RequestForGroupMembershipRequest mapperRqst = new RequestForGroupMembershipRequest(GROUP_ID, USER_ID);
         context.checking(new Expectations()
         {
             {
@@ -134,10 +133,10 @@ public class SendGroupAccessRequestExecutionTest
 
     /**
      * Make sure that sending bad arguments results in the expected exception.
-     *
+     * 
      * @throws Exception
      *             Throws an Exception.
-     *
+     * 
      */
     @Test(expected = IllegalArgumentException.class)
     public final void testPerformActionNoGroupError() throws Exception
@@ -156,7 +155,7 @@ public class SendGroupAccessRequestExecutionTest
 
     /**
      * Executes the SUT with the proper action context setup.
-     *
+     * 
      * @return List with any async requests made by the SUT.
      */
     private List<UserActionRequest> callExecute()
@@ -173,6 +172,18 @@ public class SendGroupAccessRequestExecutionTest
             public Serializable getParams()
             {
                 return new DomainGroupShortNameRequest(GROUP_SHORTNAME);
+            }
+
+            @Override
+            public String getActionId()
+            {
+                return null;
+            }
+
+            @Override
+            public void setActionId(final String inActionId)
+            {
+
             }
 
             public Principal getPrincipal()

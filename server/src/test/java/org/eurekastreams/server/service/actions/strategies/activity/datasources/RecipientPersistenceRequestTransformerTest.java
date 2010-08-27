@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,8 +33,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests the recipient transfomer used by the persistence data source.
+ * Tests the recipient transformer used by the persistence data source.
  */
+@SuppressWarnings("unchecked")
 public class RecipientPersistenceRequestTransformerTest
 {
     /**
@@ -86,6 +87,7 @@ public class RecipientPersistenceRequestTransformerTest
 
         final String personName = "personName";
         final String groupName = "groupName";
+        final String orgName = "orgName";
 
         final JSONObject personObj = new JSONObject();
         personObj.accumulate("type", "PERSON");

@@ -44,7 +44,7 @@ import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
-import org.eurekastreams.commons.server.service.ServiceActionController;
+import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
 import org.eurekastreams.server.action.request.opensocial.GetUserActivitiesRequest;
 import org.eurekastreams.server.action.request.stream.PostActivityRequest;
@@ -80,9 +80,9 @@ public class ActivityServiceImpl implements ActivityService
     private TaskHandlerAction deleteUserActivities;
 
     /**
-     * Instance of the {@link ServiceActionController} for this class.
+     * Instance of the {@link ActionController} for this class.
      */
-    private final ServiceActionController serviceActionController;
+    private final ActionController serviceActionController;
 
     /**
      * Instance of the {@link OpenSocialPrincipalPopulator} for this class.
@@ -102,7 +102,7 @@ public class ActivityServiceImpl implements ActivityService
      * @param inDeleteActivitiesAction
      *            the action to deleted a specified set of activities for a specified user.
      * @param inServiceActionController
-     *            - instance of the {@link ServiceActionController} used to execute the actions.
+     *            - instance of the {@link ActionController} used to execute the actions.
      * @param inOpenSocialPrincipalPopulator
      *            - instance of the {@link OpenSocialPrincipalPopulator} used to retrieve a Principal object based on
      *            the opensocial id.
@@ -112,7 +112,7 @@ public class ActivityServiceImpl implements ActivityService
     @Inject
     public ActivityServiceImpl(@Named("getUserActivities") final ServiceAction inGetUserActivitiesAction,
             @Named("deleteUserActivities") final TaskHandlerAction inDeleteActivitiesAction,
-            final ServiceActionController inServiceActionController,
+            final ActionController inServiceActionController,
             final OpenSocialPrincipalPopulator inOpenSocialPrincipalPopulator,
             @Named("postPersonActivityServiceActionTaskHandler") final TaskHandlerServiceAction inPostActivityAction)
     {

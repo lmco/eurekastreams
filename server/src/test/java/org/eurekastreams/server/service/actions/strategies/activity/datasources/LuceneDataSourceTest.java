@@ -52,8 +52,10 @@ public class LuceneDataSourceTest
     @Test
     public void testExecuteWithKeywords()
     {
-        final ProjectionSearchRequestBuilder builder = context.mock(ProjectionSearchRequestBuilder.class);
-        LuceneDataSource sut = new LuceneDataSource(builder);
+        final ProjectionSearchRequestBuilder builder = context.mock(ProjectionSearchRequestBuilder.class, "builder");
+        final ProjectionSearchRequestBuilder allBuilder = context.mock(ProjectionSearchRequestBuilder.class,
+                "allBuilder");
+        LuceneDataSource sut = new LuceneDataSource(builder, allBuilder);
 
         final JSONObject request = new JSONObject();
         final JSONObject query = new JSONObject();
@@ -89,8 +91,10 @@ public class LuceneDataSourceTest
     @Test
     public void testExecuteWithKeywordsSortByRelevance()
     {
-        final ProjectionSearchRequestBuilder builder = context.mock(ProjectionSearchRequestBuilder.class);
-        LuceneDataSource sut = new LuceneDataSource(builder);
+        final ProjectionSearchRequestBuilder builder = context.mock(ProjectionSearchRequestBuilder.class, "builder");
+        final ProjectionSearchRequestBuilder allBuilder = context.mock(ProjectionSearchRequestBuilder.class,
+                "allBuilder");
+        LuceneDataSource sut = new LuceneDataSource(builder, allBuilder);
 
         final JSONObject request = new JSONObject();
         final JSONObject query = new JSONObject();
@@ -127,8 +131,10 @@ public class LuceneDataSourceTest
     @Test
     public void testExecuteWithKeywordsSortByDate()
     {
-        final ProjectionSearchRequestBuilder builder = context.mock(ProjectionSearchRequestBuilder.class);
-        LuceneDataSource sut = new LuceneDataSource(builder);
+        final ProjectionSearchRequestBuilder builder = context.mock(ProjectionSearchRequestBuilder.class, "builder");
+        final ProjectionSearchRequestBuilder allBuilder = context.mock(ProjectionSearchRequestBuilder.class,
+                "allBuilder");
+        LuceneDataSource sut = new LuceneDataSource(builder, allBuilder);
 
         final JSONObject request = new JSONObject();
         final JSONObject query = new JSONObject();
@@ -168,8 +174,10 @@ public class LuceneDataSourceTest
     @Test
     public void testExecuteWithoutKeywordsAndWithoutSort()
     {
-        final ProjectionSearchRequestBuilder builder = context.mock(ProjectionSearchRequestBuilder.class);
-        LuceneDataSource sut = new LuceneDataSource(builder);
+        final ProjectionSearchRequestBuilder builder = context.mock(ProjectionSearchRequestBuilder.class, "builder");
+        final ProjectionSearchRequestBuilder allBuilder = context.mock(ProjectionSearchRequestBuilder.class,
+                "allBuilder");
+        LuceneDataSource sut = new LuceneDataSource(builder, allBuilder);
 
         assertNull(sut.fetch(new JSONObject(), 0L));
         context.assertIsSatisfied();

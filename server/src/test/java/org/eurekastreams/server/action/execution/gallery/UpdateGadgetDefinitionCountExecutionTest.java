@@ -63,7 +63,7 @@ public class UpdateGadgetDefinitionCountExecutionTest
 
     /**
      * Testing the action.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -91,6 +91,18 @@ public class UpdateGadgetDefinitionCountExecutionTest
             public Map<String, Object> getState()
             {
                 return null;
+            }
+
+            @Override
+            public String getActionId()
+            {
+                return null;
+            }
+
+            @Override
+            public void setActionId(final String inActionId)
+            {
+
             }
         });
         context.assertIsSatisfied();

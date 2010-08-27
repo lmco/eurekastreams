@@ -68,4 +68,43 @@
 			</list>
 		</property>
 	</bean>
+	
+	<!--
+		Inject the ActivityLastCommentIdClassBridge with the comments cache
+	-->
+	<bean
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass"
+			value="org.eurekastreams.server.search.bridge.ActivityLastCommentIdClassBridge" />
+		<property name="targetMethod" value="setCommentIdsByActivityIdDAO" />
+		<property name="arguments">
+			<list>
+				<ref bean="getOrderedCommentIdsByActivityId" />
+			</list>
+		</property>
+	</bean>
+
+	<!--
+		Inject the ActivityInterestingClassBridge with the interestingness strategy
+	-->
+	<bean id="interstingnessStrategy" class="org.eurekastreams.server.search.bridge.strategies.WeightedInterestingnessStrategy">
+		<constructor-arg ref="getOrderedCommentIdsByActivityId" />
+		<constructor-arg ref="getCommentorIdsByActivityId" />
+		<constructor-arg value="2" />
+		<constructor-arg value="3" />
+		<constructor-arg value="15" />
+	</bean>
+	
+	<bean
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass"
+			value="org.eurekastreams.server.search.bridge.ActivityInterestingClassBridge" />
+		<property name="targetMethod" value="setInterstingnessStrategy" />
+		<property name="arguments">
+			<list>
+				<ref bean="interstingnessStrategy" />
+			</list>
+		</property>
+	</bean>
+	
 </beans>
