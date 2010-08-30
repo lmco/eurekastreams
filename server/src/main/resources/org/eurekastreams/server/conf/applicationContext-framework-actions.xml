@@ -3258,6 +3258,20 @@
 		<constructor-arg value="false" />
 	</bean>
 	
+	<bean id="getActivityLikers" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean
+                class="org.eurekastreams.server.action.execution.stream.GetPeopleWhoLikedActivityExecution">
+                <constructor-arg ref="getPeopleWhoLikedActivity" />
+                <constructor-arg ref="bulkPeopleMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+    </bean>
+    
+	
 
 
 	<bean id="organizationCacheUpdaterAsyncAction" class="org.eurekastreams.commons.actions.async.AsyncAction">

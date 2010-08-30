@@ -17,7 +17,7 @@ package org.eurekastreams.server.persistence.mappers.cache;
 
 /**
  * Collection of Cache keys.
- * 
+ *
  */
 public final class CacheKeys
 {
@@ -98,6 +98,11 @@ public final class CacheKeys
      * Key for list of activity ids starred by a user.
      */
     public static final String STARRED_BY_PERSON_ID = "PerStar:";
+
+    /**
+     * Key for list of people who liked an activity.
+     */
+    public static final String LIKERS_BY_ACTIVITY_ID = "LikedByFor:";
 
     /**
      * Pointer key for person by opensocial id.

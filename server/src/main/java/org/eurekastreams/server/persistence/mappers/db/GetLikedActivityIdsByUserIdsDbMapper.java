@@ -33,7 +33,7 @@ public class GetLikedActivityIdsByUserIdsDbMapper extends CachedDomainMapper imp
 {
     /**
      * Looks in the cache for Liked activities. If data is not cached, goes to database.
-     * 
+     *
      * @param userId
      *            the user id to find followers for.
      * @return the list of follower ids.

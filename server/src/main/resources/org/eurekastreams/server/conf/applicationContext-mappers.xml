@@ -1476,6 +1476,39 @@
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 	
+         <bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID"
+                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/> 
+                
+                
+         <bean id="getPeopleWhoLikedActivity" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+               <constructor-arg>
+                      <bean
+                           class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
+                                  <constructor-arg>
+                                        <bean  class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer"/>
+                                  </constructor-arg>
+                                  <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID" />
+                                        <property name="cache" ref="memcachedCache" />
+                     </bean>
+              </constructor-arg>
+              <constructor-arg>
+                     <!-- Database mapper to fall back on if not found in cache -->
+                     <bean class="org.eurekastreams.server.persistence.mappers.db.GetPeopleWhoLikedActivityDbMapper" />
+              </constructor-arg>
+              <constructor-arg >
+                     <bean class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
+              </constructor-arg>
+              <constructor-arg>
+                     <!-- Cache refresher -->
+                     <bean class="org.eurekastreams.server.persistence.mappers.cache.SetKeyedSingleValueCacheMapper">
+                        <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID" />
+                           <property name="cache" ref="memcachedCache" />
+                     </bean>
+              </constructor-arg>
+         </bean>
+	
+	
+	
 	<!-- Begin ldap mappers -->
 
 	<bean id="findLdapGroupByCnNameMapper" class="org.eurekastreams.server.persistence.mappers.ldap.LdapLookup">
