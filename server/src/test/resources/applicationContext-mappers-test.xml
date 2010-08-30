@@ -53,6 +53,10 @@
     </bean>
 	<bean id="getEveryoneStreamIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetEveryoneStreamIdDbMapper" />
 	
+	    <bean id="getPeopleWhoLikedActivityDbMapper"
+        class="org.eurekastreams.server.persistence.mappers.db.GetPeopleWhoLikedActivityDbMapper"/>
+        
+	
 	<bean id="getEveryoneActivityChain" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<constructor-arg>
 			<!-- Wrap the cache mapper with a partial mapper wrapper -->
