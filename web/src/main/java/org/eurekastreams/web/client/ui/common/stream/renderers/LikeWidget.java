@@ -36,25 +36,19 @@ public class LikeWidget extends Composite
     private Boolean liked;
 
     /**
-     * Number of times the activity has been liked.
-     */
-    private Long likeCount;
-    
-    /**
      * The widget.
      */
     private FlowPanel widget = new FlowPanel();
-    
+
     /**
      * The like link.
      */
     private Anchor likeLink = new Anchor();
-    
+
     /**
      * The like count link.
      */
-    private Anchor likeCountLink = new Anchor();
-
+    private LikeCountWidget likeCountWidget;
 
     /**
      * Default constructor.
@@ -66,29 +60,26 @@ public class LikeWidget extends Composite
      * @param activityId
      *            the activity ID.
      */
-    public LikeWidget(final Boolean isLiked, final Long inLikeCount, final Long activityId)
+    public LikeWidget(final Boolean isLiked, final LikeCountWidget inLikeCountWidget, final Long activityId)
     {
         widget.addStyleName("like-wrapper");
         liked = isLiked;
-        likeCount = inLikeCount;
-        
+        likeCountWidget = inLikeCountWidget;
+
         likeLink.addStyleName("linked-label like");
         setText();
-        
+
         widget.add(likeLink);
-        widget.add(likeCountLink);
 
         likeLink.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent event)
             {
-                SetActivityLikeRequest request = new SetActivityLikeRequest(
-                        activityId, liked ? LikeActionType.REMOVE_LIKE
-                                : LikeActionType.ADD_LIKE);
+                SetActivityLikeRequest request = new SetActivityLikeRequest(activityId,
+                        liked ? LikeActionType.REMOVE_LIKE : LikeActionType.ADD_LIKE);
 
                 Session.getInstance().getActionProcessor().makeRequest(
-                        new ActionRequestImpl<Boolean>("setActivityLiked",
-                                request), new AsyncCallback<Boolean>()
+                        new ActionRequestImpl<Boolean>("setActivityLiked", request), new AsyncCallback<Boolean>()
                         {
                             /* implement the async call back methods */
                             public void onFailure(final Throwable caught)
@@ -99,16 +90,16 @@ public class LikeWidget extends Composite
                             public void onSuccess(final Boolean result)
                             {
                                 liked = !liked;
-                                
+
                                 if (liked)
                                 {
-                                    likeCount += 1;
+                                    likeCountWidget.addLike();
                                 }
                                 else
                                 {
-                                    likeCount -= 1;
+                                    likeCountWidget.removeLike();
                                 }
-                                
+
                                 setText();
                             }
                         });
@@ -118,13 +109,12 @@ public class LikeWidget extends Composite
 
         initWidget(widget);
     }
-    
+
     /**
      * Sets the text based on the current state.
      */
     private void setText()
     {
         likeLink.setText(liked ? "Unlike" : "Like");
-        likeCountLink.setText(likeCount.toString());
     }
 }

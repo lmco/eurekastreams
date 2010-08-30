@@ -328,6 +328,13 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
             timestampActions.add(new HTML("via <a href='" + msg.getAppSource() + "'>" + msg.getAppName() + "</a>"));
         }
 
+        
+        LikeCountWidget likeCount = null;
+        if (verbRenderer.getAllowLike())
+        {
+            likeCount = new LikeCountWidget(msg.getLikeCount());
+            timestampActions.add(likeCount);
+        }
         timestampActions.add(buildActions(msg, mainPanel, commentsPanel, verbRenderer));
 
         msgContent.add(timestampActions);
@@ -388,6 +395,15 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
                 }
             });
         }
+        
+        // Like
+        if (verbRenderer.getAllowLike())
+        {
+            insertActionSeparator(actionsPanel);
+            Widget like = new LikeWidget(msg.isLiked(), null, msg.getEntityId());
+            like.addStyleName("action-link");
+            actionsPanel.add(like);
+        } 
 
         // Share
         if (verbRenderer.getAllowShare() && msg.isShareable())
@@ -463,15 +479,6 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
             star.addStyleName("action-link");
             actionsPanel.add(star);
         }
-        
-        // Like
-        if (verbRenderer.getAllowLike())
-        {
-            insertActionSeparator(actionsPanel);
-            Widget like = new LikeWidget(msg.isLiked(), msg.getLikeCount(), msg.getEntityId());
-            like.addStyleName("action-link");
-            actionsPanel.add(like);
-        } 
 
         return actionsPanel;
     }

@@ -8552,6 +8552,90 @@ body .post-to-stream .post-button.inactive {
 	display: inline;
 }
 
+.message-actions-area .like-count-widget
+{
+	background: transparent url(images/like-bg-front.png) no-repeat
+		scroll 0 0;
+	margin-left: 5px;
+	display: inline-block;
+	*display: inline;
+	height: 20px;
+	padding-left: 25px;
+}
+
+.message-actions-area .like-count-widget:hover
+{
+	background: transparent url(images/like-bg-front-hover.png) no-repeat
+		scroll 0 0;
+}
+
+.message-actions-area .like-count-widget .like-count
+{
+	background: transparent url(images/like-bg-back.png) no-repeat
+		scroll top right;
+	padding-right: 6px;
+}
+
+.message-actions-area .like-count-widget:hover .like-count
+{
+	background: transparent url(images/like-bg-back-hover.png) no-repeat
+		scroll top right;
+}
+
+.message-actions-area .like-count-widget a:link, .message-actions-area .like-count-widget a:visited,
+ .message-actions-area .like-count-widget a:hover, .message-actions-area .like-count-widget a:active 
+{
+	color: #666;
+	font-weight: bold;
+	padding: 0 3px;
+	background-color: #e4e4e4;
+	display: inline-block;
+	*display: inline;
+	height: 19px;
+	padding-top: 1px;
+	margin-top: 1px;
+}
+	
+.message-actions-area .like-count-widget:hover a:link, .message-actions-area .like-count-widget:hover a:visited,
+ .message-actions-area .like-count-widget:hover a:hover, .message-actions-area .like-count-widget:hover a:active 
+{
+	color: #fff;
+	background-color: #666;
+}
+
+.message-actions-area .like-count-widget:hover .users-who-liked-activity
+{
+	display: block;
+	width: 198px;
+}
+
+.message-actions-area .like-count-widget .users-who-liked-activity .users-who-liked-activity-header
+{
+	background: transparent url(images/like-modal-top.png) repeat scroll 0	0;
+	height: 10px;	
+}
+
+.message-actions-area .like-count-widget .users-who-liked-activity .users-who-liked-activity-body
+{
+	background: transparent url(images/like-modal-bg.png) repeat scroll 0	0;
+	padding: 0 10px 5px;
+}
+
+.message-actions-area .like-count-widget .users-who-liked-activity .users-who-liked-activity-footer
+{
+	background: transparent url(images/like-modal-bottom.png) repeat scroll 0	0;
+	height: 9px;	
+}
+
+.message-actions-area .users-who-liked-activity
+{
+	position: absolute;
+	display: none;
+	color: #fff;
+	margin-top: -4px;
+	margin-left: -25px;
+}
+
 .stream-message-item:hover .message-actions-area {
 	display: inline-block; 
 	*display: inline;
