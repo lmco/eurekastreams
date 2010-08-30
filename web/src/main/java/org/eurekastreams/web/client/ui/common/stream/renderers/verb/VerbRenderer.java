@@ -45,7 +45,14 @@ public interface VerbRenderer
      * @return the value.
      */
     boolean getAllowStar();
-
+    
+    /**
+     * Should the ver allow liking.
+     * 
+     * @return the value.
+     */
+    boolean getAllowLike();
+    
     /**
      * Should the verb allow sharing.
      *

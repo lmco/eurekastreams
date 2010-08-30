@@ -172,13 +172,23 @@ public class ActivityDTO extends ModelView implements Serializable
     private String appSource;
 
     /**
+     * If the activity is liked by teh current user.
+     */
+    private Boolean liked = false;
+
+    /**
+     * The number of times the activity has been liked.
+     */
+    private Long likeCount = 0L;
+
+    /**
      * ID of organization "owning" the entity whose stream the activity is posted to.
      */
     private long recipientParentOrgId = UNINITIALIZED_LONG_VALUE;
 
     /**
      * Load this object's properties from the input Map.
-     *
+     * 
      * @param properties
      *            the Map of the properties to load
      */
@@ -288,6 +298,11 @@ public class ActivityDTO extends ModelView implements Serializable
         {
             setRecipientParentOrgId((Long) properties.get("recipientParentOrgId"));
         }
+        if (properties.containsKey("likeCount"))
+        {
+            setLikeCount((Long) properties.get("likeCount"));
+        }
+
     }
 
     /**
@@ -479,7 +494,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Gets the name of the entity backing this model view.
-     *
+     * 
      * @return the entity name;
      */
     @Override
@@ -651,7 +666,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Get whether the destination stream is a public.
-     *
+     * 
      * @return whether the destination stream is public.
      */
     public Boolean getIsDestinationStreamPublic()
@@ -661,7 +676,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Set whether the destination stream is public.
-     *
+     * 
      * @param inIsDestinationStreamPublic
      *            whether the destination stream is public
      */
@@ -753,5 +768,39 @@ public class ActivityDTO extends ModelView implements Serializable
     public void setRecipientParentOrgId(final long inRecipientParentOrgId)
     {
         recipientParentOrgId = inRecipientParentOrgId;
+    }
+
+    /**
+     * @param isLiked
+     *            the activity as liked.
+     */
+    public void setLiked(final Boolean isLiked)
+    {
+        liked = isLiked;
+    }
+
+    /**
+     * @return if the user liked the activity.
+     */
+    public Boolean isLiked()
+    {
+        return liked;
+    }
+
+    /**
+     * @param inLikeCount
+     *            set the like count.
+     */
+    public void setLikeCount(final Long inLikeCount)
+    {
+        likeCount = inLikeCount;
+    }
+
+    /**
+     * @return the number of times the activity has been liked.
+     */
+    public Long getLikeCount()
+    {
+        return likeCount;
     }
 }

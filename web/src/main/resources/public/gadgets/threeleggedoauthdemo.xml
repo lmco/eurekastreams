@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Demo 3-legged OAuth" author="Eureka Streams" author_email="support@eurekastreams.org"
+    description="Testing 3-legged OAuth proxy support through the shindig container to a third party endpoint using http POST." 
+    thumbnail="${build.web.baseurl}/style/images/oauth-logo.png">
+    <OAuth>
+      <Service name="sevengoslings">
+        <Request url="http://oauth-sandbox.sevengoslings.net/request_token" method="POST"></Request>
+        <Access url="http://oauth-sandbox.sevengoslings.net/access_token" method="POST"></Access>
+        <Authorization url="http://oauth-sandbox.sevengoslings.net/authorize"></Authorization>
+      </Service>
+    </OAuth>
+    <Require feature="oauthpopup" />
+  </ModulePrefs>
+  <Content type="html">
+    <![CDATA[
+    <div id="main" style="display: none">
+    </div>
+
+    <div id="approval" style="display: none">
+        <a href="#" id="personalize">Login to external provider</a><br/>
+        Sample account names: oauthuser123 and oauthuser456<br/>
+        Sample password image: Cat with blue background
+    </div>
+
+    <div id="waiting" style="display: none">
+        External access approved. Click <a href="#" id="approvaldone">here</a> to show content if view does not refresh automatically.
+    </div>
+
+  <script type="text/javascript">
+    function $(x)
+    {
+      return document.getElementById(x);
+    }
+
+    function showOneSection(toshow)
+    {
+      var sections = [ "main", "approval", "waiting" ];
+      for (var i=0; i < sections.length; ++i)
+      {
+        var s = sections[i];
+        var el = $(s);
+        if (s === toshow)
+        {
+          el.style.display = "block";
+        }
+        else
+        {
+          el.style.display = "none";
+        }
+      }
+    }
+      
+    function showResults(result)
+    {
+      showOneSection("main");
+
+      var titleElement = document.createElement("div");
+      var nameNode = document.createTextNode(result);
+      titleElement.appendChild(nameNode);
+      $("main").appendChild(titleElement);
+      $("main").appendChild(document.createElement("br"));
+    }
+
+    function fetchProtectedDataWith3LeggedOauth()
+    {
+      url = "http://oauth-sandbox.sevengoslings.net/three_legged";
+      var params = {};
+      params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.TEXT;
+      params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
+      params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "sevengoslings";
+      params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.POST;
+      
+      // These two statements are necessary because shindig is incorrectly including them in the request signing
+      // process but the provider is ignoring them during signing (which the oauth spec requires). 
+      params["VIEWER_SIGNED"] = false;
+      params["OWNER_SIGNED"] = false;
+
+      gadgets.io.makeRequest(url, function (response)
+      { 
+        if (response.oauthApprovalUrl)
+        {
+          var popup = new gadgets.oauth.Popup(response.oauthApprovalUrl, "height=700,width=700",
+            function() {showOneSection("waiting")}, fetchProtectedDataWith3LeggedOauth);
+          $("personalize").onclick = popup.createOpenerOnClick();
+          $("approvaldone").onclick = popup.createApprovedOnClick();
+          showOneSection("approval");
+        }
+        else if (response.data)
+        {
+            showOneSection("main");
+            showResults(response.data);
+        }
+        else
+        {
+            var errorMsg = document.createTextNode("OAuth error: " + response.oauthError + ": "
+              + response.oauthErrorText);
+            $("main").appendChild(errorMsg);
+            showOneSection("main");
+        }
+      }, params);
+    }
+    
+    gadgets.util.registerOnLoadHandler(fetchProtectedDataWith3LeggedOauth);
+  </script>
+   ]]>
+  </Content>
+</Module>
