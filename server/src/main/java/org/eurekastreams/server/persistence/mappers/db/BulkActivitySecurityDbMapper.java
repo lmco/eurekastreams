@@ -35,8 +35,8 @@ import org.hibernate.criterion.Restrictions;
 /**
  * Maps activity security information from the DB.
  */
-public class BulkActivitySecurityDbMapper extends BaseArgDomainMapper<List<Long>, Collection<ActivitySecurityDTO>>
-        implements DomainMapper<List<Long>, Collection<ActivitySecurityDTO>>
+public class BulkActivitySecurityDbMapper extends BaseArgDomainMapper<Collection<Long>, Collection<ActivitySecurityDTO>>
+        implements DomainMapper<Collection<Long>, Collection<ActivitySecurityDTO>>
 {
     /**
      * The stream mapper.
@@ -57,7 +57,7 @@ public class BulkActivitySecurityDbMapper extends BaseArgDomainMapper<List<Long>
      *            the request of activity IDs..
      * @return security information for the activites in the request.
      */
-    public Collection<ActivitySecurityDTO> execute(final List<Long> inRequest)
+    public Collection<ActivitySecurityDTO> execute(final Collection<Long> inRequest)
     {
         if (inRequest.size() == 0)
         {

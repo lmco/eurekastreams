@@ -16,6 +16,8 @@
 package org.eurekastreams.server.persistence.mappers.stream;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,6 +32,7 @@ import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.strategies.ActivityDeletePropertyStrategy;
 import org.eurekastreams.server.persistence.strategies.CommentDeletePropertyStrategy;
@@ -51,6 +54,11 @@ public class BulkActivitiesMapper extends CachedDomainMapper
      * Logger.
      */
     private static Log log = LogFactory.make();
+
+    /**
+     * Get activities that a person has liked.
+     */
+    private DomainMapper<Collection<Long>, Collection<Collection<Long>>> getLikedActivityIdsByUserIdsMapper;
 
     /**
      * Mapper to get starred activities.
@@ -108,6 +116,16 @@ public class BulkActivitiesMapper extends CachedDomainMapper
     public void setStarredActivitiesMapper(final GetStarredActivityIds inStarredActivitiesMapper)
     {
         starredActivitiesMapper = inStarredActivitiesMapper;
+    }
+
+    /**
+     * @param inGetLikedActivityIdsByUserIdsMapper
+     *            the mapper.
+     */
+    public void setGetLikedActivityIdsByUserIdsMapper(
+            final DomainMapper<Collection<Long>, Collection<Collection<Long>>> inGetLikedActivityIdsByUserIdsMapper)
+    {
+        getLikedActivityIdsByUserIdsMapper = inGetLikedActivityIdsByUserIdsMapper;
     }
 
     /**
@@ -297,10 +315,23 @@ public class BulkActivitiesMapper extends CachedDomainMapper
             List<String> thisUser = new ArrayList<String>();
             thisUser.add(userName);
             List<PersonModelView> thisPerson = peopleMapper.execute(thisUser);
-            List<Long> starred = new ArrayList();
+            List<Long> starred = null;
+            Collection<Long> liked = null;
+
             if (thisPerson.size() > 0)
             {
                 starred = starredActivitiesMapper.execute(thisPerson.get(0).getEntityId());
+                Collection<Collection<Long>> likedCollection = getLikedActivityIdsByUserIdsMapper.execute(Arrays
+                        .asList(thisPerson.get(0).getEntityId()));
+
+                if (likedCollection != null && likedCollection.iterator().hasNext())
+                {
+                    liked = likedCollection.iterator().next();
+                }
+                else
+                {
+                    liked = new ArrayList<Long>();
+                }
             }
 
             // Puts the activities in the same order as they were passed in.
@@ -312,6 +343,7 @@ public class BulkActivitiesMapper extends CachedDomainMapper
                 {
                     activity.setStarred(starred.contains(activity.getId()));
                     activity.setServerDateTime(currentServerDate);
+                    activity.setLiked(liked.contains(activity.getId()));
                     if (activity.getFirstComment() != null)
                     {
                         activity.getFirstComment().setServerDateTime(currentServerDate);

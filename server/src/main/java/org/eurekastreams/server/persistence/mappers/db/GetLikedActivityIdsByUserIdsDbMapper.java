@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.mappers.stream;
+package org.eurekastreams.server.persistence.mappers.db;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.Query;
 
 import org.eurekastreams.server.domain.stream.LikedActivity;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
+import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
  * Gets a list of Liked activity ids for a given user.
  */
-public class GetLikedActivityIds extends CachedDomainMapper implements DomainMapper<Long, List<Long>>
+public class GetLikedActivityIdsByUserIdsDbMapper extends CachedDomainMapper implements
+        DomainMapper<Collection<Long>, Collection<Collection<Long>>>
 {
     /**
      * Looks in the cache for Liked activities. If data is not cached, goes to database.
@@ -37,30 +39,29 @@ public class GetLikedActivityIds extends CachedDomainMapper implements DomainMap
      * @return the list of follower ids.
      */
     @SuppressWarnings("unchecked")
-    public List<Long> execute(final Long userId)
+    public Collection<Collection<Long>> execute(final Collection<Long> userIds)
     {
-        String key = CacheKeys.LIKED_BY_PERSON_ID + userId;
+        Collection<Collection<Long>> results = new ArrayList<Collection<Long>>();
 
-        // Looks for the item in the cache
-        List<Long> keys = getCache().getList(key);
-
-        // If nothing in cache, gets from database and sets in the cache
-        if (keys == null)
+        List<Long> keys;
+        
+        for (long userId : userIds)
         {
-            Query q = getEntityManager().createQuery(
-                    "from LikedActivity where personId = :id ORDER BY activityId DESC").setParameter("id", userId);
-
-            List<LikedActivity> results = q.getResultList();
+            Query q = getEntityManager()
+                    .createQuery("from LikedActivity where personId = :id ORDER BY activityId DESC").setParameter("id",
+                            userId);
+            
+            List<LikedActivity> items = q.getResultList();
 
             keys = new ArrayList<Long>();
-            for (LikedActivity f : results)
+            for (LikedActivity f : items)
             {
                 keys.add(f.getActivityId());
             }
-
-            getCache().setList(key, keys);
+            
+            results.add(keys);
         }
 
-        return keys;
+        return results;
     }
 }

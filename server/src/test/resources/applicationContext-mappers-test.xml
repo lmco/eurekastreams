@@ -28,7 +28,7 @@
 	</bean>
 
 	<bean id="getLikedActivityIds"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetLikedActivityIds">
+		class="org.eurekastreams.server.persistence.mappers.db.GetLikedActivityIdsByUserIdsDbMapper">
 		<property name="cache" ref="testCache" />
 	</bean>
 

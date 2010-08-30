@@ -68,7 +68,7 @@ public class LikeWidget extends Composite
      */
     public LikeWidget(final Boolean isLiked, final Long inLikeCount, final Long activityId)
     {
-        
+        widget.addStyleName("like-wrapper");
         liked = isLiked;
         likeCount = inLikeCount;
         

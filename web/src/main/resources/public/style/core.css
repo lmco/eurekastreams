@@ -8547,6 +8547,11 @@ body .post-to-stream .post-button.inactive {
 	display: none;
 }
 
+.message-actions-area .like-wrapper
+{
+	display: inline;
+}
+
 .stream-message-item:hover .message-actions-area {
 	display: inline-block; 
 	*display: inline;

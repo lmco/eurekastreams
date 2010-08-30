@@ -15,7 +15,8 @@
  */
 package org.eurekastreams.server.persistence.mappers;
 
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,7 +25,6 @@ import javax.persistence.Query;
 import org.eurekastreams.server.domain.stream.LikedActivity;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetLikedActivityIds;
 
 /**
  * Insert entry into LikedActivity table.
@@ -35,7 +35,7 @@ public class InsertLikedActivity extends CachedDomainMapper
     /**
      * Mapper to read liked activities.
      */
-    private GetLikedActivityIds likedActivitiesMapper;
+    private DomainMapper<Collection<Long>, Collection<Collection<Long>>> likedActivitiesMapper;
 
     /**
      * Constructor.
@@ -43,7 +43,8 @@ public class InsertLikedActivity extends CachedDomainMapper
      * @param inLikedActivitiesMapper
      *            the liked activity read mapper.
      */
-    public InsertLikedActivity(final GetLikedActivityIds inLikedActivitiesMapper)
+    public InsertLikedActivity(
+            final DomainMapper<Collection<Long>, Collection<Collection<Long>>> inLikedActivitiesMapper)
     {
         likedActivitiesMapper = inLikedActivitiesMapper;
     }
@@ -69,18 +70,7 @@ public class InsertLikedActivity extends CachedDomainMapper
 
         this.getEntityManager().persist(inLikedActivity);
 
-        // sets in cache.
-        String key = CacheKeys.LIKED_BY_PERSON_ID + inLikedActivity.getPersonId();
-        List<Long> likedIds = likedActivitiesMapper.execute(inLikedActivity.getPersonId());
-        
-        if (likedIds == null)
-        {
-            likedIds = new LinkedList<Long>();
-        }
-        likedIds.add(inLikedActivity.getActivityId());
-        Collections.sort(likedIds);
-        Collections.reverse(likedIds);
-        getCache().setList(key, likedIds);
+        getCache().addToTopOfList(CacheKeys.LIKED_BY_PERSON_ID + inLikedActivity.getPersonId(), inLikedActivity.getActivityId());
 
         return Boolean.TRUE;
     }
