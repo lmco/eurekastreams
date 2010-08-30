@@ -23,13 +23,13 @@ import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
  * Removes entry from {@link LikedActivity} table.
- * 
+ *
  */
 public class DeleteLikedActivity extends CachedDomainMapper
 {
     /**
      * Removes entry from LikedActivity table.
-     * 
+     *
      * @param inLikedActivity
      *            the {@link LikedActivity} to remove.
      * @return True if successful.
@@ -46,7 +46,10 @@ public class DeleteLikedActivity extends CachedDomainMapper
 
         // remove from cache.
         getCache().removeFromList(CacheKeys.LIKED_BY_PERSON_ID + inLikedActivity.getPersonId(),
-                inLikedActivity.getActivityId());        
+                inLikedActivity.getActivityId());
+
+        getCache().removeFromList(CacheKeys.LIKERS_BY_ACTIVITY_ID + inLikedActivity.getActivityId(),
+                inLikedActivity.getPersonId());
 
         return Boolean.TRUE;
     }
