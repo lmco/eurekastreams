@@ -164,7 +164,10 @@ public class PersonServiceImpl implements PersonService
             (LinkedList<org.eurekastreams.server.domain.Person>) serviceActionController.execute(currentContext,
                     getPeopleAction);
 
-            log.debug("Retrieved " + people.size() + " people from action");
+            if (log.isDebugEnabled())
+            {
+                log.debug("Retrieved " + people.size() + " people from action");
+            }
 
             for (org.eurekastreams.server.domain.Person currentPerson : people)
             {
