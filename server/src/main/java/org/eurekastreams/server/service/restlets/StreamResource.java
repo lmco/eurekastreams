@@ -46,7 +46,7 @@ import org.restlet.resource.Variant;
 
 /**
  * REST end point for stream filters.
- * 
+ *
  */
 public class StreamResource extends SmpResource
 {
@@ -112,7 +112,7 @@ public class StreamResource extends SmpResource
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inAction
      *            the action.
      * @param inServiceActionController
@@ -141,7 +141,7 @@ public class StreamResource extends SmpResource
 
     /**
      * init the params.
-     * 
+     *
      * @param request
      *            the request object.
      */
@@ -155,7 +155,7 @@ public class StreamResource extends SmpResource
 
     /**
      * GET the activites.
-     * 
+     *
      * @param variant
      *            the variant.
      * @return the JSON.
@@ -216,6 +216,7 @@ public class StreamResource extends SmpResource
 
                 JSONObject jsonActivity = new JSONObject();
                 jsonActivity.put("commentCount", activity.getCommentCount());
+                jsonActivity.put("likeCount", activity.getLikeCount());
                 jsonActivity.put("destinationDisplayName", activity.getDestinationStream().getDisplayName());
                 jsonActivity.put("destinationUniqueIdentifier", activity.getDestinationStream().getUniqueIdentifier());
                 jsonActivity.put("destinationType", activity.getDestinationStream().getType());
@@ -264,7 +265,7 @@ public class StreamResource extends SmpResource
 
     /**
      * Parses the request.
-     * 
+     *
      * @param path
      *            the path.
      * @return the request.
@@ -309,7 +310,7 @@ public class StreamResource extends SmpResource
 
     /**
      * Determine if the keyword is a multiple entity word.
-     * 
+     *
      * @param keyword
      *            the word.
      * @return true or false.
@@ -321,7 +322,7 @@ public class StreamResource extends SmpResource
 
     /**
      * Determine if the keyword is a global word.
-     * 
+     *
      * @param keyword
      *            the word.
      * @return true or false.
@@ -333,7 +334,7 @@ public class StreamResource extends SmpResource
 
     /**
      * Determine if the keyword is recognized..
-     * 
+     *
      * @param keyword
      *            the word.
      * @return true or false.
@@ -345,7 +346,7 @@ public class StreamResource extends SmpResource
 
     /**
      * Overrides the path.
-     * 
+     *
      * @param inPathOverride
      *            the string to override the path with.
      */
@@ -356,7 +357,7 @@ public class StreamResource extends SmpResource
 
     /**
      * Get the path.
-     * 
+     *
      * @return the path.
      */
     public String getPath()
@@ -373,7 +374,7 @@ public class StreamResource extends SmpResource
 
     /**
      * Parses entities from the request.
-     * 
+     *
      * @param entityString
      *            the request string.
      * @return the entities.

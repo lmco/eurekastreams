@@ -39,7 +39,7 @@ public class InsertLikedActivityTest extends MapperTest
      */
     @Autowired
     private InsertLikedActivity insertLikedActivity;
-    
+
     /**
      * Setup method.
      */
@@ -58,28 +58,28 @@ public class InsertLikedActivityTest extends MapperTest
     {
         final long activityId = 6790L;
         final long personId = 99L;
-        
+
         //verify that entry is not present.
         Query q = getEntityManager().createQuery(
         "FROM LikedActivity where personId=:personId and activityId=:activityId").setParameter("personId",
                 personId).setParameter("activityId", activityId);
         List<LikedActivity> results = q.getResultList();
         assertTrue(results.size() == 0);
-        
-        
+
+
         String key = CacheKeys.LIKED_BY_PERSON_ID + personId;
         //verify that cached list is empty
         assertTrue(insertLikedActivity.getCache().getList(key) == null);
-        
+
         //insert it.
-        assertTrue(insertLikedActivity.execute(new LikedActivity(personId, activityId))); 
-        
+        assertTrue(insertLikedActivity.execute(new LikedActivity(personId, activityId)));
+
         //verify it's there now.
         assertTrue(q.getResultList().size() == 1);
-        
+
         assertTrue(insertLikedActivity.getCache().getList(key) != null);
     }
-    
+
     /**
      * Test execute method with entry already in db.
      */
@@ -89,20 +89,20 @@ public class InsertLikedActivityTest extends MapperTest
     {
         final long personId = 99L;
         final long activityId = 6789L;
-        
+
         Query q = getEntityManager().createQuery(
         "FROM LikedActivity where personId=:personId and activityId=:activityId");
         q.setParameter("personId", personId);
         q.setParameter("activityId", activityId);
-        
+
         List<LikedActivity> results = q.getResultList();
-        
+
         //verify that entry is present.
         assertTrue(results.size() == 1);
-        
+
         //insert.
-        assertTrue(insertLikedActivity.execute(new LikedActivity(personId, activityId))); 
-        
+        assertTrue(insertLikedActivity.execute(new LikedActivity(personId, activityId)));
+
       //verify it's still there and not duplicated.
         assertTrue(q.getResultList().size() == 1);
     }

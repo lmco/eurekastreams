@@ -71,7 +71,7 @@ public class SimpleMemoryCache implements Cache
 
     /**
      * Gets a value from the cache.
-     * 
+     *
      * @param inKey
      *            the key of the object to get.
      * @return the Object from the cache matching inKey (or null if nothing found).
@@ -97,7 +97,7 @@ public class SimpleMemoryCache implements Cache
     {
         ArrayList toReturn = null;
         byte[] bytes = (byte[]) cache.get(inKey);
-        
+
         if (bytes != null)
         {
             try
@@ -126,7 +126,7 @@ public class SimpleMemoryCache implements Cache
             }
             catch (IOException e)
             {
-                log.error("Error getBytesFromList getList memcached list with passed in value for key " + inKey 
+                log.error("Error getBytesFromList getList memcached list with passed in value for key " + inKey
                         + ".  Exception : " + e.toString());
             }
         }
@@ -156,27 +156,27 @@ public class SimpleMemoryCache implements Cache
     public Map<String, ArrayList<Long>> multiGetList(final Collection<String> inKeys)
     {
         Map<String, Object> multiGetMap = this.multiGet(inKeys);
-        
+
         Map<String, ArrayList<Long>> toReturn = new HashMap<String, ArrayList<Long>>();
         for (String key : multiGetMap.keySet())
         {
             // look up the value, convert it to an ArrayList and add it to the return
             try
             {
-                ArrayList<Long> value = this.getListFromBytes((byte[]) multiGetMap.get(key));
+                ArrayList<Long> value = this.getListFromBytes(multiGetMap.get(key));
                 toReturn.put(key, value);
             }
             catch (IOException e)
             {
-                log.error("Error getListFromBytes multiGetList memcached list with passed in value for key " + key 
+                log.error("Error getListFromBytes multiGetList memcached list with passed in value for key " + key
                         + ".  Exception : " + e.toString());
                 toReturn.put(key, null); // return null to force client to reload
             }
         }
-        
+
         return toReturn;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -191,7 +191,7 @@ public class SimpleMemoryCache implements Cache
             throw new RuntimeException("DO NOT SET NULL, INSTEAD USE DELETE");
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -203,29 +203,29 @@ public class SimpleMemoryCache implements Cache
         }
 
         ArrayList<Long> toReturn = null;
-        
+
         try
         {
             toReturn = getListFromBytes(cache.get(inKey));
         }
         catch (IOException e)
         {
-            log.error("Error getListFromBytes setListCAS memcached list with passed in value for key " + inKey 
+            log.error("Error getListFromBytes setListCAS memcached list with passed in value for key " + inKey
                     + ".  Exception : " + e.toString());
             return null;
         }
-        
+
         try
         {
             cache.put(inKey, getBytesFromList(inValue));
         }
         catch (IOException e)
         {
-            log.error("Error getBytesFromList setListCAS memcached list with passed in value for key " + inKey 
+            log.error("Error getBytesFromList setListCAS memcached list with passed in value for key " + inKey
                     + ".  Exception : " + e.toString());
             return null;
         }
-        
+
         return toReturn;
     }
 
@@ -238,21 +238,21 @@ public class SimpleMemoryCache implements Cache
         {
             throw new RuntimeException("DO NOT setList NULL, INSTEAD USE DELETE");
         }
-        
+
         try
         {
             cache.put(inKey, getBytesFromList(inValue));
         }
         catch (IOException e)
         {
-            log.error("Error setting memcached list with passed in value for key " + inKey 
+            log.error("Error setting memcached list with passed in value for key " + inKey
                     + ".  Exception : " + e.toString());
         }
     }
-    
+
     /**
      * Get the byte[] from a ArrayList&lt;Long&gt;.
-     * 
+     *
      * @param inListOfLongs
      *            the list of longs to convert
      * @return the byte[] representation of the ArrayList
@@ -270,7 +270,7 @@ public class SimpleMemoryCache implements Cache
                 out.writeLong(oneLong);
                 out.flush();
             }
-            
+
             toReturn = bytes.toByteArray();
         }
         finally
@@ -283,7 +283,7 @@ public class SimpleMemoryCache implements Cache
 
     /**
      * Convert the memcached object into a List&lt;Long&gt;.
-     * 
+     *
      * @param inBytesOfLongs
      *            the byte[] to convert
      * @return the byte[] as List&lt;Long&gt;, null if not valid or empty bytes
@@ -313,7 +313,7 @@ public class SimpleMemoryCache implements Cache
         }
 
         return toReturn;
-    }    
+    }
 
     /**
      * {@inheritDoc}
@@ -322,7 +322,7 @@ public class SimpleMemoryCache implements Cache
     {
         cache.remove(inKey);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -344,17 +344,16 @@ public class SimpleMemoryCache implements Cache
         {
             throw new RuntimeException("DO NOT addToTopOfList NULL, INSTEAD USE DELETE");
         }
-        
-        
-        if (!cache.containsKey(inKey))
-        {
-            return;
-        }
-        
+
+
+
         ArrayList<Long> existingList = new ArrayList<Long>();
         try
         {
-            existingList = getListFromBytes(cache.get(inKey));
+            if (cache.containsKey(inKey))
+            {
+                existingList = getListFromBytes(cache.get(inKey));
+            }
         }
         catch (IOException e1)
         {
@@ -362,7 +361,7 @@ public class SimpleMemoryCache implements Cache
             return;
         }
 
-        ArrayList<Long> listOfLongs = new ArrayList<Long>();        
+        ArrayList<Long> listOfLongs = new ArrayList<Long>();
         listOfLongs.addAll(inValue); // add new first (prepend)
         listOfLongs.addAll(existingList); // add the previously existing list second
 
@@ -396,7 +395,7 @@ public class SimpleMemoryCache implements Cache
         {
             return;
         }
-        
+
         List<Long> list;
         try
         {
@@ -418,7 +417,7 @@ public class SimpleMemoryCache implements Cache
             log.error("Exception in removeFromList getBytesFromList for key " + inKey + e.toString());
             return;
         }
-    
+
     }
 
     /**
@@ -435,7 +434,7 @@ public class SimpleMemoryCache implements Cache
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -446,7 +445,7 @@ public class SimpleMemoryCache implements Cache
         {
             throw new RuntimeException("DO NOT addToSet NULL, INSTEAD USE DELETE");
         }
-        
+
         Set<Long> set;
         if (cache.containsKey(inKey))
         {
@@ -471,8 +470,8 @@ public class SimpleMemoryCache implements Cache
         {
             throw new RuntimeException("DO NOT removeFromSet NULL, INSTEAD USE DELETE");
         }
-        
-        
+
+
         if (!cache.containsKey(inKey))
         {
             return;
