@@ -255,6 +255,8 @@
 				<value>followedBy</value>
 				<value>sortBy</value>
 				<value>savedBy</value>
+				<value>organization</value>
+				<value>parentOrg</value>
 			</list>
 		</constructor-arg>
 	</bean>
