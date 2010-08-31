@@ -21,8 +21,9 @@
  <UserPref name="streamType"  datatype="hidden"  default_value="" />
  <UserPref name="shortName"  datatype="hidden"  default_value="" />
  <UserPref name="searchId" datatype="hidden" default_value="0" />
- <UserPref name="gadgetTitle" datatype="hidden" default_value="Activity App"/>
-
+ <UserPref name="gadgetTitle" datatype="text" default_value="Activity App"/>
+ <UserPref name="streamQuery" datatype="text" default_value=""/>
+ 
     <Content type="html" view="canvas">
     <![CDATA[
         <style type="text/css">
@@ -243,7 +244,7 @@
 
 		<script type="text/os-data" xmlns:os="http://ns.opensocial.org/2008/markup" >
             		<os:OwnerRequest key="databindowner" />
-			<os:HttpRequest refreshInterval="0"  key="activityDataSet" href="${build.web.baseurl}/resources/${UserPrefs.filterType}/${UserPrefs.filterId}/owner/${databindowner.id}" />
+			<os:HttpRequest refreshInterval="0"  key="activityDataSet" href="${build.web.baseurl}/resources/stream/${databindowner.id}/query/${UserPrefs.streamQuery}" />
 		</script>		
 
 		
@@ -289,6 +290,13 @@
 							<span if="${commentCount == '1'}">1 comment</span>
 							<span if="${commentCount != '1'}">${commentCount} comments</span>
 						</a>
+						<span if="${likeCount >= '1'}">
+						 • 
+                        <a href="javascript:activityNav('${activityId}')">
+                            <span if="${likeCount == '1'}">1 like</span>
+                            <span if="${likeCount != '1'}">${commentCount} likes</span>
+                        </a>
+						</span>
 					</div>
 				</div>
 			  </div>

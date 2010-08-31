@@ -25,7 +25,7 @@ import org.junit.Test;
 
 /**
  * Test for PerformanceTimer.
- *
+ * 
  */
 public class PerformanceTimerTest
 {
@@ -61,7 +61,7 @@ public class PerformanceTimerTest
 
     /**
      * Test.
-     *
+     * 
      * @throws Throwable
      *             on error
      */
@@ -78,7 +78,7 @@ public class PerformanceTimerTest
                 allowing(pjp).toShortString();
                 will(returnValue("shortString"));
 
-                allowing(pjp).proceed();
+                oneOf(pjp).proceed();
 
                 allowing(pjp).getArgs();
                 will(returnValue(args));
