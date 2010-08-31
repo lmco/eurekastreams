@@ -7,7 +7,33 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>Eureka Streams Parent</name>
-    <url>http://maven.apache.org</url>
+    <url>http://www.eurekastreams.org</url>
+    <mailingLists>
+      <mailingList>
+        <name>Eureka Streams Development Google Group</name>
+        <subscribe>eureka-streams-dev+subscribe@googlegroups.com</subscribe>
+        <unsubscribe>eureka-streams-dev+unsubscribe@googlegroups.com</unsubscribe>
+        <post>eureka-streams-dev@googlegroups.com</post>
+        <archive>http://groups.google.com/group/eureka-streams-dev</archive>
+      </mailingList>
+    </mailingLists>
+    <licenses>
+      <license>
+        <name>Apache 2</name>
+        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        <distribution>repo</distribution>
+        <comments>A business-friendly OSS license</comments>
+      </license>
+    </licenses>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>http://github.com/lmco/eurekastreams/issues</url>
+    </issueManagement>
+    <scm>
+        <connection>git://github.com/lmco/eurekastreams.git</connection>
+        <developerConnection>ssh://git@github.com:lmco/eurekastreams.git</developerConnection>
+        <url>http://github.com/lmco/eurekastreams</url>
+    </scm>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
