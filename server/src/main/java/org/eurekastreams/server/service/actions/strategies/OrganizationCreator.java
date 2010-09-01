@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,7 @@
 package org.eurekastreams.server.service.actions.strategies;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
+import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder;
 import org.eurekastreams.server.domain.stream.StreamScope;
@@ -55,7 +57,6 @@ public class OrganizationCreator extends OrganizationPersister
 
     /** Factory for creating traversers. */
     private OrganizationHierarchyTraverserBuilder orgTraverserBuilder;
-
 
     /**
      * Constructor.
@@ -109,6 +110,7 @@ public class OrganizationCreator extends OrganizationPersister
 
         orgView.setIncludedScopes(defaultScopeList);
         org.setEntityStreamView(orgView);
+        org.setCapabilities(new ArrayList<BackgroundItem>());
 
         return org;
     }

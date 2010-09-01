@@ -12672,6 +12672,7 @@ body .dragdrop-proxy {
 .modal .message-comment .warning,.share-message-dialog .warning
 {
 	margin-bottom: 0;
+	height:17px;
 }
 
 .message-comment .characters-remaining,.share-message-dialog .characters-remaining
@@ -13100,6 +13101,7 @@ div.tab-container table.dragdrop-dropTarget-engage {
 .settings-panel .settings-title-bar .gwt-Hyperlink {
 	font-size: 0.8em;
 	margin-bottom: 10px;
+	height:16px;
 	display: inline-block;
 	*display: inline;
 	zoom: 1;

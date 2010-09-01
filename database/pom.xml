@@ -4,12 +4,12 @@
     <parent>
         <artifactId>eurekastreams-parent</artifactId>
         <groupId>org.eurekastreams</groupId>
-        <version>0.9-SNAPSHOT</version>
+        <version>0.9.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.eurekastreams</groupId>
     <artifactId>eurekastreams-database</artifactId>
-    <version>0.9-SNAPSHOT</version>
+    <version>0.9.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Eureka Streams Database Resources</name>
     <dependencies>
@@ -167,10 +167,10 @@
             </build>
         </profile>
         <profile>
-            <id>buildtype.int</id>
+            <id>Int Environment Database Build Config</id>
             <activation>
                 <property>
-                    <name>env.BUILDTYPE</name>
+                    <name>buildtype</name>
                     <value>int</value>
                 </property>
             </activation>
@@ -205,10 +205,10 @@
             </build>
         </profile>
         <profile>
-            <id>buildtype.uat</id>
+            <id>Uat Environment Database Build Config</id>
             <activation>
                 <property>
-                    <name>env.BUILDTYPE</name>
+                    <name>buildtype</name>
                     <value>uat</value>
                 </property>
             </activation>
@@ -243,10 +243,10 @@
             </build>
         </profile>
         <profile>
-            <id>buildtype.perf</id>
+            <id>Perf Environment Database Build Config</id>
             <activation>
                 <property>
-                    <name>env.BUILDTYPE</name>
+                    <name>buildtype</name>
                     <value>perf</value>
                 </property>
             </activation>

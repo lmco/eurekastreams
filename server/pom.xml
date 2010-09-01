@@ -3,24 +3,30 @@
 	<parent>
 		<artifactId>eurekastreams-parent</artifactId>
 		<groupId>org.eurekastreams</groupId>
-		<version>0.9-SNAPSHOT</version>
+		<version>0.9.1-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.eurekastreams</groupId>
 	<artifactId>eurekastreams-server</artifactId>
 	<name>Eureka Streams Server</name>
-	<version>0.9-SNAPSHOT</version>
+	<version>0.9.1-SNAPSHOT</version>
 	<url>http://maven.apache.org</url>
 	<dependencies>
         <dependency>
             <groupId>rome</groupId>
             <artifactId>rome</artifactId>
             <version>1.0</version>
-        </dependency> 
+        </dependency>
         <dependency>
             <groupId>rome</groupId>
             <artifactId>rome-fetcher</artifactId>
             <version>1.0</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>xerces</groupId>
+            		<artifactId>xercesImpl</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency> 
         <dependency>
             <groupId>rome</groupId>
