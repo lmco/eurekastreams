@@ -346,7 +346,7 @@
             <id>Production Configuration</id>
             <activation>
                 <property>
-                    <name>env.BUILDTYPE</name>
+                    <name>buildtype</name>
                     <value>prod</value>
                 </property>
             </activation>           
