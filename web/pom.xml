@@ -1089,7 +1089,7 @@
             <id>Update node type to Web node</id>
             <activation>
                 <property>
-                    <name>env.NODETYPE</name>
+                    <name>nodetype</name>
                     <value>webnode</value>
                 </property>
             </activation>

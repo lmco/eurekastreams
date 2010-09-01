@@ -101,7 +101,7 @@
     		<id>Configure plugins when in webnode mode.</id>
     		<activation>
     			<property>
-    				<name>env.NODETYPE</name>
+    				<name>nodetype</name>
     				<value>webnode</value>
     			</property>
     		</activation>

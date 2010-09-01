@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,6 +17,8 @@ package org.eurekastreams.server.search.bridge;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.Job;
 import org.hibernate.search.bridge.StringBridge;
 
@@ -26,8 +28,13 @@ import org.hibernate.search.bridge.StringBridge;
 public class JobsListStringBridge implements StringBridge
 {
     /**
+     * Logger.
+     */
+    private final Log log = LogFactory.make();
+
+    /**
      * Convert the input List&lt;Job&gt; into a searchable String.
-     * 
+     *
      * @param listObj
      *            the List&lt;Job&gt; to convert
      * @return a string concatenation of company name, description, industry, and title for all jobs passed in.
@@ -42,18 +49,27 @@ public class JobsListStringBridge implements StringBridge
         }
 
         StringBuilder sb = new StringBuilder();
-        for (Job job : (List<Job>) listObj)
+
+        try
         {
-            // note: the extra space in the beginning here is for easier unit testing
-            sb.append(" ");
-            sb.append(job.getCompanyName());
-            sb.append(" ");
-            sb.append(job.getDescription());
-            sb.append(" ");
-            sb.append(job.getIndustry());
-            sb.append(" ");
-            sb.append(job.getTitle());
-            sb.append(" ");
+            for (Job job : (List<Job>) listObj)
+            {
+                // note: the extra space in the beginning here is for easier unit testing
+                sb.append(" ");
+                sb.append(job.getCompanyName());
+                sb.append(" ");
+                sb.append(job.getDescription());
+                sb.append(" ");
+                sb.append(job.getIndustry());
+                sb.append(" ");
+                sb.append(job.getTitle());
+                sb.append(" ");
+            }
+        }
+        catch (Exception ex)
+        {
+            log.info("Error iterating through the list of jobs - most likely because it's null, "
+                    + "but not detectable because it's a lazy-loaded collection. ", ex);
         }
         return sb.toString();
     }
