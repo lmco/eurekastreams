@@ -63,8 +63,8 @@ public class TermsOfServiceAcceptanceStrategyImpl implements TermsOfServiceAccep
             return true;
         }
 
-        // short circuit if ToS is required every session.
-        if (inDateLastAccepted == null || settings.getIsTosDisplayedEverySession())
+        // short circuit if ToS has not yet been set.
+        if (inDateLastAccepted == null)
         {
             return false;
         }

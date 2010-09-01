@@ -374,8 +374,11 @@ public class SystemSettingsPanelComposite extends FlowPanel
             }
         };
 
-        promptInt.addRadioButton("every session", "", true, systemSettingValues.getIsTosDisplayedEverySession(),
-                everySessionListener);
+        //TODO: Need to remove this option completely including the database column.
+        BasicRadioButtonFormElement rbElement1 = promptInt.addRadioButton("every session", "", true, 
+                systemSettingValues.getIsTosDisplayedEverySession(), everySessionListener);
+        rbElement1.setVisible(false);
+        
         BasicRadioButtonFormElement rbElement = promptInt.addRadioButton("every", "", false, !systemSettingValues
                 .getIsTosDisplayedEverySession(), everySessionListener);
 
