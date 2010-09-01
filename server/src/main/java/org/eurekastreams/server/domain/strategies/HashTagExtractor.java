@@ -15,6 +15,11 @@
  */
 package org.eurekastreams.server.domain.strategies;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * Extract hashtags from a body of text, recognizing when the hash is part of a url, or parentheses.
  */
@@ -37,7 +42,7 @@ public class HashTagExtractor
     private static final String VALID_URL_CHARACTERS = VALID_HASHTAG_CHARS + ".~:/?#[]@!$&'()*+,;=%";
 
     /**
-     * Extract the next hashtag, starting with the input starting position. the stream with the input view id.
+     * Extract the next hashtag, starting with the input starting position.
      *
      * @param content
      *            the content to search for hashtags
@@ -95,6 +100,29 @@ public class HashTagExtractor
             }
         }
         return null;
+    }
+
+    /**
+     * Extract all hashtags from the input content.
+     *
+     * @param content
+     *            the content to extract
+     * @return a set of hashtags extracted
+     */
+    public List<String> extractAll(final String content)
+    {
+        Set<String> hashTagContents = new HashSet<String>();
+
+        // parse the hashtags content, then send them into the mapper to get them from the database
+        Substring hashTag;
+        int position = 0;
+
+        while (null != (hashTag = extract(content, position)))
+        {
+            position = hashTag.getStartIndex() + hashTag.getLength();
+            hashTagContents.add(hashTag.getContent());
+        }
+        return new ArrayList<String>(hashTagContents);
     }
 
     /**

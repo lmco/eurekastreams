@@ -20,6 +20,7 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 
 import org.eurekastreams.commons.model.DomainEntity;
+import org.hibernate.annotations.Index;
 import org.hibernate.annotations.NaturalId;
 
 /**
@@ -36,6 +37,7 @@ public class HashTag extends DomainEntity implements Serializable
     /**
      * The content of the hashtag, including the #.
      */
+    @Index(name="hashtag_content_idx")
     @NaturalId
     private String content;
 

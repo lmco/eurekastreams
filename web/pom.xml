@@ -367,6 +367,7 @@
                     <nonFilteredFileExtensions>
                        <nonFilteredFileExtension>pdf</nonFilteredFileExtension>
                        <nonFilteredFileExtension>swf</nonFilteredFileExtension>
+                       <nonFilteredFileExtension>so</nonFilteredFileExtension>
                     </nonFilteredFileExtensions>
                 </configuration>
             </plugin>
@@ -857,6 +858,20 @@
                                         </source>
                                     </sources>
                                 </mapping>
+                                <mapping>   
+                                    <directory>/usr/local/lib</directory>
+                                    <filemode>555</filemode>
+                                    <username>root</username>
+                                    <groupname>root</groupname>
+                                    <sources>
+                                        <source>
+                                            <location>${project.build.directory}/classes/libeurekastreams</location>
+                                            <excludes>
+                                                <exclude>README.txt</exclude>
+                                            </excludes>
+                                        </source>
+                                    </sources>
+                                </mapping>                                
                             </mappings>
                             <requires>
                             </requires>

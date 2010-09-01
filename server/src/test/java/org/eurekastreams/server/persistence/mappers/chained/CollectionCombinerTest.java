@@ -16,7 +16,7 @@
 package org.eurekastreams.server.persistence.mappers.chained;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 
 import junit.framework.Assert;
 
@@ -49,11 +49,11 @@ public class CollectionCombinerTest
     @Test
     public void testCombine()
     {
-        Collection<Long> listA = Arrays.asList(1L, 2L);
-        Collection<Long> listB = Arrays.asList(3L, 4L);
-        
-        Collection<Long> results = sut.combine(listA, listB);
-        
+        List<Long> listA = Arrays.asList(1L, 2L);
+        List<Long> listB = Arrays.asList(3L, 4L);
+
+        List<Long> results = sut.combine(listA, listB);
+
         Assert.assertEquals(4, results.size());
         Assert.assertTrue(results.contains(1L));
         Assert.assertTrue(results.contains(2L));

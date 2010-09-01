@@ -16,28 +16,33 @@
 package org.eurekastreams.server.persistence.mappers.chained;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Combines two collections.
+ *
+ * @param <Type>
+ *            the type of list objects to combine
  */
-@SuppressWarnings("unchecked")
-public class CollectionCombiner implements ResultsCombinerStrategy<Collection>
+public class CollectionCombiner<Type> implements ResultsCombinerStrategy<List<Type>>
 {
     /**
-     * Generics purposely left off.
-     * @param collection1 the first collection.
-     * @param collection2 the second collection.
+     * Combine two lists.
+     *
+     * @param collection1
+     *            the first collection.
+     * @param collection2
+     *            the second collection.
      * @return the combined collection.
      */
     @Override
-    public Collection combine(final Collection collection1, final Collection collection2)
+    public List combine(final List<Type> collection1, final List<Type> collection2)
     {
-        Collection allItems = new ArrayList();
-        
+        List allItems = new ArrayList<Type>();
+
         allItems.addAll(collection1);
         allItems.addAll(collection2);
-        
+
         return allItems;
     }
 

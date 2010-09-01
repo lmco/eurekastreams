@@ -1898,6 +1898,10 @@
 	<bean id="postActivityAsyncExecutionStrategy"
 		class="org.eurekastreams.server.action.execution.stream.PostActivityAsyncExecutionStrategy">
 		<constructor-arg ref="postCachedActivity" />
+		<constructor-arg ref="hashTagExtractor" />
+		<constructor-arg ref="activityContentExtractor" />
+		<constructor-arg ref="getHashTagsFromDatabaseMapper" />
+		<constructor-arg ref="findByIdMapper" />
 	</bean>
 
 	<bean id="postActivityAsyncAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
