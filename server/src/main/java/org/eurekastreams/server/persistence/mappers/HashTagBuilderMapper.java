@@ -16,7 +16,6 @@
 package org.eurekastreams.server.persistence.mappers;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +25,7 @@ import org.eurekastreams.server.domain.stream.HashTag;
 /**
  * Mapper that builds a new HashTag from its content.
  */
-public class HashTagBuilderMapper implements DomainMapper<Collection<String>, Collection<HashTag>>
+public class HashTagBuilderMapper implements DomainMapper<List<String>, List<HashTag>>
 {
     /**
      * Return a new HashTag from the input content.
@@ -36,7 +35,7 @@ public class HashTagBuilderMapper implements DomainMapper<Collection<String>, Co
      * @return a new HashTag from the input content
      */
     @Override
-    public Collection<HashTag> execute(final Collection<String> inHashTags)
+    public List<HashTag> execute(final List<String> inHashTags)
     {
         // weed out dupes with hashset
         Set<String> hashTagContents = new HashSet<String>();

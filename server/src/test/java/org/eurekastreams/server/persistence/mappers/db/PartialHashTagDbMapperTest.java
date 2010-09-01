@@ -20,7 +20,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.eurekastreams.server.domain.stream.HashTag;
@@ -46,7 +45,7 @@ public class PartialHashTagDbMapperTest extends MapperTest
         hashTags.add("#heynow");
         hashTags.add("#foobar");
 
-        PartialMapperResponse<Collection<String>, Collection<HashTag>> results = sut.execute(hashTags);
+        PartialMapperResponse<List<String>, List<HashTag>> results = sut.execute(hashTags);
 
         assertEquals(0, results.getResponse().size());
         assertEquals(2, results.getUnhandledRequest().size());
@@ -75,7 +74,7 @@ public class PartialHashTagDbMapperTest extends MapperTest
         hashTags.add("#javA");
         hashTags.add("#dEvelopMent");
 
-        PartialMapperResponse<Collection<String>, Collection<HashTag>> results = sut.execute(hashTags);
+        PartialMapperResponse<List<String>, List<HashTag>> results = sut.execute(hashTags);
 
         // check the found responses
         assertEquals(4, results.getResponse().size());
@@ -117,7 +116,7 @@ public class PartialHashTagDbMapperTest extends MapperTest
         hashTags.add("#java");
         hashTags.add("#dEvelopMent");
 
-        PartialMapperResponse<Collection<String>, Collection<HashTag>> results = sut.execute(hashTags);
+        PartialMapperResponse<List<String>, List<HashTag>> results = sut.execute(hashTags);
 
         // check the found responses
         assertEquals(2, results.getResponse().size());

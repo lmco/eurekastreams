@@ -29,7 +29,7 @@ import org.eurekastreams.server.persistence.mappers.chained.RefreshStrategy;
  * Refresh strategy to insert HashTags in the database, lowercasing and making sure they start with octothorpe.
  */
 public class HashTagDbRefreshStrategy extends BaseDomainMapper implements
-        RefreshStrategy<Collection<String>, Collection<HashTag>>
+        RefreshStrategy<List<String>, List<HashTag>>
 {
     /**
      * Logger.
@@ -45,7 +45,7 @@ public class HashTagDbRefreshStrategy extends BaseDomainMapper implements
      *            HashTags retrieved from another data source
      */
     @Override
-    public void refresh(final Collection<String> inContents, final Collection<HashTag> inHashTags)
+    public void refresh(final List<String> inContents, final List<HashTag> inHashTags)
     {
         // scrub the inputs
         List<String> contents = new ArrayList<String>();
@@ -63,13 +63,15 @@ public class HashTagDbRefreshStrategy extends BaseDomainMapper implements
         }
 
         // get all of the existing hashtag contents
-        List<String> foundHashTagContents = getEntityManager().createQuery(
-                "SELECT content FROM HashTag WHERE content IN (:contents)").setParameter("contents", contents)
-                .getResultList();
+        List<HashTag> foundHashTags = getEntityManager().createQuery("FROM HashTag WHERE content IN (:contents)")
+                .setParameter("contents", contents).getResultList();
 
-        for (String content : contents)
+        List<HashTag> hashTagsToReturn = new ArrayList<HashTag>();
+        hashTagsToReturn.addAll(foundHashTags);
+
+        for (String content : inContents)
         {
-            if (foundHashTagContents.contains(content))
+            if (isHashTagInCollection(content, foundHashTags))
             {
                 log.info("HashTag " + content + " already exists - skipping.");
                 continue;
@@ -79,6 +81,32 @@ public class HashTagDbRefreshStrategy extends BaseDomainMapper implements
             // INSERT the hastag
             HashTag ht = new HashTag(content);
             getEntityManager().persist(ht);
+            hashTagsToReturn.add(ht);
         }
+
+        // set all of the hash tags to return
+        inHashTags.clear();
+        inHashTags.addAll(hashTagsToReturn);
+    }
+
+    /**
+     * Check whether the hashtag content is in the list of hash tags.
+     *
+     * @param inContent
+     *            the content to search for
+     * @param hashTags
+     *            the hashtags to search
+     * @return whether the content was found in the list of hashtags
+     */
+    private boolean isHashTagInCollection(final String inContent, final Collection<HashTag> hashTags)
+    {
+        for (HashTag hashTag : hashTags)
+        {
+            if (hashTag.getContent().equals(inContent))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

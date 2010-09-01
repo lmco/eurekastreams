@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +30,7 @@ import org.hibernate.criterion.Restrictions;
  * Partial results mapper for HashTags.
  */
 public class PartialHashTagDbMapper extends
-        ReadMapper<Collection<String>, PartialMapperResponse<Collection<String>, Collection<HashTag>>>
+        ReadMapper<List<String>, PartialMapperResponse<List<String>, List<HashTag>>>
 {
     /**
      *Find the hash tags with the input contents. The contents will be lowercased.
@@ -40,13 +40,20 @@ public class PartialHashTagDbMapper extends
      * @return a partial mapper response containing the hash tags found and a new request of the contents that weren't
      */
     @Override
-    public PartialMapperResponse<Collection<String>, Collection<HashTag>> execute(
-            final Collection<String> inHashTagContents)
+    public PartialMapperResponse<List<String>, List<HashTag>> execute(final List<String> inHashTagContents)
     {
         Set<String> contents = new HashSet<String>();
         for (String content : inHashTagContents)
         {
-            contents.add(content.toLowerCase());
+            String hashTag = content.toLowerCase();
+            if (!hashTag.startsWith("#"))
+            {
+                contents.add("#" + hashTag);
+            }
+            else
+            {
+                contents.add(hashTag);
+            }
         }
 
         // find the hash tags that exist
@@ -55,7 +62,7 @@ public class PartialHashTagDbMapper extends
         List<HashTag> results = criteria.list();
 
         // interpret the results
-        Set<String> hashtagsNotFound = new HashSet<String>();
+        List<String> hashtagsNotFound = new ArrayList<String>();
         hashtagsNotFound.addAll(contents);
 
         for (HashTag ht : results)
@@ -70,12 +77,12 @@ public class PartialHashTagDbMapper extends
         if (hashtagsNotFound.size() > 0)
         {
             // missing some results
-            return new PartialMapperResponse<Collection<String>, Collection<HashTag>>(results, hashtagsNotFound);
+            return new PartialMapperResponse<List<String>, List<HashTag>>(results, hashtagsNotFound);
         }
         else
         {
             // found everything
-            return new PartialMapperResponse<Collection<String>, Collection<HashTag>>(results);
+            return new PartialMapperResponse<List<String>, List<HashTag>>(results);
         }
     }
 

@@ -12,6 +12,32 @@
 	<!-- Results combiner - just returns the first non-null value -->
 	<bean id="nonNullResultsCombiner" class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
 	  
+	<bean name="hashTagExtractor" class="org.eurekastreams.server.domain.strategies.HashTagExtractor"/>
+	
+	<bean name="activityContentExtractor" class="org.eurekastreams.server.persistence.mappers.stream.ActivityContentExtractor" />
+	  
+	<!-- Mapper to get the hash tags from the database - insert if not already in the database -->
+	<bean id="getHashTagsFromDatabaseMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		<constructor-arg>
+			<!-- Partial database mapper -->
+			<bean class="org.eurekastreams.server.persistence.mappers.db.PartialHashTagDbMapper" />
+		</constructor-arg>
+		
+		<constructor-arg>
+			<!-- Hashtag generation mapper to create new ones if not found in the database -->
+			<bean class="org.eurekastreams.server.persistence.mappers.HashTagBuilderMapper" />
+		</constructor-arg>
+		
+		<constructor-arg >
+			<!-- Combiner to put together the generated and existing hashtags together -->
+			<bean class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
+		</constructor-arg>
+		
+		<constructor-arg>
+			<!-- Database refresher -->
+			<bean class="org.eurekastreams.server.persistence.mappers.db.HashTagDbRefreshStrategy" />
+		</constructor-arg>
+	</bean>
 	  
 	<!-- ****  **** -->
 	
