@@ -20,6 +20,7 @@ import static org.junit.Assert.assertSame;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -27,11 +28,13 @@ import java.util.Map;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetCommentsById;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrderedCommentIdsByActivityId;
+import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.persistence.strategies.CommentDeletePropertyStrategy;
 import org.eurekastreams.server.search.modelview.CommentDTO;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -68,8 +71,13 @@ public class GetActivityByIdExecutionStrategyTest
     /**
      * Bulk mapper mock.
      */
-    private BulkActivitiesMapper activityDAO = context.mock(BulkActivitiesMapper.class);
+    private DomainMapper<List<Long>, List<ActivityDTO>>  activityDAO = context.mock(DomainMapper.class);
 
+    /**
+     * Person mapper.
+     */
+    private GetPeopleByAccountIds peopleMapper = context.mock(GetPeopleByAccountIds.class);
+    
     /**
      * DAO for finding comment ids.
      */
@@ -105,7 +113,7 @@ public class GetActivityByIdExecutionStrategyTest
         List<ActivityFilter> filters = new LinkedList<ActivityFilter>();
         filters.add(filterMock);
         sut = new GetActivityByIdExecutionStrategy(activityDAO, commentIdsByActivityIdDAO, commentsByIdDAO,
-                commentDeletableSetter, filters);
+                commentDeletableSetter, peopleMapper, filters);
     }
 
     /**
@@ -131,11 +139,13 @@ public class GetActivityByIdExecutionStrategyTest
         final List<CommentDTO> comments = new ArrayList(2);
         comments.add(context.mock(CommentDTO.class, "comment1"));
         comments.add(context.mock(CommentDTO.class, "comment2"));
-
+        
+        final PersonModelView person = new PersonModelView();
+        
         context.checking(new Expectations()
         {
             {
-                oneOf(activityDAO).execute(with(any(ArrayList.class)), with(any(String.class)));
+                oneOf(activityDAO).execute(with(any(ArrayList.class)));
                 will(returnValue(activities));
 
                 oneOf(activityDTO).getId();
@@ -149,8 +159,10 @@ public class GetActivityByIdExecutionStrategyTest
 
                 oneOf(commentDeletableSetter).execute(accountId, activityDTO, comments);
 
-                allowing(filterMock).filter(activities, accountId);
-                will(returnValue(activities));
+                allowing(filterMock).filter(with(activities), with(any(PersonModelView.class)));
+                
+                oneOf(peopleMapper).execute(Arrays.asList(accountId));
+                will(returnValue(Arrays.asList(person)));
 
                 oneOf(activityDTO).setComments(comments);
             }
@@ -184,14 +196,19 @@ public class GetActivityByIdExecutionStrategyTest
         comments.add(context.mock(CommentDTO.class, "comment1"));
         comments.add(context.mock(CommentDTO.class, "comment2"));
 
+        final PersonModelView person = new PersonModelView();
+        
         context.checking(new Expectations()
         {
             {
-                oneOf(activityDAO).execute(with(any(ArrayList.class)), with(any(String.class)));
+                oneOf(activityDAO).execute(with(any(ArrayList.class)));
                 will(returnValue(activities));
 
-                allowing(filterMock).filter(activities, accountId);
-                will(returnValue(activities));
+                allowing(filterMock).filter(with(activities), with(any(PersonModelView.class)));
+                
+                oneOf(peopleMapper).execute(Arrays.asList(accountId));
+                will(returnValue(Arrays.asList(person)));
+
             }
         });
 

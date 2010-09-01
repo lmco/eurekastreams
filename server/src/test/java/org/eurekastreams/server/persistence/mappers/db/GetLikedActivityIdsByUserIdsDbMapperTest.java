@@ -18,7 +18,6 @@ package org.eurekastreams.server.persistence.mappers.db;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.eurekastreams.server.persistence.mappers.stream.CachedMapperTest;
@@ -61,9 +60,9 @@ public class GetLikedActivityIdsByUserIdsDbMapperTest extends CachedMapperTest
     @Test
     public void testExecute()
     {
-        Collection<Collection<Long>> results = mapper.execute(Arrays.asList(USER_ID));
+        List<List<Long>> results = mapper.execute(Arrays.asList(USER_ID));
         assertEquals(1, results.size());
-        assertEquals(1, results.toArray().length);
-        assertEquals(new Long(ACTIVITY_ID), results.toArray()[0]);
+        assertEquals(1, results.get(0).size());
+        assertEquals(new Long(ACTIVITY_ID), results.get(0).get(0));
     }
 }

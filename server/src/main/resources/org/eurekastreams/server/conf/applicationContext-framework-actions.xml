@@ -1536,6 +1536,10 @@
                     <list>
                         <ref bean="canCommentFilter" />
                         <ref bean="canShareFilter" />
+            	        <ref bean="likeFilter" />
+        	            <ref bean="deleteFilter" />
+    	                <ref bean="savedFilter" />
+	                    <ref bean="serverTimeFilter" />
                     </list>
                 </constructor-arg>
                 <constructor-arg
@@ -1546,6 +1550,7 @@
                     then the first batch will request 20, the second 40, third 80.
                 -->
                 <constructor-arg type="float" value="2.0" />
+                <constructor-arg ref="bulkPeopleByAccountIdMapper" />
     </bean>
     
     <bean id="getActivitiesByRequestExecutor" 
@@ -1621,6 +1626,10 @@
                 <list>
                     <ref bean="canCommentFilter" />
                     <ref bean="canShareFilter" />
+                    <ref bean="likeFilter" />
+                    <ref bean="deleteFilter" />
+                    <ref bean="savedFilter" />
+                    <ref bean="serverTimeFilter" />
                 </list>
             </constructor-arg>
             <constructor-arg>
@@ -1630,15 +1639,9 @@
     		<constructor-arg
                     ref="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper" />
             <constructor-arg ref="bulkActivitySecurityMapper" />
+            <constructor-arg ref="bulkPeopleByAccountIdMapper" />
     </bean>
-            
-	<bean id="getActivitiesByRequest" class="org.eurekastreams.commons.actions.service.ServiceAction">
-		<constructor-arg ref="noValidationStrategy" />
-		<constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg ref="getActivitiesByRequestExecutor" />
-		<constructor-arg value="true" />
-	</bean>
-	            
+
 	<bean id="getActivitiesByCompositeStream" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg >
           <bean class="org.eurekastreams.server.action.validation.stream.GetActivitiesByCompositeStreamIdValidation">
@@ -2357,10 +2360,15 @@
 	<bean id="getStreamSearchResultsExecution"
                 class="org.eurekastreams.server.action.execution.stream.GetStreamSearchResultsExecution">
                 <constructor-arg ref="searchActivitiesMapper" />
+                <constructor-arg ref="bulkPeopleByAccountIdMapper" />
                 <constructor-arg>
                     <list>
                         <ref bean="canCommentFilter" />
                         <ref bean="canShareFilter" />
+            	        <ref bean="likeFilter" />
+        	            <ref bean="deleteFilter" />
+    	                <ref bean="savedFilter" />
+	                    <ref bean="serverTimeFilter" />
                     </list>
                 </constructor-arg>
     </bean>
@@ -2515,10 +2523,15 @@
 				<constructor-arg ref="getOrderedCommentIdsByActivityId" />
 				<constructor-arg ref="getCommentsById" />
 				<constructor-arg ref="commentDeletePropertyStrategy" />
+                <constructor-arg ref="bulkPeopleByAccountIdMapper" />			
 				<constructor-arg>
 					<list>
 						<ref bean="canCommentFilter" />
 						<ref bean="canShareFilter" />
+            	        <ref bean="likeFilter" />
+        	            <ref bean="deleteFilter" />
+    	                <ref bean="savedFilter" />
+	                    <ref bean="serverTimeFilter" />
 					</list>
 				</constructor-arg>
 			</bean>
@@ -4269,6 +4282,32 @@
             <ref bean="bulkDomainGroupsByShortNameMapper" />
         </constructor-arg>
     </bean>
+
+	<bean id="likeFilter"
+		class="org.eurekastreams.server.service.actions.strategies.activity.PopulateActivityDTOLikeData">
+		<constructor-arg ref="getLikedActivityIdsByUserId" />
+		<constructor-arg ref="getPeopleWhoLikedActivity" />
+		<constructor-arg ref="bulkPeopleMapper" />
+		<constructor-arg value="10" />
+	</bean>
+	<bean id="deleteFilter"
+		class="org.eurekastreams.server.service.actions.strategies.activity.PopulateActivityDTODeletabilityData">
+		<constructor-arg ref="commentDeletePropertyStrategy" />
+		<constructor-arg ref="activityDeletePropertyStrategy" />
+	</bean>
+	<bean id="savedFilter"
+		class="org.eurekastreams.server.service.actions.strategies.activity.PopulateActivityDTOSavedData">
+		<constructor-arg ref="getStarredActivityIds" />
+	</bean>
+	<bean id="serverTimeFilter"
+		class="org.eurekastreams.server.service.actions.strategies.activity.PopulateActivityDTOServerDateTime" />
+            
+	<bean id="getActivitiesByRequest" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg ref="getActivitiesByRequestExecutor" />
+		<constructor-arg value="true" />
+	</bean>
 
     <!--
         Beans for all of the Verb Validators that will be added to the

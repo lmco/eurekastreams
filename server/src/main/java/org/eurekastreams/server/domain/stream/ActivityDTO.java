@@ -25,6 +25,7 @@ import java.util.Map;
 import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.search.modelview.CommentDTO;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * A view of an Activity containing everything needed for display.
@@ -179,12 +180,17 @@ public class ActivityDTO extends ModelView implements Serializable
     /**
      * The number of times the activity has been liked.
      */
-    private Long likeCount = 0L;
+    private Integer likeCount = 0;
 
     /**
      * ID of organization "owning" the entity whose stream the activity is posted to.
      */
     private long recipientParentOrgId = UNINITIALIZED_LONG_VALUE;
+
+    /**
+     * List of people who have liked the activity.
+     */
+    private List<PersonModelView> likers;
 
     /**
      * Load this object's properties from the input Map.
@@ -300,7 +306,7 @@ public class ActivityDTO extends ModelView implements Serializable
         }
         if (properties.containsKey("likeCount"))
         {
-            setLikeCount((Long) properties.get("likeCount"));
+            setLikeCount((Integer) properties.get("likeCount"));
         }
 
     }
@@ -791,7 +797,7 @@ public class ActivityDTO extends ModelView implements Serializable
      * @param inLikeCount
      *            set the like count.
      */
-    public void setLikeCount(final Long inLikeCount)
+    public void setLikeCount(final Integer inLikeCount)
     {
         likeCount = inLikeCount;
     }
@@ -799,8 +805,29 @@ public class ActivityDTO extends ModelView implements Serializable
     /**
      * @return the number of times the activity has been liked.
      */
-    public Long getLikeCount()
+    public Integer getLikeCount()
     {
         return likeCount;
+    }
+
+    /**
+     * Set the likers.
+     * 
+     * @param inLikers
+     *            the likers.
+     */
+    public void setLikers(final List<PersonModelView> inLikers)
+    {
+        likers = inLikers;
+    }
+
+    /**
+     * Get the likers.
+     * 
+     * @return the likers.
+     */
+    public List<PersonModelView> getLikers()
+    {
+        return likers;
     }
 }

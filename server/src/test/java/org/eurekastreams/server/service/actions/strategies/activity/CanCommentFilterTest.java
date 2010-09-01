@@ -95,9 +95,9 @@ public class CanCommentFilterTest
     private DomainGroupModelView groupMock = context.mock(DomainGroupModelView.class);
 
     /**
-     * Current user account id.
+     * Current user account.
      */
-    private String currentUserAccountId = "currentuseraccountid";
+    private PersonModelView currentUserAccount = new PersonModelView();
 
     /**
      * Person destination account id.
@@ -117,9 +117,9 @@ public class CanCommentFilterTest
     {
         activities = new ArrayList<ActivityDTO>(1);
         activities.add(activityMock);
+        currentUserAccount.setAccountId("personAccount");
 
         sut = new CanCommentFilter(pMapperMock, gMapperMock, groupCoordinators);
-
     }
 
     /**
@@ -130,7 +130,7 @@ public class CanCommentFilterTest
     {
         final List<ActivityDTO> empty = new ArrayList<ActivityDTO>();
 
-        sut.filter(empty, currentUserAccountId);
+        sut.filter(empty, currentUserAccount);
     }
 
     /**
@@ -155,7 +155,7 @@ public class CanCommentFilterTest
             }
         });
 
-        sut.filter(activities, currentUserAccountId);
+        sut.filter(activities, currentUserAccount);
 
         context.assertIsSatisfied();
     }
@@ -197,7 +197,7 @@ public class CanCommentFilterTest
             }
         });
 
-        sut.filter(activities, currentUserAccountId);
+        sut.filter(activities, currentUserAccount);
 
         context.assertIsSatisfied();
     }
@@ -239,7 +239,7 @@ public class CanCommentFilterTest
             }
         });
 
-        sut.filter(activities, currentUserAccountId);
+        sut.filter(activities, currentUserAccount);
 
         context.assertIsSatisfied();
     }
@@ -251,7 +251,7 @@ public class CanCommentFilterTest
     public final void testFilterPersonStreamCanNotCommentIsDestinationUser()
     {
         final List<String> destinationIds = new ArrayList<String>(1);
-        destinationIds.add(currentUserAccountId);
+        destinationIds.add(currentUserAccount.getAccountId());
 
         final List<PersonModelView> personModelViews = new ArrayList<PersonModelView>(1);
         personModelViews.add(destinationPersonMock);
@@ -266,9 +266,9 @@ public class CanCommentFilterTest
                 will(returnValue(EntityType.PERSON));
 
                 allowing(streamMock).getUniqueIdentifier();
-                will(returnValue(currentUserAccountId));
+                will(returnValue(currentUserAccount.getAccountId()));
 
-                oneOf(pMapperMock).execute(destinationIds);
+                oneOf(pMapperMock).execute(with(any(List.class)));
                 will(returnValue(personModelViews));
 
                 oneOf(destinationPersonMock).isCommentable();
@@ -281,7 +281,7 @@ public class CanCommentFilterTest
             }
         });
 
-        sut.filter(activities, currentUserAccountId);
+        sut.filter(activities, currentUserAccount);
 
         context.assertIsSatisfied();
     }
@@ -323,7 +323,7 @@ public class CanCommentFilterTest
             }
         });
 
-        sut.filter(activities, currentUserAccountId);
+        sut.filter(activities, currentUserAccount);
 
         context.assertIsSatisfied();
     }
@@ -364,14 +364,14 @@ public class CanCommentFilterTest
                 oneOf(groupMock).getEntityId();
                 will(returnValue(1L));
 
-                oneOf(groupCoordinators).hasGroupCoordinatorAccessRecursively(currentUserAccountId, 1L);
+                oneOf(groupCoordinators).hasGroupCoordinatorAccessRecursively(currentUserAccount.getAccountId(), 1L);
                 will(returnValue(false));
 
                 oneOf(activityMock).setCommentable(false);
             }
         });
 
-        sut.filter(activities, currentUserAccountId);
+        sut.filter(activities, currentUserAccount);
 
         context.assertIsSatisfied();
     }
@@ -412,14 +412,14 @@ public class CanCommentFilterTest
                 oneOf(groupMock).getEntityId();
                 will(returnValue(1L));
 
-                oneOf(groupCoordinators).hasGroupCoordinatorAccessRecursively(currentUserAccountId, 1L);
+                oneOf(groupCoordinators).hasGroupCoordinatorAccessRecursively(currentUserAccount.getAccountId(), 1L);
                 will(returnValue(true));
 
                 oneOf(activityMock).setCommentable(true);
             }
         });
 
-        sut.filter(activities, currentUserAccountId);
+        sut.filter(activities, currentUserAccount);
 
         context.assertIsSatisfied();
     }

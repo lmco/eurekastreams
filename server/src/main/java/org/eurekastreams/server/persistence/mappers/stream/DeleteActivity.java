@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.server.persistence.mappers.stream;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
@@ -23,6 +23,7 @@ import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamView;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.requests.DeleteActivityRequest;
 
@@ -38,7 +39,7 @@ public class DeleteActivity extends BaseArgCachedDomainMapper<DeleteActivityRequ
     /**
      * Activity DAO.
      */
-    private BulkActivitiesMapper activityDAO;
+    private DomainMapper<List<Long>, List<ActivityDTO>>  activityDAO;
     
     /**
      * CompositeStream Ids by user DAO.
@@ -69,7 +70,7 @@ public class DeleteActivity extends BaseArgCachedDomainMapper<DeleteActivityRequ
      * @param inBulkDomainGroupsByShortNameMapper Groups by short name DAO.
      * @param inCommentIdsByActivityIdDAO Comment ids by activity id DAO.
      */
-    public DeleteActivity(final BulkActivitiesMapper inActivityDAO, 
+    public DeleteActivity(final DomainMapper<List<Long>, List<ActivityDTO>>  inActivityDAO, 
             final UserCompositeStreamIdsMapper inUserCompositeStreamIdsDAO,
             final BulkCompositeStreamsMapper inUserCompositeStreamDAO,
             final GetPeopleByAccountIds inBulkPeopleByAccountIdMapper,
@@ -99,7 +100,7 @@ public class DeleteActivity extends BaseArgCachedDomainMapper<DeleteActivityRequ
         final Long activityId = inDeleteActivityRequest.getActivityId();
         final Long userId = inDeleteActivityRequest.getUserId();
         
-        List<ActivityDTO> activities = activityDAO.execute(new ArrayList() { { add(activityId); } }, null);
+        List<ActivityDTO> activities = activityDAO.execute(Arrays.asList(activityId));
         
         //activity already deleted, short circuit.
         if (activities.size() == 0)

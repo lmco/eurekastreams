@@ -34,17 +34,17 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.ActivityVerb;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.InsertMapper;
 import org.eurekastreams.server.persistence.mappers.cache.PostActivityUpdateStreamsByActorMapper;
 import org.eurekastreams.server.persistence.mappers.requests.InsertActivityCommentRequest;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 import org.eurekastreams.server.persistence.mappers.stream.InsertActivityComment;
 import org.eurekastreams.server.service.actions.strategies.RecipientRetriever;
 
 /**
  * This class contains the business logic for posting an Activity to the system.
- *
+ * 
  */
 public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
@@ -67,24 +67,22 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
     /**
      * Instance of the {@link BulkActivitiesMapper}.
      */
-    private final BulkActivitiesMapper activitiesMapper;
+    private final DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper;
 
     /**
-     * Instance of the {@link RecipientRetriever} responsible for retrieving the recipient from the
-     * {@link ActivityDTO}.
+     * Instance of the {@link RecipientRetriever} responsible for retrieving the recipient from the {@link ActivityDTO}.
      */
     private final RecipientRetriever recipientRetriever;
 
     /**
-     * Instance of the {@link PostActivityUpdateStreamsByActorMapper} responsible for updating
-     * the cached lists directly
+     * Instance of the {@link PostActivityUpdateStreamsByActorMapper} responsible for updating the cached lists directly
      * related to the actor of the {@link Activity}.
      */
     private final PostActivityUpdateStreamsByActorMapper updateStreamsByActorMapper;
 
     /**
      * Constructor for the PostActivityExecutionStrategy.
-     *
+     * 
      * @param inInsertMapper
      *            - instance of the {@link InsertMapper} for the {@link Activity} object.
      * @param inInsertCommentDAO
@@ -97,7 +95,8 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
      *            - instance of the {@link PostActivityUpdateStreamsByActorMapper}.
      */
     public PostActivityExecutionStrategy(final InsertMapper<Activity> inInsertMapper,
-            final InsertActivityComment inInsertCommentDAO, final BulkActivitiesMapper inActivitiesMapper,
+            final InsertActivityComment inInsertCommentDAO,
+            final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper,
             final RecipientRetriever inRecipientRetriever,
             final PostActivityUpdateStreamsByActorMapper inUpdateStreamsByActorMapper)
     {
@@ -110,13 +109,13 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
 
     /**
      * {@inheritDoc}.
-     *
+     * 
      * Perform the business logic for posting an {@link Activity} to the system.
-     *
+     * 
      * Create the {@link Activity} object from the provided {@link ActivityDTO}, assign appropriate values, update the
      * cached streams related to the actor (surgical strike) and submit assemble async requests to be submitted to the
      * queue.
-     *
+     * 
      * @return Populated instance of the {@link ActivityDTO} after being persisted.
      */
     @Override
@@ -144,8 +143,7 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
 
         // Force the cache to load the activityDTO in from the db.
 
-        List<ActivityDTO> activityResults = activitiesMapper.execute(Arrays.asList(newActivity.getId()),
-                actorAccountName);
+        List<ActivityDTO> activityResults = activitiesMapper.execute(Arrays.asList(newActivity.getId()));
         persistedActivityDTO = activityResults.get(0);
         actorId = persistedActivityDTO.getActor().getId();
         destinationId = persistedActivityDTO.getDestinationStream().getDestinationEntityId();
@@ -195,7 +193,7 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
 
     /**
      * Method to convert ActivityDTO to an Activity object.
-     *
+     * 
      * @param inActivityDTO
      *            - ActivityDTO instance to be converted.
      * @return - Activity object populated with the values from the ActivityDTO passed in.

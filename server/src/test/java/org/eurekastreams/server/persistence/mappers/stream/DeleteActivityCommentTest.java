@@ -22,14 +22,12 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.persistence.mappers.cache.Cache;
-import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Test for DeleteActivityComment.
- *
+ * 
  */
 public class DeleteActivityCommentTest extends CachedMapperTest
 {
@@ -40,23 +38,16 @@ public class DeleteActivityCommentTest extends CachedMapperTest
     private DeleteActivityComment sut;
 
     /**
-     * System cache.
-     */
-    @Autowired
-    private Cache cache;
-    
-    /**
      * Activity DAO.
      */
-    @Autowired 
-    private BulkActivitiesMapper activityDAO;
-    
+    @Autowired
+    private BulkActivitiesDbMapper activityDAO;
+
     /**
      * Activity id from dataset.xml.
      */
     private final long activityId = 6789;
-    
-    
+
     /**
      * Test the execute method with bogus id.
      */
@@ -66,136 +57,140 @@ public class DeleteActivityCommentTest extends CachedMapperTest
         final long bogusId = -9879843;
         assertTrue(sut.execute(bogusId));
     }
-    
+
     /**
      * Test execute removing first comment.
      */
     @Test
     public void testExecuteRemoveFirstComment()
     {
-            //hit the mapper to load activity into cache.
+        // hit the mapper to load activity into cache.
         loadAndVerifyInitialActivity();
-        
-        //delete a comment via sut.
+
+        // delete a comment via sut.
         assertTrue(sut.execute(1L));
-        
-        //grab activity directly from cache and verify state has changed.
-        ActivityDTO activity = (ActivityDTO) cache.get(CacheKeys.ACTIVITY_BY_ID + activityId);        
+
+        // grab activity directly from cache and verify state has changed.
+        ActivityDTO activity = activityDAO.execute(new ArrayList<Long>()
+        {
+            {
+                add(activityId);
+            }
+        }).get(0);
         assertEquals(2, activity.getFirstComment().getId());
         assertEquals(3, activity.getLastComment().getId());
         assertEquals(2, activity.getCommentCount());
-        
+
     }
-    
+
     /**
      * Test execute removing last comment.
      */
     @Test
     public void testExecuteRemoveLastComment()
     {
-        //hit the mapper to load activity into cache.
+        // hit the mapper to load activity into cache.
         loadAndVerifyInitialActivity();
-        
-        //delete a comment via sut.
+
+        // delete a comment via sut.
         assertTrue(sut.execute(3L));
-        
-        //grab activity directly from cache and verify state has changed.
-        ActivityDTO activity = (ActivityDTO) cache.get(CacheKeys.ACTIVITY_BY_ID + activityId);        
+
+        // grab activity directly from cache and verify state has changed.
+        ActivityDTO activity = activityDAO.execute(new ArrayList<Long>()
+        {
+            {
+                add(activityId);
+            }
+        }).get(0);
         assertEquals(1, activity.getFirstComment().getId());
         assertEquals(2, activity.getLastComment().getId());
-        assertEquals(2, activity.getCommentCount());        
+        assertEquals(2, activity.getCommentCount());
     }
-    
+
     /**
      * Test execute removing a non-endpoint comments.
      */
     @Test
     public void testExecuteRemoveMiddleComment()
     {
-        //hit the mapper to load activity into cache.
-        loadAndVerifyInitialActivity();       
-        
-        //delete a comment via sut.
+        // hit the mapper to load activity into cache.
+        loadAndVerifyInitialActivity();
+
+        // delete a comment via sut.
         assertTrue(sut.execute(2L));
-        
-        //grab activity directly from cache and verify state has changed.
-        ActivityDTO activity = (ActivityDTO) cache.get(CacheKeys.ACTIVITY_BY_ID + activityId);        
+
+        // grab activity directly from cache and verify state has changed.
+        ActivityDTO activity = activityDAO.execute(new ArrayList<Long>()
+        {
+            {
+                add(activityId);
+            }
+        }).get(0);
         assertEquals(1, activity.getFirstComment().getId());
         assertEquals(3, activity.getLastComment().getId());
-        assertEquals(2, activity.getCommentCount());        
+        assertEquals(2, activity.getCommentCount());
     }
-    
+
     /**
      * Test execute removing all but one comment.
      */
     @Test
     public void testExecuteRemoveAllButOne()
     {
-        //hit the mapper to load activity into cache.
+        // hit the mapper to load activity into cache.
         loadAndVerifyInitialActivity();
-        
-        //delete a comment via sut.
+
+        // delete a comment via sut.
         assertTrue(sut.execute(1L));
-        //delete a comment via sut.
+        // delete a comment via sut.
         assertTrue(sut.execute(2L));
-        
-        //grab activity directly from cache and verify state has changed.
-        ActivityDTO activity = (ActivityDTO) cache.get(CacheKeys.ACTIVITY_BY_ID + activityId);        
+
+        // grab activity directly from cache and verify state has changed.
+        ActivityDTO activity = activityDAO.execute(new ArrayList<Long>() { { add(activityId); } }).get(0);
         assertEquals(3, activity.getFirstComment().getId());
         assertNull(activity.getLastComment());
-        assertEquals(1, activity.getCommentCount());        
+        assertEquals(1, activity.getCommentCount());
     }
-    
+
     /**
      * Test execute removing all comments.
      */
     @Test
     public void testExecuteRemoveAll()
     {
-        //hit the mapper to load activity into cache.
+        // hit the mapper to load activity into cache.
         loadAndVerifyInitialActivity();
-        
-        //delete a comment via sut.
+
+        // delete a comment via sut.
         assertTrue(sut.execute(1L));
-        //delete a comment via sut.
+        // delete a comment via sut.
         assertTrue(sut.execute(2L));
-        //delete a comment via sut.
+        // delete a comment via sut.
         assertTrue(sut.execute(3L));
-        
-        //grab activity directly from cache and verify state has changed.
-        ActivityDTO activity = (ActivityDTO) cache.get(CacheKeys.ACTIVITY_BY_ID + activityId);        
+
+        // grab activity directly from cache and verify state has changed.
+        ActivityDTO activity = activityDAO.execute(new ArrayList<Long>() { { add(activityId); } }).get(0);
         assertNull(activity.getFirstComment());
         assertNull(activity.getLastComment());
-        assertEquals(0, activity.getCommentCount());        
+        assertEquals(0, activity.getCommentCount());
     }
-    
+
     /**
-     * execute delete comment, verify that 
-     * didn't load stuff into cache to update it (wasted effort).
-     */
-    @Test
-    public void testExecuteNoCacheTouch()
-    {
-        assertTrue(sut.execute(1L));
-        assertNull(cache.get(CacheKeys.ACTIVITY_BY_ID + activityId));
-        assertNull(cache.getList(CacheKeys.COMMENT_IDS_BY_ACTIVITY_ID + activityId));
-    }
-    
-    /**
-     * Hit the mapper to load activity into cache and verify state.
+     * Hit the mapper to load activity and verify state.
      */
     @SuppressWarnings("serial")
     private void loadAndVerifyInitialActivity()
     {
-        //hit the mapper to load activity into cache.
-        activityDAO.execute(new ArrayList<Long>() { { add(activityId); } }, "smithers");
-        
-        //grab activity directly from cache and verify state.
-        ActivityDTO activity = (ActivityDTO) cache.get(CacheKeys.ACTIVITY_BY_ID + activityId);        
+        // grab activity directly from cache and verify state.
+        ActivityDTO activity = activityDAO.execute(new ArrayList<Long>()
+        {
+            {
+                add(activityId);
+            }
+        }).get(0);
         assertEquals(1, activity.getFirstComment().getId());
         assertEquals(3, activity.getLastComment().getId());
         assertEquals(3, activity.getCommentCount());
-        
-        
+
     }
 }

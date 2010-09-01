@@ -17,14 +17,16 @@ package org.eurekastreams.server.action.execution.notification;
 
 import static junit.framework.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
@@ -76,7 +78,7 @@ public class NotificationPopulatorTest
     private GetOrganizationsByIds orgMapper = context.mock(GetOrganizationsByIds.class);
 
     /** Fixture: For getting activity info. */
-    private BulkActivitiesMapper activityMapper = context.mock(BulkActivitiesMapper.class);
+    private DomainMapper<List<Long>, List<ActivityDTO>>  activityMapper = context.mock(DomainMapper.class);
 
     /** Fixture: person. */
     private PersonModelView person = new PersonModelView();
@@ -146,8 +148,8 @@ public class NotificationPopulatorTest
         context.checking(new Expectations()
         {
             {
-                allowing(activityMapper).execute(9L, null);
-                will(returnValue(activity));
+                allowing(activityMapper).execute(Arrays.asList(9L));
+                will(returnValue(Arrays.asList(activity)));
             }
         });
 

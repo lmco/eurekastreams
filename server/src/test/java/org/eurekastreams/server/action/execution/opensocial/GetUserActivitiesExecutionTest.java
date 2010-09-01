@@ -23,8 +23,9 @@ import java.util.List;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.server.action.request.opensocial.GetUserActivitiesRequest;
+import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamFilter;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.CompositeStreamActivityIdsMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetStreamByOwnerId;
@@ -37,7 +38,7 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link GetUserActivitiesExecution} class.
- *
+ * 
  */
 public class GetUserActivitiesExecutionTest
 {
@@ -64,7 +65,8 @@ public class GetUserActivitiesExecutionTest
     /**
      * Mocked instance of the {@link BulkActivitiesMapper}.
      */
-    private final BulkActivitiesMapper bulkActivitiesMapperMock = context.mock(BulkActivitiesMapper.class);
+    private final DomainMapper<List<Long>, List<ActivityDTO>> bulkActivitiesMapperMock = context
+            .mock(DomainMapper.class);
 
     /**
      * Mocked instance of the {@link CompositeStreamActivityIdsMapper}.
@@ -118,7 +120,7 @@ public class GetUserActivitiesExecutionTest
             {
                 allowing(getPeopleByOpenSocialIdsMapper).execute(userIds);
 
-                allowing(bulkActivitiesMapperMock).execute(activityIds, userId);
+                allowing(bulkActivitiesMapperMock).execute(activityIds);
             }
         });
 
@@ -159,7 +161,7 @@ public class GetUserActivitiesExecutionTest
 
                 allowing(compositeStreamActivityIdsMapper).execute(compStreamId, longUserId);
 
-                allowing(bulkActivitiesMapperMock).execute(activityIds, userId);
+                allowing(bulkActivitiesMapperMock).execute(activityIds);
             }
         });
 

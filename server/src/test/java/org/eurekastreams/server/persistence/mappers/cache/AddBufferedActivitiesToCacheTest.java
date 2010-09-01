@@ -22,7 +22,7 @@ import java.util.List;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamView;
 import org.eurekastreams.server.domain.stream.StreamView.Type;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -48,7 +48,7 @@ public class AddBufferedActivitiesToCacheTest
     /**
      * Bulk activities mapper mock.
      */
-    private BulkActivitiesMapper bulkActivitiesMapper = context.mock(BulkActivitiesMapper.class);
+    private DomainMapper<List<Long>, List<ActivityDTO>>  bulkActivitiesMapper = context.mock(DomainMapper.class);
     /**
      * Cache mock.
      */
@@ -134,7 +134,7 @@ public class AddBufferedActivitiesToCacheTest
                 oneOf(cache).setListCAS(CacheKeys.BUFFERED_ACTIVITIES, null);
                 will(returnValue(activityIds));
 
-                oneOf(bulkActivitiesMapper).execute(activityIds, null);
+                oneOf(bulkActivitiesMapper).execute(activityIds);
                 will(returnValue(activities));
 
                 oneOf(getCoreStreamViewIdCacheMapperMock).execute(Type.EVERYONE);

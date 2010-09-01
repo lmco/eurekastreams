@@ -25,6 +25,7 @@ import java.util.List;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.ActivityVerb;
+import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -33,7 +34,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
  * Tests getting activity DTOs from a list of activity ids.
  */
 @TransactionConfiguration(defaultRollback = false)
-public class BulkActivitiesMapperTest extends CachedMapperTest
+public class BulkActivitiesDbMapperTest extends MapperTest
 {
     /**
      * The main activity id to test with.
@@ -59,7 +60,7 @@ public class BulkActivitiesMapperTest extends CachedMapperTest
      * System under test.
      */
     @Autowired
-    private BulkActivitiesMapper mapper;
+    private BulkActivitiesDbMapper mapper;
 
     /**
      * Verifies that the activity returned when requesting ID 6789 is correct.
@@ -75,7 +76,6 @@ public class BulkActivitiesMapperTest extends CachedMapperTest
         assertEquals(DESTINATION_STREAM, activity.getDestinationStream().getId());
         assertEquals("smithers", activity.getDestinationStream().getUniqueIdentifier());
         assertEquals("Smithers Smithers", activity.getActor().getDisplayName());
-        assertTrue(activity.isStarred());
         assertEquals(7L, activity.getRecipientParentOrgId());
 
         // Assert first and last comments and comment count were set correctly.
@@ -92,28 +92,15 @@ public class BulkActivitiesMapperTest extends CachedMapperTest
     {
         List<Long> list = new ArrayList<Long>();
         list.add(new Long(ACTIVITY_ID));
-        List<ActivityDTO> results = mapper.execute(list, PERSON_ID);
+        
+        List<ActivityDTO> results = mapper.execute(list);
         assertEquals(1, results.size());
         verifyActivity6789(results.get(0));
 
         // now that the cache should be populated, run the execute again
-        results = mapper.execute(list, PERSON_ID);
+        results = mapper.execute(list);
         assertEquals(1, results.size());
         verifyActivity6789(results.get(0));
-    }
-
-    /**
-     * test.
-     */
-    @Test
-    public void testExecuteSingle()
-    {
-        ActivityDTO result = mapper.execute(ACTIVITY_ID, PERSON_ID);
-        verifyActivity6789(result);
-
-        // now that the cache should be populated, run the execute again
-        result = mapper.execute(ACTIVITY_ID, PERSON_ID);
-        verifyActivity6789(result);
     }
 
     /**
@@ -125,10 +112,10 @@ public class BulkActivitiesMapperTest extends CachedMapperTest
         List<Long> list = new ArrayList<Long>();
         list.add(new Long(ACTIVITY_ID));
         list.add(new Long(ACTIVITY_ID_2));
-        List<ActivityDTO> results = mapper.execute(list, PERSON_ID);
+        List<ActivityDTO> results = mapper.execute(list);
         assertEquals(2, results.size());
 
-        results = mapper.execute(list, PERSON_ID);
+        results = mapper.execute(list);
         assertEquals(2, results.size());
         assertEquals(ACTIVITY_ID, results.get(0).getEntityId());
 
@@ -136,20 +123,8 @@ public class BulkActivitiesMapperTest extends CachedMapperTest
         list = new ArrayList<Long>();
         list.add(new Long(ACTIVITY_ID_2));
         list.add(new Long(ACTIVITY_ID));
-        results = mapper.execute(list, PERSON_ID);
+        results = mapper.execute(list);
         assertEquals(ACTIVITY_ID_2, results.get(0).getEntityId());
         assertTrue(results.get(0).getIsDestinationStreamPublic());
-    }
-
-    /**
-     * test.
-     */
-    @Test
-    public void testExecuteWithNullUser()
-    {
-        List<Long> list = new ArrayList<Long>();
-        list.add(new Long(ACTIVITY_ID));
-        List<ActivityDTO> results = mapper.execute(list, null);
-        assertEquals(1, results.size());
     }
 }

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eurekastreams.server.domain.stream.ActivitySecurityDTO;
+import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -28,7 +28,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests the bulk activity security refresher.
+ * Tests the bulk activity refresher.
  */
 public class BulkActivitySecurityRefresherTest
 {
@@ -45,7 +45,7 @@ public class BulkActivitySecurityRefresherTest
     /**
      * System under test.
      */
-    private static BulkActivitySecurityRefresher sut;
+    private static BulkActivityRefresher sut;
 
     /**
      * Cache fed into the loader.
@@ -58,7 +58,7 @@ public class BulkActivitySecurityRefresherTest
     @BeforeClass
     public static final void setup()
     {
-        sut = new BulkActivitySecurityRefresher();
+        sut = new BulkActivityRefresher();
         sut.setCache(cache);
     }
 
@@ -68,15 +68,15 @@ public class BulkActivitySecurityRefresherTest
     @Test
     public void testRefresh()
     {
-        final List<ActivitySecurityDTO> activities = new ArrayList<ActivitySecurityDTO>();
-        activities.add(new ActivitySecurityDTO()
+        final List<ActivityDTO> activities = new ArrayList<ActivityDTO>();
+        activities.add(new ActivityDTO()
         {
             {
                 setId(1L);
             }
         });
 
-        activities.add(new ActivitySecurityDTO()
+        activities.add(new ActivityDTO()
         {
             {
                 setId(2L);
@@ -86,8 +86,8 @@ public class BulkActivitySecurityRefresherTest
         CONTEXT.checking(new Expectations()
         {
             {
-                oneOf(cache).set(CacheKeys.ACTIVITY_SECURITY_BY_ID + activities.get(0).getId(), activities.get(0));
-                oneOf(cache).set(CacheKeys.ACTIVITY_SECURITY_BY_ID + activities.get(1).getId(), activities.get(1));
+                oneOf(cache).set(CacheKeys.ACTIVITY_BY_ID + activities.get(0).getId(), activities.get(0));
+                oneOf(cache).set(CacheKeys.ACTIVITY_BY_ID + activities.get(1).getId(), activities.get(1));
             }
         });
 

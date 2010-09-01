@@ -18,6 +18,7 @@ package org.eurekastreams.server.service.actions.strategies.activity;
 import java.util.List;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * The interface for any filter to be applied to a list of activities.
@@ -30,9 +31,8 @@ public interface ActivityFilter
      * 
      * @param activities
      *            list of activities to filter.
-     * @param currentUserAccountId
-     *            Account id for the user currently logged into the system.
-     * @return the filtered list of activities.
+     * @param currentUserAccount
+     *            Account for the user currently logged into the system.
      */
-    List<ActivityDTO> filter(final List<ActivityDTO> activities, String currentUserAccountId);
+    void filter(final List<ActivityDTO> activities, PersonModelView currentUserAccount);
 }

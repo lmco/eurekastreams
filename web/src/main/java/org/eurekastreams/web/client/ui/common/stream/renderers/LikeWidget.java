@@ -18,6 +18,9 @@ package org.eurekastreams.web.client.ui.common.stream.renderers;
 import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest;
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest.LikeActionType;
+import org.eurekastreams.web.client.events.ActivityLikedChangeEvent;
+import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.ui.Session;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -46,28 +49,21 @@ public class LikeWidget extends Composite
     private Anchor likeLink = new Anchor();
 
     /**
-     * The like count link.
-     */
-    private LikeCountWidget likeCountWidget;
-
-    /**
      * Default constructor.
      * 
      * @param isLiked
      *            whether its liked by the current user.
-     * @param inLikeCount
-     *            the number of times the activity has been liked.
      * @param activityId
      *            the activity ID.
      */
-    public LikeWidget(final Boolean isLiked, final LikeCountWidget inLikeCountWidget, final Long activityId)
+    public LikeWidget(final Boolean isLiked, final Long activityId)
     {
         widget.addStyleName("like-wrapper");
         liked = isLiked;
-        likeCountWidget = inLikeCountWidget;
 
         likeLink.addStyleName("linked-label like");
-        setText();
+
+        likeLink.setText(isLiked ? "Unlike" : "Like");
 
         widget.add(likeLink);
 
@@ -75,8 +71,8 @@ public class LikeWidget extends Composite
         {
             public void onClick(final ClickEvent event)
             {
-                SetActivityLikeRequest request = new SetActivityLikeRequest(activityId,
-                        liked ? LikeActionType.REMOVE_LIKE : LikeActionType.ADD_LIKE);
+                final LikeActionType actionType = liked ? LikeActionType.REMOVE_LIKE : LikeActionType.ADD_LIKE;
+                SetActivityLikeRequest request = new SetActivityLikeRequest(activityId, actionType);
 
                 Session.getInstance().getActionProcessor().makeRequest(
                         new ActionRequestImpl<Boolean>("setActivityLiked", request), new AsyncCallback<Boolean>()
@@ -84,37 +80,30 @@ public class LikeWidget extends Composite
                             /* implement the async call back methods */
                             public void onFailure(final Throwable caught)
                             {
-                                // TODO handle error.
                             }
 
                             public void onSuccess(final Boolean result)
                             {
-                                liked = !liked;
-
-                                if (liked)
-                                {
-                                    likeCountWidget.addLike();
-                                }
-                                else
-                                {
-                                    likeCountWidget.removeLike();
-                                }
-
-                                setText();
+                                EventBus.getInstance().notifyObservers(
+                                        new ActivityLikedChangeEvent(actionType, activityId));
                             }
                         });
             }
 
         });
 
-        initWidget(widget);
-    }
+        EventBus.getInstance().addObserver(ActivityLikedChangeEvent.class, new Observer<ActivityLikedChangeEvent>()
+        {
+            public void update(final ActivityLikedChangeEvent event)
+            {
+                if (event.getActivityId().equals(activityId))
+                {
+                    liked = event.getActionType() == LikeActionType.ADD_LIKE;
+                    likeLink.setText(event.getActionType() == LikeActionType.ADD_LIKE ? "Unlike" : "Like");
+                }
+            }
+        });
 
-    /**
-     * Sets the text based on the current state.
-     */
-    private void setText()
-    {
-        likeLink.setText(liked ? "Unlike" : "Like");
+        initWidget(widget);
     }
 }

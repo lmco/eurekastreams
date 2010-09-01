@@ -15,35 +15,91 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.renderers;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import java.util.List;
+
+import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest.LikeActionType;
+import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.web.client.events.ActivityLikedChangeEvent;
+import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.jsni.EffectsFacade;
+import org.eurekastreams.web.client.ui.Session;
+
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * Like count widget.
+ */
 public class LikeCountWidget extends Composite
 {
+    /**
+     * Main widget.
+     */
     private FlowPanel widget = new FlowPanel();
 
+    /**
+     * Shows users who have liked this.
+     */
     private FlowPanel usersWhoLikedPanel = new FlowPanel();
 
-    private Long likeCount = 0L;
+    /**
+     * Like count.
+     */
+    private Integer likeCount = 0;
 
-    public LikeCountWidget(final Long inLikeCount)
+    /**
+     * Link for the like count link.
+     */
+    final Anchor likeCountLink = new Anchor();
+
+    /**
+     * Avatar renderer.
+     */
+    private AvatarRenderer avatarRenderer = new AvatarRenderer();
+
+    /**
+     * Liked label.
+     */
+    private Label likedLabel = new Label();
+
+    /**
+     * Avatar panel.
+     */
+    final FlowPanel avatarPanel = new FlowPanel();
+
+    /**
+     * Likers.
+     */
+    private List<PersonModelView> likers;
+
+    /**
+     * Constructor.
+     * 
+     * @param activityId
+     *            activity id.
+     * @param inLikeCount
+     *            like count.
+     * @param inLikers
+     *            who has liked this activity.
+     */
+    public LikeCountWidget(final Long activityId, final Integer inLikeCount, final List<PersonModelView> inLikers)
     {
+        likers = inLikers;
         widget.addStyleName("like-count-widget");
         likeCount = inLikeCount;
         initWidget(widget);
-        
+
         final FlowPanel likeCountPanel = new FlowPanel();
         likeCountPanel.addStyleName("like-count");
-        
-        final Anchor likeCountLink = new Anchor(likeCount.toString());
+
         likeCountPanel.add(likeCountLink);
-        
+
         widget.add(likeCountPanel);
-        
+
         usersWhoLikedPanel.addStyleName("users-who-liked-activity");
 
         FlowPanel userLikedHeader = new FlowPanel();
@@ -53,23 +109,86 @@ public class LikeCountWidget extends Composite
         FlowPanel userLikedBody = new FlowPanel();
         userLikedBody.addStyleName("users-who-liked-activity-body");
         usersWhoLikedPanel.add(userLikedBody);
-        
+
         FlowPanel userLikedFooter = new FlowPanel();
         userLikedFooter.addStyleName("users-who-liked-activity-footer");
         usersWhoLikedPanel.add(userLikedFooter);
-        
-        userLikedBody.add(new Label(likeCount + " people liked this"));
+
+        userLikedBody.add(likedLabel);
+        userLikedBody.add(avatarPanel);
 
         widget.add(usersWhoLikedPanel);
+
+        EventBus.getInstance().addObserver(ActivityLikedChangeEvent.class, new Observer<ActivityLikedChangeEvent>()
+        {
+            public void update(final ActivityLikedChangeEvent event)
+            {
+                if (event.getActivityId().equals(activityId))
+                {
+                    updatePanel(event.getActionType());
+                }
+            }
+        });
+
+        updatePanel(null);
     }
 
-    public void addLike()
+    /**
+     * Update the panel.
+     * 
+     * @param likeActionType
+     *            the action that's being taken.
+     */
+    private void updatePanel(final LikeActionType likeActionType)
     {
-        likeCount += 1L;
-    }
+        avatarPanel.clear();
 
-    public void removeLike()
-    {
-        likeCount -= 1L;
+        if (null != likeActionType)
+        {
+            if (likeActionType == LikeActionType.ADD_LIKE)
+            {
+                PersonModelView currentPerson = new PersonModelView();
+                currentPerson.setEntityId(Session.getInstance().getCurrentPerson().getId());
+                currentPerson.setAvatarId(Session.getInstance().getCurrentPerson().getAvatarId());
+                currentPerson.setDisplayName(Session.getInstance().getCurrentPerson().getDisplayName());
+
+                likers.add(0, currentPerson);
+
+                likeCount++;
+
+                if (!widget.isVisible())
+                {
+                    EffectsFacade.nativeFadeIn(widget.getElement());
+                }
+            }
+            else
+            {
+                for (PersonModelView liker : likers)
+                {
+                    if (likeActionType == LikeActionType.REMOVE_LIKE
+                            && liker.getId() == Session.getInstance().getCurrentPerson().getId())
+                    {
+                        likers.remove(liker);
+                    }
+                }
+
+                likeCount--;
+            }
+        }
+
+        for (PersonModelView liker : likers)
+        {
+            Widget avatar = avatarRenderer.render(liker.getId(), liker.getAvatarId());
+            avatar.addStyleName("avatar-image-VerySmall");
+
+            avatar.setTitle(liker.getDisplayName());
+
+            avatarPanel.add(avatar);
+        }
+
+        likeCountLink.setText(likeCount.toString());
+        likedLabel.setText(likeCount + " people liked this");
+
+        widget.setVisible(likeCount > 0);
     }
 }

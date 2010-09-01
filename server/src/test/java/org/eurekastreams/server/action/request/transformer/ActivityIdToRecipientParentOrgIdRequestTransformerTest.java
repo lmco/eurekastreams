@@ -17,9 +17,12 @@ package org.eurekastreams.server.action.request.transformer;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -44,7 +47,7 @@ public class ActivityIdToRecipientParentOrgIdRequestTransformerTest
     /**
      * Mapper to get activities.
      */
-    private BulkActivitiesMapper activitiesMapper = context.mock(BulkActivitiesMapper.class);
+    private DomainMapper<List<Long>, List<ActivityDTO>>  activitiesMapper = context.mock(DomainMapper.class);
 
     /**
      * System under test.
@@ -70,8 +73,8 @@ public class ActivityIdToRecipientParentOrgIdRequestTransformerTest
         context.checking(new Expectations()
         {
             {
-                oneOf(activitiesMapper).execute(activityId, null);
-                will(returnValue(activity));
+                oneOf(activitiesMapper).execute(Arrays.asList(activityId));
+                will(returnValue(Arrays.asList(activity)));
 
                 oneOf(actionContext).getParams();
                 will(returnValue(activityId));

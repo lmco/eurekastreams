@@ -16,13 +16,14 @@
 package org.eurekastreams.server.action.authorization.stream;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetCommentsById;
 import org.eurekastreams.server.persistence.strategies.CommentDeletePropertyStrategy;
 import org.eurekastreams.server.search.modelview.CommentDTO;
@@ -57,7 +58,7 @@ public class CommentModificationAuthorizationTest
     /**
      * DAO for looking up activity by id.
      */
-    private BulkActivitiesMapper activityDAO = context.mock(BulkActivitiesMapper.class);
+    private DomainMapper<List<Long>, List<ActivityDTO>>  activityDAO = context.mock(DomainMapper.class);
 
     /**
      * Strategy for setting Deletable property on CommentDTOs.
@@ -179,7 +180,7 @@ public class CommentModificationAuthorizationTest
                 oneOf(comment).getActivityId();
                 will(returnValue(parentActivityId));
 
-                oneOf(activityDAO).execute(activityIds, userAcctId);
+                oneOf(activityDAO).execute(activityIds);
                 will(returnValue(activities));
 
                 oneOf(commentDAO).execute(commentIds);
@@ -217,7 +218,7 @@ public class CommentModificationAuthorizationTest
                 oneOf(comment).getActivityId();
                 will(returnValue(parentActivityId));
 
-                oneOf(activityDAO).execute(activityIds, userAcctId);
+                oneOf(activityDAO).execute(activityIds);
                 will(returnValue(activities));
 
                 oneOf(commentDAO).execute(commentIds);
@@ -256,7 +257,7 @@ public class CommentModificationAuthorizationTest
                 oneOf(comment).getActivityId();
                 will(returnValue(parentActivityId));
 
-                oneOf(activityDAO).execute(activityIds, userAcctId);
+                oneOf(activityDAO).execute(activityIds);
                 will(returnValue(activities));
 
                 oneOf(commentDAO).execute(commentIds);
@@ -296,7 +297,7 @@ public class CommentModificationAuthorizationTest
                 oneOf(commentDAO).execute(commentIds);
                 will(returnValue(comments));
 
-                oneOf(activityDAO).execute(activityIds, userAcctId);
+                oneOf(activityDAO).execute(activityIds);
                 will(returnValue(new ArrayList(0)));
             }
         });

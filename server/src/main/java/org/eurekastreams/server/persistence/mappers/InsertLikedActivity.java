@@ -15,14 +15,6 @@
  */
 package org.eurekastreams.server.persistence.mappers;
 
-<<<<<<< HEAD
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-
-=======
->>>>>>> c4e10f6f59ac4a3eafeb4d29b2197373fe4cb8a9
 import javax.persistence.Query;
 
 import org.eurekastreams.server.domain.stream.LikedActivity;
@@ -35,23 +27,6 @@ import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
  */
 public class InsertLikedActivity extends CachedDomainMapper
 {
-    /**
-     * Mapper to read liked activities.
-     */
-    private DomainMapper<Collection<Long>, Collection<Collection<Long>>> likedActivitiesMapper;
-
-    /**
-     * Constructor.
-     *
-     * @param inLikedActivitiesMapper
-     *            the liked activity read mapper.
-     */
-    public InsertLikedActivity(
-            final DomainMapper<Collection<Long>, Collection<Collection<Long>>> inLikedActivitiesMapper)
-    {
-        likedActivitiesMapper = inLikedActivitiesMapper;
-    }
-
     /**
      * Inserts entry into LikedActivity table.
      *
@@ -73,16 +48,12 @@ public class InsertLikedActivity extends CachedDomainMapper
 
         this.getEntityManager().persist(inLikedActivity);
 
-<<<<<<< HEAD
-        getCache().addToTopOfList(CacheKeys.LIKED_BY_PERSON_ID + inLikedActivity.getPersonId(), inLikedActivity.getActivityId());
-=======
         // sets in cache.
         getCache().addToTopOfList(
                 CacheKeys.LIKED_BY_PERSON_ID + inLikedActivity.getPersonId(), inLikedActivity.getActivityId());
 
         getCache().addToTopOfList(
                 CacheKeys.LIKERS_BY_ACTIVITY_ID + inLikedActivity.getActivityId(), inLikedActivity.getPersonId());
->>>>>>> c4e10f6f59ac4a3eafeb4d29b2197373fe4cb8a9
 
         return Boolean.TRUE;
     }

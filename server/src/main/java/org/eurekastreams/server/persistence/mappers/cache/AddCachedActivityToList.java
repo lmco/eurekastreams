@@ -20,8 +20,8 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.AddCachedActivityToListRequest;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.CompositeStreamActivityIdsMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetStreamByOwnerId;
@@ -48,7 +48,7 @@ public class AddCachedActivityToList extends CachedDomainMapper
     /**
      * Local instance of the Mapper responsible for loading activities by id.
      */
-    private final BulkActivitiesMapper activitiesByIdMapper;
+    private final DomainMapper<List<Long>, List<ActivityDTO>>  activitiesByIdMapper;
     
     /**
      * Local instance of the mapper used to retrieve the stream scope id based on the
@@ -70,7 +70,7 @@ public class AddCachedActivityToList extends CachedDomainMapper
      * @param inListKey - string cache key for the cached list that needs to be updated.
      */
     public AddCachedActivityToList(final CompositeStreamActivityIdsMapper inActivityIdsMapper, 
-            final BulkActivitiesMapper inActivitiesByIdMapper,
+            final DomainMapper<List<Long>, List<ActivityDTO>>  inActivitiesByIdMapper,
             final GetStreamByOwnerId inStreamByOwnerIdMapper,
             final String inListKey)
     {
@@ -93,7 +93,7 @@ public class AddCachedActivityToList extends CachedDomainMapper
         //Retrieve the owner's list of activities.
         List<Long> ownerActivityIds = 
             activitiesMapper.execute(inRequest.getListId(), inRequest.getListOwnerId());
-        List<ActivityDTO> ownerActivities = activitiesByIdMapper.execute(ownerActivityIds, null);
+        List<ActivityDTO> ownerActivities = activitiesByIdMapper.execute(ownerActivityIds);
         logger.debug("Retrieved " + ownerActivities.size() + " activities for the list.");
         
         //Retrieve the activity ids in that compositestream.
@@ -109,7 +109,7 @@ public class AddCachedActivityToList extends CachedDomainMapper
         }
         
         //Get the ActivityDTO of the newest item in that List, this will be the one that is added into the ownerlist.
-        List<ActivityDTO> targetActivity = activitiesByIdMapper.execute(targetActivityIds.subList(0, 1), null);
+        List<ActivityDTO> targetActivity = activitiesByIdMapper.execute(targetActivityIds.subList(0, 1));
         
         //Find the index to insert the new item at.
         int targetIndex = findIndexToInsertActivity(ownerActivities, targetActivity.get(0));

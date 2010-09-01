@@ -16,7 +16,7 @@
 
 package org.eurekastreams.server.service.actions.strategies.activity;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +25,14 @@ import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eurekastreams.commons.exceptions.ValidationException;
+import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.domain.stream.ActivityVerb;
+import org.eurekastreams.server.domain.stream.BaseObjectType;
+import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.service.actions.TransactionManagerFake;
 import org.jmock.Expectations;
@@ -34,14 +42,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.domain.stream.ActivityVerb;
-import org.eurekastreams.server.domain.stream.BaseObjectType;
-import org.eurekastreams.server.domain.stream.StreamEntityDTO;
-import org.eurekastreams.commons.exceptions.ValidationException;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 
 /**
  * This class tests the ShareVerbValidator.
@@ -72,7 +72,7 @@ public class ShareVerbValidatorTest
     /**
      * Test instance of the BulkActivitiesMapper.
      */
-    private final BulkActivitiesMapper activityMapperMock = context.mock(BulkActivitiesMapper.class);
+    private final DomainMapper<List<Long>, List<ActivityDTO>>  activityMapperMock = context.mock(DomainMapper.class);
 
     /**
      * Test instance of the GetDomainGroupsByShortNames.
@@ -190,7 +190,7 @@ public class ShareVerbValidatorTest
                 oneOf(transMgr).getTransaction(transDef);
                 will(returnValue(transStatus));
 
-                oneOf(activityMapperMock).execute(activityIds, null);
+                oneOf(activityMapperMock).execute(activityIds);
                 will(returnValue(matchingActivities));
 
                 oneOf(transMgr).commit(transStatus);
@@ -272,7 +272,7 @@ public class ShareVerbValidatorTest
                 oneOf(transMgr).getTransaction(transDef);
                 will(returnValue(transStatus));
 
-                oneOf(activityMapperMock).execute(activityIds, null);
+                oneOf(activityMapperMock).execute(activityIds);
                 will(returnValue(matchingActivities));
 
                 oneOf(transMgr).rollback(transStatus);
@@ -325,7 +325,7 @@ public class ShareVerbValidatorTest
                 oneOf(transMgr).getTransaction(transDef);
                 will(returnValue(transStatus));
 
-                oneOf(activityMapperMock).execute(activityIds, null);
+                oneOf(activityMapperMock).execute(activityIds);
                 will(returnValue(matchingActivities));
 
                 oneOf(transMgr).commit(transStatus);
@@ -394,7 +394,7 @@ public class ShareVerbValidatorTest
                 oneOf(transMgr).getTransaction(transDef);
                 will(returnValue(transStatus));
 
-                oneOf(activityMapperMock).execute(activityIds, null);
+                oneOf(activityMapperMock).execute(activityIds);
                 will(returnValue(matchingActivities));
 
                 oneOf(groupMapperMock).fetchUniqueResult(testGroupId);
@@ -458,7 +458,7 @@ public class ShareVerbValidatorTest
                 oneOf(transMgr).getTransaction(transDef);
                 will(returnValue(transStatus));
 
-                oneOf(activityMapperMock).execute(activityIds, null);
+                oneOf(activityMapperMock).execute(activityIds);
                 will(returnValue(matchingActivities));
 
                 oneOf(groupMapperMock).fetchUniqueResult(testGroupId);
@@ -518,7 +518,7 @@ public class ShareVerbValidatorTest
                 oneOf(transMgr).getTransaction(transDef);
                 will(returnValue(transStatus));
 
-                oneOf(activityMapperMock).execute(activityIds, null);
+                oneOf(activityMapperMock).execute(activityIds);
                 will(returnValue(matchingActivities));
 
                 oneOf(groupMapperMock).fetchUniqueResult(testGroupId);

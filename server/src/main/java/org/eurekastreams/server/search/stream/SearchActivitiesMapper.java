@@ -26,13 +26,13 @@ import org.eurekastreams.commons.search.ProjectionSearchRequestBuilder;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetStreamScopesByStreamViewId;
 import org.eurekastreams.server.persistence.mappers.ReadMapper;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCache;
 import org.eurekastreams.server.persistence.mappers.requests.StreamSearchRequest;
 import org.eurekastreams.server.persistence.mappers.stream.BuildActivityStreamSearchStringForUser;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -85,7 +85,7 @@ public class SearchActivitiesMapper extends ReadMapper<StreamSearchRequest, List
     /**
      * Mapper to get Activities by ID.
      */
-    private BulkActivitiesMapper bulkActivitiesMapper;
+    private DomainMapper<List<Long>, List<ActivityDTO>> bulkActivitiesMapper;
 
     /**
      * Factory to build ActivityIdSearchPageFetcher.
@@ -99,7 +99,7 @@ public class SearchActivitiesMapper extends ReadMapper<StreamSearchRequest, List
 
     /**
      * Search a stream by the stream id and search text.
-     *
+     * 
      * @param inRequest
      *            the request, containing the stream id to search and search text
      * @return a list of Messages that match the search request
@@ -118,8 +118,7 @@ public class SearchActivitiesMapper extends ReadMapper<StreamSearchRequest, List
             log.info("Fetching the activities from cache/db with the activity ids: "
                     + (activityIds == null ? "(null)" : activityIds.toString()));
         }
-        List<ActivityDTO> activities = bulkActivitiesMapper
-                .execute(activityIds, inRequest.getRequestingUserAccountId());
+        List<ActivityDTO> activities = bulkActivitiesMapper.execute(activityIds);
 
         if (log.isInfoEnabled())
         {
@@ -132,11 +131,11 @@ public class SearchActivitiesMapper extends ReadMapper<StreamSearchRequest, List
 
     /**
      * Fetch a list of Activity IDs as efficiently as possible.
-     *
+     * 
      * If searching all activities, go straight to Lucene. If the search includes starred activities or those by people
      * the user is following, search all activities, then scope the search against the cached list of activity ids.
      * Else, flatten the search scopes and use Lucene, 100%
-     *
+     * 
      * @param inRequest
      *            the search request
      * @return a Page Fetcher to fetch the list of ActivityIDs
@@ -200,7 +199,7 @@ public class SearchActivitiesMapper extends ReadMapper<StreamSearchRequest, List
 
     /**
      * Get the first part of the search string with keywords.
-     *
+     * 
      * @param inSearchText
      *            the search text the user entered
      * @param inLastSeenStreamItemId
@@ -236,7 +235,7 @@ public class SearchActivitiesMapper extends ReadMapper<StreamSearchRequest, List
 
     /**
      * Check whether we're searching all activity - if so, no additional scoping is required.
-     *
+     * 
      * @param inScopes
      *            the scopes for the search
      * @return true if there are scopes to add to the query and the query doesn't search all activities
@@ -256,7 +255,7 @@ public class SearchActivitiesMapper extends ReadMapper<StreamSearchRequest, List
     /**
      * Check whether the input list of scopes is too complicated to search Lucene alone, requiring joining a full search
      * against the cached list of message ids from the specific list.
-     *
+     * 
      * @param inScopes
      *            the scopes of the list to check
      * @return true if we need to scope the search with the list, or false if the query is simple enough to use Lucene
@@ -276,7 +275,7 @@ public class SearchActivitiesMapper extends ReadMapper<StreamSearchRequest, List
 
     /**
      * Get the Lucene query string component from the input list of Scopes.
-     *
+     * 
      * @param inRequestingUserAccountId
      *            the
      * @param inStreamScopes
@@ -337,7 +336,7 @@ public class SearchActivitiesMapper extends ReadMapper<StreamSearchRequest, List
 
     /**
      * Load PersonModelViews and DomainGroup IDs that will be needed from cache.
-     *
+     * 
      * @param inRequestingUserAccountId
      *            the accountId of the user making the request
      * @param inStreamScopes
@@ -400,7 +399,7 @@ public class SearchActivitiesMapper extends ReadMapper<StreamSearchRequest, List
 
     /**
      * Set the organization hierarchy cache.
-     *
+     * 
      * @param inOrgCache
      *            the orgCache to set
      */
@@ -411,7 +410,7 @@ public class SearchActivitiesMapper extends ReadMapper<StreamSearchRequest, List
 
     /**
      * Set the search request builder.
-     *
+     * 
      * @param inSearchRequestBuilder
      *            the searchRequestBuilder to set
      */
@@ -422,7 +421,7 @@ public class SearchActivitiesMapper extends ReadMapper<StreamSearchRequest, List
 
     /**
      * Set the factory responsible for creating SearchResultScopers.
-     *
+     * 
      * @param inSearchResultScoperFactory
      *            the searchResultScoperFactory to set
      */
@@ -433,7 +432,7 @@ public class SearchActivitiesMapper extends ReadMapper<StreamSearchRequest, List
 
     /**
      * Set the Factory that builds PageFetchers that fetch ActivityIds for a stream view.
-     *
+     * 
      * @param inStreamViewActivityIdListPageFetcherFactory
      *            the StreamViewActivityIdListPageFetcherFactory to set
      */
@@ -445,7 +444,7 @@ public class SearchActivitiesMapper extends ReadMapper<StreamSearchRequest, List
 
     /**
      * Set the mapper to get stream scopes by stream view id.
-     *
+     * 
      * @param inGetStreamScopesByStreamViewIdMapper
      *            the getStreamScopesByStreamViewIdMapper to set
      */
@@ -457,7 +456,7 @@ public class SearchActivitiesMapper extends ReadMapper<StreamSearchRequest, List
 
     /**
      * Setter for activityIdSearchPageFetcherFactory.
-     *
+     * 
      * @param inActivityIdSearchPageFetcherFactory
      *            the activityIdSearchPageFetcherFactory to set
      */
@@ -478,11 +477,11 @@ public class SearchActivitiesMapper extends ReadMapper<StreamSearchRequest, List
 
     /**
      * Set the BulkActivitiesMapper.
-     *
+     * 
      * @param inBulkActivitiesMapper
      *            the bulkActivitiesMapper to set
      */
-    public void setBulkActivitiesMapper(final BulkActivitiesMapper inBulkActivitiesMapper)
+    public void setBulkActivitiesMapper(final DomainMapper<List<Long>, List<ActivityDTO>> inBulkActivitiesMapper)
     {
         bulkActivitiesMapper = inBulkActivitiesMapper;
     }

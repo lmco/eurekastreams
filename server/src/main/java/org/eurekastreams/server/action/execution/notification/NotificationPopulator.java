@@ -15,10 +15,13 @@
  */
 package org.eurekastreams.server.action.execution.notification;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
@@ -41,7 +44,7 @@ public class NotificationPopulator
     private GetOrganizationsByIds orgMapper;
 
     /** For getting activity info. */
-    private BulkActivitiesMapper activitiesMapper;
+    private DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper;
 
     /**
      * Constructor.
@@ -56,7 +59,8 @@ public class NotificationPopulator
      *            For getting activity info.
      */
     public NotificationPopulator(final GetPeopleByIds inPeopleMapper, final GetDomainGroupsByIds inGroupMapper,
-            final GetOrganizationsByIds inOrgMapper, final BulkActivitiesMapper inActivitiesMapper)
+            final GetOrganizationsByIds inOrgMapper,
+            final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper)
     {
         peopleMapper = inPeopleMapper;
         groupMapper = inGroupMapper;
@@ -66,7 +70,7 @@ public class NotificationPopulator
 
     /**
      * Populates a notification with any details not initially provided.
-     *
+     * 
      * @param notif
      *            The notification.
      */
@@ -83,7 +87,7 @@ public class NotificationPopulator
         // populate activity
         if (notif.getActivityId() > 0 && notif.getActivityType() == null)
         {
-            ActivityDTO activity = activitiesMapper.execute(notif.getActivityId(), null);
+            ActivityDTO activity = activitiesMapper.execute(Arrays.asList(notif.getActivityId())).get(0);
             notif.setActivityType(activity.getBaseObjectType());
         }
 
@@ -114,7 +118,7 @@ public class NotificationPopulator
 
     /**
      * Convenience routine to test if a string is not present.
-     *
+     * 
      * @param theString
      *            String to test.
      * @return True if null/empty.

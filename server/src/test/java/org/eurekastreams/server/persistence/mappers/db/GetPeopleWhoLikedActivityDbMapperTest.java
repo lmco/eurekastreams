@@ -18,7 +18,8 @@ package org.eurekastreams.server.persistence.mappers.db;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Test;
@@ -46,10 +47,13 @@ public class GetPeopleWhoLikedActivityDbMapperTest extends MapperTest
         final Long personId1 = 42L;
         final Long personId2 = 142L;
 
-        List<Long> coordinatorIds = sut.execute(activityid);
-        assertEquals(2, coordinatorIds.size());
-        assertTrue(coordinatorIds.contains(personId1));
-        assertTrue(coordinatorIds.contains(personId2));
+        Collection<Collection<Long>> values = sut.execute(Arrays.asList(activityid));
+
+        final Collection<Long> peopleIds = values.iterator().next();
+
+        assertEquals(2, peopleIds.size());
+        assertTrue(peopleIds.contains(personId1));
+        assertTrue(peopleIds.contains(personId2));
     }
 
     /**
@@ -58,7 +62,10 @@ public class GetPeopleWhoLikedActivityDbMapperTest extends MapperTest
     @Test
     public void testExecuteActivityWithOutResults()
     {
-        List<Long> coordinatorIds = sut.execute(1L);
-        assertEquals(0, coordinatorIds.size());
+        Collection<Collection<Long>> values = sut.execute(Arrays.asList(1L));
+
+        final Collection<Long> peopleIds = values.iterator().next();
+
+        assertEquals(0, peopleIds.size());
     }
 }

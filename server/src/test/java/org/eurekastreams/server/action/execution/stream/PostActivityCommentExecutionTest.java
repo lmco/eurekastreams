@@ -26,8 +26,8 @@ import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.InsertActivityCommentRequest;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 import org.eurekastreams.server.persistence.mappers.stream.InsertActivityComment;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.jmock.Expectations;
@@ -80,7 +80,7 @@ public class PostActivityCommentExecutionTest
     /**
      * Mock activities mapper.
      */
-    private BulkActivitiesMapper activitiesMapperMock = context.mock(BulkActivitiesMapper.class);
+    private DomainMapper<List<Long>, List<ActivityDTO>>  activitiesMapperMock = context.mock(DomainMapper.class);
 
     /**
      * {@link PrincipalActionContext}.
@@ -136,7 +136,7 @@ public class PostActivityCommentExecutionTest
 
                 oneOf(insertActivityCommentMock).execute(with(any(InsertActivityCommentRequest.class)));
 
-                oneOf(activitiesMapperMock).execute(with(any(List.class)), with(any(String.class)));
+                oneOf(activitiesMapperMock).execute(with(any(List.class)));
                 will(returnValue(Arrays.asList(activityDTOMock)));
 
                 oneOf(activityDTOMock).getDestinationStream();
@@ -186,7 +186,7 @@ public class PostActivityCommentExecutionTest
 
                 oneOf(insertActivityCommentMock).execute(with(any(InsertActivityCommentRequest.class)));
 
-                oneOf(activitiesMapperMock).execute(with(any(List.class)), with(any(String.class)));
+                oneOf(activitiesMapperMock).execute(with(any(List.class)));
                 will(returnValue(Arrays.asList(activityDTOMock)));
 
                 allowing(activityDTOMock).getDestinationStream();

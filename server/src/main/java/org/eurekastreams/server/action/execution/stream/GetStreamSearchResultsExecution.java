@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.action.execution.stream;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -26,12 +27,14 @@ import org.eurekastreams.server.action.request.stream.GetStreamSearchResultsRequ
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.requests.StreamSearchRequest;
+import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.stream.SearchActivitiesMapper;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
 
 /**
  * This class provides the execution strategy for retrieving stream search results.
- *
+ * 
  */
 public class GetStreamSearchResultsExecution implements ExecutionStrategy<PrincipalActionContext>
 {
@@ -51,23 +54,31 @@ public class GetStreamSearchResultsExecution implements ExecutionStrategy<Princi
     private final List<ActivityFilter> filters;
 
     /**
+     * The people mapper.
+     */
+    private GetPeopleByAccountIds peopleMapper;
+
+    /**
      * Constructor.
-     *
+     * 
      * @param inSearchActivitiesMapper
      *            - instance of the {@link SearchActivitiesMapper} for this execution.
+     * @param inPeopleMapper
+     *            people mapper.
      * @param inFilters
      *            - list of {@link ActivityFilter} objects that filter the results of the search.
      */
     public GetStreamSearchResultsExecution(final SearchActivitiesMapper inSearchActivitiesMapper,
-            final List<ActivityFilter> inFilters)
+            final GetPeopleByAccountIds inPeopleMapper, final List<ActivityFilter> inFilters)
     {
         searchActivitiesMapper = inSearchActivitiesMapper;
         filters = inFilters;
+        peopleMapper = inPeopleMapper;
     }
 
     /**
      * {@inheritDoc}.
-     *
+     * 
      * Retrieve the search results from searching the stream.
      */
     @Override
@@ -94,7 +105,6 @@ public class GetStreamSearchResultsExecution implements ExecutionStrategy<Princi
             results.remove(request.getPageSize());
         }
 
-
         // Loop backwards because we're removing results.
         for (int i = results.size() - 1; i >= 0; i--)
         {
@@ -110,10 +120,13 @@ public class GetStreamSearchResultsExecution implements ExecutionStrategy<Princi
         String elapsedTime = formatElapasedTime(startTime, System.currentTimeMillis());
         pagedResults.setElapsedTime(elapsedTime);
 
+        PersonModelView person = peopleMapper.execute(Arrays.asList(inActionContext.getPrincipal().getAccountId()))
+                .get(0);
+
+        // execute filter strategies.
         for (ActivityFilter filter : filters)
         {
-            pagedResults.setPagedSet(filter.filter(pagedResults.getPagedSet(), inActionContext.getPrincipal()
-                    .getAccountId()));
+            filter.filter(results, person);
         }
 
         log.info("Searched in " + elapsedTime);
@@ -122,7 +135,7 @@ public class GetStreamSearchResultsExecution implements ExecutionStrategy<Princi
 
     /**
      * Determine and format the elapsed time for a server request.
-     *
+     * 
      * @param startTime
      *            the starting milliseconds
      * @param endTime

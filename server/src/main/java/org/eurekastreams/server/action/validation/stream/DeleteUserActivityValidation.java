@@ -20,7 +20,7 @@ import java.util.List;
 import org.eurekastreams.commons.actions.ValidationStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * Validate that principal is actor on activities that are requested for delete. If not, the id requested for delete is
@@ -32,7 +32,7 @@ public class DeleteUserActivityValidation implements ValidationStrategy<Principa
     /**
      * {@link BulkActivitiesMapper}.
      */
-    private BulkActivitiesMapper activityMapper;
+    private DomainMapper<List<Long>, List<ActivityDTO>> activityMapper;
 
     /**
      * Constructor.
@@ -40,7 +40,7 @@ public class DeleteUserActivityValidation implements ValidationStrategy<Principa
      * @param inActivityMapper
      *            {@link BulkActivitiesMapper}.
      */
-    public DeleteUserActivityValidation(final BulkActivitiesMapper inActivityMapper)
+    public DeleteUserActivityValidation(final DomainMapper<List<Long>, List<ActivityDTO>> inActivityMapper)
     {
         activityMapper = inActivityMapper;
     }
@@ -64,7 +64,7 @@ public class DeleteUserActivityValidation implements ValidationStrategy<Principa
         List<Long> activityIds = (List<Long>) inActionContext.getParams();
         Long principalId = inActionContext.getPrincipal().getId();
 
-        List<ActivityDTO> activities = activityMapper.execute(activityIds, null);
+        List<ActivityDTO> activities = activityMapper.execute(activityIds);
 
         for (ActivityDTO activity : activities)
         {

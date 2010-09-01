@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.server.action.authorization.stream;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -24,7 +24,7 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.strategies.ActivityDeletePropertyStrategy;
 
 /**
@@ -39,7 +39,7 @@ public class DeleteActivityAuthorization implements AuthorizationStrategy<Princi
     /**
      * DAO for looking up activity by id.
      */
-    private BulkActivitiesMapper activityDAO;
+    private DomainMapper<List<Long>, List<ActivityDTO>>  activityDAO;
 
     /**
      * Strategy used to set deletable property of an activityDTO.
@@ -54,7 +54,7 @@ public class DeleteActivityAuthorization implements AuthorizationStrategy<Princi
      * @param inActivityDeletePropertySetter
      *            Strategy used to set deletable property of an activityDTO.
      */
-    public DeleteActivityAuthorization(final BulkActivitiesMapper inActivityByIdDAO,
+    public DeleteActivityAuthorization(final DomainMapper<List<Long>, List<ActivityDTO>>  inActivityByIdDAO,
             final ActivityDeletePropertyStrategy inActivityDeletePropertySetter)
     {
         activityDAO = inActivityByIdDAO;
@@ -102,12 +102,7 @@ public class DeleteActivityAuthorization implements AuthorizationStrategy<Princi
     @SuppressWarnings("serial")
     private ActivityDTO getActivityById(final long inActivityId)
     {
-        List<ActivityDTO> activities = activityDAO.execute(new ArrayList<Long>()
-        {
-            {
-                add(inActivityId);
-            }
-        }, null);
+        List<ActivityDTO> activities = activityDAO.execute(Arrays.asList(inActivityId));
         if (activities.size() == 0)
         {
             log.error("Unable to locate activity with id: " + inActivityId);

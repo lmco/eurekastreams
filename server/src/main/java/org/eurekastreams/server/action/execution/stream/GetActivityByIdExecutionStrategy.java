@@ -17,16 +17,19 @@ package org.eurekastreams.server.action.execution.stream;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetCommentsById;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrderedCommentIdsByActivityId;
+import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.persistence.strategies.CommentDeletePropertyStrategy;
 import org.eurekastreams.server.search.modelview.CommentDTO;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
 
 /**
@@ -37,7 +40,7 @@ public class GetActivityByIdExecutionStrategy implements ExecutionStrategy<Princ
     /**
      * Mapper to get the actual Activities.
      */
-    private BulkActivitiesMapper bulkActivitiesMapper;
+    private DomainMapper<List<Long>, List<ActivityDTO>> bulkActivitiesMapper;
 
     /**
      * DAO for finding comment ids.
@@ -60,8 +63,13 @@ public class GetActivityByIdExecutionStrategy implements ExecutionStrategy<Princ
     private List<ActivityFilter> filters;
 
     /**
+     * People mapper.
+     */
+    private GetPeopleByAccountIds peopleMapper;
+
+    /**
      * Constructor.
-     *
+     * 
      * @param inBulkActivitiesMapper
      *            Mapper to get the ActivitieDTOs.
      * @param inCommentIdsByActivityIdDAO
@@ -70,24 +78,27 @@ public class GetActivityByIdExecutionStrategy implements ExecutionStrategy<Princ
      *            DAO for finding comments by id.
      * @param inCommentDeletableSetter
      *            Strategy for setting deletable property on comments.
+     * @param inPeopleMapper
+     *            people mapper.
      * @param inFilters
      *            Filters to apply to activity List.
      */
-    public GetActivityByIdExecutionStrategy(final BulkActivitiesMapper inBulkActivitiesMapper,
+    public GetActivityByIdExecutionStrategy(final DomainMapper<List<Long>, List<ActivityDTO>> inBulkActivitiesMapper,
             final GetOrderedCommentIdsByActivityId inCommentIdsByActivityIdDAO,
             final GetCommentsById inCommentsByIdDAO, final CommentDeletePropertyStrategy inCommentDeletableSetter,
-            final List<ActivityFilter> inFilters)
+            final GetPeopleByAccountIds inPeopleMapper, final List<ActivityFilter> inFilters)
     {
         bulkActivitiesMapper = inBulkActivitiesMapper;
         commentIdsByActivityIdDAO = inCommentIdsByActivityIdDAO;
         commentsByIdDAO = inCommentsByIdDAO;
         commentDeletableSetter = inCommentDeletableSetter;
+        peopleMapper = inPeopleMapper;
         filters = inFilters;
     }
 
     /**
      * Gets a single ActivityDTO for a given activity ID.
-     *
+     * 
      * @param inActionContext
      *            the action context containing the id of the activity to fetch
      * @return the activityDTO or null if no matching activity was found.
@@ -102,11 +113,14 @@ public class GetActivityByIdExecutionStrategy implements ExecutionStrategy<Princ
         List<Long> activityKeys = new ArrayList<Long>();
         activityKeys.add(activityId);
 
-        List<ActivityDTO> results = new ArrayList<ActivityDTO>(bulkActivitiesMapper.execute(activityKeys, accountId));
+        List<ActivityDTO> results = new ArrayList<ActivityDTO>(bulkActivitiesMapper.execute(activityKeys));
 
+        PersonModelView person = peopleMapper.execute(Arrays.asList(accountId)).get(0);
+
+        // execute filter strategies.
         for (ActivityFilter filter : filters)
         {
-            results = filter.filter(results, accountId);
+            filter.filter(results, person);
         }
 
         // short-circuit if no results for activity.
@@ -123,7 +137,7 @@ public class GetActivityByIdExecutionStrategy implements ExecutionStrategy<Princ
 
     /**
      * Loads all the comments for a given Activity into the DTO.
-     *
+     * 
      * @param inUserAccountId
      *            the accountid of the user making this request.
      * @param inActivityDTO

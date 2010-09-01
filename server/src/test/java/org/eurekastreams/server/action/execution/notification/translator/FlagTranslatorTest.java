@@ -18,16 +18,18 @@ package org.eurekastreams.server.action.execution.notification.translator;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetOrgCoordinators;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -51,7 +53,7 @@ public class FlagTranslatorTest
     };
 
     /** Fixture: mapper. */
-    private BulkActivitiesMapper activitiesMapper = context.mock(BulkActivitiesMapper.class);
+    private DomainMapper<List<Long>, List<ActivityDTO>>  activitiesMapper = context.mock(DomainMapper.class);
 
     /** Fixture: mapper. */
     private GetOrgCoordinators coordinatorMapper = context.mock(GetOrgCoordinators.class);
@@ -86,8 +88,8 @@ public class FlagTranslatorTest
         context.checking(new Expectations()
         {
             {
-                allowing(activitiesMapper).execute(3L, null);
-                will(returnValue(activity));
+                allowing(activitiesMapper).execute(Arrays.asList(3L));
+                will(returnValue(Arrays.asList(activity)));
                 allowing(coordinatorMapper).execute(2L);
                 will(returnValue(recipients));
             }

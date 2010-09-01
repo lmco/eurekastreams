@@ -25,7 +25,7 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.action.request.opensocial.GetUserActivitiesRequest;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamFilter;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.CompositeStreamActivityIdsMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetStreamByOwnerId;
@@ -48,7 +48,7 @@ public class GetUserActivitiesExecution implements ExecutionStrategy<PrincipalAc
     /**
      * Local instance of the {@link BulkActivitiesMapper}.
      */
-    private final BulkActivitiesMapper bulkActivitiesMapper;
+    private final DomainMapper<List<Long>, List<ActivityDTO>>  bulkActivitiesMapper;
 
     /**
      * Local instance of the {@link CompositeStreamActivityIdsMapper} used to retrieve the list of activity ids for the
@@ -74,7 +74,7 @@ public class GetUserActivitiesExecution implements ExecutionStrategy<PrincipalAc
      *            - instance of the {@link GetPeopleByOpenSocialIds} mapper.
      */
     public GetUserActivitiesExecution(final GetStreamByOwnerId inGetStreamByOwnerId,
-            final BulkActivitiesMapper inBulkActivitiesMapper,
+            final DomainMapper<List<Long>, List<ActivityDTO>>  inBulkActivitiesMapper,
             final CompositeStreamActivityIdsMapper inCompositeStreamActivityIdsMapper,
             final GetPeopleByOpenSocialIds inGetPeopleByOpenSocialIds)
     {
@@ -114,7 +114,7 @@ public class GetUserActivitiesExecution implements ExecutionStrategy<PrincipalAc
                 activityIds.addAll(compositeStreamActivityIdsMapper.execute(currentUserStreamView.getId(), currentUser
                         .getEntityId()));
 
-                currentActivityDTOs.addAll(bulkActivitiesMapper.execute(activityIds, currentUser.getAccountId()));
+                currentActivityDTOs.addAll(bulkActivitiesMapper.execute(activityIds));
             }
         }
 
