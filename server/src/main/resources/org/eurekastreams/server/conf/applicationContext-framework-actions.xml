@@ -4255,6 +4255,57 @@
 		<constructor-arg value="true" />
 	</bean>
 		
+	<bean id="getConsumerInfo" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.action.execution.opensocial.GetConsumerInfoExecution">
+				<constructor-arg ref="jpaOAuthConsumerMapper" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="true" />
+	</bean>	
+
+	<bean id="getConsumerTokenInfo" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.action.execution.opensocial.GetConsumerTokenInfoExecution">
+				<constructor-arg ref="jpaOAuthConsumerMapper" />
+				<constructor-arg ref="jpaOAuthTokenMapper" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="true" />
+	</bean>	
+
+	<bean id="setConsumerTokenInfo" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.action.execution.opensocial.SetConsumerTokenInfoExecution">
+				<constructor-arg ref="jpaOAuthConsumerMapper" />
+				<constructor-arg ref="jpaOAuthTokenMapper" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="false" />
+	</bean>	
+
+	<bean id="removeConsumerToken" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.action.execution.opensocial.RemoveConsumerTokenExecution">
+				<constructor-arg ref="jpaOAuthConsumerMapper" />
+				<constructor-arg ref="jpaOAuthTokenMapper" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="false" />
+	</bean>	
+
     <bean id="emailerFactory"
         class="org.eurekastreams.server.service.actions.strategies.EmailerFactory">
         <constructor-arg value="smtp" />

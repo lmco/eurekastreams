@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,61 +15,97 @@
  */
 package org.eurekastreams.server.service.opensocial.gadgets.oauth;
 
-import net.oauth.OAuth;
 import net.oauth.OAuthServiceProvider;
 
+import org.apache.commons.logging.Log;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.oauth.OAuthStore;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.eurekastreams.server.domain.OAuthConsumer;
-import org.eurekastreams.server.domain.OAuthToken;
-import org.eurekastreams.server.persistence.OAuthConsumerMapper;
-import org.eurekastreams.server.persistence.OAuthTokenMapper;
+import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
+import org.eurekastreams.commons.actions.service.ServiceAction;
+import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.logging.LogFactory;
+import org.eurekastreams.commons.server.service.ActionController;
+import org.eurekastreams.server.action.request.opensocial.GetConsumerInfoRequest;
+import org.eurekastreams.server.action.request.opensocial.GetConsumerTokenInfoRequest;
+import org.eurekastreams.server.action.request.opensocial.RemoveConsumerTokenRequest;
+import org.eurekastreams.server.action.request.opensocial.SetConsumerTokenInfoRequest;
+import org.eurekastreams.server.action.response.opensocial.ConsumerInfoResponse;
+import org.eurekastreams.server.action.response.opensocial.TokenInfoResponse;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 /**
- * Implementation of OAuthStore that uses mappers to retrieve and persist OAuth tokens and consumers.
- * This implementation covers Shindig's role as an OAuth Proxy for Gadgets wishing to use external OAuth resources.
+ * {@link OAuthStore} implementation that uses action framework to retrieve and persist OAuth tokens and consumers. This
+ * implementation covers Shindig's role as an OAuth Proxy for Gadgets wishing to use external OAuth resources.
  */
 public class OAuthStoreImpl implements OAuthStore
 {
     /**
-     * Instance of OAuth consumer mapper injected by spring.
+     * Local instance of logger.
      */
-    private OAuthConsumerMapper consumerMapper;
+    private Log logger = LogFactory.make();
 
     /**
-     * Instance of OAuth token mapper injected by spring.
+     * Instance of the {@link ActionController} for this class.
      */
-    private OAuthTokenMapper tokenMapper;
+    @Inject
+    private ActionController actionController;
 
     /**
-     * Instance of the transaction manager injected by spring for mapper calls.
+     * Instance of the getConsumerInfo Service Action.
      */
-    private PlatformTransactionManager transMgr = null;
+    private final ServiceAction getConsumerInfoAction;
+
+    /**
+     * Instance of the setConsumerTokenInfo Service Action.
+     */
+    private final ServiceAction setConsumerTokenInfoAction;
+
+    /**
+     * Instance of the getConsumerTokenInfo Service Action.
+     */
+    private final ServiceAction getConsumerTokenInfoAction;
+
+    /**
+     * Instance of the removeConsumerToken Service Action.
+     */
+    private final ServiceAction removeConsumerTokenAction;
 
     /**
      * Constructor.
      * 
-     * @param inConsumerMapper
-     *            the consumer mapper to initialize with.
-     * @param inTokenMapper
-     *            the token mapper to initialize with.
-     * @param inTransMgr
-     *            the transaction manager to initialize with.
+     * @param inGetConsumerInfoAction
+     *            instance of {@link ServiceAction} for CreateOAuthRequestToken Service Action.
+     * @param inSetConsumerTokenInfoAction
+     *            instance of {@link ServiceAction} for OAuthAuthorize.
+     * @param inGetConsumerTokenInfoAction
+     *            instance of UpdateRequestToAccessToken {@link ServiceAction}.
+     * @param inRemoveConsumerTokenAction
+     *            instance of GetOAuthEntryByToken {@link ServiceAction}.
      */
     @Inject
-    public OAuthStoreImpl(final OAuthConsumerMapper inConsumerMapper, final OAuthTokenMapper inTokenMapper,
-            final PlatformTransactionManager inTransMgr)
+    public OAuthStoreImpl(@Named("getConsumerInfo") final ServiceAction inGetConsumerInfoAction,
+            @Named("setConsumerTokenInfo") final ServiceAction inSetConsumerTokenInfoAction,
+            @Named("getConsumerTokenInfo") final ServiceAction inGetConsumerTokenInfoAction,
+            @Named("removeConsumerToken") final ServiceAction inRemoveConsumerTokenAction)
     {
-        this.consumerMapper = inConsumerMapper;
-        this.tokenMapper = inTokenMapper;
-        this.transMgr = inTransMgr;
+        getConsumerInfoAction = inGetConsumerInfoAction;
+        setConsumerTokenInfoAction = inSetConsumerTokenInfoAction;
+        getConsumerTokenInfoAction = inGetConsumerTokenInfoAction;
+        removeConsumerTokenAction = inRemoveConsumerTokenAction;
+    }
+
+    /**
+     * Setter.
+     * 
+     * @param inServiceActionController
+     *            instance of the {@link ActionController}.
+     */
+    public void setServiceActionController(final ActionController inServiceActionController)
+    {
+        actionController = inServiceActionController;
     }
 
     /**
@@ -88,16 +124,22 @@ public class OAuthStoreImpl implements OAuthStore
     public ConsumerInfo getConsumerKeyAndSecret(final SecurityToken securityToken, final String serviceName,
             final OAuthServiceProvider provider) throws GadgetException
     {
-        OAuthConsumer oauthConsumer = consumerMapper.findConsumerByServiceNameAndGadgetUrl(serviceName, securityToken
-                .getAppUrl());
-        if (oauthConsumer == null)
+        ConsumerInfo consumerInfo = null;
+        try
         {
-            throw new GadgetException(GadgetException.Code.INVALID_CONFIG, "OAuth Consumer was not found");
+            GetConsumerInfoRequest request = new GetConsumerInfoRequest(securityToken, serviceName, provider);
+            ServiceActionContext currentContext = new ServiceActionContext(request, null);
+            ConsumerInfoResponse response = (ConsumerInfoResponse) actionController.execute(currentContext,
+                    getConsumerInfoAction);
+            consumerInfo = response.getConsumerInfo();
         }
-        net.oauth.OAuthConsumer consumer = new net.oauth.OAuthConsumer(oauthConsumer.getCallbackURL(), oauthConsumer
-                .getConsumerKey(), oauthConsumer.getConsumerSecret(), provider);
-        consumer.setProperty(OAuth.OAUTH_SIGNATURE_METHOD, oauthConsumer.getSignatureMethod());
-        return new ConsumerInfo(consumer, null, oauthConsumer.getCallbackURL());
+        catch (Exception ex)
+        {
+            logger.error("Error occurred getting consumer info.", ex);
+            throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR, ex.getMessage());
+        }
+
+        return consumerInfo;
     }
 
     /**
@@ -119,39 +161,22 @@ public class OAuthStoreImpl implements OAuthStore
     public void setTokenInfo(final SecurityToken securityToken, final ConsumerInfo consumerInfo,
             final String serviceName, final String tokenName, final TokenInfo tokenInfo) throws GadgetException
     {
-        DefaultTransactionDefinition transDef = new DefaultTransactionDefinition();
-        transDef.setName("UpdateTransaction");
-        transDef.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-        TransactionStatus transStatus = transMgr.getTransaction(transDef);
-        boolean isNullConsumer = true;
         try
         {
-            OAuthConsumer consumer = consumerMapper.findConsumerByServiceNameAndGadgetUrl(serviceName, securityToken
-                    .getAppUrl());
-            if (consumer != null)
-            {
-                isNullConsumer = false;
-                OAuthToken token = new OAuthToken(consumer, securityToken.getViewerId(), securityToken.getOwnerId(),
-                        tokenInfo.getAccessToken(), tokenInfo.getTokenSecret());
-                token.setTokenExpireMillis(tokenInfo.getTokenExpireMillis());
-                tokenMapper.insert(token);
-                transMgr.commit(transStatus);
-            }
+            SetConsumerTokenInfoRequest request = new SetConsumerTokenInfoRequest(securityToken, consumerInfo,
+                    serviceName, tokenName, tokenInfo);
+            ServiceActionContext currentContext = new ServiceActionContext(request, null);
+            actionController.execute(currentContext, setConsumerTokenInfoAction);
         }
-        catch (Exception ex)
+        catch (ExecutionException ex)
         {
-            transMgr.rollback(transStatus);
-            throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR, "An error occurred saving the data.");
-        }
-
-        if (isNullConsumer)
-        {
-            throw new GadgetException(GadgetException.Code.INVALID_CONFIG, "OAuth Consumer was not found");
+            logger.error("Error occurred setting consumer token info.", ex);
+            throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR, ex.getMessage());
         }
     }
 
     /**
-     * Retreives the token from the store or null if the token was not found or has expired.
+     * Retrieves the token from the store or null if the token was not found or has expired.
      * 
      * @param securityToken
      *            the token itself.
@@ -168,18 +193,26 @@ public class OAuthStoreImpl implements OAuthStore
     public TokenInfo getTokenInfo(final SecurityToken securityToken, final ConsumerInfo consumerInfo,
             final String serviceName, final String tokenName) throws GadgetException
     {
-        OAuthConsumer consumer = consumerMapper.findConsumerByServiceNameAndGadgetUrl(serviceName, securityToken
-                .getAppUrl());
-        if (consumer == null)
+        TokenInfo tokenInfo = null;
+        try
         {
-            throw new GadgetException(GadgetException.Code.INVALID_CONFIG, "OAuth Consumer was not found");
+            GetConsumerTokenInfoRequest request = new GetConsumerTokenInfoRequest(securityToken, consumerInfo,
+                    serviceName, tokenName);
+            ServiceActionContext currentContext = new ServiceActionContext(request, null);
+            TokenInfoResponse response = (TokenInfoResponse) actionController.execute(currentContext,
+                    getConsumerTokenInfoAction);
+            if (response != null)
+            {
+                tokenInfo = response.getTokenInfo();
+            }
         }
-        OAuthToken token = tokenMapper.findToken(consumer, securityToken.getViewerId(), securityToken.getOwnerId());
-        if (token != null)
+        catch (Exception ex)
         {
-            return new TokenInfo(token.getAccessToken(), token.getTokenSecret(), null, token.getTokenExpireMillis());
+            logger.error("Error occurred getting consumer token info.", ex);
+            throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR, ex.getMessage());
         }
-        return null;
+
+        return tokenInfo;
     }
 
     /**
@@ -199,32 +232,17 @@ public class OAuthStoreImpl implements OAuthStore
     public void removeToken(final SecurityToken securityToken, final ConsumerInfo consumerInfo,
             final String serviceName, final String tokenName) throws GadgetException
     {
-        DefaultTransactionDefinition transDef = new DefaultTransactionDefinition();
-        transDef.setName("RemoveTokenTransaction");
-        transDef.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-        TransactionStatus transStatus = transMgr.getTransaction(transDef);
-        boolean isNullConsumer = true;
         try
         {
-            OAuthConsumer consumer = consumerMapper.findConsumerByServiceNameAndGadgetUrl(serviceName, securityToken
-                    .getAppUrl());
-            if (consumer != null)
-            {
-                isNullConsumer = false;
-                tokenMapper.delete(consumer, securityToken.getViewerId(), securityToken.getOwnerId());
-                transMgr.commit(transStatus);
-            }
+            RemoveConsumerTokenRequest request = new RemoveConsumerTokenRequest(securityToken, consumerInfo,
+                    serviceName, tokenName);
+            ServiceActionContext currentContext = new ServiceActionContext(request, null);
+            actionController.execute(currentContext, removeConsumerTokenAction);
         }
-        catch (Exception ex)
+        catch (ExecutionException ex)
         {
-            transMgr.rollback(transStatus);
-            throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR,
-                    "An error occurred removing the data.");
-        }
-
-        if (isNullConsumer)
-        {
-            throw new GadgetException(GadgetException.Code.INVALID_CONFIG, "OAuth Consumer was not found");
+            logger.error("Error occurred removing consumer token.", ex);
+            throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR, ex.getMessage());
         }
     }
 }
