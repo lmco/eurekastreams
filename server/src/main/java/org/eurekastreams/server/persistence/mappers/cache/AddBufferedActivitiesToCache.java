@@ -22,7 +22,7 @@ import java.util.List;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamView;
 import org.eurekastreams.server.domain.stream.StreamView.Type;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
@@ -35,7 +35,7 @@ public class AddBufferedActivitiesToCache extends CachedDomainMapper
     /**
      * The bulk activities mapper.
      */
-    private BulkActivitiesMapper bulkActivitiesMapper;
+    private DomainMapper<List<Long>, List<ActivityDTO>>  bulkActivitiesMapper;
     /**
      * Cache.
      */
@@ -61,7 +61,7 @@ public class AddBufferedActivitiesToCache extends CachedDomainMapper
      *            Gets the associated stream views given an activity.
      * @param inGetCoreStreamViewIdCacheMapper - mapper to retrieve the Everyone Stream View Id from cache.
      */
-    public AddBufferedActivitiesToCache(final BulkActivitiesMapper inBulkActivitiesMapper,
+    public AddBufferedActivitiesToCache(final DomainMapper<List<Long>, List<ActivityDTO>>  inBulkActivitiesMapper,
             final MemcachedCache inCache,
             final GetCompositeStreamIdsByAssociatedActivity inGetCompositeStreamsByActivity,
             final GetCoreStreamViewIdCacheMapper inGetCoreStreamViewIdCacheMapper)
@@ -79,7 +79,7 @@ public class AddBufferedActivitiesToCache extends CachedDomainMapper
     public Boolean execute()
     {
         List<Long> activityIds = cache.setListCAS(CacheKeys.BUFFERED_ACTIVITIES, null);
-        List<ActivityDTO> activites = bulkActivitiesMapper.execute(activityIds, null);
+        List<ActivityDTO> activites = bulkActivitiesMapper.execute(activityIds);
 
         HashMap<Long, ArrayList<Long>> activitesByCompositeStream = new HashMap<Long, ArrayList<Long>>();
         HashMap<Long, ArrayList<Long>> activitesByFollower = new HashMap<Long, ArrayList<Long>>();

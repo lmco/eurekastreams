@@ -202,8 +202,6 @@ public class PostActivityAsyncExecutionStrategyTest
 
                 oneOf(hashTagMapper).execute(hashTagContents);
                 will(returnValue(hashTags));
-
-                oneOf(activityMock).setHashTags(hashTagSet);
             }
         });
 

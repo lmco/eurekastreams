@@ -16,7 +16,6 @@
 package org.eurekastreams.server.persistence.mappers.db;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.eurekastreams.commons.hibernate.ModelViewResultTransformer;
@@ -35,8 +34,8 @@ import org.hibernate.criterion.Restrictions;
 /**
  * Maps activity security information from the DB.
  */
-public class BulkActivitySecurityDbMapper extends BaseArgDomainMapper<List<Long>, Collection<ActivitySecurityDTO>>
-        implements DomainMapper<List<Long>, Collection<ActivitySecurityDTO>>
+public class BulkActivitySecurityDbMapper extends BaseArgDomainMapper<List<Long>, List<ActivitySecurityDTO>>
+        implements DomainMapper<List<Long>, List<ActivitySecurityDTO>>
 {
     /**
      * The stream mapper.
@@ -57,7 +56,7 @@ public class BulkActivitySecurityDbMapper extends BaseArgDomainMapper<List<Long>
      *            the request of activity IDs..
      * @return security information for the activites in the request.
      */
-    public Collection<ActivitySecurityDTO> execute(final List<Long> inRequest)
+    public List<ActivitySecurityDTO> execute(final List<Long> inRequest)
     {
         if (inRequest.size() == 0)
         {

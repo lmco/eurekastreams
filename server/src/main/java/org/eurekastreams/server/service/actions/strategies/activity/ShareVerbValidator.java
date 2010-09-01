@@ -19,16 +19,16 @@ package org.eurekastreams.server.service.actions.strategies.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eurekastreams.commons.exceptions.ValidationException;
+import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.commons.exceptions.ValidationException;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
 /**
  * Class that performs the validation for Share activities.
@@ -39,7 +39,7 @@ public class ShareVerbValidator implements ActivityValidator
     /**
      * Local instance of the activity mapper.
      */
-    private BulkActivitiesMapper activityMapper;
+    private DomainMapper<List<Long>, List<ActivityDTO>>  activityMapper;
 
     /**
      * Local instance of the TransactionManager to be injected.
@@ -63,7 +63,7 @@ public class ShareVerbValidator implements ActivityValidator
      * @param inGroupShortNameCacheMapper
      *            The mapper to get a group by short name. needed because private group activities can not be shared.
      */
-    public ShareVerbValidator(final BulkActivitiesMapper inActivityMapper,
+    public ShareVerbValidator(final DomainMapper<List<Long>, List<ActivityDTO>>  inActivityMapper,
             final PlatformTransactionManager inTransManager,
             final GetDomainGroupsByShortNames inGroupShortNameCacheMapper)
     {
@@ -114,7 +114,7 @@ public class ShareVerbValidator implements ActivityValidator
         List<ActivityDTO> originalActivityResults;
         try
         {
-            originalActivityResults = activityMapper.execute(activityIds, null);
+            originalActivityResults = activityMapper.execute(activityIds);
 
             // If the original activity cannot be found throw an error right away.
             if (originalActivityResults.size() == 0)

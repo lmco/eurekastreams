@@ -26,8 +26,8 @@ import java.util.List;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetCommentorIdsByActivityId;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetCoordinatorIdsByGroupId;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -52,7 +52,7 @@ public class GroupCommentTranslatorTest
     private GetCommentorIdsByActivityId commentorsMapper = context.mock(GetCommentorIdsByActivityId.class);
 
     /** Mock activities mapper. */
-    private BulkActivitiesMapper activitiesMapper = context.mock(BulkActivitiesMapper.class);
+    private DomainMapper<List<Long>, List<ActivityDTO>>  activitiesMapper = context.mock(DomainMapper.class);
 
     /** Mock activities mapper. */
     private GetCoordinatorIdsByGroupId coordinatorsMapper = context.mock(GetCoordinatorIdsByGroupId.class);
@@ -101,8 +101,8 @@ public class GroupCommentTranslatorTest
                 oneOf(coordinatorsMapper).execute(DESTINATION_ID);
                 will(returnValue(new ArrayList(coordinators)));
 
-                oneOf(activitiesMapper).execute(ACTIVITY_ID, null);
-                will(returnValue(activity));
+                oneOf(activitiesMapper).execute(Arrays.asList(ACTIVITY_ID));
+                will(returnValue(Arrays.asList(activity)));
 
                 oneOf(commentorsMapper).execute(ACTIVITY_ID);
                 will(returnValue(Collections.singletonList(COMMENTOR)));
@@ -131,8 +131,8 @@ public class GroupCommentTranslatorTest
         context.checking(new Expectations()
         {
             {
-                oneOf(activitiesMapper).execute(ACTIVITY_ID, null);
-                will(returnValue(activity));
+                oneOf(activitiesMapper).execute(Arrays.asList(ACTIVITY_ID));
+                will(returnValue(Arrays.asList(activity)));
 
                 oneOf(commentorsMapper).execute(ACTIVITY_ID);
                 will(returnValue(Collections.singletonList(COMMENTOR)));

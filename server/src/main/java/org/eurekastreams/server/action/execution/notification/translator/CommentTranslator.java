@@ -16,6 +16,7 @@
 package org.eurekastreams.server.action.execution.notification.translator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,8 +27,8 @@ import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetCommentorIdsByActivityId;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 
 /**
  * Translates the event of someone commenting on a post to appropriate notifications.
@@ -42,7 +43,7 @@ public class CommentTranslator implements NotificationTranslator
     /**
      * Mapper to get activity details.
      */
-    BulkActivitiesMapper activitiesMapper;
+    DomainMapper<List<Long>, List<ActivityDTO>>  activitiesMapper;
 
     /**
      * Constructor.
@@ -53,7 +54,7 @@ public class CommentTranslator implements NotificationTranslator
      *            activities mapper to set.
      */
     public CommentTranslator(final GetCommentorIdsByActivityId inCommentorsMapper,
-            final BulkActivitiesMapper inActivitiesMapper)
+            final DomainMapper<List<Long>, List<ActivityDTO>>  inActivitiesMapper)
     {
         commentorsMapper = inCommentorsMapper;
         activitiesMapper = inActivitiesMapper;
@@ -76,7 +77,7 @@ public class CommentTranslator implements NotificationTranslator
     {
         List<NotificationDTO> notifications = new ArrayList<NotificationDTO>();
 
-        ActivityDTO activity = activitiesMapper.execute(inActivityId, null);
+        ActivityDTO activity = activitiesMapper.execute(Arrays.asList(inActivityId)).get(0);
         if (activity != null)
         {
             Map<NotificationType, List<Long>> recipients = new HashMap<NotificationType, List<Long>>();

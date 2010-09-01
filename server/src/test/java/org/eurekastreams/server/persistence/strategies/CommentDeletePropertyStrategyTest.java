@@ -135,6 +135,27 @@ public class CommentDeletePropertyStrategyTest
                 new CommentDeletePropertyStrategy(personByAccountIdDAO, groupByShortNameDAO, groupAccessMapper,
                         orgCoordinatorDAO);
     }
+    
+
+    /**
+     * Test execute with user who can delete parent activity.
+     */
+    @Test
+    public void testExecuteUserCanDeleteParent()
+    {
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(parentActivity).isDeletable();
+                will(returnValue(true));
+
+                oneOf(comment).setDeletable(true);
+            }
+        });
+
+        sut.execute(userAcctId, parentActivity, comments);
+        context.assertIsSatisfied();
+    }
 
     /**
      * Test execute with user as stream owner.
@@ -153,6 +174,9 @@ public class CommentDeletePropertyStrategyTest
 
                 oneOf(activityDestinationStream).getUniqueIdentifier();
                 will(returnValue(userAcctId));
+                
+                oneOf(parentActivity).isDeletable();
+                will(returnValue(false));
 
                 oneOf(comment).setDeletable(true);
             }
@@ -185,6 +209,9 @@ public class CommentDeletePropertyStrategyTest
 
                 oneOf(groupByShortNameDAO).fetchId(groupShortName);
                 will(returnValue(groupId));
+                
+                oneOf(parentActivity).isDeletable();
+                will(returnValue(false));
 
                 oneOf(groupAccessMapper).hasGroupCoordinatorAccessRecursively(userPersonId, groupId);
                 will(returnValue(true));
@@ -231,6 +258,10 @@ public class CommentDeletePropertyStrategyTest
 
                 oneOf(comment).getAuthorId();
                 will(returnValue(userPersonId));
+                
+                oneOf(parentActivity).isDeletable();
+                will(returnValue(false));
+
 
                 oneOf(comment).setDeletable(true);
             }
@@ -270,6 +301,9 @@ public class CommentDeletePropertyStrategyTest
 
                 allowing(personByAccountIdDAO).fetchId(userAcctId);
                 will(returnValue(userPersonId));
+                
+                oneOf(parentActivity).isDeletable();
+                will(returnValue(false));
 
                 oneOf(comment).setDeletable(true);
             }
@@ -313,6 +347,9 @@ public class CommentDeletePropertyStrategyTest
 
                 oneOf(comment).getAuthorId();
                 will(returnValue(1L));
+                
+                oneOf(parentActivity).isDeletable();
+                will(returnValue(false));
 
                 oneOf(comment).setDeletable(false);
             }

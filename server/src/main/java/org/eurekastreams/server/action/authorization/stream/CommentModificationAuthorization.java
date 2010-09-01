@@ -16,6 +16,7 @@
 package org.eurekastreams.server.action.authorization.stream;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -24,7 +25,7 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetCommentsById;
 import org.eurekastreams.server.persistence.strategies.CommentDeletePropertyStrategy;
 import org.eurekastreams.server.search.modelview.CommentDTO;
@@ -50,7 +51,7 @@ public class CommentModificationAuthorization implements AuthorizationStrategy<P
     /**
      * DAO for looking up activity by id.
      */
-    private BulkActivitiesMapper activityDAO;
+    private DomainMapper<List<Long>, List<ActivityDTO>> activityDAO;
 
     /**
      * Strategy for setting Deletable property on CommentDTOs.
@@ -68,7 +69,8 @@ public class CommentModificationAuthorization implements AuthorizationStrategy<P
      *            Strategy for setting comment deletable property.
      */
     public CommentModificationAuthorization(final GetCommentsById inCommentDAO,
-            final BulkActivitiesMapper inActivityDAO, final CommentDeletePropertyStrategy inCommentDeletableSetter)
+            final DomainMapper<List<Long>, List<ActivityDTO>> inActivityDAO,
+            final CommentDeletePropertyStrategy inCommentDeletableSetter)
     {
         commentDAO = inCommentDAO;
         activityDAO = inActivityDAO;
@@ -148,12 +150,7 @@ public class CommentModificationAuthorization implements AuthorizationStrategy<P
     @SuppressWarnings("serial")
     private ActivityDTO getParentActivity(final CommentDTO inCommentDTO, final String inCurrentUserAcctId)
     {
-        List<ActivityDTO> activities = activityDAO.execute(new ArrayList<Long>()
-        {
-            {
-                add(inCommentDTO.getActivityId());
-            }
-        }, inCurrentUserAcctId);
+        List<ActivityDTO> activities = activityDAO.execute(Arrays.asList(inCommentDTO.getActivityId()));
         if (activities.size() == 0)
         {
             log.error("Unable to locate activity with id: " + inCommentDTO.getActivityId() + ". User : "

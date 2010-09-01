@@ -28,11 +28,11 @@ import org.eurekastreams.server.action.request.stream.PostActivityRequest;
 import org.eurekastreams.server.action.validation.stream.PostActivityTestHelpers;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.InsertMapper;
 import org.eurekastreams.server.persistence.mappers.cache.PostActivityUpdateStreamsByActorMapper;
 import org.eurekastreams.server.persistence.mappers.requests.InsertActivityCommentRequest;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 import org.eurekastreams.server.persistence.mappers.stream.InsertActivityComment;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.eurekastreams.server.service.actions.strategies.RecipientRetriever;
@@ -81,7 +81,7 @@ public class PostActivityExecutionStrategyTest
     /**
      * Mocked test instance of the {@link BulkActivitiesMapper}.
      */
-    private final BulkActivitiesMapper activitiesMapperMock = context.mock(BulkActivitiesMapper.class);
+    private final DomainMapper<List<Long>, List<ActivityDTO>>  activitiesMapperMock = context.mock(DomainMapper.class);
 
     /**
      * Mocked test instance of the {@link RecipientRetriever}.
@@ -163,7 +163,7 @@ public class PostActivityExecutionStrategyTest
 
                 oneOf(activityInsertMapperMock).flush();
 
-                oneOf(activitiesMapperMock).execute(with(any(List.class)), with(any(String.class)));
+                oneOf(activitiesMapperMock).execute(with(any(List.class)));
                 will(returnValue(activityResults));
 
                 oneOf(updateStreamsByActorMapperMock).execute(currentActivity);
@@ -210,7 +210,7 @@ public class PostActivityExecutionStrategyTest
 
                 oneOf(activityInsertMapperMock).flush();
 
-                oneOf(activitiesMapperMock).execute(with(any(List.class)), with(any(String.class)));
+                oneOf(activitiesMapperMock).execute(with(any(List.class)));
                 will(returnValue(activityResults));
 
                 oneOf(updateStreamsByActorMapperMock).execute(currentActivity);

@@ -16,6 +16,7 @@
 package org.eurekastreams.server.action.execution.notification.translator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -25,8 +26,8 @@ import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetOrgCoordinators;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 
 /**
  * Translates the event of someone flagging an activity to appropriate notifications.
@@ -34,20 +35,21 @@ import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 public class FlagTranslator implements NotificationTranslator
 {
     /** For getting activity details. */
-    private BulkActivitiesMapper activitiesMapper;
+    private DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper;
 
     /** For getting org coordinators. */
     private GetOrgCoordinators coordinatorMapper;
 
     /**
      * Constructor.
-     *
+     * 
      * @param inActivitiesMapper
      *            For getting activity details.
      * @param inCoordinatorMapper
      *            For getting org coordinators.
      */
-    public FlagTranslator(final BulkActivitiesMapper inActivitiesMapper, final GetOrgCoordinators inCoordinatorMapper)
+    public FlagTranslator(final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper,
+            final GetOrgCoordinators inCoordinatorMapper)
     {
         activitiesMapper = inActivitiesMapper;
         coordinatorMapper = inCoordinatorMapper;
@@ -56,7 +58,7 @@ public class FlagTranslator implements NotificationTranslator
     /**
      * This method takes the activity and gets a list of all the org coordinators who are responsible for the person or
      * group to whose stream the activity was posted. Those will be the recipients.
-     *
+     * 
      * {@inheritDoc}
      */
     @Override
@@ -64,16 +66,14 @@ public class FlagTranslator implements NotificationTranslator
             final long inActivityId)
     {
         // Get the activity
-        ActivityDTO activity = activitiesMapper.execute(inActivityId, null);
+        ActivityDTO activity = activitiesMapper.execute(Arrays.asList(inActivityId)).get(0);
         StreamEntityDTO stream = activity.getDestinationStream();
-        NotificationType type =
-                EntityType.PERSON == stream.getType() ? NotificationType.FLAG_PERSONAL_ACTIVITY
-                        : NotificationType.FLAG_GROUP_ACTIVITY;
+        NotificationType type = EntityType.PERSON == stream.getType() ? NotificationType.FLAG_PERSONAL_ACTIVITY
+                : NotificationType.FLAG_GROUP_ACTIVITY;
 
         // Get the list of coordinators for the org which owns the entity (person/group) in whose stream the activity
         // was posted
-        List<Long> coordinatorIds =
-                new ArrayList<Long>(coordinatorMapper.execute(activity.getRecipientParentOrgId()));
+        List<Long> coordinatorIds = new ArrayList<Long>(coordinatorMapper.execute(activity.getRecipientParentOrgId()));
 
         NotificationDTO notif = new NotificationDTO(coordinatorIds, type, inActorId);
         notif.setDestination(activity.getRecipientParentOrgId(), EntityType.ORGANIZATION);

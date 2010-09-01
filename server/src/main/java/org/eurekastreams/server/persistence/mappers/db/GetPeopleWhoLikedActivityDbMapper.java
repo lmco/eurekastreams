@@ -15,28 +15,40 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 /**
  * Get the people who liked an activity.
- *
+ * 
  */
-public class GetPeopleWhoLikedActivityDbMapper extends BaseArgDomainMapper<Long, List<Long>>
+public class GetPeopleWhoLikedActivityDbMapper extends
+        BaseArgDomainMapper<Collection<Long>, Collection<Collection<Long>>>
 {
 
     /**
      * Execute.
-     * @param inRequest the request.
+     * 
+     * @param inRequest
+     *            the request.
      * @return the list of ids.
      */
     @SuppressWarnings("unchecked")
     @Override
-    public List<Long> execute(final Long inRequest)
+    public Collection<Collection<Long>> execute(final Collection<Long> inRequest)
     {
-        return getEntityManager().createQuery("SELECT pk.personId FROM LikedActivity WHERE activityId = :activityId")
-        .setParameter("activityId", inRequest).getResultList();
+        Collection<Collection<Long>> values = new ArrayList<Collection<Long>>();
+
+        for (Long activityId : inRequest)
+        {
+            values.add(getEntityManager().createQuery(
+                    "SELECT pk.personId FROM LikedActivity WHERE activityId = :activityId").setParameter("activityId",
+                    activityId).getResultList());
+        }
+
+        return values;
 
     }
 }

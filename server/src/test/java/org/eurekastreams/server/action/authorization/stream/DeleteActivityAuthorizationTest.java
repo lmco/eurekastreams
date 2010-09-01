@@ -16,12 +16,13 @@
 package org.eurekastreams.server.action.authorization.stream;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.strategies.ActivityDeletePropertyStrategy;
 import org.eurekastreams.server.service.security.userdetails.ExtendedUserDetails;
 import org.jmock.Expectations;
@@ -49,7 +50,7 @@ public class DeleteActivityAuthorizationTest
     /**
      * DAO for looking up activity by id.
      */
-    private BulkActivitiesMapper activityDAO = context.mock(BulkActivitiesMapper.class);
+    private DomainMapper<List<Long>, List<ActivityDTO>>  activityDAO = context.mock(DomainMapper.class);
 
     /**
      * Strategy for setting Deletable property on CommentDTOs.
@@ -142,7 +143,7 @@ public class DeleteActivityAuthorizationTest
                 allowing(principal).getAccountId();
                 will(returnValue(userAcctId));
 
-                oneOf(activityDAO).execute(activityIds, null);
+                oneOf(activityDAO).execute(activityIds);
                 will(returnValue(activities));
 
                 oneOf(activityDeletableSetter).execute(userAcctId, activity);
@@ -177,7 +178,7 @@ public class DeleteActivityAuthorizationTest
                 allowing(principal).getAccountId();
                 will(returnValue(userAcctId));
 
-                oneOf(activityDAO).execute(activityIds, null);
+                oneOf(activityDAO).execute(activityIds);
                 will(returnValue(activities));
 
                 oneOf(activityDeletableSetter).execute(userAcctId, activity);
@@ -209,7 +210,7 @@ public class DeleteActivityAuthorizationTest
                 allowing(principal).getAccountId();
                 will(returnValue(userAcctId));
 
-                oneOf(activityDAO).execute(activityIds, null);
+                oneOf(activityDAO).execute(activityIds);
                 will(returnValue(new ArrayList<ActivityDTO>(0)));
             }
         });
@@ -239,7 +240,7 @@ public class DeleteActivityAuthorizationTest
                 oneOf(principal).getAccountId();
                 will(throwException(new Exception()));
 
-                oneOf(activityDAO).execute(activityIds, null);
+                oneOf(activityDAO).execute(activityIds);
                 will(returnValue(activities));
             }
         });

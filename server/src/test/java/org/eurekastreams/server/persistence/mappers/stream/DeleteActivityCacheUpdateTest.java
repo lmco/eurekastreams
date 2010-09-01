@@ -20,12 +20,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eurekastreams.server.action.request.stream.DeleteActivityCacheUpdateRequest;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
+import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -57,7 +59,7 @@ public class DeleteActivityCacheUpdateTest extends CachedMapperTest
      * Activity by id DAO.
      */
     @Autowired
-    private BulkActivitiesMapper activityByIdDAO;
+    private BulkActivitiesDbMapper activityByIdDAO;
 
     /**
      * Comment ids by activity id DAO.
@@ -110,8 +112,12 @@ public class DeleteActivityCacheUpdateTest extends CachedMapperTest
     {
         loadAndVerifyInitialActivity();
 
-        ActivityDTO activity =
-            activityByIdDAO.execute(new ArrayList() { { add(activityId); } }, null).get(0);
+        List<ActivityDTO> activityList =
+            activityByIdDAO.execute(Arrays.asList(activityId));
+        
+        assertEquals(1, activityList.size());
+        
+        ActivityDTO activity = activityList.get(0);
         assertNotNull(activity);
 
         List<Long> commentIds = new ArrayList<Long>(3);
@@ -182,15 +188,12 @@ public class DeleteActivityCacheUpdateTest extends CachedMapperTest
         assertEquals(1, starredActivityIds.size());
 
         commentIdsByActivityIdDAO.execute(activityId);
-        List<Long> commentIds =
-            cache.getList(CacheKeys.COMMENT_IDS_BY_ACTIVITY_ID + activityId);
-        assertEquals(3, commentIds.size());
 
-        activityByIdDAO.execute(new ArrayList() { { add(activityId); } }, "smithers").get(0);
-        assertNotNull(cache.get(CacheKeys.ACTIVITY_BY_ID + activityId));
+        ActivityDTO activity = activityByIdDAO.execute(new ArrayList() { { add(activityId); } }).get(0);
 
-        assertNotNull(cache.get(CacheKeys.COMMENT_BY_ID + 1));
-        assertNotNull(cache.get(CacheKeys.COMMENT_BY_ID + 3));
+        cache.set(CacheKeys.ACTIVITY_BY_ID + activityId, activity);
+        cache.set(CacheKeys.COMMENT_BY_ID + 1, new CommentDTO());
+        cache.set(CacheKeys.COMMENT_BY_ID + 3, new CommentDTO());
     }
 
 

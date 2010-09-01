@@ -23,14 +23,11 @@
 	
 	<bean id="insertLikedActivity"
 		class="org.eurekastreams.server.persistence.mappers.InsertLikedActivity">
-		<constructor-arg ref="getLikedActivityIds" />
 		<property name="cache" ref="testCache" />
 	</bean>
 
-	<bean id="getLikedActivityIds"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetLikedActivityIds">
-		<property name="cache" ref="testCache" />
-	</bean>
+	<bean id="getLikedActivityIdsByUserId"
+		class="org.eurekastreams.server.persistence.mappers.db.GetLikedActivityIdsByUserIdsDbMapper" />
 
 	<bean id="deleteLikedActivity"
 		class="org.eurekastreams.server.persistence.mappers.DeleteLikedActivity">
@@ -53,7 +50,7 @@
     </bean>
 	<bean id="getEveryoneStreamIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetEveryoneStreamIdDbMapper" />
 	
-	    <bean id="getPeopleWhoLikedActivityDbMapper"
+	<bean id="getPeopleWhoLikedActivityDbMapper"
         class="org.eurekastreams.server.persistence.mappers.db.GetPeopleWhoLikedActivityDbMapper"/>
         
 	
@@ -232,17 +229,52 @@
 	<bean id="testCache"
 		class="org.eurekastreams.server.persistence.mappers.cache.testhelpers.SimpleMemoryCache" />
 
+
 	<bean id="bulkActivitiesMapper"
-		class="org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper">
-		<property name="starredActivitiesMapper" ref="getStarredActivityIds" />
-		<property name="streamMapper" ref="getStreamsByIds" />
-		<property name="peopleMapper" ref="bulkPeopleByAccountIdMapper" />
-		<property name="commentIdListDAO" ref="getOrderedCommentIdsByActivityId" />
-		<property name="commentsByIdDAO" ref="getCommentsById" />
-		<property name="commentDeletePropertySetter" ref="commentDeletePropertyStrategy" />
-		<property name="activityDeletePropertySetter" ref="activityDeletePropertyStrategy" />		
-		<property name="cache" ref="testCache" />
+		class="org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesDbMapper">
+		<constructor-arg ref="getStreamsByIds" />
+		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+		<constructor-arg ref="getOrderedCommentIdsByActivityId" />
+		<constructor-arg ref="getCommentsById" />
 	</bean>
+	
+	<bean
+		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITY_BY_ID"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
+
+	<bean id="bulkActivityMapperWithCache"
+		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
+				<constructor-arg>
+					<bean
+						class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
+				</constructor-arg>
+				<constructor-arg
+					ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITY_BY_ID" />
+				<constructor-arg value="False" />
+				<property name="cache" ref="testCache" />
+			</bean>
+		</constructor-arg>
+
+		<constructor-arg ref="bulkActivitiesMapper" />
+
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
+		</constructor-arg>
+
+		<constructor-arg>
+			<!-- Cache refresher -->
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.cache.BulkActivityRefresher">
+				<property name="cache" ref="testCache" />
+			</bean>
+		</constructor-arg>
+	</bean>
+
 	
 	<bean id="getOrgCoordinatorIdsFromDB" 
 		class="org.eurekastreams.server.persistence.mappers.db.GetOrgCoordinatorIds"/>
@@ -686,7 +718,7 @@
         class="org.eurekastreams.server.persistence.mappers.cache.AddCachedActivityToList">
         <property name="cache" ref="testCache" />
         <constructor-arg ref="compositeStreamActivityIdsMapper" />
-        <constructor-arg ref="bulkActivitiesMapper" />
+        <constructor-arg ref="bulkActivityMapperWithCache" />
         <constructor-arg ref="getStreamByPersonOwnerId" />
         <constructor-arg>
             <bean class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">

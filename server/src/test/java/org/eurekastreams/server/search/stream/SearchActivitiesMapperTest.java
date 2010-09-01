@@ -27,12 +27,12 @@ import org.eurekastreams.commons.search.ProjectionSearchRequestBuilder;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetStreamScopesByStreamViewId;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCache;
 import org.eurekastreams.server.persistence.mappers.requests.StreamSearchRequest;
 import org.eurekastreams.server.persistence.mappers.stream.BuildActivityStreamSearchStringForUser;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -187,7 +187,7 @@ public class SearchActivitiesMapperTest
     /**
      * Bulk activities mapper.
      */
-    private BulkActivitiesMapper bulkActivitiesMapper;
+    private DomainMapper<List<Long>, List<ActivityDTO>>  bulkActivitiesMapper;
 
     /**
      * PersonModelView for person A.
@@ -243,7 +243,7 @@ public class SearchActivitiesMapperTest
         streamViewActivityIdListPageFetcherFactoryMock = context.mock(StreamViewActivityIdListPageFetcherFactory.class);
         getStreamScopesByStreamViewIdMapper = context.mock(GetStreamScopesByStreamViewId.class);
         getDomainGroupsByShortNames = context.mock(GetDomainGroupsByShortNames.class);
-        bulkActivitiesMapper = context.mock(BulkActivitiesMapper.class);
+        bulkActivitiesMapper = context.mock(DomainMapper.class);
         activityIdSearchPageFetcherFactoryMock = context.mock(ActivityIdSearchPageFetcherFactory.class);
 
         // wire up the SUT
@@ -516,7 +516,7 @@ public class SearchActivitiesMapperTest
 
                 // and that those IDs were passed into the bulk activities
                 // mapper
-                oneOf(bulkActivitiesMapper).execute(activityIds, currentUserAccountId);
+                oneOf(bulkActivitiesMapper).execute(activityIds);
                 will(returnValue(results));
 
                 oneOf(getPeopleByAccountIdsMapperMock).fetchId(currentUserAccountId);
@@ -598,7 +598,7 @@ public class SearchActivitiesMapperTest
                 will(returnValue(currentUserId));
 
                 // make sure the DTO-fetcher was called
-                oneOf(bulkActivitiesMapper).execute(activityIds, currentUserAccountId);
+                oneOf(bulkActivitiesMapper).execute(activityIds);
                 will(returnValue(results));
             }
         });

@@ -30,8 +30,8 @@ import org.eurekastreams.server.action.request.notification.CreateNotificationsR
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.InsertActivityCommentRequest;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 import org.eurekastreams.server.persistence.mappers.stream.InsertActivityComment;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 
@@ -54,7 +54,7 @@ public class PostActivityCommentExecution implements TaskHandlerExecutionStrateg
     /**
      * Mapper to get activity dto.
      */
-    private BulkActivitiesMapper activitiesMapper;
+    private DomainMapper<List<Long>, List<ActivityDTO>>  activitiesMapper;
 
     /**
      * Constructor.
@@ -65,7 +65,7 @@ public class PostActivityCommentExecution implements TaskHandlerExecutionStrateg
      *            The activities mapper.
      */
     public PostActivityCommentExecution(final InsertActivityComment inInsertCommentDAO,
-            final BulkActivitiesMapper inActivitiesMapper)
+            final DomainMapper<List<Long>, List<ActivityDTO>>  inActivitiesMapper)
     {
         insertCommentDAO = inInsertCommentDAO;
         activitiesMapper = inActivitiesMapper;
@@ -109,7 +109,7 @@ public class PostActivityCommentExecution implements TaskHandlerExecutionStrateg
         List<UserActionRequest> queuedRequests = null;
 
         // need to get activity info to decide about notifying
-        ActivityDTO activityDTO = activitiesMapper.execute(Arrays.asList(activityId), null).get(0);
+        ActivityDTO activityDTO = activitiesMapper.execute(Arrays.asList(activityId)).get(0);
 
         // Sends notifications for new personal stream comments.
         StreamEntityDTO destination = activityDTO.getDestinationStream();

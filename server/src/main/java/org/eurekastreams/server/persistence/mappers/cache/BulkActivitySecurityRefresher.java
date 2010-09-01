@@ -16,7 +16,6 @@
 package org.eurekastreams.server.persistence.mappers.cache;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.eurekastreams.server.domain.stream.ActivitySecurityDTO;
 import org.eurekastreams.server.persistence.mappers.chained.RefreshStrategy;
@@ -26,7 +25,7 @@ import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
  * Refreshes activity security information.
  */
 public class BulkActivitySecurityRefresher extends CachedDomainMapper implements
-        RefreshStrategy<List<Long>, Collection<ActivitySecurityDTO>>
+        RefreshStrategy<Collection<Long>, Collection<ActivitySecurityDTO>>
 {
     /**
      * @param request
@@ -34,7 +33,7 @@ public class BulkActivitySecurityRefresher extends CachedDomainMapper implements
      * @param response
      *            the information to use to refresh the IDs.
      */
-    public void refresh(final List<Long> request, final Collection<ActivitySecurityDTO> response)
+    public void refresh(final Collection<Long> request, final Collection<ActivitySecurityDTO> response)
     {
         for (ActivitySecurityDTO actSec : response)
         {

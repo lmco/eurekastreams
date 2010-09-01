@@ -17,14 +17,16 @@ package org.eurekastreams.server.action.execution.notification.translator;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetCommentorIdsByActivityId;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -49,7 +51,7 @@ public class CommentTranslatorTest
     private GetCommentorIdsByActivityId commentorsMapper = context.mock(GetCommentorIdsByActivityId.class);
 
     /** Mock activities mapper. */
-    private BulkActivitiesMapper activitiesMapper = context.mock(BulkActivitiesMapper.class);
+    private DomainMapper<List<Long>, List<ActivityDTO>>  activitiesMapper = context.mock(DomainMapper.class);
 
     /** System under test. */
     private CommentTranslator sut;
@@ -94,8 +96,8 @@ public class CommentTranslatorTest
         context.checking(new Expectations()
         {
             {
-                oneOf(activitiesMapper).execute(ACTIVITY_ID, null);
-                will(returnValue(activity));
+                oneOf(activitiesMapper).execute(Arrays.asList(ACTIVITY_ID));
+                will(returnValue(Arrays.asList(activity)));
 
                 oneOf(commentorsMapper).execute(ACTIVITY_ID);
                 will(returnValue(Collections.singletonList(COMMENTOR)));

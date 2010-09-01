@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 
 /**
@@ -32,7 +32,7 @@ public class ActivityDTOFromParamsStrategyByCommentDTO implements ActivityDTOFro
     /**
      * ActivtyDTO DAO for looking up activityDAO by Id.
      */
-    private BulkActivitiesMapper activityDAO;
+    private DomainMapper<List<Long>, List<ActivityDTO>>  activityDAO;
 
     /**
      * Constructor.
@@ -40,7 +40,7 @@ public class ActivityDTOFromParamsStrategyByCommentDTO implements ActivityDTOFro
      * @param inActivityDAO
      *            ActivtyDTO DAO for looking up activityDAO by Id.
      */
-    public ActivityDTOFromParamsStrategyByCommentDTO(final BulkActivitiesMapper inActivityDAO)
+    public ActivityDTOFromParamsStrategyByCommentDTO(final DomainMapper<List<Long>, List<ActivityDTO>>  inActivityDAO)
     {
         activityDAO = inActivityDAO;
     }
@@ -59,6 +59,6 @@ public class ActivityDTOFromParamsStrategyByCommentDTO implements ActivityDTOFro
         // Get the ActivityDTO based on activityID passed in.
         List<Long> activityDTOIds = new ArrayList<Long>(1);
         activityDTOIds.add(inParams.getActivityId());
-        return activityDAO.execute(activityDTOIds, inUser.getAccountId()).get(0);
+        return activityDAO.execute(activityDTOIds).get(0);
     }
 }

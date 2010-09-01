@@ -19,12 +19,13 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -50,7 +51,7 @@ public class DeleteUserActivityValidationTest
     /**
      * {@link BulkActivitiesMapper}.
      */
-    private BulkActivitiesMapper activityMapper = context.mock(BulkActivitiesMapper.class);
+    private DomainMapper<List<Long>, List<ActivityDTO>>  activityMapper = context.mock(DomainMapper.class);
 
     /**
      * {@link PrincipalActionContext}.
@@ -114,7 +115,7 @@ public class DeleteUserActivityValidationTest
                 allowing(principal).getId();
                 will(returnValue(principalId));
 
-                allowing(activityMapper).execute(activityIds, null);
+                allowing(activityMapper).execute(activityIds);
                 will(returnValue(activityDTOs));
 
                 allowing(activity1).getActor();
@@ -168,7 +169,7 @@ public class DeleteUserActivityValidationTest
                 allowing(principal).getId();
                 will(returnValue(principalId));
 
-                allowing(activityMapper).execute(activityIds, null);
+                allowing(activityMapper).execute(activityIds);
                 will(returnValue(activityDTOs));
 
                 allowing(activity1).getActor();

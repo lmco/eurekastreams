@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,6 +31,8 @@ import org.eurekastreams.server.action.request.stream.GetStreamSearchResultsRequ
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.requests.StreamSearchRequest;
+import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.stream.SearchActivitiesMapper;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
 import org.jmock.Expectations;
@@ -41,7 +44,7 @@ import org.junit.Test;
 
 /**
  * Test suite for {@link GetStreamSearchResultsExecution} class.
- *
+ * 
  */
 public class GetStreamSearchResultsExecutionTest
 {
@@ -76,6 +79,11 @@ public class GetStreamSearchResultsExecutionTest
     private Principal principalMock = context.mock(Principal.class);
 
     /**
+     * Person mapper.
+     */
+    private GetPeopleByAccountIds peopleMapper = context.mock(GetPeopleByAccountIds.class);
+
+    /**
      * Setup the test fixtures.
      */
     @Before
@@ -84,12 +92,12 @@ public class GetStreamSearchResultsExecutionTest
         List<ActivityFilter> filters = new LinkedList<ActivityFilter>();
         filters.add(filterMock);
 
-        sut = new GetStreamSearchResultsExecution(mapper, filters);
+        sut = new GetStreamSearchResultsExecution(mapper, peopleMapper, filters);
     }
 
     /**
      * Test the execution, basically just asserting that the mapper method is called correctly.
-     *
+     * 
      * @throws Exception
      *             shouldn't happen.
      */
@@ -117,7 +125,9 @@ public class GetStreamSearchResultsExecutionTest
 
         SearchStreamMapperFake mapperFake = new SearchStreamMapperFake(results);
 
-        sut = new GetStreamSearchResultsExecution(mapperFake, filters);
+        sut = new GetStreamSearchResultsExecution(mapperFake, peopleMapper, filters);
+
+        final PersonModelView person = new PersonModelView();
 
         context.checking(new Expectations()
         {
@@ -132,8 +142,10 @@ public class GetStreamSearchResultsExecutionTest
                 allowing(principalMock).getAccountId();
                 will(returnValue("accountName"));
 
-                allowing(filterMock).filter(results, "accountName");
-                will(returnValue(results));
+                allowing(filterMock).filter(with(results), with(any(PersonModelView.class)));
+
+                oneOf(peopleMapper).execute(Arrays.asList("accountName"));
+                will(returnValue(Arrays.asList(person)));
             }
         });
 
@@ -153,7 +165,7 @@ public class GetStreamSearchResultsExecutionTest
 
     /**
      * Test execute with multiple pages of data.
-     *
+     * 
      * @throws Exception
      *             on error
      */
@@ -175,6 +187,8 @@ public class GetStreamSearchResultsExecutionTest
         results.add(result2);
         results.add(result3);
 
+        final PersonModelView person = new PersonModelView();
+
         context.checking(new Expectations()
         {
             {
@@ -185,16 +199,16 @@ public class GetStreamSearchResultsExecutionTest
                 allowing(result3).getId();
                 will(returnValue(1L));
 
-
                 oneOf(mapper).execute(with(any(StreamSearchRequest.class)));
                 will(returnValue(results));
 
                 allowing(principalMock).getAccountId();
                 will(returnValue("accountName"));
 
-                allowing(filterMock).filter(results, "accountName");
-                will(returnValue(results));
+                allowing(filterMock).filter(with(results), with(any(PersonModelView.class)));
 
+                oneOf(peopleMapper).execute(Arrays.asList("accountName"));
+                will(returnValue(Arrays.asList(person)));
             }
         });
         ServiceActionContext currentContext = new ServiceActionContext(request, principalMock);
@@ -210,7 +224,7 @@ public class GetStreamSearchResultsExecutionTest
 
     /**
      * Test execute with a single page of data.
-     *
+     * 
      * @throws Exception
      *             on error
      */
@@ -232,6 +246,8 @@ public class GetStreamSearchResultsExecutionTest
         results.add(result2);
         results.add(result3);
 
+        final PersonModelView person = new PersonModelView();
+
         context.checking(new Expectations()
         {
             {
@@ -242,15 +258,16 @@ public class GetStreamSearchResultsExecutionTest
                 allowing(result3).getId();
                 will(returnValue(3L));
 
-
                 oneOf(mapper).execute(with(any(StreamSearchRequest.class)));
                 will(returnValue(results));
 
                 allowing(principalMock).getAccountId();
                 will(returnValue("accountName"));
 
-                allowing(filterMock).filter(results, "accountName");
-                will(returnValue(results));
+                allowing(filterMock).filter(with(results), with(any(PersonModelView.class)));
+
+                oneOf(peopleMapper).execute(Arrays.asList("accountName"));
+                will(returnValue(Arrays.asList(person)));
             }
         });
 
@@ -267,7 +284,7 @@ public class GetStreamSearchResultsExecutionTest
 
     /**
      * Test execute with a single page of data.
-     *
+     * 
      * @throws Exception
      *             on error
      */
@@ -289,6 +306,8 @@ public class GetStreamSearchResultsExecutionTest
         results.add(result2);
         results.add(result3);
 
+        final PersonModelView person = new PersonModelView();
+
         context.checking(new Expectations()
         {
             {
@@ -299,15 +318,16 @@ public class GetStreamSearchResultsExecutionTest
                 allowing(result3).getId();
                 will(returnValue(1L));
 
-
                 oneOf(mapper).execute(with(any(StreamSearchRequest.class)));
                 will(returnValue(results));
 
                 allowing(principalMock).getAccountId();
                 will(returnValue("accountName"));
 
-                allowing(filterMock).filter(results, "accountName");
-                will(returnValue(results));
+                allowing(filterMock).filter(with(results), with(any(PersonModelView.class)));
+
+                oneOf(peopleMapper).execute(Arrays.asList("accountName"));
+                will(returnValue(Arrays.asList(person)));
             }
         });
 
@@ -319,7 +339,6 @@ public class GetStreamSearchResultsExecutionTest
 
         context.assertIsSatisfied();
     }
-
 
     /**
      * Fake for SearchStreamMapper.
@@ -338,7 +357,7 @@ public class GetStreamSearchResultsExecutionTest
 
         /**
          * Constructor.
-         *
+         * 
          * @param inResults
          *            the results to return on execute
          */
@@ -349,7 +368,7 @@ public class GetStreamSearchResultsExecutionTest
 
         /**
          * Overriden execute method to capture the request object.
-         *
+         * 
          * @param inRequest
          *            the request
          * @return the results passed into constructor

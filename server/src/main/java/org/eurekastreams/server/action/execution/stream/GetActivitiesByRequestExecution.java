@@ -17,6 +17,7 @@ package org.eurekastreams.server.action.execution.stream;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -33,7 +34,8 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.ActivitySecurityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.GetPrivateCoordinatedAndFollowedGroupIdsForUser;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
+import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
 import org.eurekastreams.server.service.actions.strategies.activity.ListCollider;
 import org.eurekastreams.server.service.actions.strategies.activity.datasources.DescendingOrderDataSource;
@@ -94,12 +96,17 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
     /**
      * Mapper to get the actual Activities.
      */
-    private BulkActivitiesMapper bulkActivitiesMapper;
+    private DomainMapper<List<Long>, List<ActivityDTO>> bulkActivitiesMapper;
 
     /**
      * Mapper to get the list of group ids that includes private groups the current user can see activity for.
      */
     private GetPrivateCoordinatedAndFollowedGroupIdsForUser getVisibleGroupsForUserMapper;
+
+    /**
+     * People mapper.
+     */
+    private GetPeopleByAccountIds peopleMapper;
 
     /**
      * Max activities if none is specified.
@@ -123,12 +130,16 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
      *            to get which groups youre a member of.
      * @param inSecurityMapper
      *            the security mapper;
+     * @param inPeopleMapper
+     *            people mapper.
      */
     public GetActivitiesByRequestExecution(final DescendingOrderDataSource inDescendingOrderdataSource,
-            final SortedDataSource inSortedDataSource, final BulkActivitiesMapper inBulkActivitiesMapper,
+            final SortedDataSource inSortedDataSource,
+            final DomainMapper<List<Long>, List<ActivityDTO>> inBulkActivitiesMapper,
             final List<ActivityFilter> inFilters, final ListCollider inAndCollider,
             final GetPrivateCoordinatedAndFollowedGroupIdsForUser inGetVisibleGroupsForUserMapper,
-            final DomainMapper<List<Long>, Collection<ActivitySecurityDTO>> inSecurityMapper)
+            final DomainMapper<List<Long>, Collection<ActivitySecurityDTO>> inSecurityMapper,
+            final GetPeopleByAccountIds inPeopleMapper)
     {
         descendingOrderdataSource = inDescendingOrderdataSource;
         sortedDataSource = inSortedDataSource;
@@ -137,6 +148,7 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
         filters = inFilters;
         getVisibleGroupsForUserMapper = inGetVisibleGroupsForUserMapper;
         securityMapper = inSecurityMapper;
+        peopleMapper = inPeopleMapper;
     }
 
     @Override
@@ -182,24 +194,24 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
         // The pass.
         int pass = 0;
         int batchSize = 0;
-        
+
         // paging loop
         startingIndex = 0;
-        
+
         do
         {
             allKeys.clear();
-            
+
             // multiply the batch size by the multiplier to avoid extra cache
             // hits
             batchSize = maxResults * (int) (Math.pow(2, pass));
 
             request.put("count", batchSize);
-            
+
             final List<Long> descendingOrderDataSet = descendingOrderdataSource.fetch(request, userEntityId);
 
             final List<Long> sortedDataSet = sortedDataSource.fetch(request, userEntityId);
-            
+
             if (descendingOrderDataSet != null && sortedDataSet != null)
             {
                 allKeys = andCollider.collide(descendingOrderDataSet, sortedDataSet, batchSize);
@@ -248,19 +260,21 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
                     page.remove(actSec.getId());
                 }
             }
-            
+
             results.addAll(page);
-            
+
             pass++;
         }
         while (results.size() < maxResults && allKeys.size() >= batchSize);
 
-        List<ActivityDTO> dtoResults = bulkActivitiesMapper.execute(results, userAccountId);
+        List<ActivityDTO> dtoResults = bulkActivitiesMapper.execute(results);
+
+        PersonModelView person = peopleMapper.execute(Arrays.asList(userAccountId)).get(0);
 
         // execute filter strategies.
         for (ActivityFilter filter : filters)
         {
-            dtoResults = filter.filter(dtoResults, userAccountId);
+            filter.filter(dtoResults, person);
         }
 
         if (log.isTraceEnabled())

@@ -24,6 +24,7 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Strategy for setting Shareable property on a List of Activities.
@@ -52,16 +53,15 @@ public class CanShareFilter implements ActivityFilter
      * 
      * @param activities
      *            The list of activities to filter.
-     * @param inCurrentUserAccountId
+     * @param inCurrentUserAccount
      *            Not used for share filter.
-     * @return List of modified activities.
      */
-    public List<ActivityDTO> filter(final List<ActivityDTO> activities, final String inCurrentUserAccountId)
+    public void filter(final List<ActivityDTO> activities, final PersonModelView inCurrentUserAccount)
     {
         // short-circuit if no work to do.
         if (activities.size() == 0)
         {
-            return activities;
+            return;
         }
 
         // collect group destination stream ids in hashtables to eliminate duplication
@@ -71,8 +71,7 @@ public class CanShareFilter implements ActivityFilter
         {
             if (activity.getDestinationStream().getType() == EntityType.GROUP)
             {
-                groupShareable.put(activity.getDestinationStream().getUniqueIdentifier().trim(),
-                        Boolean.FALSE);
+                groupShareable.put(activity.getDestinationStream().getUniqueIdentifier().trim(), Boolean.FALSE);
             }
         }
 
@@ -98,7 +97,6 @@ public class CanShareFilter implements ActivityFilter
                         "Attempted to filter Activity with unsupported destination stream type.");
             }
         }
-        return activities;
     }
 
     /**

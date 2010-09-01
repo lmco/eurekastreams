@@ -24,6 +24,7 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -81,9 +82,9 @@ public class CanShareFilterTest
     private String destinationStreamUniqueId = "destinationstreamuniqueid";
 
     /**
-     * account id for user.
+     * account for user.
      */
-    private String personAccountId = "personAccountId";
+    private PersonModelView personAccount = new PersonModelView();
 
     /**
      * Setup test fixtures.
@@ -117,7 +118,7 @@ public class CanShareFilterTest
             }
         });
 
-        sut.filter(activities, personAccountId);
+        sut.filter(activities, personAccount);
         context.assertIsSatisfied();
     }
 
@@ -158,7 +159,7 @@ public class CanShareFilterTest
             }
         });
 
-        sut.filter(activities, personAccountId);
+        sut.filter(activities, personAccount);
         context.assertIsSatisfied();
     }
 
@@ -199,7 +200,7 @@ public class CanShareFilterTest
             }
         });
 
-        sut.filter(activities, personAccountId);
+        sut.filter(activities, personAccount);
         context.assertIsSatisfied();
     }
 
@@ -226,7 +227,7 @@ public class CanShareFilterTest
             }
         });
 
-        sut.filter(activities, personAccountId);
+        sut.filter(activities, personAccount);
         context.assertIsSatisfied();
     }
 }
