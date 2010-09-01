@@ -109,7 +109,8 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
     public void generateForm(final Map<String, Object> inSettings, final Map<String, Object> inSupport)
     {
         form = new FormBuilder("", PersonalSettingsModel.getInstance(), Method.UPDATE);
-        form.addStyleName("notif-settings-form");
+        form.turnOffChangeCheck();
+	form.addStyleName("notif-settings-form");
         setupFormCommands();
 
         buildNotificationPreferencesSection((Collection<NotificationFilterPreferenceDTO>) inSettings

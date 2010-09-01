@@ -207,7 +207,7 @@ public class StreamPluginsPanel extends FlowPanel
 
                             FormBuilder form = new FormBuilder("Submit a Plugin",
                                     PluginDefinitionModel.getInstance(), Method.INSERT);
-
+			    form.turnOffChangeCheck();
 
                             form.setOnCancelHistoryToken(Session.getInstance().generateUrl(
                                     new CreateUrlRequest(Page.SETTINGS, "tab", "Plugins")));

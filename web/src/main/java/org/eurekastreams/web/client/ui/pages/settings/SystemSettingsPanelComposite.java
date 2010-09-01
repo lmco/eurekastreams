@@ -297,7 +297,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
     {
         this.clear();
         final FormBuilder form = new FormBuilder("", SystemSettingsModel.getInstance(), Method.UPDATE);
-
+	form.turnOffChangeCheck();
         Session.getInstance().getEventBus().addObserver(UpdatedSystemSettingsResponseEvent.class,
                 new Observer<UpdatedSystemSettingsResponseEvent>()
                 {
