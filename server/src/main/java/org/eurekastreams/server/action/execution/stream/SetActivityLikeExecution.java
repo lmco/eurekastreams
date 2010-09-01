@@ -16,15 +16,22 @@
 package org.eurekastreams.server.action.execution.stream;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest;
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest.LikeActionType;
+import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.LikedActivity;
 import org.eurekastreams.server.persistence.mappers.DeleteLikedActivity;
 import org.eurekastreams.server.persistence.mappers.InsertLikedActivity;
+import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 
 /**
  * Action to add or remove like on activity for current user.
@@ -41,6 +48,8 @@ public class SetActivityLikeExecution implements ExecutionStrategy<PrincipalActi
      * Mapper for removing like.
      */
     private DeleteLikedActivity deleteLikedActivity;
+
+    BulkActivitiesMapper activityMapper;
 
     /**
      * Constructor.
@@ -65,9 +74,33 @@ public class SetActivityLikeExecution implements ExecutionStrategy<PrincipalActi
                 inActionContext.getPrincipal().getId(),
                 request.getActivityId());
 
-        return (request.getLikeActionType() == LikeActionType.ADD_LIKE)
-            ? insertLikedActivity.execute(likeActivityData)
-            : deleteLikedActivity.execute(likeActivityData);
+
+
+        if (request.getLikeActionType() == LikeActionType.ADD_LIKE)
+        {
+            ActivityDTO activity = activityMapper.execute(request.getActivityId(),
+                    inActionContext.getPrincipal().getAccountId());
+            CreateNotificationsRequest notificationRequest = new CreateNotificationsRequest(
+                    RequestType.LIKE, inActionContext.getPrincipal().getId(),
+                    activity.getActor().getId(), request.getActivityId());
+
+            List<UserActionRequest> queuedRequests = null;
+            // create list if it has not already been done.
+            queuedRequests = queuedRequests == null ? new ArrayList<UserActionRequest>() : queuedRequests;
+
+            // add UserRequest.
+            queuedRequests.add(new UserActionRequest("createNotificationsAction", null, notificationRequest));
+
+            return insertLikedActivity.execute(likeActivityData);
+
+
+        }
+        else
+        {
+            return deleteLikedActivity.execute(likeActivityData);
+        }
+
+
     }
 
 }

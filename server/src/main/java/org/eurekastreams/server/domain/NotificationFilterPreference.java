@@ -45,6 +45,9 @@ public class NotificationFilterPreference extends DomainEntity
         /** Comment to activity in the user's stream, that the user posted, or that the user commented on. */
         COMMENT,
 
+        /** Like to an activity the user posted. */
+        LIKE,
+
         /** Someone started following the user. */
         FOLLOW_PERSON,
 

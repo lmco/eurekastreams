@@ -20,6 +20,9 @@ package org.eurekastreams.server.domain;
  */
 public enum NotificationType
 {
+    /** Someone liked an activity. */
+    LIKE_ACTIVITY,
+
     /** Someone posted to the user's stream. */
     POST_TO_PERSONAL_STREAM,
 

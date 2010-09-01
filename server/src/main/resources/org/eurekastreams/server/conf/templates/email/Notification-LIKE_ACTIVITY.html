@@ -1,11 +1,10 @@
-
 <html>
 <body>
 <p>
-$(actor.name) flagged a $(activity.type) in the $(dest.name) organization.
+$(actor.name) liked your $(activity.type).
 </p>
 <p>
-To see the flagged activity follow this <a href="$(eureka.web.baseurl)#$(dest.page)/$(dest.uniqueid)?tab=Admin">link</a> to the organization Admin tab.
+To see the post follow this <a href="$(eureka.web.baseurl)#$(dest.page)/$(dest.uniqueid)?activityId=$(activity.id)">link</a>.
 </p>
 <p>
 Thank You,<br/>

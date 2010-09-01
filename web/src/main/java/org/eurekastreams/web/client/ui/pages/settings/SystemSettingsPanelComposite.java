@@ -313,7 +313,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
                 });
 
         form.setOnCancelHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.START)));
-
+        form.turnOffChangeCheck();
         hideableSiteLabel = new HideableTextAreaFormElement(MAX_SITE_LABEL, "Site Labeling", "siteLabel",
                 systemSettingValues.getSiteLabel(), "I would like to add a label to the system.",
                 "The site label will be displayed above the global navigation bar and below the "

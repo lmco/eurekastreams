@@ -38,6 +38,8 @@ public class CreateNotificationsRequest implements Serializable
          */
         COMMENT,
 
+        LIKE,
+
         /**
          * Someone posted to a stream. Actor=person id of who posted, Destination=id of person whose stream was posted
          * to, Activity=id of the new post.

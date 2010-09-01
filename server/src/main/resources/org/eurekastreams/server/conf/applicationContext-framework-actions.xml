@@ -2694,6 +2694,23 @@
 				<constructor-arg ref="emailerFactory" />
 				<constructor-arg>
 					<map>
+					    <entry key="LIKE_ACTIVITY">
+                            <bean parent="baseTemplateEmailBuilder">
+                                <constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) liked $(activity.type)" />
+                                <constructor-arg>
+                                    <bean parent="baseResourceContentLoader">
+                                        <constructor-arg
+                                            value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-LIKE_ACTIVITY.txt" />
+                                    </bean>
+                                </constructor-arg>
+                                <constructor-arg>
+                                    <bean parent="baseResourceContentLoader">
+                                        <constructor-arg
+                                            value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-LIKE_ACTIVITY.html" />
+                                    </bean>
+                                </constructor-arg>
+                            </bean>
+                        </entry>
 						<entry key="POST_TO_PERSONAL_STREAM">
 							<bean parent="baseTemplateEmailBuilder">
 								<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) posted a $(activity.type) to your stream" />
@@ -2903,6 +2920,9 @@
 		<entry key="FOLLOWER">
 			<bean class="org.eurekastreams.server.action.execution.notification.translator.FollowerTranslator" />
 		</entry>
+		<entry key="LIKE">
+            <bean class="org.eurekastreams.server.action.execution.notification.translator.LikeTranslator" />
+        </entry>
 		<entry key="COMMENT">
 			<bean class="org.eurekastreams.server.action.execution.notification.translator.CommentTranslator">
 				<constructor-arg ref="getCommentorIdsByActivityId" />
@@ -2963,6 +2983,7 @@
 		<entry key="FLAG_GROUP_ACTIVITY" value="FLAG_ACTIVITY" />
 		<entry key="REQUEST_NEW_GROUP" value="REQUEST_NEW_GROUP" />
 		<entry key="REQUEST_GROUP_ACCESS" value="REQUEST_GROUP_ACCESS" />
+		<entry key="LIKE_ACTIVITY" value="LIKE" />
 	</util:map>
 	
 	<bean id="emailNotifier"

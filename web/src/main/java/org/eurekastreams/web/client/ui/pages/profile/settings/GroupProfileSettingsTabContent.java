@@ -145,7 +145,7 @@ public class GroupProfileSettingsTabContent extends FlowPanel
         Session.getInstance().getEventBus().notifyObservers(new SetBannerEvent(group));
         RootPanel.get().addStyleName("form-body");
 
-        FormBuilder form = new FormBuilder("", GroupModel.getInstance(), Method.UPDATE);
+        final FormBuilder form = new FormBuilder("", GroupModel.getInstance(), Method.UPDATE);
 
         EventBus.getInstance().addObserver(UpdatedGroupResponseEvent.class, new Observer<UpdatedGroupResponseEvent>()
         {
@@ -153,7 +153,7 @@ public class GroupProfileSettingsTabContent extends FlowPanel
             {
                 Session.getInstance().getEventBus().notifyObservers(
                         new UpdateHistoryEvent(new CreateUrlRequest(Page.GROUPS, arg1.getResponse().getShortName())));
-                
+
                 Session.getInstance().getEventBus().notifyObservers(
                         new ShowNotificationEvent(new Notification("Your group has been successfully saved")));
             }
@@ -305,6 +305,7 @@ public class GroupProfileSettingsTabContent extends FlowPanel
                         + "Deleting the group will remove the profile from the system along with "
                         + "all of the activity that has been posted to its stream."))
                 {
+                    form.turnOffChangeCheck();
                     processingSpinny.setVisible(true);
                     deleteButton.setVisible(false);
 
