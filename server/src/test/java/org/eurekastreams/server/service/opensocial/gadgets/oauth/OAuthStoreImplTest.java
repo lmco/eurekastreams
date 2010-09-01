@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,24 @@
  */
 package org.eurekastreams.server.service.opensocial.gadgets.oauth;
 
-import static junit.framework.Assert.assertNotNull;
-import junit.framework.Assert;
 import net.oauth.OAuthServiceProvider;
 
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.oauth.OAuthStore.ConsumerInfo;
 import org.apache.shindig.gadgets.oauth.OAuthStore.TokenInfo;
+import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
+import org.eurekastreams.commons.actions.service.ServiceAction;
+import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.server.service.ServiceActionController;
+import org.eurekastreams.server.action.response.opensocial.ConsumerInfoResponse;
+import org.eurekastreams.server.action.response.opensocial.TokenInfoResponse;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.eurekastreams.server.domain.OAuthConsumer;
-import org.eurekastreams.server.domain.OAuthToken;
-import org.eurekastreams.server.persistence.OAuthConsumerMapper;
-import org.eurekastreams.server.persistence.OAuthTokenMapper;
 
 /**
  * This class performs the test for the implementation of the Shindig OAuthStore interface.
@@ -58,19 +55,9 @@ public class OAuthStoreImplTest
     };
 
     /**
-     * The mock consumer mapper.
+     * The mock {@link ServiceActionController}.
      */
-    private OAuthConsumerMapper consumerMapper = context.mock(OAuthConsumerMapper.class);
-
-    /**
-     * The mock token mapper.
-     */
-    private OAuthTokenMapper tokenMapper = context.mock(OAuthTokenMapper.class);
-
-    /**
-     * The mock transaction manager.
-     */
-    private PlatformTransactionManager transactionManager = context.mock(PlatformTransactionManager.class);
+    private ServiceActionController serviceActionControllerMock = context.mock(ServiceActionController.class);
 
     /**
      * The mock security token.
@@ -93,106 +80,128 @@ public class OAuthStoreImplTest
     private TokenInfo tokenInfo = context.mock(TokenInfo.class);
 
     /**
+     * Instance of the GetConsumerInfo Service Action.
+     */
+    private ServiceAction getConsumerInfoAction = context.mock(ServiceAction.class, "getConsumerInfoAction");
+
+    /**
+     * Instance of the SetConsumerTokenInfo Service Action.
+     */
+    private ServiceAction setConsumerTokenInfoAction = context.mock(ServiceAction.class, "setConsumerTokenInfoAction");
+
+    /**
+     * Instance of the GetConsumerTokenInfo Service Action.
+     */
+    private ServiceAction getConsumerTokenInfoAction = context.mock(ServiceAction.class, "getConsumerTokenInfoAction");
+
+    /**
+     * Instance of the RemoveConsumerToken Service Action.
+     */
+    private ServiceAction removeConsumerTokenAction = context.mock(ServiceAction.class, "removeConsumerTokenAction");
+
+    /**
      * Prepare the test.
      */
     @Before
     public void setUp()
     {
-        sut = new OAuthStoreImpl(consumerMapper, tokenMapper, transactionManager);
+        sut = new OAuthStoreImpl(getConsumerInfoAction, setConsumerTokenInfoAction, getConsumerTokenInfoAction,
+                removeConsumerTokenAction);
+        sut.setServiceActionController(serviceActionControllerMock);
     }
 
     /**
-     * Test normal path through getConsumerKeyAndSecret.
+     * Test of get consumer info.
      * 
      * @throws Exception
-     *             - covers all exceptions.
+     *             on error.
      */
     @Test
-    public void testGetConsumerKeyAndSecret() throws Exception
+    public void testGetConsumerInfo() throws Exception
     {
         context.checking(new Expectations()
         {
             {
-                oneOf(securityToken).getAppUrl();
-                will(returnValue("http://localhost:4040/some/path"));
-
-                oneOf(consumerMapper).findConsumerByServiceNameAndGadgetUrl(with(any(String.class)),
-                        with(any(String.class)));
-                will(returnValue(new OAuthConsumer("", "", "", "", "")));
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
+                will(returnValue(new ConsumerInfoResponse(new ConsumerInfo(null, null, null))));
             }
         });
 
-        ConsumerInfo info = sut.getConsumerKeyAndSecret(securityToken, "myService", provider);
-        assertNotNull("Consumer was not found", info);
+        sut.getConsumerKeyAndSecret(securityToken, "serviceName", provider);
         context.assertIsSatisfied();
     }
 
     /**
-     * Test null consumer key with getConsumerKeyAndSecret.
+     * Test of get consumer info where a rollback is necessary.
      * 
      * @throws Exception
-     *             - covers all exceptions.
+     *             on error.
      */
     @Test(expected = GadgetException.class)
-    public void testGetConsumerWithNullConsumerKey() throws Exception
+    public void testGetConsumerInfoWithRollback() throws Exception
     {
         context.checking(new Expectations()
         {
             {
-                oneOf(securityToken).getAppUrl();
-                will(returnValue("http://localhost:4040/some/path"));
-
-                oneOf(consumerMapper).findConsumerByServiceNameAndGadgetUrl(with(any(String.class)),
-                        with(any(String.class)));
-                will(returnValue(null));
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
+                will(throwException(new ExecutionException()));
             }
         });
 
-        sut.getConsumerKeyAndSecret(securityToken, "myService", provider);
+        sut.getConsumerKeyAndSecret(securityToken, "serviceName", provider);
         context.assertIsSatisfied();
     }
 
     /**
-     * Test getTokenInfo that returns a null token.
+     * Test of set token info.
      * 
      * @throws Exception
-     *             - covers all exceptions.
+     *             on error.
      */
     @Test
-    public void testGetNullTokenInfo() throws Exception
+    public void testSetTokenInfo() throws Exception
     {
         context.checking(new Expectations()
         {
             {
-                oneOf(securityToken).getAppUrl();
-                will(returnValue("http://localhost:4040/some/path"));
-
-                oneOf(securityToken).getViewerId();
-                will(returnValue("123"));
-
-                oneOf(securityToken).getOwnerId();
-                will(returnValue("456"));
-
-                oneOf(consumerMapper).findConsumerByServiceNameAndGadgetUrl(with(any(String.class)),
-                        with(any(String.class)));
-                will(returnValue(new OAuthConsumer("", "", "", "", "")));
-
-                oneOf(tokenMapper).findToken(with(any(OAuthConsumer.class)), with(any(String.class)),
-                        with(any(String.class)));
-                will(returnValue(null));
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
             }
         });
 
-        TokenInfo info = sut.getTokenInfo(securityToken, consumerInfo, "myService", "myToken");
-        Assert.assertTrue("Token was found", info == null);
+        sut.setTokenInfo(securityToken, consumerInfo, "serviceName", "tokenName", tokenInfo);
         context.assertIsSatisfied();
     }
 
     /**
-     * Test normal path through getTokenInfo.
+     * Test of set token info where a rollback is necessary.
      * 
      * @throws Exception
-     *             - covers all exceptions.
+     *             on error.
+     */
+    @Test(expected = GadgetException.class)
+    public void testSetTokenInfoWithRollback() throws Exception
+    {
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
+                will(throwException(new ExecutionException()));
+            }
+        });
+
+        sut.setTokenInfo(securityToken, consumerInfo, "serviceName", "tokenName", tokenInfo);
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test of get token info.
+     * 
+     * @throws Exception
+     *             on error.
      */
     @Test
     public void testGetTokenInfo() throws Exception
@@ -200,64 +209,65 @@ public class OAuthStoreImplTest
         context.checking(new Expectations()
         {
             {
-                OAuthConsumer consumer = new OAuthConsumer("", "", "", "", "");
-                OAuthToken token = new OAuthToken(consumer, "", "", "", "");
-                token.setTokenExpireMillis(0L);
-
-                oneOf(securityToken).getAppUrl();
-                will(returnValue("http://localhost:4040/some/path"));
-
-                oneOf(securityToken).getViewerId();
-                will(returnValue("123"));
-
-                oneOf(securityToken).getOwnerId();
-                will(returnValue("456"));
-
-                oneOf(consumerMapper).findConsumerByServiceNameAndGadgetUrl(with(any(String.class)),
-                        with(any(String.class)));
-                will(returnValue(new OAuthConsumer("", "", "", "", "")));
-
-                oneOf(tokenMapper).findToken(with(any(OAuthConsumer.class)), with(any(String.class)),
-                        with(any(String.class)));
-                will(returnValue(token));
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
+                will(returnValue(new TokenInfoResponse(new TokenInfo(null, null, null, 0))));
             }
         });
 
-        TokenInfo info = sut.getTokenInfo(securityToken, consumerInfo, "myService", "myToken");
-        assertNotNull("Token was not found", info);
+        sut.getTokenInfo(securityToken, consumerInfo, "serviceName", "tokenName");
         context.assertIsSatisfied();
     }
 
     /**
-     * Test null consumer key with getTokenInfo.
+     * Test of get token info where a rollback is necessary.
      * 
      * @throws Exception
-     *             - covers all exceptions.
+     *             on error.
      */
     @Test(expected = GadgetException.class)
-    public void testGetTokenWithNullConsumerKey() throws Exception
+    public void testGetTokenInfoWithRollback() throws Exception
     {
         context.checking(new Expectations()
         {
             {
-                oneOf(securityToken).getAppUrl();
-                will(returnValue("http://localhost:4040/some/path"));
-
-                oneOf(consumerMapper).findConsumerByServiceNameAndGadgetUrl(with(any(String.class)),
-                        with(any(String.class)));
-                will(returnValue(null));
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
+                will(throwException(new ExecutionException()));
             }
         });
 
-        sut.getTokenInfo(securityToken, consumerInfo, "myService", "myToken");
+        sut.getTokenInfo(securityToken, consumerInfo, "serviceName", "tokenName");
         context.assertIsSatisfied();
     }
 
     /**
-     * Test normal path through removeToken.
+     * Test of get token info with a null response from service call.
      * 
      * @throws Exception
-     *             - covers all exceptions.
+     *             on error.
+     */
+    @Test
+    public void testGetTokenInfoWithNullResponse() throws Exception
+    {
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
+                will(returnValue(null));
+            }
+        });
+
+        sut.getTokenInfo(securityToken, consumerInfo, "serviceName", "tokenName");
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test of Remove Token.
+     * 
+     * @throws Exception
+     *             on error.
      */
     @Test
     public void testRemoveToken() throws Exception
@@ -265,190 +275,34 @@ public class OAuthStoreImplTest
         context.checking(new Expectations()
         {
             {
-                oneOf(transactionManager).getTransaction(with(any(DefaultTransactionDefinition.class)));
-                
-                OAuthConsumer consumer = new OAuthConsumer("", "", "", "", "");
-                OAuthToken token = new OAuthToken(consumer, "", "", "", "");
-                token.setTokenExpireMillis(0L);
-
-                oneOf(securityToken).getAppUrl();
-                will(returnValue("http://localhost:4040/some/path"));
-
-                oneOf(securityToken).getViewerId();
-                will(returnValue("123"));
-
-                oneOf(securityToken).getOwnerId();
-                will(returnValue("456"));
-
-                oneOf(consumerMapper).findConsumerByServiceNameAndGadgetUrl(with(any(String.class)),
-                        with(any(String.class)));
-                will(returnValue(new OAuthConsumer("", "", "", "", "")));
-
-                oneOf(tokenMapper).delete(with(any(OAuthConsumer.class)), with(any(String.class)),
-                        with(any(String.class)));
-                
-                oneOf(transactionManager).commit(with(any(TransactionStatus.class)));
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
             }
         });
 
-        sut.removeToken(securityToken, consumerInfo, "myService", "myToken");
+        sut.removeToken(securityToken, consumerInfo, "serviceName", "tokenName");
         context.assertIsSatisfied();
     }
 
     /**
-     * Test null consumer key with removeToken.
+     * Test of Remove Token where a rollback is necessary.
      * 
      * @throws Exception
-     *             - covers all exceptions.
+     *             on error.
      */
     @Test(expected = GadgetException.class)
-    public void testRemoveTokenWithNullConsumerKey() throws Exception
+    public void testRemoveTokenWithRollback() throws Exception
     {
         context.checking(new Expectations()
         {
             {
-                oneOf(transactionManager).getTransaction(with(any(DefaultTransactionDefinition.class)));
-                
-                oneOf(securityToken).getAppUrl();
-                will(returnValue("http://localhost:4040/some/path"));
-
-                oneOf(consumerMapper).findConsumerByServiceNameAndGadgetUrl(with(any(String.class)),
-                        with(any(String.class)));
-                will(returnValue(null));
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
+                will(throwException(new ExecutionException()));
             }
         });
 
-        sut.removeToken(securityToken, consumerInfo, "myService", "myToken");
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Test normal path through setToken.
-     * 
-     * @throws Exception
-     *             - covers all exceptions.
-     */
-    @Test
-    public void testSetToken() throws Exception
-    {
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(securityToken).getAppUrl();
-                will(returnValue("http://localhost:4040/some/path"));
-
-                oneOf(consumerMapper).findConsumerByServiceNameAndGadgetUrl(with(any(String.class)),
-                        with(any(String.class)));
-                will(returnValue(new OAuthConsumer("", "", "", "", "")));
-
-                oneOf(transactionManager).getTransaction(with(any(DefaultTransactionDefinition.class)));
-
-                OAuthConsumer consumer = new OAuthConsumer("", "", "", "", "");
-                OAuthToken token = new OAuthToken(consumer, "", "", "", "");
-                token.setTokenExpireMillis(0L);
-
-                oneOf(securityToken).getViewerId();
-                will(returnValue("123"));
-
-                oneOf(securityToken).getOwnerId();
-                will(returnValue("456"));
-
-                oneOf(tokenInfo).getAccessToken();
-                will(returnValue("accesstoken"));
-
-                oneOf(tokenInfo).getTokenSecret();
-                will(returnValue("accesssecret"));
-
-                oneOf(tokenInfo).getTokenExpireMillis();
-                will(returnValue(0L));
-
-                oneOf(tokenMapper).insert(with(any(OAuthToken.class)));
-                
-                oneOf(transactionManager).commit(with(any(TransactionStatus.class)));
-            }
-        });
-
-        sut.setTokenInfo(securityToken, consumerInfo, "myService", "myToken", tokenInfo);
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Test setToken where a rollback is necessary.
-     * 
-     * @throws Exception
-     *             - covers all exceptions.
-     */
-    @Test(expected = GadgetException.class)
-    public void testSetTokenWithRollback() throws Exception
-    {
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(securityToken).getAppUrl();
-                will(returnValue("http://localhost:4040/some/path"));
-
-                oneOf(consumerMapper).findConsumerByServiceNameAndGadgetUrl(with(any(String.class)),
-                        with(any(String.class)));
-                will(returnValue(new OAuthConsumer("", "", "", "", "")));
-
-                oneOf(transactionManager).getTransaction(with(any(DefaultTransactionDefinition.class)));
-
-                OAuthConsumer consumer = new OAuthConsumer("", "", "", "", "");
-                OAuthToken token = new OAuthToken(consumer, "", "", "", "");
-                token.setTokenExpireMillis(0L);
-
-                oneOf(securityToken).getViewerId();
-                will(returnValue("123"));
-
-                oneOf(securityToken).getOwnerId();
-                will(returnValue("456"));
-
-                oneOf(tokenInfo).getAccessToken();
-                will(returnValue("accesstoken"));
-
-                oneOf(tokenInfo).getTokenSecret();
-                will(returnValue("accesssecret"));
-
-                oneOf(tokenInfo).getTokenExpireMillis();
-                will(returnValue(0L));
-
-                oneOf(tokenMapper).insert(with(any(OAuthToken.class)));
-
-                oneOf(transactionManager).commit(with(any(TransactionStatus.class)));
-                will(throwException(new Exception()));
-
-                oneOf(transactionManager).rollback(with(any(TransactionStatus.class)));
-            }
-        });
-
-        sut.setTokenInfo(securityToken, consumerInfo, "myService", "myToken", tokenInfo);
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Test null consumer key with setToken.
-     * 
-     * @throws Exception
-     *             - covers all exceptions.
-     */
-    @Test(expected = GadgetException.class)
-    public void testSetTokenWithNullConsumerKey() throws Exception
-    {
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(transactionManager).getTransaction(with(any(DefaultTransactionDefinition.class)));
-                
-                oneOf(securityToken).getAppUrl();
-                will(returnValue("http://localhost:4040/some/path"));
-
-                oneOf(consumerMapper).findConsumerByServiceNameAndGadgetUrl(with(any(String.class)),
-                        with(any(String.class)));
-                will(returnValue(null));
-            }
-        });
-
-        sut.setTokenInfo(securityToken, consumerInfo, "myService", "myToken", tokenInfo);
+        sut.removeToken(securityToken, consumerInfo, "serviceName", "tokenName");
         context.assertIsSatisfied();
     }
 }

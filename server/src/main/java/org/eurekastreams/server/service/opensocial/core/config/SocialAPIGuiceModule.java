@@ -160,7 +160,17 @@ public class SocialAPIGuiceModule extends AbstractModule
                 SpringIntegration.fromSpring(ServiceAction.class, "getOAuthConsumerByConsumerKey"));
         bind(ServiceAction.class).annotatedWith(Names.named("getSecurityTokenForConsumerRequest")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "getSecurityTokenForConsumerRequest"));
-    }
+
+        // OAuthStoreImpl wirings
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getConsumerInfo")).toProvider(
+                SpringIntegration.fromSpring(ServiceAction.class, "getConsumerInfo"));
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("setConsumerTokenInfo")).toProvider(
+                SpringIntegration.fromSpring(ServiceAction.class, "setConsumerTokenInfo"));
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getConsumerTokenInfo")).toProvider(
+                SpringIntegration.fromSpring(ServiceAction.class, "getConsumerTokenInfo"));
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("removeConsumerToken")).toProvider(
+                SpringIntegration.fromSpring(ServiceAction.class, "removeConsumerToken"));
+}
 
     /**
      * Hook to provide a Set of request handlers. Subclasses may override to add or replace additional handlers.

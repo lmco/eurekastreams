@@ -343,8 +343,6 @@ public class OAuthDataStoreImpl implements OAuthDataStore
     public SecurityToken getSecurityTokenForConsumerRequest(final String consumerKey, final String userId)
             throws OAuthProblemException
     {
-        logger.debug("Retrieving Security Token based on Consumer Request for consumer key: " + consumerKey
-                + " and userId: " + userId);
         SecurityTokenResponse response = null;
         try
         {
