@@ -7,17 +7,48 @@
       http://www.springframework.org/schema/tx/spring-tx.xsd">
 
 
-	<!-- **** Beans useful for multiple mappers (particularly in chained mappers) **** -->
-	  
+	<!--
+		**** Beans useful for multiple mappers (particularly in chained
+		mappers) ****
+	-->
+
 	<!-- Results combiner - just returns the first non-null value -->
 	<bean id="nonNullResultsCombiner" class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
 	  
-	  
-	<!-- ****  **** -->
+	<bean name="hashTagExtractor" class="org.eurekastreams.server.domain.strategies.HashTagExtractor"/>
 	
-   	<!-- Wire up the entity updaters for person, domain group, organization - handles onPostUpdate, onPostPersist
--->
-   	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+	<bean name="activityContentExtractor" class="org.eurekastreams.server.persistence.mappers.stream.ActivityContentExtractor" />
+	  
+	<!-- Mapper to get the hash tags from the database - insert if not already in the database -->
+	<bean id="getHashTagsFromDatabaseMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		<constructor-arg>
+			<!-- Partial database mapper -->
+			<bean class="org.eurekastreams.server.persistence.mappers.db.PartialHashTagDbMapper" />
+		</constructor-arg>
+		
+		<constructor-arg>
+			<!-- Hashtag generation mapper to create new ones if not found in the database -->
+			<bean class="org.eurekastreams.server.persistence.mappers.HashTagBuilderMapper" />
+		</constructor-arg>
+		
+		<constructor-arg >
+			<!-- Combiner to put together the generated and existing hashtags together -->
+			<bean class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
+		</constructor-arg>
+		
+		<constructor-arg>
+			<!-- Database refresher -->
+			<bean class="org.eurekastreams.server.persistence.mappers.db.HashTagDbRefreshStrategy" />
+		</constructor-arg>
+	</bean>
+	<!-- ****  **** -->
+
+	<!--
+		Wire up the entity updaters for person, domain group, organization -
+		handles onPostUpdate, onPostPersist
+	-->
+	<bean
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
 		<property name="targetObject">
 			<bean
 				class="org.eurekastreams.server.persistence.mappers.cache.CacheInitializer" />
@@ -88,187 +119,230 @@
 		<constructor-arg value="true" />
 	</bean>
 
-    <bean id="getPendingDomainGroupsForOrg"
-        class="org.eurekastreams.server.persistence.mappers.GetPendingDomainGroupsForOrg">
-        <constructor-arg>
-            <ref bean="organizationHierarchyCache" />
-        </constructor-arg>
-        <property name="getPeopleByIdsMapper" ref="bulkPeopleMapper" />
-    </bean>	
-	
-	<bean id="activityOrCombiner" class="org.eurekastreams.server.persistence.mappers.chained.ListColliderAdapter">
-	    <constructor-arg>
-	    	<bean class="org.eurekastreams.server.service.actions.strategies.activity.OrSortedListCollider" />
-	    </constructor-arg>
-	    <constructor-arg value="10000" />
+	<bean id="getPendingDomainGroupsForOrg"
+		class="org.eurekastreams.server.persistence.mappers.GetPendingDomainGroupsForOrg">
+		<constructor-arg>
+			<ref bean="organizationHierarchyCache" />
+		</constructor-arg>
+		<property name="getPeopleByIdsMapper" ref="bulkPeopleMapper" />
 	</bean>
-	
-	<bean id="getOrganizationLeaderIdsByOrgId" 
-	   class="org.eurekastreams.server.persistence.mappers.cache.GetOrganizationLeaderIdsByOrgId">
-	   <property name="cache" ref="memcachedCache" />
-    </bean>
+
+	<bean id="activityOrCombiner"
+		class="org.eurekastreams.server.persistence.mappers.chained.ListColliderAdapter">
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.service.actions.strategies.activity.OrSortedListCollider" />
+		</constructor-arg>
+		<constructor-arg value="10000" />
+	</bean>
+
+	<bean id="getOrganizationLeaderIdsByOrgId"
+		class="org.eurekastreams.server.persistence.mappers.cache.GetOrganizationLeaderIdsByOrgId">
+		<property name="cache" ref="memcachedCache" />
+	</bean>
 
 	<bean id="findByIdMapper"
 		class="org.eurekastreams.server.persistence.mappers.FindByIdMapper">
 		<property name="queryOptimizer" ref="queryOptimizer" />
 	</bean>
 
-	<bean id="bulkActivitySecurityMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+	<bean
+		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITY_SECURITY_BY_ID"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
+
+	<bean id="bulkActivitySecurityMapper"
+		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.cache.BulkActivitySecurityMapper">
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
+				<constructor-arg>
+					<bean
+						class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
+				</constructor-arg>
+				<constructor-arg
+					ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITY_SECURITY_BY_ID" />
+				<constructor-arg value="False" />
 				<property name="cache" ref="memcachedCache" />
 			</bean>
 		</constructor-arg>
-		
+
 		<constructor-arg>
 			<!-- Database mapper to fall back on if not found in cache -->
-			<bean class="org.eurekastreams.server.persistence.mappers.db.BulkActivitySecurityDbMapper">
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.db.BulkActivitySecurityDbMapper">
 				<property name="streamMapper" ref="getStreamsByIds" />
 			</bean>
 		</constructor-arg>
-		
-		<constructor-arg >
-			<bean class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
+
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
 		</constructor-arg>
-		
+
 		<constructor-arg>
 			<!-- Cache refresher -->
-			<bean class="org.eurekastreams.server.persistence.mappers.cache.BulkActivitySecurityRefresher">
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.cache.BulkActivitySecurityRefresher">
 				<property name="cache" ref="memcachedCache" />
 			</bean>
 		</constructor-arg>
 	</bean>
 
 
-	<bean id="bulkEntityStreamIdsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+	<bean id="bulkEntityStreamIdsMapper"
+		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.cache.BulkEntityStreamIdsMapper">
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.cache.BulkEntityStreamIdsMapper">
 				<property name="cache" ref="memcachedCache" />
 			</bean>
 		</constructor-arg>
-		
+
 		<constructor-arg>
 			<!-- Database mapper to fall back on if not found in cache -->
-			<bean class="org.eurekastreams.server.persistence.mappers.db.BulkEntityStreamIdsDbMapper" />
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.db.BulkEntityStreamIdsDbMapper" />
 		</constructor-arg>
-		
-		<constructor-arg >
+
+		<constructor-arg>
 			<ref bean="activityOrCombiner" />
 		</constructor-arg>
-		
+
 		<constructor-arg>
 			<!-- Cache refresher -->
-			<bean class="org.eurekastreams.server.persistence.mappers.cache.BulkEntityStreamIdsRefresher">
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.cache.BulkEntityStreamIdsRefresher">
 				<property name="cache" ref="memcachedCache" />
 			</bean>
 		</constructor-arg>
 	</bean>
-	
-	<bean id="bulkActivityStreamsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+
+	<bean id="bulkActivityStreamsMapper"
+		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.cache.BulkActivityStreamsMapper">
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.cache.BulkActivityStreamsMapper">
 				<property name="cache" ref="memcachedCache" />
-				<property name="orCollider"> 
-					<bean class="org.eurekastreams.server.service.actions.strategies.activity.OrSortedListCollider" />				
+				<property name="orCollider">
+					<bean
+						class="org.eurekastreams.server.service.actions.strategies.activity.OrSortedListCollider" />
 				</property>
 				<property name="maxItems" value="10000" />
 			</bean>
 		</constructor-arg>
-		
+
 		<constructor-arg>
 			<!-- Database mapper to fall back on if not found in cache -->
-			<bean class="org.eurekastreams.server.persistence.mappers.db.BulkActivityStreamsDbMapper">
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.db.BulkActivityStreamsDbMapper">
 				<property name="maxItems" value="10000" />
 			</bean>
 		</constructor-arg>
-		
-		<constructor-arg >
+
+		<constructor-arg>
 			<ref bean="activityOrCombiner" />
 		</constructor-arg>
-		
+
 		<constructor-arg>
 			<!-- Cache refresher -->
-			<bean class="org.eurekastreams.server.persistence.mappers.cache.BulkActivityStreamsRefresher">
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.cache.BulkActivityStreamsRefresher">
 				<property name="cache" ref="memcachedCache" />
 			</bean>
 		</constructor-arg>
 	</bean>
 
-	<bean id="parentOrgActivityIdMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+	<bean id="parentOrgActivityIdMapper"
+		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
 				<constructor-arg>
 					<!-- Cache mapper to get the system settings -->
-					<bean class="org.eurekastreams.server.persistence.mappers.cache.OrgActivityIdsMapper">
+					<bean
+						class="org.eurekastreams.server.persistence.mappers.cache.OrgActivityIdsMapper">
 						<property name="cache" ref="memcachedCache" />
 						<property name="organizationDAO" ref="bulkOrganizationsMapper" />
 					</bean>
 				</constructor-arg>
 			</bean>
 		</constructor-arg>
-		
+
 		<constructor-arg>
 			<!-- Database mapper to fall back on if not found in cache -->
-			<bean class="org.eurekastreams.server.persistence.mappers.db.OrgActivityIdsDbMapper">
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.db.OrgActivityIdsDbMapper">
 				<property name="descendantOrganizationStrategy" ref="descendantOrgStrategy" />
 			</bean>
 		</constructor-arg>
-		
+
 		<constructor-arg>
 			<!-- Results combiner - just returns the first non-null value -->
-			<bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner"/>
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
 		</constructor-arg>
-		
+
 		<constructor-arg>
 			<!-- Cache refresher -->
-			<bean class="org.eurekastreams.server.persistence.mappers.cache.OrgActivityIdsRefresher">
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.cache.OrgActivityIdsRefresher">
 				<property name="cache" ref="memcachedCache" />
 				<property name="organizationDAO" ref="bulkOrganizationsMapper" />
 			</bean>
 		</constructor-arg>
 	</bean>
 
-	<bean id="findSystemSettings" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+	<bean id="findSystemSettings"
+		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<constructor-arg>
-			<!-- Wrap the System Settings cache mapper with a partial mapper wrapper
--->
-			<bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+			<!--
+				Wrap the System Settings cache mapper with a partial mapper wrapper
+			-->
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
 				<constructor-arg>
 					<!-- Cache mapper to get the system settings -->
-					<bean class="org.eurekastreams.server.persistence.mappers.cache.FindSystemSettingsCacheDomainMapperImpl">
+					<bean
+						class="org.eurekastreams.server.persistence.mappers.cache.FindSystemSettingsCacheDomainMapperImpl">
 						<property name="cache" ref="memcachedCache" />
 					</bean>
 				</constructor-arg>
 			</bean>
 		</constructor-arg>
-		
+
 		<constructor-arg>
 			<!-- Database mapper to fall back on if not found in cache -->
-			<bean class="org.eurekastreams.server.persistence.mappers.db.FindSystemSettingsDbDomainMapperImpl">
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.db.FindSystemSettingsDbDomainMapperImpl">
 				<property name="queryOptimizer" ref="queryOptimizer" />
 			</bean>
 		</constructor-arg>
-		
+
 		<constructor-arg>
 			<!-- Results combiner - just returns the first non-null value -->
-			<bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner"/>
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
 		</constructor-arg>
-		
+
 		<constructor-arg>
 			<!-- Cache refresher -->
-			<bean class="org.eurekastreams.server.persistence.mappers.cache.RefreshSystemSettingsCacheMapperImpl">
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.cache.RefreshSystemSettingsCacheMapperImpl">
 				<property name="cache" ref="memcachedCache" />
 			</bean>
 		</constructor-arg>
 	</bean>
-	
 
- 	<bean id="findSystemSettingsFromDatabase" class="org.eurekastreams.server.persistence.mappers.db.FindSystemSettingsDbDomainMapperImpl">
-		<!-- Mapper to get the system settings straight from the database - needed for updating it.
--->
+
+	<bean id="findSystemSettingsFromDatabase"
+		class="org.eurekastreams.server.persistence.mappers.db.FindSystemSettingsDbDomainMapperImpl">
+		<!--
+			Mapper to get the system settings straight from the database - needed
+			for updating it.
+		-->
 		<property name="queryOptimizer" ref="queryOptimizer" />
 	</bean>
-	
+
 	<bean id="getTutorialVideos"
 		class="org.eurekastreams.server.persistence.mappers.db.GetTutorialVideos">
 		<property name="queryOptimizer" ref="queryOptimizer" />
@@ -337,10 +411,9 @@
 		class="org.eurekastreams.server.persistence.mappers.DeleteStarredActivity">
 		<property name="cache" ref="memcachedCache" />
 	</bean>
-	
+
 	<bean id="insertLikedActivity"
 		class="org.eurekastreams.server.persistence.mappers.InsertLikedActivity">
-		<constructor-arg ref="getLikedActivityIds" />
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 
@@ -348,101 +421,119 @@
 		class="org.eurekastreams.server.persistence.mappers.DeleteLikedActivity">
 		<property name="cache" ref="memcachedCache" />
 	</bean>
-	
-	
-     <bean id="getEveryoneActivityCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.GetEveryoneActivityCacheMapper">
-       <property name="cache" ref="memcachedCache" />
-    </bean>
-    <bean id="getEveryoneStreamIdCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.GetEveryoneStreamIdCacheMapper">
-       <property name="cache" ref="memcachedCache" />
-    </bean>
-    <bean id="refreshEveryoneActivityCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.RefreshEveryoneActivityCacheMapper">
-       <property name="cache" ref="memcachedCache" />
-    </bean>
-    <bean id="refreshEveryoneStreamIdCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.RefreshEveryoneStreamIdCacheMapper">
-       <property name="cache" ref="memcachedCache" />
-    </bean>
-    <bean id="getEveryoneActivityDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetEveryoneActivityDbMapper">
-    </bean>
-    <bean id="getEveryoneStreamIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetEveryoneStreamIdDbMapper">
-    </bean>
-    
-    <bean id="getEveryoneActivityChain" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+
+	<bean id="getEveryoneActivityCacheMapper"
+		class="org.eurekastreams.server.persistence.mappers.cache.GetEveryoneActivityCacheMapper">
+		<property name="cache" ref="memcachedCache" />
+	</bean>
+	<bean id="getEveryoneStreamIdCacheMapper"
+		class="org.eurekastreams.server.persistence.mappers.cache.GetEveryoneStreamIdCacheMapper">
+		<property name="cache" ref="memcachedCache" />
+	</bean>
+	<bean id="refreshEveryoneActivityCacheMapper"
+		class="org.eurekastreams.server.persistence.mappers.cache.RefreshEveryoneActivityCacheMapper">
+		<property name="cache" ref="memcachedCache" />
+	</bean>
+	<bean id="refreshEveryoneStreamIdCacheMapper"
+		class="org.eurekastreams.server.persistence.mappers.cache.RefreshEveryoneStreamIdCacheMapper">
+		<property name="cache" ref="memcachedCache" />
+	</bean>
+	<bean id="getEveryoneActivityDbMapper"
+		class="org.eurekastreams.server.persistence.mappers.db.GetEveryoneActivityDbMapper">
+	</bean>
+	<bean id="getEveryoneStreamIdDbMapper"
+		class="org.eurekastreams.server.persistence.mappers.db.GetEveryoneStreamIdDbMapper">
+	</bean>
+
+	<bean id="getEveryoneActivityChain"
+		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<constructor-arg>
 			<!-- Wrap the cache mapper with a partial mapper wrapper -->
-			<bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
 				<constructor-arg ref="getEveryoneActivityCacheMapper" />
 			</bean>
 		</constructor-arg>
-		
+
 		<!-- Database mapper to fall back on if not found in cache -->
 		<constructor-arg ref="getEveryoneActivityDbMapper" />
-		
+
 		<constructor-arg>
 			<!-- Results combiner - just returns the first non-null value -->
-			<bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner"/>
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
 		</constructor-arg>
-		
+
 		<!-- Cache refresher -->
 		<constructor-arg ref="refreshEveryoneActivityCacheMapper" />
 	</bean>
-	
-    <bean id="getEveryoneStreamIdChain" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+
+	<bean id="getEveryoneStreamIdChain"
+		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<constructor-arg>
 			<!-- Wrap the cache mapper with a partial mapper wrapper -->
-			<bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
 				<constructor-arg ref="getEveryoneStreamIdCacheMapper" />
 			</bean>
 		</constructor-arg>
-		
+
 		<!-- Database mapper to fall back on if not found in cache -->
 		<constructor-arg ref="getEveryoneStreamIdDbMapper" />
-		
+
 		<constructor-arg>
 			<!-- Results combiner - just returns the first non-null value -->
-			<bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner"/>
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
 		</constructor-arg>
-		
+
 		<!-- Cache refresher -->
 		<constructor-arg ref="refreshEveryoneStreamIdCacheMapper" />
 	</bean>
-    
-    <bean id="getEveryoneActivity" class="org.eurekastreams.server.persistence.mappers.GetEveryoneActivityMapper">
-        <constructor-arg ref="getEveryoneStreamIdChain" />
-        <constructor-arg ref="getEveryoneActivityChain" />
-    </bean>
-    
-    <bean id="getFollowedByActivityCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.GetFollowedByActivityCacheMapper">
-       <property name="cache" ref="memcachedCache" />
-    </bean>
-    <bean id="refreshFollowedByActivitiesCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.RefreshFollowedByActivitiesCacheMapper">
-       <property name="cache" ref="memcachedCache" />
-    </bean>
-    <bean id="getFollowedByActivitiesDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFollowedByActivitiesDbMapper">
-        <constructor-arg ref="followedActivityIdsLoader" />
-        <constructor-arg value="10" />
-    </bean>
-           
-    <bean id="getFollowedByActivities" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+
+	<bean id="getEveryoneActivity"
+		class="org.eurekastreams.server.persistence.mappers.GetEveryoneActivityMapper">
+		<constructor-arg ref="getEveryoneStreamIdChain" />
+		<constructor-arg ref="getEveryoneActivityChain" />
+	</bean>
+
+	<bean id="getFollowedByActivityCacheMapper"
+		class="org.eurekastreams.server.persistence.mappers.cache.GetFollowedByActivityCacheMapper">
+		<property name="cache" ref="memcachedCache" />
+	</bean>
+	<bean id="refreshFollowedByActivitiesCacheMapper"
+		class="org.eurekastreams.server.persistence.mappers.cache.RefreshFollowedByActivitiesCacheMapper">
+		<property name="cache" ref="memcachedCache" />
+	</bean>
+	<bean id="getFollowedByActivitiesDbMapper"
+		class="org.eurekastreams.server.persistence.mappers.db.GetFollowedByActivitiesDbMapper">
+		<constructor-arg ref="followedActivityIdsLoader" />
+		<constructor-arg value="10" />
+	</bean>
+
+	<bean id="getFollowedByActivities"
+		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<constructor-arg>
 			<!-- Wrap the cache mapper with a partial mapper wrapper -->
-			<bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
 				<constructor-arg ref="getFollowedByActivityCacheMapper" />
 			</bean>
 		</constructor-arg>
-		
+
 		<!-- Database mapper to fall back on if not found in cache -->
 		<constructor-arg ref="getFollowedByActivitiesDbMapper" />
-		
+
 		<constructor-arg>
 			<!-- Results combiner - just returns the first non-null value -->
-			<bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner"/>
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
 		</constructor-arg>
-		
+
 		<!-- Cache refresher -->
 		<constructor-arg ref="refreshFollowedByActivitiesCacheMapper" />
 	</bean>
-	
+
 	<!-- Organization Hierarchy Cache Loader -->
 	<bean id="organizationCacheLoader"
 		class="org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCacheLoader">
@@ -573,7 +664,7 @@
 		</constructor-arg>
 	</bean>
 
-	<bean id="luceneActivityDataSource" 
+	<bean id="luceneActivityDataSource"
 		class="org.eurekastreams.server.service.actions.strategies.activity.datasources.LuceneDataSource">
 		<!-- DataSource for searching activities -->
 
@@ -609,27 +700,28 @@
 			</bean>
 		</constructor-arg>
 		<constructor-arg>
-			<bean class="org.eurekastreams.commons.search.ProjectionSearchRequestBuilder">
-					<property name="resultFields">
-						<list>
-							<value>id</value>
-						</list>
-					</property>
-					<property name="resultTypes">
-						<list>
-							<value>org.eurekastreams.server.domain.stream.Activity
-							</value>
-						</list>
-					</property>
-					<property name="queryParserBuilder" ref="everyoneActivityResultsQueryBuilder" />
-					<property name="resultTransformer">
-						<bean
-							class="org.eurekastreams.commons.hibernate.SingleFieldResultTransformer">
-							<property name="fieldName" value="id" />
-						</bean>
-					</property>
-				</bean>
-		</constructor-arg>		
+			<bean
+				class="org.eurekastreams.commons.search.ProjectionSearchRequestBuilder">
+				<property name="resultFields">
+					<list>
+						<value>id</value>
+					</list>
+				</property>
+				<property name="resultTypes">
+					<list>
+						<value>org.eurekastreams.server.domain.stream.Activity
+						</value>
+					</list>
+				</property>
+				<property name="queryParserBuilder" ref="everyoneActivityResultsQueryBuilder" />
+				<property name="resultTransformer">
+					<bean
+						class="org.eurekastreams.commons.hibernate.SingleFieldResultTransformer">
+						<property name="fieldName" value="id" />
+					</bean>
+				</property>
+			</bean>
+		</constructor-arg>
 	</bean>
 
 	<bean id="memcachedCache"
@@ -661,18 +753,50 @@
 		<constructor-arg ref="memcachedClient-domainGroupCacheLoader" />
 		<constructor-arg value="10000" />
 	</bean>
-
+	
+	<bean
+		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITY_BY_ID"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
+		
 	<bean id="bulkActivitiesMapper"
-		class="org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper">
-		<property name="starredActivitiesMapper" ref="getStarredActivityIds" />
-		<property name="streamMapper" ref="getStreamsByIds" />
-		<property name="peopleMapper" ref="bulkPeopleByAccountIdMapper" />
-		<property name="groupMapper" ref="bulkDomainGroupsByShortNameMapper" />
-		<property name="commentIdListDAO" ref="getOrderedCommentIdsByActivityId" />
-		<property name="commentsByIdDAO" ref="getCommentsById" />
-		<property name="commentDeletePropertySetter" ref="commentDeletePropertyStrategy" />
-		<property name="activityDeletePropertySetter" ref="activityDeletePropertyStrategy" />
-		<property name="cache" ref="memcachedCache" />
+		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
+				<constructor-arg>
+					<bean
+						class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
+				</constructor-arg>
+				<constructor-arg
+					ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITY_BY_ID" />
+				<constructor-arg value="False" />
+				<property name="cache" ref="memcachedCache" />
+			</bean>
+		</constructor-arg>
+
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesDbMapper">
+				<constructor-arg ref="getStreamsByIds" />
+				<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+				<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+				<constructor-arg ref="getOrderedCommentIdsByActivityId" />
+				<constructor-arg ref="getCommentsById" />
+			</bean>
+		</constructor-arg>
+
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
+		</constructor-arg>
+
+		<constructor-arg>
+			<!-- Cache refresher -->
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.cache.BulkActivityRefresher">
+				<property name="cache" ref="memcachedCache" />
+			</bean>
+		</constructor-arg>
 	</bean>
 
 	<bean id="getOrgCoordinatorIdsFromDB"
@@ -887,11 +1011,49 @@
 		class="org.eurekastreams.server.persistence.mappers.stream.GetStarredActivityIds">
 		<property name="cache" ref="memcachedCache" />
 	</bean>
-	
-	<bean id="getLikedActivityIds"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetLikedActivityIds">
-		<property name="cache" ref="memcachedCache" />
+
+	<bean
+		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKED_BY_PERSON_ID"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
+
+	<bean id="getLikedActivityIdsByUserId"
+		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
+				<constructor-arg>
+					<bean
+						class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
+				</constructor-arg>
+				<constructor-arg
+					ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKED_BY_PERSON_ID" />
+				<constructor-arg value="True" />
+				<property name="cache" ref="memcachedCache" />
+			</bean>
+		</constructor-arg>
+
+		<constructor-arg>
+			<!-- Database mapper to fall back on if not found in cache -->
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.db.GetLikedActivityIdsByUserIdsDbMapper" />
+		</constructor-arg>
+
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
+		</constructor-arg>
+
+		<constructor-arg>
+			<!-- Cache refresher -->
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.cache.SetKeyedCollectionCacheMapper">
+				<constructor-arg
+					ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKED_BY_PERSON_ID" />
+				<property name="cache" ref="memcachedCache" />
+			</bean>
+		</constructor-arg>
 	</bean>
+
 
 	<bean id="getFollowerIds"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds">
@@ -1436,78 +1598,90 @@
 		class="org.eurekastreams.server.persistence.mappers.cache.RemovePersonFromCacheMapper">
 		<property name="cache" ref="memcachedCache" />
 	</bean>
-	
-         <bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID"
-                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/> 
-                
-                
-         <bean id="getPeopleWhoLikedActivity" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
-               <constructor-arg>
-                      <bean
-                           class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
-                                  <constructor-arg>
-                                        <bean  class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer"/>
-                                  </constructor-arg>
-                                  <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID" />
-                                        <property name="cache" ref="memcachedCache" />
-                     </bean>
-              </constructor-arg>
-              <constructor-arg>
-                     <!-- Database mapper to fall back on if not found in cache -->
-                     <bean class="org.eurekastreams.server.persistence.mappers.db.GetPeopleWhoLikedActivityDbMapper" />
-              </constructor-arg>
-              <constructor-arg >
-                     <bean class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
-              </constructor-arg>
-              <constructor-arg>
-                     <!-- Cache refresher -->
-                     <bean class="org.eurekastreams.server.persistence.mappers.cache.SetKeyedSingleValueCacheMapper">
-                        <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID" />
-                           <property name="cache" ref="memcachedCache" />
-                     </bean>
-              </constructor-arg>
-         </bean>
-	
-	
-	
+
+	<bean
+		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
+
+
+	<bean id="getPeopleWhoLikedActivity"
+		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
+				<constructor-arg>
+					<bean
+						class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
+				</constructor-arg>
+				<constructor-arg
+					ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID" />
+				<constructor-arg value="True" />
+				<property name="cache" ref="memcachedCache" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg>
+			<!-- Database mapper to fall back on if not found in cache -->
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.db.GetPeopleWhoLikedActivityDbMapper" />
+		</constructor-arg>
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
+		</constructor-arg>
+		<constructor-arg>
+			<!-- Cache refresher -->
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.cache.SetKeyedCollectionCacheMapper">
+				<constructor-arg
+					ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID" />
+				<property name="cache" ref="memcachedCache" />
+			</bean>
+		</constructor-arg>
+	</bean>
+
 	<!-- Begin ldap mappers -->
 
-	<bean id="findLdapGroupByCnNameMapper" class="org.eurekastreams.server.persistence.mappers.ldap.LdapLookup">
-		<constructor-arg ref="searchStringLdapTemplateRetriever"/>
-		<constructor-arg ref="findLdapGroupByCnFilter"/>
-		<constructor-arg ref="ldapToLdapGroupCallbackFactory"/>
-		<constructor-arg ref="pagedLdapSearchStrategy"/>
-	</bean>		
-	
-	<bean id="findLdapGroupByLdapGroupMembershipMapper" class="org.eurekastreams.server.persistence.mappers.ldap.LdapLookup">
-	    <constructor-arg ref="ldapGroupDnLdapTemplateRetriever"/>
-        <constructor-arg ref="findLdapGroupByMembershipFilter"/>
-        <constructor-arg ref="ldapToLdapGroupCallbackFactory"/>
-        <constructor-arg ref="pagedLdapSearchStrategy"/>
-    </bean>
-    
-    <bean id="findPersonByProvidedLdapQueryMapper" class="org.eurekastreams.server.persistence.mappers.ldap.LdapLookup">
-        <constructor-arg ref="searchStringLdapTemplateRetriever"/>
-        <constructor-arg ref="findPersonByAttributeQueryFilter"/>
-        <constructor-arg ref="ldapToPersonCallbackFactory"/>    
-        <constructor-arg ref="pagedLdapSearchStrategy"/>
-    </bean>
-    
-    <bean id="findPersonByCnWildcardMapper" class="org.eurekastreams.server.persistence.mappers.ldap.LdapLookup">
-        <constructor-arg ref="searchStringLdapTemplateRetriever"/>
-        <constructor-arg ref="findPersonByCnWildcardFilter"/>
-        <constructor-arg ref="ldapToPersonCallbackFactory"/>    
-        <constructor-arg ref="pagedLdapSearchStrategy"/>
-    </bean> 
-    
-    <bean id="findPersonByDirectLdapGroupMembershipMapper" class="org.eurekastreams.server.persistence.mappers.ldap.LdapLookup">
-        <constructor-arg ref="ldapGroupDnLdapTemplateRetriever"/>
-        <constructor-arg ref="findPersonByMembershipFilter"/>
-        <constructor-arg ref="ldapToPersonCallbackFactory"/>    
-        <constructor-arg ref="pagedLdapSearchStrategy"/>
-    </bean>     
-    
-    <!-- End ldap mappers -->        
+	<bean id="findLdapGroupByCnNameMapper"
+		class="org.eurekastreams.server.persistence.mappers.ldap.LdapLookup">
+		<constructor-arg ref="searchStringLdapTemplateRetriever" />
+		<constructor-arg ref="findLdapGroupByCnFilter" />
+		<constructor-arg ref="ldapToLdapGroupCallbackFactory" />
+		<constructor-arg ref="pagedLdapSearchStrategy" />
+	</bean>
+
+	<bean id="findLdapGroupByLdapGroupMembershipMapper"
+		class="org.eurekastreams.server.persistence.mappers.ldap.LdapLookup">
+		<constructor-arg ref="ldapGroupDnLdapTemplateRetriever" />
+		<constructor-arg ref="findLdapGroupByMembershipFilter" />
+		<constructor-arg ref="ldapToLdapGroupCallbackFactory" />
+		<constructor-arg ref="pagedLdapSearchStrategy" />
+	</bean>
+
+	<bean id="findPersonByProvidedLdapQueryMapper"
+		class="org.eurekastreams.server.persistence.mappers.ldap.LdapLookup">
+		<constructor-arg ref="searchStringLdapTemplateRetriever" />
+		<constructor-arg ref="findPersonByAttributeQueryFilter" />
+		<constructor-arg ref="ldapToPersonCallbackFactory" />
+		<constructor-arg ref="pagedLdapSearchStrategy" />
+	</bean>
+
+	<bean id="findPersonByCnWildcardMapper"
+		class="org.eurekastreams.server.persistence.mappers.ldap.LdapLookup">
+		<constructor-arg ref="searchStringLdapTemplateRetriever" />
+		<constructor-arg ref="findPersonByCnWildcardFilter" />
+		<constructor-arg ref="ldapToPersonCallbackFactory" />
+		<constructor-arg ref="pagedLdapSearchStrategy" />
+	</bean>
+
+	<bean id="findPersonByDirectLdapGroupMembershipMapper"
+		class="org.eurekastreams.server.persistence.mappers.ldap.LdapLookup">
+		<constructor-arg ref="ldapGroupDnLdapTemplateRetriever" />
+		<constructor-arg ref="findPersonByMembershipFilter" />
+		<constructor-arg ref="ldapToPersonCallbackFactory" />
+		<constructor-arg ref="pagedLdapSearchStrategy" />
+	</bean>
+
+	<!-- End ldap mappers -->
 
 	<bean id="deleteStreamViewAndRelatedSearches"
 		class="org.eurekastreams.server.persistence.mappers.stream.DeleteStreamViewAndRelatedSearches" />

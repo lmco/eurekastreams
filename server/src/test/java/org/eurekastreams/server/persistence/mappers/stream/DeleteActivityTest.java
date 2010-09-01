@@ -44,43 +44,43 @@ public class DeleteActivityTest extends CachedMapperTest
      */
     @Autowired
     private Cache cache;
-    
+
     /**
      * CompositeStreamActivityIds DAO.
      */
     @Autowired
     private CompositeStreamActivityIdsMapper compositeStreamActivityIdsDAO;
-    
+
     /**
      * Activity id from dataset.xml.
      */
     private final long activityId = 6789;
-    
+
     /**
      * Comment id.
      */
     private final long commentId = 1L;
-    
+
     /**
      * Smithers compositeStreamId.
      */
     private final long simthersCompStreamId = 4L;
-    
+
     /**
      * Everyone compositeStreamId.
      */
     private final long everyoneCompStreamId = 5002L;
-    
+
     /**
      * additional compositeStreamId contiaining destination stream.
      */
     private final long customCompStreamId = 17L;
-    
+
     /**
      * Smithers user id.
      */
     private final long smithersId = 98L;
-        
+
     /**
      * Test the execute method with bogus id.
      */
@@ -90,73 +90,70 @@ public class DeleteActivityTest extends CachedMapperTest
         final long bogusId = -9879843;
         assertNull(sut.execute(new DeleteActivityRequest(smithersId, bogusId)));
     }
-    
+
     /**
      * Test execute removing first comment.
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testExecute()
     {
         //verify initial state.
         loadAndVerifyInitialActivity();
-        
+
         //delete a activity via sut.
-        assertNotNull(sut.execute(new DeleteActivityRequest(smithersId, activityId)));  
-        
-        //verify delete activity comments from DB.       
+        assertNotNull(sut.execute(new DeleteActivityRequest(smithersId, activityId)));
+
+        //verify delete activity comments from DB.
         assertEquals(0, getEntityManager().createQuery("FROM Comment c WHERE c.id = :commentId")
             .setParameter("commentId", commentId).getResultList().size());
-        
+
         //verify delete activity from DB.
         assertEquals(0, getEntityManager().createQuery("FROM Activity WHERE id = :activityId")
-            .setParameter("activityId", activityId).getResultList().size()); 
-        
+            .setParameter("activityId", activityId).getResultList().size());
+
         //verify it was removed from activity destination CompositeStream.
-        List<Long> activityIds = 
-            cache.getList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + simthersCompStreamId);       
+        List<Long> activityIds =
+            cache.getList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + simthersCompStreamId);
         assertEquals(1, activityIds.size());
-        
+
         //verify it was removed from everyone CompositeStream.
-        List<Long> everyoneActivityIds = 
-            cache.getList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + everyoneCompStreamId);       
+        List<Long> everyoneActivityIds =
+            cache.getList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + everyoneCompStreamId);
         assertEquals(4, everyoneActivityIds.size());
-        
+
         //verify it was removed from custom CompositeStream.
-        List<Long> customActivityIds = 
-            cache.getList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + customCompStreamId);       
+        List<Long> customActivityIds =
+            cache.getList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + customCompStreamId);
         assertEquals(1, customActivityIds.size());
-        
+
     }
-    
+
     /**
     * Hit the mapper to load activity into cache and verify state.
     */
-   @SuppressWarnings({ "unchecked" })
    private void loadAndVerifyInitialActivity()
-   {     
-       //verify delete activity comments from DB.       
+   {
+       //verify delete activity comments from DB.
        assertEquals(1, getEntityManager().createQuery("FROM Comment c WHERE c.id = :commentId")
            .setParameter("commentId", commentId).getResultList().size());
-       
+
        //verify delete activity from DB.
        assertEquals(1, getEntityManager().createQuery("FROM Activity WHERE id = :activityId")
-           .setParameter("activityId", activityId).getResultList().size()); 
-       
-       compositeStreamActivityIdsDAO.execute(simthersCompStreamId, smithersId);       
-       List<Long> activityIds =  
-           cache.getList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + simthersCompStreamId);       
+           .setParameter("activityId", activityId).getResultList().size());
+
+       compositeStreamActivityIdsDAO.execute(simthersCompStreamId, smithersId);
+       List<Long> activityIds =
+           cache.getList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + simthersCompStreamId);
        assertEquals(2, activityIds.size());
-       
-       compositeStreamActivityIdsDAO.execute(everyoneCompStreamId, smithersId);       
-       List<Long> everyoneActivityIds = (List<Long>) 
-           cache.getList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + everyoneCompStreamId);       
+
+       compositeStreamActivityIdsDAO.execute(everyoneCompStreamId, smithersId);
+       List<Long> everyoneActivityIds = cache.getList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + everyoneCompStreamId);
        assertEquals(5, everyoneActivityIds.size());
-       
-       compositeStreamActivityIdsDAO.execute(customCompStreamId, smithersId);       
-       List<Long> customActivityIds =  
-           cache.getList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + customCompStreamId);       
-       assertEquals(2, customActivityIds.size());             
+
+       compositeStreamActivityIdsDAO.execute(customCompStreamId, smithersId);
+       List<Long> customActivityIds =
+           cache.getList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + customCompStreamId);
+       assertEquals(2, customActivityIds.size());
    }
 
 }

@@ -51,7 +51,7 @@ public class AddCachedCompositeStreamTest extends CachedMapperTest
     };
 
     /**
-     * 
+     *
      */
     private StreamView streamViewMock = context.mock(StreamView.class);
 
@@ -100,7 +100,6 @@ public class AddCachedCompositeStreamTest extends CachedMapperTest
     /**
      * test.
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testExecuteNonEmptyCompositeStreamList()
     {
@@ -128,11 +127,10 @@ public class AddCachedCompositeStreamTest extends CachedMapperTest
         assertEquals(2, (cache.getList(CacheKeys.COMPOSITE_STREAM_IDS_BY_PERSON_ID + PERSON_ID)).size());
         context.assertIsSatisfied();
     }
-    
+
     /**
      * test.
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testExecuteWithItemAlreadyAdded()
     {
@@ -165,7 +163,6 @@ public class AddCachedCompositeStreamTest extends CachedMapperTest
     /**
      * test.
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testExecuteEmptyCompositeStreamList()
     {

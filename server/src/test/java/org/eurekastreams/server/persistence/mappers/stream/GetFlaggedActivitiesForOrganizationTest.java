@@ -24,6 +24,7 @@ import java.util.List;
 import org.eurekastreams.server.action.request.stream.GetFlaggedActivitiesByOrgRequest;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -50,7 +51,7 @@ public class GetFlaggedActivitiesForOrganizationTest extends MapperTest
     /**
      * Bulk activities mapper.
      */
-    private BulkActivitiesMapper bulkActivitiesMapper = context.mock(BulkActivitiesMapper.class);
+    private DomainMapper<List<Long>, List<ActivityDTO>>  bulkActivitiesMapper = context.mock(DomainMapper.class);
 
     /**
      * System under test.
@@ -87,7 +88,7 @@ public class GetFlaggedActivitiesForOrganizationTest extends MapperTest
         context.checking(new Expectations()
         {
             {
-                oneOf(bulkActivitiesMapper).execute(expectedFlaggedActivities, userName);
+                oneOf(bulkActivitiesMapper).execute(expectedFlaggedActivities);
                 will(returnValue(activityDTOs));
             }
         });

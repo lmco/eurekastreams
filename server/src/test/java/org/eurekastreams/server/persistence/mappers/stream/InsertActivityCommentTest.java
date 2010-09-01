@@ -48,7 +48,7 @@ public class InsertActivityCommentTest extends CachedMapperTest
      * Mapper for looking up activities by id.
      */
     @Autowired
-    private BulkActivitiesMapper activityMapper;
+    private BulkActivitiesDbMapper activityMapper;
 
     /**
      * A comment that is 250 characters.
@@ -90,7 +90,7 @@ public class InsertActivityCommentTest extends CachedMapperTest
         // and assert initial state is correct.
         List<Long> activityIds = new ArrayList<Long>(1);
         activityIds.add(activityId);
-        ActivityDTO activityDTO = activityMapper.execute(activityIds, smithers.getAccountId()).get(0);
+        ActivityDTO activityDTO = activityMapper.execute(activityIds).get(0);
 
         assertEquals(activityId, activityDTO.getId());
         assertEquals(3, activityDTO.getCommentCount());
@@ -119,7 +119,7 @@ public class InsertActivityCommentTest extends CachedMapperTest
         assertEquals(is250, comment.getBody());
 
         // Get the activity DTO and assert is was updated correctly by sut.
-        activityDTO = activityMapper.execute(activityIds, smithers.getAccountId()).get(0);
+        activityDTO = activityMapper.execute(activityIds).get(0);
         assertEquals(activityId, activityDTO.getId());
         assertEquals(4, activityDTO.getCommentCount());
         assertEquals(5L, activityDTO.getFirstComment().getId());
@@ -133,7 +133,7 @@ public class InsertActivityCommentTest extends CachedMapperTest
         result = sut.execute(insertRequest);
 
         // Get the activity DTO and assert is was updated correctly.
-        activityDTO = activityMapper.execute(activityIds, smithers.getAccountId()).get(0);
+        activityDTO = activityMapper.execute(activityIds).get(0);
         assertEquals(5L, activityDTO.getFirstComment().getId());
         assertEquals(result.getId(), activityDTO.getLastComment().getId());
 
@@ -161,7 +161,7 @@ public class InsertActivityCommentTest extends CachedMapperTest
         // and assert initial state is correct.
         List<Long> activityIds = new ArrayList<Long>(1);
         activityIds.add(activityId);
-        ActivityDTO activityDTO = activityMapper.execute(activityIds, smithers.getAccountId()).get(0);
+        ActivityDTO activityDTO = activityMapper.execute(activityIds).get(0);
 
         assertEquals(activityId, activityDTO.getId());
         assertEquals(3, activityDTO.getCommentCount());

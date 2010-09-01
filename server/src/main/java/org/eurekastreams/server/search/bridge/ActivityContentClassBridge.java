@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,8 @@
  */
 package org.eurekastreams.server.search.bridge;
 
-import java.util.HashMap;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.stream.Activity;
+import org.eurekastreams.server.persistence.mappers.stream.ActivityContentExtractor;
 import org.hibernate.search.bridge.StringBridge;
 
 /**
@@ -28,13 +25,13 @@ import org.hibernate.search.bridge.StringBridge;
 public class ActivityContentClassBridge implements StringBridge
 {
     /**
-     * The logger.
+     * Content extractor.
      */
-    private Log log = LogFactory.getLog(ActivityContentClassBridge.class);
+    private ActivityContentExtractor contentExtractor = new ActivityContentExtractor();
 
     /**
      * Extract the content out of an Activity/Message.
-     * 
+     *
      * @param activityObject
      *            the message
      * @return a string containing the title and body of the input Message
@@ -42,44 +39,7 @@ public class ActivityContentClassBridge implements StringBridge
     @Override
     public String objectToString(final Object activityObject)
     {
-        StringBuffer sb = new StringBuffer();
         Activity activity = (Activity) activityObject;
-        HashMap<String, String> baseObject = activity.getBaseObject();
-        if (baseObject != null)
-        {
-            switch (activity.getBaseObjectType())
-            {
-                case NOTE:
-                    if (baseObject != null && baseObject.containsKey("content"))
-                    {
-                        sb.append(baseObject.get("content"));
-                    }
-                    break;
-                case BOOKMARK:
-                    if (baseObject.containsKey("content"))
-                    {
-                        sb.append(baseObject.get("content"));
-                    }
-                    if (baseObject.containsKey("targetTitle"))
-                    {
-                        sb.append(" ");
-                        sb.append(baseObject.get("targetTitle"));
-                    }
-                    if (baseObject.containsKey("description"))
-                    {
-                        sb.append(" ");
-                        sb.append(baseObject.get("description"));
-                    }
-                    
-                    break;
-                default:
-                    log
-                            .error("I don't know how to pull the content from activities of type: "
-                                    + activity.getBaseObjectType().toString());
-                    break;
-            }
-        }
-
-        return sb != null && sb.toString().length() > 0 ? sb.toString() : null;
+        return contentExtractor.extractContent(activity.getBaseObjectType(), activity.getBaseObject());
     }
 }

@@ -26,6 +26,7 @@ import org.eurekastreams.server.action.request.stream.GetFlaggedActivitiesByOrgR
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * Mapper that gets the flagged activities pertaining to an org.
@@ -41,7 +42,7 @@ public class GetFlaggedActivitiesForOrganization extends
     /**
      * Bulk activities mapper.
      */
-    private BulkActivitiesMapper activitiesMapper;
+    private DomainMapper<List<Long>, List<ActivityDTO>>  activitiesMapper;
 
     /**
      * Constructor.
@@ -49,7 +50,7 @@ public class GetFlaggedActivitiesForOrganization extends
      * @param inActivitiesMapper
      *            the activities mapper
      */
-    public GetFlaggedActivitiesForOrganization(final BulkActivitiesMapper inActivitiesMapper)
+    public GetFlaggedActivitiesForOrganization(final DomainMapper<List<Long>, List<ActivityDTO>>  inActivitiesMapper)
     {
         activitiesMapper = inActivitiesMapper;
     }
@@ -85,7 +86,7 @@ public class GetFlaggedActivitiesForOrganization extends
             q.setMaxResults(inRequest.getEndIndex() - inRequest.getStartIndex() + 1);
             List<Long> activityIds = q.getResultList();
 
-            activities = activitiesMapper.execute(activityIds, inRequest.getRequestingUserAccountId());
+            activities = activitiesMapper.execute(activityIds);
         }
         else
         {

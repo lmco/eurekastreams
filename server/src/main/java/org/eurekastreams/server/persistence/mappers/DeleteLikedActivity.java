@@ -23,13 +23,13 @@ import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
  * Removes entry from {@link LikedActivity} table.
- *
+ * 
  */
 public class DeleteLikedActivity extends CachedDomainMapper
 {
     /**
      * Removes entry from LikedActivity table.
-     *
+     * 
      * @param inLikedActivity
      *            the {@link LikedActivity} to remove.
      * @return True if successful.

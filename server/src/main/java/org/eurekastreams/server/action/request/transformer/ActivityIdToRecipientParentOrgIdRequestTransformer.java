@@ -16,11 +16,14 @@
 package org.eurekastreams.server.action.request.transformer;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
+import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * Request transformer that converts an activity id to its recipient organization id.
@@ -35,22 +38,23 @@ public class ActivityIdToRecipientParentOrgIdRequestTransformer implements Reque
     /**
      * Mapper to get activities.
      */
-    private BulkActivitiesMapper activityMapper;
+    private DomainMapper<List<Long>, List<ActivityDTO>> activityMapper;
 
     /**
      * Constructor.
-     *
+     * 
      * @param inActivityMapper
      *            the mapper to get activities.
      */
-    public ActivityIdToRecipientParentOrgIdRequestTransformer(final BulkActivitiesMapper inActivityMapper)
+    public ActivityIdToRecipientParentOrgIdRequestTransformer(
+            final DomainMapper<List<Long>, List<ActivityDTO>> inActivityMapper)
     {
         activityMapper = inActivityMapper;
     }
 
     /**
      * Extracts the org id from the request.
-     *
+     * 
      * @param inActionContext
      *            action context.
      * @return The org id.
@@ -59,7 +63,7 @@ public class ActivityIdToRecipientParentOrgIdRequestTransformer implements Reque
     public Serializable transform(final ActionContext inActionContext)
     {
         Long activityId = (Long) inActionContext.getParams();
-        Long recipientParentOrgId = activityMapper.execute(activityId, null).getRecipientParentOrgId();
+        Long recipientParentOrgId = activityMapper.execute(Arrays.asList(activityId)).get(0).getRecipientParentOrgId();
 
         log.info("Found recipient org id for activity #" + activityId + " = " + recipientParentOrgId);
         return recipientParentOrgId.toString();

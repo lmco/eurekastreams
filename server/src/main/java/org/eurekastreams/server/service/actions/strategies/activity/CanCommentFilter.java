@@ -73,16 +73,13 @@ public class CanCommentFilter implements ActivityFilter
      *            The list of activities to filter.
      * @param inCurrentUserAccountId
      *            The currently logged in user's account id.
-     * @return List of modified activities.
      */
-    // TODO we can use less data then a whole person object. are only using accountName. This
-    // will most likely be refactored to use requestContext object when available.
-    public List<ActivityDTO> filter(final List<ActivityDTO> activities, final String inCurrentUserAccountId)
+    public void filter(final List<ActivityDTO> activities, final PersonModelView inCurrentUserAccountId)
     {
         // short-circuit if no work to do.
         if (activities.size() == 0)
         {
-            return activities;
+            return;
         }
 
         // collect destination stream ids in hashtables (by type) to eliminate duplication
@@ -108,8 +105,8 @@ public class CanCommentFilter implements ActivityFilter
         }
 
         // do work of determining if destination streams are commentable.
-        setPersonCommentableValues(inCurrentUserAccountId, personCommentable);
-        setGroupCommentableValues(inCurrentUserAccountId, groupCommentable);
+        setPersonCommentableValues(inCurrentUserAccountId.getAccountId(), personCommentable);
+        setGroupCommentableValues(inCurrentUserAccountId.getAccountId(), groupCommentable);
 
         // loop through activities and set the appropriate values.
         for (ActivityDTO activity : activities)
@@ -129,7 +126,6 @@ public class CanCommentFilter implements ActivityFilter
                         "Attempted to filter Activity with unsupported destination stream type.");
             }
         }
-        return activities;
     }
 
     /**

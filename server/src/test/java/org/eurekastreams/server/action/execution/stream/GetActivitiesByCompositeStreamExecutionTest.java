@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,9 +33,11 @@ import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.GetPrivateCoordinatedAndFollowedGroupIdsForUser;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 import org.eurekastreams.server.persistence.mappers.stream.CompositeStreamActivityIdsMapper;
+import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -42,6 +45,7 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
+
 
 /**
  * Test for GetActivitiesByCompositeStreamExecution class.
@@ -73,6 +77,11 @@ public class GetActivitiesByCompositeStreamExecutionTest
      * Principal mock.
      */
     private Principal principal = context.mock(Principal.class);
+    
+    /**
+     * Person mapper.
+     */
+    private GetPeopleByAccountIds peopleMapper = context.mock(GetPeopleByAccountIds.class);
 
     /**
      * ID mapper mock.
@@ -82,7 +91,7 @@ public class GetActivitiesByCompositeStreamExecutionTest
     /**
      * bulk mapper mock.
      */
-    private BulkActivitiesMapper bulkMapper = context.mock(BulkActivitiesMapper.class);
+    private DomainMapper<List<Long>, List<ActivityDTO>>  bulkMapper = context.mock(DomainMapper.class);
 
     /**
      * Mocked GetPrivateCoordinatedAndFollowedGroupIdsForUser.
@@ -174,7 +183,7 @@ public class GetActivitiesByCompositeStreamExecutionTest
         List<ActivityFilter> filters = new LinkedList<ActivityFilter>();
         filters.add(filterMock);
         sut = new GetActivitiesByCompositeStreamExecution(idMapper, bulkMapper, filters, getVisibleGroupsForUserMapper,
-                2.0f);
+                2.0f, peopleMapper);
 
         // set the activity ids
         activity1Public.setId(1L);
@@ -243,6 +252,8 @@ public class GetActivitiesByCompositeStreamExecutionTest
     {
         final GetActivitiesByCompositeStreamRequest request = new GetActivitiesByCompositeStreamRequest(5L, 5, 5);
 
+        final PersonModelView personModel = new PersonModelView();
+        
         context.checking(new Expectations()
         {
             {
@@ -274,11 +285,13 @@ public class GetActivitiesByCompositeStreamExecutionTest
                 oneOf(idMapper).execute(with(any(Long.class)), with(any(Long.class)));
                 will(returnValue(activityIds));
                 
-                oneOf(bulkMapper).execute(with(any(ArrayList.class)), with(any(String.class)));
+                oneOf(bulkMapper).execute(with(any(ArrayList.class)));
                 will(returnValue(activities));
 
-                allowing(filterMock).filter(activities, personAccountId);
-                will(returnValue(activities));
+                allowing(filterMock).filter(with(activities), with(any(PersonModelView.class)));
+                
+                oneOf(peopleMapper).execute(Arrays.asList(personAccountId));
+                will(returnValue(Arrays.asList(personModel)));
             }
         });
 
@@ -300,6 +313,9 @@ public class GetActivitiesByCompositeStreamExecutionTest
         final long maxActivityId = 2817L;
         final GetActivitiesByCompositeStreamRequest request = new GetActivitiesByCompositeStreamRequest(
                 compositeStreamId, pageSize, maxActivityId);
+        
+
+        final PersonModelView personModel = new PersonModelView();
 
         // batch 1 request
         final List<Long> batch1Request = new ArrayList<Long>();
@@ -358,25 +374,26 @@ public class GetActivitiesByCompositeStreamExecutionTest
                 will(returnValue(allActivityIds));
 
                 // requesting the first batch
-                oneOf(bulkMapper).execute(with(batch1Request), with(personAccountId));
+                oneOf(bulkMapper).execute(with(batch1Request));
                 will(returnValue(batch1));
 
                 // run through the filters on batch 1
-                allowing(filterMock).filter(batch1, personAccountId);
-                will(returnValue(batch1));
+                allowing(filterMock).filter(with(batch1), with(any(PersonModelView.class)));
 
                 // requesting the second batch
-                oneOf(bulkMapper).execute(with(batch2Request), with(personAccountId));
+                oneOf(bulkMapper).execute(with(batch2Request));
                 will(returnValue(batch2));
 
                 // run through the filters on batch 2
-                allowing(filterMock).filter(expectedResults, personAccountId);
-                will(returnValue(batch2));
+                allowing(filterMock).filter(with(expectedResults), with(any(PersonModelView.class)));
 
                 // at some point, we need the action to get the list of groups
                 // the user can see activity for
                 oneOf(getVisibleGroupsForUserMapper).execute(personId);
                 will(returnValue(new HashSet<Long>()));
+                
+                oneOf(peopleMapper).execute(Arrays.asList(personAccountId));
+                will(returnValue(Arrays.asList(personModel)));
             }
         });
 
@@ -428,7 +445,9 @@ public class GetActivitiesByCompositeStreamExecutionTest
 
         final HashSet<Long> usersGroups = new HashSet<Long>();
         usersGroups.add(personPrivateGroup);
-
+        
+        final PersonModelView personModel = new PersonModelView();
+        
         context.checking(new Expectations()
         {
             {
@@ -454,17 +473,19 @@ public class GetActivitiesByCompositeStreamExecutionTest
                 will(returnValue(personAccountId));
 
                 // requesting the first batch
-                oneOf(bulkMapper).execute(with(batch1Request), with(personAccountId));
+                oneOf(bulkMapper).execute(with(batch1Request));
                 will(returnValue(batch1));
 
                 // run through the filters on batch 1
-                allowing(filterMock).filter(expectedResults, personAccountId);
-                will(returnValue(batch1));
+                allowing(filterMock).filter(with(expectedResults), with(any(PersonModelView.class)));
 
                 // at some point, we need the action to get the list of groups
                 // the user can see activity for
                 oneOf(getVisibleGroupsForUserMapper).execute(personId);
                 will(returnValue(usersGroups));
+                
+                oneOf(peopleMapper).execute(Arrays.asList(personAccountId));
+                will(returnValue(Arrays.asList(personModel)));
             }
         });
 

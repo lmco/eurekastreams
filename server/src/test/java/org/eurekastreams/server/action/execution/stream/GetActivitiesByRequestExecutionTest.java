@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -37,7 +38,8 @@ import org.eurekastreams.server.domain.stream.ActivitySecurityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.GetPrivateCoordinatedAndFollowedGroupIdsForUser;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
+import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
 import org.eurekastreams.server.service.actions.strategies.activity.ListCollider;
 import org.eurekastreams.server.service.actions.strategies.activity.datasources.DescendingOrderDataSource;
@@ -81,9 +83,14 @@ public class GetActivitiesByRequestExecutionTest
     private Principal principal = context.mock(Principal.class);
 
     /**
+     * Person mapper.
+     */
+    private GetPeopleByAccountIds peopleMapper = context.mock(GetPeopleByAccountIds.class);
+    
+    /**
      * bulk mapper mock.
      */
-    private BulkActivitiesMapper bulkMapper = context.mock(BulkActivitiesMapper.class);
+    private DomainMapper<List<Long>, List<ActivityDTO>>  bulkMapper = context.mock(DomainMapper.class);
 
     /**
      * Mocked GetPrivateCoordinatedAndFollowedGroupIdsForUser.
@@ -218,7 +225,7 @@ public class GetActivitiesByRequestExecutionTest
         filters.add(filterMock);
 
         sut = new GetActivitiesByRequestExecution(memcacheDS, luceneDS, bulkMapper, filters, andCollider,
-                getVisibleGroupsForUserMapper, securityMapper);
+                getVisibleGroupsForUserMapper, securityMapper, peopleMapper);
 
         // set the activity ids
         activity1Public.setId(1L);
@@ -314,6 +321,7 @@ public class GetActivitiesByRequestExecutionTest
     public final void performActionTest() throws Exception
     {
         final String request = "{ }";
+        final PersonModelView personModel = new PersonModelView();
 
         context.checking(new Expectations()
         {
@@ -359,12 +367,13 @@ public class GetActivitiesByRequestExecutionTest
                 oneOf(securityMapper).execute(combinedIds);
                 will(returnValue(secResults));
 
-                oneOf(bulkMapper).execute(with(any(ArrayList.class)), with(any(String.class)));
+                oneOf(bulkMapper).execute(with(any(ArrayList.class)));
                 will(returnValue(activities));
 
-                allowing(filterMock).filter(activities, personAccountId);
-                will(returnValue(activities));
-                
+                allowing(filterMock).filter(with(activities), with(any(PersonModelView.class)));
+
+                oneOf(peopleMapper).execute(Arrays.asList(personAccountId));
+                will(returnValue(Arrays.asList(personModel)));
 
                 oneOf(getVisibleGroupsForUserMapper).execute(personId);
                 will(returnValue(new HashSet<Long>()));                
@@ -385,6 +394,7 @@ public class GetActivitiesByRequestExecutionTest
     public void testPerformActionRequiringMultipleBatches()
     {
         final String request = "{ \"count\": 2, \"maxId\": 2817 }";
+        final PersonModelView personModel = new PersonModelView();
 
         final List<ActivityDTO> expectedResults = new ArrayList<ActivityDTO>();
         expectedResults.add(activity9Public);
@@ -477,11 +487,13 @@ public class GetActivitiesByRequestExecutionTest
                 oneOf(getVisibleGroupsForUserMapper).execute(personId);
                 will(returnValue(new HashSet<Long>()));
 
-                oneOf(bulkMapper).execute(with(expectedResultsIds), with(personAccountId));
+                oneOf(bulkMapper).execute(with(expectedResultsIds));
                 will(returnValue(expectedResults));
 
-                allowing(filterMock).filter(with(expectedResults), with(personAccountId));
-                will(returnValue(expectedResults));
+                allowing(filterMock).filter(with(expectedResults), with(any(PersonModelView.class)));
+
+                oneOf(peopleMapper).execute(Arrays.asList(personAccountId));
+                will(returnValue(Arrays.asList(personModel)));
             }
         });
 
@@ -504,6 +516,8 @@ public class GetActivitiesByRequestExecutionTest
     {
         final String request = "{ \"count\": 3, \"maxId\": 7 }";
 
+        final PersonModelView personModel = new PersonModelView();
+        
         final HashSet<Long> usersGroups = new HashSet<Long>();
         usersGroups.add(personPrivateGroup);
 
@@ -555,11 +569,13 @@ public class GetActivitiesByRequestExecutionTest
                 oneOf(getVisibleGroupsForUserMapper).execute(personId);
                 will(returnValue(usersGroups));
 
-                oneOf(bulkMapper).execute(with(expectedResultsIds), with(personAccountId));
+                oneOf(bulkMapper).execute(with(expectedResultsIds));
                 will(returnValue(expectedResults));
 
-                allowing(filterMock).filter(with(expectedResults), with(personAccountId));
-                will(returnValue(expectedResults));
+                allowing(filterMock).filter(with(expectedResults), with(any(PersonModelView.class)));
+
+                oneOf(peopleMapper).execute(Arrays.asList(personAccountId));
+                will(returnValue(Arrays.asList(personModel)));
             }
         });
 

@@ -17,6 +17,7 @@ package org.eurekastreams.server.action.execution.stream;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -27,26 +28,28 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.action.request.stream.GetActivitiesByCompositeStreamRequest;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.GetPrivateCoordinatedAndFollowedGroupIdsForUser;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 import org.eurekastreams.server.persistence.mappers.stream.CompositeStreamActivityIdsMapper;
+import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
 
 /**
  * Action to get a page of activities for a given composite stream.
- *
+ * 
  * Filter activities out that the current user doesn't have permission to see. Currently, this only includes activities
  * posted to private groups, where the user is not a follower of the group or a coordinator of the group or any
  * organizations above the group.
- *
+ * 
  * If the user is requesting 10 activities, and batchPageSizeMultiplier is 2.0F, we pull 20 activities from cache. We
  * loop across each activity, first checking if it's public. If it is, we add it to the result batch. If not, then we
  * have to perform a security check on it.
- *
+ * 
  * The first security check kicks off a request to get the list of private group ids that the current user can see
  * activity for. We check if the activity's destination stream's destinationEntityId (in this case, the domain group id)
  * is in that private list. If so, it's added to the results list.
- *
+ * 
  * If we aren't able to put together a full page of 10 activities from those 20 pulled, we make another batch request
  * for activities, this time, asking for 40. The size of each activities batch increases by a factor of the input
  * multiplier. The thought here is that if there are enough activities in the system that are private to this user that
@@ -67,7 +70,7 @@ public class GetActivitiesByCompositeStreamExecution implements ExecutionStrateg
     /**
      * Mapper to get the actual Activities.
      */
-    private BulkActivitiesMapper bulkActivitiesMapper;
+    private DomainMapper<List<Long>, List<ActivityDTO>> bulkActivitiesMapper;
 
     /**
      * Mapper to get the list of group ids that includes private groups the current user can see activity for.
@@ -86,8 +89,13 @@ public class GetActivitiesByCompositeStreamExecution implements ExecutionStrateg
     private final float batchPageSizeMultiplier;
 
     /**
+     * People mapper.
+     */
+    private GetPeopleByAccountIds peopleMapper;
+
+    /**
      * Constructor.
-     *
+     * 
      * @param inIdsMapper
      *            the ids mapper.
      * @param inBulkActivitiesMapper
@@ -100,22 +108,26 @@ public class GetActivitiesByCompositeStreamExecution implements ExecutionStrateg
      * @param inBatchPageSizeMultiplier
      *            Multiplier for how many times the batch size we should request. This is multiplied by the previous
      *            batch size each round.
+     * @param inPeopleMapper
+     *            the people mapper.
      */
     public GetActivitiesByCompositeStreamExecution(final CompositeStreamActivityIdsMapper inIdsMapper,
-            final BulkActivitiesMapper inBulkActivitiesMapper, final List<ActivityFilter> inFilters,
+            final DomainMapper<List<Long>, List<ActivityDTO>> inBulkActivitiesMapper,
+            final List<ActivityFilter> inFilters,
             final GetPrivateCoordinatedAndFollowedGroupIdsForUser inGetVisibleGroupsForUserMapper,
-            final float inBatchPageSizeMultiplier)
+            final float inBatchPageSizeMultiplier, final GetPeopleByAccountIds inPeopleMapper)
     {
         bulkActivitiesMapper = inBulkActivitiesMapper;
         idsMapper = inIdsMapper;
         filters = inFilters;
         getVisibleGroupsForUserMapper = inGetVisibleGroupsForUserMapper;
         batchPageSizeMultiplier = inBatchPageSizeMultiplier;
+        peopleMapper = inPeopleMapper;
     }
 
     /**
      * Returns activities for a given compositeStream.
-     *
+     * 
      * @param inActionContext
      *            The action context.
      * @return paged set of activities for a compositeStream.
@@ -135,7 +147,7 @@ public class GetActivitiesByCompositeStreamExecution implements ExecutionStrateg
                 .getParams();
 
         List<Long> allKeys;
-        
+
         // Get the list of activity ids from the context state, if possible (should be set by validation strategy)
         if (inActionContext.getState().containsKey("activityIds"))
         {
@@ -204,7 +216,7 @@ public class GetActivitiesByCompositeStreamExecution implements ExecutionStrateg
             }
 
             // get the activities from cache to see which we have access to
-            List<ActivityDTO> pagedResults = bulkActivitiesMapper.execute(page, userAccountId);
+            List<ActivityDTO> pagedResults = bulkActivitiesMapper.execute(page);
 
             // add the activities that the user can see to the result page
             for (int i = 0; i < pagedResults.size() && results.size() < inRequest.getMaxResults(); i++)
@@ -219,10 +231,12 @@ public class GetActivitiesByCompositeStreamExecution implements ExecutionStrateg
         }
         while (results.size() < inRequest.getMaxResults() && startingIndex < allKeys.size());
 
+        PersonModelView person = peopleMapper.execute(Arrays.asList(userAccountId)).get(0);
+
         // execute filter strategies.
         for (ActivityFilter filter : filters)
         {
-            results = filter.filter(results, userAccountId);
+            filter.filter(results, person);
         }
 
         if (log.isTraceEnabled())
@@ -234,7 +248,7 @@ public class GetActivitiesByCompositeStreamExecution implements ExecutionStrateg
 
     /**
      * Check whether the user with the input person id has access to view the input activity.
-     *
+     * 
      * @param inUserPersonId
      *            the person to check access for
      * @param inActivity
@@ -300,7 +314,7 @@ public class GetActivitiesByCompositeStreamExecution implements ExecutionStrateg
 
         /**
          * Constructor.
-         *
+         * 
          * @param inUserPersonId
          *            the user's person id
          */
@@ -311,7 +325,7 @@ public class GetActivitiesByCompositeStreamExecution implements ExecutionStrateg
 
         /**
          * Lazy-load get the group id set from cache.
-         *
+         * 
          * @return the set of group ids that the user has permission to see activity for, including all groups the user
          *         is coordinator of, those below orgs that he is coordinator of, and those the user is following.
          */

@@ -102,6 +102,13 @@ public class CommentDeletePropertyStrategy
             setAll(inComments, false);
             return;
         }
+        
+        // Set all comments deletable if you can delete the current comment.
+        if (inParentActivity.isDeletable())
+        {
+            setAll(inComments, true);
+            return;
+        }
 
         //TODO This should be refactored to take advantage of ActivityDeletePropertyStrategy
         //as the activity based logic is currently duplicated. Both should probably be refactored

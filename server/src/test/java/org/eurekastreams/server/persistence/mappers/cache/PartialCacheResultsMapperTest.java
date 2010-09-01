@@ -20,7 +20,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.eurekastreams.server.persistence.mappers.cache.testhelpers.SimpleMemoryCache;
@@ -78,7 +77,8 @@ public class PartialCacheResultsMapperTest
     @Before
     public void before()
     {
-        sut = new PartialCacheResultsMapper(suffixKeyTransformer, cacheKeyPrefix);
+        // Need a multigetlist test.
+        sut = new PartialCacheResultsMapper(suffixKeyTransformer, cacheKeyPrefix, false);
         cache = new SimpleMemoryCache();
         sut.setCache(cache);
 
@@ -118,7 +118,7 @@ public class PartialCacheResultsMapperTest
         cache.set(cacheKeyPrefix + "THREE", result3);
 
         // execute sut
-        PartialMapperResponse<Collection<String>, Collection<Object>> response = sut.execute(cacheKeySuffixes);
+        PartialMapperResponse<List<String>, List<Object>> response = sut.execute(cacheKeySuffixes);
 
         // make sure there's no follow-up request
         assertFalse(response.hasUnhandledRequest());
@@ -154,7 +154,7 @@ public class PartialCacheResultsMapperTest
         });
 
         // execute sut
-        PartialMapperResponse<Collection<String>, Collection<Object>> response = sut.execute(cacheKeySuffixes);
+        PartialMapperResponse<List<String>, List<Object>> response = sut.execute(cacheKeySuffixes);
 
         // make sure there's a follow-up request with the pre-transformed keys
         assertTrue(response.hasUnhandledRequest());
@@ -198,7 +198,7 @@ public class PartialCacheResultsMapperTest
         cache.set(cacheKeyPrefix + "TWO", result2);
 
         // execute sut
-        PartialMapperResponse<Collection<String>, Collection<Object>> response = sut.execute(cacheKeySuffixes);
+        PartialMapperResponse<List<String>, List<Object>> response = sut.execute(cacheKeySuffixes);
 
         // make sure there's a follow-up request with the pre-transformed keys
         assertTrue(response.hasUnhandledRequest());

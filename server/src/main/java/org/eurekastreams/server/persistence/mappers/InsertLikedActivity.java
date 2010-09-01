@@ -20,7 +20,6 @@ import javax.persistence.Query;
 import org.eurekastreams.server.domain.stream.LikedActivity;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetLikedActivityIds;
 
 /**
  * Insert entry into LikedActivity table.
@@ -28,22 +27,6 @@ import org.eurekastreams.server.persistence.mappers.stream.GetLikedActivityIds;
  */
 public class InsertLikedActivity extends CachedDomainMapper
 {
-    /**
-     * Mapper to read liked activities.
-     */
-    private GetLikedActivityIds likedActivitiesMapper;
-
-    /**
-     * Constructor.
-     *
-     * @param inLikedActivitiesMapper
-     *            the liked activity read mapper.
-     */
-    public InsertLikedActivity(final GetLikedActivityIds inLikedActivitiesMapper)
-    {
-        likedActivitiesMapper = inLikedActivitiesMapper;
-    }
-
     /**
      * Inserts entry into LikedActivity table.
      *

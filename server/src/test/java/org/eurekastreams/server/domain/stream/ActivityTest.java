@@ -16,14 +16,10 @@
 package org.eurekastreams.server.domain.stream;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Organization;
@@ -135,11 +131,6 @@ public class ActivityTest
     private long originalActivityId = 1L;
 
     /**
-     * HashTags.
-     */
-    private Set<HashTag> hashtags = new HashSet<HashTag>();
-
-    /**
      * Setup.
      */
     @Before
@@ -164,7 +155,6 @@ public class ActivityTest
         sut.setOriginalActivityId(originalActivityId);
         sut.setIsDestinationStreamPublic(true);
         sut.setFlagged(true);
-        sut.setHashTags(hashtags);
     }
 
     /**
@@ -191,60 +181,5 @@ public class ActivityTest
         assertEquals("Original Activity Id not as expected", originalActivityId, sut.getOriginalActivityId());
         assertEquals("Original isDestinationStreamPublic not as expected", true, sut.getIsDestinationStreamPublic());
         assertTrue("Flagged not as expected", sut.isFlagged());
-        assertSame(hashtags, sut.getHashTags());
-    }
-
-    /**
-     * Test addHashtag().
-     */
-    @Test
-    public void testAddHashTagAfterGet()
-    {
-        HashTag hashTag = new HashTag();
-
-        Activity activity = new Activity();
-        assertNotNull(activity.getHashTags());
-        assertEquals(0, activity.getHashTags().size());
-        activity.addHashTag(hashTag);
-
-        assertEquals(1, activity.getHashTags().size());
-        for (HashTag ht : activity.getHashTags())
-        {
-            assertSame(hashTag, ht);
-        }
-    }
-
-    /**
-     * Test addHashtag().
-     */
-    @Test
-    public void testAddHashTagWithoutGet()
-    {
-        HashTag hashTag1 = new HashTag();
-        HashTag hashTag2 = new HashTag();
-
-        hashTag1.setContent("foo");
-        hashTag2.setContent("bar");
-
-        Activity activity = new Activity();
-        activity.addHashTag(hashTag1);
-        activity.addHashTag(hashTag2);
-
-        assertEquals(2, activity.getHashTags().size());
-        boolean hashtag1Found = false;
-        boolean hashtag2Found = false;
-        for (HashTag ht : activity.getHashTags())
-        {
-            if (ht.getContent().equals("foo"))
-            {
-                hashtag1Found = true;
-            }
-            if (ht.getContent().equals("bar"))
-            {
-                hashtag2Found = true;
-            }
-        }
-        assertTrue(hashtag1Found);
-        assertTrue(hashtag2Found);
     }
 }

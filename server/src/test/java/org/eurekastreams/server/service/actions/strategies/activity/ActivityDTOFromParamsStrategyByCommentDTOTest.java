@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -46,7 +46,7 @@ public class ActivityDTOFromParamsStrategyByCommentDTOTest
     /**
      * ActivityDTO DAO.
      */
-    private BulkActivitiesMapper activitiesDAO = context.mock(BulkActivitiesMapper.class);
+    private DomainMapper<List<Long>, List<ActivityDTO>>  activitiesDAO = context.mock(DomainMapper.class);
 
     /**
      * UserDeatils mock.
@@ -76,10 +76,7 @@ public class ActivityDTOFromParamsStrategyByCommentDTOTest
                 oneOf(commentDTO).getActivityId();
                 will(returnValue(5L));
 
-                oneOf(user).getAccountId();
-                will(returnValue("userName"));
-
-                oneOf(activitiesDAO).execute(activityIds, "userName");
+                oneOf(activitiesDAO).execute(activityIds);
                 will(returnValue(dtos));
             }
         });

@@ -15,8 +15,11 @@
  */
 package org.eurekastreams.server.domain.strategies;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import org.eurekastreams.commons.test.IsEqualInternally;
 import org.junit.Test;
@@ -208,5 +211,53 @@ public class HashTagExtractorTest
         String content = "Hello?  #Hello";
         Substring expectedResult = new Substring(8, 6, "#Hello");
         assertTrue(IsEqualInternally.areEqualInternally(expectedResult, sut.extract(content, 0)));
+    }
+
+    /**
+     * Test extractAll with no hashtags.
+     */
+    @Test
+    public void testExtractAllNoHashtags()
+    {
+        String content = "Hello there! What's up?";
+        assertEquals(0, sut.extractAll(content).size());
+    }
+
+    /**
+     * Test extractAll with only a hashtag.
+     */
+    @Test
+    public void testExtractAllJustAHashTag()
+    {
+        String content = "#HI";
+        List<String> hashtags = sut.extractAll(content);
+        assertEquals(1, hashtags.size());
+        assertTrue(hashtags.contains("#HI"));
+    }
+
+    /**
+     * Test extractAll with multiple hashtags.
+     */
+    @Test
+    public void testExtractAllMultiple()
+    {
+        String content = "Hello #HI #There";
+        List<String> hashtags = sut.extractAll(content);
+        assertEquals(2, hashtags.size());
+        assertTrue(hashtags.contains("#HI"));
+        assertTrue(hashtags.contains("#There"));
+    }
+
+    /**
+     * Test extractAll with multiple hashtags.
+     */
+    @Test
+    public void testExtractAllMultiple2()
+    {
+        String content = "Hello #HI #There.";
+        List<String> hashtags = sut.extractAll(content);
+        assertEquals(2, hashtags.size());
+        assertTrue(hashtags.contains("#HI"));
+        assertTrue(hashtags.contains("#There"));
     }
 }

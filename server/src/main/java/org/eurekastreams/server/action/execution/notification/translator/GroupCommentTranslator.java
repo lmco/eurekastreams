@@ -16,6 +16,7 @@
 package org.eurekastreams.server.action.execution.notification.translator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,8 +27,8 @@ import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetCommentorIdsByActivityId;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetCoordinatorIdsByGroupId;
 
 /**
@@ -43,7 +44,7 @@ public class GroupCommentTranslator implements NotificationTranslator
     /**
      * Mapper to get activity details.
      */
-    BulkActivitiesMapper activitiesMapper;
+    DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper;
 
     /**
      * Mapper to get group coordinator ids.
@@ -52,7 +53,7 @@ public class GroupCommentTranslator implements NotificationTranslator
 
     /**
      * Constructor.
-     *
+     * 
      * @param inCommentorsMapper
      *            commentors mapper to set.
      * @param inActivitiesMapper
@@ -61,7 +62,8 @@ public class GroupCommentTranslator implements NotificationTranslator
      *            coordinator mapper to set.
      */
     public GroupCommentTranslator(final GetCommentorIdsByActivityId inCommentorsMapper,
-            final BulkActivitiesMapper inActivitiesMapper, final GetCoordinatorIdsByGroupId inCoordinatorMapper)
+            final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper,
+            final GetCoordinatorIdsByGroupId inCoordinatorMapper)
     {
         commentorsMapper = inCommentorsMapper;
         activitiesMapper = inActivitiesMapper;
@@ -70,7 +72,7 @@ public class GroupCommentTranslator implements NotificationTranslator
 
     /**
      * Gets a list of people to notify when a new comment is added.
-     *
+     * 
      * @param inActorId
      *            ID of actor that made the comment.
      * @param inDestinationId
@@ -85,7 +87,7 @@ public class GroupCommentTranslator implements NotificationTranslator
     {
         List<NotificationDTO> notifications = new ArrayList<NotificationDTO>();
 
-        ActivityDTO activity = activitiesMapper.execute(inActivityId, null);
+        ActivityDTO activity = activitiesMapper.execute(Arrays.asList(inActivityId)).get(0);
         if (activity != null)
         {
             Map<NotificationType, List<Long>> recipients = new HashMap<NotificationType, List<Long>>();
@@ -130,8 +132,8 @@ public class GroupCommentTranslator implements NotificationTranslator
 
             for (NotificationType notificationType : recipients.keySet())
             {
-                NotificationDTO notif =
-                        new NotificationDTO(recipients.get(notificationType), notificationType, inActorId);
+                NotificationDTO notif = new NotificationDTO(recipients.get(notificationType), notificationType,
+                        inActorId);
                 notif.setActivity(inActivityId, activity.getBaseObjectType());
                 StreamEntityDTO dest = activity.getDestinationStream();
                 notif.setDestination(dest.getId(), dest.getType(), dest.getUniqueIdentifier(), dest.getDisplayName());
