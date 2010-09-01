@@ -16,7 +16,6 @@
 package org.eurekastreams.server.action.execution.stream;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -126,8 +125,10 @@ public class PostActivityAsyncExecutionStrategy implements ExecutionStrategy<Asy
                 log.info("Found hash tags: " + hashTagStrings.toString() + " - attaching them to activity #"
                         + currentActivity.getId());
             }
+
+            @SuppressWarnings("unused")
             List<HashTag> hashTags = hashTagMapper.execute(hashTagStrings);
-            activity.setHashTags(new HashSet<HashTag>(hashTags));
+            // TODO: create stream hashtag entries based on the hashtags
         }
         return null;
     }

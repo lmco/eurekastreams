@@ -130,10 +130,6 @@ public class DeleteActivity extends BaseArgCachedDomainMapper<DeleteActivityRequ
         getEntityManager().createQuery("DELETE FROM StarredActivity where activityId = :activityId").setParameter(
                 "activityId", activityId).executeUpdate();
 
-        // disconnect hashtags
-        getEntityManager().createQuery("DELETE FROM ActivityHashTag WHERE activityId = :activityId").setParameter(
-                "activityId", activityId).executeUpdate();
-
         // delete activity from DB.
         getEntityManager().createQuery("DELETE FROM Activity WHERE id = :activityId").setParameter("activityId",
                 activityId).executeUpdate();
