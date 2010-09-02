@@ -3,13 +3,13 @@
 	<parent>
 		<artifactId>eurekastreams-parent</artifactId>
 		<groupId>org.eurekastreams</groupId>
-		<version>0.9.1-SNAPSHOT</version>
+		<version>0.9.2-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.eurekastreams</groupId>
 	<artifactId>eurekastreams-server</artifactId>
 	<name>Eureka Streams Server</name>
-	<version>0.9.1-SNAPSHOT</version>
+	<version>0.9.2-SNAPSHOT</version>
 	<url>http://maven.apache.org</url>
 	<dependencies>
         <dependency>
@@ -452,6 +452,12 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+            <plugin>
+               <artifactId>maven-deploy-plugin</artifactId>
+               <configuration>
+                 <skip>false</skip>
+              </configuration>
+            </plugin>
 		</plugins>
 		<resources>
 			<resource>
@@ -462,13 +468,8 @@
 			</resource>
 		</resources>
 	</build>
-
-   <distributionManagement>
-   <!-- Declare the snapshot repository to deploy the eurekastreams-server.jar file to -->
-     <snapshotRepository>
-       <id>snapshots</id>
-       <name>Snapshots</name>
-       <url>${build.maven.snapshotrepo}</url>
-     </snapshotRepository>
-   </distributionManagement>	
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
 </project>

@@ -5,7 +5,7 @@
     <groupId>org.eurekastreams</groupId>
     <artifactId>eurekastreams-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.9.1-SNAPSHOT</version>
+    <version>0.9.2-SNAPSHOT</version>
     <name>Eureka Streams Parent</name>
     <url>http://maven.apache.org</url>
     <dependencies>
@@ -147,7 +147,7 @@
         <build.report.clover.licenseurl>http://example.com/clover.license</build.report.clover.licenseurl>
         <build.report.checkstyle.rulesurl>http://dev.eurekastreams.org/conf/checkstyle/eurekastreams_eclipse-cs5.0_rules-forcheckin_latest.xml</build.report.checkstyle.rulesurl>
         <build.maven.sharedresources.artifactid>eurekastreams-sharedresources</build.maven.sharedresources.artifactid>
-        <build.maven.sharedresources.version>0.9.1-SNAPSHOT</build.maven.sharedresources.version>
+        <build.maven.sharedresources.version>0.9.2-SNAPSHOT</build.maven.sharedresources.version>
         <build.maven.snapshotrepo>http://example.com/content/repositories/snapshots</build.maven.snapshotrepo>
     </properties>
     <build>
@@ -196,7 +196,13 @@
                   <forkMode>once</forkMode>
                   <argLine>-Xms256m -Xmx1024m -XX:PermSize=128m -XX:MaxPermSize=512m</argLine>
                 </configuration>
-           </plugin>    
+           </plugin>
+           <plugin>
+               <artifactId>maven-deploy-plugin</artifactId>
+               <configuration>
+                 <skip>true</skip>
+              </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -512,4 +518,12 @@
              </build>
          </profile>
      </profiles>	
+   <distributionManagement>
+   <!-- Declare the snapshot repository to deploy the eurekastreams-server.jar file to -->
+     <snapshotRepository>
+       <id>smpsnapshots</id>
+       <name>Snapshots</name>
+       <url>${build.maven.snapshotrepo}</url>
+     </snapshotRepository>
+   </distributionManagement>	
 </project>

@@ -4,13 +4,13 @@
     <parent>
         <artifactId>eurekastreams-parent</artifactId>
         <groupId>org.eurekastreams</groupId>
-        <version>0.9.1-SNAPSHOT</version>
+        <version>0.9.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.eurekastreams</groupId>
     <artifactId>eurekastreams-web</artifactId>
     <packaging>war</packaging>
-    <version>0.9.1-SNAPSHOT</version>
+    <version>0.9.2-SNAPSHOT</version>
     <name>Eureka Streams Web</name>
 
     <repositories>
@@ -425,6 +425,12 @@
                   </execution>
                 </executions>
               </plugin>
+              <plugin>
+                   <artifactId>maven-deploy-plugin</artifactId>
+                   <configuration>
+                    <skip>true</skip>
+                   </configuration>
+               </plugin>
         </plugins>
         <resources>
             <resource>
