@@ -19,8 +19,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eurekastreams.commons.actions.ExecutionStrategy;
+import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
@@ -30,14 +31,16 @@ import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest.Lik
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.LikedActivity;
 import org.eurekastreams.server.persistence.mappers.DeleteLikedActivity;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.InsertLikedActivity;
-import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Action to add or remove like on activity for current user.
  *
  */
-public class SetActivityLikeExecution implements ExecutionStrategy<PrincipalActionContext>
+public class SetActivityLikeExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
     /**
      * Mapper for adding like.
@@ -49,40 +52,46 @@ public class SetActivityLikeExecution implements ExecutionStrategy<PrincipalActi
      */
     private DeleteLikedActivity deleteLikedActivity;
 
-    BulkActivitiesMapper activityMapper;
+    /**
+     * Activity mapper.
+     */
+    private DomainMapper<List<Long>, List<ActivityDTO>> activityMapper;
 
     /**
      * Constructor.
      * @param inInsertLikedActivity Mapper for liking an activity.
      * @param inDeleteLikedActivity Mapper for unliking an activity.
+     * @param inActivityMapper activity mapper.
      */
     public SetActivityLikeExecution(final InsertLikedActivity inInsertLikedActivity,
-            final DeleteLikedActivity inDeleteLikedActivity)
+            final DeleteLikedActivity inDeleteLikedActivity,
+            final DomainMapper<List<Long>, List<ActivityDTO>> inActivityMapper)
     {
         insertLikedActivity = inInsertLikedActivity;
         deleteLikedActivity = inDeleteLikedActivity;
+        activityMapper = inActivityMapper;
     }
 
     /**
      * {@inheritDoc}.
      */
     @Override
-    public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
+    public Serializable execute(final TaskHandlerActionContext<PrincipalActionContext> inActionContext)
+        throws ExecutionException
     {
-        SetActivityLikeRequest request = (SetActivityLikeRequest) inActionContext.getParams();
+        SetActivityLikeRequest request = (SetActivityLikeRequest) inActionContext.getActionContext().getParams();
         LikedActivity likeActivityData = new LikedActivity(
-                inActionContext.getPrincipal().getId(),
+                inActionContext.getActionContext().getPrincipal().getId(),
                 request.getActivityId());
 
 
 
         if (request.getLikeActionType() == LikeActionType.ADD_LIKE)
         {
-            ActivityDTO activity = activityMapper.execute(request.getActivityId(),
-                    inActionContext.getPrincipal().getAccountId());
+            List<ActivityDTO> activity = activityMapper.execute(Collections.singletonList(request.getActivityId()));
             CreateNotificationsRequest notificationRequest = new CreateNotificationsRequest(
-                    RequestType.LIKE, inActionContext.getPrincipal().getId(),
-                    activity.getActor().getId(), request.getActivityId());
+                    RequestType.LIKE, inActionContext.getActionContext().getPrincipal().getId(),
+                    activity.get(0).getActor().getId(), request.getActivityId());
 
             List<UserActionRequest> queuedRequests = null;
             // create list if it has not already been done.
@@ -90,6 +99,8 @@ public class SetActivityLikeExecution implements ExecutionStrategy<PrincipalActi
 
             // add UserRequest.
             queuedRequests.add(new UserActionRequest("createNotificationsAction", null, notificationRequest));
+
+            inActionContext.getUserActionRequests().addAll(queuedRequests);
 
             return insertLikedActivity.execute(likeActivityData);
 

@@ -38,6 +38,9 @@ public class CreateNotificationsRequest implements Serializable
          */
         COMMENT,
 
+        /**
+         * Someone liked an activity.
+         */
         LIKE,
 
         /**

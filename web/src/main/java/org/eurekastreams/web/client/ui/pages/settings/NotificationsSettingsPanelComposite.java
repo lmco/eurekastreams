@@ -67,6 +67,7 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
         PERSONAL_PREF_CATEGORIES.put("Posted activity", Category.POST_TO_PERSONAL_STREAM);
         PERSONAL_PREF_CATEGORIES.put("Comments", Category.COMMENT);
         PERSONAL_PREF_CATEGORIES.put("New followers", Category.FOLLOW_PERSON);
+        PERSONAL_PREF_CATEGORIES.put("Likes", Category.LIKE);
 
         GROUP_PREF_CATEGORIES.put("Posted activity", Category.POST_TO_GROUP_STREAM);
         // GROUP_PREF_CATEGORIES.put("Comments", Category.COMMENT_IN_GROUP_STREAM);

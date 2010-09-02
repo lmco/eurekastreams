@@ -53,6 +53,7 @@ public class NotificationsRenderer
                     put(NotificationType.FLAG_GROUP_ACTIVITY, new FlagActivityMessageRenderer());
                     put(NotificationType.REQUEST_NEW_GROUP, new RequestNewGroupMessageRenderer());
                     put(NotificationType.REQUEST_GROUP_ACCESS, new RequestGroupAccessMessageRenderer());
+                    put(NotificationType.LIKE_ACTIVITY, new LikeActivityMessageRenderer());
                 }
             };
 

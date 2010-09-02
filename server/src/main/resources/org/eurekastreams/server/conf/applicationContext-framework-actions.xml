@@ -3283,7 +3283,7 @@
 		<constructor-arg value="false" />
 	</bean>
 	
-	<bean id="setActivityLiked" class="org.eurekastreams.commons.actions.service.ServiceAction">
+	<bean id="setActivityLiked" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
 		<constructor-arg ref="noValidationStrategy" />
 		<constructor-arg ref="noAuthorizationStrategy" />
 		<constructor-arg>
@@ -3291,9 +3291,11 @@
 				class="org.eurekastreams.server.action.execution.stream.SetActivityLikeExecution">
 				<constructor-arg ref="insertLikedActivity" />
 				<constructor-arg ref="deleteLikedActivity" />
+				<constructor-arg ref="bulkActivitiesMapper" />
 			</bean>
 		</constructor-arg>
 		<constructor-arg value="false" />
+		<constructor-arg ref="taskHandler" />
 	</bean>
 	
 	<bean id="getActivityLikers" class="org.eurekastreams.commons.actions.service.ServiceAction">
