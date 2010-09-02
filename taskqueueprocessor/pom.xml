@@ -86,7 +86,16 @@
             <scope>provided</scope>
         </dependency>        
      </dependencies>
-
+     <build>
+        <plugins>
+           <plugin>
+               <artifactId>maven-deploy-plugin</artifactId>
+               <configuration>
+                 <skip>true</skip>
+              </configuration>
+            </plugin>
+        </plugins>
+    </build>
 <!--
     Profile Activation:
         Maven Flag missing (-D):
@@ -346,7 +355,7 @@
             <id>Production Configuration</id>
             <activation>
                 <property>
-                    <name>env.BUILDTYPE</name>
+                    <name>buildtype</name>
                     <value>prod</value>
                 </property>
             </activation>           

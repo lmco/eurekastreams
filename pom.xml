@@ -222,7 +222,13 @@
                   <forkMode>once</forkMode>
                   <argLine>-Xms256m -Xmx1024m -XX:PermSize=128m -XX:MaxPermSize=512m</argLine>
                 </configuration>
-           </plugin>    
+           </plugin>
+           <plugin>
+               <artifactId>maven-deploy-plugin</artifactId>
+               <configuration>
+                 <skip>true</skip>
+              </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -539,4 +545,12 @@
              </build>
          </profile>
      </profiles>	
+   <distributionManagement>
+   <!-- Declare the snapshot repository to deploy the eurekastreams-server.jar file to -->
+     <snapshotRepository>
+       <id>smpsnapshots</id>
+       <name>Snapshots</name>
+       <url>${build.maven.snapshotrepo}</url>
+     </snapshotRepository>
+   </distributionManagement>	
 </project>
