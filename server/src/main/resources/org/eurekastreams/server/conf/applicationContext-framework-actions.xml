@@ -2497,28 +2497,16 @@
 		</constructor-arg>
 		<constructor-arg value="true" />
 	</bean>
+	
+	<bean id="viewActivityAuthorization" class="org.eurekastreams.server.action.authorization.stream.ViewActivityAuthorizationStrategy">
+	   <constructor-arg ref="bulkActivitySecurityMapper" />
+	   <constructor-arg ref="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper" />
+	</bean>
 
 	<bean id="getActivityById" class="org.eurekastreams.commons.actions.service.ServiceAction">
 		<!-- Action's parameter: ActivityID -->
 		<constructor-arg ref="noValidationStrategy" />
-		<constructor-arg>
-			<!-- Authorization Strategy -->
-			<bean
-				class="org.eurekastreams.server.action.authorization.stream.ActivityAuthorizationStrategy">
-				<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-				<constructor-arg ref="getGroupFollowerIds" />
-				<constructor-arg ref="personActorStrategy" />
-				<constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
-				<constructor-arg>
-					<bean
-						class="org.eurekastreams.server.service.actions.strategies.activity.ActivityDTOFromParamsStrategyById">
-						<constructor-arg ref="bulkActivitiesMapper" />
-					</bean>
-				</constructor-arg>
-				<constructor-arg value="VIEW" />
-				<constructor-arg ref="bulkPeopleByAccountIdMapper" />
-			</bean>
-		</constructor-arg>
+		<constructor-arg ref="viewActivityAuthorization" />
 		<constructor-arg>
 			<!-- Execution Strategy -->
 			<bean
@@ -2613,24 +2601,7 @@
 	<bean id="flagActivity" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
 		<!-- Action's parameter: ActivityID -->
 		<constructor-arg ref="noValidationStrategy" />
-		<constructor-arg>
-			<!-- Authorization Strategy -->
-			<bean
-				class="org.eurekastreams.server.action.authorization.stream.ActivityAuthorizationStrategy">
-				<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-				<constructor-arg ref="getGroupFollowerIds" />
-				<constructor-arg ref="personActorStrategy" />
-				<constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
-				<constructor-arg>
-					<bean
-						class="org.eurekastreams.server.service.actions.strategies.activity.ActivityDTOFromParamsStrategyById">
-						<constructor-arg ref="bulkActivitiesMapper" />
-					</bean>
-				</constructor-arg>
-				<constructor-arg value="VIEW" />
-				<constructor-arg ref="bulkPeopleByAccountIdMapper" />
-			</bean>
-		</constructor-arg>
+		<constructor-arg ref="viewActivityAuthorization" />		
 		<constructor-arg>
 			<bean
 				class="org.eurekastreams.server.action.execution.stream.UpdateActivityFlagExecution">
@@ -4278,6 +4249,57 @@
 		<constructor-arg value="true" />
 	</bean>
 		
+	<bean id="getConsumerInfo" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.action.execution.opensocial.GetConsumerInfoExecution">
+				<constructor-arg ref="jpaOAuthConsumerMapper" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="true" />
+	</bean>	
+
+	<bean id="getConsumerTokenInfo" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.action.execution.opensocial.GetConsumerTokenInfoExecution">
+				<constructor-arg ref="jpaOAuthConsumerMapper" />
+				<constructor-arg ref="jpaOAuthTokenMapper" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="true" />
+	</bean>	
+
+	<bean id="setConsumerTokenInfo" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.action.execution.opensocial.SetConsumerTokenInfoExecution">
+				<constructor-arg ref="jpaOAuthConsumerMapper" />
+				<constructor-arg ref="jpaOAuthTokenMapper" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="false" />
+	</bean>	
+
+	<bean id="removeConsumerToken" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.action.execution.opensocial.RemoveConsumerTokenExecution">
+				<constructor-arg ref="jpaOAuthConsumerMapper" />
+				<constructor-arg ref="jpaOAuthTokenMapper" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="false" />
+	</bean>	
+
     <bean id="emailerFactory"
         class="org.eurekastreams.server.service.actions.strategies.EmailerFactory">
         <constructor-arg value="smtp" />

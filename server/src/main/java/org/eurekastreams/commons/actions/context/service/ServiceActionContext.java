@@ -118,7 +118,8 @@ public class ServiceActionContext implements PrincipalActionContext
     public String toString()
     {
         return this.getClass().getSimpleName() + " actionId: ***" + actionId + "*** "
-                + ((principal == null) ? "null" : principal.getAccountId());
+                + ((principal == null) ? "null" : principal.getAccountId()) + " | "
+                + ((params == null) ? "null" : params.toString());
     }
 
 }
