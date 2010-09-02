@@ -730,10 +730,10 @@
             <ol if="${links.length>0}" class="bookmarks">
                 <li repeat="${links}">
                     <div class="bookmark">
-                        <a target="blank" href="${url}">${unescapedTitle}</a>
+                        <a target="blank" href="${Cur.url}">${Cur.unescapedTitle}</a>
                     </div>
                     <div class="add-bookmark">
-                        <span class="plus"></span><a href="javascript:addUrl('${title}','${url}',displayNotification);"> Add</a>
+                        <span class="plus"></span><a href="javascript:addUrl('${Cur.title}','${Cur.url}',displayNotification);"> Add</a>
                     </div>
                 </li>
             </ol>
@@ -743,7 +743,7 @@
         <script type="text/os-template" xmlns:os="http://ns.opensocial.org/2008/markup" xmlns:uos="http://eurekastreams.org" tag="uos:bookmarksTemplate">
             <ol class="bookmarks">
                 <li repeat="${bookmarks}">
-                    <div class="bookmark"><a target="blank" href="${url}">${unescapedTitle}</a></div>
+                    <div class="bookmark"><a target="blank" href="${Cur.url}">${Cur.unescapedTitle}</a></div>
                     <div class="delete-bookmark"><a href="javascript:deleteBookmark(${Context.Index});">Remove</a></div>
                 </li>
             </ol>
