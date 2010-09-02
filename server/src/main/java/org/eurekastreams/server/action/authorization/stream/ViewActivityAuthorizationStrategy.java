@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.action.authorization.stream;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -33,7 +34,6 @@ import org.eurekastreams.server.persistence.mappers.cache.GetPrivateCoordinatedA
  */
 public class ViewActivityAuthorizationStrategy implements AuthorizationStrategy<ServiceActionContext>
 {
-
     /**
      * {@link ActivitySecurityDTO} DAO.
      */
@@ -72,22 +72,15 @@ public class ViewActivityAuthorizationStrategy implements AuthorizationStrategy<
     @Override
     public void authorize(final ServiceActionContext inActionContext)
     {
-        Collection<ActivitySecurityDTO> securityDTOs = securityMapper.execute(Arrays.asList((Long) inActionContext
-                .getParams()));
+        // get ActivitySecurityDTO for activity id passed in.
+        ActivitySecurityDTO securityDTO = new ArrayList<ActivitySecurityDTO>(securityMapper.execute(Arrays
+                .asList((Long) inActionContext.getParams()))).get(0);
 
-        if (securityDTOs.size() != 1)
+        if (!securityDTO.isDestinationStreamPublic()
+                && !getVisibleGroupsForUserMapper.execute(inActionContext.getPrincipal().getId()).contains(
+                        securityDTO.getDestinationEntityId()))
         {
-            throw new AuthorizationException("Unable to determine access rights to view activity.");
-        }
-
-        for (ActivitySecurityDTO actSec : securityDTOs)
-        {
-            if (!actSec.isDestinationStreamPublic()
-                    && !getVisibleGroupsForUserMapper.execute(inActionContext.getPrincipal().getId()).contains(
-                            actSec.getDestinationEntityId()))
-            {
-                throw new AuthorizationException("Current user does not have access right to view activity.");
-            }
+            throw new AuthorizationException("Current user does not have access right to view activity.");
         }
     }
 
