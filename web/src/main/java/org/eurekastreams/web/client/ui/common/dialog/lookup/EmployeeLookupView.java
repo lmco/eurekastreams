@@ -235,16 +235,19 @@ public class EmployeeLookupView implements Bindable
 
         for (Person person : resultsItems)
         {
-            results.addItem(person.getLastName() + ", " + person.getFirstName() + " " + person.getMiddleName(), person
-                    .getAccountId());
+            results.addItem(person.getLastName()
+                    + ", "
+                    + person.getFirstName()
+                    + " "
+                    + ((person.getMiddleName() == null || person.getMiddleName().isEmpty()) ? "" : person
+                            .getMiddleName()), person.getAccountId());
         }
 
         String message = "";
 
         if (model.getMoreResultsExist())
         {
-            message = "Greater than " + model.getResultLimit()
-                    + " results.";
+            message = "Greater than " + model.getResultLimit() + " results.";
         }
         else
         {
