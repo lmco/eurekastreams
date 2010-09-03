@@ -15,17 +15,15 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.renderers;
 
-import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest;
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest.LikeActionType;
 import org.eurekastreams.web.client.events.ActivityLikedChangeEvent;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
-import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.model.ActivityLikeModel;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -50,7 +48,7 @@ public class LikeWidget extends Composite
 
     /**
      * Default constructor.
-     * 
+     *
      * @param isLiked
      *            whether its liked by the current user.
      * @param activityId
@@ -72,22 +70,7 @@ public class LikeWidget extends Composite
             public void onClick(final ClickEvent event)
             {
                 final LikeActionType actionType = liked ? LikeActionType.REMOVE_LIKE : LikeActionType.ADD_LIKE;
-                SetActivityLikeRequest request = new SetActivityLikeRequest(activityId, actionType);
-
-                Session.getInstance().getActionProcessor().makeRequest(
-                        new ActionRequestImpl<Boolean>("setActivityLiked", request), new AsyncCallback<Boolean>()
-                        {
-                            /* implement the async call back methods */
-                            public void onFailure(final Throwable caught)
-                            {
-                            }
-
-                            public void onSuccess(final Boolean result)
-                            {
-                                EventBus.getInstance().notifyObservers(
-                                        new ActivityLikedChangeEvent(actionType, activityId));
-                            }
-                        });
+                ActivityLikeModel.getInstance().update(new SetActivityLikeRequest(activityId, actionType));
             }
 
         });

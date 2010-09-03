@@ -16,30 +16,30 @@
 package org.eurekastreams.server.persistence.mappers.db;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 /**
  * Get the people who liked an activity.
- * 
+ *
  */
 public class GetPeopleWhoLikedActivityDbMapper extends
-        BaseArgDomainMapper<Collection<Long>, Collection<Collection<Long>>>
+        BaseArgDomainMapper<List<Long>, List<List<Long>>>
 {
 
     /**
      * Execute.
-     * 
+     *
      * @param inRequest
      *            the request.
      * @return the list of ids.
      */
     @SuppressWarnings("unchecked")
     @Override
-    public Collection<Collection<Long>> execute(final Collection<Long> inRequest)
+    public List<List<Long>> execute(final List<Long> inRequest)
     {
-        Collection<Collection<Long>> values = new ArrayList<Collection<Long>>();
+        List<List<Long>> values = new ArrayList<List<Long>>();
 
         for (Long activityId : inRequest)
         {
