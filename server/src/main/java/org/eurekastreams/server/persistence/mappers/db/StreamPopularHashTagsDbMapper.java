@@ -24,14 +24,14 @@ import javax.persistence.Query;
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.StreamPopularHashTagsRequest;
+import org.eurekastreams.server.persistence.mappers.stream.StreamPopularHashTagsReport;
 
 /**
  * Mapper to fetch the popular hash tags for a stream.
  */
-public class StreamPopularHashTagsDbMapper extends BaseArgDomainMapper<StreamPopularHashTagsRequest, List<String>>
-        implements DomainMapper<StreamPopularHashTagsRequest, List<String>>
+public class StreamPopularHashTagsDbMapper extends
+        BaseArgDomainMapper<StreamPopularHashTagsRequest, StreamPopularHashTagsReport>
 {
     /**
      * Logger.
@@ -70,7 +70,7 @@ public class StreamPopularHashTagsDbMapper extends BaseArgDomainMapper<StreamPop
      *            type of stream and unique key of the entity stream to fetch hashtags for
      * @return the list of popular hashtags
      */
-    public List<String> execute(final StreamPopularHashTagsRequest inRequest)
+    public StreamPopularHashTagsReport execute(final StreamPopularHashTagsRequest inRequest)
     {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.HOUR, 0 - popularHashTagWindowInHours);
@@ -91,6 +91,16 @@ public class StreamPopularHashTagsDbMapper extends BaseArgDomainMapper<StreamPop
                         minActivityTime).setParameter("streamEntityUniqueKey", inRequest.getStreamEntityUniqueKey());
         query.setMaxResults(maxNumberOfPopularHashTags);
 
-        return query.getResultList();
+        List<String> hashTags = query.getResultList();
+
+        if (log.isInfoEnabled())
+        {
+            log.info("Found popular hashtags: " + hashTags + " for " + inRequest.getStreamEntityScopeType()
+                    + " stream with id " + inRequest.getStreamEntityUniqueKey() + " and activity date >= "
+                    + minActivityTime.toString());
+        }
+
+        Calendar now = Calendar.getInstance();
+        return new StreamPopularHashTagsReport(hashTags, now.getTime());
     }
 }

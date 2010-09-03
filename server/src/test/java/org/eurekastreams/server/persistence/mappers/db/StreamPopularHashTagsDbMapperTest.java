@@ -23,6 +23,7 @@ import java.util.List;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.eurekastreams.server.persistence.mappers.requests.StreamPopularHashTagsRequest;
+import org.eurekastreams.server.persistence.mappers.stream.StreamPopularHashTagsReport;
 import org.junit.Test;
 
 /**
@@ -42,7 +43,10 @@ public class StreamPopularHashTagsDbMapperTest extends MapperTest
         StreamPopularHashTagsDbMapper sut = new StreamPopularHashTagsDbMapper(9, 3);
         sut.setEntityManager(getEntityManager());
 
-        List<String> tags = sut.execute(new StreamPopularHashTagsRequest(ScopeType.ORGANIZATION, "tstorgname"));
+        StreamPopularHashTagsReport tagsReport = sut.execute(new StreamPopularHashTagsRequest(ScopeType.ORGANIZATION,
+                "tstorgname"));
+
+        List<String> tags = tagsReport.getPopularHashTags();
         assertEquals(3, tags.size());
 
         // tstorgname has tags #bar(4), #foo(3), #development(2), #java(1)
@@ -63,7 +67,10 @@ public class StreamPopularHashTagsDbMapperTest extends MapperTest
         StreamPopularHashTagsDbMapper sut = new StreamPopularHashTagsDbMapper(9, 8);
         sut.setEntityManager(getEntityManager());
 
-        List<String> tags = sut.execute(new StreamPopularHashTagsRequest(ScopeType.ORGANIZATION, "tstorgname"));
+        StreamPopularHashTagsReport tagsReport = sut.execute(new StreamPopularHashTagsRequest(ScopeType.ORGANIZATION,
+                "tstorgname"));
+
+        List<String> tags = tagsReport.getPopularHashTags();
         assertEquals(4, tags.size());
 
         // tstorgname has tags #bar(4), #foo(3), #development(2), #java(1)
@@ -92,7 +99,10 @@ public class StreamPopularHashTagsDbMapperTest extends MapperTest
         StreamPopularHashTagsDbMapper sut = new StreamPopularHashTagsDbMapper(9, 9);
         sut.setEntityManager(getEntityManager());
 
-        List<String> tags = sut.execute(new StreamPopularHashTagsRequest(ScopeType.ORGANIZATION, "tstorgname"));
+        StreamPopularHashTagsReport tagsReport = sut.execute(new StreamPopularHashTagsRequest(ScopeType.ORGANIZATION,
+                "tstorgname"));
+
+        List<String> tags = tagsReport.getPopularHashTags();
         assertEquals(3, tags.size());
 
         // tstorgname has tags #bar(4), #foo(3), #development(2), #java(1), but #bar was just expired
@@ -113,7 +123,9 @@ public class StreamPopularHashTagsDbMapperTest extends MapperTest
         StreamPopularHashTagsDbMapper sut = new StreamPopularHashTagsDbMapper(9, 9);
         sut.setEntityManager(getEntityManager());
 
-        List<String> tags = sut.execute(new StreamPopularHashTagsRequest(ScopeType.PERSON, "smithers"));
+        StreamPopularHashTagsReport tagsReport = sut.execute(new StreamPopularHashTagsRequest(ScopeType.PERSON,
+                "smithers"));
+        List<String> tags = tagsReport.getPopularHashTags();
         assertEquals(2, tags.size());
 
         // Smithers has tags #soda(5), one of #foo(1)
