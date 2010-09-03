@@ -27,7 +27,7 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.OAuthDomainEntry;
-import org.eurekastreams.server.persistence.OAuthEntryMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * Authorizes or rejects an OAuth request.
@@ -38,29 +38,31 @@ public class OAuthAuthorizeExecution implements ExecutionStrategy<PrincipalActio
      * Logger.
      */
     private Log log = LogFactory.make();
-    
+
     /**
      * The mapper used for retrieving OAuthEntries from the db.
      */
-    private final OAuthEntryMapper oauthEntryMapper;
-    
+    private final DomainMapper<String, OAuthDomainEntry> entryMapper;
+
     /**
      * Number of digits to create for the random callback token.
      */
     private static final int CALLBACK_TOKEN_LENGTH = 6;
-    
+
     /**
      * Constructor.
-     * @param inOAuthEntryMapper - mapper for the OauthEntry.
+     * 
+     * @param inEntryMapper
+     *            - mapper for the OauthEntry.
      */
-    public OAuthAuthorizeExecution(final OAuthEntryMapper inOAuthEntryMapper)
+    public OAuthAuthorizeExecution(final DomainMapper<String, OAuthDomainEntry> inEntryMapper)
     {
-        oauthEntryMapper = inOAuthEntryMapper;
+        entryMapper = inEntryMapper;
     }
-    
+
     /**
      * {@inheritDoc}
-     *
+     * 
      * This execute method retrieves the ActivityDTO objects for the parameters passed in.
      */
     @Override
@@ -68,14 +70,14 @@ public class OAuthAuthorizeExecution implements ExecutionStrategy<PrincipalActio
     {
         final String accountId = inActionContext.getPrincipal().getAccountId();
         final String token = (String) inActionContext.getParams();
-        
+
         log.trace("Authorizing OAuth token for user: " + accountId);
         OAuthEntry tokenEntry = new OAuthEntry();
         tokenEntry.token = token;
-        
+
         try
         {
-            OAuthDomainEntry dto = oauthEntryMapper.findEntry(token);
+            OAuthDomainEntry dto = entryMapper.execute(token);
             dto.setAuthorized(true);
             if (dto.isCallbackUrlSigned())
             {
@@ -87,19 +89,17 @@ public class OAuthAuthorizeExecution implements ExecutionStrategy<PrincipalActio
             log.error("An error occurred authorizing the OAuth token.", ex);
             throw new ExecutionException(ex);
         }
-        
-        OAuthDomainEntry currentEntry = oauthEntryMapper.findEntry(tokenEntry.token);
+
+        OAuthDomainEntry currentEntry = entryMapper.execute(tokenEntry.token);
         log.trace("Authorization for user: " + accountId + " complete.");
         String callbackUrl = "";
-        if (currentEntry.getCallbackUrl() != null 
-                && currentEntry.getCallbackUrl().length() > 0)
+        if (currentEntry.getCallbackUrl() != null && currentEntry.getCallbackUrl().length() > 0)
         {
             try
             {
-            callbackUrl = 
-                OAuth.addParameters(currentEntry.getCallbackUrl(), "oauth_verifier", currentEntry.getCallbackToken());
-            callbackUrl = 
-                OAuth.addParameters(callbackUrl, OAuth.OAUTH_TOKEN, currentEntry.getToken());
+                callbackUrl = OAuth.addParameters(currentEntry.getCallbackUrl(), "oauth_verifier", currentEntry
+                        .getCallbackToken());
+                callbackUrl = OAuth.addParameters(callbackUrl, OAuth.OAUTH_TOKEN, currentEntry.getToken());
             }
             catch (IOException ioe)
             {

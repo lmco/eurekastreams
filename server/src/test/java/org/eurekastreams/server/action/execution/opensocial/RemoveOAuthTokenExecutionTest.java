@@ -16,7 +16,7 @@
 package org.eurekastreams.server.action.execution.opensocial;
 
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
-import org.eurekastreams.server.persistence.OAuthEntryMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -26,15 +26,16 @@ import org.junit.Test;
 
 /**
  * Test suite for {@link RemoveOAuthTokenExecution}.
- *
+ * 
  */
+@SuppressWarnings("unchecked")
 public class RemoveOAuthTokenExecutionTest
 {
     /**
      * System under test.
      */
     private RemoveOAuthTokenExecution sut;
-    
+
     /**
      * Context for building mock objects.
      */
@@ -44,28 +45,28 @@ public class RemoveOAuthTokenExecutionTest
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
-    
+
     /**
-     * Instance of OAuth entry mapper injected by spring.
+     * Instance of OAuth entry delete mapper injected by spring.
      */
-    private final OAuthEntryMapper entryMapper = context.mock(OAuthEntryMapper.class);
-    
+    private final DomainMapper<String, Boolean> deleteMapper = context.mock(DomainMapper.class);
+
     /**
      * Mocked instance of the action context.
      */
     private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
-    
+
     /**
      * Prepare the sut.
      */
     @Before
     public void setup()
     {
-        sut = new RemoveOAuthTokenExecution(entryMapper);
+        sut = new RemoveOAuthTokenExecution(deleteMapper);
     }
-    
+
     /**
-     * Test successful remove of oauth token. 
+     * Test successful remove of oauth token.
      */
     @Test
     public void testSuccessfulRemoval()
@@ -75,11 +76,11 @@ public class RemoveOAuthTokenExecutionTest
             {
                 oneOf(actionContext).getParams();
                 will(returnValue("testtoken"));
-                
-                oneOf(entryMapper).delete("testtoken");
+
+                oneOf(deleteMapper).execute("testtoken");
             }
         });
-        
+
         sut.execute(actionContext);
         context.assertIsSatisfied();
     }

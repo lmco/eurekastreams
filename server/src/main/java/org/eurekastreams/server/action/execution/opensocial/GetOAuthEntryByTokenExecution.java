@@ -21,7 +21,7 @@ import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.domain.OAuthDomainEntry;
-import org.eurekastreams.server.persistence.OAuthEntryMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * This class is responsible for retrieving an OAuthToken based on a supplied string key.
@@ -32,7 +32,7 @@ public class GetOAuthEntryByTokenExecution implements ExecutionStrategy<Principa
     /**
      * Instance of OAuth entry mapper injected by spring.
      */
-    private final OAuthEntryMapper entryMapper;
+    private final DomainMapper<String, OAuthDomainEntry> entryMapper;
 
     /**
      * Instance of {@link OAuthEntryConversionStrategy} for this class.
@@ -43,11 +43,11 @@ public class GetOAuthEntryByTokenExecution implements ExecutionStrategy<Principa
      * Constructor.
      * 
      * @param inMapper
-     *            - instance of {@link OAuthEntryMapper}.
+     *            - instance of {@link DomainMapper}.
      * @param inConversionStrat
      *            - instance of {@link OAuthEntryConversionStrategy}.
      */
-    public GetOAuthEntryByTokenExecution(final OAuthEntryMapper inMapper,
+    public GetOAuthEntryByTokenExecution(final DomainMapper<String, OAuthDomainEntry> inMapper,
             final OAuthEntryConversionStrategy inConversionStrat)
     {
         entryMapper = inMapper;
@@ -61,7 +61,7 @@ public class GetOAuthEntryByTokenExecution implements ExecutionStrategy<Principa
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
         String token = (String) inActionContext.getParams();
-        OAuthDomainEntry dto = entryMapper.findEntry(token);
+        OAuthDomainEntry dto = entryMapper.execute(token);
         return (dto == null) ? null : conversionStrat.convertToEntry(dto);
     }
 

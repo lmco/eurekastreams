@@ -23,7 +23,7 @@ import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.domain.OAuthDomainEntry;
-import org.eurekastreams.server.persistence.OAuthEntryMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -33,15 +33,16 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link OAuthAuthorizeExecution} class.
- *
+ * 
  */
+@SuppressWarnings("unchecked")
 public class OAuthAuthorizeExecutionTest
 {
     /**
      * System under test.
      */
     private OAuthAuthorizeExecution sut;
-    
+
     /**
      * Context for building mock objects.
      */
@@ -51,31 +52,31 @@ public class OAuthAuthorizeExecutionTest
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
-    
+
     /**
      * The mapper used for retrieving OAuthEntries from the db.
      */
-    private final OAuthEntryMapper oauthEntryMapper = context.mock(OAuthEntryMapper.class);
-    
+    private final DomainMapper<String, OAuthDomainEntry> entryMapper = context.mock(DomainMapper.class);
+
     /**
      * Mocked instance of the action context.
      */
     private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
-    
+
     /**
      * Mocked Principal object.
      */
     private Principal principal = context.mock(Principal.class);
-    
+
     /**
      * Setup the sut.
      */
     @Before
     public void setup()
     {
-        sut = new OAuthAuthorizeExecution(oauthEntryMapper);
+        sut = new OAuthAuthorizeExecution(entryMapper);
     }
-    
+
     /**
      * Test successful authorization.
      */
@@ -84,66 +85,66 @@ public class OAuthAuthorizeExecutionTest
     {
         final OAuthDomainEntry dto = new OAuthDomainEntry();
         dto.setCallbackUrlSigned(true);
-        
+
         context.checking(new Expectations()
         {
             {
                 oneOf(actionContext).getPrincipal();
                 will(returnValue(principal));
-                
+
                 oneOf(principal).getAccountId();
                 will(returnValue("testacctid"));
 
                 oneOf(actionContext).getParams();
                 will(returnValue("token"));
-                
-                oneOf(oauthEntryMapper).findEntry("token");
+
+                oneOf(entryMapper).execute("token");
                 will(returnValue(dto));
-                
-                oneOf(oauthEntryMapper).findEntry("token");
+
+                oneOf(entryMapper).execute("token");
                 will(returnValue(dto));
             }
         });
-        
+
         String callbackurl = sut.execute(actionContext);
         assertNotNull(callbackurl);
         assertEquals(dto.isAuthorized(), true);
         assertTrue(dto.getCallbackToken() != null);
-        
+
         context.assertIsSatisfied();
-        
+
     }
-    
+
     /**
      * Test failure authorization.
      */
-    @Test(expected=ExecutionException.class)
+    @Test(expected = ExecutionException.class)
     public void testAuthorizationFailedTokenNotFound()
     {
         final OAuthDomainEntry dto = new OAuthDomainEntry();
         dto.setCallbackUrlSigned(true);
-        
+
         context.checking(new Expectations()
         {
             {
                 oneOf(actionContext).getPrincipal();
                 will(returnValue(principal));
-                
+
                 oneOf(principal).getAccountId();
                 will(returnValue("testacctid"));
 
                 oneOf(actionContext).getParams();
                 will(returnValue("token"));
-                
-                oneOf(oauthEntryMapper).findEntry("token");
+
+                oneOf(entryMapper).execute("token");
                 will(throwException(new Exception()));
             }
         });
-        
+
         sut.execute(actionContext);
-        
+
         context.assertIsSatisfied();
-        
+
     }
 
     /**
@@ -160,27 +161,27 @@ public class OAuthAuthorizeExecutionTest
             {
                 oneOf(actionContext).getPrincipal();
                 will(returnValue(principal));
-                
+
                 oneOf(principal).getAccountId();
                 will(returnValue("testacctid"));
 
                 oneOf(actionContext).getParams();
                 will(returnValue("token"));
-                
-                oneOf(oauthEntryMapper).findEntry("token");
+
+                oneOf(entryMapper).execute("token");
                 will(returnValue(dto));
-                
-                oneOf(oauthEntryMapper).findEntry("token");
+
+                oneOf(entryMapper).execute("token");
                 will(returnValue(dto));
             }
         });
-        
+
         String callbackurl = sut.execute(actionContext);
         assertNotNull(callbackurl);
         assertEquals(dto.isAuthorized(), true);
         assertTrue(dto.getCallbackToken() != null);
-        
+
         context.assertIsSatisfied();
-        
+
     }
 }
