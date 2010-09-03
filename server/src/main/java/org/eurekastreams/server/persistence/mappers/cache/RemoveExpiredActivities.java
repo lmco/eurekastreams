@@ -27,16 +27,21 @@ public class RemoveExpiredActivities extends CachedDomainMapper
 {
     /**
      * Execute the sql commands to remove the activities and associated comments.
-     * 
+     *
      * @param expiredActivityIds
      *            the list of ids of the activities to be removed from the database.
      */
     public void execute(final List<Long> expiredActivityIds)
     {
+        if (expiredActivityIds.size() == 0)
+        {
+            return;
+        }
+
         // deletes comments for activities from the database
         getEntityManager().createQuery("DELETE FROM Comment c WHERE c.target.id in (:expiredActivityIds)")
                 .setParameter("expiredActivityIds", expiredActivityIds).executeUpdate();
-        
+
         // delete comments for activities from cache
         for (long activityId : expiredActivityIds)
         {
@@ -52,6 +57,10 @@ public class RemoveExpiredActivities extends CachedDomainMapper
             getCache().delete(CacheKeys.COMMENT_IDS_BY_ACTIVITY_ID + activityId);
             getCache().delete(CacheKeys.ACTIVITY_BY_ID + activityId);
         }
+
+        // delete any hashtags stored to streams on behalf of this activity
+        getEntityManager().createQuery("DELETE FROM StreamHashTag WHERE activity.id in (:expiredActivityIds)")
+                .setParameter("expiredActivityIds", expiredActivityIds).executeUpdate();
 
         // deletes activities from the database
         getEntityManager().createQuery("DELETE FROM Activity WHERE id in (:expiredActivityIds)").setParameter(

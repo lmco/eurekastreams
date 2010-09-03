@@ -52,7 +52,7 @@ public class HashTagDbRefreshStrategyTest extends MapperTest
         assertAllHashTagsHaveIds(existingHashTags);
 
         List<HashTag> resultsAfterRefresh = getEntityManager().createQuery("FROM HashTag").getResultList();
-        assertEquals(4, resultsAfterRefresh.size());
+        assertEquals(5, resultsAfterRefresh.size());
     }
 
     /**
@@ -77,7 +77,7 @@ public class HashTagDbRefreshStrategyTest extends MapperTest
         // make sure all of the hashtags were replaced with database entities
         assertAllHashTagsHaveIds(existingHashTags);
 
-        assertEquals(6, getEntityManager().createQuery("FROM HashTag").getResultList().size());
+        assertEquals(7, getEntityManager().createQuery("FROM HashTag").getResultList().size());
 
         assertEquals(2, getEntityManager().createQuery("FROM HashTag WHERE content IN ('#potato', '#rice')")
                 .getResultList().size());
@@ -108,7 +108,7 @@ public class HashTagDbRefreshStrategyTest extends MapperTest
         // make sure all of the hashtags were replaced with database entities
         assertAllHashTagsHaveIds(existingHashTags);
 
-        assertEquals(6, getEntityManager().createQuery("FROM HashTag").getResultList().size());
+        assertEquals(7, getEntityManager().createQuery("FROM HashTag").getResultList().size());
 
         assertEquals(2, getEntityManager().createQuery("FROM HashTag WHERE content IN ('#potato', '#rice')")
                 .getResultList().size());
