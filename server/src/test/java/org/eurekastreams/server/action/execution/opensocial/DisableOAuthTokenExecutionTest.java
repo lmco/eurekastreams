@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.domain.OAuthDomainEntry;
-import org.eurekastreams.server.persistence.OAuthEntryMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -30,15 +30,16 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link DisableOAuthTokenExecution} class.
- *
+ * 
  */
+@SuppressWarnings("unchecked")
 public class DisableOAuthTokenExecutionTest
 {
     /**
      * System under test.
      */
     private DisableOAuthTokenExecution sut;
-    
+
     /**
      * Context for building mock objects.
      */
@@ -48,22 +49,22 @@ public class DisableOAuthTokenExecutionTest
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
-    
+
     /**
      * Test token.
      */
     private static final String TEST_ENTRY_TOKEN = "testtoken";
-    
+
     /**
      * Instance of OAuth entry mapper injected by spring.
      */
-    private final OAuthEntryMapper entryMapper = context.mock(OAuthEntryMapper.class);
-    
+    private final DomainMapper<String, OAuthDomainEntry> entryMapper = context.mock(DomainMapper.class);
+
     /**
      * Mocked instance of the action context.
      */
     private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
-    
+
     /**
      * Prepare the system under test.
      */
@@ -72,7 +73,7 @@ public class DisableOAuthTokenExecutionTest
     {
         sut = new DisableOAuthTokenExecution(entryMapper);
     }
-    
+
     /**
      * Test disabling an oauth token.
      */
@@ -83,24 +84,24 @@ public class DisableOAuthTokenExecutionTest
         entry.setCallbackTokenAttempts(1);
         entry.setCallbackUrlSigned(true);
         entry.setType(OAuthEntry.Type.ACCESS.toString());
-        
+
         context.checking(new Expectations()
         {
             {
                 oneOf(actionContext).getParams();
                 will(returnValue(TEST_ENTRY_TOKEN));
-                
-                oneOf(entryMapper).findEntry(TEST_ENTRY_TOKEN);
+
+                oneOf(entryMapper).execute(TEST_ENTRY_TOKEN);
                 will(returnValue(entry));
             }
         });
-        
+
         sut.execute(actionContext);
         assertEquals(entry.getCallbackTokenAttempts(), 2);
         assertEquals(entry.getType(), OAuthEntry.Type.ACCESS.toString());
         context.assertIsSatisfied();
     }
-    
+
     /**
      * Test disabling an oauth token.
      */
@@ -111,18 +112,18 @@ public class DisableOAuthTokenExecutionTest
         entry.setCallbackTokenAttempts(5);
         entry.setCallbackUrlSigned(true);
         entry.setType(OAuthEntry.Type.ACCESS.toString());
-        
+
         context.checking(new Expectations()
         {
             {
                 oneOf(actionContext).getParams();
                 will(returnValue(TEST_ENTRY_TOKEN));
-                
-                oneOf(entryMapper).findEntry(TEST_ENTRY_TOKEN);
+
+                oneOf(entryMapper).execute(TEST_ENTRY_TOKEN);
                 will(returnValue(entry));
             }
         });
-        
+
         sut.execute(actionContext);
         assertEquals(entry.getCallbackTokenAttempts(), 6);
         assertEquals(entry.getType(), OAuthEntry.Type.DISABLED.toString());

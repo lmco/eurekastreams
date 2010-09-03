@@ -22,8 +22,9 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.action.request.opensocial.RemoveConsumerTokenRequest;
 import org.eurekastreams.server.domain.OAuthConsumer;
 import org.eurekastreams.server.domain.OAuthToken;
-import org.eurekastreams.server.persistence.OAuthConsumerMapper;
-import org.eurekastreams.server.persistence.OAuthTokenMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.opensocial.OAuthConsumerRequest;
+import org.eurekastreams.server.persistence.mappers.requests.opensocial.OAuthTokenRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -34,6 +35,7 @@ import org.junit.Test;
 /**
  * Test suite for {@link RemoveConsumerTokenExecution}.
  */
+@SuppressWarnings("unchecked")
 public class RemoveConsumerTokenExecutionTest
 {
     /**
@@ -54,12 +56,14 @@ public class RemoveConsumerTokenExecutionTest
     /**
      * Instance of OAuth consumer mapper injected by spring.
      */
-    private final OAuthConsumerMapper consumerMapper = context.mock(OAuthConsumerMapper.class);
+    private final DomainMapper<OAuthConsumerRequest, OAuthConsumer> consumerMapper = context.mock(DomainMapper.class,
+            "consumerMock");
 
     /**
      * Instance of OAuth token mapper injected by spring.
      */
-    private final OAuthTokenMapper tokenMapper = context.mock(OAuthTokenMapper.class);
+    private final DomainMapper<OAuthTokenRequest, Boolean> tokenDeleteMapper = context.mock(DomainMapper.class,
+            "deleteMock");
 
     /**
      * Mocked instance of the action context.
@@ -82,7 +86,7 @@ public class RemoveConsumerTokenExecutionTest
     @Before
     public void setup()
     {
-        sut = new RemoveConsumerTokenExecution(consumerMapper, tokenMapper);
+        sut = new RemoveConsumerTokenExecution(consumerMapper, tokenDeleteMapper);
     }
 
     /**
@@ -98,7 +102,7 @@ public class RemoveConsumerTokenExecutionTest
         {
             {
                 oneOf(actionContext).getParams();
-                will(returnValue(new RemoveConsumerTokenRequest(securityToken, consumerInfo, "serviceName",
+                will(returnValue(new RemoveConsumerTokenRequest(securityToken, consumerInfo, "serviceName", // \n
                         "tokenName")));
 
                 OAuthConsumer consumer = new OAuthConsumer("", "", "", "", "");
@@ -114,12 +118,10 @@ public class RemoveConsumerTokenExecutionTest
                 oneOf(securityToken).getOwnerId();
                 will(returnValue("456"));
 
-                oneOf(consumerMapper).findConsumerByServiceNameAndGadgetUrl(with(any(String.class)),
-                        with(any(String.class)));
+                oneOf(consumerMapper).execute(with(any(OAuthConsumerRequest.class)));
                 will(returnValue(new OAuthConsumer("", "", "", "", "")));
 
-                oneOf(tokenMapper).delete(with(any(OAuthConsumer.class)), with(any(String.class)),
-                        with(any(String.class)));
+                oneOf(tokenDeleteMapper).execute(with(any(OAuthTokenRequest.class)));
             }
         });
 
@@ -140,14 +142,13 @@ public class RemoveConsumerTokenExecutionTest
         {
             {
                 oneOf(actionContext).getParams();
-                will(returnValue(new RemoveConsumerTokenRequest(securityToken, consumerInfo, "serviceName",
+                will(returnValue(new RemoveConsumerTokenRequest(securityToken, consumerInfo, "serviceName", // \n
                         "tokenName")));
 
                 oneOf(securityToken).getAppUrl();
                 will(returnValue("http://localhost:4040/some/path"));
 
-                oneOf(consumerMapper).findConsumerByServiceNameAndGadgetUrl(with(any(String.class)),
-                        with(any(String.class)));
+                oneOf(consumerMapper).execute(with(any(OAuthConsumerRequest.class)));
                 will(returnValue(null));
             }
         });

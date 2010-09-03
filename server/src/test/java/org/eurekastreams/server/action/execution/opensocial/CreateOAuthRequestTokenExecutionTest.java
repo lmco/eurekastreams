@@ -22,7 +22,8 @@ import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.action.request.opensocial.CreateOAuthRequestTokenRequest;
 import org.eurekastreams.server.domain.OAuthDomainEntry;
-import org.eurekastreams.server.persistence.OAuthEntryMapper;
+import org.eurekastreams.server.persistence.mappers.InsertMapper;
+import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -32,8 +33,9 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link CreateOAuthRequestTokenExecution} class.
- *
+ * 
  */
+@SuppressWarnings("unchecked")
 public class CreateOAuthRequestTokenExecutionTest
 {
     /**
@@ -54,7 +56,7 @@ public class CreateOAuthRequestTokenExecutionTest
     /**
      * Instance of OAuth entry mapper injected by spring.
      */
-    private OAuthEntryMapper entryMapper = context.mock(OAuthEntryMapper.class);
+    private InsertMapper<OAuthDomainEntry> insertMapper = context.mock(InsertMapper.class);
 
     /**
      * Strategy for converting {@link OAuthEntry} objects to {@link OAuthDomainEntry} objects.
@@ -97,7 +99,7 @@ public class CreateOAuthRequestTokenExecutionTest
     @Before
     public void setup()
     {
-        sut = new CreateOAuthRequestTokenExecution(TEST_OAUTH_DOMAIN, TEST_OAUTH_CONTAINER, entryMapper,
+        sut = new CreateOAuthRequestTokenExecution(TEST_OAUTH_DOMAIN, TEST_OAUTH_CONTAINER, insertMapper,
                 oauthConversionStrat);
     }
 
@@ -117,7 +119,7 @@ public class CreateOAuthRequestTokenExecutionTest
 
                 oneOf(oauthConversionStrat).convertToEntryDTO(with(any(OAuthEntry.class)));
 
-                oneOf(entryMapper).insert(with(any(OAuthDomainEntry.class)));
+                oneOf(insertMapper).execute(with(any(PersistenceRequest.class)));
             }
         });
 

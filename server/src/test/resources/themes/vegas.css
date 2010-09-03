@@ -1,0 +1,85 @@
+
+	div.banner-container
+	{
+		background: 
+			black 
+			url(http://i26.photobucket.com/albums/c104/tridirk/12.jpg)
+			repeat;
+			
+      	        border-bottom: 1px solid red; 		
+	}
+
+        .themeable .site-labeling
+        {
+            color: white;
+        }
+
+	.themeable div.tab, .themeable div.new-tab-button
+	{ 
+	      background-color: #31393B;
+	      border-color:  blue;	      
+	}
+
+        .themeable .configure-tab
+	{ 
+	      background-color: #31393B;
+	      border-color: white;
+        }
+
+        .themeable .configure-tab a
+        {
+	      color: white;
+        }
+
+	.themeable div.tab-container div.active
+	{
+		background-color: #dedede;
+	}
+
+	.themeable div.tab-container div.active
+	{
+      	border-top: 1px solid red; 
+      	border-left: 1px solid red; 
+      	border-right: 1px solid red; 
+      	border-bottom:1px solid #dedede;	      
+	}
+	
+	.themeable div.tab-container div.active div div.gwt-Label
+	{
+      	color: blue; 
+	}
+
+	.themeable div.layout-container
+	{
+      	border-color: red;
+	}
+	.themeable div.tab div div.gwt-Label, .themeable div.new-tab-button a
+	{
+	      color: white;
+	}
+	
+	.themeable .gadget-zone
+	{ 
+	      border: 1px solid #31393B ! important;
+	}
+
+	.themeable .gadget-zone-chrome-title-bar
+	{ 
+	      background-color: #31393B;
+	}
+	
+	.themeable .gadget-zone-chrome-title-bar-title-button
+	{ 
+	      color: white;
+	}
+
+	.themeable .main-contents
+	{
+		background: 
+			#dedede 
+			url()
+			no-repeat
+			 0 125px;
+	}
+
+	
