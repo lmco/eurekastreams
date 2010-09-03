@@ -90,8 +90,10 @@
 	<bean id="interstingnessStrategy" class="org.eurekastreams.server.search.bridge.strategies.WeightedInterestingnessStrategy">
 		<constructor-arg ref="getOrderedCommentIdsByActivityId" />
 		<constructor-arg ref="getCommentorIdsByActivityId" />
+		<constructor-arg ref="getPeopleWhoLikedActivity" />
 		<constructor-arg value="2" />
 		<constructor-arg value="3" />
+		<constructor-arg value="1" />
 		<constructor-arg value="15" />
 	</bean>
 	

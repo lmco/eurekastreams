@@ -34,9 +34,13 @@ public class NonNullResultsCombinerTest
         Object param1 = new Object();
         Object param2 = new Object();
 
-        assertSame(param1, new NonNullResultsCombiner<Object>().combine(param1, param2));
-        assertSame(param1, new NonNullResultsCombiner<Object>().combine(param1, null));
-        assertSame(param2, new NonNullResultsCombiner<Object>().combine(null, param2));
-        assertNull(new NonNullResultsCombiner<Object>().combine(null, null));
+        assertSame(param1, new NonNullResultsCombiner<Object>().combine(new PartialMapperResponse<Object, Object>(
+                param1, null), param2, null));
+        assertSame(param1, new NonNullResultsCombiner<Object>().combine(new PartialMapperResponse<Object, Object>(
+                param1, null), null, null));
+        assertSame(param2, new NonNullResultsCombiner<Object>().combine(new PartialMapperResponse<Object, Object>(null,
+                null), param2, null));
+        assertNull(new NonNullResultsCombiner<Object>().combine(new PartialMapperResponse<Object, Object>(null, null),
+                null, null));
     }
 }

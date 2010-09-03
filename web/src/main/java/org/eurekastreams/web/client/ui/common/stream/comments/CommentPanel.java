@@ -136,7 +136,7 @@ public class CommentPanel extends Composite
 
                                     public void onSuccess(final Boolean result)
                                     {
-                                        effects.fadeOut(commentContainer.getElement());
+                                        effects.fadeOut(commentContainer.getElement(), true);
                                         Session.getInstance().getEventBus().notifyObservers(
                                                 new CommentDeletedEvent(comment.getActivityId()));
                                     }

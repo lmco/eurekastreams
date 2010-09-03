@@ -16,12 +16,15 @@
 package org.eurekastreams.server.search.bridge.strategies;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 import junit.framework.Assert;
 
 import org.eurekastreams.server.domain.stream.Activity;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetCommentorIdsByActivityId;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrderedCommentIdsByActivityId;
 import org.jmock.Expectations;
@@ -64,6 +67,12 @@ public class WeightedInterestingnessStrategyTest
             .mock(GetCommentorIdsByActivityId.class);
 
     /**
+     * DAO for finding likes.
+     */
+    private static DomainMapper<Collection<Long>, Collection<Collection<Long>>> getPeopleWhoLikedMapper = CONTEXT
+            .mock(DomainMapper.class);
+
+    /**
      * Activity mock.
      */
     private static Activity activity = CONTEXT.mock(Activity.class);
@@ -79,6 +88,11 @@ public class WeightedInterestingnessStrategyTest
     private static final int COMMENTOR_WEIGHT = 1;
 
     /**
+     * Like weight.
+     */
+    private static final int LIKE_WEIGHT = 1;
+
+    /**
      * Time weight.
      */
     private static final int TIME_WEIGHT = 15;
@@ -90,7 +104,7 @@ public class WeightedInterestingnessStrategyTest
     public static final void setUp()
     {
         sut = new WeightedInterestingnessStrategy(commentIdsByActivityIdDAOMock, commentorIdsByActivityDAOMock,
-                COMMENT_WEIGHT, COMMENTOR_WEIGHT, TIME_WEIGHT);
+                getPeopleWhoLikedMapper, COMMENT_WEIGHT, COMMENTOR_WEIGHT, LIKE_WEIGHT, TIME_WEIGHT);
     }
 
     /**
@@ -113,6 +127,8 @@ public class WeightedInterestingnessStrategyTest
                 oneOf(commentorIdsByActivityDAOMock).execute(activityID);
                 will(returnValue(null));
 
+                oneOf(getPeopleWhoLikedMapper).execute(Arrays.asList(activityID));
+                will(returnValue(null));
             }
         });
 
@@ -128,6 +144,7 @@ public class WeightedInterestingnessStrategyTest
         final Long activityID = 1L;
         final List<Long> commentIds = new ArrayList<Long>();
         final List<Long> commentorIds = new ArrayList<Long>();
+        final Collection<Collection<Long>> likers = new ArrayList<Collection<Long>>();
 
         CONTEXT.checking(new Expectations()
         {
@@ -141,6 +158,8 @@ public class WeightedInterestingnessStrategyTest
                 oneOf(commentorIdsByActivityDAOMock).execute(activityID);
                 will(returnValue(commentorIds));
 
+                oneOf(getPeopleWhoLikedMapper).execute(Arrays.asList(activityID));
+                will(returnValue(likers));
             }
         });
 
@@ -161,6 +180,8 @@ public class WeightedInterestingnessStrategyTest
         final List<Long> commentorIds = new ArrayList<Long>();
         commentorIds.add(1L);
         commentorIds.add(2L);
+
+        final List<List<Long>> likers = Arrays.asList(Arrays.asList(1L, 2L));
 
         final Date postedTime = CONTEXT.mock(Date.class);
 
@@ -184,6 +205,8 @@ public class WeightedInterestingnessStrategyTest
                 oneOf(commentorIdsByActivityDAOMock).execute(activityID);
                 will(returnValue(commentorIds));
 
+                oneOf(getPeopleWhoLikedMapper).execute(Arrays.asList(activityID));
+                will(returnValue(likers));
             }
         });
 
@@ -192,6 +215,7 @@ public class WeightedInterestingnessStrategyTest
                 / WeightedInterestingnessStrategy.SECONDS_IN_DAY * TIME_WEIGHT;
         interestingness += commentIds.size() * COMMENT_WEIGHT;
         interestingness += commentorIds.size() * COMMENTOR_WEIGHT;
+        interestingness += likers.iterator().next().size() * LIKE_WEIGHT;
 
         Assert.assertEquals(interestingness, sut.computeInterestingness(activity));
     }

@@ -22,7 +22,7 @@ import org.eurekastreams.server.service.actions.strategies.activity.ListCollider
 /**
  * Adapts a ListCollider to be used as a ResultsCombinerStrategy.
  */
-public class ListColliderAdapter implements ResultsCombinerStrategy<List<Long>>
+public class ListColliderAdapter implements ResultsCombinerStrategy<Object, List<Long>>
 {
     /**
      * The collider.
@@ -51,15 +51,17 @@ public class ListColliderAdapter implements ResultsCombinerStrategy<List<Long>>
     /**
      * Combine two lists.
      * 
-     * @param listA
+     * @param response1
      *            the first list.
-     * @param listB
+     * @param response2
      *            the second list.
-     * 
+     * @param request
+     *            original request.
      * @return the combined list.
      */
-    public List<Long> combine(final List<Long> listA, final List<Long> listB)
+    public List<Long> combine(final PartialMapperResponse<Object, List<Long>> response1, final List<Long> response2,
+            final Object request)
     {
-        return collider.collide(listA, listB, maxResults);
+        return collider.collide(response1.getResponse(), response2, maxResults);
     }
 }

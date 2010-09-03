@@ -8566,6 +8566,7 @@ body .post-to-stream .post-button.inactive {
 
 .like-count-widget
 {
+	zoom: 1;
 	background: transparent url(images/like-bg-front.png) no-repeat
 		scroll 0 0;
 	margin-left: 5px;
@@ -8574,12 +8575,13 @@ body .post-to-stream .post-button.inactive {
 	*display: inline;
 	height: 20px;
 	padding-left: 25px;
+	z-index: 100;
 }
 
-.like-count-widget:hover
+.users-who-liked-activity-wrapper
 {
 	background: transparent url(images/like-bg-front-hover.png) no-repeat
-		scroll 0 0;
+		scroll 0 0 ! important;
 }
 
 .like-count-widget .like-count
@@ -8587,9 +8589,12 @@ body .post-to-stream .post-button.inactive {
 	background: transparent url(images/like-bg-back.png) no-repeat
 		scroll top right;
 	padding-right: 6px;
+	display: inline-block;
+	*display: inline;
+	zoom: 1;
 }
 
-.like-count-widget:hover .like-count
+.users-who-liked-activity-wrapper .like-count
 {
 	background: transparent url(images/like-bg-back-hover.png) no-repeat
 		scroll top right;
@@ -8606,57 +8611,79 @@ body .post-to-stream .post-button.inactive {
 	height: 19px;
 	padding-top: 1px;
 	margin-top: 1px;
+	zoom: 1;
 }
 	
-.like-count-widget:hover a
+.users-who-liked-activity-wrapper a
 {
 	color: #fff;
 	background-color: #666;
+	font-size: 11px;
+	*height: 18px ! important;
 }
 
-.like-count-widget:hover .users-who-liked-activity
-{
-	display: block;
-	width: 198px;
-}
-
-.like-count-widget .users-who-liked-activity .users-who-liked-activity-header
+.users-who-liked-activity .users-who-liked-activity-header
 {
 	background: transparent url(images/like-modal-top.png) repeat scroll 0	0;
 	height: 10px;	
+	zoom: 1;
 }
 
-.like-count-widget .users-who-liked-activity .users-who-liked-activity-body
+.users-who-liked-activity .users-who-liked-activity-body
 {
 	background: transparent url(images/like-modal-bg.png) repeat scroll 0	0;
 	padding: 0 10px 5px;
+	zoom: 1;
 }
 
-.like-count-widget .users-who-liked-activity .users-who-liked-activity-body > div
+.users-who-liked-activity .gwt-Label
 {
-	padding-top: 3px;
-	padding-left: 5px;	
+	text-align: right;
+	padding: 0;
+	font-size: 11px;
+	position: relative;
+	top: -7px;
+	padding-right: 3px;	
 }
 
-.like-count-widget .users-who-liked-activity .users-who-liked-activity-body > div > *
+.users-who-liked-activity .users-who-liked-activity-body > div
+{
+	padding-left: 5px;	
+	zoom: 1;
+}
+
+.users-who-liked-activity .users-who-liked-activity-body > div > *
 {
 	margin-right: 5px;	
 	margin-bottom: 5px;	
+	zoom: 1;
 }
 
 
-.like-count-widget .users-who-liked-activity .users-who-liked-activity-footer
+.users-who-liked-activity .users-who-liked-activity-footer
 {
 	background: transparent url(images/like-modal-bottom.png) repeat scroll 0	0;
 	height: 9px;	
+	zoom: 1;
+}
+
+.users-who-liked-activity-wrapper
+{
+	position: absolute ! important;
+	margin-left: -25px;
+	*margin-left: -27px;
+	*margin-top: -2px;
+	
 }
 
 .users-who-liked-activity
 {
-	position: absolute;
-	display: none;
+	display: block;
+	width: 198px;
 	color: #fff;
-	margin-top: -4px;
+	zoom: 1;
+	z-index: 101;
+	margin-top: -2px;
 	margin-left: -25px;
 }
 
