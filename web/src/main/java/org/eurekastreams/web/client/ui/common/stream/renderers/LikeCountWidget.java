@@ -26,7 +26,11 @@ import org.eurekastreams.web.client.jsni.EffectsFacade;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.TimerFactory;
 import org.eurekastreams.web.client.ui.TimerHandler;
+import org.eurekastreams.web.client.ui.common.dialog.Dialog;
+import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.DOM;
@@ -98,6 +102,22 @@ public class LikeCountWidget extends Composite
      * Link for the like count link.
      */
     private static Anchor innerLikeCountLink = new Anchor();
+    /**
+     * The view all link.
+     */
+    private static Anchor viewAll = new Anchor("view all");
+    /**
+     * The actiivty Id.
+     */
+    private static Long activityId;
+    /**
+     * The body.
+     */
+    private static FlowPanel userLikedBody = new FlowPanel();
+    /**
+     * How many do we show before the view all link shows up.
+     */
+    private static final int MAXLIKERSSHOWN = 10;
 
     /**
      * Setup the floating avatar panel.
@@ -108,10 +128,11 @@ public class LikeCountWidget extends Composite
         // Reimplementing Focus panel, GWT seems to break otherwise.
         usersWhoLikedPanelWrapper = new FlowPanel()
         {
-            private  final TimerFactory timerFactory = new TimerFactory();
+            private final TimerFactory timerFactory = new TimerFactory();
             private boolean actuallyOut = false;
             private static final int TIMER_EXPIRATION = 500;
 
+            @Override
             public void onBrowserEvent(final Event event)
             {
                 super.onBrowserEvent(event);
@@ -140,6 +161,18 @@ public class LikeCountWidget extends Composite
 
         };
 
+        viewAll.setVisible(false);
+        viewAll.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent arg0)
+            {
+                DialogContent dialogContent = new LikersDialogContent(activityId);
+                Dialog dialog = new Dialog(dialogContent);
+                dialog.setBgVisible(true);
+                dialog.center();
+            }
+
+        });
         usersWhoLikedPanelWrapper.setVisible(false);
         usersWhoLikedPanelWrapper.addStyleName("users-who-liked-activity-wrapper like-count-widget");
         RootPanel.get().add(usersWhoLikedPanelWrapper);
@@ -157,7 +190,6 @@ public class LikeCountWidget extends Composite
         userLikedHeader.addStyleName("users-who-liked-activity-header");
         usersWhoLikedPanel.add(userLikedHeader);
 
-        FlowPanel userLikedBody = new FlowPanel();
         userLikedBody.addStyleName("users-who-liked-activity-body");
         usersWhoLikedPanel.add(userLikedBody);
 
@@ -167,7 +199,7 @@ public class LikeCountWidget extends Composite
 
         userLikedBody.add(likedLabel);
         userLikedBody.add(avatarPanel);
-
+        userLikedBody.add(viewAll);
         usersWhoLikedPanelWrapper.sinkEvents(Event.ONMOUSEOUT | Event.ONMOUSEOVER);
 
         hasUsersWhoLikedBeenAddedToRoot = true;
@@ -175,16 +207,17 @@ public class LikeCountWidget extends Composite
 
     /**
      * Constructor.
-     * 
-     * @param activityId
+     *
+     * @param inActivityId
      *            activity id.
      * @param inLikeCount
      *            like count.
      * @param inLikers
      *            who has liked this activity.
      */
-    public LikeCountWidget(final Long activityId, final Integer inLikeCount, final List<PersonModelView> inLikers)
+    public LikeCountWidget(final Long inActivityId, final Integer inLikeCount, final List<PersonModelView> inLikers)
     {
+
         initWidget(widget);
 
         if (!hasUsersWhoLikedBeenAddedToRoot)
@@ -196,6 +229,8 @@ public class LikeCountWidget extends Composite
         {
             public void onMouseOver(final MouseOverEvent arg0)
             {
+                activityId = inActivityId;
+                viewAll.setVisible(false);
                 avatarPanel.clear();
                 DOM.setStyleAttribute(usersWhoLikedPanelWrapper.getElement(), "top", likeCountLink.getAbsoluteTop()
                         + "px");
@@ -212,6 +247,10 @@ public class LikeCountWidget extends Composite
                     avatarPanel.add(avatar);
                 }
 
+                if (likeCount > MAXLIKERSSHOWN)
+                {
+                    viewAll.setVisible(true);
+                }
                 likedLabel.setText(likeCount + " people liked this");
                 innerLikeCountLink.setText(likeCount.toString());
 
@@ -245,7 +284,7 @@ public class LikeCountWidget extends Composite
 
     /**
      * Update the panel.
-     * 
+     *
      * @param likeActionType
      *            the action that's being taken.
      */

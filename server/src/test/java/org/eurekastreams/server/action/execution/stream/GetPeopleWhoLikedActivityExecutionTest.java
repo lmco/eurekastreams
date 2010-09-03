@@ -51,7 +51,7 @@ public class GetPeopleWhoLikedActivityExecutionTest
     /**
      * Mapper.
      */
-    private DecoratedPartialResponseDomainMapper<Long, ArrayList<Long>> mapper =
+    private DecoratedPartialResponseDomainMapper<List<Long>, List<List<Long>>> mapper =
         context.mock(DecoratedPartialResponseDomainMapper.class);
 
     /**
@@ -70,7 +70,10 @@ public class GetPeopleWhoLikedActivityExecutionTest
     @Test
     public final void execute()
     {
-        final List<Long> returned = new ArrayList<Long>();
+        final List<List<Long>> returned = new ArrayList<List<Long>>();
+        final List<Long> innerList = new ArrayList<Long>();
+        returned.add(innerList);
+
         sut = new GetPeopleWhoLikedActivityExecution(mapper, peopleMapper);
 
         context.checking(new Expectations()
@@ -79,10 +82,9 @@ public class GetPeopleWhoLikedActivityExecutionTest
                 oneOf(actionContext).getParams();
                 will(returnValue(1L));
 
-                oneOf(mapper).execute(1L);
+                oneOf(mapper).execute(with(any(List.class)));
                 will(returnValue(returned));
-
-                oneOf(peopleMapper).execute(returned);
+                oneOf(peopleMapper).execute(innerList);
             }
         });
 

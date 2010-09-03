@@ -30,14 +30,14 @@ public class ActivityLikersModel extends BaseModel implements Fetchable<Long>
     /**
      * Singleton.
      */
-    private static ActivityLikeModel model = new ActivityLikeModel();
+    private static ActivityLikersModel model = new ActivityLikersModel();
 
     /**
      * Gets the singleton.
      *
      * @return the singleton.
      */
-    public static ActivityLikeModel getInstance()
+    public static ActivityLikersModel getInstance()
     {
         return model;
     }

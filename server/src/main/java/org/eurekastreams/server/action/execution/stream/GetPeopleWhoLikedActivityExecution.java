@@ -16,6 +16,7 @@
 package org.eurekastreams.server.action.execution.stream;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
@@ -23,6 +24,8 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Get all the people who like a particular activity.
@@ -33,7 +36,7 @@ public class GetPeopleWhoLikedActivityExecution implements ExecutionStrategy<Pri
     /**
      * The mapper.
      */
-    private DecoratedPartialResponseDomainMapper<Long, ArrayList<Long>> mapper;
+    private DecoratedPartialResponseDomainMapper<List<Long>, List<List<Long>>> mapper;
 
     /**
      * People mapper.
@@ -46,7 +49,7 @@ public class GetPeopleWhoLikedActivityExecution implements ExecutionStrategy<Pri
      * @param inPeopleMapper the people mapper.
      */
     public GetPeopleWhoLikedActivityExecution(
-            final DecoratedPartialResponseDomainMapper<Long, ArrayList<Long>> inMapper,
+            final DecoratedPartialResponseDomainMapper<List<Long>, List<List<Long>>> inMapper,
             final GetPeopleByIds inPeopleMapper)
     {
         mapper = inMapper;
@@ -62,7 +65,8 @@ public class GetPeopleWhoLikedActivityExecution implements ExecutionStrategy<Pri
     @Override
     public ArrayList<PersonModelView> execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        return new ArrayList<PersonModelView>(peopleMapper.execute(mapper.execute((Long) inActionContext.getParams())));
+        return new ArrayList<PersonModelView>(peopleMapper.execute(
+                mapper.execute(Collections.singletonList(inActionContext.getParams())).get(0)));
     }
 
 }
