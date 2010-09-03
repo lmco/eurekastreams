@@ -69,4 +69,18 @@ public class DeleteOAuthTokenTest extends MapperTest
         List<OAuthToken> results = q.getResultList();
         Assert.assertEquals(0, results.size());
     }
+
+    /**
+     * Test deleting a nonexistent token.
+     */
+    @Test
+    public void testDeleteNonexistentToken()
+    {
+        OAuthConsumer consumer = new OAuthConsumer("providerX", "http://www.example.com/gadgetX.xml", "keyX",
+                "secretX", "HMAC-SHA1");
+        Boolean result = sut.execute(new OAuthTokenRequest(consumer, "X", "Y"));
+
+        Assert.assertEquals(true, result);
+    }
+
 }

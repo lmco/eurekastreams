@@ -81,7 +81,7 @@ public class GetOAuthTokenTest extends MapperTest
     @Test
     public void testExpiredToken()
     {
-        OAuthConsumer consumer = new OAuthConsumer("provider4", "http://www.example.com/gadget5.xml", "key4",
+        OAuthConsumer consumer = new OAuthConsumer("provider4", "http://www.example.com/gadget4.xml", "key4",
                 "secret4", "HMAC-SHA1");
         OAuthToken token = sut.execute(new OAuthTokenRequest(consumer, "123", "456"));
         assertTrue("Non-expired Token found for consumer 104 and viewer 123 and owner 456", token == null);

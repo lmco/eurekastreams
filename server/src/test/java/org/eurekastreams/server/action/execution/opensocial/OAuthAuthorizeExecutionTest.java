@@ -116,6 +116,44 @@ public class OAuthAuthorizeExecutionTest
     }
 
     /**
+     * Test successful authorization.
+     */
+    @Test
+    public void testSuccessfulAuthorizationWithUnsignedCallback()
+    {
+        final OAuthDomainEntry dto = new OAuthDomainEntry();
+        dto.setCallbackUrlSigned(false);
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(actionContext).getPrincipal();
+                will(returnValue(principal));
+
+                oneOf(principal).getAccountId();
+                will(returnValue("testacctid"));
+
+                oneOf(actionContext).getParams();
+                will(returnValue("token"));
+
+                oneOf(entryMapper).execute("token");
+                will(returnValue(dto));
+
+                oneOf(entryMapper).execute("token");
+                will(returnValue(dto));
+            }
+        });
+
+        String callbackurl = sut.execute(actionContext);
+        assertNotNull(callbackurl);
+        assertEquals(dto.isAuthorized(), true);
+        assertTrue(dto.getCallbackToken() == null);
+
+        context.assertIsSatisfied();
+
+    }
+
+    /**
      * Test failure authorization.
      */
     @Test(expected = ExecutionException.class)
