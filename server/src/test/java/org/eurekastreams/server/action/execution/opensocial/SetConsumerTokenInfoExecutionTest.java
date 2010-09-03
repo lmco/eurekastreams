@@ -23,8 +23,10 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.action.request.opensocial.SetConsumerTokenInfoRequest;
 import org.eurekastreams.server.domain.OAuthConsumer;
 import org.eurekastreams.server.domain.OAuthToken;
-import org.eurekastreams.server.persistence.OAuthConsumerMapper;
-import org.eurekastreams.server.persistence.OAuthTokenMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.InsertMapper;
+import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
+import org.eurekastreams.server.persistence.mappers.requests.opensocial.OAuthConsumerRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -35,6 +37,7 @@ import org.junit.Test;
 /**
  * Test suite for {@link SetConsumerTokenInfoExecution}.
  */
+@SuppressWarnings("unchecked")
 public class SetConsumerTokenInfoExecutionTest
 {
     /**
@@ -55,12 +58,12 @@ public class SetConsumerTokenInfoExecutionTest
     /**
      * Instance of OAuth consumer mapper injected by spring.
      */
-    private final OAuthConsumerMapper consumerMapper = context.mock(OAuthConsumerMapper.class);
+    private final DomainMapper<OAuthConsumerRequest, OAuthConsumer> consumerMapper = context.mock(DomainMapper.class);
 
     /**
      * Instance of OAuth token mapper injected by spring.
      */
-    private final OAuthTokenMapper tokenMapper = context.mock(OAuthTokenMapper.class);
+    private final InsertMapper<OAuthToken> tokenInsertMapper = context.mock(InsertMapper.class);
 
     /**
      * Mocked instance of the action context.
@@ -88,7 +91,7 @@ public class SetConsumerTokenInfoExecutionTest
     @Before
     public void setup()
     {
-        sut = new SetConsumerTokenInfoExecution(consumerMapper, tokenMapper);
+        sut = new SetConsumerTokenInfoExecution(consumerMapper, tokenInsertMapper);
     }
 
     /**
@@ -110,8 +113,7 @@ public class SetConsumerTokenInfoExecutionTest
                 oneOf(securityToken).getAppUrl();
                 will(returnValue("http://localhost:4040/some/path"));
 
-                oneOf(consumerMapper).findConsumerByServiceNameAndGadgetUrl(with(any(String.class)),
-                        with(any(String.class)));
+                oneOf(consumerMapper).execute(with(any(OAuthConsumerRequest.class)));
                 will(returnValue(new OAuthConsumer("", "", "", "", "")));
 
                 OAuthConsumer consumer = new OAuthConsumer("", "", "", "", "");
@@ -133,7 +135,7 @@ public class SetConsumerTokenInfoExecutionTest
                 oneOf(tokenInfo).getTokenExpireMillis();
                 will(returnValue(0L));
 
-                oneOf(tokenMapper).insert(with(any(OAuthToken.class)));
+                oneOf(tokenInsertMapper).execute(with(any(PersistenceRequest.class)));
             }
         });
 
@@ -160,8 +162,7 @@ public class SetConsumerTokenInfoExecutionTest
                 oneOf(securityToken).getAppUrl();
                 will(returnValue("http://localhost:4040/some/path"));
 
-                oneOf(consumerMapper).findConsumerByServiceNameAndGadgetUrl(with(any(String.class)),
-                        with(any(String.class)));
+                oneOf(consumerMapper).execute(with(any(OAuthConsumerRequest.class)));
                 will(returnValue(null));
             }
         });

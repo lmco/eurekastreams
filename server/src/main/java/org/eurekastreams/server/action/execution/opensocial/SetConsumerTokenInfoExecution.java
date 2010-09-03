@@ -25,38 +25,39 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.action.request.opensocial.SetConsumerTokenInfoRequest;
 import org.eurekastreams.server.domain.OAuthConsumer;
 import org.eurekastreams.server.domain.OAuthToken;
-import org.eurekastreams.server.persistence.OAuthConsumerMapper;
-import org.eurekastreams.server.persistence.OAuthTokenMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.InsertMapper;
+import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
+import org.eurekastreams.server.persistence.mappers.requests.opensocial.OAuthConsumerRequest;
 
 /**
  * Execution Strategy to set OAuth consumer Token info during proxied requests to oauth providers.
- * 
  */
 public class SetConsumerTokenInfoExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
-     * Instance of OAuth consumer mapper injected by spring.
+     * Instance of OAuth domain mapper injected by spring.
      */
-    private final OAuthConsumerMapper consumerMapper;
+    private final DomainMapper<OAuthConsumerRequest, OAuthConsumer> consumerMapper;
 
     /**
      * Instance of OAuth token mapper injected by spring.
      */
-    private final OAuthTokenMapper tokenMapper;
+    private final InsertMapper<OAuthToken> tokenInsertMapper;
 
     /**
      * Constructor.
      * 
      * @param inConsumerMapper
-     *            instance of the {@link OAuthConsumerMapper} class.
-     * @param inTokenMapper
-     *            instance of the {@link OAuthTokenMapper} class.
+     *            instance of the {@link DomainMapper} class.
+     * @param inTokenInsertMapper
+     *            instance of the {@link DomainMapper} class.
      */
-    public SetConsumerTokenInfoExecution(final OAuthConsumerMapper inConsumerMapper,
-            final OAuthTokenMapper inTokenMapper)
+    public SetConsumerTokenInfoExecution(final DomainMapper<OAuthConsumerRequest, OAuthConsumer> inConsumerMapper,
+            final InsertMapper<OAuthToken> inTokenInsertMapper)
     {
         consumerMapper = inConsumerMapper;
-        tokenMapper = inTokenMapper;
+        tokenInsertMapper = inTokenInsertMapper;
     }
 
     /**
@@ -66,29 +67,20 @@ public class SetConsumerTokenInfoExecution implements ExecutionStrategy<Principa
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
         SetConsumerTokenInfoRequest request = (SetConsumerTokenInfoRequest) inActionContext.getParams();
-        boolean isNullConsumer = true;
-        try
-        {
-            SecurityToken securityToken = request.getSecurityToken();
-            TokenInfo tokenInfo = request.getTokenInfo();
 
-            OAuthConsumer consumer = consumerMapper.findConsumerByServiceNameAndGadgetUrl(request.getServiceName(),
-                    securityToken.getAppUrl());
-            if (consumer != null)
-            {
-                isNullConsumer = false;
-                OAuthToken token = new OAuthToken(consumer, securityToken.getViewerId(), securityToken.getOwnerId(),
-                        tokenInfo.getAccessToken(), tokenInfo.getTokenSecret());
-                token.setTokenExpireMillis(tokenInfo.getTokenExpireMillis());
-                tokenMapper.insert(token);
-            }
-        }
-        catch (Exception ex)
-        {
-            throw new ExecutionException("An error occurred setting the consumer token info.");
-        }
+        SecurityToken securityToken = request.getSecurityToken();
+        TokenInfo tokenInfo = request.getTokenInfo();
 
-        if (isNullConsumer)
+        OAuthConsumer consumer = consumerMapper.execute(new OAuthConsumerRequest(request.getServiceName(),
+                securityToken.getAppUrl()));
+        if (consumer != null)
+        {
+            OAuthToken token = new OAuthToken(consumer, securityToken.getViewerId(), securityToken.getOwnerId(),
+                    tokenInfo.getAccessToken(), tokenInfo.getTokenSecret());
+            token.setTokenExpireMillis(tokenInfo.getTokenExpireMillis());
+            tokenInsertMapper.execute(new PersistenceRequest<OAuthToken>(token));
+        }
+        else
         {
             throw new ExecutionException("OAuth Consumer was not found");
         }

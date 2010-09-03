@@ -26,8 +26,9 @@ import org.eurekastreams.server.action.request.opensocial.GetConsumerTokenInfoRe
 import org.eurekastreams.server.action.response.opensocial.TokenInfoResponse;
 import org.eurekastreams.server.domain.OAuthConsumer;
 import org.eurekastreams.server.domain.OAuthToken;
-import org.eurekastreams.server.persistence.OAuthConsumerMapper;
-import org.eurekastreams.server.persistence.OAuthTokenMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.opensocial.OAuthConsumerRequest;
+import org.eurekastreams.server.persistence.mappers.requests.opensocial.OAuthTokenRequest;
 
 /**
  * Execution Strategy to get OAuth consumer Token info during proxied requests to oauth providers.
@@ -35,25 +36,25 @@ import org.eurekastreams.server.persistence.OAuthTokenMapper;
 public class GetConsumerTokenInfoExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
-     * Instance of OAuth consumer mapper injected by spring.
+     * Instance of OAuth domain mapper injected by spring.
      */
-    private final OAuthConsumerMapper consumerMapper;
+    private final DomainMapper<OAuthConsumerRequest, OAuthConsumer> consumerMapper;
 
     /**
-     * Instance of OAuth token mapper injected by spring.
+     * Instance of OAuth domain mapper injected by spring.
      */
-    private final OAuthTokenMapper tokenMapper;
+    private final DomainMapper<OAuthTokenRequest, OAuthToken> tokenMapper;
 
     /**
      * Constructor.
      * 
      * @param inConsumerMapper
-     *            instance of the {@link OAuthConsumerMapper} class.
+     *            instance of the {@link DomainMapper} class.
      * @param inTokenMapper
-     *            instance of the {@link OAuthTokenMapper} class.
+     *            instance of the {@link DomainMapper} class.
      */
-    public GetConsumerTokenInfoExecution(final OAuthConsumerMapper inConsumerMapper,
-            final OAuthTokenMapper inTokenMapper)
+    public GetConsumerTokenInfoExecution(final DomainMapper<OAuthConsumerRequest, OAuthConsumer> inConsumerMapper,
+            final DomainMapper<OAuthTokenRequest, OAuthToken> inTokenMapper)
     {
         consumerMapper = inConsumerMapper;
         tokenMapper = inTokenMapper;
@@ -68,13 +69,14 @@ public class GetConsumerTokenInfoExecution implements ExecutionStrategy<Principa
         GetConsumerTokenInfoRequest request = (GetConsumerTokenInfoRequest) inActionContext.getParams();
         SecurityToken securityToken = request.getSecurityToken();
 
-        OAuthConsumer consumer = consumerMapper.findConsumerByServiceNameAndGadgetUrl(request.getServiceName(),
-                securityToken.getAppUrl());
+        OAuthConsumer consumer = consumerMapper.execute(new OAuthConsumerRequest(request.getServiceName(),
+                securityToken.getAppUrl()));
         if (consumer == null)
         {
             throw new ExecutionException("OAuth Consumer was not found");
         }
-        OAuthToken token = tokenMapper.findToken(consumer, securityToken.getViewerId(), securityToken.getOwnerId());
+        OAuthToken token = tokenMapper.execute(new OAuthTokenRequest(consumer, securityToken.getViewerId(),
+                securityToken.getOwnerId()));
         if (token != null)
         {
             TokenInfo tokenInfo = new TokenInfo(token.getAccessToken(), token.getTokenSecret(), null, token

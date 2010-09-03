@@ -17,19 +17,18 @@ package org.eurekastreams.server.action.request.opensocial;
 
 import java.io.Serializable;
 
-import net.oauth.OAuthServiceProvider;
-
 import org.apache.shindig.auth.SecurityToken;
+import org.apache.shindig.gadgets.oauth.OAuthStore.ConsumerInfo;
 
 /**
- * Request object that contains the parameters for calling the GetConsumerInfoExecution class.
+ * Abstract parent request class containing parameters for oauth consumer requests involving tokens.
  */
-public class GetConsumerInfoRequest implements Serializable
+public abstract class OAuthConsumerTokenRequest implements Serializable
 {
     /**
      * Serialization id.
      */
-    private static final long serialVersionUID = -4559302769655606393L;
+    private static final long serialVersionUID = -5683014205045647860L;
 
     /**
      * Instance of the {@link SecurityToken} for this request.
@@ -37,31 +36,46 @@ public class GetConsumerInfoRequest implements Serializable
     private SecurityToken securityToken;
 
     /**
+     * Instance of the {@link ConsumerInfo} for this request.
+     */
+    private ConsumerInfo consumerInfo;
+
+    /**
      * Instance of the service name for this request.
      */
     private String serviceName;
 
     /**
-     * Instance of the {@link OAuthServiceProvider} for this request.
+     * Instance of the token name for this request.
      */
-    private OAuthServiceProvider provider;
+    private String tokenName;
+
+    /**
+     * Empty constructor for serialization.
+     */
+    protected OAuthConsumerTokenRequest()
+    {
+    }
 
     /**
      * Constructor.
      * 
      * @param inSecurityToken
      *            security token for this request.
+     * @param inConsumerInfo
+     *            consumer info for this request.
      * @param inServiceName
      *            service name for this request.
-     * @param inProvider
-     *            provider for this request.
+     * @param inTokenName
+     *            token name for this request.
      */
-    public GetConsumerInfoRequest(final SecurityToken inSecurityToken, final String inServiceName,
-            final OAuthServiceProvider inProvider)
+    protected OAuthConsumerTokenRequest(final SecurityToken inSecurityToken, final ConsumerInfo inConsumerInfo,
+            final String inServiceName, final String inTokenName)
     {
         setSecurityToken(inSecurityToken);
+        setConsumerInfo(inConsumerInfo);
         setServiceName(inServiceName);
-        setProvider(inProvider);
+        setTokenName(inTokenName);
     }
 
     /**
@@ -82,6 +96,23 @@ public class GetConsumerInfoRequest implements Serializable
     }
 
     /**
+     * @param inConsumerInfo
+     *            the consumerInfo to set
+     */
+    public void setConsumerInfo(final ConsumerInfo inConsumerInfo)
+    {
+        consumerInfo = inConsumerInfo;
+    }
+
+    /**
+     * @return the consumerInfo
+     */
+    public ConsumerInfo getConsumerInfo()
+    {
+        return consumerInfo;
+    }
+
+    /**
      * @param inServiceName
      *            the serviceName to set
      */
@@ -99,19 +130,19 @@ public class GetConsumerInfoRequest implements Serializable
     }
 
     /**
-     * @param inProvider
-     *            the provider to set
+     * @param inTokenName
+     *            the tokenName to set
      */
-    public void setProvider(final OAuthServiceProvider inProvider)
+    public void setTokenName(final String inTokenName)
     {
-        provider = inProvider;
+        tokenName = inTokenName;
     }
 
     /**
-     * @return the provider
+     * @return the tokenName
      */
-    public OAuthServiceProvider getProvider()
+    public String getTokenName()
     {
-        return provider;
+        return tokenName;
     }
 }

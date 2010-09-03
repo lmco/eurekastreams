@@ -23,7 +23,8 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.action.request.opensocial.GetConsumerInfoRequest;
 import org.eurekastreams.server.action.response.opensocial.ConsumerInfoResponse;
 import org.eurekastreams.server.domain.OAuthConsumer;
-import org.eurekastreams.server.persistence.OAuthConsumerMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.opensocial.OAuthConsumerRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -35,6 +36,7 @@ import org.junit.Test;
 /**
  * Test suite for {@link GetConsumerInfoExecution}.
  */
+@SuppressWarnings("unchecked")
 public class GetConsumerInfoExecutionTest
 {
     /**
@@ -55,7 +57,7 @@ public class GetConsumerInfoExecutionTest
     /**
      * Instance of OAuth consumer mapper injected by spring.
      */
-    private final OAuthConsumerMapper consumerMapper = context.mock(OAuthConsumerMapper.class);
+    private final DomainMapper<OAuthConsumerRequest, OAuthConsumer> consumerMapper = context.mock(DomainMapper.class);
 
     /**
      * Mocked instance of the action context.
@@ -99,8 +101,7 @@ public class GetConsumerInfoExecutionTest
                 oneOf(securityToken).getAppUrl();
                 will(returnValue("http://localhost:4040/some/path"));
 
-                oneOf(consumerMapper).findConsumerByServiceNameAndGadgetUrl(with(any(String.class)),
-                        with(any(String.class)));
+                oneOf(consumerMapper).execute(with(any(OAuthConsumerRequest.class)));
                 will(returnValue(new OAuthConsumer("", "", "", "", "")));
             }
         });
@@ -127,8 +128,7 @@ public class GetConsumerInfoExecutionTest
                 oneOf(securityToken).getAppUrl();
                 will(returnValue("http://localhost:4040/some/path"));
 
-                oneOf(consumerMapper).findConsumerByServiceNameAndGadgetUrl(with(any(String.class)),
-                        with(any(String.class)));
+                oneOf(consumerMapper).execute(with(any(OAuthConsumerRequest.class)));
                 will(returnValue(null));
             }
         });

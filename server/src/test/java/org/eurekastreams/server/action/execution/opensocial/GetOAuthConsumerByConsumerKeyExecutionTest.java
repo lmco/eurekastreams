@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.domain.OAuthConsumer;
-import org.eurekastreams.server.persistence.OAuthConsumerMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -31,6 +31,7 @@ import org.junit.Test;
  * Test suite for the {@link GetOAuthConsumerByConsumerKeyExecution} class.
  * 
  */
+@SuppressWarnings("unchecked")
 public class GetOAuthConsumerByConsumerKeyExecutionTest
 {
     /**
@@ -49,9 +50,9 @@ public class GetOAuthConsumerByConsumerKeyExecutionTest
     };
 
     /**
-     * Mocked instance of OAuthCOnsumerMapper.
+     * Mocked instance of DomainMapper.
      */
-    private OAuthConsumerMapper consumerMapper = context.mock(OAuthConsumerMapper.class);
+    private DomainMapper<String, OAuthConsumer> consumerMapper = context.mock(DomainMapper.class);
 
     /**
      * Mocked instance of the action context.
@@ -103,11 +104,11 @@ public class GetOAuthConsumerByConsumerKeyExecutionTest
                 oneOf(actionContext).getParams();
                 will(returnValue(TEST_CONSUMER_KEY));
 
-                oneOf(consumerMapper).findConsumerByConsumerKey(TEST_CONSUMER_KEY);
+                oneOf(consumerMapper).execute(TEST_CONSUMER_KEY);
                 will(returnValue(consumer));
             }
         });
-        
+
         net.oauth.OAuthConsumer results = (net.oauth.OAuthConsumer) sut.execute(actionContext);
         assertEquals(results.consumerKey, TEST_CONSUMER_KEY);
         assertEquals(results.consumerSecret, "secret");

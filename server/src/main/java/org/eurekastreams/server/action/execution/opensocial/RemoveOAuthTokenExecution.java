@@ -20,7 +20,7 @@ import java.io.Serializable;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
-import org.eurekastreams.server.persistence.OAuthEntryMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * Execution Strategy to Remove an OAuth Token by the string token.
@@ -29,19 +29,19 @@ import org.eurekastreams.server.persistence.OAuthEntryMapper;
 public class RemoveOAuthTokenExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
-     * Instance of OAuth entry mapper injected by spring.
+     * Instance of domain mapper injected by spring that will delete an entry.
      */
-    private final OAuthEntryMapper entryMapper;
+    private final DomainMapper<String, Boolean> deleteMapper;
 
     /**
      * Constructor.
      * 
-     * @param inEntryMapper
-     *            - instance of the {@link OAuthEntryMapper} class.
+     * @param inDomainMapper
+     *            - instance of the {@link DomainMapper} class.
      */
-    public RemoveOAuthTokenExecution(final OAuthEntryMapper inEntryMapper)
+    public RemoveOAuthTokenExecution(final DomainMapper<String, Boolean> inDomainMapper)
     {
-        entryMapper = inEntryMapper;
+        deleteMapper = inDomainMapper;
     }
 
     /**
@@ -51,7 +51,7 @@ public class RemoveOAuthTokenExecution implements ExecutionStrategy<PrincipalAct
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
         String token = (String) inActionContext.getParams();
-        entryMapper.delete(token);
+        deleteMapper.execute(token);
         return null;
     }
 

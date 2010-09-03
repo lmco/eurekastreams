@@ -23,38 +23,38 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.action.request.opensocial.RemoveConsumerTokenRequest;
 import org.eurekastreams.server.domain.OAuthConsumer;
-import org.eurekastreams.server.persistence.OAuthConsumerMapper;
-import org.eurekastreams.server.persistence.OAuthTokenMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.opensocial.OAuthConsumerRequest;
+import org.eurekastreams.server.persistence.mappers.requests.opensocial.OAuthTokenRequest;
 
 /**
  * Execution Strategy to Remove an OAuth consumer Token during proxied requests to oauth providers.
- * 
  */
 public class RemoveConsumerTokenExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
-     * Instance of OAuth consumer mapper injected by spring.
+     * Instance of OAuth domain mapper injected by spring.
      */
-    private final OAuthConsumerMapper consumerMapper;
+    private final DomainMapper<OAuthConsumerRequest, OAuthConsumer> consumerMapper;
 
     /**
      * Instance of OAuth token mapper injected by spring.
      */
-    private final OAuthTokenMapper tokenMapper;
+    private final DomainMapper<OAuthTokenRequest, Boolean> tokenDeleteMapper;
 
     /**
      * Constructor.
      * 
      * @param inConsumerMapper
-     *            instance of the {@link OAuthConsumerMapper} class.
-     * @param inTokenMapper
-     *            instance of the {@link OAuthTokenMapper} class.
+     *            instance of the {@link DomainMapper} class.
+     * @param inTokenDeleteMapper
+     *            instance of the {@link DomainMapper} class.
      */
-    public RemoveConsumerTokenExecution(final OAuthConsumerMapper inConsumerMapper,
-            final OAuthTokenMapper inTokenMapper)
+    public RemoveConsumerTokenExecution(final DomainMapper<OAuthConsumerRequest, OAuthConsumer> inConsumerMapper, // \n
+            final DomainMapper<OAuthTokenRequest, Boolean> inTokenDeleteMapper)
     {
         consumerMapper = inConsumerMapper;
-        tokenMapper = inTokenMapper;
+        tokenDeleteMapper = inTokenDeleteMapper;
     }
 
     /**
@@ -64,25 +64,16 @@ public class RemoveConsumerTokenExecution implements ExecutionStrategy<Principal
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
         RemoveConsumerTokenRequest request = (RemoveConsumerTokenRequest) inActionContext.getParams();
-        boolean isNullConsumer = true;
 
-        try
+        SecurityToken securityToken = request.getSecurityToken();
+        OAuthConsumer consumer = consumerMapper.execute(new OAuthConsumerRequest(request.getServiceName(),
+                securityToken.getAppUrl()));
+        if (consumer != null)
         {
-            SecurityToken securityToken = request.getSecurityToken();
-            OAuthConsumer consumer = consumerMapper.findConsumerByServiceNameAndGadgetUrl(request.getServiceName(),
-                    securityToken.getAppUrl());
-            if (consumer != null)
-            {
-                isNullConsumer = false;
-                tokenMapper.delete(consumer, securityToken.getViewerId(), securityToken.getOwnerId());
-            }
+            tokenDeleteMapper.execute(new OAuthTokenRequest(consumer, securityToken.getViewerId(), securityToken
+                    .getOwnerId()));
         }
-        catch (Exception ex)
-        {
-            throw new ExecutionException("An error occurred removing the consumer token.");
-        }
-
-        if (isNullConsumer)
+        else
         {
             throw new ExecutionException("OAuth Consumer was not found.");
         }

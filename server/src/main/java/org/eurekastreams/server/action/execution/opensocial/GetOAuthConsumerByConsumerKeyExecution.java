@@ -17,13 +17,13 @@ package org.eurekastreams.server.action.execution.opensocial;
 
 import java.io.Serializable;
 
-import net.oauth.OAuthConsumer;
 import net.oauth.OAuthServiceProvider;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
-import org.eurekastreams.server.persistence.OAuthConsumerMapper;
+import org.eurekastreams.server.domain.OAuthConsumer;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * Retrieve the {@link OAuthConsumer} based on the Consumer Key provided.
@@ -32,9 +32,9 @@ import org.eurekastreams.server.persistence.OAuthConsumerMapper;
 public class GetOAuthConsumerByConsumerKeyExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
-     * Instance of the {@link OAuthConsumerMapper}.
+     * Instance of the {@link DomainMapper}.
      */
-    private final OAuthConsumerMapper mapper;
+    private final DomainMapper<String, OAuthConsumer> mapper;
 
     /**
      * The local service provider.
@@ -45,7 +45,7 @@ public class GetOAuthConsumerByConsumerKeyExecution implements ExecutionStrategy
      * Constructor.
      * 
      * @param inMapper
-     *            instance of the {@link OAuthConsumerMapper} for this class.
+     *            instance of the {@link DomainMapper} for this class.
      * @param inRequestTokenUrl
      *            - Url for retrieving the request token
      * @param inAuthorizeUrl
@@ -53,8 +53,8 @@ public class GetOAuthConsumerByConsumerKeyExecution implements ExecutionStrategy
      * @param inAccessTokenUrl
      *            - Url for retrieving the access token.
      */
-    public GetOAuthConsumerByConsumerKeyExecution(final OAuthConsumerMapper inMapper, final String inRequestTokenUrl,
-            final String inAuthorizeUrl, final String inAccessTokenUrl)
+    public GetOAuthConsumerByConsumerKeyExecution(final DomainMapper<String, OAuthConsumer> inMapper,
+            final String inRequestTokenUrl, final String inAuthorizeUrl, final String inAccessTokenUrl)
     {
         mapper = inMapper;
         serviceProvider = new OAuthServiceProvider(inRequestTokenUrl, inAuthorizeUrl, inAccessTokenUrl);
@@ -67,9 +67,9 @@ public class GetOAuthConsumerByConsumerKeyExecution implements ExecutionStrategy
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
         String consumerKey = (String) inActionContext.getParams();
-        org.eurekastreams.server.domain.OAuthConsumer mappedConsumer = mapper.findConsumerByConsumerKey(consumerKey);
-        OAuthConsumer consumer = new OAuthConsumer(mappedConsumer.getCallbackURL(), consumerKey, mappedConsumer
-                .getConsumerSecret(), serviceProvider);
+        org.eurekastreams.server.domain.OAuthConsumer mappedConsumer = mapper.execute(consumerKey);
+        net.oauth.OAuthConsumer consumer = new net.oauth.OAuthConsumer(mappedConsumer.getCallbackURL(), consumerKey,
+                mappedConsumer.getConsumerSecret(), serviceProvider);
         return consumer;
     }
 }

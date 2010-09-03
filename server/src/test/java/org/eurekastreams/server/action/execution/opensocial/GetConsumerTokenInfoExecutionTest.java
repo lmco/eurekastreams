@@ -23,8 +23,9 @@ import org.eurekastreams.server.action.request.opensocial.GetConsumerTokenInfoRe
 import org.eurekastreams.server.action.response.opensocial.TokenInfoResponse;
 import org.eurekastreams.server.domain.OAuthConsumer;
 import org.eurekastreams.server.domain.OAuthToken;
-import org.eurekastreams.server.persistence.OAuthConsumerMapper;
-import org.eurekastreams.server.persistence.OAuthTokenMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.opensocial.OAuthConsumerRequest;
+import org.eurekastreams.server.persistence.mappers.requests.opensocial.OAuthTokenRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -36,6 +37,7 @@ import org.junit.Test;
 /**
  * Test suite for {@link GetConsumerTokenInfoExecution}.
  */
+@SuppressWarnings("unchecked")
 public class GetConsumerTokenInfoExecutionTest
 {
     /**
@@ -56,12 +58,14 @@ public class GetConsumerTokenInfoExecutionTest
     /**
      * Instance of OAuth consumer mapper injected by spring.
      */
-    private final OAuthConsumerMapper consumerMapper = context.mock(OAuthConsumerMapper.class);
+    private final DomainMapper<OAuthConsumerRequest, OAuthConsumer> consumerMapper = context.mock(DomainMapper.class,
+            "consumerMapper");
 
     /**
      * Instance of OAuth token mapper injected by spring.
      */
-    private final OAuthTokenMapper tokenMapper = context.mock(OAuthTokenMapper.class);
+    private final DomainMapper<OAuthTokenRequest, OAuthToken> tokenMapper = context.mock(DomainMapper.class,
+            "tokenMapper");
 
     /**
      * Mocked instance of the action context.
@@ -112,12 +116,10 @@ public class GetConsumerTokenInfoExecutionTest
                 oneOf(securityToken).getOwnerId();
                 will(returnValue("456"));
 
-                oneOf(consumerMapper).findConsumerByServiceNameAndGadgetUrl(with(any(String.class)),
-                        with(any(String.class)));
+                oneOf(consumerMapper).execute(with(any(OAuthConsumerRequest.class)));
                 will(returnValue(new OAuthConsumer("", "", "", "", "")));
 
-                oneOf(tokenMapper).findToken(with(any(OAuthConsumer.class)), with(any(String.class)),
-                        with(any(String.class)));
+                oneOf(tokenMapper).execute(with(any(OAuthTokenRequest.class)));
                 will(returnValue(null));
             }
         });
@@ -156,12 +158,10 @@ public class GetConsumerTokenInfoExecutionTest
                 oneOf(securityToken).getOwnerId();
                 will(returnValue("456"));
 
-                oneOf(consumerMapper).findConsumerByServiceNameAndGadgetUrl(with(any(String.class)),
-                        with(any(String.class)));
+                oneOf(consumerMapper).execute(with(any(OAuthConsumerRequest.class)));
                 will(returnValue(new OAuthConsumer("", "", "", "", "")));
 
-                oneOf(tokenMapper).findToken(with(any(OAuthConsumer.class)), with(any(String.class)),
-                        with(any(String.class)));
+                oneOf(tokenMapper).execute(with(any(OAuthTokenRequest.class)));
                 will(returnValue(token));
             }
         });
@@ -191,8 +191,7 @@ public class GetConsumerTokenInfoExecutionTest
                 oneOf(securityToken).getAppUrl();
                 will(returnValue("http://localhost:4040/some/path"));
 
-                oneOf(consumerMapper).findConsumerByServiceNameAndGadgetUrl(with(any(String.class)),
-                        with(any(String.class)));
+                oneOf(consumerMapper).execute(with(any(OAuthConsumerRequest.class)));
                 will(returnValue(null));
             }
         });
