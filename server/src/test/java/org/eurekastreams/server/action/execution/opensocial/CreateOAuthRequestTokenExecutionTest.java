@@ -138,4 +138,40 @@ public class CreateOAuthRequestTokenExecutionTest
         
         context.assertIsSatisfied();
     }
+
+    /**
+     * Test successful token creation with null callback.
+     */
+    @Test
+    public void testSuccessfulTokenCreationWithNullCallback()
+    {
+        final CreateOAuthRequestTokenRequest request = new CreateOAuthRequestTokenRequest(TEST_CONSUMER_KEY,
+                TEST_OAUTH_VERSION, null);
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(actionContext).getParams();
+                will(returnValue(request));
+
+                oneOf(oauthConversionStrat).convertToEntryDTO(with(any(OAuthEntry.class)));
+
+                oneOf(insertMapper).execute(with(any(PersistenceRequest.class)));
+            }
+        });
+
+        OAuthEntry results = sut.execute(actionContext);
+        assertNotNull(results);
+        assertEquals(results.callbackUrl, null);
+        assertEquals(results.consumerKey, TEST_CONSUMER_KEY);
+        assertEquals(results.oauthVersion, TEST_OAUTH_VERSION);
+        assertEquals(results.type, OAuthEntry.Type.REQUEST);
+        assertNotNull(results.token);
+        assertNotNull(results.tokenSecret);
+        assertEquals(results.container, TEST_OAUTH_CONTAINER);
+        assertEquals(results.domain, TEST_OAUTH_DOMAIN);
+        assertEquals(results.callbackUrl, null);
+        assertEquals(results.callbackUrlSigned, false);
+
+        context.assertIsSatisfied();
+    }
 }

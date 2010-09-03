@@ -16,6 +16,7 @@
 package org.eurekastreams.server.action.execution.opensocial;
 
 import static org.junit.Assert.assertNotNull;
+import junit.framework.Assert;
 
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
@@ -33,7 +34,7 @@ import org.junit.Test;
  * 
  */
 @SuppressWarnings("unchecked")
-public class GetOAuthEntryByTokenTest
+public class GetOAuthEntryByTokenExecutionTest
 {
     /**
      * System under test.
@@ -99,4 +100,29 @@ public class GetOAuthEntryByTokenTest
 
         context.assertIsSatisfied();
     }
+
+    /**
+     * Test retrieving a null OAuthToken.
+     */
+    @Test
+    public void testRetrievingNullOauthToken()
+    {
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(actionContext).getParams();
+                will(returnValue("token"));
+
+                oneOf(entryMapper).execute("token");
+                will(returnValue(null));
+            }
+        });
+
+        OAuthEntry results = (OAuthEntry) sut.execute(actionContext);
+
+        Assert.assertNull(results);
+
+        context.assertIsSatisfied();
+    }
+
 }
