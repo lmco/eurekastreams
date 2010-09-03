@@ -326,10 +326,9 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
             timestampActions.add(new HTML("via <a href='" + msg.getAppSource() + "'>" + msg.getAppName() + "</a>"));
         }
 
-        LikeCountWidget likeCount = null;
         if (verbRenderer.getAllowLike())
         {
-            likeCount = new LikeCountWidget(msg.getEntityId(), msg.getLikeCount(), msg.getLikers());
+            LikeCountWidget likeCount = new LikeCountWidget(msg.getEntityId(), msg.getLikeCount(), msg.getLikers());
             timestampActions.add(likeCount);
         }
         timestampActions.add(buildActions(msg, mainPanel, commentsPanel, verbRenderer));
@@ -594,7 +593,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
                     {
                         if (ev.getResponse() == msg.getId())
                         {
-                            effects.fadeOut(mainPanel.getElement());
+                            effects.fadeOut(mainPanel.getElement(), true);
                             Session.getInstance().getEventBus().removeObserver(ev, this);
                         }
                     }

@@ -48,7 +48,7 @@ public class DecoratedPartialResponseDomainMapper<Request, Response> implements 
     /**
      * results combiner.
      */
-    private ResultsCombinerStrategy<Response> resultsCombiner;
+    private ResultsCombinerStrategy<Request, Response> resultsCombiner;
 
     /**
      * refresher.
@@ -71,7 +71,7 @@ public class DecoratedPartialResponseDomainMapper<Request, Response> implements 
     public DecoratedPartialResponseDomainMapper(
             final DomainMapper<Request, PartialMapperResponse<Request, Response>> inPartialMapper,
             final DomainMapper<Request, Response> inDecoratedMapper,
-            final ResultsCombinerStrategy<Response> inResultsCombiner,
+            final ResultsCombinerStrategy<Request, Response> inResultsCombiner,
             final RefreshStrategy<Request, Response> inRefreshStrategy)
     {
         partialMapper = inPartialMapper;
@@ -150,7 +150,7 @@ public class DecoratedPartialResponseDomainMapper<Request, Response> implements 
         // we don't have anywhere else to go - consider it a null response from decorated mapper - let the combiner
         // decide what to do
         log.info("Combining partial response mapper and decorated mapper responses.");
-        return resultsCombiner.combine(partialResponse.getResponse(), decoratedResponse);
+        return resultsCombiner.combine(partialResponse, decoratedResponse, request);
 
     }
 

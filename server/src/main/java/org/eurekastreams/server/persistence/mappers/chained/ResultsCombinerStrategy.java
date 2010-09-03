@@ -17,20 +17,25 @@ package org.eurekastreams.server.persistence.mappers.chained;
 
 /**
  * Strategy interface for combining two mapper results.
- *
+ * 
+ * @param <Request>
+ *            the request type.
  * @param <Response>
  *            The type of responses to combine
  */
-public interface ResultsCombinerStrategy<Response>
+public interface ResultsCombinerStrategy<Request, Response>
 {
     /**
      * Combine two responses.
-     *
+     * 
      * @param response1
      *            response to combine
      * @param response2
      *            response to combine
+     * @param request
+     *            the original request.
      * @return a combined response
      */
-    Response combine(final Response response1, final Response response2);
+    Response combine(final PartialMapperResponse<Request, Response> response1,
+            final Response response2, Request request);
 }

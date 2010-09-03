@@ -20,28 +20,46 @@ import java.util.List;
 
 /**
  * Combines two collections.
- *
+ * 
+ * @param <Request>
+ *            the request type.
  * @param <Type>
  *            the type of list objects to combine
  */
-public class CollectionCombiner<Type> implements ResultsCombinerStrategy<List<Type>>
+public class CollectionCombiner<Request, Type> implements ResultsCombinerStrategy<List<Request>, List<Type>>
 {
     /**
      * Combine two lists.
-     *
-     * @param collection1
-     *            the first collection.
-     * @param collection2
+     * 
+     * @param partialResponse
+     *            the partial response.
+     * @param response2
      *            the second collection.
+     * @param request
+     *            the original request.
      * @return the combined collection.
      */
-    @Override
-    public List combine(final List<Type> collection1, final List<Type> collection2)
+    public List<Type> combine(final PartialMapperResponse<List<Request>, List<Type>> partialResponse,
+            final List<Type> response2, final List<Request> request)
     {
-        List allItems = new ArrayList<Type>();
+        List<Type> allItems = new ArrayList<Type>();
 
-        allItems.addAll(collection1);
-        allItems.addAll(collection2);
+        int partialIndex = 0;
+        int remainingIndex = 0;
+
+        for (Request req : request)
+        {
+            if (partialResponse.getUnhandledRequest().contains(req))
+            {
+                allItems.add(response2.get(remainingIndex));
+                remainingIndex++;
+            }
+            else
+            {
+                allItems.add(partialResponse.getResponse().get(partialIndex));
+                partialIndex++;
+            }
+        }
 
         return allItems;
     }

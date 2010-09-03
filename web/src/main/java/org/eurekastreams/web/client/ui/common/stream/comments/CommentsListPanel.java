@@ -174,7 +174,7 @@ public class CommentsListPanel extends FlowPanel
                     }
                     thisBuffered.insert(commentPanel, index);
 
-                    effects.fadeIn(commentPanel.getElement());
+                    effects.fadeIn(commentPanel.getElement(), true);
                     commentCount++;
                     if (showAllComments != null)
                     {

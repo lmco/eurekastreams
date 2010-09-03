@@ -75,6 +75,9 @@ public class ListColliderAdapterTest
         final List<Long> listA = new ArrayList<Long>();
         final List<Long> listB = new ArrayList<Long>();
 
+        final PartialMapperResponse<Object, List<Long>> response = new PartialMapperResponse<Object, List<Long>>(listA,
+                null);
+
         context.checking(new Expectations()
         {
             {
@@ -82,7 +85,7 @@ public class ListColliderAdapterTest
             }
         });
 
-        sut.combine(listA, listB);
+        sut.combine(response, listB, null);
 
         context.assertIsSatisfied();
     }

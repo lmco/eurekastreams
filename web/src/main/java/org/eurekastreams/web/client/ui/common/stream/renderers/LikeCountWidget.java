@@ -24,11 +24,19 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.jsni.EffectsFacade;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.TimerFactory;
+import org.eurekastreams.web.client.ui.TimerHandler;
 
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -39,12 +47,22 @@ public class LikeCountWidget extends Composite
     /**
      * Main widget.
      */
-    private FlowPanel widget = new FlowPanel();
+    private FocusPanel widget = new FocusPanel();
 
     /**
      * Shows users who have liked this.
      */
-    private FlowPanel usersWhoLikedPanel = new FlowPanel();
+    private static FlowPanel usersWhoLikedPanel = new FlowPanel();
+
+    /**
+     * Shows users who have liked this.
+     */
+    private static FlowPanel usersWhoLikedPanelWrapper;
+
+    /**
+     * Added to root panel.
+     */
+    private static boolean hasUsersWhoLikedBeenAddedToRoot = false;
 
     /**
      * Like count.
@@ -59,17 +77,17 @@ public class LikeCountWidget extends Composite
     /**
      * Avatar renderer.
      */
-    private AvatarRenderer avatarRenderer = new AvatarRenderer();
+    private static AvatarRenderer avatarRenderer = new AvatarRenderer();
 
     /**
      * Liked label.
      */
-    private Label likedLabel = new Label();
+    private static Label likedLabel = new Label();
 
     /**
      * Avatar panel.
      */
-    final FlowPanel avatarPanel = new FlowPanel();
+    private static FlowPanel avatarPanel = new FlowPanel();
 
     /**
      * Likers.
@@ -77,29 +95,62 @@ public class LikeCountWidget extends Composite
     private List<PersonModelView> likers;
 
     /**
-     * Constructor.
-     * 
-     * @param activityId
-     *            activity id.
-     * @param inLikeCount
-     *            like count.
-     * @param inLikers
-     *            who has liked this activity.
+     * Link for the like count link.
      */
-    public LikeCountWidget(final Long activityId, final Integer inLikeCount, final List<PersonModelView> inLikers)
+    private static Anchor innerLikeCountLink = new Anchor();
+
+    /**
+     * Setup the floating avatar panel.
+     */
+    private static void setup()
     {
-        likers = inLikers;
-        widget.addStyleName("like-count-widget");
-        likeCount = inLikeCount;
-        initWidget(widget);
 
-        final FlowPanel likeCountPanel = new FlowPanel();
-        likeCountPanel.addStyleName("like-count");
+        // Reimplementing Focus panel, GWT seems to break otherwise.
+        usersWhoLikedPanelWrapper = new FlowPanel()
+        {
+            private  final TimerFactory timerFactory = new TimerFactory();
+            private boolean actuallyOut = false;
+            private static final int TIMER_EXPIRATION = 500;
 
-        likeCountPanel.add(likeCountLink);
+            public void onBrowserEvent(final Event event)
+            {
+                super.onBrowserEvent(event);
 
-        widget.add(likeCountPanel);
+                if (DOM.eventGetType(event) == Event.ONMOUSEOUT)
+                {
+                    actuallyOut = true;
 
+                    timerFactory.runTimer(TIMER_EXPIRATION, new TimerHandler()
+                    {
+                        public void run()
+                        {
+                            if (actuallyOut)
+                            {
+                                EffectsFacade.nativeFadeOut(usersWhoLikedPanelWrapper.getElement(), false);
+                            }
+
+                        }
+                    });
+                }
+                else
+                {
+                    actuallyOut = false;
+                }
+            }
+
+        };
+
+        usersWhoLikedPanelWrapper.setVisible(false);
+        usersWhoLikedPanelWrapper.addStyleName("users-who-liked-activity-wrapper like-count-widget");
+        RootPanel.get().add(usersWhoLikedPanelWrapper);
+
+        final FlowPanel innerLikeCountPanel = new FlowPanel();
+        innerLikeCountPanel.addStyleName("like-count");
+        innerLikeCountPanel.add(innerLikeCountLink);
+
+        usersWhoLikedPanelWrapper.add(innerLikeCountPanel);
+
+        usersWhoLikedPanelWrapper.add(usersWhoLikedPanel);
         usersWhoLikedPanel.addStyleName("users-who-liked-activity");
 
         FlowPanel userLikedHeader = new FlowPanel();
@@ -117,7 +168,66 @@ public class LikeCountWidget extends Composite
         userLikedBody.add(likedLabel);
         userLikedBody.add(avatarPanel);
 
-        widget.add(usersWhoLikedPanel);
+        usersWhoLikedPanelWrapper.sinkEvents(Event.ONMOUSEOUT | Event.ONMOUSEOVER);
+
+        hasUsersWhoLikedBeenAddedToRoot = true;
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param activityId
+     *            activity id.
+     * @param inLikeCount
+     *            like count.
+     * @param inLikers
+     *            who has liked this activity.
+     */
+    public LikeCountWidget(final Long activityId, final Integer inLikeCount, final List<PersonModelView> inLikers)
+    {
+        initWidget(widget);
+
+        if (!hasUsersWhoLikedBeenAddedToRoot)
+        {
+            setup();
+        }
+
+        widget.addMouseOverHandler(new MouseOverHandler()
+        {
+            public void onMouseOver(final MouseOverEvent arg0)
+            {
+                avatarPanel.clear();
+                DOM.setStyleAttribute(usersWhoLikedPanelWrapper.getElement(), "top", likeCountLink.getAbsoluteTop()
+                        + "px");
+                DOM.setStyleAttribute(usersWhoLikedPanelWrapper.getElement(), "left", likeCountLink.getAbsoluteLeft()
+                        + "px");
+
+                for (PersonModelView liker : likers)
+                {
+                    Widget avatar = avatarRenderer.render(liker.getId(), liker.getAvatarId());
+                    avatar.addStyleName("avatar-image-VerySmall");
+
+                    avatar.setTitle(liker.getDisplayName());
+
+                    avatarPanel.add(avatar);
+                }
+
+                likedLabel.setText(likeCount + " people liked this");
+                innerLikeCountLink.setText(likeCount.toString());
+
+                EffectsFacade.nativeFadeIn(usersWhoLikedPanelWrapper.getElement(), false);
+            }
+        });
+
+        likers = inLikers;
+        widget.addStyleName("like-count-widget");
+        likeCount = inLikeCount;
+
+        final FlowPanel likeCountPanel = new FlowPanel();
+        likeCountPanel.addStyleName("like-count");
+        likeCountPanel.add(likeCountLink);
+
+        widget.add(likeCountPanel);
 
         EventBus.getInstance().addObserver(ActivityLikedChangeEvent.class, new Observer<ActivityLikedChangeEvent>()
         {
@@ -141,8 +251,6 @@ public class LikeCountWidget extends Composite
      */
     private void updatePanel(final LikeActionType likeActionType)
     {
-        avatarPanel.clear();
-
         if (null != likeActionType)
         {
             if (likeActionType == LikeActionType.ADD_LIKE)
@@ -158,7 +266,7 @@ public class LikeCountWidget extends Composite
 
                 if (!widget.isVisible())
                 {
-                    EffectsFacade.nativeFadeIn(widget.getElement());
+                    EffectsFacade.nativeFadeIn(widget.getElement(), true);
                 }
             }
             else
@@ -176,18 +284,7 @@ public class LikeCountWidget extends Composite
             }
         }
 
-        for (PersonModelView liker : likers)
-        {
-            Widget avatar = avatarRenderer.render(liker.getId(), liker.getAvatarId());
-            avatar.addStyleName("avatar-image-VerySmall");
-
-            avatar.setTitle(liker.getDisplayName());
-
-            avatarPanel.add(avatar);
-        }
-
         likeCountLink.setText(likeCount.toString());
-        likedLabel.setText(likeCount + " people liked this");
 
         widget.setVisible(likeCount > 0);
     }

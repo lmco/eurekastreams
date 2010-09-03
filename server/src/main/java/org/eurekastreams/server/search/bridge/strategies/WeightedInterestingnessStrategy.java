@@ -15,9 +15,12 @@
  */
 package org.eurekastreams.server.search.bridge.strategies;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.eurekastreams.server.domain.stream.Activity;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetCommentorIdsByActivityId;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrderedCommentIdsByActivityId;
 
@@ -55,6 +58,11 @@ public class WeightedInterestingnessStrategy implements ComputeInterestingnessOf
     private int timeWeight = 0;
 
     /**
+     * Weight of likes.
+     */
+    private int likeWeight = 0;
+
+    /**
      * DAO for finding comment ids.
      */
     private GetOrderedCommentIdsByActivityId commentIdsByActivityIdDAO;
@@ -62,7 +70,12 @@ public class WeightedInterestingnessStrategy implements ComputeInterestingnessOf
     /**
      * DAO for finding unique commentors.
      */
-    private static GetCommentorIdsByActivityId commentorIdsByActivityIdDao;
+    private GetCommentorIdsByActivityId commentorIdsByActivityIdDao;
+
+    /**
+     * DAO for finding likes.
+     */
+    private DomainMapper<Collection<Long>, Collection<Collection<Long>>> getPeopleWhoLikedMapper;
 
     /**
      * Constructor.
@@ -73,19 +86,27 @@ public class WeightedInterestingnessStrategy implements ComputeInterestingnessOf
      *            the DAO for finding unique commentors.
      * @param inCommentWeight
      *            weight of comments.
+     * @param inGetPeopleWhoLikedMapper
+     *            get people who liked the activity.
      * @param inUniqueUserCommentWeight
      *            weight of unique commentors.
+     * @param inLikeWeight
+     *            weight of likes.
      * @param inTimeWeight
      *            weight of time.
      */
     public WeightedInterestingnessStrategy(final GetOrderedCommentIdsByActivityId inCommentIdsByActivityIdDAO,
-            final GetCommentorIdsByActivityId inCommentorIdsByActivityIdDao, final int inCommentWeight,
-            final int inUniqueUserCommentWeight, final int inTimeWeight)
+            final GetCommentorIdsByActivityId inCommentorIdsByActivityIdDao,
+            final DomainMapper<Collection<Long>, Collection<Collection<Long>>> inGetPeopleWhoLikedMapper,
+            final int inCommentWeight, final int inUniqueUserCommentWeight, final int inLikeWeight,
+            final int inTimeWeight)
     {
         commentIdsByActivityIdDAO = inCommentIdsByActivityIdDAO;
         commentorIdsByActivityIdDao = inCommentorIdsByActivityIdDao;
+        getPeopleWhoLikedMapper = inGetPeopleWhoLikedMapper;
         commentWeight = inCommentWeight;
         uniqueUserCommentWeight = inUniqueUserCommentWeight;
+        likeWeight = inLikeWeight;
         timeWeight = inTimeWeight;
     }
 
@@ -114,6 +135,14 @@ public class WeightedInterestingnessStrategy implements ComputeInterestingnessOf
             interestingNess += commentorList.size() * uniqueUserCommentWeight;
         }
 
+        Collection<Collection<Long>> peopleWhoLikedActivity = getPeopleWhoLikedMapper.execute(Arrays.asList(activity
+                .getId()));
+
+        if (peopleWhoLikedActivity != null && peopleWhoLikedActivity.size() > 0)
+        {
+            interestingNess += peopleWhoLikedActivity.iterator().next().size() * likeWeight;
+        }
+
         // Add Time weight, if interesting.
         if (interestingNess > 0L)
         {
@@ -122,5 +151,4 @@ public class WeightedInterestingnessStrategy implements ComputeInterestingnessOf
 
         return interestingNess;
     }
-
 }

@@ -27,41 +27,57 @@ public class EffectsFacade
      * 
      * @param e
      *            the element to apply the effect to.
+     * @param applyToIE
+     *            if the effect should be applied in internet explorer.
      */
-    public void fadeIn(final Element e)
+    public void fadeIn(final Element e, final boolean applyToIE)
     {
-        EffectsFacade.nativeFadeIn(e);
+        EffectsFacade.nativeFadeIn(e, applyToIE);
     }
-    
+
     /**
      * Fade out an element.
      * 
      * @param e
      *            the element to apply the effect to.
+     * @param applyToIE
+     *            if the effect should be applied in internet explorer.
      */
-    public void fadeOut(final Element e)
+    public void fadeOut(final Element e, final boolean applyToIE)
     {
-        EffectsFacade.nativeFadeOut(e);
+        EffectsFacade.nativeFadeOut(e, applyToIE);
     }
-    
+
     /**
      * Native implementation of fade out effect.
      * 
      * @param e
      *            the element to apply the effect to.
+     * @param applyToIE
+     *            if the effect should be applied in internet explorer.
      */
-    public static native void nativeFadeOut(final Element e)/*-{
-    	$wnd.jQuery(e).fadeOut('slow');
-	}-*/;
+    public static native void nativeFadeOut(final Element e, final boolean applyToIE)/*-{
+        if ($wnd.jQuery.browser.msie && !applyToIE)
+            $wnd.jQuery(e).hide();
+        else {
+    	    $wnd.jQuery(e).fadeOut('slow')
+    	};
+    }-*/;
 
     /**
      * Native implementation of fade in effect.
      * 
      * @param e
      *            the element to apply the effect to.
+     * @param applyToIE
+     *            if the effect should be applied in internet explorer.
      */
-    public static native void nativeFadeIn(final Element e)/*-{
-                    $wnd.jQuery(e).hide();
-                    $wnd.jQuery(e).fadeIn('slow');
-                }-*/;
+    public static native void nativeFadeIn(final Element e, final boolean applyToIE)/*-{
+        if ($wnd.jQuery.browser.msie && !applyToIE)
+            $wnd.jQuery(e).show();
+        else {
+            $wnd.jQuery(e).hide();
+            $wnd.jQuery(e).fadeIn('slow');
+        }
+    }-*/;
 }

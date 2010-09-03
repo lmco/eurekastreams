@@ -53,7 +53,7 @@ public class DecoratedPartialResponseDomainMapperTest
     /**
      * results combiner.
      */
-    private ResultsCombinerStrategy<Object> resultsCombiner = context.mock(ResultsCombinerStrategy.class);
+    private ResultsCombinerStrategy<Object, Object> resultsCombiner = context.mock(ResultsCombinerStrategy.class);
 
     /**
      * refresher.
@@ -111,7 +111,7 @@ public class DecoratedPartialResponseDomainMapperTest
                 oneOf(partialMapper).execute(request);
                 will(returnValue(partialResponse));
 
-                oneOf(resultsCombiner).combine(response, null);
+                oneOf(resultsCombiner).combine(partialResponse, null, request);
                 will(returnValue(combinedResponse));
             }
         });
@@ -153,7 +153,7 @@ public class DecoratedPartialResponseDomainMapperTest
 
                 oneOf(refreshStrategy).refresh(newRequest, newResponse);
 
-                oneOf(resultsCombiner).combine(response, newResponse);
+                oneOf(resultsCombiner).combine(partialResponse, newResponse, request);
                 will(returnValue(combinedResponse));
             }
         });

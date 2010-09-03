@@ -1898,10 +1898,19 @@
 	<bean id="postActivityAsyncExecutionStrategy"
 		class="org.eurekastreams.server.action.execution.stream.PostActivityAsyncExecutionStrategy">
 		<constructor-arg ref="postCachedActivity" />
-		<constructor-arg ref="hashTagExtractor" />
-		<constructor-arg ref="activityContentExtractor" />
-		<constructor-arg ref="getHashTagsFromDatabaseMapper" />
 		<constructor-arg ref="findByIdMapper" />
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.action.execution.stream.StoreStreamHashTagsForActivityStrategyImpl">
+				<constructor-arg ref="hashTagExtractor" />
+		        <constructor-arg ref="activityContentExtractor" />
+		        <constructor-arg ref="getHashTagsFromDatabaseMapper" />
+		        <constructor-arg>
+					<bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
+				</constructor-arg>
+		        <constructor-arg ref="getRecursiveParentOrgIdsMapper" />
+				<constructor-arg ref="bulkOrganizationsMapper" />
+			</bean>
+		</constructor-arg>
 	</bean>
 
 	<bean id="postActivityAsyncAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
