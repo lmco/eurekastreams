@@ -16,7 +16,6 @@
 package org.eurekastreams.server.action.execution.stream;
 
 import java.io.Serializable;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
@@ -24,20 +23,17 @@ import org.eurekastreams.commons.actions.context.async.AsyncActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.stream.PostActivityRequest;
-import org.eurekastreams.server.domain.strategies.HashTagExtractor;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.domain.stream.HashTag;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
-import org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
-import org.eurekastreams.server.persistence.mappers.stream.ActivityContentExtractor;
 import org.eurekastreams.server.persistence.mappers.stream.PostCachedActivity;
 
 /**
  * This class provides the Async ExecutionStrategy for the PostActivity action.
  *
- * Add the activity to cache and compute its hashtags.
+ * Add the activity to cache, extract its hashtags, and store them in the database for each stream that will use them
+ * for their popular hashtags.
  *
  */
 public class PostActivityAsyncExecutionStrategy implements ExecutionStrategy<AsyncActionContext>
@@ -53,49 +49,32 @@ public class PostActivityAsyncExecutionStrategy implements ExecutionStrategy<Asy
     private final PostCachedActivity postCachedActivityMapper;
 
     /**
-     * Hashtag extractor.
-     */
-    private final HashTagExtractor hashTagExtractor;
-
-    /**
-     * Content extractor - pulls out content for hashtag parsing.
-     */
-    private final ActivityContentExtractor contentExtractor;
-
-    /**
-     * Mapper to store hash tags to an activity.
-     */
-    private final DecoratedPartialResponseDomainMapper<List<String>, List<HashTag>> hashTagMapper;
-
-    /**
      * Mapper to find an activity by id.
      */
     private final FindByIdMapper<Activity> findByIdMapper;
+
+    /**
+     * Strategy to store hashtags for streams based on an activity.
+     */
+    private final StoreStreamHashTagsForActivityStrategy storeStreamHashTagStrategy;
 
     /**
      * Constructor for the PostActivityAsyncExecutionStrategy class.
      *
      * @param inPostCachedActivityMapper
      *            - instance of the {@link PostCachedActivity} mapper that will perform the cache updates.
-     * @param inContentExtractor
-     *            the activity content extractor
-     * @param inHashTagExtractor
-     *            hash tag extractor
-     * @param inHashTagMapper
-     *            mapper to get hashtags from the database
      * @param inFindByIdMapper
      *            mapper to find an activity by id
+     * @param inStoreStreamHashTagStrategy
+     *            strategy to store activities to streams in the database
      */
     public PostActivityAsyncExecutionStrategy(final PostCachedActivity inPostCachedActivityMapper,
-            final HashTagExtractor inHashTagExtractor, final ActivityContentExtractor inContentExtractor,
-            final DecoratedPartialResponseDomainMapper<List<String>, List<HashTag>> inHashTagMapper,
-            final FindByIdMapper<Activity> inFindByIdMapper)
+            final FindByIdMapper<Activity> inFindByIdMapper,
+            final StoreStreamHashTagsForActivityStrategy inStoreStreamHashTagStrategy)
     {
         postCachedActivityMapper = inPostCachedActivityMapper;
-        hashTagExtractor = inHashTagExtractor;
-        contentExtractor = inContentExtractor;
-        hashTagMapper = inHashTagMapper;
         findByIdMapper = inFindByIdMapper;
+        storeStreamHashTagStrategy = inStoreStreamHashTagStrategy;
     }
 
     /**
@@ -110,42 +89,13 @@ public class PostActivityAsyncExecutionStrategy implements ExecutionStrategy<Asy
         postCachedActivityMapper.execute(currentActivity);
 
         Activity activity = findByIdMapper.execute(new FindByIdRequest("Activity", currentActivity.getId()));
-        if (activity == null)
+        if (activity != null)
         {
-            log.info("Activity #" + currentActivity.getId() + " was not found - no need to set its hashtags");
-            return null;
-        }
+            log.info("Activity #" + currentActivity.getId() + " was found - no need to set its hashtags");
+            storeStreamHashTagStrategy.execute(activity);
 
-        log.info("Finding hashtags from strings.");
-        List<String> hashTagStrings = getHashTags(currentActivity);
-        if (hashTagStrings.size() > 0)
-        {
-            if (log.isInfoEnabled())
-            {
-                log.info("Found hash tags: " + hashTagStrings.toString() + " - attaching them to activity #"
-                        + currentActivity.getId());
-            }
-
-            @SuppressWarnings("unused")
-            List<HashTag> hashTags = hashTagMapper.execute(hashTagStrings);
-            // TODO: create stream hashtag entries based on the hashtags
         }
         return null;
-    }
-
-    /**
-     * Get a set of all of the hashtags for a the input activity, based on its content.
-     *
-     * @param inActivity
-     *            the activity to look for hashtags for
-     * @return the collection of hashtags
-     */
-    private List<String> getHashTags(final ActivityDTO inActivity)
-    {
-        String content = contentExtractor.extractContent(inActivity.getBaseObjectType(), inActivity
-                .getBaseObjectProperties());
-
-        return hashTagExtractor.extractAll(content);
     }
 
 }

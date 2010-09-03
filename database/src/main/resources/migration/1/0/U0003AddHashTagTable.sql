@@ -1,5 +1,5 @@
 --
--- Set database version to 0.9.0039
+-- Set database version to 1.0.0003
 --
 
 insert into db_version (major, minor, patch, scriptname, description) values (1, 0, '0003', 'U0003AddHashTagTable.sql', 'Add hashtags table.');

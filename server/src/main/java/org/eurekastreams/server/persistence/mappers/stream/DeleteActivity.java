@@ -38,7 +38,7 @@ public class DeleteActivity extends BaseArgCachedDomainMapper<DeleteActivityRequ
     /**
      * Activity DAO.
      */
-    private DomainMapper<List<Long>, List<ActivityDTO>>  activityDAO;
+    private DomainMapper<List<Long>, List<ActivityDTO>> activityDAO;
 
     /**
      * CompositeStream Ids by user DAO.
@@ -76,7 +76,7 @@ public class DeleteActivity extends BaseArgCachedDomainMapper<DeleteActivityRequ
      * @param inCommentIdsByActivityIdDAO
      *            Comment ids by activity id DAO.
      */
-    public DeleteActivity(final DomainMapper<List<Long>, List<ActivityDTO>>  inActivityDAO, 
+    public DeleteActivity(final DomainMapper<List<Long>, List<ActivityDTO>> inActivityDAO,
             final UserCompositeStreamIdsMapper inUserCompositeStreamIdsDAO,
             final BulkCompositeStreamsMapper inUserCompositeStreamDAO,
             final GetPeopleByAccountIds inBulkPeopleByAccountIdMapper,
@@ -106,8 +106,8 @@ public class DeleteActivity extends BaseArgCachedDomainMapper<DeleteActivityRequ
         final Long activityId = inDeleteActivityRequest.getActivityId();
         final Long userId = inDeleteActivityRequest.getUserId();
         List<ActivityDTO> activities = activityDAO.execute(Arrays.asList(activityId));
-        
-        //activity already deleted, short circuit.
+
+        // activity already deleted, short circuit.
         if (activities.size() == 0)
         {
             return null;
@@ -125,6 +125,10 @@ public class DeleteActivity extends BaseArgCachedDomainMapper<DeleteActivityRequ
 
         // delete activity from currentUser's starred activity collections in DB.
         getEntityManager().createQuery("DELETE FROM StarredActivity where activityId = :activityId").setParameter(
+                "activityId", activityId).executeUpdate();
+
+        // delete any hashtags stored to streams on behalf of this activity
+        getEntityManager().createQuery("DELETE FROM StreamHashTag WHERE activity.id = :activityId").setParameter(
                 "activityId", activityId).executeUpdate();
 
         // delete activity from DB.
