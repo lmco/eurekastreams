@@ -2925,6 +2925,7 @@
 		on display
 	-->
 	<util:map id="notifierIdToDisplayMap" map-class="java.util.LinkedHashMap">
+		<entry key="APP_ALERT" value="In-App" />
 		<entry key="EMAIL" value="Email" />
 	</util:map>
 
