@@ -156,6 +156,7 @@ public class CSSBuilderDecorator extends PersonDecorator
 
         // Create the CSS file based on the XML and XSLT
         transformer.transform(new StreamSource(xmlFetcher.getInputStream(theme.getUrl())), cssResult);
+        cssResult.getOutputStream().close();
 
     }
 

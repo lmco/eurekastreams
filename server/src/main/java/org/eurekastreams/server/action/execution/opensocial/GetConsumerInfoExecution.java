@@ -26,7 +26,8 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.action.request.opensocial.GetConsumerInfoRequest;
 import org.eurekastreams.server.action.response.opensocial.ConsumerInfoResponse;
 import org.eurekastreams.server.domain.OAuthConsumer;
-import org.eurekastreams.server.persistence.OAuthConsumerMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.opensocial.OAuthConsumerRequest;
 
 /**
  * Execution Strategy to get OAuth consumer info during proxied requests to oauth providers.
@@ -34,17 +35,17 @@ import org.eurekastreams.server.persistence.OAuthConsumerMapper;
 public class GetConsumerInfoExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
-     * Instance of OAuth consumer mapper injected by spring.
+     * Instance of OAuth domain mapper injected by spring.
      */
-    private final OAuthConsumerMapper consumerMapper;
+    private final DomainMapper<OAuthConsumerRequest, OAuthConsumer> consumerMapper;
 
     /**
      * Constructor.
      * 
      * @param inConsumerMapper
-     *            instance of the {@link OAuthConsumerMapper} class.
+     *            instance of the {@link DomainMapper} class.
      */
-    public GetConsumerInfoExecution(final OAuthConsumerMapper inConsumerMapper)
+    public GetConsumerInfoExecution(final DomainMapper<OAuthConsumerRequest, OAuthConsumer> inConsumerMapper)
     {
         consumerMapper = inConsumerMapper;
     }
@@ -56,8 +57,8 @@ public class GetConsumerInfoExecution implements ExecutionStrategy<PrincipalActi
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
         GetConsumerInfoRequest request = (GetConsumerInfoRequest) inActionContext.getParams();
-        OAuthConsumer oauthConsumer = consumerMapper.findConsumerByServiceNameAndGadgetUrl(request.getServiceName(),
-                request.getSecurityToken().getAppUrl());
+        OAuthConsumer oauthConsumer = consumerMapper.execute(new OAuthConsumerRequest(request.getServiceName(), request
+                .getSecurityToken().getAppUrl()));
         if (oauthConsumer == null)
         {
             throw new ExecutionException("OAuth Consumer was not found");

@@ -4159,14 +4159,14 @@
 		<constructor-arg>
 			<bean
 				class="org.eurekastreams.server.action.execution.opensocial.OAuthAuthorizeExecution">
-				<constructor-arg ref="jpaOAuthEntryMapper" />
+				<constructor-arg ref="getOAuthEntry" />
 			</bean>
 		</constructor-arg>
 		<constructor-arg value="false" />
 	</bean>	
 
 	<bean id="oauthEntryConversionStrat" class="org.eurekastreams.server.action.execution.opensocial.OAuthEntryConversionStrategy">
-		<constructor-arg ref="jpaOAuthConsumerMapper" />
+		<constructor-arg ref="getOAuthConsumerByConsumerKeyMapper" />
 	</bean>
 	
 	<bean id="createOAuthRequestToken" class="org.eurekastreams.commons.actions.service.ServiceAction">
@@ -4177,7 +4177,9 @@
 				class="org.eurekastreams.server.action.execution.opensocial.CreateOAuthRequestTokenExecution">
 				<constructor-arg value="${eureka.oauth.domain}" />
 				<constructor-arg value="${eureka.oauth.container}" />
-				<constructor-arg ref="jpaOAuthEntryMapper" />
+				<constructor-arg>
+					<bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
+				</constructor-arg>
 				<constructor-arg ref="oauthEntryConversionStrat" />
 			</bean>
 		</constructor-arg>
@@ -4190,7 +4192,10 @@
 		<constructor-arg>
 			<bean
 				class="org.eurekastreams.server.action.execution.opensocial.UpdateRequestToAccessTokenExecution">
-				<constructor-arg ref="jpaOAuthEntryMapper" />
+				<constructor-arg ref="deleteOAuthEntry" />
+				<constructor-arg>
+					<bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
+				</constructor-arg>
 				<constructor-arg ref="oauthEntryConversionStrat" />
 			</bean>
 		</constructor-arg>
@@ -4203,7 +4208,7 @@
 		<constructor-arg>
 			<bean
 				class="org.eurekastreams.server.action.execution.opensocial.GetOAuthEntryByTokenExecution">
-				<constructor-arg ref="jpaOAuthEntryMapper" />
+				<constructor-arg ref="getOAuthEntry" />
 				<constructor-arg ref="oauthEntryConversionStrat" />
 			</bean>
 		</constructor-arg>
@@ -4216,7 +4221,7 @@
 		<constructor-arg>
 			<bean
 				class="org.eurekastreams.server.action.execution.opensocial.DisableOAuthTokenExecution">
-				<constructor-arg ref="jpaOAuthEntryMapper" />
+				<constructor-arg ref="getOAuthEntry" />
 			</bean>
 		</constructor-arg>
 		<constructor-arg value="false" />
@@ -4228,7 +4233,7 @@
 		<constructor-arg>
 			<bean
 				class="org.eurekastreams.server.action.execution.opensocial.RemoveOAuthTokenExecution">
-				<constructor-arg ref="jpaOAuthEntryMapper" />
+				<constructor-arg ref="deleteOAuthEntry" />
 			</bean>
 		</constructor-arg>
 		<constructor-arg value="false" />
@@ -4240,7 +4245,7 @@
 		<constructor-arg>
 			<bean
 				class="org.eurekastreams.server.action.execution.opensocial.GetOAuthConsumerByConsumerKeyExecution">
-				<constructor-arg ref="jpaOAuthConsumerMapper" />
+				<constructor-arg ref="getOAuthConsumerByConsumerKeyMapper" />
 				<constructor-arg value="${eureka.oauth.requesttokenurl}" />
 				<constructor-arg value="${eureka.oauth.authorizeurl}" />
 				<constructor-arg value="${eureka.oauth.accesstokenurl}" />
@@ -4268,7 +4273,7 @@
 		<constructor-arg>
 			<bean
 				class="org.eurekastreams.server.action.execution.opensocial.GetConsumerInfoExecution">
-				<constructor-arg ref="jpaOAuthConsumerMapper" />
+				<constructor-arg ref="getOAuthConsumerByServiceNameMapper" />
 			</bean>
 		</constructor-arg>
 		<constructor-arg value="true" />
@@ -4280,8 +4285,8 @@
 		<constructor-arg>
 			<bean
 				class="org.eurekastreams.server.action.execution.opensocial.GetConsumerTokenInfoExecution">
-				<constructor-arg ref="jpaOAuthConsumerMapper" />
-				<constructor-arg ref="jpaOAuthTokenMapper" />
+				<constructor-arg ref="getOAuthConsumerByServiceNameMapper" />
+				<constructor-arg ref="getOAuthTokenMapper" />
 			</bean>
 		</constructor-arg>
 		<constructor-arg value="true" />
@@ -4293,8 +4298,10 @@
 		<constructor-arg>
 			<bean
 				class="org.eurekastreams.server.action.execution.opensocial.SetConsumerTokenInfoExecution">
-				<constructor-arg ref="jpaOAuthConsumerMapper" />
-				<constructor-arg ref="jpaOAuthTokenMapper" />
+				<constructor-arg ref="getOAuthConsumerByServiceNameMapper" />
+				<constructor-arg>
+					<bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
+				</constructor-arg>
 			</bean>
 		</constructor-arg>
 		<constructor-arg value="false" />
@@ -4306,8 +4313,8 @@
 		<constructor-arg>
 			<bean
 				class="org.eurekastreams.server.action.execution.opensocial.RemoveConsumerTokenExecution">
-				<constructor-arg ref="jpaOAuthConsumerMapper" />
-				<constructor-arg ref="jpaOAuthTokenMapper" />
+				<constructor-arg ref="getOAuthConsumerByServiceNameMapper" />
+				<constructor-arg ref="deleteOAuthTokenMapper" />
 			</bean>
 		</constructor-arg>
 		<constructor-arg value="false" />

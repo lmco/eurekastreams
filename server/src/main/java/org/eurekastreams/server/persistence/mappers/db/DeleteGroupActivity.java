@@ -27,17 +27,16 @@ import org.eurekastreams.server.persistence.mappers.requests.BulkActivityDeleteR
 /**
  * Given a group id, this mapper deletes all Activities and related objects (Comments and StarredActivities) from the
  * DB.
- * 
  */
 public class DeleteGroupActivity extends BaseArgDomainMapper<Long, BulkActivityDeleteResponse>
 {
     /**
      * Deletes all Activities (and related objects) that were posted to specified group.
-     * 
+     *
      * @param inRequest
      *            the group id.
      * @return {@link BulkActivityDeleteResponse} with info. needed to clean up cache and search index.
-     * 
+     *
      */
     @Override
     public BulkActivityDeleteResponse execute(final Long inRequest)
@@ -74,6 +73,13 @@ public class DeleteGroupActivity extends BaseArgDomainMapper<Long, BulkActivityD
                         + " (SELECT a.id FROM Activity a  WHERE a.recipientStreamScope.id = :groupStreamId)")// \n
                 .setParameter("groupStreamId", groupStreamId).executeUpdate();
 
+        // delete activity hashtags for this group stream
+        if (activityIds.size() > 0)
+        {
+            getEntityManager().createQuery("DELETE FROM StreamHashTag where activityId IN (:activityIds)")
+                    .setParameter("activityIds", activityIds).executeUpdate();
+        }
+
         // delete the activities.
         getEntityManager().createQuery("DELETE FROM Activity a WHERE a.recipientStreamScope.id = :groupStreamId")
                 .setParameter("groupStreamId", groupStreamId).executeUpdate();
@@ -83,7 +89,7 @@ public class DeleteGroupActivity extends BaseArgDomainMapper<Long, BulkActivityD
 
     /**
      * Get the stream id for a group.
-     * 
+     *
      * @param groupId
      *            Group id.
      * @return The stream id for a group.
@@ -101,7 +107,7 @@ public class DeleteGroupActivity extends BaseArgDomainMapper<Long, BulkActivityD
     /**
      * Return activity ids for a group. This only returns the number of results based on max list size in cache, no need
      * to return more than that.
-     * 
+     *
      * @param groupStreamId
      *            group stream id.
      * @return activity ids for a group.
@@ -116,7 +122,7 @@ public class DeleteGroupActivity extends BaseArgDomainMapper<Long, BulkActivityD
 
     /**
      * Return comment ids for all activities in a group.
-     * 
+     *
      * @param groupStreamId
      *            group stream id.
      * @return Comment ids for all activities in a group.
@@ -134,7 +140,7 @@ public class DeleteGroupActivity extends BaseArgDomainMapper<Long, BulkActivityD
     /**
      * Return Map keyed by Person id that has set of activity ids that the person has starred that belong to the group
      * being deleted.
-     * 
+     *
      * @param groupStreamId
      *            Group stream id.
      * @return Map keyed by Person id that has set of activity ids that the person has starred that belong to the group

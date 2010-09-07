@@ -32,11 +32,11 @@ public class DeleteActivities extends BaseArgDomainMapper<List<Long>, BulkActivi
 {
     /**
      * Deletes all Activities (and related objects) based on Activity ids passed in..
-     * 
+     *
      * @param inActivityIds
      *            List of activity ids.
      * @return {@link BulkActivityDeleteResponse} with info. needed to clean up cache and search index.
-     * 
+     *
      */
     @Override
     public BulkActivityDeleteResponse execute(final List<Long> inActivityIds)
@@ -61,6 +61,10 @@ public class DeleteActivities extends BaseArgDomainMapper<List<Long>, BulkActivi
         getHibernateSession().createQuery("DELETE FROM StarredActivity where activityId IN (:activityIds)")
                 .setParameterList("activityIds", inActivityIds).executeUpdate();
 
+        // delete any hashtags stored to streams on behalf of this activity
+        getEntityManager().createQuery("DELETE FROM StreamHashTag WHERE activity.id in (:expiredActivityIds)")
+                .setParameter("expiredActivityIds", inActivityIds).executeUpdate();
+
         // delete the activities.
         getHibernateSession().createQuery("DELETE FROM Activity a WHERE a.id IN (:activityIds)").setParameterList(
                 "activityIds", inActivityIds).executeUpdate();
@@ -70,7 +74,7 @@ public class DeleteActivities extends BaseArgDomainMapper<List<Long>, BulkActivi
 
     /**
      * Return comment ids for all activities in a group.
-     * 
+     *
      * @param inActivityIds
      *            List of activity ids.
      * @return Comment ids for all activities in a group.
@@ -85,7 +89,7 @@ public class DeleteActivities extends BaseArgDomainMapper<List<Long>, BulkActivi
     /**
      * Return Map keyed by Person id that has set of activity ids that the person has starred that belong to the group
      * being deleted.
-     * 
+     *
      * @param inActivityIds
      *            List of activity ids.
      * @return Map keyed by Person id that has set of activity ids that the person has starred that belong to the group

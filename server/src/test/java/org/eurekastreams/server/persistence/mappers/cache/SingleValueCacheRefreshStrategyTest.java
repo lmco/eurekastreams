@@ -13,29 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.action.execution.opensocial;
+package org.eurekastreams.server.persistence.mappers.cache;
 
-import org.eurekastreams.commons.actions.context.PrincipalActionContext;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test suite for {@link RemoveOAuthTokenExecution}.
- * 
+ * Test fixture for SingleValueCacheRefreshStrategy.
  */
-@SuppressWarnings("unchecked")
-public class RemoveOAuthTokenExecutionTest
+public class SingleValueCacheRefreshStrategyTest
 {
-    /**
-     * System under test.
-     */
-    private RemoveOAuthTokenExecution sut;
-
     /**
      * Context for building mock objects.
      */
@@ -47,41 +37,42 @@ public class RemoveOAuthTokenExecutionTest
     };
 
     /**
-     * Instance of OAuth entry delete mapper injected by spring.
+     * Cache key suffix transformer.
      */
-    private final DomainMapper<String, Boolean> deleteMapper = context.mock(DomainMapper.class);
+    private final CacheKeySuffixTransformer<Object> cacheKeySuffixTransformer = context
+            .mock(CacheKeySuffixTransformer.class);
 
     /**
-     * Mocked instance of the action context.
+     * Cache.
      */
-    private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
+    private final Cache cache = context.mock(Cache.class);
 
     /**
-     * Prepare the sut.
-     */
-    @Before
-    public void setup()
-    {
-        sut = new RemoveOAuthTokenExecution(deleteMapper);
-    }
-
-    /**
-     * Test successful remove of oauth token.
+     * Test refresh().
      */
     @Test
-    public void testSuccessfulRemoval()
+    public void testRefresh()
     {
+        final Object request = new Object();
+        final Object response = new Object();
+        final String prefix = "PREFIX:";
+        final String suffix = "SUFFIX";
+
+        SingleValueCacheRefreshStrategy<Object, Object> sut = new SingleValueCacheRefreshStrategy<Object, Object>(
+                prefix, cacheKeySuffixTransformer);
+        sut.setCache(cache);
+
         context.checking(new Expectations()
         {
             {
-                oneOf(actionContext).getParams();
-                will(returnValue("testtoken"));
+                oneOf(cacheKeySuffixTransformer).transform(request);
+                will(returnValue(suffix));
 
-                oneOf(deleteMapper).execute("testtoken");
+                oneOf(cache).set(prefix + suffix, response);
             }
         });
 
-        sut.execute(actionContext);
+        sut.refresh(request, response);
         context.assertIsSatisfied();
     }
 }

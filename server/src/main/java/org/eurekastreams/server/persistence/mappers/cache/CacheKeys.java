@@ -244,4 +244,8 @@ public final class CacheKeys
      */
     public static final String LIKED_BY_PERSON_ID = "PerLike:";
 
+    /**
+     * Popular hashag list by stream type and short name.
+     */
+    public static final String POPULAR_HASH_TAGS_BY_STREAM_TYPE_AND_SHORT_NAME = "PHT:";
 }
