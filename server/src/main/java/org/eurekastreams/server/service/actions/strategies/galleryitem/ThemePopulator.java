@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.server.service.actions.strategies.galleryitem;
 
-import java.io.File;
 import java.util.UUID;
 
 import org.apache.commons.logging.Log;
@@ -126,7 +125,7 @@ public class ThemePopulator implements GalleryItemPopulator<Theme>
      */
     private String getCleanedThemeName(final String inThemeName)
     {
-        String cleanedName = inThemeName.replace(File.separatorChar, '-');
+        String cleanedName = inThemeName.replace('/', '-');
         if (cleanedName.length() > MAX_THEME_CSS_FILE_PREFIX_LENGTH)
         {
             cleanedName = cleanedName.substring(0, MAX_THEME_CSS_FILE_PREFIX_LENGTH);
