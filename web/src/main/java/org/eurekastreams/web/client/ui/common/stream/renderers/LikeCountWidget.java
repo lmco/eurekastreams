@@ -18,14 +18,18 @@ package org.eurekastreams.web.client.ui.common.stream.renderers;
 import java.util.List;
 
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest.LikeActionType;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.ActivityLikedChangeEvent;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.jsni.EffectsFacade;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.TimerFactory;
 import org.eurekastreams.web.client.ui.TimerHandler;
+import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
+import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 
@@ -41,7 +45,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Like count widget.
@@ -77,11 +80,6 @@ public class LikeCountWidget extends Composite
      * Link for the like count link.
      */
     final Anchor likeCountLink = new Anchor();
-
-    /**
-     * Avatar renderer.
-     */
-    private static AvatarRenderer avatarRenderer = new AvatarRenderer();
 
     /**
      * Liked label.
@@ -124,15 +122,13 @@ public class LikeCountWidget extends Composite
      */
     private static void setup()
     {
-
         // Reimplementing Focus panel, GWT seems to break otherwise.
         usersWhoLikedPanelWrapper = new FlowPanel()
         {
             private final TimerFactory timerFactory = new TimerFactory();
             private boolean actuallyOut = false;
-            private static final int TIMER_EXPIRATION = 500;
+            private static final int TIMER_EXPIRATION = 250;
 
-            @Override
             public void onBrowserEvent(final Event event)
             {
                 super.onBrowserEvent(event);
@@ -158,8 +154,15 @@ public class LikeCountWidget extends Composite
                     actuallyOut = false;
                 }
             }
-
         };
+
+        EventBus.getInstance().addObserver(UpdateHistoryEvent.class, new Observer<UpdateHistoryEvent>()
+        {
+            public void update(UpdateHistoryEvent arg1)
+            {
+                EffectsFacade.nativeFadeOut(usersWhoLikedPanelWrapper.getElement(), false);
+            }
+        });
 
         viewAll.setVisible(false);
         viewAll.addClickHandler(new ClickHandler()
@@ -173,11 +176,12 @@ public class LikeCountWidget extends Composite
             }
 
         });
+
         usersWhoLikedPanelWrapper.setVisible(false);
         usersWhoLikedPanelWrapper.addStyleName("users-who-liked-activity-wrapper like-count-widget");
         RootPanel.get().add(usersWhoLikedPanelWrapper);
 
-        final FlowPanel innerLikeCountPanel = new FlowPanel();
+        final FocusPanel innerLikeCountPanel = new FocusPanel();
         innerLikeCountPanel.addStyleName("like-count");
         innerLikeCountPanel.add(innerLikeCountLink);
 
@@ -207,7 +211,7 @@ public class LikeCountWidget extends Composite
 
     /**
      * Constructor.
-     *
+     * 
      * @param inActivityId
      *            activity id.
      * @param inLikeCount
@@ -239,12 +243,8 @@ public class LikeCountWidget extends Composite
 
                 for (PersonModelView liker : likers)
                 {
-                    Widget avatar = avatarRenderer.render(liker.getId(), liker.getAvatarId());
-                    avatar.addStyleName("avatar-image-VerySmall");
-
-                    avatar.setTitle(liker.getDisplayName());
-
-                    avatarPanel.add(avatar);
+                    avatarPanel.add(new AvatarLinkPanel(EntityType.PERSON, liker.getUniqueId(), liker.getId(), liker
+                            .getAvatarId(), Size.VerySmall));
                 }
 
                 if (likeCount > MAXLIKERSSHOWN)
@@ -284,7 +284,7 @@ public class LikeCountWidget extends Composite
 
     /**
      * Update the panel.
-     *
+     * 
      * @param likeActionType
      *            the action that's being taken.
      */

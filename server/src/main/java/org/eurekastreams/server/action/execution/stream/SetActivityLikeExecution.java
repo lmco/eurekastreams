@@ -85,7 +85,6 @@ public class SetActivityLikeExecution implements TaskHandlerExecutionStrategy<Pr
                 request.getActivityId());
 
 
-
         if (request.getLikeActionType() == LikeActionType.ADD_LIKE)
         {
             List<ActivityDTO> activity = activityMapper.execute(Collections.singletonList(request.getActivityId()));

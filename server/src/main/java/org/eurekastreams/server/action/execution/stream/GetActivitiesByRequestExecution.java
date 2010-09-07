@@ -18,9 +18,7 @@ package org.eurekastreams.server.action.execution.stream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import net.sf.json.JSONObject;
 
@@ -31,9 +29,7 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.domain.stream.ActivitySecurityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.cache.GetPrivateCoordinatedAndFollowedGroupIdsForUser;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
@@ -64,9 +60,9 @@ import org.eurekastreams.server.service.actions.strategies.activity.datasources.
 public class GetActivitiesByRequestExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
-     * Activity filter.
+     * Security trimmer.
      */
-    private DomainMapper<List<Long>, Collection<ActivitySecurityDTO>> securityMapper;
+    private ActivitySecurityTrimmer securityTrimmer;
 
     /**
      * Logger.
@@ -99,11 +95,6 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
     private DomainMapper<List<Long>, List<ActivityDTO>> bulkActivitiesMapper;
 
     /**
-     * Mapper to get the list of group ids that includes private groups the current user can see activity for.
-     */
-    private GetPrivateCoordinatedAndFollowedGroupIdsForUser getVisibleGroupsForUserMapper;
-
-    /**
      * People mapper.
      */
     private GetPeopleByAccountIds peopleMapper;
@@ -126,10 +117,8 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
      *            the filters.
      * @param inAndCollider
      *            the and collider to merge results.
-     * @param inGetVisibleGroupsForUserMapper
-     *            to get which groups youre a member of.
-     * @param inSecurityMapper
-     *            the security mapper;
+     * @param inSecurityTrimmer
+     *            the security trimmer;
      * @param inPeopleMapper
      *            people mapper.
      */
@@ -137,17 +126,14 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
             final SortedDataSource inSortedDataSource,
             final DomainMapper<List<Long>, List<ActivityDTO>> inBulkActivitiesMapper,
             final List<ActivityFilter> inFilters, final ListCollider inAndCollider,
-            final GetPrivateCoordinatedAndFollowedGroupIdsForUser inGetVisibleGroupsForUserMapper,
-            final DomainMapper<List<Long>, Collection<ActivitySecurityDTO>> inSecurityMapper,
-            final GetPeopleByAccountIds inPeopleMapper)
+            final ActivitySecurityTrimmer inSecurityTrimmer, final GetPeopleByAccountIds inPeopleMapper)
     {
         descendingOrderdataSource = inDescendingOrderdataSource;
         sortedDataSource = inSortedDataSource;
         andCollider = inAndCollider;
         bulkActivitiesMapper = inBulkActivitiesMapper;
         filters = inFilters;
-        getVisibleGroupsForUserMapper = inGetVisibleGroupsForUserMapper;
-        securityMapper = inSecurityMapper;
+        securityTrimmer = inSecurityTrimmer;
         peopleMapper = inPeopleMapper;
     }
 
@@ -186,10 +172,6 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
         List<Long> results = new ArrayList<Long>();
 
         List<Long> allKeys = new ArrayList<Long>();
-
-        // The set of group ids that the user can see - this is only fetched if
-        // necessary
-        GroupIdSetWrapper accessibleGroupIdsSetWrapper = new GroupIdSetWrapper(userEntityId);
 
         // The pass.
         int pass = 0;
@@ -249,17 +231,7 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
                         + thisBatchStartIndex);
             }
 
-            Collection<ActivitySecurityDTO> securityDTOs = securityMapper.execute(page);
-
-            for (ActivitySecurityDTO actSec : securityDTOs)
-            {
-                if (!actSec.isDestinationStreamPublic()
-                        && !accessibleGroupIdsSetWrapper.getPermissionedGroupIds().contains(
-                                actSec.getDestinationEntityId()))
-                {
-                    page.remove(actSec.getId());
-                }
-            }
+            page = securityTrimmer.trim(page, userEntityId);
 
             results.addAll(page);
 
@@ -288,59 +260,4 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
 
         return pagedSet;
     }
-
-    /**
-     * Wrapper around the lazy-loaded set of IDs. This is responsible for fetching a user's permissioned groups from
-     * cache on demand.
-     */
-    private class GroupIdSetWrapper
-    {
-        /**
-         * set of group ids that the user has permission to see activity for, including all groups the user is
-         * coordinator of, those below orgs that he is coordinator of, and those the user is following.
-         */
-        private Set<Long> permissionedGroupIds;
-
-        /**
-         * The user's person id.
-         */
-        private Long userPersonId;
-
-        /**
-         * Constructor.
-         * 
-         * @param inUserPersonId
-         *            the user's person id
-         */
-        public GroupIdSetWrapper(final Long inUserPersonId)
-        {
-            userPersonId = inUserPersonId;
-        }
-
-        /**
-         * Lazy-load get the group id set from cache.
-         * 
-         * @return the set of group ids that the user has permission to see activity for, including all groups the user
-         *         is coordinator of, those below orgs that he is coordinator of, and those the user is following.
-         */
-        public Set<Long> getPermissionedGroupIds()
-        {
-            if (permissionedGroupIds == null)
-            {
-                if (log.isTraceEnabled())
-                {
-                    log.trace("Looking up the list of groups user #" + userPersonId + " can view activity for.");
-                }
-
-                permissionedGroupIds = getVisibleGroupsForUserMapper.execute(userPersonId);
-
-                if (log.isTraceEnabled())
-                {
-                    log.trace("User #" + userPersonId + " can see groups: " + permissionedGroupIds.toString());
-                }
-            }
-            return permissionedGroupIds;
-        }
-    }
-
 }

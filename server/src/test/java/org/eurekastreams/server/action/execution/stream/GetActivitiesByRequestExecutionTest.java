@@ -187,8 +187,7 @@ public class GetActivitiesByRequestExecutionTest
      * Security mapper.
      */
 
-    private DomainMapper<List<Long>, Collection<ActivitySecurityDTO>> securityMapper = context.mock(DomainMapper.class,
-            "securitymapper");
+    private ActivitySecurityTrimmer securityTrimmer = context.mock(ActivitySecurityTrimmer.class);
 
     /**
      * AND Collider.
@@ -199,11 +198,6 @@ public class GetActivitiesByRequestExecutionTest
      * The activity DTOs.
      */
     private ArrayList<ActivityDTO> activityDTOs;
-
-    /**
-     * Security for the activity DTOs.
-     */
-    private ArrayList<ActivitySecurityDTO> secResults;
 
     /**
      * 10.
@@ -225,7 +219,7 @@ public class GetActivitiesByRequestExecutionTest
         filters.add(filterMock);
 
         sut = new GetActivitiesByRequestExecution(memcacheDS, luceneDS, bulkMapper, filters, andCollider,
-                getVisibleGroupsForUserMapper, securityMapper, peopleMapper);
+                securityTrimmer, peopleMapper);
 
         // set the activity ids
         activity1Public.setId(1L);
@@ -293,21 +287,6 @@ public class GetActivitiesByRequestExecutionTest
         activityDTOs.add(activity3Public);
         activityDTOs.add(activity2);
         activityDTOs.add(activity1Public);
-
-        secResults = new ArrayList<ActivitySecurityDTO>();
-
-        for (ActivityDTO activity : activityDTOs)
-        {
-            ActivitySecurityDTO secDTO = new ActivitySecurityDTO();
-
-            secDTO.setId(activity.getId());
-            secDTO.setDestinationEntityId(activity.getDestinationStream().getDestinationEntityId());
-            secDTO.setDestinationStreamId(activity.getDestinationStream().getId());
-            secDTO.setDestinationStreamPublic(activity.getIsDestinationStreamPublic());
-
-            secResults.add(secDTO);
-        }
-
     }
 
     /**
@@ -364,8 +343,8 @@ public class GetActivitiesByRequestExecutionTest
                         with(equalInternally(THENUMBERTEN)));
                 will(returnValue(combinedIds));
 
-                oneOf(securityMapper).execute(combinedIds);
-                will(returnValue(secResults));
+                oneOf(securityTrimmer).trim(combinedIds, personId);
+                will(returnValue(combinedIds));
 
                 oneOf(bulkMapper).execute(with(any(ArrayList.class)));
                 will(returnValue(activities));
@@ -408,10 +387,6 @@ public class GetActivitiesByRequestExecutionTest
         activityIdsFirstPass.add(allActivityIds.get(0));
         activityIdsFirstPass.add(allActivityIds.get(1));
 
-        final ArrayList<ActivitySecurityDTO> activitySecurityFirstPass = new ArrayList<ActivitySecurityDTO>();
-        activitySecurityFirstPass.add(secResults.get(0));
-        activitySecurityFirstPass.add(secResults.get(1));
-
         final ArrayList<Long> activityIdsSecondPass = new ArrayList<Long>();
         activityIdsSecondPass.add(allActivityIds.get(0));
         activityIdsSecondPass.add(allActivityIds.get(1));
@@ -421,10 +396,6 @@ public class GetActivitiesByRequestExecutionTest
         final ArrayList<Long> activityIdsSecondPassNewItems = new ArrayList<Long>();
         activityIdsSecondPassNewItems.add(allActivityIds.get(2));
         activityIdsSecondPassNewItems.add(allActivityIds.get(3));
-
-        final ArrayList<ActivitySecurityDTO> activitySecuritySecondPass = new ArrayList<ActivitySecurityDTO>();
-        activitySecuritySecondPass.add(secResults.get(2));
-        activitySecuritySecondPass.add(secResults.get(3));
 
         final ArrayList<Long> activityIdsThirdPass = new ArrayList<Long>();
         activityIdsThirdPass.add(allActivityIds.get(0));
@@ -441,12 +412,6 @@ public class GetActivitiesByRequestExecutionTest
         activityIdsThirdPassNewItems.add(allActivityIds.get(5));
         activityIdsThirdPassNewItems.add(allActivityIds.get(6));
         activityIdsThirdPassNewItems.add(allActivityIds.get(7));
-
-        final ArrayList<ActivitySecurityDTO> activitySecurityThirdPass = new ArrayList<ActivitySecurityDTO>();
-        activitySecurityThirdPass.add(secResults.get(4));
-        activitySecurityThirdPass.add(secResults.get(5));
-        activitySecurityThirdPass.add(secResults.get(6));
-        activitySecurityThirdPass.add(secResults.get(7));
 
         context.checking(new Expectations()
         {
@@ -469,20 +434,20 @@ public class GetActivitiesByRequestExecutionTest
                 oneOf(memcacheDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
                 will(returnValue(activityIdsFirstPass));
 
-                oneOf(securityMapper).execute(activityIdsFirstPass);
-                will(returnValue(activitySecurityFirstPass));
+                oneOf(securityTrimmer).trim(activityIdsFirstPass, personId);
+                will(returnValue(activityIdsFirstPass));
 
                 oneOf(memcacheDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
                 will(returnValue(activityIdsSecondPass));
 
-                oneOf(securityMapper).execute(activityIdsSecondPassNewItems);
-                will(returnValue(activitySecuritySecondPass));
+                oneOf(securityTrimmer).trim(activityIdsSecondPassNewItems, personId);
+                will(returnValue(activityIdsSecondPassNewItems));
 
                 oneOf(memcacheDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
                 will(returnValue(activityIdsThirdPass));
 
-                oneOf(securityMapper).execute(activityIdsThirdPassNewItems);
-                will(returnValue(activitySecurityThirdPass));
+                oneOf(securityTrimmer).trim(activityIdsThirdPassNewItems, personId);
+                will(returnValue(activityIdsThirdPassNewItems));
 
                 oneOf(getVisibleGroupsForUserMapper).execute(personId);
                 will(returnValue(new HashSet<Long>()));
@@ -536,11 +501,6 @@ public class GetActivitiesByRequestExecutionTest
         activityIds.add(allActivityIds.get(4));
         activityIds.add(allActivityIds.get(5));
 
-
-        final ArrayList<ActivitySecurityDTO> activitySecurity = new ArrayList<ActivitySecurityDTO>();
-        activitySecurity.add(secResults.get(3));
-        activitySecurity.add(secResults.get(4));
-        activitySecurity.add(secResults.get(5));
         
         context.checking(new Expectations()
         {
@@ -563,8 +523,8 @@ public class GetActivitiesByRequestExecutionTest
                 oneOf(memcacheDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
                 will(returnValue(activityIds));
 
-                oneOf(securityMapper).execute(activityIds);
-                will(returnValue(activitySecurity));
+                oneOf(securityTrimmer).trim(activityIds, personId);
+                will(returnValue(activityIds));
 
                 oneOf(getVisibleGroupsForUserMapper).execute(personId);
                 will(returnValue(usersGroups));

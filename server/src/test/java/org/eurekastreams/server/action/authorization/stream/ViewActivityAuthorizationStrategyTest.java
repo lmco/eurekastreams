@@ -16,17 +16,18 @@
 package org.eurekastreams.server.action.authorization.stream;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.AuthorizationException;
+import org.eurekastreams.server.action.execution.stream.ActivitySecurityTrimmer;
 import org.eurekastreams.server.domain.stream.ActivitySecurityDTO;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.cache.GetPrivateCoordinatedAndFollowedGroupIdsForUser;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -48,15 +49,10 @@ public class ViewActivityAuthorizationStrategyTest
     };
 
     /**
-     * {@link ActivitySecurityDTO} DAO.
+     * Security Trimmer.
      */
-    private DomainMapper securityMapper = context.mock(DomainMapper.class);
-
-    /**
-     * Mapper to get the list of group ids that includes private groups the current user can see activity for.
-     */
-    private GetPrivateCoordinatedAndFollowedGroupIdsForUser getVisibleGroupsForUserMapper = context
-            .mock(GetPrivateCoordinatedAndFollowedGroupIdsForUser.class);
+    private ActivitySecurityTrimmer securityTrimmer = context.mock(ActivitySecurityTrimmer.class);
+    
     /**
      * {@link ServiceActionContext}.
      */
@@ -65,18 +61,12 @@ public class ViewActivityAuthorizationStrategyTest
     /**
      * System under test.
      */
-    private ViewActivityAuthorizationStrategy sut = new ViewActivityAuthorizationStrategy(securityMapper,
-            getVisibleGroupsForUserMapper);
+    private ViewActivityAuthorizationStrategy sut = new ViewActivityAuthorizationStrategy(securityTrimmer);
 
     /**
      * {@link Principal}.
      */
     private Principal principal = context.mock(Principal.class);
-
-    /**
-     * {@link ActivitySecurityDTO}.
-     */
-    private ActivitySecurityDTO asd = context.mock(ActivitySecurityDTO.class);
 
     /**
      * Activity id used in tests.
@@ -89,76 +79,27 @@ public class ViewActivityAuthorizationStrategyTest
     private Long principalId = 6L;
 
     /**
-     * Destination entity id used in tests.
-     */
-    private Long destinationEntityId = 7L;
-
-    /**
      * Test.
      */
     @Test
     public void testStreamIsPublic()
     {
-        final Collection<ActivitySecurityDTO> asdCollection = new ArrayList<ActivitySecurityDTO>();
-        asdCollection.add(asd);
+        final List<Long> visibleIds = Arrays.asList(activityId);
 
         context.checking(new Expectations()
         {
             {
-                allowing(actionContext).getParams();
-                will(returnValue(activityId));
-
                 allowing(actionContext).getPrincipal();
                 will(returnValue(principal));
-
-                allowing(securityMapper).execute(with(any(List.class)));
-                will(returnValue(asdCollection));
-
-                allowing(asd).isDestinationStreamPublic();
-                will(returnValue(true));
-
-            }
-        });
-
-        sut.authorize(actionContext);
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Test.
-     */
-    @Test
-    public void testStreamIsNotPublicUserInGroup()
-    {
-        final Collection<ActivitySecurityDTO> asdCollection = new ArrayList<ActivitySecurityDTO>();
-        asdCollection.add(asd);
-
-        final Set<Long> visibleDestinationEntityIds = new HashSet<Long>();
-        visibleDestinationEntityIds.add(destinationEntityId);
-
-        context.checking(new Expectations()
-        {
-            {
-                allowing(actionContext).getParams();
-                will(returnValue(activityId));
-
-                allowing(actionContext).getPrincipal();
-                will(returnValue(principal));
-
-                allowing(securityMapper).execute(with(any(List.class)));
-                will(returnValue(asdCollection));
-
-                allowing(asd).isDestinationStreamPublic();
-                will(returnValue(false));
 
                 allowing(principal).getId();
                 will(returnValue(principalId));
 
-                allowing(getVisibleGroupsForUserMapper).execute(principalId);
-                will(returnValue(visibleDestinationEntityIds));
+                allowing(actionContext).getParams();
+                will(returnValue(activityId));
 
-                allowing(asd).getDestinationEntityId();
-                will(returnValue(destinationEntityId));
+                allowing(securityTrimmer).trim(with(any(List.class)), with(principalId));
+                will(returnValue(visibleIds));
             }
         });
 
@@ -172,35 +113,22 @@ public class ViewActivityAuthorizationStrategyTest
     @Test(expected = AuthorizationException.class)
     public void testStreamIsNotPublicUserNotInGroup()
     {
-        final Collection<ActivitySecurityDTO> asdCollection = new ArrayList<ActivitySecurityDTO>();
-        asdCollection.add(asd);
-
-        final Set<Long> visibleDestinationEntityIds = new HashSet<Long>();
-        visibleDestinationEntityIds.add(destinationEntityId);
+        final List<Long> visibleIds = new LinkedList<Long>();
 
         context.checking(new Expectations()
         {
             {
-                allowing(actionContext).getParams();
-                will(returnValue(activityId));
-
                 allowing(actionContext).getPrincipal();
                 will(returnValue(principal));
-
-                allowing(securityMapper).execute(with(any(List.class)));
-                will(returnValue(asdCollection));
-
-                allowing(asd).isDestinationStreamPublic();
-                will(returnValue(false));
 
                 allowing(principal).getId();
                 will(returnValue(principalId));
 
-                allowing(getVisibleGroupsForUserMapper).execute(principalId);
-                will(returnValue(visibleDestinationEntityIds));
+                allowing(actionContext).getParams();
+                will(returnValue(activityId));
 
-                allowing(asd).getDestinationEntityId();
-                will(returnValue(destinationEntityId + 1));
+                allowing(securityTrimmer).trim(with(any(List.class)), with(principalId));
+                will(returnValue(visibleIds));
             }
         });
 

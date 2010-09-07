@@ -1552,7 +1552,14 @@
                 <constructor-arg type="float" value="2.0" />
                 <constructor-arg ref="bulkPeopleByAccountIdMapper" />
     </bean>
-    
+
+    <bean id="securityTrimmer" 
+    		class="org.eurekastreams.server.action.execution.stream.ActivitySecurityTrimmer">
+            <constructor-arg ref="bulkActivitySecurityMapper" />
+    		<constructor-arg
+                    ref="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper" />
+	</bean>
+	    
     <bean id="getActivitiesByRequestExecutor" 
     		class="org.eurekastreams.server.action.execution.stream.GetActivitiesByRequestExecution">
             <constructor-arg>
@@ -1636,9 +1643,7 @@
 				<bean
 					class="org.eurekastreams.server.service.actions.strategies.activity.InterpolationListCollider" />            
             </constructor-arg>
-    		<constructor-arg
-                    ref="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper" />
-            <constructor-arg ref="bulkActivitySecurityMapper" />
+            <constructor-arg ref="securityTrimmer" />
             <constructor-arg ref="bulkPeopleByAccountIdMapper" />
     </bean>
 
@@ -2508,8 +2513,7 @@
 	</bean>
 	
 	<bean id="viewActivityAuthorization" class="org.eurekastreams.server.action.authorization.stream.ViewActivityAuthorizationStrategy">
-	   <constructor-arg ref="bulkActivitySecurityMapper" />
-	   <constructor-arg ref="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper" />
+	   <constructor-arg ref="securityTrimmer" />
 	</bean>
 
 	<bean id="getActivityById" class="org.eurekastreams.commons.actions.service.ServiceAction">

@@ -18,18 +18,11 @@ package org.eurekastreams.server.persistence.mappers.db;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eurekastreams.commons.hibernate.ModelViewResultTransformer;
-import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.ActivitySecurityDTO;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetStreamsByIds;
-import org.eurekastreams.server.search.factories.ActivitySecurityDTOFactory;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 
 /**
  * Maps activity security information from the DB.
@@ -57,26 +50,13 @@ public class BulkActivitySecurityDbMapper extends BaseArgDomainMapper<List<Long>
      * @return security information for the activites in the request.
      */
     public List<ActivitySecurityDTO> execute(final List<Long> inRequest)
-    {
-        if (inRequest.size() == 0)
-        {
-            return new ArrayList<ActivitySecurityDTO>();
-        }
+    {       
+        String q = "select new org.eurekastreams.server.domain.stream.ActivitySecurityDTO "
+            + "(id, recipientStreamScope.id, isDestinationStreamPublic) "
+            + "from Activity where id in (:activityIds)";
 
-        Criteria criteria = getHibernateSession().createCriteria(Activity.class);
-        ProjectionList fields = Projections.projectionList();
-        fields.add(getColumn("id"));
-        fields.add(Projections.property("recipientStreamScope.id").as("destinationStreamId"));
-        fields.add(getColumn("isDestinationStreamPublic"));
-        criteria.setProjection(fields);
-        criteria.add(Restrictions.in("this.id", inRequest));
-
-        ModelViewResultTransformer<ActivitySecurityDTO> resultTransformer = 
-            new ModelViewResultTransformer<ActivitySecurityDTO>(
-                new ActivitySecurityDTOFactory());
-        criteria.setResultTransformer(resultTransformer);
-        List<ActivitySecurityDTO> results = criteria.list();
-
+        List<ActivitySecurityDTO> results = getEntityManager().createQuery(q).setParameter("activityIds", inRequest).getResultList();
+        
         for (ActivitySecurityDTO activitySec : results)
         {
             // fills in data from cached view of stream

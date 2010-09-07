@@ -15,17 +15,12 @@
  */
 package org.eurekastreams.server.action.authorization.stream;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 import org.eurekastreams.commons.actions.AuthorizationStrategy;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.AuthorizationException;
-import org.eurekastreams.server.domain.stream.ActivitySecurityDTO;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.cache.GetPrivateCoordinatedAndFollowedGroupIdsForUser;
+import org.eurekastreams.server.action.execution.stream.ActivitySecurityTrimmer;
 
 /**
  * Authorize if current user has permissions to view given activity id. This ONLY restricts viewing activities posted to
@@ -35,30 +30,19 @@ import org.eurekastreams.server.persistence.mappers.cache.GetPrivateCoordinatedA
 public class ViewActivityAuthorizationStrategy implements AuthorizationStrategy<ServiceActionContext>
 {
     /**
-     * {@link ActivitySecurityDTO} DAO.
+     * Trims out unauthorized activity.
      */
-    private DomainMapper<List<Long>, Collection<ActivitySecurityDTO>> securityMapper;
-
-    /**
-     * Mapper to get the list of group ids that includes private groups the current user can see activity for.
-     */
-    private GetPrivateCoordinatedAndFollowedGroupIdsForUser getVisibleGroupsForUserMapper;
+    private ActivitySecurityTrimmer securityTrimmer;
 
     /**
      * Constructor.
      * 
-     * @param inSecurityMapper
-     *            {@link ActivitySecurityDTO} DAO.
-     * @param inGetVisibleGroupsForUserMapper
-     *            Mapper to get the list of group ids that includes private groups the current user can see activity
-     *            for.
+     * @param inSecurityTrimmer
+     *            Trims unauthorized activity..
      */
-    public ViewActivityAuthorizationStrategy(
-            final DomainMapper<List<Long>, Collection<ActivitySecurityDTO>> inSecurityMapper,
-            final GetPrivateCoordinatedAndFollowedGroupIdsForUser inGetVisibleGroupsForUserMapper)
+    public ViewActivityAuthorizationStrategy(final ActivitySecurityTrimmer inSecurityTrimmer)
     {
-        securityMapper = inSecurityMapper;
-        getVisibleGroupsForUserMapper = inGetVisibleGroupsForUserMapper;
+        securityTrimmer = inSecurityTrimmer;
     }
 
     /**
@@ -69,16 +53,11 @@ public class ViewActivityAuthorizationStrategy implements AuthorizationStrategy<
      * @param inActionContext
      *            ActionContext for request.
      */
-    @Override
     public void authorize(final ServiceActionContext inActionContext)
     {
-        // get ActivitySecurityDTO for activity id passed in.
-        ActivitySecurityDTO securityDTO = new ArrayList<ActivitySecurityDTO>(securityMapper.execute(Arrays
-                .asList((Long) inActionContext.getParams()))).get(0);
-
-        if (!securityDTO.isDestinationStreamPublic()
-                && !getVisibleGroupsForUserMapper.execute(inActionContext.getPrincipal().getId()).contains(
-                        securityDTO.getDestinationEntityId()))
+        // Unauthorized if all results are trimed away.
+        if (securityTrimmer.trim(Arrays.asList((Long) inActionContext.getParams()),
+                inActionContext.getPrincipal().getId()).size() == 0)
         {
             throw new AuthorizationException("Current user does not have access right to view activity.");
         }

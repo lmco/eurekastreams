@@ -15,14 +15,12 @@
  */
 package org.eurekastreams.server.domain.stream;
 
-import java.util.Map;
-
-import org.eurekastreams.commons.search.modelview.ModelView;
+import java.io.Serializable;
 
 /**
  * Stores security information about an Activity. Used to determine who can see the activity.
  */
-public class ActivitySecurityDTO extends ModelView
+public class ActivitySecurityDTO implements Serializable
 {
     /**
      * Version.
@@ -48,6 +46,24 @@ public class ActivitySecurityDTO extends ModelView
      * Destination Entity ID.
      */
     private Long destinationEntityId;
+
+    /**
+     * Constructor.
+     * 
+     * @param inId
+     *            the activity ID.
+     * @param inDestinationStreamId
+     *            the destination stream ID.
+     * @param inIsDestinationStreamPublic
+     *            if the destination stream is public.
+     */
+    public ActivitySecurityDTO(final Long inId, final Long inDestinationStreamId,
+            final Boolean inIsDestinationStreamPublic)
+    {
+        id = inId;
+        destinationStreamId = inDestinationStreamId;
+        isDestinationStreamPublic = inIsDestinationStreamPublic;
+    }
 
     /**
      * Set if the destination stream is public.
@@ -123,45 +139,5 @@ public class ActivitySecurityDTO extends ModelView
     public Long getId()
     {
         return id;
-    }
-
-    /**
-     * Load properties.
-     * 
-     * @param properties
-     *            the properties.
-     */
-    @Override
-    public void loadProperties(final Map<String, Object> properties)
-    {
-        super.loadProperties(properties);
-
-        if (properties.containsKey("isDestinationStreamPublic"))
-        {
-            setDestinationStreamPublic((Boolean) properties.get("isDestinationStreamPublic"));
-        }
-        if (properties.containsKey("id"))
-        {
-            setId((Long) properties.get("id"));
-        }
-        if (properties.containsKey("destinationStreamId"))
-        {
-            setDestinationStreamId((Long) properties.get("destinationStreamId"));
-        }
-        if (properties.containsKey("destinationEntityId"))
-        {
-            setDestinationEntityId((Long) properties.get("destinationEntityId"));
-        }
-
-    }
-
-    /**
-     * Get the entity name.
-     * 
-     * @return the entity name.
-     */
-    protected String getEntityName()
-    {
-        return "ActivitySecurityDTO";
     }
 }

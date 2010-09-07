@@ -8648,15 +8648,25 @@ body .post-to-stream .post-button.inactive {
 
 .users-who-liked-activity .users-who-liked-activity-body > div
 {
-	padding-left: 5px;	
 	zoom: 1;
 }
 
-.users-who-liked-activity .users-who-liked-activity-body > div > *
+.users-who-liked-activity .users-who-liked-activity-body > div > * 
 {
-	margin-right: 5px;	
-	margin-bottom: 5px;	
+	margin-right: 5px;
+	margin-bottom: 5px;
 	zoom: 1;
+	height: 30px;
+	width: 30px;
+	display: inline-block;
+	*display: inline;
+}
+
+.users-who-liked-activity .users-who-liked-activity-body > div > * > a
+{
+	zoom: 1;
+	display: inline-block;
+	*display: inline;
 }
 
 
