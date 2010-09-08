@@ -20,22 +20,18 @@ import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.StreamPageLoadedEvent;
 import org.eurekastreams.web.client.events.StreamViewsLoadedEvent;
 import org.eurekastreams.web.client.events.SwitchedToGroupStreamEvent;
-import org.eurekastreams.web.client.events.SwitchedToSavedSearchEvent;
 import org.eurekastreams.web.client.events.SwitchedToStreamViewEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.UserLoggedInEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserGroupStreamsResponseEvent;
-import org.eurekastreams.web.client.events.data.GotCurrentUserStreamSearchesResponseEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserStreamViewsResponseEvent;
 import org.eurekastreams.web.client.model.GroupStreamListModel;
-import org.eurekastreams.web.client.model.StreamSearchListModel;
 import org.eurekastreams.web.client.model.StreamViewListModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
 import org.eurekastreams.web.client.ui.common.stream.filters.FilterListPanel;
 import org.eurekastreams.web.client.ui.common.stream.filters.group.GroupStreamRenderer;
-import org.eurekastreams.web.client.ui.common.stream.filters.list.StreamViewRenderer;
-import org.eurekastreams.web.client.ui.common.stream.filters.search.StreamSearchRenderer;
+import org.eurekastreams.web.client.ui.common.stream.filters.list.CustomStreamRenderer;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
@@ -47,7 +43,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Page for Stream.
- * 
+ *
  */
 public class StreamContent extends Composite
 {
@@ -80,11 +76,6 @@ public class StreamContent extends Composite
      */
     Label errorLabel = new Label("You must be logged in to view this page.");
 
-    /**
-     * The search renderer strategy. This registers an event to listen for when the views load, so it has to be
-     * instantiated up here.
-     */
-    private StreamSearchRenderer searchRenderer = new StreamSearchRenderer();
 
     /**
      * Select the first view.
@@ -99,10 +90,7 @@ public class StreamContent extends Composite
      * Group container.
      */
     private FlowPanel groupContainer = new FlowPanel();
-    /**
-     * Search container.
-     */
-    private FlowPanel searchContainer = new FlowPanel();
+
 
     /**
      * The stream view list panel.
@@ -111,7 +99,7 @@ public class StreamContent extends Composite
 
     /**
      * Default constructor.
-     * 
+     *
      */
     public StreamContent()
     {
@@ -122,14 +110,6 @@ public class StreamContent extends Composite
         streamView = new StreamPanel();
         streamPanel.add(streamView);
 
-        Session.getInstance().getEventBus().addObserver(SwitchedToSavedSearchEvent.class,
-                new Observer<SwitchedToSavedSearchEvent>()
-                {
-                    public void update(final SwitchedToSavedSearchEvent event)
-                    {
-                        Session.getInstance().getEventBus().notifyObservers(new ChangeShowStreamRecipientEvent(true));
-                    }
-                });
 
         Session.getInstance().getEventBus().addObserver(SwitchedToStreamViewEvent.class,
                 new Observer<SwitchedToStreamViewEvent>()
@@ -160,9 +140,6 @@ public class StreamContent extends Composite
 
         RootPanel.get().addStyleName("stream");
 
-        // Label activityHeader = new Label("Activity");
-        // activityHeader.addStyleName("directory-header");
-        // panel.add(activityHeader);
         panel.addStyleName("stream-page-container");
         streamPanel.addStyleName("stream-container");
 
@@ -203,7 +180,7 @@ public class StreamContent extends Composite
                     public void update(final GotCurrentUserStreamViewsResponseEvent event)
                     {
                         streanViewListWidget = new FilterListPanel(event.getResponse().getStreamFilters(), event
-                                .getResponse().getHiddenLineIndex(), new StreamViewRenderer(), false);
+                                .getResponse().getHiddenLineIndex(), new CustomStreamRenderer(), false);
 
                         listContainer.add(streanViewListWidget);
 
@@ -229,25 +206,11 @@ public class StreamContent extends Composite
                     }
                 });
 
-        Session.getInstance().getEventBus().addObserver(GotCurrentUserStreamSearchesResponseEvent.class,
-                new Observer<GotCurrentUserStreamSearchesResponseEvent>()
-                {
 
-                    public void update(final GotCurrentUserStreamSearchesResponseEvent event)
-                    {
-                        FilterListPanel viewListWidget = new FilterListPanel(event.getResponse().getStreamFilters(),
-                                event.getResponse().getHiddenLineIndex(), searchRenderer, false);
-
-                        searchContainer.add(viewListWidget);
-                    }
-
-                });
 
         filters.add(listContainer);
         filters.add(new HTML("<br />"));
         filters.add(groupContainer);
-        filters.add(new HTML("<br />"));
-        filters.add(searchContainer);
 
         panel.add(errorLabel);
         panel.add(filters);
@@ -262,7 +225,6 @@ public class StreamContent extends Composite
                 Session.getInstance().getActionProcessor().setQueueRequests(true);
                 StreamViewListModel.getInstance().fetch(null, true);
                 GroupStreamListModel.getInstance().fetch(null, false);
-                StreamSearchListModel.getInstance().fetch(null, true);
                 Session.getInstance().getActionProcessor().setQueueRequests(false);
                 Session.getInstance().getActionProcessor().fireQueuedRequests();
             }
