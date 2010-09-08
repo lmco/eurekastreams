@@ -16,11 +16,8 @@
 package org.eurekastreams.server.action.execution.stream;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,9 +30,6 @@ import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
-import org.eurekastreams.server.service.actions.strategies.activity.ListCollider;
-import org.eurekastreams.server.service.actions.strategies.activity.datasources.DescendingOrderDataSource;
-import org.eurekastreams.server.service.actions.strategies.activity.datasources.SortedDataSource;
 
 /**
  * Action to get a page of activities for a given request.
@@ -60,29 +54,14 @@ import org.eurekastreams.server.service.actions.strategies.activity.datasources.
 public class GetActivitiesByRequestExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
-     * Security trimmer.
-     */
-    private ActivitySecurityTrimmer securityTrimmer;
-
-    /**
      * Logger.
      */
     private Log log = LogFactory.getLog(GetActivitiesByRequestExecution.class);
 
     /**
-     * Data source that MUST provide results in descending order of ID.
+     * Get activity IDs by JSON request.
      */
-    private DescendingOrderDataSource descendingOrderdataSource;
-
-    /**
-     * Data source that MUST provide results in the order they will be given to the user.
-     */
-    private SortedDataSource sortedDataSource;
-
-    /**
-     * AND collider.
-     */
-    private ListCollider andCollider;
+    private GetActivityIdsByJsonRequest getActivityIdsByJsonRequest;
 
     /**
      * List of filters to apply to action.
@@ -100,148 +79,46 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
     private GetPeopleByAccountIds peopleMapper;
 
     /**
-     * Max activities if none is specified.
-     */
-    private static final int MAXRESULTS = 10;
-
-    /**
      * Default constructor.
      * 
-     * @param inDescendingOrderdataSource
-     *            the data sources to fetch the sorted descending data from.
-     * @param inSortedDataSource
-     *            the data sources to fetch the sorted data from.
      * @param inBulkActivitiesMapper
      *            the bulk activity mapper to get activity from.
      * @param inFilters
      *            the filters.
-     * @param inAndCollider
-     *            the and collider to merge results.
-     * @param inSecurityTrimmer
-     *            the security trimmer;
      * @param inPeopleMapper
      *            people mapper.
+     * @param inGetActivityIdsByJsonRequest
+     *            get activity IDs by JSON request.
      */
-    public GetActivitiesByRequestExecution(final DescendingOrderDataSource inDescendingOrderdataSource,
-            final SortedDataSource inSortedDataSource,
-            final DomainMapper<List<Long>, List<ActivityDTO>> inBulkActivitiesMapper,
-            final List<ActivityFilter> inFilters, final ListCollider inAndCollider,
-            final ActivitySecurityTrimmer inSecurityTrimmer, final GetPeopleByAccountIds inPeopleMapper)
+    public GetActivitiesByRequestExecution(final DomainMapper<List<Long>, List<ActivityDTO>> inBulkActivitiesMapper,
+            final List<ActivityFilter> inFilters, final GetPeopleByAccountIds inPeopleMapper,
+            final GetActivityIdsByJsonRequest inGetActivityIdsByJsonRequest)
     {
-        descendingOrderdataSource = inDescendingOrderdataSource;
-        sortedDataSource = inSortedDataSource;
-        andCollider = inAndCollider;
         bulkActivitiesMapper = inBulkActivitiesMapper;
         filters = inFilters;
-        securityTrimmer = inSecurityTrimmer;
         peopleMapper = inPeopleMapper;
+        getActivityIdsByJsonRequest = inGetActivityIdsByJsonRequest;
     }
 
-    @Override
+    /**
+     * Get activities base on a request.
+     * 
+     * @param inActionContext
+     *            action context.
+     * @return the activities.
+     * @throws ExecutionException execution exception.
+     */
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
         log.debug("Attempted to parse: " + inActionContext.getParams());
-        
-        JSONObject request = JSONObject.fromObject(inActionContext.getParams());
 
-        int maxResults = MAXRESULTS;
-        long minActivityId = 0;
-        long maxActivityId = Long.MAX_VALUE;
-
-        if (request.containsKey("count"))
-        {
-            maxResults = request.getInt("count");
-        }
-        if (request.containsKey("minId"))
-        {
-            minActivityId = request.getInt("minId");
-        }
-        if (request.containsKey("maxId"))
-        {
-            maxActivityId = request.getLong("maxId");
-        }
-
+        final Long userEntityId = inActionContext.getPrincipal().getId();
         final String userAccountId = inActionContext.getPrincipal().getAccountId();
 
-        // get the user's Id
-        final long userEntityId = inActionContext.getPrincipal().getId();
+        final List<Long> results = getActivityIdsByJsonRequest.execute((String) inActionContext.getParams(),
+                userEntityId);
 
-        // used for paging, this is the next activity in the list to add to the
-        // current page
-        int startingIndex = 0;
-
-        // the list of activities to return
-        List<Long> results = new ArrayList<Long>();
-
-        List<Long> allKeys = new ArrayList<Long>();
-
-        // The pass.
-        int pass = 0;
-        int batchSize = 0;
-
-        // paging loop
-        startingIndex = 0;
-
-        do
-        {
-            allKeys.clear();
-
-            // multiply the batch size by the multiplier to avoid extra cache
-            // hits
-            batchSize = maxResults * (int) (Math.pow(2, pass));
-
-            request.put("count", batchSize);
-
-            final List<Long> descendingOrderDataSet = descendingOrderdataSource.fetch(request, userEntityId);
-
-            final List<Long> sortedDataSet = sortedDataSource.fetch(request, userEntityId);
-
-            if (descendingOrderDataSet != null && sortedDataSet != null)
-            {
-                allKeys = andCollider.collide(descendingOrderDataSet, sortedDataSet, batchSize);
-            }
-            else if (descendingOrderDataSet != null)
-            {
-                allKeys = descendingOrderDataSet;
-            }
-            else if (sortedDataSet != null)
-            {
-                allKeys = sortedDataSet;
-            }
-
-            // build a list of activity ids to fetch for this page, and
-            // increment the start index for next page
-            List<Long> page = new ArrayList<Long>();
-
-            // the starting index for this batch - for logging
-            int thisBatchStartIndex = -1;
-            for (int i = startingIndex; i < allKeys.size() && page.size() < batchSize; i++, startingIndex++)
-            {
-                if (allKeys.get(i) < maxActivityId && allKeys.get(i) > minActivityId)
-                {
-                    if (thisBatchStartIndex < 0)
-                    {
-                        thisBatchStartIndex = i;
-                    }
-                    page.add(allKeys.get(i));
-                }
-            }
-
-            if (log.isTraceEnabled())
-            {
-                log.trace("Paging loop - page size: " + maxResults + "; batchSize: " + batchSize + "; starting index: "
-                        + thisBatchStartIndex);
-            }
-
-            page = securityTrimmer.trim(page, userEntityId);
-
-            results.addAll(page);
-
-            pass++;
-        }
-        while (results.size() < maxResults && allKeys.size() >= batchSize);
-
-        List<ActivityDTO> dtoResults = bulkActivitiesMapper.execute(results);
+        final List<ActivityDTO> dtoResults = bulkActivitiesMapper.execute(results);
 
         PersonModelView person = peopleMapper.execute(Arrays.asList(userAccountId)).get(0);
 

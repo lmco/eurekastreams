@@ -20,46 +20,42 @@ import java.io.Serializable;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
-import org.eurekastreams.server.domain.PagedSet;
-import org.eurekastreams.server.domain.stream.ActivityDTO;
 
 /**
  * Gets the unseen activity given an exector.
- *
+ * 
  */
-public class GetUnseenActivityCountByCompositeStreamExecution implements ExecutionStrategy<PrincipalActionContext>
+public class GetActivityCount implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
      * The get activity executor.
      */
-    private ExecutionStrategy getActivitiesByCompositeStreamExecutor;
+    private GetActivityIdsByJsonRequest getActivityIdsByJsonRequest;
 
     /**
      * Default constructor.
-     *
-     * @param inExecutionStrategy
-     *            the executor.
+     * 
+     * @param inGetActivityIdsByJsonRequest
+     *            activity getter..
      */
-    public GetUnseenActivityCountByCompositeStreamExecution(final ExecutionStrategy inExecutionStrategy)
+    public GetActivityCount(final GetActivityIdsByJsonRequest inGetActivityIdsByJsonRequest)
     {
-        getActivitiesByCompositeStreamExecutor = inExecutionStrategy;
+        getActivityIdsByJsonRequest = inGetActivityIdsByJsonRequest;
     }
 
     /**
      * Execute the executor and return it's size.
-     *
+     * 
      * @param inActionContext
      *            the action context.
      * @throws ExecutionException
      *             the exception.
      * @return the size.
      */
-    @Override
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        PagedSet<ActivityDTO> activities = (PagedSet<ActivityDTO>) getActivitiesByCompositeStreamExecutor
-                .execute(inActionContext);
-        return Integer.valueOf(activities.getPagedSet().size());
+        return Integer.valueOf(getActivityIdsByJsonRequest.execute((String) inActionContext.getParams(),
+                inActionContext.getPrincipal().getId()).size());
     }
 
 }

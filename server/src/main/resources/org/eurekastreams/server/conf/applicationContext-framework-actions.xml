@@ -413,6 +413,18 @@
 		<constructor-arg value="false" />
 	</bean>
 		
+	<!-- Get the popular hashtags for a person, org, or group stream -->
+	<bean id="getPopularHashTagsForStream" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.action.execution.stream.GetStreamPopularHashTagsExecution">
+				<constructor-arg ref="findPopularHashTagsForStreamMapper" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="true" />
+	</bean>
+	
     <bean id="postActivityCommentAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
@@ -1559,9 +1571,8 @@
     		<constructor-arg
                     ref="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper" />
 	</bean>
-	    
-    <bean id="getActivitiesByRequestExecutor" 
-    		class="org.eurekastreams.server.action.execution.stream.GetActivitiesByRequestExecution">
+
+	<bean id="getActivityIdsByJsonRequest" class="org.eurekastreams.server.action.execution.stream.GetActivityIdsByJsonRequest">
             <constructor-arg>
 				<bean
 					class="org.eurekastreams.server.service.actions.strategies.activity.datasources.PersistenceDataSource">
@@ -1627,7 +1638,16 @@
 		            </constructor-arg>		            						
 				</bean>            
             </constructor-arg>
-            <constructor-arg ref="luceneActivityDataSource" />
+            <constructor-arg ref="luceneActivityDataSource" />	
+            <constructor-arg>
+				<bean
+					class="org.eurekastreams.server.service.actions.strategies.activity.InterpolationListCollider" />            
+            </constructor-arg>
+            <constructor-arg ref="securityTrimmer" />
+	</bean>
+	    
+    <bean id="getActivitiesByRequestExecutor" 
+    		class="org.eurekastreams.server.action.execution.stream.GetActivitiesByRequestExecution">
     		<constructor-arg ref="bulkActivitiesMapper" />
             <constructor-arg>
                 <list>
@@ -1639,12 +1659,8 @@
                     <ref bean="serverTimeFilter" />
                 </list>
             </constructor-arg>
-            <constructor-arg>
-				<bean
-					class="org.eurekastreams.server.service.actions.strategies.activity.InterpolationListCollider" />            
-            </constructor-arg>
-            <constructor-arg ref="securityTrimmer" />
             <constructor-arg ref="bulkPeopleByAccountIdMapper" />
+            <constructor-arg ref="getActivityIdsByJsonRequest" />
     </bean>
 
 	<bean id="getActivitiesByCompositeStream" class="org.eurekastreams.commons.actions.service.ServiceAction">
@@ -1658,7 +1674,7 @@
 		<constructor-arg value="true" />
 	</bean>
 
-    <bean id="getUnseenActivityCount" class="org.eurekastreams.commons.actions.service.ServiceAction">
+    <bean id="getActivityCount" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg >
           <bean class="org.eurekastreams.server.action.validation.stream.GetActivitiesByCompositeStreamIdValidation">
               <constructor-arg ref="compositeStreamActivityIdsMapper"/>
@@ -1667,8 +1683,8 @@
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
             <bean
-                class="org.eurekastreams.server.action.execution.stream.GetUnseenActivityCountByCompositeStreamExecution">
-                    <constructor-arg ref="getActivitesByCompositeStreamExecutor" />
+                class="org.eurekastreams.server.action.execution.stream.GetActivityCount">
+                    <constructor-arg ref="getActivityIdsByJsonRequest" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -2375,41 +2391,6 @@
 		<constructor-arg value="true" />
 	</bean>
 	
-	<bean id="getStreamSearchResultsExecution"
-                class="org.eurekastreams.server.action.execution.stream.GetStreamSearchResultsExecution">
-                <constructor-arg ref="searchActivitiesMapper" />
-                <constructor-arg ref="bulkPeopleByAccountIdMapper" />
-                <constructor-arg>
-                    <list>
-                        <ref bean="canCommentFilter" />
-                        <ref bean="canShareFilter" />
-            	        <ref bean="likeFilter" />
-        	            <ref bean="deleteFilter" />
-    	                <ref bean="savedFilter" />
-	                    <ref bean="serverTimeFilter" />
-                    </list>
-                </constructor-arg>
-    </bean>
-    
-     <bean id="getUnseenActivityCountForSearch" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.stream.GetUnseenActivityCountByCompositeStreamExecution">
-                    <constructor-arg ref="getStreamSearchResultsExecution" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>
-
-	<bean id="getStreamSearchResults" class="org.eurekastreams.commons.actions.service.ServiceAction">
-		<constructor-arg ref="noValidationStrategy" />
-		<constructor-arg ref="noAuthorizationStrategy" />
-		<constructor-arg ref="getStreamSearchResultsExecution" />
-		<constructor-arg value="true" />
-	</bean>
-
 	<bean id="getCurrentUserCompositeStreams" class="org.eurekastreams.commons.actions.service.ServiceAction">
 		<constructor-arg ref="noValidationStrategy" />
 		<constructor-arg ref="noAuthorizationStrategy" />

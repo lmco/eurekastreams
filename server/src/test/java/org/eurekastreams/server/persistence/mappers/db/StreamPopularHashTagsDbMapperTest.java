@@ -20,9 +20,9 @@ import static org.junit.Assert.assertEquals;
 import java.util.Calendar;
 import java.util.List;
 
+import org.eurekastreams.server.action.request.stream.StreamPopularHashTagsRequest;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
-import org.eurekastreams.server.persistence.mappers.requests.StreamPopularHashTagsRequest;
 import org.eurekastreams.server.persistence.mappers.stream.StreamPopularHashTagsReport;
 import org.junit.Test;
 

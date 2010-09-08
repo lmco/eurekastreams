@@ -19,13 +19,6 @@
 		<constructor-arg ref="bulkDomainGroupsMapper" />		
 	</bean>
 
-	<bean name="compositeStreamSearchFetcher" class="org.eurekastreams.server.service.restlets.CompositeStreamSearchActivityFetcher">
-		<constructor-arg ref="getStreamSearchResults" />
-		<constructor-arg ref="openSocialPrincipalPopulator" />
-		<constructor-arg ref="serviceActionController" />
-		<constructor-arg ref="findByIdMapper" />
-	</bean>
-
 	<!-- Restlets -->
 	
 	<bean name="compositeStreamEntryResource" class="org.eurekastreams.server.service.restlets.StreamFilterEntryResource"
@@ -38,11 +31,6 @@
 		<property name="filterFetcher" ref="groupStreamFetcher" />
 	</bean>
 
-	<bean name="compositeStreamSearchEntryResource" class="org.eurekastreams.server.service.restlets.StreamFilterEntryResource"
-		scope="prototype">
-		<property name="filterFetcher" ref="compositeStreamSearchFetcher" />
-	</bean>
-	
 	<bean name="orgOverviewResource" class="org.eurekastreams.server.service.restlets.CompositeEntityOverviewResource"
 		scope="prototype">
 		<property name="entityMapper" ref="jpaOrganizationMapper" />
@@ -451,12 +439,6 @@
                 		<lookup-method name="createResource" bean="groupStreamEntryResource" />
                 	</bean>
                 </entry>
-                <entry key="/streamsearch/{id}/owner/{openSocialId}">
-                	<bean class="org.restlet.ext.spring.SpringFinder">
-                		<lookup-method name="createResource" bean="compositeStreamSearchEntryResource" />
-                	</bean>
-                </entry>
-                
                 <entry key="/stream/{openSocialId}/query">
                 	<bean class="org.restlet.ext.spring.SpringFinder">
                 		<lookup-method name="createResource" bean="streamResource" />
