@@ -23,8 +23,8 @@ import javax.persistence.Query;
 
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
+import org.eurekastreams.server.action.request.stream.StreamPopularHashTagsRequest;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
-import org.eurekastreams.server.persistence.mappers.requests.StreamPopularHashTagsRequest;
 import org.eurekastreams.server.persistence.mappers.stream.StreamPopularHashTagsReport;
 
 /**

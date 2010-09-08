@@ -21,14 +21,14 @@ import org.eurekastreams.server.service.actions.response.GetCurrentUserStreamFil
  * Response data event.
  *
  */
-public class GotCurrentUserStreamViewsResponseEvent extends BaseDataResponseEvent<GetCurrentUserStreamFiltersResponse>
+public class GotCurrentUserCustomStreamsResponseEvent extends BaseDataResponseEvent<GetCurrentUserStreamFiltersResponse>
 {
 
     /**
      * Default constructor.
      * @param inResponse response.
      */
-    public GotCurrentUserStreamViewsResponseEvent(final GetCurrentUserStreamFiltersResponse inResponse)
+    public GotCurrentUserCustomStreamsResponseEvent(final GetCurrentUserStreamFiltersResponse inResponse)
     {
         super(inResponse);
     }

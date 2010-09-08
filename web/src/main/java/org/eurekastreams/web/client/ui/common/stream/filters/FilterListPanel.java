@@ -19,8 +19,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.eurekastreams.server.domain.stream.StreamFilter;
+import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.HideNotificationEvent;
 import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.StreamRequestEvent;
+import org.eurekastreams.web.client.events.SwitchedToActivityDetailViewEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
@@ -38,7 +41,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Shows a list of views.
- * 
+ *
  */
 public class FilterListPanel extends FlowPanel
 {
@@ -103,7 +106,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inViews
      *            the views.
      * @param inHiddenLineIndex
@@ -188,6 +191,23 @@ public class FilterListPanel extends FlowPanel
         viewBoundaryPanel.add(panel);
         this.add(viewBoundaryPanel);
 
+        EventBus.getInstance().addObserver(SwitchedToActivityDetailViewEvent.class,
+                new Observer<SwitchedToActivityDetailViewEvent>()
+                {
+                    public void update(final SwitchedToActivityDetailViewEvent arg1)
+                    {
+                        unactivateAll();
+                    }
+                });
+
+        Session.getInstance().getEventBus().addObserver(StreamRequestEvent.class, new Observer<StreamRequestEvent>()
+        {
+            public void update(final StreamRequestEvent arg1)
+            {
+                unactivateAll();
+            }
+        });
+
         Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
                 new Observer<UpdatedHistoryParametersEvent>()
                 {
@@ -250,7 +270,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * hides the text on the hidden line if its the last one.
-     * 
+     *
      * @param inHiddenLineIndex
      *            the hidden line index.
      */
@@ -271,25 +291,8 @@ public class FilterListPanel extends FlowPanel
     }
 
     /**
-     * Switch to a filter.
-     * 
-     * @param filter
-     *            the filter.
-     */
-    public void switchToFilter(final StreamFilter filter)
-    {
-
-        if (activeItem != null)
-        {
-            activeItem.unActivate();
-        }
-        activeItem = listCache.get(filter.getId());
-
-    }
-
-    /**
      * Activate a filter.
-     * 
+     *
      * @param filter
      *            the filter.
      */
@@ -312,7 +315,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Adds a filter.
-     * 
+     *
      * @param filter
      *            the filter.
      */
@@ -349,7 +352,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Removes a filter.
-     * 
+     *
      * @param filter
      *            the filter.
      */
@@ -370,7 +373,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Updates the filter.
-     * 
+     *
      * @param filter
      *            the filter.
      */
@@ -409,7 +412,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Get drop panel.
-     * 
+     *
      * @return the drop panel.
      */
     public VerticalPanel getDropPanel()
@@ -419,7 +422,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Gets the hidden line.
-     * 
+     *
      * @return the hidden line.
      */
     public Integer getHiddenLineIndex()
@@ -437,10 +440,10 @@ public class FilterListPanel extends FlowPanel
         showMore.setText("show less");
         showMore.addStyleName("show-less");
     }
-    
+
     /**
      * Get the views.
-     * 
+     *
      * @return the views.
      */
     public List<StreamFilter> getViews()

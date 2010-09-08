@@ -17,8 +17,8 @@ package org.eurekastreams.server.persistence.mappers.cache;
 
 import static org.junit.Assert.assertEquals;
 
+import org.eurekastreams.server.action.request.stream.StreamPopularHashTagsRequest;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
-import org.eurekastreams.server.persistence.mappers.requests.StreamPopularHashTagsRequest;
 import org.junit.Test;
 
 /**

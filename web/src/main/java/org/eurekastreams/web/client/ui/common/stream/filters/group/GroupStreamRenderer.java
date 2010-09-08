@@ -21,9 +21,6 @@ import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SwitchedToActivityDetailViewEvent;
-import org.eurekastreams.web.client.events.SwitchedToGroupStreamEvent;
-import org.eurekastreams.web.client.events.SwitchedToSavedSearchEvent;
-import org.eurekastreams.web.client.events.SwitchedToStreamViewEvent;
 import org.eurekastreams.web.client.model.GroupStreamListModel;
 import org.eurekastreams.web.client.model.Reorderable;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
@@ -77,33 +74,6 @@ public class GroupStreamRenderer implements FilterRenderStrategy
      */
     public void setUpEvents(final FilterListPanel listPanel)
     {
-        EventBus.getInstance().addObserver(SwitchedToGroupStreamEvent.getEvent(),
-                new Observer<SwitchedToGroupStreamEvent>()
-                {
-                    public void update(final SwitchedToGroupStreamEvent arg1)
-                    {
-                        listPanel.switchToFilter(arg1.getView());
-                    }
-                });
-
-        EventBus.getInstance().addObserver(SwitchedToSavedSearchEvent.getEvent(),
-                new Observer<SwitchedToSavedSearchEvent>()
-                {
-                    public void update(final SwitchedToSavedSearchEvent arg1)
-                    {
-                        listPanel.unactivateAll();
-                    }
-                });
-
-        EventBus.getInstance().addObserver(SwitchedToStreamViewEvent.getEvent(),
-                new Observer<SwitchedToStreamViewEvent>()
-                {
-                    public void update(final SwitchedToStreamViewEvent arg1)
-                    {
-                        listPanel.unactivateAll();
-                    }
-                });
-
         EventBus.getInstance().addObserver(SwitchedToActivityDetailViewEvent.class,
                 new Observer<SwitchedToActivityDetailViewEvent>()
                 {
