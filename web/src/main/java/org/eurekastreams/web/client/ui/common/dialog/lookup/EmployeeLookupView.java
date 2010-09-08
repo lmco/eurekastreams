@@ -252,6 +252,12 @@ public class EmployeeLookupView implements Bindable
         }
 
         resultsDesc.setText(message);
+        
+        if (resultsItems.size() == 1)
+        {
+            results.setItemSelected(0, true);
+            model.setSelectedPersonByAccountId(results.getValue(0));
+        }
     }
 
     /**
