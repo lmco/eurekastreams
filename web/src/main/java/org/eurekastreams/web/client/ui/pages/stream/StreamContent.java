@@ -107,7 +107,7 @@ public class StreamContent extends Composite
         errorLabel.addStyleName("form-error-box");
         errorLabel.setVisible(false);
 
-        streamView = new StreamPanel();
+        streamView = new StreamPanel(true);
         streamPanel.add(streamView);
 
 

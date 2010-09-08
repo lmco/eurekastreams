@@ -276,7 +276,8 @@ public class PersonalProfilePanel extends FlowPanel
             setUpChecklist();
         }
 
-        final StreamPanel streamContent = new StreamPanel();
+        final StreamPanel streamContent = new StreamPanel(false);
+        streamContent.setStreamScope(person.getStreamScope());
 
         String jsonRequest = StreamJsonRequestFactory.addRecipient(EntityType.PERSON, person.getAccountId(),
                 StreamJsonRequestFactory.getEmptyRequest()).toString();

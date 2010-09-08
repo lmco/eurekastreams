@@ -233,7 +233,7 @@ public class OrganizationProfilePanel extends FlowPanel
 
         leftBarPanel.addChildWidget(new PeopleListPanel(org.getLeaders(), "Leadership", PeopleListPanel.DISPLAY_ALL));
 
-        final StreamPanel streamContent = new StreamPanel();
+        final StreamPanel streamContent = new StreamPanel(true);
         String jsonRequest = StreamJsonRequestFactory.setOrganization(org.getShortName(),
                 StreamJsonRequestFactory.getEmptyRequest()).toString();
 

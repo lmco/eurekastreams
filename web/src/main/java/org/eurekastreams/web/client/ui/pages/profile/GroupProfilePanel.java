@@ -282,7 +282,8 @@ public class GroupProfilePanel extends FlowPanel
         leftBarPanel.addChildWidget(connectionsPanel);
         leftBarPanel.addChildWidget(coordinatorPanel);
 
-        final StreamPanel streamContent = new StreamPanel();
+        final StreamPanel streamContent = new StreamPanel(false);
+        streamContent.setStreamScope(group.getStreamScope());
         
         String jsonRequest = StreamJsonRequestFactory.addRecipient(EntityType.GROUP, group.getShortName(),
                 StreamJsonRequestFactory.getEmptyRequest()).toString();
