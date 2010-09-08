@@ -51,6 +51,9 @@ public class NotificationFilterPreference extends DomainEntity
         /** Someone posted to a group stream for which the user is a coordinator. . */
         POST_TO_GROUP_STREAM,
 
+        /** Someone posted to a group's stream for a group the user is a member of. */
+        POST_TO_JOINED_GROUP,
+
         /** Someone commented on an activity in a group stream for which the user is a coordinator. */
         COMMENT_IN_GROUP_STREAM,
 
