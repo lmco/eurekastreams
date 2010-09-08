@@ -59,9 +59,13 @@ public class SetActivityLikeExecution implements TaskHandlerExecutionStrategy<Pr
 
     /**
      * Constructor.
-     * @param inInsertLikedActivity Mapper for liking an activity.
-     * @param inDeleteLikedActivity Mapper for unliking an activity.
-     * @param inActivityMapper activity mapper.
+     *
+     * @param inInsertLikedActivity
+     *            Mapper for liking an activity.
+     * @param inDeleteLikedActivity
+     *            Mapper for unliking an activity.
+     * @param inActivityMapper
+     *            activity mapper.
      */
     public SetActivityLikeExecution(final InsertLikedActivity inInsertLikedActivity,
             final DeleteLikedActivity inDeleteLikedActivity,
@@ -77,40 +81,35 @@ public class SetActivityLikeExecution implements TaskHandlerExecutionStrategy<Pr
      */
     @Override
     public Serializable execute(final TaskHandlerActionContext<PrincipalActionContext> inActionContext)
-        throws ExecutionException
+            throws ExecutionException
     {
         SetActivityLikeRequest request = (SetActivityLikeRequest) inActionContext.getActionContext().getParams();
-        LikedActivity likeActivityData = new LikedActivity(
-                inActionContext.getActionContext().getPrincipal().getId(),
+        LikedActivity likeActivityData = new LikedActivity(inActionContext.getActionContext().getPrincipal().getId(),
                 request.getActivityId());
-
-
 
         if (request.getLikeActionType() == LikeActionType.ADD_LIKE)
         {
             List<ActivityDTO> activity = activityMapper.execute(Collections.singletonList(request.getActivityId()));
-            CreateNotificationsRequest notificationRequest = new CreateNotificationsRequest(
-                    RequestType.LIKE, inActionContext.getActionContext().getPrincipal().getId(),
-                    activity.get(0).getActor().getId(), request.getActivityId());
 
-            List<UserActionRequest> queuedRequests = null;
-            // create list if it has not already been done.
-            queuedRequests = queuedRequests == null ? new ArrayList<UserActionRequest>() : queuedRequests;
+            if (inActionContext.getActionContext().getPrincipal().getId() != activity.get(0).getActor().getId())
+            {
+                CreateNotificationsRequest notificationRequest = new CreateNotificationsRequest(RequestType.LIKE,
+                        inActionContext.getActionContext().getPrincipal().getId(), activity.get(0).getActor().getId(),
+                        request.getActivityId());
 
-            // add UserRequest.
-            queuedRequests.add(new UserActionRequest("createNotificationsAction", null, notificationRequest));
+                List<UserActionRequest> queuedRequests = null;
+                queuedRequests = queuedRequests == null ? new ArrayList<UserActionRequest>() : queuedRequests;
+                queuedRequests.add(new UserActionRequest("createNotificationsAction", null, notificationRequest));
 
-            inActionContext.getUserActionRequests().addAll(queuedRequests);
-
+                inActionContext.getUserActionRequests().addAll(queuedRequests);
+            }
             return insertLikedActivity.execute(likeActivityData);
-
 
         }
         else
         {
             return deleteLikedActivity.execute(likeActivityData);
         }
-
 
     }
 
