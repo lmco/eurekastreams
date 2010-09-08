@@ -16,8 +16,8 @@
 package org.eurekastreams.web.client.ui.common.stream.filters.list;
 
 import org.eurekastreams.server.action.request.stream.SetStreamFilterOrderRequest;
+import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamFilter;
-import org.eurekastreams.server.domain.stream.StreamView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
@@ -72,7 +72,7 @@ public class CustomStreamRenderer implements FilterRenderStrategy
      */
     public FilterPanel getFilterPanel(final StreamFilter filter)
     {
-        return new CustomStreamPanel((StreamView) filter);
+        return new CustomStreamPanel((Stream) filter);
     }
 
     /**
@@ -179,7 +179,7 @@ public class CustomStreamRenderer implements FilterRenderStrategy
      */
     public String getFilterHistoryToken()
     {
-        return "listId";
+        return "streamId";
     }
 
 }

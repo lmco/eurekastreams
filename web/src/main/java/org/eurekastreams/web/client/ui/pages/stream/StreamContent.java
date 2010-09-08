@@ -15,18 +15,23 @@
  */
 package org.eurekastreams.web.client.ui.pages.stream;
 
+import java.util.HashMap;
+
 import org.eurekastreams.web.client.events.ChangeShowStreamRecipientEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.StreamPageLoadedEvent;
+import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.StreamViewsLoadedEvent;
 import org.eurekastreams.web.client.events.SwitchedToGroupStreamEvent;
 import org.eurekastreams.web.client.events.SwitchedToStreamViewEvent;
+import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.UserLoggedInEvent;
+import org.eurekastreams.web.client.events.data.GotCurrentUserCustomStreamsResponseEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserGroupStreamsResponseEvent;
-import org.eurekastreams.web.client.events.data.GotCurrentUserStreamViewsResponseEvent;
+import org.eurekastreams.web.client.history.CreateUrlRequest;
+import org.eurekastreams.web.client.model.CustomStreamModel;
 import org.eurekastreams.web.client.model.GroupStreamListModel;
-import org.eurekastreams.web.client.model.StreamViewListModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
 import org.eurekastreams.web.client.ui.common.stream.filters.FilterListPanel;
@@ -76,7 +81,6 @@ public class StreamContent extends Composite
      */
     Label errorLabel = new Label("You must be logged in to view this page.");
 
-
     /**
      * Select the first view.
      */
@@ -90,7 +94,6 @@ public class StreamContent extends Composite
      * Group container.
      */
     private FlowPanel groupContainer = new FlowPanel();
-
 
     /**
      * The stream view list panel.
@@ -110,16 +113,15 @@ public class StreamContent extends Composite
         streamView = new StreamPanel();
         streamPanel.add(streamView);
 
-
         Session.getInstance().getEventBus().addObserver(SwitchedToStreamViewEvent.class,
                 new Observer<SwitchedToStreamViewEvent>()
                 {
                     public void update(final SwitchedToStreamViewEvent event)
                     {
-//                        streamView.setPostScope(new StreamScope(ScopeType.PERSON, session.getCurrentPerson()
-//                                .getAccountId()));
-//                        streamView.setView(event.getView());
-//                        streamView.setPostable(true);
+                        // streamView.setPostScope(new StreamScope(ScopeType.PERSON, session.getCurrentPerson()
+                        // .getAccountId()));
+                        // streamView.setView(event.getView());
+                        // streamView.setPostable(true);
 
                         Session.getInstance().getEventBus().notifyObservers(new ChangeShowStreamRecipientEvent(true));
                     }
@@ -130,9 +132,9 @@ public class StreamContent extends Composite
                 {
                     public void update(final SwitchedToGroupStreamEvent event)
                     {
-//                        GroupStreamDTO group = event.getView();
-//                        streamView.setPostable(group.isPostable());
-//                        streamView.setView(event.getView().getStreamView());
+                        // GroupStreamDTO group = event.getView();
+                        // streamView.setPostable(group.isPostable());
+                        // streamView.setView(event.getView().getStreamView());
 
                         Session.getInstance().getEventBus().notifyObservers(new ChangeShowStreamRecipientEvent(false));
                     }
@@ -151,13 +153,31 @@ public class StreamContent extends Composite
             }
         });
 
+        Session.getInstance().getEventBus().addObserver(StreamRequestEvent.class, new Observer<StreamRequestEvent>()
+        {
+            public void update(final StreamRequestEvent event)
+            {
+                HashMap<String, String> values = new HashMap<String, String>();
+
+                if (event.getStreamId() != null)
+                {
+                    values.put("streamId", event.getStreamId().toString());
+                }
+
+                values.put("streamRequest", event.getJson());
+
+                Session.getInstance().getEventBus().notifyObservers(
+                        new UpdateHistoryEvent(new CreateUrlRequest(values)));
+
+            }
+        });
         Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
                 new Observer<UpdatedHistoryParametersEvent>()
                 {
 
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
-                        if (event.getParameters().get("viewId") == null
+                        if (event.getParameters().get("streamId") == null
                                 && event.getParameters().get("activityId") == null
                                 && event.getParameters().get("groupId") == null
                                 && event.getParameters().get("streamSearch") == null)
@@ -173,11 +193,11 @@ public class StreamContent extends Composite
 
                 }, true);
 
-        Session.getInstance().getEventBus().addObserver(GotCurrentUserStreamViewsResponseEvent.class,
-                new Observer<GotCurrentUserStreamViewsResponseEvent>()
+        Session.getInstance().getEventBus().addObserver(GotCurrentUserCustomStreamsResponseEvent.class,
+                new Observer<GotCurrentUserCustomStreamsResponseEvent>()
                 {
 
-                    public void update(final GotCurrentUserStreamViewsResponseEvent event)
+                    public void update(final GotCurrentUserCustomStreamsResponseEvent event)
                     {
                         streanViewListWidget = new FilterListPanel(event.getResponse().getStreamFilters(), event
                                 .getResponse().getHiddenLineIndex(), new CustomStreamRenderer(), false);
@@ -206,8 +226,6 @@ public class StreamContent extends Composite
                     }
                 });
 
-
-
         filters.add(listContainer);
         filters.add(new HTML("<br />"));
         filters.add(groupContainer);
@@ -223,7 +241,7 @@ public class StreamContent extends Composite
             public void execute()
             {
                 Session.getInstance().getActionProcessor().setQueueRequests(true);
-                StreamViewListModel.getInstance().fetch(null, true);
+                CustomStreamModel.getInstance().fetch(null, true);
                 GroupStreamListModel.getInstance().fetch(null, false);
                 Session.getInstance().getActionProcessor().setQueueRequests(false);
                 Session.getInstance().getActionProcessor().fireQueuedRequests();
