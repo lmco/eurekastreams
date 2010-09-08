@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.web.client.events;
 
-import org.eurekastreams.server.domain.stream.StreamSearch;
 
 /**
  * Gets fired when the search text changes.
@@ -24,56 +23,19 @@ import org.eurekastreams.server.domain.stream.StreamSearch;
 public class StreamSearchBeginEvent
 {
     /**
-     * Gets an instance of the event.
-     * 
-     * @return the event.
-     */
-    public static StreamSearchBeginEvent getEvent()
-    {
-        return new StreamSearchBeginEvent(null, 0);
-    }
-
-    /**
      * The search text.
      */
     private String searchText;
 
     /**
-     * The stream id.
-     */
-    private long streamId;
-    
-    /**
-     * The search.
-     */
-    private StreamSearch search = null;
-
-    /**
      * Default constructor.
      * 
      * @param inSearchText
      *            the search text.
-     * @param inStreamId
-     *            the stream view id.
      */
-    public StreamSearchBeginEvent(final String inSearchText, final long inStreamId)
+    public StreamSearchBeginEvent(final String inSearchText)
     {
         searchText = inSearchText;
-        streamId = inStreamId;
-    }
-    
-    /**
-     * Default constructor.
-     * 
-     * @param inSearchText
-     *            the search text.
-     * @param inSearch the search.
-     */
-    public StreamSearchBeginEvent(final String inSearchText, final StreamSearch inSearch)
-    {
-        search = inSearch;
-        searchText = inSearchText;
-        streamId = search.getStreamView().getId();
     }
 
     /**
@@ -84,24 +46,5 @@ public class StreamSearchBeginEvent
     public String getSearchText()
     {
         return searchText;
-    }
-
-    /**
-     * Get the stream id.
-     * 
-     * @return the stream id.
-     */
-    public long getStreamId()
-    {
-        return streamId;
-    }
-    
-    /**
-     * Gets the search.
-     * @return the search.
-     */
-    public StreamSearch getSearch()
-    {
-        return search;
     }
 }

@@ -253,7 +253,7 @@ public class StreamPanel2 extends FlowPanel implements Bindable
         }
         listContents.add(postContents);
 
-        streamSearch = new StreamSearchComposite(processor, title, view);
+        streamSearch = new StreamSearchComposite();
         listContents.add(streamSearch);
 
         listContents.add(new UnseenActivityNotificationPanel());
@@ -262,7 +262,7 @@ public class StreamPanel2 extends FlowPanel implements Bindable
         {
             messageRequest = new GetActivitiesByCompositeStreamRequest(view.getId(), DEFAULT_MAX_ITEMS);
             viewId = view.getId();
-            streamSearch.setStreamView(view);
+            //streamSearch.setStreamView(view);
         }
         else
         {
@@ -463,7 +463,7 @@ public class StreamPanel2 extends FlowPanel implements Bindable
             viewId = view.getId();
             messageRequest = new GetActivitiesByCompositeStreamRequest(view.getId(), DEFAULT_MAX_ITEMS);
             streamSearch.setTitleText(view.getName());
-            streamSearch.setStreamView(view);
+            //streamSearch.setStreamView(view);
             //streamSearch.setMode(mode);
             Session.getInstance().getEventBus().notifyObservers(StreamReinitializeRequestEvent.getEvent());
         }

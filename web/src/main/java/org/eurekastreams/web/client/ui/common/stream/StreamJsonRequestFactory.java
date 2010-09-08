@@ -29,9 +29,14 @@ import com.google.gwt.json.client.JSONValue;
 public final class StreamJsonRequestFactory
 {
     /**
-     * Recipeint key.
+     * Recipient key.
      */
     private static final String RECIPIENT_KEY = "recipient";
+
+    /**
+     * Search key.
+     */
+    private static final String SEARCH_KEY = "keywords";
 
     /**
      * Organization key.
@@ -44,9 +49,34 @@ public final class StreamJsonRequestFactory
     private static final String RECIPIENT_TYPE_KEY = "type";
 
     /**
-     * Recipeint unique ID key.
+     * Recipient unique ID key.
      */
     private static final String RECIPIENT_UNIQUE_ID_KEY = "name";
+
+    /**
+     * Sort key.
+     */
+    private static final String SORT_KEY = "sortBy";
+
+    /**
+     * Sort types.
+     */
+    public enum SortType
+    {
+        /**
+         * Sort by date.
+         */
+        DATE
+        {
+            /**
+             * @return the value as a string.
+             */
+            public String toString()
+            {
+                return "date";
+            }
+        }
+    }
 
     /**
      * Gets an empty request. Used for everyone stream.
@@ -55,7 +85,19 @@ public final class StreamJsonRequestFactory
      */
     public static JSONObject getEmptyRequest()
     {
-        return JSONParser.parse("{ query : {} }").isObject();
+        return getJSONRequest("{ query : {} }");
+    }
+
+    /**
+     * Get a JSON object from a String.
+     * 
+     * @param request
+     *            the request.
+     * @return the JSON object.
+     */
+    public static JSONObject getJSONRequest(final String request)
+    {
+        return JSONParser.parse(request).isObject();
     }
 
     /**
@@ -108,6 +150,42 @@ public final class StreamJsonRequestFactory
         JSONObject query = json.get("query").isObject();
 
         query.put(ORGANIZATION_KEY, new JSONString(orgShortName));
+
+        return json;
+    }
+
+    /**
+     * Sets the search term in a request..
+     * 
+     * @param searchText
+     *            the search text.
+     * @param json
+     *            the request.
+     * @return the request.
+     */
+    public static JSONObject setSearchTerm(final String searchText, final JSONObject json)
+    {
+        JSONObject query = json.get("query").isObject();
+
+        query.put(SEARCH_KEY, new JSONString(searchText));
+
+        return json;
+    }
+
+    /**
+     * Sets the sorting of a request..
+     * 
+     * @param sortBy
+     *            the type of sort.
+     * @param json
+     *            the request.
+     * @return the request.
+     */
+    public static JSONObject setSort(final SortType sortBy, final JSONObject json)
+    {
+        JSONObject query = json.get("query").isObject();
+
+        query.put(SORT_KEY, new JSONString(sortBy.toString()));
 
         return json;
     }
