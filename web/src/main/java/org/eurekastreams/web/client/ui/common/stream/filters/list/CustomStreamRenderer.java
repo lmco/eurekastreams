@@ -21,14 +21,9 @@ import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
-import org.eurekastreams.web.client.events.StreamSearchDeletedEvent;
 import org.eurekastreams.web.client.events.StreamViewCreatedEvent;
 import org.eurekastreams.web.client.events.StreamViewDeletedEvent;
 import org.eurekastreams.web.client.events.StreamViewUpdatedEvent;
-import org.eurekastreams.web.client.events.SwitchedToActivityDetailViewEvent;
-import org.eurekastreams.web.client.events.SwitchedToGroupStreamEvent;
-import org.eurekastreams.web.client.events.SwitchedToSavedSearchEvent;
-import org.eurekastreams.web.client.events.SwitchedToStreamViewEvent;
 import org.eurekastreams.web.client.model.Reorderable;
 import org.eurekastreams.web.client.model.StreamViewListModel;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
@@ -83,22 +78,13 @@ public class CustomStreamRenderer implements FilterRenderStrategy
      */
     public void setUpEvents(final FilterListPanel listPanel)
     {
-        EventBus.getInstance().addObserver(SwitchedToStreamViewEvent.getEvent(),
-                new Observer<SwitchedToStreamViewEvent>()
-                {
-                    public void update(final SwitchedToStreamViewEvent arg1)
-                    {
-                        listPanel.switchToFilter(arg1.getView());
-                    }
-                });
-
         EventBus.getInstance().addObserver(StreamViewCreatedEvent.getEvent(), new Observer<StreamViewCreatedEvent>()
         {
             public void update(final StreamViewCreatedEvent arg1)
             {
                 listPanel.addFilter(arg1.getView());
                 EventBus.getInstance().notifyObservers(new ShowNotificationEvent(
-                        new Notification("Your list has been successfully saved")));
+                        new Notification("Your stream has been successfully saved")));
             }
         });
 
@@ -108,7 +94,7 @@ public class CustomStreamRenderer implements FilterRenderStrategy
             {
                 listPanel.removeFilter(arg1.getView());
                 EventBus.getInstance().notifyObservers(new ShowNotificationEvent(
-                        new Notification("The list and associated searches have been deleted")));
+                        new Notification("The stream has been deleted")));
             }
         });
 
@@ -118,47 +104,9 @@ public class CustomStreamRenderer implements FilterRenderStrategy
             {
                 listPanel.updateFilter(arg1.getView());
                 EventBus.getInstance().notifyObservers(new ShowNotificationEvent(
-                        new Notification("Your list has been successfully saved")));
+                        new Notification("Your stream has been successfully saved")));
             }
         });
-
-        EventBus.getInstance().addObserver(SwitchedToSavedSearchEvent.getEvent(),
-                new Observer<SwitchedToSavedSearchEvent>()
-                {
-                    public void update(final SwitchedToSavedSearchEvent arg1)
-                    {
-                        listPanel.unactivateAll();
-                    }
-                });
-
-        EventBus.getInstance().addObserver(SwitchedToGroupStreamEvent.getEvent(),
-                new Observer<SwitchedToGroupStreamEvent>()
-                {
-                    public void update(final SwitchedToGroupStreamEvent arg1)
-                    {
-                        listPanel.unactivateAll();
-                    }
-                });
-
-        EventBus.getInstance().addObserver(SwitchedToActivityDetailViewEvent.class,
-                new Observer<SwitchedToActivityDetailViewEvent>()
-                {
-                    public void update(final SwitchedToActivityDetailViewEvent arg1)
-                    {
-                        listPanel.unactivateAll();
-                    }
-                });
-
-        // activates the first item in the Lists section when a search is deleted - necessary to put this here
-        // since there will always be at least one list but not always one search.
-        EventBus.getInstance().addObserver(StreamSearchDeletedEvent.getEvent(),
-                new Observer<StreamSearchDeletedEvent>()
-                {
-                    public void update(final StreamSearchDeletedEvent arg1)
-                    {
-                        listPanel.activateFirst();
-                    }
-                });
 
     }
 

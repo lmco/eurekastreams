@@ -57,12 +57,14 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
         everyone.setRequest("{ query : {} }");
         everyone.setName("Everyone");
         everyone.setReadOnly(true);
+        everyone.setId(1L);
         streams.add(everyone);
 
         Stream following = new Stream();
         following.setRequest("{ query : { followedBy: \"romanoa1\" } }");
         following.setName("Following");
         following.setReadOnly(true);
+        following.setId(2L);
         streams.add(following);
 
         Session.getInstance().getEventBus().notifyObservers(

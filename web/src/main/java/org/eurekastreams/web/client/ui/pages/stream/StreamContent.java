@@ -15,21 +15,13 @@
  */
 package org.eurekastreams.web.client.ui.pages.stream;
 
-import java.util.HashMap;
-
-import org.eurekastreams.web.client.events.ChangeShowStreamRecipientEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.StreamPageLoadedEvent;
-import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.StreamViewsLoadedEvent;
-import org.eurekastreams.web.client.events.SwitchedToGroupStreamEvent;
-import org.eurekastreams.web.client.events.SwitchedToStreamViewEvent;
-import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.UserLoggedInEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserCustomStreamsResponseEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserGroupStreamsResponseEvent;
-import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.CustomStreamModel;
 import org.eurekastreams.web.client.model.GroupStreamListModel;
 import org.eurekastreams.web.client.ui.Session;
@@ -113,32 +105,6 @@ public class StreamContent extends Composite
         streamView = new StreamPanel(true);
         streamPanel.add(streamView);
 
-        Session.getInstance().getEventBus().addObserver(SwitchedToStreamViewEvent.class,
-                new Observer<SwitchedToStreamViewEvent>()
-                {
-                    public void update(final SwitchedToStreamViewEvent event)
-                    {
-                        // streamView.setPostScope(new StreamScope(ScopeType.PERSON, session.getCurrentPerson()
-                        // .getAccountId()));
-                        // streamView.setView(event.getView());
-                        // streamView.setPostable(true);
-
-                        Session.getInstance().getEventBus().notifyObservers(new ChangeShowStreamRecipientEvent(true));
-                    }
-                });
-
-        Session.getInstance().getEventBus().addObserver(SwitchedToGroupStreamEvent.class,
-                new Observer<SwitchedToGroupStreamEvent>()
-                {
-                    public void update(final SwitchedToGroupStreamEvent event)
-                    {
-                        // GroupStreamDTO group = event.getView();
-                        // streamView.setPostable(group.isPostable());
-                        // streamView.setView(event.getView().getStreamView());
-
-                        Session.getInstance().getEventBus().notifyObservers(new ChangeShowStreamRecipientEvent(false));
-                    }
-                });
 
         RootPanel.get().addStyleName("stream");
 
@@ -153,24 +119,7 @@ public class StreamContent extends Composite
             }
         });
 
-        Session.getInstance().getEventBus().addObserver(StreamRequestEvent.class, new Observer<StreamRequestEvent>()
-        {
-            public void update(final StreamRequestEvent event)
-            {
-                HashMap<String, String> values = new HashMap<String, String>();
 
-                if (event.getStreamId() != null)
-                {
-                    values.put("streamId", event.getStreamId().toString());
-                }
-
-                values.put("streamRequest", event.getJson());
-
-                Session.getInstance().getEventBus().notifyObservers(
-                        new UpdateHistoryEvent(new CreateUrlRequest(values)));
-
-            }
-        });
         Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
                 new Observer<UpdatedHistoryParametersEvent>()
                 {
@@ -179,8 +128,7 @@ public class StreamContent extends Composite
                     {
                         if (event.getParameters().get("streamId") == null
                                 && event.getParameters().get("activityId") == null
-                                && event.getParameters().get("groupId") == null
-                                && event.getParameters().get("streamSearch") == null)
+                                && event.getParameters().get("groupId") == null)
                         {
                             selectFirstView = true;
 

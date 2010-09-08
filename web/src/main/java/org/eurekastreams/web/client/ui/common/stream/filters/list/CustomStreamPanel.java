@@ -17,8 +17,11 @@ package org.eurekastreams.web.client.ui.common.stream.filters.list;
 
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamFilter;
+import org.eurekastreams.web.client.events.ChangeShowStreamRecipientEvent;
 import org.eurekastreams.web.client.events.HideNotificationEvent;
 import org.eurekastreams.web.client.events.StreamRequestEvent;
+import org.eurekastreams.web.client.events.UpdateHistoryEvent;
+import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.stream.filters.FilterPanel;
@@ -133,7 +136,6 @@ public class CustomStreamPanel extends Composite implements FilterPanel
 
         container.add(panel);
         initWidget(container);
-
     }
 
     /**
@@ -173,7 +175,12 @@ public class CustomStreamPanel extends Composite implements FilterPanel
      */
     public void activate()
     {
+        Session.getInstance().getEventBus().notifyObservers(
+                new StreamRequestEvent(stream.getName(), stream.getId(), stream.getRequest()));
+
         this.addStyleName("active");
+
+        Session.getInstance().getEventBus().notifyObservers(new ChangeShowStreamRecipientEvent(true));
     }
 
     /**
@@ -200,6 +207,6 @@ public class CustomStreamPanel extends Composite implements FilterPanel
     public void updateHistory()
     {
         Session.getInstance().getEventBus().notifyObservers(
-                new StreamRequestEvent(stream.getName(), stream.getId(), stream.getRequest()));
+                new UpdateHistoryEvent(new CreateUrlRequest("streamId", String.valueOf(stream.getId()), true)));
     }
 }

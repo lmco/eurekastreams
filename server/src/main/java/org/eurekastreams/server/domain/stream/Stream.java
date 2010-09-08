@@ -104,4 +104,14 @@ public class Stream extends DomainEntity implements Serializable, StreamFilter
         return this.readOnly;
     }
 
+    /**
+     * Dont really need this.
+     * @param inId id.
+     */
+    @Override
+    public void setId(final long inId)
+    {
+        super.setId(inId);
+    }
+
 }
