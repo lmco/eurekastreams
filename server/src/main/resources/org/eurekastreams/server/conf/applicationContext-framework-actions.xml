@@ -416,7 +416,16 @@
 	<!-- Get the popular hashtags for a person, org, or group stream -->
 	<bean id="getPopularHashTagsForStream" class="org.eurekastreams.commons.actions.service.ServiceAction">
 		<constructor-arg ref="noValidationStrategy" />
-		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+			<!-- 
+				Authorizor checks if the stream is for a group, and if so, checks if it's private, and if so, makes sure
+				user is either a coordinator or follower of the group.
+			 -->
+			<bean class="org.eurekastreams.server.action.authorization.stream.StreamPopularHashTagsAuthorization">
+				<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+				<constructor-arg ref="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper" />
+			</bean>
+		</constructor-arg>
 		<constructor-arg>
 			<bean class="org.eurekastreams.server.action.execution.stream.GetStreamPopularHashTagsExecution">
 				<constructor-arg ref="findPopularHashTagsForStreamMapper" />

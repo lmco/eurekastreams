@@ -32,7 +32,8 @@ import org.hibernate.criterion.Restrictions;
 /**
  * Gets a list of group objects for a given list of group ids.
  */
-public class GetDomainGroupsByIds extends CachedDomainMapper implements DomainMapper<List<Long>, List>
+public class GetDomainGroupsByIds extends CachedDomainMapper implements
+        DomainMapper<List<Long>, List<DomainGroupModelView>>
 {
     /**
      * Strategy for querying a domain group model view from the database.
