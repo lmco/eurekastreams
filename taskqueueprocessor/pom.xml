@@ -192,7 +192,7 @@
 					         <initialMemorySize>2048M</initialMemorySize>
 					         <maxMemorySize>4096M</maxMemorySize>
 					         <systemProperties>
-					             <systemProperty>log.home=/var/eureka/tqp/logs</systemProperty>
+					             <systemProperty>log.home=/var/log/eureka/tqp</systemProperty>
 					             <systemProperty>http.proxyHost=${build.system.proxyhost}</systemProperty>
 					             <systemProperty>http.proxyPort=${build.system.proxyport}</systemProperty>
 					             <systemProperty>http.proxySet=${build.system.proxyset}</systemProperty>
