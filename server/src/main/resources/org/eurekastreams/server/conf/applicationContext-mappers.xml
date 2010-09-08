@@ -154,42 +154,63 @@
 		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
 
 
+	<!--
+		Mapper that goes to cache for the popular hashtags for a stream.  If it exists, it checks how long ago it was generated. 
+		If it was too long ago, it throws the cached value away and falls back to the database, then stores that result in cache.
+	 -->
 	<bean id="findPopularHashTagsForStreamMapper"
 		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		
+		<!-- CACHE COMPONENT -->
 		<constructor-arg>
-			<!-- Go to cache -->
-			<bean class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
-				<!-- Transformer from stream populator hash tags request to cache key suffix -->
-				<constructor-arg>
-					<bean class="org.eurekastreams.server.persistence.mappers.cache.StreamPopularHashTagsRequestCacheKeySuffixTransformer" />
-				</constructor-arg>
 			
-				<!-- Cache Key Prefix -->				
-				<constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.POPULAR_HASH_TAGS_BY_STREAM_TYPE_AND_SHORT_NAME" />
+			<!-- Cache mapper isn't partial results - wrap it -->
+			<bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+				<constructor-arg>
 				
-				<!-- Not a list of lists -->
-				<constructor-arg value="False" />
-				
-				<property name="cache" ref="memcachedCache" />
+					<!-- Get the value from cache, and check to make sure it's not too old -->
+					<bean class="org.eurekastreams.server.persistence.mappers.StreamPopularHashTagsMapper">		
+						
+						<!-- Use the reusable single-value cache mapper to get the value -->
+						<constructor-arg>
+							<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
+								<!-- Transformer from stream populator hash tags request to cache key suffix -->
+								<constructor-arg>
+									<bean class="org.eurekastreams.server.persistence.mappers.cache.StreamPopularHashTagsRequestCacheKeySuffixTransformer" />
+								</constructor-arg>
+							
+								<!-- Cache Key Prefix -->				
+								<constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.POPULAR_HASH_TAGS_BY_STREAM_TYPE_AND_SHORT_NAME" />
+								
+								<property name="cache" ref="memcachedCache" />
+							</bean>
+						</constructor-arg>
+						
+						<!-- Number of minutes that we keep popular hashtags in cache - 12 hours -->
+						<constructor-arg value="720" />
+					</bean>
+				</constructor-arg>
 			</bean>
 		</constructor-arg>
+		
+		<!-- DATABASE COMPONENT -->
 		<constructor-arg>
 			<!-- Database mapper to fall back on if not found in cache -->
 			<bean class="org.eurekastreams.server.persistence.mappers.db.StreamPopularHashTagsDbMapper">
 			
-				<!-- Number of hours to look back for popular hashtags -->
-				<constructor-arg value="720" />
+				<!-- Number of hours to look back for popular hashtags - 1 week -->
+				<constructor-arg value="10080" />
 				
 				<!-- Max number of hashtags to return -->
 				<constructor-arg value="10" />
 			</bean>
 		</constructor-arg>
 		
-		<!-- Results combiner - pick the non-null one -->
+		<!-- RESULTS COMBINER - pick the non-null one -->
 		<constructor-arg ref="nonNullResultsCombiner" />
 		
+		<!-- CACHE REFRESHER -->
 		<constructor-arg>
-			<!-- Cache refresher -->
 			<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
 				<!-- Cache Key Prefix -->				
 				<constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.POPULAR_HASH_TAGS_BY_STREAM_TYPE_AND_SHORT_NAME" />
