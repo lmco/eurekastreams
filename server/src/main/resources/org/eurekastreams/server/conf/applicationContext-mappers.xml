@@ -13,32 +13,49 @@
 	-->
 
 	<!-- Results combiner - just returns the first non-null value -->
-	<bean id="nonNullResultsCombiner" class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-	  
-	<bean name="hashTagExtractor" class="org.eurekastreams.server.domain.strategies.HashTagExtractor"/>
-	
-	<bean name="activityContentExtractor" class="org.eurekastreams.server.persistence.mappers.stream.ActivityContentExtractor" />
-	  
-	<!-- Mapper to get the hash tags from the database - insert if not already in the database -->
-	<bean id="getHashTagsFromDatabaseMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+	<bean id="nonNullResultsCombiner"
+		class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
+
+	<bean name="hashTagExtractor"
+		class="org.eurekastreams.server.domain.strategies.HashTagExtractor" />
+
+	<bean name="activityContentExtractor"
+		class="org.eurekastreams.server.persistence.mappers.stream.ActivityContentExtractor" />
+
+	<!--
+		Mapper to get the hash tags from the database - insert if not already
+		in the database
+	-->
+	<bean id="getHashTagsFromDatabaseMapper"
+		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<constructor-arg>
 			<!-- Partial database mapper -->
-			<bean class="org.eurekastreams.server.persistence.mappers.db.PartialHashTagDbMapper" />
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.db.PartialHashTagDbMapper" />
 		</constructor-arg>
-		
+
 		<constructor-arg>
-			<!-- Hashtag generation mapper to create new ones if not found in the database -->
-			<bean class="org.eurekastreams.server.persistence.mappers.HashTagBuilderMapper" />
+			<!--
+				Hashtag generation mapper to create new ones if not found in the
+				database
+			-->
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.HashTagBuilderMapper" />
 		</constructor-arg>
-		
-		<constructor-arg >
-			<!-- Combiner to put together the generated and existing hashtags together -->
-			<bean class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
+
+		<constructor-arg>
+			<!--
+				Combiner to put together the generated and existing hashtags
+				together
+			-->
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
 		</constructor-arg>
-		
+
 		<constructor-arg>
 			<!-- Database refresher -->
-			<bean class="org.eurekastreams.server.persistence.mappers.db.HashTagDbRefreshStrategy" />
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.db.HashTagDbRefreshStrategy" />
 		</constructor-arg>
 	</bean>
 	<!-- ****  **** -->
@@ -150,7 +167,8 @@
 		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITY_SECURITY_BY_ID"
 		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
 
-	<bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.POPULAR_HASH_TAGS_BY_STREAM_TYPE_AND_SHORT_NAME"
+	<bean
+		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.POPULAR_HASH_TAGS_BY_STREAM_TYPE_AND_SHORT_NAME"
 		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
 
 
@@ -205,7 +223,7 @@
 				<constructor-arg value="10" />
 			</bean>
 		</constructor-arg>
-		
+
 		<!-- RESULTS COMBINER - pick the non-null one -->
 		<constructor-arg ref="nonNullResultsCombiner" />
 		
@@ -214,17 +232,18 @@
 			<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
 				<!-- Cache Key Prefix -->				
 				<constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.POPULAR_HASH_TAGS_BY_STREAM_TYPE_AND_SHORT_NAME" />
-			
+
 				<!-- Cache key suffix transformer -->
 				<constructor-arg>
-					<bean class="org.eurekastreams.server.persistence.mappers.cache.StreamPopularHashTagsRequestCacheKeySuffixTransformer" />
+					<bean
+						class="org.eurekastreams.server.persistence.mappers.cache.StreamPopularHashTagsRequestCacheKeySuffixTransformer" />
 				</constructor-arg>
-				
+
 				<property name="cache" ref="memcachedCache" />
 			</bean>
 		</constructor-arg>
 	</bean>
-	
+
 
 	<bean id="bulkActivitySecurityMapper"
 		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
@@ -669,69 +688,6 @@
 		<constructor-arg value="5" />
 	</bean>
 
-	<!-- Mapper to search a StreamView -->
-	<bean id="searchActivitiesMapper"
-		class="org.eurekastreams.server.search.stream.SearchActivitiesMapper">
-		<property name="getStreamScopesByStreamViewIdMapper" ref="getStreamScopesByStreamViewIdMapper" />
-		<property name="getPeopleByAccountIdsMapper" ref="bulkPeopleByAccountIdMapper" />
-		<property name="orgCache" ref="organizationHierarchyCache" />
-		<property name="searchResultScoperFactory">
-			<bean
-				class="org.eurekastreams.server.search.stream.SearchResultListScoperFactory">
-				<!--
-					NOTE: This is the page size to ask Lucene for when searching lists.
-					We pull back this number of results,then cleverly intersect it with
-					the list of activity IDs from memcached. It's only used when a
-					search has to check a followed people or starred item stream.
-				-->
-				<constructor-arg value="100" />
-			</bean>
-		</property>
-		<property name="streamViewActivityIdListPageFetcherFactory">
-			<bean
-				class="org.eurekastreams.server.search.stream.StreamViewActivityIdListPageFetcherFactory">
-				<property name="compositeStreamActivityIdsMapper" ref="compositeStreamActivityIdsMapper" />
-			</bean>
-		</property>
-		<property name="activityIdSearchPageFetcherFactory" ref="activityIdSearchPageFetcherFactory" />
-		<!-- property name="pageSize" value="10" -->
-		<property name="getDomainGroupsByShortNames" ref="bulkDomainGroupsByShortNameMapper" />
-		<property name="bulkActivitiesMapper" ref="bulkActivitiesMapper" />
-		<property name="searchRequestBuilder">
-			<bean
-				class="org.eurekastreams.commons.search.ProjectionSearchRequestBuilder">
-				<property name="resultFields">
-					<list>
-						<value>id</value>
-					</list>
-				</property>
-				<property name="resultTypes">
-					<list>
-						<value>org.eurekastreams.server.domain.stream.Activity
-						</value>
-					</list>
-				</property>
-				<property name="queryParserBuilder">
-					<bean class="org.eurekastreams.commons.search.QueryParserBuilder">
-						<constructor-arg value="content" />
-						<constructor-arg>
-							<bean
-								class="org.eurekastreams.commons.search.analysis.HashTagTextStemmerSearchAnalyzer" />
-						</constructor-arg>
-					</bean>
-				</property>
-				<property name="resultTransformer">
-					<bean
-						class="org.eurekastreams.commons.hibernate.SingleFieldResultTransformer">
-						<property name="fieldName" value="id" />
-					</bean>
-				</property>
-			</bean>
-		</property>
-		<property name="buildActivityStreamSearchStringForUserMapper"
-			ref="buildActivityStreamSearchStringForUserMapper" />
-	</bean>
-
 	<bean id="everyoneActivityResultsQueryBuilder" class="org.eurekastreams.commons.search.QueryParserBuilder"
 		scope="prototype">
 		<constructor-arg value="_hibernate_class" />
@@ -829,11 +785,11 @@
 		<constructor-arg ref="memcachedClient-domainGroupCacheLoader" />
 		<constructor-arg value="10000" />
 	</bean>
-	
+
 	<bean
 		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITY_BY_ID"
 		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
-		
+
 	<bean id="bulkActivitiesMapper"
 		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<constructor-arg>

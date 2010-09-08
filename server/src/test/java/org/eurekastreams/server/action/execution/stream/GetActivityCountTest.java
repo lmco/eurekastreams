@@ -15,15 +15,13 @@
  */
 package org.eurekastreams.server.action.execution.stream;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.Assert;
 
-import org.eurekastreams.commons.actions.ExecutionStrategy;
+import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
-import org.eurekastreams.server.domain.PagedSet;
-import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -32,14 +30,14 @@ import org.junit.Test;
 
 /**
  * Tests the counting action.
- *
+ * 
  */
-public class GetUnseenActivityCountByCompositeStreamExecutionTest
+public class GetActivityCountTest
 {
     /**
      * System under test.
      */
-    private GetUnseenActivityCountByCompositeStreamExecution sut;
+    private GetActivityCount sut;
 
     /**
      * Context for building mock objects.
@@ -54,7 +52,7 @@ public class GetUnseenActivityCountByCompositeStreamExecutionTest
     /**
      * Exe mock.
      */
-    private ExecutionStrategy<PrincipalActionContext> exeMock = context.mock(ExecutionStrategy.class);
+    private GetActivityIdsByJsonRequest getIdsMock = context.mock(GetActivityIdsByJsonRequest.class);
 
     /**
      * Test. Put in 3 things, get a count of 3.
@@ -62,25 +60,36 @@ public class GetUnseenActivityCountByCompositeStreamExecutionTest
     @Test
     public void execute()
     {
-        final PagedSet<ActivityDTO> activities = new PagedSet<ActivityDTO>();
-        List<ActivityDTO> activityList = new ArrayList<ActivityDTO>();
-        activityList.add(new ActivityDTO());
-        activityList.add(new ActivityDTO());
-        activityList.add(new ActivityDTO());
+        final List<Long> activities = Arrays.asList(1L, 2L, 3L);
 
-        activities.setPagedSet(activityList);
+        sut = new GetActivityCount(getIdsMock);
 
-        sut = new GetUnseenActivityCountByCompositeStreamExecution(exeMock);
-
+        final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
+        final String request = "{}";
+        final Long userId = 1L;
+        
+        final Principal principle = context.mock(Principal.class); 
+        
         context.checking(new Expectations()
         {
             {
-                oneOf(exeMock).execute(null);
+                oneOf(actionContext).getParams();
+                will(returnValue(request));
+                
+                oneOf(actionContext).getPrincipal();
+                will(returnValue(principle));
+                
+                oneOf(principle).getId();
+                will(returnValue(userId));
+                
+                oneOf(getIdsMock).execute(request, userId);
                 will(returnValue(activities));
             }
         });
 
-        Integer result = (Integer) sut.execute(null);
+        Integer result = (Integer) sut.execute(actionContext);
         Assert.assertEquals(new Integer(3), result);
+        
+        context.assertIsSatisfied();
     }
 }
