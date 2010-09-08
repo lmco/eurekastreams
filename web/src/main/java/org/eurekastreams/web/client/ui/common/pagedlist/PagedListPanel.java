@@ -84,6 +84,11 @@ public class PagedListPanel extends FlowPanel
      * Contains the sort switchers.
      */
     private FlowPanel sortContainer = new FlowPanel();
+    
+    /**
+     * Waiting spinner.
+     */
+    FlowPanel waitSpinner = new FlowPanel();
 
     /**
      * Whether or not this has been initiated with a filter. The first filter will initiate it.
@@ -138,6 +143,8 @@ public class PagedListPanel extends FlowPanel
     {
         listId = inListId;
         bottomPager = new Pager("filteredPager" + listId, true);
+        
+        waitSpinner.addStyleName("wait-spinner");
 
         this.addStyleName("connection-master");
         filterContainer.add(new Label("View:"));
@@ -153,6 +160,7 @@ public class PagedListPanel extends FlowPanel
         sortContainer.addStyleName("options");
         bottomPager.addStyleName("bottom-pager");
 
+        this.add(waitSpinner);
         this.add(renderContainer);
 
         Session.getInstance().getEventBus().addObserver(PagerUpdatedEvent.class, new Observer<PagerUpdatedEvent>()
@@ -268,6 +276,7 @@ public class PagedListPanel extends FlowPanel
         request.setEndIndex(endIndex);
         renderContainer.addStyleName("hidden");
         fetchers.get(currentFilter).fetch(request, false);
+        waitSpinner.setVisible(true);
     }
 
     /**
@@ -421,6 +430,7 @@ public class PagedListPanel extends FlowPanel
         }
         pageRenderer.render(renderContainer, render, items, noItemsMessage);
         renderContainer.removeStyleName("hidden");
+        waitSpinner.setVisible(false);
 
         bottomPager.setTotal(items.getTotal());
     }
