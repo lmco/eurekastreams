@@ -22,12 +22,11 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.Task;
-import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SetBannerEvent;
 import org.eurekastreams.web.client.events.StreamReinitializeRequestEvent;
+import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.data.BaseDataResponseEvent;
 import org.eurekastreams.web.client.events.data.DeletedPersonFollowersResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonFollowersResponseEvent;
@@ -52,6 +51,7 @@ import org.eurekastreams.web.client.ui.common.LeftBarPanel;
 import org.eurekastreams.web.client.ui.common.pagedlist.GroupRenderer;
 import org.eurekastreams.web.client.ui.common.pagedlist.PagedListPanel;
 import org.eurekastreams.web.client.ui.common.pagedlist.PersonRenderer;
+import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
 import org.eurekastreams.web.client.ui.common.tabs.SimpleTab;
 import org.eurekastreams.web.client.ui.common.tabs.TabContainerPanel;
@@ -152,7 +152,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param accountId
      *            the account id.
      */
@@ -195,7 +195,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * We have the Person, so set up the Profile summary.
-     *
+     * 
      * @param inPerson
      *            the person whose profile is being displayed
      */
@@ -276,10 +276,12 @@ public class PersonalProfilePanel extends FlowPanel
             setUpChecklist();
         }
 
-        // Make the Stream Tab
-        final StreamPanel streamContent = new StreamPanel(processor, person.getEntityStreamView(), (person
-                .isStreamPostable() || (currentUser.getAccountId() == person.getAccountId())), false, new StreamScope(
-                ScopeType.PERSON, person.getAccountId()), person.getDisplayName());
+        final StreamPanel streamContent = new StreamPanel();
+
+        String jsonRequest = StreamJsonRequestFactory.addRecipient(EntityType.PERSON, person.getAccountId(),
+                StreamJsonRequestFactory.getEmptyRequest()).toString();
+
+        EventBus.getInstance().notifyObservers(new StreamRequestEvent(person.getDisplayName(), jsonRequest));
 
         portalPage = new TabContainerPanel();
 
@@ -314,8 +316,8 @@ public class PersonalProfilePanel extends FlowPanel
                 "Upload your picture, share a list of your skills and interests, provide a description of what you "
                         + "do, and add your contact information."), (person.getAvatarId() != null
                 && person.getJobDescription() != null && person.getBackground() != null && person.getBackground()
-                .getBackgroundItems(BackgroundItemType.SKILL) != null) && person.getBackground()
-                .getBackgroundItems(BackgroundItemType.SKILL).size() > 0);
+                .getBackgroundItems(BackgroundItemType.SKILL) != null)
+                && person.getBackground().getBackgroundItems(BackgroundItemType.SKILL).size() > 0);
 
         final Task biographyTask = new Task("Biography", "Provide an overview of your professional background.",
                 "Work History & Education");
@@ -376,7 +378,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * Creates and sets up the connections tab content.
-     *
+     * 
      * @param inPerson
      *            Person whose profile is being displayed.
      * @return Tab content.

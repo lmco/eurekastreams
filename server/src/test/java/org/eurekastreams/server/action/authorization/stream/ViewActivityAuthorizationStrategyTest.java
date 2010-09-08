@@ -15,19 +15,14 @@
  */
 package org.eurekastreams.server.action.authorization.stream;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.server.action.execution.stream.ActivitySecurityTrimmer;
-import org.eurekastreams.server.domain.stream.ActivitySecurityDTO;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;

@@ -158,7 +158,7 @@ public class LikeCountWidget extends Composite
 
         EventBus.getInstance().addObserver(UpdateHistoryEvent.class, new Observer<UpdateHistoryEvent>()
         {
-            public void update(UpdateHistoryEvent arg1)
+            public void update(final UpdateHistoryEvent arg1)
             {
                 EffectsFacade.nativeFadeOut(usersWhoLikedPanelWrapper.getElement(), false);
             }

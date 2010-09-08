@@ -39,6 +39,14 @@ public class ActivitySecurityTrimmer
      */
     private GetPrivateCoordinatedAndFollowedGroupIdsForUser getVisibleGroupsForUserMapper;
 
+    /**
+     * Constructor.
+     * 
+     * @param inSecurityMapper
+     *            security mapper.
+     * @param inGetVisibleGroupsForUserMapper
+     *            group visible mapper.
+     */
     public ActivitySecurityTrimmer(final DomainMapper<List<Long>, Collection<ActivitySecurityDTO>> inSecurityMapper,
             final GetPrivateCoordinatedAndFollowedGroupIdsForUser inGetVisibleGroupsForUserMapper)
     {

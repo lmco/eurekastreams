@@ -15,51 +15,47 @@
  */
 package org.eurekastreams.web.client.model;
 
-import org.eurekastreams.server.action.request.stream.GetStreamSearchResultsRequest;
+import java.io.Serializable;
+
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.web.client.events.data.GotActivitySearchResponseEvent;
+import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
 
 /**
- * Activity Search Model.
- *
+ * Stream Model.
+ * 
  */
-public class ActivitySearchModel extends BaseModel implements Fetchable<GetStreamSearchResultsRequest>
+public class StreamModel extends BaseModel implements Fetchable<Serializable>
 {
     /**
      * Singleton.
      */
-    private static ActivitySearchModel model = new ActivitySearchModel();
+    private static StreamModel model = new StreamModel();
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
-    public static ActivitySearchModel getInstance()
+    public static StreamModel getInstance()
     {
         return model;
     }
 
     /**
-     * Retrieves a list of flagged activities for the org.
-     *
-     * @param inRequest
-     *            Request.
-     * @param inUseClientCacheIfAvailable
-     *            If ok to return cached results.
+     * {@inheritDoc}
      */
-    public void fetch(final GetStreamSearchResultsRequest inRequest, final boolean inUseClientCacheIfAvailable)
+    public void fetch(final Serializable request, final boolean useClientCacheIfAvailable)
     {
-        super.callReadAction("getStreamSearchResults", inRequest,
+        super.callReadAction("getActivitiesByRequest", request,
                 new OnSuccessCommand<PagedSet<ActivityDTO>>()
                 {
                     public void onSuccess(final PagedSet<ActivityDTO> response)
                     {
                         Session.getInstance().getEventBus().notifyObservers(
-                                new GotActivitySearchResponseEvent(response));
+                                new GotStreamResponseEvent(response));
                     }
-                }, inUseClientCacheIfAvailable);
+                }, useClientCacheIfAvailable);
     }
 }

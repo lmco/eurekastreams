@@ -24,17 +24,14 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.RestrictedDomainGroup;
 import org.eurekastreams.server.domain.Task;
-import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.domain.stream.StreamView;
-import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SetBannerEvent;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.StreamReinitializeRequestEvent;
+import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.SwitchToFilterOnPagedFilterPanelEvent;
-import org.eurekastreams.web.client.events.data.AuthorizeUpdateGroupResponseEvent;
 import org.eurekastreams.web.client.events.data.BaseDataResponseEvent;
 import org.eurekastreams.web.client.events.data.DeletedGroupMemberResponseEvent;
 import org.eurekastreams.web.client.events.data.DeletedRequestForGroupMembershipResponseEvent;
@@ -61,6 +58,7 @@ import org.eurekastreams.web.client.ui.common.pagedlist.PersonRenderer;
 import org.eurekastreams.web.client.ui.common.pagedlist.PersonRequestingGroupMembershipRenderer;
 import org.eurekastreams.web.client.ui.common.pagedlist.RemovableGroupMemberPersonRenderer;
 import org.eurekastreams.web.client.ui.common.pagedlist.SingleColumnPagedListRenderer;
+import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
 import org.eurekastreams.web.client.ui.common.tabs.SimpleTab;
 import org.eurekastreams.web.client.ui.common.tabs.TabContainerPanel;
@@ -160,7 +158,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param accountId
      *            the account id.
      */
@@ -169,9 +167,8 @@ public class GroupProfilePanel extends FlowPanel
         RootPanel.get().addStyleName("profile");
         RootPanel.get().addStyleName("group");
 
-        profileSettingsLink =
-                new Hyperlink("Configure", Session.getInstance().generateUrl(
-                        new CreateUrlRequest(Page.GROUP_SETTINGS, accountId)));
+        profileSettingsLink = new Hyperlink("Configure", Session.getInstance().generateUrl(
+                new CreateUrlRequest(Page.GROUP_SETTINGS, accountId)));
 
         ActionProcessor inProcessor = Session.getInstance().getActionProcessor();
 
@@ -205,7 +202,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * We have the Group, so set up the Profile summary.
-     *
+     * 
      * @param inGroup
      *            the group whose profile is being displayed
      */
@@ -241,14 +238,13 @@ public class GroupProfilePanel extends FlowPanel
             return;
         }
 
-        checklistPanel =
-                new ChecklistProgressBarPanel("Group Profile Checklist",
-                        "Completing the group profile is easy, upload a group avatar, "
-                                + "enter a short description of the group stream " + "and an overview of the group "
-                                + "and the members you are looking to participate in the stream. "
-                                + "Groups that fill out their profile are more likely "
-                                + "to be found by others across your organization.", new CreateUrlRequest(
-                                Page.GROUP_SETTINGS, group.getShortName()));
+        checklistPanel = new ChecklistProgressBarPanel("Group Profile Checklist",
+                "Completing the group profile is easy, upload a group avatar, "
+                        + "enter a short description of the group stream " + "and an overview of the group "
+                        + "and the members you are looking to participate in the stream. "
+                        + "Groups that fill out their profile are more likely "
+                        + "to be found by others across your organization.", new CreateUrlRequest(Page.GROUP_SETTINGS,
+                        group.getShortName()));
 
         leftBarPanel.clear();
         portalPageContainer.clear();
@@ -278,49 +274,49 @@ public class GroupProfilePanel extends FlowPanel
             }
         });
 
-        PeopleListPanel coordinatorPanel =
-                new PeopleListPanel(inGroup.getCoordinators(), "Coordinators", 2, new CreateUrlRequest("tab",
-                        "Connections", true), new SwitchToFilterOnPagedFilterPanelEvent("connections", "Coordinators"));
+        PeopleListPanel coordinatorPanel = new PeopleListPanel(inGroup.getCoordinators(), "Coordinators", 2,
+                new CreateUrlRequest("tab", "Connections", true), new SwitchToFilterOnPagedFilterPanelEvent(
+                        "connections", "Coordinators"));
 
         leftBarPanel.addChildWidget(about);
         leftBarPanel.addChildWidget(connectionsPanel);
         leftBarPanel.addChildWidget(coordinatorPanel);
 
-        // Make the Stream Tab
-        StreamView streamView = group.getEntityStreamView();
-        streamView.setName(group.getName());
-        final StreamPanel streamContent =
-                new StreamPanel(processor, streamView, group.isStreamPostable(), false, new StreamScope(
-                        ScopeType.GROUP, inGroup.getShortName()), inGroup.getName());
+        final StreamPanel streamContent = new StreamPanel();
+        
+        String jsonRequest = StreamJsonRequestFactory.addRecipient(EntityType.GROUP, group.getShortName(),
+                StreamJsonRequestFactory.getEmptyRequest()).toString();
 
-        eventBus.addObserver(AuthorizeUpdateGroupResponseEvent.class,
-                new Observer<AuthorizeUpdateGroupResponseEvent>()
-                {
-                    public void update(final AuthorizeUpdateGroupResponseEvent event)
-                    {
-                        profileSettingsLink.removeStyleName("hidden");
-                        RootPanel.get().addStyleName("authenticated");
-                        setUpChecklist();
+        EventBus.getInstance().notifyObservers(new StreamRequestEvent(group.getName(), jsonRequest));
 
-                        if (!group.isPublicGroup())
-                        {
-                            final SimpleTab adminTab = buildAdminTab();
-                            portalPage.addTab(adminTab);
-
-                            if ("Admin".equals(Session.getInstance().getParameterValue("tab")))
-                            {
-                                portalPage.switchToTab("Admin");
-                            }
-                        }
-
-                        // if posting is disabled for group, re-enable it since
-                        // user has org/group coord permissions.
-                        if (!group.isStreamPostable())
-                        {
-                            streamContent.setPostable(true);
-                        }
-                    }
-                });
+        // eventBus.addObserver(AuthorizeUpdateGroupResponseEvent.class,
+        // new Observer<AuthorizeUpdateGroupResponseEvent>()
+        // {
+        // public void update(final AuthorizeUpdateGroupResponseEvent event)
+        // {
+        // profileSettingsLink.removeStyleName("hidden");
+        // RootPanel.get().addStyleName("authenticated");
+        // setUpChecklist();
+        //
+        // if (!group.isPublicGroup())
+        // {
+        // final SimpleTab adminTab = buildAdminTab();
+        // portalPage.addTab(adminTab);
+        //
+        // if ("Admin".equals(Session.getInstance().getParameterValue("tab")))
+        // {
+        // portalPage.switchToTab("Admin");
+        // }
+        // }
+        //
+        // // if posting is disabled for group, re-enable it since
+        // // user has org/group coord permissions.
+        // if (!group.isStreamPostable())
+        // {
+        // streamContent.setPostable(true);
+        // }
+        // }
+        // });
 
         portalPage = new TabContainerPanel();
         portalPage.addTab(new SimpleTab("Stream", streamContent));
@@ -341,7 +337,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Builds the connections tab content.
-     *
+     * 
      * @return The tab.
      */
     private Widget buildConnectionsTabContent()
@@ -359,14 +355,13 @@ public class GroupProfilePanel extends FlowPanel
             }
         });
 
-        eventBus.addObserver(GotGroupCoordinatorsResponseEvent.class,
-                new Observer<GotGroupCoordinatorsResponseEvent>()
-                {
-                    public void update(final GotGroupCoordinatorsResponseEvent event)
-                    {
-                        connectionTabContent.render(event.getResponse(), "This group has no coordinators");
-                    }
-                });
+        eventBus.addObserver(GotGroupCoordinatorsResponseEvent.class, new Observer<GotGroupCoordinatorsResponseEvent>()
+        {
+            public void update(final GotGroupCoordinatorsResponseEvent event)
+            {
+                connectionTabContent.render(event.getResponse(), "This group has no coordinators");
+            }
+        });
 
         // update the list of members after joining/leaving the group
         eventBus.addObservers(new Observer<BaseDataResponseEvent<Integer>>()
@@ -380,9 +375,8 @@ public class GroupProfilePanel extends FlowPanel
             }
         }, InsertedGroupMemberResponseEvent.class, DeletedGroupMemberResponseEvent.class);
 
-        ItemRenderer<PersonModelView> memberRenderer =
-                group.isPublicGroup() ? new PersonRenderer(false) : new RemovableGroupMemberPersonRenderer(group
-                        .getUniqueId());
+        ItemRenderer<PersonModelView> memberRenderer = group.isPublicGroup() ? new PersonRenderer(false)
+                : new RemovableGroupMemberPersonRenderer(group.getUniqueId());
         connectionTabContent.addSet("Members", GroupMembersModel.getInstance(), memberRenderer,
                 new GetFollowersFollowingRequest(EntityType.GROUP, group.getShortName(), 0, 0));
 
@@ -416,7 +410,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Creates a new error report box and centers it on the page.
-     *
+     * 
      * @return The error report box, ready to have content added to it.
      */
     private Panel addNewCenteredErrorBox()
@@ -449,13 +443,12 @@ public class GroupProfilePanel extends FlowPanel
         Label msgHeader = new Label("Profile not found");
         msgHeader.addStyleName("warning-message");
 
-        Hyperlink directoryLink =
-                new Hyperlink("profiles", Session.getInstance().generateUrl(
-                        new CreateUrlRequest(Page.ORGANIZATIONS, "")));
+        Hyperlink directoryLink = new Hyperlink("profiles", Session.getInstance().generateUrl(
+                new CreateUrlRequest(Page.ORGANIZATIONS, "")));
 
         Label msgText1 = new Label("The group profile you were looking for could not be found. Try browsing the  ");
-        Label msgText2 =
-                new Label(" or searching the profiles by entering the name in the \"search profiles\" box above.");
+        Label msgText2 = new Label(
+                " or searching the profiles by entering the name in the \"search profiles\" box above.");
         FlowPanel msgText = new FlowPanel();
         msgText.add(msgText1);
         msgText.add(directoryLink);
@@ -470,7 +463,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Tell the user that this group is restricted.
-     *
+     * 
      * @param inGroup
      *            the restricted access group
      */
@@ -484,9 +477,8 @@ public class GroupProfilePanel extends FlowPanel
         title.addStyleName("group-error-msg-panel-title");
         errorReport.add(title);
 
-        Label message =
-                new Label("To access this group you must request access from the group's coordinator.  "
-                        + "The group coordinator will respond to your request via email.");
+        Label message = new Label("To access this group you must request access from the group's coordinator.  "
+                + "The group coordinator will respond to your request via email.");
         message.addStyleName("group-error-msg-panel-text");
         errorReport.add(message);
 
@@ -515,7 +507,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Tell the user that this group is pending approval.
-     *
+     * 
      * @param inGroup
      *            the group
      */
@@ -529,15 +521,15 @@ public class GroupProfilePanel extends FlowPanel
         title.addStyleName("group-error-msg-panel-title");
         errorReport.add(title);
 
-        Label message =
-                new Label("This group is awaiting an organization coordinator to approve it.  Please try again later.");
+        Label message = new Label(
+                "This group is awaiting an organization coordinator to approve it.  Please try again later.");
         message.addStyleName("group-error-msg-panel-text");
         errorReport.add(message);
     }
 
     /**
      * Builds the admin tab.
-     *
+     * 
      * @return The tab.
      */
     @SuppressWarnings("unchecked")

@@ -140,6 +140,8 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
     @Override
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
+        log.debug("Attempted to parse: " + inActionContext.getParams());
+        
         JSONObject request = JSONObject.fromObject(inActionContext.getParams());
 
         int maxResults = MAXRESULTS;

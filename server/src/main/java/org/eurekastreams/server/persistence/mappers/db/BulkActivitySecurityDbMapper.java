@@ -27,8 +27,8 @@ import org.eurekastreams.server.persistence.mappers.stream.GetStreamsByIds;
 /**
  * Maps activity security information from the DB.
  */
-public class BulkActivitySecurityDbMapper extends BaseArgDomainMapper<List<Long>, List<ActivitySecurityDTO>>
-        implements DomainMapper<List<Long>, List<ActivitySecurityDTO>>
+public class BulkActivitySecurityDbMapper extends BaseArgDomainMapper<List<Long>, List<ActivitySecurityDTO>> implements
+        DomainMapper<List<Long>, List<ActivitySecurityDTO>>
 {
     /**
      * The stream mapper.
@@ -50,13 +50,14 @@ public class BulkActivitySecurityDbMapper extends BaseArgDomainMapper<List<Long>
      * @return security information for the activites in the request.
      */
     public List<ActivitySecurityDTO> execute(final List<Long> inRequest)
-    {       
+    {
         String q = "select new org.eurekastreams.server.domain.stream.ActivitySecurityDTO "
-            + "(id, recipientStreamScope.id, isDestinationStreamPublic) "
-            + "from Activity where id in (:activityIds)";
+                + "(id, recipientStreamScope.id, isDestinationStreamPublic) "
+                + "from Activity where id in (:activityIds)";
 
-        List<ActivitySecurityDTO> results = getEntityManager().createQuery(q).setParameter("activityIds", inRequest).getResultList();
-        
+        List<ActivitySecurityDTO> results = getEntityManager().createQuery(q).setParameter("activityIds", inRequest)
+                .getResultList();
+
         for (ActivitySecurityDTO activitySec : results)
         {
             // fills in data from cached view of stream

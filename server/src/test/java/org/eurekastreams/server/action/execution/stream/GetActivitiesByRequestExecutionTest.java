@@ -21,9 +21,7 @@ import static org.junit.Assert.assertSame;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,10 +32,8 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.domain.stream.ActivitySecurityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.cache.GetPrivateCoordinatedAndFollowedGroupIdsForUser;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
@@ -91,12 +87,6 @@ public class GetActivitiesByRequestExecutionTest
      * bulk mapper mock.
      */
     private DomainMapper<List<Long>, List<ActivityDTO>>  bulkMapper = context.mock(DomainMapper.class);
-
-    /**
-     * Mocked GetPrivateCoordinatedAndFollowedGroupIdsForUser.
-     */
-    private final GetPrivateCoordinatedAndFollowedGroupIdsForUser getVisibleGroupsForUserMapper = context
-            .mock(GetPrivateCoordinatedAndFollowedGroupIdsForUser.class);
 
     /**
      * Account id of the person.
@@ -167,11 +157,6 @@ public class GetActivitiesByRequestExecutionTest
      * Activity #9.
      */
     private final ActivityDTO activity9Public = new ActivityDTO();
-
-    /**
-     * Group that the person has access to see private activity for.
-     */
-    private final Long personPrivateGroup = 3827L;
 
     /**
      * Memcache data source.
@@ -258,7 +243,7 @@ public class GetActivitiesByRequestExecutionTest
         StreamEntityDTO destinationStream = new StreamEntityDTO();
         destinationStream.setDestinationEntityId(1L);
 
-        destinationStream.setDestinationEntityId(personPrivateGroup);
+        destinationStream.setDestinationEntityId(1L);
         activity2.setDestinationStream(destinationStream);
         activity3Public.setDestinationStream(destinationStream);
         activity4.setDestinationStream(destinationStream);
@@ -353,9 +338,6 @@ public class GetActivitiesByRequestExecutionTest
 
                 oneOf(peopleMapper).execute(Arrays.asList(personAccountId));
                 will(returnValue(Arrays.asList(personModel)));
-
-                oneOf(getVisibleGroupsForUserMapper).execute(personId);
-                will(returnValue(new HashSet<Long>()));                
             }
         });
 
@@ -435,22 +417,19 @@ public class GetActivitiesByRequestExecutionTest
                 will(returnValue(activityIdsFirstPass));
 
                 oneOf(securityTrimmer).trim(activityIdsFirstPass, personId);
-                will(returnValue(activityIdsFirstPass));
+                will(returnValue(Arrays.asList(9L)));
 
                 oneOf(memcacheDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
                 will(returnValue(activityIdsSecondPass));
 
                 oneOf(securityTrimmer).trim(activityIdsSecondPassNewItems, personId);
-                will(returnValue(activityIdsSecondPassNewItems));
+                will(returnValue(new ArrayList<Long>()));
 
                 oneOf(memcacheDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
                 will(returnValue(activityIdsThirdPass));
 
                 oneOf(securityTrimmer).trim(activityIdsThirdPassNewItems, personId);
-                will(returnValue(activityIdsThirdPassNewItems));
-
-                oneOf(getVisibleGroupsForUserMapper).execute(personId);
-                will(returnValue(new HashSet<Long>()));
+                will(returnValue(Arrays.asList(3L)));
 
                 oneOf(bulkMapper).execute(with(expectedResultsIds));
                 will(returnValue(expectedResults));
@@ -483,9 +462,6 @@ public class GetActivitiesByRequestExecutionTest
 
         final PersonModelView personModel = new PersonModelView();
         
-        final HashSet<Long> usersGroups = new HashSet<Long>();
-        usersGroups.add(personPrivateGroup);
-
         final List<ActivityDTO> expectedResults = new ArrayList<ActivityDTO>();
         expectedResults.add(activity6);
         expectedResults.add(activity5);
@@ -525,9 +501,6 @@ public class GetActivitiesByRequestExecutionTest
 
                 oneOf(securityTrimmer).trim(activityIds, personId);
                 will(returnValue(activityIds));
-
-                oneOf(getVisibleGroupsForUserMapper).execute(personId);
-                will(returnValue(usersGroups));
 
                 oneOf(bulkMapper).execute(with(expectedResultsIds));
                 will(returnValue(expectedResults));

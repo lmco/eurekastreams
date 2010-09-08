@@ -22,7 +22,6 @@ import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamView;
-import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.StreamReinitializeRequestEvent;
 import org.eurekastreams.web.client.events.StreamSearchBeginEvent;
@@ -34,7 +33,6 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LabeledTextBox;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
-import org.eurekastreams.web.client.ui.common.stream.StreamPanel.Mode;
 import org.eurekastreams.web.client.ui.common.stream.filters.search.StreamSearchDialogContent;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -116,7 +114,7 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
     /**
      * The mode of the list (needed for the "add gadget" link).
      */
-    Mode mode = Mode.LIST;
+    //Mode mode = Mode.LIST;
 
     /**
      * The streamScope of the list (also needed for the "add gadget" link).
@@ -289,7 +287,7 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
                             setAddGadgetLink(event.getSearchText().replaceAll(" ", "+"), String.valueOf(event
                                     .getSearch().getId()), event.getSearch().getName());
                         }
-                        mode = Mode.SEARCHING;
+                        //mode = Mode.SEARCHING;
                     }
                 });
     }
@@ -392,26 +390,26 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
         String searchId = "";
 
         String gadgetTitle = streamView.getName();
-        if (mode == Mode.SEARCHING || mode == Mode.SAVED_SEARCH)
-        {
-            filterType = "streamsearch";
-            streamType = "streamsearch";
-            gadgetTitle = inSearchName;
-            searchId = filterId;
-            filterId = inSearchId;
-        }
-        else if (streamScope != null && streamScope.getScopeType() == ScopeType.GROUP)
-        {
-            streamType = "groupstream";
-        }
-        else if (streamScope != null && streamScope.getScopeType() == ScopeType.PERSON)
-        {
-            streamType = "personstream";
-        }
-        else if (streamScope != null && streamScope.getScopeType() == ScopeType.ORGANIZATION)
-        {
-            streamType = "orgstream";
-        }
+//        if (mode == Mode.SEARCHING || mode == Mode.SAVED_SEARCH)
+//        {
+//            filterType = "streamsearch";
+//            streamType = "streamsearch";
+//            gadgetTitle = inSearchName;
+//            searchId = filterId;
+//            filterId = inSearchId;
+//        }
+//        else if (streamScope != null && streamScope.getScopeType() == ScopeType.GROUP)
+//        {
+//            streamType = "groupstream";
+//        }
+//        else if (streamScope != null && streamScope.getScopeType() == ScopeType.PERSON)
+//        {
+//            streamType = "personstream";
+//        }
+//        else if (streamScope != null && streamScope.getScopeType() == ScopeType.ORGANIZATION)
+//        {
+//            streamType = "orgstream";
+//        }
 
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("action", "addGadget");
@@ -439,14 +437,4 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
            return input == null ? 'null' : '"' + input.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"';
        }-*/;
 
-    /**
-     * Sets the mode.
-     *
-     * @param inMode
-     *            the mode to set.
-     */
-    public void setMode(final Mode inMode)
-    {
-        mode = inMode;
-    }
 }

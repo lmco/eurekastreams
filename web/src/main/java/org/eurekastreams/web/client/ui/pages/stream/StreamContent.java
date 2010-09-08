@@ -15,9 +15,6 @@
  */
 package org.eurekastreams.web.client.ui.pages.stream;
 
-import org.eurekastreams.server.domain.stream.GroupStreamDTO;
-import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.web.client.events.ChangeShowStreamRecipientEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.StreamPageLoadedEvent;
@@ -122,9 +119,7 @@ public class StreamContent extends Composite
         errorLabel.addStyleName("form-error-box");
         errorLabel.setVisible(false);
 
-        streamView = new StreamPanel(Session.getInstance().getActionProcessor(), null, true, true, new StreamScope(
-                ScopeType.PERSON, session.getCurrentPerson().getAccountId()), null);
-        streamPanel.clear();
+        streamView = new StreamPanel();
         streamPanel.add(streamView);
 
         Session.getInstance().getEventBus().addObserver(SwitchedToSavedSearchEvent.class,
@@ -141,10 +136,10 @@ public class StreamContent extends Composite
                 {
                     public void update(final SwitchedToStreamViewEvent event)
                     {
-                        streamView.setPostScope(new StreamScope(ScopeType.PERSON, session.getCurrentPerson()
-                                .getAccountId()));
-                        streamView.setView(event.getView());
-                        streamView.setPostable(true);
+//                        streamView.setPostScope(new StreamScope(ScopeType.PERSON, session.getCurrentPerson()
+//                                .getAccountId()));
+//                        streamView.setView(event.getView());
+//                        streamView.setPostable(true);
 
                         Session.getInstance().getEventBus().notifyObservers(new ChangeShowStreamRecipientEvent(true));
                     }
@@ -155,9 +150,9 @@ public class StreamContent extends Composite
                 {
                     public void update(final SwitchedToGroupStreamEvent event)
                     {
-                        GroupStreamDTO group = event.getView();
-                        streamView.setPostable(group.isPostable());
-                        streamView.setView(event.getView().getStreamView());
+//                        GroupStreamDTO group = event.getView();
+//                        streamView.setPostable(group.isPostable());
+//                        streamView.setView(event.getView().getStreamView());
 
                         Session.getInstance().getEventBus().notifyObservers(new ChangeShowStreamRecipientEvent(false));
                     }

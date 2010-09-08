@@ -29,14 +29,12 @@ import org.eurekastreams.server.domain.ResourceSortCriteria;
 import org.eurekastreams.server.domain.ResourceSortCriterion;
 import org.eurekastreams.server.domain.ResourceSortCriterion.SortDirection;
 import org.eurekastreams.server.domain.ResourceSortCriterion.SortField;
-import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.domain.stream.StreamView;
-import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SetBannerEvent;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.StreamReinitializeRequestEvent;
+import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.SwitchToFilterOnPagedFilterPanelEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
@@ -66,6 +64,7 @@ import org.eurekastreams.web.client.ui.common.pagedlist.PagedListPanel;
 import org.eurekastreams.web.client.ui.common.pagedlist.PendingGroupRenderer;
 import org.eurekastreams.web.client.ui.common.pagedlist.PersonRenderer;
 import org.eurekastreams.web.client.ui.common.pagedlist.SingleColumnPagedListRenderer;
+import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.common.tabs.SimpleTab;
@@ -153,7 +152,7 @@ public class OrganizationProfilePanel extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param accountId
      *            the account id.
      */
@@ -163,8 +162,8 @@ public class OrganizationProfilePanel extends FlowPanel
 
         profileSettingsLink = new Hyperlink("Configure", "");
         addSubOrgLink = new Hyperlink("", "");
-        Hyperlink addGroupLink =
-                new Hyperlink("", Session.getInstance().generateUrl(new CreateUrlRequest(Page.NEW_GROUP)));
+        Hyperlink addGroupLink = new Hyperlink("", Session.getInstance().generateUrl(
+                new CreateUrlRequest(Page.NEW_GROUP)));
 
         ActionProcessor inProcessor = Session.getInstance().getActionProcessor();
 
@@ -202,7 +201,7 @@ public class OrganizationProfilePanel extends FlowPanel
 
     /**
      * We have the Person, so set up the Profile summary.
-     *
+     * 
      * @param inOrg
      *            the person whose profile is being displayed
      */
@@ -233,12 +232,12 @@ public class OrganizationProfilePanel extends FlowPanel
         leftBarPanel.addChildWidget(connectionsPanel);
 
         leftBarPanel.addChildWidget(new PeopleListPanel(org.getLeaders(), "Leadership", PeopleListPanel.DISPLAY_ALL));
-        // Make the Stream Tab
-        StreamView streamView = org.getEntityStreamView();
-        streamView.setName(org.getName());
-        final StreamPanel streamContent =
-                new StreamPanel(processor, streamView, false, true, new StreamScope(ScopeType.ORGANIZATION, org
-                        .getShortName()), org.getName());
+
+        final StreamPanel streamContent = new StreamPanel();
+        String jsonRequest = StreamJsonRequestFactory.setOrganization(org.getShortName(),
+                StreamJsonRequestFactory.getEmptyRequest()).toString();
+
+        EventBus.getInstance().notifyObservers(new StreamRequestEvent(org.getName(), jsonRequest));
 
         portalPage = new TabContainerPanel();
         portalPage.addTab(new SimpleTab("Stream", streamContent));
@@ -312,7 +311,7 @@ public class OrganizationProfilePanel extends FlowPanel
 
     /**
      * Builds the connections tab.
-     *
+     * 
      * @return The tab.
      */
     private SimpleTab buildConnectionsTab()
@@ -379,7 +378,7 @@ public class OrganizationProfilePanel extends FlowPanel
 
     /**
      * Builds the admin tab.
-     *
+     * 
      * @return The tab.
      */
     private SimpleTab buildAdminTab()
@@ -393,21 +392,20 @@ public class OrganizationProfilePanel extends FlowPanel
         final SimpleTab adminTab = new SimpleTab("Admin", adminTabContent);
 
         // wire up the data retrieval events
-        eventBus.addObserver(GotFlaggedActivitiesResponseEvent.class,
-                new Observer<GotFlaggedActivitiesResponseEvent>()
+        eventBus.addObserver(GotFlaggedActivitiesResponseEvent.class, new Observer<GotFlaggedActivitiesResponseEvent>()
+        {
+            public void update(final GotFlaggedActivitiesResponseEvent event)
+            {
+                if (flaggedActivitiesFilterName.equals(adminTabContent.getCurrentFilter()))
                 {
-                    public void update(final GotFlaggedActivitiesResponseEvent event)
-                    {
-                        if (flaggedActivitiesFilterName.equals(adminTabContent.getCurrentFilter()))
-                        {
-                            adminTabContent.render(event.getResponse(), "No flagged activities.");
-                        }
-                        flaggedActivityCount = event.getResponse().getTotal();
-                        adminTabContent.setFilterTitle(flaggedActivitiesFilterName, "Flagged Activities ("
-                                + flaggedActivityCount + ")");
-                        adminTab.setTitle("Admin (" + (flaggedActivityCount + pendingGroupCount) + ")");
-                    }
-                });
+                    adminTabContent.render(event.getResponse(), "No flagged activities.");
+                }
+                flaggedActivityCount = event.getResponse().getTotal();
+                adminTabContent.setFilterTitle(flaggedActivitiesFilterName, "Flagged Activities ("
+                        + flaggedActivityCount + ")");
+                adminTab.setTitle("Admin (" + (flaggedActivityCount + pendingGroupCount) + ")");
+            }
+        });
 
         eventBus.addObserver(GotPendingGroupsResponseEvent.class, new Observer<GotPendingGroupsResponseEvent>()
         {
