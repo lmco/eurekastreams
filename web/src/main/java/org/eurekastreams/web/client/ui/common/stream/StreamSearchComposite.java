@@ -165,7 +165,7 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
         {
             public void onClick(final ClickEvent arg0)
             {
-                EventBus.getInstance().notifyObservers(new StreamSearchBeginEvent(searchTerm.getText()));
+                onSearch();
             }
         });
 
@@ -175,7 +175,7 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
             {
                 if (event.getCharCode() == KeyCodes.KEY_ENTER)
                 {
-                    EventBus.getInstance().notifyObservers(new StreamSearchBeginEvent(searchTerm.getText()));
+                    onSearch();
                 }
             }
         });
@@ -185,8 +185,34 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
             public void onClick(final ClickEvent arg0)
             {
                 EventBus.getInstance().notifyObservers(new StreamSearchBeginEvent(""));
+                onSearchCanceled();
             }
         });
+    }
+
+    /**
+     * When the search potentially changes.
+     */
+    public void onSearch()
+    {
+        EventBus.getInstance().notifyObservers(new StreamSearchBeginEvent(searchTerm.getText()));
+        searchDescription.setVisible(true);
+        searchTermLabel.setText(searchTerm.getText());
+        searchTerm.setText(searchTerm.getText());
+        searchTerm.checkBox();
+        addGadgetLink.setVisible(false);
+    }
+
+    /**
+     * Called when a search is canceled.
+     */
+    public void onSearchCanceled()
+    {
+        searchTermLabel.setText("");
+        searchTerm.setText("");
+        searchTerm.checkBox();
+        searchDescription.setVisible(false);
+        addGadgetLink.setVisible(true);
     }
 
     /**
@@ -214,24 +240,24 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
      */
     private void setAddGadgetLink(final String inShortName, final String inSearchId, final String inSearchName)
     {
-//        String filterType = "compositestream";
-//        // default to composite stream incase of null streamScope.
-//        String streamType = "compositestream";
-//        String filterId = String.valueOf(streamView.getId());
-//        String searchId = "";
-//
-//        String gadgetTitle = streamView.getName();
-//
-//        HashMap<String, String> params = new HashMap<String, String>();
-//        params.put("action", "addGadget");
-//        params.put("url", "{d7a58391-5375-4c76-b5fc-a431c42a7555}");
-//        params.put("prefs", "{\"filterId\":" + makeJsonString(filterId) + ",\"filterType\":"
-//                + makeJsonString(filterType) + ",\"streamType\":" + makeJsonString(streamType) + ",\"gadgetTitle\":"
-//                + makeJsonString(gadgetTitle) + ",\"searchId\":" + makeJsonString(searchId) + ",\"shortName\":"
-//                + makeJsonString(inShortName) + "}");
-//        String url = Session.getInstance().generateUrl(new CreateUrlRequest(Page.START, params));
-//
-//        addGadgetLink.setTargetHistoryToken(url);
+        // String filterType = "compositestream";
+        // // default to composite stream incase of null streamScope.
+        // String streamType = "compositestream";
+        // String filterId = String.valueOf(streamView.getId());
+        // String searchId = "";
+        //
+        // String gadgetTitle = streamView.getName();
+        //
+        // HashMap<String, String> params = new HashMap<String, String>();
+        // params.put("action", "addGadget");
+        // params.put("url", "{d7a58391-5375-4c76-b5fc-a431c42a7555}");
+        // params.put("prefs", "{\"filterId\":" + makeJsonString(filterId) + ",\"filterType\":"
+        // + makeJsonString(filterType) + ",\"streamType\":" + makeJsonString(streamType) + ",\"gadgetTitle\":"
+        // + makeJsonString(gadgetTitle) + ",\"searchId\":" + makeJsonString(searchId) + ",\"shortName\":"
+        // + makeJsonString(inShortName) + "}");
+        // String url = Session.getInstance().generateUrl(new CreateUrlRequest(Page.START, params));
+        //
+        // addGadgetLink.setTargetHistoryToken(url);
     }
 
     // TODO: We should have a utility class that takes a map of key-value pairs and builds the entire JSON object
@@ -245,7 +271,7 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
      * @return JSON string representation.
      */
     private static native String makeJsonString(final String input) /*-{
-              return input == null ? 'null' : '"' + input.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"';
-          }-*/;
+                       return input == null ? 'null' : '"' + input.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"';
+                   }-*/;
 
 }

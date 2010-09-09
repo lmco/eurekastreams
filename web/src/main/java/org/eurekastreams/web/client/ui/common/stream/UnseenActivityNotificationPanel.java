@@ -15,21 +15,19 @@
  */
 package org.eurekastreams.web.client.ui.common.stream;
 
-import org.eurekastreams.server.action.request.stream.GetActivitiesByCompositeStreamRequest;
-import org.eurekastreams.server.action.request.stream.GetStreamSearchResultsRequest;
-import org.eurekastreams.web.client.events.MessageStreamUpdateEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.StreamReinitializeRequestEvent;
 import org.eurekastreams.web.client.events.UserActiveEvent;
 import org.eurekastreams.web.client.events.UserInactiveEvent;
+import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.events.data.GotUnseenActivitiesCountResponseEvent;
 import org.eurekastreams.web.client.model.MouseActivityModel;
-import org.eurekastreams.web.client.model.UnseenActivityCountForSearchModel;
 import org.eurekastreams.web.client.model.UnseenActivityCountForViewModel;
 import org.eurekastreams.web.client.ui.Session;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -59,7 +57,6 @@ public class UnseenActivityNotificationPanel extends FlowPanel
         Anchor refreshStream = new Anchor("Refresh Stream");
         refreshStream.addClickHandler(new ClickHandler()
         {
-
             public void onClick(final ClickEvent arg0)
             {
                 Session.getInstance().getEventBus().notifyObservers(StreamReinitializeRequestEvent.getEvent());
@@ -69,41 +66,25 @@ public class UnseenActivityNotificationPanel extends FlowPanel
         this.add(unseenActivityCount);
         this.add(refreshStream);
 
-        Session.getInstance().getEventBus().addObserver(MessageStreamUpdateEvent.class,
-                new Observer<MessageStreamUpdateEvent>()
+        Session.getInstance().getEventBus().addObserver(GotStreamResponseEvent.class,
+                new Observer<GotStreamResponseEvent>()
                 {
-                    public void update(final MessageStreamUpdateEvent event)
+                    public void update(final GotStreamResponseEvent event)
                     {
                         thisBuffered.setVisible(false);
 
-                        // stop the timer if we are viewing a single activity
-                        if (Session.getInstance().getParameterValue("activityId") != null)
+                        if (event.getStream().getPagedSet().size() > 0)
                         {
-                            Session.getInstance().getTimer().pauseJob("getUnseenActivityJob");
-                        }
-                        else if (Session.getInstance().getParameterValue("streamSearch") == null)
-                        {
+                            JSONObject request = StreamJsonRequestFactory.getJSONRequest(event.getJsonRequest());
+                            request = StreamJsonRequestFactory.setMinId(event.getStream().getPagedSet().get(0).getId(),
+                                    request);
+
                             Session.getInstance().getTimer().pauseJob("getUnseenActivityJob");
                             Session.getInstance().getTimer().changeFetchable("getUnseenActivityJob",
                                     UnseenActivityCountForViewModel.getInstance());
-                            Session.getInstance().getTimer().changeRequest(
-                                    "getUnseenActivityJob",
-                                    new GetActivitiesByCompositeStreamRequest(event.getStreamId(), event
-                                            .getLatestActivity()));
+                            Session.getInstance().getTimer().changeRequest("getUnseenActivityJob", request.toString());
                             Session.getInstance().getTimer().unPauseJob("getUnseenActivityJob");
                         }
-                        else
-                        {
-                            Session.getInstance().getTimer().pauseJob("getUnseenActivityJob");
-                            Session.getInstance().getTimer().changeFetchable("getUnseenActivityJob",
-                                    UnseenActivityCountForSearchModel.getInstance());
-                            Session.getInstance().getTimer().changeRequest(
-                                    "getUnseenActivityJob",
-                                    new GetStreamSearchResultsRequest(event.getStreamId(), Session.getInstance()
-                                            .getParameterValue("streamSearch"), event.getLatestActivity()));
-                            Session.getInstance().getTimer().unPauseJob("getUnseenActivityJob");
-                        }
-
                     }
                 });
 
@@ -138,9 +119,9 @@ public class UnseenActivityNotificationPanel extends FlowPanel
         Session.getInstance().getTimer().addTimerJob("getMouseActivityJob", 1, MouseActivityModel.getInstance(), 5,
                 false);
 
-        Session.getInstance().getTimer()
-                .addTimerJob("getUnseenActivityJob", 1, UnseenActivityCountForViewModel.getInstance(),
-                        new GetActivitiesByCompositeStreamRequest(0L, 0L), false);
+        Session.getInstance().getTimer().addTimerJob("getUnseenActivityJob", 1,
+                UnseenActivityCountForViewModel.getInstance(), StreamJsonRequestFactory.getEmptyRequest().toString(),
+                false);
 
         // user is inactive - pauses the job that gets new activity counts
         Session.getInstance().getEventBus().addObserver(UserInactiveEvent.class, new Observer<UserInactiveEvent>()

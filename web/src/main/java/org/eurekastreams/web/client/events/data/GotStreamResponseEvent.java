@@ -29,14 +29,22 @@ public class GotStreamResponseEvent
     private PagedSet<ActivityDTO> stream;
 
     /**
+     * The JSON request.
+     */
+    private String jsonRequest;
+
+    /**
      * Constructor.
      * 
      * @param inStream
      *            the stream.
+     * @param inJsonRequest
+     *            the original request.
      */
-    public GotStreamResponseEvent(final PagedSet<ActivityDTO> inStream)
+    public GotStreamResponseEvent(final PagedSet<ActivityDTO> inStream, final String inJsonRequest)
     {
         stream = inStream;
+        jsonRequest = inJsonRequest;
     }
 
     /**
@@ -47,5 +55,15 @@ public class GotStreamResponseEvent
     public PagedSet<ActivityDTO> getStream()
     {
         return stream;
+    }
+
+    /**
+     * Get the JSON request.
+     * 
+     * @return the JSON request.
+     */
+    public String getJsonRequest()
+    {
+        return jsonRequest;
     }
 }

@@ -32,11 +32,6 @@ import org.eurekastreams.server.service.actions.strategies.activity.datasources.
 public class GetActivityIdsByJsonRequest
 {
     /**
-     * Max activities if none is specified.
-     */
-    private static final int MAXRESULTS = 10;
-
-    /**
      * Logger.
      */
     private Log log = LogFactory.getLog(GetActivityIdsByJsonRequest.class);
@@ -60,6 +55,13 @@ public class GetActivityIdsByJsonRequest
      * Security trimmer.
      */
     private ActivitySecurityTrimmer securityTrimmer;
+
+    /**
+     * Public constructor for AOP.
+     */
+    public GetActivityIdsByJsonRequest()
+    {
+    }
 
     /**
      * Default constructor.
@@ -94,9 +96,11 @@ public class GetActivityIdsByJsonRequest
      */
     public List<Long> execute(final String inRequest, final Long userEntityId)
     {
+        log.debug("Attempted to parse: " + inRequest);
+
         final JSONObject request = JSONObject.fromObject(inRequest);
 
-        int maxResults = MAXRESULTS;
+        int maxResults = 0;
         long minActivityId = 0;
         long maxActivityId = Long.MAX_VALUE;
 

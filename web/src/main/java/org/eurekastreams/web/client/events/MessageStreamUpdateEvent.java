@@ -47,10 +47,9 @@ public final class MessageStreamUpdateEvent
     /** If there are more stream items available to be requested (i.e. this is not the last page). */
     private boolean moreResults = true;
 
-
     /**
      * Constructor.
-     *
+     * 
      * @param inMessage
      *            the message.
      */
@@ -69,14 +68,13 @@ public final class MessageStreamUpdateEvent
 
     /**
      * Gets Event.
-     *
+     * 
      * @return Event.
      */
     public static MessageStreamUpdateEvent getEvent()
     {
         return new MessageStreamUpdateEvent(null);
     }
-
 
     /**
      * @return the stream id.
@@ -131,7 +129,9 @@ public final class MessageStreamUpdateEvent
 
     /**
      * Set the latest activity.
-     * @param inLatestActivity the latest activity.
+     * 
+     * @param inLatestActivity
+     *            the latest activity.
      */
     public void setLatestActivity(final Long inLatestActivity)
     {
@@ -140,14 +140,12 @@ public final class MessageStreamUpdateEvent
 
     /**
      * Get the latest activity.
+     * 
      * @return the latest activity.
      */
     public Long getLatestActivity()
     {
         return latestActivity;
     }
-
-
-
 
 }

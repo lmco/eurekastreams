@@ -54,7 +54,7 @@ public class StreamModel extends BaseModel implements Fetchable<Serializable>
                     public void onSuccess(final PagedSet<ActivityDTO> response)
                     {
                         Session.getInstance().getEventBus().notifyObservers(
-                                new GotStreamResponseEvent(response));
+                                new GotStreamResponseEvent(response, (String) request));
                     }
                 }, useClientCacheIfAvailable);
     }

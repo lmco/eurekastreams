@@ -25,7 +25,6 @@ import org.eurekastreams.server.domain.Task;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SetBannerEvent;
-import org.eurekastreams.web.client.events.StreamReinitializeRequestEvent;
 import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.data.BaseDataResponseEvent;
 import org.eurekastreams.web.client.events.data.DeletedPersonFollowersResponseEvent;
@@ -277,7 +276,8 @@ public class PersonalProfilePanel extends FlowPanel
         }
 
         final StreamPanel streamContent = new StreamPanel(false);
-        streamContent.setStreamScope(person.getStreamScope());
+        streamContent.setStreamScope(person.getStreamScope(),
+                (person.isStreamPostable() || (currentUser.getAccountId() == person.getAccountId())));
 
         String jsonRequest = StreamJsonRequestFactory.addRecipient(EntityType.PERSON, person.getAccountId(),
                 StreamJsonRequestFactory.getEmptyRequest()).toString();
@@ -294,11 +294,6 @@ public class PersonalProfilePanel extends FlowPanel
         portalPage.setStyleName("profile-gadgets-container");
 
         portalPageContainer.add(portalPage);
-
-        if (Session.getInstance().getParameterValue("streamSearch") == null)
-        {
-            Session.getInstance().getEventBus().notifyObservers(StreamReinitializeRequestEvent.getEvent());
-        }
 
         inProcessor.setQueueRequests(false);
         inProcessor.fireQueuedRequests();

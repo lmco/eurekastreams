@@ -19,9 +19,11 @@ import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
 import org.eurekastreams.web.client.events.MessageStreamUpdateEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
+import org.eurekastreams.web.client.events.StreamReinitializeRequestEvent;
 import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.StreamRequestMoreEvent;
 import org.eurekastreams.web.client.events.StreamSearchBeginEvent;
@@ -83,6 +85,21 @@ public class StreamPanel extends FlowPanel
     private StreamSearchComposite streamSearch;
 
     /**
+     * The stream name.
+     */
+    private String streamName = "";
+
+    /**
+     * Posting disabled panel.
+     */
+    private FlowPanel postingDisabled = new FlowPanel();
+
+    /**
+     * Post content panel.
+     */
+    private FlowPanel postContent = new FlowPanel();
+
+    /**
      * Initialize page.
      * 
      * @param showRecipients
@@ -101,10 +118,14 @@ public class StreamPanel extends FlowPanel
 
         streamSearch = new StreamSearchComposite();
 
-        this.add(shadowPanel);
+        postContent.add(shadowPanel);
+        this.add(postContent);
         this.add(streamSearch);
+        this.add(new UnseenActivityNotificationPanel());
         this.add(error);
         this.add(stream);
+
+        stream.reinitialize();
 
         EventBus.getInstance().addObserver(StreamRequestMoreEvent.class, new Observer<StreamRequestMoreEvent>()
         {
@@ -134,9 +155,31 @@ public class StreamPanel extends FlowPanel
                     lastSeenId = activity.getPagedSet().get(numberOfActivities - 1).getId();
                 }
 
+                MessageStreamUpdateEvent updateEvent = new MessageStreamUpdateEvent(activity);
+                updateEvent.setMoreResults(activity.getTotal() > activity.getPagedSet().size());
+
                 error.setText("");
-                EventBus.getInstance().notifyObservers(new MessageStreamUpdateEvent(activity));
+                EventBus.getInstance().notifyObservers(updateEvent);
                 stream.setVisible(true);
+            }
+        });
+
+        EventBus.getInstance().addObserver(StreamReinitializeRequestEvent.class,
+                new Observer<StreamReinitializeRequestEvent>()
+                {
+                    public void update(final StreamReinitializeRequestEvent event)
+                    {
+                        stream.reinitialize();
+                        StreamModel.getInstance().fetch(searchJson, false);
+                    }
+                });
+
+        EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
+        {
+            public void update(final MessageStreamAppendEvent evt)
+            {
+                stream.reinitialize();
+                StreamModel.getInstance().fetch(searchJson, false);
             }
         });
 
@@ -144,8 +187,10 @@ public class StreamPanel extends FlowPanel
         {
             public void update(final StreamRequestEvent event)
             {
+                stream.reinitialize();
                 searchJson = event.getJson();
-                streamSearch.setTitleText(event.getStreamName());
+                streamName = event.getStreamName();
+                streamSearch.setTitleText(streamName);
                 StreamModel.getInstance().fetch(event.getJson(), false);
             }
         });
@@ -158,7 +203,7 @@ public class StreamPanel extends FlowPanel
                         SortType.DATE,
                         StreamJsonRequestFactory.setSearchTerm(event.getSearchText(), StreamJsonRequestFactory
                                 .getJSONRequest(searchJson))).toString();
-                StreamModel.getInstance().fetch(searchJson, false);
+                EventBus.getInstance().notifyObservers(new StreamRequestEvent(streamName, searchJson));
             }
         });
 
@@ -178,14 +223,18 @@ public class StreamPanel extends FlowPanel
      * 
      * @param streamScope
      *            the scope.
+     * @param postingEnabled
+     *            if posting is enabled.
      */
-    public void setStreamScope(final StreamScope streamScope)
+    public void setStreamScope(final StreamScope streamScope, final Boolean postingEnabled)
     {
-        if (postComposite == null)
+        postingDisabled.setVisible(!postingEnabled);
+        shadowPanel.setVisible(postingEnabled);
+
+        if (postComposite == null && postingEnabled)
         {
             postComposite = new PostToStreamComposite(Session.getInstance().getActionProcessor(), streamScope);
             shadowPanel.add(postComposite);
-            shadowPanel.setVisible(true);
             DeferredCommand.addCommand(new Command()
             {
                 public void execute()
@@ -194,9 +243,17 @@ public class StreamPanel extends FlowPanel
                 }
             });
         }
-        else
+        else if (postingEnabled)
         {
             postComposite.setScope(streamScope);
+        }
+        else
+        {
+            FlowPanel postingDisabledMessage = new FlowPanel();
+            postingDisabledMessage.getElement().setInnerHTML("Posting messages has been disabled by this group");
+            postingDisabled.addStyleName("posting-disabled-box");
+            postingDisabled.add(postingDisabledMessage);
+            postContent.add(postingDisabled);
         }
     }
 }
