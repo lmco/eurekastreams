@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2009 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,60 +16,59 @@
 package org.eurekastreams.web.client.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.eurekastreams.server.action.request.stream.SetStreamFilterOrderRequest;
+import org.eurekastreams.server.domain.stream.Stream;
+import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.eurekastreams.server.service.actions.response.GetCurrentUserStreamFiltersResponse;
 import org.eurekastreams.web.client.events.data.GotCurrentUserCustomStreamsResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
 
 /**
- * Stream View List Model.
+ * Custom stream model.
  *
  */
-public class StreamViewListModel extends BaseModel implements
-        Fetchable<Serializable>,
-        Reorderable<SetStreamFilterOrderRequest>
+public class CustomStreamModel extends BaseModel implements Fetchable<Serializable>
 {
     /**
      * Singleton.
      */
-    private static StreamViewListModel model = new StreamViewListModel();
+    private static CustomStreamModel model = new CustomStreamModel();
 
     /**
      * Gets the singleton.
      *
      * @return the singleton.
      */
-    public static StreamViewListModel getInstance()
+    public static CustomStreamModel getInstance()
     {
         return model;
     }
-
-
 
     /**
      * {@inheritDoc}
      */
     public void fetch(final Serializable request, final boolean useClientCacheIfAvailable)
     {
-        super.callReadAction("getCurrentUserCompositeStreams", request,
-                new OnSuccessCommand<GetCurrentUserStreamFiltersResponse>()
-                {
-                    public void onSuccess(final GetCurrentUserStreamFiltersResponse response)
-                    {
-                        Session.getInstance().getEventBus().notifyObservers(
-                                new GotCurrentUserCustomStreamsResponseEvent(response));
-                    }
-                }, useClientCacheIfAvailable);
+        List<StreamFilter> streams = new ArrayList<StreamFilter>();
+
+        Stream everyone = new Stream();
+        everyone.setRequest("{ query : {} }");
+        everyone.setName("Everyone");
+        everyone.setReadOnly(true);
+        everyone.setId(1L);
+        streams.add(everyone);
+
+        Stream following = new Stream();
+        following.setRequest("{ query : { followedBy: \"romanoa1\" } }");
+        following.setName("Following");
+        following.setReadOnly(true);
+        following.setId(2L);
+        streams.add(following);
+
+        Session.getInstance().getEventBus().notifyObservers(
+                new GotCurrentUserCustomStreamsResponseEvent(new GetCurrentUserStreamFiltersResponse(1, streams)));
+
     }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public void reorder(final SetStreamFilterOrderRequest request)
-    {
-        super.callWriteAction("setStreamViewOrder", request, null);
-    }
-
 }

@@ -413,6 +413,27 @@
 		<constructor-arg value="false" />
 	</bean>
 		
+	<!-- Get the popular hashtags for a person, org, or group stream -->
+	<bean id="getPopularHashTagsForStream" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg>
+			<!-- 
+				Authorizor checks if the stream is for a group, and if so, checks if it's private, and if so, makes sure
+				user is either a coordinator or follower of the group.
+			 -->
+			<bean class="org.eurekastreams.server.action.authorization.stream.StreamPopularHashTagsAuthorization">
+				<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+				<constructor-arg ref="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.action.execution.stream.GetStreamPopularHashTagsExecution">
+				<constructor-arg ref="findPopularHashTagsForStreamMapper" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="true" />
+	</bean>
+	
     <bean id="postActivityCommentAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
@@ -2616,6 +2637,22 @@
 		</constructor-arg>
 	</bean>
 
+	<bean id="postToGroupStreamNotificationEmailBuilder" parent="baseTemplateEmailBuilder">
+		<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) posted a $(activity.type) to the $(dest.name) stream" />
+		<constructor-arg>
+			<bean parent="baseResourceContentLoader">
+				<constructor-arg
+					value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_GROUP_STREAM.txt" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg>
+			<bean parent="baseResourceContentLoader">
+				<constructor-arg
+					value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_GROUP_STREAM.html" />
+			</bean>
+		</constructor-arg>
+	</bean>
+	
 	<bean id="createEmailNotification" class="org.eurekastreams.commons.actions.async.AsyncAction">
 		<constructor-arg ref="noValidationStrategy" />
 		<constructor-arg>
@@ -2726,23 +2763,8 @@
 								</constructor-arg>
 							</bean>
 						</entry>
-						<entry key="POST_TO_GROUP_STREAM">
-							<bean parent="baseTemplateEmailBuilder">
-								<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) posted a $(activity.type) to the $(dest.name) stream" />
-								<constructor-arg>
-									<bean parent="baseResourceContentLoader">
-										<constructor-arg
-											value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_GROUP_STREAM.txt" />
-									</bean>
-								</constructor-arg>
-								<constructor-arg>
-									<bean parent="baseResourceContentLoader">
-										<constructor-arg
-											value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_GROUP_STREAM.html" />
-									</bean>
-								</constructor-arg>
-							</bean>
-						</entry>
+						<entry key="POST_TO_GROUP_STREAM" value-ref="postToGroupStreamNotificationEmailBuilder" />
+						<entry key="POST_TO_JOINED_GROUP" value-ref="postToGroupStreamNotificationEmailBuilder" />
 						<entry key="COMMENT_TO_GROUP_STREAM">
 							<bean parent="baseTemplateEmailBuilder">
 								<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) commented on a $(activity.type) in the $(dest.name) stream" />
@@ -2879,6 +2901,7 @@
 		<entry key="GROUP_STREAM_POST">
 			<bean class="org.eurekastreams.server.action.execution.notification.translator.GroupStreamPostTranslator">
 				<constructor-arg ref="getCoordinatorIdsByGroupId" />
+				<constructor-arg ref="getGroupFollowerIds" />
 			</bean>
 		</entry>
 		<entry key="FLAG_ACTIVITY">
@@ -2913,6 +2936,7 @@
 		<entry key="FLAG_GROUP_ACTIVITY" value="FLAG_ACTIVITY" />
 		<entry key="REQUEST_NEW_GROUP" value="REQUEST_NEW_GROUP" />
 		<entry key="REQUEST_GROUP_ACCESS" value="REQUEST_GROUP_ACCESS" />
+		<entry key="POST_TO_JOINED_GROUP" value="POST_TO_JOINED_GROUP" />
 		<entry key="LIKE_ACTIVITY" value="LIKE" />
 	</util:map>
 	
@@ -2940,6 +2964,7 @@
 	-->
 	<util:map id="notifierIdToDisplayMap" map-class="java.util.LinkedHashMap">
 		<entry key="EMAIL" value="Email" />
+		<entry key="APP_ALERT" value="In App" />
 	</util:map>
 
 	<bean id="createNotificationsAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">

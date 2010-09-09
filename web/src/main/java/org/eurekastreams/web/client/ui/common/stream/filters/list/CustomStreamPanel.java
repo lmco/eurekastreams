@@ -15,13 +15,11 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.filters.list;
 
-import java.util.HashMap;
-
+import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamFilter;
-import org.eurekastreams.server.domain.stream.StreamView;
-import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.ChangeShowStreamRecipientEvent;
 import org.eurekastreams.web.client.events.HideNotificationEvent;
-import org.eurekastreams.web.client.events.SwitchedToStreamViewEvent;
+import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
@@ -47,7 +45,7 @@ public class CustomStreamPanel extends Composite implements FilterPanel
     /**
      * The view associated with it.
      */
-    private StreamView view;
+    private Stream stream;
 
     /**
      * Label Container.
@@ -72,10 +70,10 @@ public class CustomStreamPanel extends Composite implements FilterPanel
     /**
      * Default constructor.
      *
-     * @param inView
+     * @param inStream
      *            the view.
      */
-    public CustomStreamPanel(final StreamView inView)
+    public CustomStreamPanel(final Stream inStream)
     {
         FocusPanel container = new FocusPanel();
         container.addStyleName("filter");
@@ -84,12 +82,12 @@ public class CustomStreamPanel extends Composite implements FilterPanel
 
         labelContainer = new FlowPanel();
         labelContainer.addStyleName("filter-label");
-        label = new Label(inView.getName());
+        label = new Label(inStream.getName());
         labelContainer.add(label);
-        view = inView;
+        stream = inStream;
 
         panel.addStyleName("stream-list-item");
-        readOnly = (inView.getType() != null);
+        readOnly = stream.getReadOnly();
 
         container.addClickHandler(new ClickHandler()
         {
@@ -108,7 +106,7 @@ public class CustomStreamPanel extends Composite implements FilterPanel
         InlineLabel seperator = new InlineLabel();
         seperator.addStyleName("filter-seperator");
         panel.add(seperator);
-        
+
         seperator.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent event)
@@ -116,7 +114,7 @@ public class CustomStreamPanel extends Composite implements FilterPanel
                 updateHistory();
             }
         });
-        
+
         if (!readOnly)
         {
             Anchor editButton = new Anchor("edit");
@@ -125,7 +123,7 @@ public class CustomStreamPanel extends Composite implements FilterPanel
                 public void onClick(final ClickEvent event)
                 {
                     Session.getInstance().getEventBus().notifyObservers(new HideNotificationEvent());
-                    CustomStreamDialogContent dialogContent = new CustomStreamDialogContent(view.getId());
+                    CustomStreamDialogContent dialogContent = new CustomStreamDialogContent(stream.getId());
                     Dialog dialog = new Dialog(dialogContent);
                     dialog.setBgVisible(true);
                     dialog.center();
@@ -138,19 +136,18 @@ public class CustomStreamPanel extends Composite implements FilterPanel
 
         container.add(panel);
         initWidget(container);
-
     }
 
     /**
      * Set view.
      *
-     * @param inView
+     * @param inStream
      *            the view.
      */
-    public void setFilter(final StreamFilter inView)
+    public void setFilter(final StreamFilter inStream)
     {
-        view = (StreamView) inView;
-        label.setText(view.getName());
+        stream = (Stream) inStream;
+        label.setText(stream.getName());
     }
 
     /**
@@ -160,7 +157,7 @@ public class CustomStreamPanel extends Composite implements FilterPanel
      */
     public Long getItemId()
     {
-        return view.getId();
+        return stream.getId();
     }
 
     /**
@@ -178,8 +175,12 @@ public class CustomStreamPanel extends Composite implements FilterPanel
      */
     public void activate()
     {
-        EventBus.getInstance().notifyObservers(new SwitchedToStreamViewEvent(view));
+        Session.getInstance().getEventBus().notifyObservers(
+                new StreamRequestEvent(stream.getName(), stream.getId(), stream.getRequest()));
+
         this.addStyleName("active");
+
+        Session.getInstance().getEventBus().notifyObservers(new ChangeShowStreamRecipientEvent(true));
     }
 
     /**
@@ -197,7 +198,7 @@ public class CustomStreamPanel extends Composite implements FilterPanel
      */
     public StreamFilter getFilter()
     {
-        return view;
+        return stream;
     }
 
     /**
@@ -205,11 +206,7 @@ public class CustomStreamPanel extends Composite implements FilterPanel
      */
     public void updateHistory()
     {
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("listId", String.valueOf(view.getId()));
-        params.put("viewId", String.valueOf(view.getId()));
-
         Session.getInstance().getEventBus().notifyObservers(
-                new UpdateHistoryEvent(new CreateUrlRequest(params, true)));
+                new UpdateHistoryEvent(new CreateUrlRequest("streamId", String.valueOf(stream.getId()), true)));
     }
 }

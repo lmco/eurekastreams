@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.server.persistence.mappers.cache;
 
-import org.eurekastreams.server.persistence.mappers.requests.StreamPopularHashTagsRequest;
+import org.eurekastreams.server.action.request.stream.StreamPopularHashTagsRequest;
 
 /**
  * Convert a StreamPopularHashTagsRequest to a cache key suffix.

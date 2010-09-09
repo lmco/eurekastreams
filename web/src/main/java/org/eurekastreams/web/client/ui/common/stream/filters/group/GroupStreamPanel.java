@@ -15,13 +15,15 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.filters.group;
 
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.GroupStreamDTO;
 import org.eurekastreams.server.domain.stream.StreamFilter;
-import org.eurekastreams.web.client.events.EventBus;
-import org.eurekastreams.web.client.events.SwitchedToGroupStreamEvent;
+import org.eurekastreams.web.client.events.ChangeShowStreamRecipientEvent;
+import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 import org.eurekastreams.web.client.ui.common.stream.filters.FilterPanel;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -34,7 +36,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * Group stream panel.
- * 
+ *
  */
 public class GroupStreamPanel extends Composite implements FilterPanel
 {
@@ -65,7 +67,7 @@ public class GroupStreamPanel extends Composite implements FilterPanel
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inGroup
      *            the group to render.
      * @param inRenderer
@@ -100,7 +102,7 @@ public class GroupStreamPanel extends Composite implements FilterPanel
         InlineLabel seperator = new InlineLabel();
         seperator.addStyleName("filter-seperator");
         panel.add(seperator);
-        
+
         seperator.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent event)
@@ -120,7 +122,7 @@ public class GroupStreamPanel extends Composite implements FilterPanel
 
     /**
      * Set view.
-     * 
+     *
      * @param inView
      *            the view.
      */
@@ -132,7 +134,7 @@ public class GroupStreamPanel extends Composite implements FilterPanel
 
     /**
      * Get item id.
-     * 
+     *
      * @return the item id.
      */
     public Long getItemId()
@@ -142,7 +144,7 @@ public class GroupStreamPanel extends Composite implements FilterPanel
 
     /**
      * Get the move handle.
-     * 
+     *
      * @return the move handle.
      */
     public Label getMoveHandle()
@@ -155,8 +157,15 @@ public class GroupStreamPanel extends Composite implements FilterPanel
      */
     public void activate()
     {
-        EventBus.getInstance().notifyObservers(new SwitchedToGroupStreamEvent(group));
         this.addStyleName("active");
+
+        String jsonRequest = StreamJsonRequestFactory.addRecipient(EntityType.GROUP, group.getShortName(),
+                StreamJsonRequestFactory.getEmptyRequest()).toString();
+
+        Session.getInstance().getEventBus().notifyObservers(
+                new StreamRequestEvent(group.getName(), group.getId(), jsonRequest));
+        Session.getInstance().getEventBus().notifyObservers(new ChangeShowStreamRecipientEvent(false));
+
     }
 
     /**
@@ -169,7 +178,7 @@ public class GroupStreamPanel extends Composite implements FilterPanel
 
     /**
      * Returns the filter.
-     * 
+     *
      * @return the filter.
      */
     public StreamFilter getFilter()

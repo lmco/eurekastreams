@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.mappers.requests;
+package org.eurekastreams.server.action.request.stream;
 
 import java.io.Serializable;
 

@@ -22,6 +22,7 @@ import java.util.List;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetCoordinatorIdsByGroupId;
 
 /**
@@ -34,15 +35,22 @@ public class GroupStreamPostTranslator implements NotificationTranslator
      */
     private GetCoordinatorIdsByGroupId coordinatorMapper;
 
+    /** Mapper to get list of members of a group. */
+    private DomainMapper<Long, List<Long>> memberMapper;
+
     /**
      * Constructor.
      *
      * @param inCoordinatorMapper
      *            coordinator mapper to set.
+     * @param inMemberMapper
+     *            Mapper to get list of members of a group.
      */
-    public GroupStreamPostTranslator(final GetCoordinatorIdsByGroupId inCoordinatorMapper)
+    public GroupStreamPostTranslator(final GetCoordinatorIdsByGroupId inCoordinatorMapper,
+            final DomainMapper<Long, List<Long>> inMemberMapper)
     {
         coordinatorMapper = inCoordinatorMapper;
+        memberMapper = inMemberMapper;
     }
 
     /**
@@ -52,6 +60,8 @@ public class GroupStreamPostTranslator implements NotificationTranslator
     public Collection<NotificationDTO> translate(final long inActorId, final long inDestinationId,
             final long inActivityId)
     {
+        // first, send notification to coordinators of the group
+
         List<Long> coordinatorIds = coordinatorMapper.execute(inDestinationId);
 
         List<Long> coordinatorsToNotify = new ArrayList<Long>();
@@ -70,6 +80,23 @@ public class GroupStreamPostTranslator implements NotificationTranslator
                     inActorId, inDestinationId, EntityType.GROUP, inActivityId));
 
         }
+
+        // second, send notification to members of the group
+        List<Long> memberIds = memberMapper.execute(inDestinationId);
+        List<Long> membersToNotify = new ArrayList<Long>();
+        for (Long id : memberIds)
+        {
+            if (id != inActorId && !coordinatorIds.contains(id))
+            {
+                membersToNotify.add(id);
+            }
+        }
+        if (!membersToNotify.isEmpty())
+        {
+            notifications.add(new NotificationDTO(membersToNotify, NotificationType.POST_TO_JOINED_GROUP, inActorId,
+                    inDestinationId, EntityType.GROUP, inActivityId));
+        }
+
         return notifications;
     }
 }

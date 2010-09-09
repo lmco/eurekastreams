@@ -40,4 +40,7 @@
     <!-- The Quartz scheduled jobs -->
     <import resource="applicationContext-jobs.xml" />
     
+    <!-- AOP support  -->
+    <import resource="applicationContext-aop.xml" />    
+    
 </beans>
