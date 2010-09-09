@@ -64,18 +64,23 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
 
     static
     {
-        PERSONAL_PREF_CATEGORIES.put("Posted activity", Category.POST_TO_PERSONAL_STREAM);
-        PERSONAL_PREF_CATEGORIES.put("Comments", Category.COMMENT);
-        PERSONAL_PREF_CATEGORIES.put("New followers", Category.FOLLOW_PERSON);
-        PERSONAL_PREF_CATEGORIES.put("Likes", Category.LIKE);
+        PERSONAL_PREF_CATEGORIES.put("Activity posted to your stream", Category.POST_TO_PERSONAL_STREAM);
+        PERSONAL_PREF_CATEGORIES.put("Colleague likes activity you posted to your stream or a group stream", 
+		Category.LIKE);
+        PERSONAL_PREF_CATEGORIES.put("Comment is posted to an activity in your stream or an activity "
+                + "you posted to a group stream", Category.COMMENT);
+        PERSONAL_PREF_CATEGORIES.put("New follower is added to your stream", Category.FOLLOW_PERSON);
 
-        GROUP_PREF_CATEGORIES.put("Posted activity", Category.POST_TO_GROUP_STREAM);
+        GROUP_PREF_CATEGORIES.put("Activity is posted to a group you joined", Category.POST_TO_JOINED_GROUP);
+        GROUP_PREF_CATEGORIES.put("Activity is posted to a group you coordinate", Category.POST_TO_GROUP_STREAM);
         // GROUP_PREF_CATEGORIES.put("Comments", Category.COMMENT_IN_GROUP_STREAM);
-        GROUP_PREF_CATEGORIES.put("New followers", Category.FOLLOW_GROUP);
-        GROUP_PREF_CATEGORIES.put("Private group membership requests", Category.REQUEST_GROUP_ACCESS);
+        GROUP_PREF_CATEGORIES.put("New member joins a group you coordinate", Category.FOLLOW_GROUP);
+        GROUP_PREF_CATEGORIES.put("Group Membership is requested in a private group you coordinate",
+                Category.REQUEST_GROUP_ACCESS);
 
-        ORG_PREF_CATEGORIES.put("Flagged activity", Category.FLAG_ACTIVITY);
-        ORG_PREF_CATEGORIES.put("New group requests", Category.REQUEST_NEW_GROUP);
+        ORG_PREF_CATEGORIES.put("Activity is Flagged in an organization you coordinate", Category.FLAG_ACTIVITY);
+        ORG_PREF_CATEGORIES
+                .put("New group is requested in an organization you coordinate", Category.REQUEST_NEW_GROUP);
     }
 
     /**
@@ -142,7 +147,7 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
         label.addStyleName("form-label");
         panel.add(label);
 
-        label = new Label("Eureka Streams will notify you when new activity has " + "taken place that involves you.");
+        label = new Label("Eureka Streams will notify you when new activity has taken place that involves you.");
         label.addStyleName("instructions");
         panel.add(label);
 
@@ -153,8 +158,8 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
         panel.add(label);
 
         label =
-                new Label("Eureka Streams will notify you when new activity has "
-                        + "taken place in the groups that you coordinate.");
+                new Label("Eureka Streams w ill notify you w hen new activity has taken place in the groups that "
+                        + "you coordinate or groups that you have joined.");
         label.addStyleName("instructions");
         panel.add(label);
 

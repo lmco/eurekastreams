@@ -47,6 +47,7 @@ public class NotificationsRenderer
                     put(NotificationType.COMMENT_TO_COMMENTED_POST, new CommentToCommentedPostMessageRenderer());
                     put(NotificationType.FOLLOW_PERSON, new FollowPersonMessageRenderer());
                     put(NotificationType.POST_TO_GROUP_STREAM, new PostToGroupStreamMessageRenderer());
+                    put(NotificationType.POST_TO_JOINED_GROUP, new PostToGroupStreamMessageRenderer());
                     put(NotificationType.COMMENT_TO_GROUP_STREAM, new CommentToGroupStreamMessageRenderer());
                     put(NotificationType.FOLLOW_GROUP, new FollowGroupMessageRenderer());
                     put(NotificationType.FLAG_PERSONAL_ACTIVITY, new FlagActivityMessageRenderer());
