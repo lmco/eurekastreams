@@ -204,8 +204,8 @@
 							</bean>
 						</constructor-arg>
 						
-						<!-- Number of minutes that we keep popular hashtags in cache - 12 hours -->
-						<constructor-arg value="720" />
+						<!-- Number of minutes that we keep popular hashtags in cache -->
+						<constructor-arg value="${eureka.stream.popularhashtags.cachetimeoutinminutes}" />
 					</bean>
 				</constructor-arg>
 			</bean>
@@ -216,11 +216,11 @@
 			<!-- Database mapper to fall back on if not found in cache -->
 			<bean class="org.eurekastreams.server.persistence.mappers.db.StreamPopularHashTagsDbMapper">
 			
-				<!-- Number of hours to look back for popular hashtags - 1 week -->
-				<constructor-arg value="10080" />
+				<!-- Number of minutes to look back for popular hashtags -->
+				<constructor-arg value="${eureka.stream.popularhashtags.activitywindowinminutes}" />
 				
 				<!-- Max number of hashtags to return -->
-				<constructor-arg value="10" />
+				<constructor-arg value="${eureka.stream.popularhashtags.count}" />
 			</bean>
 		</constructor-arg>
 
