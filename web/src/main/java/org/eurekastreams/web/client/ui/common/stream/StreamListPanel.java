@@ -20,11 +20,8 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
 import org.eurekastreams.web.client.events.MessageStreamUpdateEvent;
 import org.eurekastreams.web.client.events.Observer;
-import org.eurekastreams.web.client.events.StreamReinitializeRequestEvent;
 import org.eurekastreams.web.client.events.StreamRequestMoreEvent;
 import org.eurekastreams.web.client.events.data.DeletedActivityResponseEvent;
-import org.eurekastreams.web.client.jsni.EffectsFacade;
-import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.pagedlist.ItemRenderer;
 
@@ -69,21 +66,6 @@ public class StreamListPanel extends FlowPanel
      * Error label.
      */
     Label errorLabel = new Label();
-
-    /**
-     * Max results per request.
-     */
-    private int maxResults;
-
-    /**
-     * Effects library.
-     */
-    private EffectsFacade effects = new EffectsFacade();
-
-    /**
-     * JSNI Facade used for native Javascript.
-     */
-    private WidgetJSNIFacadeImpl facade = new WidgetJSNIFacadeImpl();
 
     /**
      * The item renderer.
@@ -179,22 +161,6 @@ public class StreamListPanel extends FlowPanel
             public void update(final MessageStreamAppendEvent event)
             {
                 howManyInList++;
-            }
-        });
-
-        eventBus.addObserver(StreamReinitializeRequestEvent.class, new Observer<StreamReinitializeRequestEvent>()
-        {
-            public void update(final StreamReinitializeRequestEvent event)
-            {
-                reinitialize();
-            }
-        });
-
-        eventBus.addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
-        {
-            public void update(final MessageStreamAppendEvent evt)
-            {
-                reinitialize();
             }
         });
 

@@ -138,7 +138,7 @@ public class GetActivityIdsByJsonRequestTest
     @Test
     public final void performActionTest() throws Exception
     {
-        final String request = "{}";
+        final String request = "{count:10}";
 
         context.checking(new Expectations()
         {

@@ -19,6 +19,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
@@ -57,6 +59,11 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
      * Logger.
      */
     private Log log = LogFactory.getLog(GetActivitiesByRequestExecution.class);
+
+    /**
+     * Max activities if none is specified.
+     */
+    private static final int MAXRESULTS = 10;
 
     /**
      * Get activity IDs by JSON request.
@@ -106,17 +113,56 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
      * @param inActionContext
      *            action context.
      * @return the activities.
-     * @throws ExecutionException execution exception.
+     * @throws ExecutionException
+     *             execution exception.
      */
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
         log.debug("Attempted to parse: " + inActionContext.getParams());
 
+        final JSONObject request = JSONObject.fromObject(inActionContext.getParams());
+
+        final JSONObject query = request.getJSONObject("query");
+
+        // Shortcut
+        // Do not sort if we're not getting anything from Lucene.
+        // Memcached lists are already sorted by date.
+        if (query.containsKey("sortBy") && query.getString("sortBy").equals("date")
+                && (!query.containsKey("keywords") || query.getString("keywords").length() == 0))
+        {
+            log.debug("Sort by date with no Lucene query, removing");
+            
+            query.remove("sortBy");
+
+            if (query.containsKey("keywords"))
+            {
+                query.remove("keywords");
+            }
+            
+            request.put("query", query);
+        }
+
+        if (!request.containsKey("count"))
+        {
+            request.put("count", MAXRESULTS);
+        }
+
+        final int currentMax = request.getInt("count");
+        request.put("count", currentMax + 1);
+
         final Long userEntityId = inActionContext.getPrincipal().getId();
         final String userAccountId = inActionContext.getPrincipal().getAccountId();
 
-        final List<Long> results = getActivityIdsByJsonRequest.execute((String) inActionContext.getParams(),
-                userEntityId);
+        final List<Long> results = getActivityIdsByJsonRequest.execute(request.toString(), userEntityId);
+
+        // the results list
+        PagedSet<ActivityDTO> pagedSet = new PagedSet<ActivityDTO>();
+        pagedSet.setTotal(results.size());
+
+        if (results.size() > currentMax)
+        {
+            results.remove(currentMax);
+        }
 
         final List<ActivityDTO> dtoResults = bulkActivitiesMapper.execute(results);
 
@@ -133,8 +179,6 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
             log.trace("Returning " + results.size() + " activities.");
         }
 
-        // the results list
-        PagedSet<ActivityDTO> pagedSet = new PagedSet<ActivityDTO>();
         pagedSet.setPagedSet(dtoResults);
 
         return pagedSet;

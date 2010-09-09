@@ -4,32 +4,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
-	<!-- Strategies -->
-	<bean name="compositeStreamFetcher" class="org.eurekastreams.server.service.restlets.CompositeStreamActivityFetcher">
-		<constructor-arg ref="getActivitiesByCompositeStream" />
-		<constructor-arg ref="serviceActionController" />
-		<constructor-arg ref="openSocialPrincipalPopulator" />
-		<constructor-arg ref="findByIdMapper" />		
-	</bean>
-
-	<bean name="groupStreamFetcher" class="org.eurekastreams.server.service.restlets.GroupStreamActivityFetcher">
-		<constructor-arg ref="getActivitiesByCompositeStream" />
-		<constructor-arg ref="serviceActionController" />
-		<constructor-arg ref="openSocialPrincipalPopulator" />
-		<constructor-arg ref="bulkDomainGroupsMapper" />		
-	</bean>
-
 	<!-- Restlets -->
-	
-	<bean name="compositeStreamEntryResource" class="org.eurekastreams.server.service.restlets.StreamFilterEntryResource"
-		scope="prototype">
-		<property name="filterFetcher" ref="compositeStreamFetcher" />
-	</bean>
-	
-	<bean name="groupStreamEntryResource" class="org.eurekastreams.server.service.restlets.StreamFilterEntryResource"
-		scope="prototype">
-		<property name="filterFetcher" ref="groupStreamFetcher" />
-	</bean>
 
 	<bean name="orgOverviewResource" class="org.eurekastreams.server.service.restlets.CompositeEntityOverviewResource"
 		scope="prototype">
@@ -427,16 +402,6 @@
                 <entry key="/oauth/accessToken">
                 	<bean class="org.restlet.ext.spring.SpringFinder">
                 		<lookup-method name="createResource" bean="oauthAccessTokenResource" />
-                	</bean>
-                </entry>
-                <entry key="/compositestream/{id}/owner/{openSocialId}">
-                	<bean class="org.restlet.ext.spring.SpringFinder">
-                		<lookup-method name="createResource" bean="compositeStreamEntryResource" />
-                	</bean>
-                </entry>
-                <entry key="/groupstream/{id}/owner/{openSocialId}">
-                	<bean class="org.restlet.ext.spring.SpringFinder">
-                		<lookup-method name="createResource" bean="groupStreamEntryResource" />
                 	</bean>
                 </entry>
                 <entry key="/stream/{openSocialId}/query">

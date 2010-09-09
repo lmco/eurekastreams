@@ -46,7 +46,7 @@ public class UnseenActivityCountForViewModel extends BaseModel implements
      */
     public void fetch(final GetActivitiesByCompositeStreamRequest request, final boolean useClientCacheIfAvailable)
     {
-        super.callReadAction("getUnseenActivityCount", request, new OnSuccessCommand<Integer>()
+        super.callReadAction("getActivityCount", request, new OnSuccessCommand<Integer>()
         {
             public void onSuccess(final Integer response)
             {

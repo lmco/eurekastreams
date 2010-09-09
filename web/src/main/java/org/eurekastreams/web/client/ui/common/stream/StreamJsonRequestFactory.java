@@ -59,6 +59,16 @@ public final class StreamJsonRequestFactory
     private static final String SORT_KEY = "sortBy";
 
     /**
+     * Min ID key.
+     */
+    private static final String MIN_ID_KEY = "minId";
+
+    /**
+     * Max ID key.
+     */
+    private static final String MAX_ID_KEY = "maxId";
+
+    /**
      * Sort types.
      */
     public enum SortType
@@ -173,7 +183,7 @@ public final class StreamJsonRequestFactory
     }
 
     /**
-     * Sets the sorting of a request..
+     * Sets the sorting of a request.
      * 
      * @param sortBy
      *            the type of sort.
@@ -190,6 +200,38 @@ public final class StreamJsonRequestFactory
         return json;
     }
 
+    /**
+     * Sets the min ID of a request.
+     * 
+     * @param minId
+     *            the min ID.
+     * @param json
+     *            the request.
+     * @return the request.
+     */
+    public static JSONObject setMinId(final Long minId, final JSONObject json)
+    {
+        json.put(MIN_ID_KEY, new JSONString(minId.toString()));
+
+        return json;
+    }
+    
+    /**
+     * Sets the max ID of a request.
+     * 
+     * @param maxId
+     *            the max ID.
+     * @param json
+     *            the request.
+     * @return the request.
+     */
+    public static JSONObject setMaxId(final Long maxId, final JSONObject json)
+    {
+        json.put(MAX_ID_KEY, new JSONString(maxId.toString()));
+
+        return json;
+    }
+    
     /**
      * Constructor.
      */

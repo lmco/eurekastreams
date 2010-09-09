@@ -1564,31 +1564,6 @@
 		<constructor-arg value="true" />
 	</bean>
 
-    <bean id="getActivitesByCompositeStreamExecutor"
-                class="org.eurekastreams.server.action.execution.stream.GetActivitiesByCompositeStreamExecution">
-                <constructor-arg ref="compositeStreamActivityIdsMapper" />
-                <constructor-arg ref="bulkActivitiesMapper" />
-                <constructor-arg>
-                    <list>
-                        <ref bean="canCommentFilter" />
-                        <ref bean="canShareFilter" />
-            	        <ref bean="likeFilter" />
-        	            <ref bean="deleteFilter" />
-    	                <ref bean="savedFilter" />
-	                    <ref bean="serverTimeFilter" />
-                    </list>
-                </constructor-arg>
-                <constructor-arg
-                    ref="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper" />
-                <!--
-                    Multiplier for batch size when requesting ActivityDTOs from cache.
-                    If the user wants 10 activities in a page, and this value is 2.0,
-                    then the first batch will request 20, the second 40, third 80.
-                -->
-                <constructor-arg type="float" value="2.0" />
-                <constructor-arg ref="bulkPeopleByAccountIdMapper" />
-    </bean>
-
     <bean id="securityTrimmer" 
     		class="org.eurekastreams.server.action.execution.stream.ActivitySecurityTrimmer">
             <constructor-arg ref="bulkActivitySecurityMapper" />
@@ -1687,23 +1662,8 @@
             <constructor-arg ref="getActivityIdsByJsonRequest" />
     </bean>
 
-	<bean id="getActivitiesByCompositeStream" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg >
-          <bean class="org.eurekastreams.server.action.validation.stream.GetActivitiesByCompositeStreamIdValidation">
-              <constructor-arg ref="compositeStreamActivityIdsMapper"/>
-          </bean>
-        </constructor-arg>
-		<constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg ref="getActivitesByCompositeStreamExecutor" />
-		<constructor-arg value="true" />
-	</bean>
-
     <bean id="getActivityCount" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg >
-          <bean class="org.eurekastreams.server.action.validation.stream.GetActivitiesByCompositeStreamIdValidation">
-              <constructor-arg ref="compositeStreamActivityIdsMapper"/>
-          </bean>
-        </constructor-arg>
+		<constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
             <bean

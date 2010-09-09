@@ -33,7 +33,6 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SetBannerEvent;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
-import org.eurekastreams.web.client.events.StreamReinitializeRequestEvent;
 import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.SwitchToFilterOnPagedFilterPanelEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
@@ -281,8 +280,6 @@ public class OrganizationProfilePanel extends FlowPanel
         portalPage.init();
         portalPage.setStyleName("profile-gadgets-container");
         portalPageContainer.add(portalPage);
-
-        Session.getInstance().getEventBus().notifyObservers(StreamReinitializeRequestEvent.getEvent());
     }
 
     /**

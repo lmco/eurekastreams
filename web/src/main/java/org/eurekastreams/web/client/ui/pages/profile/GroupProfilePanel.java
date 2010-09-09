@@ -29,7 +29,6 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SetBannerEvent;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
-import org.eurekastreams.web.client.events.StreamReinitializeRequestEvent;
 import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.SwitchToFilterOnPagedFilterPanelEvent;
 import org.eurekastreams.web.client.events.data.BaseDataResponseEvent;
@@ -283,8 +282,8 @@ public class GroupProfilePanel extends FlowPanel
         leftBarPanel.addChildWidget(coordinatorPanel);
 
         final StreamPanel streamContent = new StreamPanel(false);
-        streamContent.setStreamScope(group.getStreamScope());
-        
+        streamContent.setStreamScope(group.getStreamScope(), group.isStreamPostable());
+
         String jsonRequest = StreamJsonRequestFactory.addRecipient(EntityType.GROUP, group.getShortName(),
                 StreamJsonRequestFactory.getEmptyRequest()).toString();
 
@@ -329,7 +328,6 @@ public class GroupProfilePanel extends FlowPanel
 
         portalPageContainer.add(portalPage);
 
-        eventBus.notifyObservers(StreamReinitializeRequestEvent.getEvent());
         GroupModel.getInstance().authorize(inGroup.getShortName(), false);
 
         inProcessor.setQueueRequests(false);
