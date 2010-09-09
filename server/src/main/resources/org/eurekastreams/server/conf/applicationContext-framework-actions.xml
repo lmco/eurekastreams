@@ -204,6 +204,21 @@
         <constructor-arg value="true" />        
     </bean>    
     
+    <!-- Delete old StreamHashTag records older than the configurable value -->
+    <bean id="deleteOldStreamHashTagsAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+        <constructor-arg ref="noValidationStrategy" />        
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.DeleteOldStreamHashTagsExecution">
+                <constructor-arg>
+                	<bean class="org.eurekastreams.server.persistence.mappers.db.DeleteOldStreamHashTagRecordsDbMapper" />
+                </constructor-arg>
+                <constructor-arg value="${eureka.stream.popularhashtags.activitywindowinminutes}" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="false" />        
+    </bean>    
+    
     <bean id="createPersonAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
         <constructor-arg ref="noValidationStrategy" />        
         <constructor-arg>
