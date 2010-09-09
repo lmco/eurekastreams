@@ -17,6 +17,8 @@ package org.eurekastreams.server.service.actions.strategies.activity.plugins.rom
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collections;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -39,30 +41,36 @@ import com.sun.syndication.io.SyndFeedInput;
 
 /**
  * Strategy that uses a cookie to bypass a proxy.
- * 
+ *
  */
-public class HttpCookieBypassStrategy implements PluginFeedFetcherStrategy
+public class BasicFeedFetcher implements PluginFeedFetcherStrategy
 {
     /**
      * The Site Url's Regular Expression.
      */
     String siteUrlRegEx;
 
+    /** HTTP headers to add to the request. */
+    private Map<String, String> httpHeaders;
+
     /**
-     * The key=value pair of the cookie to set.
+     * Constructor.
      */
-    String cookieToSet;
-    
+    public BasicFeedFetcher()
+    {
+        this(null, Collections.EMPTY_MAP);
+    }
+
     /**
      * @param inSiteUrlRegEx
      *            The url RegEx.
-     * @param inCookieToSet
-     *            the (key=value) cookie to set.
+     * @param inHttpHeaders
+     *            HTTP headers to add to the request.
      */
-    public HttpCookieBypassStrategy(final String inSiteUrlRegEx, final String inCookieToSet)
+    public BasicFeedFetcher(final String inSiteUrlRegEx, final Map<String, String> inHttpHeaders)
     {
         siteUrlRegEx = inSiteUrlRegEx;
-        cookieToSet = inCookieToSet;
+        httpHeaders = inHttpHeaders;
     }
 
     /**
@@ -75,7 +83,7 @@ public class HttpCookieBypassStrategy implements PluginFeedFetcherStrategy
 
     /**
      * Executes the strategy.
-     * 
+     *
      * @param inFeedURL
      *            the Url for the feed to feed in.
      * @param inProxyHost
@@ -94,33 +102,37 @@ public class HttpCookieBypassStrategy implements PluginFeedFetcherStrategy
             final int inTimeout) throws IOException, ParserConfigurationException,
             FeedException, SAXException
     {
-        // TODO - refactor this; it's the same code (minus the cookie setting) that's in FeedFactory 
         HttpConnectionManagerParams managerParams = new HttpConnectionManagerParams();
         managerParams.setSoTimeout(inTimeout);
         managerParams.setConnectionTimeout(inTimeout);
-        
+
         HttpConnectionManager manager = new SimpleHttpConnectionManager();
         manager.setParams(managerParams);
-        
+
         HttpClientParams params = new HttpClientParams();
         params.setConnectionManagerTimeout(inTimeout);
         params.setSoTimeout(inTimeout);
-        
+
         HttpClient client = new HttpClient(params, manager);
         HttpMethodRetryHandler retryHandler = new DefaultHttpMethodRetryHandler(1, true);
         client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, retryHandler);
-        
+
         if (!inProxyHost.isEmpty())
         {
             client.getHostConfiguration().setProxy(inProxyHost, Integer.parseInt(inProxyPort));
         }
 
         GetMethod get = new GetMethod(inFeedURL.toString());
-        get.setRequestHeader("Cookie", cookieToSet);
+
+        for (Map.Entry<String, String> header : httpHeaders.entrySet())
+        {
+            get.setRequestHeader(header.getKey(), header.getValue());
+        }
+
         try
         {
             client.executeMethod(get);
-            
+
             DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
             domFactory.setNamespaceAware(true);
             DocumentBuilder builder = domFactory.newDocumentBuilder();
