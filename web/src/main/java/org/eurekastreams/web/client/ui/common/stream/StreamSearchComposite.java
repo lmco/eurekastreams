@@ -99,6 +99,16 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
      * The view.
      */
     private StreamView streamView;
+    
+    /**
+     * Title wrapper.
+     */
+    FlowPanel titleWrapper = new FlowPanel();
+    
+    /**
+     * Link for group stream titles.
+     */
+    Hyperlink titleLink = new Hyperlink();
 
     /**
      * In label.
@@ -145,12 +155,15 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
         fader.addStyleName("stream-title-fader");
         streamSearch.add(fader);
 
-        FlowPanel titleWrapper = new FlowPanel();
         titleWrapper.addStyleName("title-wrapper");
 
         titleLbl = new Label(title);
         titleLbl.addStyleName("title");
         titleWrapper.add(titleLbl);
+        
+        titleWrapper.add(titleLink);
+        titleLink.addStyleName("title");
+        titleLink.setVisible(false);
 
         streamSearch.add(titleWrapper);
 
@@ -285,6 +298,8 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
                         {
                             viewLbl.setText(event.getSearch().getStreamView().getName());
                             titleLbl.setText(event.getSearch().getName());
+                            titleLbl.setVisible(true);
+                            titleLink.setVisible(false);
                             streamView = event.getSearch().getStreamView();
                             setAddGadgetLink(event.getSearchText().replaceAll(" ", "+"), String.valueOf(event
                                     .getSearch().getId()), event.getSearch().getName());
@@ -361,16 +376,33 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
     }
 
     /**
-     * Set the title text.
+     * Set the title text, generating a hyperlink for group stream titles.
      *
      * @param title
      *            the text.
+     * @param scope
+     *            the stream scope for the stream being rendered.
      */
-    public void setTitleText(final String title)
+    public void setTitleText(final String title, final StreamScope scope)
     {
         titleLbl.setText(title);
         searchTerm.setVisible(true);
         searchGo.setVisible(true);
+        
+        if (scope != null && scope.getScopeType() == ScopeType.GROUP)
+        {
+            String url = Session.getInstance().generateUrl(new CreateUrlRequest(Page.GROUPS, scope.getUniqueKey()));
+            titleLink.setTargetHistoryToken(url);
+            titleLink.setHTML(title);
+            
+            titleLbl.setVisible(false);
+            titleLink.setVisible(true);
+        }
+        else
+        {
+            titleLbl.setVisible(true);
+            titleLink.setVisible(false);
+        }
     }
 
     /**

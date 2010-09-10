@@ -510,7 +510,12 @@ public class StreamPanel extends FlowPanel implements Bindable
             view = inView;
             viewId = view.getId();
             messageRequest = new GetActivitiesByCompositeStreamRequest(view.getId(), DEFAULT_MAX_ITEMS);
-            streamSearch.setTitleText(view.getName());
+            StreamScope scope = null;
+            if (view.getIncludedScopes() != null)
+            {
+              scope = (StreamScope) view.getIncludedScopes().toArray()[0];
+            }
+            streamSearch.setTitleText(view.getName(), scope);
             streamSearch.setStreamView(view);
             streamSearch.setMode(mode);
             Session.getInstance().getEventBus().notifyObservers(StreamReinitializeRequestEvent.getEvent());
