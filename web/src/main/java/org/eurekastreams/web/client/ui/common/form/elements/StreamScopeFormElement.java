@@ -179,7 +179,21 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
      *            the JSON object.
      * @return the display name.
      */
-    private native String getDisplayName(final String jsObj) /*-{ return jsObj.split(",")[0]; }-*/;
+    private native String getDisplayName(final String jsObj) /*-{
+           var jsArray = jsObj.split(",");
+
+           var ret = "";
+
+           for(var i=0;i<jsArray.length-3;i++)
+           {
+               ret = ret + jsArray[i];
+               if (i != jsArray.length-4)
+               {
+                   ret = ret + ",";
+               }
+           }
+           return ret;
+       }-*/;
 
     /**
      * Gets the entity type of the JSON object.
@@ -188,7 +202,10 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
      *            the JSON object.
      * @return the entity type.
      */
-    private native String getEntityType(final String jsObj) /*-{ return jsObj.split(",")[1]; }-*/;
+    private native String getEntityType(final String jsObj) /*-{
+       var jsArray = jsObj.split(",");
+       return jsArray[jsArray.length-3];
+    }-*/;
 
     /**
      * Gets the unique id of the JSON object.
@@ -197,7 +214,10 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
      *            the JSON object.
      * @return the unique id.
      */
-    private native String getUniqueId(final String jsObj) /*-{ return jsObj.split(",")[2]; }-*/;
+    private native String getUniqueId(final String jsObj) /*-{
+       var jsArray = jsObj.split(",");
+       return jsArray[jsArray.length-2];
+    }-*/;
 
     /**
      * Gets the StreamScope id of the JSON object.
@@ -206,7 +226,10 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
      *            the JSON object.
      * @return the StreamScope id.
      */
-    private native String getStreamScopeId(final String jsObj) /*-{ return jsObj.split(",")[3]; }-*/;
+    private native String getStreamScopeId(final String jsObj) /*-{
+       var jsArray = jsObj.split(",");
+       return jsArray[jsArray.length-1];
+    }-*/;
 
     /**
      * Gets called if this element has an error.
