@@ -35,8 +35,11 @@ public enum NotificationType
     /** Someone started following the user. */
     FOLLOW_PERSON,
 
-    /** Someone posted to the group's stream. */
+    /** Someone posted to a group's stream for a group the user is coordinating. */
     POST_TO_GROUP_STREAM,
+
+    /** Someone posted to a group's stream for a group the user is a member of. */
+    POST_TO_JOINED_GROUP,
 
     /** Someone commented on a post in the group's stream. */
     COMMENT_TO_GROUP_STREAM,
