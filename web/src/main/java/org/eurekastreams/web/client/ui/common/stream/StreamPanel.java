@@ -17,6 +17,7 @@ package org.eurekastreams.web.client.ui.common.stream;
 
 import java.util.HashMap;
 
+import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamScope;
@@ -41,6 +42,7 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
@@ -69,7 +71,7 @@ public class StreamPanel extends FlowPanel
      * Stream panel.
      */
     private StreamListPanel stream = null;
-
+    
     /**
      * JSON Query.
      */
@@ -267,6 +269,8 @@ public class StreamPanel extends FlowPanel
                 {
                     setListMode();
                     stream.reinitialize();
+                    boolean showTitleAsLink = false;
+                    String shortName = "";
 
                     String updatedJson = jsonQuery;
 
@@ -292,6 +296,24 @@ public class StreamPanel extends FlowPanel
                                 StreamJsonRequestFactory.getJSONRequest(updatedJson)).toString();
 
                     }
+                    // see if the stream belongs to a group and set up the stream title as a link
+                    else if (queryObject.containsKey("recipient") && queryObject.get("recipient").isArray().size() == 1)
+                    {
+                        JSONArray recipientArr = queryObject.get("recipient").isArray();
+                        JSONObject recipientObj = recipientArr.get(0).isObject();
+                        
+                        if (recipientObj.get("type").isString().stringValue().equals("GROUP"))
+                        {
+                            shortName = recipientObj.get("name").isString().stringValue();
+                            
+                            // only show the link if viewing the stream on the activity page
+                            if (Session.getInstance().getUrlPage() == Page.ACTIVITY)
+                            {
+                                showTitleAsLink = true;
+                            }
+                        }
+                    }
+
                     else
                     {
                         streamSearch.onSearchCanceled();
@@ -308,7 +330,7 @@ public class StreamPanel extends FlowPanel
                                 StreamJsonRequestFactory.getJSONRequest(updatedJson)).toString();
                     }
 
-                    streamSearch.setTitleText(streamName);
+                    streamSearch.setTitleText(streamName, shortName, showTitleAsLink);
                     streamSearch.setCanChange(canChange);
 
                     StreamModel.getInstance().fetch(updatedJson, false);
