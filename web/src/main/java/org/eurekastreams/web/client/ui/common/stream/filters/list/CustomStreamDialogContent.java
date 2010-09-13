@@ -15,33 +15,31 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.filters.list;
 
-import java.util.LinkedList;
-
 import org.eurekastreams.commons.client.ui.WidgetCommand;
-import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.domain.stream.StreamView;
+import org.eurekastreams.server.domain.stream.Stream;
+import org.eurekastreams.web.client.events.CustomStreamCreatedEvent;
+import org.eurekastreams.web.client.events.CustomStreamUpdatedEvent;
 import org.eurekastreams.web.client.events.Observer;
-import org.eurekastreams.web.client.events.StreamViewCreatedEvent;
-import org.eurekastreams.web.client.events.StreamViewUpdatedEvent;
-import org.eurekastreams.web.client.events.data.GotCompleteStreamViewResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
-import org.eurekastreams.web.client.model.StreamViewModel;
+import org.eurekastreams.web.client.model.CustomStreamModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder.Method;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextBoxFormElement;
-import org.eurekastreams.web.client.ui.common.form.elements.StreamScopeFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.ValueOnlyFormElement;
+import org.eurekastreams.web.client.ui.common.stream.filters.search.StreamSearchDialogContent.Mode;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -73,10 +71,6 @@ public class CustomStreamDialogContent implements DialogContent
      * Name.
      */
     private String name = "";
-    /**
-     * Scopes.
-     */
-    private LinkedList<StreamScope> scopes = new LinkedList<StreamScope>();
 
     /**
      * The ID of the StreamView.
@@ -86,7 +80,7 @@ public class CustomStreamDialogContent implements DialogContent
     /**
      * The view.
      */
-    private StreamView view;
+    private Stream view;
 
     /**
      * Form Builder.
@@ -94,33 +88,40 @@ public class CustomStreamDialogContent implements DialogContent
     private FormBuilder form;
 
     /**
+     * Maximum keyword length.
+     */
+    private static final int MAX_KEYWORD = 2000;
+
+    /**
+     * Keywords.
+     */
+    private String keywords = "";
+
+    /**
+     * View name.
+     */
+    private String viewName = "Everybody";
+
+    /**
+     * The list form element.
+     */
+    private StreamListFormElement streamLists;
+
+    /**
      * Default constructor.
      *
-     * @param inViewId
+     * @param inStream
      *            the view id.
      */
-    public CustomStreamDialogContent(final Long inViewId)
+    public CustomStreamDialogContent(final Stream inStream)
     {
-        viewId = inViewId;
+        viewId = inStream.getId();
         mode = Method.UPDATE;
-        Label loading = new Label("");
-        loading.setStyleName("loading");
-        body.add(loading);
         body.addStyleName("list-edit-modal");
+        view = inStream;
+        name = inStream.getName();
+        setUpForm();
 
-        Session.getInstance().getEventBus().addObserver(GotCompleteStreamViewResponseEvent.class,
-                new Observer<GotCompleteStreamViewResponseEvent>()
-                {
-                    public void update(final GotCompleteStreamViewResponseEvent event)
-                    {
-                        view = event.getResponse();
-                        name = event.getResponse().getName();
-                        scopes = new LinkedList<StreamScope>(event.getResponse().getIncludedScopes());
-                        setUpForm();
-                    }
-
-                });
-        StreamViewModel.getInstance().fetch(inViewId, true);
     }
 
     /**
@@ -140,24 +141,25 @@ public class CustomStreamDialogContent implements DialogContent
     {
         body.clear();
 
-        form = new FormBuilder("Organize streams into custom lists", StreamViewModel.getInstance(),
-                mode);
+        streamLists = new StreamListFormElement("");
+
+        form = new FormBuilder("Organize streams into custom lists", CustomStreamModel.getInstance(), mode);
         form.turnOffChangeCheck();
         form.addStyleName("stream-view-dialog-body");
 
-        Session.getInstance().getEventBus().addObserver(StreamViewCreatedEvent.class,
-                new Observer<StreamViewCreatedEvent>()
+        Session.getInstance().getEventBus().addObserver(CustomStreamCreatedEvent.class,
+                new Observer<CustomStreamCreatedEvent>()
                 {
-                    public void update(final StreamViewCreatedEvent arg1)
+                    public void update(final CustomStreamCreatedEvent arg1)
                     {
                         close();
                     }
                 });
 
-        Session.getInstance().getEventBus().addObserver(StreamViewUpdatedEvent.class,
-                new Observer<StreamViewUpdatedEvent>()
+        Session.getInstance().getEventBus().addObserver(CustomStreamUpdatedEvent.class,
+                new Observer<CustomStreamUpdatedEvent>()
                 {
-                    public void update(final StreamViewUpdatedEvent arg1)
+                    public void update(final CustomStreamUpdatedEvent arg1)
                     {
                         close();
                     }
@@ -172,13 +174,31 @@ public class CustomStreamDialogContent implements DialogContent
         });
 
         form.setOnCancelHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest()));
-        form.addFormElement(new ValueOnlyFormElement("id", viewId));
 
         form.addFormElement(new BasicTextBoxFormElement(MAX_NAME, false, "Name", "name", name, "", true));
 
-        form.addFormElement(new StreamScopeFormElement("scopes", scopes, "Streams",
-                "Enter the name of an employee or group stream.", true, true, "/resources/autocomplete/entities/",
-                MAX_NAME));
+        if (mode.equals(Mode.SAVE))
+        {
+            form.addFormElement(new ValueOnlyFormElement("streamId", viewId));
+
+            Panel whichViewPanel = new FlowPanel();
+            whichViewPanel.addStyleName("view-panel");
+            Label label = new InlineLabel("Stream: ");
+            label.addStyleName("form-label");
+            whichViewPanel.add(label);
+            label = new InlineLabel(viewName);
+            label.addStyleName("view-text");
+            whichViewPanel.add(label);
+            form.addWidget(whichViewPanel);
+        }
+        else
+        {
+            form.addFormElement(streamLists);
+        }
+
+        form.addFormElement(new BasicTextBoxFormElement(MAX_KEYWORD, false, "Keywords", "keywords", keywords,
+                "Optional: Separate multiple keywords with spaces", false));
+
         body.add(form);
 
         if (mode.equals(Method.UPDATE))
@@ -193,7 +213,7 @@ public class CustomStreamDialogContent implements DialogContent
                             + "Start Page. Saved Searches based on this list will be automatically deleted. Are "
                             + "you sure you want to delete this list?"))
                     {
-                        StreamViewModel.getInstance().delete(view);
+                        CustomStreamModel.getInstance().delete(view);
                         close();
                     }
                 }
@@ -252,9 +272,9 @@ public class CustomStreamDialogContent implements DialogContent
         switch (mode)
         {
         case INSERT:
-            return "Create a List";
+            return "Create a Stream";
         case UPDATE:
-            return "Edit List";
+            return "Edit Stream";
         default:
             return "";
         }

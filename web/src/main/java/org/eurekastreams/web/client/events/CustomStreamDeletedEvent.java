@@ -15,47 +15,47 @@
  */
 package org.eurekastreams.web.client.events;
 
-import org.eurekastreams.server.domain.stream.StreamView;
+import org.eurekastreams.server.domain.stream.Stream;
 
 /**
- * Gets fired when a stream view has been created.
+ * Gets fired when a stream view is deleted.
  *
  */
-public class StreamViewCreatedEvent
+public class CustomStreamDeletedEvent
 {
     /**
      * Gets an instance of the event.
-     * 
+     *
      * @return the event.
      */
-    public static StreamViewCreatedEvent getEvent()
+    public static CustomStreamDeletedEvent getEvent()
     {
-        return new StreamViewCreatedEvent(null);
+        return new CustomStreamDeletedEvent(null);
     }
 
     /**
      * The new view.
      */
-    private StreamView view;
+    private Stream stream;
 
     /**
      * Default constructor.
-     * 
-     * @param inView
+     *
+     * @param inStream
      *            the new view.
      */
-    public StreamViewCreatedEvent(final StreamView inView)
+    public CustomStreamDeletedEvent(final Stream inStream)
     {
-        view = inView;
+        stream = inStream;
     }
 
     /**
      * Returns the view.
-     * 
+     *
      * @return the view.
      */
-    public StreamView getView()
+    public Stream getStream()
     {
-        return view;
+        return stream;
     }
 }

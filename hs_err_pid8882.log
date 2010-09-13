@@ -1,0 +1,1381 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00002aaafe8590f1, pid=8882, tid=1101592896
+#
+# JRE version: 6.0_17-b04
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (14.3-b01 mixed mode linux-amd64 )
+# Problematic frame:
+# C  [libswt-pi-gtk-3452.so+0x5b0f1]  Java_org_eclipse_swt_internal_gtk_OS__1pango_1layout_1line_1get_1resolved_1dir+0x2f
+#
+# If you would like to submit a bug report, please visit:
+#   http://java.sun.com/webapps/bugreport/crash.jsp
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x0000000059f07000):  JavaThread "main" [_thread_in_native, id=8883, stack(0x000000004198f000,0x0000000041a90000)]
+
+siginfo:si_signo=SIGSEGV: si_errno=0, si_code=1 (SEGV_MAPERR), si_addr=0x0000000000000018
+
+Registers:
+RAX=0x0000000000000000, RBX=0x0000000000000000, RCX=0x0000000000000000, RDX=0x0000000000000000
+RSP=0x0000000041a8d4c0, RBP=0x0000000000000000, RSI=0x0000000000000004, RDI=0x0000000000000002
+R8 =0x0000000000000000, R9 =0x0000000000000001, R10=0x00002aaaaaf74ea1, R11=0x00002b3a0a7d4110
+R12=0x0000000041a8d550, R13=0x00002aaaaece8d58, R14=0x0000000041a8d558, R15=0x0000000059f07000
+RIP=0x00002aaafe8590f1, EFL=0x0000000000010246, CSGSFS=0x0000000000000033, ERR=0x0000000000000004
+  TRAPNO=0x000000000000000e
+
+Top of Stack: (sp=0x0000000041a8d4c0)
+0x0000000041a8d4c0:   0000000000000000 00002aaaaece8d58
+0x0000000041a8d4d0:   0000000041a8d530 00002aaaaaf74ece
+0x0000000041a8d4e0:   0000000041a8d5c0 00002aaaaece6d80
+0x0000000041a8d4f0:   0000000041a8d4f0 0000000000000000
+0x0000000041a8d500:   0000000041a8d558 00002aaaaecee870
+0x0000000041a8d510:   0000000000000000 00002aaaaece8d58
+0x0000000041a8d520:   0000000000000000 0000000041a8d550
+0x0000000041a8d530:   0000000041a8d5a0 00002aaaaaf6892e
+0x0000000041a8d540:   00002aaaaecee638 00002aaaaaf713f6
+0x0000000041a8d550:   0000000000000000 0000000000000001
+0x0000000041a8d560:   0000000041a8d560 00002aaaaece8e50
+0x0000000041a8d570:   0000000041a8d5c8 00002aaaaecee870
+0x0000000041a8d580:   0000000000000000 00002aaaaece8e88
+0x0000000041a8d590:   0000000041a8d550 0000000041a8d5c0
+0x0000000041a8d5a0:   0000000041a8d610 00002aaaaaf6892e
+0x0000000041a8d5b0:   0000000000000000 0000000000000000
+0x0000000041a8d5c0:   0000000000000000 0000000000020a04
+0x0000000041a8d5d0:   0000000041a8d5d0 00002aaaaedf1c6f
+0x0000000041a8d5e0:   0000000041a8d650 00002aaaaf090b88
+0x0000000041a8d5f0:   0000000000000000 00002aaaaedf1d70
+0x0000000041a8d600:   0000000041a8d5c0 0000000041a8d650
+0x0000000041a8d610:   0000000041a8d698 00002aaaaaf68a42
+0x0000000041a8d620:   0000000000000000 0000000000000000
+0x0000000041a8d630:   0000000000000000 0000000000000000
+0x0000000041a8d640:   0000000000000000 0000000000000000
+0x0000000041a8d650:   00002aaacbef79b8 0000000041a8d658
+0x0000000041a8d660:   00002aaaaedf2628 0000000041a8d6c0
+0x0000000041a8d670:   00002aaaaf090b88 0000000000000000
+0x0000000041a8d680:   00002aaaaedf2670 0000000041a8d650
+0x0000000041a8d690:   0000000041a8d6b8 0000000041a8d708
+0x0000000041a8d6a0:   00002aaaaaf68a42 00002aaaea4fa000
+0x0000000041a8d6b0:   00002aaaea4f9f58 00002aaaea4f9eb0 
+
+Instructions: (pc=0x00002aaafe8590f1)
+0x00002aaafe8590e1:   00 bf 02 00 00 00 e8 ec d2 fd ff 48 85 c0 75 0d
+0x00002aaafe8590f1:   0f b6 43 18 d0 e8 bd 07 00 00 00 21 c5 89 e8 48 
+
+Stack: [0x000000004198f000,0x0000000041a90000],  sp=0x0000000041a8d4c0,  free space=1017k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [libswt-pi-gtk-3452.so+0x5b0f1]  Java_org_eclipse_swt_internal_gtk_OS__1pango_1layout_1line_1get_1resolved_1dir+0x2f
+
+[error occurred during error reporting (printing native stack), id 0xb]
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  org.eclipse.swt.internal.gtk.OS._pango_layout_line_get_resolved_dir(J)I+0
+j  org.eclipse.swt.internal.gtk.OS.pango_layout_line_get_resolved_dir(J)I+8
+j  org.eclipse.swt.widgets.Label.setAlignment()V+63
+j  org.eclipse.swt.widgets.Label.setText(Ljava/lang/String;)V+64
+j  org.eclipse.jface.text.AbstractInformationControl.setStatusText(Ljava/lang/String;)V+37
+j  org.eclipse.jdt.internal.ui.text.java.hover.JavadocHover$HoverControlCreator.canReuse(Lorg/eclipse/jface/text/IInformationControl;)Z+39
+j  org.eclipse.jface.text.AbstractInformationControlManager.getInformationControl()Lorg/eclipse/jface/text/IInformationControl;+106
+j  org.eclipse.jface.text.AbstractInformationControlManager.internalShowInformationControl(Lorg/eclipse/swt/graphics/Rectangle;Ljava/lang/Object;)V+18
+j  org.eclipse.jface.text.AbstractInformationControlManager.presentInformation()V+70
+j  org.eclipse.jface.text.AbstractHoverInformationControlManager.presentInformation()V+64
+j  org.eclipse.jface.text.TextViewerHoverManager.doPresentInformation()V+1
+j  org.eclipse.jface.text.TextViewerHoverManager$5.run()V+4
+J  org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Z)Z
+J  org.eclipse.ui.internal.Workbench.runEventLoop(Lorg/eclipse/jface/window/Window$IExceptionHandler;Lorg/eclipse/swt/widgets/Display;)V
+j  org.eclipse.ui.internal.Workbench.runUI()I+393
+j  org.eclipse.ui.internal.Workbench.access$4(Lorg/eclipse/ui/internal/Workbench;)I+1
+j  org.eclipse.ui.internal.Workbench$5.run()V+23
+j  org.eclipse.core.databinding.observable.Realm.runWithDefault(Lorg/eclipse/core/databinding/observable/Realm;Ljava/lang/Runnable;)V+12
+j  org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Lorg/eclipse/swt/widgets/Display;Lorg/eclipse/ui/application/WorkbenchAdvisor;)I+18
+j  org.eclipse.ui.PlatformUI.createAndRunWorkbench(Lorg/eclipse/swt/widgets/Display;Lorg/eclipse/ui/application/WorkbenchAdvisor;)I+2
+j  org.eclipse.ui.internal.ide.application.IDEApplication.start(Lorg/eclipse/equinox/app/IApplicationContext;)Ljava/lang/Object;+84
+j  org.eclipse.equinox.internal.app.EclipseAppHandle.run(Ljava/lang/Object;)Ljava/lang/Object;+135
+j  org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(Ljava/lang/Object;)Ljava/lang/Object;+103
+j  org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(Ljava/lang/Object;)Ljava/lang/Object;+29
+j  org.eclipse.core.runtime.adaptor.EclipseStarter.run(Ljava/lang/Object;)Ljava/lang/Object;+149
+j  org.eclipse.core.runtime.adaptor.EclipseStarter.run([Ljava/lang/String;Ljava/lang/Runnable;)Ljava/lang/Object;+183
+v  ~StubRoutines::call_stub
+j  sun.reflect.NativeMethodAccessorImpl.invoke0(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+0
+j  sun.reflect.NativeMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+87
+j  sun.reflect.DelegatingMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+6
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+161
+j  org.eclipse.equinox.launcher.Main.invokeFramework([Ljava/lang/String;[Ljava/net/URL;)V+211
+j  org.eclipse.equinox.launcher.Main.basicRun([Ljava/lang/String;)V+114
+j  org.eclipse.equinox.launcher.Main.run([Ljava/lang/String;)I+4
+j  org.eclipse.equinox.launcher.Main.main([Ljava/lang/String;)V+10
+v  ~StubRoutines::call_stub
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x000000005bc4d000 JavaThread "Worker-511" [_thread_blocked, id=31343, stack(0x0000000040dbf000,0x0000000040ec0000)]
+  0x00002aab00dc3000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=31308, stack(0x00000000439db000,0x0000000043adc000)]
+  0x00002aab09f0d800 JavaThread "Worker-510" [_thread_blocked, id=31059, stack(0x0000000042cce000,0x0000000042dcf000)]
+  0x00002aab09f0b800 JavaThread "Worker-509" [_thread_blocked, id=30292, stack(0x0000000040936000,0x0000000040a37000)]
+  0x00002aab00331000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=16717, stack(0x00000000435d7000,0x00000000436d8000)]
+  0x00002aab09cf5800 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=16590, stack(0x00000000411fa000,0x00000000412fb000)]
+  0x00002aab0beec800 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=16525, stack(0x00000000443e5000,0x00000000444e6000)]
+  0x00002aab0a8bb000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=5584, stack(0x00000000433d5000,0x00000000434d6000)]
+  0x00002aab0ac3e000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=5567, stack(0x00000000434d6000,0x00000000435d7000)]
+  0x000000005b3b8800 JavaThread "Worker-493" [_thread_blocked, id=19812, stack(0x00000000424c6000,0x00000000425c7000)]
+  0x00002aab0b0a8000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=16559, stack(0x00000000432d4000,0x00000000433d5000)]
+  0x00002aab0bdda000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=9649, stack(0x00000000430d2000,0x00000000431d3000)]
+  0x00002aab01782000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=8772, stack(0x0000000042dcf000,0x0000000042ed0000)]
+  0x000000005bd54000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=11846, stack(0x0000000040c47000,0x0000000040d48000)]
+  0x00002aab01f24800 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=4457, stack(0x00000000427c9000,0x00000000428ca000)]
+  0x00002aab0a998800 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=3864, stack(0x0000000042bcd000,0x0000000042cce000)]
+  0x00002aab0227d800 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=3512, stack(0x000000004010e000,0x000000004020f000)]
+  0x00002aab09fb8800 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=30183, stack(0x0000000042acc000,0x0000000042bcd000)]
+  0x00002aab00dbb800 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=29425, stack(0x00000000429cb000,0x0000000042acc000)]
+  0x00002aab00008800 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=20486, stack(0x000000004b633000,0x000000004b734000)]
+  0x00002aab0a845000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=19655, stack(0x00000000442e4000,0x00000000443e5000)]
+  0x00002aab0120d000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=19644, stack(0x00000000428ca000,0x00000000429cb000)]
+  0x00002aab001fe800 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=18734, stack(0x0000000043bdd000,0x0000000043cde000)]
+  0x00002aab02231000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=9665, stack(0x00000000425c7000,0x00000000426c8000)]
+  0x00002aab01190800 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=8650, stack(0x000000004aa27000,0x000000004ab28000)]
+  0x00002aab013bc800 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=6568, stack(0x00000000436d8000,0x00000000437d9000)]
+  0x00002aab01eb4000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=6566, stack(0x00000000438da000,0x00000000439db000)]
+  0x000000005b826800 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=428, stack(0x000000004ac29000,0x000000004ad2a000)]
+  0x00002aab011ef000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=27202, stack(0x00000000444e6000,0x00000000445e7000)]
+  0x00002aab01548800 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=3615, stack(0x00000000437d9000,0x00000000438da000)]
+  0x00002aab008f0000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=27441, stack(0x00000000413fc000,0x00000000414fd000)]
+  0x00002aab01147800 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=27296, stack(0x0000000043ee0000,0x0000000043fe1000)]
+  0x000000005c864000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=27265, stack(0x0000000044aec000,0x0000000044bed000)]
+  0x00002aab0aea5000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=20180, stack(0x00000000449eb000,0x0000000044aec000)]
+  0x00002aab01a01800 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=20142, stack(0x0000000040633000,0x0000000040734000)]
+  0x00002aab0a1d1800 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=18516, stack(0x0000000044ef0000,0x0000000044ff1000)]
+  0x00002aab0a649800 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=18462, stack(0x00000000448ea000,0x00000000449eb000)]
+  0x00002aab01d51000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=15048, stack(0x0000000040734000,0x0000000040835000)]
+  0x00002aab01211000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=14218, stack(0x000000004020f000,0x0000000040310000)]
+  0x00002aab001a6800 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=13524, stack(0x0000000040835000,0x0000000040936000)]
+  0x00002aab01033000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=13512, stack(0x00000000450f2000,0x00000000451f3000)]
+  0x00002aab0033f000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=11593, stack(0x0000000044cee000,0x0000000044def000)]
+  0x00002aab0016a000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=11269, stack(0x00000000473fa000,0x00000000474fb000)]
+  0x00002aab0ae80800 JavaThread "org.eclipse.jface.text.reconciler.MonoReconciler" daemon [_thread_blocked, id=14753, stack(0x0000000044def000,0x0000000044ef0000)]
+  0x00002aab0915f000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=14668, stack(0x00000000471f8000,0x00000000472f9000)]
+  0x00002aab013b6000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=14666, stack(0x000000004a522000,0x000000004a623000)]
+  0x00002aab012b8000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=14571, stack(0x000000004af2c000,0x000000004b02d000)]
+  0x00002aab011f8000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=14535, stack(0x00000000470f7000,0x00000000471f8000)]
+  0x00002aab02281000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=13805, stack(0x0000000046ff6000,0x00000000470f7000)]
+  0x00002aab0a9af000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=13799, stack(0x0000000044ff1000,0x00000000450f2000)]
+  0x00002aab00096000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=13795, stack(0x000000004a21f000,0x000000004a320000)]
+  0x00002aab00e21000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=13790, stack(0x000000004b12e000,0x000000004b22f000)]
+  0x000000005b258000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=13574, stack(0x0000000044bed000,0x0000000044cee000)]
+  0x00002aab0023a800 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=13563, stack(0x000000004ae2b000,0x000000004af2c000)]
+  0x00002aab0a470000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=13448, stack(0x000000004b330000,0x000000004b431000)]
+  0x00002aab08887000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=4213, stack(0x00000000472f9000,0x00000000473fa000)]
+  0x00002aab0beae000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=31174, stack(0x0000000049e1b000,0x0000000049f1c000)]
+  0x00002aab0b6f6000 JavaThread "org.eclipse.jdt.internal.ui.text.JavaReconciler" daemon [_thread_blocked, id=5247, stack(0x000000004a421000,0x000000004a522000)]
+  0x00002aab15406800 JavaThread "com.google.common.base.internal.Finalizer" daemon [_thread_blocked, id=6314, stack(0x00000000412fb000,0x00000000413fc000)]
+  0x000000005a2fb800 JavaThread "JavaScript indexing" daemon [_thread_blocked, id=5255, stack(0x0000000040b46000,0x0000000040c47000)]
+  0x00002aab002b3000 JavaThread "Timer-20086" daemon [_thread_blocked, id=29710, stack(0x0000000043fe1000,0x00000000440e2000)]
+  0x000000005b98a000 JavaThread "Thread-11" daemon [_thread_blocked, id=9106, stack(0x00000000431d3000,0x00000000432d4000)]
+  0x00002aab0a196000 JavaThread "Timer-1" [_thread_blocked, id=9105, stack(0x0000000042fd1000,0x00000000430d2000)]
+  0x000000005a365000 JavaThread "Worker-13" [_thread_blocked, id=9099, stack(0x0000000042ed0000,0x0000000042fd1000)]
+  0x000000005b4b8000 JavaThread "Timer-0" [_thread_blocked, id=9064, stack(0x00000000426c8000,0x00000000427c9000)]
+  0x00002aab01357000 JavaThread "Java indexing" daemon [_thread_blocked, id=9041, stack(0x0000000040431000,0x0000000040532000)]
+  0x000000005a9d9000 JavaThread "Worker-2" [_thread_blocked, id=9029, stack(0x00000000414fe000,0x00000000415ff000)]
+  0x00002aab01180800 JavaThread "Start Level Event Dispatcher" daemon [_thread_blocked, id=8906, stack(0x00000000423c5000,0x00000000424c6000)]
+  0x000000005a7d9800 JavaThread "Framework Event Dispatcher" daemon [_thread_blocked, id=8905, stack(0x00000000422c4000,0x00000000423c5000)]
+  0x000000005a0e6800 JavaThread "Low Memory Detector" daemon [_thread_blocked, id=8898, stack(0x0000000041a90000,0x0000000041b91000)]
+  0x000000005a0e3800 JavaThread "CompilerThread1" daemon [_thread_blocked, id=8897, stack(0x000000004181e000,0x000000004191f000)]
+  0x000000005a0df000 JavaThread "CompilerThread0" daemon [_thread_blocked, id=8896, stack(0x0000000040a45000,0x0000000040b46000)]
+  0x000000005a0dd000 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=8895, stack(0x0000000040330000,0x0000000040431000)]
+  0x000000005a0ba800 JavaThread "Finalizer" daemon [_thread_blocked, id=8894, stack(0x00000000410f9000,0x00000000411fa000)]
+  0x000000005a0b8800 JavaThread "Reference Handler" daemon [_thread_blocked, id=8893, stack(0x0000000040ff8000,0x00000000410f9000)]
+=>0x0000000059f07000 JavaThread "main" [_thread_in_native, id=8883, stack(0x000000004198f000,0x0000000041a90000)]
+
+Other Threads:
+  0x000000005a0b1800 VMThread [stack: 0x0000000040ef7000,0x0000000040ff8000] [id=8892]
+  0x000000005a0e9000 WatcherThread [stack: 0x0000000041b91000,0x0000000041c92000] [id=8899]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap
+ PSYoungGen      total 215360K, used 69573K [0x00002aaae8ae0000, 0x00002aaafa310000, 0x00002aaafe030000)
+  eden space 149056K, 19% used [0x00002aaae8ae0000,0x00002aaaea6e0388,0x00002aaaf1c70000)
+  from space 66304K, 61% used [0x00002aaaf5ee0000,0x00002aaaf86d13d8,0x00002aaaf9fa0000)
+  to   space 68032K, 0% used [0x00002aaaf1c70000,0x00002aaaf1c70000,0x00002aaaf5ee0000)
+ PSOldGen        total 699072K, used 432752K [0x00002aaabe030000, 0x00002aaae8ae0000, 0x00002aaae8ae0000)
+  object space 699072K, 61% used [0x00002aaabe030000,0x00002aaad86cc2c0,0x00002aaae8ae0000)
+ PSPermGen       total 169088K, used 140639K [0x00002aaaae030000, 0x00002aaab8550000, 0x00002aaabe030000)
+  object space 169088K, 83% used [0x00002aaaae030000,0x00002aaab6987ea8,0x00002aaab8550000)
+
+Dynamic libraries:
+40000000-40009000 r-xp 00000000 08:05 943880                             /usr/java/jdk1.6.0_17/bin/java
+40108000-4010a000 rwxp 00008000 08:05 943880                             /usr/java/jdk1.6.0_17/bin/java
+4010e000-40111000 ---p 4010e000 00:00 0 
+40111000-4020f000 rwxp 40111000 00:00 0 
+4020f000-40212000 ---p 4020f000 00:00 0 
+40212000-40310000 rwxp 40212000 00:00 0 
+40330000-40333000 ---p 40330000 00:00 0 
+40333000-40431000 rwxp 40333000 00:00 0 
+40431000-40434000 ---p 40431000 00:00 0 
+40434000-40532000 rwxp 40434000 00:00 0 
+40532000-40535000 rwxp 40532000 00:00 0 
+40535000-40633000 rwxp 40535000 00:00 0 
+40633000-40636000 ---p 40633000 00:00 0 
+40636000-40734000 rwxp 40636000 00:00 0 
+40734000-40737000 ---p 40734000 00:00 0 
+40737000-40835000 rwxp 40737000 00:00 0 
+40835000-40838000 ---p 40835000 00:00 0 
+40838000-40936000 rwxp 40838000 00:00 0 
+40936000-40939000 ---p 40936000 00:00 0 
+40939000-40a37000 rwxp 40939000 00:00 0 
+40a45000-40a48000 ---p 40a45000 00:00 0 
+40a48000-40b46000 rwxp 40a48000 00:00 0 
+40b46000-40b49000 ---p 40b46000 00:00 0 
+40b49000-40c47000 rwxp 40b49000 00:00 0 
+40c47000-40c4a000 ---p 40c47000 00:00 0 
+40c4a000-40d48000 rwxp 40c4a000 00:00 0 
+40dbf000-40dc2000 ---p 40dbf000 00:00 0 
+40dc2000-40ec0000 rwxp 40dc2000 00:00 0 
+40ef7000-40ef8000 ---p 40ef7000 00:00 0 
+40ef8000-40ff8000 rwxp 40ef8000 00:00 0 
+40ff8000-40ffb000 ---p 40ff8000 00:00 0 
+40ffb000-410f9000 rwxp 40ffb000 00:00 0 
+410f9000-410fc000 ---p 410f9000 00:00 0 
+410fc000-411fa000 rwxp 410fc000 00:00 0 
+411fa000-411fd000 ---p 411fa000 00:00 0 
+411fd000-412fb000 rwxp 411fd000 00:00 0 
+412fb000-412fe000 ---p 412fb000 00:00 0 
+412fe000-413fc000 rwxp 412fe000 00:00 0 
+413fc000-413ff000 ---p 413fc000 00:00 0 
+413ff000-414fd000 rwxp 413ff000 00:00 0 
+414fe000-41501000 ---p 414fe000 00:00 0 
+41501000-415ff000 rwxp 41501000 00:00 0 
+4161c000-4161d000 ---p 4161c000 00:00 0 
+4161d000-4171d000 rwxp 4161d000 00:00 0 
+4171d000-4171e000 ---p 4171d000 00:00 0 
+4171e000-4181e000 rwxp 4171e000 00:00 0 
+4181e000-41821000 ---p 4181e000 00:00 0 
+41821000-4191f000 rwxp 41821000 00:00 0 
+4198f000-41992000 ---p 4198f000 00:00 0 
+41992000-41a90000 rwxp 41992000 00:00 0 
+41a90000-41a93000 ---p 41a90000 00:00 0 
+41a93000-41b91000 rwxp 41a93000 00:00 0 
+41b91000-41b92000 ---p 41b91000 00:00 0 
+41b92000-41c92000 rwxp 41b92000 00:00 0 
+41cbe000-41cbf000 ---p 41cbe000 00:00 0 
+41cbf000-41dbf000 rwxp 41cbf000 00:00 0 
+41dbf000-41dc0000 ---p 41dbf000 00:00 0 
+41dc0000-41ec0000 rwxp 41dc0000 00:00 0 
+41ec0000-41ec1000 ---p 41ec0000 00:00 0 
+41ec1000-41fc1000 rwxp 41ec1000 00:00 0 
+41fc1000-41fc2000 ---p 41fc1000 00:00 0 
+41fc2000-420c2000 rwxp 41fc2000 00:00 0 
+420c2000-420c3000 ---p 420c2000 00:00 0 
+420c3000-421c3000 rwxp 420c3000 00:00 0 
+421c3000-421c4000 ---p 421c3000 00:00 0 
+421c4000-422c4000 rwxp 421c4000 00:00 0 
+422c4000-422c7000 ---p 422c4000 00:00 0 
+422c7000-423c5000 rwxp 422c7000 00:00 0 
+423c5000-423c8000 ---p 423c5000 00:00 0 
+423c8000-424c6000 rwxp 423c8000 00:00 0 
+424c6000-424c9000 ---p 424c6000 00:00 0 
+424c9000-425c7000 rwxp 424c9000 00:00 0 
+425c7000-425ca000 ---p 425c7000 00:00 0 
+425ca000-426c8000 rwxp 425ca000 00:00 0 
+426c8000-426cb000 ---p 426c8000 00:00 0 
+426cb000-427c9000 rwxp 426cb000 00:00 0 
+427c9000-427cc000 ---p 427c9000 00:00 0 
+427cc000-428ca000 rwxp 427cc000 00:00 0 
+428ca000-428cd000 ---p 428ca000 00:00 0 
+428cd000-429cb000 rwxp 428cd000 00:00 0 
+429cb000-429ce000 ---p 429cb000 00:00 0 
+429ce000-42acc000 rwxp 429ce000 00:00 0 
+42acc000-42acf000 ---p 42acc000 00:00 0 
+42acf000-42bcd000 rwxp 42acf000 00:00 0 
+42bcd000-42bd0000 ---p 42bcd000 00:00 0 
+42bd0000-42cce000 rwxp 42bd0000 00:00 0 
+42cce000-42cd1000 ---p 42cce000 00:00 0 
+42cd1000-42dcf000 rwxp 42cd1000 00:00 0 
+42dcf000-42dd2000 ---p 42dcf000 00:00 0 
+42dd2000-42ed0000 rwxp 42dd2000 00:00 0 
+42ed0000-42ed3000 ---p 42ed0000 00:00 0 
+42ed3000-42fd1000 rwxp 42ed3000 00:00 0 
+42fd1000-42fd4000 ---p 42fd1000 00:00 0 
+42fd4000-430d2000 rwxp 42fd4000 00:00 0 
+430d2000-430d5000 ---p 430d2000 00:00 0 
+430d5000-431d3000 rwxp 430d5000 00:00 0 
+431d3000-431d6000 ---p 431d3000 00:00 0 
+431d6000-432d4000 rwxp 431d6000 00:00 0 
+432d4000-432d7000 ---p 432d4000 00:00 0 
+432d7000-433d5000 rwxp 432d7000 00:00 0 
+433d5000-433d8000 ---p 433d5000 00:00 0 
+433d8000-434d6000 rwxp 433d8000 00:00 0 
+434d6000-434d9000 ---p 434d6000 00:00 0 
+434d9000-435d7000 rwxp 434d9000 00:00 0 
+435d7000-435da000 ---p 435d7000 00:00 0 
+435da000-436d8000 rwxp 435da000 00:00 0 
+436d8000-436db000 ---p 436d8000 00:00 0 
+436db000-437d9000 rwxp 436db000 00:00 0 
+437d9000-437dc000 ---p 437d9000 00:00 0 
+437dc000-438da000 rwxp 437dc000 00:00 0 
+438da000-438dd000 ---p 438da000 00:00 0 
+438dd000-439db000 rwxp 438dd000 00:00 0 
+439db000-439de000 ---p 439db000 00:00 0 
+439de000-43adc000 rwxp 439de000 00:00 0 
+43adc000-43adf000 rwxp 43adc000 00:00 0 
+43adf000-43bdd000 rwxp 43adf000 00:00 0 
+43bdd000-43be0000 ---p 43bdd000 00:00 0 
+43be0000-43cde000 rwxp 43be0000 00:00 0 
+43cde000-43ce1000 rwxp 43cde000 00:00 0 
+43ce1000-43ddf000 rwxp 43ce1000 00:00 0 
+43ee0000-43ee3000 ---p 43ee0000 00:00 0 
+43ee3000-43fe1000 rwxp 43ee3000 00:00 0 
+43fe1000-43fe4000 ---p 43fe1000 00:00 0 
+43fe4000-440e2000 rwxp 43fe4000 00:00 0 
+442e4000-442e7000 ---p 442e4000 00:00 0 
+442e7000-443e5000 rwxp 442e7000 00:00 0 
+443e5000-443e8000 ---p 443e5000 00:00 0 
+443e8000-444e6000 rwxp 443e8000 00:00 0 
+444e6000-444e9000 ---p 444e6000 00:00 0 
+444e9000-445e7000 rwxp 444e9000 00:00 0 
+448ea000-448ed000 ---p 448ea000 00:00 0 
+448ed000-449eb000 rwxp 448ed000 00:00 0 
+449eb000-449ee000 ---p 449eb000 00:00 0 
+449ee000-44aec000 rwxp 449ee000 00:00 0 
+44aec000-44aef000 ---p 44aec000 00:00 0 
+44aef000-44bed000 rwxp 44aef000 00:00 0 
+44bed000-44bf0000 ---p 44bed000 00:00 0 
+44bf0000-44cee000 rwxp 44bf0000 00:00 0 
+44cee000-44cf1000 ---p 44cee000 00:00 0 
+44cf1000-44def000 rwxp 44cf1000 00:00 0 
+44def000-44df2000 ---p 44def000 00:00 0 
+44df2000-44ef0000 rwxp 44df2000 00:00 0 
+44ef0000-44ef3000 ---p 44ef0000 00:00 0 
+44ef3000-44ff1000 rwxp 44ef3000 00:00 0 
+44ff1000-44ff4000 ---p 44ff1000 00:00 0 
+44ff4000-450f2000 rwxp 44ff4000 00:00 0 
+450f2000-450f5000 ---p 450f2000 00:00 0 
+450f5000-451f3000 rwxp 450f5000 00:00 0 
+451f3000-451f4000 ---p 451f3000 00:00 0 
+451f4000-45bf4000 rwxp 451f4000 00:00 0 
+45bf4000-45bf5000 ---p 45bf4000 00:00 0 
+45bf5000-465f5000 rwxp 45bf5000 00:00 0 
+465f5000-465f6000 ---p 465f5000 00:00 0 
+465f6000-46ff6000 rwxp 465f6000 00:00 0 
+46ff6000-46ff9000 ---p 46ff6000 00:00 0 
+46ff9000-470f7000 rwxp 46ff9000 00:00 0 
+470f7000-470fa000 ---p 470f7000 00:00 0 
+470fa000-471f8000 rwxp 470fa000 00:00 0 
+471f8000-471fb000 ---p 471f8000 00:00 0 
+471fb000-472f9000 rwxp 471fb000 00:00 0 
+472f9000-472fc000 ---p 472f9000 00:00 0 
+472fc000-473fa000 rwxp 472fc000 00:00 0 
+473fa000-473fd000 ---p 473fa000 00:00 0 
+473fd000-474fb000 rwxp 473fd000 00:00 0 
+47617000-47618000 ---p 47617000 00:00 0 
+47618000-48018000 rwxp 47618000 00:00 0 
+48018000-48019000 ---p 48018000 00:00 0 
+48019000-48a19000 rwxp 48019000 00:00 0 
+48a19000-48a1a000 ---p 48a19000 00:00 0 
+48a1a000-4941a000 rwxp 48a1a000 00:00 0 
+4941a000-4941b000 ---p 4941a000 00:00 0 
+4941b000-49e1b000 rwxp 4941b000 00:00 0 
+49e1b000-49e1e000 ---p 49e1b000 00:00 0 
+49e1e000-49f1c000 rwxp 49e1e000 00:00 0 
+4a21f000-4a222000 ---p 4a21f000 00:00 0 
+4a222000-4a320000 rwxp 4a222000 00:00 0 
+4a421000-4a424000 ---p 4a421000 00:00 0 
+4a424000-4a522000 rwxp 4a424000 00:00 0 
+4a522000-4a525000 ---p 4a522000 00:00 0 
+4a525000-4a623000 rwxp 4a525000 00:00 0 
+4aa27000-4aa2a000 ---p 4aa27000 00:00 0 
+4aa2a000-4ab28000 rwxp 4aa2a000 00:00 0 
+4ac29000-4ac2c000 ---p 4ac29000 00:00 0 
+4ac2c000-4ad2a000 rwxp 4ac2c000 00:00 0 
+4ae2b000-4ae2e000 ---p 4ae2b000 00:00 0 
+4ae2e000-4af2c000 rwxp 4ae2e000 00:00 0 
+4af2c000-4af2f000 ---p 4af2c000 00:00 0 
+4af2f000-4b02d000 rwxp 4af2f000 00:00 0 
+4b12e000-4b131000 ---p 4b12e000 00:00 0 
+4b131000-4b22f000 rwxp 4b131000 00:00 0 
+4b330000-4b333000 ---p 4b330000 00:00 0 
+4b333000-4b431000 rwxp 4b333000 00:00 0 
+4b633000-4b636000 ---p 4b633000 00:00 0 
+4b636000-4b734000 rwxp 4b636000 00:00 0 
+59eff000-5eb86000 rwxp 59eff000 00:00 0                                  [heap]
+308be00000-308be08000 r-xp 00000000 08:05 84789                          /usr/lib64/libfam.so.0.0.0
+308be08000-308c007000 ---p 00008000 08:05 84789                          /usr/lib64/libfam.so.0.0.0
+308c007000-308c008000 rwxp 00007000 08:05 84789                          /usr/lib64/libfam.so.0.0.0
+380ce00000-380ce1c000 r-xp 00000000 08:05 973462                         /lib64/ld-2.5.so
+380d01b000-380d01c000 r-xp 0001b000 08:05 973462                         /lib64/ld-2.5.so
+380d01c000-380d01d000 rwxp 0001c000 08:05 973462                         /lib64/ld-2.5.so
+380d200000-380d34e000 r-xp 00000000 08:05 973463                         /lib64/libc-2.5.so
+380d34e000-380d54d000 ---p 0014e000 08:05 973463                         /lib64/libc-2.5.so
+380d54d000-380d551000 r-xp 0014d000 08:05 973463                         /lib64/libc-2.5.so
+380d551000-380d552000 rwxp 00151000 08:05 973463                         /lib64/libc-2.5.so
+380d552000-380d557000 rwxp 380d552000 00:00 0 
+380d600000-380d602000 r-xp 00000000 08:05 974138                         /lib64/libdl-2.5.so
+380d602000-380d802000 ---p 00002000 08:05 974138                         /lib64/libdl-2.5.so
+380d802000-380d803000 r-xp 00002000 08:05 974138                         /lib64/libdl-2.5.so
+380d803000-380d804000 rwxp 00003000 08:05 974138                         /lib64/libdl-2.5.so
+380da00000-380da82000 r-xp 00000000 08:05 974642                         /lib64/libm-2.5.so
+380da82000-380dc81000 ---p 00082000 08:05 974642                         /lib64/libm-2.5.so
+380dc81000-380dc82000 r-xp 00081000 08:05 974642                         /lib64/libm-2.5.so
+380dc82000-380dc83000 rwxp 00082000 08:05 974642                         /lib64/libm-2.5.so
+380de00000-380de16000 r-xp 00000000 08:05 973734                         /lib64/libpthread-2.5.so
+380de16000-380e015000 ---p 00016000 08:05 973734                         /lib64/libpthread-2.5.so
+380e015000-380e016000 r-xp 00015000 08:05 973734                         /lib64/libpthread-2.5.so
+380e016000-380e017000 rwxp 00016000 08:05 973734                         /lib64/libpthread-2.5.so
+380e017000-380e01b000 rwxp 380e017000 00:00 0 
+380e200000-380e214000 r-xp 00000000 08:05 78338                          /usr/lib64/libz.so.1.2.3
+380e214000-380e413000 ---p 00014000 08:05 78338                          /usr/lib64/libz.so.1.2.3
+380e413000-380e414000 rwxp 00013000 08:05 78338                          /usr/lib64/libz.so.1.2.3
+380e600000-380e705000 r-xp 00000000 08:05 76353                          /usr/lib64/libX11.so.6.2.0
+380e705000-380e905000 ---p 00105000 08:05 76353                          /usr/lib64/libX11.so.6.2.0
+380e905000-380e90c000 rwxp 00105000 08:05 76353                          /usr/lib64/libX11.so.6.2.0
+380ea00000-380ea02000 r-xp 00000000 08:05 76289                          /usr/lib64/libXau.so.6.0.0
+380ea02000-380ec01000 ---p 00002000 08:05 76289                          /usr/lib64/libXau.so.6.0.0
+380ec01000-380ec02000 rwxp 00001000 08:05 76289                          /usr/lib64/libXau.so.6.0.0
+380ee00000-380ee05000 r-xp 00000000 08:05 76329                          /usr/lib64/libXdmcp.so.6.0.0
+380ee05000-380f004000 ---p 00005000 08:05 76329                          /usr/lib64/libXdmcp.so.6.0.0
+380f004000-380f005000 rwxp 00004000 08:05 76329                          /usr/lib64/libXdmcp.so.6.0.0
+380f200000-380f20d000 r-xp 00000000 08:05 974648                         /lib64/libgcc_s-4.1.2-20080825.so.1
+380f20d000-380f40d000 ---p 0000d000 08:05 974648                         /lib64/libgcc_s-4.1.2-20080825.so.1
+380f40d000-380f40e000 rwxp 0000d000 08:05 974648                         /lib64/libgcc_s-4.1.2-20080825.so.1
+380f600000-380f6e6000 r-xp 00000000 08:05 85073                          /usr/lib64/libstdc++.so.6.0.8
+380f6e6000-380f8e5000 ---p 000e6000 08:05 85073                          /usr/lib64/libstdc++.so.6.0.8
+380f8e5000-380f8eb000 r-xp 000e5000 08:05 85073                          /usr/lib64/libstdc++.so.6.0.8
+380f8eb000-380f8ee000 rwxp 000eb000 08:05 85073                          /usr/lib64/libstdc++.so.6.0.8
+380f8ee000-380f900000 rwxp 380f8ee000 00:00 0 
+380fa00000-380fa10000 r-xp 00000000 08:05 84597                          /usr/lib64/libXext.so.6.4.0
+380fa10000-380fc10000 ---p 00010000 08:05 84597                          /usr/lib64/libXext.so.6.4.0
+380fc10000-380fc11000 rwxp 00010000 08:05 84597                          /usr/lib64/libXext.so.6.4.0
+380fe00000-380fe7f000 r-xp 00000000 08:05 85063                          /usr/lib64/libfreetype.so.6.3.10
+380fe7f000-381007f000 ---p 0007f000 08:05 85063                          /usr/lib64/libfreetype.so.6.3.10
+381007f000-3810084000 rwxp 0007f000 08:05 85063                          /usr/lib64/libfreetype.so.6.3.10
+3810200000-3810217000 r-xp 00000000 08:05 85069                          /usr/lib64/libICE.so.6.3.0
+3810217000-3810416000 ---p 00017000 08:05 85069                          /usr/lib64/libICE.so.6.3.0
+3810416000-3810418000 rwxp 00016000 08:05 85069                          /usr/lib64/libICE.so.6.3.0
+3810418000-381041b000 rwxp 3810418000 00:00 0 
+3810600000-3810609000 r-xp 00000000 08:05 85071                          /usr/lib64/libSM.so.6.0.0
+3810609000-3810809000 ---p 00009000 08:05 85071                          /usr/lib64/libSM.so.6.0.0
+3810809000-381080a000 rwxp 00009000 08:05 85071                          /usr/lib64/libSM.so.6.0.0
+3810a00000-3810a20000 r-xp 00000000 08:05 974647                         /lib64/libexpat.so.0.5.0
+3810a20000-3810c1f000 ---p 00020000 08:05 974647                         /lib64/libexpat.so.0.5.0
+3810c1f000-3810c22000 rwxp 0001f000 08:05 974647                         /lib64/libexpat.so.0.5.0
+3810e00000-3810e05000 r-xp 00000000 08:05 64901                          /usr/lib64/libXtst.so.6.1.0
+3810e05000-3811005000 ---p 00005000 08:05 64901                          /usr/lib64/libXtst.so.6.1.0
+3811005000-3811006000 rwxp 00005000 08:05 64901                          /usr/lib64/libXtst.so.6.1.0
+3811200000-3811229000 r-xp 00000000 08:05 85065                          /usr/lib64/libfontconfig.so.1.1.0
+3811229000-3811429000 ---p 00029000 08:05 85065                          /usr/lib64/libfontconfig.so.1.1.0
+3811429000-3811433000 rwxp 00029000 08:05 85065                          /usr/lib64/libfontconfig.so.1.1.0
+3811433000-3811434000 rwxp 3811433000 00:00 0 
+3811600000-381163b000 r-xp 00000000 08:05 974168                         /lib64/libsepol.so.1
+381163b000-381183b000 ---p 0003b000 08:05 974168                         /lib64/libsepol.so.1
+381183b000-381183c000 rwxp 0003b000 08:05 974168                         /lib64/libsepol.so.1
+381183c000-3811846000 rwxp 381183c000 00:00 0 
+3811a00000-3811a07000 r-xp 00000000 08:05 973735                         /lib64/librt-2.5.so
+3811a07000-3811c07000 ---p 00007000 08:05 973735                         /lib64/librt-2.5.so
+3811c07000-3811c08000 r-xp 00007000 08:05 973735                         /lib64/librt-2.5.so
+3811c08000-3811c09000 rwxp 00008000 08:05 973735                         /lib64/librt-2.5.so
+3811e00000-3811e23000 r-xp 00000000 08:05 84103                          /usr/lib64/libpng12.so.0.10.0
+3811e23000-3812023000 ---p 00023000 08:05 84103                          /usr/lib64/libpng12.so.0.10.0
+3812023000-3812024000 rwxp 00023000 08:05 84103                          /usr/lib64/libpng12.so.0.10.0
+3812200000-3812221000 r-xp 00000000 08:05 83635                          /usr/lib64/libjpeg.so.62.0.0
+3812221000-3812421000 ---p 00021000 08:05 83635                          /usr/lib64/libjpeg.so.62.0.0
+3812421000-3812422000 rwxp 00021000 08:05 83635                          /usr/lib64/libjpeg.so.62.0.0
+3812600000-3812609000 r-xp 00000000 08:05 84220                          /usr/lib64/libXrender.so.1.3.0
+3812609000-3812808000 ---p 00009000 08:05 84220                          /usr/lib64/libXrender.so.1.3.0
+3812808000-3812809000 rwxp 00008000 08:05 84220                          /usr/lib64/libXrender.so.1.3.0
+3812a00000-3812a02000 r-xp 00000000 08:05 85011                          /usr/lib64/libXinerama.so.1.0.0
+3812a02000-3812c01000 ---p 00002000 08:05 85011                          /usr/lib64/libXinerama.so.1.0.0
+3812c01000-3812c02000 rwxp 00001000 08:05 85011                          /usr/lib64/libXinerama.so.1.0.0
+3812e00000-3812e05000 r-xp 00000000 08:05 85007                          /usr/lib64/libXfixes.so.3.1.0
+3812e05000-3813004000 ---p 00005000 08:05 85007                          /usr/lib64/libXfixes.so.3.1.0
+3813004000-3813005000 rwxp 00004000 08:05 85007                          /usr/lib64/libXfixes.so.3.1.0
+3813200000-381320a000 r-xp 00000000 08:05 85010                          /usr/lib64/libXcursor.so.1.0.2
+381320a000-3813409000 ---p 0000a000 08:05 85010                          /usr/lib64/libXcursor.so.1.0.2
+3813409000-381340a000 rwxp 00009000 08:05 85010                          /usr/lib64/libXcursor.so.1.0.2
+3813600000-3813603000 r-xp 00000000 08:05 84630                          /usr/lib64/libXrandr.so.2.0.0
+3813603000-3813802000 ---p 00003000 08:05 84630                          /usr/lib64/libXrandr.so.2.0.0
+3813802000-3813803000 rwxp 00002000 08:05 84630                          /usr/lib64/libXrandr.so.2.0.0
+3813a00000-3813a3e000 r-xp 00000000 08:05 974136                         /lib64/libgobject-2.0.so.0.1200.3
+3813a3e000-3813c3e000 ---p 0003e000 08:05 974136                         /lib64/libgobject-2.0.so.0.1200.3
+3813c3e000-3813c40000 rwxp 0003e000 08:05 974136                         /lib64/libgobject-2.0.so.0.1200.3
+3813e00000-3813e7c000 r-xp 00000000 08:05 1137094                        /usr/lib64/xulrunner-1.9.2/libsqlite3.so
+3813e7c000-381407b000 ---p 0007c000 08:05 1137094                        /usr/lib64/xulrunner-1.9.2/libsqlite3.so
+381407b000-381407f000 rwxp 0007b000 08:05 1137094                        /usr/lib64/xulrunner-1.9.2/libsqlite3.so
+3814200000-3814236000 r-xp 00000000 08:05 74722                          /usr/lib64/libnspr4.so
+3814236000-3814436000 ---p 00036000 08:05 74722                          /usr/lib64/libnspr4.so
+3814436000-3814438000 rwxp 00036000 08:05 74722                          /usr/lib64/libnspr4.so
+3814438000-381443b000 rwxp 3814438000 00:00 0 
+3814600000-3814603000 r-xp 00000000 08:05 974654                         /lib64/libgmodule-2.0.so.0.1200.3
+3814603000-3814802000 ---p 00003000 08:05 974654                         /lib64/libgmodule-2.0.so.0.1200.3
+3814802000-3814803000 rwxp 00002000 08:05 974654                         /lib64/libgmodule-2.0.so.0.1200.3
+3814a00000-3814a03000 r-xp 00000000 08:05 88784                          /usr/lib64/libplds4.so
+3814a03000-3814c02000 ---p 00003000 08:05 88784                          /usr/lib64/libplds4.so
+3814c02000-3814c03000 rwxp 00002000 08:05 88784                          /usr/lib64/libplds4.so
+3814e00000-3814e04000 r-xp 00000000 08:05 1138051                        /usr/lib64/xulrunner-1.9.2/libxpcom.so
+3814e04000-3815003000 ---p 00004000 08:05 1138051                        /usr/lib64/xulrunner-1.9.2/libxpcom.so
+3815003000-3815004000 rwxp 00003000 08:05 1138051                        /usr/lib64/xulrunner-1.9.2/libxpcom.so
+3815200000-3815326000 r-xp 00000000 08:05 88786                          /usr/lib64/libnss3.so
+3815326000-3815525000 ---p 00126000 08:05 88786                          /usr/lib64/libnss3.so
+3815525000-381552c000 rwxp 00125000 08:05 88786                          /usr/lib64/libnss3.so
+381552c000-381552d000 rwxp 381552c000 00:00 0 
+3815600000-3815604000 r-xp 00000000 08:05 88783                          /usr/lib64/libplc4.so
+3815604000-3815803000 ---p 00004000 08:05 88783                          /usr/lib64/libplc4.so
+3815803000-3815804000 rwxp 00003000 08:05 88783                          /usr/lib64/libplc4.so
+3815a00000-3815a19000 r-xp 00000000 08:05 88785                          /usr/lib64/libnssutil3.so
+3815a19000-3815c18000 ---p 00019000 08:05 88785                          /usr/lib64/libnssutil3.so
+3815c18000-3815c1d000 rwxp 00018000 08:05 88785                          /usr/lib64/libnssutil3.so
+3815c1d000-3815c1e000 rwxp 3815c1d000 00:00 0 
+3815e00000-3815e04000 r-xp 00000000 08:05 974657                         /lib64/libgthread-2.0.so.0.1200.3
+3815e04000-3816003000 ---p 00004000 08:05 974657                         /lib64/libgthread-2.0.so.0.1200.3
+3816003000-3816004000 rwxp 00003000 08:05 974657                         /lib64/libgthread-2.0.so.0.1200.3
+3816200000-3816267000 r-xp 00000000 08:05 88799                          /usr/lib64/libcairo.so.2.9.2
+3816267000-3816466000 ---p 00067000 08:05 88799                          /usr/lib64/libcairo.so.2.9.2
+3816466000-3816469000 rwxp 00066000 08:05 88799                          /usr/lib64/libcairo.so.2.9.2
+3816600000-381661e000 r-xp 00000000 08:05 74071                          /usr/lib64/libdbus-glib-1.so.2.1.0
+381661e000-381681e000 ---p 0001e000 08:05 74071                          /usr/lib64/libdbus-glib-1.so.2.1.0
+381681e000-3816820000 rwxp 0001e000 08:05 74071                          /usr/lib64/libdbus-glib-1.so.2.1.0
+3816c00000-3816c9d000 r-xp 00000000 08:05 973757                         /lib64/libglib-2.0.so.0.1200.3
+3816c9d000-3816e9c000 ---p 0009d000 08:05 973757                         /lib64/libglib-2.0.so.0.1200.3
+3816e9c000-3816e9e000 rwxp 0009c000 08:05 973757                         /lib64/libglib-2.0.so.0.1200.3
+3817000000-3817017000 r-xp 00000000 08:05 81214                          /usr/lib64/libgdk_pixbuf-2.0.so.0.1000.4
+3817017000-3817216000 ---p 00017000 08:05 81214                          /usr/lib64/libgdk_pixbuf-2.0.so.0.1000.4
+3817216000-3817217000 rwxp 00016000 08:05 81214                          /usr/lib64/libgdk_pixbuf-2.0.so.0.1000.4
+3817600000-3817615000 r-xp 00000000 08:05 974137                         /lib64/libnsl-2.5.so
+3817615000-3817814000 ---p 00015000 08:05 974137                         /lib64/libnsl-2.5.so
+3817814000-3817815000 r-xp 00014000 08:05 974137                         /lib64/libnsl-2.5.so
+3817815000-3817816000 rwxp 00015000 08:05 974137                         /lib64/libnsl-2.5.so
+3817816000-3817818000 rwxp 3817816000 00:00 0 
+3817a00000-3817a11000 r-xp 00000000 08:05 974165                         /lib64/libresolv-2.5.so
+3817a11000-3817c11000 ---p 00011000 08:05 974165                         /lib64/libresolv-2.5.so
+3817c11000-3817c12000 r-xp 00011000 08:05 974165                         /lib64/libresolv-2.5.so
+3817c12000-3817c13000 rwxp 00012000 08:05 974165                         /lib64/libresolv-2.5.so
+3817c13000-3817c15000 rwxp 3817c13000 00:00 0 
+3817e00000-3817e02000 r-xp 00000000 08:05 974172                         /lib64/libcom_err.so.2.1
+3817e02000-3818001000 ---p 00002000 08:05 974172                         /lib64/libcom_err.so.2.1
+3818001000-3818002000 rwxp 00001000 08:05 974172                         /lib64/libcom_err.so.2.1
+3818200000-3818226000 r-xp 00000000 08:05 88795                          /usr/lib64/libsmime3.so
+3818226000-3818425000 ---p 00026000 08:05 88795                          /usr/lib64/libsmime3.so
+3818425000-3818429000 rwxp 00025000 08:05 88795                          /usr/lib64/libsmime3.so
+3818600000-3818609000 r-xp 00000000 08:05 974641                         /lib64/libcrypt-2.5.so
+3818609000-3818808000 ---p 00009000 08:05 974641                         /lib64/libcrypt-2.5.so
+3818808000-3818809000 r-xp 00008000 08:05 974641                         /lib64/libcrypt-2.5.so
+3818809000-381880a000 rwxp 00009000 08:05 974641                         /lib64/libcrypt-2.5.so
+381880a000-3818838000 rwxp 381880a000 00:00 0 
+3818a00000-3818b2d000 r-xp 00000000 08:05 974257                         /lib64/libcrypto.so.0.9.8e
+3818b2d000-3818d2c000 ---p 0012d000 08:05 974257                         /lib64/libcrypto.so.0.9.8e
+3818d2c000-3818d4d000 rwxp 0012c000 08:05 974257                         /lib64/libcrypto.so.0.9.8e
+3818d4d000-3818d51000 rwxp 3818d4d000 00:00 0 
+3818e00000-3818e02000 r-xp 00000000 08:05 974139                         /lib64/libkeyutils-1.2.so
+3818e02000-3819001000 ---p 00002000 08:05 974139                         /lib64/libkeyutils-1.2.so
+3819001000-3819002000 rwxp 00001000 08:05 974139                         /lib64/libkeyutils-1.2.so
+3819200000-381922c000 r-xp 00000000 08:05 77872                          /usr/lib64/libgssapi_krb5.so.2.2
+381922c000-381942c000 ---p 0002c000 08:05 77872                          /usr/lib64/libgssapi_krb5.so.2.2
+381942c000-381942e000 rwxp 0002c000 08:05 77872                          /usr/lib64/libgssapi_krb5.so.2.2
+3819600000-3819691000 r-xp 00000000 08:05 77106                          /usr/lib64/libkrb5.so.3.3
+3819691000-3819891000 ---p 00091000 08:05 77106                          /usr/lib64/libkrb5.so.3.3
+3819891000-3819895000 rwxp 00091000 08:05 77106                          /usr/lib64/libkrb5.so.3.3
+3819a00000-3819a24000 r-xp 00000000 08:05 76747                          /usr/lib64/libk5crypto.so.3.1
+3819a24000-3819c23000 ---p 00024000 08:05 76747                          /usr/lib64/libk5crypto.so.3.1
+3819c23000-3819c25000 rwxp 00023000 08:05 76747                          /usr/lib64/libk5crypto.so.3.1
+3819e00000-3819e3e000 r-xp 00000000 08:05 88798                          /usr/lib64/libpango-1.0.so.0.1400.9
+3819e3e000-381a03d000 ---p 0003e000 08:05 88798                          /usr/lib64/libpango-1.0.so.0.1400.9
+381a03d000-381a040000 rwxp 0003d000 08:05 88798                          /usr/lib64/libpango-1.0.so.0.1400.9
+381a200000-381a208000 r-xp 00000000 08:05 73889                          /usr/lib64/libkrb5support.so.0.1
+381a208000-381a407000 ---p 00008000 08:05 73889                          /usr/lib64/libkrb5support.so.0.1
+381a407000-381a408000 rwxp 00007000 08:05 73889                          /usr/lib64/libkrb5support.so.0.1
+381a600000-381a733000 r-xp 00000000 08:05 76375                          /usr/lib64/libxml2.so.2.6.26
+381a733000-381a933000 ---p 00133000 08:05 76375                          /usr/lib64/libxml2.so.2.6.26
+381a933000-381a93c000 rwxp 00133000 08:05 76375                          /usr/lib64/libxml2.so.2.6.26
+381a93c000-381a93d000 rwxp 381a93c000 00:00 0 
+381aa00000-381aa08000 r-xp 00000000 08:05 88802                          /usr/lib64/libXi.so.6.0.0
+381aa08000-381ac07000 ---p 00008000 08:05 88802                          /usr/lib64/libXi.so.6.0.0
+381ac07000-381ac08000 rwxp 00007000 08:05 88802                          /usr/lib64/libXi.so.6.0.0
+381ae00000-381ae08000 r-xp 00000000 08:05 88801                          /usr/lib64/libpangocairo-1.0.so.0.1400.9
+381ae08000-381b008000 ---p 00008000 08:05 88801                          /usr/lib64/libpangocairo-1.0.so.0.1400.9
+381b008000-381b009000 rwxp 00008000 08:05 88801                          /usr/lib64/libpangocairo-1.0.so.0.1400.9
+381b200000-381b22d000 r-xp 00000000 08:05 88800                          /usr/lib64/libpangoft2-1.0.so.0.1400.9
+381b22d000-381b42d000 ---p 0002d000 08:05 88800                          /usr/lib64/libpangoft2-1.0.so.0.1400.9
+381b42d000-381b42e000 rwxp 0002d000 08:05 88800                          /usr/lib64/libpangoft2-1.0.so.0.1400.9
+381b800000-381b803000 r-xp 00000000 08:05 973484                         /lib64/libcap.so.1.10
+381b803000-381ba03000 ---p 00003000 08:05 973484                         /lib64/libcap.so.1.10
+381ba03000-381ba04000 rwxp 00003000 08:05 973484                         /lib64/libcap.so.1.10
+381bc00000-381bc39000 r-xp 00000000 08:05 973731                         /lib64/libdbus-1.so.3.4.0
+381bc39000-381be39000 ---p 00039000 08:05 973731                         /lib64/libdbus-1.so.3.4.0
+381be39000-381be3b000 rwxp 00039000 08:05 973731                         /lib64/libdbus-1.so.3.4.0
+381c000000-381c0d6000 r-xp 00000000 08:05 974646                         /lib64/libasound.so.2.0.0
+381c0d6000-381c2d5000 ---p 000d6000 08:05 974646                         /lib64/libasound.so.2.0.0
+381c2d5000-381c2dd000 rwxp 000d5000 08:05 974646                         /lib64/libasound.so.2.0.0
+381c400000-381c433000 r-xp 00000000 08:05 80794                          /usr/lib64/libssl3.so
+381c433000-381c633000 ---p 00033000 08:05 80794                          /usr/lib64/libssl3.so
+381c633000-381c636000 rwxp 00033000 08:05 80794                          /usr/lib64/libssl3.so
+381c800000-381c81c000 r-xp 00000000 08:05 88804                          /usr/lib64/libatk-1.0.so.0.1212.0
+381c81c000-381ca1c000 ---p 0001c000 08:05 88804                          /usr/lib64/libatk-1.0.so.0.1212.0
+381ca1c000-381ca1f000 rwxp 0001c000 08:05 88804                          /usr/lib64/libatk-1.0.so.0.1212.0
+381cc00000-381cf74000 r-xp 00000000 08:05 88805                          /usr/lib64/libgtk-x11-2.0.so.0.1000.4
+381cf74000-381d173000 ---p 00374000 08:05 88805                          /usr/lib64/libgtk-x11-2.0.so.0.1000.4
+381d173000-381d17d000 rwxp 00373000 08:05 88805                          /usr/lib64/libgtk-x11-2.0.so.0.1000.4
+381d17d000-381d17f000 rwxp 381d17d000 00:00 0 
+381d200000-381d28f000 r-xp 00000000 08:05 88803                          /usr/lib64/libgdk-x11-2.0.so.0.1000.4
+381d28f000-381d48e000 ---p 0008f000 08:05 88803                          /usr/lib64/libgdk-x11-2.0.so.0.1000.4
+381d48e000-381d493000 rwxp 0008e000 08:05 88803                          /usr/lib64/libgdk-x11-2.0.so.0.1000.4
+381d600000-381d602000 r-xp 00000000 08:05 974658                         /lib64/libutil-2.5.so
+381d602000-381d801000 ---p 00002000 08:05 974658                         /lib64/libutil-2.5.so
+381d801000-381d802000 r-xp 00001000 08:05 974658                         /lib64/libutil-2.5.so
+381d802000-381d803000 rwxp 00002000 08:05 974658                         /lib64/libutil-2.5.so
+381da00000-381da37000 r-xp 00000000 08:05 88727                          /usr/lib64/libgconf-2.so.4.1.0
+381da37000-381dc37000 ---p 00037000 08:05 88727                          /usr/lib64/libgconf-2.so.4.1.0
+381dc37000-381dc3c000 rwxp 00037000 08:05 88727                          /usr/lib64/libgconf-2.so.4.1.0
+381de00000-381de28000 r-xp 00000000 08:05 78228                          /usr/lib64/libaudiofile.so.0.0.2
+381de28000-381e027000 ---p 00028000 08:05 78228                          /usr/lib64/libaudiofile.so.0.0.2
+381e027000-381e02b000 rwxp 00027000 08:05 78228                          /usr/lib64/libaudiofile.so.0.0.2
+381e200000-381e20b000 r-xp 00000000 08:05 88729                          /usr/lib64/libavahi-common.so.3.4.3
+381e20b000-381e40a000 ---p 0000b000 08:05 88729                          /usr/lib64/libavahi-common.so.3.4.3
+381e40a000-381e40b000 rwxp 0000a000 08:05 88729                          /usr/lib64/libavahi-common.so.3.4.3
+381e600000-381e603000 r-xp 00000000 08:05 84767                          /usr/lib64/libgpg-error.so.0.3.0
+381e603000-381e802000 ---p 00003000 08:05 84767                          /usr/lib64/libgpg-error.so.0.3.0
+381e802000-381e803000 rwxp 00002000 08:05 84767                          /usr/lib64/libgpg-error.so.0.3.0
+381ea00000-381ea0f000 r-xp 00000000 08:05 88779                          /usr/lib64/libavahi-client.so.3.2.1
+381ea0f000-381ec0f000 ---p 0000f000 08:05 88779                          /usr/lib64/libavahi-client.so.3.2.1
+381ec0f000-381ec10000 rwxp 0000f000 08:05 88779                          /usr/lib64/libavahi-client.so.3.2.1
+381ee00000-381ee0a000 r-xp 00000000 08:05 83175                          /usr/lib64/libesd.so.0.2.36
+381ee0a000-381f009000 ---p 0000a000 08:05 83175                          /usr/lib64/libesd.so.0.2.36
+381f009000-381f00a000 rwxp 00009000 08:05 83175                          /usr/lib64/libesd.so.0.2.36
+381f200000-381f271000 r-xp 00000000 08:05 88780                          /usr/lib64/libgnomevfs-2.so.0.1600.2
+381f271000-381f471000 ---p 00071000 08:05 88780                          /usr/lib64/libgnomevfs-2.so.0.1600.2
+381f471000-381f476000 rwxp 00071000 08:05 88780                          /usr/lib64/libgnomevfs-2.so.0.1600.2
+381f600000-381f602000 r-xp 00000000 08:05 88778                          /usr/lib64/libavahi-glib.so.1.0.1
+381f602000-381f802000 ---p 00002000 08:05 88778                          /usr/lib64/libavahi-glib.so.1.0.1
+381f802000-381f803000 rwxp 00002000 08:05 88778                          /usr/lib64/libavahi-glib.so.1.0.1
+381fa00000-381fa05000 r-xp 00000000 08:05 74906                          /usr/lib64/libORBitCosNaming-2.so.0.1.0
+381fa05000-381fc04000 ---p 00005000 08:05 74906                          /usr/lib64/libORBitCosNaming-2.so.0.1.0
+381fc04000-381fc06000 rwxp 00004000 08:05 74906                          /usr/lib64/libORBitCosNaming-2.so.0.1.0
+381fe00000-381fe17000 r-xp 00000000 08:05 88838                          /usr/lib64/libbonobo-activation.so.4.0.0
+381fe17000-3820016000 ---p 00017000 08:05 88838                          /usr/lib64/libbonobo-activation.so.4.0.0
+3820016000-382001a000 rwxp 00016000 08:05 88838                          /usr/lib64/libbonobo-activation.so.4.0.0
+3820200000-3820263000 r-xp 00000000 08:05 88839                          /usr/lib64/libbonobo-2.so.0.0.0
+3820263000-3820462000 ---p 00063000 08:05 88839                          /usr/lib64/libbonobo-2.so.0.0.0
+3820462000-3820473000 rwxp 00062000 08:05 88839                          /usr/lib64/libbonobo-2.so.0.0.0
+3820600000-3820616000 r-xp 00000000 08:05 88840                          /usr/lib64/libgnome-2.so.0.1600.0
+3820616000-3820815000 ---p 00016000 08:05 88840                          /usr/lib64/libgnome-2.so.0.1600.0
+3820815000-3820817000 rwxp 00015000 08:05 88840                          /usr/lib64/libgnome-2.so.0.1600.0
+3820a00000-3820a6f000 r-xp 00000000 08:05 88169                          /usr/lib64/libgcrypt.so.11.5.2
+3820a6f000-3820c6e000 ---p 0006f000 08:05 88169                          /usr/lib64/libgcrypt.so.11.5.2
+3820c6e000-3820c72000 rwxp 0006e000 08:05 88169                          /usr/lib64/libgcrypt.so.11.5.2
+3820e00000-3820e7a000 r-xp 00000000 08:05 84239                          /usr/lib64/libgnutls.so.13.0.6
+3820e7a000-3821079000 ---p 0007a000 08:05 84239                          /usr/lib64/libgnutls.so.13.0.6
+3821079000-3821084000 rwxp 00079000 08:05 84239                          /usr/lib64/libgnutls.so.13.0.6
+3821200000-3821235000 r-xp 00000000 08:05 88847                          /usr/lib64/libcups.so.2
+3821235000-3821435000 ---p 00035000 08:05 88847                          /usr/lib64/libcups.so.2
+3821435000-3821438000 rwxp 00035000 08:05 88847                          /usr/lib64/libcups.so.2
+3821600000-3821602000 r-xp 00000000 08:05 88172                          /usr/lib64/libXss.so.1.0.0
+3821602000-3821802000 ---p 00002000 08:05 88172                          /usr/lib64/libXss.so.1.0.0
+3821802000-3821803000 rwxp 00002000 08:05 88172                          /usr/lib64/libXss.so.1.0.0
+2aaaaaaab000-2aaaaaaac000 r-xs 0000a000 08:05 2693797                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.launcher_1.0.101.R34x_v20081125.jar
+2aaaaaaac000-2aaaaaaad000 r-xs 00002000 08:05 2693367                    /opt/eclipse/ganymede/plugins/org.eclipse.core.runtime.compatibility.registry_3.2.200.v20080610/runtime_registry_compatibility.jar
+2aaaaaaad000-2aaaaaab4000 r-xs 00000000 08:02 5717653                    /var/cache/fontconfig/beeeeb3dfe132a8a0633a017c99ce0c0-x86-64.cache-2
+2aaaaaab4000-2aaaaaabf000 r-xs 00000000 08:02 5717648                    /var/cache/fontconfig/e19de935dec46bbf3ed114ee4965548a-x86-64.cache-2
+2aaaaaabf000-2aaaaaac2000 r-xs 00000000 08:02 5717605                    /var/cache/fontconfig/e3ead4b767b8819993a6fa3ae306afa9-x86-64.cache-2
+2aaaaaac2000-2aaaaaac4000 r-xs 00011000 08:05 2726205                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/maven-embedder-2.1-SNAPSHOT.jar
+2aaaaaac4000-2aaaaaac5000 r-xp 2aaaaaac4000 00:00 0 
+2aaaaaac7000-2aaaaaad4000 r-xp 00000000 08:05 1007537                    /usr/java/jdk1.6.0_17/jre/lib/amd64/libverify.so
+2aaaaaad4000-2aaaaabd3000 ---p 0000d000 08:05 1007537                    /usr/java/jdk1.6.0_17/jre/lib/amd64/libverify.so
+2aaaaabd3000-2aaaaabd6000 rwxp 0000c000 08:05 1007537                    /usr/java/jdk1.6.0_17/jre/lib/amd64/libverify.so
+2aaaaabd6000-2aaaaabff000 r-xp 00000000 08:05 1007516                    /usr/java/jdk1.6.0_17/jre/lib/amd64/libjava.so
+2aaaaabff000-2aaaaacfe000 ---p 00029000 08:05 1007516                    /usr/java/jdk1.6.0_17/jre/lib/amd64/libjava.so
+2aaaaacfe000-2aaaaad05000 rwxp 00028000 08:05 1007516                    /usr/java/jdk1.6.0_17/jre/lib/amd64/libjava.so
+2aaaaad05000-2aaaaad06000 r-xp 2aaaaad05000 00:00 0 
+2aaaaad06000-2aaaaad07000 rwxp 2aaaaad06000 00:00 0 
+2aaaaad07000-2aaaaad0e000 r-xp 00000000 08:05 1007542                    /usr/java/jdk1.6.0_17/jre/lib/amd64/native_threads/libhpi.so
+2aaaaad0e000-2aaaaae0f000 ---p 00007000 08:05 1007542                    /usr/java/jdk1.6.0_17/jre/lib/amd64/native_threads/libhpi.so
+2aaaaae0f000-2aaaaae11000 rwxp 00008000 08:05 1007542                    /usr/java/jdk1.6.0_17/jre/lib/amd64/native_threads/libhpi.so
+2aaaaae11000-2aaaaae12000 rwxp 2aaaaae11000 00:00 0 
+2aaaaae12000-2aaaaae47000 r-xs 00000000 08:02 6273026                    /var/db/nscd/passwd
+2aaaaae47000-2aaaaae4f000 rwxs 00000000 08:06 2034147                    /tmp/hsperfdata_romanoa1/8882
+2aaaaae4f000-2aaaaae5d000 r-xp 00000000 08:05 1007538                    /usr/java/jdk1.6.0_17/jre/lib/amd64/libzip.so
+2aaaaae5d000-2aaaaaf5f000 ---p 0000e000 08:05 1007538                    /usr/java/jdk1.6.0_17/jre/lib/amd64/libzip.so
+2aaaaaf5f000-2aaaaaf62000 rwxp 00010000 08:05 1007538                    /usr/java/jdk1.6.0_17/jre/lib/amd64/libzip.so
+2aaaaaf62000-2aaaacc73000 rwxp 2aaaaaf62000 00:00 0 
+2aaaacc73000-2aaaadf63000 rwxp 2aaaacc73000 00:00 0 
+2aaaadf63000-2aaaadfd8000 rwxp 2aaaadf63000 00:00 0 
+2aaaadfd8000-2aaaae023000 rwxp 2aaaadfd8000 00:00 0 
+2aaaae023000-2aaaae02b000 r-xs 00000000 08:02 5717647                    /var/cache/fontconfig/b79f3aaa7d385a141ab53ec885cc22a8-x86-64.cache-2
+2aaaae02b000-2aaaae02d000 r-xs 00000000 08:02 5717706                    /var/cache/fontconfig/87f5e051180a7a75f16eb6fe7dbd3749-x86-64.cache-2
+2aaaae02d000-2aaaae02f000 r-xs 00007000 08:05 2726212                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/plexus-interpolation-1.0-SNAPSHOT.jar
+2aaaae030000-2aaab8550000 rwxp 2aaaae030000 00:00 0 
+2aaab8550000-2aaabe030000 rwxp 2aaab8550000 00:00 0 
+2aaabe030000-2aaae8ae0000 rwxp 2aaabe030000 00:00 0 
+2aaae8ae0000-2aaafa310000 rwxp 2aaae8ae0000 00:00 0 
+2aaafa310000-2aaafe030000 rwxp 2aaafa310000 00:00 0 
+2aaafe030000-2aaafe083000 rwxp 2aaafe030000 00:00 0 
+2aaafe083000-2aaafe0b0000 rwxp 2aaafe083000 00:00 0 
+2aaafe0b0000-2aaafe205000 rwxp 2aaafe0b0000 00:00 0 
+2aaafe205000-2aaafe292000 rwxp 2aaafe205000 00:00 0 
+2aaafe292000-2aaafe2b0000 rwxp 2aaafe292000 00:00 0 
+2aaafe2b0000-2aaafe407000 rwxp 2aaafe2b0000 00:00 0 
+2aaafe407000-2aaafe45a000 rwxp 2aaafe407000 00:00 0 
+2aaafe45a000-2aaafe487000 rwxp 2aaafe45a000 00:00 0 
+2aaafe487000-2aaafe61d000 r-xs 02fb6000 08:05 1007781                    /usr/java/jdk1.6.0_17/jre/lib/rt.jar
+2aaafe61d000-2aaafe650000 rwxp 2aaafe61d000 00:00 0 
+2aaafe650000-2aaafe662000 r-xs 000b9000 08:05 2693975                    /opt/eclipse/ganymede/plugins/org.maven.ide.eclipse_0.9.8.200905041413.jar
+2aaafe662000-2aaafe666000 r-xs 00014000 08:05 2693976                    /opt/eclipse/ganymede/plugins/org.maven.ide.eclipse.editor.xml_0.9.8.200905041414.jar
+2aaafe666000-2aaafe66a000 r-xs 00017000 08:05 2693977                    /opt/eclipse/ganymede/plugins/org.maven.ide.eclipse.jdt_0.9.8.200905041413.jar
+2aaafe66a000-2aaafe66d000 r-xs 00010000 08:05 2693978                    /opt/eclipse/ganymede/plugins/org.maven.ide.eclipse.launching_0.9.8.200905041413.jar
+2aaafe66d000-2aaafe671000 r-xs 001fc000 08:05 2693979                    /opt/eclipse/ganymede/plugins/org.maven.ide.eclipse.pr_0.9.8.200905041414.jar
+2aaafe671000-2aaafe672000 r-xs 00002000 08:05 2693966                    /opt/eclipse/ganymede/plugins/org.maven.ide.eclipse.scm_0.9.8.200905041413.jar
+2aaafe672000-2aaafe674000 r-xs 00003000 08:05 2693969                    /opt/eclipse/ganymede/plugins/org.maven.ide.eclipse.subclipse_0.9.8.200905041413.jar
+2aaafe674000-2aaafe677000 r-xs 00011000 08:05 2694033                    /opt/eclipse/ganymede/plugins/org.tigris.subversion.clientadapter_1.6.4.1.jar
+2aaafe677000-2aaafe67b000 r-xs 00023000 08:05 2694034                    /opt/eclipse/ganymede/plugins/org.tigris.subversion.clientadapter.javahl_1.6.6.jar
+2aaafe67b000-2aaafe67d000 r-xs 00011000 08:05 2694035                    /opt/eclipse/ganymede/plugins/org.tigris.subversion.clientadapter.svnkit_1.6.4.jar
+2aaafe67d000-2aaafe683000 r-xs 00041000 08:05 2694036                    /opt/eclipse/ganymede/plugins/org.tigris.subversion.subclipse.core_1.6.5.jar
+2aaafe683000-2aaafe689000 r-xs 00237000 08:05 2694037                    /opt/eclipse/ganymede/plugins/org.tigris.subversion.subclipse.doc_1.3.0.jar
+2aaafe689000-2aaafe68d000 r-xs 0001b000 08:05 2694038                    /opt/eclipse/ganymede/plugins/org.tigris.subversion.subclipse.graph_1.0.7.jar
+2aaafe68d000-2aaafe68f000 r-xs 00003000 08:05 2694039                    /opt/eclipse/ganymede/plugins/org.tigris.subversion.subclipse.mylyn_3.0.0.jar
+2aaafe68f000-2aaafe6b3000 r-xs 0019a000 08:05 2694040                    /opt/eclipse/ganymede/plugins/org.tigris.subversion.subclipse.ui_1.6.5.jar
+2aaafe6b3000-2aaafe6b4000 r-xs 00401000 08:05 2694041                    /opt/eclipse/ganymede/plugins/org.tmatesoft.svnkit_1.3.2.6267.jar
+2aaafe6b4000-2aaafe6b8000 r-xs 0002c000 08:05 2694042                    /opt/eclipse/ganymede/plugins/org.uddi4j_2.0.5.v200805270300.jar
+2aaafe6b8000-2aaafe6b9000 r-xs 00001000 08:05 2725708                    /opt/eclipse/ganymede/plugins/org.eclipse.ui.workbench.compatibility_3.2.0.I20080509-2000/compatibility.jar
+2aaafe6b9000-2aaafe6f9000 r-xp 00000000 08:07 21268209                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/96/1/.cp/libswt-gtk-3452.so
+2aaafe6f9000-2aaafe7f9000 ---p 00040000 08:07 21268209                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/96/1/.cp/libswt-gtk-3452.so
+2aaafe7f9000-2aaafe7fd000 rwxp 00040000 08:07 21268209                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/96/1/.cp/libswt-gtk-3452.so
+2aaafe7fd000-2aaafe7fe000 rwxp 2aaafe7fd000 00:00 0 
+2aaafe7fe000-2aaafe869000 r-xp 00000000 08:07 21268210                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/96/1/.cp/libswt-pi-gtk-3452.so
+2aaafe869000-2aaafe968000 ---p 0006b000 08:07 21268210                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/96/1/.cp/libswt-pi-gtk-3452.so
+2aaafe968000-2aaafe96c000 rwxp 0006a000 08:07 21268210                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/96/1/.cp/libswt-pi-gtk-3452.so
+2aaafe96c000-2aaafe96d000 rwxp 2aaafe96c000 00:00 0 
+2aaafe96e000-2aaafe973000 r-xp 00000000 08:05 422737                     /usr/lib64/gtk-2.0/2.10.0/loaders/libpixbufloader-gif.so
+2aaafe973000-2aaafeb73000 ---p 00005000 08:05 422737                     /usr/lib64/gtk-2.0/2.10.0/loaders/libpixbufloader-gif.so
+2aaafeb73000-2aaafeb74000 rwxp 00005000 08:05 422737                     /usr/lib64/gtk-2.0/2.10.0/loaders/libpixbufloader-gif.so
+2aaafeb74000-2aaafeb78000 r-xp 00000000 08:05 422741                     /usr/lib64/gtk-2.0/2.10.0/loaders/libpixbufloader-png.so
+2aaafeb78000-2aaafed77000 ---p 00004000 08:05 422741                     /usr/lib64/gtk-2.0/2.10.0/loaders/libpixbufloader-png.so
+2aaafed77000-2aaafed78000 rwxp 00003000 08:05 422741                     /usr/lib64/gtk-2.0/2.10.0/loaders/libpixbufloader-png.so
+2aaafed78000-2aaafed7a000 r-xp 00000000 08:07 21267551                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/22/1/.cp/os/linux/x86_64/liblocalfile_1_0_0.so
+2aaafed7a000-2aaafee79000 ---p 00002000 08:07 21267551                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/22/1/.cp/os/linux/x86_64/liblocalfile_1_0_0.so
+2aaafee79000-2aaafee7a000 rwxp 00001000 08:07 21267551                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/22/1/.cp/os/linux/x86_64/liblocalfile_1_0_0.so
+2aaafee7a000-2aaafee8b000 r-xp 00000000 08:05 292184                     /usr/share/fonts/bitstream-vera/Vera.ttf
+2aaafee8b000-2aaafee8d000 r-xp 00000000 08:05 358795                     /usr/lib64/pango/1.5.0/modules/pango-basic-fc.so
+2aaafee8d000-2aaaff08d000 ---p 00002000 08:05 358795                     /usr/lib64/pango/1.5.0/modules/pango-basic-fc.so
+2aaaff08d000-2aaaff08e000 rwxp 00002000 08:05 358795                     /usr/lib64/pango/1.5.0/modules/pango-basic-fc.so
+2aaaff08e000-2aaaff095000 r-xp 00000000 08:07 21268257                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/96/1/.cp/libswt-atk-gtk-3452.so
+2aaaff095000-2aaaff194000 ---p 00007000 08:07 21268257                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/96/1/.cp/libswt-atk-gtk-3452.so
+2aaaff194000-2aaaff195000 rwxp 00006000 08:07 21268257                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/96/1/.cp/libswt-atk-gtk-3452.so
+2aaaff195000-2aaaff1a1000 r-xp 00000000 08:07 21268262                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/96/1/.cp/libswt-cairo-gtk-3452.so
+2aaaff1a1000-2aaaff2a1000 ---p 0000c000 08:07 21268262                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/96/1/.cp/libswt-cairo-gtk-3452.so
+2aaaff2a1000-2aaaff2a2000 rwxp 0000c000 08:07 21268262                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/96/1/.cp/libswt-cairo-gtk-3452.so
+2aaaff2a2000-2aaaff2a9000 r-xs 00111000 08:05 1007778                    /usr/java/jdk1.6.0_17/jre/lib/resources.jar
+2aaaff2a9000-2aaaff2b8000 r-xp 00000000 08:05 292186                     /usr/share/fonts/bitstream-vera/VeraBd.ttf
+2aaaff2b8000-2aaaff2c8000 r-xp 00000000 08:05 292187                     /usr/share/fonts/bitstream-vera/VeraIt.ttf
+2aaaff2c8000-2aaaff2d8000 r-xp 00000000 08:05 292185                     /usr/share/fonts/bitstream-vera/VeraBI.ttf
+2aaaff2d8000-2aaaff2e5000 r-xp 00000000 08:05 292191                     /usr/share/fonts/bitstream-vera/VeraMono.ttf
+2aaaff2e5000-2aaaff2f1000 r-xp 00000000 08:05 292189                     /usr/share/fonts/bitstream-vera/VeraMoBd.ttf
+2aaaff2f1000-2aaaff2ff000 r-xp 00000000 08:05 292190                     /usr/share/fonts/bitstream-vera/VeraMoIt.ttf
+2aaaff2ff000-2aaaff30d000 r-xp 00000000 08:05 292188                     /usr/share/fonts/bitstream-vera/VeraMoBI.ttf
+2aaaff30d000-2aaaff310000 r-xp 00000000 08:05 422751                     /usr/lib64/gtk-2.0/2.10.0/printbackends/libprintbackend-file.so
+2aaaff310000-2aaaff510000 ---p 00003000 08:05 422751                     /usr/lib64/gtk-2.0/2.10.0/printbackends/libprintbackend-file.so
+2aaaff510000-2aaaff511000 rwxp 00003000 08:05 422751                     /usr/lib64/gtk-2.0/2.10.0/printbackends/libprintbackend-file.so
+2aaaff511000-2aaaff51e000 r-xp 00000000 08:05 422750                     /usr/lib64/gtk-2.0/2.10.0/printbackends/libprintbackend-cups.so
+2aaaff51e000-2aaaff71d000 ---p 0000d000 08:05 422750                     /usr/lib64/gtk-2.0/2.10.0/printbackends/libprintbackend-cups.so
+2aaaff71d000-2aaaff71f000 rwxp 0000c000 08:05 422750                     /usr/lib64/gtk-2.0/2.10.0/printbackends/libprintbackend-cups.so
+2aaaff71f000-2aaaff725000 r-xs 0004f000 08:05 2726220                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/maven-core-2.1-SNAPSHOT.jar
+2aaaff725000-2aaaff727000 r-xs 00001000 08:05 2726208                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/maven-workspace-2.1-SNAPSHOT.jar
+2aaaff727000-2aaaff72e000 r-xs 00039000 08:05 2726222                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/plexus-container-default-1.0-alpha-44.jar
+2aaaff72e000-2aaaff733000 r-xs 00018000 08:05 2726215                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/aspectjrt-1.5.3.jar
+2aaaff733000-2aaaff737000 r-xs 00030000 08:05 2726211                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/plexus-utils-1.5.1.jar
+2aaaff737000-2aaaff739000 r-xs 00009000 08:05 2726225                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/plexus-classworlds-1.2-alpha-12.jar
+2aaaff73a000-2aaaff74f000 r-xp 00000000 08:05 974169                     /lib64/libselinux.so.1
+2aaaff74f000-2aaaff94f000 ---p 00015000 08:05 974169                     /lib64/libselinux.so.1
+2aaaff94f000-2aaaff951000 rwxp 00015000 08:05 974169                     /lib64/libselinux.so.1
+2aaaff951000-2aaaff952000 rwxp 2aaaff951000 00:00 0 
+2aaaff952000-2aaaff95c000 r-xp 00000000 08:05 974190                     /lib64/libnss_files-2.5.so
+2aaaff95c000-2aaaffb5b000 ---p 0000a000 08:05 974190                     /lib64/libnss_files-2.5.so
+2aaaffb5b000-2aaaffb5c000 r-xp 00009000 08:05 974190                     /lib64/libnss_files-2.5.so
+2aaaffb5c000-2aaaffb5d000 rwxp 0000a000 08:05 974190                     /lib64/libnss_files-2.5.so
+2aaaffb5d000-2aaaffb64000 r-xp 00000000 08:05 974177                     /lib64/libnss_compat-2.5.so
+2aaaffb64000-2aaaffd64000 ---p 00007000 08:05 974177                     /lib64/libnss_compat-2.5.so
+2aaaffd64000-2aaaffd65000 r-xp 00007000 08:05 974177                     /lib64/libnss_compat-2.5.so
+2aaaffd65000-2aaaffd66000 rwxp 00008000 08:05 974177                     /lib64/libnss_compat-2.5.so
+2aaaffd66000-2aaaffd6f000 r-xp 00000000 08:05 974206                     /lib64/libnss_nis-2.5.so
+2aaaffd6f000-2aaafff6f000 ---p 00009000 08:05 974206                     /lib64/libnss_nis-2.5.so
+2aaafff6f000-2aaafff70000 r-xp 00009000 08:05 974206                     /lib64/libnss_nis-2.5.so
+2aaafff70000-2aaafff71000 rwxp 0000a000 08:05 974206                     /lib64/libnss_nis-2.5.so
+2aaafff71000-2aaafff73000 r-xs 0000a000 08:05 2726218                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/maven-lifecycle-2.1-SNAPSHOT.jar
+2aaafff73000-2aaafff74000 r-xs 00002000 08:05 2726227                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/maven-reporting-api-2.1-SNAPSHOT.jar
+2aaafff74000-2aaafff75000 r-xs 00002000 08:05 2726206                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/doxia-sink-api-1.0-alpha-9.jar
+2aaafff75000-2aaafff77000 r-xs 00008000 08:05 2726207                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/maven-profile-2.1-SNAPSHOT.jar
+2aaafff77000-2aaafff79000 r-xs 00016000 08:05 2726134                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/maven-model-2.1-SNAPSHOT.jar
+2aaafff79000-2aaafff7e000 r-xs 00030000 08:05 2726203                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/maven-artifact-3.0-SNAPSHOT.jar
+2aaafff7e000-2aaafff80000 r-xs 0000a000 08:05 2726221                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/wagon-provider-api-1.0-beta-2.jar
+2aaafff80000-2aaafff82000 r-xs 0000a000 08:05 2726214                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/maven-plugin-api-2.1-SNAPSHOT.jar
+2aaafff82000-2aaafff86000 r-xs 00035000 08:05 2726226                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/maven-project-2.1-SNAPSHOT.jar
+2aaafff86000-2aaafff8a000 r-xs 00035000 08:05 2726075                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.archetype_common_2.0.0.20080522-1230/jars/archetype-common-2.0-alpha-2.jar
+2aaafff8a000-2aaafff8e000 r-xs 00021000 08:05 2726267                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.nexus_indexer_1.9.0.20090429/jars/nexus-indexer-2.0.0.jar
+2aaafff8e000-2aaafff9a000 r-xs 00097000 08:05 2726266                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.nexus_indexer_1.9.0.20090429/jars/lucene-core-2.3.2.jar
+2aaafff9a000-2aaafff9c000 r-xs 00006000 08:05 2726228                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/commons-cli-1.0.jar
+2aaafff9c000-2aaafff9d000 r-xs 00002000 08:05 2726216                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/plexus-interactivity-api-1.0-alpha-6.jar
+2aaafff9d000-2aaafff9e000 r-xs 00008000 08:05 2726135                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/maven-toolchain-2.1-SNAPSHOT.jar
+2aaafff9e000-2aaafffa0000 r-xs 00002000 08:05 2726209                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/wagon-http-lightweight-1.0-beta-2.jar
+2aaafffa0000-2aaafffa1000 r-xs 00002000 08:05 2726204                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/wagon-http-shared-1.0-beta-2.jar
+2aaafffa1000-2aaafffa4000 r-xs 0001f000 08:05 2726224                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/jtidy-4aug2000r7-dev.jar
+2aaafffa4000-2aaafffa5000 r-xs 00005000 08:05 2726210                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/wagon-ssh-1.0-beta-2.jar
+2aaafffa5000-2aaafffa8000 r-xs 0001b000 08:05 2726217                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/jsch-0.1.27.jar
+2aaafffa8000-2aaafffaa000 r-xs 00005000 08:05 2726219                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/wagon-ssh-common-1.0-beta-2.jar
+2aaafffaa000-2aaafffac000 r-xs 00002000 08:05 2726213                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/wagon-ssh-external-1.0-beta-2.jar
+2aaafffac000-2aaafffad000 r-xs 00002000 08:05 2726223                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_embedder_2.1.0.20080530-2300/jars/wagon-file-1.0-beta-2.jar
+2aaafffad000-2aaafffaf000 r-xs 00007000 08:05 2726111                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.dependency_tree_1.2.0.20080424-1900/jars/maven-dependency-tree-1.2-SNAPSHOT.jar
+2aaafffaf000-2aaafffb3000 r-xs 00011000 08:05 2791312                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_scm_1.0.0.20080602-2350/jars/maven-scm-api-1.0.jar
+2aaafffb3000-2aaafffb5000 r-xs 00005000 08:05 2791307                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_scm_1.0.0.20080602-2350/jars/maven-scm-provider-cvsexe-1.0.jar
+2aaafffb5000-2aaafffb8000 r-xs 0000e000 08:05 2791304                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_scm_1.0.0.20080602-2350/jars/maven-scm-provider-cvs-commons-1.0.jar
+2aaafffb8000-2aaafffba000 r-xs 00008000 08:05 2791296                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_scm_1.0.0.20080602-2350/jars/maven-scm-provider-cvsjava-1.0.jar
+2aaafffba000-2aaafffc2000 r-xs 00090000 08:05 2791303                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_scm_1.0.0.20080602-2350/jars/cvsclient-20060125.jar
+2aaafffc2000-2aaafffc6000 r-xs 00038000 08:05 2791309                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_scm_1.0.0.20080602-2350/jars/ganymed-ssh2-build210.jar
+2aaafffc6000-2aaafffc9000 r-xs 0000c000 08:05 2791300                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_scm_1.0.0.20080602-2350/jars/maven-scm-provider-svnexe-1.0.jar
+2aaafffc9000-2aaafffcb000 r-xs 00007000 08:05 2791295                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_scm_1.0.0.20080602-2350/jars/maven-scm-provider-svn-commons-1.0.jar
+2aaafffcb000-2aaafffcd000 r-xs 00005000 08:05 2791310                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_scm_1.0.0.20080602-2350/jars/regexp-1.3.jar
+2aaafffcd000-2aaafffd0000 r-xs 0000d000 08:05 2791314                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_scm_1.0.0.20080602-2350/jars/maven-scm-provider-perforce-1.0.jar
+2aaafffd0000-2aaafffd2000 r-xs 0000a000 08:05 2791306                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_scm_1.0.0.20080602-2350/jars/maven-scm-provider-bazaar-1.0.jar
+2aaafffd2000-2aaafffd5000 r-xs 0000c000 08:05 2791297                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_scm_1.0.0.20080602-2350/jars/maven-scm-provider-clearcase-1.0.jar
+2aaafffd5000-2aaafffd7000 r-xs 0000b000 08:05 2791302                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_scm_1.0.0.20080602-2350/jars/maven-scm-provider-hg-1.0.jar
+2aaafffd7000-2aaafffd9000 r-xs 0000f000 08:05 2791301                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_scm_1.0.0.20080602-2350/jars/maven-scm-provider-starteam-1.0.jar
+2aaafffd9000-2aaafffdc000 r-xs 0000a000 08:05 2791311                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_scm_1.0.0.20080602-2350/jars/maven-scm-provider-synergy-1.0.jar
+2aaafffdc000-2aaafffde000 r-xs 0000c000 08:05 2791313                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_scm_1.0.0.20080602-2350/jars/maven-scm-provider-vss-1.0.jar
+2aaafffde000-2aaafffe1000 r-xs 00008000 08:05 2791298                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_scm_1.0.0.20080602-2350/jars/maven-scm-provider-gitexe-1.1-SNAPSHOT.jar
+2aaafffe1000-2aaafffe3000 r-xs 00007000 08:05 2791308                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_scm_1.0.0.20080602-2350/jars/maven-scm-provider-git-commons-1.1-SNAPSHOT.jar
+2aaafffe3000-2aaafffe5000 r-xs 00005000 08:05 2791305                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_scm_1.0.0.20080602-2350/jars/maven-scm-provider-accurev-1.0-SNAPSHOT.jar
+2aaafffe5000-2aaafffe7000 r-xs 00006000 08:07 21266536                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/313/1/.cp/jars/plexus-swizzle-1.0-alpha-4.jar
+2aaafffe7000-2aaafffea000 r-xs 0000f000 08:07 21266552                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/313/1/.cp/jars/swizzle-jira-1.3.3-sonatype-1.jar
+2aaafffea000-2aaafffec000 r-xs 00009000 08:07 21266566                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/313/1/.cp/jars/swizzle-stream-1.0.2.jar
+2aaafffec000-2aaaffff0000 r-xs 00013000 08:07 21266574                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/313/1/.cp/jars/commons-collections-2.0.jar
+2aaaffff0000-2aaaffff8000 r-xs 0004f000 08:07 21266577                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/313/1/.cp/jars/log4j-1.2.8.jar
+2aaaffff8000-2aaaffffa000 r-xs 00009000 08:07 21266594                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/313/1/.cp/jars/xmlrpc-client-3.0.jar
+2aaaffffa000-2aaaffffd000 r-xs 00015000 08:07 21266605                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/313/1/.cp/jars/xmlrpc-common-3.0.jar
+2aaaffffd000-2aaafffff000 r-xs 00007000 08:07 21266619                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/313/1/.cp/jars/ws-commons-util-1.0.1.jar
+2aab00000000-2aab03ffb000 rwxp 2aab00000000 00:00 0 
+2aab03ffb000-2aab04000000 ---p 2aab03ffb000 00:00 0 
+2aab04000000-2aab075d8000 r-xp 00000000 08:05 80790                      /usr/lib/locale/locale-archive
+2aab075d8000-2aab075e6000 r-xp 00000000 08:05 2693328                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.launcher.gtk.linux.x86_64_1.0.101.R34x_v20080731/eclipse_1115.so
+2aab075e6000-2aab076e6000 ---p 0000e000 08:05 2693328                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.launcher.gtk.linux.x86_64_1.0.101.R34x_v20080731/eclipse_1115.so
+2aab076e6000-2aab076e7000 rwxp 0000e000 08:05 2693328                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.launcher.gtk.linux.x86_64_1.0.101.R34x_v20080731/eclipse_1115.so
+2aab076e7000-2aab076ee000 r-xs 00000000 08:05 194980                     /usr/lib64/gconv/gconv-modules.cache
+2aab076ee000-2aab076ef000 r-xp 00000000 08:05 197800                     /usr/lib64/gconv/ISO8859-1.so
+2aab076ef000-2aab078ef000 ---p 00001000 08:05 197800                     /usr/lib64/gconv/ISO8859-1.so
+2aab078ef000-2aab078f1000 rwxp 00001000 08:05 197800                     /usr/lib64/gconv/ISO8859-1.so
+2aab078f1000-2aab07902000 r-xp 00000000 08:05 429631                     /usr/lib64/gtk-2.0/2.10.0/engines/libclearlooks.so
+2aab07902000-2aab07b02000 ---p 00011000 08:05 429631                     /usr/lib64/gtk-2.0/2.10.0/engines/libclearlooks.so
+2aab07b02000-2aab07b03000 rwxp 00011000 08:05 429631                     /usr/lib64/gtk-2.0/2.10.0/engines/libclearlooks.so
+2aab07b04000-2aab07b07000 r-xp 00000000 08:05 422736                     /usr/lib64/gtk-2.0/2.10.0/loaders/libpixbufloader-bmp.so
+2aab07b07000-2aab07d06000 ---p 00003000 08:05 422736                     /usr/lib64/gtk-2.0/2.10.0/loaders/libpixbufloader-bmp.so
+2aab07d06000-2aab07d07000 rwxp 00002000 08:05 422736                     /usr/lib64/gtk-2.0/2.10.0/loaders/libpixbufloader-bmp.so
+2aab07d07000-2aab07d6a000 rwxp 2aab07d07000 00:00 0 
+2aab07d6a000-2aab07d79000 r-xs 000e5000 08:05 2693775                    /opt/eclipse/ganymede/plugins/org.eclipse.osgi_3.4.3.R34x_v20081215-1030.jar
+2aab07d79000-2aab07d8c000 r-xp 00000000 08:05 1007529                    /usr/java/jdk1.6.0_17/jre/lib/amd64/libnet.so
+2aab07d8c000-2aab07e8d000 ---p 00013000 08:05 1007529                    /usr/java/jdk1.6.0_17/jre/lib/amd64/libnet.so
+2aab07e8d000-2aab07e90000 rwxp 00014000 08:05 1007529                    /usr/java/jdk1.6.0_17/jre/lib/amd64/libnet.so
+2aab07e90000-2aab07e97000 r-xp 00000000 08:05 1007530                    /usr/java/jdk1.6.0_17/jre/lib/amd64/libnio.so
+2aab07e97000-2aab07f96000 ---p 00007000 08:05 1007530                    /usr/java/jdk1.6.0_17/jre/lib/amd64/libnio.so
+2aab07f96000-2aab07f98000 rwxp 00006000 08:05 1007530                    /usr/java/jdk1.6.0_17/jre/lib/amd64/libnio.so
+2aab07f98000-2aab07f9e000 r-xs 00045000 08:07 21266621                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/313/1/.cp/jars/commons-httpclient-3.1.jar
+2aab07f9e000-2aab07fa0000 r-xs 00008000 08:07 21266632                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/313/1/.cp/jars/commons-logging-1.0.4.jar
+2aab07fa0000-2aab07fa2000 r-xs 00006000 08:07 21266649                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/313/1/.cp/jars/commons-codec-1.2.jar
+2aab07fa2000-2aab07fa4000 r-xs 00005000 08:05 2726074                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.archetype_common_2.0.0.20080522-1230/jars/jchardet-1.0.jar
+2aab07fa4000-2aab07fa9000 r-xs 00048000 08:05 2726072                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.archetype_common_2.0.0.20080522-1230/jars/dom4j-1.6.1.jar
+2aab07fa9000-2aab07fac000 r-xs 00023000 08:05 2726073                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.archetype_common_2.0.0.20080522-1230/jars/jdom-1.0.jar
+2aab07fac000-2aab07faf000 r-xs 00012000 08:05 2726071                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.archetype_common_2.0.0.20080522-1230/jars/commons-io-1.3.1.jar
+2aab07faf000-2aab07fb0000 r-xs 00001000 08:05 2726069                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.archetype_common_2.0.0.20080522-1230/jars/plexus-velocity-1.1.3.jar
+2aab07fb0000-2aab07fbd000 r-xs 0007f000 08:05 2726041                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.archetype_common_2.0.0.20080522-1230/jars/commons-collections-3.2.jar
+2aab07fbd000-2aab07fc5000 r-xs 00051000 08:05 2726070                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.archetype_common_2.0.0.20080522-1230/jars/velocity-1.4.jar
+2aab07fc5000-2aab07fc8000 r-xs 00013000 08:05 1007716                    /usr/java/jdk1.6.0_17/jre/lib/jce.jar
+2aab07fc8000-2aab07fcf000 r-xs 00091000 08:05 1007779                    /usr/java/jdk1.6.0_17/jre/lib/jsse.jar
+2aab07fcf000-2aab07fd2000 r-xs 00013000 08:05 2693395                    /opt/eclipse/ganymede/plugins/org.eclipse.ui.intro.universal_3.2.200.v20080508/universal.jar
+2aab07fd2000-2aab07fd6000 r-xs 0000d000 08:05 2693299                    /opt/eclipse/ganymede/plugins/org.eclipse.jdt.debug_3.4.1.v20081216_r342/jdi.jar
+2aab07fd6000-2aab07fe3000 r-xs 000b6000 08:05 2693297                    /opt/eclipse/ganymede/plugins/org.eclipse.jdt.debug_3.4.1.v20081216_r342/jdimodel.jar
+2aab07fe3000-2aab07ff9000 r-xs 001ae000 08:07 21267556                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/324/1/.cp/svnkit.jar
+2aab07ff9000-2aab07ffc000 r-xs 00018000 08:07 21267565                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/324/1/.cp/svnkit-javahl.jar
+2aab07ffc000-2aab07fff000 r-xs 00027000 08:05 1007668                    /usr/java/jdk1.6.0_17/jre/lib/ext/sunjce_provider.jar
+2aab08000000-2aab0c000000 rwxp 2aab08000000 00:00 0 
+2aab0c000000-2aab0c002000 r-xs 00007000 08:05 2693377                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.simpleconfigurator_1.0.0.v20080604.jar
+2aab0c002000-2aab0c01e000 r-xs 00427000 08:05 2693387                    /opt/eclipse/ganymede/plugins/com.ibm.icu_3.8.1.v20080530.jar
+2aab0c01e000-2aab0c021000 r-xs 00032000 08:05 2693812                    /opt/eclipse/ganymede/plugins/com.jcraft.jsch_0.1.37.v200803061811.jar
+2aab0c021000-2aab0c024000 r-xs 00018000 08:05 2693945                    /opt/eclipse/ganymede/plugins/javax.servlet_2.4.0.v200806031604.jar
+2aab0c024000-2aab0c026000 r-xs 0000e000 08:05 2693940                    /opt/eclipse/ganymede/plugins/javax.servlet.jsp_2.0.0.v200806031607.jar
+2aab0c026000-2aab0c029000 r-xs 0001d000 08:05 2693323                    /opt/eclipse/ganymede/plugins/org.apache.commons.el_1.0.0.v200806031608.jar
+2aab0c029000-2aab0c02a000 r-xs 0000a000 08:05 2693778                    /opt/eclipse/ganymede/plugins/org.apache.commons.logging_1.0.4.v20080605-1930.jar
+2aab0c02a000-2aab0c03b000 r-xs 00194000 08:05 2693833                    /opt/eclipse/ganymede/plugins/org.apache.jasper_5.5.17.v200806031609.jar
+2aab0c03b000-2aab0c043000 r-xs 00065000 08:05 2693805                    /opt/eclipse/ganymede/plugins/org.apache.lucene_1.9.1.v20080530-1600.jar
+2aab0c043000-2aab0c045000 r-xs 00010000 08:05 2693785                    /opt/eclipse/ganymede/plugins/org.apache.lucene.analysis_1.9.1.v20080530-1600.jar
+2aab0c045000-2aab0c047000 r-xs 00016000 08:05 2693209                    /opt/eclipse/ganymede/plugins/org.eclipse.ant.core_3.2.0.v20080529.jar
+2aab0c047000-2aab0c054000 r-xs 0009e000 08:05 2693810                    /opt/eclipse/ganymede/plugins/org.eclipse.compare_3.4.1.r34x_20090121.jar
+2aab0c054000-2aab0c055000 r-xs 00001000 08:05 2693777                    /opt/eclipse/ganymede/plugins/org.eclipse.core.boot_3.1.100.v20080218.jar
+2aab0c055000-2aab0c058000 r-xs 00017000 08:05 2693794                    /opt/eclipse/ganymede/plugins/org.eclipse.core.commands_3.4.0.I20080509-2000.jar
+2aab0c058000-2aab0c05b000 r-xs 00013000 08:05 2693724                    /opt/eclipse/ganymede/plugins/org.eclipse.core.contenttype_3.3.0.v20080604-1400.jar
+2aab0c05b000-2aab0c064000 r-xs 0004c000 08:05 2693708                    /opt/eclipse/ganymede/plugins/org.eclipse.core.databinding_1.1.1.M20080827-0800b.jar
+2aab0c064000-2aab0c066000 r-xs 0000d000 08:05 2693827                    /opt/eclipse/ganymede/plugins/org.eclipse.core.databinding.beans_1.1.1.M20080827-0800a.jar
+2aab0c066000-2aab0c069000 r-xs 00013000 08:05 2693326                    /opt/eclipse/ganymede/plugins/org.eclipse.core.expressions_3.4.1.r342_v20081203-0800.jar
+2aab0c069000-2aab0c06c000 r-xs 00019000 08:05 2693383                    /opt/eclipse/ganymede/plugins/org.eclipse.core.filebuffers_3.4.0.v20080603-2000.jar
+2aab0c06c000-2aab0c06e000 r-xs 00009000 08:05 2693947                    /opt/eclipse/ganymede/plugins/org.eclipse.core.filesystem_1.2.0.v20080604-1400.jar
+2aab0c06e000-2aab0c070000 r-xs 00003000 08:05 2693391                    /opt/eclipse/ganymede/plugins/org.eclipse.core.filesystem.linux.x86_64_1.0.100.v20080604-1400.jar
+2aab0c070000-2aab0c073000 r-xs 00012000 08:05 2693709                    /opt/eclipse/ganymede/plugins/org.eclipse.core.jobs_3.4.1.R34x_v20081128.jar
+2aab0c073000-2aab0c075000 r-xs 0000c000 08:05 2693344                    /opt/eclipse/ganymede/plugins/org.eclipse.core.net_1.1.0.I20080604.jar
+2aab0c075000-2aab0c07f000 r-xs 000a1000 08:05 2693380                    /opt/eclipse/ganymede/plugins/org.eclipse.core.resources_3.4.2.R34x_v20090126.jar
+2aab0c07f000-2aab0c082000 r-xs 0001b000 08:05 2693314                    /opt/eclipse/ganymede/plugins/org.eclipse.core.resources.compatibility_3.4.0.v20080604-1400.jar
+2aab0c082000-2aab0c084000 r-xs 0000f000 08:05 2693342                    /opt/eclipse/ganymede/plugins/org.eclipse.core.runtime_3.4.0.v20080512.jar
+2aab0c084000-2aab0c087000 r-xs 00014000 08:05 2693803                    /opt/eclipse/ganymede/plugins/org.eclipse.core.runtime.compatibility_3.2.0.v20071008.jar
+2aab0c087000-2aab0c089000 r-xs 00004000 08:05 2693795                    /opt/eclipse/ganymede/plugins/org.eclipse.core.runtime.compatibility.auth_3.2.100.v20070502.jar
+2aab0c089000-2aab0c08b000 r-xs 00006000 08:05 2693952                    /opt/eclipse/ganymede/plugins/org.eclipse.core.variables_3.2.100.v20080529-1300.jar
+2aab0c08b000-2aab0c092000 r-xs 00045000 08:05 2693815                    /opt/eclipse/ganymede/plugins/org.eclipse.debug.core_3.4.1.v20090106_r342.jar
+2aab0c092000-2aab0c0be000 r-xs 001fe000 08:05 2693388                    /opt/eclipse/ganymede/plugins/org.eclipse.debug.ui_3.4.2.v20090110_r342.jar
+2aab0c0be000-2aab0c0c1000 r-xs 00011000 08:05 2693755                    /opt/eclipse/ganymede/plugins/org.eclipse.ecf_2.0.0.v20080611-1715.jar
+2aab0c0c1000-2aab0c0c4000 r-xs 00008000 08:05 2693723                    /opt/eclipse/ganymede/plugins/org.eclipse.ecf.filetransfer_2.0.0.v20080611-1715.jar
+2aab0c0c4000-2aab0c0c6000 r-xs 0000b000 08:05 2693693                    /opt/eclipse/ganymede/plugins/org.eclipse.ecf.identity_2.0.0.v20080611-1715.jar
+2aab0c0c6000-2aab0c0c9000 r-xs 00015000 08:05 2693385                    /opt/eclipse/ganymede/plugins/org.eclipse.ecf.provider.filetransfer_2.0.0.v20080611-1715.jar
+2aab0c0c9000-2aab0c0ca000 r-xs 00001000 08:05 2693739                    /opt/eclipse/ganymede/plugins/org.eclipse.ecf.provider.filetransfer.ssl_1.0.0.v20080611-1715.jar
+2aab0c0ca000-2aab0c0cb000 r-xs 00002000 08:05 2693822                    /opt/eclipse/ganymede/plugins/org.eclipse.ecf.ssl_1.0.0.v20080611-1715.jar
+2aab0c0cb000-2aab0c0cd000 r-xs 00012000 08:05 2693823                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.app_1.1.0.v20080421-2006.jar
+2aab0c0cd000-2aab0c0d0000 r-xs 00015000 08:05 2693954                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.common_3.4.0.v20080421-2006.jar
+2aab0c0d0000-2aab0c0d2000 r-xs 00007000 08:05 2693721                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.frameworkadmin_1.0.2.R34x_v20081007.jar
+2aab0c0d2000-2aab0c0d4000 r-xs 0000c000 08:05 2693958                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.frameworkadmin.equinox_1.0.4.v20080930.jar
+2aab0c0d4000-2aab0c0d6000 r-xs 00004000 08:05 2693937                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.http.jetty_1.1.0.v20080425.jar
+2aab0c0d6000-2aab0c0d8000 r-xs 00007000 08:05 2693955                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.http.registry_1.0.100.v20080427-0830.jar
+2aab0c0d8000-2aab0c0da000 r-xs 00007000 08:05 2693712                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.http.servlet_1.0.100.v20080427-0830.jar
+2aab0c0da000-2aab0c0dc000 r-xs 00004000 08:05 2693290                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.jsp.jasper_1.0.100.v20080427-0830.jar
+2aab0c0dc000-2aab0c0dd000 r-xs 00002000 08:05 2693941                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.jsp.jasper.registry_1.0.0.v20080427-0830.jar
+2aab0c0dd000-2aab0c0e1000 r-xs 0001b000 08:05 2693343                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.p2.artifact.repository_1.0.4.v20080930.jar
+2aab0c0e1000-2aab0c0e2000 r-xs 00004000 08:05 2693697                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.p2.console_1.0.0.v20080514-1900.jar
+2aab0c0e2000-2aab0c0e5000 r-xs 00011000 08:05 2693751                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.p2.core_1.0.4.v20081112-1019.jar
+2aab0c0e5000-2aab0c0e8000 r-xs 00016000 08:05 2693376                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.p2.director_1.0.4.v20081112-1019.jar
+2aab0c0e8000-2aab0c0ea000 r-xs 00005000 08:05 2693740                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.p2.director.app_1.0.1.R34x_v20080729.jar
+2aab0c0ea000-2aab0c0eb000 r-xs 00005000 08:05 2693696                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.p2.directorywatcher_1.0.2.v20080806-1619.jar
+2aab0c0eb000-2aab0c0ef000 r-xs 0001b000 08:05 2693793                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.p2.engine_1.0.4.v20080930.jar
+2aab0c0ef000-2aab0c0f0000 r-xs 00001000 08:05 2693784                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.p2.exemplarysetup_1.0.0.v20080427-2136.jar
+2aab0c0f0000-2aab0c0f1000 r-xs 00006000 08:05 2693787                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.p2.extensionlocation_1.0.4.v20081027-2115.jar
+2aab0c0f1000-2aab0c0f2000 r-xs 00004000 08:05 2693322                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.p2.garbagecollector_1.0.1.R34x_v20080818.jar
+2aab0c0f2000-2aab0c0f4000 r-xs 0000a000 08:05 2693764                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.p2.jarprocessor_1.0.0.v20080514-1900.jar
+2aab0c0f4000-2aab0c0f6000 r-xs 00009000 08:05 2693215                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.p2.metadata_1.0.0.v20080514-1900.jar
+2aab0c0f6000-2aab0c0f9000 r-xs 00027000 08:05 2693720                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.p2.metadata.generator_1.0.4.v20081217.jar
+2aab0c0f9000-2aab0c0fd000 r-xs 00019000 08:05 2693706                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.p2.metadata.repository_1.0.0.v20080604.jar
+2aab0c0fd000-2aab0c0ff000 r-xs 00008000 08:05 2693722                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.p2.reconciler.dropins_1.0.4.v20081027-2115.jar
+2aab0c0ff000-2aab0c101000 r-xs 00016000 08:05 2693714                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.p2.touchpoint.eclipse_1.0.2.v20081119-1055.jar
+2aab0c101000-2aab0c103000 r-xs 00006000 08:05 2693315                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.p2.touchpoint.natives_1.0.0.v20080505-1850.jar
+2aab0c103000-2aab0c10b000 r-xs 00054000 08:05 2693783                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.p2.ui_1.0.4.R34x_v20090123.jar
+2aab0c10b000-2aab0c10f000 r-xs 0001c000 08:05 2693294                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.p2.ui.sdk_1.0.1.R34x_v20081029.jar
+2aab0c10f000-2aab0c110000 r-xs 00003000 08:05 2693772                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.p2.updatechecker_1.0.0.v20080427-2136.jar
+2aab0c110000-2aab0c112000 r-xs 00008000 08:05 2693324                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.p2.updatesite_1.0.1.R34x_v20080808-1156.jar
+2aab0c112000-2aab0c115000 r-xs 00017000 08:05 2693393                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.preferences_3.2.201.R34x_v20080709.jar
+2aab0c115000-2aab0c119000 r-xs 00027000 08:05 2693702                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.registry_3.4.0.v20080516-0950.jar
+2aab0c119000-2aab0c11c000 r-xs 00017000 08:05 2693337                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.security_1.0.1.R34x_v20080721.jar
+2aab0c11c000-2aab0c121000 r-xs 0002f000 08:05 2693716                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.security.ui_1.0.0.v20080603-1810.jar
+2aab0c121000-2aab0c122000 r-xs 00004000 08:05 2693819                    /opt/eclipse/ganymede/plugins/org.eclipse.equinox.simpleconfigurator.manipulator_1.0.4.v20080930.jar
+2aab0c122000-2aab0c126000 r-xs 00031000 08:05 2693804                    /opt/eclipse/ganymede/plugins/org.eclipse.help_3.3.102.v20081014_34x.jar
+2aab0c126000-2aab0c128000 r-xs 00003000 08:05 2693761                    /opt/eclipse/ganymede/plugins/org.eclipse.help.appserver_3.1.300.v20080507.jar
+2aab0c128000-2aab0c12e000 r-xs 0004d000 08:05 2693318                    /opt/eclipse/ganymede/plugins/org.eclipse.help.base_3.3.103.v20090128_34x.jar
+2aab0c12e000-2aab0c138000 r-xs 00069000 08:05 2693384                    /opt/eclipse/ganymede/plugins/org.eclipse.help.ui_3.3.102.v20081014_34x.jar
+2aab0c138000-2aab0c13e000 r-xs 00066000 08:05 2693713                    /opt/eclipse/ganymede/plugins/org.eclipse.help.webapp_3.3.101.M20080805_34x.jar
+2aab0c13e000-2aab0c152000 r-xs 000eb000 08:05 2693208                    /opt/eclipse/ganymede/plugins/org.eclipse.jface_3.4.2.M20090107-0800.jar
+2aab0c152000-2aab0c157000 r-xs 0002b000 08:05 2693312                    /opt/eclipse/ganymede/plugins/org.eclipse.jface.databinding_1.2.1.M20080827-0800a.jar
+2aab0c157000-2aab0c169000 r-xs 000d5000 08:05 2693736                    /opt/eclipse/ganymede/plugins/org.eclipse.jface.text_3.4.2.r342_v20081119-0800.jar
+2aab0c169000-2aab0c16b000 r-xs 00007000 08:05 2693321                    /opt/eclipse/ganymede/plugins/org.eclipse.jsch.core_1.1.100.I20080604.jar
+2aab0c16b000-2aab0c16e000 r-xs 00012000 08:05 2693939                    /opt/eclipse/ganymede/plugins/org.eclipse.jsch.ui_1.1.100.I20080415.jar
+2aab0c16e000-2aab0c175000 r-xs 00047000 08:05 2693382                    /opt/eclipse/ganymede/plugins/org.eclipse.ltk.core.refactoring_3.4.2.r342_v20081028-0800.jar
+2aab0c175000-2aab0c17f000 r-xs 00065000 08:05 2693824                    /opt/eclipse/ganymede/plugins/org.eclipse.ltk.ui.refactoring_3.4.1.r341_v20080716-0800.jar
+2aab0c17f000-2aab0c182000 r-xs 0000d000 08:05 2693710                    /opt/eclipse/ganymede/plugins/org.eclipse.osgi.services_3.1.200.v20071203.jar
+2aab0c182000-2aab0c183000 r-xs 00005000 08:05 2693765                    /opt/eclipse/ganymede/plugins/org.eclipse.osgi.util_3.1.300.v20080303.jar
+2aab0c183000-2aab0c196000 r-xs 006c6000 08:05 2693286                    /opt/eclipse/ganymede/plugins/org.eclipse.platform.doc.user_3.4.2.r342_v20081031-0800.jar
+2aab0c196000-2aab0c198000 r-xs 00002000 08:05 2693287                    /opt/eclipse/ganymede/plugins/org.eclipse.rcp_3.4.1.R342_v20090205.jar
+2aab0c198000-2aab0c1a2000 r-xs 00068000 08:05 2693389                    /opt/eclipse/ganymede/plugins/org.eclipse.search_3.4.1.r341_v20080813-0800.jar
+2aab0c1a2000-2aab0c1a3000 r-xs 00003000 08:05 2693834                    /opt/eclipse/ganymede/plugins/org.eclipse.swt_3.4.2.v3452b.jar
+2aab0c1a3000-2aab0c1b5000 r-xs 001f5000 08:05 2693788                    /opt/eclipse/ganymede/plugins/org.eclipse.swt.gtk.linux.x86_64_3.4.1.v3452b.jar
+2aab0c1b5000-2aab0c1bd000 r-xs 00056000 08:05 2693737                    /opt/eclipse/ganymede/plugins/org.eclipse.team.core_3.4.2.r34x_20080115.jar
+2aab0c1bd000-2aab0c1d6000 r-xs 00122000 08:05 2693310                    /opt/eclipse/ganymede/plugins/org.eclipse.team.ui_3.4.1.r34x_20080827.jar
+2aab0c1d6000-2aab0c1db000 r-xs 00037000 08:05 2693951                    /opt/eclipse/ganymede/plugins/org.eclipse.text_3.4.0.v20080605-1800.jar
+2aab0c1db000-2aab0c1df000 r-xs 00020000 08:05 2693292                    /opt/eclipse/ganymede/plugins/org.eclipse.ui_3.4.2.M20090204-0800.jar
+2aab0c1df000-2aab0c1e4000 r-xs 00029000 08:05 2693703                    /opt/eclipse/ganymede/plugins/org.eclipse.ui.browser_3.2.201.v20080708_34x.jar
+2aab0c1e4000-2aab0c1ec000 r-xs 00049000 08:05 2693719                    /opt/eclipse/ganymede/plugins/org.eclipse.ui.cheatsheets_3.3.101.v20080702_34x.jar
+2aab0c1ec000-2aab0c1ef000 r-xs 00023000 08:05 2693339                    /opt/eclipse/ganymede/plugins/org.eclipse.ui.console_3.3.1.v20090128_r342.jar
+2aab0c1ef000-2aab0c1fb000 r-xs 0007b000 08:05 2693949                    /opt/eclipse/ganymede/plugins/org.eclipse.ui.editors_3.4.0.v20080603-2000.jar
+2aab0c1fb000-2aab0c1ff000 r-xs 00022000 08:05 2693943                    /opt/eclipse/ganymede/plugins/org.eclipse.ui.externaltools_3.2.0.v20080514-1542.jar
+2aab0c1ff000-2aab0c204000 r-xs 00044000 08:05 2693792                    /opt/eclipse/ganymede/plugins/org.eclipse.ui.forms_3.3.103.v20081027_34x.jar
+2aab0c204000-2aab0c227000 r-xs 001ce000 08:05 2693749                    /opt/eclipse/ganymede/plugins/org.eclipse.ui.ide_3.4.2.M20090127-1700.jar
+2aab0c227000-2aab0c229000 r-xs 0000a000 08:05 2693814                    /opt/eclipse/ganymede/plugins/org.eclipse.ui.ide.application_1.0.1.M20090204-0800.jar
+2aab0c229000-2aab0c22e000 r-xs 0003f000 08:05 2693747                    /opt/eclipse/ganymede/plugins/org.eclipse.ui.intro_3.2.201.v20080702_34x.jar
+2aab0c22e000-2aab0c236000 r-xs 00047000 08:05 2693779                    /opt/eclipse/ganymede/plugins/org.eclipse.ui.navigator_3.3.102.M20090127-1700.jar
+2aab0c236000-2aab0c23a000 r-xs 00019000 08:05 2693311                    /opt/eclipse/ganymede/plugins/org.eclipse.ui.navigator.resources_3.3.101.M20080910-0800.jar
+2aab0c23a000-2aab0c23c000 r-xs 00008000 08:05 2693948                    /opt/eclipse/ganymede/plugins/org.eclipse.ui.net_1.0.0.I20080605.jar
+2aab0c23c000-2aab0c23e000 r-xs 00016000 08:05 2693743                    /opt/eclipse/ganymede/plugins/org.eclipse.ui.presentations.r21_3.2.100.I20080512-2000.jar
+2aab0c23e000-2aab0c241000 r-xs 00011000 08:05 2693946                    /opt/eclipse/ganymede/plugins/org.eclipse.ui.views_3.3.1.M20081112-0800.jar
+2aab0c241000-2aab0c245000 r-xs 00016000 08:05 2693320                    /opt/eclipse/ganymede/plugins/org.eclipse.ui.views.properties.tabbed_3.4.2.M20090127-1700.jar
+2aab0c245000-2aab0c289000 r-xs 0037c000 08:05 2693707                    /opt/eclipse/ganymede/plugins/org.eclipse.ui.workbench_3.4.2.M20090127-1700.jar
+2aab0c289000-2aab0c295000 r-xs 00081000 08:05 2693748                    /opt/eclipse/ganymede/plugins/org.eclipse.ui.workbench.texteditor_3.4.1.r341_v20080827-1100.jar
+2aab0c295000-2aab0c297000 r-xs 00016000 08:05 2693817                    /opt/eclipse/ganymede/plugins/org.eclipse.update.configurator_3.2.201.R34x_v20080819.jar
+2aab0c297000-2aab0c2a0000 r-xs 0008b000 08:05 2693938                    /opt/eclipse/ganymede/plugins/org.eclipse.update.core_3.2.202.R34x_v20081128.jar
+2aab0c2a0000-2aab0c2a1000 r-xs 00001000 08:05 2693799                    /opt/eclipse/ganymede/plugins/org.eclipse.update.core.linux_3.2.1.R34x_v20081024.jar
+2aab0c2a1000-2aab0c2a3000 r-xs 00006000 08:05 2693950                    /opt/eclipse/ganymede/plugins/org.eclipse.update.scheduler_3.2.100.v20080404.jar
+2aab0c2a3000-2aab0c2ac000 r-xs 00074000 08:05 2693769                    /opt/eclipse/ganymede/plugins/org.eclipse.update.ui_3.2.101.R34x_v20081128.jar
+2aab0c2ac000-2aab0c2b4000 r-xs 000a4000 08:05 2693796                    /opt/eclipse/ganymede/plugins/org.mortbay.jetty_5.1.14.v200806031611.jar
+2aab0c2b4000-2aab0c2b9000 r-xs 00026000 08:05 2693766                    /opt/eclipse/ganymede/plugins/org.sat4j.core_2.0.3.v20081021.jar
+2aab0c2b9000-2aab0c2bb000 r-xs 00014000 08:05 2693738                    /opt/eclipse/ganymede/plugins/org.sat4j.pb_2.0.3.v20081021.jar
+2aab0c2bb000-2aab0c398000 r-xs 00aa8000 08:05 2693980                    /opt/eclipse/ganymede/plugins/com.cenqua.clover.core_2.6.3.v20091214180000.jar
+2aab0c398000-2aab0c39b000 r-xs 0000f000 08:05 2693981                    /opt/eclipse/ganymede/plugins/com.cenqua.clover.testoptimization_2.6.3.v20091214180000.jar
+2aab0c39b000-2aab0c3a2000 r-xs 00065000 08:05 2693967                    /opt/eclipse/ganymede/plugins/com.collabnet.subversion.merge_1.10.0.jar
+2aab0c3a2000-2aab0c3a4000 r-xs 0000b000 08:05 2693968                    /opt/eclipse/ganymede/plugins/javax.activation_1.1.0.v200806101325.jar
+2aab0c3a4000-2aab0c3ab000 r-xs 00048000 08:05 2693970                    /opt/eclipse/ganymede/plugins/javax.mail_1.4.0.v200804091730.jar
+2aab0c3ab000-2aab0c3af000 r-xs 0001b000 08:05 2693971                    /opt/eclipse/ganymede/plugins/javax.wsdl_1.4.0.v200806030407.jar
+2aab0c3af000-2aab0c3b3000 r-xs 00020000 08:05 2693973                    /opt/eclipse/ganymede/plugins/javax.wsdl_1.5.1.v200806030408.jar
+2aab0c3b3000-2aab0c3bb000 r-xs 00032000 08:05 2693957                    /opt/eclipse/ganymede/plugins/javax.xml_1.3.4.v200806030440.jar
+2aab0c3bb000-2aab0c3bf000 r-xs 000b5000 08:05 2694043                    /opt/eclipse/ganymede/plugins/net.sf.eclipsecs.core_5.0.3.200911042225.jar
+2aab0c3bf000-2aab0c3c8000 r-xs 003ba000 08:05 2694044                    /opt/eclipse/ganymede/plugins/net.sf.eclipsecs.doc_5.0.3.200911042225.jar
+2aab0c3c8000-2aab0c3d1000 r-xs 003b7000 08:05 2694045                    /opt/eclipse/ganymede/plugins/net.sf.eclipsecs.ui_5.0.3.200911042225.jar
+2aab0c3d1000-2aab0c3d3000 r-xs 0000c000 08:05 2693379                    /opt/eclipse/ganymede/plugins/org.apache.commons.codec_1.3.0.v20080530-1600.jar
+2aab0c3d3000-2aab0c3d9000 r-xs 00049000 08:05 2693809                    /opt/eclipse/ganymede/plugins/org.apache.commons.httpclient_3.1.0.v20080605-1935.jar
+2aab0c3d9000-2aab0c3de000 r-xs 0003b000 08:05 2693813                    /opt/eclipse/ganymede/plugins/org.apache.commons.lang_2.3.0.v200803061910.jar
+2aab0c3de000-2aab0c3e5000 r-xs 00058000 08:05 2693982                    /opt/eclipse/ganymede/plugins/org.apache.log4j_1.2.13.v200806030600.jar
+2aab0c3e5000-2aab0c3e8000 r-xs 00010000 08:05 2693984                    /opt/eclipse/ganymede/plugins/org.apache.wsil4j_1.0.0.v200806040330.jar
+2aab0c3e8000-2aab0c3ff000 r-xs 00127000 08:05 2693760                    /opt/eclipse/ganymede/plugins/org.apache.xerces_2.9.0.v200805270400.jar
+2aab0c3ff000-2aab0c401000 r-xs 00016000 08:05 2693284                    /opt/eclipse/ganymede/plugins/org.apache.xml.resolver_1.2.0.v200806030312.jar
+2aab0c401000-2aab0c405000 r-xs 00044000 08:05 2693782                    /opt/eclipse/ganymede/plugins/org.apache.xml.serializer_2.7.1.v200806030322.jar
+2aab0c405000-2aab0c415000 r-xs 000f7000 08:05 2693767                    /opt/eclipse/ganymede/plugins/org.eclipse.ant.ui_3.3.1.v20090120_r342.jar
+2aab0c415000-2aab0c417000 r-xs 00002000 08:05 2693210                    /opt/eclipse/ganymede/plugins/org.eclipse.cvs_1.0.200.R342_v20090206.jar
+2aab0c417000-2aab0c420000 r-xs 00078000 08:05 2693746                    /opt/eclipse/ganymede/plugins/org.eclipse.draw2d_3.4.2.v20090114-1330.jar
+2aab0c420000-2aab0c424000 r-xs 0002a000 08:05 2693309                    /opt/eclipse/ganymede/plugins/org.eclipse.emf.common_2.4.0.v200902171115.jar
+2aab0c424000-2aab0c427000 r-xs 00019000 08:05 2693944                    /opt/eclipse/ganymede/plugins/org.eclipse.emf.common.ui_2.4.0.v200902171115.jar
+2aab0c427000-2aab0c437000 r-xs 000ee000 08:05 2693694                    /opt/eclipse/ganymede/plugins/org.eclipse.emf.ecore_2.4.2.v200902171115.jar
+2aab0c437000-2aab0c439000 r-xs 00012000 08:05 2693754                    /opt/eclipse/ganymede/plugins/org.eclipse.emf.ecore.change_2.4.0.v200902171115.jar
+2aab0c439000-2aab0c43a000 r-xs 00006000 08:05 2693828                    /opt/eclipse/ganymede/plugins/org.eclipse.emf.ecore.change.edit_2.4.0.v200902171115.jar
+2aab0c43a000-2aab0c43d000 r-xs 0001a000 08:05 2693829                    /opt/eclipse/ganymede/plugins/org.eclipse.emf.ecore.edit_2.4.1.v200902171115.jar
+2aab0c43d000-2aab0c440000 r-xs 00032000 08:05 2693214                    /opt/eclipse/ganymede/plugins/org.eclipse.emf.ecore.xmi_2.4.1.v200902171115.jar
+2aab0c440000-2aab0c445000 r-xs 0003a000 08:05 2693801                    /opt/eclipse/ganymede/plugins/org.eclipse.emf.edit_2.4.2.v200902171115.jar
+2aab0c445000-2aab0c449000 r-xs 00022000 08:05 2693791                    /opt/eclipse/ganymede/plugins/org.eclipse.emf.edit.ui_2.4.2.v200902171115.jar
+2aab0c449000-2aab0c44a000 r-xs 00007000 08:05 2693698                    /opt/eclipse/ganymede/plugins/org.eclipse.epp.usagedata.gathering_1.0.1.R200809220400.jar
+2aab0c44a000-2aab0c44c000 r-xs 00009000 08:05 2693802                    /opt/eclipse/ganymede/plugins/org.eclipse.epp.usagedata.recording_1.0.1.R200809220400.jar
+2aab0c44c000-2aab0c44f000 r-xs 00023000 08:05 2693325                    /opt/eclipse/ganymede/plugins/org.eclipse.epp.usagedata.ui_1.0.1.R200809220400.jar
+2aab0c44f000-2aab0c460000 r-xs 000b7000 08:05 2693364                    /opt/eclipse/ganymede/plugins/org.eclipse.gef_3.4.1.v20080806.jar
+2aab0c460000-2aab0c462000 r-xs 00009000 08:05 2693695                    /opt/eclipse/ganymede/plugins/org.eclipse.jdt_3.4.2.r342_v20090128.jar
+2aab0c462000-2aab0c469000 r-xs 00052000 08:05 2693758                    /opt/eclipse/ganymede/plugins/org.eclipse.jdt.apt.core_3.3.101.R34x_v20090114-1205.jar
+2aab0c469000-2aab0c46b000 r-xs 00006000 08:05 2693776                    /opt/eclipse/ganymede/plugins/org.eclipse.jdt.apt.pluggable.core_1.0.101.R34x_v20081108-1950.jar
+2aab0c46b000-2aab0c46e000 r-xs 0000e000 08:05 2693718                    /opt/eclipse/ganymede/plugins/org.eclipse.jdt.apt.ui_3.3.100.v20080407-1345.jar
+2aab0c46e000-2aab0c471000 r-xs 00023000 08:05 2693386                    /opt/eclipse/ganymede/plugins/org.eclipse.jdt.compiler.apt_1.0.101.R34x_v20090114-1205.jar
+2aab0c471000-2aab0c472000 r-xs 0000c000 08:05 2693750                    /opt/eclipse/ganymede/plugins/org.eclipse.jdt.compiler.tool_1.0.100.v_894_R34x.jar
+2aab0c472000-2aab0c49b000 r-xs 00403000 08:05 2693780                    /opt/eclipse/ganymede/plugins/org.eclipse.jdt.core_3.4.4.v_894_R34x.jar
+2aab0c49b000-2aab0c49e000 r-xs 00010000 08:05 2693800                    /opt/eclipse/ganymede/plugins/org.eclipse.jdt.core.manipulation_1.2.0.v20080603-2000.jar
+2aab0c49e000-2aab0c4b6000 r-xs 00128000 08:05 2693789                    /opt/eclipse/ganymede/plugins/org.eclipse.jdt.debug.ui_3.3.1.v20080730_r341.jar
+2aab0c4b6000-2aab0c4da000 r-xs 0070b000 08:05 2693336                    /opt/eclipse/ganymede/plugins/org.eclipse.jdt.doc.user_3.4.2.r342_v20081119-0800.jar
+2aab0c4da000-2aab0c4e5000 r-xs 00073000 08:05 2693757                    /opt/eclipse/ganymede/plugins/org.eclipse.jdt.junit_3.4.0.v20080603-2000.jar
+2aab0c4e5000-2aab0c4e7000 r-xs 0000b000 08:05 2693313                    /opt/eclipse/ganymede/plugins/org.eclipse.jdt.junit.runtime_3.3.0.v20080603-2000.jar
+2aab0c4e7000-2aab0c4e8000 r-xs 00003000 08:05 2693759                    /opt/eclipse/ganymede/plugins/org.eclipse.jdt.junit4.runtime_1.0.200.v20080603-2000.jar
+2aab0c4e8000-2aab0c4ed000 r-xs 00041000 08:05 2693816                    /opt/eclipse/ganymede/plugins/org.eclipse.jdt.launching_3.4.1.v20080729_r341.jar
+2aab0c4ed000-2aab0c57a000 r-xs 008a6000 08:05 2693742                    /opt/eclipse/ganymede/plugins/org.eclipse.jdt.ui_3.4.2.r342_v20090107-0800.jar
+2aab0c57a000-2aab0c57d000 r-xs 00017000 08:05 2693715                    /opt/eclipse/ganymede/plugins/org.eclipse.jem.util_2.0.100.v200805140020.jar
+2aab0c57d000-2aab0c57e000 r-xs 00001000 08:05 2693831                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn_3.0.5.v20090218-1800-e3x.jar
+2aab0c57e000-2aab0c581000 r-xs 00023000 08:05 2693753                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn.bugzilla.core_3.0.5.v20090218-1800-e3x.jar
+2aab0c581000-2aab0c582000 r-xs 00001000 08:05 2693807                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn.bugzilla.ide_3.0.5.v20090218-1800-e3x.jar
+2aab0c582000-2aab0c586000 r-xs 0001e000 08:05 2693316                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn.bugzilla.ui_3.0.5.v20090218-1800-e3x.jar
+2aab0c586000-2aab0c587000 r-xs 00004000 08:05 2693295                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn.commons.core_3.0.5.v20090218-1800-e3x.jar
+2aab0c587000-2aab0c58a000 r-xs 0000f000 08:05 2693212                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn.commons.net_3.0.5.v20090218-1800-e3x.jar
+2aab0c58a000-2aab0c58f000 r-xs 0002a000 08:05 2693363                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn.commons.ui_3.0.5.v20090218-1800-e3x.jar
+2aab0c58f000-2aab0c590000 r-xs 00001000 08:05 2693705                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn.compatibility_3.0.5.v20090218-1800-e3x.jar
+2aab0c590000-2aab0c592000 r-xs 00012000 08:05 2693338                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn.context.core_3.0.5.v20090218-1800-e3x.jar
+2aab0c592000-2aab0c598000 r-xs 0002f000 08:05 2693378                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn.context.ui_3.0.5.v20090218-1800-e3x.jar
+2aab0c598000-2aab0c59b000 r-xs 000d9000 08:05 2693319                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn.help.ui_3.0.5.v20090218-1800-e3x.jar
+2aab0c59b000-2aab0c59d000 r-xs 00004000 08:05 2693786                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn.ide.ant_3.0.5.v20090218-1800-e3x.jar
+2aab0c59d000-2aab0c59f000 r-xs 00006000 08:05 2693392                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn.ide.ui_3.0.5.v20090218-1800-e3x.jar
+2aab0c59f000-2aab0c5a0000 r-xs 00003000 08:05 2693701                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn.java.tasks_3.0.5.v20090218-1800-e3x.jar
+2aab0c5a0000-2aab0c5a3000 r-xs 0001f000 08:05 2693808                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn.java.ui_3.0.5.v20090218-1800-e3x.jar
+2aab0c5a3000-2aab0c5a4000 r-xs 00007000 08:05 2693820                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn.monitor.core_3.0.5.v20090218-1800-e3x.jar
+2aab0c5a4000-2aab0c5a6000 r-xs 0000a000 08:05 2693756                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn.monitor.ui_3.0.5.v20090218-1800-e3x.jar
+2aab0c5a6000-2aab0c5a8000 r-xs 0000a000 08:05 2693773                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn.resources.ui_3.0.5.v20090218-1800-e3x.jar
+2aab0c5a8000-2aab0c5ab000 r-xs 0000d000 08:05 2693806                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn.tasks.bugs_3.0.5.v20090218-1800-e3x.jar
+2aab0c5ab000-2aab0c5b3000 r-xs 00050000 08:05 2693699                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn.tasks.core_3.0.5.v20090218-1800-e3x.jar
+2aab0c5b3000-2aab0c5d3000 r-xs 00169000 08:05 2693341                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn.tasks.ui_3.0.5.v20090218-1800-e3x.jar
+2aab0c5d3000-2aab0c5d5000 r-xs 00003000 08:05 2693700                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn.team.cvs_3.0.5.v20090218-1800-e3x.jar
+2aab0c5d5000-2aab0c5d8000 r-xs 00018000 08:05 2693798                    /opt/eclipse/ganymede/plugins/org.eclipse.mylyn.team.ui_3.0.5.v20090218-1800-e3x.jar
+2aab0c5d8000-2aab0c5e1000 r-xs 00084000 08:05 2693375                    /opt/eclipse/ganymede/plugins/org.eclipse.team.cvs.core_3.3.101.r34x_20090115.jar
+2aab0c5e1000-2aab0c5e3000 r-xs 0000c000 08:05 2693774                    /opt/eclipse/ganymede/plugins/org.eclipse.team.cvs.ssh_3.2.100.I20080604.jar
+2aab0c5e3000-2aab0c5e4000 r-xs 00005000 08:05 2693781                    /opt/eclipse/ganymede/plugins/org.eclipse.team.cvs.ssh2_3.2.200.I20080604.jar
+2aab0c5e4000-2aab0c601000 r-xs 00174000 08:05 2693340                    /opt/eclipse/ganymede/plugins/org.eclipse.team.cvs.ui_3.3.100.r34x_20090121.jar
+2aab0c601000-2aab0c605000 r-xs 0001d000 08:05 2693985                    /opt/eclipse/ganymede/plugins/org.eclipse.ui.views.log_1.0.0.v20080803-1700.jar
+2aab0c605000-2aab0c606000 r-xs 00002000 08:05 2693986                    /opt/eclipse/ganymede/plugins/org.eclipse.wst_1.0.100.v200805140017.jar
+2aab0c606000-2aab0c609000 r-xs 0000b000 08:05 2693821                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.command.env.core_1.0.204.v200805140020.jar
+2aab0c609000-2aab0c60a000 r-xs 00008000 08:05 2693987                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.command.env.doc.user_1.5.200.v200806092138.jar
+2aab0c60a000-2aab0c60b000 r-xs 00001000 08:05 2693830                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.command.env.infopop_1.0.100.v200805301544.jar
+2aab0c60b000-2aab0c60f000 r-xs 00019000 08:05 2693711                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.command.env.ui_1.1.2.v200811200248.jar
+2aab0c60f000-2aab0c611000 r-xs 00008000 08:05 2693381                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.common.core_1.1.201.v200806010600.jar
+2aab0c611000-2aab0c616000 r-xs 0002f000 08:05 2693752                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.common.emf_1.1.203.v200811022047.jar
+2aab0c616000-2aab0c61a000 r-xs 0001f000 08:05 2693832                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.common.emfworkbench.integration_1.1.202.v200811131900.jar
+2aab0c61a000-2aab0c61c000 r-xs 00009000 08:05 2693770                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.common.environment_1.0.202.v200807161459.jar
+2aab0c61c000-2aab0c61f000 r-xs 00019000 08:05 2693826                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.common.frameworks_1.1.201.v200811060900.jar
+2aab0c61f000-2aab0c624000 r-xs 0001f000 08:05 2693935                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.common.frameworks.ui_1.1.202.v200901292145.jar
+2aab0c624000-2aab0c625000 r-xs 00001000 08:05 2693790                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.common.infopop_1.0.100.v200805301550.jar
+2aab0c625000-2aab0c62b000 r-xs 00042000 08:05 2693744                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.common.modulecore_1.1.205.v200901292145.jar
+2aab0c62b000-2aab0c632000 r-xs 00043000 08:05 2693717                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.common.project.facet.core_1.3.4.v200810151458.jar
+2aab0c632000-2aab0c63a000 r-xs 00039000 08:05 2693291                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.common.project.facet.ui_1.3.2.v200809022055.jar
+2aab0c63a000-2aab0c641000 r-xs 00038000 08:05 2693942                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.common.snippets_1.1.200.v200805140415.jar
+2aab0c641000-2aab0c645000 r-xs 0001f000 08:05 2693293                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.common.ui_1.1.302.v200810160107.jar
+2aab0c645000-2aab0c647000 r-xs 00008000 08:05 2693288                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.common.uriresolver_1.1.301.v200805140415.jar
+2aab0c647000-2aab0c651000 r-xs 00072000 08:05 2693988                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.css.core_1.1.201.v200808072008.jar
+2aab0c651000-2aab0c657000 r-xs 00039000 08:05 2693989                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.css.ui_1.0.301.v200807170605.jar
+2aab0c657000-2aab0c659000 r-xs 000bf000 08:05 2693990                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.doc.user_1.2.0.v200806052254.jar
+2aab0c659000-2aab0c661000 r-xs 0005c000 08:05 2693936                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.dtd.core_1.1.200.v200805140200.jar
+2aab0c661000-2aab0c667000 r-xs 00030000 08:05 2693211                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.dtd.ui_1.0.301.v200808072012.jar
+2aab0c667000-2aab0c668000 r-xs 00001000 08:05 2693763                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.dtd.ui.infopop_1.0.300.v200805140200.jar
+2aab0c668000-2aab0c66a000 r-xs 00008000 08:05 2693317                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.dtdeditor.doc.user_1.0.400.v200805150028.jar
+2aab0c66a000-2aab0c677000 r-xs 0008a000 08:05 2693991                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.html.core_1.1.204.v200901141603.jar
+2aab0c677000-2aab0c67d000 r-xs 0003c000 08:05 2693992                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.html.ui_1.0.302.v200810291731.jar
+2aab0c67d000-2aab0c67f000 r-xs 00001000 08:05 2693993                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.html.ui.infopop_1.0.100.v200805301545.jar
+2aab0c67f000-2aab0c681000 r-xs 00009000 08:05 2693741                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.internet.cache_1.0.301.v200805140020.jar
+2aab0c681000-2aab0c683000 r-xs 0000e000 08:05 2693994                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.internet.monitor.core_1.0.303.v200805140145.jar
+2aab0c683000-2aab0c687000 r-xs 0001b000 08:05 2693995                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.internet.monitor.ui_1.0.304.v200805140145.jar
+2aab0c687000-2aab0c68a000 r-xs 0000c000 08:05 2693996                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.javascript.core_1.0.200.v200805140200.jar
+2aab0c68a000-2aab0c69b000 r-xs 00080000 08:05 2693997                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.javascript.ui_1.0.200.v200805160650.jar
+2aab0c69b000-2aab0c69c000 r-xs 00001000 08:05 2693998                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.javascript.ui.infopop_1.0.100.v200805301545.jar
+2aab0c69c000-2aab0c6c6000 r-xs 00390000 08:05 2693999                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.jsdt.core_1.0.104.v200901281939.jar
+2aab0c6c6000-2aab0c6ef000 r-xs 00418000 08:05 2694000                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.jsdt.doc_1.0.103.v200810081720.jar
+2aab0c6ef000-2aab0c6f2000 r-xs 0000a000 08:05 2694001                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.jsdt.manipulation_1.0.1.v200807241900.jar
+2aab0c6f2000-2aab0c6f4000 r-xs 00005000 08:05 2694002                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.jsdt.support.firefox_1.0.103.v200810021840.jar
+2aab0c6f4000-2aab0c6fb000 r-xs 0007a000 08:05 2694003                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.jsdt.support.ie_1.0.103.v200810021840.jar
+2aab0c6fb000-2aab0c77e000 r-xs 007d1000 08:05 2694004                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.jsdt.ui_1.0.104.v200901290004.jar
+2aab0c77e000-2aab0c781000 r-xs 0001f000 08:05 2694005                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.jsdt.web.core_1.0.104.v200902121909.jar
+2aab0c781000-2aab0c786000 r-xs 0002a000 08:05 2694006                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.jsdt.web.ui_1.0.104.v200901282355.jar
+2aab0c786000-2aab0c78d000 r-xs 00049000 08:05 2694007                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.server.core_1.1.3.v20090209.jar
+2aab0c78d000-2aab0c78e000 r-xs 00006000 08:05 2694008                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.server.http.core_1.0.100.v200805140145.jar
+2aab0c78e000-2aab0c790000 r-xs 00008000 08:05 2694009                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.server.http.ui_1.0.100.v200805140145.jar
+2aab0c790000-2aab0c791000 r-xs 00004000 08:05 2694010                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.server.preview_1.0.100.v200805140145.jar
+2aab0c791000-2aab0c793000 r-xs 00007000 08:05 2694011                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.server.preview.adapter_1.0.101.v20080730.jar
+2aab0c793000-2aab0c7a5000 r-xs 000b3000 08:05 2694012                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.server.ui_1.1.4.v20090128.jar
+2aab0c7a5000-2aab0c7a7000 r-xs 0001c000 08:05 2694013                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.server.ui.doc.user_1.1.150.v200901232034.jar
+2aab0c7a7000-2aab0c7a8000 r-xs 00002000 08:05 2694014                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.server.ui.infopop_1.1.0.v200805140145.jar
+2aab0c7a8000-2aab0c7b1000 r-xs 0005a000 08:05 2693289                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.sse.core_1.1.303.v200901290024.jar
+2aab0c7b1000-2aab0c7b3000 r-xs 0001c000 08:05 2693835                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.sse.doc.user_1.1.0.v200805211530.jar
+2aab0c7b3000-2aab0c7c3000 r-xs 000af000 08:05 2693768                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.sse.ui_1.1.4.v200901202345.jar
+2aab0c7c3000-2aab0c7c4000 r-xs 00001000 08:05 2693365                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.sse.ui.infopop_1.0.200.v200805301545.jar
+2aab0c7c4000-2aab0c7c6000 r-xs 00024000 08:05 2693704                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.standard.schemas_1.0.102.v200807220733.jar
+2aab0c7c6000-2aab0c7ce000 r-xs 0005a000 08:05 2693953                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.validation_1.2.6.v200902121900.jar
+2aab0c7ce000-2aab0c7cf000 r-xs 00001000 08:05 2693762                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.validation.infopop_1.0.300.v200806041506.jar
+2aab0c7cf000-2aab0c7d3000 r-xs 0001f000 08:05 2693213                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.validation.ui_1.2.4.v200901291336.jar
+2aab0c7d3000-2aab0c7d5000 r-xs 0000c000 08:05 2694015                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.web_1.1.206.v200812100430.jar
+2aab0c7d5000-2aab0c7d8000 r-xs 0000e000 08:05 2694017                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.web.ui_1.1.201.v200811240900.jar
+2aab0c7d8000-2aab0c7d9000 r-xs 00001000 08:05 2694018                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.web.ui.infopop_1.0.300.v200805140415.jar
+2aab0c7d9000-2aab0c7db000 r-xs 0001c000 08:05 2694016                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.webtools.doc.user_1.0.400.v200805150134.jar
+2aab0c7db000-2aab0c7e1000 r-xs 00033000 08:05 2694019                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.ws_1.1.3.v200902042200.jar
+2aab0c7e1000-2aab0c802000 r-xs 001a5000 08:05 2694024                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.ws.explorer_1.0.309.v200901271844.jar
+2aab0c802000-2aab0c803000 r-xs 00001000 08:05 2694026                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.ws.infopop_1.0.300.v200805140230.jar
+2aab0c803000-2aab0c805000 r-xs 0000a000 08:05 2694029                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.ws.parser_1.0.202.v200805140300.jar
+2aab0c805000-2aab0c808000 r-xs 0000b000 08:05 2694030                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.ws.service.policy_1.0.3.v200811261813.jar
+2aab0c808000-2aab0c80b000 r-xs 00010000 08:05 2694031                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.ws.service.policy.ui_1.0.2.v200809031518.jar
+2aab0c80b000-2aab0c80c000 r-xs 00004000 08:05 2694032                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.ws.ui_1.1.0.v200805140300.jar
+2aab0c80c000-2aab0c812000 r-xs 00061000 08:05 2694020                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.wsdl_1.1.202.v200809291819.jar
+2aab0c812000-2aab0c823000 r-xs 000c0000 08:05 2694021                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.wsdl.ui_1.2.104.v200901201856.jar
+2aab0c823000-2aab0c824000 r-xs 00014000 08:05 2694022                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.wsdl.ui.doc.user_1.0.550.v200901232040.jar
+2aab0c824000-2aab0c828000 r-xs 00029000 08:05 2694023                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.wsdl.validation_1.1.302.v200807240215.jar
+2aab0c828000-2aab0c837000 r-xs 000be000 08:05 2694025                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.wsi_1.0.205.v200805140300.jar
+2aab0c837000-2aab0c839000 r-xs 00010000 08:05 2694027                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.wsi.ui_1.0.400.v200805140300.jar
+2aab0c839000-2aab0c83a000 r-xs 0000b000 08:05 2694028                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.wsi.ui.doc.user_1.0.301.v200808070608.jar
+2aab0c83a000-2aab0c847000 r-xs 00098000 08:05 2693811                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.xml.core_1.1.307.v200812040936.jar
+2aab0c847000-2aab0c856000 r-xs 000b9000 08:05 2693285                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.xml.ui_1.0.430.v200901212230.jar
+2aab0c856000-2aab0c857000 r-xs 00003000 08:05 2693818                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.xml.ui.infopop_1.0.300.v200805140200.jar
+2aab0c857000-2aab0c859000 r-xs 0001e000 08:05 2693825                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.xmleditor.doc.user_1.0.500.v200810081958.jar
+2aab0c859000-2aab0c85b000 r-xs 0000f000 08:05 2693771                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.xsd.core_1.1.302.v200810020300.jar
+2aab0c85b000-2aab0c873000 r-xs 0010c000 08:05 2693956                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.xsd.ui_1.2.105.v200811282340.jar
+2aab0c873000-2aab0c876000 r-xs 0001b000 08:05 2693390                    /opt/eclipse/ganymede/plugins/org.eclipse.wst.xsdeditor.doc.user_1.0.500.v200809092106.jar
+2aab0c876000-2aab0c87d000 r-xs 000b0000 08:05 2693308                    /opt/eclipse/ganymede/plugins/org.eclipse.xsd_2.4.2.v200902171115.jar
+2aab0c87d000-2aab0c882000 r-xs 00030000 08:05 2693745                    /opt/eclipse/ganymede/plugins/org.eclipse.xsd.edit_2.4.0.v200902171115.jar
+2aab0c882000-2aab0c88a000 r-xs 00074000 08:05 2693974                    /opt/eclipse/ganymede/plugins/org.maven.ide.components.maven_model_edit_1.0.0.200905041413.jar
+2aab0c88a000-2aab0c8bf000 r-xs 00000000 08:02 6273030                    /var/db/nscd/hosts
+2aab0c8bf000-2aab0c8c4000 r-xs 00039000 08:07 21267569                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/324/1/.cp/trilead.jar
+2aab0c8c4000-2aab0c8d2000 r-xs 000a9000 08:07 21267570                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/324/1/.cp/sqljet.1.0.1.jar
+2aab0c8d2000-2aab0c8d5000 r-xs 00022000 08:07 21267571                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/324/1/.cp/antlr-runtime-3.1.3.jar
+2aab0c8d5000-2aab0c8dc000 r-xp 00000000 08:07 21268696                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/96/1/.cp/libswt-xpcominit-gtk-3452.so
+2aab0c8dc000-2aab0c9dc000 ---p 00007000 08:07 21268696                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/96/1/.cp/libswt-xpcominit-gtk-3452.so
+2aab0c9dc000-2aab0c9de000 rwxp 00007000 08:07 21268696                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/96/1/.cp/libswt-xpcominit-gtk-3452.so
+2aab0c9de000-2aab0c9df000 rwxp 2aab0c9de000 00:00 0 
+2aab0c9df000-2aab0cabe000 r-xp 00000000 08:05 1137606                    /usr/lib64/xulrunner-1.9.2/libmozjs.so
+2aab0cabe000-2aab0ccbd000 ---p 000df000 08:05 1137606                    /usr/lib64/xulrunner-1.9.2/libmozjs.so
+2aab0ccbd000-2aab0ccc8000 rwxp 000de000 08:05 1137606                    /usr/lib64/xulrunner-1.9.2/libmozjs.so
+2aab0ccc8000-2aab0ccc9000 rwxp 2aab0ccc8000 00:00 0 
+2aab0ccc9000-2aab0e21f000 r-xp 00000000 08:05 1137636                    /usr/lib64/xulrunner-1.9.2/libxul.so
+2aab0e21f000-2aab0e41e000 ---p 01556000 08:05 1137636                    /usr/lib64/xulrunner-1.9.2/libxul.so
+2aab0e41e000-2aab0e5f9000 rwxp 01555000 08:05 1137636                    /usr/lib64/xulrunner-1.9.2/libxul.so
+2aab0e5f9000-2aab0e615000 rwxp 2aab0e5f9000 00:00 0 
+2aab0e615000-2aab0e617000 r-xs 0000f000 08:07 22807541                   /home/ACCT04/romanoa1/.m2/repository/org/apache/maven/plugins/maven-checkstyle-plugin/2.4/maven-checkstyle-plugin-2.4.jar
+2aab0e617000-2aab0e61c000 r-xs 00039000 08:07 22645450                   /home/ACCT04/romanoa1/.m2/repository/org/codehaus/plexus/plexus-utils/1.5.6/plexus-utils-1.5.6.jar
+2aab0e61c000-2aab0e61f000 r-xs 0001b000 08:07 16121896                   /home/ACCT04/romanoa1/.m2/repository/junit/junit/3.8.1/junit-3.8.1.jar
+2aab0e61f000-2aab0e621000 r-xs 00006000 08:07 17794312                   /home/ACCT04/romanoa1/.m2/repository/org/apache/maven/maven-plugin-registry/2.0.6/maven-plugin-registry-2.0.6.jar
+2aab0e621000-2aab0e623000 r-xs 00004000 08:07 22807641                   /home/ACCT04/romanoa1/.m2/repository/org/apache/maven/reporting/maven-reporting-impl/2.0.4.3/maven-reporting-impl-2.0.4.3.jar
+2aab0e623000-2aab0e626000 r-xs 0000b000 08:07 22807644                   /home/ACCT04/romanoa1/.m2/repository/org/apache/maven/doxia/doxia-core/1.0/doxia-core-1.0.jar
+2aab0e626000-2aab0e628000 r-xs 0000a000 08:07 22807647                   /home/ACCT04/romanoa1/.m2/repository/org/apache/maven/doxia/doxia-site-renderer/1.0/doxia-site-renderer-1.0.jar
+2aab0e628000-2aab0e629000 r-xs 00002000 08:07 22643113                   /home/ACCT04/romanoa1/.m2/repository/org/codehaus/plexus/plexus-i18n/1.0-beta-7/plexus-i18n-1.0-beta-7.jar
+2aab0e629000-2aab0e62a000 r-xs 00001000 08:07 22643116                   /home/ACCT04/romanoa1/.m2/repository/org/codehaus/plexus/plexus-velocity/1.1.7/plexus-velocity-1.1.7.jar
+2aab0e630000-2aab0e68b000 r-xp 00000000 08:05 85156                      /usr/lib64/libXt.so.6.0.0
+2aab0e68b000-2aab0e88a000 ---p 0005b000 08:05 85156                      /usr/lib64/libXt.so.6.0.0
+2aab0e88a000-2aab0e890000 rwxp 0005a000 08:05 85156                      /usr/lib64/libXt.so.6.0.0
+2aab0e890000-2aab0e891000 rwxp 2aab0e890000 00:00 0 
+2aab0e891000-2aab0e8a9000 r-xp 00000000 08:07 21268697                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/96/1/.cp/libswt-xulrunner-gtk-3452.so
+2aab0e8a9000-2aab0e9a9000 ---p 00018000 08:07 21268697                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/96/1/.cp/libswt-xulrunner-gtk-3452.so
+2aab0e9a9000-2aab0e9ab000 rwxp 00018000 08:07 21268697                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/96/1/.cp/libswt-xulrunner-gtk-3452.so
+2aab0e9ab000-2aab0e9ac000 rwxp 2aab0e9ab000 00:00 0 
+2aab0e9ac000-2aab0e9ae000 r-xp 00000000 08:05 197848                     /usr/lib64/gconv/UTF-16.so
+2aab0e9ae000-2aab0ebad000 ---p 00002000 08:05 197848                     /usr/lib64/gconv/UTF-16.so
+2aab0ebad000-2aab0ebaf000 rwxp 00001000 08:05 197848                     /usr/lib64/gconv/UTF-16.so
+2aab0ebaf000-2aab0ebbe000 r-xp 00000000 08:05 1136848                    /usr/lib64/xulrunner-1.9.2/components/libimgicon.so
+2aab0ebbe000-2aab0edbe000 ---p 0000f000 08:05 1136848                    /usr/lib64/xulrunner-1.9.2/components/libimgicon.so
+2aab0edbe000-2aab0edc0000 rwxp 0000f000 08:05 1136848                    /usr/lib64/xulrunner-1.9.2/components/libimgicon.so
+2aab0edc0000-2aab0edcc000 r-xp 00000000 08:05 1136850                    /usr/lib64/xulrunner-1.9.2/components/libnkgnomevfs.so
+2aab0edcc000-2aab0efcc000 ---p 0000c000 08:05 1136850                    /usr/lib64/xulrunner-1.9.2/components/libnkgnomevfs.so
+2aab0efcc000-2aab0efcd000 rwxp 0000c000 08:05 1136850                    /usr/lib64/xulrunner-1.9.2/components/libnkgnomevfs.so
+2aab0efcd000-2aab0efd5000 r-xs 00058000 08:07 22643119                   /home/ACCT04/romanoa1/.m2/repository/org/apache/velocity/velocity/1.5/velocity-1.5.jar
+2aab0efd5000-2aab0efe3000 r-xs 0007f000 08:07 22642708                   /home/ACCT04/romanoa1/.m2/repository/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar
+2aab0efe3000-2aab0efe7000 r-xs 0002f000 08:07 22643126                   /home/ACCT04/romanoa1/.m2/repository/commons-lang/commons-lang/2.1/commons-lang-2.1.jar
+2aab0efe8000-2aab0f042000 r-xp 00000000 08:05 72614                      /usr/lib64/libORBit-2.so.0.1.0
+2aab0f042000-2aab0f241000 ---p 0005a000 08:05 72614                      /usr/lib64/libORBit-2.so.0.1.0
+2aab0f241000-2aab0f254000 rwxp 00059000 08:05 72614                      /usr/lib64/libORBit-2.so.0.1.0
+2aab0f254000-2aab0f29a000 r-xp 00000000 08:05 974640                     /lib64/libssl.so.0.9.8e
+2aab0f29a000-2aab0f49a000 ---p 00046000 08:05 974640                     /lib64/libssl.so.0.9.8e
+2aab0f49a000-2aab0f4a0000 rwxp 00046000 08:05 974640                     /lib64/libssl.so.0.9.8e
+2aab0f4a0000-2aab0f4aa000 r-xp 00000000 08:05 1136847                    /usr/lib64/xulrunner-1.9.2/components/libdbusservice.so
+2aab0f4aa000-2aab0f6a9000 ---p 0000a000 08:05 1136847                    /usr/lib64/xulrunner-1.9.2/components/libdbusservice.so
+2aab0f6a9000-2aab0f6aa000 rwxp 00009000 08:05 1136847                    /usr/lib64/xulrunner-1.9.2/components/libdbusservice.so
+2aab0f6aa000-2aab0f6b6000 r-xp 00000000 08:05 1136849                    /usr/lib64/xulrunner-1.9.2/components/libmozgnome.so
+2aab0f6b6000-2aab0f8b5000 ---p 0000c000 08:05 1136849                    /usr/lib64/xulrunner-1.9.2/components/libmozgnome.so
+2aab0f8b5000-2aab0f8b7000 rwxp 0000b000 08:05 1136849                    /usr/lib64/xulrunner-1.9.2/components/libmozgnome.so
+2aab0f8b7000-2aab0f8d9000 r-xp 00000000 08:05 1136836                    /usr/lib64/xulrunner-1.9.2/chrome/en-US.jar
+2aab0f8d9000-2aab0f95a000 r-xp 00000000 08:05 1136840                    /usr/lib64/xulrunner-1.9.2/chrome/toolkit.jar
+2aab0f95a000-2aab0f99c000 r-xp 00000000 08:05 1136831                    /usr/lib64/xulrunner-1.9.2/chrome/classic.jar
+2aab0f99c000-2aab0fcb6000 r-xp 00000000 08:05 422459                     /usr/share/icons/hicolor/icon-theme.cache
+2aab0fcb6000-2aab0fcb9000 r-xp 00000000 08:07 21268051                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/96/1/.cp/libswt-gnome-gtk-3452.so
+2aab0fcb9000-2aab0fdb8000 ---p 00003000 08:07 21268051                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/96/1/.cp/libswt-gnome-gtk-3452.so
+2aab0fdb8000-2aab0fdb9000 rwxp 00002000 08:07 21268051                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/96/1/.cp/libswt-gnome-gtk-3452.so
+2aab0fdb9000-2aab0fdc9000 r-xp 00000000 08:05 625935                     /usr/lib64/gnome-vfs-2.0/modules/libfile.so
+2aab0fdc9000-2aab0ffc9000 ---p 00010000 08:05 625935                     /usr/lib64/gnome-vfs-2.0/modules/libfile.so
+2aab0ffc9000-2aab0ffca000 rwxp 00010000 08:05 625935                     /usr/lib64/gnome-vfs-2.0/modules/libfile.so
+2aab0ffca000-2aab0ffed000 r-xs 0019b000 08:05 2823404                    /opt/eclipse/ganymede/plugins/net.sf.eclipsecs.checkstyle_5.0.3.200911042225/checkstyle-all-5.0.jar
+2aab0ffed000-2aab0fff1000 r-xs 00038000 08:07 23887940                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/141/1/.cp/lib/commons-lang-2.3.jar
+2aab0fff1000-2aab0fff4000 r-xs 0000e000 08:07 23887941                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/141/1/.cp/lib/commons-io-1.2.jar
+2aab0fff4000-2aab0fff9000 r-xs 00048000 08:07 23887942                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/141/1/.cp/lib/dom4j-1.6.1.jar
+2aab0fff9000-2aab0fffb000 r-xs 0000e000 08:07 22643129                   /home/ACCT04/romanoa1/.m2/repository/oro/oro/2.0.8/oro-2.0.8.jar
+2aab0fffb000-2aab0fffc000 r-xs 0000b000 08:07 22807650                   /home/ACCT04/romanoa1/.m2/repository/org/apache/maven/doxia/doxia-decoration-model/1.0/doxia-decoration-model-1.0.jar
+2aab0fffc000-2aab0fffe000 r-xs 0000a000 08:07 22807653                   /home/ACCT04/romanoa1/.m2/repository/org/apache/maven/doxia/doxia-module-apt/1.0/doxia-module-apt-1.0.jar
+2aab0fffe000-2aab0ffff000 r-xs 00004000 08:07 22807656                   /home/ACCT04/romanoa1/.m2/repository/org/apache/maven/doxia/doxia-module-fml/1.0/doxia-module-fml-1.0.jar
+2aab0ffff000-2aab10000000 r-xs 00006000 08:07 22807659                   /home/ACCT04/romanoa1/.m2/repository/org/apache/maven/doxia/doxia-module-xdoc/1.0/doxia-module-xdoc-1.0.jar
+2aab10000000-2aab1248e000 rwxp 2aab10000000 00:00 0 
+2aab1248e000-2aab14000000 ---p 2aab1248e000 00:00 0 
+2aab14000000-2aab179d2000 rwxp 2aab14000000 00:00 0 
+2aab179d2000-2aab18000000 ---p 2aab179d2000 00:00 0 
+2aab18000000-2aab18093000 r-xp 00000000 08:05 88842                      /usr/lib64/libgnomeui-2.so.0.1600.0
+2aab18093000-2aab18293000 ---p 00093000 08:05 88842                      /usr/lib64/libgnomeui-2.so.0.1600.0
+2aab18293000-2aab18299000 rwxp 00093000 08:05 88842                      /usr/lib64/libgnomeui-2.so.0.1600.0
+2aab18299000-2aab182a0000 r-xp 00000000 08:05 75783                      /usr/lib64/libpopt.so.0.0.0
+2aab182a0000-2aab184a0000 ---p 00007000 08:05 75783                      /usr/lib64/libpopt.so.0.0.0
+2aab184a0000-2aab184a1000 rwxp 00007000 08:05 75783                      /usr/lib64/libpopt.so.0.0.0
+2aab184a1000-2aab18509000 r-xp 00000000 08:05 88841                      /usr/lib64/libbonoboui-2.so.0.0.0
+2aab18509000-2aab18709000 ---p 00068000 08:05 88841                      /usr/lib64/libbonoboui-2.so.0.0.0
+2aab18709000-2aab1870e000 rwxp 00068000 08:05 88841                      /usr/lib64/libbonoboui-2.so.0.0.0
+2aab1870e000-2aab1873b000 r-xp 00000000 08:05 88806                      /usr/lib64/libgnomecanvas-2.so.0.1400.0
+2aab1873b000-2aab1893a000 ---p 0002d000 08:05 88806                      /usr/lib64/libgnomecanvas-2.so.0.1400.0
+2aab1893a000-2aab1893c000 rwxp 0002c000 08:05 88806                      /usr/lib64/libgnomecanvas-2.so.0.1400.0
+2aab1893c000-2aab18953000 r-xp 00000000 08:05 85075                      /usr/lib64/libart_lgpl_2.so.2.3.17
+2aab18953000-2aab18b52000 ---p 00017000 08:05 85075                      /usr/lib64/libart_lgpl_2.so.2.3.17
+2aab18b52000-2aab18b53000 rwxp 00016000 08:05 85075                      /usr/lib64/libart_lgpl_2.so.2.3.17
+2aab18b53000-2aab18b5f000 r-xp 00000000 08:05 77328                      /usr/lib64/libgnome-keyring.so.0.0.1
+2aab18b5f000-2aab18d5f000 ---p 0000c000 08:05 77328                      /usr/lib64/libgnome-keyring.so.0.0.1
+2aab18d5f000-2aab18d60000 rwxp 0000c000 08:05 77328                      /usr/lib64/libgnome-keyring.so.0.0.1
+2aab18d60000-2aab18d64000 r-xp 00000000 08:05 974649                     /lib64/libattr.so.1.1.0
+2aab18d64000-2aab18f63000 ---p 00004000 08:05 974649                     /lib64/libattr.so.1.1.0
+2aab18f63000-2aab18f64000 rwxp 00003000 08:05 974649                     /lib64/libattr.so.1.1.0
+2aab18f64000-2aab18f6a000 r-xp 00000000 08:05 974650                     /lib64/libacl.so.1.1.0
+2aab18f6a000-2aab19169000 ---p 00006000 08:05 974650                     /lib64/libacl.so.1.1.0
+2aab19169000-2aab1916a000 rwxp 00005000 08:05 974650                     /lib64/libacl.so.1.1.0
+2aab1916a000-2aab19484000 r-xp 00000000 08:05 422459                     /usr/share/icons/hicolor/icon-theme.cache
+2aab19484000-2aab19486000 r-xs 00004000 08:07 22807662                   /home/ACCT04/romanoa1/.m2/repository/org/apache/maven/doxia/doxia-module-xhtml/1.0/doxia-module-xhtml-1.0.jar
+2aab19486000-2aab19489000 r-xs 00014000 08:07 22645296                   /home/ACCT04/romanoa1/.m2/repository/commons-validator/commons-validator/1.2.0/commons-validator-1.2.0.jar
+2aab19489000-2aab1948e000 r-xs 0002a000 08:07 22644387                   /home/ACCT04/romanoa1/.m2/repository/commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0.jar
+2aab1948e000-2aab1948f000 r-xs 00007000 08:07 22645329                   /home/ACCT04/romanoa1/.m2/repository/commons-logging/commons-logging/1.0.3/commons-logging-1.0.3.jar
+2aab1948f000-2aab19493000 r-xs 00026000 08:07 22645299                   /home/ACCT04/romanoa1/.m2/repository/commons-digester/commons-digester/1.6/commons-digester-1.6.jar
+2aab19493000-2aab19498000 r-xs 00016000 08:07 22644471                   /home/ACCT04/romanoa1/.m2/repository/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar
+2aab19498000-2aab1949a000 r-xs 00009000 08:07 22807665                   /home/ACCT04/romanoa1/.m2/repository/org/apache/maven/shared/maven-doxia-tools/1.0.2/maven-doxia-tools-1.0.2.jar
+2aab1949a000-2aab1949d000 r-xs 00018000 08:07 22646495                   /home/ACCT04/romanoa1/.m2/repository/commons-io/commons-io/1.4/commons-io-1.4.jar
+2aab1949d000-2aab1949f000 r-xs 00003000 08:07 22807668                   /home/ACCT04/romanoa1/.m2/repository/org/codehaus/plexus/plexus-resources/1.0-alpha-4/plexus-resources-1.0-alpha-4.jar
+2aab1949f000-2aab194ae000 r-xs 00088000 08:07 22807671                   /home/ACCT04/romanoa1/.m2/repository/checkstyle/checkstyle/5.0/checkstyle-5.0.jar
+2aab194ae000-2aab194b4000 r-xs 00067000 08:07 22644465                   /home/ACCT04/romanoa1/.m2/repository/antlr/antlr/2.7.6/antlr-2.7.6.jar
+2aab194b4000-2aab194b8000 r-xs 00026000 08:07 22807674                   /home/ACCT04/romanoa1/.m2/repository/commons-beanutils/commons-beanutils-core/1.7.0/commons-beanutils-core-1.7.0.jar
+2aab194b8000-2aab194c5000 r-xs 0007f000 08:07 22807677                   /home/ACCT04/romanoa1/.m2/repository/com/google/collections/google-collections/0.9/google-collections-0.9.jar
+2aab194c5000-2aab194c6000 r-xs 00005000 08:07 22642775                   /home/ACCT04/romanoa1/.m2/repository/org/apache/maven/plugins/maven-resources-plugin/2.4.1/maven-resources-plugin-2.4.1.jar
+2aab194c6000-2aab194ca000 r-xs 00034000 08:07 22643378                   /home/ACCT04/romanoa1/.m2/repository/org/codehaus/plexus/plexus-utils/1.5.15/plexus-utils-1.5.15.jar
+2aab194ca000-2aab194cc000 r-xs 00007000 08:07 22643381                   /home/ACCT04/romanoa1/.m2/repository/org/apache/maven/shared/maven-filtering/1.0-beta-3/maven-filtering-1.0-beta-3.jar
+2aab194cc000-2aab194cd000 r-xs 00002000 08:07 10190876                   /home/ACCT04/romanoa1/.m2/repository/org/apache/maven/wagon/wagon-http-shared/1.0-beta-2/wagon-http-shared-1.0-beta-2.jar
+2aab194cd000-2aab194d0000 r-xs 0001f000 08:07 10387461                   /home/ACCT04/romanoa1/.m2/repository/jtidy/jtidy/4aug2000r7-dev/jtidy-4aug2000r7-dev.jar
+2aab194d0000-2aab194d2000 r-xs 00002000 08:07 11010049                   /home/ACCT04/romanoa1/.m2/repository/org/apache/maven/maven-error-diagnostics/2.0.6/maven-error-diagnostics-2.0.6.jar
+2aab194d2000-2aab194d4000 r-xs 00005000 08:07 11534401                   /home/ACCT04/romanoa1/.m2/repository/org/apache/maven/wagon/wagon-ssh-common/1.0-beta-2/wagon-ssh-common-1.0-beta-2.jar
+2aab194d4000-2aab194d6000 r-xs 0000d000 08:07 22643384                   /home/ACCT04/romanoa1/.m2/repository/org/codehaus/plexus/plexus-interpolation/1.13/plexus-interpolation-1.13.jar
+2aab194d6000-2aab194d7000 r-xs 00001000 08:07 22643387                   /home/ACCT04/romanoa1/.m2/repository/org/sonatype/plexus/plexus-build-api/0.0.4/plexus-build-api-0.0.4.jar
+2aab194d7000-2aab194d8000 r-xs 00004000 08:07 22642754                   /home/ACCT04/romanoa1/.m2/repository/org/apache/maven/plugins/maven-compiler-plugin/2.0.2/maven-compiler-plugin-2.0.2.jar
+2aab194d8000-2aab194da000 r-xs 00026000 08:07 22610033                   /home/ACCT04/romanoa1/.m2/repository/org/codehaus/plexus/plexus-utils/1.0.4/plexus-utils-1.0.4.jar
+2aab194da000-2aab194db000 r-xs 00004000 08:07 22644666                   /home/ACCT04/romanoa1/.m2/repository/org/codehaus/plexus/plexus-compiler-api/1.5.3/plexus-compiler-api-1.5.3.jar
+2aab194db000-2aab194dd000 r-xs 00000000 08:07 22644669                   /home/ACCT04/romanoa1/.m2/repository/org/codehaus/plexus/plexus-compiler-manager/1.5.3/plexus-compiler-manager-1.5.3.jar
+2aab194dd000-2aab194de000 r-xs 00003000 08:07 22644672                   /home/ACCT04/romanoa1/.m2/repository/org/codehaus/plexus/plexus-compiler-javac/1.5.3/plexus-compiler-javac-1.5.3.jar
+2aab194de000-2aab194ed000 r-xp 00000000 08:05 292192                     /usr/share/fonts/bitstream-vera/VeraSe.ttf
+2aab194ed000-2aab194fc000 r-xp 00000000 08:05 292186                     /usr/share/fonts/bitstream-vera/VeraBd.ttf
+2aab194fc000-2aab1950e000 r-xs 001a7000 08:07 21332754                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/143/1/.cp/lib/itext-2.0.1.jar
+2aab1950e000-2aab19514000 r-xs 00045000 08:07 21332757                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/143/1/.cp/lib/jcommon-1.0.9.jar
+2aab19514000-2aab19522000 r-xs 00114000 08:07 21332758                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/143/1/.cp/lib/jfreechart-1.0.5.jar
+2aab19522000-2aab19524000 r-xs 00010000 08:07 21332759                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/143/1/.cp/lib/jfreechart-1.0.5-swt.jar
+2aab19524000-2aab19529000 r-xs 00040000 08:07 21332760                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/143/1/.cp/lib/commons-httpclient-3.0.1.jar
+2aab19529000-2aab1952b000 r-xs 0000a000 08:07 21332761                   /home/ACCT04/romanoa1/.eclipse/org.eclipse.platform_3.4.0_365901039/configuration/org.eclipse.osgi/bundles/143/1/.cp/lib/commons-codec-1.3.jar
+2b3a0a0a5000-2b3a0a0a6000 rwxp 2b3a0a0a5000 00:00 0 
+2b3a0a0c1000-2b3a0a0c2000 rwxp 2b3a0a0c1000 00:00 0 
+2b3a0a0c2000-2b3a0a0c9000 r-xp 00000000 08:05 1007499                    /usr/java/jdk1.6.0_17/jre/lib/amd64/jli/libjli.so
+2b3a0a0c9000-2b3a0a1ca000 ---p 00007000 08:05 1007499                    /usr/java/jdk1.6.0_17/jre/lib/amd64/jli/libjli.so
+2b3a0a1ca000-2b3a0a1cc000 rwxp 00008000 08:05 1007499                    /usr/java/jdk1.6.0_17/jre/lib/amd64/jli/libjli.so
+2b3a0a1cc000-2b3a0a1ce000 rwxp 2b3a0a1cc000 00:00 0 
+2b3a0a1ce000-2b3a0a92c000 r-xp 00000000 08:05 1007546                    /usr/java/jdk1.6.0_17/jre/lib/amd64/server/libjvm.so
+2b3a0a92c000-2b3a0aa2b000 ---p 0075e000 08:05 1007546                    /usr/java/jdk1.6.0_17/jre/lib/amd64/server/libjvm.so
+2b3a0aa2b000-2b3a0aba3000 rwxp 0075d000 08:05 1007546                    /usr/java/jdk1.6.0_17/jre/lib/amd64/server/libjvm.so
+2b3a0aba3000-2b3a0abe1000 rwxp 2b3a0aba3000 00:00 0 
+7fffda3a9000-7fffda3be000 rwxp 7ffffffea000 00:00 0                      [stack]
+ffffffffff600000-ffffffffffe00000 ---p 00000000 00:00 0                  [vdso]
+
+VM Arguments:
+jvm_args: -Dosgi.requiredJavaVersion=1.5 -Xms256m -Xmx1024m -XX:MaxPermSize=256m -Dorg.eclipse.ecf.provider.filetransfer.excludeContributors=org.eclipse.ecf.provider.filetransfer.httpclient -DproxyPort=8080 -DproxyHost=proxy-vf.global.lmco.com -DnonProxyHosts=localhost|127\.0\.0\.1|*\.lmco\.com 
+java_command: /opt/eclipse/ganymede/plugins/org.eclipse.equinox.launcher_1.0.101.R34x_v20081125.jar -os linux -ws gtk -arch x86_64 -showsplash -launcher /opt/eclipse/ganymede/eclipse -name Eclipse --launcher.library /opt/eclipse/ganymede/plugins/org.eclipse.equinox.launcher.gtk.linux.x86_64_1.0.101.R34x_v20080731/eclipse_1115.so -startup /opt/eclipse/ganymede/plugins/org.eclipse.equinox.launcher_1.0.101.R34x_v20081125.jar -exitdata 36000a -framework plugins/org.eclipse.osgi_3.4.3.R34x_v20081215-1030.jar -vm /usr/bin/java -vmargs -Dosgi.requiredJavaVersion=1.5 -Xms256m -Xmx1024m -XX:MaxPermSize=256m -Dorg.eclipse.ecf.provider.filetransfer.excludeContributors=org.eclipse.ecf.provider.filetransfer.httpclient -DproxyPort=8080 -DproxyHost=proxy-vf.global.lmco.com -DnonProxyHosts=localhost|127\.0\.0\.1|*\.lmco\.com -jar /opt/eclipse/ganymede/plugins/org.eclipse.equinox.launcher_1.0.101.R34x_v20081125.jar
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=/usr/java/latest
+PATH=/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/home/ACCT04/romanoa1/bin:./:/home/ACCT04/romanoa1/bin:/opt/maven/latest/bin:/usr/java/latest/bin:/opt/jmeter/latest/bin:/home/ACCT04/romanoa1/bin:./:/home/ACCT04/romanoa1/bin:/opt/maven/latest/bin:/usr/java/latest/bin:/opt/jmeter/latest/bin:/home/ACCT04/romanoa1/bin:./:/home/ACCT04/romanoa1/bin:/opt/maven/latest/bin:/usr/java/latest/bin:/opt/jmeter/latest/bin:/home/ACCT04/romanoa1/bin:./:/home/ACCT04/romanoa1/bin:/opt/maven/latest/bin:/usr/java/latest/bin:/opt/jmeter/latest/bin
+LD_LIBRARY_PATH=/usr/java/jdk1.6.0_17/jre/lib/amd64/server:/usr/java/jdk1.6.0_17/jre/lib/amd64:/usr/java/jdk1.6.0_17/jre/../lib/amd64:/usr/lib64/xulrunner-1.9.2
+SHELL=/bin/bash
+DISPLAY=166.17.46.218:0.0
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0x6bddc0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGBUS: [libjvm.so+0x6bddc0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGFPE: [libjvm.so+0x594f90], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGPIPE: SIG_IGN, sa_mask[0]=0x00000000, sa_flags=0x00000000
+SIGXFSZ: [libjvm.so+0x594f90], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGILL: [libjvm.so+0x594f90], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGUSR1: SIG_DFL, sa_mask[0]=0x00000000, sa_flags=0x00000000
+SIGUSR2: [libjvm.so+0x597750], sa_mask[0]=0x00000000, sa_flags=0x10000004
+SIGHUP: SIG_IGN, sa_mask[0]=0x00000000, sa_flags=0x00000000
+SIGINT: [libjvm.so+0x5974a0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGTERM: [libjvm.so+0x5974a0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGQUIT: [libjvm.so+0x5974a0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+
+
+---------------  S Y S T E M  ---------------
+
+OS:Red Hat Enterprise Linux Server release 5.5 (Tikanga)
+
+uname:Linux 2.6.18-194.11.1.el5 #1 SMP Tue Jul 27 05:45:06 EDT 2010 x86_64
+libc:glibc 2.5 NPTL 2.5 
+rlimit: STACK 10240k, CORE 0k, NPROC 270336, NOFILE 1024, AS infinity
+load average:2.58 3.31 2.88
+
+CPU:total 8 (6 cores per cpu, 1 threads per core) family 16 model 8 stepping 0, cmov, cx8, fxsr, mmx, sse, sse2, sse3, mmxext, 3dnow, 3dnowext, sse4a
+
+Memory: 4k page, physical 32959936k(4369604k free), swap 35648224k(35647504k free)
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (14.3-b01) for linux-amd64 JRE (1.6.0_17-b04), built on Oct 11 2009 01:08:48 by "java_re" with gcc 3.2.2 (SuSE Linux)
+
+time: Thu Sep  9 12:38:27 2010
+elapsed time: 1130811 seconds
+

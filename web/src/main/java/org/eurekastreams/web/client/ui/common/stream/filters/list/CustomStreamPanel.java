@@ -19,7 +19,9 @@ import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.eurekastreams.web.client.events.ChangeShowStreamRecipientEvent;
 import org.eurekastreams.web.client.events.HideNotificationEvent;
+import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.StreamRequestEvent;
+import org.eurekastreams.web.client.events.SwitchedToActivityDetailViewEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
@@ -123,7 +125,7 @@ public class CustomStreamPanel extends Composite implements FilterPanel
                 public void onClick(final ClickEvent event)
                 {
                     Session.getInstance().getEventBus().notifyObservers(new HideNotificationEvent());
-                    CustomStreamDialogContent dialogContent = new CustomStreamDialogContent(stream.getId());
+                    CustomStreamDialogContent dialogContent = new CustomStreamDialogContent(stream);
                     Dialog dialog = new Dialog(dialogContent);
                     dialog.setBgVisible(true);
                     dialog.center();
@@ -133,6 +135,23 @@ public class CustomStreamPanel extends Composite implements FilterPanel
             panel.add(editButton);
 
         }
+
+        Session.getInstance().getEventBus().addObserver(SwitchedToActivityDetailViewEvent.class,
+                new Observer<SwitchedToActivityDetailViewEvent>()
+                {
+                    public void update(final SwitchedToActivityDetailViewEvent arg1)
+                    {
+                        unActivate();
+                    }
+                });
+
+        Session.getInstance().getEventBus().addObserver(StreamRequestEvent.class, new Observer<StreamRequestEvent>()
+        {
+            public void update(final StreamRequestEvent arg1)
+            {
+                unActivate();
+            }
+        });
 
         container.add(panel);
         initWidget(container);

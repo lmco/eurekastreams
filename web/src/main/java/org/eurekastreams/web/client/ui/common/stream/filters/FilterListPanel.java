@@ -19,11 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.eurekastreams.server.domain.stream.StreamFilter;
-import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.HideNotificationEvent;
 import org.eurekastreams.web.client.events.Observer;
-import org.eurekastreams.web.client.events.StreamRequestEvent;
-import org.eurekastreams.web.client.events.SwitchedToActivityDetailViewEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
@@ -191,22 +188,7 @@ public class FilterListPanel extends FlowPanel
         viewBoundaryPanel.add(panel);
         this.add(viewBoundaryPanel);
 
-        EventBus.getInstance().addObserver(SwitchedToActivityDetailViewEvent.class,
-                new Observer<SwitchedToActivityDetailViewEvent>()
-                {
-                    public void update(final SwitchedToActivityDetailViewEvent arg1)
-                    {
-                        unactivateAll();
-                    }
-                });
 
-        Session.getInstance().getEventBus().addObserver(StreamRequestEvent.class, new Observer<StreamRequestEvent>()
-        {
-            public void update(final StreamRequestEvent arg1)
-            {
-                unactivateAll();
-            }
-        });
 
         Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
                 new Observer<UpdatedHistoryParametersEvent>()

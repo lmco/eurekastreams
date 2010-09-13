@@ -1714,6 +1714,11 @@
 	</bean>
 
 	<!-- End ldap mappers -->
+	
+	<bean id="syncParentOrgForGroupActivities" class="org.eurekastreams.server.persistence.mappers.db.SyncParentOrgForGroupActivities" />
+	
+	<bean id="getActivityIdsPostedToStreamByUniqueKeyAndScopeType" 
+	    class="org.eurekastreams.server.persistence.mappers.db.GetActivityIdsPostedToStreamByUniqueKeyAndScopeType" />                
 
 	<bean id="deleteStreamViewAndRelatedSearches"
 		class="org.eurekastreams.server.persistence.mappers.stream.DeleteStreamViewAndRelatedSearches" />

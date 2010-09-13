@@ -46,6 +46,7 @@ import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.eurekastreams.commons.model.DomainEntity;
 import org.eurekastreams.commons.search.analysis.HtmlStemmerAnalyzer;
 import org.eurekastreams.commons.search.analysis.TextStemmerAnalyzer;
+import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamSearch;
 import org.eurekastreams.server.domain.stream.StreamView;
@@ -80,10 +81,6 @@ import org.hibernate.validator.NotEmpty;
 public class Person extends DomainEntity implements Serializable, AvatarEntity, Followable, OrganizationChild,
         HasEmail, Bannerable
 {
-    // ///////////////////////////////////////////////////////////////////
-    // VALIDATION
-    // ///////////////////////////////////////////////////////////////////
-
     /**
      * Serial version uid.
      */
@@ -220,6 +217,14 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      */
     @Transient
     private Long bannerEntityId = null;
+
+    /**
+     * List of Streams for this person.
+     */
+    @IndexColumn(name = "streamIndex", base = 0)
+    // Don't cascade on delete
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+    private List<Stream> streams;
 
     // ///////////////////////////////////////////////////////////////////
     // ATTRIBUTES
@@ -1824,24 +1829,21 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         lastAcceptedTermsOfService = inLastAcceptedTermsOfService;
     }
 
-    /**
-     * @return the lastAcceptedTermsOfService
+    /** @return the lastAcceptedTermsOfService
      */
     public Date getLastAcceptedTermsOfService()
     {
         return lastAcceptedTermsOfService;
     }
 
-    /**
-     * @return the streamScope
+    /** @return the streamScope
      */
     public StreamScope getStreamScope()
     {
         return streamScope;
     }
 
-    /**
-     * @param inStreamScope
+    /** @param inStreamScope
      *            the streamScope to set
      */
     public void setStreamScope(final StreamScope inStreamScope)
@@ -1866,8 +1868,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         accountLocked = inAccountLocked;
     }
 
-    /**
-     * Get the unique id for as implemented for Followable.
+    /** Get the unique id for as implemented for Followable.
      *
      * @return uniqueId of the person - accountid.
      */
@@ -1877,8 +1878,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         return getAccountId();
     }
 
-    /**
-     * Get the parent org id without loading the parent organization.
+    /** Get the parent org id without loading the parent organization.
      *
      * @return the parent org id without loading the parent organization
      */
@@ -1887,8 +1887,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         return parentOrgId;
     }
 
-    /**
-     * Set the parent org id.
+    /** Set the parent org id.
      *
      * @param inParentOrgId
      *            the parent org id
@@ -1898,8 +1897,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         parentOrgId = inParentOrgId;
     }
 
-    /**
-     * {@inheritDoc}.
+    /** {@inheritDoc}.
      */
     @Override
     public String getBannerId()
@@ -1908,8 +1906,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         return bannerId;
     }
 
-    /**
-     * {@inheritDoc}.
+    /** {@inheritDoc}.
      */
     @Override
     public void setBannerId(final String inBannerId)
@@ -1917,8 +1914,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         bannerId = inBannerId;
     }
 
-    /**
-     * {@inheritDoc}.
+    /** {@inheritDoc}.
      */
     @Override
     public Long getBannerEntityId()
@@ -1926,8 +1922,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         return bannerEntityId;
     }
 
-    /**
-     * {@inheritDoc}.
+    /** {@inheritDoc}.
      */
     @Override
     public void setBannerEntityId(final Long inBannerEntityId)
@@ -1951,6 +1946,27 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     public String getParentOrganizationShortName()
     {
         return parentOrganization.getShortName();
+    }
+
+    /**
+     * Get the streams.
+     *
+     * @return the streams
+     */
+    public List<Stream> getStreams()
+    {
+        return streams;
+    }
+
+    /**
+     * Set the streams.
+     *
+     * @param inStreams
+     *            the streams to set
+     */
+    public void setStreams(final List<Stream> inStreams)
+    {
+        streams = inStreams;
     }
 
     /**

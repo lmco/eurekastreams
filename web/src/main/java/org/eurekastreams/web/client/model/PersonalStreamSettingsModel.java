@@ -33,7 +33,7 @@ Updateable<HashMap<String, Serializable>>
      * Singleton.
      */
     private static PersonalStreamSettingsModel model = new PersonalStreamSettingsModel();
-    
+
     /**
      * Gets the singleton.
      *
@@ -72,6 +72,8 @@ Updateable<HashMap<String, Serializable>>
                                 new UpdatedPersonalStreamSettingsResponseEvent(response));
                     }
                 });
+
+        CustomStreamModel.getInstance().clearCache();
     }
 
 }

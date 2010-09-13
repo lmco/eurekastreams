@@ -204,7 +204,6 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
                 if (event.getStreamId() == null)
                 {
                     JSONObject json = JSONParser.parse(event.getJson()).isObject();
-                    ;
 
                     String queryString = "";
                     JSONObject query = json.get("query").isObject();
@@ -225,7 +224,8 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
                                     queryString += ",";
                                 }
 
-                                queryString += entity.get("type").isString().stringValue() + ":" + entity.get("name").isString().stringValue();
+                                queryString += entity.get("type").isString().stringValue() + ":"
+                                        + entity.get("name").isString().stringValue();
                             }
                         }
                         else
@@ -285,12 +285,10 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
     /**
      * Builds and sets the link for adding the stream as a gadget.
      * 
-     * @param inShortName
-     *            the short name for the gadget link (or null if not applicable).
-     * @param inSearchId
-     *            the id of the stream search for the gadget link (or null if not applicable).
-     * @param inSearchName
-     *            the name of the stream search for the gadget link (or null if not applicable).
+     * @param gadgetTitle
+     *            the gadget title.
+     * @param streamQuery
+     *            the stream query.
      */
     private void setAddGadgetLink(final String gadgetTitle, final String streamQuery)
     {
@@ -315,7 +313,7 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
      * @return JSON string representation.
      */
     private static native String makeJsonString(final String input) /*-{
-                                              return input == null ? 'null' : '"' + input.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"';
-                                          }-*/;
+            return input == null ? 'null' : '"' + input.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"';
+        }-*/;
 
 }

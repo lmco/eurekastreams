@@ -171,7 +171,7 @@ public class EntitiesByPrefixResource extends WritableResource
     private Object convertDisplayEntityModelViewToJSON(final DisplayEntityModelView femv)
     {
         JSONObject jsonEntityObject = new JSONObject();
-        jsonEntityObject.put(NAME_KEY, femv.getDisplayName());
+        jsonEntityObject.put(NAME_KEY, femv.getDisplayName().replace("'", "\'"));
         jsonEntityObject.put(TYPE_KEY, femv.getType().toString());
         jsonEntityObject.put(UNIQUEID_KEY, femv.getUniqueKey());
         jsonEntityObject.put(STREAMSCOPEID_KEY, femv.getStreamScopeId());

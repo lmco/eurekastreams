@@ -169,11 +169,12 @@ public class StreamResourceTest
         attributes.put("query", jsonReq);
         attributes.put("openSocialId", osId);
         attributes.put("callback", callback);
+        attributes.put("mode", "query");       
 
         context.checking(new Expectations()
         {
             {
-                exactly(3).of(request).getAttributes();
+                allowing(request).getAttributes();
                 will(returnValue(attributes));
 
                 oneOf(principalPopulator).getPrincipal("guid");
@@ -235,12 +236,13 @@ public class StreamResourceTest
         final Request request = context.mock(Request.class);
         final Map<String, Object> attributes = new HashMap<String, Object>();
         attributes.put("query", query);
+        attributes.put("mode", "query");
         attributes.put("openSocialId", osId);
 
         context.checking(new Expectations()
         {
             {
-                exactly(3).of(request).getAttributes();
+                allowing(request).getAttributes();
                 will(returnValue(attributes));
 
                 oneOf(principalPopulator).getPrincipal("guid");
@@ -293,12 +295,13 @@ public class StreamResourceTest
         final Request request = context.mock(Request.class);
         final Map<String, Object> attributes = new HashMap<String, Object>();
         attributes.put("query", query);
+        attributes.put("mode", "query");
         attributes.put("openSocialId", osId);
 
         context.checking(new Expectations()
         {
             {
-                exactly(3).of(request).getAttributes();
+                allowing(request).getAttributes();
                 will(returnValue(attributes));
 
                 oneOf(principalPopulator).getPrincipal("guid");
@@ -337,11 +340,12 @@ public class StreamResourceTest
         final Map<String, Object> attributes = new HashMap<String, Object>();
         attributes.put("query", query);
         attributes.put("openSocialId", osId);
+        attributes.put("mode", "query");
 
         context.checking(new Expectations()
         {
             {
-                exactly(3).of(request).getAttributes();
+                allowing(request).getAttributes();
                 will(returnValue(attributes));
             }
         });

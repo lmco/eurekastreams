@@ -148,12 +148,12 @@ public class StreamPanel extends FlowPanel
         EventBus.getInstance().addObserver(UpdatedHistoryParametersEvent.class,
                 new Observer<UpdatedHistoryParametersEvent>()
                 {
-                    public void update(UpdatedHistoryParametersEvent event)
+                    public void update(final UpdatedHistoryParametersEvent event)
                     {
                         historyParams = event.getParameters();
                     }
                 }, true);
-        
+
         EventBus.getInstance().addObserver(GotActivityResponseEvent.class, new Observer<GotActivityResponseEvent>()
         {
             public void update(final GotActivityResponseEvent event)
@@ -237,10 +237,10 @@ public class StreamPanel extends FlowPanel
                     {
                         searchJson = StreamJsonRequestFactory.setSort(
                                 SortType.DATE,
-                                StreamJsonRequestFactory.setSearchTerm(historyParams.get("search"), StreamJsonRequestFactory
-                                        .getJSONRequest(searchJson))).toString();
+                                StreamJsonRequestFactory.setSearchTerm(historyParams.get("search"),
+                                        StreamJsonRequestFactory.getJSONRequest(searchJson))).toString();
                     }
-                    
+
                     streamName = event.getStreamName();
                     streamSearch.setTitleText(streamName);
                     StreamModel.getInstance().fetch(searchJson, false);
@@ -253,7 +253,8 @@ public class StreamPanel extends FlowPanel
             public void update(final StreamSearchBeginEvent event)
             {
                 Session.getInstance().getEventBus().notifyObservers(
-                        new UpdateHistoryEvent(new CreateUrlRequest("search", String.valueOf(event.getSearchText()), true)));
+                        new UpdateHistoryEvent(new CreateUrlRequest("search", String.valueOf(event.getSearchText()),
+                                true)));
                 EventBus.getInstance().notifyObservers(StreamReinitializeRequestEvent.getEvent());
             }
         });
@@ -269,6 +270,9 @@ public class StreamPanel extends FlowPanel
                 });
     }
 
+    /**
+     * Put the widget in list mode.
+     */
     private void setListMode()
     {
         streamSearch.setVisible(true);
@@ -277,6 +281,9 @@ public class StreamPanel extends FlowPanel
         activityDetailPanel.clear();
     }
 
+    /**
+     * Put the widget in single activity mode.
+     */
     private void setSingleActivityMode()
     {
         streamSearch.setVisible(false);

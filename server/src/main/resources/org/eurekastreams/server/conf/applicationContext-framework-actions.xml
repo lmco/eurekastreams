@@ -202,7 +202,33 @@
         </constructor-arg>
         <constructor-arg ref="taskHandler" />
         <constructor-arg value="true" />        
-    </bean>    
+    </bean> 
+    
+    <bean id="syncGroupActivityRecipientParentOrganization" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+        <constructor-arg ref="noValidationStrategy" />        
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.stream.SyncGroupActivityRecipientParentOrganizationExecution">
+                <constructor-arg ref="syncParentOrgForGroupActivities" />
+                <constructor-arg ref="getActivityIdsPostedToStreamByUniqueKeyAndScopeType" /> 
+                <constructor-arg ref="bulkOrganizationsByShortNameMapper" />
+                <constructor-arg ref="bulkOrganizationsMapper" />
+                <constructor-arg ref="getRecursiveParentOrgIdsMapper" />                             
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="false" />        
+    </bean>     
+    
+    <bean id="indexActivityById" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />        
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.stream.IndexActivityByIdExecution">
+                <constructor-arg ref="findByIdMapper" /> 
+                <constructor-arg ref="indexEntity" />         
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />   
+    </bean>
     
     <!-- Delete old StreamHashTag records older than the configurable value -->
     <bean id="deleteOldStreamHashTagsAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
