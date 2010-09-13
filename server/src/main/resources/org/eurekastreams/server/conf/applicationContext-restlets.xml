@@ -222,6 +222,7 @@
 				<value>parentOrg</value>
 			</list>
 		</constructor-arg>
+		<constructor-arg ref="findByIdMapper" />
 	</bean>
 	
 	
@@ -404,13 +405,17 @@
                 		<lookup-method name="createResource" bean="oauthAccessTokenResource" />
                 	</bean>
                 </entry>
-                <entry key="/stream/{openSocialId}/query">
+                <entry key="/stream/{openSocialId}/{mode}">
                 	<bean class="org.restlet.ext.spring.SpringFinder">
                 		<lookup-method name="createResource" bean="streamResource" />
                 	</bean>
                 </entry>
-
-                <entry key="/stream/{openSocialId}/callback/{callback}/query">
+                <entry key="/stream/{openSocialId}/{mode}/{streamId}">
+                	<bean class="org.restlet.ext.spring.SpringFinder">
+                		<lookup-method name="createResource" bean="streamResource" />
+                	</bean>
+                </entry>
+                <entry key="/stream/{openSocialId}/callback/{callback}/{mode}">
                 	<bean class="org.restlet.ext.spring.SpringFinder">
                 		<lookup-method name="createResource" bean="streamResource" />
                 	</bean>

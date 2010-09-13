@@ -39,7 +39,9 @@ import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.ActivityVerb;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
+import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -53,6 +55,7 @@ import org.restlet.resource.Representation;
  * Test for system filter restlet.
  * 
  */
+@SuppressWarnings("unchecked")
 public class StreamResourceTest
 {
     /**
@@ -79,6 +82,11 @@ public class StreamResourceTest
      * Principal populator.
      */
     private PrincipalPopulator principalPopulator = context.mock(PrincipalPopulator.class);
+
+    /**
+     * Stream mapper.
+     */
+    private FindByIdMapper<Stream> streamMapper = context.mock(FindByIdMapper.class);
 
     /**
      * System under test.
@@ -108,7 +116,7 @@ public class StreamResourceTest
         otherWords.add("followedBy");
 
         sut = new StreamResource(action, serviceActionController, principalPopulator, globalWords, multipleEntityWords,
-                otherWords);
+                otherWords, streamMapper);
 
         ActivityDTO activity = new ActivityDTO();
         StreamEntityDTO actor = new StreamEntityDTO();
@@ -250,7 +258,7 @@ public class StreamResourceTest
         assertEquals("OK", json.getString("status"));
 
         JSONArray activityArray = json.getJSONArray("activities");
-        
+
         assertNotNull("Activity array is null and should not be", activityArray);
         assertEquals("Activity array should contain 1 item and does not", 1, activityArray.size());
 
@@ -305,12 +313,12 @@ public class StreamResourceTest
         Representation actual = sut.represent(null);
 
         JSONObject json = JSONObject.fromObject(actual.getText());
-        
+
         assertTrue(json.getString("status").startsWith("Error"));
-        
+
         context.assertIsSatisfied();
     }
-    
+
     /**
      * Test representing as JSON with a service exception.
      * 
@@ -343,9 +351,9 @@ public class StreamResourceTest
         Representation actual = sut.represent(null);
 
         JSONObject json = JSONObject.fromObject(actual.getText());
-        
+
         assertTrue(json.getString("status").startsWith("Error"));
-        
+
         context.assertIsSatisfied();
     }
 

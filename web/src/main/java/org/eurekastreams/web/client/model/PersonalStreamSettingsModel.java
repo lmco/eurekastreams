@@ -72,9 +72,6 @@ Updateable<HashMap<String, Serializable>>
                                 new UpdatedPersonalStreamSettingsResponseEvent(response));
                     }
                 });
-
-        StreamSearchListModel.getInstance().clearCache();
-        StreamViewListModel.getInstance().clearCache();
     }
 
 }
