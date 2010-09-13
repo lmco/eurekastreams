@@ -4,4 +4,4 @@ target
 .settings
 Thumbs.db
 nohup.out
-
+server/.checkstyle
