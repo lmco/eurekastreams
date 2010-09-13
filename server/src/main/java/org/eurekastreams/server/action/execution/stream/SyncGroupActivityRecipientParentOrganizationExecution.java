@@ -122,8 +122,7 @@ public class SyncGroupActivityRecipientParentOrganizationExecution implements
         // queue up async tasks to sync the recipientParentOrg for activities in cache and search index.
         for (Long activityId : activityIds)
         {
-            inActionContext.getUserActionRequests().add(
-                    new UserActionRequest("indexGroupActivityById", null, activityId));
+            inActionContext.getUserActionRequests().add(new UserActionRequest("indexActivityById", null, activityId));
 
             inActionContext.getUserActionRequests().add(
                     new UserActionRequest("deleteCacheKeysAction", null, new HashSet<String>(Arrays
