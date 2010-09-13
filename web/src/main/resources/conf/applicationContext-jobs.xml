@@ -50,9 +50,15 @@
         <constructor-arg ref="taskHandler" />
     </bean> 
     
-	<!-- Memebership Refresh -->
+	<!-- Membership Refresh -->
     <bean id="membershipRefreshJob" class="org.eurekastreams.commons.scheduling.ActionSubmitterJob">
         <constructor-arg value="refreshMembershipAction" />
+        <constructor-arg ref="taskHandler" />
+    </bean>
+    
+    <!-- Delete old StreamHashTags that fall outside our popular hashtags window-->
+    <bean id="deleteOldStreamHashTagsJob" class="org.eurekastreams.commons.scheduling.ActionSubmitterJob">
+        <constructor-arg value="deleteOldStreamHashTagsAction" />
         <constructor-arg ref="taskHandler" />
     </bean>
     
@@ -106,6 +112,12 @@
     <bean id="membershipRefreshJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="membershipRefreshJob" />
         <property name="cronExpression" value="0 0 1 * * ?" />
+    </bean>
+    
+    <!-- this is intended to run every day at 1:30am -->
+    <bean id="deleteOldStreamHashTagsJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="deleteOldStreamHashTagsJob" />
+        <property name="cronExpression" value="0 30 1 * * ?" />
     </bean>
 
     <!-- this is intended to run every day at 2:00am -->
@@ -170,6 +182,7 @@
                 <ref bean="refreshFeedsJobTrigger" />				
 				<ref bean="applicationAlertCleanupJobTrigger" />
                 <ref bean="membershipRefreshJobTrigger" />
+                <ref bean="deleteOldStreamHashTagsJobTrigger" />
                 <ref bean="gadgetDefUserCountRefreshJobTrigger" />
                 <ref bean="expiredActivitiesCleanupJobTrigger" />
 				<ref bean="pluginDefUserIndexJobTrigger" />

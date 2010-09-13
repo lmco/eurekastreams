@@ -22,20 +22,21 @@ import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 /**
  * Mapper to delete all StreamHashTags from activities inserted before a certain date.
  */
-public class DeleteOldStreamHashTagRecordsDbMapper extends BaseArgDomainMapper<Date, Boolean>
+public class DeleteOldStreamHashTagRecordsDbMapper extends BaseArgDomainMapper<Date, Integer>
 {
     /**
      * Delete all StreamHashTags from activities before a certain date.
      *
      * @param inStreamHashTagExpireDate
      *            the date to delete all activity posted before
-     * @return true
+     * @return number of records affected
      */
     @Override
-    public Boolean execute(final Date inStreamHashTagExpireDate)
+    public Integer execute(final Date inStreamHashTagExpireDate)
     {
-        getEntityManager().createQuery("DELETE FROM StreamHashTag WHERE activityDate < :activityDate").setParameter(
-                "activityDate", inStreamHashTagExpireDate).executeUpdate();
-        return true;
+        int numberOfRecordsAffected = getEntityManager().createQuery(
+                "DELETE FROM StreamHashTag WHERE activityDate < :activityDate").setParameter("activityDate",
+                inStreamHashTagExpireDate).executeUpdate();
+        return numberOfRecordsAffected;
     }
 }

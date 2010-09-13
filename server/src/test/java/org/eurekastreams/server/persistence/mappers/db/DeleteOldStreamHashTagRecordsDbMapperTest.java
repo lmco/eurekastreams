@@ -62,7 +62,12 @@ public class DeleteOldStreamHashTagRecordsDbMapperTest extends MapperTest
         calDayAndAHalfAgo.add(Calendar.HOUR, -dayAndAHalfAgoHours);
         Date dayAndAHalAgo = calDayAndAHalfAgo.getTime();
 
-        sut.execute(dayAndAHalAgo);
+        Long numberOfActivities = (Long) getEntityManager().createQuery("SELECT COUNT(*) FROM StreamHashTag")
+                .getSingleResult();
+
+        Long numberOfRecordsDeleted = new Long(sut.execute(dayAndAHalAgo));
+
+        assertEquals(new Long(numberOfActivities - 2L), numberOfRecordsDeleted);
 
         List<StreamHashTag> streamHashTags = getEntityManager().createQuery("FROM StreamHashTag").getResultList();
         assertEquals(2, streamHashTags.size());
