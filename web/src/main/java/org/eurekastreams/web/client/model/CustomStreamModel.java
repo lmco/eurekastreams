@@ -17,11 +17,15 @@ package org.eurekastreams.web.client.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import org.eurekastreams.server.action.request.stream.SetStreamFilterOrderRequest;
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.eurekastreams.server.service.actions.response.GetCurrentUserStreamFiltersResponse;
+import org.eurekastreams.web.client.events.CustomStreamCreatedEvent;
+import org.eurekastreams.web.client.events.CustomStreamDeletedEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserCustomStreamsResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
 
@@ -29,7 +33,9 @@ import org.eurekastreams.web.client.ui.Session;
  * Custom stream model.
  *
  */
-public class CustomStreamModel extends BaseModel implements Fetchable<Serializable>
+public class CustomStreamModel extends BaseModel implements Fetchable<Serializable>,
+        Insertable<HashMap<String, Serializable>>, Updateable<HashMap<String, Serializable>>, Deletable<Stream>,
+        Reorderable<SetStreamFilterOrderRequest>
 {
     /**
      * Singleton.
@@ -70,5 +76,45 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
         Session.getInstance().getEventBus().notifyObservers(
                 new GotCurrentUserCustomStreamsResponseEvent(new GetCurrentUserStreamFiltersResponse(1, streams)));
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void insert(final HashMap<String, Serializable> request)
+    {
+        Stream everyone = new Stream();
+        everyone.setRequest("{ query : { recipient : [ { type : \"PERSON\", name : \"romanoa1\" } ] } }");
+
+        everyone.setName("Anthony Romano");
+        everyone.setReadOnly(false);
+        everyone.setId(3L);
+
+        Session.getInstance().getEventBus().notifyObservers(new CustomStreamCreatedEvent(everyone));
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void update(final HashMap<String, Serializable> request)
+    {
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void delete(final Stream request)
+    {
+        Session.getInstance().getEventBus().notifyObservers(new CustomStreamDeletedEvent(request));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void reorder(final SetStreamFilterOrderRequest request)
+    {
+        super.callWriteAction("setStreamViewOrder", request, null);
     }
 }

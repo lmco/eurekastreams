@@ -74,8 +74,7 @@ public class PersonalInformationModel extends BaseModel implements Fetchable<Str
                     }
                 });
 
-        StreamSearchListModel.getInstance().clearCache();
-        StreamViewListModel.getInstance().clearCache();
+        CustomStreamModel.getInstance().clearCache();
     }
 
 }

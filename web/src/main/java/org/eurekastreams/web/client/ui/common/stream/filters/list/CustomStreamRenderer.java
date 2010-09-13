@@ -18,14 +18,14 @@ package org.eurekastreams.web.client.ui.common.stream.filters.list;
 import org.eurekastreams.server.action.request.stream.SetStreamFilterOrderRequest;
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamFilter;
+import org.eurekastreams.web.client.events.CustomStreamCreatedEvent;
+import org.eurekastreams.web.client.events.CustomStreamDeletedEvent;
+import org.eurekastreams.web.client.events.CustomStreamUpdatedEvent;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
-import org.eurekastreams.web.client.events.StreamViewCreatedEvent;
-import org.eurekastreams.web.client.events.StreamViewDeletedEvent;
-import org.eurekastreams.web.client.events.StreamViewUpdatedEvent;
+import org.eurekastreams.web.client.model.CustomStreamModel;
 import org.eurekastreams.web.client.model.Reorderable;
-import org.eurekastreams.web.client.model.StreamViewListModel;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.common.stream.filters.FilterListPanel;
@@ -55,7 +55,7 @@ public class CustomStreamRenderer implements FilterRenderStrategy
      */
     public Reorderable<SetStreamFilterOrderRequest> getReorderableModel()
     {
-        return StreamViewListModel.getInstance();
+        return CustomStreamModel.getInstance();
     }
 
     /**
@@ -78,31 +78,31 @@ public class CustomStreamRenderer implements FilterRenderStrategy
      */
     public void setUpEvents(final FilterListPanel listPanel)
     {
-        EventBus.getInstance().addObserver(StreamViewCreatedEvent.getEvent(), new Observer<StreamViewCreatedEvent>()
+        EventBus.getInstance().addObserver(CustomStreamCreatedEvent.getEvent(), new Observer<CustomStreamCreatedEvent>()
         {
-            public void update(final StreamViewCreatedEvent arg1)
+            public void update(final CustomStreamCreatedEvent arg1)
             {
-                listPanel.addFilter(arg1.getView());
+                listPanel.addFilter(arg1.getStream());
                 EventBus.getInstance().notifyObservers(new ShowNotificationEvent(
                         new Notification("Your stream has been successfully saved")));
             }
         });
 
-        EventBus.getInstance().addObserver(StreamViewDeletedEvent.getEvent(), new Observer<StreamViewDeletedEvent>()
+        EventBus.getInstance().addObserver(CustomStreamDeletedEvent.getEvent(), new Observer<CustomStreamDeletedEvent>()
         {
-            public void update(final StreamViewDeletedEvent arg1)
+            public void update(final CustomStreamDeletedEvent arg1)
             {
-                listPanel.removeFilter(arg1.getView());
+                listPanel.removeFilter(arg1.getStream());
                 EventBus.getInstance().notifyObservers(new ShowNotificationEvent(
                         new Notification("The stream has been deleted")));
             }
         });
 
-        EventBus.getInstance().addObserver(StreamViewUpdatedEvent.getEvent(), new Observer<StreamViewUpdatedEvent>()
+        EventBus.getInstance().addObserver(CustomStreamUpdatedEvent.getEvent(), new Observer<CustomStreamUpdatedEvent>()
         {
-            public void update(final StreamViewUpdatedEvent arg1)
+            public void update(final CustomStreamUpdatedEvent arg1)
             {
-                listPanel.updateFilter(arg1.getView());
+                listPanel.updateFilter(arg1.getStream());
                 EventBus.getInstance().notifyObservers(new ShowNotificationEvent(
                         new Notification("Your stream has been successfully saved")));
             }

@@ -38,6 +38,7 @@ import org.eurekastreams.web.client.ui.common.form.FormBuilder.Method;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextBoxFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.ValueOnlyFormElement;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
+import org.eurekastreams.web.client.ui.common.stream.filters.list.StreamListFormElement;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -238,8 +239,8 @@ public class StreamSearchDialogContent implements DialogContent
         }
         if (!mode.equals(Mode.SAVE))
         {
-            streamLists = new StreamListFormElement(views, viewId, viewName);
-            viewName = streamLists.getStreamViewName();
+            streamLists = new StreamListFormElement("");
+
             form = new FormBuilder(TITLE, StreamSearchModel.getInstance(viewName), method);
         }
         else
@@ -312,8 +313,7 @@ public class StreamSearchDialogContent implements DialogContent
             form.addFormElement(streamLists);
         }
 
-        form.addFormElement(new BasicTextBoxFormElement(MAX_KEYWORD, false, "Keywords", "keywords", keywords,
-                "Separate multiple keywords with spaces", true));
+
 
         if (mode.equals(Mode.EDIT))
         {
