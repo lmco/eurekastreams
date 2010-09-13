@@ -37,7 +37,7 @@
     </bean>
     
     <bean id="ldapToPersonMapper"
-        class="org.eurekastreams.server.service.actions.strategies.ldap.LdapToPersonMapper">
+        class="org.eurekastreams.server.persistence.mappers.ldap.callback.LdapToPersonMapper">
         <property name="accountAttrib" value="none" />
         <property name="firstNameAttrib" value="none" />
         <property name="lastNameAttrib" value="none" />
@@ -45,6 +45,7 @@
         <property name="titleAttrib" value="none" />
         <property name="fullNameAttrib" value="none" />
         <property name="emailAttrib" value="none" />
+        <property name="supportEmail" value="${eureka.mail.support.emailaddress}" />
     </bean>
 
     <bean id="ldapToLdapGroupMapper" class="org.eurekastreams.server.persistence.mappers.ldap.callback.LdapToLdapGroupMapper" />
