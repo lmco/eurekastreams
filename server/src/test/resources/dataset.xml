@@ -47,6 +47,9 @@
 	<StreamSearch id="3" version="0" streamview_id="19"
 		name="something" />
 
+	<Stream id="1" version="0" readonly="true" name="everyone" request="{ query : {} }" />
+	<Stream id="2" version="0" readonly="false" name="my search" request="{ query : { keywords : 'search'} }" />
+
 	<!-- Gadget Categories -->
 	<GalleryItemCategory id="4565" name="News" version="3467"
 		galleryItemType="GADGET" />
@@ -260,6 +263,7 @@
 		parentOrganizationId="5" />
 	-->
 
+
 	<!-- **************************************** -->
 	<!-- Ford Prefect - Tab Group with three tabs -->
 	<Person id="42" version="1117" accountId="fordp" firstName="Ford"
@@ -282,6 +286,10 @@
 		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="2"
 		streamSearchHiddenLineIndex="2" commentable="true" streamPostable="false" accountlocked="false"
 		entityStreamViewId="6" groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
+		
+		
+	<Person_Stream person_id="42" streams_id="1" streamIndex="1" />
+	<Person_Stream person_id="42" streams_id="2" streamIndex="2" />
 
 	<FeedSubscriber id="1" version="1" feedId="1" entityId="42" type="PERSON" requestorId="42" />
 	<FeedSubscriber id="2" version="1" feedId="2" entityId="42" type="PERSON" requestorId="42" />

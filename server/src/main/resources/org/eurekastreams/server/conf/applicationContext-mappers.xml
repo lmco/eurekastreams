@@ -21,7 +21,7 @@
 
 	<bean name="activityContentExtractor"
 		class="org.eurekastreams.server.persistence.mappers.stream.ActivityContentExtractor" />
-
+		
 	<!--
 		Mapper to get the hash tags from the database - insert if not already
 		in the database
@@ -186,13 +186,15 @@
 			<bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
 				<constructor-arg>
 				
-					<!-- Get the value from cache, and check to make sure it's not too old -->
+					<!-- Get the value from cache, and check to make sure it's not too old
+-->
 					<bean class="org.eurekastreams.server.persistence.mappers.StreamPopularHashTagsMapper">		
 						
 						<!-- Use the reusable single-value cache mapper to get the value -->
 						<constructor-arg>
 							<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
-								<!-- Transformer from stream populator hash tags request to cache key suffix -->
+								<!-- Transformer from stream populator hash tags request to cache key suffix
+-->
 								<constructor-arg>
 									<bean class="org.eurekastreams.server.persistence.mappers.cache.StreamPopularHashTagsRequestCacheKeySuffixTransformer" />
 								</constructor-arg>
@@ -283,6 +285,7 @@
 		</constructor-arg>
 	</bean>
 
+	<bean id="getUserStreamsMapper" class="org.eurekastreams.server.persistence.mappers.db.GetUserStreamsDbMapper" />
 
 	<bean id="bulkEntityStreamIdsMapper"
 		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">

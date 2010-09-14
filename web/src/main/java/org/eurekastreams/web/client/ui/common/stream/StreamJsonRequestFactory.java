@@ -121,7 +121,7 @@ public final class StreamJsonRequestFactory
      *            the request.
      * @return the modified request.
      */
-    public static JSONValue addRecipient(final EntityType type, final String uniqueId, final JSONObject json)
+    public static JSONObject addRecipient(final EntityType type, final String uniqueId, final JSONObject json)
     {
         JSONObject query = json.get("query").isObject();
 

@@ -4379,6 +4379,17 @@
         <constructor-arg ref="getActivitiesByRequestExecutor" />
 		<constructor-arg value="true" />
 	</bean>
+	
+	<bean id="getCurrentUsersStreams" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+        	<bean class="org.eurekastreams.server.action.execution.stream.GetCurrentUsersStreamsExecution">
+        		<constructor-arg ref="getUserStreamsMapper" />
+        	</bean>
+        </constructor-arg>
+		<constructor-arg value="true" />
+	</bean>
 
     <!--
         Beans for all of the Verb Validators that will be added to the
