@@ -307,9 +307,8 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     private String bannerId;
 
     /**
-     * Transient field used only for displaying a banner on profile pages.  This is needed so that
-     * a common strategy can be used across groups, orgs, and people to display banners.  When profiles
-     * support DTO's, this can be moved there.
+     * Transient field used only for displaying a banner on profile pages. This is needed so that a common strategy can
+     * be used across groups, orgs, and people to display banners. When profiles support DTO's, this can be moved there.
      */
     @Transient
     private Long bannerEntityId;
@@ -335,6 +334,25 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     @Basic
     @Field(name = "isPending", index = Index.UN_TOKENIZED, store = Store.NO)
     private boolean isPending;
+
+    /** Suppresses notifications to group members when new activities are posted. */
+    @Basic(optional = false)
+    private boolean suppressPostNotifToMember;
+
+    /** Suppresses notifications to group coordinators when new activities are posted. */
+    @Basic(optional = false)
+    private boolean suppressPostNotifToCoordinator;
+
+    /**
+     * Retrieve the name of the DomainEntity. This is to allow for the super class to identify the table within
+     * hibernate.
+     *
+     * @return The name of the domain entity.
+     */
+    public static String getDomainEntityName()
+    {
+        return "DomainGroup";
+    }
 
     /**
      * Default constructor.
@@ -411,7 +429,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     @Formula("parentOrganizationId")
     private Long parentOrgId;
 
-     /**
+    /**
      * People who are requesting membership to the group. Only used if the group is private. Field is private with no
      * getters/setters since it is used only for table/key creation.
      */
@@ -1039,5 +1057,39 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     public String getParentOrganizationShortName()
     {
         return parentOrganization.getShortName();
+    }
+
+    /**
+     * @return If notifications to group members when new activities are posted should be suppressed.
+     */
+    public boolean isSuppressPostNotifToMember()
+    {
+        return suppressPostNotifToMember;
+    }
+
+    /**
+     * @param inSuppressPostNotifToMember
+     *            If notifications to group members when new activities are posted should be suppressed.
+     */
+    public void setSuppressPostNotifToMember(final boolean inSuppressPostNotifToMember)
+    {
+        suppressPostNotifToMember = inSuppressPostNotifToMember;
+    }
+
+    /**
+     * @return If notifications to group coordinators when new activities are posted should be suppressed.
+     */
+    public boolean isSuppressPostNotifToCoordinator()
+    {
+        return suppressPostNotifToCoordinator;
+    }
+
+    /**
+     * @param inSuppressPostNotifToCoordinator
+     *            If notifications to group coordinators when new activities are posted should be suppressed.
+     */
+    public void setSuppressPostNotifToCoordinator(final boolean inSuppressPostNotifToCoordinator)
+    {
+        suppressPostNotifToCoordinator = inSuppressPostNotifToCoordinator;
     }
 }

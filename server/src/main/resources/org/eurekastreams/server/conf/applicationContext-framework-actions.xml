@@ -2868,6 +2868,7 @@
 			<bean class="org.eurekastreams.server.action.execution.notification.translator.GroupStreamPostTranslator">
 				<constructor-arg ref="getCoordinatorIdsByGroupId" />
 				<constructor-arg ref="getGroupFollowerIds" />
+				<constructor-arg ref="findByIdMapper" />
 			</bean>
 		</entry>
 		<entry key="FLAG_ACTIVITY">
