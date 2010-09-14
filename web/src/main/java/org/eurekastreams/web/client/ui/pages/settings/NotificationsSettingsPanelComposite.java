@@ -156,7 +156,7 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
         panel.add(label);
 
         label =
-                new Label("Eureka Streams w ill notify you w hen new activity has taken place in the groups that "
+                new Label("Eureka Streams will notify you when new activity has taken place in the groups that "
                         + "you coordinate or groups that you have joined.");
         label.addStyleName("instructions");
         panel.add(label);
