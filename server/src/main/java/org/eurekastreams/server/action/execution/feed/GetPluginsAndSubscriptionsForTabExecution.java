@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
+import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.formatting.DateFormatter;
@@ -40,77 +41,85 @@ import org.eurekastreams.server.service.actions.strategies.activity.plugins.GetE
  */
 public class GetPluginsAndSubscriptionsForTabExecution implements ExecutionStrategy<PrincipalActionContext>
 {
-	/**
-	 * Milliseconds in minutes.
-	 */
-	private static final int MSINMIN = 60000;
-	/**
-	 * Get all the plugins.
-	 */
-	private GetAllPluginsMapper getAllPluginsMapper;
-	/**
-	 * Get all the subs for an entity.
-	 */
-	private GetFeedSubscriptionsByEntity getFeedSubsMapper;
-	/**
-	 * Get the entity id.
-	 */
-	private GetEntityIdForFeedSubscription getEntityId;
-	/**
-	 * Get the entity type.
-	 */
-	private EntityType type;
-	
-	/**
-	 * Default constructor.
-	 * @param inGetAllPluginsMapper plugin mapper.
-	 * @param inGetFeedSubsMapper feed sub mapper.
-	 * @param inGetEntityId get entity id mapper.
-	 * @param inType type.
-	 */
-	public GetPluginsAndSubscriptionsForTabExecution(final GetAllPluginsMapper inGetAllPluginsMapper,
-			final GetFeedSubscriptionsByEntity inGetFeedSubsMapper,
-			final GetEntityIdForFeedSubscription inGetEntityId,
-			final EntityType inType) 
-	{
-		getAllPluginsMapper = inGetAllPluginsMapper;
-		getFeedSubsMapper = inGetFeedSubsMapper;
-		getEntityId = inGetEntityId;
-		type = inType;
-	}
+    /**
+     * Milliseconds in minutes.
+     */
+    private static final int MSINMIN = 60000;
+    /**
+     * Get all the plugins.
+     */
+    private GetAllPluginsMapper getAllPluginsMapper;
+    /**
+     * Get all the subs for an entity.
+     */
+    private GetFeedSubscriptionsByEntity getFeedSubsMapper;
+    /**
+     * Get the entity id.
+     */
+    private GetEntityIdForFeedSubscription getEntityId;
+    /**
+     * Get the entity type.
+     */
+    private EntityType type;
+
+    /**
+     * Default constructor.
+     *
+     * @param inGetAllPluginsMapper
+     *            plugin mapper.
+     * @param inGetFeedSubsMapper
+     *            feed sub mapper.
+     * @param inGetEntityId
+     *            get entity id mapper.
+     * @param inType
+     *            type.
+     */
+    public GetPluginsAndSubscriptionsForTabExecution(final GetAllPluginsMapper inGetAllPluginsMapper,
+            final GetFeedSubscriptionsByEntity inGetFeedSubsMapper,
+            final GetEntityIdForFeedSubscription inGetEntityId, final EntityType inType)
+    {
+        getAllPluginsMapper = inGetAllPluginsMapper;
+        getFeedSubsMapper = inGetFeedSubsMapper;
+        getEntityId = inGetEntityId;
+        type = inType;
+    }
 
     /**
      * This method performs the action.
-     * 
-     * @param context the context for the strategy
+     *
+     * @param context
+     *            the context for the strategy
      * @return the response object.
-     * @throws ExecutionException if any errors occur in strategy
+     * @throws ExecutionException
+     *             if any errors occur in strategy
      */
-	public PluginAndFeedSubscriptionsResponse execute(final PrincipalActionContext context) throws ExecutionException
-	{
-		
-		HashMap<String, Serializable> values = new HashMap<String, Serializable>();
-		values.put("EUREKA:USER", context.getPrincipal().getAccountId());
-		values.put("EUREKA:GROUP", (String) context.getParams());
-		
-		List<PluginDefinition> plugins = getAllPluginsMapper.execute(new EmptyRequest());
-		List<FeedSubscriber> feedSubs = getFeedSubsMapper.execute(
-				new GetFeedSubscriberRequest(0L, getEntityId.getEntityId(values), type));
-		for (FeedSubscriber feedSub : feedSubs)
-		{
-			feedSub.getFeed().getPlugin().getId();
-			if (feedSub.getFeed().getLastUpdated() == null)
-			{
-				feedSub.getFeed().setTimeAgo(null);
-			}
-			else
-			{
-				DateFormatter dateFormatter = new DateFormatter(new Date());
-				feedSub.getFeed().setTimeAgo(
-	        		dateFormatter.timeAgo(new Date(feedSub.getFeed().getLastUpdated() * MSINMIN)));
-			}
-		}
-		
-		return new PluginAndFeedSubscriptionsResponse(plugins, feedSubs);
-	}
+    public PluginAndFeedSubscriptionsResponse execute(final PrincipalActionContext context) throws ExecutionException
+    {
+
+        HashMap<String, Serializable> values = new HashMap<String, Serializable>();
+        Principal principal = context.getPrincipal();
+        values.put("EUREKA:USER", principal.getAccountId());
+        values.put("EUREKA:GROUP", (String) context.getParams());
+
+        List<PluginDefinition> plugins = getAllPluginsMapper.execute(new EmptyRequest());
+        List<FeedSubscriber> feedSubs =
+                getFeedSubsMapper.execute(new GetFeedSubscriberRequest(0L, getEntityId.getEntityId(values), type,
+                        principal.getId()));
+        for (FeedSubscriber feedSub : feedSubs)
+        {
+            feedSub.getFeed().getPlugin().getId();
+            if (feedSub.getFeed().getLastUpdated() == null)
+            {
+                feedSub.getFeed().setTimeAgo(null);
+            }
+            else
+            {
+                DateFormatter dateFormatter = new DateFormatter(new Date());
+                feedSub.getFeed().setTimeAgo(
+                        dateFormatter.timeAgo(new Date(feedSub.getFeed().getLastUpdated() * MSINMIN)));
+            }
+        }
+
+        return new PluginAndFeedSubscriptionsResponse(plugins, feedSubs);
+    }
 }

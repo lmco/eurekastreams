@@ -244,7 +244,7 @@
 
 		<script type="text/os-data" xmlns:os="http://ns.opensocial.org/2008/markup" >
             		<os:OwnerRequest key="databindowner" />
-			<os:HttpRequest refreshInterval="0"  key="activityDataSet" href="${build.web.baseurl}/resources/stream/${databindowner.id}/query/${UserPrefs.streamQuery}" />
+			<os:HttpRequest refreshInterval="0"  key="activityDataSet" href="${build.web.baseurl}/resources/stream/${databindowner.id}/${UserPrefs.streamQuery}" />
 		</script>		
 
 		

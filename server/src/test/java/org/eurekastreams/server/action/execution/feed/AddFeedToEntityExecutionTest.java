@@ -193,6 +193,9 @@ public class AddFeedToEntityExecutionTest
                 allowing(principal).getAccountId();
                 will(returnValue("user"));
 
+                allowing(principal).getId();
+                will(returnValue(9L));
+
                 oneOf(postActivity).execute(with(any(TaskHandlerActionContext.class)));
             }
         });
@@ -265,6 +268,10 @@ public class AddFeedToEntityExecutionTest
 
                 allowing(principal).getAccountId();
                 will(returnValue("user"));
+
+                allowing(principal).getId();
+                will(returnValue(9L));
+
                 oneOf(postActivity).execute(with(any(TaskHandlerActionContext.class)));
             }
         });

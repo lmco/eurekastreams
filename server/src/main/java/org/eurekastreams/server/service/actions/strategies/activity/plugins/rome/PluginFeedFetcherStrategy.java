@@ -16,13 +16,14 @@
 
 package org.eurekastreams.server.service.actions.strategies.activity.plugins.rome;
 
-import java.net.URL;
+import java.util.List;
+import java.util.Map;
 
 import com.sun.syndication.feed.synd.SyndFeed;
 
 /**
  * A strategy for Fetching a Plugin Feed.
- * 
+ *
  */
 public interface PluginFeedFetcherStrategy
 {
@@ -32,17 +33,20 @@ public interface PluginFeedFetcherStrategy
     String getSiteUrlRegEx();
 
     /**
-     * @param inFeedURL
+     * @param inFeedUrl
      *            the url to create a SyndFeed From.
+     * @param inRequestors
+     *            List of people who requested the feed.
      * @param inProxyHost
      *            host name to use (if desires) for proxying http requests.
      * @param inProxyPort
      *            port for http proxy server.
      * @param inTimeout
      *            the period of time to wait for a response from the feed.
-     * @return a Syndicated Feed.
+     * @return Syndicated feeds: key is requestor (or null if anonymous), value is the feed.
      * @throws Exception
      *             if an error occurs.
      */
-    SyndFeed execute(URL inFeedURL, String inProxyHost, String inProxyPort, int inTimeout) throws Exception;
+    Map<String, SyndFeed> execute(String inFeedUrl, List<String> inRequestors, String inProxyHost, String inProxyPort,
+            int inTimeout) throws Exception;
 }

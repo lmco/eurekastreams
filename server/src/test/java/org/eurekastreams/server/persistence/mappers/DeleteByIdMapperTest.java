@@ -54,14 +54,14 @@ public class DeleteByIdMapperTest extends MapperTest
     	// Make sure user 42 has his 4 feeds.
     	final long entityId = 42L;
         List<FeedSubscriber> feedSubs = getFeeds.execute(
-        		new GetFeedSubscriberRequest(0L, entityId, EntityType.PERSON));
+        		new GetFeedSubscriberRequest(0L, entityId, EntityType.PERSON, 0));
         assertEquals(4, feedSubs.size());
         
         // Delete feed 1.
         sut.execute(new FindByIdRequest("FeedSubscriber", 1L));
         
         List<FeedSubscriber> feedSubs2 = getFeeds.execute(
-        		new GetFeedSubscriberRequest(0L, entityId, EntityType.PERSON));
+        		new GetFeedSubscriberRequest(0L, entityId, EntityType.PERSON, 0));
         // Make sure he has 3 left.
         assertEquals(3, feedSubs2.size());
         // Make sure feed 1 isn't in there.

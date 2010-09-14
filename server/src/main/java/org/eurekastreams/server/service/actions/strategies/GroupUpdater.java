@@ -32,6 +32,7 @@ import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusByGroupCreatorRequest;
+import org.eurekastreams.server.action.request.stream.SyncGroupActivityRecipientParentOrganizationRequest;
 import org.eurekastreams.server.domain.DomainFormatUtility;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Follower;
@@ -192,6 +193,13 @@ public class GroupUpdater extends GroupPersister
                 inGroup.setParentOrganization(newParentOrg);
                 updateOrgStatistics(newParentOrg);
                 updateOrgStatistics(origParentOrg);
+
+                // queue action to update parent org for group activities, reindex activities, and sync activity cache
+                // lists for new/old orgs up the tree.
+                inActionContext.getUserActionRequests().add(
+                        new UserActionRequest("syncGroupActivityRecipientParentOrganization", null,
+                                new SyncGroupActivityRecipientParentOrganizationRequest(inGroup.getShortName(),
+                                        newParentOrgName, origParentOrgName)));
             }
 
             Set<Person> oldCoordinators = (Set<Person>) inFields.get(ORIGINAL_GROUP_COORDINATORS_KEY);

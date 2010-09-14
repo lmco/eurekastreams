@@ -17,10 +17,11 @@ package org.eurekastreams.server.action.execution.feed;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.Serializable;
-import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 
-import org.eurekastreams.commons.actions.context.ActionContext;
+import org.eurekastreams.commons.actions.context.Principal;
+import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.FeedFactory;
 import org.jmock.Expectations;
@@ -31,14 +32,19 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sun.syndication.feed.synd.SyndFeed;
-import com.sun.syndication.fetcher.FeedFetcher;
 
 /**
  * Get title from feed action test.
- * 
+ *
  */
 public class GetTitleFromFeedExecutionTest
 {
+    /** Test data. */
+    private static final String FEED_URL = "http://www.google.com";
+
+    /** Test data. */
+    private static final String USER = "jdoe";
+
     /**
      * Context for building mock objects.
      */
@@ -53,11 +59,7 @@ public class GetTitleFromFeedExecutionTest
      * Feed factory mock.
      */
     private FeedFactory feedFetcherFactory = context.mock(FeedFactory.class);
-    /**
-     * Feed fetcher mock.
-     */
-    private FeedFetcher feedFetcher = context.mock(FeedFetcher.class);
-    
+
     /**
      * Atom feed mock.
      */
@@ -66,12 +68,15 @@ public class GetTitleFromFeedExecutionTest
      * System under test.
      */
     private GetTitleFromFeedExecution sut;
-    
+
     /**
      * Action Context for test.
      */
-    private ActionContext ac = context.mock(ActionContext.class);
-    
+    private PrincipalActionContext ac = context.mock(PrincipalActionContext.class);
+
+    /** Fixture: principal. */
+    private Principal principal = context.mock(Principal.class);
+
 
     /**
      * Set up the SUT.
@@ -80,58 +85,62 @@ public class GetTitleFromFeedExecutionTest
     public void setup()
     {
         sut = new GetTitleFromFeedExecution(feedFetcherFactory);
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(ac).getParams();
+                will(returnValue(FEED_URL));
+                allowing(ac).getPrincipal();
+                will(returnValue(principal));
+                allowing(principal).getAccountId();
+                will(returnValue(USER));
+            }
+        });
     }
 
     /**
      * Perform the action successfully.
-     * 
+     *
      * @throws Exception
      *             the exception.
      */
     @Test
     public void performActionWithNoException() throws Exception
     {
-        final Serializable params = "http://www.google.com";
-
         context.checking(new Expectations()
         {
             {
-            	oneOf(ac).getParams();
-            	will(returnValue(params));
-            	
-                oneOf(feedFetcherFactory).getSyndicatedFeed((with(any(URL.class))));
-                will(returnValue(atomFeed));
+                oneOf(feedFetcherFactory).getSyndicatedFeed(with(equal(FEED_URL)),
+                        (List<String>) with(org.hamcrest.Matchers.hasItem(USER)));
+                will(returnValue(Collections.singletonMap(USER, atomFeed)));
 
-                oneOf(atomFeed).getTitle();
+                allowing(atomFeed).getTitle();
                 will(returnValue("title"));
             }
         });
 
         String title = (String) sut.execute(ac);
 
-        assertEquals("title", title);
-
         context.assertIsSatisfied();
+
+        assertEquals("title", title);
     }
 
     /**
      * Perform the action with an error in the feed.
-     * 
+     *
      * @throws Exception
      *             the exception.
      */
     @Test(expected = ExecutionException.class)
     public void performActionWithException() throws Exception
     {
-        final Serializable params = "http://www.google.com";
-    	
         context.checking(new Expectations()
         {
             {
-            	oneOf(ac).getParams();
-            	will(returnValue(params));            
-            	
-                oneOf(feedFetcherFactory).getSyndicatedFeed(with(any(URL.class)));
+                oneOf(feedFetcherFactory).getSyndicatedFeed(with(equal(FEED_URL)),
+                        (List<String>) with(org.hamcrest.Matchers.hasItem(USER)));
                 will(throwException(new Exception()));
             }
         });

@@ -37,6 +37,9 @@ import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.domain.stream.Stream;
+import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
+import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.resource.Representation;
@@ -46,14 +49,14 @@ import org.restlet.resource.Variant;
 
 /**
  * REST end point for stream filters.
- *
+ * 
  */
 public class StreamResource extends SmpResource
 {
     /**
      * Logger.
      */
-    private Log log = LogFactory.getLog(TitlesCollectionResource.class);
+    private Log log = LogFactory.getLog(StreamResource.class);
 
     /**
      * Open Social Id. TODO: this should be eliminated when we have OAuth.
@@ -111,8 +114,24 @@ public class StreamResource extends SmpResource
     private List<String> keywords = null;
 
     /**
+     * Stream find by ID mapper.
+     */
+    private FindByIdMapper<Stream> streamMapper = null;
+
+    /**
+     * The mode of the resource, can be ad-hoc query, or saved stream. "query" is for ad-hoc. "saved" is for saved
+     * stream.
+     */
+    private String mode;
+
+    /**
+     * The stream Id.
+     */
+    private long streamId;
+
+    /**
      * Default constructor.
-     *
+     * 
      * @param inAction
      *            the action.
      * @param inServiceActionController
@@ -125,11 +144,13 @@ public class StreamResource extends SmpResource
      *            the multiple entities keyword.
      * @param inKeywords
      *            the other keywords.
+     * @param inStreamMapper
+     *            the stream mapper.
      */
-    @SuppressWarnings("unchecked")
     public StreamResource(final ServiceAction inAction, final ActionController inServiceActionController,
             final PrincipalPopulator inPrincipalPopulator, final List<String> inGlobalKeywords,
-            final List<String> inMultipleEntityKeywords, final List<String> inKeywords)
+            final List<String> inMultipleEntityKeywords, final List<String> inKeywords,
+            final FindByIdMapper<Stream> inStreamMapper)
     {
         action = inAction;
         serviceActionController = inServiceActionController;
@@ -137,11 +158,12 @@ public class StreamResource extends SmpResource
         globalKeywords = inGlobalKeywords;
         multipleEntityKeywords = inMultipleEntityKeywords;
         keywords = inKeywords;
+        streamMapper = inStreamMapper;
     }
 
     /**
      * init the params.
-     *
+     * 
      * @param request
      *            the request object.
      */
@@ -151,11 +173,18 @@ public class StreamResource extends SmpResource
         jsonRequest = (String) request.getAttributes().get("json");
         openSocialId = (String) request.getAttributes().get("openSocialId");
         callback = (String) request.getAttributes().get("callback");
+        mode = (String) request.getAttributes().get("mode");
+        String streamIdStr = ((String) request.getAttributes().get("streamId"));
+
+        if (null != streamIdStr && mode.equals("saved"))
+        {
+            streamId = Long.parseLong(streamIdStr);
+        }
     }
 
     /**
      * GET the activites.
-     *
+     * 
      * @param variant
      *            the variant.
      * @return the JSON.
@@ -172,15 +201,30 @@ public class StreamResource extends SmpResource
 
         JSONObject decodedJson = null;
 
-        try
+        if (mode.equals("query"))
         {
-            decodedJson = parseRequest(getPath());
+            try
+            {
+                decodedJson = parseRequest(getPath());
+            }
+            catch (Exception e)
+            {
+                status = "Error: " + e;
+            }
         }
-        catch (Exception e)
+        else if (mode.equals("saved"))
         {
-            status = "Error: " + e;
+            Stream stream = streamMapper.execute(new FindByIdRequest("Stream", streamId));
+            decodedJson = JSONObject.fromObject(stream.getRequest());
+        }
+        else
+        {
+            status = "Error: Unknown mode.";
         }
 
+        log.debug(status);
+        log.debug("JSON" + jsonRequest);
+        
         JSONObject json = new JSONObject();
 
         PagedSet<ActivityDTO> activities = null;
@@ -265,7 +309,7 @@ public class StreamResource extends SmpResource
 
     /**
      * Parses the request.
-     *
+     * 
      * @param path
      *            the path.
      * @return the request.
@@ -310,7 +354,7 @@ public class StreamResource extends SmpResource
 
     /**
      * Determine if the keyword is a multiple entity word.
-     *
+     * 
      * @param keyword
      *            the word.
      * @return true or false.
@@ -322,7 +366,7 @@ public class StreamResource extends SmpResource
 
     /**
      * Determine if the keyword is a global word.
-     *
+     * 
      * @param keyword
      *            the word.
      * @return true or false.
@@ -334,7 +378,7 @@ public class StreamResource extends SmpResource
 
     /**
      * Determine if the keyword is recognized..
-     *
+     * 
      * @param keyword
      *            the word.
      * @return true or false.
@@ -346,7 +390,7 @@ public class StreamResource extends SmpResource
 
     /**
      * Overrides the path.
-     *
+     * 
      * @param inPathOverride
      *            the string to override the path with.
      */
@@ -357,7 +401,7 @@ public class StreamResource extends SmpResource
 
     /**
      * Get the path.
-     *
+     * 
      * @return the path.
      */
     public String getPath()
@@ -374,7 +418,7 @@ public class StreamResource extends SmpResource
 
     /**
      * Parses entities from the request.
-     *
+     * 
      * @param entityString
      *            the request string.
      * @return the entities.

@@ -45,7 +45,7 @@ import org.springframework.security.userdetails.UserDetails;
  * Test the get plugins and subs action.
  *
  */
-public class GetPluginsAndSubscriptionsForTabExecutionTest 
+public class GetPluginsAndSubscriptionsForTabExecutionTest
 {
     /**
      * Context for building mock objects.
@@ -56,111 +56,115 @@ public class GetPluginsAndSubscriptionsForTabExecutionTest
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
-    
+
     /**
      * Get plugins Mapper mock.
      */
     private GetAllPluginsMapper getAllPluginsMapper = context.mock(GetAllPluginsMapper.class);
-	
+
     /**
      * Mapper mock.
      */
     private GetFeedSubscriptionsByEntity getFeedSubsMapper = context.mock(GetFeedSubscriptionsByEntity.class);
-	/**
-	 * Get entity id mapper mock.
-	 */
+    /**
+     * Get entity id mapper mock.
+     */
     private GetEntityIdForFeedSubscription getEntityId = context.mock(GetEntityIdForFeedSubscription.class);
-	/**
-	 * User details mock.
-	 */
+    /**
+     * User details mock.
+     */
     private UserDetails user = context.mock(UserDetails.class);
-	
+
     /**
      * System under test.
      */
-	private GetPluginsAndSubscriptionsForTabExecution sut;
-	
-	/**
-	 * Actioncontext mock.
-	 */
-	private PrincipalActionContext ac = context.mock(PrincipalActionContext.class);
-	
-	/**
-	 * user principal mock.
-	 */
-	private Principal principal = context.mock(Principal.class);
-	
+    private GetPluginsAndSubscriptionsForTabExecution sut;
+
+    /**
+     * Actioncontext mock.
+     */
+    private PrincipalActionContext ac = context.mock(PrincipalActionContext.class);
+
+    /**
+     * user principal mock.
+     */
+    private Principal principal = context.mock(Principal.class);
+
     /**
      * Set up the SUT.
      */
     @Before
     public void setup()
     {
-        sut = new GetPluginsAndSubscriptionsForTabExecution(
-        		getAllPluginsMapper, getFeedSubsMapper, getEntityId, EntityType.PERSON);
+        sut =
+                new GetPluginsAndSubscriptionsForTabExecution(getAllPluginsMapper, getFeedSubsMapper, getEntityId,
+                        EntityType.PERSON);
     }
-    
+
     /**
      * Perform the action successfully.
-     * @throws Exception the exception.
+     *
+     * @throws Exception
+     *             the exception.
      */
     @Test
     public void performAction() throws Exception
     {
-    	final PluginDefinition plugin = context.mock(PluginDefinition.class);
-    	final Feed feed = context.mock(Feed.class);
-    	final Feed feed2 = context.mock(Feed.class, "f2");
-    	final FeedSubscriber feedSub = context.mock(FeedSubscriber.class);
-    	final FeedSubscriber feedSub2 = context.mock(FeedSubscriber.class, "fs2");
-    	
-    	final List<FeedSubscriber> feedSubs = new ArrayList<FeedSubscriber>();
-    	feedSubs.add(feedSub);
-    	feedSubs.add(feedSub2);
+        final PluginDefinition plugin = context.mock(PluginDefinition.class);
+        final Feed feed = context.mock(Feed.class);
+        final Feed feed2 = context.mock(Feed.class, "f2");
+        final FeedSubscriber feedSub = context.mock(FeedSubscriber.class);
+        final FeedSubscriber feedSub2 = context.mock(FeedSubscriber.class, "fs2");
+
+        final List<FeedSubscriber> feedSubs = new ArrayList<FeedSubscriber>();
+        feedSubs.add(feedSub);
+        feedSubs.add(feedSub2);
 
         context.checking(new Expectations()
         {
             {
                 allowing(ac).getPrincipal();
                 will(returnValue(principal));
-                
+
                 allowing(ac).getParams();
                 will(returnValue("username1"));
-                
+
                 allowing(principal).getAccountId();
                 will(returnValue("user"));
 
-                oneOf(getEntityId).getEntityId(with(any(HashMap.class)));
-            	oneOf(getAllPluginsMapper).execute(with(any(EmptyRequest.class)));
-            	oneOf(getFeedSubsMapper).execute(with(any(GetFeedSubscriberRequest.class)));
-            	will(returnValue(feedSubs));
-            	
-            	allowing(feedSub).getFeed();
-            	will(returnValue(feed));
-            	allowing(feedSub2).getFeed();
-            	will(returnValue(feed2));
-            	
+                allowing(principal).getId();
+                will(returnValue(9L));
 
-            	allowing(plugin).getId();
-            	
-            	oneOf(feed).getPlugin();
-            	will(returnValue(plugin));
-            	allowing(feed).getLastUpdated();
-            	will(returnValue(0L));
-            	oneOf(feed).setTimeAgo(with(any(String.class)));
-            	
-            	oneOf(feed2).getPlugin();
-            	will(returnValue(plugin));
-            	allowing(feed2).getLastUpdated();
-            	will(returnValue(null));
-            	oneOf(feed2).setTimeAgo(null);
+                oneOf(getEntityId).getEntityId(with(any(HashMap.class)));
+                oneOf(getAllPluginsMapper).execute(with(any(EmptyRequest.class)));
+                oneOf(getFeedSubsMapper).execute(with(any(GetFeedSubscriberRequest.class)));
+                will(returnValue(feedSubs));
+
+                allowing(feedSub).getFeed();
+                will(returnValue(feed));
+                allowing(feedSub2).getFeed();
+                will(returnValue(feed2));
+
+                allowing(plugin).getId();
+
+                oneOf(feed).getPlugin();
+                will(returnValue(plugin));
+                allowing(feed).getLastUpdated();
+                will(returnValue(0L));
+                oneOf(feed).setTimeAgo(with(any(String.class)));
+
+                oneOf(feed2).getPlugin();
+                will(returnValue(plugin));
+                allowing(feed2).getLastUpdated();
+                will(returnValue(null));
+                oneOf(feed2).setTimeAgo(null);
             }
         });
 
-        PluginAndFeedSubscriptionsResponse response = 
-        	(PluginAndFeedSubscriptionsResponse) sut.execute(ac);
+        PluginAndFeedSubscriptionsResponse response = (PluginAndFeedSubscriptionsResponse) sut.execute(ac);
 
         assertEquals(feedSubs, response.getFeedSubcribers());
-        
+
         context.assertIsSatisfied();
     }
 }

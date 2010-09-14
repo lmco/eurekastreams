@@ -1,7 +1,6 @@
 --
 -- Set database version to 1.0.0005
 --
-
 insert into db_version (major, minor, patch, scriptname, description) values (1, 0, '0005', 'U0005AddStreamTable.sql', 'Add Stream table.');
 
 
@@ -27,4 +26,3 @@ alter table Person_Stream
     add constraint FKBEF553AA3C9AB417
     foreign key (Person_id)
     references Person;
-

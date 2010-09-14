@@ -19,6 +19,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 
 import org.eurekastreams.commons.model.DomainEntity;
 
@@ -39,6 +40,7 @@ public class Stream extends DomainEntity implements Serializable, StreamFilter
      * The name of the view.
      */
     @Column(nullable = false)
+    @Lob
     private String request;
 
 
