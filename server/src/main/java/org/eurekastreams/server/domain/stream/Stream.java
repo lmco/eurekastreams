@@ -25,7 +25,7 @@ import org.eurekastreams.commons.model.DomainEntity;
 
 /**
  * A stream.
- *
+ * 
  */
 @Entity
 public class Stream extends DomainEntity implements Serializable, StreamFilter
@@ -43,17 +43,17 @@ public class Stream extends DomainEntity implements Serializable, StreamFilter
     @Lob
     private String request;
 
-
     /**
      * The name of the view.
      */
     @Column(nullable = false)
     private String name;
 
-
     /**
      * Sets the name of the view.
-     * @param inName the name.
+     * 
+     * @param inName
+     *            the name.
      */
     public void setName(final String inName)
     {
@@ -62,6 +62,7 @@ public class Stream extends DomainEntity implements Serializable, StreamFilter
 
     /**
      * Gets the name.
+     * 
      * @return the name.
      */
     public String getName()
@@ -71,7 +72,9 @@ public class Stream extends DomainEntity implements Serializable, StreamFilter
 
     /**
      * Sets the name of the view.
-     * @param inRequest the name.
+     * 
+     * @param inRequest
+     *            the name.
      */
     public void setRequest(final String inRequest)
     {
@@ -80,6 +83,7 @@ public class Stream extends DomainEntity implements Serializable, StreamFilter
 
     /**
      * Gets the name.
+     * 
      * @return the name.
      */
     public String getRequest()
@@ -87,10 +91,11 @@ public class Stream extends DomainEntity implements Serializable, StreamFilter
         return this.request;
     }
 
-
     /**
      * Sets the name of the view.
-     * @param inReadOnly the name.
+     * 
+     * @param inReadOnly
+     *            the name.
      */
     public void setReadOnly(final Boolean inReadOnly)
     {
@@ -99,6 +104,7 @@ public class Stream extends DomainEntity implements Serializable, StreamFilter
 
     /**
      * Gets the name.
+     * 
      * @return the name.
      */
     public Boolean getReadOnly()
@@ -108,7 +114,9 @@ public class Stream extends DomainEntity implements Serializable, StreamFilter
 
     /**
      * Dont really need this.
-     * @param inId id.
+     * 
+     * @param inId
+     *            id.
      */
     @Override
     public void setId(final long inId)

@@ -39,7 +39,7 @@ import com.google.gwt.user.client.Window;
 
 /**
  * Custom stream model.
- *
+ * 
  */
 public class CustomStreamModel extends BaseModel implements Fetchable<Serializable>,
         Insertable<HashMap<String, Serializable>>, Updateable<HashMap<String, Serializable>>, Deletable<Stream>,
@@ -52,7 +52,7 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
     public static CustomStreamModel getInstance()
@@ -65,25 +65,15 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
      */
     public void fetch(final Serializable request, final boolean useClientCacheIfAvailable)
     {
-        List<StreamFilter> streams = new ArrayList<StreamFilter>();
-
-        Stream everyone = new Stream();
-        everyone.setRequest("{ query : {} }");
-        everyone.setName("Everyone");
-        everyone.setReadOnly(true);
-        everyone.setId(1L);
-        streams.add(everyone);
-
-        Stream following = new Stream();
-        following.setRequest("{ query : { followedBy: \"romanoa1\" } }");
-        following.setName("Following");
-        following.setReadOnly(true);
-        following.setId(2L);
-        streams.add(following);
-
-        Session.getInstance().getEventBus().notifyObservers(
-                new GotCurrentUserCustomStreamsResponseEvent(new GetCurrentUserStreamFiltersResponse(1, streams)));
-
+        super.callReadAction("getCurrentUsersStreams", request, new OnSuccessCommand<ArrayList<StreamFilter>>()
+        {
+            public void onSuccess(final ArrayList<StreamFilter> streams)
+            {
+                Session.getInstance().getEventBus().notifyObservers(
+                        new GotCurrentUserCustomStreamsResponseEvent(
+                                new GetCurrentUserStreamFiltersResponse(1, streams)));
+            }
+        }, useClientCacheIfAvailable);
     }
 
     /**

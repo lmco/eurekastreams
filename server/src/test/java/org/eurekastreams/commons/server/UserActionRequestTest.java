@@ -16,7 +16,10 @@
 package org.eurekastreams.commons.server;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
+import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.service.security.userdetails.ExtendedUserDetailsImpl;
 import org.junit.Test;
 import org.springframework.security.userdetails.UserDetails;
 
@@ -37,6 +40,20 @@ public class UserActionRequestTest
         assertEquals(actionKey, sut.getActionKey());
         assertEquals(userDetails, sut.getUser());
         assertEquals(null, sut.getParams());
+    }
+    
+    /**
+     * Test the toString implementation.
+     */
+    @Test
+    public void testToString()
+    {
+        Person testPerson = new Person("testAccountId", "firstname", "middlename", "lastname", "preferredname");
+        UserDetails userDetails = new ExtendedUserDetailsImpl(testPerson, null, null, null);
+        
+        String actionKey = "actionKey";
+        UserActionRequest sut = new UserActionRequest(actionKey, userDetails, null);
+        assertNotNull(sut.toString());
     }
 
 }

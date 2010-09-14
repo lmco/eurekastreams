@@ -247,9 +247,20 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
     /**
      * When the search potentially changes.
      */
-    public void onSearch()
+    private void onSearch()
     {
         EventBus.getInstance().notifyObservers(new StreamSearchBeginEvent(searchTerm.getText()));
+    }
+
+    /**
+     * Update search widget.
+     * 
+     * @param inSearchTerm
+     *            the search term.
+     */
+    public void setSearchTerm(final String inSearchTerm)
+    {
+        searchTerm.setText(inSearchTerm);
         searchDescription.setVisible(true);
         searchTermLabel.setText(searchTerm.getText());
         searchTerm.setText(searchTerm.getText());
@@ -260,7 +271,7 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
     /**
      * Called when a search is canceled.
      */
-    public void onSearchCanceled()
+    private void onSearchCanceled()
     {
         searchTermLabel.setText("");
         searchTerm.setText("");
@@ -313,7 +324,7 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
      * @return JSON string representation.
      */
     private static native String makeJsonString(final String input) /*-{
-            return input == null ? 'null' : '"' + input.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"';
-        }-*/;
+                           return input == null ? 'null' : '"' + input.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"';
+                       }-*/;
 
 }

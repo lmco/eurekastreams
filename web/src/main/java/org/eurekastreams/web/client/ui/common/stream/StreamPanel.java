@@ -154,6 +154,23 @@ public class StreamPanel extends FlowPanel
                     }
                 }, true);
 
+        EventBus.getInstance().addObserver(UpdatedHistoryParametersEvent.class,
+                new Observer<UpdatedHistoryParametersEvent>()
+                {
+                    public void update(final UpdatedHistoryParametersEvent event)
+                    {
+                        if (null != event.getParameters())
+                        {
+                            historyParams = event.getParameters();
+                        }
+                        else
+                        {
+                            historyParams = new HashMap<String, String>();
+                        }
+                        EventBus.getInstance().notifyObservers(StreamReinitializeRequestEvent.getEvent());
+                    }
+                });
+
         EventBus.getInstance().addObserver(GotActivityResponseEvent.class, new Observer<GotActivityResponseEvent>()
         {
             public void update(final GotActivityResponseEvent event)
@@ -223,6 +240,8 @@ public class StreamPanel extends FlowPanel
         {
             public void update(final StreamRequestEvent event)
             {
+                streamName = event.getStreamName();
+                searchJson = event.getJson();
                 if (historyParams.containsKey("activityId"))
                 {
                     ActivityModel.getInstance().fetch(Long.parseLong(historyParams.get("activityId")), false);
@@ -231,19 +250,20 @@ public class StreamPanel extends FlowPanel
                 {
                     setListMode();
                     stream.reinitialize();
-                    searchJson = event.getJson();
+
+                    String updatedJson = searchJson;
 
                     if (historyParams.containsKey("search"))
                     {
-                        searchJson = StreamJsonRequestFactory.setSort(
+                        updatedJson = StreamJsonRequestFactory.setSort(
                                 SortType.DATE,
                                 StreamJsonRequestFactory.setSearchTerm(historyParams.get("search"),
                                         StreamJsonRequestFactory.getJSONRequest(searchJson))).toString();
+                        streamSearch.setSearchTerm(historyParams.get("search"));
                     }
 
-                    streamName = event.getStreamName();
                     streamSearch.setTitleText(streamName);
-                    StreamModel.getInstance().fetch(searchJson, false);
+                    StreamModel.getInstance().fetch(updatedJson, false);
                 }
             }
         });
@@ -255,7 +275,6 @@ public class StreamPanel extends FlowPanel
                 Session.getInstance().getEventBus().notifyObservers(
                         new UpdateHistoryEvent(new CreateUrlRequest("search", String.valueOf(event.getSearchText()),
                                 true)));
-                EventBus.getInstance().notifyObservers(StreamReinitializeRequestEvent.getEvent());
             }
         });
 

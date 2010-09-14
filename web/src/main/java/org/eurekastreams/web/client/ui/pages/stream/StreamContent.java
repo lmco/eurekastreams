@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Page for Stream.
- *
+ * 
  */
 public class StreamContent extends Composite
 {
@@ -94,7 +94,7 @@ public class StreamContent extends Composite
 
     /**
      * Default constructor.
-     *
+     * 
      */
     public StreamContent()
     {
@@ -104,7 +104,6 @@ public class StreamContent extends Composite
 
         streamView = new StreamPanel(true);
         streamPanel.add(streamView);
-
 
         RootPanel.get().addStyleName("stream");
 
@@ -118,7 +117,6 @@ public class StreamContent extends Composite
                 Session.getInstance().getEventBus().notifyObservers(StreamPageLoadedEvent.getEvent());
             }
         });
-
 
         Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
                 new Observer<UpdatedHistoryParametersEvent>()
