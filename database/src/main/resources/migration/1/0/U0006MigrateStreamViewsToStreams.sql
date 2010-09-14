@@ -4,6 +4,12 @@
 
 insert into db_version (major, minor, patch, scriptname, description) values (1, 0, '0006', 'U0006MigrateStreamViewsToStreams.sql', 'Migrate from StreamView to Stream');
 
+-- add the missing constraint
+alter table Person_Stream
+	add constraint FKBEF553AAB077E4B8
+	foreign key (streams_id)
+	references Stream;
+
 
 -- ************************** Custom (non-search) Streams **************************
 -- Create a temp table
@@ -14,7 +20,8 @@ CREATE TABLE TempStreamViewMigrate
   streamviewid bigserial NOT NULL,
   request character varying(8000) NOT NULL,
   "name" character varying(255) NOT NULL,
-  streamId bigserial
+  streamId bigserial,
+  streamViewIndex bigserial
 );
 
 -- 
@@ -28,7 +35,13 @@ BEGIN
 
 	-- QUERY//
 		select 
-			p.id as PersonId, sv.name as StreamViewName, sv.id as StreamViewId, sc.scopetype, sc.uniquekey
+			p.id as PersonId, 
+			sv.name as StreamViewName, 
+			sv.id as StreamViewId, 
+			sc.scopetype, 
+			sc.uniquekey, 
+			psv.streamviewindex, 
+			(sv.type is not null) as readOnly
 		from Person p
 			inner join person_streamview psv
 				on p.id = psv.person_id
@@ -38,25 +51,22 @@ BEGIN
 				on svsc.streamview_id = sv.id
 			inner join streamscope sc 
 				on svsc.includedscopes_id = sc.id
-		where 
-			sc.scopetype NOT IN ('PERSONS_FOLLOWED_STREAMS', 'PERSONS_PARENT_ORGANIZATION', 'ALL', 'STARRED')
-		order by 
-			p.id, sv.id, sc.scopetype, sc.uniquekey
 	-- //QUERY
      LOOP
 	
-		select count(1) into cnt from TempStreamViewMigrate where streamviewid=rec.StreamViewId;
+		select count(1) into cnt from TempStreamViewMigrate where streamviewid = rec.StreamViewId AND personId = rec.PersonId;
 		if cnt = 0 then
 			
 			-- insert a stream record
-			insert into Stream ("name", request, version, readonly) values (rec.StreamViewName, '', 0, false); 
+			insert into Stream ("name", request, version, readonly) values (rec.StreamViewName, '', 0, rec.readOnly); 
 		
-			insert into TempStreamViewMigrate (personId, streamviewid, "name", streamid, request) values(
+			insert into TempStreamViewMigrate (personId, streamviewid, "name", streamid, request, streamViewIndex) values(
 				rec.PersonId,
 				rec.StreamViewId,
 				rec.StreamViewName,
 				currval('stream_id_seq'),
-				'{query:{recipient:[{type:"' || rec.scopetype || '",name:"' || rec.uniquekey || '"}]}}'
+				'{query:{recipient:[{type:"' || rec.scopetype || '",name:"' || rec.uniquekey || '"}]}}',
+				rec.streamviewindex
 			);
 			
 		else
@@ -78,28 +88,15 @@ BEGIN
 		TempStreamViewMigrate 
 	WHERE Stream.id = TempStreamViewMigrate.StreamId;
 
+	-- tie the streams to people
+	INSERT INTO person_stream (person_id, streams_id, streamindex) 
+		SELECT personId, streamid, streamViewIndex FROM TempStreamViewMigrate GROUP BY personId, streamId, streamViewIndex;
+	
+
+	DELETE FROM TempStreamViewMigrate;
+
     RETURN 0;
     
-END;
-$$ LANGUAGE plpgsql;
-
--- Tie the streams to people in a loop to be able to set the indexes
-CREATE or replace FUNCTION createPersonStreamsForStreamViews() RETURNS integer AS $$
-DECLARE
-    rec RECORD ;
-    cnt integer ;
-BEGIN
-	FOR rec IN 
-		SELECT * FROM TempStreamViewMigrate ORDER BY id
-	LOOP
-		select count(*) into cnt from TempStreamViewMigrate where PersonId = rec.PersonId AND id < rec.id;
-
-		-- tie the streams to people
-		INSERT INTO person_stream (person_id, streams_id, streamindex)
-			SELECT rec.personId, rec.streamid, cnt;
-	END LOOP;
-
-	RETURN 0;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -107,8 +104,6 @@ $$ LANGUAGE plpgsql;
 -- Create the streams
 select createStreamsForStreamViews();
 
--- Tie the streams to people
-select createPersonStreamsForStreamViews();
 
 -- ************************** END OF Custom (non-search) Streams **************************
 

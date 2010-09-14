@@ -91,7 +91,7 @@ public class PostActivityAsyncExecutionStrategy implements ExecutionStrategy<Asy
         Activity activity = findByIdMapper.execute(new FindByIdRequest("Activity", currentActivity.getId()));
         if (activity != null)
         {
-            log.info("Activity #" + currentActivity.getId() + " was found - no need to set its hashtags");
+            log.info("Activity #" + currentActivity.getId() + " was found - parsing and storing its hashtags");
             storeStreamHashTagStrategy.execute(activity);
 
         }
