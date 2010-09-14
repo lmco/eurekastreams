@@ -113,7 +113,8 @@ public class UserActionRequest implements Serializable
     @Override
     public String toString()
     {
-        String stringOutput = "UserActionRequest actionKey: " + actionKey + " requesting user: " + user.getUsername();
+        String stringOutput = "UserActionRequest actionKey: " + actionKey 
+            + " requesting user: " + (user != null ? user.getUsername() : "null");
         return stringOutput;
     }
 }
