@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.AuthorizationStrategy;
+import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.action.request.feed.DeleteFeedSubscriptionRequest;
 import org.eurekastreams.server.domain.EntityType;
@@ -30,74 +31,79 @@ import org.eurekastreams.server.service.actions.strategies.activity.plugins.GetE
 import org.springframework.security.AccessDeniedException;
 
 /**
- * Make sure the feed subscription that the person or group
- * wants to delete is theirs.
+ * Make sure the feed subscription that the person or group wants to delete is theirs.
  *
  */
 public class DeleteFeedSubscriberAuthorizationStrategy implements AuthorizationStrategy<PrincipalActionContext>
 {
-	/**
-	 * Get all the subs for an entity.
-	 */
-	private GetFeedSubscriptionsByEntity getFeedSubsMapper;
-	/**
-	 * Get the entity id.
-	 */
-	private GetEntityIdForFeedSubscription getEntityId;
-	
-	/**
-	 * Get the entity type.
-	 */
-	private EntityType type;
-	
-	/**
-	 * Delete feed subscriber authorization.
-	 * @param inGetFeedSubsMapper get feed subs mapper.
-	 * @param inGetEntityId get entity id mapper.
-	 * @param inType entity type.
-	 */
-	public DeleteFeedSubscriberAuthorizationStrategy(
-			final GetFeedSubscriptionsByEntity inGetFeedSubsMapper,
-			final GetEntityIdForFeedSubscription inGetEntityId,
-			final EntityType inType)
-	{
-		getFeedSubsMapper = inGetFeedSubsMapper;
-		getEntityId = inGetEntityId;
-		type = inType;
-	}
+    /**
+     * Get all the subs for an entity.
+     */
+    private GetFeedSubscriptionsByEntity getFeedSubsMapper;
+    /**
+     * Get the entity id.
+     */
+    private GetEntityIdForFeedSubscription getEntityId;
 
-	/**
-	 * Authorize.
-	 * @param inActionContext context for the strategy
-	 */
-	public void authorize(final PrincipalActionContext inActionContext) 
-	{
-		DeleteFeedSubscriptionRequest request = (DeleteFeedSubscriptionRequest) inActionContext.getParams();
-		Serializable[] paramsForAuthorizor = new Serializable[1];
-		paramsForAuthorizor[0] = request.getEntityId();
-		
-		HashMap<String, Serializable> values = new HashMap<String, Serializable>();
-		values.put("EUREKA:USER", inActionContext.getPrincipal().getAccountId());
-		values.put("EUREKA:GROUP", request.getEntityId());
-		
-		List<FeedSubscriber> feedSubs = getFeedSubsMapper.execute(
-				new GetFeedSubscriberRequest(0L, getEntityId.getEntityId(values), type));
-		
-		boolean found = false;
-		
-		for (FeedSubscriber feedSub : feedSubs)
-		{
-			if (feedSub.getId() == request.getFeedSubscriberId())
-			{
-				found = true;
-				break;
-			}
-		}
-		
-		if (!found)
-		{
-			throw new AccessDeniedException("You can only delete feed subscriptions you own.");
-		}
-	}
-	
+    /**
+     * Get the entity type.
+     */
+    private EntityType type;
+
+    /**
+     * Delete feed subscriber authorization.
+     *
+     * @param inGetFeedSubsMapper
+     *            get feed subs mapper.
+     * @param inGetEntityId
+     *            get entity id mapper.
+     * @param inType
+     *            entity type.
+     */
+    public DeleteFeedSubscriberAuthorizationStrategy(final GetFeedSubscriptionsByEntity inGetFeedSubsMapper,
+            final GetEntityIdForFeedSubscription inGetEntityId, final EntityType inType)
+    {
+        getFeedSubsMapper = inGetFeedSubsMapper;
+        getEntityId = inGetEntityId;
+        type = inType;
+    }
+
+    /**
+     * Authorize.
+     *
+     * @param inActionContext
+     *            context for the strategy
+     */
+    public void authorize(final PrincipalActionContext inActionContext)
+    {
+        DeleteFeedSubscriptionRequest request = (DeleteFeedSubscriptionRequest) inActionContext.getParams();
+        Serializable[] paramsForAuthorizor = new Serializable[1];
+        paramsForAuthorizor[0] = request.getEntityId();
+
+        HashMap<String, Serializable> values = new HashMap<String, Serializable>();
+        Principal principal = inActionContext.getPrincipal();
+        values.put("EUREKA:USER", principal.getAccountId());
+        values.put("EUREKA:GROUP", request.getEntityId());
+
+        List<FeedSubscriber> feedSubs =
+                getFeedSubsMapper.execute(new GetFeedSubscriberRequest(0L, getEntityId.getEntityId(values), type,
+                        principal.getId()));
+
+        boolean found = false;
+
+        for (FeedSubscriber feedSub : feedSubs)
+        {
+            if (feedSub.getId() == request.getFeedSubscriberId())
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found)
+        {
+            throw new AccessDeniedException("You can only delete feed subscriptions you own.");
+        }
+    }
+
 }

@@ -283,16 +283,16 @@
 		streamSearchHiddenLineIndex="2" commentable="true" streamPostable="false" accountlocked="false"
 		entityStreamViewId="6" groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
 
-	<FeedSubscriber id="1" version="1" feedId="1" entityId="42" type="PERSON"  />
-	<FeedSubscriber id="2" version="1" feedId="2" entityId="42" type="PERSON"  />
-	<FeedSubscriber id="3" version="1" feedId="3" entityId="42" type="PERSON"  />
-	<FeedSubscriber id="4" version="1" feedId="5" entityId="42" type="PERSON"  />
-	<FeedSubscriber id="5" version="1" feedId="2" entityId="142" type="PERSON"  />
-	<FeedSubscriber id="6" version="1" feedId="1" entityId="142" type="PERSON"  />
-	<FeedSubscriber id="7" version="1" feedId="4" entityId="142" type="PERSON"  />
-	<FeedSubscriber id="8" version="1" feedId="1" entityId="8" type="GROUP"  />
-	<FeedSubscriber id="9" version="1" feedId="2" entityId="8" type="GROUP"  />
-	<FeedSubscriber id="10" version="1" feedId="3" entityId="6" type="GROUP"  />
+	<FeedSubscriber id="1" version="1" feedId="1" entityId="42" type="PERSON" requestorId="42" />
+	<FeedSubscriber id="2" version="1" feedId="2" entityId="42" type="PERSON" requestorId="42" />
+	<FeedSubscriber id="3" version="1" feedId="3" entityId="42" type="PERSON" requestorId="42" />
+	<FeedSubscriber id="4" version="1" feedId="5" entityId="42" type="PERSON" requestorId="42" />
+	<FeedSubscriber id="5" version="1" feedId="2" entityId="142" type="PERSON" requestorId="142" />
+	<FeedSubscriber id="6" version="1" feedId="1" entityId="142" type="PERSON" requestorId="142" />
+	<FeedSubscriber id="7" version="1" feedId="4" entityId="142" type="PERSON" requestorId="142" />
+	<FeedSubscriber id="8" version="1" feedId="1" entityId="8" type="GROUP" requestorId="42" />
+	<FeedSubscriber id="9" version="1" feedId="2" entityId="8" type="GROUP" requestorId="42" />
+	<FeedSubscriber id="10" version="1" feedId="3" entityId="6" type="GROUP" requestorId="42" />
 
 	<Person_StreamView person_Id="42" streamViews_Id="5002"
 		streamviewindex="0" />

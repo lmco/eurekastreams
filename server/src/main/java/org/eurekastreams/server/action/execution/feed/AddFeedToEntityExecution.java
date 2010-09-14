@@ -21,6 +21,7 @@ import java.util.HashMap;
 import org.eurekastreams.commons.actions.Action;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
+import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
@@ -45,7 +46,7 @@ import org.eurekastreams.server.service.actions.strategies.activity.plugins.GetE
 /**
  * Adds a feed to a user or group. Also handles updates, since the conf settings are cleared and reset regardless and
  * the mappers handle finding and creating for me. Booya.
- * 
+ *
  */
 public class AddFeedToEntityExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
@@ -90,7 +91,7 @@ public class AddFeedToEntityExecution implements TaskHandlerExecutionStrategy<Pr
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inUpdateMapper
      *            update mapper.
      * @param inGetMapper
@@ -127,7 +128,7 @@ public class AddFeedToEntityExecution implements TaskHandlerExecutionStrategy<Pr
 
     /**
      * Perform action.
-     * 
+     *
      * @param context
      *            The ActionContext for this execution
      * @return Serializable result
@@ -170,32 +171,33 @@ public class AddFeedToEntityExecution implements TaskHandlerExecutionStrategy<Pr
         {
             group = (String) values.get("EUREKA:GROUP");
         }
+        Principal principal = context.getActionContext().getPrincipal();
         if (values.containsKey("EUREKA:FEEDSUBID"))
         {
-            ServiceActionContext deleteAC = new ServiceActionContext(new DeleteFeedSubscriptionRequest((Long) values
-                    .get("EUREKA:FEEDSUBID"), group), context.getActionContext().getPrincipal());
-
+            ServiceActionContext deleteAC =
+                    new ServiceActionContext(new DeleteFeedSubscriptionRequest((Long) values.get("EUREKA:FEEDSUBID"),
+                            group), principal);
             deleteFeedSub.getExecutionStrategy().execute(deleteAC);
         }
 
         // Put the user in the values hash map so it's on equal footing for the strategies.
-        values.put("EUREKA:USER", context.getActionContext().getPrincipal().getAccountId());
+        values.put("EUREKA:USER", principal.getAccountId());
 
         // TODO BUG: context does not contain the right parameters for this execution strategy.
         // Perhaps a new request object needs to be created? Moving on for now.
-        ServiceActionContext getFeedContext = new ServiceActionContext(values.get("EUREKA:FEEDURL"), context
-                .getActionContext().getPrincipal());
+        ServiceActionContext getFeedContext = new ServiceActionContext(values.get("EUREKA:FEEDURL"), principal);
         String title = (String) getTitleFromFeed.execute(getFeedContext);
 
         // Find or create the feed.
-        GetFeedByUrlRequest request = new GetFeedByUrlRequest((Long) values.get("EUREKA:PLUGINID"), (String) values
-                .get("EUREKA:FEEDURL"));
+        GetFeedByUrlRequest request =
+                new GetFeedByUrlRequest((Long) values.get("EUREKA:PLUGINID"), (String) values.get("EUREKA:FEEDURL"));
         Feed feed = getMapper.execute(request);
         feed.setTitle(title);
 
         // And now find or create the subscriber.
-        FeedSubscriber feedSubscriber = getFeedSubscriberMapper.execute(new GetFeedSubscriberRequest(feed.getId(),
-                getEntityId.getEntityId(values), type));
+        FeedSubscriber feedSubscriber =
+                getFeedSubscriberMapper.execute(new GetFeedSubscriberRequest(feed.getId(), getEntityId
+                        .getEntityId(values), type, principal.getId()));
 
         // Add any non system key/value pairs to the feed subscribers conf settings.
         feedSubscriber.getConfSettings().clear();
@@ -217,7 +219,7 @@ public class AddFeedToEntityExecution implements TaskHandlerExecutionStrategy<Pr
         StreamEntityDTO destination = new StreamEntityDTO();
         if (type.equals(EntityType.PERSON))
         {
-            destination.setUniqueIdentifier(context.getActionContext().getPrincipal().getAccountId());
+            destination.setUniqueIdentifier(principal.getAccountId());
         }
         else
         {
@@ -229,8 +231,7 @@ public class AddFeedToEntityExecution implements TaskHandlerExecutionStrategy<Pr
         activity.setVerb(ActivityVerb.POST);
 
         postActivityExecutor.execute(new TaskHandlerActionContext<PrincipalActionContext>(new ServiceActionContext(
-                new PostActivityRequest(activity), context.getActionContext().getPrincipal()), context
-                .getUserActionRequests()));
+                new PostActivityRequest(activity), principal), context.getUserActionRequests()));
 
         updateMapper.execute(new PersistenceRequest<Feed>(feed));
         return Boolean.TRUE;

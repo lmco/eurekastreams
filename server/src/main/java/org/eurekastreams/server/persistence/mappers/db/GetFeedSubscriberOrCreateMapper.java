@@ -17,6 +17,7 @@ package org.eurekastreams.server.persistence.mappers.db;
 
 import java.util.List;
 
+import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.plugins.Feed;
 import org.eurekastreams.server.domain.stream.plugins.FeedSubscriber;
 import org.eurekastreams.server.persistence.mappers.ReadMapper;
@@ -50,10 +51,11 @@ public class GetFeedSubscriberOrCreateMapper extends ReadMapper<GetFeedSubscribe
         }
 
         FeedSubscriber feedSub = new FeedSubscriber();
-        
+
         feedSub.setEntityId(inRequest.getEntityId());
         feedSub.setEntityType(inRequest.getEntityType());
         feedSub.setFeed((Feed) getHibernateSession().load(Feed.class, inRequest.getFeedId()));
+        feedSub.setRequestor((Person) getHibernateSession().load(Person.class, inRequest.getRequestorPersonId()));
         getEntityManager().persist(feedSub);
 
         return feedSub;
