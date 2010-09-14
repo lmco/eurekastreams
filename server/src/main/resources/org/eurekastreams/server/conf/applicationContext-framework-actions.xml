@@ -1489,6 +1489,8 @@
 		<constructor-arg value="true" />
 	</bean>
 
+
+
 	<bean id="getPersonModelView" class="org.eurekastreams.commons.actions.service.ServiceAction">
 		<constructor-arg ref="noValidationStrategy" />
 		<constructor-arg ref="noAuthorizationStrategy" />
@@ -1507,6 +1509,19 @@
 		</constructor-arg>
 		<constructor-arg value="true" />
 	</bean>
+	
+	
+    <bean id="getBulkEntities" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.GetBulkEntitiesExecution">
+                <constructor-arg ref="bulkPeopleByAccountIdMapper" />
+                <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
 
 	<bean id="personLookup" class="org.eurekastreams.commons.actions.service.ServiceAction">
 		<constructor-arg ref="noValidationStrategy" />

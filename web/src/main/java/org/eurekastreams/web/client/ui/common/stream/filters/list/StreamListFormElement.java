@@ -20,15 +20,22 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.StreamScopeAddedEvent;
+import org.eurekastreams.web.client.events.data.GotBulkEntityResponseEvent;
+import org.eurekastreams.web.client.model.BulkEntityModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.form.elements.FormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.StreamScopeFormElement;
 
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
@@ -119,6 +126,19 @@ public class StreamListFormElement extends FlowPanel implements FormElement
      */
     public StreamListFormElement(final JSONObject json)
     {
+        scopes = new StreamScopeFormElement("scopes", new LinkedList<StreamScope>(), "",
+                "Enter the name of an employee or group stream.", false, true, "/resources/autocomplete/entities/",
+                MAX_NAME);
+
+        Session.getInstance().getEventBus().addObserver(StreamScopeAddedEvent.getEvent(),
+                new Observer<StreamScopeAddedEvent>()
+                {
+                    public void update(final StreamScopeAddedEvent arg1)
+                    {
+                        myLists.setChecked(true);
+                    }
+                });
+
         this.addStyleName("stream-lists");
         label.addStyleName("form-label");
         myLists.addStyleName("my-lists");
@@ -140,8 +160,6 @@ public class StreamListFormElement extends FlowPanel implements FormElement
         this.add(starred);
         this.add(myLists);
 
-        LinkedList<StreamScope> scopesList = new LinkedList<StreamScope>();
-
         if (json == null)
         {
             following.setChecked(true);
@@ -150,17 +168,48 @@ public class StreamListFormElement extends FlowPanel implements FormElement
         {
             if (json.containsKey(RECIPIENT_KEY))
             {
+                Session.getInstance().getEventBus().addObserver(GotBulkEntityResponseEvent.class,
+                        new Observer<GotBulkEntityResponseEvent>()
+                        {
+                            public void update(final GotBulkEntityResponseEvent event)
+                            {
+                                JSONArray recipientArray = json.get(RECIPIENT_KEY).isArray();
+
+                                for (int i = 0; i < recipientArray.size(); i++)
+                                {
+                                    JSONObject recipient = (JSONObject) recipientArray.get(i);
+                                    String uniqueId = recipient.get(RECIPIENT_UNIQUE_ID_KEY).isString().stringValue();
+                                    String displayName = getEntityDisplayName(EntityType.valueOf(recipient.get(
+                                            RECIPIENT_TYPE_KEY).isString().stringValue()), uniqueId, event
+                                            .getResponse());
+
+                                    ScopeType scopeType = ScopeType.valueOf(recipient.get(RECIPIENT_TYPE_KEY)
+                                            .isString().stringValue());
+
+                                    StreamScope scope = new StreamScope(scopeType, uniqueId);
+                                    scope.setDisplayName(displayName);
+
+                                    Session.getInstance().getEventBus().notifyObservers(
+                                            new StreamScopeAddedEvent(scope));
+                                }
+
+                                Session.getInstance().getEventBus().removeObserver(GotBulkEntityResponseEvent.class,
+                                        this);
+                            }
+                        });
+
+                ArrayList<StreamEntityDTO> entities = new ArrayList<StreamEntityDTO>();
+
                 JSONArray recipientArray = json.get(RECIPIENT_KEY).isArray();
                 for (int i = 0; i < recipientArray.size(); i++)
                 {
                     JSONObject recipient = (JSONObject) recipientArray.get(i);
-                    Window.alert(recipient.get(RECIPIENT_TYPE_KEY).isString().stringValue());
-                    ScopeType scopeType = ScopeType.valueOf(recipient.get(RECIPIENT_TYPE_KEY).isString().stringValue());
-                    String uniqueId = recipient.get(RECIPIENT_UNIQUE_ID_KEY).isString().stringValue();
-                    StreamScope scope = new StreamScope(scopeType, uniqueId);
-                    scope.setDisplayName("Display Name Needed");
-                    scopesList.add(scope);
+                    StreamEntityDTO entity = new StreamEntityDTO();
+                    entity.setType(EntityType.valueOf(recipient.get(RECIPIENT_TYPE_KEY).isString().stringValue()));
+                    entity.setUniqueIdentifier(recipient.get(RECIPIENT_UNIQUE_ID_KEY).isString().stringValue());
+                    entities.add(entity);
                 }
+                BulkEntityModel.getInstance().fetch(entities, false);
                 myLists.setChecked(true);
             }
             else if (json.containsKey(SAVED_KEY))
@@ -181,10 +230,38 @@ public class StreamListFormElement extends FlowPanel implements FormElement
             }
         }
 
-        scopes = new StreamScopeFormElement("scopes", scopesList, "", "Enter the name of an employee or group stream.",
-                false, true, "/resources/autocomplete/entities/", MAX_NAME);
         this.add(scopes);
 
+    }
+
+    /**
+     * Get the person.
+     *
+     * @param type
+     *            the type.
+     * @param accountId
+     *            account id.
+     * @param entities
+     *            the person.
+     * @return the person.
+     */
+    private String getEntityDisplayName(
+            final EntityType type, final String accountId, final List<Serializable> entities)
+    {
+        for (Serializable entity : entities)
+        {
+            if (type.equals(EntityType.PERSON) && entity instanceof PersonModelView
+                    && ((PersonModelView) entity).getUniqueId().equals(accountId))
+            {
+                return ((PersonModelView) entity).getDisplayName();
+            }
+            if (type.equals(EntityType.GROUP) && entity instanceof DomainGroupModelView
+                    && ((DomainGroupModelView) entity).getUniqueId().equals(accountId))
+            {
+                return ((DomainGroupModelView) entity).getName();
+            }
+        }
+        return "Name Unknown";
     }
 
     /**
