@@ -29,17 +29,14 @@ import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder.Method;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextBoxFormElement;
-import org.eurekastreams.web.client.ui.common.form.elements.ValueOnlyFormElement;
-import org.eurekastreams.web.client.ui.common.stream.filters.search.StreamSearchDialogContent.Mode;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -141,7 +138,7 @@ public class CustomStreamDialogContent implements DialogContent
     {
         body.clear();
 
-        streamLists = new StreamListFormElement("");
+        streamLists = new StreamListFormElement(null);
 
         form = new FormBuilder("Organize streams into custom lists", CustomStreamModel.getInstance(), mode);
         form.turnOffChangeCheck();
@@ -175,29 +172,25 @@ public class CustomStreamDialogContent implements DialogContent
 
         form.setOnCancelHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest()));
 
+
+
+        if (view != null)
+        {
+            JSONObject json = JSONParser.parse(view.getRequest()).isObject();
+            JSONObject query = json.get("query").isObject();
+
+            streamLists = new StreamListFormElement(query);
+            keywords = query.get("keywords").isString().stringValue();
+        }
+
         form.addFormElement(new BasicTextBoxFormElement(MAX_NAME, false, "Name", "name", name, "", true));
 
-        if (mode.equals(Mode.SAVE))
-        {
-            form.addFormElement(new ValueOnlyFormElement("streamId", viewId));
-
-            Panel whichViewPanel = new FlowPanel();
-            whichViewPanel.addStyleName("view-panel");
-            Label label = new InlineLabel("Stream: ");
-            label.addStyleName("form-label");
-            whichViewPanel.add(label);
-            label = new InlineLabel(viewName);
-            label.addStyleName("view-text");
-            whichViewPanel.add(label);
-            form.addWidget(whichViewPanel);
-        }
-        else
-        {
-            form.addFormElement(streamLists);
-        }
+        form.addFormElement(streamLists);
 
         form.addFormElement(new BasicTextBoxFormElement(MAX_KEYWORD, false, "Keywords", "keywords", keywords,
                 "Optional: Separate multiple keywords with spaces", false));
+
+
 
         body.add(form);
 

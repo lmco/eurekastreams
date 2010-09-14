@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,23 @@ package org.eurekastreams.web.client.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+import java.util.LinkedList;
+import java.util.List;
 import org.eurekastreams.server.action.request.stream.SetStreamFilterOrderRequest;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamFilter;
+import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.service.actions.response.GetCurrentUserStreamFiltersResponse;
 import org.eurekastreams.web.client.events.CustomStreamCreatedEvent;
 import org.eurekastreams.web.client.events.CustomStreamDeletedEvent;
+import org.eurekastreams.web.client.events.CustomStreamUpdatedEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserCustomStreamsResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
+
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.user.client.Window;
 
 /**
  * Custom stream model.
@@ -72,10 +80,11 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
      */
     public void insert(final HashMap<String, Serializable> request)
     {
+        JSONObject json = getJSONFromHashMap(request);
+        Window.alert(json.toString());
         Stream everyone = new Stream();
-        everyone.setRequest("{ query : { recipient : [ { type : \"PERSON\", name : \"romanoa1\" } ] } }");
-
-        everyone.setName("Anthony Romano");
+        everyone.setRequest(json.toString());
+        everyone.setName((String) request.get("name"));
         everyone.setReadOnly(false);
         everyone.setId(3L);
 
@@ -88,9 +97,59 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
      */
     public void update(final HashMap<String, Serializable> request)
     {
+        JSONObject json = getJSONFromHashMap(request);
+        Window.alert(json.toString());
+        Stream everyone = new Stream();
+        everyone.setRequest(json.toString());
+        everyone.setName((String) request.get("name"));
+        everyone.setReadOnly(false);
+        everyone.setId(3L);
 
+        Session.getInstance().getEventBus().notifyObservers(new CustomStreamUpdatedEvent(everyone));
     }
 
+    /**
+     * Converts the form hashmap to the JSON request object.
+     * @param request the form request.
+     * @return the JSON request.
+     */
+    private JSONObject getJSONFromHashMap(final HashMap<String, Serializable> request)
+    {
+        JSONObject jsonObject = StreamJsonRequestFactory.getEmptyRequest();
+
+        if (!"".equals(request.get("keywords")))
+        {
+            jsonObject = StreamJsonRequestFactory.setSearchTerm((String) request.get("keywords"), jsonObject);
+        }
+
+        if (request.get("stream") instanceof String)
+        {
+            if (request.get("stream").equals("Following"))
+            {
+                jsonObject = StreamJsonRequestFactory.setSourceAsFollowing(jsonObject);
+            }
+            else if (request.get("stream").equals("Saved"))
+            {
+                jsonObject = StreamJsonRequestFactory.setSourceAsSaved(jsonObject);
+            }
+            else if (request.get("stream").equals("parentOrg"))
+            {
+                jsonObject = StreamJsonRequestFactory.setSourceAsParentOrg(jsonObject);
+            }
+        }
+        else
+        {
+            List<StreamScope> scopes = (LinkedList<StreamScope>) request.get("stream");
+
+            for (StreamScope scope : scopes)
+            {
+                jsonObject = StreamJsonRequestFactory.addRecipient(EntityType.valueOf(scope.getScopeType().toString()),
+                        scope.getUniqueKey(), jsonObject);
+            }
+        }
+
+        return jsonObject;
+    }
     /**
      * {@inheritDoc}
      */

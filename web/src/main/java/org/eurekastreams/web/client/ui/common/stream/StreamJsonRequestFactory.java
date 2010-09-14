@@ -16,12 +16,12 @@
 package org.eurekastreams.web.client.ui.common.stream;
 
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.web.client.ui.Session;
 
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
-import com.google.gwt.json.client.JSONValue;
 
 /**
  * Constructs a stream JSON request.
@@ -59,6 +59,21 @@ public final class StreamJsonRequestFactory
     private static final String SORT_KEY = "sortBy";
 
     /**
+     * Sort key.
+     */
+    private static final String FOLLOWED_BY_KEY = "followedBy";
+
+    /**
+     * Sort key.
+     */
+    private static final String PARENT_ORG_KEY = "parentOrg";
+
+    /**
+     * Sort key.
+     */
+    private static final String SAVED_KEY = "savedBy";
+
+    /**
      * Min ID key.
      */
     private static final String MIN_ID_KEY = "minId";
@@ -81,6 +96,7 @@ public final class StreamJsonRequestFactory
             /**
              * @return the value as a string.
              */
+            @Override
             public String toString()
             {
                 return "date";
@@ -90,7 +106,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Gets an empty request. Used for everyone stream.
-     * 
+     *
      * @return new empty JSON request.
      */
     public static JSONObject getEmptyRequest()
@@ -100,7 +116,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Get a JSON object from a String.
-     * 
+     *
      * @param request
      *            the request.
      * @return the JSON object.
@@ -112,7 +128,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Adds a recipient to a request.
-     * 
+     *
      * @param type
      *            the type of recepient.
      * @param uniqueId
@@ -131,9 +147,9 @@ public final class StreamJsonRequestFactory
 
         JSONArray recipientArray = null;
 
-        if (json.containsKey(RECIPIENT_KEY))
+        if (query.containsKey(RECIPIENT_KEY))
         {
-            recipientArray = json.get(RECIPIENT_KEY).isArray();
+            recipientArray = query.get(RECIPIENT_KEY).isArray();
         }
         else
         {
@@ -148,14 +164,14 @@ public final class StreamJsonRequestFactory
 
     /**
      * Set the org stream in the request.
-     * 
+     *
      * @param orgShortName
      *            the org short name.
      * @param json
      *            the json request.
      * @return the modified request.
      */
-    public static JSONValue setOrganization(final String orgShortName, final JSONObject json)
+    public static JSONObject setOrganization(final String orgShortName, final JSONObject json)
     {
         JSONObject query = json.get("query").isObject();
 
@@ -166,7 +182,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Sets the search term in a request..
-     * 
+     *
      * @param searchText
      *            the search text.
      * @param json
@@ -184,7 +200,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Sets the sorting of a request.
-     * 
+     *
      * @param sortBy
      *            the type of sort.
      * @param json
@@ -200,9 +216,45 @@ public final class StreamJsonRequestFactory
         return json;
     }
 
+
+    /**
+     * Sets the source as the current user's parent org.
+     * @param json the json.
+     * @return the json.
+     */
+    public static JSONObject setSourceAsParentOrg(final JSONObject json)
+    {
+        JSONObject query = json.get("query").isObject();
+        query.put(PARENT_ORG_KEY, new JSONString(Session.getInstance().getCurrentPerson().getAccountId()));
+        return json;
+    }
+
+    /**
+     * Sets the source as the current user's saved..
+     * @param json the json.
+     * @return the json.
+     */
+    public static JSONObject setSourceAsSaved(final JSONObject json)
+    {
+        JSONObject query = json.get("query").isObject();
+        query.put(SAVED_KEY, new JSONString(Session.getInstance().getCurrentPerson().getAccountId()));
+        return json;
+    }
+
+    /**
+     * Sets the source as the current user's following.
+     * @param json the json.
+     * @return the json.
+     */
+    public static JSONObject setSourceAsFollowing(final JSONObject json)
+    {
+        JSONObject query = json.get("query").isObject();
+        query.put(FOLLOWED_BY_KEY, new JSONString(Session.getInstance().getCurrentPerson().getAccountId()));
+        return json;
+    }
     /**
      * Sets the min ID of a request.
-     * 
+     *
      * @param minId
      *            the min ID.
      * @param json
@@ -215,10 +267,10 @@ public final class StreamJsonRequestFactory
 
         return json;
     }
-    
+
     /**
      * Sets the max ID of a request.
-     * 
+     *
      * @param maxId
      *            the max ID.
      * @param json
@@ -231,7 +283,7 @@ public final class StreamJsonRequestFactory
 
         return json;
     }
-    
+
     /**
      * Constructor.
      */

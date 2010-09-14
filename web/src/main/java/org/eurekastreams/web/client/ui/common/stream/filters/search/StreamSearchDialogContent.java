@@ -239,7 +239,7 @@ public class StreamSearchDialogContent implements DialogContent
         }
         if (!mode.equals(Mode.SAVE))
         {
-            streamLists = new StreamListFormElement("");
+           // streamLists = new StreamListFormElement("");
 
             form = new FormBuilder(TITLE, StreamSearchModel.getInstance(viewName), method);
         }
