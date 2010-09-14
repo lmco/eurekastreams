@@ -105,4 +105,15 @@ public class UserActionRequest implements Serializable
     {
         this.user = inUser;
     }
+    
+    /**
+     * Retrieve information about the user request overriding the toString method.
+     * @return String description of the contents of this User Request.
+     */
+    @Override
+    public String toString()
+    {
+        String stringOutput = "UserActionRequest actionKey: " + actionKey + " requesting user: " + user.getUsername();
+        return stringOutput;
+    }
 }
