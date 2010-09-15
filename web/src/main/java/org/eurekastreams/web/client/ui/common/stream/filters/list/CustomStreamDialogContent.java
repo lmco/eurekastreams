@@ -180,7 +180,10 @@ public class CustomStreamDialogContent implements DialogContent
             JSONObject query = json.get("query").isObject();
 
             streamLists = new StreamListFormElement(query);
-            keywords = query.get("keywords").isString().stringValue();
+            if (query.get("keywords") != null)
+            {
+                keywords = query.get("keywords").isString().stringValue();
+            }
         }
 
         form.addFormElement(new BasicTextBoxFormElement(MAX_NAME, false, "Name", "name", name, "", true));
