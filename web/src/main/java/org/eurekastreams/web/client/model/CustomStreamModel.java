@@ -165,7 +165,7 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
     {
         super.callWriteAction("deleteStreamForCurrentUser", request.getId(), new OnSuccessCommand<Long>()
         {
-            public void onSuccess(Long response)
+            public void onSuccess(final Long response)
             {
                 Session.getInstance().getEventBus().notifyObservers(new CustomStreamDeletedEvent(request));
             }

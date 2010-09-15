@@ -317,6 +317,13 @@ public class StreamPanel extends FlowPanel
         stream.setVisible(false);
     }
 
+    /**
+     * Check the history for changes.
+     * 
+     * @param history
+     *            the history.
+     * @return true if it has changed.
+     */
     private Boolean checkHistory(final HashMap<String, String> history)
     {
         Boolean hasChanged = false;

@@ -70,12 +70,12 @@ public class DeleteStreamForCurrentUserExecutionTest
     /**
      * User Id.
      */
-    private final static String USER_ID = "ntid";
+    private static final String USER_ID = "ntid";
 
     /**
      * Person.
      */
-    private final static Person person = CONTEXT.mock(Person.class);
+    private static Person person = CONTEXT.mock(Person.class);
 
     /**
      * Setup fixtures.
