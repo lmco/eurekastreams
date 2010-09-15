@@ -30,6 +30,11 @@ import org.eurekastreams.commons.model.DomainEntity;
 public class Stream extends DomainEntity implements Serializable, StreamFilter
 {
     /**
+     * Serial version uid.
+     */
+    private static final long serialVersionUID = 7278197745679222759L;
+
+    /**
      * The name of the view.
      */
     @Column(nullable = false)

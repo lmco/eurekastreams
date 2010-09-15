@@ -1,14 +1,40 @@
 --
--- Set database version to 1.0.000
+-- Set database version to 1.0.0006
 --
 
--- insert into db_version (major, minor, patch, scriptname, description) values (1, 0, '0006', 'U0006MigrateStreamViewsToStreams.sql', 'Migrate from StreamView to Stream');
+insert into db_version (major, minor, patch, scriptname, description) values (1, 0, '0006', 'U0006MigrateStreamViewsToStreams.sql', 'Migrate from StreamView to Stream');
 
--- add the missing constraint
--- alter table Person_Stream
--- 	add constraint FKBEF553AAB077E4B8
--- 	foreign key (streams_id)
--- 	references Stream;
+-- Recreate the tables
+DROP TABLE Stream CASCADE;
+DROP TABLE Person_Stream;
+
+create table Stream (
+    id  bigserial not null,
+    version int8 not null,
+    name varchar(255) not null,
+    readOnly bool not null,
+    request varchar(255) not null,
+    primary key (id)
+);
+
+create table Person_Stream (
+	personId int8 not null,
+	streamId int8 not null,
+	streamIndex int4 not null,
+	primary key (personId, streamIndex),
+	unique (personId, streamId)
+);
+
+alter table Person_Stream
+	add constraint FKBEF553AA242A4102
+	foreign key (personId)
+	references Person;
+
+alter table Person_Stream
+	add constraint FKBEF553AA6260196C
+	foreign key (streamId)
+	references Stream;
+
 
 -- 
 -- Function to migrate stream views
@@ -114,16 +140,16 @@ BEGIN
 
 
 	-- everyone gets the default 4
-	INSERT INTO person_stream (person_id, streams_id, streamindex) 
+	INSERT INTO person_stream (personId, streamId, streamindex) 
 		SELECT id, followingId, 0 FROM Person;
 
-	INSERT INTO person_stream (person_id, streams_id, streamindex) 
+	INSERT INTO person_stream (personId, streamId, streamindex) 
 		SELECT id, parentOrgId, 1 FROM Person;
 
-	INSERT INTO person_stream (person_id, streams_id, streamindex) 
+	INSERT INTO person_stream (personId, streamId, streamindex)
 		SELECT id, everyoneId, 2 FROM Person;
 
-	INSERT INTO person_stream (person_id, streams_id, streamindex) 
+	INSERT INTO person_stream (personId, streamId, streamindex)
 		SELECT id, savedItemsId, 3 FROM Person;
 		
 	
@@ -134,9 +160,9 @@ BEGIN
 		-- //QUERY
      LOOP
 		
-		SELECT MAX(streamindex) + 1 INTO personMaxStreamIndex FROM Person_Stream WHERE person_id = rec.personid;
+		SELECT MAX(streamindex) + 1 INTO personMaxStreamIndex FROM Person_Stream WHERE personId = rec.personid;
 		
-		INSERT INTO person_stream (person_id, streams_id, streamindex) 
+		INSERT INTO person_stream (personId, streamId, streamindex) 
 			VALUES(rec.personid, rec.streamid, personMaxStreamIndex);
 	
     END LOOP;
@@ -273,9 +299,9 @@ BEGIN
 		-- //QUERY
      LOOP
 		
-		SELECT MAX(streamindex) + 1 INTO personMaxStreamIndex FROM Person_Stream WHERE person_id = rec.personid;
+		SELECT MAX(streamindex) + 1 INTO personMaxStreamIndex FROM Person_Stream WHERE personId = rec.personid;
 		
-		INSERT INTO person_stream (person_id, streams_id, streamindex) 
+		INSERT INTO person_stream (personId, streamId, streamindex) 
 			VALUES(rec.personid, rec.streamid, personMaxStreamIndex);
 	
     END LOOP;
@@ -289,15 +315,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
-
--- Clear out the tables
-DELETE FROM person_stream;
-DELETE FROM stream;
-SELECT setval('stream_id_seq', 1, false);
-
-
 -- Create the streams
 SELECT migrateStreamViews();
 SELECT migrateStreamSearches();
-

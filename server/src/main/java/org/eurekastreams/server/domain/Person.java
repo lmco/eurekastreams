@@ -224,6 +224,13 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     @IndexColumn(name = "streamIndex", base = 0)
     // Don't cascade on delete
     @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+    @JoinTable(name = "Person_Stream",
+    // join columns
+    joinColumns = { @JoinColumn(table = "Person", name = "personId") },
+    // inverse join columns
+    inverseJoinColumns = { @JoinColumn(table = "Stream", name = "streamId") },
+    // unique constraints
+    uniqueConstraints = { @UniqueConstraint(columnNames = { "personId", "streamId" }) })
     private List<Stream> streams;
 
     // ///////////////////////////////////////////////////////////////////
@@ -486,26 +493,22 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     @Basic(optional = false)
     @Field(name = "followersCount", index = Index.UN_TOKENIZED, store = Store.NO)
     private int followersCount = 0;
-
     /**
      * The number of updates for this person.
      */
     @Basic(optional = false)
     @Field(name = "updatesCount", index = Index.UN_TOKENIZED, store = Store.NO)
     private int updatesCount = 0;
-
     /**
      * Count of people this user is following.
      */
     @Basic(optional = false)
     private int followingCount = 0;
-
     /**
      * Count of groups this user is following.
      */
     @Basic(optional = false)
     private int groupsCount = 0;
-
     /**
      * avatar id image for this user.
      */
@@ -1829,21 +1832,24 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         lastAcceptedTermsOfService = inLastAcceptedTermsOfService;
     }
 
-    /** @return the lastAcceptedTermsOfService
+    /**
+     * @return the lastAcceptedTermsOfService
      */
     public Date getLastAcceptedTermsOfService()
     {
         return lastAcceptedTermsOfService;
     }
 
-    /** @return the streamScope
+    /**
+     * @return the streamScope
      */
     public StreamScope getStreamScope()
     {
         return streamScope;
     }
 
-    /** @param inStreamScope
+    /**
+     * @param inStreamScope
      *            the streamScope to set
      */
     public void setStreamScope(final StreamScope inStreamScope)
@@ -1858,7 +1864,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         return accountLocked;
     }
-
     /**
      * @param inAccountLocked
      *            if the account is locked.
@@ -1867,8 +1872,8 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         accountLocked = inAccountLocked;
     }
-
-    /** Get the unique id for as implemented for Followable.
+    /**
+     * Get the unique id for as implemented for Followable.
      *
      * @return uniqueId of the person - accountid.
      */
@@ -1877,8 +1882,8 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         return getAccountId();
     }
-
-    /** Get the parent org id without loading the parent organization.
+    /**
+     * Get the parent org id without loading the parent organization.
      *
      * @return the parent org id without loading the parent organization
      */
@@ -1886,8 +1891,8 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         return parentOrgId;
     }
-
-    /** Set the parent org id.
+    /**
+     * Set the parent org id.
      *
      * @param inParentOrgId
      *            the parent org id
@@ -1896,8 +1901,8 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         parentOrgId = inParentOrgId;
     }
-
-    /** {@inheritDoc}.
+    /**
+     * {@inheritDoc}.
      */
     @Override
     public String getBannerId()
@@ -1905,31 +1910,30 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         // TODO Auto-generated method stub
         return bannerId;
     }
-
-    /** {@inheritDoc}.
+    /**
+     * {@inheritDoc}.
      */
     @Override
     public void setBannerId(final String inBannerId)
     {
         bannerId = inBannerId;
     }
-
-    /** {@inheritDoc}.
+    /**
+     * {@inheritDoc}.
      */
     @Override
     public Long getBannerEntityId()
     {
         return bannerEntityId;
     }
-
-    /** {@inheritDoc}.
+    /**
+     * {@inheritDoc}.
      */
     @Override
     public void setBannerEntityId(final Long inBannerEntityId)
     {
         bannerEntityId = inBannerEntityId;
     }
-
     /**
      * {@inheritDoc}
      */
@@ -1938,7 +1942,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         return parentOrganization.getName();
     }
-
     /**
      * {@inheritDoc}
      */
@@ -1947,7 +1950,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         return parentOrganization.getShortName();
     }
-
     /**
      * Get the streams.
      *
@@ -1957,7 +1959,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         return streams;
     }
-
     /**
      * Set the streams.
      *
@@ -1968,7 +1969,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         streams = inStreams;
     }
-
     /**
      * TODO: This is a patch until we stop sending entities over the line
      *
