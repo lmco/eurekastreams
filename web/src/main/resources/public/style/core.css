@@ -11415,6 +11415,31 @@ div.profile-settings-tab-container div.tab-container {
 	padding-bottom: 10px;
 }
 
+
+.group-notif-suppress
+{
+	width: 420px;
+}
+.group-notif-suppress label
+{
+	font-style: normal;
+	font-size: 11px;
+}
+.group-notif-suppress .form-instructions
+{
+	margin-bottom: 5px;
+}
+.group-notif-suppress+.group-notif-suppress
+{
+	margin-top: -10px;
+	padding-top: 0;
+}
+.group-notif-suppress+.group-notif-suppress .form-label
+{
+	display: none;
+}
+
+
 .profile-more-people {
 	color: #0066CC;
 }

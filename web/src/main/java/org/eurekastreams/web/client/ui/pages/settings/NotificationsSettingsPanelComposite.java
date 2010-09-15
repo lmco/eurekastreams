@@ -65,7 +65,7 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
     static
     {
         PERSONAL_PREF_CATEGORIES.put("Activity posted to your stream", Category.POST_TO_PERSONAL_STREAM);
-        PERSONAL_PREF_CATEGORIES.put("Colleague likes activity you posted to your stream or a group stream", 
+        PERSONAL_PREF_CATEGORIES.put("Colleague likes activity you posted to your stream or a group stream",
 		Category.LIKE);
         PERSONAL_PREF_CATEGORIES.put("Comment is posted to an activity in your stream or an activity "
                 + "you posted to a group stream", Category.COMMENT);
@@ -158,7 +158,7 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
         panel.add(label);
 
         label =
-                new Label("Eureka Streams w ill notify you w hen new activity has taken place in the groups that "
+                new Label("Eureka Streams will notify you when new activity has taken place in the groups that "
                         + "you coordinate or groups that you have joined.");
         label.addStyleName("instructions");
         panel.add(label);

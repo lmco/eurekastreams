@@ -82,6 +82,12 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
      */
     public static final String STREAM_COMMENTABLE_KEY = "commentable";
 
+    /** Form key. */
+    public static final String SUPPRESS_POST_NOTIF_TO_MEMBER_KEY = "suppressPostNotifToMember";
+
+    /** Form key. */
+    public static final String SUPPRESS_POST_NOTIF_TO_COORDINATOR_KEY = "suppressPostNotifToCoordinator";
+
     /**
      * form error message.
      */
