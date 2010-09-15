@@ -2930,7 +2930,7 @@
 	-->
 	<util:map id="notifierIdToDisplayMap" map-class="java.util.LinkedHashMap">
 		<entry key="EMAIL" value="Email" />
-		<entry key="APP_ALERT" value="In App" />
+		<entry key="APP_ALERT" value="In-App" />
 	</util:map>
 
 	<bean id="createNotificationsAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
