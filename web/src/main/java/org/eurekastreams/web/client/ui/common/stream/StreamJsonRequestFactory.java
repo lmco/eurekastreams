@@ -291,7 +291,7 @@ public final class StreamJsonRequestFactory
     }
     
     /**
-     * Sets the max number of results for the request
+     * Sets the max number of results for the request.
      *
      * @param maxResults
      *            the max results.
