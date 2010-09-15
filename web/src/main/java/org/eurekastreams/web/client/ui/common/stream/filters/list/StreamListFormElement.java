@@ -261,7 +261,7 @@ public class StreamListFormElement extends FlowPanel implements FormElement
                 return ((DomainGroupModelView) entity).getName();
             }
         }
-        return "Name Unknown";
+        return null;
     }
 
     /**

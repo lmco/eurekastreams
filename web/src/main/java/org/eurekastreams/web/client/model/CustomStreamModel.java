@@ -39,7 +39,7 @@ import com.google.gwt.user.client.Window;
 
 /**
  * Custom stream model.
- * 
+ *
  */
 public class CustomStreamModel extends BaseModel implements Fetchable<Serializable>,
         Insertable<HashMap<String, Serializable>>, Updateable<HashMap<String, Serializable>>, Deletable<Stream>,
@@ -52,7 +52,7 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
 
     /**
      * Gets the singleton.
-     * 
+     *
      * @return the singleton.
      */
     public static CustomStreamModel getInstance()
@@ -147,6 +147,9 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
                 jsonObject = StreamJsonRequestFactory.addRecipient(EntityType.valueOf(scope.getScopeType().toString()),
                         scope.getUniqueKey(), jsonObject);
             }
+
+            jsonObject = StreamJsonRequestFactory.addRecipient(EntityType.GROUP,
+                    "groupDeleted", jsonObject);
         }
 
         return jsonObject;

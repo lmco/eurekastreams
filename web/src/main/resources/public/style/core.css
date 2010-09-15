@@ -14420,3 +14420,7 @@ body .url-validator .required-form-label {
 	display:none;
 }
 
+.stream-scope.deleted .gwt-Label
+{
+	text-decoration:line-through;
+}

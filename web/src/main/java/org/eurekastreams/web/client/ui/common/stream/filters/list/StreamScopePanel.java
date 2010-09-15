@@ -39,7 +39,16 @@ public class StreamScopePanel extends FlowPanel
     {
 
         this.addStyleName("stream-scope");
-        this.add(new Label(scope.getDisplayName()));
+        if (scope.getDisplayName() == null)
+        {
+            this.add(new Label(scope.getUniqueKey()));
+            this.addStyleName("deleted");
+        }
+        else
+        {
+            this.add(new Label(scope.getDisplayName()));
+        }
+
         FlowPanel anchorContainer = new FlowPanel();
         anchorContainer.addStyleName("gwt-Hyperlink");
         Anchor close = new Anchor("X");
