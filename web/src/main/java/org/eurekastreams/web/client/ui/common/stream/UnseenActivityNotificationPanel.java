@@ -78,6 +78,7 @@ public class UnseenActivityNotificationPanel extends FlowPanel
                             JSONObject request = StreamJsonRequestFactory.getJSONRequest(event.getJsonRequest());
                             request = StreamJsonRequestFactory.setMinId(event.getStream().getPagedSet().get(0).getId(),
                                     request);
+                            request = StreamJsonRequestFactory.setMaxResults(Integer.MAX_VALUE, request);
 
                             Session.getInstance().getTimer().pauseJob("getUnseenActivityJob");
                             Session.getInstance().getTimer().changeFetchable("getUnseenActivityJob",

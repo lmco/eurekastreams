@@ -84,6 +84,11 @@ public final class StreamJsonRequestFactory
     private static final String MAX_ID_KEY = "maxId";
 
     /**
+     * Max results key.
+     */
+    private static final String MAX_RESULTS_KEY = "count";
+
+    /**
      * Sort types.
      */
     public enum SortType
@@ -252,6 +257,7 @@ public final class StreamJsonRequestFactory
         query.put(FOLLOWED_BY_KEY, new JSONString(Session.getInstance().getCurrentPerson().getAccountId()));
         return json;
     }
+    
     /**
      * Sets the min ID of a request.
      *
@@ -280,6 +286,22 @@ public final class StreamJsonRequestFactory
     public static JSONObject setMaxId(final Long maxId, final JSONObject json)
     {
         json.put(MAX_ID_KEY, new JSONString(maxId.toString()));
+
+        return json;
+    }
+    
+    /**
+     * Sets the max number of results for the request
+     *
+     * @param maxResults
+     *            the max results.
+     * @param json
+     *            the request.
+     * @return the request.
+     */
+    public static JSONObject setMaxResults(final Integer maxResults, final JSONObject json)
+    {
+        json.put(MAX_RESULTS_KEY, new JSONString(maxResults.toString()));
 
         return json;
     }

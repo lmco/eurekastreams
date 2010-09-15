@@ -294,6 +294,20 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
     }
 
     /**
+     * Sets if the search can be changed.
+     * 
+     * @param canChange
+     *            if the search can be changed.
+     */
+    public void setCanChange(final boolean canChange)
+    {
+        closeButton.setVisible(canChange);
+        saveSearch.setVisible(canChange);
+        searchTerm.setVisible(canChange);
+        searchGo.setVisible(canChange);
+    }
+
+    /**
      * Builds and sets the link for adding the stream as a gadget.
      * 
      * @param gadgetTitle
@@ -324,7 +338,6 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
      * @return JSON string representation.
      */
     private static native String makeJsonString(final String input) /*-{
-                           return input == null ? 'null' : '"' + input.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"';
-                       }-*/;
-
+          return input == null ? 'null' : '"' + input.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"';
+       }-*/;
 }

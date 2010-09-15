@@ -72,9 +72,9 @@ public class StreamPanel extends FlowPanel
     private StreamListPanel stream = null;
 
     /**
-     * Search JSON.
+     * JSON Query.
      */
-    private String searchJson = "";
+    private String jsonQuery = "";
 
     /**
      * Panel for posting contents.
@@ -185,7 +185,7 @@ public class StreamPanel extends FlowPanel
         {
             public void update(final StreamRequestMoreEvent arg1)
             {
-                JSONValue jsonVal = JSONParser.parse(searchJson);
+                JSONValue jsonVal = JSONParser.parse(jsonQuery);
                 JSONObject obj = jsonVal.isObject();
 
                 if (null != obj)
@@ -223,7 +223,7 @@ public class StreamPanel extends FlowPanel
                 {
                     public void update(final StreamReinitializeRequestEvent event)
                     {
-                        EventBus.getInstance().notifyObservers(new StreamRequestEvent(streamName, searchJson));
+                        EventBus.getInstance().notifyObservers(new StreamRequestEvent(streamName, jsonQuery));
                     }
                 });
 
@@ -232,7 +232,7 @@ public class StreamPanel extends FlowPanel
             public void update(final MessageStreamAppendEvent evt)
             {
                 stream.reinitialize();
-                StreamModel.getInstance().fetch(searchJson, false);
+                StreamModel.getInstance().fetch(jsonQuery, false);
             }
         });
 
@@ -241,7 +241,7 @@ public class StreamPanel extends FlowPanel
             public void update(final StreamRequestEvent event)
             {
                 streamName = event.getStreamName();
-                searchJson = event.getJson();
+                jsonQuery = event.getJson();
                 if (activityId != 0L)
                 {
                     ActivityModel.getInstance().fetch(activityId, false);
@@ -251,25 +251,29 @@ public class StreamPanel extends FlowPanel
                     setListMode();
                     stream.reinitialize();
 
-                    String updatedJson = searchJson;
+                    String updatedJson = jsonQuery;
+
+                    JSONObject queryObject = JSONParser.parse(updatedJson).isObject().get("query").isObject();
+
+                    // Only show cancel option if search is not part of the view.
+                    Boolean canChange = !queryObject.containsKey("keywords"); 
 
                     if ("" != search)
                     {
                         updatedJson = StreamJsonRequestFactory.setSort(
                                 SortType.DATE,
                                 StreamJsonRequestFactory.setSearchTerm(search, StreamJsonRequestFactory
-                                        .getJSONRequest(searchJson))).toString();
-                        streamSearch.setSearchTerm(search);
+                                        .getJSONRequest(jsonQuery))).toString();
                     }
 
-                    JSONObject queryObject = JSONParser.parse(searchJson).isObject().get("query").isObject();
-
-                    if (queryObject.containsKey("search"))
+                    if (queryObject.containsKey("keywords"))
                     {
-                        streamSearch.setSearchTerm(queryObject.get("search").isString().stringValue());
+                        streamSearch.setSearchTerm(queryObject.get("keywords").isString().stringValue());
                     }
-
+                    
                     streamSearch.setTitleText(streamName);
+                    streamSearch.setCanChange(canChange);
+                    
                     StreamModel.getInstance().fetch(updatedJson, false);
                 }
             }
@@ -281,7 +285,7 @@ public class StreamPanel extends FlowPanel
             {
                 Session.getInstance().getEventBus().notifyObservers(
                         new UpdateHistoryEvent(new CreateUrlRequest("search", String.valueOf(event.getSearchText()),
-                                true)));
+                                false)));
             }
         });
 

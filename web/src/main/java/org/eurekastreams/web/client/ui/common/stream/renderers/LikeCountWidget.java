@@ -104,10 +104,12 @@ public class LikeCountWidget extends Composite
      * The view all link.
      */
     private static Anchor viewAll = new Anchor("view all");
+    
     /**
-     * The actiivty Id.
+     * Current activity ID being shown.
      */
-    private static Long activityId;
+    private static Long currentActivityId = 0L;
+    
     /**
      * The body.
      */
@@ -169,7 +171,7 @@ public class LikeCountWidget extends Composite
         {
             public void onClick(final ClickEvent arg0)
             {
-                DialogContent dialogContent = new LikersDialogContent(activityId);
+                DialogContent dialogContent = new LikersDialogContent(currentActivityId);
                 Dialog dialog = new Dialog(dialogContent);
                 dialog.setBgVisible(true);
                 dialog.center();
@@ -233,7 +235,7 @@ public class LikeCountWidget extends Composite
         {
             public void onMouseOver(final MouseOverEvent arg0)
             {
-                activityId = inActivityId;
+                currentActivityId = inActivityId;
                 viewAll.setVisible(false);
                 avatarPanel.clear();
                 DOM.setStyleAttribute(usersWhoLikedPanelWrapper.getElement(), "top", likeCountLink.getAbsoluteTop()
@@ -272,7 +274,7 @@ public class LikeCountWidget extends Composite
         {
             public void update(final ActivityLikedChangeEvent event)
             {
-                if (event.getActivityId().equals(activityId))
+                if (event.getActivityId().equals(inActivityId))
                 {
                     updatePanel(event.getActionType());
                 }
@@ -298,6 +300,7 @@ public class LikeCountWidget extends Composite
                 currentPerson.setEntityId(Session.getInstance().getCurrentPerson().getId());
                 currentPerson.setAvatarId(Session.getInstance().getCurrentPerson().getAvatarId());
                 currentPerson.setDisplayName(Session.getInstance().getCurrentPerson().getDisplayName());
+                currentPerson.setAccountId(Session.getInstance().getCurrentPerson().getAccountId());
 
                 likers.add(0, currentPerson);
 
