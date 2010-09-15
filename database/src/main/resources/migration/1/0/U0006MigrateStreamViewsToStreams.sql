@@ -10,23 +10,9 @@
 -- 	foreign key (streams_id)
 -- 	references Stream;
 
-
--- ************************** Custom (non-search) Streams **************************
--- Create a temp table
-CREATE TABLE TempStreamViewMigrate
-(
-	id SERIAL,
-	personId bigserial NOT NULL,
-	streamviewid bigserial NOT NULL,
-	request character varying(8000) NOT NULL,
-	"name" character varying(255) NOT NULL,
-	streamId bigserial
-);
-
-
 -- 
--- Function to create streams for views
-CREATE or replace FUNCTION createStreamsForStreamViews() RETURNS integer AS $$
+-- Function to migrate stream views
+CREATE or replace FUNCTION migrateStreamViews() RETURNS integer AS $$
 DECLARE
 	rec RECORD ;
 	cnt integer ;
@@ -37,10 +23,15 @@ DECLARE
 	personMaxStreamIndex integer ;
 BEGIN
 	
-	-- Empty out streams
-	DELETE FROM person_stream;
-	DELETE FROM stream;
-	PERFORM setval('stream_id_seq', 1, false);
+	CREATE TABLE TempStreamViewMigrate
+	(
+		id SERIAL,
+		personId bigserial NOT NULL,
+		streamviewid bigserial NOT NULL,
+		request character varying(8000) NOT NULL,
+		"name" character varying(255) NOT NULL,
+		streamId bigserial
+	);
 	
 	-- insert shared views
 	INSERT INTO Stream (version, "name", readonly, request) 
@@ -81,6 +72,9 @@ BEGIN
 		where
 			-- omits the standard 4 streams
 			sv.type is null
+		ORDER BY
+			sc.scopetype, 
+			sc.uniquekey
 		-- //QUERY
 	LOOP
 	
@@ -133,7 +127,7 @@ BEGIN
 		SELECT id, savedItemsId, 3 FROM Person;
 		
 	
-	-- Tie the user's custom-created streams to those people
+	-- Tie the user's custom-created streams to their owners
 	FOR rec IN 
 		-- QUERY//
 		SELECT * FROM TempStreamViewMigrate
@@ -145,7 +139,9 @@ BEGIN
 		INSERT INTO person_stream (person_id, streams_id, streamindex) 
 			VALUES(rec.personid, rec.streamid, personMaxStreamIndex);
 	
-    END LOOP;	
+    END LOOP;
+	
+	DROP TABLE TempStreamViewMigrate;
 	
     RETURN 0;
     
@@ -153,8 +149,155 @@ END;
 $$ LANGUAGE plpgsql;
 
 
--- Create the streams
-select createStreamsForStreamViews();
 
--- drop the temp table
-DROP TABLE TempStreamViewMigrate;
+-- 
+-- Function to migrate stream searches
+CREATE or replace FUNCTION migrateStreamSearches() RETURNS integer AS $$
+DECLARE
+	rec RECORD ;
+	cnt integer ;
+	personMaxStreamIndex integer ;
+BEGIN
+	
+	CREATE TABLE TempStreamSearchMigrate
+	(
+		id SERIAL,
+		personId bigserial NOT NULL,
+		streamsearchid bigserial NOT NULL,
+		request character varying(8000) NOT NULL,
+		"name" character varying(255) NOT NULL,
+		streamId bigserial
+	);
+	
+	-- Add all stream searches without keywords
+	FOR rec IN 
+
+		-- QUERY//
+		select 
+			p.id as PersonId, 
+			ss.name as StreamSearchName, 
+			ss.id as StreamSearchId,
+			sc.scopetype, 
+			sc.uniquekey
+		from Person p
+			inner join person_streamsearch pss
+				on p.id = pss.person_id
+			inner join streamsearch ss
+				on ss.id = pss.streamsearches_id
+			inner join streamview sv 
+				on ss.streamview_id = sv.id
+			inner join streamview_streamscope svsc
+				on svsc.streamview_id = sv.id
+			inner join streamscope sc 
+				on svsc.includedscopes_id = sc.id
+		ORDER BY 
+			sc.scopetype, 
+			sc.uniquekey
+		-- //QUERY
+	LOOP
+
+		select count(1) into cnt from TempStreamSearchMigrate where streamsearchid = rec.StreamSearchId AND personId = rec.PersonId;
+		if cnt = 0 then
+			
+			-- insert a stream record
+			insert into Stream ("name", request, version, readonly) values (rec.StreamSearchName, '', 0, false); 
+	
+			insert into TempStreamSearchMigrate (personId, streamsearchid, "name", streamid, request) values(
+				rec.PersonId,
+				rec.StreamSearchId,
+				rec.StreamSearchName,
+				currval('stream_id_seq'),
+				'{query:{recipient:[{type:"' || rec.scopetype || '",name:"' || rec.uniquekey || '"}]}}'
+			);
+			
+		else
+			update 
+				TempStreamSearchMigrate 
+			SET 
+				request = replace(request, ']}}', ',{type:"' || rec.scopetype || '",name:"' || rec.uniquekey || '"}]}}')
+			WHERE
+				PersonId = rec.PersonId
+				AND streamsearchid = rec.StreamSearchId;
+		end if;
+			
+	END LOOP;
+	
+	-- create the block for keywords in all requests
+	UPDATE 
+		TempStreamSearchMigrate 
+	SET 
+		request = replace(request, ']}}', '], keywords:"____KEYWORDS_TEMP_BLOCK____"}}');
+	
+	
+	-- add all keywords
+	FOR rec IN
+	 	-- QUERY//
+		SELECT 
+			kw.streamsearch_id AS StreamSearchId, 
+			replace(element, '"', '') AS keyword 
+		FROM 
+			streamsearch_keywords kw 
+			INNER JOIN TempStreamSearchMigrate tmp 
+				ON tmp.streamsearchid = kw.streamsearch_id
+		-- //QUERY
+	LOOP
+	
+		update 
+			TempStreamSearchMigrate 
+		SET 
+			request = replace(request, '____KEYWORDS_TEMP_BLOCK____', '____KEYWORDS_TEMP_BLOCK____ ' || rec.keyword)
+		WHERE
+			streamsearchid = rec.StreamSearchId;
+	
+	END LOOP;
+	
+	-- remove the block for keywords in all requests
+	update 
+		TempStreamSearchMigrate 
+	SET 
+		request = replace(request, '____KEYWORDS_TEMP_BLOCK____ ', '');
+
+
+	-- update the streams with the requests
+	UPDATE Stream 
+		SET request = TempStreamSearchMigrate.request 
+	FROM 
+		TempStreamSearchMigrate 
+	WHERE Stream.id = TempStreamSearchMigrate.StreamId;
+
+
+	-- Tie the user's searches to their owners
+	FOR rec IN 
+		-- QUERY//
+		SELECT * FROM TempStreamSearchMigrate
+		-- //QUERY
+     LOOP
+		
+		SELECT MAX(streamindex) + 1 INTO personMaxStreamIndex FROM Person_Stream WHERE person_id = rec.personid;
+		
+		INSERT INTO person_stream (person_id, streams_id, streamindex) 
+			VALUES(rec.personid, rec.streamid, personMaxStreamIndex);
+	
+    END LOOP;
+
+
+	-- drop the temp table
+	DROP TABLE TempStreamSearchMigrate;
+	
+    RETURN 0;
+    
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+-- Clear out the tables
+DELETE FROM person_stream;
+DELETE FROM stream;
+SELECT setval('stream_id_seq', 1, false);
+
+
+-- Create the streams
+SELECT migrateStreamViews();
+SELECT migrateStreamSearches();
+
