@@ -49,12 +49,12 @@ public class CollectionCombiner<Request, Type> implements ResultsCombinerStrateg
 
         for (Request req : request)
         {
-            if (partialResponse.getUnhandledRequest().contains(req))
+            if (partialResponse.getUnhandledRequest().contains(req) && remainingIndex < response2.size())
             {
                 allItems.add(response2.get(remainingIndex));
                 remainingIndex++;
             }
-            else
+            else if (partialIndex < partialResponse.getResponse().size())
             {
                 allItems.add(partialResponse.getResponse().get(partialIndex));
                 partialIndex++;

@@ -54,5 +54,4 @@ public class GetUserStreamsDbMapperTest extends MapperTest
         List<StreamFilter> result = sut.execute(userId);
         assertEquals(2, result.size());
     }
-
 }

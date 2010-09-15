@@ -4390,7 +4390,28 @@
         </constructor-arg>
 		<constructor-arg value="true" />
 	</bean>
-
+	
+	<bean id="modifyStreamForCurrentUser" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+        	<bean class="org.eurekastreams.server.action.execution.stream.ModifyStreamForCurrentUserExecution">
+        		<constructor-arg ref="jpaPersonMapper" />
+        	</bean>
+        </constructor-arg>
+		<constructor-arg value="true" />
+	</bean>
+	
+	<bean id="deleteStreamForCurrentUser" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+        	<bean class="org.eurekastreams.server.action.execution.stream.DeleteStreamForCurrentUserExecution">
+        		<constructor-arg ref="jpaPersonMapper" />
+        	</bean>
+        </constructor-arg>
+		<constructor-arg value="true" />
+	</bean>
     <!--
         Beans for all of the Verb Validators that will be added to the
         VerbValidator HashMap

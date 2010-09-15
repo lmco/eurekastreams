@@ -82,14 +82,18 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
     public void insert(final HashMap<String, Serializable> request)
     {
         JSONObject json = getJSONFromHashMap(request);
-        Window.alert(json.toString());
-        Stream everyone = new Stream();
-        everyone.setRequest(json.toString());
-        everyone.setName((String) request.get("name"));
-        everyone.setReadOnly(false);
-        everyone.setId(3L);
+        Stream stream = new Stream();
+        stream.setRequest(json.toString());
+        stream.setName((String) request.get("name"));
+        stream.setId(0L);
 
-        Session.getInstance().getEventBus().notifyObservers(new CustomStreamCreatedEvent(everyone));
+        super.callWriteAction("modifyStreamForCurrentUser", stream, new OnSuccessCommand<Stream>()
+        {
+            public void onSuccess(final Stream response)
+            {
+                Session.getInstance().getEventBus().notifyObservers(new CustomStreamCreatedEvent(response));
+            }
+        });
 
     }
 
@@ -111,7 +115,9 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
 
     /**
      * Converts the form hashmap to the JSON request object.
-     * @param request the form request.
+     * 
+     * @param request
+     *            the form request.
      * @return the JSON request.
      */
     private JSONObject getJSONFromHashMap(final HashMap<String, Serializable> request)
@@ -151,12 +157,19 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
 
         return jsonObject;
     }
+
     /**
      * {@inheritDoc}
      */
     public void delete(final Stream request)
     {
-        Session.getInstance().getEventBus().notifyObservers(new CustomStreamDeletedEvent(request));
+        super.callWriteAction("deleteStreamForCurrentUser", request.getId(), new OnSuccessCommand<Long>()
+        {
+            public void onSuccess(Long response)
+            {
+                Session.getInstance().getEventBus().notifyObservers(new CustomStreamDeletedEvent(request));
+            }
+        });
     }
 
     /**
