@@ -112,9 +112,14 @@ public class StreamPanel extends FlowPanel
     private FlowPanel activityDetailPanel = new FlowPanel();
 
     /**
-     * History parameters.
+     * Activity ID.
      */
-    private HashMap<String, String> historyParams = new HashMap<String, String>();
+    private Long activityId = 0L;
+
+    /**
+     * Search string.
+     */
+    private String search = "";
 
     /**
      * Initialize page.
@@ -150,7 +155,7 @@ public class StreamPanel extends FlowPanel
                 {
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
-                        historyParams = event.getParameters();
+                        checkHistory(event.getParameters());
                     }
                 }, true);
 
@@ -159,15 +164,10 @@ public class StreamPanel extends FlowPanel
                 {
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
-                        if (null != event.getParameters())
+                        if (checkHistory(event.getParameters()))
                         {
-                            historyParams = event.getParameters();
+                            EventBus.getInstance().notifyObservers(StreamReinitializeRequestEvent.getEvent());
                         }
-                        else
-                        {
-                            historyParams = new HashMap<String, String>();
-                        }
-                        EventBus.getInstance().notifyObservers(StreamReinitializeRequestEvent.getEvent());
                     }
                 });
 
@@ -242,9 +242,9 @@ public class StreamPanel extends FlowPanel
             {
                 streamName = event.getStreamName();
                 searchJson = event.getJson();
-                if (historyParams.containsKey("activityId"))
+                if (activityId != 0L)
                 {
-                    ActivityModel.getInstance().fetch(Long.parseLong(historyParams.get("activityId")), false);
+                    ActivityModel.getInstance().fetch(activityId, false);
                 }
                 else
                 {
@@ -253,13 +253,20 @@ public class StreamPanel extends FlowPanel
 
                     String updatedJson = searchJson;
 
-                    if (historyParams.containsKey("search"))
+                    if ("" != search)
                     {
                         updatedJson = StreamJsonRequestFactory.setSort(
                                 SortType.DATE,
-                                StreamJsonRequestFactory.setSearchTerm(historyParams.get("search"),
-                                        StreamJsonRequestFactory.getJSONRequest(searchJson))).toString();
-                        streamSearch.setSearchTerm(historyParams.get("search"));
+                                StreamJsonRequestFactory.setSearchTerm(search, StreamJsonRequestFactory
+                                        .getJSONRequest(searchJson))).toString();
+                        streamSearch.setSearchTerm(search);
+                    }
+
+                    JSONObject queryObject = JSONParser.parse(searchJson).isObject().get("query").isObject();
+
+                    if (queryObject.containsKey("search"))
+                    {
+                        streamSearch.setSearchTerm(queryObject.get("search").isString().stringValue());
                     }
 
                     streamSearch.setTitleText(streamName);
@@ -308,6 +315,41 @@ public class StreamPanel extends FlowPanel
         streamSearch.setVisible(false);
         postContent.setVisible(false);
         stream.setVisible(false);
+    }
+
+    /**
+     * Check the history for changes.
+     * 
+     * @param history
+     *            the history.
+     * @return true if it has changed.
+     */
+    private Boolean checkHistory(final HashMap<String, String> history)
+    {
+        Boolean hasChanged = false;
+
+        Long newActivityId = 0L;
+        String newSearch = "";
+
+        if (null != history)
+        {
+            if (history.containsKey("activityId"))
+            {
+                newActivityId = Long.parseLong(history.get("activityId"));
+            }
+
+            if (history.containsKey("search"))
+            {
+                newSearch = history.get("search");
+            }
+        }
+
+        hasChanged = !(newActivityId.equals(activityId) && newSearch.equals(search));
+
+        activityId = newActivityId;
+        search = newSearch;
+
+        return hasChanged;
     }
 
     /**
