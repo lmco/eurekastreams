@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
-import org.eurekastreams.web.client.events.StreamReinitializeRequestEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
@@ -53,6 +52,9 @@ public class StreamSortPanel extends Composite
      */
     private Anchor activeSort = null;
 
+    /**
+     * Map of the links to the sorts.
+     */
     final Map<String, Anchor> linkMap = new HashMap<String, Anchor>();
 
     /**
@@ -131,7 +133,15 @@ public class StreamSortPanel extends Composite
         });
     }
 
-    private void updateSelected(final String updatedSort, boolean setHistory)
+    /**
+     * Update the selected sort.
+     * 
+     * @param updatedSort
+     *            the new sort.
+     * @param setHistory
+     *            if the history should be set.
+     */
+    private void updateSelected(final String updatedSort, final boolean setHistory)
     {
         sort = updatedSort;
         if (null != activeSort)

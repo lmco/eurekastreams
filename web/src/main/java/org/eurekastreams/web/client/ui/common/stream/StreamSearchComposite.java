@@ -200,7 +200,7 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
 
         saveSearch.addClickHandler(new ClickHandler()
         {
-            public void onClick(ClickEvent arg0)
+            public void onClick(final ClickEvent arg0)
             {
                 Stream newStream = new Stream();
                 newStream.setRequest(lastRequest);

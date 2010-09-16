@@ -93,7 +93,7 @@ public class StreamPanel extends FlowPanel
     /**
      * Non date sort max results.
      */
-    private final static int NON_DATE_SORT_MAX_RESULTS = 50;
+    private static final int NON_DATE_SORT_MAX_RESULTS = 50;
 
     /**
      * The stream name.
