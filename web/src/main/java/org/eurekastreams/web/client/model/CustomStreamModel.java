@@ -35,7 +35,6 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.user.client.Window;
 
 /**
  * Custom stream model.
@@ -103,19 +102,23 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
     public void update(final HashMap<String, Serializable> request)
     {
         JSONObject json = getJSONFromHashMap(request);
-        Window.alert(json.toString());
-        Stream everyone = new Stream();
-        everyone.setRequest(json.toString());
-        everyone.setName((String) request.get("name"));
-        everyone.setReadOnly(false);
-        everyone.setId(3L);
+        Stream stream = new Stream();
+        stream.setRequest(json.toString());
+        stream.setName((String) request.get("name"));
+        stream.setId((Long) request.get("id"));
 
-        Session.getInstance().getEventBus().notifyObservers(new CustomStreamUpdatedEvent(everyone));
+        super.callWriteAction("modifyStreamForCurrentUser", stream, new OnSuccessCommand<Stream>()
+        {
+            public void onSuccess(final Stream response)
+            {
+                Session.getInstance().getEventBus().notifyObservers(new CustomStreamUpdatedEvent(response));
+            }
+        });
     }
 
     /**
      * Converts the form hashmap to the JSON request object.
-     * 
+     *
      * @param request
      *            the form request.
      * @return the JSON request.
@@ -153,9 +156,6 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
                 jsonObject = StreamJsonRequestFactory.addRecipient(EntityType.valueOf(scope.getScopeType().toString()),
                         scope.getUniqueKey(), jsonObject);
             }
-
-            jsonObject = StreamJsonRequestFactory.addRecipient(EntityType.GROUP,
-                    "groupDeleted", jsonObject);
         }
 
         return jsonObject;

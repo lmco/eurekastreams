@@ -29,6 +29,7 @@ import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder.Method;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextBoxFormElement;
+import org.eurekastreams.web.client.ui.common.form.elements.ValueOnlyFormElement;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -184,6 +185,8 @@ public class CustomStreamDialogContent implements DialogContent
             {
                 keywords = query.get("keywords").isString().stringValue();
             }
+
+            form.addFormElement(new ValueOnlyFormElement("id", view.getId()));
         }
 
         form.addFormElement(new BasicTextBoxFormElement(MAX_NAME, false, "Name", "name", name, "", true));
