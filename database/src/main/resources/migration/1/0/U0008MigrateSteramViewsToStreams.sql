@@ -9,13 +9,14 @@ DROP TABLE Stream CASCADE;
 DROP TABLE Person_Stream;
 
 create table Stream (
-    id  bigserial not null,
-    version int8 not null,
-    name varchar(255) not null,
-    readOnly bool not null,
-    request varchar(255) not null,
-    primary key (id)
+	id  bigserial not null,
+	version int8 not null,
+	name varchar(255) not null,
+	readOnly bool not null,
+	request text not null,
+	primary key (id)
 );
+
 
 create table Person_Stream (
 	personId int8 not null,

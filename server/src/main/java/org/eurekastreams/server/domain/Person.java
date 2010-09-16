@@ -1864,6 +1864,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         return accountLocked;
     }
+
     /**
      * @param inAccountLocked
      *            if the account is locked.
@@ -1872,6 +1873,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         accountLocked = inAccountLocked;
     }
+
     /**
      * Get the unique id for as implemented for Followable.
      *
@@ -1882,6 +1884,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         return getAccountId();
     }
+
     /**
      * Get the parent org id without loading the parent organization.
      *
@@ -1891,6 +1894,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         return parentOrgId;
     }
+
     /**
      * Set the parent org id.
      *
@@ -1901,6 +1905,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         parentOrgId = inParentOrgId;
     }
+
     /**
      * {@inheritDoc}.
      */
@@ -1910,6 +1915,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         // TODO Auto-generated method stub
         return bannerId;
     }
+
     /**
      * {@inheritDoc}.
      */
@@ -1918,6 +1924,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         bannerId = inBannerId;
     }
+
     /**
      * {@inheritDoc}.
      */
@@ -1926,6 +1933,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         return bannerEntityId;
     }
+
     /**
      * {@inheritDoc}.
      */
@@ -1934,6 +1942,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         bannerEntityId = inBannerEntityId;
     }
+
     /**
      * {@inheritDoc}
      */
@@ -1942,6 +1951,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         return parentOrganization.getName();
     }
+
     /**
      * {@inheritDoc}
      */
@@ -1950,6 +1960,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         return parentOrganization.getShortName();
     }
+
     /**
      * Get the streams.
      *
@@ -1959,6 +1970,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         return streams;
     }
+
     /**
      * Set the streams.
      *
@@ -1969,6 +1981,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         streams = inStreams;
     }
+
     /**
      * TODO: This is a patch until we stop sending entities over the line
      *
