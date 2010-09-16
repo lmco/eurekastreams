@@ -89,55 +89,6 @@ public final class StreamJsonRequestFactory
     private static final String MAX_RESULTS_KEY = "count";
 
     /**
-     * Sort types.
-     */
-    public enum SortType
-    {
-        /**
-         * Date.
-         */
-        DATE
-        {
-            /**
-             * To string.
-             * @return the enum value as a string.
-             */
-            public String toString()
-            {
-                return "date";
-            }
-        },
-        /**
-         * Interesting.
-         */
-        INTERESTING
-        {
-            /**
-             * To string.
-             * @return the enum value as a string.
-             */
-            public String toString()
-            {
-                return "interesting";
-            }
-        },
-        /**
-         * Comment date.
-         */
-        COMMENT_DATE
-        {
-            /**
-             * To string.
-             * @return the enum value as a string.
-             */
-            public String toString()
-            {
-                return "commentdate";
-            }
-        }
-    }
-
-    /**
      * Gets an empty request. Used for everyone stream.
      * 
      * @return new empty JSON request.
@@ -240,11 +191,11 @@ public final class StreamJsonRequestFactory
      *            the request.
      * @return the request.
      */
-    public static JSONObject setSort(final SortType sortBy, final JSONObject json)
+    public static JSONObject setSort(final String sortBy, final JSONObject json)
     {
         JSONObject query = json.get("query").isObject();
 
-        query.put(SORT_KEY, new JSONString(sortBy.toString()));
+        query.put(SORT_KEY, new JSONString(sortBy));
 
         return json;
     }

@@ -18,15 +18,20 @@ package org.eurekastreams.web.client.ui.common.stream;
 import java.util.HashMap;
 
 import org.eurekastreams.server.domain.Page;
+import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.HideNotificationEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.StreamSearchBeginEvent;
+import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Bindable;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LabeledTextBox;
+import org.eurekastreams.web.client.ui.common.dialog.Dialog;
+import org.eurekastreams.web.client.ui.common.stream.filters.list.CustomStreamDialogContent;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -70,7 +75,7 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
     /**
      * Save search button.
      */
-    Label saveSearch = new Label("+ Save Search");
+    Label saveSearch = new Label("+ Save Stream");
 
     /**
      * Close button.
@@ -96,6 +101,11 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
      * View label.
      */
     private Label viewLbl = new Label("");
+
+    /**
+     * Last request.
+     */
+    private String lastRequest = "";
 
     /** Link to add a gadget for the displayed stream. */
     private Hyperlink addGadgetLink;
@@ -188,12 +198,35 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
             }
         });
 
+        saveSearch.addClickHandler(new ClickHandler()
+        {
+            public void onClick(ClickEvent arg0)
+            {
+                Stream newStream = new Stream();
+                newStream.setRequest(lastRequest);
+                
+                Session.getInstance().getEventBus().notifyObservers(new HideNotificationEvent());
+                CustomStreamDialogContent dialogContent = new CustomStreamDialogContent(newStream);
+                Dialog dialog = new Dialog(dialogContent);
+                dialog.setBgVisible(true);
+                dialog.center();
+            }
+        });
+
         closeButton.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent arg0)
             {
                 EventBus.getInstance().notifyObservers(new StreamSearchBeginEvent(""));
                 onSearchCanceled();
+            }
+        });
+
+        EventBus.getInstance().addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
+        {
+            public void update(final GotStreamResponseEvent event)
+            {
+                lastRequest = event.getJsonRequest();
             }
         });
 
@@ -338,6 +371,6 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
      * @return JSON string representation.
      */
     private static native String makeJsonString(final String input) /*-{
-          return input == null ? 'null' : '"' + input.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"';
-       }-*/;
+                return input == null ? 'null' : '"' + input.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"';
+             }-*/;
 }
