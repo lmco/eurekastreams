@@ -318,3 +318,6 @@ $$ LANGUAGE plpgsql;
 -- Create the streams
 SELECT migrateStreamViews();
 SELECT migrateStreamSearches();
+
+DROP FUNCTION migrateStreamViews();
+DROP FUNCTION migrateStreamSearches();
