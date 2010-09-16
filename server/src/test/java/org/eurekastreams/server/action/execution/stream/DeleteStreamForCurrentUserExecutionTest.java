@@ -24,7 +24,8 @@ import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.Stream;
-import org.eurekastreams.server.persistence.PersonMapper;
+import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
+import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -55,7 +56,7 @@ public class DeleteStreamForCurrentUserExecutionTest
     /**
      * Person mapper.
      */
-    private static PersonMapper personMapper = CONTEXT.mock(PersonMapper.class);
+    private static FindByIdMapper<Person> personMapper = CONTEXT.mock(FindByIdMapper.class);
 
     /**
      * Action context.
@@ -70,7 +71,7 @@ public class DeleteStreamForCurrentUserExecutionTest
     /**
      * User Id.
      */
-    private static final String USER_ID = "ntid";
+    private static final Long USER_ID = 6L;
 
     /**
      * Person.
@@ -106,10 +107,10 @@ public class DeleteStreamForCurrentUserExecutionTest
                 oneOf(actionContext).getPrincipal();
                 will(returnValue(principal));
 
-                oneOf(principal).getAccountId();
+                oneOf(principal).getId();
                 will(returnValue(USER_ID));
 
-                oneOf(personMapper).findByAccountId(USER_ID);
+                oneOf(personMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(person));
                 
                 oneOf(person).getStreams();
@@ -150,10 +151,10 @@ public class DeleteStreamForCurrentUserExecutionTest
                 oneOf(actionContext).getPrincipal();
                 will(returnValue(principal));
 
-                oneOf(principal).getAccountId();
+                oneOf(principal).getId();
                 will(returnValue(USER_ID));
-
-                oneOf(personMapper).findByAccountId(USER_ID);
+                
+                oneOf(personMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(person));
                 
                 oneOf(person).getStreams();

@@ -134,7 +134,7 @@ public class StreamListPanel extends FlowPanel
                 }
                 else
                 {
-                    noResults.setText(event.getNoResultsMessage());
+                    noResults.setText("This stream does not contain any activity.");
                     noResults.setVisible(true);
                     howManyInList = 0;
                 }
@@ -168,6 +168,7 @@ public class StreamListPanel extends FlowPanel
         {
             public void onClick(final ClickEvent arg0)
             {
+                waitSpinner.setVisible(true);
                 addingMore = true;
                 eventBus.notifyObservers(new StreamRequestMoreEvent());
             }

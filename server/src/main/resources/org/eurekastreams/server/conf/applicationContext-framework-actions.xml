@@ -1691,6 +1691,8 @@
 					class="org.eurekastreams.server.service.actions.strategies.activity.InterpolationListCollider" />            
             </constructor-arg>
             <constructor-arg ref="securityTrimmer" />
+            <constructor-arg ref="bulkPeopleMapper" />
+			<constructor-arg value="%%CURRENT_USER_ACCOUNT_ID%%" />            
 	</bean>
 	    
     <bean id="getActivitiesByRequestExecutor" 
@@ -3097,33 +3099,6 @@
 		<constructor-arg value="false" />
 	</bean>
 
-	<bean id="deleteStreamSearch" class="org.eurekastreams.commons.actions.service.ServiceAction">
-		<constructor-arg ref="noValidationStrategy" />
-		<constructor-arg ref="noAuthorizationStrategy" />
-		<constructor-arg>
-			<bean
-				class="org.eurekastreams.server.action.execution.stream.DeleteStreamSearchExecution">
-				<constructor-arg ref="deleteCachedCompositeStreamSearchByIdMapper" />
-				<constructor-arg ref="findByIdMapper" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg value="false" />
-	</bean>
-
-	<bean id="deleteStreamView" class="org.eurekastreams.commons.actions.service.ServiceAction">
-		<constructor-arg ref="noValidationStrategy" />
-		<constructor-arg ref="noAuthorizationStrategy" />
-		<constructor-arg>
-			<bean
-				class="org.eurekastreams.server.action.execution.stream.DeleteStreamViewExecution">
-				<constructor-arg ref="deleteCachedCompositeStreamByIdMapper" />
-				<constructor-arg ref="findByIdMapper" />
-				<constructor-arg ref="deleteStreamViewAndRelatedSearches" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg value="false" />
-	</bean>
-
 	<bean id="updateGadgetDefinitionCountAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
 		<!-- Quartz job -->
 		<constructor-arg ref="noValidationStrategy" />
@@ -3187,6 +3162,35 @@
 		</constructor-arg>
 		<constructor-arg value="false" />
 	</bean>
+	
+
+	<bean id="deleteStreamForCurrentUser" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.action.execution.stream.DeleteStreamForCurrentUserExecution">
+				<constructor-arg>
+					<ref bean="findByIdMapper" />
+				</constructor-arg>
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="false" />
+	</bean>
+	
+	<bean id="modifyStreamForCurrentUser" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.action.execution.stream.ModifyStreamForCurrentUserExecution">
+				<constructor-arg>
+					<ref bean="findByIdMapper" />
+				</constructor-arg>
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="false" />
+	</bean>		
 
 	<bean id="refreshCachedCustomCompositeStreamAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
 		<constructor-arg ref="noValidationStrategy" />

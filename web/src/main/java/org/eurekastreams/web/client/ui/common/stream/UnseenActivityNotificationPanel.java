@@ -44,6 +44,11 @@ public class UnseenActivityNotificationPanel extends FlowPanel
     private HTML unseenActivityCount = new HTML();
 
     /**
+     * Max number of unseen activities to look for.
+     */
+    private static final int MAX_UNSEEN = 1000;
+
+    /**
      * Default constructor.
      */
     public UnseenActivityNotificationPanel()
@@ -73,14 +78,16 @@ public class UnseenActivityNotificationPanel extends FlowPanel
                     {
                         thisBuffered.setVisible(false);
 
-                        if (event.getStream().getPagedSet().size() > 0)
+                        Session.getInstance().getTimer().pauseJob("getUnseenActivityJob");
+
+                        // Only show unseen activity if sorted by date.
+                        if ("date".equals(event.getSortType()) && event.getStream().getPagedSet().size() > 0)
                         {
                             JSONObject request = StreamJsonRequestFactory.getJSONRequest(event.getJsonRequest());
                             request = StreamJsonRequestFactory.setMinId(event.getStream().getPagedSet().get(0).getId(),
                                     request);
-                            request = StreamJsonRequestFactory.setMaxResults(Integer.MAX_VALUE, request);
+                            request = StreamJsonRequestFactory.setMaxResults(MAX_UNSEEN, request);
 
-                            Session.getInstance().getTimer().pauseJob("getUnseenActivityJob");
                             Session.getInstance().getTimer().changeFetchable("getUnseenActivityJob",
                                     UnseenActivityCountForViewModel.getInstance());
                             Session.getInstance().getTimer().changeRequest("getUnseenActivityJob", request.toString());

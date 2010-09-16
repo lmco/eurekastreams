@@ -34,17 +34,26 @@ public class GotStreamResponseEvent
     private String jsonRequest;
 
     /**
+     * The sort type.
+     */
+    private String sortType;
+
+    /**
      * Constructor.
      * 
      * @param inStream
      *            the stream.
      * @param inJsonRequest
      *            the original request.
+     * @param sortString
+     *            the sort string.
      */
-    public GotStreamResponseEvent(final PagedSet<ActivityDTO> inStream, final String inJsonRequest)
+    public GotStreamResponseEvent(final PagedSet<ActivityDTO> inStream, final String inJsonRequest,
+            final String sortString)
     {
         stream = inStream;
         jsonRequest = inJsonRequest;
+        sortType = sortString;
     }
 
     /**
@@ -65,5 +74,15 @@ public class GotStreamResponseEvent
     public String getJsonRequest()
     {
         return jsonRequest;
+    }
+
+    /**
+     * Get the sort type.
+     * 
+     * @return the sort type.
+     */
+    public String getSortType()
+    {
+        return sortType;
     }
 }

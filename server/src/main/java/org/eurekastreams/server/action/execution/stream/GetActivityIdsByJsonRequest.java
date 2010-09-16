@@ -22,6 +22,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.service.actions.strategies.activity.ListCollider;
 import org.eurekastreams.server.service.actions.strategies.activity.datasources.DescendingOrderDataSource;
 import org.eurekastreams.server.service.actions.strategies.activity.datasources.SortedDataSource;
@@ -57,6 +58,16 @@ public class GetActivityIdsByJsonRequest
     private ActivitySecurityTrimmer securityTrimmer;
 
     /**
+     * Person mapper.
+     */
+    private GetPeopleByIds personMapper;
+
+    /**
+     * String to replace with user name.
+     */
+    private String userReplaceString;
+
+    /**
      * Public constructor for AOP.
      */
     public GetActivityIdsByJsonRequest()
@@ -74,15 +85,22 @@ public class GetActivityIdsByJsonRequest
      *            the and collider to merge results.
      * @param inSecurityTrimmer
      *            the security trimmer;
+     * @param inPersonMapper
+     *            the person mapper.
+     * @param inUserRelaceString
+     *            the string to replace with the user id.
      */
     public GetActivityIdsByJsonRequest(final DescendingOrderDataSource inDescendingOrderdataSource,
             final SortedDataSource inSortedDataSource, final ListCollider inAndCollider,
-            final ActivitySecurityTrimmer inSecurityTrimmer)
+            final ActivitySecurityTrimmer inSecurityTrimmer, final GetPeopleByIds inPersonMapper,
+            final String inUserRelaceString)
     {
         descendingOrderdataSource = inDescendingOrderdataSource;
         sortedDataSource = inSortedDataSource;
         andCollider = inAndCollider;
         securityTrimmer = inSecurityTrimmer;
+        personMapper = inPersonMapper;
+        userReplaceString = inUserRelaceString;
     }
 
     /**
@@ -96,25 +114,32 @@ public class GetActivityIdsByJsonRequest
      */
     public List<Long> execute(final String inRequest, final Long userEntityId)
     {
+        String request = inRequest;
+
         log.debug("Attempted to parse: " + inRequest);
 
-        final JSONObject request = JSONObject.fromObject(inRequest);
+        if (request.contains(userReplaceString))
+        {
+            request = request.replaceAll(userReplaceString, personMapper.execute(userEntityId).getAccountId());
+        }
+
+        final JSONObject jsonRequest = JSONObject.fromObject(request);
 
         int maxResults = 0;
         long minActivityId = 0;
         long maxActivityId = Long.MAX_VALUE;
 
-        if (request.containsKey("count"))
+        if (jsonRequest.containsKey("count"))
         {
-            maxResults = request.getInt("count");
+            maxResults = jsonRequest.getInt("count");
         }
-        if (request.containsKey("minId"))
+        if (jsonRequest.containsKey("minId"))
         {
-            minActivityId = request.getInt("minId");
+            minActivityId = jsonRequest.getInt("minId");
         }
-        if (request.containsKey("maxId"))
+        if (jsonRequest.containsKey("maxId"))
         {
-            maxActivityId = request.getLong("maxId");
+            maxActivityId = jsonRequest.getLong("maxId");
         }
 
         // used for paging, this is the next activity in the list to add to the
@@ -141,11 +166,11 @@ public class GetActivityIdsByJsonRequest
             // hits
             batchSize = maxResults * (int) (Math.pow(2, pass));
 
-            request.put("count", batchSize);
+            jsonRequest.put("count", batchSize);
 
-            final List<Long> descendingOrderDataSet = descendingOrderdataSource.fetch(request, userEntityId);
+            final List<Long> descendingOrderDataSet = descendingOrderdataSource.fetch(jsonRequest, userEntityId);
 
-            final List<Long> sortedDataSet = sortedDataSource.fetch(request, userEntityId);
+            final List<Long> sortedDataSet = sortedDataSource.fetch(jsonRequest, userEntityId);
 
             if (descendingOrderDataSet != null && sortedDataSet != null)
             {

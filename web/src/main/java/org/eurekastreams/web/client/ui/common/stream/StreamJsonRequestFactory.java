@@ -94,24 +94,52 @@ public final class StreamJsonRequestFactory
     public enum SortType
     {
         /**
-         * Sort by date.
+         * Date.
          */
         DATE
         {
             /**
-             * @return the value as a string.
+             * To string.
+             * @return the enum value as a string.
              */
-            @Override
             public String toString()
             {
                 return "date";
+            }
+        },
+        /**
+         * Interesting.
+         */
+        INTERESTING
+        {
+            /**
+             * To string.
+             * @return the enum value as a string.
+             */
+            public String toString()
+            {
+                return "interesting";
+            }
+        },
+        /**
+         * Comment date.
+         */
+        COMMENT_DATE
+        {
+            /**
+             * To string.
+             * @return the enum value as a string.
+             */
+            public String toString()
+            {
+                return "commentdate";
             }
         }
     }
 
     /**
      * Gets an empty request. Used for everyone stream.
-     *
+     * 
      * @return new empty JSON request.
      */
     public static JSONObject getEmptyRequest()
@@ -121,7 +149,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Get a JSON object from a String.
-     *
+     * 
      * @param request
      *            the request.
      * @return the JSON object.
@@ -133,7 +161,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Adds a recipient to a request.
-     *
+     * 
      * @param type
      *            the type of recepient.
      * @param uniqueId
@@ -169,7 +197,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Set the org stream in the request.
-     *
+     * 
      * @param orgShortName
      *            the org short name.
      * @param json
@@ -187,7 +215,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Sets the search term in a request..
-     *
+     * 
      * @param searchText
      *            the search text.
      * @param json
@@ -205,7 +233,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Sets the sorting of a request.
-     *
+     * 
      * @param sortBy
      *            the type of sort.
      * @param json
@@ -221,10 +249,11 @@ public final class StreamJsonRequestFactory
         return json;
     }
 
-
     /**
      * Sets the source as the current user's parent org.
-     * @param json the json.
+     * 
+     * @param json
+     *            the json.
      * @return the json.
      */
     public static JSONObject setSourceAsParentOrg(final JSONObject json)
@@ -236,7 +265,9 @@ public final class StreamJsonRequestFactory
 
     /**
      * Sets the source as the current user's saved..
-     * @param json the json.
+     * 
+     * @param json
+     *            the json.
      * @return the json.
      */
     public static JSONObject setSourceAsSaved(final JSONObject json)
@@ -248,7 +279,9 @@ public final class StreamJsonRequestFactory
 
     /**
      * Sets the source as the current user's following.
-     * @param json the json.
+     * 
+     * @param json
+     *            the json.
      * @return the json.
      */
     public static JSONObject setSourceAsFollowing(final JSONObject json)
@@ -257,10 +290,10 @@ public final class StreamJsonRequestFactory
         query.put(FOLLOWED_BY_KEY, new JSONString(Session.getInstance().getCurrentPerson().getAccountId()));
         return json;
     }
-    
+
     /**
      * Sets the min ID of a request.
-     *
+     * 
      * @param minId
      *            the min ID.
      * @param json
@@ -276,7 +309,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Sets the max ID of a request.
-     *
+     * 
      * @param maxId
      *            the max ID.
      * @param json
@@ -289,10 +322,10 @@ public final class StreamJsonRequestFactory
 
         return json;
     }
-    
+
     /**
      * Sets the max number of results for the request.
-     *
+     * 
      * @param maxResults
      *            the max results.
      * @param json

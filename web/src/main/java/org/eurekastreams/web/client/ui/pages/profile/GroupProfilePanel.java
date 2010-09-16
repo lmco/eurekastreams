@@ -24,6 +24,8 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.RestrictedDomainGroup;
 import org.eurekastreams.server.domain.Task;
+import org.eurekastreams.server.domain.stream.StreamScope;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
@@ -31,6 +33,7 @@ import org.eurekastreams.web.client.events.SetBannerEvent;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.SwitchToFilterOnPagedFilterPanelEvent;
+import org.eurekastreams.web.client.events.data.AuthorizeUpdateGroupResponseEvent;
 import org.eurekastreams.web.client.events.data.BaseDataResponseEvent;
 import org.eurekastreams.web.client.events.data.DeletedGroupMemberResponseEvent;
 import org.eurekastreams.web.client.events.data.DeletedRequestForGroupMembershipResponseEvent;
@@ -289,34 +292,38 @@ public class GroupProfilePanel extends FlowPanel
 
         EventBus.getInstance().notifyObservers(new StreamRequestEvent(group.getName(), jsonRequest));
 
-        // eventBus.addObserver(AuthorizeUpdateGroupResponseEvent.class,
-        // new Observer<AuthorizeUpdateGroupResponseEvent>()
-        // {
-        // public void update(final AuthorizeUpdateGroupResponseEvent event)
-        // {
-        // profileSettingsLink.removeStyleName("hidden");
-        // RootPanel.get().addStyleName("authenticated");
-        // setUpChecklist();
-        //
-        // if (!group.isPublicGroup())
-        // {
-        // final SimpleTab adminTab = buildAdminTab();
-        // portalPage.addTab(adminTab);
-        //
-        // if ("Admin".equals(Session.getInstance().getParameterValue("tab")))
-        // {
-        // portalPage.switchToTab("Admin");
-        // }
-        // }
-        //
-        // // if posting is disabled for group, re-enable it since
-        // // user has org/group coord permissions.
-        // if (!group.isStreamPostable())
-        // {
-        // streamContent.setPostable(true);
-        // }
-        // }
-        // });
+        if (group.isStreamPostable())
+        {
+            streamContent.setStreamScope(new StreamScope(ScopeType.GROUP, inGroup.getShortName()), true);
+        }
+
+        eventBus.addObserver(AuthorizeUpdateGroupResponseEvent.class, new Observer<AuthorizeUpdateGroupResponseEvent>()
+        {
+            public void update(final AuthorizeUpdateGroupResponseEvent event)
+            {
+                profileSettingsLink.removeStyleName("hidden");
+                RootPanel.get().addStyleName("authenticated");
+                setUpChecklist();
+
+                if (!group.isPublicGroup())
+                {
+                    final SimpleTab adminTab = buildAdminTab();
+                    portalPage.addTab(adminTab);
+
+                    if ("Admin".equals(Session.getInstance().getParameterValue("tab")))
+                    {
+                        portalPage.switchToTab("Admin");
+                    }
+                }
+
+                // if posting is disabled for group, re-enable it since
+                // user has org/group coord permissions.
+                if (!group.isStreamPostable())
+                {
+                    streamContent.setStreamScope(new StreamScope(ScopeType.GROUP, inGroup.getShortName()), true);
+                }
+            }
+        });
 
         portalPage = new TabContainerPanel();
         portalPage.addTab(new SimpleTab("Stream", streamContent));

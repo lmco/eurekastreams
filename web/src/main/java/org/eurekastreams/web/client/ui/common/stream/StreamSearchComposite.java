@@ -271,7 +271,7 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
     /**
      * Called when a search is canceled.
      */
-    private void onSearchCanceled()
+    public void onSearchCanceled()
     {
         searchTermLabel.setText("");
         searchTerm.setText("");

@@ -39,7 +39,6 @@ import org.eurekastreams.web.client.model.ActivityModel;
 import org.eurekastreams.web.client.model.StreamModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
-import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory.SortType;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 
 import com.google.gwt.json.client.JSONObject;
@@ -122,6 +121,11 @@ public class StreamPanel extends FlowPanel
     private String search = "";
 
     /**
+     * Sort panel.
+     */
+    private StreamSortPanel sortPanel = new StreamSortPanel();
+
+    /**
      * Initialize page.
      * 
      * @param showRecipients
@@ -144,6 +148,7 @@ public class StreamPanel extends FlowPanel
         this.add(postContent);
         this.add(streamSearch);
         this.add(new UnseenActivityNotificationPanel());
+        this.add(sortPanel);
         this.add(error);
         this.add(stream);
         this.add(activityDetailPanel);
@@ -156,6 +161,9 @@ public class StreamPanel extends FlowPanel
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
                         checkHistory(event.getParameters());
+                        
+                        // Only process this once.
+                        EventBus.getInstance().removeObserver(UpdatedHistoryParametersEvent.class, this);
                     }
                 }, true);
 
@@ -231,8 +239,7 @@ public class StreamPanel extends FlowPanel
         {
             public void update(final MessageStreamAppendEvent evt)
             {
-                stream.reinitialize();
-                StreamModel.getInstance().fetch(jsonQuery, false);
+                EventBus.getInstance().notifyObservers(StreamReinitializeRequestEvent.getEvent());
             }
         });
 
@@ -256,24 +263,30 @@ public class StreamPanel extends FlowPanel
                     JSONObject queryObject = JSONParser.parse(updatedJson).isObject().get("query").isObject();
 
                     // Only show cancel option if search is not part of the view.
-                    Boolean canChange = !queryObject.containsKey("keywords"); 
+                    Boolean canChange = !queryObject.containsKey("keywords");
 
-                    if ("" != search)
+                    if ("".equals(search))
                     {
-                        updatedJson = StreamJsonRequestFactory.setSort(
-                                SortType.DATE,
-                                StreamJsonRequestFactory.setSearchTerm(search, StreamJsonRequestFactory
-                                        .getJSONRequest(jsonQuery))).toString();
+                        streamSearch.onSearchCanceled();
                     }
+                    else
+                    {
+                        streamSearch.setSearchTerm(search);
+                    }
+
+                    updatedJson = StreamJsonRequestFactory.setSort(
+                            sortPanel.getSort(),
+                            StreamJsonRequestFactory.setSearchTerm(search, StreamJsonRequestFactory
+                                    .getJSONRequest(jsonQuery))).toString();
 
                     if (queryObject.containsKey("keywords"))
                     {
                         streamSearch.setSearchTerm(queryObject.get("keywords").isString().stringValue());
                     }
-                    
+
                     streamSearch.setTitleText(streamName);
                     streamSearch.setCanChange(canChange);
-                    
+
                     StreamModel.getInstance().fetch(updatedJson, false);
                 }
             }
@@ -308,6 +321,7 @@ public class StreamPanel extends FlowPanel
         streamSearch.setVisible(true);
         postContent.setVisible(true);
         stream.setVisible(true);
+        sortPanel.setVisible(true);
         activityDetailPanel.clear();
     }
 
@@ -316,6 +330,7 @@ public class StreamPanel extends FlowPanel
      */
     private void setSingleActivityMode()
     {
+        sortPanel.setVisible(false);
         streamSearch.setVisible(false);
         postContent.setVisible(false);
         stream.setVisible(false);

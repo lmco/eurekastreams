@@ -28,6 +28,8 @@ import java.util.List;
 import net.sf.json.JSONObject;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
 import org.eurekastreams.server.service.actions.strategies.activity.ListCollider;
 import org.eurekastreams.server.service.actions.strategies.activity.datasources.DescendingOrderDataSource;
@@ -97,6 +99,16 @@ public class GetActivityIdsByJsonRequestTest
     private ListCollider andCollider = context.mock(ListCollider.class);
 
     /**
+     * People mapper.
+     */
+    private GetPeopleByIds peopleMapper = context.mock(GetPeopleByIds.class);
+
+    /**
+     * Replace string.
+     */
+    private String replaceString = "USER_ID";
+
+    /**
      * 10.
      */
     private static final int THENUMBERTEN = 10;
@@ -115,7 +127,8 @@ public class GetActivityIdsByJsonRequestTest
         List<ActivityFilter> filters = new LinkedList<ActivityFilter>();
         filters.add(filterMock);
 
-        sut = new GetActivityIdsByJsonRequest(memcacheDS, luceneDS, andCollider, securityTrimmer);
+        sut = new GetActivityIdsByJsonRequest(memcacheDS, luceneDS, andCollider, securityTrimmer, peopleMapper,
+                replaceString);
 
         // create the activity ids list
         allActivityIds.add(9L);
@@ -161,6 +174,62 @@ public class GetActivityIdsByJsonRequestTest
 
                 oneOf(luceneDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
                 will(returnValue(luceneIds));
+
+                oneOf(andCollider).collide(with(equalInternally(memcacheIds)), with(equalInternally(luceneIds)),
+                        with(equalInternally(THENUMBERTEN)));
+                will(returnValue(combinedIds));
+
+                oneOf(securityTrimmer).trim(combinedIds, personId);
+                will(returnValue(combinedIds));
+            }
+        });
+
+        List<Long> results = (List<Long>) sut.execute(request, personId);
+
+        context.assertIsSatisfied();
+        assertEquals(1, results.size());
+    }
+
+    /**
+     * Perform action test with one item in the list. Tests with a replace done for the user string.
+     * 
+     * @throws Exception
+     *             on failure.
+     */
+    @Test
+    public final void performActionWithReplace() throws Exception
+    {
+        final String request = "{count:10, query : { followedBy: \"" + replaceString + "\"}}";
+
+        final PersonModelView person = context.mock(PersonModelView.class);
+        
+        context.checking(new Expectations()
+        {
+            {
+                ArrayList<Long> memcacheIds = new ArrayList<Long>();
+                memcacheIds.add(2L);
+
+                ArrayList<Long> luceneIds = new ArrayList<Long>();
+
+                ActivityDTO dto = new ActivityDTO();
+                dto.setId(3);
+                dto.setPostedTime(new Date());
+                dto.setIsDestinationStreamPublic(true);
+
+                ArrayList<Long> combinedIds = new ArrayList<Long>();
+                combinedIds.add(2L);
+
+                oneOf(memcacheDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
+                will(returnValue(memcacheIds));
+
+                oneOf(luceneDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
+                will(returnValue(luceneIds));
+                
+                oneOf(peopleMapper).execute(personId);
+                will(returnValue(person));
+                
+                oneOf(person).getAccountId();
+                will(returnValue("acctid"));
 
                 oneOf(andCollider).collide(with(equalInternally(memcacheIds)), with(equalInternally(luceneIds)),
                         with(equalInternally(THENUMBERTEN)));

@@ -22,6 +22,9 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
 
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+
 /**
  * Stream Model.
  * 
@@ -48,14 +51,19 @@ public class StreamModel extends BaseModel implements Fetchable<Serializable>
      */
     public void fetch(final Serializable request, final boolean useClientCacheIfAvailable)
     {
-        super.callReadAction("getActivitiesByRequest", request,
-                new OnSuccessCommand<PagedSet<ActivityDTO>>()
-                {
-                    public void onSuccess(final PagedSet<ActivityDTO> response)
-                    {
-                        Session.getInstance().getEventBus().notifyObservers(
-                                new GotStreamResponseEvent(response, (String) request));
-                    }
-                }, useClientCacheIfAvailable);
+        super.callReadAction("getActivitiesByRequest", request, new OnSuccessCommand<PagedSet<ActivityDTO>>()
+        {
+            public void onSuccess(final PagedSet<ActivityDTO> response)
+            {
+                String requestStr = (String) request;
+
+                JSONObject queryObject = JSONParser.parse(requestStr).isObject().get("query").isObject();
+                String sortString = queryObject.get("sortBy").isString().stringValue();
+
+
+                Session.getInstance().getEventBus().notifyObservers(
+                        new GotStreamResponseEvent(response, requestStr, sortString));
+            }
+        }, useClientCacheIfAvailable);
     }
 }
