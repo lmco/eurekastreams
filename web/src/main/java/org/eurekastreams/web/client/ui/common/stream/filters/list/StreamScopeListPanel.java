@@ -17,11 +17,11 @@ package org.eurekastreams.web.client.ui.common.stream.filters.list;
 
 import java.util.LinkedList;
 
+import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.StreamScopeAddedEvent;
 import org.eurekastreams.web.client.events.StreamScopeDeletedEvent;
-import org.eurekastreams.server.domain.stream.StreamScope;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 
@@ -35,6 +35,7 @@ public class StreamScopeListPanel extends FlowPanel
      * The scopes.
      */
     private LinkedList<StreamScope> scopes;
+
 
     /**
      * Default constructor.
@@ -72,16 +73,16 @@ public class StreamScopeListPanel extends FlowPanel
                     public void update(final StreamScopeAddedEvent arg1)
                     {
                     	boolean scopeFound = false;
-                    	
+
                     	for (StreamScope scope : scopes)
                     	{
-                    		if (scope.getUniqueKey().equals(arg1.getScope().getUniqueKey()) 
+                    		if (scope.getUniqueKey().equals(arg1.getScope().getUniqueKey())
                     				&& scope.getScopeType().equals(arg1.getScope().getScopeType()))
                     		{
                     			scopeFound = true;
                     		}
                     	}
-                    	
+
                     	if (!scopeFound)
                     	{
                     		scopes.add(arg1.getScope());
@@ -116,12 +117,12 @@ public class StreamScopeListPanel extends FlowPanel
     private void render()
     {
         this.clear();
-        
+
         this.setVisible(scopes.size() > 0);
-        
         for (StreamScope scope : scopes)
         {
-            this.add(new StreamScopePanel(scope));
+            StreamScopePanel panel = new StreamScopePanel(scope);
+            this.add(panel);
         }
     }
 }

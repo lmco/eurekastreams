@@ -15,14 +15,17 @@
  */
 package org.eurekastreams.server.action.execution.feed;
 
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
-import org.eurekastreams.commons.actions.context.ActionContext;
+import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.FeedFactory;
 
 import com.sun.syndication.feed.synd.SyndFeed;
@@ -31,7 +34,7 @@ import com.sun.syndication.feed.synd.SyndFeed;
  * Gets the title from a feed. Basically is checking to make sure the feed exists and lets the user see its title.
  *
  */
-public class GetTitleFromFeedExecution implements ExecutionStrategy<ActionContext>
+public class GetTitleFromFeedExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
      * Feed fetcher factory, really only needed for testing.
@@ -41,7 +44,7 @@ public class GetTitleFromFeedExecution implements ExecutionStrategy<ActionContex
     /**
      * Logger.
      */
-    private Log logger = LogFactory.getLog(GetTitleFromFeedExecution.class);
+    private Log logger = LogFactory.make();
 
     /**
      * Default constructor.
@@ -57,30 +60,32 @@ public class GetTitleFromFeedExecution implements ExecutionStrategy<ActionContex
     /**
      * {@inheritDoc}
      */
-    public String execute(final ActionContext inActionContext) throws ExecutionException
+    @Override
+    public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        URL feedUrl;
-		try
-		{
-			feedUrl = new URL((String) inActionContext.getParams());
-		}
-		catch (MalformedURLException e)
-		{
-		    logger.error("Error fetching feed");
-			throw new ExecutionException(e);
-		}
+        String feedUrlText = (String) inActionContext.getParams();
+        try
+        {
+            new URL(feedUrlText);
+        }
+        catch (MalformedURLException e)
+        {
+            logger.error("Error fetching feed");
+            throw new ExecutionException(e);
+        }
 
-        SyndFeed feed;
-		try
-		{
-			feed = feedFetcherFactory.getSyndicatedFeed(feedUrl);
-		}
-		catch (Exception e)
-		{
-		    logger.error("Error getting title");
-			throw new ExecutionException(e);
-		}
-
-        return feed.getTitle();
+        // fetch the feeds; use the first result since there should be exactly one
+        try
+        {
+            Map<String, SyndFeed> synFeeds =
+                    feedFetcherFactory.getSyndicatedFeed(feedUrlText, Collections.singletonList(inActionContext
+                            .getPrincipal().getAccountId()));
+            SyndFeed synFeed = synFeeds.values().iterator().next();
+            return synFeed.getTitle();
+        }
+        catch (Exception e)
+        {
+            throw new ExecutionException(e);
+        }
     }
 }

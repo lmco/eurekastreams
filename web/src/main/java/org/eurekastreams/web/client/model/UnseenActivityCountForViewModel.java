@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.web.client.model;
 
-import org.eurekastreams.server.action.request.stream.GetActivitiesByCompositeStreamRequest;
 import org.eurekastreams.web.client.events.data.GotUnseenActivitiesCountResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
 
@@ -24,7 +23,7 @@ import org.eurekastreams.web.client.ui.Session;
  *
  */
 public class UnseenActivityCountForViewModel extends BaseModel implements
-        Fetchable<GetActivitiesByCompositeStreamRequest>
+        Fetchable<String>
 {
     /**
      * Singleton.
@@ -44,7 +43,7 @@ public class UnseenActivityCountForViewModel extends BaseModel implements
     /**
      * {@inheritDoc}
      */
-    public void fetch(final GetActivitiesByCompositeStreamRequest request, final boolean useClientCacheIfAvailable)
+    public void fetch(final String request, final boolean useClientCacheIfAvailable)
     {
         super.callReadAction("getActivityCount", request, new OnSuccessCommand<Integer>()
         {

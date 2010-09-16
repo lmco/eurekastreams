@@ -151,7 +151,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param accountId
      *            the account id.
      */
@@ -194,7 +194,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * We have the Person, so set up the Profile summary.
-     * 
+     *
      * @param inPerson
      *            the person whose profile is being displayed
      */
@@ -365,8 +365,8 @@ public class PersonalProfilePanel extends FlowPanel
 
         Session.getInstance().getActionProcessor().setQueueRequests(true);
         PersonalBiographyModel.getInstance().fetch(person.getAccountId(), true);
-        PersonalEducationModel.getInstance().fetch(person.getId(), true);
-        PersonalEmploymentModel.getInstance().fetch(person.getId(), true);
+        PersonalEducationModel.getInstance().fetch(person.getId(), false);
+        PersonalEmploymentModel.getInstance().fetch(person.getId(), false);
         PersonalStreamSettingsModel.getInstance().fetch(person.getAccountId(), true);
         Session.getInstance().getActionProcessor().setQueueRequests(false);
         Session.getInstance().getActionProcessor().fireQueuedRequests();
@@ -374,7 +374,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * Creates and sets up the connections tab content.
-     * 
+     *
      * @param inPerson
      *            Person whose profile is being displayed.
      * @return Tab content.

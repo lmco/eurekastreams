@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.web.client.ui.pages.stream;
 
+import org.eurekastreams.server.domain.stream.StreamScope;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.StreamPageLoadedEvent;
 import org.eurekastreams.web.client.events.StreamViewsLoadedEvent;
@@ -40,7 +42,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Page for Stream.
- *
+ * 
  */
 public class StreamContent extends Composite
 {
@@ -51,7 +53,7 @@ public class StreamContent extends Composite
     /**
      * The main panel.
      */
-    private FlowPanel panel = new FlowPanel();
+    private FlowPanel panel = null;
 
     /**
      * The stream view.
@@ -62,11 +64,6 @@ public class StreamContent extends Composite
      * The filters div.
      */
     private FlowPanel filters = new FlowPanel();
-
-    /**
-     * The session.
-     */
-    private Session session = Session.getInstance();
 
     /**
      * Error label.
@@ -94,17 +91,19 @@ public class StreamContent extends Composite
 
     /**
      * Default constructor.
-     *
+     * 
      */
     public StreamContent()
     {
+        panel = new FlowPanel();
+        initWidget(panel);
+
         filters.addStyleName("filters");
         errorLabel.addStyleName("form-error-box");
         errorLabel.setVisible(false);
 
         streamView = new StreamPanel(true);
         streamPanel.add(streamView);
-
 
         RootPanel.get().addStyleName("stream");
 
@@ -118,7 +117,6 @@ public class StreamContent extends Composite
                 Session.getInstance().getEventBus().notifyObservers(StreamPageLoadedEvent.getEvent());
             }
         });
-
 
         Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
                 new Observer<UpdatedHistoryParametersEvent>()
@@ -158,6 +156,9 @@ public class StreamContent extends Composite
                         }
                         Session.getInstance().getEventBus().notifyObservers(
                                 new StreamViewsLoadedEvent(event.getResponse().getStreamFilters()));
+
+                        streamView.setStreamScope(new StreamScope(ScopeType.PERSON, Session.getInstance()
+                                .getCurrentPerson().getAccountId()), true);
                     }
 
                 });
@@ -182,8 +183,6 @@ public class StreamContent extends Composite
         panel.add(filters);
         panel.add(streamPanel);
 
-        initWidget(panel);
-
         DeferredCommand.addCommand(new Command()
         {
             public void execute()
@@ -195,6 +194,5 @@ public class StreamContent extends Composite
                 Session.getInstance().getActionProcessor().fireQueuedRequests();
             }
         });
-
     }
 }

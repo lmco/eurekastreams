@@ -185,7 +185,7 @@ public class GroupUpdaterTest
 
     /**
      * Build an organization based on the input form being fully filled out with valid data.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -221,7 +221,7 @@ public class GroupUpdaterTest
 
     /**
      * Build an organization based on the input form being fully filled out with valid data.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -279,7 +279,7 @@ public class GroupUpdaterTest
 
     /**
      * Same as previous test, but with org update.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -340,15 +340,13 @@ public class GroupUpdaterTest
         // TODO Could be more thorough - a list compare utility would help
         assertEquals(2, group.getCapabilities().size());
 
-        // make sure the only queued task is the domain group cache update
-        assertEquals(1, taskHandlerActionContext.getUserActionRequests().size());
-        assertEquals("domainGroupCacheUpdaterAsyncAction", taskHandlerActionContext.getUserActionRequests().get(0)
-                .getActionKey());
+        // make sure the only queued tasks are the domain group cache update and activity parent org sync.
+        assertEquals(2, taskHandlerActionContext.getUserActionRequests().size());
     }
 
     /**
      * Build an organization based on the input form being fully filled out with valid data.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -411,7 +409,7 @@ public class GroupUpdaterTest
 
     /**
      * Build an group with new coordinators. Should see new coordinators added to the group.
-     *
+     * 
      * @throws Exception
      *             not expected
      */

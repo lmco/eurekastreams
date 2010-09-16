@@ -47,6 +47,9 @@
 	<StreamSearch id="3" version="0" streamview_id="19"
 		name="something" />
 
+	<Stream id="1" version="0" readonly="true" name="everyone" request="{ query : {} }" />
+	<Stream id="2" version="0" readonly="false" name="my search" request="{ query : { keywords : 'search'} }" />
+
 	<!-- Gadget Categories -->
 	<GalleryItemCategory id="4565" name="News" version="3467"
 		galleryItemType="GADGET" />
@@ -260,6 +263,7 @@
 		parentOrganizationId="5" />
 	-->
 
+
 	<!-- **************************************** -->
 	<!-- Ford Prefect - Tab Group with three tabs -->
 	<Person id="42" version="1117" accountId="fordp" firstName="Ford"
@@ -282,17 +286,21 @@
 		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="2"
 		streamSearchHiddenLineIndex="2" commentable="true" streamPostable="false" accountlocked="false"
 		entityStreamViewId="6" groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
+		
+		
+	<Person_Stream person_id="42" streams_id="1" streamIndex="1" />
+	<Person_Stream person_id="42" streams_id="2" streamIndex="2" />
 
-	<FeedSubscriber id="1" version="1" feedId="1" entityId="42" type="PERSON"  />
-	<FeedSubscriber id="2" version="1" feedId="2" entityId="42" type="PERSON"  />
-	<FeedSubscriber id="3" version="1" feedId="3" entityId="42" type="PERSON"  />
-	<FeedSubscriber id="4" version="1" feedId="5" entityId="42" type="PERSON"  />
-	<FeedSubscriber id="5" version="1" feedId="2" entityId="142" type="PERSON"  />
-	<FeedSubscriber id="6" version="1" feedId="1" entityId="142" type="PERSON"  />
-	<FeedSubscriber id="7" version="1" feedId="4" entityId="142" type="PERSON"  />
-	<FeedSubscriber id="8" version="1" feedId="1" entityId="8" type="GROUP"  />
-	<FeedSubscriber id="9" version="1" feedId="2" entityId="8" type="GROUP"  />
-	<FeedSubscriber id="10" version="1" feedId="3" entityId="6" type="GROUP"  />
+	<FeedSubscriber id="1" version="1" feedId="1" entityId="42" type="PERSON" requestorId="42" />
+	<FeedSubscriber id="2" version="1" feedId="2" entityId="42" type="PERSON" requestorId="42" />
+	<FeedSubscriber id="3" version="1" feedId="3" entityId="42" type="PERSON" requestorId="42" />
+	<FeedSubscriber id="4" version="1" feedId="5" entityId="42" type="PERSON" requestorId="42" />
+	<FeedSubscriber id="5" version="1" feedId="2" entityId="142" type="PERSON" requestorId="142" />
+	<FeedSubscriber id="6" version="1" feedId="1" entityId="142" type="PERSON" requestorId="142" />
+	<FeedSubscriber id="7" version="1" feedId="4" entityId="142" type="PERSON" requestorId="142" />
+	<FeedSubscriber id="8" version="1" feedId="1" entityId="8" type="GROUP" requestorId="42" />
+	<FeedSubscriber id="9" version="1" feedId="2" entityId="8" type="GROUP" requestorId="42" />
+	<FeedSubscriber id="10" version="1" feedId="3" entityId="6" type="GROUP" requestorId="42" />
 
 	<Person_StreamView person_Id="42" streamViews_Id="5002"
 		streamviewindex="0" />
@@ -596,56 +604,64 @@
 		followersCount="3" parentOrganizationId="7"
 		dateAdded="2009-02-01 05:54:54" isPending="false" 
 		createdById="42" streamScopeId="874" commentable="true" streamPostable="true"
-		entityStreamViewId="9" />
+		entityStreamViewId="9"
+		suppressPostNotifToMember="false" suppressPostNotifToCoordinator="false" />
 
 	<DomainGroup id="2" version="1" description="Group_2_Mission Statement"
 		updatesCount="5" name="D Group 1 Name" shortName="group2" publicgroup="true"
 		followersCount="1" parentOrganizationId="7" 
 		dateAdded="2009-01-01 05:54:54" isPending="false" 
 		createdById="42" streamScopeId="875" commentable="true" streamPostable="true"
-		entityStreamViewId="10" />
+		entityStreamViewId="10"
+		suppressPostNotifToMember="false" suppressPostNotifToCoordinator="false" />
 
 	<DomainGroup id="3" version="1" description="Group_3_Mission Statement"
 		updatesCount="8" name="C Group 1 Name" shortName="group3" publicgroup="true"
 		followersCount="10" parentOrganizationId="6" 
 		dateAdded="2009-04-01 05:54:54" isPending="false" 
 		createdById="42" streamScopeId="876" commentable="true" streamPostable="true"
-		entityStreamViewId="11" />
+		entityStreamViewId="11"
+		suppressPostNotifToMember="false" suppressPostNotifToCoordinator="false" />
 
 	<DomainGroup id="4" version="1" description="Group_4_Mission Statement"
 		updatesCount="8" name="BGroup 1 Name" shortName="group4" publicgroup="true"
 		followersCount="1" parentOrganizationId="6" 
 		dateAdded="2009-05-01 05:54:54" isPending="false" 
 		createdById="42" streamScopeId="877" commentable="true" streamPostable="true"
-		entityStreamViewId="12" />
+		entityStreamViewId="12"
+		suppressPostNotifToMember="false" suppressPostNotifToCoordinator="false" />
 
 	<DomainGroup id="5" version="1" description="Group_5_Mission Statement"
 		updatesCount="8" name="A Group 1 Name" shortName="group5" publicgroup="true"
 		followersCount="0" parentOrganizationId="5" 
 		dateAdded="2008-01-01 05:54:54" isPending="false" 
 		createdById="42" streamScopeId="878"  commentable="true" streamPostable="true"
-		entityStreamViewId="13"/>
+		entityStreamViewId="13"
+		suppressPostNotifToMember="false" suppressPostNotifToCoordinator="false" />
 
 	<DomainGroup id="6" version="1" description="Group_6_Mission Statement"
 		updatesCount="8" name="Pending Group" shortName="pendinggroup" publicgroup="true"
 		followersCount="0" parentOrganizationId="5" 
 		dateAdded="2008-01-01 05:54:54" isPending="true" 
 		createdById="42" streamScopeId="879" commentable="true" streamPostable="true"
-		entityStreamViewId="14" />
+		entityStreamViewId="14"
+		suppressPostNotifToMember="false" suppressPostNotifToCoordinator="false" />
 		
 	<DomainGroup id="7" version="1" description="Group_7_Mission Statement"
 		updatesCount="8" name="Pending Group 2" shortName="pendinggroup2" publicgroup="true"
 		followersCount="0" parentOrganizationId="6" 
 		dateAdded="2008-01-01 05:54:55" isPending="true" 
 		createdById="42" streamScopeId="880" commentable="true" streamPostable="true"
-		entityStreamViewId="15" />
+		entityStreamViewId="15"
+		suppressPostNotifToMember="false" suppressPostNotifToCoordinator="false" />
 		
 	<DomainGroup id="8" version="1" description="Group_8_Mission Statement"
 		updatesCount="8" name="Pending Group 3" shortName="pendinggroup3" publicgroup="true"
 		followersCount="0" parentOrganizationId="5" 
 		dateAdded="2008-01-01 05:54:56" isPending="true" 
 		createdById="4507" streamScopeId="881" commentable="true" streamPostable="true"
-		entityStreamViewId="16" />
+		entityStreamViewId="16"
+		suppressPostNotifToMember="false" suppressPostNotifToCoordinator="false" />
 	
 
 	<!-- Smithers and Burns follow group 1 -->

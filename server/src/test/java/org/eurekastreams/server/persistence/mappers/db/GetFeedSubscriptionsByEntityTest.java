@@ -37,7 +37,7 @@ public class GetFeedSubscriptionsByEntityTest  extends MapperTest
      */
     @Autowired
     private GetFeedSubscriptionsByEntity sut;
-   
+
 
     /**
      * Test execute on existing feed.
@@ -46,15 +46,15 @@ public class GetFeedSubscriptionsByEntityTest  extends MapperTest
     public void execute()
     {
     	final long entityId = 42L;
-        List<FeedSubscriber> feedSubs = sut.execute(new GetFeedSubscriberRequest(0L, entityId, EntityType.PERSON));
+        List<FeedSubscriber> feedSubs = sut.execute(new GetFeedSubscriberRequest(0L, entityId, EntityType.PERSON, 0));
         assertEquals(4, feedSubs.size());
-        
+
         assertEquals(1L, feedSubs.get(0).getId());
         assertEquals(2L, feedSubs.get(1).getId());
         assertEquals(3L, feedSubs.get(2).getId());
         assertEquals(4L, feedSubs.get(3).getId());
     }
-    
+
     /**
      * Test execute on existing feed.
      */
@@ -62,8 +62,8 @@ public class GetFeedSubscriptionsByEntityTest  extends MapperTest
     public void executeWithNoResults()
     {
     	final long entityId = 41L;
-        List<FeedSubscriber> feedSubs = sut.execute(new GetFeedSubscriberRequest(0L, entityId, EntityType.PERSON));
+        List<FeedSubscriber> feedSubs = sut.execute(new GetFeedSubscriberRequest(0L, entityId, EntityType.PERSON, 0));
         assertEquals(0, feedSubs.size());
-        
+
     }
 }

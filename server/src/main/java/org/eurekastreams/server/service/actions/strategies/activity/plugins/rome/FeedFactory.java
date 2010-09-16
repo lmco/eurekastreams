@@ -15,8 +15,8 @@
  */
 package org.eurekastreams.server.service.actions.strategies.activity.plugins.rome;
 
-import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
@@ -84,32 +84,35 @@ public class FeedFactory
     /**
      * Gets the Syndicated Feed.
      *
-     * @param inFeedURL
-     *            the url.
-     * @return the feed fetcher.
+     * @param inFeedUrl
+     *            the feed.
+     * @param inRequestors
+     *            List of people who requested the feed.
+     * @return List of feeds by requestor: key is requestor (or null if anonymous), value is the feed.
      * @throws Exception
-     *             if errror occurs.
+     *             if error occurs.
      */
-    public SyndFeed getSyndicatedFeed(final URL inFeedURL) throws Exception
+    public Map<String, SyndFeed> getSyndicatedFeed(final String inFeedUrl, final List<String> inRequestors)
+            throws Exception
     {
         for (PluginFeedFetcherStrategy ps : siteStratagies)
         {
-            if (Pattern.compile(ps.getSiteUrlRegEx()).matcher(inFeedURL.toString()).find())
+            if (Pattern.compile(ps.getSiteUrlRegEx()).matcher(inFeedUrl.toString()).find())
             {
                 if (logger.isDebugEnabled())
                 {
-                    logger.debug("Feed being fetched from special site" + inFeedURL);
+                    logger.debug("Feed being fetched from special site " + inFeedUrl);
                 }
 
-                return ps.execute(inFeedURL, proxyHost, proxyPort, timeout);
+                return ps.execute(inFeedUrl, inRequestors, proxyHost, proxyPort, timeout);
             }
         }
 
         if (logger.isDebugEnabled())
         {
-            logger.debug("Feed being fetched from normal site" + inFeedURL);
+            logger.debug("Feed being fetched from normal site " + inFeedUrl);
         }
 
-        return defaultFetcher.execute(inFeedURL, proxyHost, proxyPort, timeout);
+        return defaultFetcher.execute(inFeedUrl, inRequestors, proxyHost, proxyPort, timeout);
     }
 }

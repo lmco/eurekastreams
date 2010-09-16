@@ -28,6 +28,7 @@ import javax.persistence.ManyToOne;
 
 import org.eurekastreams.commons.model.DomainEntity;
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.Person;
 
 /**
  * Feed Subscriber, a person or group who has a feed. Many to Many.
@@ -36,109 +37,143 @@ import org.eurekastreams.server.domain.EntityType;
 @Entity
 public class FeedSubscriber extends DomainEntity implements Serializable
 {
-	/**
-	 * Many feed subscribers can have the same feed, thus many to one here.
-	 */
+    /**
+     * Many feed subscribers can have the same feed, thus many to one here.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "feedId", nullable = false)
     private Feed feed;
-    
+
     /**
      * Entity id of the subscriber.
      */
     @Basic(optional = false)
     private Long entityId;
-    
+
     /**
      * Type of the subscriber. (PERSON/GROUP).
      */
     @Enumerated(EnumType.STRING)
     @Basic(optional = false)
     private EntityType type;
-    
+
     /**
      * Settings the entity put into the conf page.
      */
     @Basic(optional = true)
     private HashMap<String, Serializable> confSettings;
-    
+
+    /** Person who requested the feed (configured the plug-in). */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "requestorId", nullable = false)
+    private Person requestor;
+
     /**
      * Default constructor. Init the conf settings.
      */
     public FeedSubscriber()
     {
-    	confSettings = new HashMap<String, Serializable>();
+        confSettings = new HashMap<String, Serializable>();
     }
-    
+
     /**
      * Set the feed.
-     * @param inFeed the feed.
+     *
+     * @param inFeed
+     *            the feed.
      */
     public void setFeed(final Feed inFeed)
     {
-    	feed = inFeed;
+        feed = inFeed;
     }
-    
+
     /**
      * Set the entity.
-     * @param inEntityId the entity.
+     *
+     * @param inEntityId
+     *            the entity.
      */
     public void setEntityId(final Long inEntityId)
     {
-    	entityId = inEntityId;
+        entityId = inEntityId;
     }
-    
+
     /**
      * Set the entity type.
-     * @param inEntityType the type.
+     *
+     * @param inEntityType
+     *            the type.
      */
     public void setEntityType(final EntityType inEntityType)
     {
-    	type = inEntityType;
+        type = inEntityType;
     }
-    
+
     /**
      * Here for serialization.
-     * @param inConfSettings the conf settings.
+     *
+     * @param inConfSettings
+     *            the conf settings.
      */
     private void setConfSettings(final HashMap<String, Serializable> inConfSettings)
     {
-    	confSettings = inConfSettings;
+        confSettings = inConfSettings;
     }
-    
+
     /**
      * Get the feed.
+     *
      * @return the feed.
      */
     public Feed getFeed()
     {
-    	return feed;
+        return feed;
     }
-    
+
     /**
      * Get the entity id.
+     *
      * @return the id.
      */
     public Long getEntityId()
     {
-    	return entityId;
+        return entityId;
     }
-    
+
     /**
      * Get the entity type.
+     *
      * @return the type.
      */
     public EntityType getEntityType()
     {
-    	return type;
+        return type;
     }
-    
+
     /**
      * Get the conf settings.
+     *
      * @return the conf settings.
      */
     public HashMap<String, Serializable> getConfSettings()
     {
-    	return confSettings;
+        return confSettings;
+    }
+
+    /**
+     * @return Person who requested the feed.
+     */
+    public Person getRequestor()
+    {
+        return requestor;
+    }
+
+    /**
+     * @param inRequestor
+     *            Person who requested the feed.
+     */
+    public void setRequestor(final Person inRequestor)
+    {
+        requestor = inRequestor;
     }
 }

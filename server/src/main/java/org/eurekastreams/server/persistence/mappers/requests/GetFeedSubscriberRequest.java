@@ -23,7 +23,7 @@ import org.eurekastreams.server.domain.EntityType;
  * Get feed subscriber request.
  *
  */
-public class GetFeedSubscriberRequest  implements Serializable
+public class GetFeedSubscriberRequest implements Serializable
 {
     /**
      * Feed id.
@@ -33,51 +33,72 @@ public class GetFeedSubscriberRequest  implements Serializable
      * Entity id.
      */
     private long entityId;
-    
+
     /**
      * Entity type.
      */
     private EntityType entityType;
-    
+
+    /** Person ID of requestor. */
+    private long requestorPersonId;
+
     /**
      * Default constructor.
-     * @param inFeedId feed id.
-     * @param inEntityId entity id.
-     * @param inEntityType type.
+     *
+     * @param inFeedId
+     *            feed id.
+     * @param inEntityId
+     *            entity id.
+     * @param inEntityType
+     *            type.
+     * @param inRequestorPersonId
+     *            Person ID of requestor.
      */
-    public GetFeedSubscriberRequest(final long inFeedId, final long inEntityId,
-    		final EntityType inEntityType)
+    public GetFeedSubscriberRequest(final long inFeedId, final long inEntityId, final EntityType inEntityType,
+            final long inRequestorPersonId)
     {
-    	feedId = inFeedId;
-    	entityId = inEntityId;
-    	entityType = inEntityType;
+        feedId = inFeedId;
+        entityId = inEntityId;
+        entityType = inEntityType;
+        requestorPersonId = inRequestorPersonId;
     }
-    
+
     /**
      * Gets the feed id.
+     *
      * @return the feed id.
      */
     public long getFeedId()
     {
         return feedId;
     }
-    
+
     /**
      * Gets the entity id.
+     *
      * @return the entity id.
      */
     public long getEntityId()
     {
         return entityId;
     }
-    
+
     /**
      * Gets the entity type.
+     *
      * @return the entity type.
      */
     public EntityType getEntityType()
     {
-    	return entityType;
+        return entityType;
     }
-    
+
+    /**
+     * @return the Person ID of requestor.
+     */
+    public long getRequestorPersonId()
+    {
+        return requestorPersonId;
+    }
+
 }

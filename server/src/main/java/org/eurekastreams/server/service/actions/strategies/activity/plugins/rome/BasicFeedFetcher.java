@@ -16,8 +16,8 @@
 package org.eurekastreams.server.service.actions.strategies.activity.plugins.rome;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -84,8 +84,10 @@ public class BasicFeedFetcher implements PluginFeedFetcherStrategy
     /**
      * Executes the strategy.
      *
-     * @param inFeedURL
+     * @param inFeedUrl
      *            the Url for the feed to feed in.
+     * @param inRequestors
+     *            List of people who requested the feed (not used).
      * @param inProxyHost
      *            host name to use (if desires) for proxying http requests.
      * @param inProxyPort
@@ -93,13 +95,18 @@ public class BasicFeedFetcher implements PluginFeedFetcherStrategy
      * @param inTimeout
      *            the timeout period to wait for the feed to return (in ms).
      * @return a Syndicated Feed.
-     * @throws FeedException if Exception.
-     * @throws ParserConfigurationException if Exception.
-     * @throws SAXException if Exception.
-     * @throws IOException if Exception.
+     * @throws FeedException
+     *             if Exception.
+     * @throws ParserConfigurationException
+     *             if Exception.
+     * @throws SAXException
+     *             if Exception.
+     * @throws IOException
+     *             if Exception.
      */
-    public SyndFeed execute(final URL inFeedURL, final String inProxyHost, final String inProxyPort,
-            final int inTimeout) throws IOException, ParserConfigurationException,
+    public Map<String, SyndFeed> execute(final String inFeedUrl, final List<String> inRequestors,
+            final String inProxyHost, final String inProxyPort, final int inTimeout) throws IOException,
+            ParserConfigurationException,
             FeedException, SAXException
     {
         HttpConnectionManagerParams managerParams = new HttpConnectionManagerParams();
@@ -122,7 +129,7 @@ public class BasicFeedFetcher implements PluginFeedFetcherStrategy
             client.getHostConfiguration().setProxy(inProxyHost, Integer.parseInt(inProxyPort));
         }
 
-        GetMethod get = new GetMethod(inFeedURL.toString());
+        GetMethod get = new GetMethod(inFeedUrl);
 
         for (Map.Entry<String, String> header : httpHeaders.entrySet())
         {
@@ -138,7 +145,8 @@ public class BasicFeedFetcher implements PluginFeedFetcherStrategy
             DocumentBuilder builder = domFactory.newDocumentBuilder();
 
             SyndFeedInput input = new SyndFeedInput();
-            return input.build(builder.parse(get.getResponseBodyAsStream()));
+            SyndFeed syndFeed = input.build(builder.parse(get.getResponseBodyAsStream()));
+            return Collections.singletonMap(null, syndFeed);
         }
         finally
         {

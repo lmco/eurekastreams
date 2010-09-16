@@ -15,13 +15,14 @@
  */
 package org.eurekastreams.server.action.execution.feed;
 
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.server.action.request.feed.RefreshFeedRequest;
@@ -55,14 +56,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.sun.syndication.feed.module.SyModule;
-import com.sun.syndication.feed.module.SyModuleImpl;
 import com.sun.syndication.feed.synd.SyndEntryImpl;
 import com.sun.syndication.feed.synd.SyndFeed;
-import com.sun.syndication.fetcher.FeedFetcher;
 
 /**
  * Test for the RefreshFeedAction.
- * 
+ *
  */
 public class RefreshFeedExecutionTest
 {
@@ -75,6 +74,9 @@ public class RefreshFeedExecutionTest
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
+
+    /** Test data. */
+    private static final String FEED_URL = "http://www.flickr.com/rss/feed";
 
     /**
      * Minutes in an hour.
@@ -122,14 +124,6 @@ public class RefreshFeedExecutionTest
     private MemcachedCache cache = context.mock(MemcachedCache.class);
 
     /**
-     * Feed mock.
-     */
-    private Feed feed = context.mock(Feed.class);
-    /**
-     * Request.
-     */
-    private RefreshFeedRequest request = context.mock(RefreshFeedRequest.class);
-    /**
      * System under test.
      */
     private RefreshFeedExecution sut;
@@ -143,18 +137,6 @@ public class RefreshFeedExecutionTest
      * Feed factory mock.
      */
     private FeedFactory feedFetcherFactory = context.mock(FeedFactory.class);
-    /**
-     * Feed fetcher mock.
-     */
-    private FeedFetcher feedFetcher = context.mock(FeedFetcher.class);
-    /**
-     * Atom feed mock.
-     */
-    private SyndFeed atomFeed = context.mock(SyndFeed.class);
-    /**
-     * Symod mock.
-     */
-    private SyModuleImpl syMod = context.mock(SyModuleImpl.class);
     /**
      * Flickr mapper mock.
      */
@@ -171,22 +153,6 @@ public class RefreshFeedExecutionTest
      * Bookmark mapper mock.
      */
     private ObjectMapper bookmarkMapper = context.mock(ObjectMapper.class, "bookmark");
-    /**
-     * List of entries.
-     */
-    private List<SyndEntryImpl> entryList = new LinkedList<SyndEntryImpl>();
-    /**
-     * List of people owners.
-     */
-    private List<Person> peopleOwners = new LinkedList<Person>();
-    /**
-     * List of group owners.
-     */
-    private List<DomainGroup> groupOwners = new LinkedList<DomainGroup>();
-    /**
-     * Plugin mock.
-     */
-    private PluginDefinition plugin = context.mock(PluginDefinition.class);
 
     /**
      * Find by id person mapper.
@@ -222,9 +188,24 @@ public class RefreshFeedExecutionTest
      */
     private GadgetMetaDataFetcher fetcher = context.mock(GadgetMetaDataFetcher.class);
 
+
+
+    /** Fixture: feed. */
+    private Feed feed = context.mock(Feed.class);
+
+    /** Fixture: stream plugin. */
+    private PluginDefinition plugin = context.mock(PluginDefinition.class);
+
+    /** Fixture: atom feed. */
+    private SyndFeed atomFeed1 = context.mock(SyndFeed.class, "atomFeed1");
+
+    /** Fixture: atom feed. */
+    private SyndFeed atomFeed2 = context.mock(SyndFeed.class, "atomFeed2");
+
+
     /**
      * Prep the system under test for the test suite.
-     * 
+     *
      * @throws Exception
      *             exception.
      */
@@ -237,9 +218,11 @@ public class RefreshFeedExecutionTest
         FeedSubscriber sub1 = new FeedSubscriber();
         sub1.setEntityId(1L);
         sub1.setEntityType(EntityType.PERSON);
+        sub1.setRequestor(new Person("user1", "", "", "", ""));
         FeedSubscriber sub2 = new FeedSubscriber();
         sub2.setEntityId(2L);
         sub2.setEntityType(EntityType.GROUP);
+        sub2.setRequestor(new Person("user2", "", "", "", ""));
         final List<FeedSubscriber> feedSubs = new ArrayList<FeedSubscriber>();
         feedSubs.add(sub1);
         feedSubs.add(sub2);
@@ -255,30 +238,12 @@ public class RefreshFeedExecutionTest
         context.checking(new Expectations()
         {
             {
-                allowing(updateMapper).execute(with(any(PersistenceRequest.class)));
+                allowing(ac).getParams();
+                will(returnValue(new RefreshFeedRequest(5L)));
 
-                allowing(cache).get(CacheKeys.BUFFERED_ACTIVITIES);
-                will(returnValue(1L));
-
-                allowing(fetcher).getGadgetsMetaData(with(any(Map.class)));
-                will(returnValue(metaDataList));
-
+                // ---- feed ----
                 allowing(feed).getUrl();
-                will(returnValue("http://www.flickr.com/rss/feed"));
-
-                allowing(feed).getId();
-                will(returnValue(5L));
-
-                oneOf(feedFetcherFactory).getSyndicatedFeed(with(any(URL.class)));
-                will(returnValue(atomFeed));
-
-                oneOf(feed).setLastPostDate(with(any(Date.class)));
-                oneOf(feed).setLastUpdated(with(any(Long.class)));
-
-                oneOf(feed).setPending(false);
-
-                allowing(activityDBInserter).execute(with(any(PersistenceRequest.class)));
-                allowing(cache).addToTopOfList(with(any(String.class)), with(any(ArrayList.class)));
+                will(returnValue(FEED_URL));
 
                 allowing(feed).getLastPostDate();
                 will(returnValue(new Date(2)));
@@ -289,6 +254,39 @@ public class RefreshFeedExecutionTest
                 allowing(feed).getFeedSubscribers();
                 will(returnValue(feedSubs));
 
+                allowing(feed).getTitle();
+                will(returnValue("This is a feed"));
+
+                // allowing(feed).getId();
+                // will(returnValue(5L));
+
+                // ---- plugin ----
+                allowing(plugin).getUrl();
+
+                allowing(plugin).getId();
+                will(returnValue(1L));
+
+                allowing(plugin).getObjectType();
+                will(returnValue(BaseObjectType.BOOKMARK));
+
+
+                oneOf(youTubeMapper).getRegex();
+                will(returnValue("nevermatchme"));
+
+
+                allowing(updateMapper).execute(with(any(PersistenceRequest.class)));
+
+                allowing(cache).get(CacheKeys.BUFFERED_ACTIVITIES);
+                will(returnValue(1L));
+
+                allowing(fetcher).getGadgetsMetaData(with(any(Map.class)));
+                will(returnValue(metaDataList));
+
+
+                allowing(activityDBInserter).execute(with(any(PersistenceRequest.class)));
+                allowing(cache).addToTopOfList(with(any(String.class)), with(any(ArrayList.class)));
+
+
                 allowing(personMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(personOwner));
 
@@ -298,53 +296,116 @@ public class RefreshFeedExecutionTest
                 allowing(feedMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(feed));
 
-                allowing(plugin).getUrl();
 
-                allowing(plugin).getId();
-                will(returnValue(1L));
 
-                allowing(atomFeed).getEntries();
-                will(returnValue(entryList));
-
-                allowing(plugin).getObjectType();
-                will(returnValue(BaseObjectType.BOOKMARK));
-
+                // ---- updates always made ----
+                oneOf(feed).setLastPostDate(with(any(Date.class)));
+                oneOf(feed).setLastUpdated(with(any(Long.class)));
+                oneOf(feed).setPending(false);
             }
         });
 
     }
 
     /**
-     * Test with symod saying hourly and an error in the feed.
-     * 
+     * Setup expectations for fetching anonymously.
+     *
      * @throws Exception
-     *             exception feed throws.
+     *             Shouldn't.
      */
-    @Test
-    public void withSymodHourlyAndError() throws Exception
+    private void setupFetchAnonymous() throws Exception
     {
         context.checking(new Expectations()
         {
             {
-                oneOf(ac).getParams();
-                will(returnValue(request));
+                allowing(feedFetcherFactory).getSyndicatedFeed(with(equal(FEED_URL)), with(any(List.class)));
+                will(returnValue(Collections.singletonMap(null, atomFeed1)));
+            }
+        });
+    }
 
-                oneOf(request).getFeedId();
-                will(returnValue(new Long(5)));
+    /**
+     * Setup expectations for fetching on a per-user basis.
+     *
+     * @throws Exception
+     *             Shouldn't.
+     */
+    private void setupFetchByUser() throws Exception
+    {
+        final Map<String, SyndFeed> feeds = new TreeMap<String, SyndFeed>(); // use TreeMap to force order
+        feeds.put("user1", atomFeed1);
+        feeds.put("user2", atomFeed2);
 
-                oneOf(atomFeed).getModule(SyModule.URI);
+        context.checking(new Expectations()
+        {
+            {
+                allowing(feedFetcherFactory).getSyndicatedFeed(with(equal(FEED_URL)), with(any(List.class)));
+                will(returnValue(feeds));
+            }
+        });
+    }
+
+    /**
+     * Creates expectations for no SyMod.
+     */
+    private void setupNoSyMod()
+    {
+        context.checking(new Expectations()
+        {
+            {
+                allowing(atomFeed1).getModule(SyModule.URI);
+                will(returnValue(null));
+
+                allowing(atomFeed2).getModule(SyModule.URI);
+                will(returnValue(null));
+
+                oneOf(feed).setUpdateFrequency(null);
+            }
+        });
+    }
+
+    /**
+     * Core behavior for update frequency tests.
+     *
+     * @param period
+     *            Time unit of update period.
+     * @param frequency
+     *            Frequency of update.
+     * @param expected
+     *            Expected value to be set in the feed.
+     * @throws Exception
+     *             Shouldn't.
+     */
+    private void coreUpdateFrequencyTest(final String period, final int frequency, final Long expected)
+            throws Exception
+    {
+        final SyModule syMod = context.mock(SyModule.class);
+
+        setupFetchByUser();
+        context.checking(new Expectations()
+        {
+            {
+                allowing(flickrMapper).getRegex();
+                will(returnValue("dontmatchthis"));
+
+                allowing(atomFeed1).getModule(SyModule.URI);
                 will(returnValue(syMod));
 
-                oneOf(syMod).getUpdateFrequency();
-                will(returnValue(1));
+                never(atomFeed2).getModule(with(any(String.class)));
 
-                oneOf(syMod).getUpdatePeriod();
-                will(returnValue(SyModule.HOURLY));
+                allowing(syMod).getUpdateFrequency();
+                will(returnValue(frequency));
 
-                oneOf(youTubeMapper).getRegex();
-                will(throwException(new Exception()));
+                allowing(syMod).getUpdatePeriod();
+                will(returnValue(period));
 
-                oneOf(feed).setUpdateFrequency(MININHOUR);
+                allowing(atomFeed1).getEntries();
+                will(returnValue(Collections.EMPTY_LIST));
+
+                allowing(atomFeed2).getEntries();
+                will(returnValue(Collections.EMPTY_LIST));
+
+                oneOf(feed).setUpdateFrequency(expected);
             }
         });
 
@@ -354,189 +415,96 @@ public class RefreshFeedExecutionTest
     }
 
     /**
-     * Test with symod saying daily and an error in the feed.
-     * 
+     * Tests SyMod-specified update frequency.
+     *
      * @throws Exception
-     *             exception feed throws.
+     *             Shouldn't.
      */
     @Test
-    public void withSymodDailyAndError() throws Exception
+    public void testSymodDefault() throws Exception
     {
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(ac).getParams();
-                will(returnValue(request));
-
-                oneOf(request).getFeedId();
-                will(returnValue(new Long(5)));
-
-                oneOf(atomFeed).getModule(SyModule.URI);
-                will(returnValue(syMod));
-
-                oneOf(syMod).getUpdateFrequency();
-                will(returnValue(1));
-
-                oneOf(syMod).getUpdatePeriod();
-                will(returnValue(SyModule.DAILY));
-
-                oneOf(youTubeMapper).getRegex();
-                will(throwException(new Exception()));
-
-                oneOf(feed).setUpdateFrequency(MININDAY);
-            }
-        });
-
-        sut.execute(ac);
-
-        context.assertIsSatisfied();
+        coreUpdateFrequencyTest("Undefined Value", 1, MININHOUR);
     }
 
     /**
-     * Test with symod saying weekly and an error in the feed.
-     * 
+     * Tests SyMod-specified update frequency.
+     *
      * @throws Exception
-     *             exception feed throws.
+     *             Shouldn't.
      */
     @Test
-    public void withSymodWeeklyAndError() throws Exception
+    public void testSymodHourly() throws Exception
     {
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(ac).getParams();
-                will(returnValue(request));
-
-                oneOf(request).getFeedId();
-                will(returnValue(new Long(5)));
-
-                oneOf(atomFeed).getModule(SyModule.URI);
-                will(returnValue(syMod));
-
-                oneOf(syMod).getUpdateFrequency();
-                will(returnValue(1));
-
-                oneOf(syMod).getUpdatePeriod();
-                will(returnValue(SyModule.WEEKLY));
-
-                oneOf(youTubeMapper).getRegex();
-                will(throwException(new Exception()));
-
-                oneOf(feed).setUpdateFrequency(MININWEEK);
-            }
-        });
-
-        sut.execute(ac);
-
-        context.assertIsSatisfied();
+        coreUpdateFrequencyTest(SyModule.HOURLY, 1, MININHOUR);
     }
 
     /**
-     * Test with symod saying monthly and an error in the feed.
-     * 
+     * Tests SyMod-specified update frequency.
+     *
      * @throws Exception
-     *             exception feed throws.
+     *             Shouldn't.
      */
     @Test
-    public void withSymodMonthlyAndError() throws Exception
+    public void testSymodDaily() throws Exception
     {
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(ac).getParams();
-                will(returnValue(request));
-
-                oneOf(request).getFeedId();
-                will(returnValue(new Long(5)));
-
-                oneOf(atomFeed).getModule(SyModule.URI);
-                will(returnValue(syMod));
-
-                oneOf(syMod).getUpdateFrequency();
-                will(returnValue(1));
-
-                oneOf(syMod).getUpdatePeriod();
-                will(returnValue(SyModule.MONTHLY));
-
-                oneOf(youTubeMapper).getRegex();
-                will(throwException(new Exception()));
-
-                oneOf(feed).setUpdateFrequency(MININMONTH);
-            }
-        });
-
-        sut.execute(ac);
-
-        context.assertIsSatisfied();
+        coreUpdateFrequencyTest(SyModule.DAILY, 1, MININDAY);
     }
 
     /**
-     * Test with symod saying yearly and an error in the feed.
-     * 
+     * Tests SyMod-specified update frequency.
+     *
      * @throws Exception
-     *             exception feed throws.
+     *             Shouldn't.
      */
     @Test
-    public void withSymodYearlyAndError() throws Exception
+    public void testSymodWeekly() throws Exception
     {
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(ac).getParams();
-                will(returnValue(request));
-
-                oneOf(request).getFeedId();
-                will(returnValue(new Long(5)));
-
-                oneOf(atomFeed).getModule(SyModule.URI);
-                will(returnValue(syMod));
-
-                oneOf(syMod).getUpdateFrequency();
-                will(returnValue(1));
-
-                oneOf(syMod).getUpdatePeriod();
-                will(returnValue(SyModule.YEARLY));
-
-                oneOf(youTubeMapper).getRegex();
-                will(throwException(new Exception()));
-
-                oneOf(feed).setUpdateFrequency(MININYEAR);
-            }
-        });
-
-        sut.execute(ac);
-
-        context.assertIsSatisfied();
+        coreUpdateFrequencyTest(SyModule.WEEKLY, 1, MININWEEK);
     }
+
+    /**
+     * Tests SyMod-specified update frequency.
+     *
+     * @throws Exception
+     *             Shouldn't.
+     */
+    @Test
+    public void testSymodMonthly() throws Exception
+    {
+        coreUpdateFrequencyTest(SyModule.MONTHLY, 1, MININMONTH);
+    }
+
+    /**
+     * Tests SyMod-specified update frequency.
+     *
+     * @throws Exception
+     *             Shouldn't.
+     */
+    @Test
+    public void testSymodYearly() throws Exception
+    {
+        coreUpdateFrequencyTest(SyModule.YEARLY, 1, MININYEAR);
+    }
+
 
     /**
      * Test with no mapper and a specific URL mapper for the feed and 1 entry.
-     * 
+     *
      * @throws Exception
      *             exception feed throws.
      */
     @Test
-    public void withNoSymodAndSpecificMapper() throws Exception
+    public void withSpecificMapper() throws Exception
     {
-        final SyndEntryImpl entry1 = context.mock(SyndEntryImpl.class, "e1");
         final ObjectMapper flickrObjectMapper = context.mock(ObjectMapper.class);
-        entryList.add(entry1);
+        final SyndEntryImpl entry1 = context.mock(SyndEntryImpl.class, "e1");
+        final List<SyndEntryImpl> entryList = Collections.singletonList(entry1);
 
+        setupNoSyMod();
+        setupFetchAnonymous();
         context.checking(new Expectations()
         {
             {
-                oneOf(ac).getParams();
-                will(returnValue(request));
-
-                oneOf(request).getFeedId();
-                will(returnValue(new Long(5)));
-
-                oneOf(atomFeed).getModule(SyModule.URI);
-                will(returnValue(null));
-
-                oneOf(youTubeMapper).getRegex();
-                will(returnValue("dontmatchme"));
-
                 oneOf(flickrMapper).getRegex();
                 will(returnValue("(www.)?flickr.com"));
 
@@ -552,8 +520,6 @@ public class RefreshFeedExecutionTest
                 oneOf(flickrObjectMapper).getBaseObjectType();
                 oneOf(flickrObjectMapper).getBaseObject(entry1);
 
-                oneOf(feed).setUpdateFrequency(null);
-
                 allowing(personOwner).getAccountId();
                 allowing(personOwner).getId();
                 allowing(personOwner).getParentOrganization();
@@ -563,6 +529,10 @@ public class RefreshFeedExecutionTest
                 allowing(groupOwner).isPublicGroup();
                 allowing(groupOwner).getShortName();
                 will(returnValue(false));
+
+                allowing(atomFeed1).getEntries();
+                will(returnValue(entryList));
+
             }
         });
 
@@ -572,14 +542,13 @@ public class RefreshFeedExecutionTest
     }
 
     /**
-     * Test with symod undefined, 1 old entry, 1 activitystreams entry, 1 unsupported activitystreams object, and 1
-     * standard note object.
+     * Test with 1 old entry, 1 activitystreams entry, 1 unsupported activitystreams object, and 1 standard note object.
      * 
      * @throws Exception
      *             exception feed throws.
      */
     @Test
-    public void withSymodUndefOneActivityStreamsAndOneEntryError() throws Exception
+    public void withOneActivityStreamsAndOneEntryError() throws Exception
     {
         final ActivityStreamsModuleImpl activityModule = context.mock(ActivityStreamsModuleImpl.class);
         // Feed is too old.
@@ -591,20 +560,17 @@ public class RefreshFeedExecutionTest
         // This is a standard entry with a known object
         final SyndEntryImpl entry4 = context.mock(SyndEntryImpl.class, "e4");
 
+        final List<SyndEntryImpl> entryList = new LinkedList<SyndEntryImpl>();
         entryList.add(entry1);
         entryList.add(entry2);
         entryList.add(entry3);
         entryList.add(entry4);
 
+        setupNoSyMod();
+        setupFetchAnonymous();
         context.checking(new Expectations()
         {
             {
-                oneOf(ac).getParams();
-                will(returnValue(request));
-
-                oneOf(request).getFeedId();
-                will(returnValue(new Long(5)));
-
                 allowing(personOwner).getAccountId();
                 allowing(personOwner).getParentOrganization();
                 allowing(groupOwner).getParentOrganization();
@@ -615,17 +581,6 @@ public class RefreshFeedExecutionTest
                 allowing(groupOwner).getShortName();
                 will(returnValue(false));
 
-                oneOf(atomFeed).getModule(SyModule.URI);
-                will(returnValue(syMod));
-
-                oneOf(syMod).getUpdateFrequency();
-                will(returnValue(1));
-
-                oneOf(syMod).getUpdatePeriod();
-                will(returnValue("dontfindme"));
-
-                oneOf(youTubeMapper).getRegex();
-                will(returnValue("dontmatchme"));
 
                 oneOf(flickrMapper).getRegex();
                 will(returnValue("dontmatchmeeither"));
@@ -670,11 +625,11 @@ public class RefreshFeedExecutionTest
                 oneOf(entry4).getModule(ActivityStreamsModule.URI);
                 will(returnValue(null));
 
+                allowing(atomFeed1).getEntries();
+                will(returnValue(entryList));
+
                 oneOf(bookmarkMapper).getBaseObjectType();
                 oneOf(bookmarkMapper).getBaseObject(entry4);
-
-                // Default to hourly when undefined.
-                oneOf(feed).setUpdateFrequency(MININHOUR);
 
             }
         });

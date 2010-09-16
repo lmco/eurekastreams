@@ -37,14 +37,14 @@ public class GetFeedSubscriberOrCreateMapperTest extends MapperTest
      */
     @Autowired
     private GetFeedSubscriberOrCreateMapper sut;
-    
+
     /**
      * Mapper to make sure we persisted our new feeds.
      */
     @Autowired
     private FindByIdMapper<FeedSubscriber> findByIdMapper;
 
-    
+
     /**
      * Test execute on existing feedsubscriber.
      */
@@ -52,8 +52,8 @@ public class GetFeedSubscriberOrCreateMapperTest extends MapperTest
     public void testExecuteWithExisting()
     {
     	final long id = 42L;
-    	
-        GetFeedSubscriberRequest request = new GetFeedSubscriberRequest(2L, id, EntityType.PERSON);
+
+        GetFeedSubscriberRequest request = new GetFeedSubscriberRequest(2L, id, EntityType.PERSON, 0);
 
         FeedSubscriber feedSub = sut.execute(request);
         // Just make sure it found the right one.
@@ -67,14 +67,16 @@ public class GetFeedSubscriberOrCreateMapperTest extends MapperTest
     public void testExecuteWithOutExisting()
     {
     	final long id = 42L;
-    	
-    	GetFeedSubscriberRequest request = new GetFeedSubscriberRequest(4L, id, EntityType.PERSON);
+    	final long id2 = 142L;
+
+    	GetFeedSubscriberRequest request = new GetFeedSubscriberRequest(4L, id, EntityType.PERSON, id2);
 
         FeedSubscriber feed = sut.execute(request);
         // Make sure the created guy has all the right attributes.
         assertEquals(4L, feed.getFeed().getId());
         assertEquals(id, (long) feed.getEntityId());
         assertEquals(EntityType.PERSON, feed.getEntityType());
+        assertEquals(id2, (long) feed.getRequestor().getId());
         // And make sure he got persisted to the DB.
         FeedSubscriber persisted = findByIdMapper.execute(new FindByIdRequest("FeedSubscriber", feed.getId()));
         assertEquals(persisted.getId(), feed.getId());

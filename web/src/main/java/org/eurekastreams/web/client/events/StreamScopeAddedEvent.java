@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,12 +31,12 @@ public class StreamScopeAddedEvent
     {
         return new StreamScopeAddedEvent(null);
     }
-    
+
     /**
      * The new scope.
      */
     private StreamScope scope;
-    
+
     /**
      * Default constructor.
      * @param inScope the new scope.
@@ -45,7 +45,7 @@ public class StreamScopeAddedEvent
     {
         scope = inScope;
     }
-    
+
     /**
      * Returns the scope.
      * @return the scope.

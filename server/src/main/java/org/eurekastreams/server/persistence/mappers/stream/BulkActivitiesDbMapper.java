@@ -205,11 +205,11 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
 
         final List<ActivityDTO> orderedResults = new LinkedList<ActivityDTO>();
 
-        for (Long id : activityIds)
+        for (int i = 0; i < activityIds.size(); i++)
         {
-            if (activityMap.containsKey(id))
+            if (activityMap.containsKey(activityIds.get(i)))
             {
-                orderedResults.add(activityMap.get(id));
+                orderedResults.add(activityMap.get(activityIds.get(i)));
             }
         }
 

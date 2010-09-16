@@ -16,7 +16,6 @@
 package org.eurekastreams.server.action.execution.feed;
 
 import java.io.Serializable;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -24,7 +23,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
@@ -53,12 +51,10 @@ import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 import org.eurekastreams.server.service.actions.strategies.activity.plugins.ObjectMapper;
 import org.eurekastreams.server.service.actions.strategies.activity.plugins.SpecificUrlObjectMapper;
 import org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.ActivityStreamsModule;
-import org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.ActivityStreamsModuleImpl;
 import org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.FeedFactory;
 import org.eurekastreams.server.service.opensocial.gadgets.spec.GadgetMetaDataFetcher;
 
 import com.sun.syndication.feed.module.SyModule;
-import com.sun.syndication.feed.module.SyModuleImpl;
 import com.sun.syndication.feed.synd.SyndEntryImpl;
 import com.sun.syndication.feed.synd.SyndFeed;
 
@@ -66,7 +62,7 @@ import com.sun.syndication.feed.synd.SyndFeed;
  * Goes out to the interwebs, grabs a feed, parses it, stores it in DB and queues it up to be stored in cache. The
  * reason for the queueing is so I don't update the same exact list 100s of times instead of once. This cuts down by
  * multiple orders of magnitude
- * 
+ *
  */
 public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 {
@@ -151,7 +147,7 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inStandardFeedMappers
      *            Standard feed mappers.
      * @param inSpecificUrlMappers
@@ -194,37 +190,35 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 
     /**
      * {@inheritDoc}.
-     * 
+     *
      * Grab all the feeds, set them as pending, and fire off an async job. to refresh each one.
      */
     public Serializable execute(final ActionContext inActionContext) throws ExecutionException
     {
-        boolean foundSpecificMapper = false;
-        Long updateFrequency = null;
-        List<Activity> insertedActivities = new LinkedList<Activity>();
-        ArrayList<Long> insertedActivityIds = new ArrayList<Long>();
-
         RefreshFeedRequest request = (RefreshFeedRequest) inActionContext.getParams();
         Feed feed = feedFinder.execute(new FindByIdRequest("Feed", request.getFeedId()));
         Date lastPostDate = feed.getLastPostDate();
-        ArrayList<Long> people = new ArrayList<Long>();
-        ArrayList<Long> groups = new ArrayList<Long>();
+        Long updateFrequency = null;
+
         try
         {
-            URL feedUrl = new URL(feed.getUrl());
-            SyndFeed syndFeed = feedFetcherFactory.getSyndicatedFeed(feedUrl);
-            SyModuleImpl syMod = (SyModuleImpl) syndFeed.getModule(SyModule.URI);
-
-            if (syMod != null)
+            // fetch the feeds
+            // Gives the fetcher the feed and a list of the requestors; the fetcher will decide if it can make a single
+            // unauthenticated request or if it needs to make one request per requestor
+            List<String> requestorAccounts = new ArrayList<String>();
+            for (FeedSubscriber feedSubscriber : feed.getFeedSubscribers())
             {
-                updateFrequency = getUpdateFrequency(syMod.getUpdatePeriod(), syMod.getUpdateFrequency());
+                requestorAccounts.add(feedSubscriber.getRequestor().getAccountId());
             }
+            Map<String, SyndFeed> syndFeeds = feedFetcherFactory.getSyndicatedFeed(feed.getUrl(), requestorAccounts);
 
             ObjectMapper selectedObjectMapper = null;
+            boolean foundSpecificMapper = false;
             for (SpecificUrlObjectMapper strategy : specificUrlMappers)
             {
-                Matcher match = Pattern.compile(strategy.getRegex()).matcher(feed.getUrl());
-                if (match.find())
+                String pattern = strategy.getRegex();
+                String value = feed.getUrl();
+                if (Pattern.compile(pattern).matcher(value).find())
                 {
                     selectedObjectMapper = strategy.getObjectMapper();
                     foundSpecificMapper = true;
@@ -232,104 +226,125 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
                 }
             }
 
-            for (Object entryObject : syndFeed.getEntries())
+            // iterate through all feed instances returned by the fetcher
+            List<Activity> insertedActivities = new LinkedList<Activity>();
+            for (Map.Entry<String, SyndFeed> mapEntry : syndFeeds.entrySet())
             {
-                try
+                SyndFeed syndFeed = mapEntry.getValue();
+                List<FeedSubscriber> subscribers = getFeedSubscribers(mapEntry.getKey(), feed);
+
+                // check for update frequency info
+                if (updateFrequency == null)
                 {
-                    SyndEntryImpl entry = (SyndEntryImpl) entryObject;
-                    if (feed.getLastPostDate() == null || entry.getPublishedDate().after(feed.getLastPostDate()))
+                    SyModule syMod = (SyModule) syndFeed.getModule(SyModule.URI);
+                    if (syMod != null)
                     {
-                        if (lastPostDate == null || entry.getPublishedDate().after(lastPostDate))
-                        {
-                            lastPostDate = entry.getPublishedDate();
-                        }
-
-                        Activity activity = new Activity();
-                        activity.setAppType(EntityType.PLUGIN);
-                        activity.setAppId(feed.getPlugin().getId());
-                        activity.setAppSource(feed.getUrl());
-                        final Map<String, GeneralGadgetDefinition> gadgetDefs =
-                            new HashMap<String, GeneralGadgetDefinition>();
-                        gadgetDefs.put(feed.getPlugin().getUrl(), feed.getPlugin());
-                        try
-                        {
-                            List<GadgetMetaDataDTO> meta = metaDataFetcher.getGadgetsMetaData(gadgetDefs);
-
-                            if (meta.size() > 0)
-                            {
-                                activity.setAppName(meta.get(0).getTitle());
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            log.error("Error getting plugin definition");
-                            activity.setAppName(feed.getTitle());
-                        }
-                        activity.setPostedTime(entry.getPublishedDate());
-                        activity.setUpdated(entry.getUpdatedDate());
-                        activity.setVerb(ActivityVerb.POST);
-                        if (!foundSpecificMapper)
-                        {
-                            ActivityStreamsModule activityModule = (ActivityStreamsModuleImpl) entry
-                                    .getModule(ActivityStreamsModule.URI);
-                            BaseObjectType type = feed.getPlugin().getObjectType();
-
-                            if (activityModule != null)
-                            {
-                                type = BaseObjectType.valueOf(activityModule.getObjectType());
-                                entry = activityModule.getAtomEntry();
-                            }
-
-                            if (!standardFeedMappers.containsKey(type))
-                            {
-                                type = BaseObjectType.NOTE;
-                            }
-                            selectedObjectMapper = standardFeedMappers.get(type);
-                        }
-                        activity.setBaseObjectType(selectedObjectMapper.getBaseObjectType());
-                        activity.setBaseObject(selectedObjectMapper.getBaseObject(entry));
-                        for (FeedSubscriber feedSubscriber : feed.getFeedSubscribers())
-                        {
-                            Activity activityForIndividual = (Activity) activity.clone();
-
-                            if (feedSubscriber.getEntityType().equals(EntityType.PERSON))
-                            {
-                                Person person = personFinder.execute(new FindByIdRequest("Person", feedSubscriber
-                                        .getEntityId()));
-                                activityForIndividual.setActorType(EntityType.PERSON);
-                                activityForIndividual.setActorId(person.getAccountId());
-                                activityForIndividual.setRecipientParentOrg(person.getParentOrganization());
-                                activityForIndividual.setRecipientStreamScope(person.getStreamScope());
-                                activityForIndividual.setIsDestinationStreamPublic(true);
-                                people.add(person.getId());
-                            }
-                            else if (feedSubscriber.getEntityType().equals(EntityType.GROUP))
-                            {
-                                DomainGroup group = groupFinder.execute(new FindByIdRequest("DomainGroup",
-                                        feedSubscriber.getEntityId()));
-
-                                activityForIndividual.setActorType(EntityType.GROUP);
-                                activityForIndividual.setActorId(group.getShortName());
-                                activityForIndividual.setRecipientParentOrg(group.getParentOrganization());
-                                activityForIndividual.setRecipientStreamScope(group.getStreamScope());
-                                activityForIndividual.setIsDestinationStreamPublic(group.isPublicGroup());
-                                groups.add(group.getId());
-                            }
-                            insertedActivities.add(activityForIndividual);
-                        }
-                    } // end if
+                        updateFrequency = getUpdateFrequency(syMod.getUpdatePeriod(), syMod.getUpdateFrequency());
+                    }
                 }
-                catch (Exception ex)
+
+                // iterate through each entry in the feed instance
+                for (Object entryObject : syndFeed.getEntries())
                 {
-                    log.warn("ATOM/RSS entry is not to spec. "
-                            + "Skipping entry and moving to the next one. Feed url: " + feed.getUrl(), ex);
+                    try
+                    {
+                        SyndEntryImpl entry = (SyndEntryImpl) entryObject;
+                        if (feed.getLastPostDate() == null || entry.getPublishedDate().after(feed.getLastPostDate()))
+                        {
+                            if (lastPostDate == null || entry.getPublishedDate().after(lastPostDate))
+                            {
+                                lastPostDate = entry.getPublishedDate();
+                            }
+
+                            Activity activity = new Activity();
+                            activity.setAppType(EntityType.PLUGIN);
+                            activity.setAppId(feed.getPlugin().getId());
+                            activity.setAppSource(feed.getUrl());
+                            final Map<String, GeneralGadgetDefinition> gadgetDefs =
+                                    new HashMap<String, GeneralGadgetDefinition>();
+                            gadgetDefs.put(feed.getPlugin().getUrl(), feed.getPlugin());
+                            try
+                            {
+                                List<GadgetMetaDataDTO> meta = metaDataFetcher.getGadgetsMetaData(gadgetDefs);
+
+                                if (meta.size() > 0)
+                                {
+                                    activity.setAppName(meta.get(0).getTitle());
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                log.error("Error getting plugin definition");
+                                activity.setAppName(feed.getTitle());
+                            }
+                            activity.setPostedTime(entry.getPublishedDate());
+                            activity.setUpdated(entry.getUpdatedDate());
+                            activity.setVerb(ActivityVerb.POST);
+                            if (!foundSpecificMapper)
+                            {
+                                BaseObjectType type = feed.getPlugin().getObjectType();
+
+                                ActivityStreamsModule activityModule =
+                                        (ActivityStreamsModule) entry.getModule(ActivityStreamsModule.URI);
+                                if (activityModule != null)
+                                {
+                                    type = BaseObjectType.valueOf(activityModule.getObjectType());
+                                    entry = activityModule.getAtomEntry();
+                                }
+
+                                if (!standardFeedMappers.containsKey(type))
+                                {
+                                    type = BaseObjectType.NOTE;
+                                }
+                                selectedObjectMapper = standardFeedMappers.get(type);
+                            }
+                            activity.setBaseObjectType(selectedObjectMapper.getBaseObjectType());
+                            activity.setBaseObject(selectedObjectMapper.getBaseObject(entry));
+
+                            // create activities per subscriber
+                            for (FeedSubscriber feedSubscriber : subscribers)
+                            {
+                                Activity activityForIndividual = (Activity) activity.clone();
+
+                                if (feedSubscriber.getEntityType().equals(EntityType.PERSON))
+                                {
+                                    Person person =
+                                            personFinder.execute(new FindByIdRequest("Person", feedSubscriber
+                                                    .getEntityId()));
+                                    activityForIndividual.setActorId(person.getAccountId());
+                                    activityForIndividual.setRecipientParentOrg(person.getParentOrganization());
+                                    activityForIndividual.setRecipientStreamScope(person.getStreamScope());
+                                    activityForIndividual.setIsDestinationStreamPublic(true);
+                                }
+                                else if (feedSubscriber.getEntityType().equals(EntityType.GROUP))
+                                {
+                                    DomainGroup group =
+                                            groupFinder.execute(new FindByIdRequest("DomainGroup", feedSubscriber
+                                                    .getEntityId()));
+
+                                    activityForIndividual.setActorId(group.getShortName());
+                                    activityForIndividual.setRecipientParentOrg(group.getParentOrganization());
+                                    activityForIndividual.setRecipientStreamScope(group.getStreamScope());
+                                    activityForIndividual.setIsDestinationStreamPublic(group.isPublicGroup());
+                                }
+                                activityForIndividual.setActorType(feedSubscriber.getEntityType());
+                                insertedActivities.add(activityForIndividual);
+                            }
+                        } // end if
+                    }
+                    catch (Exception ex)
+                    {
+                        log.warn("ATOM/RSS entry is not to spec. "
+                                + "Skipping entry and moving to the next one. Feed url: " + feed.getUrl(), ex);
+                    }
                 }
             }
 
             // updateFeedMapper.execute(new PersistenceRequest<Feed>(feed));
-            Collections.reverse(insertedActivities);
-            if (insertedActivities.size() > 0)
+            if (!insertedActivities.isEmpty())
             {
+                ArrayList<Long> insertedActivityIds = new ArrayList<Long>();
+                Collections.reverse(insertedActivities);
                 for (Activity activity : insertedActivities)
                 {
                     activityDBInserter.execute(new PersistenceRequest<Activity>(activity));
@@ -364,8 +379,35 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
     }
 
     /**
+     * Returns the subscribers applicable to receive feed results returned for a given requestor.
+     *
+     * @param requestorId
+     *            The requestor.
+     * @param feed
+     *            The feed definition.
+     * @return List of subscribers.
+     */
+    private List<FeedSubscriber> getFeedSubscribers(final String requestorId, final Feed feed)
+    {
+        if (requestorId == null)
+        {
+            return feed.getFeedSubscribers();
+        }
+
+        for (FeedSubscriber subscriber : feed.getFeedSubscribers())
+        {
+            if (subscriber.getRequestor().getAccountId().equals(requestorId))
+            {
+                return Collections.singletonList(subscriber);
+            }
+        }
+
+        return Collections.EMPTY_LIST;
+    }
+
+    /**
      * Get the update frequeuncy in minutes given the period and frequency.
-     * 
+     *
      * @param updatePeriod
      *            Period, hourly, daily, weekly, etc.
      * @param updateFrequency
