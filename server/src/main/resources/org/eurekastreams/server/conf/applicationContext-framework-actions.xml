@@ -1261,13 +1261,29 @@
 		<constructor-arg value="true" />
 	</bean>
 	
-	<bean id="feedFactory" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.FeedFactory">
+	<bean id="feedFetcher" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.BasicFeedFetcher" />
+	
+	<bean id="standardPluginFeedFetcher" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.BasicPluginFeedFetcher">
+		<constructor-arg ref="feedFetcher" />
+	</bean>
+	
+	<bean id="twitterCookieBypassPluginFeedFetcher" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.BasicPluginFeedFetcher">
+		<constructor-arg ref="feedFetcher" />
+       <constructor-arg value="(www.)?twitter.com"/>
 		<constructor-arg>
-            <list>
-                <ref bean="twitterCookieBypassStrategy"/>
-            </list>
-       </constructor-arg>
-		<constructor-arg ref="standardFeedFetcher" />
+			<map>
+				<entry key="Cookie" value="lmyellow=" />
+			</map>
+		</constructor-arg>
+    </bean>        
+	
+	<util:list id="feedFetcherStrategies">
+		<ref bean="twitterCookieBypassPluginFeedFetcher"/>
+	</util:list>
+	
+	<bean id="feedFactory" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.FeedFactory">
+		<constructor-arg ref="feedFetcherStrategies" />
+		<constructor-arg ref="standardPluginFeedFetcher" />
 		<constructor-arg value="${eureka.proxy.host}" />
 		<constructor-arg value="${eureka.proxy.port}" />
 		<constructor-arg type="int" value="${eureka.feeds.httptimeout}" />            
@@ -1358,17 +1374,6 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
-
-	<bean id="standardFeedFetcher" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.BasicFeedFetcher" />
-	
-	<bean id="twitterCookieBypassStrategy" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.BasicFeedFetcher">
-       <constructor-arg value="(www.)?twitter.com"/>
-		<constructor-arg>
-			<map>
-				<entry key="Cookie" value="lmyellow=" />
-			</map>
-		</constructor-arg>
-    </bean>        
 
     <bean id="getPersonIdForFeedSub" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.GetPersonIdForFeedSubscription">
         <constructor-arg ref="bulkPeopleByAccountIdMapper" /> 
