@@ -16,8 +16,6 @@
 package org.eurekastreams.server.service.actions.strategies.activity.plugins.rome;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -40,54 +38,17 @@ import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedInput;
 
 /**
- * Strategy that uses a cookie to bypass a proxy.
- *
+ * Fetches a feed (for use by the stream plugin framework).
  */
-public class BasicFeedFetcher implements PluginFeedFetcherStrategy
+public class BasicFeedFetcher
 {
     /**
-     * The Site Url's Regular Expression.
-     */
-    String siteUrlRegEx;
-
-    /** HTTP headers to add to the request. */
-    private Map<String, String> httpHeaders;
-
-    /**
-     * Constructor.
-     */
-    public BasicFeedFetcher()
-    {
-        this(null, Collections.EMPTY_MAP);
-    }
-
-    /**
-     * @param inSiteUrlRegEx
-     *            The url RegEx.
-     * @param inHttpHeaders
-     *            HTTP headers to add to the request.
-     */
-    public BasicFeedFetcher(final String inSiteUrlRegEx, final Map<String, String> inHttpHeaders)
-    {
-        siteUrlRegEx = inSiteUrlRegEx;
-        httpHeaders = inHttpHeaders;
-    }
-
-    /**
-     * @return the sites regularExpression.
-     */
-    public String getSiteUrlRegEx()
-    {
-        return siteUrlRegEx;
-    }
-
-    /**
-     * Executes the strategy.
+     * Fetches a feed.
      *
      * @param inFeedUrl
      *            the Url for the feed to feed in.
-     * @param inRequestors
-     *            List of people who requested the feed (not used).
+     * @param inHttpHeaders
+     *            HTTP headers to add to the request.
      * @param inProxyHost
      *            host name to use (if desires) for proxying http requests.
      * @param inProxyPort
@@ -104,7 +65,7 @@ public class BasicFeedFetcher implements PluginFeedFetcherStrategy
      * @throws IOException
      *             if Exception.
      */
-    public Map<String, SyndFeed> execute(final String inFeedUrl, final List<String> inRequestors,
+    public SyndFeed fetchFeed(final String inFeedUrl, final Map<String, String> inHttpHeaders,
             final String inProxyHost, final String inProxyPort, final int inTimeout) throws IOException,
             ParserConfigurationException,
             FeedException, SAXException
@@ -131,7 +92,7 @@ public class BasicFeedFetcher implements PluginFeedFetcherStrategy
 
         GetMethod get = new GetMethod(inFeedUrl);
 
-        for (Map.Entry<String, String> header : httpHeaders.entrySet())
+        for (Map.Entry<String, String> header : inHttpHeaders.entrySet())
         {
             get.setRequestHeader(header.getKey(), header.getValue());
         }
@@ -145,13 +106,11 @@ public class BasicFeedFetcher implements PluginFeedFetcherStrategy
             DocumentBuilder builder = domFactory.newDocumentBuilder();
 
             SyndFeedInput input = new SyndFeedInput();
-            SyndFeed syndFeed = input.build(builder.parse(get.getResponseBodyAsStream()));
-            return Collections.singletonMap(null, syndFeed);
+            return input.build(builder.parse(get.getResponseBodyAsStream()));
         }
         finally
         {
             get.releaseConnection();
         }
     }
-
 }

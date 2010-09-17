@@ -91,6 +91,11 @@ public class StreamPanel extends FlowPanel
     private StreamSearchComposite streamSearch;
 
     /**
+     * Non date sort max results.
+     */
+    private static final int NON_DATE_SORT_MAX_RESULTS = 50;
+
+    /**
      * The stream name.
      */
     private String streamName = "";
@@ -119,6 +124,11 @@ public class StreamPanel extends FlowPanel
      * Search string.
      */
     private String search = "";
+
+    /**
+     * Sort value.
+     */
+    private String sort = "";
 
     /**
      * Sort panel.
@@ -161,7 +171,7 @@ public class StreamPanel extends FlowPanel
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
                         checkHistory(event.getParameters());
-                        
+
                         // Only process this once.
                         EventBus.getInstance().removeObserver(UpdatedHistoryParametersEvent.class, this);
                     }
@@ -265,23 +275,37 @@ public class StreamPanel extends FlowPanel
                     // Only show cancel option if search is not part of the view.
                     Boolean canChange = !queryObject.containsKey("keywords");
 
-                    if ("".equals(search))
+                    if (queryObject.containsKey("keywords"))
                     {
-                        streamSearch.onSearchCanceled();
+                        final String streamSearchText = queryObject.get("keywords").isString().stringValue();
+
+                        streamSearch.setSearchTerm(streamSearchText);
+
+                        updatedJson = StreamJsonRequestFactory.setSearchTerm(streamSearchText,
+                                StreamJsonRequestFactory.getJSONRequest(updatedJson)).toString();
+                    }
+                    else if (search.length() > 0)
+                    {
+                        streamSearch.setSearchTerm(search);
+
+                        updatedJson = StreamJsonRequestFactory.setSearchTerm(search,
+                                StreamJsonRequestFactory.getJSONRequest(updatedJson)).toString();
+
                     }
                     else
                     {
-                        streamSearch.setSearchTerm(search);
+                        streamSearch.onSearchCanceled();
                     }
 
-                    updatedJson = StreamJsonRequestFactory.setSort(
-                            sortPanel.getSort(),
-                            StreamJsonRequestFactory.setSearchTerm(search, StreamJsonRequestFactory
-                                    .getJSONRequest(jsonQuery))).toString();
+                    sort = sortPanel.getSort();
 
-                    if (queryObject.containsKey("keywords"))
+                    updatedJson = StreamJsonRequestFactory.setSort(sort,
+                            StreamJsonRequestFactory.getJSONRequest(updatedJson)).toString();
+
+                    if (!sortPanel.getSort().equals("date"))
                     {
-                        streamSearch.setSearchTerm(queryObject.get("keywords").isString().stringValue());
+                        updatedJson = StreamJsonRequestFactory.setMaxResults(NON_DATE_SORT_MAX_RESULTS,
+                                StreamJsonRequestFactory.getJSONRequest(updatedJson)).toString();
                     }
 
                     streamSearch.setTitleText(streamName);
@@ -349,6 +373,7 @@ public class StreamPanel extends FlowPanel
 
         Long newActivityId = 0L;
         String newSearch = "";
+        String newSort = sortPanel.getSort();
 
         if (null != history)
         {
@@ -363,10 +388,11 @@ public class StreamPanel extends FlowPanel
             }
         }
 
-        hasChanged = !(newActivityId.equals(activityId) && newSearch.equals(search));
+        hasChanged = !(newActivityId.equals(activityId) && newSearch.equals(search) && newSort.equals(sort));
 
         activityId = newActivityId;
         search = newSearch;
+        sort = newSort;
 
         return hasChanged;
     }
