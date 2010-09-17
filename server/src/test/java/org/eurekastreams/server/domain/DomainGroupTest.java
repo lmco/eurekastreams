@@ -132,6 +132,12 @@ public class DomainGroupTest
         Person creator = context.mock(Person.class);
         sut.setCreatedBy(creator);
         assertEquals(creator, sut.getCreatedBy());
+
+        sut.setSuppressPostNotifToMember(true);
+        assertTrue(sut.isSuppressPostNotifToMember());
+
+        sut.setSuppressPostNotifToCoordinator(true);
+        assertTrue(sut.isSuppressPostNotifToCoordinator());
     }
 
     /**

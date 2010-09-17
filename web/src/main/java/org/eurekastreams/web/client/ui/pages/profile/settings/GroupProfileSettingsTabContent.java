@@ -153,7 +153,7 @@ public class GroupProfileSettingsTabContent extends FlowPanel
             {
                 Session.getInstance().getEventBus().notifyObservers(
                         new UpdateHistoryEvent(new CreateUrlRequest(Page.GROUPS, arg1.getResponse().getShortName())));
-                
+
                 Session.getInstance().getEventBus().notifyObservers(
                         new ShowNotificationEvent(new Notification("Your group has been successfully saved")));
             }
@@ -293,6 +293,33 @@ public class GroupProfileSettingsTabContent extends FlowPanel
         form.addFormElement(blockWallPost);
         form.addFormElement(blockCommentPost);
         form.addFormDivider();
+
+        // ---- Notification suppression ----
+
+        BasicCheckBoxFormElement noMemberPostNotif =
+                new BasicCheckBoxFormElement(
+                        "Notification Settings",
+                        DomainGroupModelView.SUPPRESS_POST_NOTIF_TO_MEMBER_KEY,
+                        "Allow group members to receive emails and in-app notifications when activity is posted "
+                                + "to this group",
+                        "Eureka Streams will notify group members and coordinators when new activity has taken place "
+                                + "in this group", false, !group.isSuppressPostNotifToMember());
+        noMemberPostNotif.setReverseValue(true);
+        noMemberPostNotif.addStyleName("group-notif-suppress");
+        form.addFormElement(noMemberPostNotif);
+
+        BasicCheckBoxFormElement noCoordPostNotif =
+                new BasicCheckBoxFormElement(null,
+                        DomainGroupModelView.SUPPRESS_POST_NOTIF_TO_COORDINATOR_KEY,
+                        "Allow group coordinators to receive emails and in-app notifications when activity is posted "
+                                + "to this group", false, !group.isSuppressPostNotifToCoordinator());
+        noCoordPostNotif.setReverseValue(true);
+        noCoordPostNotif.addStyleName("group-notif-suppress");
+        form.addFormElement(noCoordPostNotif);
+
+        form.addFormDivider();
+
+        // ---- Action buttons ----
 
         deleteButton.addStyleName("form-delete-group-button");
         deleteButton.addStyleName("form-button");
