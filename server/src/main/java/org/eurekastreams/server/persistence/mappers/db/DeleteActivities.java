@@ -62,8 +62,8 @@ public class DeleteActivities extends BaseArgDomainMapper<List<Long>, BulkActivi
                 .setParameterList("activityIds", inActivityIds).executeUpdate();
 
         // delete any hashtags stored to streams on behalf of this activity
-        getEntityManager().createQuery("DELETE FROM StreamHashTag WHERE activity.id in (:expiredActivityIds)")
-                .setParameter("expiredActivityIds", inActivityIds).executeUpdate();
+        getEntityManager().createQuery("DELETE FROM StreamHashTag WHERE activity.id in (:activityIds)").setParameter(
+                "activityIds", inActivityIds).executeUpdate();
 
         // delete the activities.
         getHibernateSession().createQuery("DELETE FROM Activity a WHERE a.id IN (:activityIds)").setParameterList(

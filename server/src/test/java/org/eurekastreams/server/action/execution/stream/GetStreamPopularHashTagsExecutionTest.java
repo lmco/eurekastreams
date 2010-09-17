@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.action.request.stream.StreamPopularHashTagsRequest;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.StreamPopularHashTagsReport;
+import org.eurekastreams.server.persistence.mappers.stream.StreamPopularHashTagsReportDTO;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -51,11 +51,11 @@ public class GetStreamPopularHashTagsExecutionTest
     @Test
     public final void executeWithNoTags()
     {
-        final DomainMapper<StreamPopularHashTagsRequest, StreamPopularHashTagsReport> popularHashTagsMapper = context
+        final DomainMapper<StreamPopularHashTagsRequest, StreamPopularHashTagsReportDTO> popularHashTagsMapper = context
                 .mock(DomainMapper.class);
 
         final StreamPopularHashTagsRequest request = new StreamPopularHashTagsRequest();
-        final StreamPopularHashTagsReport response = new StreamPopularHashTagsReport();
+        final StreamPopularHashTagsReportDTO response = new StreamPopularHashTagsReportDTO(null, null);
         final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
 
         GetStreamPopularHashTagsExecution sut = new GetStreamPopularHashTagsExecution(popularHashTagsMapper);
@@ -82,11 +82,11 @@ public class GetStreamPopularHashTagsExecutionTest
     @Test
     public final void executeWithTags()
     {
-        final DomainMapper<StreamPopularHashTagsRequest, StreamPopularHashTagsReport> popularHashTagsMapper = context
+        final DomainMapper<StreamPopularHashTagsRequest, StreamPopularHashTagsReportDTO> popularHashTagsMapper = context
                 .mock(DomainMapper.class);
 
         final StreamPopularHashTagsRequest request = new StreamPopularHashTagsRequest();
-        final StreamPopularHashTagsReport response = new StreamPopularHashTagsReport();
+        final StreamPopularHashTagsReportDTO response = new StreamPopularHashTagsReportDTO(null, null);
         final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
         final ArrayList<String> hashTags = new ArrayList<String>();
         hashTags.add("#foo");

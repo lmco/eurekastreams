@@ -42,9 +42,9 @@ public class HashTag extends DomainEntity implements Serializable
     private String content;
 
     /**
-     * Empty constructor.
+     * Empty constructor - for serialization.
      */
-    public HashTag()
+    protected HashTag()
     {
     }
 

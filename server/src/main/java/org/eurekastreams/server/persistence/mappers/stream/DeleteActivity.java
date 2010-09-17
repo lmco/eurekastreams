@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.server.persistence.mappers.stream;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
@@ -26,6 +25,8 @@ import org.eurekastreams.server.domain.stream.StreamView;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.requests.DeleteActivityRequest;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Delete an activity (and associated comments) from DB and update current user's CompositeStreams (and "Everyone"
@@ -105,7 +106,7 @@ public class DeleteActivity extends BaseArgCachedDomainMapper<DeleteActivityRequ
     {
         final Long activityId = inDeleteActivityRequest.getActivityId();
         final Long userId = inDeleteActivityRequest.getUserId();
-        List<ActivityDTO> activities = activityDAO.execute(Arrays.asList(activityId));
+        List<ActivityDTO> activities = activityDAO.execute(Collections.singletonList(activityId));
 
         // activity already deleted, short circuit.
         if (activities.size() == 0)
