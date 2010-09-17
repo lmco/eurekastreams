@@ -113,7 +113,7 @@ public class SyncGroupActivityRecipientParentOrganizationExecution implements
 
         String groupUniqueKey = request.getGroupKey();
 
-        // update all activities for given group in one fail swoop.
+        // update all activities for given group in one fell swoop.
         syncActivityRecipientParentOrg.execute(groupUniqueKey);
 
         // get all activity ids to update
