@@ -46,7 +46,7 @@ public class PersonalProfileAboutTabPanel extends ProfileAboutTabPanel
 {
     /**
      * Constructor.
-     * 
+     *
      * @param person
      *            Person whose data to display.
      */
@@ -184,13 +184,13 @@ public class PersonalProfileAboutTabPanel extends ProfileAboutTabPanel
                     }
                 });
 
-        PersonalEmploymentModel.getInstance().fetch(person.getId(), true);
-        PersonalEducationModel.getInstance().fetch(person.getId(), true);
+        PersonalEmploymentModel.getInstance().fetch(person.getId(), false);
+        PersonalEducationModel.getInstance().fetch(person.getId(), false);
     }
 
     /**
      * strips html out of String.
-     * 
+     *
      * @param htmlString
      *            the string to strip.
      * @return a stripped string.
