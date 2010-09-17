@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.action.execution.stream;
+package org.eurekastreams.server.action.execution;
 
 import org.eurekastreams.commons.actions.context.ActionContext;
-import org.eurekastreams.server.domain.stream.Activity;
+import org.eurekastreams.commons.model.DomainEntity;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.IndexEntity;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
@@ -27,11 +27,10 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
 /**
- * Test for IndexActivityByIdExecution.
+ * Test for IndexDomainEntityByIdExecution.
  * 
  */
-@SuppressWarnings("unchecked")
-public class IndexActivityByIdExecutionTest
+public class IndexDomainEntityByIdExecutionTest
 {
     /**
      * Context for building mock objects.
@@ -44,19 +43,19 @@ public class IndexActivityByIdExecutionTest
     };
 
     /**
-     * Activity entity mapper.
+     * Entity mapper.
      */
-    private FindByIdMapper<Activity> activityMapper = context.mock(FindByIdMapper.class);
+    private FindByIdMapper<DomainEntity> mapper = context.mock(FindByIdMapper.class);
 
     /**
      * {@link IndexEntity} mapper.
      */
-    private IndexEntity<Activity> activityIndexer = context.mock(IndexEntity.class);
+    private IndexEntity<DomainEntity> indexer = context.mock(IndexEntity.class);
 
     /**
-     * Activity.
+     * {@link DomainEntity}.
      */
-    private Activity activity = context.mock(Activity.class);
+    private DomainEntity entity = context.mock(DomainEntity.class);
 
     /**
      * ActonContext.
@@ -66,7 +65,7 @@ public class IndexActivityByIdExecutionTest
     /**
      * System under test.
      */
-    private IndexActivityByIdExecution sut = new IndexActivityByIdExecution(activityMapper, activityIndexer);
+    private IndexDomainEntityByIdExecution sut = new IndexDomainEntityByIdExecution(mapper, indexer, "foo");
 
     /**
      * Test.
@@ -80,10 +79,10 @@ public class IndexActivityByIdExecutionTest
                 allowing(actionContext).getParams();
                 will(returnValue(5L));
 
-                allowing(activityMapper).execute(with(any(FindByIdRequest.class)));
-                will(returnValue(activity));
+                allowing(mapper).execute(with(any(FindByIdRequest.class)));
+                will(returnValue(entity));
 
-                allowing(activityIndexer).execute(activity);
+                allowing(indexer).execute(entity);
             }
         });
 
@@ -103,13 +102,13 @@ public class IndexActivityByIdExecutionTest
                 allowing(actionContext).getParams();
                 will(returnValue(5L));
 
-                allowing(activityMapper).execute(with(any(FindByIdRequest.class)));
+                allowing(mapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(null));
             }
         });
 
         sut.execute(actionContext);
         context.assertIsSatisfied();
-
     }
+
 }

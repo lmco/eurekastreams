@@ -22,6 +22,10 @@
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-framework-actions.xml" />
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-framework-servletcontextaware-actions.xml" />
 	
+	<!-- Extension point for other projects to tie in. -->
+	<import resource="classpath*:/conf/external/common/*.xml" />
+	<import resource="classpath*:/conf/external/main/*.xml" />
+	
 	<!-- alias used on all actions that submit an async action -->
 	<!--
 		can be of value: 

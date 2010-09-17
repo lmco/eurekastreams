@@ -15,9 +15,15 @@
  */
 package org.eurekastreams.web.client.ui.common.stream;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eurekastreams.web.client.events.EventBus;
-import org.eurekastreams.web.client.events.StreamReinitializeRequestEvent;
-import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory.SortType;
+import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.UpdateHistoryEvent;
+import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
+import org.eurekastreams.web.client.history.CreateUrlRequest;
+import org.eurekastreams.web.client.ui.Session;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -39,12 +45,17 @@ public class StreamSortPanel extends Composite
     /**
      * The sort type.
      */
-    private SortType sort = SortType.DATE;
+    private String sort = "date";
 
     /**
      * The active sort.
      */
     private Anchor activeSort = null;
+
+    /**
+     * Map of the links to the sorts.
+     */
+    final Map<String, Anchor> linkMap = new HashMap<String, Anchor>();
 
     /**
      * Constructor.
@@ -63,28 +74,45 @@ public class StreamSortPanel extends Composite
         options.add(new Label("Sort:"));
 
         final Anchor dateSort = new Anchor("Recent");
-        activeSort = dateSort;
-        dateSort.addStyleName("sort-option active");
+        dateSort.setTitle("Sorted by activity post date.");
+        dateSort.addStyleName("sort-option");
         options.add(dateSort);
+        linkMap.put("date", dateSort);
 
         final Anchor interestingSort = new Anchor("Popular");
         interestingSort.addStyleName("sort-option");
         options.add(interestingSort);
+        linkMap.put("interesting", interestingSort);
 
-        final Anchor commentSort = new Anchor("Last Comment");
+        final Anchor commentSort = new Anchor("Active");
+        commentSort.setTitle("Sorted by last comment date");
         commentSort.addStyleName("sort-option");
         options.add(commentSort);
+        linkMap.put("commentdate", commentSort);
+
+        EventBus.getInstance().addObserver(UpdatedHistoryParametersEvent.class,
+                new Observer<UpdatedHistoryParametersEvent>()
+                {
+                    public void update(final UpdatedHistoryParametersEvent event)
+                    {
+                        if (event.getParameters().containsKey("sort"))
+                        {
+                            sort = event.getParameters().get("sort");
+                        }
+                        else
+                        {
+                            sort = "date";
+                        }
+
+                        updateSelected(sort, false);
+                    }
+                }, true);
 
         dateSort.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent arg0)
             {
-                activeSort.removeStyleName("active");
-                activeSort = dateSort;
-                activeSort.addStyleName("active");
-
-                sort = SortType.DATE;
-                EventBus.getInstance().notifyObservers(StreamReinitializeRequestEvent.getEvent());
+                updateSelected("date", true);
             }
         });
 
@@ -92,12 +120,7 @@ public class StreamSortPanel extends Composite
         {
             public void onClick(final ClickEvent arg0)
             {
-                activeSort.removeStyleName("active");
-                activeSort = interestingSort;
-                activeSort.addStyleName("active");
-
-                sort = SortType.INTERESTING;
-                EventBus.getInstance().notifyObservers(StreamReinitializeRequestEvent.getEvent());
+                updateSelected("interesting", true);
             }
         });
 
@@ -105,14 +128,35 @@ public class StreamSortPanel extends Composite
         {
             public void onClick(final ClickEvent arg0)
             {
-                activeSort.removeStyleName("active");
-                activeSort = commentSort;
-                activeSort.addStyleName("active");
-
-                sort = SortType.COMMENT_DATE;
-                EventBus.getInstance().notifyObservers(StreamReinitializeRequestEvent.getEvent());
+                updateSelected("commentdate", true);
             }
         });
+    }
+
+    /**
+     * Update the selected sort.
+     * 
+     * @param updatedSort
+     *            the new sort.
+     * @param setHistory
+     *            if the history should be set.
+     */
+    private void updateSelected(final String updatedSort, final boolean setHistory)
+    {
+        sort = updatedSort;
+        if (null != activeSort)
+        {
+            activeSort.removeStyleName("active");
+        }
+
+        activeSort = linkMap.get(sort);
+        activeSort.addStyleName("active");
+
+        if (setHistory)
+        {
+            Session.getInstance().getEventBus().notifyObservers(
+                    new UpdateHistoryEvent(new CreateUrlRequest("sort", String.valueOf(sort), false)));
+        }
     }
 
     /**
@@ -120,7 +164,7 @@ public class StreamSortPanel extends Composite
      * 
      * @return the sort.
      */
-    public SortType getSort()
+    public String getSort()
     {
         return sort;
     }
