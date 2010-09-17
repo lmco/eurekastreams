@@ -83,7 +83,7 @@ public class ModifyStreamForCurrentUserAuthorization implements AuthorizationStr
             }
         }
 
-        if (!found)
+        if (!found && streamId != 0)
         {
             throw new AuthorizationException(inActionContext.getPrincipal().getAccountId()
                     + " cannot modify stream " + streamId);

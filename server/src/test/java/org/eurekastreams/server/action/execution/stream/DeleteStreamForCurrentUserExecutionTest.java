@@ -15,7 +15,9 @@
  */
 package org.eurekastreams.server.action.execution.stream;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -79,6 +81,12 @@ public class DeleteStreamForCurrentUserExecutionTest
     private static Person person = CONTEXT.mock(Person.class);
 
     /**
+     * State.
+     */
+    private final HashMap<String, Serializable> state = new HashMap<String, Serializable>();
+
+
+    /**
      * Setup fixtures.
      */
     @BeforeClass
@@ -104,6 +112,9 @@ public class DeleteStreamForCurrentUserExecutionTest
         CONTEXT.checking(new Expectations()
         {
             {
+                oneOf(actionContext).getState();
+                will(returnValue(state));
+
                 oneOf(actionContext).getPrincipal();
                 will(returnValue(principal));
 
@@ -112,30 +123,30 @@ public class DeleteStreamForCurrentUserExecutionTest
 
                 oneOf(personMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(person));
-                
+
                 oneOf(person).getStreams();
                 will(returnValue(streams));
-                
+
                 oneOf(actionContext).getParams();
                 will(returnValue(streamId));
-                
-                oneOf(personMapper).flush();
             }
         });
 
         sut.execute(actionContext);
 
         Assert.assertEquals(0, streams.size());
-        
+
         CONTEXT.assertIsSatisfied();
     }
-    
+
     /**
      * Tests deleting a stream that does not belong to the current user.
      */
     @Test
     public void testDeleteDenied()
     {
+        state.put("person", person);
+
         final Long streamId = 1L;
         final Long targetStreamId = 2L;
 
@@ -148,29 +159,21 @@ public class DeleteStreamForCurrentUserExecutionTest
         CONTEXT.checking(new Expectations()
         {
             {
-                oneOf(actionContext).getPrincipal();
-                will(returnValue(principal));
+                oneOf(actionContext).getState();
+                will(returnValue(state));
 
-                oneOf(principal).getId();
-                will(returnValue(USER_ID));
-                
-                oneOf(personMapper).execute(with(any(FindByIdRequest.class)));
-                will(returnValue(person));
-                
                 oneOf(person).getStreams();
                 will(returnValue(streams));
-                
+
                 oneOf(actionContext).getParams();
                 will(returnValue(targetStreamId));
-                
-                oneOf(personMapper).flush();
             }
         });
 
         sut.execute(actionContext);
 
         Assert.assertEquals(1, streams.size());
-        
+
         CONTEXT.assertIsSatisfied();
     }
 }

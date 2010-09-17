@@ -15,7 +15,9 @@
  */
 package org.eurekastreams.server.action.execution.stream;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -79,6 +81,11 @@ public class ModifyStreamForCurrentUserExecutionTest
     private static Person person = CONTEXT.mock(Person.class);
 
     /**
+     * State.
+     */
+    private final HashMap<String, Serializable> state = new HashMap<String, Serializable>();
+
+    /**
      * Setup fixtures.
      */
     @BeforeClass
@@ -106,9 +113,12 @@ public class ModifyStreamForCurrentUserExecutionTest
                 oneOf(actionContext).getPrincipal();
                 will(returnValue(principal));
 
+                oneOf(actionContext).getState();
+                will(returnValue(state));
+
                 oneOf(principal).getId();
                 will(returnValue(USER_ID));
-                
+
                 oneOf(personMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(person));
 
@@ -118,7 +128,6 @@ public class ModifyStreamForCurrentUserExecutionTest
                 oneOf(actionContext).getParams();
                 will(returnValue(stream));
 
-                oneOf(personMapper).flush();
             }
         });
 
@@ -135,6 +144,8 @@ public class ModifyStreamForCurrentUserExecutionTest
     @Test
     public void testModify()
     {
+        state.put("person", person);
+
         // Stream to modify
         final Stream modifiedStream = new Stream();
         modifiedStream.setId(1L);
@@ -150,21 +161,15 @@ public class ModifyStreamForCurrentUserExecutionTest
         oldStream.setName("Old Name");
         oldStream.setRequest("{ query : { keywords : 'cheese' } }");
         oldStream.setReadOnly(true);
-        
+
         streams.add(oldStream);
 
-        
+
         CONTEXT.checking(new Expectations()
         {
             {
-                oneOf(actionContext).getPrincipal();
-                will(returnValue(principal));
-
-                oneOf(principal).getId();
-                will(returnValue(USER_ID));
-
-                oneOf(personMapper).execute(with(any(FindByIdRequest.class)));
-                will(returnValue(person));
+                oneOf(actionContext).getState();
+                will(returnValue(state));
 
                 oneOf(person).getStreams();
                 will(returnValue(streams));
@@ -172,7 +177,6 @@ public class ModifyStreamForCurrentUserExecutionTest
                 oneOf(actionContext).getParams();
                 will(returnValue(modifiedStream));
 
-                oneOf(personMapper).flush();
             }
         });
 
@@ -180,7 +184,7 @@ public class ModifyStreamForCurrentUserExecutionTest
 
         // Stream size remains at 1.
         Assert.assertEquals(1, streams.size());
-        
+
         // Confirm stream data has changed.
         Assert.assertEquals(modifiedStream.getName(), streams.get(0).getName());
         Assert.assertEquals(modifiedStream.getRequest(), streams.get(0).getRequest());
@@ -188,13 +192,15 @@ public class ModifyStreamForCurrentUserExecutionTest
 
         CONTEXT.assertIsSatisfied();
     }
-    
+
     /**
      * Tests modifying and existing stream that does not belong to the current user..
      */
     @Test
     public void testModifyDenied()
     {
+        state.put("person", person);
+
         // Stream to modify
         final Stream modifiedStream = new Stream();
         modifiedStream.setId(2L);
@@ -210,21 +216,15 @@ public class ModifyStreamForCurrentUserExecutionTest
         oldStream.setName("Old Name");
         oldStream.setRequest("{ query : { keywords : 'cheese' } }");
         oldStream.setReadOnly(true);
-        
+
         streams.add(oldStream);
 
-        
+
         CONTEXT.checking(new Expectations()
         {
             {
-                oneOf(actionContext).getPrincipal();
-                will(returnValue(principal));
-
-                oneOf(principal).getId();
-                will(returnValue(USER_ID));
-
-                oneOf(personMapper).execute(with(any(FindByIdRequest.class)));
-                will(returnValue(person));
+                oneOf(actionContext).getState();
+                will(returnValue(state));
 
                 oneOf(person).getStreams();
                 will(returnValue(streams));
@@ -232,7 +232,6 @@ public class ModifyStreamForCurrentUserExecutionTest
                 oneOf(actionContext).getParams();
                 will(returnValue(modifiedStream));
 
-                oneOf(personMapper).flush();
             }
         });
 
@@ -240,7 +239,7 @@ public class ModifyStreamForCurrentUserExecutionTest
 
         // Stream size remains at 1
         Assert.assertEquals(1, streams.size());
-        
+
         // Confirm stream data has not changed.
         Assert.assertEquals(oldStream.getName(), streams.get(0).getName());
         Assert.assertEquals(oldStream.getRequest(), streams.get(0).getRequest());
