@@ -278,7 +278,7 @@
                 <constructor-arg ref="jpaPersonMapper" />
                 <!-- email action ref -->
                 <constructor-arg value="sendWelcomeEmail"/> 
-                <constructor-arg ref="getOrganizationProxyById"/>            
+                <constructor-arg ref="findByIdMapper"/>            
             </bean>
         </constructor-arg>
         <constructor-arg ref="taskHandler" />
