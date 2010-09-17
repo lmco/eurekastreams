@@ -184,8 +184,8 @@ public class PersonalProfileAboutTabPanel extends ProfileAboutTabPanel
                     }
                 });
 
-        PersonalEmploymentModel.getInstance().fetch(person.getId(), true);
-        PersonalEducationModel.getInstance().fetch(person.getId(), true);
+        PersonalEmploymentModel.getInstance().fetch(person.getId(), false);
+        PersonalEducationModel.getInstance().fetch(person.getId(), false);
     }
 
     /**

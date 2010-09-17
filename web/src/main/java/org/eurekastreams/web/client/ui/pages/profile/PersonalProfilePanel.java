@@ -367,8 +367,8 @@ public class PersonalProfilePanel extends FlowPanel
 
         Session.getInstance().getActionProcessor().setQueueRequests(true);
         PersonalBiographyModel.getInstance().fetch(person.getAccountId(), true);
-        PersonalEducationModel.getInstance().fetch(person.getId(), false);
-        PersonalEmploymentModel.getInstance().fetch(person.getId(), false);
+        PersonalEducationModel.getInstance().fetch(person.getId(), true);
+        PersonalEmploymentModel.getInstance().fetch(person.getId(), true);
         PersonalStreamSettingsModel.getInstance().fetch(person.getAccountId(), true);
         Session.getInstance().getActionProcessor().setQueueRequests(false);
         Session.getInstance().getActionProcessor().fireQueuedRequests();
