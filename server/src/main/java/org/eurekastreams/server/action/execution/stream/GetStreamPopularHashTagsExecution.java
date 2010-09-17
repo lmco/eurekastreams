@@ -24,7 +24,7 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.action.request.stream.StreamPopularHashTagsRequest;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.StreamPopularHashTagsReport;
+import org.eurekastreams.server.persistence.mappers.stream.StreamPopularHashTagsReportDTO;
 
 /**
  * Execution to get the list of popular HashTags for an activity stream.
@@ -34,7 +34,7 @@ public class GetStreamPopularHashTagsExecution implements ExecutionStrategy<Prin
     /**
      * Mapper to get the popular hashtags for a stream.
      */
-    private final DomainMapper<StreamPopularHashTagsRequest, StreamPopularHashTagsReport> popularHashTagsMapper;
+    private final DomainMapper<StreamPopularHashTagsRequest, StreamPopularHashTagsReportDTO> popularHashTagsMapper;
 
     /**
      * Constructor.
@@ -43,7 +43,7 @@ public class GetStreamPopularHashTagsExecution implements ExecutionStrategy<Prin
      *            the mapper to get the popular hashtags for a stream
      */
     public GetStreamPopularHashTagsExecution(
-            final DomainMapper<StreamPopularHashTagsRequest, StreamPopularHashTagsReport> inPopularHashTagsMapper)
+            final DomainMapper<StreamPopularHashTagsRequest, StreamPopularHashTagsReportDTO> inPopularHashTagsMapper)
     {
         popularHashTagsMapper = inPopularHashTagsMapper;
     }
@@ -61,7 +61,7 @@ public class GetStreamPopularHashTagsExecution implements ExecutionStrategy<Prin
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
         StreamPopularHashTagsRequest request = (StreamPopularHashTagsRequest) inActionContext.getParams();
-        StreamPopularHashTagsReport response = popularHashTagsMapper.execute(request);
+        StreamPopularHashTagsReportDTO response = popularHashTagsMapper.execute(request);
 
         List<String> hashTags = response.getPopularHashTags();
         ArrayList<String> result = new ArrayList<String>();

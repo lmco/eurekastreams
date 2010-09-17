@@ -23,7 +23,7 @@ import java.util.List;
 import org.eurekastreams.server.action.request.stream.StreamPopularHashTagsRequest;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
-import org.eurekastreams.server.persistence.mappers.stream.StreamPopularHashTagsReport;
+import org.eurekastreams.server.persistence.mappers.stream.StreamPopularHashTagsReportDTO;
 import org.junit.Test;
 
 /**
@@ -43,7 +43,7 @@ public class StreamPopularHashTagsDbMapperTest extends MapperTest
         StreamPopularHashTagsDbMapper sut = new StreamPopularHashTagsDbMapper(9, 3);
         sut.setEntityManager(getEntityManager());
 
-        StreamPopularHashTagsReport tagsReport = sut.execute(new StreamPopularHashTagsRequest(ScopeType.ORGANIZATION,
+        StreamPopularHashTagsReportDTO tagsReport = sut.execute(new StreamPopularHashTagsRequest(ScopeType.ORGANIZATION,
                 "tstorgname"));
 
         List<String> tags = tagsReport.getPopularHashTags();
@@ -67,7 +67,7 @@ public class StreamPopularHashTagsDbMapperTest extends MapperTest
         StreamPopularHashTagsDbMapper sut = new StreamPopularHashTagsDbMapper(9, 8);
         sut.setEntityManager(getEntityManager());
 
-        StreamPopularHashTagsReport tagsReport = sut.execute(new StreamPopularHashTagsRequest(ScopeType.ORGANIZATION,
+        StreamPopularHashTagsReportDTO tagsReport = sut.execute(new StreamPopularHashTagsRequest(ScopeType.ORGANIZATION,
                 "tstorgname"));
 
         List<String> tags = tagsReport.getPopularHashTags();
@@ -99,7 +99,7 @@ public class StreamPopularHashTagsDbMapperTest extends MapperTest
         StreamPopularHashTagsDbMapper sut = new StreamPopularHashTagsDbMapper(9, 9);
         sut.setEntityManager(getEntityManager());
 
-        StreamPopularHashTagsReport tagsReport = sut.execute(new StreamPopularHashTagsRequest(ScopeType.ORGANIZATION,
+        StreamPopularHashTagsReportDTO tagsReport = sut.execute(new StreamPopularHashTagsRequest(ScopeType.ORGANIZATION,
                 "tstorgname"));
 
         List<String> tags = tagsReport.getPopularHashTags();
@@ -123,7 +123,7 @@ public class StreamPopularHashTagsDbMapperTest extends MapperTest
         StreamPopularHashTagsDbMapper sut = new StreamPopularHashTagsDbMapper(9, 9);
         sut.setEntityManager(getEntityManager());
 
-        StreamPopularHashTagsReport tagsReport = sut.execute(new StreamPopularHashTagsRequest(ScopeType.PERSON,
+        StreamPopularHashTagsReportDTO tagsReport = sut.execute(new StreamPopularHashTagsRequest(ScopeType.PERSON,
                 "smithers"));
         List<String> tags = tagsReport.getPopularHashTags();
         assertEquals(2, tags.size());

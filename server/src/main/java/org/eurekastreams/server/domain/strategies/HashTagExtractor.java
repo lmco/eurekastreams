@@ -72,7 +72,6 @@ public class HashTagExtractor
                 // this is a hashtag
 
                 // walk through this to find its endpoint
-                String hashtag = "#";
                 pos = hashPos + 1;
                 char nextChar;
                 while (pos < contentLength)
@@ -83,13 +82,12 @@ public class HashTagExtractor
                         break;
                     }
 
-                    hashtag += nextChar;
                     pos++;
                 }
 
-                if (hashtag.length() > 1)
+                if (pos > hashPos + 1)
                 {
-                    return new Substring(hashPos, hashtag.length(), hashtag);
+                    return new Substring(hashPos, pos - hashPos, content.substring(hashPos, pos));
                 }
                 // not a hashtag, just a hash
             }

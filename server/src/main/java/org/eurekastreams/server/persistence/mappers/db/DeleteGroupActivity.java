@@ -74,7 +74,7 @@ public class DeleteGroupActivity extends BaseArgDomainMapper<Long, BulkActivityD
                 .setParameter("groupStreamId", groupStreamId).executeUpdate();
 
         // delete activity hashtags for this group stream
-        if (activityIds.size() > 0)
+        if (!activityIds.isEmpty())
         {
             getEntityManager().createQuery("DELETE FROM StreamHashTag where activityId IN (:activityIds)")
                     .setParameter("activityIds", activityIds).executeUpdate();

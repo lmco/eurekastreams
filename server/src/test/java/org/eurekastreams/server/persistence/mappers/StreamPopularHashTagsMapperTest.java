@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.eurekastreams.server.action.request.stream.StreamPopularHashTagsRequest;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
-import org.eurekastreams.server.persistence.mappers.stream.StreamPopularHashTagsReport;
+import org.eurekastreams.server.persistence.mappers.stream.StreamPopularHashTagsReportDTO;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -50,7 +50,7 @@ public class StreamPopularHashTagsMapperTest
     /**
      * Mapper to get the popular hashtags for a stream.
      */
-    private final DomainMapper<StreamPopularHashTagsRequest, StreamPopularHashTagsReport>
+    private final DomainMapper<StreamPopularHashTagsRequest, StreamPopularHashTagsReportDTO>
     // line break
     popularHashTagsMapper = context.mock(DomainMapper.class);
 
@@ -96,7 +96,7 @@ public class StreamPopularHashTagsMapperTest
         hashTags.add("#foo");
         hashTags.add("#bar");
         Calendar cal = Calendar.getInstance();
-        final StreamPopularHashTagsReport response = new StreamPopularHashTagsReport(hashTags, cal.getTime());
+        final StreamPopularHashTagsReportDTO response = new StreamPopularHashTagsReportDTO(hashTags, cal.getTime());
 
         context.checking(new Expectations()
         {
@@ -122,7 +122,7 @@ public class StreamPopularHashTagsMapperTest
         Calendar cal = Calendar.getInstance();
         final int twentyDaysAgo = -480;
         cal.add(Calendar.HOUR, twentyDaysAgo);
-        final StreamPopularHashTagsReport response = new StreamPopularHashTagsReport(hashTags, cal.getTime());
+        final StreamPopularHashTagsReportDTO response = new StreamPopularHashTagsReportDTO(hashTags, cal.getTime());
 
         context.checking(new Expectations()
         {

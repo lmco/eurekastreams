@@ -70,11 +70,11 @@ public class DeleteOldStreamHashTagsExecution implements TaskHandlerExecutionStr
     @Override
     public Serializable execute(final TaskHandlerActionContext<ActionContext> inActionContext)
     {
-        log.info("Deleting StreamHashTag records older than " + activityHashTagExpirationInMinutes + " minutes.");
+        log.trace("Deleting StreamHashTag records older than " + activityHashTagExpirationInMinutes + " minutes.");
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MINUTE, -activityHashTagExpirationInMinutes);
         int numberOfDeletedRecords = deleteMapper.execute(cal.getTime());
-        log.info("Deleted " + numberOfDeletedRecords + " stream hashtag records.");
+        log.trace("Deleted " + numberOfDeletedRecords + " stream hashtag records.");
         return true;
     }
 }

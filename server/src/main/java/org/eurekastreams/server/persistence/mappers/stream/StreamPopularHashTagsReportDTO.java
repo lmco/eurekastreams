@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * List of the popular hashtags for a stream, generated on interval, storing the report date for report expiration.
  */
-public class StreamPopularHashTagsReport implements Serializable
+public class StreamPopularHashTagsReportDTO implements Serializable
 {
     /**
      * Serial version uid.
@@ -42,7 +42,8 @@ public class StreamPopularHashTagsReport implements Serializable
     /**
      * Empty constructor for serialization.
      */
-    public StreamPopularHashTagsReport()
+    @SuppressWarnings("unused")
+    private StreamPopularHashTagsReportDTO()
     {
     }
 
@@ -54,7 +55,7 @@ public class StreamPopularHashTagsReport implements Serializable
      * @param inReportGenerationDate
      *            the date the popular hashtags were generated
      */
-    public StreamPopularHashTagsReport(final List<String> inPopularHashTags, final Date inReportGenerationDate)
+    public StreamPopularHashTagsReportDTO(final List<String> inPopularHashTags, final Date inReportGenerationDate)
     {
         popularHashTags = inPopularHashTags;
         reportGenerationDate = inReportGenerationDate;
