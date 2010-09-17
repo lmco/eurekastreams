@@ -23,7 +23,8 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.Stream;
-import org.eurekastreams.server.persistence.PersonMapper;
+import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
+import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 
 /**
  * Delete a stream for the current user.
@@ -34,7 +35,7 @@ public class DeleteStreamForCurrentUserExecution implements ExecutionStrategy<Pr
     /**
      * Mapper used to retrieve and save the page that holds the streams.
      */
-    private final PersonMapper personMapper;
+    private final FindByIdMapper<Person> personMapper;
 
     /**
      * Constructor.
@@ -42,7 +43,7 @@ public class DeleteStreamForCurrentUserExecution implements ExecutionStrategy<Pr
      * @param inPersonMapper
      *            person mapper.
      */
-    public DeleteStreamForCurrentUserExecution(final PersonMapper inPersonMapper)
+    public DeleteStreamForCurrentUserExecution(final FindByIdMapper<Person> inPersonMapper)
     {
         personMapper = inPersonMapper;
     }
@@ -58,7 +59,7 @@ public class DeleteStreamForCurrentUserExecution implements ExecutionStrategy<Pr
      */
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        Person person = personMapper.findByAccountId(inActionContext.getPrincipal().getAccountId());
+        Person person = personMapper.execute(new FindByIdRequest("Person", inActionContext.getPrincipal().getId()));
 
         List<Stream> streams = person.getStreams();
         Long streamId = (Long) inActionContext.getParams();

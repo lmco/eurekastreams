@@ -13,50 +13,58 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.action.execution.stream;
+package org.eurekastreams.server.action.execution;
 
 import java.io.Serializable;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
-import org.eurekastreams.server.domain.stream.Activity;
+import org.eurekastreams.commons.model.DomainEntity;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.IndexEntity;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 
 /**
- * Submit the activity to search index.
+ * Submit {@link DomainEntity} to search index.
  * 
  */
-public class IndexActivityByIdExecution implements ExecutionStrategy<ActionContext>
+public class IndexDomainEntityByIdExecution implements ExecutionStrategy<ActionContext>
 {
     /**
-     * Activity entity mapper.
+     * Object mapper.
      */
-    private FindByIdMapper<Activity> activityMapper;
+    private FindByIdMapper<DomainEntity> objectMapper;
 
     /**
      * {@link IndexEntity} mapper.
      */
-    private IndexEntity<Activity> activityIndexer;
+    private IndexEntity<DomainEntity> objectIndexer;
+
+    /**
+     * Domain entity name used by {@link FindByIdMapper}.
+     */
+    private String domainEntityName;
 
     /**
      * Constructor.
      * 
-     * @param inActivityMapper
+     * @param inObjectMapper
      *            Activity entity mapper.
-     * @param inActivityIndexer
+     * @param inObjectIndexer
      *            {@link IndexEntity} mapper.
+     * @param inDomainEntityName
+     *            Domain entity name used by {@link FindByIdMapper}.
      */
-    public IndexActivityByIdExecution(final FindByIdMapper<Activity> inActivityMapper,
-            final IndexEntity<Activity> inActivityIndexer)
+    public IndexDomainEntityByIdExecution(final FindByIdMapper<DomainEntity> inObjectMapper,
+            final IndexEntity<DomainEntity> inObjectIndexer, final String inDomainEntityName)
     {
-        activityMapper = inActivityMapper;
-        activityIndexer = inActivityIndexer;
+        objectMapper = inObjectMapper;
+        objectIndexer = inObjectIndexer;
+        domainEntityName = inDomainEntityName;
     }
 
     /**
-     * Submit the activity to search index if found in DB.
+     * Submit the object to search index if found in DB.
      * 
      * @param inActionContext
      *            {@link ActionContext}.
@@ -65,13 +73,13 @@ public class IndexActivityByIdExecution implements ExecutionStrategy<ActionConte
     @Override
     public Serializable execute(final ActionContext inActionContext)
     {
-        Activity activity = activityMapper.execute(new FindByIdRequest("Activity", (Long) inActionContext.getParams()));
-        if (activity != null)
+        DomainEntity entity = objectMapper.execute(new FindByIdRequest(domainEntityName, (Long) inActionContext
+                .getParams()));
+        if (entity != null)
         {
-            activityIndexer.execute(activity);
+            objectIndexer.execute(entity);
         }
 
         return null;
     }
-
 }

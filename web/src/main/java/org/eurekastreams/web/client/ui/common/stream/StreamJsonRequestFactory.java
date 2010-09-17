@@ -89,29 +89,8 @@ public final class StreamJsonRequestFactory
     private static final String MAX_RESULTS_KEY = "count";
 
     /**
-     * Sort types.
-     */
-    public enum SortType
-    {
-        /**
-         * Sort by date.
-         */
-        DATE
-        {
-            /**
-             * @return the value as a string.
-             */
-            @Override
-            public String toString()
-            {
-                return "date";
-            }
-        }
-    }
-
-    /**
      * Gets an empty request. Used for everyone stream.
-     *
+     * 
      * @return new empty JSON request.
      */
     public static JSONObject getEmptyRequest()
@@ -121,7 +100,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Get a JSON object from a String.
-     *
+     * 
      * @param request
      *            the request.
      * @return the JSON object.
@@ -133,7 +112,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Adds a recipient to a request.
-     *
+     * 
      * @param type
      *            the type of recepient.
      * @param uniqueId
@@ -169,7 +148,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Set the org stream in the request.
-     *
+     * 
      * @param orgShortName
      *            the org short name.
      * @param json
@@ -187,7 +166,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Sets the search term in a request..
-     *
+     * 
      * @param searchText
      *            the search text.
      * @param json
@@ -205,26 +184,27 @@ public final class StreamJsonRequestFactory
 
     /**
      * Sets the sorting of a request.
-     *
+     * 
      * @param sortBy
      *            the type of sort.
      * @param json
      *            the request.
      * @return the request.
      */
-    public static JSONObject setSort(final SortType sortBy, final JSONObject json)
+    public static JSONObject setSort(final String sortBy, final JSONObject json)
     {
         JSONObject query = json.get("query").isObject();
 
-        query.put(SORT_KEY, new JSONString(sortBy.toString()));
+        query.put(SORT_KEY, new JSONString(sortBy));
 
         return json;
     }
 
-
     /**
      * Sets the source as the current user's parent org.
-     * @param json the json.
+     * 
+     * @param json
+     *            the json.
      * @return the json.
      */
     public static JSONObject setSourceAsParentOrg(final JSONObject json)
@@ -236,7 +216,9 @@ public final class StreamJsonRequestFactory
 
     /**
      * Sets the source as the current user's saved..
-     * @param json the json.
+     * 
+     * @param json
+     *            the json.
      * @return the json.
      */
     public static JSONObject setSourceAsSaved(final JSONObject json)
@@ -248,7 +230,9 @@ public final class StreamJsonRequestFactory
 
     /**
      * Sets the source as the current user's following.
-     * @param json the json.
+     * 
+     * @param json
+     *            the json.
      * @return the json.
      */
     public static JSONObject setSourceAsFollowing(final JSONObject json)
@@ -257,10 +241,10 @@ public final class StreamJsonRequestFactory
         query.put(FOLLOWED_BY_KEY, new JSONString(Session.getInstance().getCurrentPerson().getAccountId()));
         return json;
     }
-    
+
     /**
      * Sets the min ID of a request.
-     *
+     * 
      * @param minId
      *            the min ID.
      * @param json
@@ -276,7 +260,7 @@ public final class StreamJsonRequestFactory
 
     /**
      * Sets the max ID of a request.
-     *
+     * 
      * @param maxId
      *            the max ID.
      * @param json
@@ -289,10 +273,10 @@ public final class StreamJsonRequestFactory
 
         return json;
     }
-    
+
     /**
      * Sets the max number of results for the request.
-     *
+     * 
      * @param maxResults
      *            the max results.
      * @param json

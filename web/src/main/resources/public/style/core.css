@@ -10090,7 +10090,7 @@ body .options>li>.option-title:hover {
 	background-image: url('images/doneBtnSmall.png');
 }
 
-.options .connection-filter-button {
+.options .connection-filter-button, .options .sort-option {
 	margin-right: 15px;
 	text-decoration: none;
 	color: black;
@@ -10099,7 +10099,7 @@ body .options>li>.option-title:hover {
 	*zoom: 1;
 }
 
-.options .connection-filter-button.active {
+.options .connection-filter-button.active, .options .sort-option.active {
 	background-color: #FFE488;
 }
 

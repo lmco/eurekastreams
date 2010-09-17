@@ -131,14 +131,14 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
                 && (!query.containsKey("keywords") || query.getString("keywords").length() == 0))
         {
             log.debug("Sort by date with no Lucene query, removing");
-            
+
             query.remove("sortBy");
 
             if (query.containsKey("keywords"))
             {
                 query.remove("keywords");
             }
-            
+
             request.put("query", query);
         }
 
@@ -148,7 +148,11 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
         }
 
         final int currentMax = request.getInt("count");
-        request.put("count", currentMax + 1);
+
+        if (!query.containsKey("sortBy") || query.getString("sortBy").equals("date"))
+        {
+            request.put("count", currentMax + 1);
+        }
 
         final Long userEntityId = inActionContext.getPrincipal().getId();
         final String userAccountId = inActionContext.getPrincipal().getAccountId();

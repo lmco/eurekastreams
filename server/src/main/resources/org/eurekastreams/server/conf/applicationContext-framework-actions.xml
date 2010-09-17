@@ -222,12 +222,37 @@
     <bean id="indexActivityById" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />        
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.stream.IndexActivityByIdExecution">
+            <bean class="org.eurekastreams.server.action.execution.IndexDomainEntityByIdExecution">
                 <constructor-arg ref="findByIdMapper" /> 
-                <constructor-arg ref="indexEntity" />         
+                <constructor-arg ref="indexEntity" /> 
+                <constructor-arg value="Activity" />        
             </bean>
         </constructor-arg>
-        <constructor-arg value="false" />   
+        <constructor-arg value="true" />   
+    </bean>
+    
+    <bean id="indexPersonById" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />        
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.IndexDomainEntityByIdExecution">
+                <constructor-arg ref="findByIdMapper" /> 
+                <constructor-arg ref="indexEntity" />  
+                <constructor-arg value="Person" />       
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />   
+    </bean>
+    
+    <bean id="indexOrganizationById" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />        
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.IndexDomainEntityByIdExecution">
+                <constructor-arg ref="findByIdMapper" /> 
+                <constructor-arg ref="indexEntity" /> 
+                <constructor-arg value="Organization" />        
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />   
     </bean>
     
     <!-- Delete old StreamHashTag records older than the configurable value -->
@@ -293,6 +318,25 @@
             </bean>        
         </constructor-arg>            
         <constructor-arg ref="deleteGroupExecution" />
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="false" />        
+    </bean> 
+    
+    <bean id="deleteOrganizationAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" /> 
+        <constructor-arg>                
+	        <bean class="org.eurekastreams.server.action.execution.profile.DeleteOrganizationExecution">
+		        <constructor-arg ref="moveOrganizationPeopleMapper" />
+		        <constructor-arg ref="bulkOrganizationsMapper" />
+		        <constructor-arg ref="findByIdMapper" />
+		        <constructor-arg ref="deleteOrganizationMapper" />   
+		        <constructor-arg ref="jpaOrganizationMapper" />  
+		        <constructor-arg>
+                    <bean class="org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder" />
+                </constructor-arg>                              
+		    </bean>
+	    </constructor-arg>
         <constructor-arg ref="taskHandler" />
         <constructor-arg value="false" />        
     </bean> 
@@ -1261,13 +1305,29 @@
 		<constructor-arg value="true" />
 	</bean>
 	
-	<bean id="feedFactory" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.FeedFactory">
+	<bean id="feedFetcher" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.BasicFeedFetcher" />
+	
+	<bean id="standardPluginFeedFetcher" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.BasicPluginFeedFetcher">
+		<constructor-arg ref="feedFetcher" />
+	</bean>
+	
+	<bean id="twitterCookieBypassPluginFeedFetcher" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.BasicPluginFeedFetcher">
+		<constructor-arg ref="feedFetcher" />
+       <constructor-arg value="(www.)?twitter.com"/>
 		<constructor-arg>
-            <list>
-                <ref bean="twitterCookieBypassStrategy"/>
-            </list>
-       </constructor-arg>
-		<constructor-arg ref="standardFeedFetcher" />
+			<map>
+				<entry key="Cookie" value="lmyellow=" />
+			</map>
+		</constructor-arg>
+    </bean>        
+	
+	<util:list id="feedFetcherStrategies">
+		<ref bean="twitterCookieBypassPluginFeedFetcher"/>
+	</util:list>
+	
+	<bean id="feedFactory" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.FeedFactory">
+		<constructor-arg ref="feedFetcherStrategies" />
+		<constructor-arg ref="standardPluginFeedFetcher" />
 		<constructor-arg value="${eureka.proxy.host}" />
 		<constructor-arg value="${eureka.proxy.port}" />
 		<constructor-arg type="int" value="${eureka.feeds.httptimeout}" />            
@@ -1358,17 +1418,6 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
-
-	<bean id="standardFeedFetcher" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.BasicFeedFetcher" />
-	
-	<bean id="twitterCookieBypassStrategy" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.BasicFeedFetcher">
-       <constructor-arg value="(www.)?twitter.com"/>
-		<constructor-arg>
-			<map>
-				<entry key="Cookie" value="lmyellow=" />
-			</map>
-		</constructor-arg>
-    </bean>        
 
     <bean id="getPersonIdForFeedSub" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.GetPersonIdForFeedSubscription">
         <constructor-arg ref="bulkPeopleByAccountIdMapper" /> 
@@ -1691,6 +1740,8 @@
 					class="org.eurekastreams.server.service.actions.strategies.activity.InterpolationListCollider" />            
             </constructor-arg>
             <constructor-arg ref="securityTrimmer" />
+            <constructor-arg ref="bulkPeopleMapper" />
+			<constructor-arg value="%%CURRENT_USER_ACCOUNT_ID%%" />            
 	</bean>
 	    
     <bean id="getActivitiesByRequestExecutor" 
@@ -3097,33 +3148,6 @@
 		<constructor-arg value="false" />
 	</bean>
 
-	<bean id="deleteStreamSearch" class="org.eurekastreams.commons.actions.service.ServiceAction">
-		<constructor-arg ref="noValidationStrategy" />
-		<constructor-arg ref="noAuthorizationStrategy" />
-		<constructor-arg>
-			<bean
-				class="org.eurekastreams.server.action.execution.stream.DeleteStreamSearchExecution">
-				<constructor-arg ref="deleteCachedCompositeStreamSearchByIdMapper" />
-				<constructor-arg ref="findByIdMapper" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg value="false" />
-	</bean>
-
-	<bean id="deleteStreamView" class="org.eurekastreams.commons.actions.service.ServiceAction">
-		<constructor-arg ref="noValidationStrategy" />
-		<constructor-arg ref="noAuthorizationStrategy" />
-		<constructor-arg>
-			<bean
-				class="org.eurekastreams.server.action.execution.stream.DeleteStreamViewExecution">
-				<constructor-arg ref="deleteCachedCompositeStreamByIdMapper" />
-				<constructor-arg ref="findByIdMapper" />
-				<constructor-arg ref="deleteStreamViewAndRelatedSearches" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg value="false" />
-	</bean>
-
 	<bean id="updateGadgetDefinitionCountAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
 		<!-- Quartz job -->
 		<constructor-arg ref="noValidationStrategy" />
@@ -3187,6 +3211,35 @@
 		</constructor-arg>
 		<constructor-arg value="false" />
 	</bean>
+	
+
+	<bean id="deleteStreamForCurrentUser" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.action.execution.stream.DeleteStreamForCurrentUserExecution">
+				<constructor-arg>
+					<ref bean="findByIdMapper" />
+				</constructor-arg>
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="false" />
+	</bean>
+	
+	<bean id="modifyStreamForCurrentUser" class="org.eurekastreams.commons.actions.service.ServiceAction">
+		<constructor-arg ref="noValidationStrategy" />
+		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.action.execution.stream.ModifyStreamForCurrentUserExecution">
+				<constructor-arg>
+					<ref bean="findByIdMapper" />
+				</constructor-arg>
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="false" />
+	</bean>		
 
 	<bean id="refreshCachedCustomCompositeStreamAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
 		<constructor-arg ref="noValidationStrategy" />
@@ -4405,28 +4458,6 @@
         	</bean>
         </constructor-arg>
 		<constructor-arg value="true" />
-	</bean>
-
-	<bean id="modifyStreamForCurrentUser" class="org.eurekastreams.commons.actions.service.ServiceAction">
-		<constructor-arg ref="noValidationStrategy" />
-		<constructor-arg ref="noAuthorizationStrategy" />
-		<constructor-arg>
-			<bean class="org.eurekastreams.server.action.execution.stream.ModifyStreamForCurrentUserExecution">
-			   <constructor-arg ref="jpaPersonMapper" />
-			</bean>
-       </constructor-arg>
-	   <constructor-arg value="true" />
-	</bean>
-
-	<bean id="deleteStreamForCurrentUser" class="org.eurekastreams.commons.actions.service.ServiceAction">
-	   <constructor-arg ref="noValidationStrategy" />
-	   <constructor-arg ref="noAuthorizationStrategy" />
-       <constructor-arg>
-			<bean class="org.eurekastreams.server.action.execution.stream.DeleteStreamForCurrentUserExecution">
-			   <constructor-arg ref="jpaPersonMapper" />
-			</bean>
-       </constructor-arg>
-	   <constructor-arg value="true" />
 	</bean>
 
    <!--
