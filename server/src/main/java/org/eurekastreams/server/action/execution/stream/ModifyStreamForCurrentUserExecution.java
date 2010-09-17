@@ -39,7 +39,7 @@ public class ModifyStreamForCurrentUserExecution implements ExecutionStrategy<Pr
 
     /**
      * Constructor.
-     * 
+     *
      * @param inPersonMapper
      *            the person mapper.
      */
@@ -50,7 +50,7 @@ public class ModifyStreamForCurrentUserExecution implements ExecutionStrategy<Pr
 
     /**
      * Modify a stream for the current user.
-     * 
+     *
      * @param inActionContext
      *            the action context.
      * @return the stream.
@@ -59,7 +59,12 @@ public class ModifyStreamForCurrentUserExecution implements ExecutionStrategy<Pr
      */
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        Person person = personMapper.execute(new FindByIdRequest("Person", inActionContext.getPrincipal().getId()));
+        Person person = (Person) inActionContext.getState().get("person");
+
+        if (person == null)
+        {
+            person = personMapper.execute(new FindByIdRequest("Person", inActionContext.getPrincipal().getId()));
+        }
 
         List<Stream> streams = person.getStreams();
 
@@ -83,7 +88,6 @@ public class ModifyStreamForCurrentUserExecution implements ExecutionStrategy<Pr
             streams.add(stream);
         }
 
-        personMapper.flush();
 
         return stream;
     }
