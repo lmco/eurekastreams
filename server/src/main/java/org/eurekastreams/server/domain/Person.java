@@ -1819,10 +1819,8 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         entityCacheUpdater = inEntityCacheUpdater;
     }
-
     // ---------------- END CACHE UPDATING ----------------
     // ----------------------------------------------------
-
     /**
      * @param inLastAcceptedTermsOfService
      *            the lastAcceptedTermsOfService to set
@@ -1864,6 +1862,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         return accountLocked;
     }
+
     /**
      * @param inAccountLocked
      *            if the account is locked.
@@ -1872,6 +1871,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         accountLocked = inAccountLocked;
     }
+
     /**
      * Get the unique id for as implemented for Followable.
      *

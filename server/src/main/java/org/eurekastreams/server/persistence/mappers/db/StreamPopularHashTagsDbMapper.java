@@ -25,13 +25,13 @@ import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.stream.StreamPopularHashTagsRequest;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.StreamPopularHashTagsReport;
+import org.eurekastreams.server.persistence.mappers.stream.StreamPopularHashTagsReportDTO;
 
 /**
  * Mapper to fetch the popular hash tags for a stream.
  */
 public class StreamPopularHashTagsDbMapper extends
-        BaseArgDomainMapper<StreamPopularHashTagsRequest, StreamPopularHashTagsReport>
+        BaseArgDomainMapper<StreamPopularHashTagsRequest, StreamPopularHashTagsReportDTO>
 {
     /**
      * Logger.
@@ -70,15 +70,15 @@ public class StreamPopularHashTagsDbMapper extends
      *            type of stream and unique key of the entity stream to fetch hashtags for
      * @return the list of popular hashtags
      */
-    public StreamPopularHashTagsReport execute(final StreamPopularHashTagsRequest inRequest)
+    public StreamPopularHashTagsReportDTO execute(final StreamPopularHashTagsRequest inRequest)
     {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.HOUR, 0 - popularHashTagWindowInHours);
         Date minActivityTime = calendar.getTime();
 
-        if (log.isInfoEnabled())
+        if (log.isDebugEnabled())
         {
-            log.info("Looking for " + maxNumberOfPopularHashTags + " popular hashtags for "
+            log.debug("Looking for " + maxNumberOfPopularHashTags + " popular hashtags for "
                     + inRequest.getStreamEntityScopeType() + " stream with id " + inRequest.getStreamEntityUniqueKey()
                     + " and activity date >= " + minActivityTime.toString());
         }
@@ -93,14 +93,14 @@ public class StreamPopularHashTagsDbMapper extends
 
         List<String> hashTags = query.getResultList();
 
-        if (log.isInfoEnabled())
+        if (log.isDebugEnabled())
         {
-            log.info("Found popular hashtags: " + hashTags + " for " + inRequest.getStreamEntityScopeType()
+            log.debug("Found popular hashtags: " + hashTags + " for " + inRequest.getStreamEntityScopeType()
                     + " stream with id " + inRequest.getStreamEntityUniqueKey() + " and activity date >= "
                     + minActivityTime.toString());
         }
 
         Calendar now = Calendar.getInstance();
-        return new StreamPopularHashTagsReport(hashTags, now.getTime());
+        return new StreamPopularHashTagsReportDTO(hashTags, now.getTime());
     }
 }

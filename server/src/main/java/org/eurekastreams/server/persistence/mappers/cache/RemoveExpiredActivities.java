@@ -23,6 +23,7 @@ import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
  * This class removes the specified activities from the database and cache, including comments. The caller of this
  * method should ensure that the list of ids passed in is of reasonable size, chunking as necessary.
  */
+// TODO: Pull apart the cache and database components
 public class RemoveExpiredActivities extends CachedDomainMapper
 {
     /**

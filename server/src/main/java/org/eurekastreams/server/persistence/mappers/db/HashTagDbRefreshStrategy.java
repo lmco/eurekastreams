@@ -28,8 +28,7 @@ import org.eurekastreams.server.persistence.mappers.chained.RefreshStrategy;
 /**
  * Refresh strategy to insert HashTags in the database, lowercasing and making sure they start with octothorpe.
  */
-public class HashTagDbRefreshStrategy extends BaseDomainMapper implements
-        RefreshStrategy<List<String>, List<HashTag>>
+public class HashTagDbRefreshStrategy extends BaseDomainMapper implements RefreshStrategy<List<String>, List<HashTag>>
 {
     /**
      * Logger.
@@ -66,27 +65,29 @@ public class HashTagDbRefreshStrategy extends BaseDomainMapper implements
         List<HashTag> foundHashTags = getEntityManager().createQuery("FROM HashTag WHERE content IN (:contents)")
                 .setParameter("contents", contents).getResultList();
 
-        List<HashTag> hashTagsToReturn = new ArrayList<HashTag>();
-        hashTagsToReturn.addAll(foundHashTags);
+        inHashTags.clear();
+        inHashTags.addAll(foundHashTags);
 
         for (String content : inContents)
         {
             if (isHashTagInCollection(content, foundHashTags))
             {
-                log.info("HashTag " + content + " already exists - skipping.");
+                if (log.isTraceEnabled())
+                {
+                    log.trace("HashTag " + content + " already exists - skipping.");
+                }
                 continue;
             }
-            log.info("Inserting hashtag " + content + " in the database.");
+            if (log.isTraceEnabled())
+            {
+                log.trace("Inserting hashtag " + content + " in the database.");
+            }
 
             // INSERT the hastag
             HashTag ht = new HashTag(content);
             getEntityManager().persist(ht);
-            hashTagsToReturn.add(ht);
+            inHashTags.add(ht);
         }
-
-        // set all of the hash tags to return
-        inHashTags.clear();
-        inHashTags.addAll(hashTagsToReturn);
     }
 
     /**

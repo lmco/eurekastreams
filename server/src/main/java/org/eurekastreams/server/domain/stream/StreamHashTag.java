@@ -75,8 +75,7 @@ public class StreamHashTag extends DomainEntity implements Serializable
     /**
      * Empty constructor for ORM.
      */
-    @SuppressWarnings("unused")
-    private StreamHashTag()
+    protected StreamHashTag()
     {
     }
 

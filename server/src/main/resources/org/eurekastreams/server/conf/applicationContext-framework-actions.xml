@@ -278,7 +278,7 @@
                 <constructor-arg ref="jpaPersonMapper" />
                 <!-- email action ref -->
                 <constructor-arg value="sendWelcomeEmail"/> 
-                <constructor-arg ref="getOrganizationProxyById"/>            
+                <constructor-arg ref="findByIdMapper"/>            
             </bean>
         </constructor-arg>
         <constructor-arg ref="taskHandler" />
@@ -3217,9 +3217,16 @@
 	</bean>
 	
 
+
 	<bean id="deleteStreamForCurrentUser" class="org.eurekastreams.commons.actions.service.ServiceAction">
 		<constructor-arg ref="noValidationStrategy" />
-		<constructor-arg ref="noAuthorizationStrategy" />
+	    <constructor-arg>
+            <bean
+                class="org.eurekastreams.server.action.authorization.stream.ModifyStreamForCurrentUserAuthorization">
+                <constructor-arg ref="findByIdMapper" />
+                <constructor-arg ref="passThruRequestTransformer" />
+            </bean>
+        </constructor-arg>
 		<constructor-arg>
 			<bean
 				class="org.eurekastreams.server.action.execution.stream.DeleteStreamForCurrentUserExecution">
@@ -3230,10 +3237,19 @@
 		</constructor-arg>
 		<constructor-arg value="false" />
 	</bean>
+
 	
 	<bean id="modifyStreamForCurrentUser" class="org.eurekastreams.commons.actions.service.ServiceAction">
 		<constructor-arg ref="noValidationStrategy" />
-		<constructor-arg ref="noAuthorizationStrategy" />
+		<constructor-arg>
+            <bean
+                class="org.eurekastreams.server.action.authorization.stream.ModifyStreamForCurrentUserAuthorization">
+                <constructor-arg ref="findByIdMapper" />
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.action.request.transformer.GetIdFromStreamRequestTransformer" />
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
 		<constructor-arg>
 			<bean
 				class="org.eurekastreams.server.action.execution.stream.ModifyStreamForCurrentUserExecution">

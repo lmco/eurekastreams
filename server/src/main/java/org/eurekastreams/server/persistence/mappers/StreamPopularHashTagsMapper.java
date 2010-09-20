@@ -20,13 +20,13 @@ import java.util.Calendar;
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.stream.StreamPopularHashTagsRequest;
-import org.eurekastreams.server.persistence.mappers.stream.StreamPopularHashTagsReport;
+import org.eurekastreams.server.persistence.mappers.stream.StreamPopularHashTagsReportDTO;
 
 /**
  * Wrapping mapper to get the popular hashtags from another mapper, then return null if it's expired.
  */
 public class StreamPopularHashTagsMapper implements
-        DomainMapper<StreamPopularHashTagsRequest, StreamPopularHashTagsReport>
+        DomainMapper<StreamPopularHashTagsRequest, StreamPopularHashTagsReportDTO>
 {
     /**
      * Logger.
@@ -41,7 +41,7 @@ public class StreamPopularHashTagsMapper implements
     /**
      * Mapper to get the popular hashtags for a stream.
      */
-    private final DomainMapper<StreamPopularHashTagsRequest, StreamPopularHashTagsReport> popularHashTagsMapper;
+    private final DomainMapper<StreamPopularHashTagsRequest, StreamPopularHashTagsReportDTO> popularHashTagsMapper;
 
     /**
      * Constructor.
@@ -52,7 +52,7 @@ public class StreamPopularHashTagsMapper implements
      *            the number of minutes to allow popular hashtags in cache
      */
     public StreamPopularHashTagsMapper(
-            final DomainMapper<StreamPopularHashTagsRequest, StreamPopularHashTagsReport> inPopularHashTagsMapper,
+            final DomainMapper<StreamPopularHashTagsRequest, StreamPopularHashTagsReportDTO> inPopularHashTagsMapper,
             final Integer inPopularHashTagsExpirationInMinutes)
     {
         popularHashTagsMapper = inPopularHashTagsMapper;
@@ -67,9 +67,9 @@ public class StreamPopularHashTagsMapper implements
      * @return null if not found or found and generated too long ago
      */
     @Override
-    public StreamPopularHashTagsReport execute(final StreamPopularHashTagsRequest inRequest)
+    public StreamPopularHashTagsReportDTO execute(final StreamPopularHashTagsRequest inRequest)
     {
-        StreamPopularHashTagsReport hashTagReport = popularHashTagsMapper.execute(inRequest);
+        StreamPopularHashTagsReportDTO hashTagReport = popularHashTagsMapper.execute(inRequest);
         if (hashTagReport != null)
         {
             // found the report - see if it's too old

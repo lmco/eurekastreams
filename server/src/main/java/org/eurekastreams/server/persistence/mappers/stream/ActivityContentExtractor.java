@@ -48,7 +48,7 @@ public class ActivityContentExtractor
             switch (inBaseObjectType)
             {
             case NOTE:
-                if (inBaseObject != null && inBaseObject.containsKey("content"))
+                if (inBaseObject.containsKey("content"))
                 {
                     sb.append(inBaseObject.get("content"));
                 }
@@ -76,6 +76,6 @@ public class ActivityContentExtractor
             }
         }
 
-        return sb != null && sb.toString().length() > 0 ? sb.toString() : null;
+        return sb.toString().length() > 0 ? sb.toString() : null;
     }
 }

@@ -30,7 +30,7 @@ public class HashTagTest
     @Test
     public void testContent()
     {
-        HashTag ht = new HashTag();
+        HashTag ht = new HashTag("foo");
         ht.setContent("content");
         assertEquals("content", ht.getContent());
     }

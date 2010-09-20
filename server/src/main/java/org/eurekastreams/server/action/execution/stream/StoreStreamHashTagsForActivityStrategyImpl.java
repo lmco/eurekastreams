@@ -137,9 +137,9 @@ public class StoreStreamHashTagsForActivityStrategyImpl implements StoreStreamHa
         for (HashTag hashTag : hashTagMapper.execute(hashTagStrings))
         {
             // insert the activity hashtag for the destination stream
-            if (log.isInfoEnabled())
+            if (log.isDebugEnabled())
             {
-                log.info("Adding StreamHashTag " + hashTag.getContent() + " for direct recipient stream of type "
+                log.debug("Adding StreamHashTag " + hashTag.getContent() + " for direct recipient stream of type "
                         + scopeType + ", key: " + recipientStreamKey + ", activity id: #" + inActivity.getId());
             }
 
@@ -156,9 +156,9 @@ public class StoreStreamHashTagsForActivityStrategyImpl implements StoreStreamHa
 
                 for (String orgShortName : orgHierarchyShortNames)
                 {
-                    if (log.isInfoEnabled())
+                    if (log.isDebugEnabled())
                     {
-                        log.info("Adding StreamHashTag " + hashTag.getContent() + " for public " + scopeType
+                        log.debug("Adding StreamHashTag " + hashTag.getContent() + " for public " + scopeType
                                 + " stream's parent org tree, organization " + orgShortName + ", activity id: #"
                                 + inActivity.getId());
                     }
@@ -196,9 +196,9 @@ public class StoreStreamHashTagsForActivityStrategyImpl implements StoreStreamHa
         List<Long> parentOrgIds = getRecursiveParentOrgIds.execute(orgId);
         parentOrgIds.add(orgId);
 
-        if (log.isInfoEnabled())
+        if (log.isTraceEnabled())
         {
-            log.info("Fetching organization modelviews for all of the parent orgs of activity with parent org id "
+            log.trace("Fetching organization modelviews for all of the parent orgs of activity with parent org id "
                     + parentOrgIds.toString());
         }
 
@@ -206,9 +206,9 @@ public class StoreStreamHashTagsForActivityStrategyImpl implements StoreStreamHa
         {
             shortNames.add(org.getShortName());
         }
-        if (log.isInfoEnabled())
+        if (log.isTraceEnabled())
         {
-            log.info("Found org short names: " + shortNames.toString());
+            log.trace("Found org short names: " + shortNames.toString());
         }
         return shortNames;
     }
