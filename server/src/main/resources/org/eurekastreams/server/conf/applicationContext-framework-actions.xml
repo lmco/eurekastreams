@@ -323,8 +323,12 @@
     </bean> 
     
     <bean id="deleteOrganizationAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" /> 
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.validation.profile.DeleteOrganizationValidation">
+                <constructor-arg ref="getRelatedEntityCountMapper"/>            
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="currentUserRootOrgCoordinatorAuthorization" />
         <constructor-arg>                
 	        <bean class="org.eurekastreams.server.action.execution.profile.DeleteOrganizationExecution">
 		        <constructor-arg ref="moveOrganizationPeopleMapper" />

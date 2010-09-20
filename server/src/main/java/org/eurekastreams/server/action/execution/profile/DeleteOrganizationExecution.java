@@ -160,6 +160,7 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
             inActionContext.getUserActionRequests().add(
                     new UserActionRequest("indexOrganizationById", null, org.getId()));
             cacheKeysToRemove.add(CacheKeys.ORGANIZATION_BY_ID + org.getId());
+            cacheKeysToRemove.add(CacheKeys.ORGANIZATION_RECURSIVE_CHILDREN + org.getId());
         }
 
         // remove org from search index
