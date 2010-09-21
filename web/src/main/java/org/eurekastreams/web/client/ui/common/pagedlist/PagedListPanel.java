@@ -16,13 +16,18 @@
 package org.eurekastreams.web.client.ui.common.pagedlist;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.eurekastreams.server.action.request.PageableRequest;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.PagerUpdatedEvent;
 import org.eurekastreams.web.client.events.SwitchToFilterOnPagedFilterPanelEvent;
+import org.eurekastreams.web.client.events.UpdateHistoryEvent;
+import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
+import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.Fetchable;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.Pager;
@@ -48,6 +53,7 @@ public class PagedListPanel extends FlowPanel
     /**
      * The renderers keyed by filter.
      */
+    @SuppressWarnings("unchecked")
     private HashMap<String, ItemRenderer> renderers = new HashMap<String, ItemRenderer>();
     /**
      * Requests keyed by filter.
@@ -62,6 +68,7 @@ public class PagedListPanel extends FlowPanel
     /**
      * Fetchers keyed by filter.
      */
+    @SuppressWarnings("unchecked")
     private HashMap<String, Fetchable> fetchers = new HashMap<String, Fetchable>();
     /**
      * Sorters keyed by filter.
@@ -71,6 +78,46 @@ public class PagedListPanel extends FlowPanel
      * Sort Links keyed by filter and sort.
      */
     private HashMap<String, HashMap<String, Anchor>> sortLinks = new HashMap<String, HashMap<String, Anchor>>();
+
+    /**
+     * Collection of filters that have been loaded and the available sorts for each filter.
+     */
+    private HashMap<String, List<String>> loadedFilters = new HashMap<String, List<String>>();
+
+    /**
+     * Filter to go to.
+     */
+    private String jumpToFilter;
+
+    /**
+     * Sort to go to.
+     */
+    private String jumpToSort;
+
+    /**
+     * Pager item start index to go to.
+     */
+    private Integer jumpToStart;
+
+    /**
+     * Pager item end index to go to.
+     */
+    private Integer jumpToEnd;
+
+    /**
+     * Flag indicating processing of initial panel view.
+     */
+    private boolean processingInitial = false;
+    
+    /**
+     * Flag indicating processing of a browser back button click.
+     */
+    private boolean processingBack = false;
+    
+    /**
+     * Flag indicating processing of initial panel view initiated from a browser back button click.
+     */
+    private boolean processingDefaultOnBack = false;
 
     /**
      * Contains the items.
@@ -84,7 +131,7 @@ public class PagedListPanel extends FlowPanel
      * Contains the sort switchers.
      */
     private FlowPanel sortContainer = new FlowPanel();
-    
+
     /**
      * Waiting spinner.
      */
@@ -93,7 +140,7 @@ public class PagedListPanel extends FlowPanel
     /**
      * Whether or not this has been initiated with a filter. The first filter will initiate it.
      */
-    private boolean initiated = false;
+    private boolean initialized = false;
 
     /**
      * Start index.
@@ -129,11 +176,6 @@ public class PagedListPanel extends FlowPanel
     private FlowPanel navPanel;
 
     /**
-     * Timeout before clearing panel to prevent flashing on quick returns.
-     */
-    private static final int CLEAR_THRESHHOLD = 250;
-
-    /**
      * Default constructor.
      * 
      * @param inListId
@@ -143,7 +185,7 @@ public class PagedListPanel extends FlowPanel
     {
         listId = inListId;
         bottomPager = new Pager("filteredPager" + listId, true);
-        
+
         waitSpinner.addStyleName("wait-spinner");
 
         this.addStyleName("connection-master");
@@ -187,18 +229,92 @@ public class PagedListPanel extends FlowPanel
                             currentFilter = event.getFilterName();
                             currentSortKey = event.getSortKey();
                             startIndex = null;
-                            // NOTE: This will cause data reload.
-                            bottomPager.reset();
+
+                            // reset the pager settings if the view or sort has changed
+                            if (jumpToFilter != currentFilter || jumpToSort != currentSortKey)
+                            {
+                                jumpToStart = null;
+                                jumpToEnd = null;
+                            }
+
+                            if (jumpToStart == null)
+                            {
+                                bottomPager.reset();
+                            }
+                            else
+                            {
+                                bottomPager.setStartIndex(jumpToStart);
+                                bottomPager.setEndIndex(jumpToEnd);
+                                Session.getInstance().getEventBus().notifyObservers(new PagerUpdatedEvent(bottomPager));
+                            }
+
+                            String nameFromUrl = Session.getInstance().getParameterValue("name");
+                            String sortFromUrl = Session.getInstance().getParameterValue("sort");
+
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            params.put("name", currentFilter);
+                            params.put("sort", currentSortKey);
+                            params.put("listId", listId);
+
+                            if (!processingDefaultOnBack && (!processingInitial || processingBack)
+                                    && (nameFromUrl != "undefined" && !nameFromUrl.equals(currentFilter))
+                                    && (sortFromUrl != "undefined" && !sortFromUrl.equals(currentSortKey)))
+                            {
+                                Session.getInstance().getEventBus().notifyObservers(
+                                        new UpdateHistoryEvent(new CreateUrlRequest(params, false)));
+                            }
+                            processingInitial = false;
+                            processingDefaultOnBack = false;
                         }
                     }
                 });
+
+        Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
+                new Observer<UpdatedHistoryParametersEvent>()
+                {
+                    public void update(final UpdatedHistoryParametersEvent event)
+                    {
+                        processingDefaultOnBack = false;
+                        String thisListId = event.getParameters().get("listId");
+
+                        // handle returning back to the default view (no history tokens)
+                        if (processingBack && !thisListId.equals(listId))
+                        {
+                            String defaultFilter = (String) loadedFilters.keySet().toArray()[0];
+                            String defaultSort = loadedFilters.get(defaultFilter).get(0);
+                            processingDefaultOnBack = true;
+                            Session.getInstance().getEventBus().notifyObservers(
+                                    new SwitchToFilterOnPagedFilterPanelEvent(listId, defaultFilter, defaultSort));
+                        }
+                        else if (thisListId.equals(listId))
+                        {
+                            jumpToFilter = event.getParameters().get("name");
+                            jumpToSort = event.getParameters().get("sort");
+                            if (jumpToSort == null)
+                            {
+                                jumpToSort = "";
+                            }
+
+                            jumpToStart = event.getParameters().get("startIndex") == null ? null : new Integer(event
+                                    .getParameters().get("startIndex"));
+                            jumpToEnd = event.getParameters().get("endIndex") == null ? null : new Integer(event
+                                    .getParameters().get("endIndex"));
+
+                            if (initialized)
+                            {
+                                Session.getInstance().getEventBus().notifyObservers(
+                                        new SwitchToFilterOnPagedFilterPanelEvent(listId, jumpToFilter, jumpToSort));
+                                processingBack = true;
+                            }
+                        }
+                    }
+                }, true);
 
         this.add(bottomPager);
 
         FlowPanel clear = new FlowPanel();
         clear.addStyleName("clear");
         this.add(clear);
-
     }
 
     /**
@@ -269,6 +385,7 @@ public class PagedListPanel extends FlowPanel
     /**
      * Causes the data for the current filter and sort to be refreshed (via fetching from the model).
      */
+    @SuppressWarnings("unchecked")
     public void refreshData()
     {
         PageableRequest request = requests.get(currentFilter).get(currentSortKey);
@@ -291,6 +408,7 @@ public class PagedListPanel extends FlowPanel
      * @param request
      *            the request.
      */
+    @SuppressWarnings("unchecked")
     public void addSet(final String name, final Fetchable fetchable, final ItemRenderer renderer,
             final PageableRequest request)
     {
@@ -311,6 +429,7 @@ public class PagedListPanel extends FlowPanel
      * @param sortKey
      *            the sort key.
      */
+    @SuppressWarnings("unchecked")
     public void addSet(final String name, final Fetchable fetchable, final ItemRenderer renderer,
             final PageableRequest request, final String sortKey)
     {
@@ -363,12 +482,33 @@ public class PagedListPanel extends FlowPanel
             sortLinks.get(name).put(sortKey, sortLink);
         }
 
-        if (!initiated)
+        if (loadedFilters.containsKey(name))
         {
+            loadedFilters.get(name).add(sortKey);
+        }
+        else
+        {
+            List sorts = new ArrayList();
+            sorts.add(sortKey);
+            loadedFilters.put(name, sorts);
+        }
 
-            initiated = true;
+        // default case with no history detection
+        if (!initialized && jumpToFilter == null)
+        {
+            initialized = true;
+            processingInitial = true;
             Session.getInstance().getEventBus().notifyObservers(
                     new SwitchToFilterOnPagedFilterPanelEvent(listId, name, sortKey));
+        }
+        // case where back button was just pressed (history listener has already set jumpToFilter/jumpToSort)
+        else if (!initialized && loadedFilters.containsKey(jumpToFilter)
+                && loadedFilters.get(jumpToFilter).contains(jumpToSort))
+        {
+            initialized = true;
+            processingBack = true;
+            Session.getInstance().getEventBus().notifyObservers(
+                    new SwitchToFilterOnPagedFilterPanelEvent(listId, jumpToFilter, jumpToSort));
         }
     }
 
@@ -414,6 +554,7 @@ public class PagedListPanel extends FlowPanel
      * @param noItemsMessage
      *            the message to display when nothing is there.
      */
+    @SuppressWarnings("unchecked")
     public <T extends Serializable> void render(final PagedSet<T> items, final String noItemsMessage)
     {
         ItemRenderer render = renderers.get(currentFilter);
