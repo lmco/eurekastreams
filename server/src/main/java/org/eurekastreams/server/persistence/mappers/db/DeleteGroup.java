@@ -16,14 +16,12 @@
 package org.eurekastreams.server.persistence.mappers.db;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverser;
 import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder;
-import org.eurekastreams.server.domain.stream.StreamView;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
@@ -59,7 +57,7 @@ public class DeleteGroup extends BaseArgDomainMapper<Long, DeleteGroupResponse>
 
     /**
      * Constructor.
-     * 
+     *
      * @param inGroupMapper
      *            {@link FindByIdMapper}.
      * @param inOrganizationMapper
@@ -81,7 +79,7 @@ public class DeleteGroup extends BaseArgDomainMapper<Long, DeleteGroupResponse>
 
     /**
      * Deletes a group and adjusts denormalized organization statistics accordingly.
-     * 
+     *
      * @param inRequest
      *            group id.
      * @return Set of organization ids representing parent orgs all the way up the tree, will need these to adjust
@@ -100,22 +98,8 @@ public class DeleteGroup extends BaseArgDomainMapper<Long, DeleteGroupResponse>
         Set<Long> parentOrgIds = new HashSet<Long>(parentOrgIdMapper.execute(parentOrgId));
         parentOrgIds.add(parentOrgId);
 
-        // get set of compositeStreams ids that include this group.
-        @SuppressWarnings("unused")
-        List<Long> containingCompositeStreamIds = getEntityManager().createQuery(
-                "SELECT sv.id FROM StreamView sv, StreamScope ss WHERE ss.id = :ssId AND "
-                        + " sv MEMBER OF ss.containingCompositeStreams").setParameter("ssId",
-                group.getStreamScope().getId()).getResultList();
-
-        // get everyone composite stream id and add to list of containingCompositeStreamIds.
-        Long everyoneCompositeStreamId = (Long) getEntityManager().createQuery(
-                "SELECT id from StreamView where type = :type").setParameter("type", StreamView.Type.EVERYONE)
-                .getSingleResult();
-        containingCompositeStreamIds.add(everyoneCompositeStreamId);
-
         DeleteGroupResponse response = new DeleteGroupResponse(groupId, group.getShortName(), new Long(group
-                .getEntityStreamView().getId()), new Long(group.getStreamScope().getId()), parentOrgIds,
-                containingCompositeStreamIds);
+                .getStreamScope().getId()), parentOrgIds);
 
         // delete the group hibernate should take care of following since we are deleting via entity manager.
         // Hibernate: delete from Group_Capability where domainGroupId=?

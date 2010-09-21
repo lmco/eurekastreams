@@ -48,15 +48,12 @@ import org.eurekastreams.commons.search.analysis.HtmlStemmerAnalyzer;
 import org.eurekastreams.commons.search.analysis.TextStemmerAnalyzer;
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.domain.stream.StreamSearch;
-import org.eurekastreams.server.domain.stream.StreamView;
 import org.eurekastreams.server.search.bridge.BackgroundStringBridge;
 import org.eurekastreams.server.search.bridge.EducationListStringBridge;
 import org.eurekastreams.server.search.bridge.JobsListStringBridge;
 import org.eurekastreams.server.search.bridge.OrgIdHierarchyFieldBridge;
 import org.eurekastreams.server.search.bridge.OrganizationToShortNameFieldBridge;
 import org.eurekastreams.server.search.modelview.PersonModelView;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.search.annotations.Analyzer;
@@ -594,22 +591,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     private Theme theme;
 
     /**
-     * List of StreamViews for this person.
-     */
-    @IndexColumn(name = "streamViewIndex", base = 0)
-    // Don't cascade on delete, StreamView may have FK in StreamSearches.
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
-    private List<StreamView> streamViews;
-
-    /**
-     * Stream view for a person.
-     */
-    // TODO make this non-nullable when create person strat. is updated.
-    @OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
-    @JoinColumn(name = "entityStreamViewId")
-    private StreamView entityStreamView;
-
-    /**
      * Stream scope representing this person.
      */
     @OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST })
@@ -621,16 +602,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      */
     @Basic(optional = false)
     private Integer streamViewHiddenLineIndex = 0;
-
-    /**
-     * List of StreamSearches for this person.
-     */
-    @IndexColumn(name = "streamSearchIndex", base = 0)
-    @ManyToMany(fetch = FetchType.LAZY)
-    @Cascade(
-    // line break for checkstyle
-    { org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
-    private List<StreamSearch> streamSearches = new ArrayList<StreamSearch>();
 
     /**
      * StreamSearch hidden line index for user.
@@ -1657,44 +1628,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     }
 
     /**
-     * @return the streamViewDefinitions
-     */
-    public List<StreamView> getStreamViewDefinitions()
-    {
-        return streamViews;
-    }
-
-    /**
-     * Delete orpahans cascade type requires ownership of collection, cannot just set new collection or hibernate gets
-     * angry, private accessor for serialization only. If one does use this setter, the original collection cannot be
-     * set to new instance, must clear original collection and copy values from new collection into original.
-     *
-     * @param inStreamViews
-     *            the streamViewDefinitions to set.
-     */
-    public void setStreamViews(final List<StreamView> inStreamViews)
-    {
-        streamViews = inStreamViews;
-    }
-
-    /**
-     * @return the entityStreamView
-     */
-    public StreamView getEntityStreamView()
-    {
-        return entityStreamView;
-    }
-
-    /**
-     * @param inEntityStreamView
-     *            the entityStreamView to set
-     */
-    public void setEntityStreamView(final StreamView inEntityStreamView)
-    {
-        this.entityStreamView = inEntityStreamView;
-    }
-
-    /**
      * @return the streamViewHiddenLineIndex
      */
     public Integer getStreamViewHiddenLineIndex()
@@ -1709,36 +1642,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     public void setStreamViewHiddenLineIndex(final Integer inStreamViewHiddenLineIndex)
     {
         this.streamViewHiddenLineIndex = inStreamViewHiddenLineIndex;
-    }
-
-    /**
-     * @return the streamViewDefinitions
-     */
-    public List<StreamSearch> getStreamSearches()
-    {
-        return streamSearches;
-    }
-
-    /**
-     * @return the list of stream views for this person.
-     */
-    public List<StreamView> getStreamViews()
-    {
-        return streamViews;
-    }
-
-    /**
-     * Delete orpahans cascade type requires ownership of collection, cannot just set new collection or hibernate gets
-     * angry, private accessor for serialization only. If one does use this setter, the original collection cannot be
-     * set to new instance, must clear original collection and copy values from new collection into original.
-     *
-     * @param inStreamSearches
-     *            the streamViewDefinitions to set.
-     */
-    @SuppressWarnings("unused")
-    private void setStreamSearches(final List<StreamSearch> inStreamSearches)
-    {
-        streamSearches = inStreamSearches;
     }
 
     /**

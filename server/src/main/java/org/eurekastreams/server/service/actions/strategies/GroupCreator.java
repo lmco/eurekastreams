@@ -17,9 +17,7 @@ package org.eurekastreams.server.service.actions.strategies;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.DefaultPrincipal;
@@ -39,7 +37,6 @@ import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverser;
 import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder;
 import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.domain.stream.StreamView;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.persistence.OrganizationMapper;
@@ -87,7 +84,7 @@ public class GroupCreator extends GroupPersister
 
     /**
      * Constructor.
-     * 
+     *
      * @param inGroupMapper
      *            The Group Mapper
      * @param inOrgMapper
@@ -116,7 +113,7 @@ public class GroupCreator extends GroupPersister
 
     /**
      * Returns DomainGroup base on id passed in inFields.
-     * 
+     *
      * @param inActionContext
      *            The action context.
      * @param inFields
@@ -141,15 +138,7 @@ public class GroupCreator extends GroupPersister
         }
 
         StreamScope groupScope = new StreamScope(ScopeType.GROUP, (String) inFields.get("shortName"));
-        StreamView groupView = new StreamView();
-        groupView.setName((String) inFields.get("shortName"));
-
-        Set<StreamScope> defaultScopeList = new HashSet<StreamScope>();
-        defaultScopeList.add(groupScope);
-
-        groupView.setIncludedScopes(defaultScopeList);
         group.setStreamScope(groupScope);
-        group.setEntityStreamView(groupView);
 
         // set the capabilities as a new list to avoid search indexing problems
         group.setCapabilities(new ArrayList<BackgroundItem>());
@@ -159,7 +148,7 @@ public class GroupCreator extends GroupPersister
 
     /**
      * Persists new group object.
-     * 
+     *
      * @param inGroup
      *            The group.
      * @param inFields
@@ -245,7 +234,7 @@ public class GroupCreator extends GroupPersister
     // isCoordinator method to recursively look.
     /**
      * Get whiter the user is a coordinator for this org or it's sub orgs.
-     * 
+     *
      * @param org
      *            The org object you are currently on.
      * @param accountId

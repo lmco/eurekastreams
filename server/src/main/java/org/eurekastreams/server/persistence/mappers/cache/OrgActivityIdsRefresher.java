@@ -43,7 +43,7 @@ public class OrgActivityIdsRefresher extends CachedDomainMapper implements Refre
 
     /**
      * Returns compositeStreamId for a person's parent org.
-     * 
+     *
      * @param inOrgId
      *            the parent org id.
      * @return compositeStreamId for a person's parent org.
@@ -67,8 +67,8 @@ public class OrgActivityIdsRefresher extends CachedDomainMapper implements Refre
      */
     public void refresh(final Long inOrgId, final List<Long> inActivities)
     {
-        getCache().setList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + getPersonParentOrgCompositeStreamId(inOrgId),
-                inActivities);
+        // getCache().setList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + getPersonParentOrgCompositeStreamId(inOrgId),
+        // inActivities);
     }
 
 }

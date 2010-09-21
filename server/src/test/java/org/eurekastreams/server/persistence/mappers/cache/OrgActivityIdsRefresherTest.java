@@ -93,8 +93,6 @@ public class OrgActivityIdsRefresherTest
 
                 oneOf(org).getCompositeStreamId();
                 will(returnValue(streamId));
-
-                oneOf(cache).setList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + streamId, activities);
             }
         });
 

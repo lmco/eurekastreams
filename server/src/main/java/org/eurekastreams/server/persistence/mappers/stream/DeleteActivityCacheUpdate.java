@@ -18,15 +18,11 @@ package org.eurekastreams.server.persistence.mappers.stream;
 import java.util.List;
 
 import org.eurekastreams.server.action.request.stream.DeleteActivityCacheUpdateRequest;
-import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
-import org.eurekastreams.server.domain.stream.StreamView;
-import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 
 /**
  * DAO for updating cache after Activity delete.
- *
  */
 public class DeleteActivityCacheUpdate extends BaseArgCachedDomainMapper<DeleteActivityCacheUpdateRequest, Boolean>
 {
@@ -90,9 +86,6 @@ public class DeleteActivityCacheUpdate extends BaseArgCachedDomainMapper<DeleteA
             getCache().removeFromList(CacheKeys.STARRED_BY_PERSON_ID + personId, activityId);
         }
 
-        // remove activity id from all compositeStreams that contain the activity.
-        removeFromCompositeStreamActivityIdLists(inRequest.getActivity());
-
         // remove comments by activityId list from cache.
         getCache().delete(CacheKeys.COMMENT_IDS_BY_ACTIVITY_ID + activityId);
 
@@ -114,28 +107,6 @@ public class DeleteActivityCacheUpdate extends BaseArgCachedDomainMapper<DeleteA
         getCache().delete(CacheKeys.ACTIVITY_BY_ID + activityId);
 
         return true;
-    }
-
-    /**
-     * Removes activity id from any CompositeStream that contains the activity's destination stream.
-     *
-     * @param inActivity
-     *            The activity being deleted.
-     */
-    @SuppressWarnings("unchecked")
-    private void removeFromCompositeStreamActivityIdLists(final ActivityDTO inActivity)
-    {
-        // query for compositestreams that have this streamId
-        List<StreamView> containingCompositeStreams = getEntityManager().createQuery(
-                "SELECT containingCompositeStreams FROM StreamScope ss WHERE ss.id = :streamScopeId").setParameter(
-                "streamScopeId", inActivity.getDestinationStream().getId()).getResultList();
-
-        Cache cache = getCache();
-        long activityId = inActivity.getId();
-        for (StreamView compositeStream : containingCompositeStreams)
-        {
-            cache.removeFromList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + compositeStream.getId(), activityId);
-        }
     }
 
     /**

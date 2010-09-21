@@ -20,8 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.domain.stream.StreamView;
-import org.eurekastreams.server.domain.stream.StreamView.Type;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -48,22 +46,18 @@ public class AddBufferedActivitiesToCacheTest
     /**
      * Bulk activities mapper mock.
      */
-    private DomainMapper<List<Long>, List<ActivityDTO>>  bulkActivitiesMapper = context.mock(DomainMapper.class);
+    private DomainMapper<List<Long>, List<ActivityDTO>> bulkActivitiesMapper = context.mock(DomainMapper.class);
+
     /**
      * Cache mock.
      */
     private MemcachedCache cache = context.mock(MemcachedCache.class);
+
     /**
      * Get composite stream ids by activity mock.
      */
     private GetCompositeStreamIdsByAssociatedActivity getCompositeStreamsByActivity = context
             .mock(GetCompositeStreamIdsByAssociatedActivity.class);
-
-    /**
-     * Mocked instance of the {@link GetCoreStreamViewIdCacheMapper}.
-     */
-    private GetCoreStreamViewIdCacheMapper getCoreStreamViewIdCacheMapperMock = context
-            .mock(GetCoreStreamViewIdCacheMapper.class);
 
     /**
      * Test the execution.
@@ -72,9 +66,7 @@ public class AddBufferedActivitiesToCacheTest
     public void testExecute()
     {
         AddBufferedActivitiesToCache sut = new AddBufferedActivitiesToCache(bulkActivitiesMapper, cache,
-                getCompositeStreamsByActivity, getCoreStreamViewIdCacheMapperMock);
-
-        final Long everyoneList = 3L;
+                getCompositeStreamsByActivity);
 
         final List<Long> activityIds = null;
 
@@ -84,21 +76,6 @@ public class AddBufferedActivitiesToCacheTest
         final List<ActivityDTO> activities = new LinkedList<ActivityDTO>();
         activities.add(activity1);
         activities.add(activity2);
-
-        final StreamView view1 = context.mock(StreamView.class, "view1");
-        final StreamView view2 = context.mock(StreamView.class, "view2");
-        final StreamView view3 = context.mock(StreamView.class, "view3");
-        final StreamView view4 = context.mock(StreamView.class, "view4");
-
-        final List<StreamView> streamViewsForAct1 = new LinkedList<StreamView>();
-        streamViewsForAct1.add(view1);
-        streamViewsForAct1.add(view2);
-        streamViewsForAct1.add(view3);
-
-        final List<StreamView> streamViewsForAct2 = new LinkedList<StreamView>();
-        streamViewsForAct2.add(view1);
-        streamViewsForAct2.add(view2);
-        streamViewsForAct2.add(view4);
 
         final List<Long> followerIdsForAct1 = new LinkedList<Long>();
         followerIdsForAct1.add(1L);
@@ -119,34 +96,15 @@ public class AddBufferedActivitiesToCacheTest
                 allowing(activity2).getId();
                 will(returnValue(8L));
 
-                allowing(view1).getId();
-                will(returnValue(1L));
-
-                allowing(view2).getId();
-                will(returnValue(2L));
-
-                allowing(view3).getId();
-                will(returnValue(3L));
-
-                allowing(view4).getId();
-                will(returnValue(4L));
-
                 oneOf(cache).setListCAS(CacheKeys.BUFFERED_ACTIVITIES, null);
                 will(returnValue(activityIds));
 
                 oneOf(bulkActivitiesMapper).execute(activityIds);
                 will(returnValue(activities));
 
-                oneOf(getCoreStreamViewIdCacheMapperMock).execute(Type.EVERYONE);
-                will(returnValue(everyoneList));
-
-                oneOf(getCompositeStreamsByActivity).getCompositeStreams(activity1);
-                will(returnValue(streamViewsForAct1));
                 oneOf(getCompositeStreamsByActivity).getFollowers(activity1);
                 will(returnValue(followerIdsForAct1));
 
-                oneOf(getCompositeStreamsByActivity).getCompositeStreams(activity2);
-                will(returnValue(streamViewsForAct2));
                 oneOf(getCompositeStreamsByActivity).getFollowers(activity2);
                 will(returnValue(followerIdsForAct2));
 

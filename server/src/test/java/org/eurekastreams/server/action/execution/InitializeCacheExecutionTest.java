@@ -19,7 +19,6 @@ import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.server.persistence.mappers.cache.DomainGroupCacheLoader;
 import org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCacheLoader;
 import org.eurekastreams.server.persistence.mappers.cache.PersonCacheLoader;
-import org.eurekastreams.server.persistence.mappers.cache.StreamCacheLoader;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -65,18 +64,12 @@ public class InitializeCacheExecutionTest
     private PersonCacheLoader personCacheLoader = context.mock(PersonCacheLoader.class);
 
     /**
-     * Mocked loader for streams and activities.
-     */
-    private StreamCacheLoader streamCacheLoader = context.mock(StreamCacheLoader.class);
-
-    /**
      * Setup the test.
      */
     @Before
     public final void setUp()
     {
-        sut = new InitializeCacheExecution(domainGroupCacheLoader, organizationCacheLoader, personCacheLoader,
-                        streamCacheLoader);
+        sut = new InitializeCacheExecution(domainGroupCacheLoader, organizationCacheLoader, personCacheLoader);
     }
 
     /**
@@ -95,7 +88,6 @@ public class InitializeCacheExecutionTest
                 oneOf(domainGroupCacheLoader).initialize();
                 oneOf(organizationCacheLoader).initialize();
                 oneOf(personCacheLoader).initialize();
-                oneOf(streamCacheLoader).initialize();
             }
         });
         ServiceActionContext currentContext = new ServiceActionContext(null, null);
@@ -119,7 +111,6 @@ public class InitializeCacheExecutionTest
                 oneOf(domainGroupCacheLoader).initialize();
                 oneOf(organizationCacheLoader).initialize();
                 oneOf(personCacheLoader).initialize();
-                oneOf(streamCacheLoader).initialize();
                 will(throwException(new Exception()));
             }
         });

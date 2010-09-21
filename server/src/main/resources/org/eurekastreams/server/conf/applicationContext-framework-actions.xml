@@ -4142,10 +4142,6 @@
         <constructor-arg ref="jpaPersonMapper" />
         <constructor-arg ref="jpaTabMapper" />
         <constructor-arg ref="jpaOrganizationMapper" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.persistence.mappers.GetStreamViewByType" />
-        </constructor-arg>
     </bean>
 
     <bean id="personUpdater" class="org.eurekastreams.server.service.actions.strategies.PersonUpdater">

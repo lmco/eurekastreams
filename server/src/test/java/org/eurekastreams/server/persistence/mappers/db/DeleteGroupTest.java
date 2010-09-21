@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Test for DeleteGroup mapper.
- * 
+ *
  */
 public class DeleteGroupTest extends MapperTest
 {
@@ -44,11 +44,6 @@ public class DeleteGroupTest extends MapperTest
      * Group StreamScope id.
      */
     private final long groupStreamScopeId = 875L;
-
-    /**
-     * Gropu StreamView id.
-     */
-    private final long groupStreamViewId = 10L;
 
     /**
      * Test.
@@ -74,7 +69,6 @@ public class DeleteGroupTest extends MapperTest
         assertEquals(2, response.getGroupId().longValue());
         assertEquals("group2", response.getGroupShortName());
         assertEquals(groupStreamScopeId, response.getStreamScopeId().longValue());
-        assertEquals(groupStreamViewId, response.getStreamViewId().longValue());
         assertEquals(2, response.getParentOrganizationIds().size());
         assertTrue(response.getParentOrganizationIds().contains(5L));
         assertTrue(response.getParentOrganizationIds().contains(7L));

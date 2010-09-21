@@ -18,7 +18,6 @@ package org.eurekastreams.server.persistence.mappers.cache;
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
@@ -47,10 +46,10 @@ public class RemovePersonFromCacheMapper extends CachedDomainMapper
 
         getCache().delete(CacheKeys.PERSON_BY_ID + inPerson.getId());
 
-        // Removes the streams and searches for the user if this update was
-        // triggered by a change in order of the lists on the activity page.
-        getCache().delete(CacheKeys.COMPOSITE_STREAM_IDS_BY_PERSON_ID + inPerson.getId());
-        getCache().delete(CacheKeys.COMPOSITE_STREAM_SEARCH_IDS_BY_PERSON_ID + inPerson.getId());
+        // // Removes the streams and searches for the user if this update was
+        // // triggered by a change in order of the lists on the activity page.
+        // getCache().delete(CacheKeys.COMPOSITE_STREAM_IDS_BY_PERSON_ID + inPerson.getId());
+        // getCache().delete(CacheKeys.COMPOSITE_STREAM_SEARCH_IDS_BY_PERSON_ID + inPerson.getId());
 
         if (log.isInfoEnabled())
         {
@@ -58,12 +57,12 @@ public class RemovePersonFromCacheMapper extends CachedDomainMapper
                     + inPerson.getAccountId());
         }
 
-        StreamScope personScope = inPerson.getStreamScope();
-        getCache().delete(CacheKeys.STREAM_BY_ID + personScope.getId());
-        if (log.isInfoEnabled())
-        {
-            log.info("StreamScope for person with id: " + inPerson.getId() + ", stream scope id: "
-                    + personScope.getId() + " deleted from cache.");
-        }
+        // StreamScope personScope = inPerson.getStreamScope();
+        // getCache().delete(CacheKeys.STREAM_BY_ID + personScope.getId());
+        // if (log.isInfoEnabled())
+        // {
+        // log.info("StreamScope for person with id: " + inPerson.getId() + ", stream scope id: "
+        // + personScope.getId() + " deleted from cache.");
+        // }
     }
 }

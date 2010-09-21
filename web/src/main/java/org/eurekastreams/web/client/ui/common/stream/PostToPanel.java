@@ -22,8 +22,6 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.StreamScopeDeletedEvent;
 import org.eurekastreams.web.client.events.SwitchedToGroupStreamEvent;
-import org.eurekastreams.web.client.events.SwitchedToSavedSearchEvent;
-import org.eurekastreams.web.client.events.SwitchedToStreamViewEvent;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.common.autocomplete.AutoCompleteEntityDropDownPanel;
@@ -38,7 +36,7 @@ import com.google.gwt.user.client.ui.RadioButton;
 
 /**
  * A panel for determining where a post gets posted to.
- * 
+ *
  */
 public class PostToPanel extends FlowPanel
 {
@@ -75,7 +73,7 @@ public class PostToPanel extends FlowPanel
 
     /**
      * Default constructor.
-     * 
+     *
      * @param postScope
      *            the scope of the current user.
      */
@@ -86,7 +84,7 @@ public class PostToPanel extends FlowPanel
 
     /**
      * Default constructor.
-     * 
+     *
      * @param postScope
      *            the scope of the current user.
      * @param alwaysShow
@@ -177,37 +175,6 @@ public class PostToPanel extends FlowPanel
                         }
                     });
 
-            EventBus.getInstance().addObserver(SwitchedToStreamViewEvent.class,
-                    new Observer<SwitchedToStreamViewEvent>()
-                    {
-                        public void update(final SwitchedToStreamViewEvent event)
-                        {
-                            if (typedInScope != null)
-                            {
-                                mine.setChecked(true);
-                                autoComplete.setVisible(true);
-                                autoComplete.setDefaultText(OTHER_TEXT);
-                                removeScopePanel(thisBuffered);
-                            }
-                            selectMyActivityStream();
-                        }
-                    });
-
-            EventBus.getInstance().addObserver(SwitchedToSavedSearchEvent.class,
-                    new Observer<SwitchedToSavedSearchEvent>()
-                    {
-                        public void update(final SwitchedToSavedSearchEvent event)
-                        {
-                            if (typedInScope != null)
-                            {
-                                mine.setChecked(true);
-                                autoComplete.setVisible(true);
-                                autoComplete.setDefaultText(OTHER_TEXT);
-                                removeScopePanel(thisBuffered);
-                            }
-                        }
-                    });
-
             EventBus.getInstance().addObserver(SwitchedToGroupStreamEvent.getEvent(),
                     new Observer<SwitchedToGroupStreamEvent>()
                     {
@@ -231,7 +198,7 @@ public class PostToPanel extends FlowPanel
 
     /**
      * If necessary, removes an existing StreamScopePanel in the indicated PostToPanel.
-     * 
+     *
      * @param postToPanel
      *            the panel to search for a StreamScopePanel.
      */
@@ -256,7 +223,7 @@ public class PostToPanel extends FlowPanel
 
     /**
      * Gets the entity type of the JSON object.
-     * 
+     *
      * @param jsObj
      *            the JSON object.
      * @return the entity type.
@@ -265,7 +232,7 @@ public class PostToPanel extends FlowPanel
 
     /**
      * Gets the unique id of the JSON object.
-     * 
+     *
      * @param jsObj
      *            the JSON object.
      * @return the unique id.
@@ -274,7 +241,7 @@ public class PostToPanel extends FlowPanel
 
     /**
      * Gets the display name of the JSON object.
-     * 
+     *
      * @param jsObj
      *            the JSON object.
      * @return the display name.
@@ -283,7 +250,7 @@ public class PostToPanel extends FlowPanel
 
     /**
      * Gets the StreamScope id of the JSON object.
-     * 
+     *
      * @param jsObj
      *            the JSON object.
      * @return the StreamScope id.
@@ -292,7 +259,7 @@ public class PostToPanel extends FlowPanel
 
     /**
      * Gets the post scope.
-     * 
+     *
      * @return the scope.
      */
     public StreamScope getPostScope()
@@ -313,7 +280,7 @@ public class PostToPanel extends FlowPanel
 
     /**
      * Sets the post scope.
-     * 
+     *
      * @param inScope
      *            the scope.
      */

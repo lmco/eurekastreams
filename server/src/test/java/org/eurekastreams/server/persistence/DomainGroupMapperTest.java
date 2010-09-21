@@ -40,7 +40,6 @@ import org.eurekastreams.server.persistence.mappers.cache.PersonCacheLoader;
 import org.eurekastreams.server.persistence.mappers.cache.RemoveDomainGroupFromCacheMapper;
 import org.eurekastreams.server.persistence.mappers.cache.RemovePersonFromCacheMapper;
 import org.eurekastreams.server.persistence.mappers.cache.testhelpers.SimpleMemoryCache;
-import org.eurekastreams.server.persistence.mappers.stream.UserCompositeStreamIdsMapper;
 import org.eurekastreams.server.persistence.strategies.DescendantOrganizationStrategy;
 import org.eurekastreams.server.persistence.strategies.DomainGroupQueryStrategy;
 import org.eurekastreams.server.persistence.strategies.PersonQueryStrategy;
@@ -106,11 +105,6 @@ public class DomainGroupMapperTest extends DomainEntityMapperTest
     private GetRelatedOrganizationIdsByPersonId
     // line break
     getRelatedOrganizationIdsByPersonIdMapper = new GetRelatedOrganizationIdsByPersonId();
-
-    /**
-     * Mocked mapper.
-     */
-    private final UserCompositeStreamIdsMapper streamsMapper = context.mock(UserCompositeStreamIdsMapper.class);
 
     /**
      * Setup.
@@ -231,7 +225,7 @@ public class DomainGroupMapperTest extends DomainEntityMapperTest
 
         // verify new state
         assertTrue(jpaGroupMapper.isFollowing("fordp2", "group1"));
-        //Test case insensitivity (everything should be lower cased by the mapper).
+        // Test case insensitivity (everything should be lower cased by the mapper).
         assertTrue(jpaGroupMapper.isFollowing("fordp2", "Group1"));
         assertFalse(jpaGroupMapper.isFollowing("csagan", "group1"));
         assertEquals(0, fordp2.getFollowingCount());

@@ -27,11 +27,8 @@ import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.persistence.PersonMapper;
-import org.eurekastreams.server.persistence.mappers.GetFollowedStreamViewByUser;
 import org.eurekastreams.server.persistence.mappers.cache.AddCachedPersonFollower;
-import org.eurekastreams.server.persistence.mappers.cache.RemoveCachedActivitiesFromList;
 import org.eurekastreams.server.persistence.mappers.cache.RemoveCachedPersonFollower;
-import org.eurekastreams.server.persistence.mappers.requests.RemoveCachedActivitiesFromListRequest;
 import org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -89,18 +86,6 @@ public class SetFollowingPersonStatusExecutionTest
     private final GetFollowerIds followerIdsMapperMock = context.mock(GetFollowerIds.class);
 
     /**
-     * Mock instance of the RemoveCachedActivitiesFromList.
-     */
-    private final RemoveCachedActivitiesFromList removeCachedActivitiesMapperMock = context
-            .mock(RemoveCachedActivitiesFromList.class);
-
-    /**
-     * Mock instance of the GetFollowedStreamViewByUser mapper.
-     */
-    private final GetFollowedStreamViewByUser followedStreamViewMapperMock = context
-            .mock(GetFollowedStreamViewByUser.class);
-
-    /**
      * Mock instance of the principal object.
      */
     private final Principal principalMock = context.mock(Principal.class);
@@ -112,8 +97,7 @@ public class SetFollowingPersonStatusExecutionTest
     public void setUp()
     {
         sut = new SetFollowingPersonStatusExecution(personMapperMock, peopleByAccountIdsMapperMock,
-                addCachedMapperMock, removeCachedMapperMock, followerIdsMapperMock,
-                removeCachedActivitiesMapperMock, followedStreamViewMapperMock);
+                addCachedMapperMock, removeCachedMapperMock, followerIdsMapperMock);
     }
 
     /**
@@ -142,8 +126,6 @@ public class SetFollowingPersonStatusExecutionTest
                 oneOf(peopleByAccountIdsMapperMock).fetchUniqueResult(with(any(String.class)));
                 will(returnValue(testTarget));
 
-                oneOf(followedStreamViewMapperMock).execute(with(any(Long.class)));
-
                 oneOf(personMapperMock).addFollower(1L, 2L);
 
                 oneOf(addCachedMapperMock).execute(1L, 2L);
@@ -156,8 +138,7 @@ public class SetFollowingPersonStatusExecutionTest
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntAccount", "followingntaccount",
                 EntityType.PERSON, false, Follower.FollowerStatus.FOLLOWING);
         ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
-        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext =
-            new TaskHandlerActionContext<PrincipalActionContext>(
+        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext = new TaskHandlerActionContext<PrincipalActionContext>(
                 currentContext, new ArrayList<UserActionRequest>());
         sut.execute(currentTaskHandlerActionContext);
 
@@ -190,13 +171,9 @@ public class SetFollowingPersonStatusExecutionTest
                 oneOf(peopleByAccountIdsMapperMock).fetchUniqueResult(with(any(String.class)));
                 will(returnValue(testTarget));
 
-                oneOf(followedStreamViewMapperMock).execute(with(any(Long.class)));
-
                 oneOf(personMapperMock).removeFollower(1L, 2L);
 
                 oneOf(removeCachedMapperMock).execute(1L, 2L);
-
-                oneOf(removeCachedActivitiesMapperMock).execute(with(any(RemoveCachedActivitiesFromListRequest.class)));
 
                 oneOf(followerIdsMapperMock).execute(2L);
                 will(returnValue(targetFollowerIds));
@@ -206,8 +183,7 @@ public class SetFollowingPersonStatusExecutionTest
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntAccount", "followingntaccount",
                 EntityType.PERSON, false, Follower.FollowerStatus.NOTFOLLOWING);
         ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
-        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext =
-            new TaskHandlerActionContext<PrincipalActionContext>(
+        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext = new TaskHandlerActionContext<PrincipalActionContext>(
                 currentContext, new ArrayList<UserActionRequest>());
         sut.execute(currentTaskHandlerActionContext);
 
@@ -240,8 +216,7 @@ public class SetFollowingPersonStatusExecutionTest
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntAccount", "followingntaccount",
                 EntityType.PERSON, false, Follower.FollowerStatus.FOLLOWING);
         ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
-        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext =
-            new TaskHandlerActionContext<PrincipalActionContext>(
+        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext = new TaskHandlerActionContext<PrincipalActionContext>(
                 currentContext, new ArrayList<UserActionRequest>());
         sut.execute(currentTaskHandlerActionContext);
 
@@ -274,8 +249,6 @@ public class SetFollowingPersonStatusExecutionTest
                 oneOf(peopleByAccountIdsMapperMock).fetchUniqueResult(with(any(String.class)));
                 will(returnValue(testTarget));
 
-                oneOf(followedStreamViewMapperMock).execute(with(any(Long.class)));
-
                 oneOf(followerIdsMapperMock).execute(2L);
                 will(returnValue(targetFollowerIds));
             }
@@ -284,8 +257,7 @@ public class SetFollowingPersonStatusExecutionTest
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntAccount", "followingntaccount",
                 EntityType.PERSON, false, Follower.FollowerStatus.NOTSPECIFIED);
         ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
-        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext =
-            new TaskHandlerActionContext<PrincipalActionContext>(
+        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext = new TaskHandlerActionContext<PrincipalActionContext>(
                 currentContext, new ArrayList<UserActionRequest>());
         sut.execute(currentTaskHandlerActionContext);
 

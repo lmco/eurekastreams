@@ -47,11 +47,6 @@ public class BulkActivitiesDbMapperTest extends MapperTest
     private static final long ACTIVITY_ID_2 = 6790;
 
     /**
-     * User id.
-     */
-    private static final String PERSON_ID = "smithers";
-
-    /**
      * Stream id.
      */
     private static final long DESTINATION_STREAM = 87433;
@@ -64,7 +59,7 @@ public class BulkActivitiesDbMapperTest extends MapperTest
 
     /**
      * Verifies that the activity returned when requesting ID 6789 is correct.
-     * 
+     *
      * @param activity
      *            The activity returned.
      */
@@ -92,7 +87,7 @@ public class BulkActivitiesDbMapperTest extends MapperTest
     {
         List<Long> list = new ArrayList<Long>();
         list.add(new Long(ACTIVITY_ID));
-        
+
         List<ActivityDTO> results = mapper.execute(list);
         assertEquals(1, results.size());
         verifyActivity6789(results.get(0));

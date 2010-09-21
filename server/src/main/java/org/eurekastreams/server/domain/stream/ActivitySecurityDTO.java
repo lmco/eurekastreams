@@ -38,36 +38,31 @@ public class ActivitySecurityDTO implements Serializable
     private Long id;
 
     /**
-     * Destination stream ID.
-     */
-    private Long destinationStreamId;
-
-    /**
      * Destination Entity ID.
      */
     private Long destinationEntityId;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inId
      *            the activity ID.
-     * @param inDestinationStreamId
-     *            the destination stream ID.
+     * @param inDestinationEntityId
+     *            the destination stream's entity ID.
      * @param inIsDestinationStreamPublic
      *            if the destination stream is public.
      */
-    public ActivitySecurityDTO(final Long inId, final Long inDestinationStreamId,
+    public ActivitySecurityDTO(final Long inId, final Long inDestinationEntityId,
             final Boolean inIsDestinationStreamPublic)
     {
         id = inId;
-        destinationStreamId = inDestinationStreamId;
+        destinationEntityId = inDestinationEntityId;
         isDestinationStreamPublic = inIsDestinationStreamPublic;
     }
 
     /**
      * Set if the destination stream is public.
-     * 
+     *
      * @param inIsDestinationStreamPublic
      *            the if destination stream is public.
      */
@@ -86,7 +81,7 @@ public class ActivitySecurityDTO implements Serializable
 
     /**
      * Set the destination entity ID.
-     * 
+     *
      * @param inDestinationEntityId
      *            the destination entity ID.
      */
@@ -104,27 +99,8 @@ public class ActivitySecurityDTO implements Serializable
     }
 
     /**
-     * Set the destination stream ID.
-     * 
-     * @param inDestinationStreamId
-     *            the destination stream ID.
-     */
-    public void setDestinationStreamId(final Long inDestinationStreamId)
-    {
-        this.destinationStreamId = inDestinationStreamId;
-    }
-
-    /**
-     * @return the destination stream ID.
-     */
-    public Long getDestinationStreamId()
-    {
-        return destinationStreamId;
-    }
-
-    /**
      * Set the activity ID.
-     * 
+     *
      * @param inId
      *            the id.
      */

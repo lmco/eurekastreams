@@ -43,11 +43,6 @@ public class GroupStreamDTO implements Serializable, StreamFilter
     private String name;
 
     /**
-     * The streamView associated with the group.
-     */
-    private StreamView streamView;
-
-    /**
      * The id of the stream for the group.
      */
     private long streamId;
@@ -59,27 +54,24 @@ public class GroupStreamDTO implements Serializable, StreamFilter
 
     /**
      * Constructor.
-     * 
+     *
      * @param inId
      *            the id to set.
      * @param inName
      *            the name to set.
      * @param inShortName
      *            the shortName to set.
-     * @param inStreamView
-     *            the streamView to set.
      * @param inStreamId
      *            the streamId to set.
      * @param inIsPostable
      *            if the stream can have activities posted to it.
      */
     public GroupStreamDTO(final long inId, final String inName, final String inShortName,
-            final StreamView inStreamView, final long inStreamId, final boolean inIsPostable)
+            final long inStreamId, final boolean inIsPostable)
     {
         id = inId;
         shortName = inShortName;
         name = inName;
-        streamView = inStreamView;
         streamId = inStreamId;
         isPostable = inIsPostable;
     }
@@ -143,23 +135,6 @@ public class GroupStreamDTO implements Serializable, StreamFilter
     public void setShortName(final String inShortName)
     {
         shortName = inShortName;
-    }
-
-    /**
-     * @return the streamView
-     */
-    public StreamView getStreamView()
-    {
-        return streamView;
-    }
-
-    /**
-     * @param inStreamView
-     *            the streamView to set
-     */
-    public void setStreamView(final StreamView inStreamView)
-    {
-        streamView = inStreamView;
     }
 
     /**

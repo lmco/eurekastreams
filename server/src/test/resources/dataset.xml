@@ -6,47 +6,6 @@
 	<HashTag id="4" content="#java" version="1" />
 	<HashTag id="5" content="#soda" version="1" />
 
-	<StreamView id="5000" version="0" name="Following" type="PEOPLEFOLLOW"/>
-	<StreamView id="5001" version="0" name="ParentOrg" type="PARENTORG"/>
-	<StreamView id="5002" version="0" name="Everyone" type="EVERYONE"/>
-	<StreamView id="5003" version="0" name="Starred" type="STARRED"/>
-		
-	<StreamView id="4896" version="1117" name="Someone" />
-	
-	<!-- Org StreamViews -->	
-	<StreamView id="1" version="1117" name="TstOrgName" />
-	<StreamView id="2" version="1117" name="Child1OrgName" />
-	<StreamView id="3" version="1117" name="Child2OrgName" />
-	
-	<!-- Person StreamViews -->
-	<StreamView id="4" version="1117" name="smithers" />
-	<StreamView id="5" version="1117" name="fordp" />
-	<StreamView id="6" version="1117" name="fordp2" />
-	<StreamView id="7" version="1117" name="csagan" />
-	<StreamView id="8" version="1117" name="mrburns" />
-	
-	<!-- DomainGroup StreamViews -->
-	<StreamView id="9"  name="group1" version="1" />
-	<StreamView id="10" name="group2" version="1" />
-	<StreamView id="11" name="group3" version="1" />
-	<StreamView id="12" name="group4" version="1" />
-	<StreamView id="13" name="group5" version="1" />
-	<StreamView id="14" name="pendinggroup" version="1" />
-	<StreamView id="15" name="pendinggroup2" version="1" />
-	<StreamView id="16" name="pendinggroup3" version="1" />
-	
-	<!-- Custom StreamViews -->
-	<StreamView id="17" version="1117" name="smithers custom compositeStream" />
-	<StreamView id="18" version="1117" name="orphaned compositeStream" />
-	<StreamView id="19" version="1117" name="non-orphaned compositeStream" />
-			
-	<StreamSearch id="1" version="0" streamview_id="5002"
-		name="streamSearch1" />
-	<StreamSearch id="2" version="0" streamview_id="4896"
-		name="streamSearch2" />
-	<StreamSearch id="3" version="0" streamview_id="19"
-		name="something" />
-
 	<Stream id="1" version="0" readonly="true" name="everyone" request="{ query : {} }" />
 	<Stream id="2" version="0" readonly="false" name="my search" request="{ query : { keywords : 'search'} }" />
 
@@ -194,62 +153,27 @@
 	<StreamScope id="347" scopeType="PERSONS_PARENT_ORGANIZATION" uniqueKey="fordp" version="1" />
 	<StreamScope id="3452" scopeType="PERSONS_FOLLOWED_STREAMS" uniqueKey="fordp" version="1" />
 	
-	<!-- StreamView_StreamScope associations for core -->
-    <StreamView_StreamScope StreamView_id="5000" includedScopes_id="50000" />
-    <StreamView_StreamScope StreamView_id="5001" includedScopes_id="50001" />
-    <StreamView_StreamScope StreamView_id="5002" includedScopes_id="50002" />
-    <StreamView_StreamScope StreamView_id="5003" includedScopes_id="50003" />
-    	
-	<!-- StreamView_StreamScope associations for orgs -->
-	<StreamView_StreamScope StreamView_id="1" includedScopes_id="837433" />
-	<StreamView_StreamScope StreamView_id="2" includedScopes_id="8374533" />
-	<StreamView_StreamScope StreamView_id="3" includedScopes_id="9374533" />
-	
-	<!-- StreamView_StreamScope associations for people -->
-	<StreamView_StreamScope StreamView_id="4" includedScopes_id="87433" />
-	<StreamView_StreamScope StreamView_id="5" includedScopes_id="1" />
-	<StreamView_StreamScope StreamView_id="6" includedScopes_id="2" />
-	<StreamView_StreamScope StreamView_id="7" includedScopes_id="3" />
-	<StreamView_StreamScope StreamView_id="8" includedScopes_id="4" />
-	
-	<!-- StreamView_StreamScope associations for domainGroups -->
-	<StreamView_StreamScope StreamView_id="9" includedScopes_id="874" />
-	<StreamView_StreamScope StreamView_id="10" includedScopes_id="875" />
-	<StreamView_StreamScope StreamView_id="11" includedScopes_id="876" />
-	<StreamView_StreamScope StreamView_id="12" includedScopes_id="877" />
-	<StreamView_StreamScope StreamView_id="13" includedScopes_id="878" />
-	<StreamView_StreamScope StreamView_id="14" includedScopes_id="879" />
-	<StreamView_StreamScope StreamView_id="15" includedScopes_id="880" />
-	<StreamView_StreamScope StreamView_id="16" includedScopes_id="881" />
-	
-	<StreamView_StreamScope StreamView_id="17" includedScopes_id="87433" />
-	<StreamView_StreamScope StreamView_id="18" includedScopes_id="87433" />
-	<StreamView_StreamScope StreamView_id="19" includedScopes_id="87433" />
-
 	<Organization id="5" version="1" description="Mission Statement"
 		name="Test Organization Name" allUsersCanCreateGroups="true"
 		shortName="tstorgname" url="http://www.TestOrganizationName.com"
 		parentOrganizationId="5" 
 		childOrganizationCount="2" descendantGroupCount="5"
 		descendantEmployeeCount="2" employeeFollowerCount="0" bannerId="Foo"
-		updatesCount="6" streamScopeId="837433"
-		entityStreamViewId="1"/>
+		updatesCount="6" streamScopeId="837433" />
 	<Organization id="6" version="1" description="Child 1 Mission Statement"
 		name="Child 1 Organization Name" allUsersCanCreateGroups="false"
 		shortName="child1orgname" url="http://www.Child_1_OrganizationName.com"
 		parentOrganizationId="5" 
 		childOrganizationCount="0" descendantGroupCount="0"
 		descendantEmployeeCount="0" employeeFollowerCount="2" bannerId="Bar"
-		updatesCount="61" streamScopeId="8374533"
-		entityStreamViewId="2"/>
+		updatesCount="61" streamScopeId="8374533" />
 	<Organization id="7" version="1" description="Child_2_Mission Statement"
 		name="Child 2 Organization Name" allUsersCanCreateGroups="true"
 		shortName="child2orgname" url="http://www.Child_2_OrganizationName.com"
 		parentOrganizationId="5" 
 		childOrganizationCount="0" descendantGroupCount="2"
 		descendantEmployeeCount="0" employeeFollowerCount="0"
-		updatesCount="51" streamScopeId="9374533"
-		entityStreamViewId="3"/>
+		updatesCount="51" streamScopeId="9374533" />
 	<!--
 		I want to set up orgs so that getChildOrganizations() returns a
 		different result from getDescendantOrganizations(), but when I set Org

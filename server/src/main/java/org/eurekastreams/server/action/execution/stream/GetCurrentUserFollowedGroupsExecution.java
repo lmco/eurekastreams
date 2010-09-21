@@ -26,9 +26,7 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.stream.GroupStreamDTO;
 import org.eurekastreams.server.domain.stream.StreamFilter;
-import org.eurekastreams.server.domain.stream.StreamView;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
-import org.eurekastreams.server.persistence.mappers.stream.BulkCompositeStreamsMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetFollowedGroupIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
@@ -57,11 +55,6 @@ public class GetCurrentUserFollowedGroupsExecution implements ExecutionStrategy<
     private GetDomainGroupsByIds groupsMapper;
 
     /**
-     * Mapper to get the compositeStream (a.k.a. streamView) by id.
-     */
-    private BulkCompositeStreamsMapper streamMapper;
-
-    /**
      * Mapper to get people.
      */
     private GetPeopleByIds peopleMapper;
@@ -73,7 +66,7 @@ public class GetCurrentUserFollowedGroupsExecution implements ExecutionStrategy<
 
     /**
      * Constructor.
-     * 
+     *
      * @param inIdsMapper
      *            ids mapper to set.
      * @param inGroupsMapper
@@ -86,13 +79,11 @@ public class GetCurrentUserFollowedGroupsExecution implements ExecutionStrategy<
      *            Group permission checker.
      */
     public GetCurrentUserFollowedGroupsExecution(final GetFollowedGroupIds inIdsMapper,
-            final GetDomainGroupsByIds inGroupsMapper, final BulkCompositeStreamsMapper inStreamMapper,
-            final GetPeopleByIds inPeopleMapper,
+            final GetDomainGroupsByIds inGroupsMapper, final GetPeopleByIds inPeopleMapper,
             final GetAllPersonIdsWhoHaveGroupCoordinatorAccess inGroupPermissionChecker)
     {
         idsMapper = inIdsMapper;
         groupsMapper = inGroupsMapper;
-        streamMapper = inStreamMapper;
         peopleMapper = inPeopleMapper;
         groupPermissionsChecker = inGroupPermissionChecker;
     }
@@ -116,9 +107,6 @@ public class GetCurrentUserFollowedGroupsExecution implements ExecutionStrategy<
         List<StreamFilter> groupStreams = new ArrayList<StreamFilter>();
         for (DomainGroupModelView group : followedGroups)
         {
-            StreamView streamView = // \n
-            (StreamView) streamMapper.execute(Arrays.asList(group.getCompositeStreamId())).get(0);
-
             boolean isStreamPostable = group.isStreamPostable();
 
             // if stream is marked as not postable, check if user has group coordinator access and
@@ -126,9 +114,8 @@ public class GetCurrentUserFollowedGroupsExecution implements ExecutionStrategy<
             isStreamPostable = isStreamPostable ? isStreamPostable : groupPermissionsChecker
                     .hasGroupCoordinatorAccessRecursively(userEntityId, group.getEntityId());
 
-            streamView.setName(group.getName());
-            groupStreams.add(new GroupStreamDTO(group.getEntityId(), group.getName(), group.getShortName(), streamView,
-                    group.getStreamId(), isStreamPostable));
+            groupStreams.add(new GroupStreamDTO(group.getEntityId(), group.getName(), group.getShortName(), group
+                    .getStreamId(), isStreamPostable));
 
             if (log.isInfoEnabled())
             {

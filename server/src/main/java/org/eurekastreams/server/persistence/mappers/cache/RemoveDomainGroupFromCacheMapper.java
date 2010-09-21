@@ -52,7 +52,7 @@ public class RemoveDomainGroupFromCacheMapper extends CachedDomainMapper
                     + inGroup.getShortName());
         }
         StreamScope groupScope = inGroup.getStreamScope();
-        getCache().delete(CacheKeys.STREAM_BY_ID + groupScope.getId());
+
         if (log.isInfoEnabled())
         {
             log.info("StreamScope for group with id: " + inGroup.getId() + ", stream scope id: " + groupScope.getId()

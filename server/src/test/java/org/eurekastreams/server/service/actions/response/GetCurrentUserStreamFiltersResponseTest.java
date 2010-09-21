@@ -20,26 +20,23 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import org.eurekastreams.server.domain.stream.StreamView;
+import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.junit.Test;
 
 /**
  * Test for GetCurrentUserStreamViewsResponse.
- *
  */
 public class GetCurrentUserStreamFiltersResponseTest
 {
     /**
      * Test constructor and getters.
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testGetters()
     {
         GetCurrentUserStreamFiltersResponse sut =
-            new GetCurrentUserStreamFiltersResponse(new Integer(1), (List) new ArrayList<StreamView>());
+            new GetCurrentUserStreamFiltersResponse(new Integer(1), new ArrayList<StreamFilter>());
         assertEquals(1, sut.getHiddenLineIndex().intValue());
         assertNotNull(sut.getStreamFilters());
 
@@ -49,5 +46,4 @@ public class GetCurrentUserStreamFiltersResponseTest
         assertEquals(5, sut.getHiddenLineIndex().intValue());
         assertNull(sut.getStreamFilters());
     }
-
 }
