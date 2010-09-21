@@ -108,12 +108,12 @@ public class PagedListPanel extends FlowPanel
      * Flag indicating processing of initial panel view.
      */
     private boolean processingInitial = false;
-    
+
     /**
      * Flag indicating processing of a browser back button click.
      */
     private boolean processingBack = false;
-    
+
     /**
      * Flag indicating processing of initial panel view initiated from a browser back button click.
      */
@@ -230,8 +230,10 @@ public class PagedListPanel extends FlowPanel
                             currentSortKey = event.getSortKey();
                             startIndex = null;
 
+                            // TODO - put pager history handling into Pager class
+
                             // reset the pager settings if the view or sort has changed
-                            if (jumpToFilter != currentFilter || jumpToSort != currentSortKey)
+                            if (hasSortOrFilterChanged())
                             {
                                 jumpToStart = null;
                                 jumpToEnd = null;
@@ -248,18 +250,23 @@ public class PagedListPanel extends FlowPanel
                                 Session.getInstance().getEventBus().notifyObservers(new PagerUpdatedEvent(bottomPager));
                             }
 
-                            String nameFromUrl = Session.getInstance().getParameterValue("name");
-                            String sortFromUrl = Session.getInstance().getParameterValue("sort");
-
-                            HashMap<String, String> params = new HashMap<String, String>();
-                            params.put("name", currentFilter);
-                            params.put("sort", currentSortKey);
-                            params.put("listId", listId);
-
                             if (!processingDefaultOnBack && (!processingInitial || processingBack)
-                                    && (nameFromUrl != "undefined" && !nameFromUrl.equals(currentFilter))
-                                    && (sortFromUrl != "undefined" && !sortFromUrl.equals(currentSortKey)))
+                                    && hasSortOrFilterChanged())
                             {
+                                HashMap<String, String> params = new HashMap<String, String>();
+                                params.put("name", currentFilter);
+                                params.put("sort", currentSortKey);
+                                params.put("listId", listId);
+
+                                if (jumpToStart == null)
+                                {
+                                    params.put("startIndex", "0");
+                                }
+                                if (jumpToEnd == null)
+                                {
+                                    params.put("endIndex", "9");
+                                }
+
                                 Session.getInstance().getEventBus().notifyObservers(
                                         new UpdateHistoryEvent(new CreateUrlRequest(params, false)));
                             }
@@ -315,6 +322,19 @@ public class PagedListPanel extends FlowPanel
         FlowPanel clear = new FlowPanel();
         clear.addStyleName("clear");
         this.add(clear);
+    }
+
+    /**
+     * Helper method to isolate complex logic determining if filter or sort has been updated.
+     * 
+     * @return true if either sort or filter history tokens have been changed.
+     */
+    private boolean hasSortOrFilterChanged()
+    {
+        String nameFromUrl = Session.getInstance().getParameterValue("name");
+        String sortFromUrl = Session.getInstance().getParameterValue("sort");
+        return (nameFromUrl != "undefined" && !nameFromUrl.equals(currentFilter))
+                || (currentSortKey != "" && !sortFromUrl.equals(currentSortKey));
     }
 
     /**
