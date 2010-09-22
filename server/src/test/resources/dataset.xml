@@ -199,7 +199,7 @@
 		openSocialId="2d359911-0977-418a-9490-57e8252b1a42" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="1" streamScopeId="1"
 		streamSearchHiddenLineIndex="2" commentable="true" streamPostable="true" accountlocked="false"
-		entityStreamViewId="5" groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
+		groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
 	<Person id="142" version="1117" accountId="fordp2" firstName="Ford"
 		middleName="X" lastName="Prefect" preferredName="Volgon-Vwatter"
 		email="vswatter@gmail.com" workPhone="6105551212" title="towel carrier"
@@ -209,7 +209,7 @@
 		openSocialId="2d359911-0977-418a-9490-57e8252b1142" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="2"
 		streamSearchHiddenLineIndex="2" commentable="true" streamPostable="false" accountlocked="false"
-		entityStreamViewId="6" groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
+		groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
 		
 		
 	<Person_Stream personid="42" streamid="1" streamIndex="1" />
@@ -225,26 +225,6 @@
 	<FeedSubscriber id="8" version="1" feedId="1" entityId="8" type="GROUP" requestorId="42" />
 	<FeedSubscriber id="9" version="1" feedId="2" entityId="8" type="GROUP" requestorId="42" />
 	<FeedSubscriber id="10" version="1" feedId="3" entityId="6" type="GROUP" requestorId="42" />
-
-	<Person_StreamView person_Id="42" streamViews_Id="5002"
-		streamviewindex="0" />
-	<Person_StreamView person_Id="42" streamViews_Id="4896"
-		streamviewindex="1" />
-		
-	<!-- add EVERYONE compositeStream to smithers collection of compositeStreams -->
-	<Person_StreamView person_Id="98" streamViews_Id="5002"
-		streamviewindex="0" />
-	<Person_StreamView person_Id="98" streamViews_Id="17"
-		streamviewindex="1" />
-
-	<Person_StreamSearch person_Id="42"
-		streamSearches_Id="1" streamSearchindex="0" />
-	<Person_StreamSearch person_Id="42"
-		streamSearches_Id="2" streamSearchindex="1" />
-		
-	
-	<Person_StreamSearch person_Id="142" streamSearches_Id="3" streamSearchindex="0" />
-	<Person_StreamSearch person_Id="142" streamSearches_Id="2" streamSearchindex="1" />
 
 	<Person_RelatedOrganization personId="42"
 		organizationId="5" />
@@ -422,7 +402,7 @@
 		openSocialId="2d359911-0977-418a-9490-57e8252b4507" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="3" 
 		streamSearchHiddenLineIndex="2" commentable="true" streamPostable="true" accountlocked="false"
-		entityStreamViewId="7" groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
+		groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
 		
 	<Person_RelatedOrganization personId="4507" organizationId="7" />
 
@@ -435,7 +415,7 @@
 		openSocialId="2d359911-0977-418a-9490-57e8252b1a98" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="87433" 
 		streamSearchHiddenLineIndex="2" commentable="true" streamPostable="true" accountlocked="false"
-		entityStreamViewId="4" groupstreamhiddenlineindex="3" optOutVideoIds="6;"/>
+		groupstreamhiddenlineindex="3" optOutVideoIds="6;"/>
 
 	<Person id="99" version="5" accountId="mrburns" firstName="Monty"
 		middleName="Mr." lastName="Burns" preferredName="Mr.Burns" email="mrburns@gmail.com"
@@ -446,7 +426,7 @@
 		openSocialId="2d359911-0977-418a-9490-57e8252b1a99" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="4" 
 		streamSearchHiddenLineIndex="2" commentable="true" streamPostable="true" accountlocked="false"
-		entityStreamViewId="8" groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
+		groupstreamhiddenlineindex="3" optOutVideoIds="5;"/>
 
     <NotificationFilterPreference version="1" personId="99" notifierType="email" notificationCategory="COMMENT" />
 
@@ -528,7 +508,6 @@
 		followersCount="3" parentOrganizationId="7"
 		dateAdded="2009-02-01 05:54:54" isPending="false" 
 		createdById="42" streamScopeId="874" commentable="true" streamPostable="true"
-		entityStreamViewId="9"
 		suppressPostNotifToMember="false" suppressPostNotifToCoordinator="false" />
 
 	<DomainGroup id="2" version="1" description="Group_2_Mission Statement"
@@ -536,7 +515,6 @@
 		followersCount="1" parentOrganizationId="7" 
 		dateAdded="2009-01-01 05:54:54" isPending="false" 
 		createdById="42" streamScopeId="875" commentable="true" streamPostable="true"
-		entityStreamViewId="10"
 		suppressPostNotifToMember="false" suppressPostNotifToCoordinator="false" />
 
 	<DomainGroup id="3" version="1" description="Group_3_Mission Statement"
@@ -544,7 +522,6 @@
 		followersCount="10" parentOrganizationId="6" 
 		dateAdded="2009-04-01 05:54:54" isPending="false" 
 		createdById="42" streamScopeId="876" commentable="true" streamPostable="true"
-		entityStreamViewId="11"
 		suppressPostNotifToMember="false" suppressPostNotifToCoordinator="false" />
 
 	<DomainGroup id="4" version="1" description="Group_4_Mission Statement"
@@ -552,7 +529,6 @@
 		followersCount="1" parentOrganizationId="6" 
 		dateAdded="2009-05-01 05:54:54" isPending="false" 
 		createdById="42" streamScopeId="877" commentable="true" streamPostable="true"
-		entityStreamViewId="12"
 		suppressPostNotifToMember="false" suppressPostNotifToCoordinator="false" />
 
 	<DomainGroup id="5" version="1" description="Group_5_Mission Statement"
@@ -560,7 +536,6 @@
 		followersCount="0" parentOrganizationId="5" 
 		dateAdded="2008-01-01 05:54:54" isPending="false" 
 		createdById="42" streamScopeId="878"  commentable="true" streamPostable="true"
-		entityStreamViewId="13"
 		suppressPostNotifToMember="false" suppressPostNotifToCoordinator="false" />
 
 	<DomainGroup id="6" version="1" description="Group_6_Mission Statement"
@@ -568,7 +543,6 @@
 		followersCount="0" parentOrganizationId="5" 
 		dateAdded="2008-01-01 05:54:54" isPending="true" 
 		createdById="42" streamScopeId="879" commentable="true" streamPostable="true"
-		entityStreamViewId="14"
 		suppressPostNotifToMember="false" suppressPostNotifToCoordinator="false" />
 		
 	<DomainGroup id="7" version="1" description="Group_7_Mission Statement"
@@ -576,7 +550,6 @@
 		followersCount="0" parentOrganizationId="6" 
 		dateAdded="2008-01-01 05:54:55" isPending="true" 
 		createdById="42" streamScopeId="880" commentable="true" streamPostable="true"
-		entityStreamViewId="15"
 		suppressPostNotifToMember="false" suppressPostNotifToCoordinator="false" />
 		
 	<DomainGroup id="8" version="1" description="Group_8_Mission Statement"
@@ -584,7 +557,6 @@
 		followersCount="0" parentOrganizationId="5" 
 		dateAdded="2008-01-01 05:54:56" isPending="true" 
 		createdById="4507" streamScopeId="881" commentable="true" streamPostable="true"
-		entityStreamViewId="16"
 		suppressPostNotifToMember="false" suppressPostNotifToCoordinator="false" />
 	
 
@@ -776,44 +748,7 @@
 		domain="domain3" issueTime="2009-09-14 09:11:36.157" oauthVersion="1.0" token="token3"
 		tokenSecret="tokensecret3" type="REQUEST" userId=""  callbackUrlSigned="true"/>
 		
-	
 
-	<!-- StreamView 883 has one scope - messages posted to group1's wall -->
-	<StreamView id="883" name="Group 1 Posts" version="1" />	
-	<StreamView_StreamScope StreamView_id="883" includedScopes_id="874" />
-
-	<!-- StreamView 938 has one scope - messages posted on smithers' wall-->
-	<StreamView id="938" name="Posts on Monty's Wall" version="1" />	
-	<StreamView_StreamScope StreamView_id="938" includedScopes_id="87433" />
-
-    <!-- StreamView 187 has one scope - messages posted on mrburns' wall-->
-    <StreamView id="187" name="Posts on Burns' Wall" version="1" />    
-    <StreamView_StreamScope StreamView_id="187" includedScopes_id="4" />
-    
-	<!-- StreamView 9383 has one scope - anything under org 5 -->
-	<StreamView id="9383" name="Posts under org 5" version="1" />	
-	<StreamView_StreamScope StreamView_id="9383" includedScopes_id="837433" />
-
-	<!-- StreamView 93833 has one scope - anything under org 6 -->
-	<StreamView id="93833" name="Posts under org 6" version="1" />	
-	<StreamView_StreamScope StreamView_id="93833" includedScopes_id="8374533" />
-
-	<!-- StreamView 913833 has one scope - anything under org 7 -->
-	<StreamView id="913833" name="Posts under org 7" version="1" />	
-	<StreamView_StreamScope StreamView_id="913833" includedScopes_id="9374533" />
-
-	<StreamView id="382" name="heyNow" version="1" />	
-	<StreamView_StreamScope StreamView_id="382" includedScopes_id="837433" />
-	<StreamView_StreamScope StreamView_id="382" includedScopes_id="874" />
-	<StreamView_StreamScope StreamView_id="382" includedScopes_id="347" />
-
-	<StreamView id="400" name="heyNow" version="1" />
-	<StreamView_StreamScope StreamView_id="400" includedScopes_id="837433" />
-	<StreamView_StreamScope StreamView_id="400" includedScopes_id="874" />
-
-	<StreamView id="401" name="People Ford's Following (none)" version="1" />	
-	<StreamView_StreamScope StreamView_id="401" includedScopes_id="3452" />
-		
 	<!-- Mr burns "stars" activity -->	
 	<StarredActivity personId="99" activityId="6789" />	
 	

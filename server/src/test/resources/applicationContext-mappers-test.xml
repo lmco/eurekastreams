@@ -298,52 +298,6 @@
 		<constructor-arg ref="testCache" />
 	</bean>
 
-	<bean id="compositeStreamActivityIdsMapper"
-		class="org.eurekastreams.server.persistence.mappers.stream.CompositeStreamActivityIdsMapper">
-		<constructor-arg ref="bulkCompositeStreamsMapper" />
-		<property name="compositeStreamLoaders">
-			<map>
-				<entry key="EVERYONE">
-					<bean class="org.eurekastreams.server.persistence.mappers.stream.CompositeStreamLoaderAll" >
-						<property name="cache" ref="testCache" />
-					</bean>
-				</entry>
-				<entry key="PARENTORG">
-					<bean
-						class="org.eurekastreams.server.persistence.mappers.stream.CompositeStreamLoaderParentOrg">
-						<constructor-arg ref="bulkPeopleMapper" />
-						<constructor-arg ref="bulkOrganizationsMapper" />
-						<property name="cache" ref="testCache" />
-						<property name="organizationHierarchyCache" ref="organizationHierarchyCache" />
-					</bean>
-				</entry>
-				<entry key="PEOPLEFOLLOW">
-					<bean
-						class="org.eurekastreams.server.persistence.mappers.stream.CompositeStreamLoaderFollowed">
-						<constructor-arg ref="bulkPeopleMapper" />
-						<constructor-arg ref="bulkDomainGroupsMapper" />
-						<constructor-arg ref="getFollowedPersonIds" />
-						<constructor-arg ref="getFollowedGroupIds" />
-						<property name="cache" ref="testCache" />
-					</bean>
-				</entry>
-				<entry key="STARRED">
-					<bean
-						class="org.eurekastreams.server.persistence.mappers.stream.CompositeStreamLoaderStarred">
-						<constructor-arg ref="getStarredActivityIds" />
-						<property name="cache" ref="testCache" />
-					</bean>
-				</entry>
-				<entry key="NOTSET">
-					<bean
-						class="org.eurekastreams.server.persistence.mappers.stream.CompositeStreamLoaderCustom">
-						<property name="cache" ref="testCache" />
-						<property name="organizationHierarchyCache" ref="organizationHierarchyCache" />
-					</bean>
-				</entry>
-			</map>
-		</property>
-	</bean>
 
 	<bean id="commentDeletePropertyStrategy"
 		class="org.eurekastreams.server.persistence.strategies.CommentDeletePropertyStrategy">
@@ -364,18 +318,6 @@
 	<bean id="personQueryStrategy" class="org.eurekastreams.server.persistence.strategies.PersonQueryStrategy" />
 	
 	<bean id="domainGroupQueryStrategy" class="org.eurekastreams.server.persistence.strategies.DomainGroupQueryStrategy" />
-
-	<bean id="addCachedCompositeStreamMapper"
-		class="org.eurekastreams.server.persistence.mappers.stream.AddCachedCompositeStream">
-		<constructor-arg ref="userCompositeStreamIdsMapper" />
-		<property name="cache" ref="testCache" />
-	</bean>
-
-	<bean id="addCachedCompositeStreamSearchMapper"
-		class="org.eurekastreams.server.persistence.mappers.stream.AddCachedCompositeStreamSearch">
-		<constructor-arg ref="userCompositeStreamSearchIdsMapper" />
-		<property name="cache" ref="testCache" />
-	</bean>
 
 	<bean id="deleteCachedCompositeStreamById"
 		class="org.eurekastreams.server.persistence.mappers.stream.DeleteCachedCompositeStreamById">
@@ -398,38 +340,10 @@
 		<property name="cache" ref="testCache" />
 	</bean>
 
-	<bean id="compositeStreamLoaderAll"
-		class="org.eurekastreams.server.persistence.mappers.stream.CompositeStreamLoaderAll">
-		<property name="cache" ref="testCache" />
-	</bean>
-
 	<bean id="compositeStreamLoaderStarred"
 		class="org.eurekastreams.server.persistence.mappers.stream.CompositeStreamLoaderStarred">
 		<constructor-arg ref="getStarredActivityIds" />
 		<property name="cache" ref="testCache" />
-	</bean>
-
-	<bean id="compositeStreamLoaderParentOrg"
-		class="org.eurekastreams.server.persistence.mappers.stream.CompositeStreamLoaderParentOrg">
-		<constructor-arg ref="bulkPeopleMapper" />
-		<constructor-arg ref="bulkOrganizationsMapper" />
-		<property name="organizationHierarchyCache" ref="organizationHierarchyCache"/>
-		<property name="cache" ref="testCache" />
-	</bean>
-
-	<bean id="compositeStreamLoaderFollowed"
-		class="org.eurekastreams.server.persistence.mappers.stream.CompositeStreamLoaderFollowed">
-		<constructor-arg ref="bulkPeopleMapper" />
-		<constructor-arg ref="bulkDomainGroupsMapper" />
-		<constructor-arg ref="getFollowedPersonIds" />
-		<constructor-arg ref="getFollowedGroupIds" />
-		<property name="cache" ref="testCache" />
-	</bean>
-
-	<bean id="compositeStreamLoaderCustom"
-		class="org.eurekastreams.server.persistence.mappers.stream.CompositeStreamLoaderCustom">
-		<property name="cache" ref="testCache" />
-		<property name="organizationHierarchyCache" ref="organizationHierarchyCache" />
 	</bean>
 
 	<bean id="getFollowedPersonIds"
@@ -506,21 +420,10 @@
 		<property name="cache" ref="testCache" />
 	</bean>
 
-	<bean id="bulkCompositeStreamsMapper"
-		class="org.eurekastreams.server.persistence.mappers.stream.BulkCompositeStreamsMapper">
-		<property name="cache" ref="testCache" />
-	</bean>
-
 	<bean id="userCompositeStreamSearchIdsMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.UserCompositeStreamSearchIdsMapper">
 		<property name="cache" ref="testCache" />
 	</bean>
-
-	<bean id="bulkCompositeStreamSearchesMapper"
-		class="org.eurekastreams.server.persistence.mappers.stream.BulkCompositeStreamSearchesMapper">
-		<property name="cache" ref="testCache" />
-	</bean>
-
 	<bean id="getFollowerIds"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds">
 		<property name="cache" ref="testCache" />
@@ -572,7 +475,6 @@
 		class="org.eurekastreams.server.persistence.mappers.stream.DeleteActivity">
 		<constructor-arg ref="bulkActivitiesMapper" />
 		<constructor-arg ref="userCompositeStreamIdsMapper" />
-		<constructor-arg ref="bulkCompositeStreamsMapper" />
 		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 		<constructor-arg ref="getOrderedCommentIdsByActivityId" />
@@ -592,7 +494,6 @@
         class="org.eurekastreams.server.persistence.mappers.cache.GetCompositeStreamIdsByAssociatedActivity">
         <constructor-arg ref="getFollowerIds" />
         <constructor-arg ref="getGroupFollowerIds" />
-        <constructor-arg ref="bulkCompositeStreamsMapper" />
         <constructor-arg ref="bulkPeopleByAccountIdMapper" />
         <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
         <constructor-arg ref="getRecursiveParentOrgIdsMapper" />
@@ -606,7 +507,6 @@
 		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
 		<constructor-arg ref="getRecursiveParentOrgIdsMapper" />
 		<constructor-arg ref="bulkOrganizationsMapper" />
-		<constructor-arg ref="bulkCompositeStreamsMapper" />
 		<constructor-arg ref="bulkOrganizationsByShortNameMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 		<property name="cache" ref="testCache" />
@@ -615,7 +515,6 @@
 	<bean id="postActivityUpdateStreamsByActorMapper"
 	   class="org.eurekastreams.server.persistence.mappers.cache.PostActivityUpdateStreamsByActorMapper">
 	   <constructor-arg ref="userCompositeStreamIdsMapper" />
-	   <constructor-arg ref="bulkCompositeStreamsMapper" />
 	   <constructor-arg ref="bulkPeopleByAccountIdMapper" />
 	   <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 	   <constructor-arg ref="bulkOrganizationsByShortNameMapper" />
@@ -672,7 +571,6 @@
 		class="org.eurekastreams.server.persistence.mappers.cache.StreamCacheLoader">
 		<property name="cache" ref="testCache" />
 		<constructor-arg ref="getStreamsByIds" />
-		<constructor-arg ref="compositeStreamActivityIdsMapper" />
 		<constructor-arg ref="followedActivityIdsLoader" />
 	</bean>
 	
@@ -687,22 +585,6 @@
         class="org.eurekastreams.server.persistence.mappers.stream.GetStreamByOwnerId">
         <constructor-arg value="GROUP" />
     </bean>
-    
-    <!-- Cache Mapper for adding cached user activity to cached list -->
-    <bean id="addCachedPersonActivityToList" 
-        class="org.eurekastreams.server.persistence.mappers.cache.AddCachedActivityToList">
-        <property name="cache" ref="testCache" />
-        <constructor-arg ref="compositeStreamActivityIdsMapper" />
-        <constructor-arg ref="bulkActivityMapperWithCache" />
-        <constructor-arg ref="getStreamByPersonOwnerId" />
-        <constructor-arg>
-            <bean class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
-              <property name="staticField">
-                <value>org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM</value>
-              </property>
-            </bean>
-        </constructor-arg>
-    </bean>    
     
     <bean id="getCompositeStreamById"
         class="org.eurekastreams.server.persistence.mappers.cache.GetCompositeStreamById">
