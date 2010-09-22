@@ -15,11 +15,19 @@
  */
 package org.eurekastreams.web.client.ui.pages.profile.tabs;
 
+import java.util.HashMap;
+
 import org.eurekastreams.server.domain.DomainGroup;
+import org.eurekastreams.server.domain.Page;
+import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.data.AuthorizeUpdateGroupResponseEvent;
+import org.eurekastreams.web.client.history.CreateUrlRequest;
+import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.BackgroundItemLinksPanel;
 
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Panel;
 
 /**
@@ -29,23 +37,38 @@ public class GroupProfileAboutTabPanel extends ProfileAboutTabPanel
 {
     /**
      * Constructor.
-     *
+     * 
      * @param group
      *            Group to display.
      */
     public GroupProfileAboutTabPanel(final DomainGroup group)
     {
-        final Panel overviewPanel = createTitledPanel("Overview");
-        final Panel keywordsPanel = createTitledPanel("Keywords");
+        final HashMap<String, String> basicInfoTabURL = new HashMap<String, String>();
+        basicInfoTabURL.put("tab", "Basic Info");
+
+        CreateUrlRequest target = new CreateUrlRequest(Page.GROUP_SETTINGS, group.getShortName());
+        target.setParameters(basicInfoTabURL);
+
+        Panel overviewPanel = createTitledPanel("Overview");
+        Panel keywordsPanel = createTitledPanel("Keywords");
+
+        final HTML noOverview = new HTML("An overview has not been added.");
+        final HTML noKeywords = new HTML("Keywords have not been added.");
+
+        final Hyperlink overviewHyperlink = new Hyperlink();
+        final Hyperlink keywordsHyperlink = new Hyperlink();
 
         addLeft(overviewPanel);
         addRight(keywordsPanel);
 
         if (group.getOverview() == null || group.getOverview().trim().isEmpty())
         {
-            Label none = new Label("No overview entered.");
-            none.addStyleName("profile-about-none-label");
-            overviewPanel.add(none);
+            overviewHyperlink.setText("Add an overview.");
+            overviewHyperlink.setTargetHistoryToken(Session.getInstance().generateUrl(target));
+            overviewHyperlink.setVisible(false);
+
+            overviewPanel.add(overviewHyperlink);
+            overviewPanel.add(noOverview);
         }
         else
         {
@@ -54,6 +77,38 @@ public class GroupProfileAboutTabPanel extends ProfileAboutTabPanel
             overviewPanel.add(overview);
         }
 
-        keywordsPanel.add(new BackgroundItemLinksPanel("keywords", group.getCapabilities()));
+        if (group.getCapabilities().isEmpty())
+        {
+            keywordsHyperlink.setText("Add keywords.");
+            keywordsHyperlink.setTargetHistoryToken(Session.getInstance().generateUrl(target));
+            keywordsHyperlink.setVisible(false);
+
+            keywordsPanel.add(keywordsHyperlink);
+            keywordsPanel.add(noKeywords);
+        }
+        else
+        {
+            keywordsPanel.add(new BackgroundItemLinksPanel("keywords", group.getCapabilities()));
+        }
+
+        // Shows the appropriate "add" links for group coordinators, if necessary.
+        final EventBus eventBus = Session.getInstance().getEventBus();
+        eventBus.addObserver(AuthorizeUpdateGroupResponseEvent.class, new Observer<AuthorizeUpdateGroupResponseEvent>()
+        {
+            public void update(final AuthorizeUpdateGroupResponseEvent event)
+            {
+                if (!overviewHyperlink.getText().isEmpty())
+                {
+                    overviewHyperlink.setVisible(true);
+                    noOverview.setVisible(false);
+                }
+
+                if (!keywordsHyperlink.getText().isEmpty())
+                {
+                    keywordsHyperlink.setVisible(true);
+                    noKeywords.setVisible(false);
+                }
+            }
+        });
     }
 }

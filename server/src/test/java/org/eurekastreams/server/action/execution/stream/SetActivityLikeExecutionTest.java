@@ -24,12 +24,16 @@ import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest;
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest.LikeActionType;
+import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.LikedActivity;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DeleteLikedActivity;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
+import org.eurekastreams.server.persistence.mappers.IndexEntity;
 import org.eurekastreams.server.persistence.mappers.InsertLikedActivity;
+import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -41,7 +45,7 @@ import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Test suite for the {@link SetActivityLikeExecution} class.
- *
+ * 
  */
 public class SetActivityLikeExecutionTest
 {
@@ -91,12 +95,23 @@ public class SetActivityLikeExecutionTest
     private DomainMapper<List<Long>, List<ActivityDTO>> activityMapper = context.mock(DomainMapper.class);
 
     /**
+     * Indexer mock.
+     */
+    private IndexEntity<Activity> activityIndexer = context.mock(IndexEntity.class);
+
+    /**
+     * Find Activity by id mock.
+     */
+    private FindByIdMapper<Activity> activityEntityMapper = context.mock(FindByIdMapper.class);
+
+    /**
      * Prepare the sut.
      */
     @Before
     public void setup()
     {
-        sut = new SetActivityLikeExecution(likeMapperMock, unlikeMapperMock, activityMapper);
+        sut = new SetActivityLikeExecution(likeMapperMock, unlikeMapperMock, activityMapper, activityIndexer,
+                activityEntityMapper);
     }
 
     /**
@@ -106,10 +121,12 @@ public class SetActivityLikeExecutionTest
     public void testAddLike()
     {
         final ActivityDTO activity = context.mock(ActivityDTO.class);
+        final Activity activityEntity = context.mock(Activity.class);
         final StreamEntityDTO actor = context.mock(StreamEntityDTO.class);
         final List<ActivityDTO> activities = Collections.singletonList(activity);
         final List<UserActionRequest> requests = new ArrayList<UserActionRequest>();
         final SetActivityLikeRequest currentRequest = new SetActivityLikeRequest(1L, LikeActionType.ADD_LIKE);
+        
         context.checking(new Expectations()
         {
             {
@@ -125,10 +142,8 @@ public class SetActivityLikeExecutionTest
                 allowing(actor).getId();
                 will(returnValue(1L));
 
-
                 oneOf(contextMock).getUserActionRequests();
                 will(returnValue(requests));
-
 
                 allowing(contextMock).getActionContext();
                 will(returnValue(principalActionContextMock));
@@ -143,6 +158,11 @@ public class SetActivityLikeExecutionTest
                 will(returnValue(5L));
 
                 oneOf(likeMapperMock).execute(with(any(LikedActivity.class)));
+
+                oneOf(activityEntityMapper).execute(with(any(FindByIdRequest.class)));
+                will(returnValue(activityEntity));
+                
+                oneOf(activityIndexer).execute(activityEntity);
             }
         });
 
@@ -156,12 +176,19 @@ public class SetActivityLikeExecutionTest
     @Test
     public void testRemoveLike()
     {
+        final ActivityDTO activity = context.mock(ActivityDTO.class);
+        final Activity activityEntity = context.mock(Activity.class);
+        final List<ActivityDTO> activities = Collections.singletonList(activity);
         final SetActivityLikeRequest currentRequest = new SetActivityLikeRequest(1L, LikeActionType.REMOVE_LIKE);
+        
         context.checking(new Expectations()
         {
             {
                 allowing(contextMock).getActionContext();
                 will(returnValue(principalActionContextMock));
+                
+                allowing(activity).getId();
+                will(returnValue(1L));
 
                 oneOf(principalActionContextMock).getPrincipal();
                 will(returnValue(principalMock));
@@ -171,11 +198,18 @@ public class SetActivityLikeExecutionTest
 
                 oneOf(principalMock).getId();
                 will(returnValue(5L));
+                
+                oneOf(activityMapper).execute(with(any(List.class)));
+                will(returnValue(activities));
 
                 oneOf(unlikeMapperMock).execute(with(any(LikedActivity.class)));
+
+                oneOf(activityEntityMapper).execute(with(any(FindByIdRequest.class)));
+                will(returnValue(activityEntity));
+                
+                oneOf(activityIndexer).execute(activityEntity);
             }
         });
-
 
         sut.execute(contextMock);
         context.assertIsSatisfied();

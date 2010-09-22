@@ -140,7 +140,7 @@ public class SearchContent extends FlowPanel
 
                         if (!init)
                         {
-                            searchResultsPanel.reload("All");
+                            searchResultsPanel.reload();
                         }
                         init = false;
                     }

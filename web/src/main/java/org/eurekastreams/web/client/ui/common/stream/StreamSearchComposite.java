@@ -93,6 +93,16 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
     private Label titleLbl = null;
 
     /**
+     * Title wrapper.
+     */
+    FlowPanel titleWrapper = new FlowPanel();
+    
+    /**
+     * Link for group stream titles.
+     */
+    Hyperlink titleLink = new Hyperlink();
+    
+    /**
      * In label.
      */
     private Label in = new Label(" in ");
@@ -133,12 +143,15 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
         fader.addStyleName("stream-title-fader");
         streamSearch.add(fader);
 
-        FlowPanel titleWrapper = new FlowPanel();
         titleWrapper.addStyleName("title-wrapper");
 
         titleLbl = new Label();
         titleLbl.addStyleName("title");
         titleWrapper.add(titleLbl);
+        
+        titleWrapper.add(titleLink);
+        titleLink.addStyleName("title");
+        titleLink.setVisible(false);
 
         streamSearch.add(titleWrapper);
 
@@ -264,6 +277,8 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
                         else
                         {
                             queryString += query.get(key).isString().stringValue() + "/";
+                            titleLbl.setVisible(true);
+                            titleLink.setVisible(false);
                         }
                     }
 
@@ -314,16 +329,35 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
     }
 
     /**
-     * Set the title text.
-     * 
+     * Set the title text, generating a hyperlink for group stream titles.
+     *
      * @param title
      *            the text.
+     * @param shortName
+     *            the short name key for this stream.
+     * @param makeLink
+     *            flag to indicate if the title should be a link.
      */
-    public void setTitleText(final String title)
+    public void setTitleText(final String title, final String shortName, final boolean makeLink)
     {
         titleLbl.setText(title);
         searchTerm.setVisible(true);
         searchGo.setVisible(true);
+        
+        if (makeLink)
+        {
+            String url = Session.getInstance().generateUrl(new CreateUrlRequest(Page.GROUPS, shortName));
+            titleLink.setTargetHistoryToken(url);
+            titleLink.setHTML(title);
+            
+            titleLbl.setVisible(false);
+            titleLink.setVisible(true);
+        }
+        else
+        {
+            titleLbl.setVisible(true);
+            titleLink.setVisible(false);
+        }
     }
 
     /**
