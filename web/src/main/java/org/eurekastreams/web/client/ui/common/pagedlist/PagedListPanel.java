@@ -408,12 +408,12 @@ public class PagedListPanel extends FlowPanel
     @SuppressWarnings("unchecked")
     public void refreshData()
     {
+        waitSpinner.setVisible(true);
         PageableRequest request = requests.get(currentFilter).get(currentSortKey);
         request.setStartIndex(startIndex);
         request.setEndIndex(endIndex);
         renderContainer.addStyleName("hidden");
         fetchers.get(currentFilter).fetch(request, false);
-        waitSpinner.setVisible(true);
     }
 
     /**
@@ -591,9 +591,9 @@ public class PagedListPanel extends FlowPanel
         }
         pageRenderer.render(renderContainer, render, items, noItemsMessage);
         renderContainer.removeStyleName("hidden");
-        waitSpinner.setVisible(false);
 
         bottomPager.setTotal(items.getTotal());
+        waitSpinner.setVisible(false);
     }
 
     /**
