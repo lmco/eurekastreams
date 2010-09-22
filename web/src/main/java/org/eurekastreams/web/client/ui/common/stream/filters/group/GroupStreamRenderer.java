@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.filters.group;
 
-import org.eurekastreams.server.action.request.stream.SetStreamFilterOrderRequest;
+import org.eurekastreams.server.action.request.stream.SetStreamOrderRequest;
 import org.eurekastreams.server.domain.stream.GroupStreamDTO;
 import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.eurekastreams.web.client.events.EventBus;
@@ -49,7 +49,7 @@ public class GroupStreamRenderer implements FilterRenderStrategy
      *
      * @return the model.
      */
-    public Reorderable<SetStreamFilterOrderRequest> getReorderableModel()
+    public Reorderable<SetStreamOrderRequest> getReorderableModel()
     {
         return GroupStreamListModel.getInstance();
     }

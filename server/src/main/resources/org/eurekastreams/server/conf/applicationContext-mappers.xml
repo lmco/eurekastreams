@@ -1042,6 +1042,11 @@
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 
+	<bean id="reorderStreams"
+		class="org.eurekastreams.server.persistence.mappers.stream.ReorderStreams">
+		<property name="cache" ref="memcachedCache" />
+	</bean>
+
 	<bean id="getStarredActivityIds"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetStarredActivityIds">
 		<property name="cache" ref="memcachedCache" />

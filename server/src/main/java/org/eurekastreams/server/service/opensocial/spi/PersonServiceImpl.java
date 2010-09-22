@@ -259,7 +259,7 @@ public class PersonServiceImpl implements PersonService
         osPerson.setDisplayName(inPerson.getPreferredName());
         osPerson.setId(inPerson.getOpenSocialId());
         osPerson.setAboutMe(inPerson.getBiography());
-        osPerson.setProfileUrl(containerBaseUrl + "/#profile/" + inPerson.getAccountId());
+        osPerson.setProfileUrl(containerBaseUrl + "/#people/" + inPerson.getAccountId());
         AvatarUrlGenerator generator = new AvatarUrlGenerator(EntityType.PERSON);
 
         osPerson.setThumbnailUrl(containerBaseUrl

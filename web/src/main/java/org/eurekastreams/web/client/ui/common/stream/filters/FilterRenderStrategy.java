@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.filters;
 
-import org.eurekastreams.server.action.request.stream.SetStreamFilterOrderRequest;
+import org.eurekastreams.server.action.request.stream.SetStreamOrderRequest;
 import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.eurekastreams.web.client.model.Reorderable;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
@@ -53,7 +53,7 @@ public interface FilterRenderStrategy
      *
      * @return the action key.
      */
-    Reorderable<SetStreamFilterOrderRequest> getReorderableModel();
+    Reorderable<SetStreamOrderRequest> getReorderableModel();
 
     /**
      * Gets the filter panel.
