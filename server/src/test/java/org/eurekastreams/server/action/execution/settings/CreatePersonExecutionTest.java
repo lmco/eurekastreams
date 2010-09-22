@@ -29,7 +29,8 @@ import org.eurekastreams.server.action.request.CreatePersonRequest;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.PersonMapper;
-import org.eurekastreams.server.persistence.mappers.db.GetOrganizationProxyById;
+import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
+import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.service.actions.strategies.UpdaterStrategy;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -37,9 +38,9 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
 /**
- * Test for CreatePersonExecution.
- * 
- */
+* Test for CreatePersonExecution.
+*
+*/
 public class CreatePersonExecutionTest
 {
     /** Used for mocking objects. */
@@ -51,64 +52,64 @@ public class CreatePersonExecutionTest
     };
 
     /**
-     * Persist resource action.
-     */
+* Persist resource action.
+*/
     private PersistResourceExecution<Person> persistResourceExecution = context.mock(PersistResourceExecution.class);
 
     /**
-     * Factory to create person.
-     */
+* Factory to create person.
+*/
     private CreatePersonActionFactory createPersonActionFactory = context.mock(CreatePersonActionFactory.class);
 
     /**
-     * Person mapper.
-     */
+* Person mapper.
+*/
     private PersonMapper personMapper = context.mock(PersonMapper.class);
 
     /**
-     * {@link GetOrganizationProxyById}.
-     */
-    private GetOrganizationProxyById getRootOrgProxyDAO = context.mock(GetOrganizationProxyById.class);
+* Mapper to find org by id.
+*/
+    private FindByIdMapper<Organization> findByIdMapper = context.mock(FindByIdMapper.class);
 
     /**
-     * {@link TaskHandlerActionContext}.
-     */
+* {@link TaskHandlerActionContext}.
+*/
     private TaskHandlerActionContext taskHandlerActionContext = context.mock(TaskHandlerActionContext.class);
 
     /**
-     * {@link ActionContext}.
-     */
+* {@link ActionContext}.
+*/
     private ActionContext actionContext = context.mock(ActionContext.class);
 
     /**
-     * {@link CreatePersonRequest}.
-     */
+* {@link CreatePersonRequest}.
+*/
     private CreatePersonRequest createRequest = context.mock(CreatePersonRequest.class);
 
     /**
-     * {@link Person}.
-     */
+* {@link Person}.
+*/
     private Person person = context.mock(Person.class);
 
     /**
-     * {@link Organization}.
-     */
+* {@link Organization}.
+*/
     private Organization organization = context.mock(Organization.class);
 
     /**
-     * Org id used in test.
-     */
+* Org id used in test.
+*/
     private Long orgId = 1L;
 
     /**
-     * System under test.
-     */
+* System under test.
+*/
     private CreatePersonExecution sut = new CreatePersonExecution(createPersonActionFactory, personMapper, "emailKey",
-            getRootOrgProxyDAO);
+            findByIdMapper);
 
     /**
-     * Test.
-     */
+* Test.
+*/
     @Test
     public void test()
     {
@@ -132,7 +133,7 @@ public class CreatePersonExecutionTest
 
                 allowing(person).getProperties(false);
 
-                allowing(getRootOrgProxyDAO).execute(orgId);
+                allowing(findByIdMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(organization));
 
                 allowing(createPersonActionFactory).getCreatePersonAction(with(any(PersonMapper.class)),
@@ -160,8 +161,8 @@ public class CreatePersonExecutionTest
     }
 
     /**
-     * Test.
-     */
+* Test.
+*/
     @Test
     public void testNoEmail()
     {
@@ -185,7 +186,7 @@ public class CreatePersonExecutionTest
 
                 allowing(person).getProperties(false);
 
-                allowing(getRootOrgProxyDAO).execute(orgId);
+                allowing(findByIdMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(organization));
 
                 allowing(createPersonActionFactory).getCreatePersonAction(with(any(PersonMapper.class)),
@@ -207,13 +208,13 @@ public class CreatePersonExecutionTest
     }
 
     /**
-     * Test.
-     */
+* Test.
+*/
     @Test
     public void testNullEmailActionKey()
     {
         CreatePersonExecution tempSut = new CreatePersonExecution(createPersonActionFactory, personMapper, null,
-                getRootOrgProxyDAO);
+                findByIdMapper);
 
         final List<UserActionRequest> list = new ArrayList<UserActionRequest>();
         context.checking(new Expectations()
@@ -235,7 +236,7 @@ public class CreatePersonExecutionTest
 
                 allowing(person).getProperties(false);
 
-                allowing(getRootOrgProxyDAO).execute(orgId);
+                allowing(findByIdMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(organization));
 
                 allowing(createPersonActionFactory).getCreatePersonAction(with(any(PersonMapper.class)),
@@ -257,13 +258,13 @@ public class CreatePersonExecutionTest
     }
 
     /**
-     * Test.
-     */
+* Test.
+*/
     @Test
     public void testEmptyEmailActionKey()
     {
         CreatePersonExecution tempSut = new CreatePersonExecution(createPersonActionFactory, personMapper, "",
-                getRootOrgProxyDAO);
+                findByIdMapper);
 
         final List<UserActionRequest> list = new ArrayList<UserActionRequest>();
         context.checking(new Expectations()
@@ -285,7 +286,7 @@ public class CreatePersonExecutionTest
 
                 allowing(person).getProperties(false);
 
-                allowing(getRootOrgProxyDAO).execute(orgId);
+                allowing(findByIdMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(organization));
 
                 allowing(createPersonActionFactory).getCreatePersonAction(with(any(PersonMapper.class)),
@@ -306,3 +307,4 @@ public class CreatePersonExecutionTest
         context.assertIsSatisfied();
     }
 }
+
