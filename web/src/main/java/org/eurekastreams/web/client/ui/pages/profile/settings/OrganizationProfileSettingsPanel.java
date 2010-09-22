@@ -18,11 +18,13 @@ package org.eurekastreams.web.client.ui.pages.profile.settings;
 import java.util.Set;
 
 import org.eurekastreams.commons.client.ActionProcessor;
+import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
@@ -32,6 +34,7 @@ import org.eurekastreams.web.client.events.data.AuthorizeUpdateOrganizationRespo
 import org.eurekastreams.web.client.events.data.GotOrganizationInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedOrganizationResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
+import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.OrganizationModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.SettingsPanel;
@@ -47,7 +50,12 @@ import org.eurekastreams.web.client.ui.common.form.elements.avatar.strategies.Av
 import org.eurekastreams.web.client.ui.common.form.elements.avatar.strategies.BannerUploadStrategy;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -64,6 +72,16 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
      * Maximum name length.
      */
     private static final int MAX_NAME = 50;
+
+    /**
+     * The delete-group button.
+     */
+    private Anchor deleteButton = new Anchor("");
+
+    /**
+     * The processing spinner.
+     */
+    private Label processingSpinny = new Label("Processing...");
 
     /**
      * Default constructor.
@@ -203,6 +221,62 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
 
         form.setOnCancelHistoryToken(Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.ORGANIZATIONS, entity.getShortName())));
+
+        if (Session.getInstance().getCurrentPersonRoles().contains(Role.ROOT_ORG_COORDINATOR))
+        {
+            deleteButton.addStyleName("form-delete-org-button");
+            deleteButton.addStyleName("form-button");
+
+            deleteButton.addClickHandler(new ClickHandler()
+            {
+                public void onClick(final ClickEvent event)
+                {
+                    if (new WidgetJSNIFacadeImpl().confirm("Are sure you want to delete this organization? "
+                            + "Deleting the organization will remove the profile from the system "
+                            + "and will move all employees reporting to this organization to it’s parent organization"))
+                    {
+                        processingSpinny.setVisible(true);
+                        deleteButton.setVisible(false);
+
+                        // TODO - should put this in OrganizationModel (and mark it as Deletable) but there's no
+                        // custom onFailure ability there yet.
+                        Session.getInstance().getActionProcessor().makeRequest(
+                                new ActionRequestImpl<String>("deleteOrganizationAction", entity.getId()),
+                                new AsyncCallback<String>()
+                                {
+                                    public void onSuccess(final String result)
+                                    {
+                                        // adds notification to top of page
+                                        Session.getInstance().getEventBus().notifyObservers(
+                                                new ShowNotificationEvent(new Notification("The organization '"
+                                                        + entity.getName() + "' has been deleted")));
+
+                                        // navigates away from settings page to the parent org profile page
+                                        Session.getInstance().getEventBus()
+                                                .notifyObservers(
+                                                        new UpdateHistoryEvent(new CreateUrlRequest(Page.ORGANIZATIONS,
+                                                                result)));
+                                    }
+
+                                    public void onFailure(final Throwable caught)
+                                    {
+                                        // adds notification to top of page
+                                        Session.getInstance().getEventBus().notifyObservers(
+                                                new ShowNotificationEvent(new Notification(
+                                                        "An error has occured and the organization '"
+                                                                + entity.getName() + "' was not deleted")));
+                                    }
+                                });
+                    }
+                }
+            });
+
+            form.addWidgetToFormContainer(deleteButton);
+
+            processingSpinny.setVisible(false);
+            processingSpinny.addStyleName("form-submit-spinny");
+            form.addWidgetToFormContainer(processingSpinny);
+        }
 
         panel.add(form);
     }

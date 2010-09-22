@@ -9314,6 +9314,21 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 	padding-top: 7px;
 }
 
+.form-delete-org-button a,a.form-delete-org-button {
+    background: transparent url(images/deleteOrgBtn.png) no-repeat;
+    width: 99px;
+    height: 26px;
+    margin-left: 100px;
+    margin-top: 20px;
+}
+
+.form-delete-org-button+.form-submit-spinny {
+    margin-left: 100px;
+    margin-top: 10px;
+    padding-left: 40px;
+    padding-top: 7px;
+}
+
 .deleteFollower {
 	margin-left: 70px;
 	margin-top: 6px;
