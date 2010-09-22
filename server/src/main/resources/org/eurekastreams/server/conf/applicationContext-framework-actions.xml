@@ -1309,8 +1309,12 @@
 		</constructor-arg>
 		<constructor-arg value="true" />
 	</bean>
+
+	<bean id="httpDocumentFetcher" class="org.eurekastreams.server.service.utility.http.HttpDocumentFetcherImpl" />
 	
-	<bean id="feedFetcher" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.BasicFeedFetcher" />
+	<bean id="feedFetcher" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.BasicFeedFetcher">
+		<constructor-arg ref="httpDocumentFetcher" />
+	</bean>
 	
 	<bean id="standardPluginFeedFetcher" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.BasicPluginFeedFetcher">
 		<constructor-arg ref="feedFetcher" />

@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
@@ -204,8 +206,9 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
         {
             // fetch the feeds
             // Gives the fetcher the feed and a list of the requestors; the fetcher will decide if it can make a single
-            // unauthenticated request or if it needs to make one request per requestor
-            List<String> requestorAccounts = new ArrayList<String>();
+            // unauthenticated request or if it needs to make one request per requestor. A set is used to prevent
+            // giving the fetcher any duplicates.
+            Set<String> requestorAccounts = new HashSet<String>();
             for (FeedSubscriber feedSubscriber : feed.getFeedSubscribers())
             {
                 requestorAccounts.add(feedSubscriber.getRequestor().getAccountId());
