@@ -76,7 +76,7 @@ public class DeleteOrganizationValidation implements ValidationStrategy<ActionCo
         if ((group + org + activity) != 0)
         {
             throw new ValidationException("Unable to delete organization. Related items still exist. Groups:" + group
-                    + " Orgs:" + org + "Group Activities:" + activity);
+                    + " Orgs:" + org + " Group Activities:" + activity);
         }
     }
 }
