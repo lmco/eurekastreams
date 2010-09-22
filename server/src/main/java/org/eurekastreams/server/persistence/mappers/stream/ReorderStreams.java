@@ -42,6 +42,7 @@ public class ReorderStreams extends CachedDomainMapper
      *            The user id to find followed groups for.
      * @param streams
      *            The newly ordered list of streams.
+     * @param newHiddenLineIndex the new hidden line index.
      */
     public void execute(final long userId, final List<Stream> streams, final int newHiddenLineIndex)
     {

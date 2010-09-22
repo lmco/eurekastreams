@@ -48,9 +48,11 @@ public class GetCurrentUsersStreamsExecution implements ExecutionStrategy<Princi
      * 
      * @param inGetUserStreamsMapper
      *            stream mapper.
+     * @param inPersonMapper
+     *            person mapper.
      */
     public GetCurrentUsersStreamsExecution(final DomainMapper<Long, List<StreamFilter>> inGetUserStreamsMapper,
-            FindByIdMapper<Person> inPersonMapper)
+            final FindByIdMapper<Person> inPersonMapper)
     {
         getUserStreamsMapper = inGetUserStreamsMapper;
         personMapper = inPersonMapper;

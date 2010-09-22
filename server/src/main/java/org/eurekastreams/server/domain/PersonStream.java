@@ -136,11 +136,19 @@ public class PersonStream extends LightEntity implements Serializable
             personId = inPersonId;
         }
 
+        /** 
+         * Get the stream id.
+         * @return the stream id.
+         */
         public long getStreamId()
         {
             return streamId;
         }
 
+        /** 
+         * Get the person id.
+         * @return the person id.
+         */
         public long getPersonId()
         {
             return personId;
