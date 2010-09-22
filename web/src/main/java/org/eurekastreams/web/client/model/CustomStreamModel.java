@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.eurekastreams.server.action.request.stream.SetStreamFilterOrderRequest;
+import org.eurekastreams.server.action.request.stream.SetStreamOrderRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamFilter;
@@ -42,7 +42,7 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class CustomStreamModel extends BaseModel implements Fetchable<Serializable>,
         Insertable<HashMap<String, Serializable>>, Updateable<HashMap<String, Serializable>>, Deletable<Stream>,
-        Reorderable<SetStreamFilterOrderRequest>
+        Reorderable<SetStreamOrderRequest>
 {
     /**
      * Singleton.
@@ -64,13 +64,12 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
      */
     public void fetch(final Serializable request, final boolean useClientCacheIfAvailable)
     {
-        super.callReadAction("getCurrentUsersStreams", request, new OnSuccessCommand<ArrayList<StreamFilter>>()
+        super.callReadAction("getCurrentUsersStreams", request, new OnSuccessCommand<GetCurrentUserStreamFiltersResponse>()
         {
-            public void onSuccess(final ArrayList<StreamFilter> streams)
+            public void onSuccess(final GetCurrentUserStreamFiltersResponse response)
             {
                 Session.getInstance().getEventBus().notifyObservers(
-                        new GotCurrentUserCustomStreamsResponseEvent(
-                                new GetCurrentUserStreamFiltersResponse(1, streams)));
+                        new GotCurrentUserCustomStreamsResponseEvent(response));
             }
         }, useClientCacheIfAvailable);
     }
@@ -178,8 +177,8 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
     /**
      * {@inheritDoc}
      */
-    public void reorder(final SetStreamFilterOrderRequest request)
+    public void reorder(final SetStreamOrderRequest request)
     {
-        super.callWriteAction("setStreamViewOrder", request, null);
+        super.callWriteAction("setStreamOrder", request, null);
     }
 }

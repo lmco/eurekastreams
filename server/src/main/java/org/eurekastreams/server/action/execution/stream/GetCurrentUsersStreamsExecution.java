@@ -21,8 +21,12 @@ import java.util.List;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
+import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
+import org.eurekastreams.server.service.actions.response.GetCurrentUserStreamFiltersResponse;
 
 /**
  * Get the streams for the current user.
@@ -35,14 +39,21 @@ public class GetCurrentUsersStreamsExecution implements ExecutionStrategy<Princi
     private DomainMapper<Long, List<StreamFilter>> getUserStreamsMapper;
 
     /**
+     * Person mapper.
+     */
+    private FindByIdMapper<Person> personMapper;
+
+    /**
      * Constructor.
      * 
      * @param inGetUserStreamsMapper
      *            stream mapper.
      */
-    public GetCurrentUsersStreamsExecution(final DomainMapper<Long, List<StreamFilter>> inGetUserStreamsMapper)
+    public GetCurrentUsersStreamsExecution(final DomainMapper<Long, List<StreamFilter>> inGetUserStreamsMapper,
+            FindByIdMapper<Person> inPersonMapper)
     {
         getUserStreamsMapper = inGetUserStreamsMapper;
+        personMapper = inPersonMapper;
     }
 
     /**
@@ -56,7 +67,10 @@ public class GetCurrentUsersStreamsExecution implements ExecutionStrategy<Princi
      */
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        return (Serializable) getUserStreamsMapper.execute(inActionContext.getPrincipal().getId());
+        Person person = personMapper.execute(new FindByIdRequest("Person", inActionContext.getPrincipal().getId()));
+
+        return new GetCurrentUserStreamFiltersResponse(person.getStreamViewHiddenLineIndex(), getUserStreamsMapper
+                .execute(inActionContext.getPrincipal().getId()));
     }
 
 }
