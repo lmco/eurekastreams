@@ -423,11 +423,11 @@ public class GroupProfilePanel extends FlowPanel
     {
         // create panel
         Panel errorReport = new FlowPanel();
-        errorReport.addStyleName("error-report");
+        errorReport.addStyleName("warning-report");
 
         // center on page
         FlowPanel centeringPanel = new FlowPanel();
-        centeringPanel.addStyleName("error-report-container");
+        centeringPanel.addStyleName("warning-report-container");
         centeringPanel.add(errorReport);
         add(centeringPanel);
 

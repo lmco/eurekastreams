@@ -54,7 +54,7 @@ public class InsertLikedActivity extends CachedDomainMapper
 
         getCache().addToTopOfList(
                 CacheKeys.LIKERS_BY_ACTIVITY_ID + inLikedActivity.getActivityId(), inLikedActivity.getPersonId());
-
+        
         return Boolean.TRUE;
     }
 

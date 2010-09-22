@@ -28,17 +28,21 @@ import org.eurekastreams.server.action.request.notification.CreateNotificationsR
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest;
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest.LikeActionType;
+import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.LikedActivity;
 import org.eurekastreams.server.persistence.mappers.DeleteLikedActivity;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
+import org.eurekastreams.server.persistence.mappers.IndexEntity;
 import org.eurekastreams.server.persistence.mappers.InsertLikedActivity;
+import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Action to add or remove like on activity for current user.
- *
+ * 
  */
 public class SetActivityLikeExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
@@ -58,18 +62,39 @@ public class SetActivityLikeExecution implements TaskHandlerExecutionStrategy<Pr
     private DomainMapper<List<Long>, List<ActivityDTO>> activityMapper;
 
     /**
+     * The entity indexer.
+     */
+    private IndexEntity<Activity> indexEntity;
+
+    /**
+     * Find Activity by ID mapper.
+     */
+    private FindByIdMapper<Activity> activityEntityMapper;
+
+    /**
      * Constructor.
-     * @param inInsertLikedActivity Mapper for liking an activity.
-     * @param inDeleteLikedActivity Mapper for unliking an activity.
-     * @param inActivityMapper activity mapper.
+     * 
+     * @param inInsertLikedActivity
+     *            Mapper for liking an activity.
+     * @param inDeleteLikedActivity
+     *            Mapper for unliking an activity.
+     * @param inActivityMapper
+     *            activity mapper.
+     * @param inIndexEntity
+     *            the activity indexer.
+     * @param inActivityEntityMapper
+     *            activity entity mapper, used for indexing.
      */
     public SetActivityLikeExecution(final InsertLikedActivity inInsertLikedActivity,
             final DeleteLikedActivity inDeleteLikedActivity,
-            final DomainMapper<List<Long>, List<ActivityDTO>> inActivityMapper)
+            final DomainMapper<List<Long>, List<ActivityDTO>> inActivityMapper,
+            final IndexEntity<Activity> inIndexEntity, final FindByIdMapper<Activity> inActivityEntityMapper)
     {
         insertLikedActivity = inInsertLikedActivity;
         deleteLikedActivity = inDeleteLikedActivity;
         activityMapper = inActivityMapper;
+        indexEntity = inIndexEntity;
+        activityEntityMapper = inActivityEntityMapper;
     }
 
     /**
@@ -77,20 +102,19 @@ public class SetActivityLikeExecution implements TaskHandlerExecutionStrategy<Pr
      */
     @Override
     public Serializable execute(final TaskHandlerActionContext<PrincipalActionContext> inActionContext)
-        throws ExecutionException
+            throws ExecutionException
     {
         SetActivityLikeRequest request = (SetActivityLikeRequest) inActionContext.getActionContext().getParams();
-        LikedActivity likeActivityData = new LikedActivity(
-                inActionContext.getActionContext().getPrincipal().getId(),
+        LikedActivity likeActivityData = new LikedActivity(inActionContext.getActionContext().getPrincipal().getId(),
                 request.getActivityId());
 
+        ActivityDTO activity = activityMapper.execute(Collections.singletonList(request.getActivityId())).get(0);
 
         if (request.getLikeActionType() == LikeActionType.ADD_LIKE)
         {
-            List<ActivityDTO> activity = activityMapper.execute(Collections.singletonList(request.getActivityId()));
-            CreateNotificationsRequest notificationRequest = new CreateNotificationsRequest(
-                    RequestType.LIKE, inActionContext.getActionContext().getPrincipal().getId(),
-                    activity.get(0).getActor().getId(), request.getActivityId());
+            CreateNotificationsRequest notificationRequest = new CreateNotificationsRequest(RequestType.LIKE,
+                    inActionContext.getActionContext().getPrincipal().getId(), activity.getActor().getId(), request
+                            .getActivityId());
 
             List<UserActionRequest> queuedRequests = null;
             // create list if it has not already been done.
@@ -101,16 +125,17 @@ public class SetActivityLikeExecution implements TaskHandlerExecutionStrategy<Pr
 
             inActionContext.getUserActionRequests().addAll(queuedRequests);
 
-            return insertLikedActivity.execute(likeActivityData);
-
+            insertLikedActivity.execute(likeActivityData);
 
         }
         else
         {
-            return deleteLikedActivity.execute(likeActivityData);
+            deleteLikedActivity.execute(likeActivityData);
         }
 
+        indexEntity.execute(activityEntityMapper.execute(new FindByIdRequest("Activity", activity.getId())));
+
+        return Boolean.TRUE;
 
     }
-
 }

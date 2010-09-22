@@ -34,9 +34,10 @@ public class GetRelatedEntityCount extends BaseArgDomainMapper<GetRelatedEntityC
     @Override
     public Long execute(final GetRelatedEntityCountRequest inRequest)
     {
+        String whereClause = (inRequest.getWhereClauseAddition() == null) ? "" : inRequest.getWhereClauseAddition();
         return (Long) getEntityManager().createQuery(
                 "SELECT Count(id) FROM " + inRequest.getRelatedEntityName() + " WHERE "
-                        + inRequest.getTargetEntityFieldName() + ".id = :id").setParameter("id",
+                        + inRequest.getTargetEntityFieldName() + ".id = :id " + whereClause).setParameter("id",
                 inRequest.getTargetEntityId()).getSingleResult();
     }
 }
