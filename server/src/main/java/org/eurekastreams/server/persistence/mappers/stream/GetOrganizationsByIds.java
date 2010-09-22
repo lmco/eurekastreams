@@ -39,7 +39,7 @@ public class GetOrganizationsByIds extends CachedDomainMapper
 {
     /**
      * Refresh all Organizations in cache from database. Should be called during cache warming.
-     *
+     * 
      * @return list of stream objects.
      */
     public List<OrganizationModelView> execute()
@@ -51,7 +51,7 @@ public class GetOrganizationsByIds extends CachedDomainMapper
     /**
      * Looks in cache for the necessary DTOs and returns them if found. Otherwise, makes a database call, puts them in
      * cache, and returns them.
-     *
+     * 
      * @param ids
      *            the list of ids that should be found.
      * @return list of DTO objects.
@@ -93,9 +93,14 @@ public class GetOrganizationsByIds extends CachedDomainMapper
         }
 
         List<OrganizationModelView> returnOrgs = new ArrayList<OrganizationModelView>();
+        OrganizationModelView omv = null;
         for (Long orgId : ids)
         {
-            returnOrgs.add(items.get(CacheKeys.ORGANIZATION_BY_ID + orgId));
+            omv = items.get(CacheKeys.ORGANIZATION_BY_ID + orgId);
+            if (omv != null)
+            {
+                returnOrgs.add(omv);
+            }
         }
 
         return returnOrgs;
@@ -104,7 +109,7 @@ public class GetOrganizationsByIds extends CachedDomainMapper
     /**
      * Looks in cache for the necessary DTO and returns it if found. Otherwise, makes a database call, puts it in cache,
      * and returns it.
-     *
+     * 
      * @param id
      *            id that should be found.
      * @return DTO object.
@@ -116,7 +121,7 @@ public class GetOrganizationsByIds extends CachedDomainMapper
 
     /**
      * Gets items from database and stores them in cache.
-     *
+     * 
      * @param uncached
      *            list of items to be refreshed. If this is null, all items will be refreshed from database.
      * @return the map of refreshed items.
@@ -166,8 +171,8 @@ public class GetOrganizationsByIds extends CachedDomainMapper
             criteria.add(restriction);
         }
 
-        ModelViewResultTransformer<OrganizationModelView> resultTransformer =
-            new ModelViewResultTransformer<OrganizationModelView>(new OrganizationModelViewFactory());
+        ModelViewResultTransformer<OrganizationModelView> resultTransformer = //
+        new ModelViewResultTransformer<OrganizationModelView>(new OrganizationModelViewFactory());
         criteria.setResultTransformer(resultTransformer);
 
         List<OrganizationModelView> results = criteria.list();

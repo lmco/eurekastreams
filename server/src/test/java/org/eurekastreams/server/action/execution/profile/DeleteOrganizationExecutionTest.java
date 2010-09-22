@@ -82,6 +82,12 @@ public class DeleteOrganizationExecutionTest
     private DomainMapper<Long, Boolean> deleteOrgMapper = context.mock(DomainMapper.class, "deleteOrgMapper");
 
     /**
+     * Mapper to get person ids for those that have given org as related org.
+     */
+    private DomainMapper<Long, Set<Long>> relatedOrgPersonIdsMapper = context.mock(DomainMapper.class,
+            "relatedOrgPersonIdMapper");
+
+    /**
      * {@link OrganizationMapper}. This is used for updating org stats only.
      */
     @SuppressWarnings("deprecation")
@@ -138,7 +144,7 @@ public class DeleteOrganizationExecutionTest
      * System under test.
      */
     private DeleteOrganizationExecution sut = new DeleteOrganizationExecution(movePeopleMapper, orgDTOByIdMapper,
-            orgByIdMapper, deleteOrgMapper, organizationMapper, orgTraverserBuilder);
+            orgByIdMapper, deleteOrgMapper, relatedOrgPersonIdsMapper, organizationMapper, orgTraverserBuilder);
 
     /**
      * Test.
@@ -181,6 +187,9 @@ public class DeleteOrganizationExecutionTest
                 will(returnValue("orgShortName"));
 
                 allowing(movePeopleMapper).execute(with(any(MoveOrganizationPeopleRequest.class)));
+                will(returnValue(movedPeopleIds));
+
+                allowing(relatedOrgPersonIdsMapper).execute(orgId);
                 will(returnValue(movedPeopleIds));
 
                 allowing(deleteOrgMapper).execute(orgId);

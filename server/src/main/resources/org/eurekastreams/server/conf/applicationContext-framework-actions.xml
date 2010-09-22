@@ -334,7 +334,8 @@
 		        <constructor-arg ref="moveOrganizationPeopleMapper" />
 		        <constructor-arg ref="bulkOrganizationsMapper" />
 		        <constructor-arg ref="findByIdMapper" />
-		        <constructor-arg ref="deleteOrganizationMapper" />   
+		        <constructor-arg ref="deleteOrganizationMapper" /> 
+		        <constructor-arg ref="getPeopleIdsWithRelatedOrg" />		          
 		        <constructor-arg ref="jpaOrganizationMapper" />  
 		        <constructor-arg>
                     <bean class="org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder" />
