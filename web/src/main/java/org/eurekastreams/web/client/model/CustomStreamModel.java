@@ -16,7 +16,6 @@
 package org.eurekastreams.web.client.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,7 +23,6 @@ import java.util.List;
 import org.eurekastreams.server.action.request.stream.SetStreamOrderRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Stream;
-import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.service.actions.response.GetCurrentUserStreamFiltersResponse;
 import org.eurekastreams.web.client.events.CustomStreamCreatedEvent;
@@ -38,7 +36,7 @@ import com.google.gwt.json.client.JSONObject;
 
 /**
  * Custom stream model.
- *
+ * 
  */
 public class CustomStreamModel extends BaseModel implements Fetchable<Serializable>,
         Insertable<HashMap<String, Serializable>>, Updateable<HashMap<String, Serializable>>, Deletable<Stream>,
@@ -51,7 +49,7 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
     public static CustomStreamModel getInstance()
@@ -64,14 +62,15 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
      */
     public void fetch(final Serializable request, final boolean useClientCacheIfAvailable)
     {
-        super.callReadAction("getCurrentUsersStreams", request, new OnSuccessCommand<GetCurrentUserStreamFiltersResponse>()
-        {
-            public void onSuccess(final GetCurrentUserStreamFiltersResponse response)
-            {
-                Session.getInstance().getEventBus().notifyObservers(
-                        new GotCurrentUserCustomStreamsResponseEvent(response));
-            }
-        }, useClientCacheIfAvailable);
+        super.callReadAction("getCurrentUsersStreams", request,
+                new OnSuccessCommand<GetCurrentUserStreamFiltersResponse>()
+                {
+                    public void onSuccess(final GetCurrentUserStreamFiltersResponse response)
+                    {
+                        Session.getInstance().getEventBus().notifyObservers(
+                                new GotCurrentUserCustomStreamsResponseEvent(response));
+                    }
+                }, useClientCacheIfAvailable);
     }
 
     /**
@@ -117,7 +116,7 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
 
     /**
      * Converts the form hashmap to the JSON request object.
-     *
+     * 
      * @param request
      *            the form request.
      * @return the JSON request.

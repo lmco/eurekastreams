@@ -88,6 +88,8 @@ public class SetStreamOrderExecutionTest
 
         final Person person = context.mock(Person.class);
 
+        final Long personId = 12L;
+        
         final Stream stream1 = context.mock(Stream.class, "s1");
         final Stream stream2 = context.mock(Stream.class, "s2");
         final List<Stream> streamList = new LinkedList<Stream>();
@@ -101,18 +103,17 @@ public class SetStreamOrderExecutionTest
 
                 oneOf(personMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(person));
-
+                
+                oneOf(person).getId();
+                will(returnValue(personId));
+                
                 oneOf(person).getStreams();
                 will(returnValue(streamList));
 
                 allowing(stream1).getId();
                 will(returnValue(0L));
-
-                allowing(stream2).getId();
-                will(returnValue(1L));
-
-                oneOf(person).setStreamViewHiddenLineIndex(1);
-                oneOf(personMapper).flush();
+                
+                oneOf(reorderMapper).execute(personId, streamList, 1);
             }
         });
         ServiceActionContext currentContext = new ServiceActionContext(request, principalMock);
