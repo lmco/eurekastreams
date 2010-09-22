@@ -17,7 +17,7 @@ package org.eurekastreams.web.client.model;
 
 import java.io.Serializable;
 
-import org.eurekastreams.server.action.request.stream.SetStreamFilterOrderRequest;
+import org.eurekastreams.server.action.request.stream.SetStreamOrderRequest;
 import org.eurekastreams.server.service.actions.response.GetCurrentUserStreamFiltersResponse;
 import org.eurekastreams.web.client.events.data.GotCurrentUserGroupStreamsResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
@@ -26,7 +26,7 @@ import org.eurekastreams.web.client.ui.Session;
  * Group Stream List Model.
  */
 public class GroupStreamListModel extends BaseModel implements Fetchable<Serializable>,
-        Reorderable<SetStreamFilterOrderRequest>
+        Reorderable<SetStreamOrderRequest>
 {
     /**
      * Singleton.
@@ -62,7 +62,7 @@ public class GroupStreamListModel extends BaseModel implements Fetchable<Seriali
     /**
      * {@inheritDoc}
      */
-    public void reorder(final SetStreamFilterOrderRequest request)
+    public void reorder(final SetStreamOrderRequest request)
     {
         super.callWriteAction("setGroupStreamsOrder", request, null);
     }

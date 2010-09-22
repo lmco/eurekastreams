@@ -1678,6 +1678,9 @@
 							<entry key="followedBy">
 								<ref bean="getFollowedByActivities" />
 							</entry>
+							<entry key="recipient">
+								<ref bean="bulkActivityStreamsMapper" />
+							</entry>
 							<entry key="organization">
 								<ref bean="parentOrgActivityIdMapper" />
 							</entry>							
@@ -2464,6 +2467,7 @@
 				class="org.eurekastreams.server.action.execution.opensocial.GetUserActivitiesExecution">
 				<constructor-arg ref="getStreamByPersonOwnerId" />
 				<constructor-arg ref="bulkActivitiesMapper" />
+				<constructor-arg ref="compositeStreamActivityIdsMapper" />
 				<constructor-arg ref="bulkPeopleByOpenSocialIdMapper" />
 			</bean>
 		</constructor-arg>
@@ -2477,6 +2481,7 @@
 			<bean
 				class="org.eurekastreams.server.action.execution.stream.GetCurrentUserCompositeStreamsExecution">
 				<constructor-arg ref="userCompositeStreamIdsMapper" />
+				<constructor-arg ref="bulkCompositeStreamsMapper" />
 				<constructor-arg ref="bulkPeopleMapper" />
 			</bean>
 		</constructor-arg>
@@ -2611,6 +2616,7 @@
 			<bean
 				class="org.eurekastreams.server.action.execution.stream.GetCurrentUserCompositeStreamSearchesExecutionStrategy">
 				<constructor-arg ref="userCompositeStreamSearchIdsMapper" />
+				<constructor-arg ref="bulkCompositeStreamSearchesMapper" />
 				<constructor-arg ref="bulkPeopleMapper" />
 				<constructor-arg ref="bulkOrganizationsByShortNameMapper" />
 				<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
@@ -2627,6 +2633,7 @@
 				class="org.eurekastreams.server.action.execution.stream.GetCurrentUserFollowedGroupsExecution">
 				<constructor-arg ref="getFollowedGroupIds" />
 				<constructor-arg ref="bulkDomainGroupsMapper" />
+				<constructor-arg ref="bulkCompositeStreamsMapper" />
 				<constructor-arg ref="bulkPeopleMapper" />
 				<constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
 			</bean>
@@ -3255,6 +3262,7 @@
 		<constructor-arg>
 			<bean
 				class="org.eurekastreams.server.action.execution.stream.RefreshCachedCompositeStreamExecution">
+				<constructor-arg ref="compositeStreamActivityIdsMapper" />
 				<constructor-arg>
 					<bean
 						class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
@@ -3276,6 +3284,7 @@
 		<constructor-arg>
 			<bean
 				class="org.eurekastreams.server.action.execution.stream.RefreshCachedCompositeStreamExecution">
+				<constructor-arg ref="compositeStreamActivityIdsMapper" />
 				<constructor-arg>
 					<bean
 						class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
@@ -4133,6 +4142,10 @@
         <constructor-arg ref="jpaPersonMapper" />
         <constructor-arg ref="jpaTabMapper" />
         <constructor-arg ref="jpaOrganizationMapper" />
+        <constructor-arg>
+            <bean
+                class="org.eurekastreams.server.persistence.mappers.GetStreamViewByType" />
+        </constructor-arg>
     </bean>
 
     <bean id="personUpdater" class="org.eurekastreams.server.service.actions.strategies.PersonUpdater">
@@ -4146,6 +4159,7 @@
 
     <bean id="streamViewCreator"
         class="org.eurekastreams.server.service.actions.strategies.StreamViewCreator">
+        <constructor-arg ref="addCachedCompositeStreamMapper" />
         <constructor-arg ref="findByIdMapper" />
         <constructor-arg ref="getStreamScopeById" />
     </bean>
@@ -4156,11 +4170,15 @@
         <constructor-arg ref="findUserStreamViewByIdMapper" />
         <constructor-arg ref="getStreamScopeProxyById" />
         <constructor-arg ref="getCompositeStreamById" />
+        <constructor-arg ref="addCachedActivityToListByStreamScope" />
         <constructor-arg ref="removeCachedActivitiesFromListByStreamScope" />
     </bean>
 
     <bean id="streamSearchCreator"
         class="org.eurekastreams.server.service.actions.strategies.StreamSearchCreator">
+        <constructor-arg>
+            <ref bean="addCachedCompositeStreamSearchMapper" />
+        </constructor-arg>
         <constructor-arg>
             <ref bean="findByIdMapper" />
         </constructor-arg>

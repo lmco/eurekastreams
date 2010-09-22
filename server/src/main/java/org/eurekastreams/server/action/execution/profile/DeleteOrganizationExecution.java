@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.server.action.execution.profile;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -49,6 +48,11 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
      * Mapper to move People out of organization.
      */
     private DomainMapper<MoveOrganizationPeopleRequest, Set<Long>> movePeopleMapper;
+
+    /**
+     * Mapper to get person ids for those that have given org as related org.
+     */
+    private DomainMapper<Long, Set<Long>> relatedOrgPersonIdsMapper;
 
     /**
      * Mapper for getting organization DTOs.
@@ -89,6 +93,8 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
      *            {@link FindByIdMapper}.
      * @param inDeleteOrgMapper
      *            Mapper to delete org and related objects.
+     * @param inRelatedOrgPersonIdsMapper
+     *            Mapper to get person ids for all users that have deleted org as related org.
      * @param inOrganizationMapper
      *            {@link OrganizationMapper}. This is used for updating org stats only.
      * @param inOrgTraverserBuilder
@@ -96,13 +102,16 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
      */
     public DeleteOrganizationExecution(final DomainMapper<MoveOrganizationPeopleRequest, Set<Long>> inMovePeopleMapper,
             final GetOrganizationsByIds inOrgDTOByIdMapper, final FindByIdMapper<Organization> inOrgByIdMapper,
-            final DomainMapper<Long, Boolean> inDeleteOrgMapper, final OrganizationMapper inOrganizationMapper,
+            final DomainMapper<Long, Boolean> inDeleteOrgMapper,
+            final DomainMapper<Long, Set<Long>> inRelatedOrgPersonIdsMapper,
+            final OrganizationMapper inOrganizationMapper,
             final OrganizationHierarchyTraverserBuilder inOrgTraverserBuilder)
     {
         movePeopleMapper = inMovePeopleMapper;
         orgDTOByIdMapper = inOrgDTOByIdMapper;
         orgByIdMapper = inOrgByIdMapper;
         deleteOrgMapper = inDeleteOrgMapper;
+        relatedOrgPersonIdsMapper = inRelatedOrgPersonIdsMapper;
         organizationMapper = inOrganizationMapper;
         orgTraverserBuilder = inOrgTraverserBuilder;
     }
@@ -112,11 +121,11 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
      *
      * @param inActionContext
      *            The action context.
-     * @return null;
+     * @return parent org short name;
      */
     @SuppressWarnings("deprecation")
     @Override
-    public Serializable execute(final TaskHandlerActionContext<ActionContext> inActionContext)
+    public String execute(final TaskHandlerActionContext<ActionContext> inActionContext)
     {
         // ***START DB UPDATES****
 
@@ -132,6 +141,9 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
         Set<Long> movedPeopleIds = movePeopleMapper.execute(new MoveOrganizationPeopleRequest(orgDto.getShortName(),
                 parentOrg.getShortName()));
 
+        // get ids of people that have org as related org.
+        Set<Long> relatedOrgPersonIds = relatedOrgPersonIdsMapper.execute(orgId);
+
         // delete the org.
         deleteOrgMapper.execute(orgId);
 
@@ -144,11 +156,18 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
 
         // queue up async tasks.
 
-        // reindex and re-cache all people that were moved out of org.
+        // Only reindex all people that were moved out of org.
         HashSet<String> cacheKeysToRemove = new HashSet<String>();
         for (Long personId : movedPeopleIds)
         {
             inActionContext.getUserActionRequests().add(new UserActionRequest("indexPersonById", null, personId));
+        }
+
+        // re-cache both moved people and people that had org as related org.
+        Set<Long> personCacheKeysToModify = new HashSet<Long>(movedPeopleIds);
+        personCacheKeysToModify.addAll(relatedOrgPersonIds);
+        for (Long personId : personCacheKeysToModify)
+        {
             cacheKeysToRemove.add(CacheKeys.PERSON_BY_ID + personId);
         }
 
@@ -160,7 +179,14 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
             inActionContext.getUserActionRequests().add(
                     new UserActionRequest("indexOrganizationById", null, org.getId()));
             cacheKeysToRemove.add(CacheKeys.ORGANIZATION_BY_ID + org.getId());
+            cacheKeysToRemove.add(CacheKeys.ORGANIZATION_BY_SHORT_NAME + org.getShortName());
+            cacheKeysToRemove.add(CacheKeys.ORGANIZATION_RECURSIVE_CHILDREN + org.getId());
         }
+
+        // remove cache keys for org being deleted.
+        cacheKeysToRemove.add(CacheKeys.ORGANIZATION_BY_ID + orgId);
+        cacheKeysToRemove.add(CacheKeys.ORGANIZATION_BY_SHORT_NAME + orgDto.getShortName());
+        cacheKeysToRemove.add(CacheKeys.ORGANIZATION_RECURSIVE_CHILDREN + orgId);
 
         // remove org from search index
         inActionContext.getUserActionRequests().add(
@@ -175,6 +201,6 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
         inActionContext.getUserActionRequests().add(
                 new UserActionRequest("deleteCacheKeysAction", null, cacheKeysToRemove));
 
-        return null;
+        return parentOrg.getShortName();
     }
 }

@@ -38,8 +38,9 @@ public class GetUserStreamsDbMapper extends BaseArgDomainMapper<Long, List<Strea
      */
     public List<StreamFilter> execute(final Long inUserEntityId)
     {
-        List<Stream> streams = getEntityManager().createQuery("SELECT streams from Person p where p.id = :userId")
-                .setParameter("userId", inUserEntityId).getResultList();
+        List<Stream> streams = getEntityManager().createQuery(
+                "SELECT streams from Person p where p.id = :userId order by streamindex").setParameter("userId",
+                inUserEntityId).getResultList();
 
         List<StreamFilter> filters = new ArrayList<StreamFilter>();
 

@@ -16,7 +16,7 @@
 
 package org.eurekastreams.server.service.actions.strategies.activity.plugins.rome;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 import com.sun.syndication.feed.synd.SyndFeed;
@@ -47,6 +47,7 @@ public interface PluginFeedFetcherStrategy
      * @throws Exception
      *             if an error occurs.
      */
-    Map<String, SyndFeed> execute(String inFeedUrl, List<String> inRequestors, String inProxyHost, String inProxyPort,
+    Map<String, SyndFeed> execute(String inFeedUrl, Collection<String> inRequestors, String inProxyHost,
+            String inProxyPort,
             int inTimeout) throws Exception;
 }

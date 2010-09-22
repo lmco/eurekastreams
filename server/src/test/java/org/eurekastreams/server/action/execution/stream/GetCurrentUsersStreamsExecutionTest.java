@@ -22,8 +22,12 @@ import junit.framework.Assert;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
+import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
+import org.eurekastreams.server.service.actions.response.GetCurrentUserStreamFiltersResponse;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -53,15 +57,20 @@ public class GetCurrentUsersStreamsExecutionTest
     private static DomainMapper<Long, List<StreamFilter>> getUserStreamsMapper = CONTEXT.mock(DomainMapper.class);
 
     /**
+     * Person mapper.
+     */
+    private static FindByIdMapper<Person> personMapper = CONTEXT.mock(FindByIdMapper.class);
+
+    /**
      * Action context.
      */
     private static PrincipalActionContext actionContext = CONTEXT.mock(PrincipalActionContext.class);
-    
+
     /**
      * Principle.
      */
     private static Principal principal = CONTEXT.mock(Principal.class);
-    
+
     /**
      * User ID.
      */
@@ -78,7 +87,7 @@ public class GetCurrentUsersStreamsExecutionTest
     @BeforeClass
     public static final void setup()
     {
-        sut = new GetCurrentUsersStreamsExecution(getUserStreamsMapper);
+        sut = new GetCurrentUsersStreamsExecution(getUserStreamsMapper, personMapper);
     }
 
     /**
@@ -88,23 +97,35 @@ public class GetCurrentUsersStreamsExecutionTest
     public void testExecute()
     {
         final List<StreamFilter> filters = new ArrayList<StreamFilter>();
-        
+        final Integer hiddenLineIndex = 1;
+
+        final Person person = CONTEXT.mock(Person.class);
+
         CONTEXT.checking(new Expectations()
         {
             {
-                oneOf(actionContext).getPrincipal();
+                allowing(actionContext).getPrincipal();
                 will(returnValue(principal));
-                
-                oneOf(principal).getId();
+
+                allowing(principal).getId();
                 will(returnValue(USER_ID));
-                
+
+                oneOf(person).getStreamViewHiddenLineIndex();
+                will(returnValue(hiddenLineIndex));
+
+                oneOf(personMapper).execute(with(any(FindByIdRequest.class)));
+                will(returnValue(person));
+
                 oneOf(getUserStreamsMapper).execute(USER_ID);
                 will(returnValue(filters));
             }
         });
 
-        Assert.assertEquals(filters, sut.execute(actionContext));
+        GetCurrentUserStreamFiltersResponse response = (GetCurrentUserStreamFiltersResponse) sut.execute(actionContext);
         
+        Assert.assertEquals(filters, response.getStreamFilters());
+        Assert.assertEquals(hiddenLineIndex, response.getHiddenLineIndex());
+
         CONTEXT.assertIsSatisfied();
     }
 }
