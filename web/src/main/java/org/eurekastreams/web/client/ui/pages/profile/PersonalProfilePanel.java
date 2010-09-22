@@ -22,6 +22,7 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.Task;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SetBannerEvent;
@@ -60,6 +61,7 @@ import org.eurekastreams.web.client.ui.pages.profile.widgets.BreadcrumbPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.ChecklistProgressBarPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.ConnectionsPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.ContactInfoPanel;
+import org.eurekastreams.web.client.ui.pages.profile.widgets.PopularHashtagsPanel;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -151,7 +153,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param accountId
      *            the account id.
      */
@@ -194,7 +196,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * We have the Person, so set up the Profile summary.
-     *
+     * 
      * @param inPerson
      *            the person whose profile is being displayed
      */
@@ -267,6 +269,7 @@ public class PersonalProfilePanel extends FlowPanel
                 .addObserver(DeletedPersonFollowersResponseEvent.class, followChangeObserver);
 
         leftBarPanel.addChildWidget(about);
+        leftBarPanel.addChildWidget(new PopularHashtagsPanel(ScopeType.PERSON, person.getAccountId()));
         leftBarPanel.addChildWidget(connectionsPanel);
         leftBarPanel.addChildWidget(new ContactInfoPanel(person));
 
@@ -374,7 +377,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * Creates and sets up the connections tab content.
-     *
+     * 
      * @param inPerson
      *            Person whose profile is being displayed.
      * @return Tab content.

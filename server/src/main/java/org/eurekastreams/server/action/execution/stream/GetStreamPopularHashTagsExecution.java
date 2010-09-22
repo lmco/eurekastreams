@@ -19,9 +19,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.stream.StreamPopularHashTagsRequest;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.StreamPopularHashTagsReportDTO;
@@ -36,6 +38,11 @@ public class GetStreamPopularHashTagsExecution implements ExecutionStrategy<Prin
      */
     private final DomainMapper<StreamPopularHashTagsRequest, StreamPopularHashTagsReportDTO> popularHashTagsMapper;
 
+    /**
+     * Logger.
+     */
+    private Log log = LogFactory.make();
+    
     /**
      * Constructor.
      *
@@ -60,15 +67,20 @@ public class GetStreamPopularHashTagsExecution implements ExecutionStrategy<Prin
     @Override
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
+        log.debug("Entering");
         StreamPopularHashTagsRequest request = (StreamPopularHashTagsRequest) inActionContext.getParams();
         StreamPopularHashTagsReportDTO response = popularHashTagsMapper.execute(request);
 
         List<String> hashTags = response.getPopularHashTags();
+        
         ArrayList<String> result = new ArrayList<String>();
+        
         if (hashTags != null)
         {
+            log.debug("Found " + hashTags.size() + " Popular Hashtags");
             result.addAll(hashTags);
         }
+        
         return result;
     }
 }

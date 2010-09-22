@@ -11176,6 +11176,11 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 	cursor: pointer;
 }
 
+.popular-hashtags div.gwt-HTML
+{
+	margin-bottom: 10px;	
+}
+
 .profile-connection-count:hover {
 	background-image: url('images/connectionsActiveBtn.png');
 }

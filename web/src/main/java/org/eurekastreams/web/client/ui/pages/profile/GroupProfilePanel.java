@@ -70,6 +70,7 @@ import org.eurekastreams.web.client.ui.pages.profile.widgets.ChecklistProgressBa
 import org.eurekastreams.web.client.ui.pages.profile.widgets.ConnectionsPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.GroupAboutPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.PeopleListPanel;
+import org.eurekastreams.web.client.ui.pages.profile.widgets.PopularHashtagsPanel;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -281,6 +282,7 @@ public class GroupProfilePanel extends FlowPanel
                         "connections", "Coordinators"));
 
         leftBarPanel.addChildWidget(about);
+        leftBarPanel.addChildWidget(new PopularHashtagsPanel(ScopeType.GROUP, group.getShortName()));
         leftBarPanel.addChildWidget(connectionsPanel);
         leftBarPanel.addChildWidget(coordinatorPanel);
 

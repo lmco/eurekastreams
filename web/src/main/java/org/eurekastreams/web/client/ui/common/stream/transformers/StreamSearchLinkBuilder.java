@@ -37,7 +37,7 @@ public class StreamSearchLinkBuilder
     public String buildHashtagSearchLink(final String searchText, final Long streamViewId)
     {
         HashMap<String, String> params = new HashMap<String, String>();
-        params.put("streamSearch", searchText);
+        params.put("search", searchText);
 
         // in case we're viewing a single activity
         params.put("activityId", null);
