@@ -233,7 +233,8 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
                 {
                     if (new WidgetJSNIFacadeImpl().confirm("Are sure you want to delete this organization? "
                             + "Deleting the organization will remove the profile from the system "
-                            + "and will move all employees reporting to this organization to it’s parent organization"))
+                            + "and will move all employees reporting to this organization to it’s "
+                            + "parent organization"))
                     {
                         processingSpinny.setVisible(true);
                         deleteButton.setVisible(false);
