@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.filters;
 
-import org.eurekastreams.server.action.request.stream.SetStreamFilterOrderRequest;
+import org.eurekastreams.server.action.request.stream.SetStreamOrderRequest;
 import org.eurekastreams.web.client.model.Reorderable;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
@@ -40,7 +40,7 @@ public class FilterDragHandler implements DragHandler
     /**
      * The model.
      */
-    private Reorderable<SetStreamFilterOrderRequest> reorderable;
+    private Reorderable<SetStreamOrderRequest> reorderable;
 
     /**
      * Default constructor.
@@ -51,7 +51,7 @@ public class FilterDragHandler implements DragHandler
      *            the model.
      */
     public FilterDragHandler(final FilterListPanel inListPanel,
-            final Reorderable<SetStreamFilterOrderRequest> inReorderable)
+            final Reorderable<SetStreamOrderRequest> inReorderable)
     {
         reorderable = inReorderable;
         listPanel = inListPanel;
@@ -84,7 +84,7 @@ public class FilterDragHandler implements DragHandler
             listPanel.hideTextOnHiddenLine(hiddenLineIndex);
         }
 
-        SetStreamFilterOrderRequest request = new SetStreamFilterOrderRequest(listItem.getItemId(), itemIndex,
+        SetStreamOrderRequest request = new SetStreamOrderRequest(listItem.getItemId(), itemIndex,
                 hiddenLineIndex - 1);
         reorderable.reorder(request);
 

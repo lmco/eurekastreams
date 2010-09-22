@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.filters.list;
 
-import org.eurekastreams.server.action.request.stream.SetStreamFilterOrderRequest;
+import org.eurekastreams.server.action.request.stream.SetStreamOrderRequest;
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.eurekastreams.web.client.events.CustomStreamCreatedEvent;
@@ -53,7 +53,7 @@ public class CustomStreamRenderer implements FilterRenderStrategy
      *
      * @return the action key.
      */
-    public Reorderable<SetStreamFilterOrderRequest> getReorderableModel()
+    public Reorderable<SetStreamOrderRequest> getReorderableModel()
     {
         return CustomStreamModel.getInstance();
     }

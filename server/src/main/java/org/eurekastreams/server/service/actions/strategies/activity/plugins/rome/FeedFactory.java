@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.service.actions.strategies.activity.plugins.rome;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -92,7 +93,7 @@ public class FeedFactory
      * @throws Exception
      *             if error occurs.
      */
-    public Map<String, SyndFeed> getSyndicatedFeed(final String inFeedUrl, final List<String> inRequestors)
+    public Map<String, SyndFeed> getSyndicatedFeed(final String inFeedUrl, final Collection<String> inRequestors)
             throws Exception
     {
         for (PluginFeedFetcherStrategy ps : siteStratagies)

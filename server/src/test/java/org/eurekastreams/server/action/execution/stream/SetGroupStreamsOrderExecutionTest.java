@@ -23,7 +23,7 @@ import javax.persistence.Query;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
-import org.eurekastreams.server.action.request.stream.SetStreamFilterOrderRequest;
+import org.eurekastreams.server.action.request.stream.SetStreamOrderRequest;
 import org.eurekastreams.server.domain.stream.StreamView;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
@@ -180,7 +180,7 @@ public class SetGroupStreamsOrderExecutionTest
     @SuppressWarnings("unchecked")
     public final void testExecute() throws Exception
     {
-        final SetStreamFilterOrderRequest request = new SetStreamFilterOrderRequest(2L, 0, NEW_HIDDEN_LINE_INDEX);
+        final SetStreamOrderRequest request = new SetStreamOrderRequest(2L, 0, NEW_HIDDEN_LINE_INDEX);
         context.checking(new Expectations()
         {
             {

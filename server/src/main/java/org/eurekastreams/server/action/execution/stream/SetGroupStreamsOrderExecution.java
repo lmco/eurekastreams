@@ -25,7 +25,7 @@ import javax.persistence.Query;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
-import org.eurekastreams.server.action.request.stream.SetStreamFilterOrderRequest;
+import org.eurekastreams.server.action.request.stream.SetStreamOrderRequest;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.stream.GetFollowedGroupIds;
@@ -95,7 +95,7 @@ public class SetGroupStreamsOrderExecution implements ExecutionStrategy<Principa
     @Override
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        SetStreamFilterOrderRequest request = (SetStreamFilterOrderRequest) inActionContext.getParams();
+        SetStreamOrderRequest request = (SetStreamOrderRequest) inActionContext.getParams();
         final long userEntityId = inActionContext.getPrincipal().getId();
 
         List<Long> followedGroupIds = groupIdsMapper.execute(userEntityId);
@@ -105,7 +105,7 @@ public class SetGroupStreamsOrderExecution implements ExecutionStrategy<Principa
 
         for (int i = 0; i < followedGroupIds.size(); i++)
         {
-            if (followedGroupIds.get(i).longValue() == request.getFilterId().longValue())
+            if (followedGroupIds.get(i).longValue() == request.getStreamId().longValue())
             {
                 oldIndex = i;
             }
@@ -113,7 +113,7 @@ public class SetGroupStreamsOrderExecution implements ExecutionStrategy<Principa
 
         // Reorder the list
         followedGroupIds.remove(oldIndex);
-        followedGroupIds.add(request.getNewIndex(), request.getFilterId());
+        followedGroupIds.add(request.getNewIndex(), request.getStreamId());
 
         reorderMapper.execute(userEntityId, followedGroupIds);
 

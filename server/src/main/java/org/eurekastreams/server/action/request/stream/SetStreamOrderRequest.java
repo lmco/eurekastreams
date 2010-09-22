@@ -21,7 +21,7 @@ import java.io.Serializable;
  * Request for reordering streams (Group, Search, and View) on the Activity Page.
  *
  */
-public class SetStreamFilterOrderRequest implements Serializable
+public class SetStreamOrderRequest implements Serializable
 {
     /**
      * Serialization id.
@@ -32,7 +32,7 @@ public class SetStreamFilterOrderRequest implements Serializable
      * Filter id.
      */
 
-    private Long filterId;
+    private Long streamId;
     /**
      * New index.
      */
@@ -47,17 +47,17 @@ public class SetStreamFilterOrderRequest implements Serializable
     /**
      * Default constructor.
      *
-     * @param inFilterId
+     * @param inStreamId
      *            filter id.
      * @param inNewIndex
      *            new index.
      * @param inHiddenLineIndex
      *            hidden line index.
      */
-    public SetStreamFilterOrderRequest(final Long inFilterId,
+    public SetStreamOrderRequest(final Long inStreamId,
             final Integer inNewIndex, final Integer inHiddenLineIndex)
     {
-        filterId = inFilterId;
+        streamId = inStreamId;
         newIndex = inNewIndex;
         hiddenLineIndex = inHiddenLineIndex;
     }
@@ -65,29 +65,29 @@ public class SetStreamFilterOrderRequest implements Serializable
     /**
      * Used for Serialization.
      */
-    private SetStreamFilterOrderRequest()
+    private SetStreamOrderRequest()
     {
     }
 
     /**
-     * Gets filter id.
+     * Gets stream id.
      *
-     * @return filter id.
+     * @return stream id.
      */
-    public Long getFilterId()
+    public Long getStreamId()
     {
-        return filterId;
+        return streamId;
     }
 
     /**
-     * Sets filter id.
+     * Sets stream id.
      *
-     * @param inFilterId
-     *            filter id.
+     * @param inStreamId
+     *            stream id.
      */
-    public void setFilterId(final Long inFilterId)
+    public void setStreamId(final Long inStreamId)
     {
-        filterId = inFilterId;
+        streamId = inStreamId;
     }
 
     /**
