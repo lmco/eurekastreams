@@ -83,6 +83,22 @@
 			</list>
 		</property>
 	</bean>
+	
+	<!--
+		Inject the ActivityContentClassBridge with the comments DAOs.
+	-->
+	<bean
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass"
+			value="org.eurekastreams.server.search.bridge.ActivityContentClassBridge" />
+		<property name="targetMethod" value="setCommentDAOs" />
+		<property name="arguments">
+			<list>
+				<ref bean="getOrderedCommentIdsByActivityId" />
+				<ref bean="getCommentsById" />
+			</list>
+		</property>
+	</bean>
 
 	<!--
 		Inject the ActivityInterestingClassBridge with the interestingness strategy

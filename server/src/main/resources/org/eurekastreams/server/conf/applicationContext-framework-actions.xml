@@ -3338,6 +3338,8 @@
 				<constructor-arg ref="insertLikedActivity" />
 				<constructor-arg ref="deleteLikedActivity" />
 				<constructor-arg ref="bulkActivitiesMapper" />
+				<constructor-arg ref="indexEntity" />
+				<constructor-arg ref="findByIdMapper" />
 			</bean>
 		</constructor-arg>
 		<constructor-arg value="false" />

@@ -15,8 +15,13 @@
  */
 package org.eurekastreams.server.search.bridge;
 
+import java.util.List;
+
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.persistence.mappers.stream.ActivityContentExtractor;
+import org.eurekastreams.server.persistence.mappers.stream.GetCommentsById;
+import org.eurekastreams.server.persistence.mappers.stream.GetOrderedCommentIdsByActivityId;
+import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.hibernate.search.bridge.StringBridge;
 
 /**
@@ -30,8 +35,33 @@ public class ActivityContentClassBridge implements StringBridge
     private ActivityContentExtractor contentExtractor = new ActivityContentExtractor();
 
     /**
+     * DAO for finding comment ids.
+     */
+    private static GetOrderedCommentIdsByActivityId commentIdsByActivityIdDAO;
+
+    /**
+     * DAO for finding comments.
+     */
+    private static GetCommentsById commentsByIdDAO;
+
+    /**
+     * Setter for the DAOs for finding comment information.
+     * 
+     * @param inCommentIdsByActivityIdDAO
+     *            the DAO.
+     * @param inCommentsByIdDAO
+     *            the DAO.
+     */
+    public static void setCommentDAOs(final GetOrderedCommentIdsByActivityId inCommentIdsByActivityIdDAO,
+            final GetCommentsById inCommentsByIdDAO)
+    {
+        ActivityContentClassBridge.commentIdsByActivityIdDAO = inCommentIdsByActivityIdDAO;
+        ActivityContentClassBridge.commentsByIdDAO = inCommentsByIdDAO;
+    }
+
+    /**
      * Extract the content out of an Activity/Message.
-     *
+     * 
      * @param activityObject
      *            the message
      * @return a string containing the title and body of the input Message
@@ -40,6 +70,25 @@ public class ActivityContentClassBridge implements StringBridge
     public String objectToString(final Object activityObject)
     {
         Activity activity = (Activity) activityObject;
-        return contentExtractor.extractContent(activity.getBaseObjectType(), activity.getBaseObject());
+
+        List<CommentDTO> commentList = commentsByIdDAO.execute(commentIdsByActivityIdDAO.execute(activity.getId()));
+
+        final StringBuilder contentAsString = new StringBuilder();
+
+        String content = contentExtractor.extractContent(activity.getBaseObjectType(), activity.getBaseObject());
+
+        if (null != content)
+        {
+            contentAsString.append(content);
+        }
+
+        for (CommentDTO comment : commentList)
+        {
+            // Add a space between each comment.
+            contentAsString.append(" ");
+            contentAsString.append(comment.getBody());
+        }
+
+        return contentAsString.toString();
     }
 }
