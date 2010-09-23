@@ -4308,6 +4308,7 @@
             <map>
                 <entry key="mail.smtp.host" value="${eureka.mail.smtp.host}" />
                 <entry key="mail.smtp.port" value="${eureka.mail.smtp.port}" />
+                <entry key="mail.smtp.sendpartial" value="true" />
             </map>
         </constructor-arg>
         <constructor-arg value="${eureka.mail.support.emailaddress}" />
