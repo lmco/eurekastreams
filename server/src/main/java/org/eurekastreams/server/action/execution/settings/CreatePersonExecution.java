@@ -34,12 +34,13 @@ import org.eurekastreams.server.action.request.SendWelcomeEmailRequest;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.PersonMapper;
-import org.eurekastreams.server.persistence.mappers.db.GetOrganizationProxyById;
+import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
+import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.service.actions.strategies.ReflectiveUpdater;
 
 /**
  * Strategy for creating person record in the system.
- * 
+ *
  */
 public class CreatePersonExecution implements TaskHandlerExecutionStrategy<ActionContext>
 {
@@ -69,38 +70,38 @@ public class CreatePersonExecution implements TaskHandlerExecutionStrategy<Actio
     private PersonMapper personMapper;
 
     /**
-     * {@link GetOrganizationProxyById}.
+     * Mapper to find orgs by id.
      */
-    private GetOrganizationProxyById getRootOrgProxyDAO;
+    private FindByIdMapper<Organization> findByIdMapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inCreatePersonActionFactory
      *            action factory persist user updates.
      * @param inPersonMapper
      *            mapper to get people.
      * @param inSendWelcomeEmailAction
      *            Send welcome email action key.
-     * @param inGetRootOrgProxyDAO
-     *            {@link GetOrganizationProxyById}.
+     * @param inFindByIdMapper
+     *            Mapper to get orgs by id
      */
     public CreatePersonExecution(final CreatePersonActionFactory inCreatePersonActionFactory,
             final PersonMapper inPersonMapper, final String inSendWelcomeEmailAction,
-            final GetOrganizationProxyById inGetRootOrgProxyDAO)
+            final FindByIdMapper<Organization> inFindByIdMapper)
     {
         createPersonActionFactory = inCreatePersonActionFactory;
         personMapper = inPersonMapper;
         sendWelcomeEmailAction = inSendWelcomeEmailAction;
-        getRootOrgProxyDAO = inGetRootOrgProxyDAO;
+        findByIdMapper = inFindByIdMapper;
     }
 
     /**
      * Add person to the system.
-     * 
+     *
      * @param inActionContext
      *            The action context
-     * 
+     *
      * @return true on success.
      */
     @Override
@@ -108,7 +109,8 @@ public class CreatePersonExecution implements TaskHandlerExecutionStrategy<Actio
     {
         CreatePersonRequest createRequest = (CreatePersonRequest) inActionContext.getActionContext().getParams();
         Person inPerson = createRequest.getPerson();
-        Organization org = getRootOrgProxyDAO.execute(createRequest.getOrganizationId());
+        Organization org = findByIdMapper
+                .execute(new FindByIdRequest("Organization", createRequest.getOrganizationId()));
 
         persistResourceExecution = createPersonActionFactory.getCreatePersonAction(personMapper,
                 new ReflectiveUpdater());

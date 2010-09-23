@@ -29,7 +29,8 @@ import org.eurekastreams.server.action.request.CreatePersonRequest;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.PersonMapper;
-import org.eurekastreams.server.persistence.mappers.db.GetOrganizationProxyById;
+import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
+import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.service.actions.strategies.UpdaterStrategy;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -38,7 +39,7 @@ import org.junit.Test;
 
 /**
  * Test for CreatePersonExecution.
- * 
+ *
  */
 public class CreatePersonExecutionTest
 {
@@ -66,9 +67,9 @@ public class CreatePersonExecutionTest
     private PersonMapper personMapper = context.mock(PersonMapper.class);
 
     /**
-     * {@link GetOrganizationProxyById}.
+     * Mapper to find org by id.
      */
-    private GetOrganizationProxyById getRootOrgProxyDAO = context.mock(GetOrganizationProxyById.class);
+    private FindByIdMapper<Organization> findByIdMapper = context.mock(FindByIdMapper.class);
 
     /**
      * {@link TaskHandlerActionContext}.
@@ -104,7 +105,7 @@ public class CreatePersonExecutionTest
      * System under test.
      */
     private CreatePersonExecution sut = new CreatePersonExecution(createPersonActionFactory, personMapper, "emailKey",
-            getRootOrgProxyDAO);
+            findByIdMapper);
 
     /**
      * Test.
@@ -132,7 +133,7 @@ public class CreatePersonExecutionTest
 
                 allowing(person).getProperties(false);
 
-                allowing(getRootOrgProxyDAO).execute(orgId);
+                allowing(findByIdMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(organization));
 
                 allowing(createPersonActionFactory).getCreatePersonAction(with(any(PersonMapper.class)),
@@ -185,7 +186,7 @@ public class CreatePersonExecutionTest
 
                 allowing(person).getProperties(false);
 
-                allowing(getRootOrgProxyDAO).execute(orgId);
+                allowing(findByIdMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(organization));
 
                 allowing(createPersonActionFactory).getCreatePersonAction(with(any(PersonMapper.class)),
@@ -213,7 +214,7 @@ public class CreatePersonExecutionTest
     public void testNullEmailActionKey()
     {
         CreatePersonExecution tempSut = new CreatePersonExecution(createPersonActionFactory, personMapper, null,
-                getRootOrgProxyDAO);
+                findByIdMapper);
 
         final List<UserActionRequest> list = new ArrayList<UserActionRequest>();
         context.checking(new Expectations()
@@ -235,7 +236,7 @@ public class CreatePersonExecutionTest
 
                 allowing(person).getProperties(false);
 
-                allowing(getRootOrgProxyDAO).execute(orgId);
+                allowing(findByIdMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(organization));
 
                 allowing(createPersonActionFactory).getCreatePersonAction(with(any(PersonMapper.class)),
@@ -263,7 +264,7 @@ public class CreatePersonExecutionTest
     public void testEmptyEmailActionKey()
     {
         CreatePersonExecution tempSut = new CreatePersonExecution(createPersonActionFactory, personMapper, "",
-                getRootOrgProxyDAO);
+                findByIdMapper);
 
         final List<UserActionRequest> list = new ArrayList<UserActionRequest>();
         context.checking(new Expectations()
@@ -285,7 +286,7 @@ public class CreatePersonExecutionTest
 
                 allowing(person).getProperties(false);
 
-                allowing(getRootOrgProxyDAO).execute(orgId);
+                allowing(findByIdMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(organization));
 
                 allowing(createPersonActionFactory).getCreatePersonAction(with(any(PersonMapper.class)),

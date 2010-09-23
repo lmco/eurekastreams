@@ -15,8 +15,8 @@
  */
 package org.eurekastreams.server.service.actions.strategies.activity.plugins.rome;
 
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import com.sun.syndication.feed.synd.SyndFeed;
@@ -77,7 +77,7 @@ public class BasicPluginFeedFetcher implements PluginFeedFetcherStrategy
      * {@inheritDoc}
      */
     @Override
-    public Map<String, SyndFeed> execute(final String inFeedUrl, final List<String> inRequestors,
+    public Map<String, SyndFeed> execute(final String inFeedUrl, final Collection<String> inRequestors,
             final String inProxyHost, final String inProxyPort, final int inTimeout) throws Exception
     {
         return Collections.singletonMap(null, fetcher.fetchFeed(inFeedUrl, httpHeaders, inProxyHost, inProxyPort,

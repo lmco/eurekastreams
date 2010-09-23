@@ -23,16 +23,18 @@ import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.server.action.request.stream.SetStreamFilterOrderRequest;
+import org.eurekastreams.server.action.request.stream.SetStreamOrderRequest;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.domain.stream.StreamView;
-import org.eurekastreams.server.persistence.PersonMapper;
+import org.eurekastreams.server.domain.stream.Stream;
+import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
+import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
+import org.eurekastreams.server.persistence.mappers.stream.ReorderStreams;
 
 /**
- * Reorders the stream views displayed on the activity page..
- *
+ * Reorders the streams displayed on the activity page..
+ * 
  */
-public class SetStreamViewOrderExecution implements ExecutionStrategy<PrincipalActionContext>
+public class SetStreamOrderExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
      * Local logger instance.
@@ -42,17 +44,25 @@ public class SetStreamViewOrderExecution implements ExecutionStrategy<PrincipalA
     /**
      * Mapper used to retrieve and save the page that holds the tabs.
      */
-    private final PersonMapper personMapper;
+    private final FindByIdMapper<Person> personMapper;
+
+    /**
+     * The reorder mapper.
+     */
+    private ReorderStreams reorderMapper;
 
     /**
      * Constructor.
-     *
+     * 
      * @param inPersonMapper
      *            injecting the mapper
+     * @param inReorderMapper
+     *            the reorder mapper.
      */
-    public SetStreamViewOrderExecution(final PersonMapper inPersonMapper)
+    public SetStreamOrderExecution(final FindByIdMapper<Person> inPersonMapper, final ReorderStreams inReorderMapper)
     {
         personMapper = inPersonMapper;
+        reorderMapper = inReorderMapper;
     }
 
     /**
@@ -62,32 +72,32 @@ public class SetStreamViewOrderExecution implements ExecutionStrategy<PrincipalA
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
         log.debug("entering");
-        SetStreamFilterOrderRequest request = (SetStreamFilterOrderRequest) inActionContext.getParams();
+        SetStreamOrderRequest request = (SetStreamOrderRequest) inActionContext.getParams();
 
-        Person person = personMapper.findByAccountId(inActionContext.getPrincipal().getAccountId());
+        Person person = personMapper.execute(new FindByIdRequest("Person", inActionContext.getPrincipal().getId()));
 
-        List<StreamView> views = person.getStreamViewDefinitions();
+        List<Stream> streams = person.getStreams();
 
         // Find the tab to be moved
         int oldIndex = -1;
 
-        for (int i = 0; i < views.size(); i++)
+        for (int i = 0; i < streams.size(); i++)
         {
-            if (views.get(i).getId() == request.getFilterId())
+            if (streams.get(i).getId() == request.getStreamId())
             {
+                log.debug("Found item at index: " + i);
                 oldIndex = i;
+                break;
             }
         }
 
-        StreamView movingView = views.get(oldIndex);
+        Stream movingStream = streams.get(oldIndex);
 
         // move the tab
-        views.remove(oldIndex);
-        views.add(request.getNewIndex(), movingView);
+        streams.remove(oldIndex);
+        streams.add(request.getNewIndex(), movingStream);
 
-        person.setStreamViewHiddenLineIndex(request.getHiddenLineIndex());
-
-        personMapper.flush();
+        reorderMapper.execute(person.getId(), streams, request.getHiddenLineIndex());
 
         return Boolean.TRUE;
     }

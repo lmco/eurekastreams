@@ -18,6 +18,8 @@ package org.eurekastreams.server.search.bridge;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.Background;
 import org.eurekastreams.server.domain.BackgroundItemType;
 import org.hibernate.search.bridge.StringBridge;
@@ -27,6 +29,10 @@ import org.hibernate.search.bridge.StringBridge;
  */
 public class BackgroundStringBridge implements StringBridge
 {
+    /**
+     * Logger.
+     */
+    private final Log log = LogFactory.make();
 
     /**
      * Individual item list bridge.
@@ -49,23 +55,29 @@ public class BackgroundStringBridge implements StringBridge
         }
 
         StringBuilder sb = new StringBuilder();
-
-        Background bg = (Background) backgroundObj;
-
-        // note: the extra space in the beginning here is for easier unit testing
-        sb.append(" ");
-
-        // we currently only index SKILLS since that's all that's settable
-        List<BackgroundItemType> handledTypes = new ArrayList<BackgroundItemType>();
-        handledTypes.add(BackgroundItemType.SKILL);
-
-        for (BackgroundItemType itemType : handledTypes)
+        try
         {
-            sb.append(itemBridge.objectToString(bg.getBackgroundItems(itemType)));
+            Background bg = (Background) backgroundObj;
+
+            // note: the extra space in the beginning here is for easier unit testing
+            sb.append(" ");
+
+            // we currently only index SKILLS since that's all that's settable
+            List<BackgroundItemType> handledTypes = new ArrayList<BackgroundItemType>();
+            handledTypes.add(BackgroundItemType.SKILL);
+
+            for (BackgroundItemType itemType : handledTypes)
+            {
+                sb.append(itemBridge.objectToString(bg.getBackgroundItems(itemType)));
+            }
+
+            sb.append(" ");
         }
-
-        sb.append(" ");
-
+        catch (Exception ex)
+        {
+            log.info("Error iterating through the list of background items - most likely because it's null, "
+                    + "but not detectable because it's a lazy-loaded collection.  ", ex);
+        }
         return sb.toString();
     }
 }

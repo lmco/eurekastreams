@@ -34,6 +34,7 @@ import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.persistence.mappers.requests.MoveOrganizationPeopleRequest;
+import org.eurekastreams.server.persistence.mappers.requests.MoveOrganizationPeopleResponse;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.jmock.Expectations;
@@ -62,8 +63,8 @@ public class DeleteOrganizationExecutionTest
     /**
      * Mapper to move People out of organization.
      */
-    private DomainMapper<MoveOrganizationPeopleRequest, Set<Long>> movePeopleMapper = context.mock(DomainMapper.class,
-            "movePeopleMapper");
+    private DomainMapper<MoveOrganizationPeopleRequest, MoveOrganizationPeopleResponse> movePeopleMapper = context
+            .mock(DomainMapper.class, "movePeopleMapper");
 
     /**
      * Mapper for getting organization DTOs.
@@ -80,6 +81,12 @@ public class DeleteOrganizationExecutionTest
      * Mapper to delete org and related objects.
      */
     private DomainMapper<Long, Boolean> deleteOrgMapper = context.mock(DomainMapper.class, "deleteOrgMapper");
+
+    /**
+     * Mapper to get person ids for those that have given org as related org.
+     */
+    private DomainMapper<Long, Set<Long>> relatedOrgPersonIdsMapper = context.mock(DomainMapper.class,
+            "relatedOrgPersonIdMapper");
 
     /**
      * {@link OrganizationMapper}. This is used for updating org stats only.
@@ -135,10 +142,15 @@ public class DeleteOrganizationExecutionTest
     private Long compositeStreamId = 3L;
 
     /**
+     * Moved activity id.
+     */
+    private Long activityId = 4L;
+
+    /**
      * System under test.
      */
     private DeleteOrganizationExecution sut = new DeleteOrganizationExecution(movePeopleMapper, orgDTOByIdMapper,
-            orgByIdMapper, deleteOrgMapper, organizationMapper, orgTraverserBuilder);
+            orgByIdMapper, deleteOrgMapper, relatedOrgPersonIdsMapper, organizationMapper, orgTraverserBuilder);
 
     /**
      * Test.
@@ -149,6 +161,10 @@ public class DeleteOrganizationExecutionTest
     {
         final List<UserActionRequest> requests = new ArrayList<UserActionRequest>();
         final Set<Long> movedPeopleIds = new HashSet<Long>(Arrays.asList(9L));
+        final Set<Long> movedActivityIds = new HashSet<Long>(Arrays.asList(9L));
+
+        final MoveOrganizationPeopleResponse response = new MoveOrganizationPeopleResponse(movedPeopleIds,
+                movedActivityIds);
 
         context.checking(new Expectations()
         {
@@ -181,6 +197,9 @@ public class DeleteOrganizationExecutionTest
                 will(returnValue("orgShortName"));
 
                 allowing(movePeopleMapper).execute(with(any(MoveOrganizationPeopleRequest.class)));
+                will(returnValue(response));
+
+                allowing(relatedOrgPersonIdsMapper).execute(orgId);
                 will(returnValue(movedPeopleIds));
 
                 allowing(deleteOrgMapper).execute(orgId);
@@ -207,8 +226,9 @@ public class DeleteOrganizationExecutionTest
         // verify queued tasks should be 4
         // * reindex single moved person
         // * reindex parent org.
+        // * reindex moved activity
         // * remove deleted org from search index.
         // * delete cache keys.
-        assertEquals(4, requests.size());
+        assertEquals(5, requests.size());
     }
 }

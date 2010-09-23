@@ -55,7 +55,6 @@ public class QueryParserBuilder
      * @return a QueryParser with the constructor-fed default field and analyzer.
      */
     public QueryParser buildQueryParser()
-    {
-        return new QueryParser(defaultField, analyzer);
+    {   return new QueryParser(defaultField, analyzer);
     }
 }

@@ -15,8 +15,12 @@
  */
 package org.eurekastreams.web.client.ui.common;
 
+import java.util.HashMap;
+
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.PagerUpdatedEvent;
+import org.eurekastreams.web.client.events.UpdateHistoryEvent;
+import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -103,6 +107,13 @@ public class Pager extends FlowPanel
                         startIndex += pageSize;
                         endIndex += pageSize;
                         Session.getInstance().getEventBus().notifyObservers(new PagerUpdatedEvent(thisBuffered));
+                        
+                        HashMap<String, String> params = new HashMap<String, String>();
+                        params.put("startIndex", startIndex.toString());
+                        params.put("endIndex", endIndex.toString());
+
+                        Session.getInstance().getEventBus().notifyObservers(
+                                new UpdateHistoryEvent(new CreateUrlRequest(params, false)));
                     }
                 }
             });
@@ -118,6 +129,13 @@ public class Pager extends FlowPanel
                         startIndex -= pageSize;
                         endIndex -= pageSize;
                         Session.getInstance().getEventBus().notifyObservers(new PagerUpdatedEvent(thisBuffered));
+                        
+                        HashMap<String, String> params = new HashMap<String, String>();
+                        params.put("startIndex", startIndex.toString());
+                        params.put("endIndex", endIndex.toString());
+
+                        Session.getInstance().getEventBus().notifyObservers(
+                                new UpdateHistoryEvent(new CreateUrlRequest(params, false)));
                     }
                 }
             });
@@ -235,6 +253,17 @@ public class Pager extends FlowPanel
     {
         return startIndex;
     }
+    
+    /**
+     * Set the startIndex.
+     * 
+     * @param inStartIndex
+     *            the startIndex.
+     */
+    public void setStartIndex(final Integer inStartIndex)
+    {
+        startIndex = inStartIndex;
+    }
 
     /**
      * Get the end index.
@@ -244,6 +273,17 @@ public class Pager extends FlowPanel
     public Integer getEndIndex()
     {
         return endIndex;
+    }
+
+    /**
+     * Set the endIndex.
+     * 
+     * @param inEndIndex
+     *          the endIndex.
+     */
+    public void setEndIndex(final Integer inEndIndex)
+    {
+        endIndex = inEndIndex;
     }
 
     /**

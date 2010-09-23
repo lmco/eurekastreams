@@ -387,6 +387,47 @@ public class EmployeeLookupViewTest
     }
 
     /**
+     * Tests on results updated with one result.
+     */
+    @Test
+    public final void testOnResultsUpdatedOneResult()
+    {
+        final List<Person> results = new ArrayList<Person>();
+        results.add(new Person("a", "b", "c", "d", "e"));
+
+        context.checking(new Expectations()
+        {
+            {
+                final Sequence execSequence = context.sequence("Execution sequence");
+                
+                oneOf(resultsMock).clear();
+
+                exactly(2).of(modelMock).getPeopleResults();
+                will(returnValue(results));
+                
+                exactly(1).of(resultsMock).addItem(with(any(String.class)), with(any(String.class)));
+                inSequence(execSequence);
+
+                oneOf(modelMock).getMoreResultsExist();
+                will(returnValue(false));
+
+                oneOf(resultsDescMock).setText(with(any(String.class)));
+                
+                oneOf(resultsMock).setItemSelected(0, true);
+                
+                oneOf(resultsMock).getValue(0);
+                will(returnValue("a"));
+                
+                oneOf(modelMock).setSelectedPersonByAccountId("a");
+            }
+        });
+
+        sut.onPeopleResultsUpdated();
+
+        context.assertIsSatisfied();
+    }
+
+    /**
      * Tests when select button active state changes.
      */
     @Test

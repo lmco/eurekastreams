@@ -1082,6 +1082,11 @@
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 
+	<bean id="reorderStreams"
+		class="org.eurekastreams.server.persistence.mappers.stream.ReorderStreams">
+		<property name="cache" ref="memcachedCache" />
+	</bean>
+
 	<bean id="getStarredActivityIds"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetStarredActivityIds">
 		<property name="cache" ref="memcachedCache" />
@@ -1761,8 +1766,12 @@
     <bean id="deleteOrganizationMapper" class="org.eurekastreams.server.persistence.mappers.db.DeleteOrganizationDbMapper" >
         <constructor-arg ref="findByIdMapper"/>
     </bean>
+    
+    <bean id="getRelatedEntityCountMapper" class="org.eurekastreams.server.persistence.mappers.db.GetRelatedEntityCount" />
 	
 	<bean id="moveOrganizationPeopleMapper" class="org.eurekastreams.server.persistence.mappers.db.MoveOrganizationPeopleDBMapper" />
+	
+	<bean id="getPeopleIdsWithRelatedOrg" class="org.eurekastreams.server.persistence.mappers.db.GetPeopleIdsWithRelatedOrg" />
 	
 	<bean id="syncParentOrgForGroupActivities" class="org.eurekastreams.server.persistence.mappers.db.SyncParentOrgForGroupActivities" />
 	

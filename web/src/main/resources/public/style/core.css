@@ -9314,6 +9314,21 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 	padding-top: 7px;
 }
 
+.form-delete-org-button a,a.form-delete-org-button {
+    background: transparent url(images/deleteOrgBtn.png) no-repeat;
+    width: 99px;
+    height: 26px;
+    margin-left: 100px;
+    margin-top: 20px;
+}
+
+.form-delete-org-button+.form-submit-spinny {
+    margin-left: 100px;
+    margin-top: 10px;
+    padding-left: 40px;
+    padding-top: 7px;
+}
+
 .deleteFollower {
 	margin-left: 70px;
 	margin-top: 6px;
@@ -11161,6 +11176,11 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 	cursor: pointer;
 }
 
+.popular-hashtags div.gwt-HTML
+{
+	margin-bottom: 10px;	
+}
+
 .profile-connection-count:hover {
 	background-image: url('images/connectionsActiveBtn.png');
 }
@@ -11448,10 +11468,9 @@ div.profile-settings-tab-container div.tab-container {
 	background-color: #FFFFFF;
 	border: #bbbbbb solid 1px;
 	padding: 20px;
-	width: 475px;
+	width: 600px;
 	font-family: Verdana;
 	font-size: 12px;
-	margin-top: 20px;
 	margin-left: 20px;
 	display: inline-block;
 }
@@ -11497,6 +11516,22 @@ div.profile-settings-tab-container div.tab-container {
 	font-style: italic;
 	margin-top: 15px;
 	margin-left: 30px;
+}
+
+.warning-report {
+	background-color: #FFFFFF;
+	border: #bbbbbb solid 1px;
+	padding: 20px;
+	width: 475px;
+	font-family: Verdana;
+	font-size: 12px;
+	margin-top: 20px;
+	margin-left: 20px;
+	display: inline-block;
+}
+
+.warning-report-container {
+	text-align: center;
 }
 
 .warning-message {
