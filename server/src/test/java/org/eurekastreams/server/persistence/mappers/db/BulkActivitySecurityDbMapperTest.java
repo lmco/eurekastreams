@@ -65,7 +65,7 @@ public class BulkActivitySecurityDbMapperTest extends MapperTest
     public void testExecute()
     {
         final Long activityId = 6789L;
-        final Long destinationEntityId = 100L;
+        final Long destinationEntityId = 98L;
 
         final List<Long> activites = new ArrayList<Long>();
         activites.add(activityId);

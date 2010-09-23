@@ -388,9 +388,6 @@
 	<bean id="deleteActivity"
 		class="org.eurekastreams.server.persistence.mappers.stream.DeleteActivity">
 		<constructor-arg ref="bulkActivitiesMapper" />
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
-		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-		<constructor-arg ref="getOrderedCommentIdsByActivityId" />
 		<property name="cache" ref="testCache" />
 	</bean>
 	
@@ -409,9 +406,7 @@
         <constructor-arg ref="getGroupFollowerIds" />
         <constructor-arg ref="bulkPeopleByAccountIdMapper" />
         <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-        <constructor-arg ref="getRecursiveParentOrgIdsMapper" />
-        <constructor-arg ref="bulkOrganizationsMapper" />
-        <constructor-arg ref="bulkOrganizationsByShortNameMapper" />
+        <property name="cache" ref="testCache" />
     </bean>	
 	
 	<bean id="postCachedActivity"
@@ -419,7 +414,6 @@
 		<constructor-arg ref="getFollowerIds" />
 		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
 		<constructor-arg ref="getRecursiveParentOrgIdsMapper" />
-		<constructor-arg ref="bulkOrganizationsMapper" />
 		<constructor-arg ref="bulkOrganizationsByShortNameMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 		<property name="cache" ref="testCache" />

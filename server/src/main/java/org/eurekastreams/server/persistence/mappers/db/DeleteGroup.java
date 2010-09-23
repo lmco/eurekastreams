@@ -85,7 +85,6 @@ public class DeleteGroup extends BaseArgDomainMapper<Long, DeleteGroupResponse>
      * @return Set of organization ids representing parent orgs all the way up the tree, will need these to adjust
      *         cache.
      */
-    @SuppressWarnings("unchecked")
     @Override
     public DeleteGroupResponse execute(final Long inRequest)
     {

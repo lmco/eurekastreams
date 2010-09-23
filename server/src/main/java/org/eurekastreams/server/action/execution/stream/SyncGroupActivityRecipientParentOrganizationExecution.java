@@ -139,7 +139,8 @@ public class SyncGroupActivityRecipientParentOrganizationExecution implements
             orgIds.addAll(getRecursiveOrgParentMapper.execute(org.getEntityId()));
         }
 
-        // get compositeStream ids for all affected orgs
+        // TODO: still needed after StreamViews were deleted?
+        // // get compositeStream ids for all affected orgs
         // List<OrganizationModelView> allOrgs = getOrgByIdMapper.execute(new ArrayList<Long>(orgIds));
         // for (OrganizationModelView org : allOrgs)
         // {

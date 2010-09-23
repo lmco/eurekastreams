@@ -54,7 +54,6 @@ public class DeleteGroupTest extends MapperTest
         // verify associated items are present as expected.
         assertEquals(1, getEntityManager().createQuery("FROM DomainGroup WHERE id = 2").getResultList().size());
         assertEquals(1, getEntityManager().createQuery("FROM StreamScope WHERE id = 875").getResultList().size());
-        assertEquals(1, getEntityManager().createQuery("FROM StreamView WHERE id = 10").getResultList().size());
 
         // get a parent org group count to compare with after delete.
         int descendantGroupCount = (Integer) getEntityManager().createQuery(
@@ -77,7 +76,6 @@ public class DeleteGroupTest extends MapperTest
         // TODO: This could be filled out with more related entities to ensure cascading doesn't change for DomainGroup.
         assertEquals(0, getEntityManager().createQuery("FROM DomainGroup WHERE id = 2").getResultList().size());
         assertEquals(0, getEntityManager().createQuery("FROM StreamScope WHERE id = 875").getResultList().size());
-        assertEquals(0, getEntityManager().createQuery("FROM StreamView WHERE id = 10").getResultList().size());
 
         // verify organization stats were updated.
         assertEquals(descendantGroupCount - 1, ((Integer) getEntityManager().createQuery(

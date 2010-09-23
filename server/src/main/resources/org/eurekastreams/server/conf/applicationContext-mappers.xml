@@ -520,10 +520,7 @@
 
 	<bean id="followedActivityIdsLoader"
 		class="org.eurekastreams.server.persistence.mappers.cache.FollowedActivityIdsLoaderImpl" />
-
-	<bean id="getStreamScopesByStreamViewIdMapper"
-		class="org.eurekastreams.server.persistence.mappers.GetStreamScopesByStreamViewId" />
-
+		
 	<bean id="activityIdSearchPageFetcherFactory"
 		class="org.eurekastreams.server.search.stream.ActivityIdSearchPageFetcherFactory">
 		<constructor-arg value="5" />

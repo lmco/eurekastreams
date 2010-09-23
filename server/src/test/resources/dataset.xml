@@ -122,36 +122,32 @@
 		themeCategoryId="4566" numberOfUsers="100" created="2008-01-01 12:00:00.000" />
 		
     <!-- Core StreamScopes -->
-    <StreamScope id="50000" scopeType="PERSONS_FOLLOWED_STREAMS" uniqueKey="follow" version="1" />
-    <StreamScope id="50001" scopeType="PERSONS_PARENT_ORGANIZATION" uniqueKey="parentorg" version="1" />
-    <StreamScope id="50002" scopeType="ALL" uniqueKey="everyone" version="1" />
-    <StreamScope id="50003" scopeType="STARRED" uniqueKey="starred" version="1" />
+    <StreamScope id="50000" scopeType="PERSONS_FOLLOWED_STREAMS" uniqueKey="follow" version="1" destinationEntityId="0" />
+    <StreamScope id="50001" scopeType="PERSONS_PARENT_ORGANIZATION" uniqueKey="parentorg" version="1" destinationEntityId="0" />
+    <StreamScope id="50002" scopeType="ALL" uniqueKey="everyone" version="1" destinationEntityId="0" />
+    <StreamScope id="50003" scopeType="STARRED" uniqueKey="starred" version="1" destinationEntityId="0" />
     
 	<!-- Person StreamScopes -->
-	<StreamScope id="87433" scopeType="PERSON" uniqueKey="smithers" version="1" />
-	<StreamScope id="1" scopeType="PERSON" uniqueKey="fordp" version="1" />
-	<StreamScope id="2" scopeType="PERSON" uniqueKey="fordp2" version="1" />
-	<StreamScope id="3" scopeType="PERSON" uniqueKey="csagan" version="1" />
-	<StreamScope id="4" scopeType="PERSON" uniqueKey="mrburns" version="1" />
+	<StreamScope id="87433" scopeType="PERSON" uniqueKey="smithers" version="1" destinationEntityId="98" />
+	<StreamScope id="1" scopeType="PERSON" uniqueKey="fordp" version="1" destinationEntityId="42" />
+	<StreamScope id="2" scopeType="PERSON" uniqueKey="fordp2" version="1" destinationEntityId="142" />
+	<StreamScope id="3" scopeType="PERSON" uniqueKey="csagan" version="1" destinationEntityId="4507" />
+	<StreamScope id="4" scopeType="PERSON" uniqueKey="mrburns" version="1" destinationEntityId="99" />
 	
 	<!-- DomainGroup StreamScopes -->
-	<StreamScope id="874" scopeType="GROUP" uniqueKey="group1" version="1" />
-	<StreamScope id="875" scopeType="GROUP" uniqueKey="group2" version="1" />
-	<StreamScope id="876" scopeType="GROUP" uniqueKey="group3" version="1" />
-	<StreamScope id="877" scopeType="GROUP" uniqueKey="group4" version="1" />
-	<StreamScope id="878" scopeType="GROUP" uniqueKey="group5" version="1" />
-	<StreamScope id="879" scopeType="GROUP" uniqueKey="pendinggroup" version="1" />
-	<StreamScope id="880" scopeType="GROUP" uniqueKey="pendinggroup2" version="1" />
-	<StreamScope id="881" scopeType="GROUP" uniqueKey="pendinggroup3" version="1" />
+	<StreamScope id="874" scopeType="GROUP" uniqueKey="group1" version="1" destinationEntityId="1" />
+	<StreamScope id="875" scopeType="GROUP" uniqueKey="group2" version="1" destinationEntityId="2" />
+	<StreamScope id="876" scopeType="GROUP" uniqueKey="group3" version="1" destinationEntityId="3" />
+	<StreamScope id="877" scopeType="GROUP" uniqueKey="group4" version="1" destinationEntityId="4" />
+	<StreamScope id="878" scopeType="GROUP" uniqueKey="group5" version="1" destinationEntityId="5" />
+	<StreamScope id="879" scopeType="GROUP" uniqueKey="pendinggroup" version="1" destinationEntityId="6" />
+	<StreamScope id="880" scopeType="GROUP" uniqueKey="pendinggroup2" version="1" destinationEntityId="7" />
+	<StreamScope id="881" scopeType="GROUP" uniqueKey="pendinggroup3" version="1" destinationEntityId="8" />
 	
 	<!-- Organization StreamScopes -->
-	<StreamScope id="837433" scopeType="ORGANIZATION" uniqueKey="tstorgname" version="1" />
-	<StreamScope id="8374533" scopeType="ORGANIZATION" uniqueKey="child1orgname" version="1" />
-	<StreamScope id="9374533" scopeType="ORGANIZATION" uniqueKey="child2orgname" version="1" />		
-	
-	<!-- Other StreamScopes -->
-	<StreamScope id="347" scopeType="PERSONS_PARENT_ORGANIZATION" uniqueKey="fordp" version="1" />
-	<StreamScope id="3452" scopeType="PERSONS_FOLLOWED_STREAMS" uniqueKey="fordp" version="1" />
+	<StreamScope id="837433" scopeType="ORGANIZATION" uniqueKey="tstorgname" version="1" destinationEntityId="0" />
+	<StreamScope id="8374533" scopeType="ORGANIZATION" uniqueKey="child1orgname" version="1" destinationEntityId="0" />
+	<StreamScope id="9374533" scopeType="ORGANIZATION" uniqueKey="child2orgname" version="1" destinationEntityId="0" />		
 	
 	<Organization id="5" version="1" description="Mission Statement"
 		name="Test Organization Name" allUsersCanCreateGroups="true"

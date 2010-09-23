@@ -253,6 +253,10 @@ public class ActivityDTO extends ModelView implements Serializable
         {
             setCommentCount((Integer) properties.get("commentCount"));
         }
+        if (properties.containsKey("destinationStreamScopeId"))
+        {
+            getDestinationStream().setId((Long) properties.get("destinationStreamScopeId"));
+        }
         if (properties.containsKey("destinationStreamEntityId"))
         {
             getDestinationStream().setDestinationEntityId((Long) properties.get("destinationStreamEntityId"));
