@@ -61,7 +61,7 @@ public class StreamScope extends DomainEntity implements Serializable
     /**
      * The destination (group or person) entity's id.
      */
-    @Transient
+    @Basic(optional = true)
     private Long destinationEntityId;
 
     /**

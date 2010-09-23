@@ -106,9 +106,9 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
         fields.add(getColumn("verb"));
         fields.add(getColumn("baseObjectType"));
         fields.add(Projections.property("baseObject").as("baseObjectProperties"));
-        fields.add(Projections.property("recipientStreamScope.destinationEntityId").as("destinationStreamEntityId"));
-        fields.add(Projections.property("recipientStreamScope.scopeType").as("destinationStreamScopeType"));
-        fields.add(Projections.property("recipientStreamScope.uniqueKey").as("destinationStreamUniqueKey"));
+        fields.add(Projections.property("recipStreamScope.destinationEntityId").as("destinationStreamEntityId"));
+        fields.add(Projections.property("recipStreamScope.scopeType").as("destinationStreamScopeType"));
+        fields.add(Projections.property("recipStreamScope.uniqueKey").as("destinationStreamUniqueKey"));
         fields.add(Projections.property("recipientParentOrg.id").as("recipientParentOrgId"));
         fields.add(getColumn("isDestinationStreamPublic"));
         fields.add(getColumn("actorType"));
@@ -122,6 +122,7 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
         fields.add(getColumn("appId"));
         fields.add(getColumn("appSource"));
         fields.add(getColumn("appName"));
+        criteria.createAlias("recipientStreamScope", "recipStreamScope");
         criteria.setProjection(fields);
         criteria.add(Restrictions.in("this.id", activityIds));
 
