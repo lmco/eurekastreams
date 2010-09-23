@@ -15,11 +15,7 @@
  */
 package org.eurekastreams.server.service.restlets;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.Date;
-import java.util.List;
-import java.util.regex.Pattern;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -30,7 +26,6 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.PrincipalPopulator;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
-import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.commons.formatting.DateFormatter;
 import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
@@ -40,6 +35,7 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
+import org.eurekastreams.server.service.restlets.support.RestletQueryRequestParser;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.resource.Representation;
@@ -49,7 +45,7 @@ import org.restlet.resource.Variant;
 
 /**
  * REST end point for stream filters.
- * 
+ *
  */
 public class StreamResource extends SmpResource
 {
@@ -62,11 +58,6 @@ public class StreamResource extends SmpResource
      * Open Social Id. TODO: this should be eliminated when we have OAuth.
      */
     private String openSocialId;
-
-    /**
-     * JSON.
-     */
-    private String jsonRequest;
 
     /**
      * Action.
@@ -99,21 +90,6 @@ public class StreamResource extends SmpResource
     private static final String GOOD_STATUS = "OK";
 
     /**
-     * Global keywords.
-     */
-    private List<String> globalKeywords = null;
-
-    /**
-     * Multiple entity keywords.
-     */
-    private List<String> multipleEntityKeywords = null;
-
-    /**
-     * Keywords.
-     */
-    private List<String> keywords = null;
-
-    /**
      * Stream find by ID mapper.
      */
     private FindByIdMapper<Stream> streamMapper = null;
@@ -129,48 +105,43 @@ public class StreamResource extends SmpResource
      */
     private long streamId;
 
+    /** Extracts the query out of the request path. */
+    private RestletQueryRequestParser requestParser;
+
     /**
      * Default constructor.
-     * 
+     *
      * @param inAction
      *            the action.
      * @param inServiceActionController
      *            {@link ActionController} used to execute action.
      * @param inPrincipalPopulator
      *            {@link PrincipalPopulator} used to create principal via open social id.
-     * @param inGlobalKeywords
-     *            the global keywords.
-     * @param inMultipleEntityKeywords
-     *            the multiple entities keyword.
-     * @param inKeywords
-     *            the other keywords.
      * @param inStreamMapper
      *            the stream mapper.
+     * @param inRequestParser
+     *            Extracts the query out of the request path.
      */
     public StreamResource(final ServiceAction inAction, final ActionController inServiceActionController,
-            final PrincipalPopulator inPrincipalPopulator, final List<String> inGlobalKeywords,
-            final List<String> inMultipleEntityKeywords, final List<String> inKeywords,
-            final FindByIdMapper<Stream> inStreamMapper)
+            final PrincipalPopulator inPrincipalPopulator, final FindByIdMapper<Stream> inStreamMapper,
+            final RestletQueryRequestParser inRequestParser)
     {
         action = inAction;
         serviceActionController = inServiceActionController;
         principalPopulator = inPrincipalPopulator;
-        globalKeywords = inGlobalKeywords;
-        multipleEntityKeywords = inMultipleEntityKeywords;
-        keywords = inKeywords;
         streamMapper = inStreamMapper;
+        requestParser = inRequestParser;
     }
 
     /**
      * init the params.
-     * 
+     *
      * @param request
      *            the request object.
      */
     @Override
     protected void initParams(final Request request)
     {
-        jsonRequest = (String) request.getAttributes().get("json");
         openSocialId = (String) request.getAttributes().get("openSocialId");
         callback = (String) request.getAttributes().get("callback");
         mode = (String) request.getAttributes().get("mode");
@@ -184,7 +155,7 @@ public class StreamResource extends SmpResource
 
     /**
      * GET the activites.
-     * 
+     *
      * @param variant
      *            the variant.
      * @return the JSON.
@@ -197,62 +168,41 @@ public class StreamResource extends SmpResource
     {
         log.debug("Path: " + getPath());
 
+        JSONObject responseJson = new JSONObject();
         String status = GOOD_STATUS;
 
-        JSONObject decodedJson = null;
-
-        if (mode.equals("query"))
+        try
         {
-            try
+            JSONObject queryJson = null;
+
+            if (mode.equals("query"))
             {
-                decodedJson = parseRequest(getPath());
+                int start = (null == callback) ? 5 : 7;
+                queryJson = requestParser.parseRequest(getPath(), start);
             }
-            catch (Exception e)
+            else if (mode.equals("saved"))
             {
-                status = "Error: " + e;
+                Stream stream = streamMapper.execute(new FindByIdRequest("Stream", streamId));
+                if (stream == null)
+                {
+                    throw new Exception("Unknown saved stream.");
+                }
+                queryJson = JSONObject.fromObject(stream.getRequest());
             }
-        }
-        else if (mode.equals("saved"))
-        {
-            Stream stream = streamMapper.execute(new FindByIdRequest("Stream", streamId));
-            decodedJson = JSONObject.fromObject(stream.getRequest());
-        }
-        else
-        {
-            status = "Error: Unknown mode.";
-        }
-
-        log.debug(status);
-        log.debug("JSON" + jsonRequest);
-        
-        JSONObject json = new JSONObject();
-
-        PagedSet<ActivityDTO> activities = null;
-
-        if (GOOD_STATUS.equals(status))
-        {
-            log.debug("Making request using: " + decodedJson);
-            json.put("query", decodedJson.getJSONObject("query"));
-
-            // Create the actionContext
-            PrincipalActionContext ac = new ServiceActionContext(decodedJson.toString(), principalPopulator
-                    .getPrincipal(openSocialId));
-
-            try
+            else
             {
-                activities = (PagedSet<ActivityDTO>) serviceActionController.execute((ServiceActionContext) ac, action);
-            }
-            catch (Exception e)
-            {
-                status = "Error: " + e.toString();
+                throw new Exception("Unknown request mode.");
             }
 
-        }
+            log.debug("Making request using: " + queryJson);
+            PrincipalActionContext ac =
+                    new ServiceActionContext(queryJson.toString(), principalPopulator.getPrincipal(openSocialId));
+            PagedSet<ActivityDTO> activities =
+                    (PagedSet<ActivityDTO>) serviceActionController.execute((ServiceActionContext) ac, action);
 
-        if (GOOD_STATUS.equals(status))
-        {
+            responseJson.put("query", queryJson.getJSONObject("query"));
+
             DateFormatter dateFormatter = new DateFormatter(new Date());
-
             JSONArray jsonActivities = new JSONArray();
             for (ActivityDTO activity : activities.getPagedSet())
             {
@@ -264,8 +214,8 @@ public class StreamResource extends SmpResource
                 jsonActivity.put("destinationDisplayName", activity.getDestinationStream().getDisplayName());
                 jsonActivity.put("destinationUniqueIdentifier", activity.getDestinationStream().getUniqueIdentifier());
                 jsonActivity.put("destinationType", activity.getDestinationStream().getType());
-                jsonActivity.put("actorAvatarPath", actorUrlGen.getSmallAvatarUrl(activity.getActor().getId(), activity
-                        .getActor().getAvatarId()));
+                jsonActivity.put("actorAvatarPath", actorUrlGen.getSmallAvatarUrl(activity.getActor().getId(),
+                        activity.getActor().getAvatarId()));
                 jsonActivity.put("actorDisplayName", activity.getActor().getDisplayName());
                 jsonActivity.put("actorUniqueIdentifier", activity.getActor().getUniqueIdentifier());
                 jsonActivity.put("actorType", activity.getActor().getType());
@@ -288,12 +238,18 @@ public class StreamResource extends SmpResource
                 jsonActivities.add(jsonActivity);
             }
 
-            json.put("activities", jsonActivities);
+            responseJson.put("activities", jsonActivities);
+
+        }
+        catch (Exception ex)
+        {
+            status = "Error: " + ex.toString();
         }
 
-        json.put("status", status);
+        log.debug(status);
+        responseJson.put("status", status);
 
-        String jsString = json.toString();
+        String jsString = responseJson.toString();
 
         // JSONP
         if (null != callback)
@@ -308,89 +264,8 @@ public class StreamResource extends SmpResource
     }
 
     /**
-     * Parses the request.
-     * 
-     * @param path
-     *            the path.
-     * @return the request.
-     * @throws UnsupportedEncodingException
-     *             thrown for bad request.
-     */
-    public JSONObject parseRequest(final String path) throws UnsupportedEncodingException
-    {
-        JSONObject json = new JSONObject();
-        JSONObject query = new JSONObject();
-
-        String[] parts = Pattern.compile("/").split(path);
-
-        int start = (null == callback) ? 5 : 7;
-
-        for (int i = start; i < parts.length - 1; i += 2)
-        {
-            log.debug("Found key: " + parts[i]);
-
-            if (isMultipleEntityKeyword(parts[i]))
-            {
-                query.accumulate(parts[i], parseEntities(parts[i + 1]));
-            }
-            else if (isGlobalKeyword(parts[i]))
-            {
-                json.accumulate(parts[i], parts[i + 1]);
-            }
-            else if (isKeyword(parts[i]))
-            {
-                query.accumulate(parts[i], URLDecoder.decode(parts[i + 1], "UTF-8"));
-            }
-            else
-            {
-                throw new ValidationException("Unable to parse request, unrecognized keyword: " + parts[i]);
-            }
-        }
-
-        json.accumulate("query", query);
-
-        return json;
-    }
-
-    /**
-     * Determine if the keyword is a multiple entity word.
-     * 
-     * @param keyword
-     *            the word.
-     * @return true or false.
-     */
-    public boolean isMultipleEntityKeyword(final String keyword)
-    {
-        return multipleEntityKeywords.contains(keyword);
-    }
-
-    /**
-     * Determine if the keyword is a global word.
-     * 
-     * @param keyword
-     *            the word.
-     * @return true or false.
-     */
-    public boolean isGlobalKeyword(final String keyword)
-    {
-        return globalKeywords.contains(keyword);
-    }
-
-    /**
-     * Determine if the keyword is recognized..
-     * 
-     * @param keyword
-     *            the word.
-     * @return true or false.
-     */
-    public boolean isKeyword(final String keyword)
-    {
-        return keywords.contains(keyword);
-    }
-
-    /**
      * Overrides the path.
-     * 
+     *
      * @param inPathOverride
      *            the string to override the path with.
      */
@@ -401,7 +276,7 @@ public class StreamResource extends SmpResource
 
     /**
      * Get the path.
-     * 
+     *
      * @return the path.
      */
     public String getPath()
@@ -416,29 +291,4 @@ public class StreamResource extends SmpResource
         }
     }
 
-    /**
-     * Parses entities from the request.
-     * 
-     * @param entityString
-     *            the request string.
-     * @return the entities.
-     */
-    private JSONArray parseEntities(final String entityString)
-    {
-        JSONArray entityArr = new JSONArray();
-        String[] parts = Pattern.compile(",").split(entityString);
-
-        for (String part : parts)
-        {
-            String[] entity = part.split(":");
-
-            JSONObject entityObj = new JSONObject();
-            entityObj.accumulate("name", entity[1]);
-            entityObj.accumulate("type", entity[0]);
-
-            entityArr.add(entityObj);
-        }
-
-        return entityArr;
-    }
 }

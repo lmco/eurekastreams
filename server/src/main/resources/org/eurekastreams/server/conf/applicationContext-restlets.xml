@@ -168,10 +168,13 @@
 		<property name="root" ref="restletRouter" />
 	</bean>
 		
-	<bean name="oauthRequestTokenResource" class="org.eurekastreams.server.service.restlets.OAuthRequestTokenResource">
+	<!-- Resource beans - these are stateful (inherit statefulness from org.restlet.Handler) thus need to be defined as "prototype". -->
+	
+	<bean name="oauthRequestTokenResource" class="org.eurekastreams.server.service.restlets.OAuthRequestTokenResource" scope="prototype">
 		<property name="dataStore" ref="oauthDataStore" />
 	</bean>
-	<bean name="oauthAccessTokenResource" class="org.eurekastreams.server.service.restlets.OAuthAccessTokenResource">
+	
+	<bean name="oauthAccessTokenResource" class="org.eurekastreams.server.service.restlets.OAuthAccessTokenResource" scope="prototype">
 			<property name="dataStore" ref="oauthDataStore" />
 	</bean>
 
@@ -197,32 +200,36 @@
 		<property name="modifiable" value="true" />
 	</bean>	
 	
-	<bean name="streamResource" class="org.eurekastreams.server.service.restlets.StreamResource">
+	<bean name="streamResource" class="org.eurekastreams.server.service.restlets.StreamResource" scope="prototype">
 		<constructor-arg ref="getActivitiesByRequest" />
 		<constructor-arg ref="serviceActionController" />
 		<constructor-arg ref="openSocialPrincipalPopulator" />
-		<constructor-arg>
-			<list>
-				<value>minId</value>
-				<value>maxId</value>
-			</list>
-		</constructor-arg>
-		<constructor-arg>
-			<list>
-				<value>recipient</value>
-			</list>
-		</constructor-arg>
-		<constructor-arg>
-			<list>
-				<value>keywords</value>
-				<value>followedBy</value>
-				<value>sortBy</value>
-				<value>savedBy</value>
-				<value>organization</value>
-				<value>parentOrg</value>
-			</list>
-		</constructor-arg>
 		<constructor-arg ref="findByIdMapper" />
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.service.restlets.support.RestletQueryRequestParser">
+				<constructor-arg>
+					<list>
+						<value>minId</value>
+						<value>maxId</value>
+					</list>
+				</constructor-arg>
+				<constructor-arg>
+					<list>
+						<value>recipient</value>
+					</list>
+				</constructor-arg>
+				<constructor-arg>
+					<list>
+						<value>keywords</value>
+						<value>followedBy</value>
+						<value>sortBy</value>
+						<value>savedBy</value>
+						<value>organization</value>
+						<value>parentOrg</value>
+					</list>
+				</constructor-arg>
+			</bean>
+		</constructor-arg>
 	</bean>
 	
 	
