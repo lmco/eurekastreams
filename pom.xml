@@ -293,6 +293,7 @@
                         -->
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>ounce-maven-plugin</artifactId>
+                        <version>1.2</version>
                         <configuration>
                             <installDir>/usr/local/share/Ounce_Labs</installDir>
                             <waitForScan>true</waitForScan>
