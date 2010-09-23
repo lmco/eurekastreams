@@ -4343,6 +4343,7 @@
         	<bean class="org.eurekastreams.server.action.execution.stream.GetCurrentUsersStreamsExecution">
         		<constructor-arg ref="getUserStreamsMapper" />
         		<constructor-arg ref="findByIdMapper" />
+        		<constructor-arg value="EUREKA:PARENT_ORG_TAG" />
         	</bean>
         </constructor-arg>
 		<constructor-arg value="true" />
