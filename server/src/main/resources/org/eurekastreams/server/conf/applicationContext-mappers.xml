@@ -247,6 +247,46 @@
 	</bean>
 
 
+
+    <bean id="findPopularHashTagsForAllGroupsJoinedMapper"
+        class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        
+        <!-- CACHE COMPONENT -->
+
+        <constructor-arg>
+            <!-- Cache mapper isn't partial results - wrap it -->
+                            <bean
+                                class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
+                                <constructor-arg>
+                                    <bean
+                                        class="org.eurekastreams.server.persistence.mappers.cache.StreamPopularHashTagsRequestCacheKeySuffixTransformer" />
+                                </constructor-arg>
+                                <constructor-arg
+                                    ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.POPULAR_HASH_TAGS_BY_STREAM_TYPE_AND_SHORT_NAME" />
+                               <constructor-arg value="False" />
+                                <property name="cache" ref="memcachedCache" />
+                             </bean>
+         </constructor-arg>
+        <!-- DATABASE COMPONENT -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.MultiDomainMapperRequestMapper">
+                    <constructor-arg>
+                         <ref bean="findPopularHashTagsForStreamMapper" />
+                    </constructor-arg>
+            </bean>
+        </constructor-arg>
+
+        <constructor-arg>
+            <bean
+                class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
+        </constructor-arg>
+        
+        <!-- CACHE REFRESHER -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.NullCacheRefresher" />
+        </constructor-arg>
+    </bean>
+
 	<bean id="bulkActivitySecurityMapper"
 		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<constructor-arg>
