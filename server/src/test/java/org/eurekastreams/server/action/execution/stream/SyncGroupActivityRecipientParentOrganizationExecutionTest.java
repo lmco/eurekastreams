@@ -40,7 +40,7 @@ import org.junit.Test;
 
 /**
  * Test for SyncGroupActivityRecipientParentOrganizationExecution.
- * 
+ *
  */
 @SuppressWarnings("unchecked")
 public class SyncGroupActivityRecipientParentOrganizationExecutionTest
@@ -182,16 +182,6 @@ public class SyncGroupActivityRecipientParentOrganizationExecutionTest
 
                 allowing(getOrgByIdMapper).execute(with(any(List.class)));
                 will(returnValue(new ArrayList<OrganizationModelView>(Arrays.asList(rootOrg, oldParent, newParent))));
-
-                allowing(rootOrg).getCompositeStreamId();
-                will(returnValue(6L));
-
-                allowing(oldParent).getCompositeStreamId();
-                will(returnValue(7L));
-
-                allowing(newParent).getCompositeStreamId();
-                will(returnValue(8L));
-
             }
         });
 

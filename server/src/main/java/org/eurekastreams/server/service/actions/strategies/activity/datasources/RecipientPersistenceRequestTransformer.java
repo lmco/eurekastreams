@@ -17,14 +17,12 @@ package org.eurekastreams.server.service.actions.strategies.activity.datasources
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 
@@ -33,10 +31,6 @@ import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds
  */
 public class RecipientPersistenceRequestTransformer implements PersistenceDataSourceRequestTransformer
 {
-    /**
-     * Steam ID mapper.
-     */
-    private DomainMapper<Map<Long, EntityType>, List<Long>> streamIdMapper;
 
     /**
      * Person mapper for getting entity ID from short name.
@@ -50,26 +44,22 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
 
     /**
      * Constructor.
-     * 
+     *
      * @param inPersonMapper
      *            the person mapper.
      * @param inGroupMapper
      *            the group mapper.
-     * @param inStreamIdMapper
-     *            the stream mapper.
      */
     public RecipientPersistenceRequestTransformer(final GetPeopleByAccountIds inPersonMapper,
-            final GetDomainGroupsByShortNames inGroupMapper,
-            final DomainMapper<Map<Long, EntityType>, List<Long>> inStreamIdMapper)
+            final GetDomainGroupsByShortNames inGroupMapper)
     {
         personMapper = inPersonMapper;
         groupMapper = inGroupMapper;
-        streamIdMapper = inStreamIdMapper;
     }
 
     /**
      * Transform the request into a list of entity stream IDs.
-     * 
+     *
      * @param request
      *            the request.
      * @param userEntityId
@@ -100,6 +90,7 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
             }
         }
 
-        return (ArrayList<Long>) streamIdMapper.execute(mapperRequest);
+        // TODO: return (ArrayList<Long>) streamIdMapper.execute(mapperRequest);
+        return new ArrayList<Long>();
     }
 }

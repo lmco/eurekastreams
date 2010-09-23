@@ -63,8 +63,6 @@ public class InitializeCacheExecution implements ExecutionStrategy<ActionContext
      *            the org loader.
      * @param inPersonCacheLoader
      *            the person loader.
-     * @param inStreamCacheLoader
-     *            the stream loader.
      */
     public InitializeCacheExecution(final DomainGroupCacheLoader inDomainGroupCacheLoader,
             final OrganizationHierarchyCacheLoader inOrganizationCacheLoader,

@@ -85,10 +85,10 @@ public class GetUserActivitiesExecution implements ExecutionStrategy<PrincipalAc
             List<PersonModelView> currentUsers = getPeopleByOpenSocialIds.execute(new ArrayList<String>(currentRequest
                     .getOpenSocialIds()));
 
-            for (PersonModelView currentUser : currentUsers)
-            {
-                // TODO: add all activities from this person
-            }
+            // for (PersonModelView currentUser : currentUsers)
+            // {
+            // // TODO: add all activities from this person
+            // }
         }
 
         currentActivityDTOs.addAll(bulkActivitiesMapper.execute(activityIds));

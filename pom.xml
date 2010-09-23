@@ -483,7 +483,6 @@
 				                  <exclude>**/*DTO.java</exclude>
 				                  <exclude>**/*Request.java</exclude>
 				                  <exclude>**/*Response.java</exclude>
-				                  <exclude>**/GetStreamViewByType.java</exclude>
 				                  <exclude>**/MemcachedCache.java</exclude>
 									<exclude>**/*GuiceModule.java</exclude>
 									<exclude>**/*GuiceConfigurator.java</exclude>

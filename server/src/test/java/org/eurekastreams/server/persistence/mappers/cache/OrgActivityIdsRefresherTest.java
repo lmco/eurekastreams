@@ -76,7 +76,6 @@ public class OrgActivityIdsRefresherTest
     public void testRefresh()
     {
         final Long orgId = 10L;
-        final Long streamId = 90L;
 
         final List<Long> activities = new ArrayList<Long>();
         activities.add(7L);
@@ -90,9 +89,6 @@ public class OrgActivityIdsRefresherTest
             {
                 oneOf(orgDao).execute(with(equal(Arrays.asList(orgId))));
                 will(returnValue(Arrays.asList(org)));
-
-                oneOf(org).getCompositeStreamId();
-                will(returnValue(streamId));
             }
         });
 

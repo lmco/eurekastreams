@@ -330,7 +330,8 @@
 		        <constructor-arg ref="moveOrganizationPeopleMapper" />
 		        <constructor-arg ref="bulkOrganizationsMapper" />
 		        <constructor-arg ref="findByIdMapper" />
-		        <constructor-arg ref="deleteOrganizationMapper" />   
+		        <constructor-arg ref="deleteOrganizationMapper" />
+		        <constructor-arg ref="getPeopleIdsWithRelatedOrg" />   
 		        <constructor-arg ref="jpaOrganizationMapper" />  
 		        <constructor-arg>
                     <bean class="org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder" />
@@ -1055,20 +1056,6 @@
 		<constructor-arg value="true" />
 	</bean>
 
-	<bean id="getCompleteStreamView" class="org.eurekastreams.commons.actions.service.ServiceAction">
-		<constructor-arg ref="noValidationStrategy" />
-		<constructor-arg ref="noAuthorizationStrategy" />
-		<constructor-arg>
-			<bean
-				class="org.eurekastreams.server.action.execution.stream.GetCompleteStreamViewByIdExecution">
-				<constructor-arg ref="findByIdMapper" />
-				<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-				<constructor-arg ref="bulkPeopleByAccountIdMapper" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg value="true" />
-	</bean>
-
 	<bean id="updateBiography" class="org.eurekastreams.commons.actions.service.ServiceAction">
 		<constructor-arg ref="noValidationStrategy" />
 		<constructor-arg ref="noAuthorizationStrategy" />
@@ -1305,7 +1292,11 @@
 		<constructor-arg value="true" />
 	</bean>
 	
-	<bean id="feedFetcher" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.BasicFeedFetcher" />
+	<bean id="httpDocumentFetcher" class="org.eurekastreams.server.service.utility.http.HttpDocumentFetcherImpl" />
+	
+	<bean id="feedFetcher" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.BasicFeedFetcher">
+		<constructor-arg ref="httpDocumentFetcher" />
+	</bean>
 	
 	<bean id="standardPluginFeedFetcher" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.BasicPluginFeedFetcher">
 		<constructor-arg ref="feedFetcher" />
@@ -1672,14 +1663,14 @@
             <constructor-arg>
 				<bean
 					class="org.eurekastreams.server.service.actions.strategies.activity.datasources.PersistenceDataSource">
-					<constructor-arg ref="getEveryoneActivity" />
+					
+					<!-- TODO: replace this with one that falls back to cache -->
+					<constructor-arg ref="getEveryoneActivityDbMapper" />
+					
 		            <constructor-arg>
 						<map>
 							<entry key="followedBy">
 								<ref bean="getFollowedByActivities" />
-							</entry>
-							<entry key="recipient">
-								<ref bean="bulkActivityStreamsMapper" />
 							</entry>
 							<entry key="organization">
 								<ref bean="parentOrgActivityIdMapper" />
@@ -1705,7 +1696,6 @@
                                     class="org.eurekastreams.server.service.actions.strategies.activity.datasources.RecipientPersistenceRequestTransformer">
                                     <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
                                     <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-                                    <constructor-arg ref="bulkEntityStreamIdsMapper" />   
                                 </bean>
                             </entry>
                             <entry key="organization">
@@ -2465,24 +2455,8 @@
 		<constructor-arg>
 			<bean
 				class="org.eurekastreams.server.action.execution.opensocial.GetUserActivitiesExecution">
-				<constructor-arg ref="getStreamByPersonOwnerId" />
 				<constructor-arg ref="bulkActivitiesMapper" />
-				<constructor-arg ref="compositeStreamActivityIdsMapper" />
 				<constructor-arg ref="bulkPeopleByOpenSocialIdMapper" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg value="true" />
-	</bean>
-	
-	<bean id="getCurrentUserCompositeStreams" class="org.eurekastreams.commons.actions.service.ServiceAction">
-		<constructor-arg ref="noValidationStrategy" />
-		<constructor-arg ref="noAuthorizationStrategy" />
-		<constructor-arg>
-			<bean
-				class="org.eurekastreams.server.action.execution.stream.GetCurrentUserCompositeStreamsExecution">
-				<constructor-arg ref="userCompositeStreamIdsMapper" />
-				<constructor-arg ref="bulkCompositeStreamsMapper" />
-				<constructor-arg ref="bulkPeopleMapper" />
 			</bean>
 		</constructor-arg>
 		<constructor-arg value="true" />
@@ -2608,23 +2582,6 @@
 		<constructor-arg value="true" />
 	</bean>
 
-	<bean id="getCurrentUserCompositeStreamSearches" class="org.eurekastreams.commons.actions.service.ServiceAction">
-		<!-- No arguments -->
-		<constructor-arg ref="noValidationStrategy" />
-		<constructor-arg ref="noAuthorizationStrategy" />
-		<constructor-arg>
-			<bean
-				class="org.eurekastreams.server.action.execution.stream.GetCurrentUserCompositeStreamSearchesExecutionStrategy">
-				<constructor-arg ref="userCompositeStreamSearchIdsMapper" />
-				<constructor-arg ref="bulkCompositeStreamSearchesMapper" />
-				<constructor-arg ref="bulkPeopleMapper" />
-				<constructor-arg ref="bulkOrganizationsByShortNameMapper" />
-				<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg value="true" />
-	</bean>
-
 	<bean id="getCurrentUserFollowedGroups" class="org.eurekastreams.commons.actions.service.ServiceAction">
 		<constructor-arg ref="noValidationStrategy" />
 		<constructor-arg ref="noAuthorizationStrategy" />
@@ -2633,7 +2590,6 @@
 				class="org.eurekastreams.server.action.execution.stream.GetCurrentUserFollowedGroupsExecution">
 				<constructor-arg ref="getFollowedGroupIds" />
 				<constructor-arg ref="bulkDomainGroupsMapper" />
-				<constructor-arg ref="bulkCompositeStreamsMapper" />
 				<constructor-arg ref="bulkPeopleMapper" />
 				<constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
 			</bean>
@@ -3257,50 +3213,6 @@
 		<constructor-arg value="false" />
 	</bean>		
 
-	<bean id="refreshCachedCustomCompositeStreamAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
-		<constructor-arg ref="noValidationStrategy" />
-		<constructor-arg>
-			<bean
-				class="org.eurekastreams.server.action.execution.stream.RefreshCachedCompositeStreamExecution">
-				<constructor-arg ref="compositeStreamActivityIdsMapper" />
-				<constructor-arg>
-					<bean
-						class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
-						<property name="staticField">
-							<value>
-								org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM
-							</value>
-						</property>
-					</bean>
-				</constructor-arg>
-				<constructor-arg ref="memcachedCache" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg value="false" />
-	</bean>
-
-	<bean id="refreshCachedFollowingCompositeStreamAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
-		<constructor-arg ref="noValidationStrategy" />
-		<constructor-arg>
-			<bean
-				class="org.eurekastreams.server.action.execution.stream.RefreshCachedCompositeStreamExecution">
-				<constructor-arg ref="compositeStreamActivityIdsMapper" />
-				<constructor-arg>
-					<bean
-						class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
-						<property name="staticField">
-							<value>
-								org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITIES_BY_FOLLOWING
-							</value>
-						</property>
-					</bean>
-				</constructor-arg>
-				<constructor-arg ref="memcachedCache" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg value="false" />
-	</bean>
-
 	<bean id="undeleteGadget" class="org.eurekastreams.commons.actions.service.ServiceAction">
 		<constructor-arg ref="noValidationStrategy" />
 		<constructor-arg ref="noAuthorizationStrategy" />
@@ -3310,32 +3222,6 @@
 				<constructor-arg>
 					<ref bean="jpaTabMapper" />
 				</constructor-arg>
-			</bean>
-		</constructor-arg>
-		<constructor-arg value="false" />
-	</bean>
-
-	<bean id="setStreamSearchOrder" class="org.eurekastreams.commons.actions.service.ServiceAction">
-		<constructor-arg ref="noValidationStrategy" />
-		<constructor-arg ref="noAuthorizationStrategy" />
-		<constructor-arg>
-			<bean
-				class="org.eurekastreams.server.action.execution.stream.SetStreamSearchOrderExecution">
-				<constructor-arg>
-					<ref bean="jpaPersonMapper" />
-				</constructor-arg>
-			</bean>
-		</constructor-arg>
-		<constructor-arg value="false" />
-	</bean>
-
-	<bean id="setStreamViewOrder" class="org.eurekastreams.commons.actions.service.ServiceAction">
-		<constructor-arg ref="noValidationStrategy" />
-		<constructor-arg ref="noAuthorizationStrategy" />
-		<constructor-arg>
-			<bean
-				class="org.eurekastreams.server.action.execution.stream.SetStreamViewOrderExecution">
-				<constructor-arg ref="jpaPersonMapper" />
 			</bean>
 		</constructor-arg>
 		<constructor-arg value="false" />
@@ -3560,8 +3446,6 @@
 		<constructor-arg ref="addCachedGroupFollower" />
 		<constructor-arg ref="removeCachedGroupFollower" />
 		<constructor-arg ref="getGroupFollowerIds" />
-		<constructor-arg ref="removeCachedGroupActivitiesFromFollowingList" />
-		<constructor-arg ref="getFollowedStreamViewByUser" />
 		<constructor-arg ref="deleteRequestForGroupMembershipMapper" />
     </bean>
 
@@ -3609,8 +3493,6 @@
                 <constructor-arg ref="addCachedPersonFollower" />
                 <constructor-arg ref="removeCachedPersonFollower" />
                 <constructor-arg ref="getFollowerIds" />
-                <constructor-arg ref="removeCachedPersonActivitiesFromFollowingList" />
-                <constructor-arg ref="getFollowedStreamViewByUser" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
@@ -3624,7 +3506,6 @@
                 <constructor-arg ref="domainGroupCacheLoader" />
 		        <constructor-arg ref="organizationCacheLoader" />
 		        <constructor-arg ref="personCacheLoader" />
-		        <constructor-arg ref="streamCacheLoader" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -3633,9 +3514,6 @@
     <bean id="createPersonActionFactory" class="org.eurekastreams.server.action.execution.CreatePersonActionFactory">
         <constructor-arg ref="jpaTabMapper" />
         <constructor-arg ref="jpaOrganizationMapper" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.GetStreamViewByType" />
-        </constructor-arg>
     </bean>
     
     
@@ -3819,167 +3697,6 @@
 		<constructor-arg ref="taskHandler" />
     </bean>
 	
-	<!-- WORKS (sync part, at least) -->
-	<bean id="createStreamView" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
-		<constructor-arg>
-			<!-- Validation -->
-			<bean class="org.eurekastreams.server.action.validation.MapParameterDecoratorValidation">
-				<constructor-arg>
-					<bean class="org.eurekastreams.server.service.actions.strategies.MapParameterValidator">
-						<constructor-arg value="name" />
-						<constructor-arg value="java.lang.String" />
-						<constructor-arg value="Name is required" />
-						<property name="mapParameterValidatorDecorator">
-							<bean
-								class="org.eurekastreams.server.service.actions.strategies.MapParameterValidator">
-								<constructor-arg value="scopes" />
-								<constructor-arg value="java.util.List" />
-								<constructor-arg
-									value="At least one stream is required" />
-							</bean>
-						</property>
-					</bean>
-				</constructor-arg>
-			</bean>
-		</constructor-arg>
-		<!-- Authorization -->
-		<constructor-arg ref="noAuthorizationStrategy" />
-		<constructor-arg>
-			<!-- Execution -->
-			<bean class="org.eurekastreams.server.action.execution.PersistResourceExecution">
-				<constructor-arg ref="jpaPersonMapper" />
-				<constructor-arg ref="createPersonActionFactory" />
-				<constructor-arg ref="streamViewCreator" />
-				<constructor-arg ref="streamViewCreator" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg value="false" />
-        <constructor-arg ref="taskHandler" />
-    </bean>
-	
-	<!-- WORKS (sync part, at least) -->
-	<bean id="updateStreamView" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
-		<constructor-arg>
-			<!-- Validation -->
-			<bean class="org.eurekastreams.server.action.validation.MapParameterDecoratorValidation">
-				<constructor-arg>
-					<bean class="org.eurekastreams.server.service.actions.strategies.MapParameterValidator">
-						<constructor-arg value="name" />
-						<constructor-arg value="java.lang.String" />
-						<constructor-arg value="Name is required" />
-						<property name="mapParameterValidatorDecorator">
-							<bean
-								class="org.eurekastreams.server.service.actions.strategies.MapParameterValidator">
-								<constructor-arg value="scopes" />
-								<constructor-arg value="java.util.List" />
-								<constructor-arg
-									value="At least one stream is required" />
-							</bean>
-						</property>
-					</bean>
-				</constructor-arg>
-			</bean>
-		</constructor-arg>
-        <constructor-arg>
-        	<!-- Authorization -->
-            <bean class="org.eurekastreams.server.action.authorization.stream.UpdateStreamViewAuthorization">
-              <constructor-arg ref="findUserStreamViewByIdMapper" />
-            </bean>
-        </constructor-arg>
-		<constructor-arg>
-			<!-- Execution -->
-			<bean class="org.eurekastreams.server.action.execution.PersistResourceExecution">
-				<constructor-arg ref="jpaPersonMapper" />
-				<constructor-arg ref="createPersonActionFactory" />
-				<constructor-arg ref="streamViewUpdater" />
-				<constructor-arg ref="streamViewUpdater" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg value="false" />
-        <constructor-arg ref="taskHandler" />
-    </bean>
-
-	<!-- WORKS (sync part, at least) -->
-	<bean id="createStreamSearch" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
-		<constructor-arg>
-			<!-- Validation -->
-			<bean class="org.eurekastreams.server.action.validation.MapParameterDecoratorValidation">
-				<constructor-arg>
-					<bean class="org.eurekastreams.server.service.actions.strategies.MapParameterValidator">
-						<constructor-arg value="name" />
-						<constructor-arg value="java.lang.String" />
-						<constructor-arg value="Name is required" />
-						<property name="mapParameterValidatorDecorator">
-							<bean
-								class="org.eurekastreams.server.service.actions.strategies.MapParameterValidator">
-								<constructor-arg value="keywords" />
-								<constructor-arg value="java.lang.String" />
-								<constructor-arg
-									value="At least one keyword is required" />
-							</bean>
-						</property>
-					</bean>
-				</constructor-arg>
-			</bean>
-		</constructor-arg>
-		<!-- Authorization -->
-		<constructor-arg ref="noAuthorizationStrategy" />
-		<constructor-arg>
-			<!-- Execution -->
-			<bean class="org.eurekastreams.server.action.execution.PersistResourceExecution">
-				<constructor-arg ref="jpaPersonMapper" />
-				<constructor-arg ref="createPersonActionFactory" />
-				<constructor-arg ref="streamSearchCreator" />
-				<constructor-arg ref="streamSearchCreator" />
-			</bean>
-		</constructor-arg>
-        <constructor-arg value="false" />
-        <constructor-arg ref="taskHandler" />
-    </bean>
-			
-	<!-- WORKS (sync part, at least) - but ui doesn't repaint, just hangs
--->	
-	<bean id="updateStreamSearch" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
-		<constructor-arg>
-			<!-- Validation -->
-			<bean class="org.eurekastreams.server.action.validation.MapParameterDecoratorValidation">
-				<constructor-arg>
-					<bean class="org.eurekastreams.server.service.actions.strategies.MapParameterValidator">
-						<constructor-arg value="name" />
-						<constructor-arg value="java.lang.String" />
-						<constructor-arg value="Name is required" />
-						<property name="mapParameterValidatorDecorator">
-							<bean
-								class="org.eurekastreams.server.service.actions.strategies.MapParameterValidator">
-								<constructor-arg value="keywords" />
-								<constructor-arg value="java.lang.String" />
-								<constructor-arg
-									value="At least one keyword is required" />
-							</bean>
-						</property>
-					</bean>
-				</constructor-arg>
-			</bean>
-		</constructor-arg>
-		<constructor-arg>
-			<!-- Authorization -->
-		    <bean class="org.eurekastreams.server.action.authorization.stream.UpdateStreamSearchAuthorization">
-		      <constructor-arg ref="findUserStreamSearchByIdMapper" />
-		    </bean>
-		</constructor-arg>
-		<constructor-arg>
-			<!-- Execution -->
-			<bean class="org.eurekastreams.server.action.execution.PersistResourceExecution">
-				<constructor-arg ref="jpaPersonMapper" />
-				<constructor-arg ref="createPersonActionFactory" />
-				<constructor-arg ref="streamSearchUpdater" />
-				<constructor-arg ref="streamSearchUpdater" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg value="false" />
-        <constructor-arg ref="taskHandler" />
-    </bean>
-	
 	<bean id="createRootOrganization" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
 		<!-- Validation -->
 		<constructor-arg ref="noValidationStrategy"/>
@@ -4144,10 +3861,6 @@
         <constructor-arg ref="jpaPersonMapper" />
         <constructor-arg ref="jpaTabMapper" />
         <constructor-arg ref="jpaOrganizationMapper" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.persistence.mappers.GetStreamViewByType" />
-        </constructor-arg>
     </bean>
 
     <bean id="personUpdater" class="org.eurekastreams.server.service.actions.strategies.PersonUpdater">
@@ -4156,52 +3869,6 @@
         	<bean class="org.eurekastreams.server.action.execution.profile.UpdatePersonDisplayNameCaches">
         		<constructor-arg ref="bulkPeopleMapper" />
         	</bean>
-        </constructor-arg>
-    </bean>
-
-    <bean id="streamViewCreator"
-        class="org.eurekastreams.server.service.actions.strategies.StreamViewCreator">
-        <constructor-arg ref="addCachedCompositeStreamMapper" />
-        <constructor-arg ref="findByIdMapper" />
-        <constructor-arg ref="getStreamScopeById" />
-    </bean>
-
-    <bean id="streamViewUpdater"
-        class="org.eurekastreams.server.service.actions.strategies.StreamViewUpdater">
-        <constructor-arg ref="updateCachedCompositeStreamMapper" />
-        <constructor-arg ref="findUserStreamViewByIdMapper" />
-        <constructor-arg ref="getStreamScopeProxyById" />
-        <constructor-arg ref="getCompositeStreamById" />
-        <constructor-arg ref="addCachedActivityToListByStreamScope" />
-        <constructor-arg ref="removeCachedActivitiesFromListByStreamScope" />
-    </bean>
-
-    <bean id="streamSearchCreator"
-        class="org.eurekastreams.server.service.actions.strategies.StreamSearchCreator">
-        <constructor-arg>
-            <ref bean="addCachedCompositeStreamSearchMapper" />
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="findByIdMapper" />
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="findByIdMapper" />
-        </constructor-arg>
-    </bean>
-
-    <bean id="streamSearchUpdater"
-        class="org.eurekastreams.server.service.actions.strategies.StreamSearchUpdater">
-        <constructor-arg>
-            <ref bean="updateCachedCompositeStreamSearchMapper" />
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="findByIdMapper" />
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="findByIdMapper" />
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="findUserStreamSearchByIdMapper" />
         </constructor-arg>
     </bean>
 
@@ -4473,6 +4140,7 @@
         <constructor-arg>
         	<bean class="org.eurekastreams.server.action.execution.stream.GetCurrentUsersStreamsExecution">
         		<constructor-arg ref="getUserStreamsMapper" />
+        		<constructor-arg ref="findByIdMapper" />
         	</bean>
         </constructor-arg>
 		<constructor-arg value="true" />

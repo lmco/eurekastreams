@@ -71,8 +71,6 @@ public class GetCurrentUserFollowedGroupsExecution implements ExecutionStrategy<
      *            ids mapper to set.
      * @param inGroupsMapper
      *            groups mapper to set.
-     * @param inStreamMapper
-     *            stream mapper to set.
      * @param inPeopleMapper
      *            people mapper to set.
      * @param inGroupPermissionChecker

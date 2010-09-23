@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.server.persistence.mappers.cache;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.server.persistence.mappers.chained.RefreshStrategy;
@@ -39,24 +38,6 @@ public class OrgActivityIdsRefresher extends CachedDomainMapper implements Refre
     public void setOrganizationDAO(final GetOrganizationsByIds inOrganizationDAO)
     {
         this.organizationDAO = inOrganizationDAO;
-    }
-
-    /**
-     * Returns compositeStreamId for a person's parent org.
-     *
-     * @param inOrgId
-     *            the parent org id.
-     * @return compositeStreamId for a person's parent org.
-     */
-    private Long getPersonParentOrgCompositeStreamId(final long inOrgId)
-    {
-        ArrayList<Long> ids = new ArrayList<Long>()
-        {
-            {
-                add(inOrgId);
-            }
-        };
-        return organizationDAO.execute(ids).get(0).getCompositeStreamId();
     }
 
     /**

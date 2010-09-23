@@ -138,8 +138,8 @@ public class SetFollowingPersonStatusExecutionTest
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntAccount", "followingntaccount",
                 EntityType.PERSON, false, Follower.FollowerStatus.FOLLOWING);
         ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
-        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext = new TaskHandlerActionContext<PrincipalActionContext>(
-                currentContext, new ArrayList<UserActionRequest>());
+        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext //
+        = new TaskHandlerActionContext<PrincipalActionContext>(currentContext, new ArrayList<UserActionRequest>());
         sut.execute(currentTaskHandlerActionContext);
 
         context.assertIsSatisfied();
@@ -183,8 +183,8 @@ public class SetFollowingPersonStatusExecutionTest
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntAccount", "followingntaccount",
                 EntityType.PERSON, false, Follower.FollowerStatus.NOTFOLLOWING);
         ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
-        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext = new TaskHandlerActionContext<PrincipalActionContext>(
-                currentContext, new ArrayList<UserActionRequest>());
+        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext //
+        = new TaskHandlerActionContext<PrincipalActionContext>(currentContext, new ArrayList<UserActionRequest>());
         sut.execute(currentTaskHandlerActionContext);
 
         context.assertIsSatisfied();
@@ -216,8 +216,8 @@ public class SetFollowingPersonStatusExecutionTest
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntAccount", "followingntaccount",
                 EntityType.PERSON, false, Follower.FollowerStatus.FOLLOWING);
         ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
-        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext = new TaskHandlerActionContext<PrincipalActionContext>(
-                currentContext, new ArrayList<UserActionRequest>());
+        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext //
+        = new TaskHandlerActionContext<PrincipalActionContext>(currentContext, new ArrayList<UserActionRequest>());
         sut.execute(currentTaskHandlerActionContext);
 
         context.assertIsSatisfied();
@@ -257,8 +257,8 @@ public class SetFollowingPersonStatusExecutionTest
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntAccount", "followingntaccount",
                 EntityType.PERSON, false, Follower.FollowerStatus.NOTSPECIFIED);
         ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
-        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext = new TaskHandlerActionContext<PrincipalActionContext>(
-                currentContext, new ArrayList<UserActionRequest>());
+        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext //
+        = new TaskHandlerActionContext<PrincipalActionContext>(currentContext, new ArrayList<UserActionRequest>());
         sut.execute(currentTaskHandlerActionContext);
 
         context.assertIsSatisfied();
