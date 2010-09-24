@@ -19,7 +19,6 @@ import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.TabMapper;
-import org.eurekastreams.server.persistence.mappers.GetStreamViewByType;
 import org.eurekastreams.server.service.actions.strategies.PersonCreator;
 import org.eurekastreams.server.service.actions.strategies.UpdaterStrategy;
 
@@ -39,25 +38,17 @@ public class CreatePersonActionFactory
     private OrganizationMapper organizationMapper;
 
     /**
-     * Type Mapper.
-     */
-    private GetStreamViewByType typeMapper;
-
-    /**
      * Constructor.
      *
      * @param inTabMapper
      *            TabMapper.
      * @param inOrganizationMapper
      *            OrganizationMapper.
-     * @param inTypeMapper type mapper.
      */
-    public CreatePersonActionFactory(final TabMapper inTabMapper, final OrganizationMapper inOrganizationMapper,
-            final GetStreamViewByType inTypeMapper)
+    public CreatePersonActionFactory(final TabMapper inTabMapper, final OrganizationMapper inOrganizationMapper)
     {
         tabMapper = inTabMapper;
         organizationMapper = inOrganizationMapper;
-        typeMapper = inTypeMapper;
     }
 
     /**
@@ -67,12 +58,12 @@ public class CreatePersonActionFactory
      *            the person mapper to be injected into the action
      * @param inUpdater
      *            Updater
-     *  @return the newly built action
+     * @return the newly built action
      */
     public PersistResourceExecution<Person> getCreatePersonAction(final PersonMapper inPersonMapper,
             final UpdaterStrategy inUpdater)
     {
         return new PersistResourceExecution<Person>(inPersonMapper, this, inUpdater, new PersonCreator(inPersonMapper,
-                tabMapper, organizationMapper, typeMapper));
+                tabMapper, organizationMapper));
     }
 }

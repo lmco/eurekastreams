@@ -319,6 +319,7 @@
                         -->
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>ounce-maven-plugin</artifactId>
+                        <version>1.2</version>
                         <configuration>
                             <installDir>/usr/local/share/Ounce_Labs</installDir>
                             <waitForScan>true</waitForScan>
@@ -483,7 +484,6 @@
 				                  <exclude>**/*DTO.java</exclude>
 				                  <exclude>**/*Request.java</exclude>
 				                  <exclude>**/*Response.java</exclude>
-				                  <exclude>**/GetStreamViewByType.java</exclude>
 				                  <exclude>**/MemcachedCache.java</exclude>
 									<exclude>**/*GuiceModule.java</exclude>
 									<exclude>**/*GuiceConfigurator.java</exclude>

@@ -94,7 +94,7 @@ public class DeleteActivitiesByIdsExecutionTest
         actionContext = new TaskHandlerActionContext<ActionContext>(new ServiceActionContext(activityIds, null),
                 new ArrayList<UserActionRequest>());
         final List<String> listsToUpdate = new ArrayList<String>();
-        listsToUpdate.add(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + 1L);
+        listsToUpdate.add(CacheKeys.ACTIVITIES_BY_FOLLOWING + 1L);
         final List<Long> commentIds = new ArrayList<Long>();
         commentIds.add(1L);
         commentIds.add(2L);

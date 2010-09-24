@@ -25,12 +25,10 @@ import java.util.HashMap;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.TabType;
-import org.eurekastreams.server.domain.stream.StreamView;
 import org.eurekastreams.server.persistence.DomainEntityMapperTest;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.TabMapper;
-import org.eurekastreams.server.persistence.mappers.GetStreamViewByType;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -74,36 +72,30 @@ public class PersonCreatorTest extends DomainEntityMapperTest
     private OrganizationMapper organizationMapperMock = context.mock(OrganizationMapper.class);
 
     /**
-     * for real.
-     */
-    @Autowired
-    private GetStreamViewByType getStreamViewByType;
-
-    /**
      * actual person mapper.
      */
     @Autowired
     private PersonMapper personMapper;
-    
+
     /**
      * actual org mapper.
      */
     @Autowired
     private OrganizationMapper organizationMapper;
-    
+
     /**
      * Actual Tab Mapper.
      */
     @Autowired
     private TabMapper tabMapper;
-    
+
     /**
      * Setup fixtures.
      */
     @Before
     public final void load()
     {
-        sut = new PersonCreator(personMapperMock, tabMapperMock, organizationMapperMock, getStreamViewByType);
+        sut = new PersonCreator(personMapperMock, tabMapperMock, organizationMapperMock);
     }
 
     /**
@@ -139,7 +131,6 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         assertEquals("", p.getMiddleName());
         assertEquals("Flanders", p.getLastName());
         assertEquals("Ned-diddly", p.getPreferredName());
-        assertNotNull(p.getEntityStreamView());
     }
 
     /**
@@ -178,14 +169,6 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         assertEquals("Flanders", p.getLastName());
         assertEquals("Ned-diddly", p.getPreferredName());
         assertEquals(orgMock, p.getParentOrganization());
-        assertNotNull(p.getEntityStreamView());
-
-      //Test Order of stream views for new users
-        assertEquals(StreamView.Type.PEOPLEFOLLOW, p.getStreamViews().get(0).getType());
-        assertEquals(StreamView.Type.PARENTORG, p.getStreamViews().get(1).getType());
-        assertEquals(StreamView.Type.EVERYONE, p.getStreamViews().get(2).getType());
-        assertEquals(StreamView.Type.STARRED, p.getStreamViews().get(3).getType());
-
     }
 
     /**
@@ -214,7 +197,7 @@ public class PersonCreatorTest extends DomainEntityMapperTest
 
         context.assertIsSatisfied();
     }
-    
+
     /**
      * Test the persist method.
      *
@@ -224,24 +207,24 @@ public class PersonCreatorTest extends DomainEntityMapperTest
     @Test
     public final void testPersistFromDB() throws Exception
     {
-        sut = new PersonCreator(personMapper, tabMapper, organizationMapper, getStreamViewByType);
+        sut = new PersonCreator(personMapper, tabMapper, organizationMapper);
         final Organization org = organizationMapper.getRootOrganization();
-        
+
         final HashMap<String, Serializable> inFields = new HashMap<String, Serializable>();
-       
+
         inFields.put("accountId", "nflanders");
         inFields.put("firstName", "Ned");
         inFields.put("email", "Ned@dude.com");
         inFields.put("middleName", "s");
         inFields.put("lastName", "Flanders");
         inFields.put("preferredName", "Neddiddly");
-        inFields.put("organization", org);        
+        inFields.put("organization", org);
 
         final Person testPerson = sut.get(null, inFields);
-        
+
         sut.persist(null, null, testPerson);
         Person testResult = personMapper.findByAccountId("nflanders");
         assertTrue(personMapper.isFollowing(testResult.getAccountId(), testResult.getAccountId()));
-        
+
     }
 }

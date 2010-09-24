@@ -67,11 +67,9 @@ public class PersonQueryStrategy
         fields.add(Projections.property("po.name").as("parentOrganizationName"));
         fields.add(Projections.property("po.shortName").as("parentOrganizationShortName"));
         fields.add(Projections.property("stream.id").as("streamId"));
-        fields.add(Projections.property("compositeStream.id").as("compositeStreamId"));
         criteria.setProjection(fields);
         criteria.createAlias("parentOrganization", "po");
         criteria.createAlias("streamScope", "stream");
-        criteria.createAlias("entityStreamView", "compositeStream");
 
         ModelViewResultTransformer<PersonModelView> resultTransformer = new ModelViewResultTransformer<PersonModelView>(
                 new PersonModelViewFactory());

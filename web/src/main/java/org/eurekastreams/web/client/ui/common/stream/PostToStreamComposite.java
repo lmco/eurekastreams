@@ -34,7 +34,6 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.TextArea;
 
 /**
  * Post a message to the stream.
@@ -54,7 +53,7 @@ public class PostToStreamComposite extends FlowPanel implements Bindable
     /**
      * The message.
      */
-    TextArea message;
+    PostToStreamTextboxPanel message;
 
     /**
      * The list of links in the message.
@@ -107,7 +106,7 @@ public class PostToStreamComposite extends FlowPanel implements Bindable
 
         charsRemaining = new Label();
         postButton = new Label("Post");
-        message = new TextArea();
+        message = new PostToStreamTextboxPanel();
         message.setText("Something to share?");
         message.setVisible(false); // Hide until post ready event.
 

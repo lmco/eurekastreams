@@ -15,21 +15,17 @@
  */
 package org.eurekastreams.server.persistence.mappers;
 
-import java.util.HashSet;
-
 import javax.persistence.EntityManager;
 
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.domain.stream.StreamView;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
-import org.eurekastreams.server.domain.stream.StreamView.Type;
 import org.junit.Test;
 
 /**
  * Test helper to add to the org tree:
- * 
+ *
  * 5 -6 -6a -6a1 -6a2 -7 -7a -7a1 .
  */
 public class OrgTreeBuilderTestHelper extends MapperTest
@@ -87,7 +83,7 @@ public class OrgTreeBuilderTestHelper extends MapperTest
 
     /**
      * Constructor.
-     * 
+     *
      * @param inEntityManager
      *            the entity manager
      */
@@ -131,7 +127,7 @@ public class OrgTreeBuilderTestHelper extends MapperTest
 
     /**
      * Get a new organization to add to a parent.
-     * 
+     *
      * @param rand
      *            number to use to add on to the end of string values to get around constraints
      * @return a new organization ready to be added to a parent
@@ -139,12 +135,6 @@ public class OrgTreeBuilderTestHelper extends MapperTest
     private Organization getNewOrganization(final String rand)
     {
         Person ford = getEntityManager().find(Person.class, NEW_ORG_COORDINATOR_ID);
-
-        StreamView entityStreamView = new StreamView();
-        entityStreamView.setIncludedScopes(new HashSet<StreamScope>());
-        entityStreamView.setName("FOO-" + rand);
-        entityStreamView.setType(Type.NOTSET);
-
         StreamScope streamScope = new StreamScope();
         streamScope.setDisplayName("FOO-" + rand);
         streamScope.setScopeType(ScopeType.ORGANIZATION);
@@ -157,7 +147,6 @@ public class OrgTreeBuilderTestHelper extends MapperTest
         o.addCoordinator(ford);
 
         o.setStreamScope(streamScope);
-        o.setEntityStreamView(entityStreamView);
 
         return o;
     }

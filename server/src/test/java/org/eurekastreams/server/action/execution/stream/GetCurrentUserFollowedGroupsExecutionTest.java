@@ -23,9 +23,7 @@ import java.util.List;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
-import org.eurekastreams.server.domain.stream.StreamView;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
-import org.eurekastreams.server.persistence.mappers.stream.BulkCompositeStreamsMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetFollowedGroupIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
@@ -80,11 +78,6 @@ public class GetCurrentUserFollowedGroupsExecutionTest
     private GetDomainGroupsByIds groupMapper = context.mock(GetDomainGroupsByIds.class);
 
     /**
-     * Stream mapper mock.
-     */
-    private BulkCompositeStreamsMapper streamMapper = context.mock(BulkCompositeStreamsMapper.class);
-
-    /**
      * People mapper mock.
      */
     private GetPeopleByIds peopleMapper = context.mock(GetPeopleByIds.class);
@@ -126,18 +119,12 @@ public class GetCurrentUserFollowedGroupsExecutionTest
     DomainGroupModelView group3;
 
     /**
-     * Test streamview.
-     */
-    StreamView streamView;
-
-    /**
      * Set up test.
      */
     @Before
     public final void setUp()
     {
-        sut = new GetCurrentUserFollowedGroupsExecution(idMapper, groupMapper, streamMapper, peopleMapper,
-                groupPermissionsChecker);
+        sut = new GetCurrentUserFollowedGroupsExecution(idMapper, groupMapper, peopleMapper, groupPermissionsChecker);
         group1 = new DomainGroupModelView();
         group2 = new DomainGroupModelView();
         group3 = new DomainGroupModelView();
@@ -154,15 +141,9 @@ public class GetCurrentUserFollowedGroupsExecutionTest
         group2.setShortName("group2");
         group3.setShortName("group3");
 
-        group1.setCompositeStreamId(1);
-        group2.setCompositeStreamId(2);
-        group3.setCompositeStreamId(3);
-
         group1.setStreamId(1);
         group2.setStreamId(2);
         group3.setStreamId(3);
-
-        streamView = new StreamView();
 
         person = new PersonModelView();
         person.setGroupStreamHiddenLineIndex(HIDDEN_LINE_INDEX);
@@ -170,7 +151,7 @@ public class GetCurrentUserFollowedGroupsExecutionTest
 
     /**
      * Test execute method.
-     * 
+     *
      * @throws Exception
      *             on failure.
      */
@@ -192,9 +173,6 @@ public class GetCurrentUserFollowedGroupsExecutionTest
 
                 oneOf(groupMapper).execute(with(any(ArrayList.class)));
                 will(returnValue(Arrays.asList(group1, group2, group3)));
-
-                exactly(3).of(streamMapper).execute(with(any(List.class)));
-                will(returnValue(Arrays.asList(streamView)));
 
                 oneOf(peopleMapper).execute(with(any(List.class)));
                 will(returnValue(Arrays.asList(person)));

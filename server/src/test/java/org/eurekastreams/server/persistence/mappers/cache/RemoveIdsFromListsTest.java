@@ -42,9 +42,9 @@ public class RemoveIdsFromListsTest extends CachedMapperTest
     @Test
     public void testExecute()
     {
-        final String cacheKey1 = CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + 1;
-        final String cacheKey2 = CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + 2;
-        final String cacheKey3 = CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + 3;
+        final String cacheKey1 = "FOO" + 1;
+        final String cacheKey2 = "FOO" + 2;
+        final String cacheKey3 = "FOO" + 3;
 
         final List<Long> cacheValues1 = Arrays.asList(1L, 2L, 3L);
         final List<Long> cacheValues2 = Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L);

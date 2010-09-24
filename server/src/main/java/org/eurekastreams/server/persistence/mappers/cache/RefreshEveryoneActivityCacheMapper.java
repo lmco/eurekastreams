@@ -23,19 +23,21 @@ import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 /**
  * Refresh the everyone activity list.
  */
-public class RefreshEveryoneActivityCacheMapper extends CachedDomainMapper implements
-RefreshStrategy<Long, List<Long>>
+public class RefreshEveryoneActivityCacheMapper extends CachedDomainMapper implements RefreshStrategy<Long, List<Long>>
 {
 
     /**
      * Refresh the everyone activity list.
-     * @param request the everyone stream id.
-     * @param data the everyone activity list.
+     *
+     * @param request
+     *            the everyone stream id.
+     * @param data
+     *            the everyone activity list.
      */
     @Override
     public void refresh(final Long request, final List<Long> data)
     {
-        getCache().setList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + request, data);
+        // getCache().setList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + request, data);
     }
 
 }

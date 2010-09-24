@@ -32,7 +32,6 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.domain.stream.StreamView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
@@ -273,7 +272,6 @@ public class PersonTest
         sut.setDateAdded(dateAdded);
         sut.setUpdatesCount(updatesCount);
         sut.setGroupCount(3);
-        sut.setStreamViews(new ArrayList<StreamView>());
         sut.setLastAcceptedTermsOfService(lastAcceptedTos);
         sut.setStreamScope(streamScopeMock);
         sut.setParentOrgId(parentOrgId);
@@ -289,7 +287,6 @@ public class PersonTest
         assertTrue(updatesCount == sut.getStreamViewHiddenLineIndex());
         assertTrue(updatesCount == sut.getStreamSearchHiddenLineIndex());
         assertTrue(updatesCount == sut.getGroupStreamHiddenLineIndex());
-        assertNotNull(sut.getStreamViewDefinitions());
 
         assertEquals("title" + message, title, sut.getTitle());
         assertEquals("jobDescription" + message, jobDescription, sut.getJobDescription());

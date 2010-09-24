@@ -27,11 +27,10 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.persistence.mappers.cache.DomainGroupCacheLoader;
 import org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCacheLoader;
 import org.eurekastreams.server.persistence.mappers.cache.PersonCacheLoader;
-import org.eurekastreams.server.persistence.mappers.cache.StreamCacheLoader;
 
 /**
- * This action initialized/warms the cache by running a series of cache loaders.
- * This action is meant to be run asynchronously at application startup.
+ * This action initialized/warms the cache by running a series of cache loaders. This action is meant to be run
+ * asynchronously at application startup.
  */
 public class InitializeCacheExecution implements ExecutionStrategy<ActionContext>
 {
@@ -56,30 +55,22 @@ public class InitializeCacheExecution implements ExecutionStrategy<ActionContext
     private final PersonCacheLoader personCacheLoader;
 
     /**
-     * Loader for streams and activities.
-     */
-    private final StreamCacheLoader streamCacheLoader;
-
-    /**
      * Constructor.
      *
      * @param inDomainGroupCacheLoader
-     *                  the group loader.
+     *            the group loader.
      * @param inOrganizationCacheLoader
-     *                  the org loader.
+     *            the org loader.
      * @param inPersonCacheLoader
-     *                  the person loader.
-     * @param inStreamCacheLoader
-     *                  the stream loader.
+     *            the person loader.
      */
     public InitializeCacheExecution(final DomainGroupCacheLoader inDomainGroupCacheLoader,
-                final OrganizationHierarchyCacheLoader inOrganizationCacheLoader,
-                final PersonCacheLoader inPersonCacheLoader, final StreamCacheLoader inStreamCacheLoader)
+            final OrganizationHierarchyCacheLoader inOrganizationCacheLoader,
+            final PersonCacheLoader inPersonCacheLoader)
     {
         domainGroupCacheLoader = inDomainGroupCacheLoader;
         organizationCacheLoader = inOrganizationCacheLoader;
         personCacheLoader = inPersonCacheLoader;
-        streamCacheLoader = inStreamCacheLoader;
     }
 
     /**
@@ -100,7 +91,6 @@ public class InitializeCacheExecution implements ExecutionStrategy<ActionContext
             domainGroupCacheLoader.initialize();
             organizationCacheLoader.initialize();
             personCacheLoader.initialize();
-            streamCacheLoader.initialize();
         }
         catch (Exception ex)
         {

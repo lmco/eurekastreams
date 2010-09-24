@@ -30,26 +30,6 @@ public final class CacheKeys
     }
 
     /**
-     * Cache key for the Core StreamView id of Everyone StreamView.
-     */
-    public static final String CORE_STREAMVIEW_ID_EVERYONE = "CoreEveryone";
-
-    /**
-     * Cache key for the Core StreamView id of the Starred StreamView.
-     */
-    public static final String CORE_STREAMVIEW_ID_STARRED = "CoreStarred";
-
-    /**
-     * Cache key for the Core StreamView id of the PeopleFollow StreamView.
-     */
-    public static final String CORE_STREAMVIEW_ID_PEOPLEFOLLOW = "CorePeopleFollow";
-
-    /**
-     * Cache key for the Core StreamView id of the ParentOrg StreamView.
-     */
-    public static final String CORE_STREAMVIEW_ID_PARENTORG = "CoreParentOrg";
-
-    /**
      * Cache key for buffered activities not yet added to cache or lists.
      */
     public static final String BUFFERED_ACTIVITIES = "BufferedActivites:";
@@ -65,34 +45,9 @@ public final class CacheKeys
     public static final String COMMENT_BY_ID = "Cmt:";
 
     /**
-     * Key for composite streams list by person id.
-     */
-    public static final String COMPOSITE_STREAM_IDS_BY_PERSON_ID = "CmpPer:";
-
-    /**
-     * Key for composite stream search by id.
-     */
-    public static final String COMPOSITE_STREAM_SEARCH_BY_ID = "Sch:";
-
-    /**
-     * Key for list of stream searches for a user.
-     */
-    public static final String COMPOSITE_STREAM_SEARCH_IDS_BY_PERSON_ID = "PerSch:";
-
-    /**
      * Key for ActivityDTO by id.
      */
     public static final String ACTIVITY_BY_ID = "Act:";
-
-    /**
-     * Key for composite stream by id.
-     */
-    public static final String COMPOSITE_STREAM_BY_ID = "Cmp:";
-
-    /**
-     * Key for stream by id.
-     */
-    public static final String STREAM_BY_ID = "Stream:";
 
     /**
      * Key for list of activity ids starred by a user.
@@ -170,11 +125,6 @@ public final class CacheKeys
     public static final String ORG_IDS_DIRECTLY_COORD_BY_PERSON = "OrgIdsCoordByPer:";
 
     /**
-     * Key for list of activity ids by composite stream id.
-     */
-    public static final String ACTIVITIES_BY_COMPOSITE_STREAM = "CmpIds:";
-
-    /**
      * Key for list of activity ids of all users being followed by a person.
      */
     public static final String ACTIVITIES_BY_FOLLOWING = "CmpFwg:";
@@ -225,16 +175,6 @@ public final class CacheKeys
     public static final String SYSTEM_SETTINGS = "SystemSettings";
 
     /**
-     * Holds pointer to composite stream for recipient person.
-     */
-    public static final String PERSON_ENTITITY_STREAM_VIEW_ID = "PrEntStream:";
-
-    /**
-     * Holds pointer to composite stream for recipient group.
-     */
-    public static final String GROUP_ENTITITY_STREAM_VIEW_ID = "GrEntStream:";
-
-    /**
      * Key for activity security information.
      */
     public static final String ACTIVITY_SECURITY_BY_ID = "ActSec:";
@@ -248,4 +188,9 @@ public final class CacheKeys
      * Popular hashag list by stream type and short name.
      */
     public static final String POPULAR_HASH_TAGS_BY_STREAM_TYPE_AND_SHORT_NAME = "PHT:";
+
+    /**
+     * Cache key for the everyone activity list.
+     */
+    public static final String EVERYONE_ACTIVITY_IDS = "ActAll";
 }

@@ -14489,3 +14489,28 @@ body .url-validator .required-form-label {
 {
 	text-decoration:line-through;
 }
+
+.post-entry-panel .auto-complete
+{
+    margin-left:0px;
+}
+
+.post-entry-panel .auto-complete textarea
+{
+    color:black;
+    position:relative;
+    width:570px;
+}
+
+.post-entry-panel .yui-ac-container
+{
+    width:589px;
+}
+
+.post-entry-panel .yui-ac-content
+{
+    margin-top:50px;
+}
+
+
+

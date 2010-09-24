@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Auto complete drop down widget.
- * 
+ *
  */
 public abstract class AutoCompleteDropDownPanel extends FlowPanel
 {
@@ -47,16 +47,16 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
          */
         TEXTAREA;
     }
-    
+
     /**
      * The command interface for what happens when one selects the item.
-     * 
+     *
      */
     public interface OnItemSelectedCommand
     {
         /**
          * Gets called when the item is selected.
-         * 
+         *
          * @param obj
          *            the javascript object of the selected.
          */
@@ -91,10 +91,10 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
      * Random identifier.
      */
     private final String rand = String.valueOf(Random.nextInt());
-    
+
     /**
      * Default constructor.
-     * 
+     *
      * @param url
      *            the resource url.
      */
@@ -105,19 +105,19 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Default constructor.
-     * 
+     *
      * @param url
      *            the resource url.
-     * @param inElementType 
-     *            the element type            
+     * @param inElementType
+     *            the element type
      */
     public AutoCompleteDropDownPanel(final String url, final ElementType inElementType)
     {
         elementType = inElementType;
-        
+
         this.addStyleName("yui-skin-sam");
         this.addStyleName("auto-complete");
-        
+
         // Need to do this to fix an especially nasty IE CSS bug (input margin inheritance)
         final SimplePanel textWrapper = new SimplePanel();
 
@@ -134,13 +134,13 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
         textWrapper.addStyleName("input-wrapper");
         this.add(textWrapper);
-        
+
         resultsPanel.getElement().setAttribute("id", "acra-" + rand);
         clearPanel.setStyleName("clear");
-        
+
         this.add(clearPanel);
         this.add(resultsPanel);
-        
+
         DeferredCommand.addCommand(new Command()
         {
             public void execute()
@@ -152,7 +152,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Sets the default text.
-     * 
+     *
      * @param text
      *            the text.
      */
@@ -164,13 +164,13 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
             textBox.addStyleName("default");
             textBox.addFocusListener(new FocusListener()
             {
-    
+
                 public void onFocus(final Widget arg0)
                 {
                     textBox.setText("");
                     textBox.removeStyleName("default");
                 }
-    
+
                 public void onLostFocus(final Widget arg0)
                 {
                 }
@@ -182,23 +182,23 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
             textArea.addStyleName("default");
             textArea.addFocusListener(new FocusListener()
             {
-    
+
                 public void onFocus(final Widget arg0)
                 {
                     textArea.setText("");
                     textArea.removeStyleName("default");
                 }
-    
+
                 public void onLostFocus(final Widget arg0)
                 {
                 }
             });
         }
     }
-    
+
     /**
      * Sets the text.
-     * 
+     *
      * @param text
      *            The text.
      */
@@ -216,10 +216,10 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
         textBox.setText("");
         textArea.setText("");
     }
-    
+
     /**
      * Set the maxlength field.
-     * 
+     *
      * @param maxLength
      *            the length to set.
      */
@@ -227,10 +227,10 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
     {
         textBox.setMaxLength(maxLength);
     }
-    
+
     /**
      * Get the text from the text box.
-     * 
+     *
      * @return
      *            The text.
      */
@@ -245,10 +245,10 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
             return textArea.getText();
         }
     }
-    
+
     /**
      * Returns the random identifier.
-     * 
+     *
      * @return
      *            the random identifier.
      */
@@ -259,7 +259,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Set up the command.
-     * 
+     *
      * @param inCommand
      *            the command.
      */
@@ -270,7 +270,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Gets called by the JSNI when the item is selected.
-     * 
+     *
      * @param obj
      *            the javascript object.
      */
@@ -283,8 +283,17 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
     }
 
     /**
+     * Returns the text area.
+     * @return the text area.
+     */
+    protected TextArea getTextArea()
+    {
+        return textArea;
+    }
+
+    /**
      * Sets up the auto complete.
-     * 
+     *
      * @param taId
      *            the text area id.
      * @param acdId

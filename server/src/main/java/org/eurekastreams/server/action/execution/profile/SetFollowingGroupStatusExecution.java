@@ -23,22 +23,17 @@ import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
-import org.eurekastreams.commons.server.NoCurrentUserDetails;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.action.request.profile.RequestForGroupMembershipRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusByGroupCreatorRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
-import org.eurekastreams.server.action.request.stream.RefreshCachedCompositeStreamRequest;
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
-import org.eurekastreams.server.persistence.mappers.GetFollowedStreamViewByUser;
 import org.eurekastreams.server.persistence.mappers.cache.AddCachedGroupFollower;
-import org.eurekastreams.server.persistence.mappers.cache.RemoveCachedActivitiesFromList;
 import org.eurekastreams.server.persistence.mappers.cache.RemoveCachedGroupFollower;
 import org.eurekastreams.server.persistence.mappers.db.DeleteRequestForGroupMembership;
-import org.eurekastreams.server.persistence.mappers.requests.RemoveCachedActivitiesFromListRequest;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
@@ -82,17 +77,6 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
     private final GetGroupFollowerIds followerIdsMapper;
 
     /**
-     * Local instance of the cache mapper for removing all activities of the newly unfollowed users from the following
-     * activities list in cache.
-     */
-    private final RemoveCachedActivitiesFromList removeCachedActivitiesMapper;
-
-    /**
-     * Local instance of the db mapper that retrieves the followed composite stream (streamview) id.
-     */
-    private final GetFollowedStreamViewByUser followedStreamViewMapper;
-
-    /**
      * Mapper to remove group access requests.
      */
     private DeleteRequestForGroupMembership deleteRequestForGroupMembershipMapper;
@@ -111,11 +95,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
      * @param inRemoveCachedGroupFollowerMapper
      *            - instance of the RemoveCachedGroupFollower mapper.
      * @param inFollowerIdsMapper
-     *            - instance of the GetGroupFollowerIds mapper.
-     * @param inRemoveCachedActivitiesMapper
      *            - instance of the RemoveCachedActivitiesFromList mapper.
-     * @param inFollowedStreamViewMapper
-     *            = instance of the GetFollowedStreamViewByUser mapper.
      * @param inDeleteRequestForGroupMembershipMapper
      *            Mapper to remove group access requests.
      */
@@ -124,8 +104,6 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             final AddCachedGroupFollower inAddCachedGroupFollowerMapper,
             final RemoveCachedGroupFollower inRemoveCachedGroupFollowerMapper,
             final GetGroupFollowerIds inFollowerIdsMapper,
-            final RemoveCachedActivitiesFromList inRemoveCachedActivitiesMapper,
-            final GetFollowedStreamViewByUser inFollowedStreamViewMapper,
             final DeleteRequestForGroupMembership inDeleteRequestForGroupMembershipMapper)
     {
         groupMapper = inGroupMapper;
@@ -134,8 +112,6 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
         addCachedGroupFollowerMapper = inAddCachedGroupFollowerMapper;
         removeCachedGroupFollowerMapper = inRemoveCachedGroupFollowerMapper;
         followerIdsMapper = inFollowerIdsMapper;
-        removeCachedActivitiesMapper = inRemoveCachedActivitiesMapper;
-        followedStreamViewMapper = inFollowedStreamViewMapper;
         deleteRequestForGroupMembershipMapper = inDeleteRequestForGroupMembershipMapper;
     }
 
@@ -181,7 +157,6 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
         {
             throw new IllegalArgumentException("Invalid Request type sent to SetFollowingGroupStatusExecution.");
         }
-        Long compositeStreamId = followedStreamViewMapper.execute(followerId);
 
         switch (followerStatus)
         {
@@ -194,11 +169,10 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             // remove any requests from the user for group membership
             deleteRequestForGroupMembershipMapper.execute(new RequestForGroupMembershipRequest(targetId, followerId));
 
-            // Post an async action to update the cache with the rest of the followers.
-            RefreshCachedCompositeStreamRequest actionRequest = new RefreshCachedCompositeStreamRequest(
-                    compositeStreamId, followerId);
-            taskRequests.add(new UserActionRequest("refreshCachedFollowingCompositeStreamAction",
-                    new NoCurrentUserDetails(), actionRequest));
+            // TODO: Post an async action to update the cache with the rest of the followers.
+
+            // taskRequests.add(new UserActionRequest("refreshCachedFollowingCompositeStreamAction",
+            // new NoCurrentUserDetails(), actionRequest));
 
             // Sends new follower notifications.
             CreateNotificationsRequest notificationRequest = new CreateNotificationsRequest(RequestType.GROUP_FOLLOWER,
@@ -208,12 +182,8 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
         case NOTFOLLOWING:
             // Update the db and cache for list of followers and following.
             domainGroupMapper.removeFollower(followerId, targetId);
-            // Update the cache list
+            // TODO: Update the cache list
             removeCachedGroupFollowerMapper.execute(followerId, targetId);
-
-            RemoveCachedActivitiesFromListRequest removeRequest = new RemoveCachedActivitiesFromListRequest(
-                    compositeStreamId, followerId, targetId);
-            removeCachedActivitiesMapper.execute(removeRequest);
 
             break;
         default:

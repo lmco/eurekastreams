@@ -13,27 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.mappers.cache;
+package org.eurekastreams.web.client.events.data;
 
-import java.util.List;
-
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
+import java.util.HashSet;
 
 /**
- * Get all the activities.
+ * Response event.
  *
  */
-public class GetEveryoneActivityCacheMapper extends CachedDomainMapper implements DomainMapper<Long, List<Long>>
+public class GotAllPopularHashTagsResponseEvent extends BaseDataResponseEvent<HashSet<String>>
 {
     /**
-     * Get all the activities.
-     * @param inRequest ignored
-     * @return the IDs.
+     * Default constructor.
+     * @param inResponse response.
      */
-    @Override
-    public List<Long> execute(final Long inRequest)
+    public GotAllPopularHashTagsResponseEvent(final HashSet<String>inResponse)
     {
-        return getCache().getList("TODO");
+        super(inResponse);
     }
+
 }

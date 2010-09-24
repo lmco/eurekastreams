@@ -24,11 +24,8 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.action.request.opensocial.GetUserActivitiesRequest;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.CompositeStreamActivityIdsMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds;
-import org.eurekastreams.server.persistence.mappers.stream.GetStreamByOwnerId;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
@@ -41,20 +38,9 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 public class GetUserActivitiesExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
-     * Local instance of the {@link GetStreamByOwnerId} mapper.
-     */
-    private final GetStreamByOwnerId getStreamByOwnerIdMapper;
-
-    /**
      * Local instance of the {@link BulkActivitiesMapper}.
      */
-    private final DomainMapper<List<Long>, List<ActivityDTO>>  bulkActivitiesMapper;
-
-    /**
-     * Local instance of the {@link CompositeStreamActivityIdsMapper} used to retrieve the list of activity ids for the
-     * user's personal composite stream (the wall).
-     */
-    private final CompositeStreamActivityIdsMapper compositeStreamActivityIdsMapper;
+    private final DomainMapper<List<Long>, List<ActivityDTO>> bulkActivitiesMapper;
 
     /**
      * Local instance of the {@link GetPeopleByOpenSocialIds} mapper.
@@ -64,23 +50,15 @@ public class GetUserActivitiesExecution implements ExecutionStrategy<PrincipalAc
     /**
      * Constructor.
      *
-     * @param inGetStreamByOwnerId
-     *            - instance of the {@link GetStreamByOwnerId} mapper.
      * @param inBulkActivitiesMapper
      *            - instance of the {@link BulkActivitiesMapper}.
-     * @param inCompositeStreamActivityIdsMapper
-     *            - instance of the {@link CompositeStreamActivityIdsMapper}.
      * @param inGetPeopleByOpenSocialIds
      *            - instance of the {@link GetPeopleByOpenSocialIds} mapper.
      */
-    public GetUserActivitiesExecution(final GetStreamByOwnerId inGetStreamByOwnerId,
-            final DomainMapper<List<Long>, List<ActivityDTO>>  inBulkActivitiesMapper,
-            final CompositeStreamActivityIdsMapper inCompositeStreamActivityIdsMapper,
+    public GetUserActivitiesExecution(final DomainMapper<List<Long>, List<ActivityDTO>> inBulkActivitiesMapper,
             final GetPeopleByOpenSocialIds inGetPeopleByOpenSocialIds)
     {
-        getStreamByOwnerIdMapper = inGetStreamByOwnerId;
         bulkActivitiesMapper = inBulkActivitiesMapper;
-        compositeStreamActivityIdsMapper = inCompositeStreamActivityIdsMapper;
         getPeopleByOpenSocialIds = inGetPeopleByOpenSocialIds;
     }
 
@@ -107,17 +85,13 @@ public class GetUserActivitiesExecution implements ExecutionStrategy<PrincipalAc
             List<PersonModelView> currentUsers = getPeopleByOpenSocialIds.execute(new ArrayList<String>(currentRequest
                     .getOpenSocialIds()));
 
-            for (PersonModelView currentUser : currentUsers)
-            {
-                StreamFilter currentUserStreamView = getStreamByOwnerIdMapper.execute(currentUser.getEntityId());
-
-                activityIds.addAll(compositeStreamActivityIdsMapper.execute(currentUserStreamView.getId(), currentUser
-                        .getEntityId()));
-
-                currentActivityDTOs.addAll(bulkActivitiesMapper.execute(activityIds));
-            }
+            // for (PersonModelView currentUser : currentUsers)
+            // {
+            // // TODO: add all activities from this person
+            // }
         }
 
+        currentActivityDTOs.addAll(bulkActivitiesMapper.execute(activityIds));
         return currentActivityDTOs;
     }
 

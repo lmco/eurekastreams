@@ -35,6 +35,7 @@ import org.eurekastreams.web.client.events.data.GotSystemSettingsResponseEvent;
 import org.eurekastreams.web.client.history.HistoryHandler;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
+import org.eurekastreams.web.client.model.AllPopularHashTagsModel;
 import org.eurekastreams.web.client.model.NotificationCountModel;
 import org.eurekastreams.web.client.model.SystemSettingsModel;
 import org.eurekastreams.web.client.model.TutorialVideoModel;
@@ -157,10 +158,12 @@ public class ApplicationEntryPoint implements EntryPoint
      */
     private void loadPerson()
     {
+
         this.processor.setQueueRequests(true);
 
         SystemSettingsModel.getInstance().fetch(null, false);
         TutorialVideoModel.getInstance().fetch(null, true);
+        AllPopularHashTagsModel.getInstance().fetch(null, true);
 
         // fetch initial notification count here so request gets bundled with the other startup requests
         NotificationCountModel.getInstance().fetch(null, false);
@@ -229,7 +232,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Shows the ToS modal.
-     * 
+     *
      */
     private void displayToS()
     {
@@ -267,7 +270,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires off a gadget change state event.
-     * 
+     *
      * @param id
      *            the gadget id
      * @param view
@@ -283,7 +286,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires of the UpdateGadgetPrefsEvent when called from the gadget container.
-     * 
+     *
      * @param inId
      *            - id of the gadget being updated.
      * @param inPrefs

@@ -59,12 +59,10 @@ public class DomainGroupQueryStrategy
         fields.add(Projections.property("cb.accountId").as("personCreatedByAccountId"));
         fields.add(Projections.property("cb.displayName").as("personCreatedByDisplayName"));
         fields.add(Projections.property("stream.id").as("streamId"));
-        fields.add(Projections.property("compositeStream.id").as("compositeStreamId"));
         criteria.setProjection(fields);
         criteria.createAlias("parentOrganization", "po");
         criteria.createAlias("createdBy", "cb");
         criteria.createAlias("streamScope", "stream");
-        criteria.createAlias("entityStreamView", "compositeStream");
 
         // We don't currently cache pending groups
         // TODO: this needs to change - we should figure out how to remove this rule

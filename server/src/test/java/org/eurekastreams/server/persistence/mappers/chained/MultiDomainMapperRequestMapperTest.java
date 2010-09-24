@@ -13,25 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.mappers.db;
+package org.eurekastreams.server.persistence.mappers.chained;
+
+import static org.junit.Assert.assertSame;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
-import org.eurekastreams.server.domain.stream.ActivitySecurityDTO;
-import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests the bulk activity security DB mapper.
+ * Test for the mulitdomian mapper.
+ *
  */
-public class BulkActivitySecurityDbMapperTest extends MapperTest
+public class MultiDomainMapperRequestMapperTest
 {
     /**
      * Context for building mock objects.
@@ -46,38 +46,41 @@ public class BulkActivitySecurityDbMapperTest extends MapperTest
     /**
      * System under test.
      */
-    private BulkActivitySecurityDbMapper sut = null;
+    private MultiDomainMapperRequestMapper<Long, Long> sut;
 
     /**
-     * Setup test fixtures.
+     * Mapper mock.
      */
-    @Before
-    public void before()
-    {
-        sut = new BulkActivitySecurityDbMapper();
-        sut.setEntityManager(getEntityManager());
-    }
+    private DomainMapper<Long, Long> mapper = context.mock(DomainMapper.class);
 
     /**
-     * Test execute.
+     * Test.
      */
     @Test
-    public void testExecute()
+    public void execute()
     {
-        final Long activityId = 6789L;
-        final Long destinationEntityId = 98L;
+        final List<Long> requests = new ArrayList<Long>();
+        requests.add(1L);
+        requests.add(2L);
 
-        final List<Long> activites = new ArrayList<Long>();
-        activites.add(activityId);
+        sut = new MultiDomainMapperRequestMapper(mapper);
 
-        final List<ActivitySecurityDTO> results = sut.execute(activites);
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(mapper).execute(1L);
+                will(returnValue(3L));
 
-        Assert.assertEquals(1, results.size());
-        Assert.assertEquals(activityId, results.get(0).getId());
-        Assert.assertEquals(destinationEntityId, results.get(0).getDestinationEntityId());
-        Assert.assertTrue(results.get(0).isDestinationStreamPublic());
+                oneOf(mapper).execute(2L);
+                will(returnValue(4L));
+            }
+        });
+
+        List<Long> responses = sut.execute(requests);
+
+        assertSame(3L, responses.get(0));
+        assertSame(4L, responses.get(1));
 
         context.assertIsSatisfied();
     }
-
 }

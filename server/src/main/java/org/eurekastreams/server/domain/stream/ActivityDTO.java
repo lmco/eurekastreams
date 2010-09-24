@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
@@ -194,7 +195,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Load this object's properties from the input Map.
-     * 
+     *
      * @param properties
      *            the Map of the properties to load
      */
@@ -252,9 +253,29 @@ public class ActivityDTO extends ModelView implements Serializable
         {
             setCommentCount((Integer) properties.get("commentCount"));
         }
-        if (properties.containsKey("destinationStreamId"))
+        if (properties.containsKey("destinationStreamScopeId"))
         {
-            getDestinationStream().setId((Long) properties.get("destinationStreamId"));
+            getDestinationStream().setId((Long) properties.get("destinationStreamScopeId"));
+        }
+        if (properties.containsKey("destinationStreamEntityId"))
+        {
+            getDestinationStream().setDestinationEntityId((Long) properties.get("destinationStreamEntityId"));
+        }
+        if (properties.containsKey("destinationStreamScopeType"))
+        {
+            ScopeType scopeType = (ScopeType) properties.get("destinationStreamScopeType");
+            if (scopeType == ScopeType.PERSON)
+            {
+                getDestinationStream().setType(EntityType.PERSON);
+            }
+            else if (scopeType == ScopeType.GROUP)
+            {
+                getDestinationStream().setType(EntityType.GROUP);
+            }
+        }
+        if (properties.containsKey("destinationStreamUniqueKey"))
+        {
+            getDestinationStream().setUniqueIdentifier((String) properties.get("destinationStreamUniqueKey"));
         }
         if (properties.containsKey("actorType"))
         {
@@ -500,7 +521,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Gets the name of the entity backing this model view.
-     * 
+     *
      * @return the entity name;
      */
     @Override
@@ -672,7 +693,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Get whether the destination stream is a public.
-     * 
+     *
      * @return whether the destination stream is public.
      */
     public Boolean getIsDestinationStreamPublic()
@@ -682,7 +703,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Set whether the destination stream is public.
-     * 
+     *
      * @param inIsDestinationStreamPublic
      *            whether the destination stream is public
      */
@@ -812,7 +833,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Set the likers.
-     * 
+     *
      * @param inLikers
      *            the likers.
      */
@@ -823,7 +844,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Get the likers.
-     * 
+     *
      * @return the likers.
      */
     public List<PersonModelView> getLikers()

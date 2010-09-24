@@ -126,11 +126,6 @@ public class OrganizationModelView extends ModelView implements Serializable
     private long streamId = UNINITIALIZED_LONG_VALUE;
 
     /**
-     * CompositeStreamId.
-     */
-    private long compositeStreamId = UNINITIALIZED_LONG_VALUE;
-
-    /**
      * Banner id.
      */
     private String bannerId = UNINITIALIZED_STRING_VALUE;
@@ -201,10 +196,6 @@ public class OrganizationModelView extends ModelView implements Serializable
         if (properties.containsKey("streamId"))
         {
             setStreamId((Long) properties.get("streamId"));
-        }
-        if (properties.containsKey("compositeStreamId"))
-        {
-            setCompositeStreamId((Long) properties.get("compositeStreamId"));
         }
         if (properties.containsKey("parentOrganizationId"))
         {
@@ -450,23 +441,6 @@ public class OrganizationModelView extends ModelView implements Serializable
     public void setStreamId(final long inStreamId)
     {
         streamId = inStreamId;
-    }
-
-    /**
-     * @return the compositeStreamId
-     */
-    public long getCompositeStreamId()
-    {
-        return compositeStreamId;
-    }
-
-    /**
-     * @param inCompositeStreamId
-     *            the compositeStreamId to set
-     */
-    public void setCompositeStreamId(final long inCompositeStreamId)
-    {
-        compositeStreamId = inCompositeStreamId;
     }
 
     /**

@@ -21,7 +21,6 @@ import org.eurekastreams.web.client.ui.common.stream.attach.bookmark.AddLinkComp
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextArea;
 
 /**
  * Post to stream view.
@@ -45,13 +44,13 @@ public class PostToStreamView implements Bindable
     /**
      * The message.
      */
-    TextArea message;
-    
+    PostToStreamTextboxPanel message;
+
     /**
      * The content warning.
      */
     Label contentWarning;
-    
+
     /**
      * The list of links in the message.
      */
@@ -64,7 +63,7 @@ public class PostToStreamView implements Bindable
 
     /**
      * Constructor.
-     * 
+     *
      * @param inModel
      *            the model.
      */
@@ -75,7 +74,7 @@ public class PostToStreamView implements Bindable
 
     /**
      * Adds a message keyboard listener.
-     * 
+     *
      * @param listener
      *            the change listener.
      */
@@ -109,7 +108,7 @@ public class PostToStreamView implements Bindable
             charsRemaining.removeStyleName("over-character-limit");
         }
     }
-    
+
     /**
      * Hides the post button.
      */
@@ -117,7 +116,7 @@ public class PostToStreamView implements Bindable
     {
         postButton.addStyleName("inactive");
     }
-    
+
     /**
      * Displays the post button.
      */
@@ -125,7 +124,7 @@ public class PostToStreamView implements Bindable
     {
         postButton.removeStyleName("inactive");
     }
-    
+
     /**
      * Calculates if the UI is in a state that it can post. This helps eliminates the ability for a double post
      * of an activity.
@@ -135,10 +134,10 @@ public class PostToStreamView implements Bindable
     {
         return !postButton.getStyleName().contains("inactive");
     }
-    
+
     /**
      * Adds a listener to the post button.
-     * 
+     *
      * @param listener
      *            the listener.
      */
@@ -166,7 +165,7 @@ public class PostToStreamView implements Bindable
         errorMsg.setVisible(true);
         showPostButton();
     }
-    
+
     /**
      * Hides the error.
      */
@@ -174,7 +173,7 @@ public class PostToStreamView implements Bindable
     {
         errorMsg.setVisible(false);
     }
-    
+
     /**
      * @return the message text.
      */
@@ -195,7 +194,7 @@ public class PostToStreamView implements Bindable
         }
         else
         {
-            contentWarning.setVisible(false);            
+            contentWarning.setVisible(false);
         }
 
         message.setVisible(true);

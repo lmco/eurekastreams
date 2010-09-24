@@ -40,7 +40,7 @@ import org.eurekastreams.server.search.modelview.OrganizationModelView;
 /**
  * Delete an organization. This assumes that the organization has no orgs or groups underneath it. People reporting to
  * org will be moved to deleted org's parent org, org will be removed from people's related orgs collection.
- * 
+ *
  */
 public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy<ActionContext>
 {
@@ -85,7 +85,7 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
 
     /**
      * Constructor.
-     * 
+     *
      * @param inMovePeopleMapper
      *            Mapper to move People out of organization.
      * @param inOrgDTOByIdMapper
@@ -120,7 +120,7 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
 
     /**
      * Delete Organization and directly associated entities.
-     * 
+     *
      * @param inActionContext
      *            The action context.
      * @return parent org short name;
@@ -207,9 +207,6 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
 
         // remove org tree DTO
         cacheKeysToRemove.add(CacheKeys.ORGANIZATION_TREE_DTO);
-
-        // remove activity id list for deleted org
-        cacheKeysToRemove.add(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + orgDto.getCompositeStreamId());
 
         // remove all major components from cache. This is not all inclusive as the peripheral stuff will just
         // expire away and there's no real need to keep maintaining this list as cache is modified.

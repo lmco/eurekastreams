@@ -15,25 +15,26 @@
  */
 package org.eurekastreams.server.persistence.mappers.cache;
 
-import java.util.List;
-
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.chained.RefreshStrategy;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
- * Get all the activities.
+ * A do-nothing cache refresher.
  *
+ * @param <Request> request type.
+ * @param <Response> response type.
  */
-public class GetEveryoneActivityCacheMapper extends CachedDomainMapper implements DomainMapper<Long, List<Long>>
+public class NullCacheRefresher<Request, Response> extends CachedDomainMapper implements
+RefreshStrategy<Request, Response>
 {
     /**
-     * Get all the activities.
-     * @param inRequest ignored
-     * @return the IDs.
+     * Do nothing. If we did something we wouldn't be much of a null cache refresher would we?
+     * @param request who cares?
+     * @param response again, nothing to see here. This is not the param you're looking for.
      */
     @Override
-    public List<Long> execute(final Long inRequest)
+    public void refresh(final Request request, final Response response)
     {
-        return getCache().getList("TODO");
     }
+
 }

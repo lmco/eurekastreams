@@ -45,7 +45,7 @@ import org.junit.Test;
 
 /**
  * Test for DeleteOrganizationExecution.
- * 
+ *
  */
 @SuppressWarnings("unchecked")
 public class DeleteOrganizationExecutionTest
@@ -180,9 +180,6 @@ public class DeleteOrganizationExecutionTest
 
                 allowing(orgDto).getParentOrganizationId();
                 will(returnValue(orgParentId));
-
-                allowing(orgDto).getCompositeStreamId();
-                will(returnValue(compositeStreamId));
 
                 allowing(orgByIdMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(parentOrg));

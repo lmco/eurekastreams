@@ -195,11 +195,6 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     private long streamId = UNINITIALIZED_LONG_VALUE;
 
     /**
-     * CompositeStream id for this person.
-     */
-    private long compositeStreamId = UNINITIALIZED_LONG_VALUE;
-
-    /**
      * Set of videos a user has opted out of seeing.
      */
     private HashSet<Long> optOutVideos = new HashSet<Long>();
@@ -354,10 +349,6 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
         if (properties.containsKey("groupStreamHiddenLineIndex"))
         {
             setGroupStreamHiddenLineIndex((Integer) properties.get("groupStreamHiddenLineIndex"));
-        }
-        if (properties.containsKey("compositeStreamId"))
-        {
-            setCompositeStreamId((Long) properties.get("compositeStreamId"));
         }
         if (properties.containsKey("tosAcceptance"))
         {
@@ -720,23 +711,6 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     public void setGroupStreamHiddenLineIndex(final int inGroupStreamHiddenLineIndex)
     {
         groupStreamHiddenLineIndex = inGroupStreamHiddenLineIndex;
-    }
-
-    /**
-     * @return the compositeStreamId
-     */
-    public long getCompositeStreamId()
-    {
-        return compositeStreamId;
-    }
-
-    /**
-     * @param inCompositeStreamId
-     *            the compositeStreamId to set
-     */
-    public void setCompositeStreamId(final long inCompositeStreamId)
-    {
-        this.compositeStreamId = inCompositeStreamId;
     }
 
     /**

@@ -16,17 +16,11 @@
 package org.eurekastreams.server.domain.stream;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
 
 import org.eurekastreams.commons.model.DomainEntity;
@@ -67,20 +61,8 @@ public class StreamScope extends DomainEntity implements Serializable
     /**
      * The destination (group or person) entity's id.
      */
-    @Transient
+    @Basic(optional = true)
     private Long destinationEntityId;
-
-    /**
-     * List of compositeStreams this stream is a part of, reusing the existing join table.
-     */
-    @SuppressWarnings("unused")
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "StreamView_StreamScope",
-    // line break
-    joinColumns = @JoinColumn(name = "includedScopes_id"),
-    // line break
-    inverseJoinColumns = @JoinColumn(name = "StreamView_id"))
-    private Set<StreamView> containingCompositeStreams = new HashSet<StreamView>();
 
     /**
      * Empty constructor for serialization.
