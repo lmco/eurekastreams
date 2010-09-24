@@ -145,16 +145,41 @@ public class OrganizationCreatorTest
             }
         });
 
-//        try
-//        {
-            OrganizationCreator sut = new OrganizationCreator(orgMapperMock);
-            Assert.assertNotNull(sut.get(null, formData));
-            context.assertIsSatisfied();
-//        }
-//        catch (Exception e)
-//        {
-//            fail(e + ": something bad happened while getting");
-//        }
+        OrganizationCreator sut = new OrganizationCreator(orgMapperMock);
+        Assert.assertNotNull(sut.get(null, formData));
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Build an organization based on the input form being fully filled out with valid data and with a non-root
+     * parent org defined.
+     *
+     * @throws Exception
+     *             not expected
+     */
+    @SuppressWarnings("deprecation")
+    @Test
+    public void getSuccessWithParentOrgDefined() throws Exception
+    {
+        final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
+        final String subOrgShortname = "someSubOrg";
+        formData.put("orgParent", subOrgShortname);
+
+        userActionRequests = new ArrayList<UserActionRequest>();
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(taskHandlerActionContext).getUserActionRequests();
+                will(returnValue(userActionRequests));
+
+                allowing(orgMapperMock).findByShortName(with(any(String.class)));
+            }
+        });
+
+        OrganizationCreator sut = new OrganizationCreator(orgMapperMock);
+        Assert.assertNotNull(sut.get(null, formData));
+        context.assertIsSatisfied();
     }
 
     /**
