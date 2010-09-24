@@ -93,15 +93,15 @@ public class FollowedGroupsPersistenceRequestTransformerTest
 
         DomainGroupModelView group1 = new DomainGroupModelView();
         group1.setEntityId(1L);
-        group1.setCompositeStreamId(4L);
+        group1.setStreamId(4L);
 
         DomainGroupModelView group2 = new DomainGroupModelView();
         group2.setEntityId(2L);
-        group2.setCompositeStreamId(5L);
+        group2.setStreamId(5L);
 
         DomainGroupModelView group3 = new DomainGroupModelView();
         group3.setEntityId(3L);
-        group3.setCompositeStreamId(6L);
+        group3.setStreamId(6L);
 
         final List<DomainGroupModelView> groups = Arrays.asList(group1, group2, group3);
 
@@ -119,8 +119,8 @@ public class FollowedGroupsPersistenceRequestTransformerTest
             }
         });
 
-        Assert.assertEquals(Arrays.asList(group1.getCompositeStreamId(), group2.getCompositeStreamId(), group3
-                .getCompositeStreamId()), sut.transform(jsonReq, entityId));
+        Assert.assertEquals(Arrays.asList(group1.getStreamId(), group2.getStreamId(), group3
+                .getStreamId()), sut.transform(jsonReq, entityId));
 
         context.assertIsSatisfied();
     }

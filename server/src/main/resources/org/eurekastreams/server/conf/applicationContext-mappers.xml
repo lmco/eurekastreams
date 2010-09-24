@@ -319,7 +319,51 @@
 	</bean>
 
 	<bean id="getUserStreamsMapper" class="org.eurekastreams.server.persistence.mappers.db.GetUserStreamsDbMapper" />
-	
+
+
+	<bean
+		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ENTITY_STREAM_BY_SCOPE_ID"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
+
+	<bean id="bulkActivityStreamsMapper"
+		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
+				<constructor-arg>
+					<bean
+						class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
+				</constructor-arg>
+				<constructor-arg
+					ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ENTITY_STREAM_BY_SCOPE_ID" />
+				<constructor-arg value="True" />
+				<property name="cache" ref="memcachedCache" />
+			</bean>
+		</constructor-arg>
+
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.db.BulkActivityStreamsDbMapper">
+					<property name="maxItems" value="10000" />
+			</bean>
+
+		</constructor-arg>
+
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
+		</constructor-arg>
+
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.persistence.mappers.cache.SetKeyedCollectionCacheMapper">
+				<constructor-arg
+					ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ENTITY_STREAM_BY_SCOPE_ID" />
+				<!-- Cache Key Prefix -->				
+				<property name="cache" ref="memcachedCache" />
+			</bean>
+		</constructor-arg>
+	</bean>
+
 	<bean id="parentOrgActivityIdMapper"
 		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<constructor-arg>

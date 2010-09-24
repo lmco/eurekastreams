@@ -193,4 +193,9 @@ public final class CacheKeys
      * Cache key for the everyone activity list.
      */
     public static final String EVERYONE_ACTIVITY_IDS = "ActAll";
+    
+    /**
+     * Entity activity stream.
+     */
+    public static final String ENTITY_STREAM_BY_SCOPE_ID = "EntStr:";
 }

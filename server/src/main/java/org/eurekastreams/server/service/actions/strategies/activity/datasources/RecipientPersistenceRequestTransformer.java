@@ -16,8 +16,7 @@
 package org.eurekastreams.server.service.actions.strategies.activity.datasources;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -25,6 +24,8 @@ import net.sf.json.JSONObject;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Transformers a list of recipient short names into entity stream IDs.
@@ -44,7 +45,7 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
 
     /**
      * Constructor.
-     *
+     * 
      * @param inPersonMapper
      *            the person mapper.
      * @param inGroupMapper
@@ -59,7 +60,7 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
 
     /**
      * Transform the request into a list of entity stream IDs.
-     *
+     * 
      * @param request
      *            the request.
      * @param userEntityId
@@ -70,7 +71,8 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
     {
         JSONArray recipients = request.getJSONArray("recipient");
 
-        Map<Long, EntityType> mapperRequest = new HashMap<Long, EntityType>();
+        List<String> personIds = new ArrayList<String>();
+        List<String> groupIds = new ArrayList<String>();
 
         for (int i = 0; i < recipients.size(); i++)
         {
@@ -80,17 +82,31 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
             switch (type)
             {
             case PERSON:
-                mapperRequest.put(personMapper.fetchId(req.getString("name")), type);
+                personIds.add(req.getString("name"));
                 break;
             case GROUP:
-                mapperRequest.put(groupMapper.fetchId(req.getString("name")), type);
+                groupIds.add(req.getString("name"));
                 break;
             default:
                 throw new RuntimeException("Unhandled type.");
             }
         }
 
-        // TODO: return (ArrayList<Long>) streamIdMapper.execute(mapperRequest);
-        return new ArrayList<Long>();
+        final List<PersonModelView> people = personMapper.execute(personIds);
+        final List<DomainGroupModelView> groups = groupMapper.execute(groupIds);
+
+        final ArrayList<Long> streamScopeIds = new ArrayList<Long>();
+        
+        for (PersonModelView person : people)
+        {
+            streamScopeIds.add(person.getStreamId());
+        }
+
+        for (DomainGroupModelView group : groups)
+        {
+            streamScopeIds.add(group.getStreamId());
+        }
+
+        return streamScopeIds;
     }
 }

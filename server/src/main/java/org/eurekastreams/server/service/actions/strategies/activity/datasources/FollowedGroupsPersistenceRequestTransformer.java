@@ -102,7 +102,7 @@ public class FollowedGroupsPersistenceRequestTransformer implements PersistenceD
 
             for (DomainGroupModelView group : groupList)
             {
-                results.add(group.getCompositeStreamId());
+                results.add(group.getStreamId());
             }
 
             return results;
