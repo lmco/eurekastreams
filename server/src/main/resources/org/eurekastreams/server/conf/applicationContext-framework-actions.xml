@@ -2624,19 +2624,45 @@
 		</constructor-arg>
 	</bean>
 
-	<bean id="postToGroupStreamNotificationEmailBuilder" parent="baseTemplateEmailBuilder">
-		<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) posted a $(activity.type) to the $(dest.name) stream" />
+	<bean id="postToGroupStreamNotificationEmailBuilder" class="org.eurekastreams.server.action.execution.notification.ActivityTemplateEmailBuilder">
+		<constructor-arg ref="bulkActivitiesMapper" />
 		<constructor-arg>
-			<bean parent="baseResourceContentLoader">
-				<constructor-arg
-					value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_GROUP_STREAM.txt" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg>
-			<bean parent="baseResourceContentLoader">
-				<constructor-arg
-					value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_GROUP_STREAM.html" />
-			</bean>
+			<map>
+				<entry key="NOTE">
+					<bean parent="baseTemplateEmailBuilder">
+						<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) posted a $(activity.type) to the $(dest.name) stream" />
+						<constructor-arg>
+							<bean parent="baseResourceContentLoader">
+								<constructor-arg
+									value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_GROUP_STREAM-NOTE.txt" />
+							</bean>
+						</constructor-arg>
+						<constructor-arg>
+							<bean parent="baseResourceContentLoader">
+								<constructor-arg
+									value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_GROUP_STREAM-NOTE.html" />
+							</bean>
+						</constructor-arg>
+					</bean>
+				</entry>
+				<entry key="BOOKMARK">
+					<bean parent="baseTemplateEmailBuilder">
+						<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) posted a $(activity.type) to the $(dest.name) stream" />
+						<constructor-arg>
+							<bean parent="baseResourceContentLoader">
+								<constructor-arg
+									value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_GROUP_STREAM-BOOKMARK.txt" />
+							</bean>
+						</constructor-arg>
+						<constructor-arg>
+							<bean parent="baseResourceContentLoader">
+								<constructor-arg
+									value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_GROUP_STREAM-BOOKMARK.html" />
+							</bean>
+						</constructor-arg>
+					</bean>
+				</entry>
+			</map>
 		</constructor-arg>
 	</bean>
 	
@@ -2649,19 +2675,45 @@
 				<constructor-arg>
 					<map>
 						<entry key="POST_TO_PERSONAL_STREAM">
-							<bean parent="baseTemplateEmailBuilder">
-								<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) posted a $(activity.type) to your stream" />
+							<bean class="org.eurekastreams.server.action.execution.notification.ActivityTemplateEmailBuilder">
+								<constructor-arg ref="bulkActivitiesMapper" />
 								<constructor-arg>
-									<bean parent="baseResourceContentLoader">
-										<constructor-arg
-											value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_PERSONAL_STREAM.txt" />
-									</bean>
-								</constructor-arg>
-								<constructor-arg>
-									<bean parent="baseResourceContentLoader">
-										<constructor-arg
-											value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_PERSONAL_STREAM.html" />
-									</bean>
+									<map>
+										<entry key="NOTE">
+											<bean parent="baseTemplateEmailBuilder">
+												<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) posted a $(activity.type) to your stream" />
+												<constructor-arg>
+													<bean parent="baseResourceContentLoader">
+														<constructor-arg
+															value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_PERSONAL_STREAM-NOTE.txt" />
+													</bean>
+												</constructor-arg>
+												<constructor-arg>
+													<bean parent="baseResourceContentLoader">
+														<constructor-arg
+															value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_PERSONAL_STREAM-NOTE.html" />
+													</bean>
+												</constructor-arg>
+											</bean>
+										</entry>
+										<entry key="BOOKMARK">
+											<bean parent="baseTemplateEmailBuilder">
+												<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) posted a $(activity.type) to your stream" />
+												<constructor-arg>
+													<bean parent="baseResourceContentLoader">
+														<constructor-arg
+															value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_PERSONAL_STREAM-BOOKMARK.txt" />
+													</bean>
+												</constructor-arg>
+												<constructor-arg>
+													<bean parent="baseResourceContentLoader">
+														<constructor-arg
+															value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_PERSONAL_STREAM-BOOKMARK.html" />
+													</bean>
+												</constructor-arg>
+											</bean>
+										</entry>
+									</map>
 								</constructor-arg>
 							</bean>
 						</entry>
