@@ -397,6 +397,7 @@
 		<constructor-arg ref="getGroupFollowerIds" />
 		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+		<constructor-arg ref="getPeopleWhoLikedActivityDbMapper" />
 		<property name="cache" ref="testCache" />
 	</bean>
 

@@ -15,15 +15,20 @@
  */
 package org.eurekastreams.server.persistence.mappers.cache;
 
+import java.util.Arrays;
+
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * This mapper adds an activity to the composite streams that are related to the actor posting the activity.
- *
+ * 
  */
 public class PostActivityUpdateStreamsByActorMapper extends CachedDomainMapper
 {
@@ -45,7 +50,7 @@ public class PostActivityUpdateStreamsByActorMapper extends CachedDomainMapper
 
     /**
      * Constructor for the {@link PostActivityUpdateStreamsByActorMapper}.
-     *
+     * 
      * @param inBulkPeopleByAccountIdMapper
      *            - instance of the {@link GetPeopleByAccountIds} mapper.
      * @param inBulkDomainGroupsByShortNameMapper
@@ -64,14 +69,34 @@ public class PostActivityUpdateStreamsByActorMapper extends CachedDomainMapper
 
     /**
      * Post the provided {@link ActivityDTO} into the cached composite streams related to the actor.
-     *
+     * 
      * @param activity
      *            - {@link ActivityDTO} to be posted into the streams.
      */
     public void execute(final ActivityDTO activity)
     {
-        // TODO: add to the person or group's stream
+        long activityId = activity.getId();
 
-        // TODO: add to all org's streams
+        // Remove from entity stream.
+        EntityType streamType = activity.getDestinationStream().getType();
+
+        switch (streamType)
+        {
+        case GROUP:
+            DomainGroupModelView group = bulkDomainGroupsByShortNameMapper.execute(
+                    Arrays.asList(activity.getDestinationStream().getUniqueIdentifier())).get(0);
+
+            getCache().addToTopOfList(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + group.getStreamId(), activityId);
+            break;
+        case PERSON:
+            PersonModelView person = bulkPeopleByAccountIdMapper.execute(
+                    Arrays.asList(activity.getDestinationStream().getUniqueIdentifier())).get(0);
+
+            getCache().addToTopOfList(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + person.getStreamId(), activityId);
+
+            break;
+        default:
+            break;            
+        }
     }
 }
