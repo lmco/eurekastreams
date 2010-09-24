@@ -33,6 +33,7 @@ import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.persistence.mappers.requests.MoveOrganizationPeopleRequest;
+import org.eurekastreams.server.persistence.mappers.requests.MoveOrganizationPeopleResponse;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 
@@ -47,7 +48,7 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
     /**
      * Mapper to move People out of organization.
      */
-    private DomainMapper<MoveOrganizationPeopleRequest, Set<Long>> movePeopleMapper;
+    private DomainMapper<MoveOrganizationPeopleRequest, MoveOrganizationPeopleResponse> movePeopleMapper;
 
     /**
      * Mapper to get person ids for those that have given org as related org.
@@ -100,7 +101,8 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
      * @param inOrgTraverserBuilder
      *            The organization hierarchy traverser builder.
      */
-    public DeleteOrganizationExecution(final DomainMapper<MoveOrganizationPeopleRequest, Set<Long>> inMovePeopleMapper,
+    public DeleteOrganizationExecution(
+            final DomainMapper<MoveOrganizationPeopleRequest, MoveOrganizationPeopleResponse> inMovePeopleMapper,
             final GetOrganizationsByIds inOrgDTOByIdMapper, final FindByIdMapper<Organization> inOrgByIdMapper,
             final DomainMapper<Long, Boolean> inDeleteOrgMapper,
             final DomainMapper<Long, Set<Long>> inRelatedOrgPersonIdsMapper,
@@ -137,9 +139,12 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
         Organization parentOrg = orgByIdMapper.execute(new FindByIdRequest("Organization", orgDto
                 .getParentOrganizationId()));
 
-        // move all people out of org.
-        Set<Long> movedPeopleIds = movePeopleMapper.execute(new MoveOrganizationPeopleRequest(orgDto.getShortName(),
-                parentOrg.getShortName()));
+        // move all people/personal stream activities out of org.
+        MoveOrganizationPeopleResponse movePeopleResponse = movePeopleMapper.execute(new MoveOrganizationPeopleRequest(
+                orgDto.getShortName(), parentOrg.getShortName()));
+
+        Set<Long> movedPeopleIds = movePeopleResponse.getMovedPersonIds();
+        Set<Long> movedActivityIds = movePeopleResponse.getMovedActivityIds();
 
         // get ids of people that have org as related org.
         Set<Long> relatedOrgPersonIds = relatedOrgPersonIdsMapper.execute(orgId);
@@ -169,6 +174,13 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
         for (Long personId : personCacheKeysToModify)
         {
             cacheKeysToRemove.add(CacheKeys.PERSON_BY_ID + personId);
+        }
+
+        // queue up async tasks to reindex moved activities, add cache key for re-cache.
+        for (Long activityId : movedActivityIds)
+        {
+            inActionContext.getUserActionRequests().add(new UserActionRequest("indexActivityById", null, activityId));
+            cacheKeysToRemove.add(CacheKeys.ACTIVITY_BY_ID + activityId);
         }
 
         // reindex and re-cache all orgs up tree from deleted org

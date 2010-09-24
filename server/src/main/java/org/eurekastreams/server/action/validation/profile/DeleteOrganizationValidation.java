@@ -67,13 +67,16 @@ public class DeleteOrganizationValidation implements ValidationStrategy<ActionCo
                 "parentOrganization", orgId));
         Long org = relatedEntityCountMapper.execute(new GetRelatedEntityCountRequest("Organization",
                 "parentOrganization", orgId));
+
+        // make sure there are no activities posted to group stream that have this org as parent org.
+        // activities posted to personal streams will be taken care of when people are moved out of org.
         Long activity = relatedEntityCountMapper.execute(new GetRelatedEntityCountRequest("Activity",
-                "recipientParentOrg", orgId));
+                "recipientParentOrg", orgId, "AND recipientStreamScope.scopeType = 'GROUP'"));
 
         if ((group + org + activity) != 0)
         {
             throw new ValidationException("Unable to delete organization. Related items still exist. Groups:" + group
-                    + " Orgs:" + org + " Activity:" + activity);
+                    + " Orgs:" + org + " Group Activities:" + activity);
         }
     }
 }

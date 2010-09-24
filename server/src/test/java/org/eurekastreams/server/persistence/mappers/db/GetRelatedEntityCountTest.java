@@ -50,6 +50,14 @@ public class GetRelatedEntityCountTest extends MapperTest
         assertEquals(2, //
                 sut.execute(new GetRelatedEntityCountRequest("Activity", "recipientParentOrg", 7L)).longValue());
 
+        assertEquals(2, sut.execute(
+                new GetRelatedEntityCountRequest("Activity", "recipientParentOrg", 7L,
+                        "AND recipientStreamScope.scopeType = 'PERSON'")).longValue());
+
+        assertEquals(0, sut.execute(
+                new GetRelatedEntityCountRequest("Activity", "recipientParentOrg", 7L,
+                        "AND recipientStreamScope.scopeType = 'GROUP'")).longValue());
+
         // Get count of orgs with parent org id 5
         assertEquals(3, sut.execute(new GetRelatedEntityCountRequest("Organization", "parentOrganization", 5L))
                 .longValue());

@@ -34,6 +34,7 @@ import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.persistence.mappers.requests.MoveOrganizationPeopleRequest;
+import org.eurekastreams.server.persistence.mappers.requests.MoveOrganizationPeopleResponse;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.jmock.Expectations;
@@ -62,8 +63,8 @@ public class DeleteOrganizationExecutionTest
     /**
      * Mapper to move People out of organization.
      */
-    private DomainMapper<MoveOrganizationPeopleRequest, Set<Long>> movePeopleMapper = context.mock(DomainMapper.class,
-            "movePeopleMapper");
+    private DomainMapper<MoveOrganizationPeopleRequest, MoveOrganizationPeopleResponse> movePeopleMapper = context
+            .mock(DomainMapper.class, "movePeopleMapper");
 
     /**
      * Mapper for getting organization DTOs.
@@ -141,6 +142,11 @@ public class DeleteOrganizationExecutionTest
     private Long compositeStreamId = 3L;
 
     /**
+     * Moved activity id.
+     */
+    private Long activityId = 4L;
+
+    /**
      * System under test.
      */
     private DeleteOrganizationExecution sut = new DeleteOrganizationExecution(movePeopleMapper, orgDTOByIdMapper,
@@ -155,6 +161,10 @@ public class DeleteOrganizationExecutionTest
     {
         final List<UserActionRequest> requests = new ArrayList<UserActionRequest>();
         final Set<Long> movedPeopleIds = new HashSet<Long>(Arrays.asList(9L));
+        final Set<Long> movedActivityIds = new HashSet<Long>(Arrays.asList(9L));
+
+        final MoveOrganizationPeopleResponse response = new MoveOrganizationPeopleResponse(movedPeopleIds,
+                movedActivityIds);
 
         context.checking(new Expectations()
         {
@@ -184,7 +194,7 @@ public class DeleteOrganizationExecutionTest
                 will(returnValue("orgShortName"));
 
                 allowing(movePeopleMapper).execute(with(any(MoveOrganizationPeopleRequest.class)));
-                will(returnValue(movedPeopleIds));
+                will(returnValue(response));
 
                 allowing(relatedOrgPersonIdsMapper).execute(orgId);
                 will(returnValue(movedPeopleIds));
@@ -213,8 +223,9 @@ public class DeleteOrganizationExecutionTest
         // verify queued tasks should be 4
         // * reindex single moved person
         // * reindex parent org.
+        // * reindex moved activity
         // * remove deleted org from search index.
         // * delete cache keys.
-        assertEquals(4, requests.size());
+        assertEquals(5, requests.size());
     }
 }

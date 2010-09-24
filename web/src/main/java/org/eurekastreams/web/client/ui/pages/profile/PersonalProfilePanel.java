@@ -22,6 +22,7 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.Task;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SetBannerEvent;
@@ -60,9 +61,12 @@ import org.eurekastreams.web.client.ui.pages.profile.widgets.BreadcrumbPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.ChecklistProgressBarPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.ConnectionsPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.ContactInfoPanel;
+import org.eurekastreams.web.client.ui.pages.profile.widgets.PopularHashtagsPanel;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
@@ -145,13 +149,8 @@ public class PersonalProfilePanel extends FlowPanel
     private ConnectionsPanel connectionsPanel;
 
     /**
-     * Action Processor.
-     */
-    private ActionProcessor processor = Session.getInstance().getActionProcessor();
-
-    /**
      * Constructor.
-     *
+     * 
      * @param accountId
      *            the account id.
      */
@@ -194,7 +193,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * We have the Person, so set up the Profile summary.
-     *
+     * 
      * @param inPerson
      *            the person whose profile is being displayed
      */
@@ -253,6 +252,7 @@ public class PersonalProfilePanel extends FlowPanel
         // update the list of members after joining/leaving the group
         Observer<BaseDataResponseEvent<Integer>> followChangeObserver = new Observer<BaseDataResponseEvent<Integer>>()
         {
+            @SuppressWarnings("unchecked")
             public void update(final BaseDataResponseEvent ev)
             {
                 if ("Followers".equals(connectionTabContent.getCurrentFilter()))
@@ -267,6 +267,7 @@ public class PersonalProfilePanel extends FlowPanel
                 .addObserver(DeletedPersonFollowersResponseEvent.class, followChangeObserver);
 
         leftBarPanel.addChildWidget(about);
+        leftBarPanel.addChildWidget(new PopularHashtagsPanel(ScopeType.PERSON, person.getAccountId()));
         leftBarPanel.addChildWidget(connectionsPanel);
         leftBarPanel.addChildWidget(new ContactInfoPanel(person));
 
@@ -278,6 +279,11 @@ public class PersonalProfilePanel extends FlowPanel
         final StreamPanel streamContent = new StreamPanel(false);
         streamContent.setStreamScope(person.getStreamScope(),
                 (person.isStreamPostable() || (currentUser.getAccountId() == person.getAccountId())));
+        
+        if (person.isAccountLocked())
+        {
+            streamContent.setLockedMessagePanel(generateLockedUserMessage());
+        }
 
         String jsonRequest = StreamJsonRequestFactory.addRecipient(EntityType.PERSON, person.getAccountId(),
                 StreamJsonRequestFactory.getEmptyRequest()).toString();
@@ -299,6 +305,39 @@ public class PersonalProfilePanel extends FlowPanel
         inProcessor.fireQueuedRequests();
     }
 
+    /**
+     * Generates a panel to use as the message when a user is locked out of the system.
+     * 
+     * @return the Panel content containing the locked message.
+     */
+    private Panel generateLockedUserMessage()
+    {
+        Panel errorReport = new FlowPanel();
+        errorReport.addStyleName("error-report");
+
+        FlowPanel centeringPanel = new FlowPanel();
+        centeringPanel.addStyleName("error-report-container");
+        centeringPanel.add(errorReport);
+        add(centeringPanel);
+
+        FlowPanel msgPanel = new FlowPanel();
+
+        Label msgHeader = new Label("Employee no longer has access to Eureka Streams");
+        msgHeader.addStyleName("error-message");
+
+        Label msgText = new Label("This employee no longer has access to Eureka Streams. This could be due to a change"
+                + " of assignment within the company or due to leaving the company.");
+        FlowPanel text = new FlowPanel();
+        text.add(msgText);
+        text.addStyleName("error-message-text");
+
+        msgPanel.add(msgHeader);
+        msgPanel.add(msgText);
+
+        errorReport.add(msgPanel);
+        return errorReport;
+    }
+    
     /**
      * Set up the checklist.
      */
@@ -374,7 +413,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * Creates and sets up the connections tab content.
-     *
+     * 
      * @param inPerson
      *            Person whose profile is being displayed.
      * @return Tab content.

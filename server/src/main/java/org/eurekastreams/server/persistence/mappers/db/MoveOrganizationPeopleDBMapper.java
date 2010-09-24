@@ -17,16 +17,18 @@ package org.eurekastreams.server.persistence.mappers.db;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.MoveOrganizationPeopleRequest;
+import org.eurekastreams.server.persistence.mappers.requests.MoveOrganizationPeopleResponse;
 
 /**
  * Mapper to update all employees with given source organization to the destination organization. Note: This does NOT
  * modify the person's relatedOrganization collection.
  */
-public class MoveOrganizationPeopleDBMapper extends BaseArgDomainMapper<MoveOrganizationPeopleRequest, Set<Long>>
+public class MoveOrganizationPeopleDBMapper extends
+        BaseArgDomainMapper<MoveOrganizationPeopleRequest, MoveOrganizationPeopleResponse>
 {
 
     /**
@@ -39,7 +41,7 @@ public class MoveOrganizationPeopleDBMapper extends BaseArgDomainMapper<MoveOrga
      */
     @SuppressWarnings("unchecked")
     @Override
-    public Set<Long> execute(final MoveOrganizationPeopleRequest inRequest)
+    public MoveOrganizationPeopleResponse execute(final MoveOrganizationPeopleRequest inRequest)
     {
         String sourceOrgKey = inRequest.getSourceOrganizationKey();
         String destOrgKey = inRequest.getDestinationOrganizationKey();
@@ -55,6 +57,21 @@ public class MoveOrganizationPeopleDBMapper extends BaseArgDomainMapper<MoveOrga
         getEntityManager().createQuery(q).setParameter("sourceOrgKey", sourceOrgKey).setParameter("destOrgKey",
                 destOrgKey).executeUpdate();
 
-        return new HashSet<Long>(personIdsAffected);
+        // get list of affected ids to return.
+        q = "SELECT id FROM Activity WHERE recipientParentOrg = (FROM Organization WHERE shortName = :sourceOrgKey) AND"
+                + " recipientStreamScope.scopeType = :scopeType";
+        List<Long> activityIdsAffected = getEntityManager().createQuery(q).setParameter("sourceOrgKey", sourceOrgKey)
+                .setParameter("scopeType", ScopeType.PERSON).getResultList();
+
+        // update activities posted to any personal stream of direct employees of the org.
+        q = "UPDATE VERSIONED Activity SET recipientParentOrg = (FROM Organization WHERE shortName = :destOrgKey)"
+                + " WHERE id IN (SELECT id FROM Activity WHERE recipientParentOrg ="
+                + " (FROM Organization WHERE shortName = :sourceOrgKey) AND"
+                + " recipientStreamScope.scopeType = :scopeType)";
+        getEntityManager().createQuery(q).setParameter("sourceOrgKey", sourceOrgKey).setParameter("destOrgKey",
+                destOrgKey).setParameter("scopeType", ScopeType.PERSON).executeUpdate();
+
+        return new MoveOrganizationPeopleResponse(new HashSet<Long>(personIdsAffected), new HashSet<Long>(
+                activityIdsAffected));
     }
 }

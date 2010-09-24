@@ -19,14 +19,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.Assert;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -42,6 +40,7 @@ import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
+import org.eurekastreams.server.service.restlets.support.RestletQueryRequestParser;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -53,7 +52,7 @@ import org.restlet.resource.Representation;
 
 /**
  * Test for system filter restlet.
- * 
+ *
  */
 @SuppressWarnings("unchecked")
 public class StreamResourceTest
@@ -115,8 +114,9 @@ public class StreamResourceTest
         otherWords.add("keywords");
         otherWords.add("followedBy");
 
-        sut = new StreamResource(action, serviceActionController, principalPopulator, globalWords, multipleEntityWords,
-                otherWords, streamMapper);
+        sut =
+                new StreamResource(action, serviceActionController, principalPopulator, streamMapper,
+                        new RestletQueryRequestParser(globalWords, multipleEntityWords, otherWords));
 
         ActivityDTO activity = new ActivityDTO();
         StreamEntityDTO actor = new StreamEntityDTO();
@@ -151,7 +151,7 @@ public class StreamResourceTest
 
     /**
      * Test representing as JSONP.
-     * 
+     *
      * @throws Exception
      *             exception.
      */
@@ -169,7 +169,7 @@ public class StreamResourceTest
         attributes.put("query", jsonReq);
         attributes.put("openSocialId", osId);
         attributes.put("callback", callback);
-        attributes.put("mode", "query");       
+        attributes.put("mode", "query");
 
         context.checking(new Expectations()
         {
@@ -221,7 +221,7 @@ public class StreamResourceTest
 
     /**
      * Test representing as JSON.
-     * 
+     *
      * @throws Exception
      *             exception.
      */
@@ -280,7 +280,7 @@ public class StreamResourceTest
 
     /**
      * Test representing as JSON with a bad request.
-     * 
+     *
      * @throws Exception
      *             exception.
      */
@@ -324,7 +324,7 @@ public class StreamResourceTest
 
     /**
      * Test representing as JSON with a service exception.
-     * 
+     *
      * @throws Exception
      *             exception.
      */
@@ -359,25 +359,5 @@ public class StreamResourceTest
         assertTrue(json.getString("status").startsWith("Error"));
 
         context.assertIsSatisfied();
-    }
-
-    /**
-     * Tests parsing a large request.
-     * 
-     * @throws UnsupportedEncodingException
-     *             bad request.
-     */
-    @Test
-    public void parseLargeRequestTest() throws UnsupportedEncodingException
-    {
-
-        String expected = "{\"query\":{\"keywords\":\"test\",\"followedBy\":\"p1\","
-                + "\"recipient\":[{\"name\":\"p1\",\"type\":\"PERSON\"},{\"name\":\"p2\""
-                + ",\"type\":\"PERSON\"},{\"name\":\"g1\",\"type\":\"GROUP\"}]}"
-                + ",\"maxId\":\"20\",\"minId\":\"10\"}";
-        JSONObject req = sut.parseRequest("/resources/stream/guid/query/recipient/" + "PERSON:p1,PERSON:p2,GROUP:g1/"
-                + "followedBy/p1/keywords/test/minId/10/maxId/20");
-
-        Assert.assertEquals(expected, req.toString());
     }
 }

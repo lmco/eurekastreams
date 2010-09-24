@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.web.client.ui.pages.search;
 
+import java.util.HashMap;
+
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SwitchedHistoryViewEvent;
@@ -33,7 +35,6 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * Global search composite. TODO break this out for testability.
- * 
  */
 public class GlobalSearchComposite extends FlowPanel
 {
@@ -65,7 +66,8 @@ public class GlobalSearchComposite extends FlowPanel
                 if (searchTerm.getText().length() > 0)
                 {
                     Session.getInstance().getEventBus().notifyObservers(
-                            new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH, "query", searchTerm.getText())));
+                            new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH, generateParams(searchTerm
+                                    .getText()), false)));
                 }
             }
         });
@@ -78,7 +80,8 @@ public class GlobalSearchComposite extends FlowPanel
                 if (event.getCharCode() == KeyCodes.KEY_ENTER && searchTerm.getText().length() > 0)
                 {
                     Session.getInstance().getEventBus().notifyObservers(
-                            new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH, "query", searchTerm.getText())));
+                            new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH, generateParams(searchTerm
+                                    .getText()), false)));
                 }
             }
         });
@@ -98,4 +101,19 @@ public class GlobalSearchComposite extends FlowPanel
                 });
     }
 
+    /**
+     * Creates a hashmap for the history parameters to pass to the search page.
+     * 
+     * @param query
+     *            the search string.
+     * @return the hashmap of all necessary initial search parameters.
+     */
+    private HashMap<String, String> generateParams(final String query)
+    {
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("query", query);
+        params.put("startIndex", "0");
+        params.put("endIndex", "9");
+        return params;
+    }
 }

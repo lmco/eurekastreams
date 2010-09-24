@@ -51,6 +51,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Page to test advanced search features.
@@ -136,6 +137,11 @@ public class StreamPanel extends FlowPanel
      * Sort panel.
      */
     private StreamSortPanel sortPanel = new StreamSortPanel();
+    
+    /**
+     * Panel to hold a message when the subject is locked.
+     */
+    private FlowPanel lockedMessage = new FlowPanel();
 
     /**
      * Initialize page.
@@ -162,6 +168,7 @@ public class StreamPanel extends FlowPanel
         this.add(new UnseenActivityNotificationPanel());
         this.add(sortPanel);
         this.add(error);
+        this.add(lockedMessage);
         this.add(stream);
         this.add(activityDetailPanel);
 
@@ -456,5 +463,16 @@ public class StreamPanel extends FlowPanel
             postingDisabled.add(postingDisabledMessage);
             postContent.add(postingDisabled);
         }
+    }
+    
+    /**
+     * Set the locked message panel content.
+     * 
+     * @param inPanel
+     *            the panel content to set as the locked message.
+     */
+    public void setLockedMessagePanel(final Panel inPanel)
+    {
+        lockedMessage.add(inPanel);
     }
 }

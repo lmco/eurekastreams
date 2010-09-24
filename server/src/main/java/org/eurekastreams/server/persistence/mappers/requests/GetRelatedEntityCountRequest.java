@@ -44,6 +44,32 @@ public class GetRelatedEntityCountRequest implements Serializable
     private String targetEntityFieldName;
 
     /**
+     * Optional where clause addtion. (begin with AND).
+     */
+    private String whereClauseAddition;
+
+    /**
+     * Constructor.
+     * 
+     * @param inRelatedEntityName
+     *            Related entity name.
+     * @param inTargetEntityFieldName
+     *            Field name of target entity in related entity.
+     * @param inTargetEntityId
+     *            Db id of target entity to count related entities for.
+     * @param inWhereClauseAddition
+     *            Optional where clause addtion. (begin with AND).
+     */
+    public GetRelatedEntityCountRequest(final String inRelatedEntityName, final String inTargetEntityFieldName,
+            final Long inTargetEntityId, final String inWhereClauseAddition)
+    {
+        relatedEntityName = inRelatedEntityName;
+        targetEntityFieldName = inTargetEntityFieldName;
+        targetEntityId = inTargetEntityId;
+        whereClauseAddition = inWhereClauseAddition;
+    }
+
+    /**
      * Constructor.
      * 
      * @param inRelatedEntityName
@@ -56,9 +82,7 @@ public class GetRelatedEntityCountRequest implements Serializable
     public GetRelatedEntityCountRequest(final String inRelatedEntityName, final String inTargetEntityFieldName,
             final Long inTargetEntityId)
     {
-        relatedEntityName = inRelatedEntityName;
-        targetEntityFieldName = inTargetEntityFieldName;
-        targetEntityId = inTargetEntityId;
+        this(inRelatedEntityName, inTargetEntityFieldName, inTargetEntityId, null);
     }
 
     /**
@@ -83,6 +107,14 @@ public class GetRelatedEntityCountRequest implements Serializable
     public String getTargetEntityFieldName()
     {
         return targetEntityFieldName;
+    }
+
+    /**
+     * @return the whereClauseAddition
+     */
+    public String getWhereClauseAddition()
+    {
+        return whereClauseAddition;
     }
 
 }

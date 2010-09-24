@@ -520,6 +520,29 @@
 		<constructor-arg value="true" />
 	</bean>
 	
+	 <bean id="getAllPopularHashTags" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.stream.GetAllPopularHashTagsFromGroupsJoinedExecution">
+                <constructor-arg ref="findPopularHashTagsForAllGroupsJoinedMapper" />
+                <constructor-arg>
+                    <bean
+                        class="org.eurekastreams.server.action.execution.stream.GetCurrentUserFollowedGroupsExecution">
+                        <constructor-arg ref="getFollowedGroupIds" />
+                        <constructor-arg ref="bulkDomainGroupsMapper" />
+                        <constructor-arg ref="bulkCompositeStreamsMapper" />
+                        <constructor-arg ref="bulkPeopleMapper" />
+                        <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
+    
+	
+	
     <bean id="postActivityCommentAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
@@ -4083,6 +4106,7 @@
             <map>
                 <entry key="mail.smtp.host" value="${eureka.mail.smtp.host}" />
                 <entry key="mail.smtp.port" value="${eureka.mail.smtp.port}" />
+                <entry key="mail.smtp.sendpartial" value="true" />
             </map>
         </constructor-arg>
         <constructor-arg value="${eureka.mail.support.emailaddress}" />
@@ -4141,6 +4165,7 @@
         	<bean class="org.eurekastreams.server.action.execution.stream.GetCurrentUsersStreamsExecution">
         		<constructor-arg ref="getUserStreamsMapper" />
         		<constructor-arg ref="findByIdMapper" />
+        		<constructor-arg value="EUREKA:PARENT_ORG_TAG" />
         	</bean>
         </constructor-arg>
 		<constructor-arg value="true" />

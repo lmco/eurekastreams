@@ -25,7 +25,6 @@ import org.junit.Test;
 import com.google.gwt.junit.GWTMockUtilities;
 import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextArea;
 
 /**
  * Test the post to stream view.
@@ -61,7 +60,7 @@ public class PostToStreamViewTest
         sut = new PostToStreamView(modelMock);
         GWTMockUtilities.disarm();
 
-        sut.message = context.mock(TextArea.class);
+        sut.message = context.mock(PostToStreamTextboxPanel.class);
         sut.charsRemaining = context.mock(Label.class, "charsRemaining");
         sut.postButton = context.mock(Label.class, "postButton");
         sut.links = context.mock(AddLinkComposite.class, "links");
