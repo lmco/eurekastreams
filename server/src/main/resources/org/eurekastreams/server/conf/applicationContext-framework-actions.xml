@@ -530,10 +530,9 @@
                     <bean
                         class="org.eurekastreams.server.action.execution.stream.GetCurrentUserFollowedGroupsExecution">
                         <constructor-arg ref="getFollowedGroupIds" />
-                        <constructor-arg ref="bulkDomainGroupsMapper" />
-                        <constructor-arg ref="bulkCompositeStreamsMapper" />
-                        <constructor-arg ref="bulkPeopleMapper" />
-                        <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
+						<constructor-arg ref="bulkDomainGroupsMapper" />
+						<constructor-arg ref="bulkPeopleMapper" />
+						<constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
                     </bean>
                 </constructor-arg>
             </bean>

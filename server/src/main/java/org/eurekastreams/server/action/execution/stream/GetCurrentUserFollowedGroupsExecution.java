@@ -112,8 +112,8 @@ public class GetCurrentUserFollowedGroupsExecution implements ExecutionStrategy<
             isStreamPostable = isStreamPostable ? isStreamPostable : groupPermissionsChecker
                     .hasGroupCoordinatorAccessRecursively(userEntityId, group.getEntityId());
 
-            groupStreams.add(new GroupStreamDTO(group.getEntityId(), group.getName(), group.getShortName(), group
-                    .getStreamId(), isStreamPostable));
+            groupStreams.add(new GroupStreamDTO(group.getEntityId(), group.getName(), group.getShortName(),
+                    isStreamPostable));
 
             if (log.isInfoEnabled())
             {

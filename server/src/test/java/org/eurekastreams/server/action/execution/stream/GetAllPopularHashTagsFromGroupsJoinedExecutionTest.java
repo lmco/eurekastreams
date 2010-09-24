@@ -85,7 +85,7 @@ public class GetAllPopularHashTagsFromGroupsJoinedExecutionTest
     {
         final GetCurrentUserStreamFiltersResponse groupResponse = new GetCurrentUserStreamFiltersResponse();
         final List<StreamFilter> filters = new ArrayList<StreamFilter>();
-        GroupStreamDTO groupFilter = new GroupStreamDTO(1L, "", "shortName", null, 1L, false);
+        GroupStreamDTO groupFilter = new GroupStreamDTO(1L, "", "shortName", false);
         filters.add(groupFilter);
         groupResponse.setStreamFilters(filters);
 

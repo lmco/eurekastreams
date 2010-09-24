@@ -187,8 +187,9 @@ public class PostToPanel extends FlowPanel
                             autoComplete.setDefaultText(OTHER_TEXT);
                             removeScopePanel(thisBuffered);
 
-                            typedInScope = new StreamScope(group.getName(), ScopeType.GROUP, group.getShortName(),
-                                    group.getStreamId());
+                            typedInScope = new StreamScope(ScopeType.GROUP, group.getShortName());
+                            typedInScope.setDisplayName(group.getName());
+
                             scopePanel = new StreamScopePanel(typedInScope);
                             thisBuffered.add(scopePanel);
                         }
