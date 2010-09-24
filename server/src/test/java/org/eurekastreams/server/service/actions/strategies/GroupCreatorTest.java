@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -285,6 +286,11 @@ public class GroupCreatorTest
                 will(returnValue(ORG_ID));
 
                 oneOf(orgHierarchyCacheMock).getParentOrganizations(with(any(Long.class)));
+                will(returnValue(Arrays.asList(id)));
+                oneOf(orgMapperMock).findById(id);
+                will(returnValue(orgMock));
+                oneOf(orgMock).isCoordinator(accountId);
+                will(returnValue(false));
 
                 oneOf(groupMock).setPending(true);
                 oneOf(personMapperMock).findByAccountId(accountId);
@@ -386,6 +392,7 @@ public class GroupCreatorTest
                 will(returnValue(true));
                 oneOf(orgMock).getId();
                 oneOf(orgHierarchyCacheMock).getParentOrganizations(with(any(Long.class)));
+                will(returnValue(Arrays.asList(id)));
 
                 oneOf(groupMock).setPending(false);
                 oneOf(personMapperMock).findByAccountId(accountId);
