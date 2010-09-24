@@ -25,6 +25,7 @@ import java.util.HashMap;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.TabType;
+import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.DomainEntityMapperTest;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
@@ -181,15 +182,22 @@ public class PersonCreatorTest extends DomainEntityMapperTest
     public final void testPersist() throws Exception
     {
         final Person testPerson = context.mock(Person.class);
-        final Person testPersonResult = context.mock(Person.class, "p2");
+        final StreamScope streamScope = context.mock(StreamScope.class);
 
         context.checking(new Expectations()
         {
             {
                 oneOf(personMapperMock).insert(testPerson);
-                exactly(2).of(testPerson).getId();
+                exactly(3).of(testPerson).getId();
                 will(returnValue(2L));
                 oneOf(personMapperMock).addFollower(2L, 2L);
+                
+                oneOf(testPerson).getStreamScope();
+                will(returnValue(streamScope));
+                
+                oneOf(streamScope).setDestinationEntityId(2L);
+
+                oneOf(personMapperMock).flush();
             }
         });
 

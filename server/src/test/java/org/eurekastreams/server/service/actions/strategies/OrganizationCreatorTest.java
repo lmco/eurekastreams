@@ -34,6 +34,7 @@ import org.eurekastreams.server.action.execution.CreatePersonActionFactory;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverser;
+import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.jmock.Expectations;
@@ -167,6 +168,7 @@ public class OrganizationCreatorTest
     public void persistSuccess() throws Exception
     {
         final Organization newOrg = context.mock(Organization.class);
+        final StreamScope streamScope = context.mock(StreamScope.class);
         final long newOrgId = 19382L;
 
         final Organization parentOrg = context.mock(Organization.class, "parentOrg");
@@ -206,6 +208,10 @@ public class OrganizationCreatorTest
                 will(returnValue(new HashSet<Person>()));
 
                 oneOf(orgMapperMock).insert(newOrg);
+                oneOf(newOrg).getStreamScope();
+                will(returnValue(streamScope));
+                
+                oneOf(streamScope).setDestinationEntityId(newOrgId);
 
                 oneOf(orgMapperMock).updateChildOrganizationCount(with(same(parentOrg)));
                 oneOf(orgMapperMock).flush();

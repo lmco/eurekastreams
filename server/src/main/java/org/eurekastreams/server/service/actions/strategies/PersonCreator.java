@@ -174,6 +174,10 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
     {
         personMapper.insert(inPerson);
         personMapper.addFollower(inPerson.getId(), inPerson.getId());
+        
+        // sets the destination entity id for the person's stream scope
+        inPerson.getStreamScope().setDestinationEntityId(inPerson.getId());
+        personMapper.flush();
     }
 
 }

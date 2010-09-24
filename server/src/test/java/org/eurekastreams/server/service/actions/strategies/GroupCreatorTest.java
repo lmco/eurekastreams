@@ -41,6 +41,7 @@ import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverser;
 import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder;
+import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
@@ -253,6 +254,7 @@ public class GroupCreatorTest
 
         personMock = context.mock(Person.class);
         orgMock = context.mock(Organization.class);
+        final StreamScope streamScope = context.mock(StreamScope.class);
 
         final long id = 1L;
         String newName = "NEW org name here";
@@ -297,6 +299,14 @@ public class GroupCreatorTest
 
                 allowing(groupMock).getId();
                 will(returnValue(id));
+                
+                oneOf(groupMock).getStreamScope();
+                will(returnValue(streamScope));
+                
+                oneOf(streamScope).setDestinationEntityId(id);
+
+                oneOf(groupMapperMock).flush();
+
 
                 // TODO: consider making a fake so we can make sure the right
                 // action was called
@@ -348,6 +358,7 @@ public class GroupCreatorTest
 
         personMock = context.mock(Person.class);
         orgMock = context.mock(Organization.class);
+        final StreamScope streamScope = context.mock(StreamScope.class);
 
         final long id = 1L;
         String newName = "NEW org name here";
@@ -403,6 +414,14 @@ public class GroupCreatorTest
                 will(returnValue(1L));
 
                 oneOf(followStrategyMock).execute(with(any(TaskHandlerActionContext.class)));
+                
+                oneOf(groupMock).getStreamScope();
+                will(returnValue(streamScope));
+                
+                oneOf(streamScope).setDestinationEntityId(id);
+
+                oneOf(groupMapperMock).flush();
+
             }
         });
 
@@ -434,6 +453,7 @@ public class GroupCreatorTest
 
         personMock = context.mock(Person.class);
         orgMock = context.mock(Organization.class);
+        final StreamScope streamScope = context.mock(StreamScope.class);
 
         final long id = 1L;
         String newName = "NEW org name here";
@@ -485,6 +505,13 @@ public class GroupCreatorTest
                 will(returnValue(1L));
 
                 oneOf(followStrategyMock).execute(with(any(TaskHandlerActionContext.class)));
+                
+                oneOf(groupMock).getStreamScope();
+                will(returnValue(streamScope));
+                
+                oneOf(streamScope).setDestinationEntityId(id);
+
+                oneOf(groupMapperMock).flush();
             }
         });
 

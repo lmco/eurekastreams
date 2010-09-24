@@ -112,7 +112,7 @@ public class GroupCreator extends GroupPersister
     }
 
     /**
-     * Returns DomainGroup base on id passed in inFields.
+     * Returns DomainGroup based on id passed in inFields.
      *
      * @param inActionContext
      *            The action context.
@@ -198,6 +198,10 @@ public class GroupCreator extends GroupPersister
         inGroup.setCreatedBy(personMapper.findByAccountId(creatorUserName));
 
         getGroupMapper().insert(inGroup);
+        
+        // sets the destination entity id for the group's stream scope
+        inGroup.getStreamScope().setDestinationEntityId(inGroup.getId());
+        getGroupMapper().flush();
 
         OrganizationHierarchyTraverser orgTraverser = orgTraverserBuilder.getOrganizationHierarchyTraverser();
         orgTraverser.traverseHierarchy(inGroup);
