@@ -22,13 +22,10 @@ import java.util.HashMap;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.eurekastreams.commons.hibernate.QueryOptimizer;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
-import org.eurekastreams.server.persistence.TabGroupMapper;
-import org.eurekastreams.server.persistence.ThemeMapper;
 import org.eurekastreams.testing.DBUnitFixtureSetup;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +52,7 @@ public class DescendantOrganizationStrategyTest
 
     /**
      * Set the entity manager to use for all ORM operations.
-     * 
+     *
      * @param inEntityManager
      *            the EntityManager to use for all ORM operations.
      */
@@ -66,28 +63,10 @@ public class DescendantOrganizationStrategyTest
     }
 
     /**
-     * Autowired QueryOptimizer.
-     */
-    @Autowired
-    private QueryOptimizer queryOptimizer;
-
-    /**
      * system under test.
      */
     @Autowired
     private OrganizationMapper jpaOrganizationMapper;
-
-    /**
-     * Theme mapper for setup.
-     */
-    @Autowired
-    private ThemeMapper jpaThemeMapper;
-
-    /**
-     * Tab group mapper for setup.
-     */
-    @Autowired
-    private TabGroupMapper jpaTabGroupMapper;
 
     /**
      * System under test.
@@ -102,7 +81,7 @@ public class DescendantOrganizationStrategyTest
 
     /**
      * Setup method - create the SUT.
-     * 
+     *
      * @throws Exception
      *             on error
      */
@@ -113,7 +92,17 @@ public class DescendantOrganizationStrategyTest
 
         descOrgStrategy = new DescendantOrganizationStrategy();
         descOrgStrategy.setEntityManager(entityManager);
-        descOrgStrategy.setQueryOptimizer(queryOptimizer);
+    }
+
+    /**
+     * Test getOrgIdByShortName().
+     */
+    @Test
+    public void testGetOrgIdByShortName()
+    {
+        assertEquals(5L, descOrgStrategy.getOrgIdByShortName("tstorgname"));
+        assertEquals(6L, descOrgStrategy.getOrgIdByShortName("child1orgname"));
+        assertEquals(0L, descOrgStrategy.getOrgIdByShortName("sdifljsdlkjfsdf"));
     }
 
     /**
@@ -160,7 +149,7 @@ public class DescendantOrganizationStrategyTest
 
     /**
      * Get a new organization to add to a parent.
-     * 
+     *
      * @param rand
      *            number to use to add on to the end of string values to get
      *            around constraints

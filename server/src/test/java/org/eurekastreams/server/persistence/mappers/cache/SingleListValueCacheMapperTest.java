@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.server.persistence.mappers.cache;
 
+import static org.junit.Assert.assertSame;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,18 +24,17 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests the org actitivyt IDs refresher.
+ * Test fixture for SingleListCacheMapper.
  */
-public class OrgActivityIdsRefresherTest
+public class SingleListValueCacheMapperTest
 {
     /**
      * Context for building mock objects.
      */
-    private static final Mockery CONTEXT = new JUnit4Mockery()
+    private final Mockery context = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -41,39 +42,44 @@ public class OrgActivityIdsRefresherTest
     };
 
     /**
-     * System under test.
+     * Cache.
      */
-    private static OrgActivityIdsRefresher sut;
+    private Cache cache = context.mock(Cache.class);
 
     /**
-     * Cache fed into the loader.
+     * Cache key suffix transformer.
      */
-    private static Cache cache = CONTEXT.mock(Cache.class);
+    private CacheKeySuffixTransformer<String> keySuffixTransformer = context.mock(CacheKeySuffixTransformer.class);
 
     /**
-     * Setup fixtures.
+     * Cache key prefix.
      */
-    @BeforeClass
-    public static final void setup()
-    {
-        sut = new OrgActivityIdsRefresher();
-        sut.setCache(cache);
-    }
+    private String cacheKeyPrefix;
 
     /**
-     * Tests refreshing.
+     * Test execute.
      */
     @Test
-    public void testRefresh()
+    public void testExecute()
     {
-        final List<Long> activities = new ArrayList<Long>();
-        CONTEXT.checking(new Expectations()
+        SingleListValueCacheMapper sut //
+        = new SingleListValueCacheMapper<String, String>(keySuffixTransformer, "PREFIX:");
+        sut.setCache(cache);
+        final List<String> result = new ArrayList<String>();
+
+        context.checking(new Expectations()
         {
             {
-                oneOf(cache).setList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + "foo", activities);
+                oneOf(keySuffixTransformer).transform("SUFFIX");
+                will(returnValue("FOO"));
+
+                oneOf(cache).getList("PREFIX:FOO");
+                will(returnValue(result));
             }
         });
-        sut.refresh("foo", activities);
-        CONTEXT.assertIsSatisfied();
+
+        assertSame(result, sut.execute("SUFFIX"));
+
+        context.assertIsSatisfied();
     }
 }

@@ -1731,9 +1731,7 @@
                             </entry>
                             <entry key="organization">
                                 <bean 
-                                    class="org.eurekastreams.server.service.actions.strategies.activity.datasources.OrgPersistenceRequestTransformer">
-                                    <constructor-arg ref="bulkOrganizationsByShortNameMapper" />   
-                                </bean>
+                                    class="org.eurekastreams.server.service.actions.strategies.activity.datasources.OrgPersistenceRequestTransformer" />
                             </entry>                            
                             <entry key="savedBy">
                                 <bean 

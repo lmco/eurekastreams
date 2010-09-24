@@ -67,7 +67,7 @@ public class ParentOrgPersistenceRequestTransformerTest
     public void testTransform()
     {
         final String personName = "personName";
-        final Long orgId = 100L;
+        final String orgShortName = "shortName";
 
         final JSONObject request = new JSONObject();
         request.accumulate("parentOrg", personName);
@@ -80,14 +80,14 @@ public class ParentOrgPersistenceRequestTransformerTest
                 oneOf(bulkPeopleMapper).fetchUniqueResult(personName);
                 will(returnValue(person));
 
-                oneOf(person).getParentOrganizationId();
-                will(returnValue(orgId));
+                oneOf(person).getParentOrganizationShortName();
+                will(returnValue(orgShortName));
             }
         });
 
-        Long result = (Long) sut.transform(request, 1L);
+        String result = (String) sut.transform(request, 1L);
 
-        Assert.assertEquals(orgId, result);
+        Assert.assertEquals(orgShortName, result);
 
         CONTEXT.assertIsSatisfied();
     }

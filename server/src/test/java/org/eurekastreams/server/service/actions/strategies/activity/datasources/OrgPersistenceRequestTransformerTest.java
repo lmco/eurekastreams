@@ -18,10 +18,6 @@ package org.eurekastreams.server.service.actions.strategies.activity.datasources
 import junit.framework.Assert;
 import net.sf.json.JSONObject;
 
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames;
-import org.jmock.Expectations;
-import org.jmock.integration.junit4.JUnit4Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -31,24 +27,9 @@ import org.junit.Test;
 public class OrgPersistenceRequestTransformerTest
 {
     /**
-     * Mocking context.
-     */
-    private static final JUnit4Mockery CONTEXT = new JUnit4Mockery()
-    {
-        {
-            setImposteriser(ClassImposteriser.INSTANCE);
-        }
-    };
-
-    /**
      * System under test.
      */
     private static OrgPersistenceRequestTransformer sut;
-
-    /**
-     * Bulk org mapper.
-     */
-    private static GetOrganizationsByShortNames bulkOrgMapper = CONTEXT.mock(GetOrganizationsByShortNames.class);
 
     /**
      * Setup test fixtures.
@@ -56,7 +37,7 @@ public class OrgPersistenceRequestTransformerTest
     @BeforeClass
     public static void setup()
     {
-        sut = new OrgPersistenceRequestTransformer(bulkOrgMapper);
+        sut = new OrgPersistenceRequestTransformer();
     }
 
     /**
@@ -66,23 +47,10 @@ public class OrgPersistenceRequestTransformerTest
     public void testTransform()
     {
         final String orgShortName = "orgShortName";
-        final Long orgId = 100L;
 
         final JSONObject request = new JSONObject();
         request.accumulate("organization", orgShortName);
 
-        CONTEXT.checking(new Expectations()
-        {
-            {
-                oneOf(bulkOrgMapper).fetchId(orgShortName);
-                will(returnValue(orgId));
-            }
-        });
-
-        Long result = (Long) sut.transform(request, 1L);
-
-        Assert.assertEquals(orgId, result);
-
-        CONTEXT.assertIsSatisfied();
+        Assert.assertEquals(orgShortName, (String) sut.transform(request, 1L));
     }
 }

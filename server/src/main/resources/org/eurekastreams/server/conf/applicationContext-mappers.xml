@@ -165,6 +165,8 @@
 		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.POPULAR_HASH_TAGS_BY_STREAM_TYPE_AND_SHORT_NAME"
 		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
 
+	<bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
 
 	<!--
 		Mapper that goes to cache for the popular hashtags for a stream.  If it exists, it checks how long ago it was generated. 
@@ -370,8 +372,17 @@
 			<bean
 				class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
 				<constructor-arg>
-					<!-- TODO - reusable partial cache mapper -->
-					<null />
+						<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleListValueCacheMapper">
+						<!-- Transformer from org short name to org short name -->
+						<constructor-arg>
+							<bean class="org.eurekastreams.server.persistence.mappers.cache.LowerCaseCacheKeySuffixTransformer" />
+						</constructor-arg>
+					
+						<!-- Cache Key Prefix -->				
+						<constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE" />
+						
+						<property name="cache" ref="memcachedCache" />
+					</bean>
 				</constructor-arg>
 			</bean>
 		</constructor-arg>
@@ -395,7 +406,6 @@
 			<bean
 				class="org.eurekastreams.server.persistence.mappers.cache.OrgActivityIdsRefresher">
 				<property name="cache" ref="memcachedCache" />
-				<property name="organizationDAO" ref="bulkOrganizationsMapper" />
 			</bean>
 		</constructor-arg>
 	</bean>
