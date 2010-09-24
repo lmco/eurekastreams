@@ -46,7 +46,7 @@ public class MultiDomainMapperRequestMapperTest
     /**
      * System under test.
      */
-    private MultiDomainMapperRequestMapper<Long, Long> sut;
+    private MultiRequestMapperWrapper<Long, Long> sut;
 
     /**
      * Mapper mock.
@@ -63,7 +63,7 @@ public class MultiDomainMapperRequestMapperTest
         requests.add(1L);
         requests.add(2L);
 
-        sut = new MultiDomainMapperRequestMapper(mapper);
+        sut = new MultiRequestMapperWrapper(mapper);
 
         context.checking(new Expectations()
         {

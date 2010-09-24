@@ -28,7 +28,7 @@ import org.eurekastreams.server.persistence.mappers.DomainMapper;
  * @param <Request> the request object.
  * @param <Response> the response obkect.
  */
-public class MultiDomainMapperRequestMapper<Request, Response> implements DomainMapper<List<Request>, List<Response>>
+public class MultiRequestMapperWrapper<Request, Response> implements DomainMapper<List<Request>, List<Response>>
 {
     /**
      * The domain mapper to query.
@@ -39,7 +39,7 @@ public class MultiDomainMapperRequestMapper<Request, Response> implements Domain
      * Default constructor.
      * @param inDomainMapper the domain mapper.
      */
-    public MultiDomainMapperRequestMapper(final DomainMapper<Request, Response> inDomainMapper)
+    public MultiRequestMapperWrapper(final DomainMapper<Request, Response> inDomainMapper)
     {
         domainMapper = inDomainMapper;
     }

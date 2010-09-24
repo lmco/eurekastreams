@@ -14502,9 +14502,22 @@ body .url-validator .required-form-label {
     width:589px;
 }
 
+
+.profile .post-entry-panel .auto-complete textarea
+{
+    width:555px;
+}
+
+.profile .post-entry-panel .yui-ac-container
+{
+    width:574px;
+}
+
+
 .post-entry-panel .yui-ac-content
 {
     margin-top:50px;
+    *margin-top:-22px;
 }
 
 

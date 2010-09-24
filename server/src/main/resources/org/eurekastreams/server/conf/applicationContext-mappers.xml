@@ -263,7 +263,7 @@
          </constructor-arg>
         <!-- DATABASE COMPONENT -->
         <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.MultiDomainMapperRequestMapper">
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.MultiRequestMapperWrapper">
                     <constructor-arg>
                          <ref bean="findPopularHashTagsForStreamMapper" />
                     </constructor-arg>

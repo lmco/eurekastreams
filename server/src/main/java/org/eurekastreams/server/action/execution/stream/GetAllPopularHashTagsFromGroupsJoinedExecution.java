@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.stream.StreamPopularHashTagsRequest;
 import org.eurekastreams.server.domain.stream.GroupStreamDTO;
 import org.eurekastreams.server.domain.stream.StreamFilter;
@@ -37,6 +39,10 @@ import org.eurekastreams.server.service.actions.response.GetCurrentUserStreamFil
  */
 public class GetAllPopularHashTagsFromGroupsJoinedExecution implements ExecutionStrategy<PrincipalActionContext>
 {
+    /**
+     * Logger.
+     */
+    private Log log = LogFactory.make();
     /**
      * Mapper to get the popular hashtags for a stream.
      */
@@ -95,6 +101,12 @@ public class GetAllPopularHashTagsFromGroupsJoinedExecution implements Execution
         List<StreamPopularHashTagsReportDTO> responses = popularHashTagsMapper.execute(requests);
 
         HashSet<String> result = new HashSet<String>();
+
+        if (responses.size() != requests.size())
+        {
+            log.warn("response size does not equal request size");
+        }
+
         for (StreamPopularHashTagsReportDTO response : responses)
         {
             if (response.getPopularHashTags() != null)

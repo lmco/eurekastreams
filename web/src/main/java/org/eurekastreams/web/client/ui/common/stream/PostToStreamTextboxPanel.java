@@ -40,9 +40,6 @@ public class PostToStreamTextboxPanel extends AutoCompleteDropDownPanel
     public PostToStreamTextboxPanel()
     {
         super("", ElementType.TEXTAREA);
-
-
-
     }
 
     /**
