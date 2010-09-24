@@ -33,7 +33,7 @@ public class PersistenceDataSource implements DescendingOrderDataSource
     /**
      * A map of search params and key generators.
      */
-    private HashMap<String, DomainMapper<Object, List<Long>>> mappers;
+    private HashMap<String, DomainMapper<Object, List<?>>> mappers;
 
     /**
      * Transformers.
@@ -67,7 +67,7 @@ public class PersistenceDataSource implements DescendingOrderDataSource
      *            collider.
      */
     public PersistenceDataSource(final DomainMapper<Object, List<Long>> inEveryoneMapper,
-            final HashMap<String, DomainMapper<Object, List<Long>>> inMappers,
+            final HashMap<String, DomainMapper<Object, List<?>>> inMappers,
             final HashMap<String, PersistenceDataSourceRequestTransformer> inTransformers,
             final ListCollider inOrCollider)
     {
@@ -91,28 +91,50 @@ public class PersistenceDataSource implements DescendingOrderDataSource
         boolean unHandled = false;
         List<List<Long>> returnedDataSets = new ArrayList<List<Long>>();
 
-        if (request.getJSONObject("query").size() == 0)
+        JSONObject jsonQuery = request.getJSONObject("query");
+
+        if (jsonQuery.size() == 0
+                || (jsonQuery.size() == 1 && jsonQuery.containsKey("sortBy") && jsonQuery.getString("sortBy").equals(
+                        "date")))
         {
             // get everyone list
             returnedDataSets.add(everyoneMapper.execute(null));
         }
         else
         {
-            for (Object objParam : request.getJSONObject("query").keySet())
+            for (Object objParam : jsonQuery.keySet())
             {
 
-                DomainMapper<Object, List<Long>> mapper = mappers.get(objParam);
+                DomainMapper<Object, List<?>> mapper = mappers.get(objParam);
 
                 if (mapper != null)
                 {
+                    List<?> data = null;
                     if (transformers.containsKey(objParam) && transformers.get(objParam) != null)
                     {
-                        returnedDataSets.add(mapper.execute(transformers.get(objParam).transform(
-                                request.getJSONObject("query"), userEntityId)));
+                        data = mapper.execute(transformers.get(objParam).transform(jsonQuery, userEntityId));
                     }
                     else
                     {
-                        returnedDataSets.add(mapper.execute(request.getJSONObject("query")));
+                        data = mapper.execute(jsonQuery);
+                    }
+
+                    if (data.size() > 0)
+                    {
+                        // List of lists
+                        if (data.get(0) instanceof List)
+                        {
+                            List<List<Long>> dataList = (List<List<Long>>) data;
+
+                            for (List<Long> subList : dataList)
+                            {
+                                returnedDataSets.add(subList);
+                            }
+                        }
+                        else
+                        {
+                            returnedDataSets.add((List<Long>) data);
+                        }
                     }
                 }
                 else
@@ -144,5 +166,4 @@ public class PersistenceDataSource implements DescendingOrderDataSource
 
         return returned;
     }
-
 }

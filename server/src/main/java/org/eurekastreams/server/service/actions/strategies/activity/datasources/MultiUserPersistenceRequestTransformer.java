@@ -16,23 +16,25 @@
 package org.eurekastreams.server.service.actions.strategies.activity.datasources;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.eurekastreams.commons.exceptions.AuthorizationException;
+import org.eurekastreams.commons.logging.LogFactory;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 
 /**
- * Transforms JSON request to saved activity request.
+ * Transforms JSON request to a request for a single person.
  */
-public class SavedActivityPersistenceRequestTransformer implements PersistenceDataSourceRequestTransformer
+public class MultiUserPersistenceRequestTransformer implements PersistenceDataSourceRequestTransformer
 {
     /**
      * Logger.
      */
-    private Log log = LogFactory.getLog(SavedActivityPersistenceRequestTransformer.class);
+    private Log log = LogFactory.make();
 
     /**
      * Person mapper.
@@ -40,14 +42,22 @@ public class SavedActivityPersistenceRequestTransformer implements PersistenceDa
     private GetPeopleByAccountIds personMapper;
 
     /**
+     * The request key.
+     */
+    private String reqKey;
+
+    /**
      * Default constructor.
      * 
      * @param inPersonMapper
      *            person mapper.
+     * @param inReqKey
+     *            the relevant request key.
      */
-    public SavedActivityPersistenceRequestTransformer(final GetPeopleByAccountIds inPersonMapper)
+    public MultiUserPersistenceRequestTransformer(final GetPeopleByAccountIds inPersonMapper, final String inReqKey)
     {
         personMapper = inPersonMapper;
+        reqKey = inReqKey;
     }
 
     /**
@@ -61,18 +71,27 @@ public class SavedActivityPersistenceRequestTransformer implements PersistenceDa
      */
     public Serializable transform(final JSONObject request, final Long userEntityId)
     {
-        String accountId = request.getString("savedBy");
+        String accountId = request.getString(reqKey);
 
-        Long requestAccountId = personMapper.fetchId(accountId);
+        JSONArray entities = request.getJSONArray(reqKey);
 
-        if (userEntityId.equals(requestAccountId))
+        ArrayList<Long> peopleIds = new ArrayList<Long>();
+
+        for (int i = 0; i < entities.size(); i++)
         {
-            return userEntityId;
+            JSONObject req = entities.getJSONObject(i);
+            EntityType type = EntityType.valueOf(req.getString("type"));
+
+            switch (type)
+            {
+            case PERSON:
+                peopleIds.add(personMapper.fetchId(req.getString("name")));
+                break;
+            default:
+                throw new RuntimeException("Unhandled type.");
+            }
         }
-        else
-        {
-            log.debug("User was: " + userEntityId + " Request from: " + requestAccountId);
-            throw new AuthorizationException("Insufficent priveledges to access stream.");
-        }
+
+        return (ArrayList<Long>) peopleIds;
     }
 }

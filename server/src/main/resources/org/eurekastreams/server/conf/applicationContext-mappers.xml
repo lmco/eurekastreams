@@ -691,7 +691,7 @@
 		<constructor-arg value="5" />
 	</bean>
 
-	<bean id="everyoneActivityResultsQueryBuilder" class="org.eurekastreams.commons.search.QueryParserBuilder"
+	<bean id="unstemmedActivityResultsQueryBuilder" class="org.eurekastreams.commons.search.QueryParserBuilder"
 		scope="prototype">
 		<constructor-arg value="_hibernate_class" />
 		<constructor-arg>
@@ -726,6 +726,15 @@
 						</constructor-arg>
 					</bean>
 				</property>
+				<property name="advancedQueryParserBuilder">
+					<bean class="org.eurekastreams.commons.search.QueryParserBuilder">
+						<constructor-arg value="content" />
+						<constructor-arg>
+							<bean
+								class="org.eurekastreams.commons.search.analysis.HashTagTextStemmerSearchAnalyzer" />
+						</constructor-arg>
+					</bean>
+				</property>
 				<property name="resultTransformer">
 					<bean
 						class="org.eurekastreams.commons.hibernate.SingleFieldResultTransformer">
@@ -748,7 +757,7 @@
 						</value>
 					</list>
 				</property>
-				<property name="queryParserBuilder" ref="everyoneActivityResultsQueryBuilder" />
+				<property name="queryParserBuilder" ref="unstemmedActivityResultsQueryBuilder" />
 				<property name="resultTransformer">
 					<bean
 						class="org.eurekastreams.commons.hibernate.SingleFieldResultTransformer">
@@ -757,6 +766,27 @@
 				</property>
 			</bean>
 		</constructor-arg>
+		<constructor-arg>
+			<map>
+				<entry key="keywords">
+					<value>content</value>
+				</entry>
+				<entry key="authoredBy">
+					<value>author</value>
+				</entry>
+			</map>
+		</constructor-arg>
+		<constructor-arg>
+        	<map>
+				<entry key="authoredBy">
+					<bean 
+                       class="org.eurekastreams.server.service.actions.strategies.activity.datasources.AuthoredByPersistenceRequestTransformer">
+                       <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
+                       <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+                    </bean>
+				</entry>
+			</map>
+		</constructor-arg>		
 	</bean>
 
 	<bean id="memcachedCache"

@@ -146,7 +146,8 @@ public class WeightedInterestingnessStrategy implements ComputeInterestingnessOf
         // Add Time weight, if interesting.
         if (interestingNess > 0L)
         {
-            interestingNess += ((activity.getPostedTime().getTime() - EPOCH_2010) / SECONDS_IN_DAY) * timeWeight;
+            interestingNess += Math.round(Math.floor(activity.getPostedTime().getTime() - EPOCH_2010) / SECONDS_IN_DAY
+                    * timeWeight);
         }
 
         return interestingNess;

@@ -31,62 +31,77 @@ public final class StreamJsonRequestFactory
     /**
      * Recipient key.
      */
-    private static final String RECIPIENT_KEY = "recipient";
+    public static final String RECIPIENT_KEY = "recipient";
 
     /**
      * Search key.
      */
-    private static final String SEARCH_KEY = "keywords";
+    public static final String SEARCH_KEY = "keywords";
 
     /**
      * Organization key.
      */
-    private static final String ORGANIZATION_KEY = "organization";
+    public static final String ORGANIZATION_KEY = "organization";
 
     /**
      * Recipient type key.
      */
-    private static final String RECIPIENT_TYPE_KEY = "type";
+    public static final String ENTITY_TYPE_KEY = "type";
 
     /**
      * Recipient unique ID key.
      */
-    private static final String RECIPIENT_UNIQUE_ID_KEY = "name";
+    public static final String ENTITY_UNIQUE_ID_KEY = "name";
 
     /**
      * Sort key.
      */
-    private static final String SORT_KEY = "sortBy";
+    public static final String SORT_KEY = "sortBy";
 
     /**
      * Sort key.
      */
-    private static final String FOLLOWED_BY_KEY = "followedBy";
+    public static final String FOLLOWED_BY_KEY = "followedBy";
 
     /**
      * Sort key.
      */
-    private static final String PARENT_ORG_KEY = "parentOrg";
+    public static final String PARENT_ORG_KEY = "parentOrg";
 
     /**
      * Sort key.
      */
-    private static final String SAVED_KEY = "savedBy";
+    public static final String SAVED_KEY = "savedBy";
 
     /**
      * Min ID key.
      */
-    private static final String MIN_ID_KEY = "minId";
+    public static final String MIN_ID_KEY = "minId";
 
     /**
      * Max ID key.
      */
-    private static final String MAX_ID_KEY = "maxId";
+    public static final String MAX_ID_KEY = "maxId";
 
     /**
      * Max results key.
      */
-    private static final String MAX_RESULTS_KEY = "count";
+    public static final String MAX_RESULTS_KEY = "count";
+
+    /**
+     * Authored by key.
+     */
+    public static final String AUTHOR_KEY = "authoredBy";
+
+    /**
+     * Liked By Key.
+     */
+    public static final String LIKER_KEY = "likedBy";
+
+    /**
+     * Joined groups key.
+     */
+    public static final String JOINED_GROUPS_KEY = "joinedGroups";
 
     /**
      * Gets an empty request. Used for everyone stream.
@@ -114,7 +129,7 @@ public final class StreamJsonRequestFactory
      * Adds a recipient to a request.
      * 
      * @param type
-     *            the type of recepient.
+     *            the type of recipient.
      * @param uniqueId
      *            the unique ID of the recipient.
      * @param json
@@ -123,25 +138,76 @@ public final class StreamJsonRequestFactory
      */
     public static JSONObject addRecipient(final EntityType type, final String uniqueId, final JSONObject json)
     {
+        return addEntity(RECIPIENT_KEY, type, uniqueId, json);
+    }
+
+    /**
+     * Adds a recipient to a request.
+     * 
+     * @param type
+     *            the type of author.
+     * @param uniqueId
+     *            the unique ID of the author.
+     * @param json
+     *            the request.
+     * @return the modified request.
+     */
+    public static JSONObject addAuthor(final EntityType type, final String uniqueId, final JSONObject json)
+    {
+        return addEntity(AUTHOR_KEY, type, uniqueId, json);
+    }
+
+    /**
+     * Adds a liker to a request.
+     * 
+     * @param type
+     *            the type of liker.
+     * @param uniqueId
+     *            the unique ID of the liker.
+     * @param json
+     *            the request.
+     * @return the modified request.
+     */
+    public static JSONObject addLiker(final EntityType type, final String uniqueId, final JSONObject json)
+    {
+        return addEntity(LIKER_KEY, type, uniqueId, json);
+    }
+
+    /**
+     * Adds an entity to a request.
+     * 
+     * @param key
+     *            the JSON key.
+     * @param type
+     *            the type of entity.
+     * @param uniqueId
+     *            the unique ID of the entity.
+     * @param json
+     *            the request.
+     * @return the modified request.
+     */
+    private static JSONObject addEntity(final String key, final EntityType type, final String uniqueId,
+            final JSONObject json)
+    {
         JSONObject query = json.get("query").isObject();
 
-        JSONObject recipient = new JSONObject();
-        recipient.put(RECIPIENT_TYPE_KEY, new JSONString(type.toString()));
-        recipient.put(RECIPIENT_UNIQUE_ID_KEY, new JSONString(uniqueId));
+        JSONObject entity = new JSONObject();
+        entity.put(ENTITY_TYPE_KEY, new JSONString(type.toString()));
+        entity.put(ENTITY_UNIQUE_ID_KEY, new JSONString(uniqueId));
 
-        JSONArray recipientArray = null;
+        JSONArray entityArray = null;
 
-        if (query.containsKey(RECIPIENT_KEY))
+        if (query.containsKey(key))
         {
-            recipientArray = query.get(RECIPIENT_KEY).isArray();
+            entityArray = query.get(key).isArray();
         }
         else
         {
-            recipientArray = new JSONArray();
-            query.put(RECIPIENT_KEY, recipientArray);
+            entityArray = new JSONArray();
+            query.put(key, entityArray);
         }
 
-        recipientArray.set(recipientArray.size(), recipient);
+        entityArray.set(entityArray.size(), entity);
 
         return json;
     }
@@ -164,6 +230,7 @@ public final class StreamJsonRequestFactory
         return json;
     }
 
+    
     /**
      * Sets the search term in a request..
      * 
@@ -211,6 +278,21 @@ public final class StreamJsonRequestFactory
     {
         JSONObject query = json.get("query").isObject();
         query.put(PARENT_ORG_KEY, new JSONString(Session.getInstance().getCurrentPerson().getAccountId()));
+        return json;
+    }
+    
+
+    /**
+     * Sets the source as the current user's joined groups..
+     * 
+     * @param json
+     *            the json.
+     * @return the json.
+     */
+    public static JSONObject setSourceAsJoinedGroups(final JSONObject json)
+    {
+        JSONObject query = json.get("query").isObject();
+        query.put(JOINED_GROUPS_KEY, new JSONString(Session.getInstance().getCurrentPerson().getAccountId()));
         return json;
     }
 

@@ -51,8 +51,8 @@ public class PersistenceDataSourceTest
     /**
      * A map of search params and key generators.
      */
-    private HashMap<String, DomainMapper<Object, List<Long>>> mappers =
-        new HashMap<String, DomainMapper<Object, List<Long>>>();
+    private HashMap<String, DomainMapper<Object, List<?>>> mappers =
+        new HashMap<String, DomainMapper<Object, List<?>>>();
 
     /**
      * Transformers.
@@ -68,7 +68,7 @@ public class PersistenceDataSourceTest
     /**
      * Key gens.
      */
-    private DomainMapper<Object, List<Long>> followedMapper = context.mock(DomainMapper.class);
+    private DomainMapper<Object, List<?>> followedMapper = context.mock(DomainMapper.class);
 
     /**
      * Everyone mapper.

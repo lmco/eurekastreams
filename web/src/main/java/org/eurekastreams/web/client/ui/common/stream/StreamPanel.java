@@ -45,8 +45,6 @@ import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItem
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONString;
-import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -72,7 +70,7 @@ public class StreamPanel extends FlowPanel
      * Stream panel.
      */
     private StreamListPanel stream = null;
-    
+
     /**
      * JSON Query.
      */
@@ -137,7 +135,7 @@ public class StreamPanel extends FlowPanel
      * Sort panel.
      */
     private StreamSortPanel sortPanel = new StreamSortPanel();
-    
+
     /**
      * Panel to hold a message when the subject is locked.
      */
@@ -212,14 +210,13 @@ public class StreamPanel extends FlowPanel
         {
             public void update(final StreamRequestMoreEvent arg1)
             {
-                JSONValue jsonVal = JSONParser.parse(jsonQuery);
-                JSONObject obj = jsonVal.isObject();
+                JSONObject jsonObj = StreamJsonRequestFactory.getJSONRequest(jsonQuery);
+                jsonObj = StreamJsonRequestFactory.setMaxId(lastSeenId, jsonObj);
+                
+                // Must be sorted by date to request more.
+                jsonObj = StreamJsonRequestFactory.setSort("date", jsonObj);
 
-                if (null != obj)
-                {
-                    obj.put("maxId", new JSONString(Long.toString(lastSeenId)));
-                    StreamModel.getInstance().fetch(jsonVal.toString(), false);
-                }
+                StreamModel.getInstance().fetch(jsonObj.toString(), false);
             }
         });
 
@@ -308,11 +305,11 @@ public class StreamPanel extends FlowPanel
                     {
                         JSONArray recipientArr = queryObject.get("recipient").isArray();
                         JSONObject recipientObj = recipientArr.get(0).isObject();
-                        
+
                         if (recipientObj.get("type").isString().stringValue().equals("GROUP"))
                         {
                             shortName = recipientObj.get("name").isString().stringValue();
-                            
+
                             // only show the link if viewing the stream on the activity page
                             if (Session.getInstance().getUrlPage() == Page.ACTIVITY)
                             {
@@ -464,7 +461,7 @@ public class StreamPanel extends FlowPanel
             postContent.add(postingDisabled);
         }
     }
-    
+
     /**
      * Set the locked message panel content.
      * 

@@ -1690,11 +1690,17 @@
 							<entry key="recipient">
 								<ref bean="bulkActivityStreamsMapper" />
 							</entry>
+							<entry key="joinedGroups">
+								<ref bean="bulkActivityStreamsMapper" />
+							</entry>
 							<entry key="organization">
 								<ref bean="parentOrgActivityIdMapper" />
 							</entry>							
 							<entry key="savedBy">
 								<ref bean="getStarredActivityIds" />
+							</entry>							
+							<entry key="likedBy">
+								<ref bean="getLikedActivityIdsByUserId" />
 							</entry>							
 							<entry key="parentOrg">
 								<ref bean="parentOrgActivityIdMapper" />
@@ -1725,8 +1731,26 @@
                             </entry>                            
                             <entry key="savedBy">
                                 <bean 
-                                    class="org.eurekastreams.server.service.actions.strategies.activity.datasources.SavedActivityPersistenceRequestTransformer">
+                                    class="org.eurekastreams.server.service.actions.strategies.activity.datasources.SingleUserPersistenceRequestTransformer">
                                     <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
+                                    <constructor-arg value="savedBy" />   
+                                    <constructor-arg value="false" />   
+                                    <constructor-arg value="true" />   
+                                </bean>
+                            </entry>
+                            <entry key="joinedGroups">
+                                <bean 
+                                    class="org.eurekastreams.server.service.actions.strategies.activity.datasources.FollowedGroupsPersistenceRequestTransformer">
+                                    <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
+                                    <constructor-arg ref="getFollowedGroupIds" />
+                                    <constructor-arg ref="bulkDomainGroupsMapper" />   
+                                </bean>
+                            </entry>                                                        
+                            <entry key="likedBy">
+                                <bean 
+                                    class="org.eurekastreams.server.service.actions.strategies.activity.datasources.MultiUserPersistenceRequestTransformer">
+                                    <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
+                                    <constructor-arg value="likedBy" />   
                                 </bean>
                             </entry>                            
                             <entry key="parentOrg">

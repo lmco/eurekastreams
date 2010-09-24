@@ -14466,12 +14466,17 @@ body .url-validator .required-form-label {
 	border-bottom: 1px solid #CCC;
 }
 
+.stream-lists select
+{
+	width: 87%;
+	margin-bottom: 10px;
+}
+
 .scope-form-element
 {
     display: inline-block; 
     *display: inline; 
     *zoom: 1;
-    margin-left:-10px;
     width:90%;
 }
 

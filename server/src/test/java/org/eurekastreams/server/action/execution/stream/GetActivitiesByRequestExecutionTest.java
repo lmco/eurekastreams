@@ -172,63 +172,6 @@ public class GetActivitiesByRequestExecutionTest
     }
 
     /**
-     * Perform action test with one item in the list. Asks for sorted by date with no keyword. Should ignore sort.
-     * 
-     * @throws Exception
-     *             on failure.
-     */
-    @Test
-    public final void performActionDateSortNoKeywordTest() throws Exception
-    {
-        final String request = "{ query : { sortBy:\"date\" } }";
-        final PersonModelView personModel = new PersonModelView();
-
-        context.checking(new Expectations()
-        {
-            {
-                ActivityDTO dto = new ActivityDTO();
-                dto.setId(3);
-                dto.setPostedTime(new Date());
-                dto.setIsDestinationStreamPublic(true);
-
-                ArrayList<Long> combinedIds = new ArrayList<Long>();
-                combinedIds.add(2L);
-
-                ArrayList<ActivityDTO> activities = new ArrayList<ActivityDTO>();
-                activities.add(dto);
-
-                allowing(actionContext).getPrincipal();
-                will(returnValue(principal));
-
-                allowing(principal).getAccountId();
-                will(returnValue(personAccountId));
-
-                allowing(principal).getId();
-                will(returnValue(personId));
-
-                allowing(actionContext).getParams();
-                will(returnValue(request));
-
-                oneOf(getActivityIdsByJsonRequest).execute(with("{\"count\":11,\"query\":{}}"), with(personId));
-                will(returnValue(combinedIds));
-
-                oneOf(bulkMapper).execute(with(any(ArrayList.class)));
-                will(returnValue(activities));
-
-                allowing(filterMock).filter(with(activities), with(any(PersonModelView.class)));
-
-                oneOf(peopleMapper).execute(Arrays.asList(personAccountId));
-                will(returnValue(Arrays.asList(personModel)));
-            }
-        });
-
-        PagedSet<ActivityDTO> results = (PagedSet<ActivityDTO>) sut.execute(actionContext);
-
-        context.assertIsSatisfied();
-        assertEquals(1, results.getPagedSet().size());
-    }
-
-    /**
      * Perform action test with one item in the list. Asks for sorted by date with a keyword.
      * 
      * @throws Exception

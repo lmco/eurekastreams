@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.server.service.actions.strategies.activity.datasources;
 
+import java.util.ArrayList;
+
 import junit.framework.Assert;
 import net.sf.json.JSONObject;
 
@@ -24,13 +26,12 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Saved activity transformer test.
  */
-public class SavedActivityPersistenceRequestTransformerTest
+public class SingleUserPersistenceRequestTransformerTest
 {
     /**
      * Context for building mock objects.
@@ -43,22 +44,44 @@ public class SavedActivityPersistenceRequestTransformerTest
     };
 
     /**
-     * System under test.
-     */
-    private SavedActivityPersistenceRequestTransformer sut;
-
-    /**
      * Person mapper mock.
      */
     private GetPeopleByAccountIds personMapper = context.mock(GetPeopleByAccountIds.class);
 
     /**
-     * Setup test fixtures.
+     * The key.
      */
-    @Before
-    public void setUP()
+    private String relevantKey = "savedBy";
+
+    /**
+     * Array Test.
+     */
+    @Test
+    public void transformTestMatchingIdArray()
     {
-        sut = new SavedActivityPersistenceRequestTransformer(personMapper);
+        // Sut just for this test.
+        final SingleUserPersistenceRequestTransformer sut = new SingleUserPersistenceRequestTransformer(personMapper,
+                relevantKey, true, false);
+
+        final Long entityId = 10L;
+        final String entityAcctName = "acctName";
+
+        final JSONObject jsonReq = new JSONObject();
+        jsonReq.accumulate("savedBy", entityAcctName);
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(personMapper).fetchId(entityAcctName);
+                will(returnValue(entityId));
+            }
+        });
+
+        final ArrayList<Long> results = (ArrayList<Long>) sut.transform(jsonReq, entityId);
+
+        Assert.assertEquals(1, results.size());
+        Assert.assertEquals(entityId, results.get(0));
+        context.assertIsSatisfied();
     }
 
     /**
@@ -67,9 +90,12 @@ public class SavedActivityPersistenceRequestTransformerTest
     @Test
     public void transformTestMatchingId()
     {
+        SingleUserPersistenceRequestTransformer sut = new SingleUserPersistenceRequestTransformer(personMapper,
+                relevantKey, false, true);
+
         final Long entityId = 10L;
         final String entityAcctName = "acctName";
-        
+
         final JSONObject jsonReq = new JSONObject();
         jsonReq.accumulate("savedBy", entityAcctName);
 
@@ -82,17 +108,47 @@ public class SavedActivityPersistenceRequestTransformerTest
         });
 
         Assert.assertEquals(entityId, sut.transform(jsonReq, entityId));
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Tests the transformation.
+     */
+    @Test(expected = AuthorizationException.class)
+    public void transformTestNotMatchingId()
+    {
+        SingleUserPersistenceRequestTransformer sut = new SingleUserPersistenceRequestTransformer(personMapper,
+                relevantKey, false, true);
+
+        final Long entityId = 10L;
+        final String entityAcctName = "acctName";
+
+        final JSONObject jsonReq = new JSONObject();
+        jsonReq.accumulate("savedBy", entityAcctName);
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(personMapper).fetchId(entityAcctName);
+                will(returnValue(entityId - 1L));
+            }
+        });
+
+        sut.transform(jsonReq, entityId);
+        context.assertIsSatisfied();
     }
     
     /**
      * Tests the transformation.
      */
-    @Test(expected=AuthorizationException.class)
-    public void transformTestNotMatchingId()
+    public void transformTestNotMatchingIdNotRequired()
     {
+        SingleUserPersistenceRequestTransformer sut = new SingleUserPersistenceRequestTransformer(personMapper,
+                relevantKey, false, false);
+
         final Long entityId = 10L;
         final String entityAcctName = "acctName";
-        
+
         final JSONObject jsonReq = new JSONObject();
         jsonReq.accumulate("savedBy", entityAcctName);
 
@@ -105,6 +161,7 @@ public class SavedActivityPersistenceRequestTransformerTest
         });
 
         Assert.assertEquals(entityId, sut.transform(jsonReq, entityId));
+        context.assertIsSatisfied();
     }
 
 }
