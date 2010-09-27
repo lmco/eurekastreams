@@ -160,6 +160,9 @@ public class StreamPanel extends FlowPanel
 
         streamSearch = new StreamSearchComposite();
 
+        lockedMessage.setVisible(false);
+        error.setVisible(false);
+
         postContent.add(shadowPanel);
         this.add(postContent);
         this.add(streamSearch);
@@ -237,6 +240,7 @@ public class StreamPanel extends FlowPanel
                 updateEvent.setMoreResults(activity.getTotal() > activity.getPagedSet().size());
 
                 error.setText("");
+                error.setVisible(false);
                 EventBus.getInstance().notifyObservers(updateEvent);
                 stream.setVisible(true);
             }
@@ -470,6 +474,7 @@ public class StreamPanel extends FlowPanel
      */
     public void setLockedMessagePanel(final Panel inPanel)
     {
+        lockedMessage.setVisible(true);
         lockedMessage.add(inPanel);
     }
 }

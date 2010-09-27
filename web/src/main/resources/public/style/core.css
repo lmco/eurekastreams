@@ -8584,6 +8584,15 @@ body .post-to-stream .post-button.inactive {
 		scroll 0 0 ! important;
 }
 
+.users-who-liked-activity-wrapper .transparent-like-link
+{
+	background-color:transparent;
+	cursor:pointer;
+	left:0;
+	position:absolute;
+	width:37px;
+}
+
 .like-count-widget .like-count
 {
 	background: transparent url(images/like-bg-back.png) no-repeat

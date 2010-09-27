@@ -129,6 +129,7 @@ public class CustomStreamPanel extends Composite implements FilterPanel
                     Dialog dialog = new Dialog(dialogContent);
                     dialog.setBgVisible(true);
                     dialog.center();
+                    event.stopPropagation();
                 }
             });
             editButton.addStyleName("edit-button");
