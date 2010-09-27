@@ -64,7 +64,6 @@
 
 	<bean id="descendantOrgStrategy"
 		class="org.eurekastreams.server.persistence.strategies.DescendantOrganizationStrategy">
-		<property name="queryOptimizer" ref="queryOptimizer" />
 	</bean>
 
 	<bean id="jpaGroupMapper" class="org.eurekastreams.server.persistence.DomainGroupMapper">

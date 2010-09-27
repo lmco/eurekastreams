@@ -24,10 +24,8 @@ import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Activity;
-import org.eurekastreams.server.domain.stream.StreamView;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
-import org.hibernate.Query;
 
 /**
  * This mapper finds all cache keys that could contain a reference to one of the activities passed as input. Lists of
@@ -60,8 +58,7 @@ public class GetListsContainingActivities extends BaseArgDomainMapper<List<Long>
             logger.trace("Retrieve the activities for the supplied activity ids: " + activityIds.size());
         }
 
-        List<Activity> activities = getHibernateSession().createQuery(
-                "from Activity where id in (:activityIds)")
+        List<Activity> activities = getHibernateSession().createQuery("from Activity where id in (:activityIds)")
                 .setParameterList("activityIds", activityIds).list();
 
         if (logger.isTraceEnabled())
@@ -87,39 +84,20 @@ public class GetListsContainingActivities extends BaseArgDomainMapper<List<Long>
 
         if (logger.isTraceEnabled())
         {
-            logger.trace("Retrieve the CompositeStreamViews that contain the streamscopes: "
-                    + activities.size() + " for the activities to be deleted.");
-        }
-        // adds the compositestreams that have this streamScopeId/destinationStreamId
-        List<Long> compositeStreamIds = getHibernateSession().createQuery("SELECT sv.id FROM StreamView sv, "
-                + "StreamScope ss WHERE ss.id in (:streamScopeIds) AND sv MEMBER OF ss.containingCompositeStreams")
-                .setParameterList("streamScopeIds", streamScopeIds).list();
-//        List<Long> compositeStreamIds = getHibernateSession().createQuery("SELECT sv.id FROM StreamView sv "
-//                + "WHERE (:streamScopeIds) MEMBER OF sv.includedScopes")
-//                .setParameterList("streamScopeIds", streamScopeIds).list();
-//        List<Long> compositeStreamIds = getHibernateSession().createQuery("SELECT id FROM StreamView_StreamScope "
-//                + "WHERE includedScopes.id in (:streamScopeIds)")
-//                .setParameterList("streamScopeIds", streamScopeIds).list();
-        if (logger.isTraceEnabled())
-        {
-            logger.trace("Retrieved " + compositeStreamIds.size()
-                    + " CompositeStreamViews for the activities to be deleted.");
-        }
-        for (Long compositeStreamId : compositeStreamIds)
-        {
-            lists.add(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + compositeStreamId);
+            logger.trace("Retrieve the CompositeStreamViews that contain the streamscopes: " + activities.size()
+                    + " for the activities to be deleted.");
         }
 
         if (logger.isTraceEnabled())
         {
-            logger.trace("Retrieve the follower ids of the authors: "
-                    + authorAccountIds.size() + " of the activities to be deleted: ");
+            logger.trace("Retrieve the follower ids of the authors: " + authorAccountIds.size()
+                    + " of the activities to be deleted: ");
         }
         // following lists for everyone following the authors of the expired activities.
         List<Long> followerIds = getHibernateSession().createQuery(
                 "select f.pk.followerId from Follower f where f.pk.followingId in "
-                + "(select id from Person p where p.accountId in (:authorIds))")
-                .setParameterList("authorIds", authorAccountIds).list();
+                        + "(select id from Person p where p.accountId in (:authorIds))").setParameterList("authorIds",
+                authorAccountIds).list();
 
         if (logger.isTraceEnabled())
         {
@@ -133,20 +111,8 @@ public class GetListsContainingActivities extends BaseArgDomainMapper<List<Long>
 
         if (logger.isTraceEnabled())
         {
-            logger.trace("Retrieve Everyone Composite Stream id to remove the activities to be deleted from.");
-        }
-        // adds the list of everyone's activity ids
-        // TODO - this query is repeated at least two other places - need to put this id in a common cache key
-        //        and a mapper to get/set it.
-        Query everyoneQuery = getHibernateSession().createQuery("SELECT id from StreamView where type = :type")
-                .setParameter("type", StreamView.Type.EVERYONE);
-        long everyoneStreamId = (Long) everyoneQuery.uniqueResult();
-        lists.add(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + everyoneStreamId);
-
-        if (logger.isTraceEnabled())
-        {
-            logger.trace("Retrieve all lists containing the supplied activities count: "
-                    + lists.size() + " keys: " + lists);
+            logger.trace("Retrieve all lists containing the supplied activities count: " + lists.size() + " keys: "
+                    + lists);
         }
 
         return new ArrayList(lists);

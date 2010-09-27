@@ -16,27 +16,22 @@
 package org.eurekastreams.server.service.actions.strategies.activity.datasources;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Transformers a list of recipient short names into entity stream IDs.
  */
 public class RecipientPersistenceRequestTransformer implements PersistenceDataSourceRequestTransformer
 {
-    /**
-     * Steam ID mapper.
-     */
-    private DomainMapper<Map<Long, EntityType>, List<Long>> streamIdMapper;
 
     /**
      * Person mapper for getting entity ID from short name.
@@ -55,16 +50,12 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
      *            the person mapper.
      * @param inGroupMapper
      *            the group mapper.
-     * @param inStreamIdMapper
-     *            the stream mapper.
      */
     public RecipientPersistenceRequestTransformer(final GetPeopleByAccountIds inPersonMapper,
-            final GetDomainGroupsByShortNames inGroupMapper,
-            final DomainMapper<Map<Long, EntityType>, List<Long>> inStreamIdMapper)
+            final GetDomainGroupsByShortNames inGroupMapper)
     {
         personMapper = inPersonMapper;
         groupMapper = inGroupMapper;
-        streamIdMapper = inStreamIdMapper;
     }
 
     /**
@@ -80,7 +71,8 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
     {
         JSONArray recipients = request.getJSONArray("recipient");
 
-        Map<Long, EntityType> mapperRequest = new HashMap<Long, EntityType>();
+        List<String> personIds = new ArrayList<String>();
+        List<String> groupIds = new ArrayList<String>();
 
         for (int i = 0; i < recipients.size(); i++)
         {
@@ -90,16 +82,31 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
             switch (type)
             {
             case PERSON:
-                mapperRequest.put(personMapper.fetchId(req.getString("name")), type);
+                personIds.add(req.getString("name"));
                 break;
             case GROUP:
-                mapperRequest.put(groupMapper.fetchId(req.getString("name")), type);
+                groupIds.add(req.getString("name"));
                 break;
             default:
                 throw new RuntimeException("Unhandled type.");
             }
         }
 
-        return (ArrayList<Long>) streamIdMapper.execute(mapperRequest);
+        final List<PersonModelView> people = personMapper.execute(personIds);
+        final List<DomainGroupModelView> groups = groupMapper.execute(groupIds);
+
+        final ArrayList<Long> streamScopeIds = new ArrayList<Long>();
+        
+        for (PersonModelView person : people)
+        {
+            streamScopeIds.add(person.getStreamId());
+        }
+
+        for (DomainGroupModelView group : groups)
+        {
+            streamScopeIds.add(group.getStreamId());
+        }
+
+        return streamScopeIds;
     }
 }

@@ -191,7 +191,6 @@ public class PersonModelViewTest
         sut.setAvatarId(avatarId);
         sut.setUpdatesCount(updatesCount);
         sut.setStreamId(streamId);
-        sut.setCompositeStreamId(compositeStreamId);
         sut.setTosAcceptance(tosAcceptance);
         sut.setAuthenticationType(authenticationType);
         sut.setEmail(EMAIL);
@@ -286,7 +285,6 @@ public class PersonModelViewTest
         assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getAvatarId());
         assertEquals(ModelView.UNINITIALIZED_INTEGER_VALUE, sut.getUpdatesCount());
         assertEquals(ModelView.UNINITIALIZED_LONG_VALUE, sut.getStreamId());
-        assertEquals(ModelView.UNINITIALIZED_LONG_VALUE, sut.getCompositeStreamId());
         assertEquals(ModelView.UNINITIALIZED_DATE_VALUE, sut.getLastAcceptedTermsOfService());
         assertEquals(false, sut.getTosAcceptance());
         assertEquals(AuthenticationType.NOTSET, sut.getAuthenticationType());
@@ -315,7 +313,6 @@ public class PersonModelViewTest
         assertEquals(avatarId, sut.getAvatarId());
         assertEquals(updatesCount, sut.getUpdatesCount());
         assertEquals(streamId, sut.getStreamId());
-        assertEquals(compositeStreamId, sut.getCompositeStreamId());
         assertEquals(tosAcceptance, sut.getTosAcceptance());
         assertEquals(authenticationType, sut.getAuthenticationType());
         assertEquals(EMAIL, sut.getEmail());

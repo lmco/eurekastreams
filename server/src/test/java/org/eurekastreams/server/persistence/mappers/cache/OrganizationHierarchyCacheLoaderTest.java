@@ -21,14 +21,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashSet;
-
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.domain.stream.StreamView;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
-import org.eurekastreams.server.domain.stream.StreamView.Type;
 import org.eurekastreams.server.persistence.mappers.stream.CachedMapperTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -206,11 +202,6 @@ public class OrganizationHierarchyCacheLoaderTest extends CachedMapperTest
     {
         Person ford = getEntityManager().find(Person.class, NEW_ORG_COORDINATOR_ID);
 
-        StreamView entityStreamView = new StreamView();
-        entityStreamView.setIncludedScopes(new HashSet<StreamScope>());
-        entityStreamView.setName("FOO-" + inShortName);
-        entityStreamView.setType(Type.NOTSET);
-
         StreamScope streamScope = new StreamScope();
         streamScope.setDisplayName("FOO-" + inShortName);
         streamScope.setScopeType(ScopeType.ORGANIZATION);
@@ -223,7 +214,6 @@ public class OrganizationHierarchyCacheLoaderTest extends CachedMapperTest
         o.addCoordinator(ford);
 
         o.setStreamScope(streamScope);
-        o.setEntityStreamView(entityStreamView);
 
         return o;
     }

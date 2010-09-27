@@ -19,8 +19,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.GetRelatedOrganizationIdsByPersonId;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
@@ -137,10 +135,6 @@ public class PersonCacheLoaderTest extends MapperTest
     {
         final long smithersId = 98L;
         personCacheLoader.initialize();
-
-        // manually add lists to cache since they are not part of warming
-        cache.setList(CacheKeys.COMPOSITE_STREAM_IDS_BY_PERSON_ID + smithersId, new ArrayList<Long>());
-        cache.setList(CacheKeys.COMPOSITE_STREAM_SEARCH_IDS_BY_PERSON_ID + smithersId, new ArrayList<Long>());
 
         // make sure the person is in cache
         assertNotNull(cache.get(CacheKeys.PERSON_BY_ID + smithersId));

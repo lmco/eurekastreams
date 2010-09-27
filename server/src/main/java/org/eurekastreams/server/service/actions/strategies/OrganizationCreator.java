@@ -30,7 +30,6 @@ import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder;
 import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.domain.stream.StreamView;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 
@@ -70,7 +69,7 @@ public class OrganizationCreator extends OrganizationPersister
     }
 
     /**
-     * Returns Organization base on id passed in inFields.
+     * Returns Organization based on id passed in inFields.
      *
      * @param inActionContext
      *            The action context
@@ -100,16 +99,12 @@ public class OrganizationCreator extends OrganizationPersister
         org.setParentOrganization(parentOrg);
 
         StreamScope orgScope = new StreamScope(ScopeType.ORGANIZATION, (String) inFields.get("shortName"));
-        StreamView orgView = new StreamView();
-        orgView.setName((String) inFields.get("shortName"));
 
         org.setStreamScope(orgScope);
 
         Set<StreamScope> defaultScopeList = new HashSet<StreamScope>();
         defaultScopeList.add(orgScope);
 
-        orgView.setIncludedScopes(defaultScopeList);
-        org.setEntityStreamView(orgView);
         org.setCapabilities(new ArrayList<BackgroundItem>());
 
         return org;
@@ -146,6 +141,9 @@ public class OrganizationCreator extends OrganizationPersister
 
         // update the statistics with the new count
         getOrgMapper().updateChildOrganizationCount(inOrganization.getParentOrganization());
+        
+        // sets the destination entity id for the organization's stream scope
+        inOrganization.getStreamScope().setDestinationEntityId(inOrganization.getId());
         getOrgMapper().flush();
 
         // kick off an async action to update the coordinators' activity search

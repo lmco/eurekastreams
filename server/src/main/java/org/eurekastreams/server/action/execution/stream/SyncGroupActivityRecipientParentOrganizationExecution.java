@@ -16,7 +16,6 @@
 package org.eurekastreams.server.action.execution.stream;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -38,7 +37,7 @@ import org.eurekastreams.server.search.modelview.OrganizationModelView;
 /**
  * Sync the recipientParentOrg for all activities posted to a group in the DB and queue up task to sync a the groups up
  * in cache and search index upon successful DB update.
- * 
+ *
  */
 public class SyncGroupActivityRecipientParentOrganizationExecution implements
         TaskHandlerExecutionStrategy<ActionContext>
@@ -71,7 +70,7 @@ public class SyncGroupActivityRecipientParentOrganizationExecution implements
 
     /**
      * Constructor.
-     * 
+     *
      * @param inSyncActivityRecipientParentOrg
      *            Mapper to update recipient parent org id for all activites for a group.
      * @param inActivityIdMapper
@@ -100,7 +99,7 @@ public class SyncGroupActivityRecipientParentOrganizationExecution implements
     /**
      * Sync the recipientParentOrg for all activities posted to a group in the DB and queue up task to sync a the groups
      * up in cache and search index upon successful DB update.
-     * 
+     *
      * @param inActionContext
      *            {@link ActionContext}.
      * @return null;
@@ -140,15 +139,16 @@ public class SyncGroupActivityRecipientParentOrganizationExecution implements
             orgIds.addAll(getRecursiveOrgParentMapper.execute(org.getEntityId()));
         }
 
-        // get compositeStream ids for all affected orgs
-        List<OrganizationModelView> allOrgs = getOrgByIdMapper.execute(new ArrayList<Long>(orgIds));
-        for (OrganizationModelView org : allOrgs)
-        {
-            inActionContext.getUserActionRequests().add(
-                    new UserActionRequest("deleteCacheKeysAction", null, new HashSet<String>(Arrays
-                            .asList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + org.getCompositeStreamId()))));
-
-        }
+        // TODO: still needed after StreamViews were deleted?
+        // // get compositeStream ids for all affected orgs
+        // List<OrganizationModelView> allOrgs = getOrgByIdMapper.execute(new ArrayList<Long>(orgIds));
+        // for (OrganizationModelView org : allOrgs)
+        // {
+        // inActionContext.getUserActionRequests().add(
+        // new UserActionRequest("deleteCacheKeysAction", null, new HashSet<String>(Arrays
+        // .asList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + org.getCompositeStreamId()))));
+        //
+        // }
 
         return null;
     }

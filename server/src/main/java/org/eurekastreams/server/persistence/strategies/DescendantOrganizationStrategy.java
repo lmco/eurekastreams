@@ -23,7 +23,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.eurekastreams.commons.hibernate.QueryOptimizer;
 import org.eurekastreams.server.domain.Organization;
 
 /**
@@ -31,11 +30,6 @@ import org.eurekastreams.server.domain.Organization;
  */
 public class DescendantOrganizationStrategy
 {
-    /**
-     * The QueryOptimizer to use for specialized functions.
-     */
-    private QueryOptimizer queryOptimizer;
-
     /**
      * EntityManager to use for all ORM operations.
      */
@@ -54,14 +48,22 @@ public class DescendantOrganizationStrategy
     }
 
     /**
-     * Set the QueryOptimizer.
+     * Get the org's id by its short name.
      *
-     * @param inQueryOptimizer
-     *            the QueryOptimizer
+     * @param inShortName
+     *            the org's short name
+     * @return the org's id, or 0 if not found
      */
-    public void setQueryOptimizer(final QueryOptimizer inQueryOptimizer)
+    public long getOrgIdByShortName(final String inShortName)
     {
-        queryOptimizer = inQueryOptimizer;
+        Query q = entityManager.createQuery("SELECT id FROM Organization WHERE shortName = :shortName").setParameter(
+                "shortName", inShortName);
+        List<Long> orgIds = q.getResultList();
+        if (orgIds.size() != 1)
+        {
+            return 0;
+        }
+        return orgIds.get(0);
     }
 
     /**

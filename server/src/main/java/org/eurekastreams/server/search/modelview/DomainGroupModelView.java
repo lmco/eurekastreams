@@ -171,11 +171,6 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     private long streamId = UNINITIALIZED_LONG_VALUE;
 
     /**
-     * CompositeStream id for this group.
-     */
-    private long compositeStreamId = UNINITIALIZED_LONG_VALUE;
-
-    /**
      * Flag to determine if group's activities can be commented on.
      */
     private boolean commentable = true;
@@ -256,10 +251,6 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
         if (properties.containsKey("streamId"))
         {
             setStreamId((Long) properties.get("streamId"));
-        }
-        if (properties.containsKey("compositeStreamId"))
-        {
-            setCompositeStreamId((Long) properties.get("compositeStreamId"));
         }
         if (properties.containsKey("commentable"))
         {
@@ -589,23 +580,6 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     public void setStreamId(final long inStreamId)
     {
         this.streamId = inStreamId;
-    }
-
-    /**
-     * @return the compositeStreamId
-     */
-    public long getCompositeStreamId()
-    {
-        return compositeStreamId;
-    }
-
-    /**
-     * @param inCompositeStreamId
-     *            the compositeStreamId to set
-     */
-    public void setCompositeStreamId(final long inCompositeStreamId)
-    {
-        this.compositeStreamId = inCompositeStreamId;
     }
 
     /**

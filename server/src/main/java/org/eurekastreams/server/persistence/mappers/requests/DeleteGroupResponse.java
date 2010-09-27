@@ -15,12 +15,11 @@
  */
 package org.eurekastreams.server.persistence.mappers.requests;
 
-import java.util.List;
 import java.util.Set;
 
 /**
  * Respose object for DeleteGroup mapper.
- * 
+ *
  */
 public class DeleteGroupResponse
 {
@@ -35,11 +34,6 @@ public class DeleteGroupResponse
     private String groupShortName;
 
     /**
-     * Group streamView id.
-     */
-    private Long streamViewId;
-
-    /**
      * Group streamScope id.
      */
     private Long streamScopeId;
@@ -50,37 +44,25 @@ public class DeleteGroupResponse
     private Set<Long> parentOrganizationIds;
 
     /**
-     * List of compositeStream ids that contained the group's stream scope.
-     */
-    private List<Long> compositeStreamsidsContainingGroupStream;
-
-    /**
      * Constructor.
-     * 
+     *
      * @param inGroupId
      *            Group id.
      * @param inGroupShortName
      *            Group short name.
-     * @param inStreamViewId
-     *            Group streamView id.
      * @param inStreamScopeId
      *            Group streamScope id.
      * @param inParentOrganizationIds
      *            Set of parent organization ids.
-     * @param inCompositeStreamsidsContainingGroupStream
-     *            ids of composite streams containing group stream.
      */
-    public DeleteGroupResponse(final Long inGroupId, final String inGroupShortName, final Long inStreamViewId,
-            final Long inStreamScopeId, final Set<Long> inParentOrganizationIds,
-            final List<Long> inCompositeStreamsidsContainingGroupStream)
+    public DeleteGroupResponse(final Long inGroupId, final String inGroupShortName, final Long inStreamScopeId,
+            final Set<Long> inParentOrganizationIds)
     {
 
         groupId = inGroupId;
         groupShortName = inGroupShortName;
-        streamViewId = inStreamViewId;
         streamScopeId = inStreamScopeId;
         parentOrganizationIds = inParentOrganizationIds;
-        compositeStreamsidsContainingGroupStream = inCompositeStreamsidsContainingGroupStream;
     }
 
     /**
@@ -100,14 +82,6 @@ public class DeleteGroupResponse
     }
 
     /**
-     * @return the streamViewId
-     */
-    public Long getStreamViewId()
-    {
-        return streamViewId;
-    }
-
-    /**
      * @return the streamScopeId
      */
     public Long getStreamScopeId()
@@ -121,14 +95,6 @@ public class DeleteGroupResponse
     public Set<Long> getParentOrganizationIds()
     {
         return parentOrganizationIds;
-    }
-
-    /**
-     * @return the compositeStreamsidsContainingGroupStream
-     */
-    public List<Long> getCompositeStreamsidsContainingGroupStream()
-    {
-        return compositeStreamsidsContainingGroupStream;
     }
 
 }

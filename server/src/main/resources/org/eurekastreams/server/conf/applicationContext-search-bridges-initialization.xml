@@ -68,6 +68,36 @@
 			</list>
 		</property>
 	</bean>
+
+	<!--
+		Inject the ActivityAuthorClassBridge with the person cache
+	-->
+	<bean
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass"
+			value="org.eurekastreams.server.search.bridge.ActivityAuthorClassBridge" />
+		<property name="targetMethod" value="setGetPeopleByAccountIds" />
+		<property name="arguments">
+			<list>
+				<ref bean="bulkPeopleByAccountIdMapper" />
+			</list>
+		</property>
+	</bean>
+	
+	<!--
+		Inject the ActivityAuthorClassBridge with the domain group cache
+	-->
+	<bean
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass"
+			value="org.eurekastreams.server.search.bridge.ActivityAuthorClassBridge" />
+		<property name="targetMethod" value="setGetDomainGroupsByShortNames" />
+		<property name="arguments">
+			<list>
+				<ref bean="bulkDomainGroupsByShortNameMapper" />
+			</list>
+		</property>
+	</bean>
 	
 	<!--
 		Inject the ActivityLastCommentIdClassBridge with the comments cache

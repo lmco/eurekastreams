@@ -19,7 +19,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.sf.json.JSONObject;
 
@@ -29,6 +31,7 @@ import org.hibernate.search.jpa.FullTextQuery;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -47,15 +50,42 @@ public class LuceneDataSourceTest
     };
 
     /**
+     * System under test.
+     */
+    private LuceneDataSource sut;
+
+    /**
+     * Search builder.
+     */
+    private ProjectionSearchRequestBuilder builder = context.mock(ProjectionSearchRequestBuilder.class, "builder");
+
+    /**
+     * Unstemmed search builder.
+     */
+    private ProjectionSearchRequestBuilder unstemmedBuilder = context.mock(ProjectionSearchRequestBuilder.class,
+            "unstemmed builder");
+
+    /**
+     * Setup test fixtures.
+     */
+    @Before
+    public void setup()
+    {
+        final Map<String, String> searchMap = new HashMap<String, String>();
+        searchMap.put("keywords", "content");
+
+        final Map<String, PersistenceDataSourceRequestTransformer> transformerMap = 
+            new HashMap<String, PersistenceDataSourceRequestTransformer>();
+
+        sut = new LuceneDataSource(builder, unstemmedBuilder, searchMap, transformerMap);
+    }
+
+    /**
      * Test execute method with search keywords.
      */
     @Test
     public void testExecuteWithKeywords()
     {
-        final ProjectionSearchRequestBuilder builder = context.mock(ProjectionSearchRequestBuilder.class, "builder");
-        final ProjectionSearchRequestBuilder allBuilder = context.mock(ProjectionSearchRequestBuilder.class,
-                "allBuilder");
-        LuceneDataSource sut = new LuceneDataSource(builder, allBuilder);
 
         final JSONObject request = new JSONObject();
         final JSONObject query = new JSONObject();
@@ -71,47 +101,7 @@ public class LuceneDataSourceTest
         context.checking(new Expectations()
         {
             {
-                oneOf(builder).buildQueryFromNativeSearchString("hithere(foo)");
-                will(returnValue(ftq));
-
-                oneOf(ftq).getResultList();
-                will(returnValue(results));
-
-                oneOf(builder).setPaging(ftq, 0, pageSize);
-            }
-        });
-
-        assertSame(results, sut.fetch(request, 0L));
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Test execute method with search keywords, sorting by relevance.
-     */
-    @Test
-    public void testExecuteWithKeywordsSortByRelevance()
-    {
-        final ProjectionSearchRequestBuilder builder = context.mock(ProjectionSearchRequestBuilder.class, "builder");
-        final ProjectionSearchRequestBuilder allBuilder = context.mock(ProjectionSearchRequestBuilder.class,
-                "allBuilder");
-        LuceneDataSource sut = new LuceneDataSource(builder, allBuilder);
-
-        final JSONObject request = new JSONObject();
-        final JSONObject query = new JSONObject();
-        final int pageSize = 388;
-
-        request.put("count", pageSize);
-        query.put("keywords", "hithere:(foo)");
-        query.put("sortBy", "relevance");
-        request.put("query", query);
-
-        final FullTextQuery ftq = context.mock(FullTextQuery.class);
-        final List<Long> results = new ArrayList<Long>();
-
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(builder).buildQueryFromNativeSearchString("hithere(foo)");
+                oneOf(builder).buildQueryFromNativeSearchString("+content:(hithere(foo))");
                 will(returnValue(ftq));
 
                 oneOf(ftq).getResultList();
@@ -131,11 +121,6 @@ public class LuceneDataSourceTest
     @Test
     public void testExecuteWithKeywordsSortByDate()
     {
-        final ProjectionSearchRequestBuilder builder = context.mock(ProjectionSearchRequestBuilder.class, "builder");
-        final ProjectionSearchRequestBuilder allBuilder = context.mock(ProjectionSearchRequestBuilder.class,
-                "allBuilder");
-        LuceneDataSource sut = new LuceneDataSource(builder, allBuilder);
-
         final JSONObject request = new JSONObject();
         final JSONObject query = new JSONObject();
         final int pageSize = 388;
@@ -151,7 +136,7 @@ public class LuceneDataSourceTest
         context.checking(new Expectations()
         {
             {
-                oneOf(builder).buildQueryFromNativeSearchString("hithere(foo)");
+                oneOf(builder).buildQueryFromNativeSearchString("+content:(hithere(foo))");
                 will(returnValue(ftq));
 
                 oneOf(ftq).getResultList();
@@ -174,11 +159,6 @@ public class LuceneDataSourceTest
     @Test
     public void testExecuteWithoutKeywordsAndWithoutSort()
     {
-        final ProjectionSearchRequestBuilder builder = context.mock(ProjectionSearchRequestBuilder.class, "builder");
-        final ProjectionSearchRequestBuilder allBuilder = context.mock(ProjectionSearchRequestBuilder.class,
-                "allBuilder");
-        LuceneDataSource sut = new LuceneDataSource(builder, allBuilder);
-
         assertNull(sut.fetch(new JSONObject(), 0L));
         context.assertIsSatisfied();
     }

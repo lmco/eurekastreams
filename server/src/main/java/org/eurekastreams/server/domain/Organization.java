@@ -43,7 +43,6 @@ import org.eurekastreams.commons.search.analysis.HtmlStemmerAnalyzer;
 import org.eurekastreams.commons.search.analysis.TextStemmerAnalyzer;
 import org.eurekastreams.commons.search.bridge.StandardAnalyzerSortFieldBridge;
 import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.domain.stream.StreamView;
 import org.eurekastreams.server.search.bridge.BackgroundItemListStringBridge;
 import org.eurekastreams.server.search.bridge.IsRootOrganizationClassBridge;
 import org.eurekastreams.server.search.bridge.OrgIdHierarchyFieldBridge;
@@ -323,14 +322,6 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
     private Long bannerEntityId;
 
     /**
-     * Stream view for an organization.
-     */
-    // TODO make this non-nullable when create org strat. is updated.
-    @OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
-    @JoinColumn(name = "entityStreamViewId")
-    private StreamView entityStreamView;
-
-    /**
      * Stream scope representing this organization.
      */
     @OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
@@ -348,9 +339,9 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
     /**
      * Constructor that creates a skeleton org from the input OrganizationModelView, populating the fields that the
      * front-end typically needs.
-     * 
+     *
      * - orgId, shortName, name, bannerId
-     * 
+     *
      * @param inOrgModelView
      *            - the organization modelview to pull values from
      */
@@ -365,7 +356,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Override equality to be based on the org's id.
-     * 
+     *
      * @param rhs
      *            target object
      * @return true if equal, false otherwise.
@@ -378,7 +369,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * set the id - useful for unit testing.
-     * 
+     *
      * @param newId
      *            the new id
      */
@@ -390,7 +381,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * HashCode override.
-     * 
+     *
      * @see java.lang.Object#hashCode()
      * @return hashcode for object.
      */
@@ -433,7 +424,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Constructor. This should have every non-null parameter included.
-     * 
+     *
      * @param inName
      *            - Full name of org.
      * @param inShortName
@@ -447,7 +438,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Add coordinator to org.
-     * 
+     *
      * @param person
      *            The Person to add.
      */
@@ -463,7 +454,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Remove coordinator from org.
-     * 
+     *
      * @param person
      *            The Person to remove.
      */
@@ -481,7 +472,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Getter for list of coordinators.
-     * 
+     *
      * @return list of coordinators.
      */
     public Set<Person> getCoordinators()
@@ -491,7 +482,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Setter for list of coordinators.
-     * 
+     *
      * @param inCoordinators
      *            list of coordinators.
      */
@@ -502,7 +493,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Add leaders to org.
-     * 
+     *
      * @param person
      *            The Person to add.
      */
@@ -513,7 +504,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Remove leader from org.
-     * 
+     *
      * @param person
      *            The Person to remove.
      */
@@ -531,7 +522,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Getter for list of leaders.
-     * 
+     *
      * @return list of leaders.
      */
     public Set<Person> getLeaders()
@@ -541,7 +532,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Setter for list of leaders.
-     * 
+     *
      * @param inLeaders
      *            list of coordinators.
      */
@@ -552,7 +543,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Getter for Organization name.
-     * 
+     *
      * @return the name.
      */
     public String getName()
@@ -562,7 +553,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Setter for Organization name.
-     * 
+     *
      * @param inName
      *            new name
      */
@@ -573,7 +564,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Getter for Organization short name.
-     * 
+     *
      * @return the shortName
      */
     public String getShortName()
@@ -583,7 +574,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Setter for Organization short name.
-     * 
+     *
      * @param inShortName
      *            the shortName to set.
      */
@@ -637,7 +628,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
     /**
      * Parent Organization - used for serialization and unit testing only - setting a parent organization must be done
      * through the mapper.
-     * 
+     *
      * @param inParentOrganization
      *            the parentOrganization to set
      */
@@ -656,7 +647,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * check to see if the specified account id is a coordinator for this Organization.
-     * 
+     *
      * @param account
      *            to check.
      * @return if they're a coordinator.
@@ -676,7 +667,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Getter.
-     * 
+     *
      * @return the overview
      */
     public String getOverview()
@@ -686,7 +677,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Setter.
-     * 
+     *
      * @param inOverview
      *            the overview to set
      */
@@ -697,7 +688,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Returns the completed tasks for a person.
-     * 
+     *
      * @return the tasks.
      */
     public List<Task> getCompletedTasks()
@@ -707,7 +698,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Needed for serialization.
-     * 
+     *
      * @param inTasks
      *            the tasks.
      */
@@ -736,7 +727,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Set the number of child (non-recursive) organizations.
-     * 
+     *
      * @param inCount
      *            the count to set
      */
@@ -747,7 +738,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Get the number of child (non-recursive) organizations - de-normalized.
-     * 
+     *
      * @return the count
      */
     public int getChildOrganizationCount()
@@ -757,7 +748,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Get the de-normalized count of employees in this organization.
-     * 
+     *
      * @return the employeeCount
      */
     public int getDescendantEmployeeCount()
@@ -767,7 +758,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Set the employee count.
-     * 
+     *
      * @param inDescendantEmployeeCount
      *            the employeeCount to set
      */
@@ -778,7 +769,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Set the de-normalized number of employees following this organization - for unit testing and serialization.
-     * 
+     *
      * @param inEmployeeFollowerCount
      *            the employeeFollowerCount to set
      */
@@ -789,7 +780,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Get the de-normalized number of employees following this organization.
-     * 
+     *
      * @return the employeeFollowerCount the number of employees following this organization
      */
     public int getEmployeeFollowerCount()
@@ -799,7 +790,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Set the de-normalized group count - for serialization and unit testing.
-     * 
+     *
      * @param inDescendantGroupCount
      *            the groupCount to set
      */
@@ -810,7 +801,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Get the de-normalized group count.
-     * 
+     *
      * @return the groupCount
      */
     public int getDescendantGroupCount()
@@ -837,7 +828,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Set the number of updates for the org.
-     * 
+     *
      * @param inUpdatesCount
      *            the updatesCount to set
      */
@@ -848,7 +839,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Get the number of updates for the org.
-     * 
+     *
      * @return the updatesCount
      */
     public int getUpdatesCount()
@@ -858,7 +849,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Get avatar x coord.
-     * 
+     *
      * @return avatar x coord.
      */
     public Integer getAvatarCropX()
@@ -868,7 +859,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Set avatar x coord.
-     * 
+     *
      * @param value
      *            x coord.
      */
@@ -879,7 +870,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Get avatar y coord.
-     * 
+     *
      * @return avatar y coord.
      */
     public Integer getAvatarCropY()
@@ -889,7 +880,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Set avatar y coord.
-     * 
+     *
      * @param value
      *            y coord.
      */
@@ -900,7 +891,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Get avatar crop size.
-     * 
+     *
      * @return avatar crop size.
      */
     public Integer getAvatarCropSize()
@@ -910,7 +901,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Set avatar crop size.
-     * 
+     *
      * @param value
      *            crop size.
      */
@@ -953,23 +944,6 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
         return allUsersCanCreateGroups;
     }
 
-    /**
-     * @return the entityStreamView
-     */
-    public StreamView getEntityStreamView()
-    {
-        return entityStreamView;
-    }
-
-    /**
-     * @param inEntityStreamView
-     *            the entityStreamView to set
-     */
-    public void setEntityStreamView(final StreamView inEntityStreamView)
-    {
-        this.entityStreamView = inEntityStreamView;
-    }
-
     // ----------------------------------------------------
     // ------------------ CACHE UPDATING ------------------
 
@@ -1006,7 +980,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Setter for the static PersonUpdater.
-     * 
+     *
      * @param inEntityCacheUpdater
      *            the PersonUpdater to set
      */
@@ -1037,7 +1011,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Get the parent org id without loading the parent organization.
-     * 
+     *
      * @return the parent org id without loading the parent organization
      */
     public Long getParentOrgId()
@@ -1047,7 +1021,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
 
     /**
      * Set the parent org id.
-     * 
+     *
      * @param inParentOrgId
      *            the parent org id
      */

@@ -15,18 +15,20 @@
  */
 package org.eurekastreams.server.persistence.mappers.stream;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.eurekastreams.server.action.request.stream.DeleteActivityCacheUpdateRequest;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
-import org.eurekastreams.server.domain.stream.StreamView;
-import org.eurekastreams.server.persistence.mappers.cache.Cache;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * DAO for updating cache after Activity delete.
- *
  */
 public class DeleteActivityCacheUpdate extends BaseArgCachedDomainMapper<DeleteActivityCacheUpdateRequest, Boolean>
 {
@@ -51,8 +53,13 @@ public class DeleteActivityCacheUpdate extends BaseArgCachedDomainMapper<DeleteA
     private GetDomainGroupsByShortNames groupByShortNameDAO;
 
     /**
+     * Get the people who liked the activity.
+     */
+    private DomainMapper<List<Long>, List<List<Long>>> getLikersForActivity;
+
+    /**
      * Constructor.
-     *
+     * 
      * @param inUserIdsFollowingPersonDAO
      *            DAO to get followers of a person.
      * @param inUserIdsFollowingGroupDAO
@@ -61,20 +68,24 @@ public class DeleteActivityCacheUpdate extends BaseArgCachedDomainMapper<DeleteA
      *            DAO to get people by account ids.
      * @param inGroupByShortNameDAO
      *            DAO to get groups by short name.
+     * @param inGetLikersForActivity
+     *            get the likers for the activity.
      */
     public DeleteActivityCacheUpdate(final GetFollowerIds inUserIdsFollowingPersonDAO,
             final GetGroupFollowerIds inUserIdsFollowingGroupDAO, final GetPeopleByAccountIds inPersonByAccountIdDAO,
-            final GetDomainGroupsByShortNames inGroupByShortNameDAO)
+            final GetDomainGroupsByShortNames inGroupByShortNameDAO,
+            final DomainMapper<List<Long>, List<List<Long>>> inGetLikersForActivity)
     {
         userIdsFollowingPersonDAO = inUserIdsFollowingPersonDAO;
         userIdsFollowingGroupDAO = inUserIdsFollowingGroupDAO;
         personByAccountIdDAO = inPersonByAccountIdDAO;
         groupByShortNameDAO = inGroupByShortNameDAO;
+        getLikersForActivity = inGetLikersForActivity;
     }
 
     /**
      * Update cache after Activity delete.
-     *
+     * 
      * @param inRequest
      *            the DeleteActivityCacheUpdateRequest.
      * @return true if successful.
@@ -82,7 +93,30 @@ public class DeleteActivityCacheUpdate extends BaseArgCachedDomainMapper<DeleteA
     @Override
     public Boolean execute(final DeleteActivityCacheUpdateRequest inRequest)
     {
-        long activityId = inRequest.getActivity().getId();
+        ActivityDTO activity = inRequest.getActivity();
+        long activityId = activity.getId();
+
+        // Remove from entity stream.
+        EntityType streamType = activity.getDestinationStream().getType();
+
+        switch (streamType)
+        {
+        case GROUP:
+            DomainGroupModelView group = groupByShortNameDAO.execute(
+                    Arrays.asList(activity.getDestinationStream().getUniqueIdentifier())).get(0);
+
+            getCache().removeFromList(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + group.getStreamId(), activityId);
+            break;
+        case PERSON:
+            PersonModelView person = personByAccountIdDAO.execute(
+                    Arrays.asList(activity.getDestinationStream().getUniqueIdentifier())).get(0);
+
+            getCache().removeFromList(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + person.getStreamId(), activityId);
+
+            break;
+        default:
+            break;
+        }
 
         // remove activity from starred list for people that have this starred
         for (Long personId : inRequest.getPersonIdsWithActivityStarred())
@@ -90,8 +124,18 @@ public class DeleteActivityCacheUpdate extends BaseArgCachedDomainMapper<DeleteA
             getCache().removeFromList(CacheKeys.STARRED_BY_PERSON_ID + personId, activityId);
         }
 
-        // remove activity id from all compositeStreams that contain the activity.
-        removeFromCompositeStreamActivityIdLists(inRequest.getActivity());
+        // Update likers
+        List<List<Long>> likers = getLikersForActivity.execute(Arrays.asList(activityId));
+
+        if (likers.size() > 0)
+        {
+            for (Long liker : likers.get(0))
+            {
+                getCache().removeFromList(CacheKeys.LIKED_BY_PERSON_ID + liker, activityId);
+            }
+        }
+
+        getCache().delete(CacheKeys.LIKERS_BY_ACTIVITY_ID + activityId);
 
         // remove comments by activityId list from cache.
         getCache().delete(CacheKeys.COMMENT_IDS_BY_ACTIVITY_ID + activityId);
@@ -117,30 +161,8 @@ public class DeleteActivityCacheUpdate extends BaseArgCachedDomainMapper<DeleteA
     }
 
     /**
-     * Removes activity id from any CompositeStream that contains the activity's destination stream.
-     *
-     * @param inActivity
-     *            The activity being deleted.
-     */
-    @SuppressWarnings("unchecked")
-    private void removeFromCompositeStreamActivityIdLists(final ActivityDTO inActivity)
-    {
-        // query for compositestreams that have this streamId
-        List<StreamView> containingCompositeStreams = getEntityManager().createQuery(
-                "SELECT containingCompositeStreams FROM StreamScope ss WHERE ss.id = :streamScopeId").setParameter(
-                "streamScopeId", inActivity.getDestinationStream().getId()).getResultList();
-
-        Cache cache = getCache();
-        long activityId = inActivity.getId();
-        for (StreamView compositeStream : containingCompositeStreams)
-        {
-            cache.removeFromList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + compositeStream.getId(), activityId);
-        }
-    }
-
-    /**
      * Returns list of user Ids for users that are following the activity's destination stream.
-     *
+     * 
      * @param inDestinationStream
      *            The destination stream of activity being deleted.
      * @return List of user Ids for users that are following the activity's destination stream.

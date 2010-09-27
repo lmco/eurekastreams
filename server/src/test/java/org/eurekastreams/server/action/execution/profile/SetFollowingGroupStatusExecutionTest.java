@@ -31,12 +31,9 @@ import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
-import org.eurekastreams.server.persistence.mappers.GetFollowedStreamViewByUser;
 import org.eurekastreams.server.persistence.mappers.cache.AddCachedGroupFollower;
-import org.eurekastreams.server.persistence.mappers.cache.RemoveCachedActivitiesFromList;
 import org.eurekastreams.server.persistence.mappers.cache.RemoveCachedGroupFollower;
 import org.eurekastreams.server.persistence.mappers.db.DeleteRequestForGroupMembership;
-import org.eurekastreams.server.persistence.mappers.requests.RemoveCachedActivitiesFromListRequest;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
@@ -48,7 +45,6 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
-
 
 /**
  * Test class for the {@link SetFollowingGroupStatusExecution} class.
@@ -104,25 +100,13 @@ public class SetFollowingGroupStatusExecutionTest
     private final GetGroupFollowerIds groupFollowerIdsMapperMock = context.mock(GetGroupFollowerIds.class);
 
     /**
-     * Mock instance of the RemoveCachedActivitiesFromList.
-     */
-    private final RemoveCachedActivitiesFromList removeCachedActivitiesMapperMock = context
-            .mock(RemoveCachedActivitiesFromList.class);
-
-    /**
-     * Mock instance of the GetFollowedStreamViewByUser mapper.
-     */
-    private final GetFollowedStreamViewByUser followedStreamViewMapperMock = context
-            .mock(GetFollowedStreamViewByUser.class);
-
-    /**
      * Mocked principal object.
      */
     private final Principal princpalMock = context.mock(Principal.class);
 
     /** Mapper to remove group access requests. */
-    private DeleteRequestForGroupMembership deleteRequestForGroupMembershipMapper =
-            context.mock(DeleteRequestForGroupMembership.class);
+    private DeleteRequestForGroupMembership deleteRequestForGroupMembershipMapper = context
+            .mock(DeleteRequestForGroupMembership.class);
 
     /**
      * Method to setup the System Under Test.
@@ -130,10 +114,9 @@ public class SetFollowingGroupStatusExecutionTest
     @Before
     public void setUp()
     {
-        sut = new SetFollowingGroupStatusExecution(
-                groupByShortNameMapperMock, personMapperMock, groupMapperMock,
+        sut = new SetFollowingGroupStatusExecution(groupByShortNameMapperMock, personMapperMock, groupMapperMock,
                 addCachedGroupFollowerMapperMock, removeCachedGroupFollowerMapperMock, groupFollowerIdsMapperMock,
-                removeCachedActivitiesMapperMock, followedStreamViewMapperMock, deleteRequestForGroupMembershipMapper);
+                deleteRequestForGroupMembershipMapper);
     }
 
     /**
@@ -163,8 +146,6 @@ public class SetFollowingGroupStatusExecutionTest
 
                 oneOf(groupByShortNameMapperMock).fetchUniqueResult(with(any(String.class)));
                 will(returnValue(testTarget));
-
-                oneOf(followedStreamViewMapperMock).execute(with(any(Long.class)));
 
                 oneOf(groupMapperMock).addFollower(1L, 2L);
 
@@ -209,8 +190,6 @@ public class SetFollowingGroupStatusExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(followedStreamViewMapperMock).execute(with(any(Long.class)));
-
                 oneOf(groupMapperMock).addFollower(1L, 2L);
 
                 oneOf(addCachedGroupFollowerMapperMock).execute(1L, 2L);
@@ -258,13 +237,9 @@ public class SetFollowingGroupStatusExecutionTest
                 oneOf(groupByShortNameMapperMock).fetchUniqueResult(with(any(String.class)));
                 will(returnValue(testTarget));
 
-                oneOf(followedStreamViewMapperMock).execute(with(any(Long.class)));
-
                 oneOf(groupMapperMock).removeFollower(1L, 2L);
 
                 oneOf(removeCachedGroupFollowerMapperMock).execute(1L, 2L);
-
-                oneOf(removeCachedActivitiesMapperMock).execute(with(any(RemoveCachedActivitiesFromListRequest.class)));
 
                 oneOf(groupFollowerIdsMapperMock).execute(2L);
                 will(returnValue(targetFollowerIds));
@@ -341,8 +316,6 @@ public class SetFollowingGroupStatusExecutionTest
 
                 oneOf(groupByShortNameMapperMock).fetchUniqueResult(with(any(String.class)));
                 will(returnValue(testTarget));
-
-                oneOf(followedStreamViewMapperMock).execute(with(any(Long.class)));
 
                 oneOf(groupFollowerIdsMapperMock).execute(2L);
                 will(returnValue(targetFollowerIds));

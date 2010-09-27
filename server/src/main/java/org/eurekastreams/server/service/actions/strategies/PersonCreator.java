@@ -16,8 +16,8 @@
 package org.eurekastreams.server.service.actions.strategies;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,14 +31,12 @@ import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.domain.TabGroup;
 import org.eurekastreams.server.domain.TabTemplate;
 import org.eurekastreams.server.domain.TabType;
+import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.domain.stream.StreamView;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.TabMapper;
-import org.eurekastreams.server.persistence.mappers.GetStreamViewByType;
-import org.eurekastreams.server.persistence.mappers.requests.StreamViewTypeRequest;
 
 /**
  * Create person resource strategy.
@@ -62,11 +60,6 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
     private OrganizationMapper organizationMapper;
 
     /**
-     * Mapper to get the Stream Views.
-     */
-    private GetStreamViewByType streamViewMapper;
-
-    /**
      * Constructor.
      *
      * @param inPersonMapper
@@ -75,16 +68,13 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
      *            tab mapper.
      * @param inOrganizationMapper
      *            org mapper
-     * @param inStreamViewMapper
-     *            stream view mapper.
      */
     public PersonCreator(final PersonMapper inPersonMapper, final TabMapper inTabMapper,
-            final OrganizationMapper inOrganizationMapper, final GetStreamViewByType inStreamViewMapper)
+            final OrganizationMapper inOrganizationMapper)
     {
         personMapper = inPersonMapper;
         tabMapper = inTabMapper;
         organizationMapper = inOrganizationMapper;
-        streamViewMapper = inStreamViewMapper;
     }
 
     /**
@@ -135,24 +125,16 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
         StreamScope personScope = new StreamScope(ScopeType.PERSON, (String) inFields.get("accountId"));
 
         person.setStreamScope(personScope);
-        StreamView personView = new StreamView();
-        personView.setName((String) inFields.get("preferredName") + " " + (String) inFields.get("lastName"));
 
         Set<StreamScope> defaultScopeList = new HashSet<StreamScope>();
         defaultScopeList.add(personScope);
 
-        personView.setIncludedScopes(defaultScopeList);
-        person.setEntityStreamView(personView);
+        List<Stream> streams = new ArrayList<Stream>();
+        // TODO: person.setStreams(/*TODO*/);
+        person.setStreams(streams);
 
-        List<StreamView> viewList = new LinkedList<StreamView>();
-        viewList.add(streamViewMapper.execute(new StreamViewTypeRequest(StreamView.Type.PEOPLEFOLLOW)));
-        viewList.add(streamViewMapper.execute(new StreamViewTypeRequest(StreamView.Type.PARENTORG)));
-        viewList.add(streamViewMapper.execute(new StreamViewTypeRequest(StreamView.Type.EVERYONE)));
-        viewList.add(streamViewMapper.execute(new StreamViewTypeRequest(StreamView.Type.STARRED)));
-        person.setStreamViews(viewList);
-        
         // Set hidden line indexes.
-        person.setStreamViewHiddenLineIndex(viewList.size() - 1);
+        person.setStreamViewHiddenLineIndex(streams.size() - 1);
         person.setStreamSearchHiddenLineIndex(2);
         person.setGroupStreamHiddenLineIndex(3);
 
@@ -166,7 +148,7 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
         {
             person.setParentOrganization(organizationMapper.getRootOrganization());
         }
-        
+
         // remove public settable properties already handled from map so updater
         // doesn't do them again.
         inFields.remove("organization");
@@ -192,6 +174,10 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
     {
         personMapper.insert(inPerson);
         personMapper.addFollower(inPerson.getId(), inPerson.getId());
+        
+        // sets the destination entity id for the person's stream scope
+        inPerson.getStreamScope().setDestinationEntityId(inPerson.getId());
+        personMapper.flush();
     }
 
 }

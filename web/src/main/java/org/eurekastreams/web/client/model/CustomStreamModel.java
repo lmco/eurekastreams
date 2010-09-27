@@ -17,13 +17,9 @@ package org.eurekastreams.web.client.model;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 import org.eurekastreams.server.action.request.stream.SetStreamOrderRequest;
-import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Stream;
-import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.service.actions.response.GetCurrentUserStreamFiltersResponse;
 import org.eurekastreams.web.client.events.CustomStreamCreatedEvent;
 import org.eurekastreams.web.client.events.CustomStreamDeletedEvent;
@@ -33,6 +29,7 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
 
 /**
  * Custom stream model.
@@ -78,7 +75,14 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
      */
     public void insert(final HashMap<String, Serializable> request)
     {
-        JSONObject json = getJSONFromHashMap(request);
+        JSONObject json = JSONParser.parse((String) request.get("stream")).isObject();
+        
+        if (!"".equals(request.get(StreamJsonRequestFactory.SEARCH_KEY)))
+        {
+            json = StreamJsonRequestFactory.setSearchTerm((String) request
+                    .get(StreamJsonRequestFactory.SEARCH_KEY), json);
+        }
+        
         Stream stream = new Stream();
         stream.setRequest(json.toString());
         stream.setName((String) request.get("name"));
@@ -99,7 +103,14 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
      */
     public void update(final HashMap<String, Serializable> request)
     {
-        JSONObject json = getJSONFromHashMap(request);
+        JSONObject json = JSONParser.parse((String) request.get("stream")).isObject();
+        
+        if (!"".equals(request.get(StreamJsonRequestFactory.SEARCH_KEY)))
+        {
+            json = StreamJsonRequestFactory.setSearchTerm((String) request
+                    .get(StreamJsonRequestFactory.SEARCH_KEY), json);
+        }
+        
         Stream stream = new Stream();
         stream.setRequest(json.toString());
         stream.setName((String) request.get("name"));
@@ -112,51 +123,6 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
                 Session.getInstance().getEventBus().notifyObservers(new CustomStreamUpdatedEvent(response));
             }
         });
-    }
-
-    /**
-     * Converts the form hashmap to the JSON request object.
-     * 
-     * @param request
-     *            the form request.
-     * @return the JSON request.
-     */
-    private JSONObject getJSONFromHashMap(final HashMap<String, Serializable> request)
-    {
-        JSONObject jsonObject = StreamJsonRequestFactory.getEmptyRequest();
-
-        if (!"".equals(request.get("keywords")))
-        {
-            jsonObject = StreamJsonRequestFactory.setSearchTerm((String) request.get("keywords"), jsonObject);
-        }
-
-        if (request.get("stream") instanceof String)
-        {
-            if (request.get("stream").equals("Following"))
-            {
-                jsonObject = StreamJsonRequestFactory.setSourceAsFollowing(jsonObject);
-            }
-            else if (request.get("stream").equals("Saved"))
-            {
-                jsonObject = StreamJsonRequestFactory.setSourceAsSaved(jsonObject);
-            }
-            else if (request.get("stream").equals("parentOrg"))
-            {
-                jsonObject = StreamJsonRequestFactory.setSourceAsParentOrg(jsonObject);
-            }
-        }
-        else
-        {
-            List<StreamScope> scopes = (LinkedList<StreamScope>) request.get("stream");
-
-            for (StreamScope scope : scopes)
-            {
-                jsonObject = StreamJsonRequestFactory.addRecipient(EntityType.valueOf(scope.getScopeType().toString()),
-                        scope.getUniqueKey(), jsonObject);
-            }
-        }
-
-        return jsonObject;
     }
 
     /**

@@ -142,7 +142,6 @@ public class DomainGroupModelViewTest
         assertEquals(createdby.getAccountId(), sut.getPersonCreatedByAccountId());
         assertEquals(createdby.getDisplayName(), sut.getPersonCreatedByDisplayName());
         assertEquals(streamId, sut.getStreamId());
-        assertEquals(compositeStreamId, sut.getCompositeStreamId());
         assertEquals(commentable, sut.isCommentable());
         assertEquals(streamPostable, sut.isStreamPostable());
 
@@ -170,7 +169,6 @@ public class DomainGroupModelViewTest
         assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getAvatarId());
         assertEquals(false, sut.isPublic());
         assertEquals(ModelView.UNINITIALIZED_LONG_VALUE, sut.getStreamId());
-        assertEquals(ModelView.UNINITIALIZED_LONG_VALUE, sut.getCompositeStreamId());
         assertEquals(true, sut.isCommentable());
         assertEquals(true, sut.isStreamPostable());
     }
@@ -197,7 +195,6 @@ public class DomainGroupModelViewTest
         sut.setPersonCreatedByAccountId(createdby.getAccountId());
         sut.setPersonCreatedByDisplayName(createdby.getDisplayName());
         sut.setStreamId(streamId);
-        sut.setCompositeStreamId(compositeStreamId);
         sut.setCommentable(commentable);
         sut.setStreamPostable(streamPostable);
 

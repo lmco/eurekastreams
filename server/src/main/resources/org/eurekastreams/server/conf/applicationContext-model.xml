@@ -28,9 +28,7 @@
 	</bean>
 
 	<bean id="descendantOrgStrategy"
-		class="org.eurekastreams.server.persistence.strategies.DescendantOrganizationStrategy">
-		<property name="queryOptimizer" ref="queryOptimizer" />
-	</bean>
+		class="org.eurekastreams.server.persistence.strategies.DescendantOrganizationStrategy" />
 
 	<bean id="entityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">

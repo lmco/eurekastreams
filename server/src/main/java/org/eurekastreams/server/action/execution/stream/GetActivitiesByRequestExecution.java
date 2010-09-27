@@ -124,24 +124,6 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
 
         final JSONObject query = request.getJSONObject("query");
 
-        // Shortcut
-        // Do not sort if we're not getting anything from Lucene.
-        // Memcached lists are already sorted by date.
-        if (query.containsKey("sortBy") && query.getString("sortBy").equals("date")
-                && (!query.containsKey("keywords") || query.getString("keywords").length() == 0))
-        {
-            log.debug("Sort by date with no Lucene query, removing");
-
-            query.remove("sortBy");
-
-            if (query.containsKey("keywords"))
-            {
-                query.remove("keywords");
-            }
-
-            request.put("query", query);
-        }
-
         if (!request.containsKey("count"))
         {
             request.put("count", MAXRESULTS);

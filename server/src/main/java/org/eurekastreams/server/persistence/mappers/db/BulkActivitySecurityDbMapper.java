@@ -15,14 +15,11 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.server.domain.stream.ActivitySecurityDTO;
-import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetStreamsByIds;
 
 /**
  * Maps activity security information from the DB.
@@ -31,46 +28,18 @@ public class BulkActivitySecurityDbMapper extends BaseArgDomainMapper<List<Long>
         DomainMapper<List<Long>, List<ActivitySecurityDTO>>
 {
     /**
-     * The stream mapper.
-     */
-    private GetStreamsByIds streamMapper;
-
-    /**
-     * @param inStreamMapper
-     *            the streamMapper to set
-     */
-    public void setStreamMapper(final GetStreamsByIds inStreamMapper)
-    {
-        streamMapper = inStreamMapper;
-    }
-
-    /**
      * @param inRequest
      *            the request of activity IDs..
      * @return security information for the activites in the request.
      */
+    @SuppressWarnings("unchecked")
     public List<ActivitySecurityDTO> execute(final List<Long> inRequest)
     {
         String q = "select new org.eurekastreams.server.domain.stream.ActivitySecurityDTO "
-                + "(id, recipientStreamScope.id, isDestinationStreamPublic) "
+                + "(id, recipientStreamScope.destinationEntityId, isDestinationStreamPublic) "
                 + "from Activity where id in (:activityIds)";
 
-        List<ActivitySecurityDTO> results = getEntityManager().createQuery(q).setParameter("activityIds", inRequest)
-                .getResultList();
-
-        for (ActivitySecurityDTO activitySec : results)
-        {
-            // fills in data from cached view of stream
-            List<Long> streamIds = new ArrayList<Long>();
-            streamIds.add(activitySec.getDestinationStreamId());
-            List<StreamScope> streams = streamMapper.execute(streamIds);
-            if (streams.size() > 0)
-            {
-                activitySec.setDestinationEntityId(streams.get(0).getDestinationEntityId());
-            }
-        }
-
-        return results;
+        return getEntityManager().createQuery(q).setParameter("activityIds", inRequest).getResultList();
     }
 
 }

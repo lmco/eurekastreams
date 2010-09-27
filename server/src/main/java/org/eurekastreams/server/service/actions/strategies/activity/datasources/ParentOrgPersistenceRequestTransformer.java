@@ -43,7 +43,7 @@ public class ParentOrgPersistenceRequestTransformer implements PersistenceDataSo
 
     /**
      * Transofrm the request.
-     * 
+     *
      * @param request
      *            JSON request.
      * @param userEntityId
@@ -52,6 +52,6 @@ public class ParentOrgPersistenceRequestTransformer implements PersistenceDataSo
      */
     public Serializable transform(final JSONObject request, final Long userEntityId)
     {
-        return personMapper.fetchUniqueResult(request.getString("parentOrg")).getParentOrganizationId();
+        return personMapper.fetchUniqueResult(request.getString("parentOrg")).getParentOrganizationShortName();
     }
 }

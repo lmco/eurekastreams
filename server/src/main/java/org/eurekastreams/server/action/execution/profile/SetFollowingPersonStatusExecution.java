@@ -25,18 +25,13 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.commons.server.NoCurrentUserDetails;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
-import org.eurekastreams.server.action.request.stream.RefreshCachedCompositeStreamRequest;
 import org.eurekastreams.server.persistence.PersonMapper;
-import org.eurekastreams.server.persistence.mappers.GetFollowedStreamViewByUser;
 import org.eurekastreams.server.persistence.mappers.cache.AddCachedPersonFollower;
-import org.eurekastreams.server.persistence.mappers.cache.RemoveCachedActivitiesFromList;
 import org.eurekastreams.server.persistence.mappers.cache.RemoveCachedPersonFollower;
-import org.eurekastreams.server.persistence.mappers.requests.RemoveCachedActivitiesFromListRequest;
 import org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -78,17 +73,6 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
     private final GetFollowerIds followerIdsMapper;
 
     /**
-     * Local instance of the cache mapper for removing all activities of the newly unfollowed users from the following
-     * activities list in cache.
-     */
-    private final RemoveCachedActivitiesFromList removeCachedActivitiesMapper;
-
-    /**
-     * Local instance of the db mapper that retrieves the followed composite stream (streamview) id.
-     */
-    private final GetFollowedStreamViewByUser followedStreamViewMapper;
-
-    /**
      * Constructor for the FollowingPersonStrategy.
      *
      * @param inMapper
@@ -101,24 +85,16 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
      *            - instance of RemoveCachedPersonFollower mapper.
      * @param inFollowerIdsMapper
      *            - instance of GetFollowerIds mapper.
-     * @param inRemoveCachedActivitiesMapper
-     *            - instance of the RemoveCachedActivitiesFromList mapper.
-     * @param inFollowedStreamViewMapper
-     *            - instance of the GetFollowedStreamViewByUser mapper.
      */
     public SetFollowingPersonStatusExecution(final PersonMapper inMapper,
             final GetPeopleByAccountIds inCachedPersonMapper, final AddCachedPersonFollower inAddCachedFollowerMapper,
-            final RemoveCachedPersonFollower inRemoveCachedFollowerMapper, final GetFollowerIds inFollowerIdsMapper,
-            final RemoveCachedActivitiesFromList inRemoveCachedActivitiesMapper,
-            final GetFollowedStreamViewByUser inFollowedStreamViewMapper)
+            final RemoveCachedPersonFollower inRemoveCachedFollowerMapper, final GetFollowerIds inFollowerIdsMapper)
     {
         mapper = inMapper;
         cachedPersonMapper = inCachedPersonMapper;
         addCachedFollowerMapper = inAddCachedFollowerMapper;
         removeCachedFollowerMapper = inRemoveCachedFollowerMapper;
         followerIdsMapper = inFollowerIdsMapper;
-        removeCachedActivitiesMapper = inRemoveCachedActivitiesMapper;
-        followedStreamViewMapper = inFollowedStreamViewMapper;
     }
 
     /**
@@ -145,13 +121,6 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
 
         PersonModelView targetResult = cachedPersonMapper.fetchUniqueResult(request.getTargetUniqueId());
 
-        Long compositeStreamId = followedStreamViewMapper.execute(followerResult.getEntityId());
-        if (logger.isDebugEnabled())
-        {
-            logger.debug("Retrieved the compositeStreamId: " + compositeStreamId
-                    + " for the list of following activities");
-        }
-
         switch (request.getFollowerStatus())
         {
         case FOLLOWING:
@@ -161,10 +130,10 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
 
             logger.trace("Submit async action to update all cached activities.");
             // Post an async action to update the cache with the rest of the followers.
-            RefreshCachedCompositeStreamRequest actionRequest = new RefreshCachedCompositeStreamRequest(
-                    compositeStreamId, followerResult.getEntityId());
-            currentRequests.add(new UserActionRequest("refreshCachedFollowingCompositeStreamAction",
-                    new NoCurrentUserDetails(), actionRequest));
+
+            // TODO:
+            // currentRequests.add(new UserActionRequest("refreshCachedFollowingCompositeStreamAction",
+            // new NoCurrentUserDetails(), actionRequest));
 
             // queues up new follower notifications.
             currentRequests.add(new UserActionRequest("createNotificationsAction", null,
@@ -178,11 +147,8 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
 
             removeCachedFollowerMapper.execute(followerResult.getEntityId(), targetResult.getEntityId());
 
-            // Update the cache list of followers' activities by removing the activities for the
+            // TODO: Update the cache list of followers' activities by removing the activities for the
             // entity being unfollowed.
-            RemoveCachedActivitiesFromListRequest removeRequest = new RemoveCachedActivitiesFromListRequest(
-                    compositeStreamId, followerResult.getEntityId(), targetResult.getEntityId());
-            removeCachedActivitiesMapper.execute(removeRequest);
 
             break;
         default:

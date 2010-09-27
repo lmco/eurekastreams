@@ -29,6 +29,7 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 
+
 /**
  * Tests the org activity ids DB mapper.
  */
@@ -73,20 +74,24 @@ public class OrgActivityIdsDbMapperTest extends MapperTest
     public void testWithChildren()
     {
         final long orgId = 5L;
+        final String orgShortName = "tstorgname";
 
         final String children = "6,7";
 
         context.checking(new Expectations()
         {
             {
+                oneOf(descendantOrganizationStrategy).getOrgIdByShortName(orgShortName);
+                will(returnValue(orgId));
+
                 oneOf(descendantOrganizationStrategy).getDescendantOrganizationIdsForJpql(with(equal(orgId)),
                         with(any(HashMap.class)));
                 will(returnValue(children));
             }
         });
 
-        List<Long> results = sut.execute(orgId);
-        
+        List<Long> results = sut.execute(orgShortName);
+
         Assert.assertEquals(5, results.size());
 
         context.assertIsSatisfied();
@@ -99,22 +104,26 @@ public class OrgActivityIdsDbMapperTest extends MapperTest
     public void testWithoutChildren()
     {
         final long orgId = 5L;
+        final String orgShortName = "tstorgname";
 
         final String children = "";
 
         context.checking(new Expectations()
         {
             {
+                oneOf(descendantOrganizationStrategy).getOrgIdByShortName(orgShortName);
+                will(returnValue(orgId));
+
                 oneOf(descendantOrganizationStrategy).getDescendantOrganizationIdsForJpql(with(equal(orgId)),
                         with(any(HashMap.class)));
                 will(returnValue(children));
             }
         });
 
-        List<Long> results = sut.execute(orgId);
+        List<Long> results = sut.execute(orgShortName);
 
         Assert.assertEquals(2, results.size());
-        
+
         context.assertIsSatisfied();
     }
 }

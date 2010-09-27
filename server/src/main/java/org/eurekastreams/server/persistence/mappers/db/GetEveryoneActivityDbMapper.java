@@ -33,6 +33,13 @@ public class GetEveryoneActivityDbMapper extends BaseDomainMapper implements Dom
      */
     private static final int MAX_RESULTS = 10000;
 
+    /**
+     * Get the activity ids for all people.
+     *
+     * @param inRequest
+     *            ignored
+     * @return the most recent MAX_RESULTS activity ids
+     */
     @Override
     public List<Long> execute(final Long inRequest)
     {

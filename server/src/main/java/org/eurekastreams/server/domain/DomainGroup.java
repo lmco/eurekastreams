@@ -45,7 +45,6 @@ import org.eurekastreams.commons.model.DomainEntity;
 import org.eurekastreams.commons.search.analysis.HtmlStemmerAnalyzer;
 import org.eurekastreams.commons.search.analysis.TextStemmerAnalyzer;
 import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.domain.stream.StreamView;
 import org.eurekastreams.server.search.bridge.BackgroundItemListStringBridge;
 import org.eurekastreams.server.search.bridge.DomainGroupPeopleIdClassBridge;
 import org.eurekastreams.server.search.bridge.OrgIdHierarchyFieldBridge;
@@ -312,14 +311,6 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      */
     @Transient
     private Long bannerEntityId;
-
-    /**
-     * Stream view for a group.
-     */
-    // TODO make this non-nullable when create group strat. is updated.
-    @OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
-    @JoinColumn(name = "entityStreamViewId")
-    private StreamView entityStreamView;
 
     /**
      * Stream scope representing this group.
@@ -836,23 +827,6 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     public Date getDateAdded()
     {
         return dateAdded;
-    }
-
-    /**
-     * @return the entityStreamView
-     */
-    public StreamView getEntityStreamView()
-    {
-        return entityStreamView;
-    }
-
-    /**
-     * @param inEntityStreamView
-     *            the entityStreamView to set
-     */
-    public void setEntityStreamView(final StreamView inEntityStreamView)
-    {
-        this.entityStreamView = inEntityStreamView;
     }
 
     /**

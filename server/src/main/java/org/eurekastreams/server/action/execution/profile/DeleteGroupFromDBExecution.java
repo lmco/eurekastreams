@@ -47,7 +47,7 @@ import org.eurekastreams.server.persistence.mappers.requests.DeleteGroupResponse
 /**
  * Execution strategy for deleting a group and associated objects from database, and creating the UserActionRequests to
  * clean up cache and search index.
- * 
+ *
  */
 public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<ActionContext>
 {
@@ -83,7 +83,7 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
 
     /**
      * Constructor.
-     * 
+     *
      * @param inDeleteGroupActivityDAO
      *            {@link DeleteGroupActivity}.
      * @param inRemoveGroupFollowersDAO
@@ -108,7 +108,7 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
 
     /**
      * Deleting a group and associated objects from database.
-     * 
+     *
      * @param inActionContext
      *            {@link TaskHandlerActionContext}.
      * @return True if successful.
@@ -228,10 +228,6 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
         ? deleteActivityResponse.getActivityIds().subList(0, maxCacheListSize - 1)
                 : deleteActivityResponse.getActivityIds();
 
-        // create tasks (1/key) to remove activity ids from compositeStreams that contained the group's stream.
-        generateRemoveIdsFromListTasks(createKeys(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM, deleteGroupResponse
-                .getCompositeStreamsidsContainingGroupStream()), cachedActivityIds, inActionContext);
-
         if (log.isDebugEnabled())
         {
             endSize = inActionContext.getUserActionRequests().size();
@@ -296,7 +292,7 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
 
     /**
      * Queues UserActionRequest for deleteActivitiesFromLists actions. Queues a task for each key passed in.
-     * 
+     *
      * @param keys
      *            Cache keys to remove ids from
      * @param values
@@ -318,7 +314,7 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
 
     /**
      * Queues UserActionRequest for deleteFromSearchIndex actions.
-     * 
+     *
      * @param clazz
      *            Class of item to remove.
      * @param ids
@@ -338,7 +334,7 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
 
     /**
      * Queues Single UserActionRequest for deleteKeysFromCache action.
-     * 
+     *
      * @param keys
      *            keys to delete from cache.
      * @param inActionContext
@@ -353,7 +349,7 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
 
     /**
      * Queues UserActionRequest for deleteKeysFromCache action, one for each key.
-     * 
+     *
      * @param keys
      *            keys to delete from cache.
      * @param inActionContext
@@ -375,7 +371,7 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
     /**
      * Utility method for converting Map of personid/starred activity ids to tasks to update the users'
      * CacheKeys.STARRED_BY_PERSON_ID lists in cache.
-     * 
+     *
      * @param inDeleteActivityResponse
      *            {@link BulkActivityDeleteResponse} containing Map.
      * @param inActionContext
@@ -397,7 +393,7 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
 
     /**
      * Generate keys to delete from cache as a result of deleting a group.
-     * 
+     *
      * @param inRequest
      *            {@link DeleteGroupCacheUpdateRequest}.
      * @return Keys to delete from cache as a result of deleting a group.
@@ -416,21 +412,12 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
         // remove coordinator ids list for group.
         keysToPurgeFromCache.add(CacheKeys.COORDINATOR_PERSON_IDS_BY_GROUP_ID + inRequest.getGroupId());
 
-        // remove group composite stream from cache.
-        keysToPurgeFromCache.add(CacheKeys.COMPOSITE_STREAM_BY_ID + inRequest.getStreamViewId());
-
-        // remove group stream from cache.
-        keysToPurgeFromCache.add(CacheKeys.STREAM_BY_ID + inRequest.getStreamScopeId());
-
-        // remove list of activities for group's composite stream from cache
-        keysToPurgeFromCache.add(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + inRequest.getStreamViewId());
-
         return keysToPurgeFromCache;
     }
 
     /**
      * Generate cacheKeys.
-     * 
+     *
      * @param keyRoot
      *            Root of key.
      * @param inIds

@@ -26,16 +26,14 @@ import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
  */
 public class GetEveryoneActivityCacheMapper extends CachedDomainMapper implements DomainMapper<Long, List<Long>>
 {
-
     /**
      * Get all the activities.
-     * @param inRequest the everyone stream ID.
+     * @param inRequest ignored
      * @return the IDs.
      */
     @Override
     public List<Long> execute(final Long inRequest)
     {
-        return getCache().getList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + inRequest);
+        return getCache().getList("TODO");
     }
-
 }

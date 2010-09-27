@@ -19,32 +19,14 @@ import java.io.Serializable;
 
 import net.sf.json.JSONObject;
 
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames;
-
 /**
  * Transforms an org request.
  */
 public class OrgPersistenceRequestTransformer implements PersistenceDataSourceRequestTransformer
 {
     /**
-     * Org mapper for getting ID from short name.
-     */
-    private GetOrganizationsByShortNames bulkOrgMapper;
-
-    /**
-     * Constructor.
-     * 
-     * @param inBulkOrgMapperMapper
-     *            bulk org mapper.
-     */
-    public OrgPersistenceRequestTransformer(final GetOrganizationsByShortNames inBulkOrgMapperMapper)
-    {
-        bulkOrgMapper = inBulkOrgMapperMapper;
-    }
-
-    /**
-     * Transofrm the request.
-     * 
+     * Transofrm the request by just returning what was passed in - the short name.
+     *
      * @param request
      *            JSON request.
      * @param userEntityId
@@ -53,6 +35,6 @@ public class OrgPersistenceRequestTransformer implements PersistenceDataSourceRe
      */
     public Serializable transform(final JSONObject request, final Long userEntityId)
     {
-        return bulkOrgMapper.fetchId(request.getString("organization"));
+        return request.getString("organization");
     }
 }

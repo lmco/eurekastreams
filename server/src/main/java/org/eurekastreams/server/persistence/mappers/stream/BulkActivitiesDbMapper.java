@@ -27,8 +27,6 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.factories.ActivityDTOFactory;
@@ -52,11 +50,6 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
     private static Log log = LogFactory.make();
 
     /**
-     * Mapper to get stream info.
-     */
-    private GetStreamsByIds streamMapper;
-
-    /**
      * Mapper to get person info.
      */
     private GetPeopleByAccountIds peopleMapper;
@@ -77,8 +70,6 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
     private GetCommentsById commentsByIdDAO;
 
     /**
-     * @param inStreamMapper
-     *            the stream mapper.
      * @param inPeopleMapper
      *            the people mapper.
      * @param inGroupMapper
@@ -88,11 +79,10 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
      * @param inCommentsByIdDAO
      *            comments by ID DAO.
      */
-    public BulkActivitiesDbMapper(final GetStreamsByIds inStreamMapper, final GetPeopleByAccountIds inPeopleMapper,
+    public BulkActivitiesDbMapper(final GetPeopleByAccountIds inPeopleMapper,
             final GetDomainGroupsByShortNames inGroupMapper, final GetOrderedCommentIdsByActivityId inCommentIdListDAO,
             final GetCommentsById inCommentsByIdDAO)
     {
-        streamMapper = inStreamMapper;
         peopleMapper = inPeopleMapper;
         groupMapper = inGroupMapper;
         commentIdListDAO = inCommentIdListDAO;
@@ -102,7 +92,7 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
     /**
      * Looks in cache for the necessary activity DTOs and returns them if found. Otherwise, makes a database call, puts
      * them in cache, and returns them.
-     * 
+     *
      * @param activityIds
      *            the list of ids that should be found.
      * @return list of ActivityDTO objects.
@@ -116,7 +106,10 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
         fields.add(getColumn("verb"));
         fields.add(getColumn("baseObjectType"));
         fields.add(Projections.property("baseObject").as("baseObjectProperties"));
-        fields.add(Projections.property("recipientStreamScope.id").as("destinationStreamId"));
+        fields.add(Projections.property("recipStreamScope.destinationEntityId").as("destinationStreamEntityId"));
+        fields.add(Projections.property("recipStreamScope.id").as("destinationStreamScopeId"));
+        fields.add(Projections.property("recipStreamScope.scopeType").as("destinationStreamScopeType"));
+        fields.add(Projections.property("recipStreamScope.uniqueKey").as("destinationStreamUniqueKey"));
         fields.add(Projections.property("recipientParentOrg.id").as("recipientParentOrgId"));
         fields.add(getColumn("isDestinationStreamPublic"));
         fields.add(getColumn("actorType"));
@@ -130,6 +123,7 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
         fields.add(getColumn("appId"));
         fields.add(getColumn("appSource"));
         fields.add(getColumn("appName"));
+        criteria.createAlias("recipientStreamScope", "recipStreamScope");
         criteria.setProjection(fields);
         criteria.add(Restrictions.in("this.id", activityIds));
 
@@ -146,22 +140,25 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
             // fills in data from cached view of stream
             List<Long> streamIds = new ArrayList<Long>();
             streamIds.add(activity.getDestinationStream().getId());
-            List<StreamScope> streams = streamMapper.execute(streamIds);
-            if (streams.size() > 0)
-            {
-                activity.getDestinationStream().setDisplayName(streams.get(0).getDisplayName());
-                activity.getDestinationStream().setUniqueIdentifier(streams.get(0).getUniqueKey());
-                activity.getDestinationStream().setDestinationEntityId(streams.get(0).getDestinationEntityId());
 
-                if (streams.get(0).getScopeType() == ScopeType.PERSON)
+            // get the display name for the destination stream
+            if (activity.getDestinationStream().getUniqueIdentifier() != null)
+            {
+                if (activity.getDestinationStream().getType() == EntityType.PERSON)
                 {
-                    activity.getDestinationStream().setType(EntityType.PERSON);
+                    PersonModelView person = peopleMapper.fetchUniqueResult(activity.getDestinationStream()
+                            .getUniqueIdentifier());
+                    activity.getDestinationStream().setDisplayName(person.getDisplayName());
+
                 }
-                else if (streams.get(0).getScopeType() == ScopeType.GROUP)
+                else if (activity.getDestinationStream().getType() == EntityType.GROUP)
                 {
-                    activity.getDestinationStream().setType(EntityType.GROUP);
+                    DomainGroupModelView group = groupMapper.fetchUniqueResult(activity.getDestinationStream()
+                            .getUniqueIdentifier());
+                    activity.getDestinationStream().setDisplayName(group.getName());
                 }
             }
+
             if (activity.getActor().getType() == EntityType.PERSON)
             {
                 List<String> peopleIds = new ArrayList<String>();
@@ -218,7 +215,7 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
 
     /**
      * Load the first/last comments of an activity if present, also sets the comment count.
-     * 
+     *
      * @param activity
      *            ActivityDTO to load comment info for.
      */

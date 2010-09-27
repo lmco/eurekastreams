@@ -44,12 +44,6 @@ public class DeleteActivityCacheUpdateTest extends CachedMapperTest
     private Cache cache;
 
     /**
-     * CompositeStreamActivityIds DAO.
-     */
-    @Autowired
-    private CompositeStreamActivityIdsMapper compositeStreamActivityIdsDAO;
-
-    /**
      * StarredActivity DAO.
      */
     @Autowired
@@ -114,9 +108,9 @@ public class DeleteActivityCacheUpdateTest extends CachedMapperTest
 
         List<ActivityDTO> activityList =
             activityByIdDAO.execute(Arrays.asList(activityId));
-        
+
         assertEquals(1, activityList.size());
-        
+
         ActivityDTO activity = activityList.get(0);
         assertNotNull(activity);
 
@@ -132,14 +126,6 @@ public class DeleteActivityCacheUpdateTest extends CachedMapperTest
         assertNotNull(sut.execute(
                 new DeleteActivityCacheUpdateRequest(
                         activity, commentIds, personIdsWithStarredActivity)));
-
-        List<Long> activityIds =
-            cache.getList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + simthersCompStreamId);
-        assertEquals(1, activityIds.size());
-
-        List<Long> customActivityIds =
-            cache.getList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + customCompStreamId);
-        assertEquals(1, customActivityIds.size());
 
         List<Long> starredActivityIds =
             cache.getList(CacheKeys.STARRED_BY_PERSON_ID + mrburnsId);
@@ -171,16 +157,6 @@ public class DeleteActivityCacheUpdateTest extends CachedMapperTest
         //verify delete activity from DB.
         assertEquals(1, getEntityManager().createQuery("FROM Activity WHERE id = :activityId")
             .setParameter("activityId", activityId).getResultList().size());
-
-        compositeStreamActivityIdsDAO.execute(simthersCompStreamId, smithersId);
-        List<Long> activityIds =
-            cache.getList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + simthersCompStreamId);
-        assertEquals(2, activityIds.size());
-
-        compositeStreamActivityIdsDAO.execute(customCompStreamId, smithersId);
-        List<Long> customActivityIds =
-            cache.getList(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + customCompStreamId);
-        assertEquals(2, customActivityIds.size());
 
         starredActivityIdDAO.execute(mrburnsId);
         List<Long> starredActivityIds =

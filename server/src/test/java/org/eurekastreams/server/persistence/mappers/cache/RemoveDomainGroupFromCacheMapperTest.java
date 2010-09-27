@@ -68,7 +68,6 @@ public class RemoveDomainGroupFromCacheMapperTest
 
                 oneOf(cache).delete(CacheKeys.GROUP_BY_ID + groupId);
                 oneOf(cache).delete(CacheKeys.FOLLOWERS_BY_GROUP + groupId);
-                oneOf(cache).delete(CacheKeys.STREAM_BY_ID + scopeId);
             }
         });
 

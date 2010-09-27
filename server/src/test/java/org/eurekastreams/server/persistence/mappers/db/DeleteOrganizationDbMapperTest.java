@@ -65,7 +65,6 @@ public class DeleteOrganizationDbMapperTest extends MapperTest
                 .setParameter("orgId", orgId).getSingleResult();
 
         Long streamScopeId = org.getStreamScope().getId();
-        Long streamViewId = org.getEntityStreamView().getId();
 
         sut.execute(orgId);
 
@@ -79,9 +78,5 @@ public class DeleteOrganizationDbMapperTest extends MapperTest
         // assert streamScope is gone
         assertEquals(0, getEntityManager().createQuery("From StreamScope where id = :streamScopeId").setParameter(
                 "streamScopeId", streamScopeId).getResultList().size());
-
-        // assert streamView is gone
-        assertEquals(0, getEntityManager().createQuery("From StreamView where id = :streamViewId").setParameter(
-                "streamViewId", streamViewId).getResultList().size());
     }
 }
