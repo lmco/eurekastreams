@@ -16,6 +16,7 @@
 package org.eurekastreams.server.action.execution.notification.translator;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -163,4 +164,55 @@ public class GroupCommentTranslatorTest
         assertEquals(2, results.size());
         context.assertIsSatisfied();
     }
+
+    /**
+     * Test the translator.
+     */
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testTranslateCommentNotFound()
+    {
+        sut = new GroupCommentTranslator(commentorsMapper, activitiesMapper, coordinatorsMapper, commentsMapper);
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(commentsMapper).execute(Collections.singletonList(COMMENT_ID));
+                will(returnValue(Collections.EMPTY_LIST));
+            }
+        });
+
+        Collection<NotificationDTO> results = sut.translate(ACTOR_ID, DESTINATION_ID, COMMENT_ID);
+        context.assertIsSatisfied();
+        assertTrue(results.isEmpty());
+    }
+
+    /**
+     * Test the translator.
+     */
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testTranslateActivityNotFound()
+    {
+        sut = new GroupCommentTranslator(commentorsMapper, activitiesMapper, coordinatorsMapper, commentsMapper);
+
+        final CommentDTO comment = new CommentDTO();
+        comment.setActivityId(ACTIVITY_ID);
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(commentsMapper).execute(Collections.singletonList(COMMENT_ID));
+                will(returnValue(Collections.singletonList(comment)));
+
+                oneOf(activitiesMapper).execute(ACTIVITY_ID, null);
+                will(returnValue(null));
+            }
+        });
+
+        Collection<NotificationDTO> results = sut.translate(ACTOR_ID, DESTINATION_ID, COMMENT_ID);
+        context.assertIsSatisfied();
+        assertTrue(results.isEmpty());
+    }
+
 }

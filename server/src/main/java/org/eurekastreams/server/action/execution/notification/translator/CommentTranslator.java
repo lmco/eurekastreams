@@ -86,58 +86,57 @@ public class CommentTranslator implements NotificationTranslator
             return Collections.EMPTY_LIST;
         }
         long activityId = commentList.get(0).getActivityId();
+        ActivityDTO activity = activitiesMapper.execute(activityId, null);
+        if (activity == null)
+        {
+            return Collections.EMPTY_LIST;
+        }
+
+        Map<NotificationType, List<Long>> recipients = new HashMap<NotificationType, List<Long>>();
+
+        // Adds post author as recipient
+        long postAuthor = activity.getActor().getId();
+        if (postAuthor != inActorId)
+        {
+            recipients.put(NotificationType.COMMENT_TO_PERSONAL_POST, Collections.singletonList(postAuthor));
+        }
+
+        // Adds stream owner as a recipient
+        if (inDestinationId != postAuthor && inDestinationId != inActorId)
+        {
+            recipients.put(NotificationType.COMMENT_TO_PERSONAL_STREAM, Collections.singletonList(inDestinationId));
+        }
+
+        // Adds recipient who previously commented on this post
+        List<Long> commentToCommentedRecipients = new ArrayList<Long>();
+        for (long commentorId : commentorsMapper.execute(activityId))
+        {
+            if (commentorId != postAuthor && commentorId != inDestinationId && commentorId != inActorId)
+            {
+                commentToCommentedRecipients.add(commentorId);
+
+                // this recipient list will keep replacing the old value in the map when new recipients are found
+                recipients.put(NotificationType.COMMENT_TO_COMMENTED_POST, commentToCommentedRecipients);
+            }
+        }
 
         List<NotificationDTO> notifications = new ArrayList<NotificationDTO>();
 
-        ActivityDTO activity = activitiesMapper.execute(activityId, null);
-        if (activity != null)
+        for (NotificationType notificationType : recipients.keySet())
         {
-            Map<NotificationType, List<Long>> recipients = new HashMap<NotificationType, List<Long>>();
-
-            // Adds post author as recipient
-            long postAuthor = activity.getActor().getId();
-            if (postAuthor != inActorId)
+            NotificationDTO notif = new NotificationDTO(recipients.get(notificationType), notificationType, inActorId);
+            notif.setActivity(activityId, activity.getBaseObjectType());
+            StreamEntityDTO dest = activity.getDestinationStream();
+            notif.setDestination(dest.getId(), dest.getType(), dest.getUniqueIdentifier(), dest.getDisplayName());
+            notif.setCommentId(inCommentId);
+            if (notif.getType().equals(NotificationType.COMMENT_TO_COMMENTED_POST))
             {
-                recipients.put(NotificationType.COMMENT_TO_PERSONAL_POST, Collections.singletonList(postAuthor));
+                StreamEntityDTO author = activity.getActor();
+                notif.setAuxiliary(author.getType(), author.getUniqueIdentifier(), author.getDisplayName());
             }
-
-            // Adds stream owner as a recipient
-            if (inDestinationId != postAuthor && inDestinationId != inActorId)
-            {
-                recipients
-                        .put(NotificationType.COMMENT_TO_PERSONAL_STREAM, Collections.singletonList(inDestinationId));
-            }
-
-            // Adds recipient who previously commented on this post
-            List<Long> commentToCommentedRecipients = new ArrayList<Long>();
-            for (long commentorId : commentorsMapper.execute(activityId))
-            {
-                if (commentorId != postAuthor && commentorId != inDestinationId && commentorId != inActorId)
-                {
-                    commentToCommentedRecipients.add(commentorId);
-
-                    // this recipient list will keep replacing the old value in the map when new recipients are found
-                    recipients.put(NotificationType.COMMENT_TO_COMMENTED_POST, commentToCommentedRecipients);
-                }
-            }
-
-            for (NotificationType notificationType : recipients.keySet())
-            {
-                NotificationDTO notif =
-                        new NotificationDTO(recipients.get(notificationType), notificationType, inActorId);
-                notif.setActivity(activityId, activity.getBaseObjectType());
-                StreamEntityDTO dest = activity.getDestinationStream();
-                notif.setDestination(dest.getId(), dest.getType(), dest.getUniqueIdentifier(), dest.getDisplayName());
-                notif.setCommentId(inCommentId);
-                if (notif.getType().equals(NotificationType.COMMENT_TO_COMMENTED_POST))
-                {
-                    StreamEntityDTO author = activity.getActor();
-                    notif.setAuxiliary(author.getType(), author.getUniqueIdentifier(), author.getDisplayName());
-                }
-                notifications.add(notif);
-            }
-
+            notifications.add(notif);
         }
+
         return notifications;
     }
 
