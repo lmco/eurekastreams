@@ -26,9 +26,11 @@ import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetCommentorIdsByActivityId;
 import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetCoordinatorIdsByGroupId;
+import org.eurekastreams.server.search.modelview.CommentDTO;
 
 /**
  * Translates the event of someone commenting on a post to appropriate notifications.
@@ -50,42 +52,57 @@ public class GroupCommentTranslator implements NotificationTranslator
      */
     private GetCoordinatorIdsByGroupId coordinatorMapper;
 
+    /** Mapper to get the comment. */
+    private DomainMapper<List<Long>, List<CommentDTO>> commentsMapper;
+
     /**
      * Constructor.
-     *
+     * 
      * @param inCommentorsMapper
      *            commentors mapper to set.
      * @param inActivitiesMapper
      *            activities mapper to set.
      * @param inCoordinatorMapper
      *            coordinator mapper to set.
+     * @param inCommentsMapper
+     *            Mapper to get the comment.
      */
     public GroupCommentTranslator(final GetCommentorIdsByActivityId inCommentorsMapper,
-            final BulkActivitiesMapper inActivitiesMapper, final GetCoordinatorIdsByGroupId inCoordinatorMapper)
+            final BulkActivitiesMapper inActivitiesMapper, final GetCoordinatorIdsByGroupId inCoordinatorMapper,
+            final DomainMapper<List<Long>, List<CommentDTO>> inCommentsMapper)
     {
         commentorsMapper = inCommentorsMapper;
         activitiesMapper = inActivitiesMapper;
         coordinatorMapper = inCoordinatorMapper;
+        commentsMapper = inCommentsMapper;
     }
 
     /**
      * Gets a list of people to notify when a new comment is added.
-     *
+     * 
      * @param inActorId
      *            ID of actor that made the comment.
      * @param inDestinationId
      *            ID of group whose stream contains the activity commented on.
-     * @param inActivityId
-     *            the activity id itself.
+     * @param inCommentId
+     *            the comment id.
      * @return List of notifications generated.
      */
     @Override
     public Collection<NotificationDTO> translate(final long inActorId, final long inDestinationId,
-            final long inActivityId)
+            final long inCommentId)
     {
+        // get activity ID from comment
+        List<CommentDTO> commentList = commentsMapper.execute(Collections.singletonList(inCommentId));
+        if (commentList.isEmpty())
+        {
+            return Collections.EMPTY_LIST;
+        }
+        long activityId = commentList.get(0).getActivityId();
+
         List<NotificationDTO> notifications = new ArrayList<NotificationDTO>();
 
-        ActivityDTO activity = activitiesMapper.execute(inActivityId, null);
+        ActivityDTO activity = activitiesMapper.execute(activityId, null);
         if (activity != null)
         {
             Map<NotificationType, List<Long>> recipients = new HashMap<NotificationType, List<Long>>();
@@ -117,7 +134,7 @@ public class GroupCommentTranslator implements NotificationTranslator
 
             // Adds recipient who previously commented on this post
             List<Long> commentToCommentedRecipients = new ArrayList<Long>();
-            for (long commentorId : commentorsMapper.execute(inActivityId))
+            for (long commentorId : commentorsMapper.execute(activityId))
             {
                 if (commentorId != postAuthor && !coordinatorIds.contains(commentorId) && commentorId != inActorId)
                 {
@@ -132,9 +149,10 @@ public class GroupCommentTranslator implements NotificationTranslator
             {
                 NotificationDTO notif =
                         new NotificationDTO(recipients.get(notificationType), notificationType, inActorId);
-                notif.setActivity(inActivityId, activity.getBaseObjectType());
+                notif.setActivity(activityId, activity.getBaseObjectType());
                 StreamEntityDTO dest = activity.getDestinationStream();
                 notif.setDestination(dest.getId(), dest.getType(), dest.getUniqueIdentifier(), dest.getDisplayName());
+                notif.setCommentId(inCommentId);
                 if (notif.getType().equals(NotificationType.COMMENT_TO_COMMENTED_POST))
                 {
                     StreamEntityDTO author = activity.getActor();

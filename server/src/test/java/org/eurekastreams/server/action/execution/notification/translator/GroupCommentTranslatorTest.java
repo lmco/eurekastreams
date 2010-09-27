@@ -26,9 +26,11 @@ import java.util.List;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetCommentorIdsByActivityId;
 import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetCoordinatorIdsByGroupId;
+import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -57,6 +59,9 @@ public class GroupCommentTranslatorTest
     /** Mock activities mapper. */
     private GetCoordinatorIdsByGroupId coordinatorsMapper = context.mock(GetCoordinatorIdsByGroupId.class);
 
+    /** Mapper to get the comment. */
+    private DomainMapper<List<Long>, List<CommentDTO>> commentsMapper = context.mock(DomainMapper.class);
+
     /** System under test. */
     private GroupCommentTranslator sut;
 
@@ -73,6 +78,9 @@ public class GroupCommentTranslatorTest
     private static final long ACTIVITY_ID = 4444L;
 
     /** Test data. */
+    private static final long COMMENT_ID = 4545L;
+
+    /** Test data. */
     private static final long COMMENTOR = 5555L;
 
     /** Test data. */
@@ -85,7 +93,7 @@ public class GroupCommentTranslatorTest
     @SuppressWarnings("unchecked")
     public void testTranslateWithCoordinators()
     {
-        sut = new GroupCommentTranslator(commentorsMapper, activitiesMapper, coordinatorsMapper);
+        sut = new GroupCommentTranslator(commentorsMapper, activitiesMapper, coordinatorsMapper, commentsMapper);
 
         final StreamEntityDTO actor = new StreamEntityDTO();
         actor.setId(STREAM_OWNER_ID);
@@ -95,9 +103,15 @@ public class GroupCommentTranslatorTest
 
         final List<Long> coordinators = Arrays.asList(COORDINATOR_ID);
 
+        final CommentDTO comment = new CommentDTO();
+        comment.setActivityId(ACTIVITY_ID);
+
         context.checking(new Expectations()
         {
             {
+                oneOf(commentsMapper).execute(Collections.singletonList(COMMENT_ID));
+                will(returnValue(Collections.singletonList(comment)));
+
                 oneOf(coordinatorsMapper).execute(DESTINATION_ID);
                 will(returnValue(new ArrayList(coordinators)));
 
@@ -109,7 +123,7 @@ public class GroupCommentTranslatorTest
             }
         });
 
-        Collection<NotificationDTO> results = sut.translate(ACTOR_ID, DESTINATION_ID, ACTIVITY_ID);
+        Collection<NotificationDTO> results = sut.translate(ACTOR_ID, DESTINATION_ID, COMMENT_ID);
         assertEquals(3, results.size());
         context.assertIsSatisfied();
     }
@@ -120,7 +134,7 @@ public class GroupCommentTranslatorTest
     @Test
     public void testTranslateWithoutCoordinators()
     {
-        sut = new GroupCommentTranslator(commentorsMapper, activitiesMapper, null);
+        sut = new GroupCommentTranslator(commentorsMapper, activitiesMapper, null, commentsMapper);
 
         final StreamEntityDTO actor = new StreamEntityDTO();
         actor.setId(STREAM_OWNER_ID);
@@ -128,9 +142,15 @@ public class GroupCommentTranslatorTest
         final ActivityDTO activity = new ActivityDTO();
         activity.setActor(actor);
 
+        final CommentDTO comment = new CommentDTO();
+        comment.setActivityId(ACTIVITY_ID);
+
         context.checking(new Expectations()
         {
             {
+                oneOf(commentsMapper).execute(Collections.singletonList(COMMENT_ID));
+                will(returnValue(Collections.singletonList(comment)));
+
                 oneOf(activitiesMapper).execute(ACTIVITY_ID, null);
                 will(returnValue(activity));
 
@@ -139,7 +159,7 @@ public class GroupCommentTranslatorTest
             }
         });
 
-        Collection<NotificationDTO> results = sut.translate(ACTOR_ID, DESTINATION_ID, ACTIVITY_ID);
+        Collection<NotificationDTO> results = sut.translate(ACTOR_ID, DESTINATION_ID, COMMENT_ID);
         assertEquals(2, results.size());
         context.assertIsSatisfied();
     }

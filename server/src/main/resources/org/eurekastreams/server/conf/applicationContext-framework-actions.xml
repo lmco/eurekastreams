@@ -2735,52 +2735,67 @@
 							</bean>
 						</entry>
 						<entry key="COMMENT_TO_PERSONAL_STREAM">
-							<bean parent="baseTemplateEmailBuilder">
-								<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) commented on a $(activity.type) in your stream" />
+							<bean class="org.eurekastreams.server.action.execution.notification.CommentTemplateEmailBuilder">
+								<constructor-arg ref="getCommentsById" />
 								<constructor-arg>
-									<bean parent="baseResourceContentLoader">
-										<constructor-arg
-											value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_PERSONAL_STREAM.txt" />
-									</bean>
-								</constructor-arg>
-								<constructor-arg>
-									<bean parent="baseResourceContentLoader">
-										<constructor-arg
-											value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_PERSONAL_STREAM.html" />
+									<bean parent="baseTemplateEmailBuilder">
+										<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) commented on a $(activity.type) in your stream" />
+										<constructor-arg>
+											<bean parent="baseResourceContentLoader">
+												<constructor-arg
+													value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_PERSONAL_STREAM.txt" />
+											</bean>
+										</constructor-arg>
+										<constructor-arg>
+											<bean parent="baseResourceContentLoader">
+												<constructor-arg
+													value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_PERSONAL_STREAM.html" />
+											</bean>
+										</constructor-arg>
 									</bean>
 								</constructor-arg>
 							</bean>
 						</entry>
 						<entry key="COMMENT_TO_PERSONAL_POST">
-							<bean parent="baseTemplateEmailBuilder">
-								<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) commented on your $(activity.type)" />
+													<bean class="org.eurekastreams.server.action.execution.notification.CommentTemplateEmailBuilder">
+								<constructor-arg ref="getCommentsById" />
 								<constructor-arg>
-									<bean parent="baseResourceContentLoader">
-										<constructor-arg
-											value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_PERSONAL_POST.txt" />
-									</bean>
-								</constructor-arg>
-								<constructor-arg>
-									<bean parent="baseResourceContentLoader">
-										<constructor-arg
-											value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_PERSONAL_POST.html" />
+									<bean parent="baseTemplateEmailBuilder">
+										<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) commented on your $(activity.type)" />
+										<constructor-arg>
+											<bean parent="baseResourceContentLoader">
+												<constructor-arg
+													value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_PERSONAL_POST.txt" />
+											</bean>
+										</constructor-arg>
+										<constructor-arg>
+											<bean parent="baseResourceContentLoader">
+												<constructor-arg
+													value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_PERSONAL_POST.html" />
+											</bean>
+										</constructor-arg>
 									</bean>
 								</constructor-arg>
 							</bean>
 						</entry>
 						<entry key="COMMENT_TO_COMMENTED_POST">
-							<bean parent="baseTemplateEmailBuilder">
-								<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) also commented on $(aux.name)'s $(activity.type)" />
+							<bean class="org.eurekastreams.server.action.execution.notification.CommentTemplateEmailBuilder">
+								<constructor-arg ref="getCommentsById" />
 								<constructor-arg>
-									<bean parent="baseResourceContentLoader">
-										<constructor-arg
-											value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_COMMENTED_POST.txt" />
-									</bean>
-								</constructor-arg>
-								<constructor-arg>
-									<bean parent="baseResourceContentLoader">
-										<constructor-arg
-											value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_COMMENTED_POST.html" />
+									<bean parent="baseTemplateEmailBuilder">
+										<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) also commented on $(aux.name)'s $(activity.type)" />
+										<constructor-arg>
+											<bean parent="baseResourceContentLoader">
+												<constructor-arg
+													value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_COMMENTED_POST.txt" />
+											</bean>
+										</constructor-arg>
+										<constructor-arg>
+											<bean parent="baseResourceContentLoader">
+												<constructor-arg
+													value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_COMMENTED_POST.html" />
+											</bean>
+										</constructor-arg>
 									</bean>
 								</constructor-arg>
 							</bean>
@@ -2788,18 +2803,23 @@
 						<entry key="POST_TO_GROUP_STREAM" value-ref="postToGroupStreamNotificationEmailBuilder" />
 						<entry key="POST_TO_JOINED_GROUP" value-ref="postToGroupStreamNotificationEmailBuilder" />
 						<entry key="COMMENT_TO_GROUP_STREAM">
-							<bean parent="baseTemplateEmailBuilder">
-								<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) commented on a $(activity.type) in the $(dest.name) stream" />
+							<bean class="org.eurekastreams.server.action.execution.notification.CommentTemplateEmailBuilder">
+								<constructor-arg ref="getCommentsById" />
 								<constructor-arg>
-									<bean parent="baseResourceContentLoader">
-										<constructor-arg
-											value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_GROUP_STREAM.txt" />
-									</bean>
-								</constructor-arg>
-								<constructor-arg>
-									<bean parent="baseResourceContentLoader">
-										<constructor-arg
-											value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_GROUP_STREAM.html" />
+									<bean parent="baseTemplateEmailBuilder">
+										<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) commented on a $(activity.type) in the $(dest.name) stream" />
+										<constructor-arg>
+											<bean parent="baseResourceContentLoader">
+												<constructor-arg
+													value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_GROUP_STREAM.txt" />
+											</bean>
+										</constructor-arg>
+										<constructor-arg>
+											<bean parent="baseResourceContentLoader">
+												<constructor-arg
+													value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_GROUP_STREAM.html" />
+											</bean>
+										</constructor-arg>
 									</bean>
 								</constructor-arg>
 							</bean>
@@ -2898,6 +2918,7 @@
 			<bean class="org.eurekastreams.server.action.execution.notification.translator.CommentTranslator">
 				<constructor-arg ref="getCommentorIdsByActivityId" />
 				<constructor-arg ref="bulkActivitiesMapper" />
+				<constructor-arg ref="getCommentsById" />
 			</bean>
 		</entry>
 		<entry key="STREAM_POST">
@@ -2914,6 +2935,7 @@
 				<constructor-arg ref="bulkActivitiesMapper" />
 				<constructor-arg><null /></constructor-arg>
 				<!-- Replace above with <constructor-arg ref="getCoordinatorIdsByGroupId" /> to notify group coordinators when comments are posted to group streams. -->
+				<constructor-arg ref="getCommentsById" />
 			</bean>
 		</entry>
 		<entry key="GROUP_STREAM_POST">

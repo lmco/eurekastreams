@@ -19,12 +19,15 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetCommentorIdsByActivityId;
 import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
+import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -51,6 +54,9 @@ public class CommentTranslatorTest
     /** Mock activities mapper. */
     private BulkActivitiesMapper activitiesMapper = context.mock(BulkActivitiesMapper.class);
 
+    /** Mapper to get the comment. */
+    private DomainMapper<List<Long>, List<CommentDTO>> commentsMapper = context.mock(DomainMapper.class);
+
     /** System under test. */
     private CommentTranslator sut;
 
@@ -67,6 +73,9 @@ public class CommentTranslatorTest
     private static final long ACTIVITY_ID = 4444L;
 
     /** Test data. */
+    private static final long COMMENT_ID = 4545L;
+
+    /** Test data. */
     private static final long COMMENTOR = 5555L;
 
     /**
@@ -75,7 +84,7 @@ public class CommentTranslatorTest
     @Before
     public void setup()
     {
-        sut = new CommentTranslator(commentorsMapper, activitiesMapper);
+        sut = new CommentTranslator(commentorsMapper, activitiesMapper, commentsMapper);
     }
 
     /**
@@ -91,9 +100,15 @@ public class CommentTranslatorTest
         final ActivityDTO activity = new ActivityDTO();
         activity.setActor(actor);
 
+        final CommentDTO comment = new CommentDTO();
+        comment.setActivityId(ACTIVITY_ID);
+
         context.checking(new Expectations()
         {
             {
+                oneOf(commentsMapper).execute(Collections.singletonList(COMMENT_ID));
+                will(returnValue(Collections.singletonList(comment)));
+
                 oneOf(activitiesMapper).execute(ACTIVITY_ID, null);
                 will(returnValue(activity));
 
@@ -102,8 +117,9 @@ public class CommentTranslatorTest
             }
         });
 
-        Collection<NotificationDTO> results = sut.translate(ACTOR_ID, DESTINATION_ID, ACTIVITY_ID);
-        assertEquals(3, results.size());
+        Collection<NotificationDTO> results = sut.translate(ACTOR_ID, DESTINATION_ID, COMMENT_ID);
+
         context.assertIsSatisfied();
+        assertEquals(3, results.size());
     }
 }
