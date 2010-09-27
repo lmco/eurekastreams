@@ -17,6 +17,8 @@ package org.eurekastreams.server.persistence.mappers.cache;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
@@ -31,6 +33,11 @@ import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 public class SingleListValueCacheMapper<KeySuffixType, CachedValueType> extends CachedDomainMapper implements
         DomainMapper<KeySuffixType, List<CachedValueType>>
 {
+    /**
+     * Logger.
+     */
+    private final Log log = LogFactory.make();
+
     /**
      * Cache key suffix transformer.
      */
@@ -66,6 +73,7 @@ public class SingleListValueCacheMapper<KeySuffixType, CachedValueType> extends 
     public List<CachedValueType> execute(final KeySuffixType inKeySuffix)
     {
         String cacheKey = cacheKeyPrefix + keySuffixTransformer.transform(inKeySuffix);
+        log.trace("Looking for cache key: " + cacheKey + " from " + inKeySuffix);
         return (List<CachedValueType>) getCache().getList(cacheKey);
     }
 }

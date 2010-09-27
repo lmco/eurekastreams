@@ -167,6 +167,9 @@
 
 	<bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE"
 		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
+		
+	<bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.EVERYONE_ACTIVITY_IDS"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
 
 	<!--
 		Mapper that goes to cache for the popular hashtags for a stream.  If it exists, it checks how long ago it was generated. 
