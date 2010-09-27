@@ -329,7 +329,5 @@ public class RestrictedDomainGroup implements DomainGroupEntity, AvatarEntity
     @Override
     public void setBannerEntityId(final Long inBannerEntityId)
     {
-        // TODO Auto-generated method stub
-
     }
 }

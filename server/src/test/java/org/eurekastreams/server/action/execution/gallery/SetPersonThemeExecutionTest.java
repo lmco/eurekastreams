@@ -292,7 +292,6 @@ public class SetPersonThemeExecutionTest
             @Override
             public String getOpenSocialId()
             {
-                // TODO Auto-generated method stub
                 return null;
             }
 

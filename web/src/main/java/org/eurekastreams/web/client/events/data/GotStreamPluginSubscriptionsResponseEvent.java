@@ -35,7 +35,6 @@ public class GotStreamPluginSubscriptionsResponseEvent extends
 			final PluginAndFeedSubscriptionsResponse inResponse) 
 	{
 		super(inResponse);
-		// TODO Auto-generated constructor stub
 	}
 
 }

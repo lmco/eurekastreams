@@ -29,6 +29,5 @@ public class DeleteOrganizationBannerResponseEvent extends BaseDataResponseEvent
     public DeleteOrganizationBannerResponseEvent(final Bannerable inResponse)
     {
         super(inResponse);
-        // TODO Auto-generated constructor stub
     }
 }
