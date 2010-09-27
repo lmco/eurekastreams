@@ -202,8 +202,6 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
      */
     public void onError(final String errMessage)
     {
-        // TODO Auto-generated method stub
-
     }
 
     /**
@@ -211,8 +209,6 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
      */
     public void onSuccess()
     {
-        // TODO Auto-generated method stub
-
     }
 
 }

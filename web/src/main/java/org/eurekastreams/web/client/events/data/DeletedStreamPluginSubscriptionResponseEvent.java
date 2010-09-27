@@ -32,7 +32,6 @@ public class DeletedStreamPluginSubscriptionResponseEvent extends BaseDataRespon
 	public DeletedStreamPluginSubscriptionResponseEvent(final Boolean inResponse) 
 	{
 		super(inResponse);
-		// TODO Auto-generated constructor stub
 	}
 
 }

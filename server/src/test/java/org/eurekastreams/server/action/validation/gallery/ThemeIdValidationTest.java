@@ -149,7 +149,6 @@ public class ThemeIdValidationTest
             @Override
             public String getOpenSocialId()
             {
-                // TODO Auto-generated method stub
                 return null;
             }
 

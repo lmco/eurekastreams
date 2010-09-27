@@ -71,7 +71,6 @@ public class BannerableDTO implements Bannerable
     @Override
     public Long getBannerEntityId()
     {
-        // TODO Auto-generated method stub
         return entityId;
     }
 
