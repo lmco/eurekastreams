@@ -255,7 +255,8 @@
         <constructor-arg value="true" />   
     </bean>
     
-    <!-- Delete old StreamHashTag records older than the configurable value -->
+    <!-- Delete old StreamHashTag records older than the configurable value
+-->
     <bean id="deleteOldStreamHashTagsAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
         <constructor-arg ref="noValidationStrategy" />        
         <constructor-arg>
@@ -1683,11 +1684,59 @@
 
     <bean id="getActivityIdsByJsonRequest" class="org.eurekastreams.server.action.execution.stream.GetActivityIdsByJsonRequest">
             <constructor-arg>
-                <bean
-                    class="org.eurekastreams.server.service.actions.strategies.activity.datasources.PersistenceDataSource">
+                <bean class="org.eurekastreams.server.service.actions.strategies.activity.datasources.PersistenceDataSource">
+                    <constructor-arg>
+                    	<!-- Mapper to get the everyone activity id list -->
+                    	
+	                    
+		 				<bean class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+							<constructor-arg>
+								<!--
+									Wrap the cache mapper with a partial mapper wrapper
+								-->
+								<bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+									<constructor-arg>
+										<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleListValueCacheMapper">
+											<!-- Cache Key Prefix -->				
+											<constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.EVERYONE_ACTIVITY_IDS" />
+												
+											<!-- Transformer to return an empty string as suffix -->
+											<constructor-arg>
+												<bean class="org.eurekastreams.server.persistence.mappers.cache.IgnoredCacheKeySuffixTransformer" />
+											</constructor-arg>
+											
+											<property name="cache" ref="memcachedCache" />
+										</bean>
+									</constructor-arg>
+								</bean>
+							</constructor-arg>
+					
+							<!-- Database mapper to fall back on if not found in cache -->
+							<constructor-arg ref="getEveryoneActivityDbMapper" />
+							
+							<constructor-arg>
+								<!-- Results combiner - just returns the first non-null value -->
+								<bean
+									class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
+							</constructor-arg>
+					
+							<constructor-arg>
+								<!-- Cache refresher - sets the list back to the everyone cache list -->
+								<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleListValueCacheRefreshStrategy">
+									<constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.EVERYONE_ACTIVITY_IDS" />
+									<constructor-arg>
+										<bean class="org.eurekastreams.server.persistence.mappers.cache.IgnoredCacheKeySuffixTransformer" />
+									</constructor-arg>
+									<property name="cache" ref="memcachedCache" />
+								</bean>
+							</constructor-arg>
+						</bean>
                     
-                    <!-- TODO: replace this with one that falls back to cache -->
-                    <constructor-arg ref="getEveryoneActivityDbMapper" />
+                    
+                   </constructor-arg> 
+                    
+                    
+                    
                     
                     <constructor-arg>
                         <map>

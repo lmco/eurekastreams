@@ -107,6 +107,9 @@ public class PostCachedActivity extends CachedDomainMapper
             }
         }
 
+        // add to everyone list
+        getCache().addToTopOfList(CacheKeys.EVERYONE_ACTIVITY_IDS, activity.getId());
+
         // TODO: climb up the tree, adding activity to each org
     }
 
