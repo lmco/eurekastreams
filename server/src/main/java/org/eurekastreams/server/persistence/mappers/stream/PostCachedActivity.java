@@ -19,11 +19,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.GetRecursiveParentOrgIds;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
+import org.eurekastreams.server.persistence.mappers.db.GetOrgShortNamesByIdsMapper;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 
 /**
@@ -31,6 +34,11 @@ import org.eurekastreams.server.search.modelview.OrganizationModelView;
  */
 public class PostCachedActivity extends CachedDomainMapper
 {
+    /**
+     * Logger.
+     */
+    private final Log log = LogFactory.make();
+
     /**
      * Mapper to get followers of a person.
      */
@@ -57,6 +65,11 @@ public class PostCachedActivity extends CachedDomainMapper
     private final GetDomainGroupsByShortNames bulkDomainGroupsByShortNameMapper;
 
     /**
+     * Mapper to get the short names from org ids.
+     */
+    private final GetOrgShortNamesByIdsMapper orgShortNamesFromIdsMapper;
+
+    /**
      * Constructor.
      *
      * @param inPersonFollowersMapper
@@ -69,18 +82,22 @@ public class PostCachedActivity extends CachedDomainMapper
      *            orgs by short names mapper.
      * @param inBulkDomainGroupsByShortNameMapper
      *            groups by short names mapper.
+     * @param inOrgShortNamesFromIdsMapper
+     *            mapper to get org shortnames from ids
      */
     public PostCachedActivity(final GetFollowerIds inPersonFollowersMapper,
             final GetPeopleByAccountIds inBulkPeopleByAccountIdMapper,
             final GetRecursiveParentOrgIds inParentOrgIdsMapper,
             final GetOrganizationsByShortNames inOrganizationsByShortNameMapper,
-            final GetDomainGroupsByShortNames inBulkDomainGroupsByShortNameMapper)
+            final GetDomainGroupsByShortNames inBulkDomainGroupsByShortNameMapper,
+            final GetOrgShortNamesByIdsMapper inOrgShortNamesFromIdsMapper)
     {
         personFollowersMapper = inPersonFollowersMapper;
         bulkPeopleByAccountIdMapper = inBulkPeopleByAccountIdMapper;
         parentOrgIdsMapper = inParentOrgIdsMapper;
         organizationsByShortNameMapper = inOrganizationsByShortNameMapper;
         bulkDomainGroupsByShortNameMapper = inBulkDomainGroupsByShortNameMapper;
+        orgShortNamesFromIdsMapper = inOrgShortNamesFromIdsMapper;
     }
 
     /**
@@ -108,19 +125,26 @@ public class PostCachedActivity extends CachedDomainMapper
         }
 
         // add to everyone list
+        log.trace("Adding activity id " + activity.getId() + " into everyone activity list.");
         getCache().addToTopOfList(CacheKeys.EVERYONE_ACTIVITY_IDS, activity.getId());
 
-        // TODO: climb up the tree, adding activity to each org
+        // climb up the tree, adding activity to each org
+        for (String orgShortName : getAllParentOrgShortNames(activity))
+        {
+            log.trace("Adding activity id " + activity.getId() + " to organization cache list " + orgShortName);
+            getCache().addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName,
+                    activity.getId());
+        }
     }
 
     /**
-     * Returns all parent org ids up the tree.
+     * Returns all parent org short names up the tree.
      *
      * @param inActivity
      *            The activity.
      * @return all parent org ids up the tree
      */
-    private List<Long> getAllParentOrgIds(final ActivityDTO inActivity)
+    private List<String> getAllParentOrgShortNames(final ActivityDTO inActivity)
     {
         final StreamEntityDTO destinationStream = inActivity.getDestinationStream();
         String parentOrgShortName = null;
@@ -147,6 +171,6 @@ public class PostCachedActivity extends CachedDomainMapper
         List<Long> parentIds = parentOrgIdsMapper.execute(parentOrg.getEntityId());
         parentIds.add(parentOrg.getEntityId());
 
-        return parentIds;
+        return orgShortNamesFromIdsMapper.execute(parentIds);
     }
 }
