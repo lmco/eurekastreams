@@ -565,6 +565,10 @@
         <constructor-arg ref="findByIdMapper"/>
     </bean>
     
+    <bean id="getPersonIds" class="org.eurekastreams.server.persistence.mappers.db.GetIds" >
+        <constructor-arg value="Person"/>
+    </bean>
+    
     <bean id="getRelatedEntityCountMapper" class="org.eurekastreams.server.persistence.mappers.db.GetRelatedEntityCount" />
 	
 	<bean id="moveOrganizationPeopleMapper" class="org.eurekastreams.server.persistence.mappers.db.MoveOrganizationPeopleDBMapper" />
