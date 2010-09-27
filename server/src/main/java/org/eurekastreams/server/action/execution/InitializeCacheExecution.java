@@ -16,101 +16,79 @@
 package org.eurekastreams.server.action.execution;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.List;
 
-import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.commons.logging.Log;
-import org.eurekastreams.commons.actions.ExecutionStrategy;
+import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
-import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.server.persistence.mappers.cache.DomainGroupCacheLoader;
-import org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCacheLoader;
-import org.eurekastreams.server.persistence.mappers.cache.PersonCacheLoader;
-import org.eurekastreams.server.persistence.mappers.cache.StreamCacheLoader;
+import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.persistence.mappers.cache.Cache;
 
 /**
- * This action initialized/warms the cache by running a series of cache loaders.
- * This action is meant to be run asynchronously at application startup.
+ * This action initialized/warms the cache by running a series of cache loaders. This action is meant to be run
+ * asynchronously at application startup.
  */
-public class InitializeCacheExecution implements ExecutionStrategy<ActionContext>
+public class InitializeCacheExecution implements TaskHandlerExecutionStrategy<ActionContext>
 {
     /**
-     * Local log instance.
+     * The logger.
      */
-    private final Log logger = LogFactory.make();
+    private Log log = LogFactory.make();
 
     /**
-     * Loader for domain groups.
+     * The cache.
      */
-    private final DomainGroupCacheLoader domainGroupCacheLoader;
+    private Cache cache;
 
     /**
-     * Loader for organizations.
+     * Action key.
      */
-    private final OrganizationHierarchyCacheLoader organizationCacheLoader;
+    private List<String> actionKeys = null;
 
     /**
-     * Loader for people.
+     * Constructor. Set cache to null to skip clearing cache before warming.
+     * 
+     * @param inCache
+     *            Cache client, leave null to skip clearing cache before warming.
+     * @param inActionKeys
+     *            Action keys.
      */
-    private final PersonCacheLoader personCacheLoader;
-
-    /**
-     * Loader for streams and activities.
-     */
-    private final StreamCacheLoader streamCacheLoader;
-
-    /**
-     * Constructor.
-     *
-     * @param inDomainGroupCacheLoader
-     *                  the group loader.
-     * @param inOrganizationCacheLoader
-     *                  the org loader.
-     * @param inPersonCacheLoader
-     *                  the person loader.
-     * @param inStreamCacheLoader
-     *                  the stream loader.
-     */
-    public InitializeCacheExecution(final DomainGroupCacheLoader inDomainGroupCacheLoader,
-                final OrganizationHierarchyCacheLoader inOrganizationCacheLoader,
-                final PersonCacheLoader inPersonCacheLoader, final StreamCacheLoader inStreamCacheLoader)
+    public InitializeCacheExecution(final Cache inCache, final List<String> inActionKeys)
     {
-        domainGroupCacheLoader = inDomainGroupCacheLoader;
-        organizationCacheLoader = inOrganizationCacheLoader;
-        personCacheLoader = inPersonCacheLoader;
-        streamCacheLoader = inStreamCacheLoader;
+        cache = inCache;
+        actionKeys = inActionKeys;
     }
 
     /**
-     * {@inheritDoc}.
-     *
-     * Performs the cache initialization by invoking each of the cache loaders.
+     * Clear cache (if not null) and queue list of cache warming actions.
+     * 
+     * @param inActionContext
+     *            {@link TaskHandlerActionContext}.
+     * @return null.
      */
     @Override
-    public Serializable execute(final ActionContext inActionContext) throws ExecutionException
+    public Serializable execute(final TaskHandlerActionContext<ActionContext> inActionContext)
     {
-        Date start = new Date();
-        try
+        if (cache != null)
         {
-            // grabs the cache from one of the loaders and clears all existing data.
-            domainGroupCacheLoader.getCache().clear();
-
-            // initializes each loader.
-            domainGroupCacheLoader.initialize();
-            organizationCacheLoader.initialize();
-            personCacheLoader.initialize();
-            streamCacheLoader.initialize();
+            log.info("Clearing Cache");
+            cache.clear();
         }
-        catch (Exception ex)
+        else
         {
-            logger.error("Error occurred initializing cache", ex);
+            log.info("Skipping Cache clearing");
         }
-        Date end = new Date();
 
-        logger.info("Cache Initialization: elapsed time: "
-                + DurationFormatUtils.formatDurationHMS(end.getTime() - start.getTime()));
+        for (String key : actionKeys)
+        {
+            if (key != null && !key.isEmpty())
+            {
+                log.info("Queueing up action: " + key);
+                inActionContext.getUserActionRequests().add(new UserActionRequest(key, null, null));
+            }
+        }
         return null;
     }
-
 }

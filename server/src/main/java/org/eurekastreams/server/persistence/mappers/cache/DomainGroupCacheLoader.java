@@ -24,6 +24,7 @@ import javax.persistence.Query;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.EntityCacheUpdater;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
@@ -37,7 +38,7 @@ import org.hibernate.ScrollableResults;
 /**
  * Cache loader for Groups.
  */
-public class DomainGroupCacheLoader extends CachedDomainMapper implements EntityCacheUpdater<DomainGroup>
+public class DomainGroupCacheLoader extends CachedDomainMapper implements EntityCacheUpdater<DomainGroup>, CacheWarmer
 {
     /**
      * Logger instance.
@@ -56,7 +57,7 @@ public class DomainGroupCacheLoader extends CachedDomainMapper implements Entity
 
     /**
      * Constructor.
-     *
+     * 
      * @param inDomainGroupQueryStrategy
      *            the person query strategy to set.
      * @param inRemoveDomainGroupFromCacheMapper
@@ -175,7 +176,7 @@ public class DomainGroupCacheLoader extends CachedDomainMapper implements Entity
 
     /**
      * Domain Group updater implementation - fired when an existing domain group entity is updated.
-     *
+     * 
      * @param inUpdatedDomainGroup
      *            the domain group just updated
      */
@@ -191,7 +192,7 @@ public class DomainGroupCacheLoader extends CachedDomainMapper implements Entity
 
     /**
      * Domain Group persist implementation - fired when a new domain group entity is persisted.
-     *
+     * 
      * @param inDomainGroup
      *            the domainGroup just persisted
      */
@@ -204,6 +205,12 @@ public class DomainGroupCacheLoader extends CachedDomainMapper implements Entity
                     + " - doing nothing.");
         }
         // no-op - cache will be loaded when someone requests this domain group
+    }
+
+    @Override
+    public void execute(final List<UserActionRequest> inRequests)
+    {
+        initialize();
     }
 
 }

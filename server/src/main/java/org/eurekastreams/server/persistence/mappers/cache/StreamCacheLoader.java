@@ -22,6 +22,7 @@ import javax.persistence.Query;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.StarredActivity;
@@ -39,7 +40,7 @@ import org.hibernate.ScrollableResults;
 /**
  * Cache loader for Streams.
  */
-public class StreamCacheLoader extends CachedDomainMapper
+public class StreamCacheLoader extends CachedDomainMapper implements CacheWarmer
 {
     /**
      * Maximum number of items for the activity id lists.
@@ -135,7 +136,7 @@ public class StreamCacheLoader extends CachedDomainMapper
         stepStart = System.currentTimeMillis();
         queryPersonActivityIdLists();
         log.info("Done: " + (System.currentTimeMillis() - stepStart) + " ms.");
-        
+
         log.info("Querying and group person activity id list cache");
         stepStart = System.currentTimeMillis();
         queryGroupActivityIdLists();
@@ -253,7 +254,7 @@ public class StreamCacheLoader extends CachedDomainMapper
             getCache().setList(CacheKeys.ACTIVITIES_BY_FOLLOWING + personId, followedActivityIds);
         }
     }
-    
+
     /**
      * Query the database for ids of activity on various lists of group activity ids.
      */
@@ -381,5 +382,11 @@ public class StreamCacheLoader extends CachedDomainMapper
         }
         // sets the last group in cache
         getCache().setList(CacheKeys.STARRED_BY_PERSON_ID + lastPersonId, keys);
+    }
+
+    @Override
+    public void execute(final List<UserActionRequest> inRequests)
+    {
+        initialize();
     }
 }
