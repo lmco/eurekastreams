@@ -43,7 +43,7 @@ public class GetEveryoneActivityDbMapper extends BaseDomainMapper implements Dom
     @Override
     public List<Long> execute(final Long inRequest)
     {
-        String idsQueryString = "select id FROM Activity ORDER BY PostedTime desc";
+        String idsQueryString = "select id FROM Activity ORDER BY id DESC";
         Query idsQuery = getEntityManager().createQuery(idsQueryString);
         idsQuery.setMaxResults(MAX_RESULTS);
         return idsQuery.getResultList();

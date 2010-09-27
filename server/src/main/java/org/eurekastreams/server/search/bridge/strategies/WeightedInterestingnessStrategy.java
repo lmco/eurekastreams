@@ -34,13 +34,7 @@ public class WeightedInterestingnessStrategy implements ComputeInterestingnessOf
     /**
      * Seconds in a day.
      */
-    public static final Long SECONDS_IN_DAY = 86400L;
-
-    /**
-     * Epoch time at 2010. Used to calculate dates since 2010. No real danger of field rolling over, but saves chars and
-     * in theory nobody will use this app before 2010.
-     */
-    public static final long EPOCH_2010 = 1262304000L;
+    public static final Long MILLISECONDS_IN_DAY = 86400000L;
 
     /**
      * Weight of a comment.
@@ -146,8 +140,7 @@ public class WeightedInterestingnessStrategy implements ComputeInterestingnessOf
         // Add Time weight, if interesting.
         if (interestingNess > 0L)
         {
-            interestingNess += Math.round(Math.floor(activity.getPostedTime().getTime() - EPOCH_2010) / SECONDS_IN_DAY
-                    * timeWeight);
+            interestingNess += activity.getPostedTime().getTime() / MILLISECONDS_IN_DAY * timeWeight;
         }
 
         return interestingNess;
