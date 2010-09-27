@@ -87,15 +87,15 @@ public class StreamListFormElement extends FlowPanel implements FormElement
 
         this.add(streamOptions);
 
-        streamOptions.addItem("Following", StreamJsonRequestFactory.FOLLOWED_BY_KEY);
         streamOptions.addItem("Everyone", "");
+        streamOptions.addItem("Following", StreamJsonRequestFactory.FOLLOWED_BY_KEY);
         streamOptions.addItem(Session.getInstance().getCurrentPerson().getParentOrganizationName(),
                 StreamJsonRequestFactory.PARENT_ORG_KEY);
-        streamOptions.addItem("Posted To", StreamJsonRequestFactory.RECIPIENT_KEY);
         streamOptions.addItem("Saved", StreamJsonRequestFactory.SAVED_KEY);
+        streamOptions.addItem("Groups I've Joined", StreamJsonRequestFactory.JOINED_GROUPS_KEY);
+        streamOptions.addItem("Posted To", StreamJsonRequestFactory.RECIPIENT_KEY);
         streamOptions.addItem("Authored By", StreamJsonRequestFactory.AUTHOR_KEY);
         streamOptions.addItem("Liked By", StreamJsonRequestFactory.LIKER_KEY);
-        streamOptions.addItem("Joined Groups", StreamJsonRequestFactory.JOINED_GROUPS_KEY);
 
         streamOptions.addChangeHandler(new ChangeHandler()
         {
@@ -108,6 +108,7 @@ public class StreamListFormElement extends FlowPanel implements FormElement
         if (json == null)
         {
             streamOptions.setSelectedIndex(0);
+            scopes.setVisible(false);
         }
         else
         {
@@ -192,8 +193,6 @@ public class StreamListFormElement extends FlowPanel implements FormElement
                 }
                 BulkEntityModel.getInstance().fetch(entities, false);
             }
-
-            scopes.setVisible(hasStreamScopes(getSelected()));
         }
 
         this.add(scopes);
@@ -239,6 +238,8 @@ public class StreamListFormElement extends FlowPanel implements FormElement
                 streamOptions.setSelectedIndex(i);
             }
         }
+
+        scopes.setVisible(hasStreamScopes(selectedValue));
     }
 
     /**
