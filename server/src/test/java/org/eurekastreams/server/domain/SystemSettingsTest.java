@@ -45,11 +45,6 @@ public class SystemSettingsTest
     private final String testTermsOfService = "some terms of service";
 
     /**
-     * test the boolean that etermines whether terms of service is to be displayed on an every session or # days basis.
-     */
-    private final boolean testIsTosDisplayedEverySession = false;
-
-    /**
      * test terms of service prompt interval.
      */
     private final int testTosPromptInterval = 1;
@@ -108,7 +103,6 @@ public class SystemSettingsTest
         systemSettings = new SystemSettings();
         systemSettings.setSiteLabel(testSiteLabel);
         systemSettings.setTermsOfService(testTermsOfService);
-        systemSettings.setIsTosDisplayedEverySession(testIsTosDisplayedEverySession);
         systemSettings.setTosPromptInterval(testTosPromptInterval);
         systemSettings.setContentWarningText(testContentWarning);
         systemSettings.setContentExpiration(testContentExpiration);
@@ -159,16 +153,6 @@ public class SystemSettingsTest
     public void setAndGetTermsOfService()
     {
         assertEquals("property should be gotten", testTermsOfService, systemSettings.getTermsOfService());
-    }
-
-    /**
-     * Test TosPromptInterval setter/getter.
-     */
-    @Test
-    public void setAndGetIsTosDisplayedEverySession()
-    {
-        assertEquals("property should be gotten", testIsTosDisplayedEverySession, systemSettings
-                .getIsTosDisplayedEverySession());
     }
 
     /**

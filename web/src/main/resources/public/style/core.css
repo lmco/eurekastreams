@@ -10277,33 +10277,20 @@ body .options>li>.option-title:hover {
 	margin-top: 10px;
 }
 
-.settings .tos-prompt-interval {
-	clear: both;
+.tos-prompt-interval>.form-label {
+	color: #666666;
+	display: inline-block;
+	margin-right: 25px;
+}
+
+.tos-prompt-interval {
 	padding-top: 0px;
-	/* The following are to compensate for using (evil) relative positioning. */
-	padding-bottom: 0px;
-	margin-bottom: -10px;
 }
 
-.settings .tos-prompt-interval .form-instructions {
-	display: none;
-}
-
-.settings .tos-prompt-interval input.prompt-interval {
+.tos-prompt-interval input.prompt-interval {
 	width: 30px;
 	margin: 0 8px; 
 	*left: 8px;
-}
-
-.settings .tos-prompt-interval .form-radioButtonGroup {
-	position: relative;
-	top: -23px;
-	left: 120px;
-}
-
-.settings .tos-prompt-interval .form-radioButtonGroup input {
-	position: relative;
-	top: 4px;
 }
 
 .settings .activity-expiration {
@@ -10500,8 +10487,7 @@ body .options>li>.option-title:hover {
 	vertical-align: bottom;
 }
 
-.system-settings .tos-prompt-interval>.form-label,.system-settings .help-form-element>.form-label
-	{
+.system-settings .help-form-element>.form-label {
 	color: #666;
 }
 

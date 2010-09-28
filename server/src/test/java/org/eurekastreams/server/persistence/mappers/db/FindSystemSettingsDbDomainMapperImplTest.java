@@ -16,7 +16,6 @@
 package org.eurekastreams.server.persistence.mappers.db;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.eurekastreams.server.domain.SystemSettings;
@@ -48,7 +47,6 @@ public class FindSystemSettingsDbDomainMapperImplTest extends MapperTest
         assertEquals(settingsId, settings.getId());
         assertEquals("some site label", settings.getSiteLabel());
         assertEquals("some terms of service", settings.getTermsOfService());
-        assertFalse(settings.getIsTosDisplayedEverySession());
         assertEquals(1, settings.getTosPromptInterval());
         assertEquals("some content warning", settings.getContentWarningText());
         assertEquals(1, settings.getContentExpiration());
