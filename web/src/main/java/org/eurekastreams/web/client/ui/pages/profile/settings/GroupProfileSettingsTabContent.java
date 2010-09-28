@@ -162,9 +162,9 @@ public class GroupProfileSettingsTabContent extends FlowPanel
         form.addFormElement(new ValueOnlyFormElement(DomainGroupModelView.ID_KEY, Long.toString(group.getId())));
         form.addFormElement(new ValueOnlyFormElement(DomainGroupModelView.SHORT_NAME_KEY, group.getShortName()));
 
-        AvatarUploadFormElement avatarFormEl = new AvatarUploadFormElement(
-                "Avatar",
-                "Select a JPG, PNG or GIF image from your computer. The maxium file size is 4MB and will be cropped to 990 x 100 pixels high.",
+        AvatarUploadFormElement avatarFormEl = new AvatarUploadFormElement("Avatar",
+                "Select a JPG, PNG or GIF image from your computer. The maxium file size is 4MB"
+                        + " and will be cropped to 990 x 100 pixels high.",
                 "/eurekastreams/groupavatarupload?groupName=" + group.getShortName(), Session.getInstance()
                         .getActionProcessor(), new AvatarUploadStrategy<DomainGroup>(group, "resizeGroupAvatar",
                         EntityType.GROUP));
