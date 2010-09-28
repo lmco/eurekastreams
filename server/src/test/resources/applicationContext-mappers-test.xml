@@ -34,9 +34,6 @@
 		<property name="cache" ref="testCache" />
 	</bean>
 	
-	<bean id="getEveryoneActivityCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.GetEveryoneActivityCacheMapper">
-	   <property name="cache" ref="testCache" />
-	</bean>
 	<bean id="refreshEveryoneActivityCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.RefreshEveryoneActivityCacheMapper">
 	   <property name="cache" ref="testCache" />
     </bean>
@@ -415,7 +412,6 @@
 		<constructor-arg ref="getFollowerIds" />
 		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
 		<constructor-arg ref="getRecursiveParentOrgIdsMapper" />
-		<constructor-arg ref="bulkOrganizationsByShortNameMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 		<constructor-arg>
 			<bean class="org.eurekastreams.server.persistence.mappers.db.GetOrgShortNamesByIdsMapper" />
