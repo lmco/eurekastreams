@@ -68,7 +68,7 @@ public class PostToStreamController
 
     /**
      * Constructor.
-     *
+     * 
      * @param inEventBus
      *            the event bus.
      * @param inView
@@ -118,8 +118,8 @@ public class PostToStreamController
         {
             public void onClick(final Widget sender)
             {
-                if ((model.isMessageLengthAcceptable()
-                        || (model.getAttachment() != null && model.getRemainingMessageCharacters() >= 0))
+                if ((model.isMessageLengthAcceptable() || (model.getAttachment() != null && model
+                        .getRemainingMessageCharacters() >= 0))
                         && view.canPost())
                 {
                     view.hidePostButton();

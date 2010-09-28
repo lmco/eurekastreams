@@ -354,7 +354,7 @@ public class PersonMapperTest extends DomainEntityMapperTest
     @Test
     public void testFindByLastNamePrefixWithFirstName()
     {
-        assertEquals(2, jpaPersonMapper.findPeopleByPrefix("Prefect, Ford").size());
+        assertEquals(2, jpaPersonMapper.findPeopleByPrefix("Prefect, Volgon").size());
     }
 
     /**
