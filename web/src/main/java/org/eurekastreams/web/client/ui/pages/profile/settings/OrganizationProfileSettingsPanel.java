@@ -154,7 +154,7 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
         form.addFormElement(new ValueOnlyFormElement(OrganizationModelView.SHORT_NAME_KEY, entity.getShortName()));
 
         form.addWidget(new AvatarUploadFormElement("Avatar",
-                "Select a JPG, PNG or GIF image from your computer. The maximum file size is 4MB.",
+                "Select a JPG, PNG or GIF image from your computer. The maxium file size is 4MB and will be cropped to 990 x 100 pixels high.",
                 "/eurekastreams/orgavatarupload?orgName=" + entity.getShortName(), processor,
                 new AvatarUploadStrategy<Organization>(entity, "resizeOrgAvatar", EntityType.ORGANIZATION)));
 
