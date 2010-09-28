@@ -1810,7 +1810,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     @Override
     public String getBannerId()
     {
-        // TODO Auto-generated method stub
         return bannerId;
     }
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,8 +83,6 @@ public class ThemeMapperFake implements GalleryItemMapper
      */
     public void delete(final Object inTheme)
     {
-        // TODO Auto-generated method stub
-        
     }
 
     /**
@@ -96,7 +94,6 @@ public class ThemeMapperFake implements GalleryItemMapper
      */
     public Object findById(final Long galleryItemId)
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -107,7 +104,6 @@ public class ThemeMapperFake implements GalleryItemMapper
      */
     public Object findDefault()
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -124,7 +120,6 @@ public class ThemeMapperFake implements GalleryItemMapper
      */
     public PagedSet findForCategorySortedByPopularity(final String inCategory, final int inStart, final int inEnd)
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -141,7 +136,6 @@ public class ThemeMapperFake implements GalleryItemMapper
      */
     public PagedSet findForCategorySortedByRecent(final String inCategory, final int inStart, final int inEnd)
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -156,7 +150,6 @@ public class ThemeMapperFake implements GalleryItemMapper
      */
     public PagedSet findSortedByPopularity(final int inStart, final int inEnd)
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -171,7 +164,6 @@ public class ThemeMapperFake implements GalleryItemMapper
      */
     public PagedSet findSortedByRecent(final int inStart, final int inEnd)
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -181,8 +173,6 @@ public class ThemeMapperFake implements GalleryItemMapper
      */
     public void flush()
     {
-        // TODO Auto-generated method stub
-        
     }
 
     /**
@@ -193,8 +183,6 @@ public class ThemeMapperFake implements GalleryItemMapper
      */
     public void insert(final Object domainEntity)
     {
-        // TODO Auto-generated method stub
-        
     }
 
     /**
@@ -203,7 +191,5 @@ public class ThemeMapperFake implements GalleryItemMapper
      */
     public void refresh(final Object inGalleryItem)
     {
-        // TODO Auto-generated method stub
-        
     }
 }

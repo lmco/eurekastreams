@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,6 @@ public class MessageServiceImpl implements MessageService
     public Future<Void> createMessage(final UserId userId, final String appId,
             final String msgCollId, final Message message, final SecurityToken token)
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -60,7 +59,6 @@ public class MessageServiceImpl implements MessageService
     public Future<MessageCollection> createMessageCollection(final UserId userId,
             final MessageCollection msgCollection, final SecurityToken token)
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -74,7 +72,6 @@ public class MessageServiceImpl implements MessageService
     public Future<Void> deleteMessageCollection(final UserId userId,
             final String msgCollId, final SecurityToken token)
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -89,7 +86,6 @@ public class MessageServiceImpl implements MessageService
     public Future<Void> deleteMessages(final UserId userId, final String msgCollId,
             final List<String> ids, final SecurityToken token)
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -105,7 +101,6 @@ public class MessageServiceImpl implements MessageService
             final UserId userId, final Set<String> fields, final CollectionOptions options,
             final SecurityToken token)
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -123,7 +118,6 @@ public class MessageServiceImpl implements MessageService
             final String msgCollId, final Set<String> fields, final List<String> msgIds,
             final CollectionOptions options, final SecurityToken token)
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -139,7 +133,6 @@ public class MessageServiceImpl implements MessageService
     public Future<Void> modifyMessage(final UserId userId, final String msgCollId,
             final String messageId, final Message message, final SecurityToken token)
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -153,7 +146,6 @@ public class MessageServiceImpl implements MessageService
     public Future<Void> modifyMessageCollection(final UserId userId,
             final MessageCollection msgCollection, final SecurityToken token)
     {
-        // TODO Auto-generated method stub
         return null;
     }
 

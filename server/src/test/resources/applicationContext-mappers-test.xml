@@ -417,6 +417,9 @@
 		<constructor-arg ref="getRecursiveParentOrgIdsMapper" />
 		<constructor-arg ref="bulkOrganizationsByShortNameMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.persistence.mappers.db.GetOrgShortNamesByIdsMapper" />
+		</constructor-arg>
 		<property name="cache" ref="testCache" />
 	</bean>
 	
@@ -563,6 +566,10 @@
 	
     <bean id="deleteOrganizationMapper" class="org.eurekastreams.server.persistence.mappers.db.DeleteOrganizationDbMapper" >
         <constructor-arg ref="findByIdMapper"/>
+    </bean>
+    
+    <bean id="getPersonIds" class="org.eurekastreams.server.persistence.mappers.db.GetIds" >
+        <constructor-arg value="Person"/>
     </bean>
     
     <bean id="getRelatedEntityCountMapper" class="org.eurekastreams.server.persistence.mappers.db.GetRelatedEntityCount" />

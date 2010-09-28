@@ -1090,6 +1090,9 @@
 		<constructor-arg ref="getRecursiveParentOrgIdsMapper" />
 		<constructor-arg ref="bulkOrganizationsByShortNameMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.persistence.mappers.db.GetOrgShortNamesByIdsMapper" />
+		</constructor-arg>
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 

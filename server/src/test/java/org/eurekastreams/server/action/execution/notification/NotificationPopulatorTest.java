@@ -98,7 +98,6 @@ public class NotificationPopulatorTest
     {
         person.setAccountId(PERSON_ACCOUNT_ID);
         person.setDisplayName(PERSON_NAME);
-        // TODO Auto-generated constructor stub
     }
 
     /**
