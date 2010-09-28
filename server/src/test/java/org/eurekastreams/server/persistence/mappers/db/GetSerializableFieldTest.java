@@ -22,16 +22,16 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Test for GetIds mapper.
+ * Test for GetSerializableField mapper.
  * 
  */
-public class GetIdsTest extends MapperTest
+public class GetSerializableFieldTest extends MapperTest
 {
     /**
-     * System under test.
+     * System under test. Autowired mapper is config'ed to grab ids from Person table.
      */
     @Autowired
-    private GetIds sut;
+    private GetSerializableField sut;
 
     /**
      * Test for person ids.

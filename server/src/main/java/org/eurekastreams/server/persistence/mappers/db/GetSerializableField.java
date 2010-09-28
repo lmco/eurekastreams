@@ -15,15 +15,16 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 /**
- * Get list of ids for all entities of given entity name.
+ * Get list of Serializable values for given entity/field name.
  * 
  */
-public class GetIds extends BaseArgDomainMapper<String, List<Long>>
+public class GetSerializableField extends BaseArgDomainMapper<String, List<Serializable>>
 {
 
     /**
@@ -32,15 +33,23 @@ public class GetIds extends BaseArgDomainMapper<String, List<Long>>
     private String entityName;
 
     /**
+     * Field name.
+     */
+    private String fieldName;
+
+    /**
      * Constructor.
      * 
      * @param inEntityName
      *            Entity name to find ids for.
+     * @param inFieldName
+     *            name of field to select.
      * 
      */
-    public GetIds(final String inEntityName)
+    public GetSerializableField(final String inEntityName, final String inFieldName)
     {
         entityName = inEntityName;
+        fieldName = inFieldName;
     }
 
     /**
@@ -52,9 +61,9 @@ public class GetIds extends BaseArgDomainMapper<String, List<Long>>
      */
     @SuppressWarnings("unchecked")
     @Override
-    public List<Long> execute(final String inEntityName)
+    public List<Serializable> execute(final String inEntityName)
     {
-        return getEntityManager().createQuery("SELECT id FROM " + entityName).getResultList();
+        return getEntityManager().createQuery("SELECT " + fieldName + " FROM " + entityName).getResultList();
     }
 
 }
