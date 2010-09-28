@@ -16,7 +16,6 @@
 package org.eurekastreams.server.action.execution.notification.translator;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,21 +28,21 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetCommentorIdsByActivityId;
+import org.eurekastreams.server.search.modelview.CommentDTO;
 
 /**
  * Translates the event of someone commenting on a post to appropriate notifications.
  */
 public class CommentTranslator implements NotificationTranslator
 {
-    /**
-     * Mapper to get commentors.
-     */
-    GetCommentorIdsByActivityId commentorsMapper;
+    /** Mapper to get commentors. */
+    private GetCommentorIdsByActivityId commentorsMapper;
 
-    /**
-     * Mapper to get activity details.
-     */
-    DomainMapper<List<Long>, List<ActivityDTO>>  activitiesMapper;
+    /** Mapper to get activity details. */
+    private DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper;
+
+    /** Mapper to get the comment. */
+    private DomainMapper<List<Long>, List<CommentDTO>> commentsMapper;
 
     /**
      * Constructor.
@@ -52,12 +51,16 @@ public class CommentTranslator implements NotificationTranslator
      *            commentors mapper to set.
      * @param inActivitiesMapper
      *            activities mapper to set.
+     * @param inCommentsMapper
+     *            Mapper to get the comment.
      */
     public CommentTranslator(final GetCommentorIdsByActivityId inCommentorsMapper,
-            final DomainMapper<List<Long>, List<ActivityDTO>>  inActivitiesMapper)
+            final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper,
+            final DomainMapper<List<Long>, List<CommentDTO>> inCommentsMapper)
     {
         commentorsMapper = inCommentorsMapper;
         activitiesMapper = inActivitiesMapper;
+        commentsMapper = inCommentsMapper;
     }
 
     /**
@@ -67,64 +70,73 @@ public class CommentTranslator implements NotificationTranslator
      *            ID of actor that made the comment.
      * @param inDestinationId
      *            ID of person whose personal stream contains the activity commented on.
-     * @param inActivityId
-     *            the activity id itself.
+     * @param inCommentId
+     *            the comment id.
      * @return List of notifications generated.
      */
     @Override
     public Collection<NotificationDTO> translate(final long inActorId, final long inDestinationId,
-            final long inActivityId)
+            final long inCommentId)
     {
+        // get activity ID from comment
+        List<CommentDTO> commentList = commentsMapper.execute(Collections.singletonList(inCommentId));
+        if (commentList.isEmpty())
+        {
+            return Collections.EMPTY_LIST;
+        }
+        long activityId = commentList.get(0).getActivityId();
+        List<ActivityDTO> activities = activitiesMapper.execute(Collections.singletonList(activityId));
+        if (activities.isEmpty())
+        {
+            return Collections.EMPTY_LIST;
+        }
+        ActivityDTO activity = activities.get(0);
+
+        Map<NotificationType, List<Long>> recipients = new HashMap<NotificationType, List<Long>>();
+
+        // Adds post author as recipient
+        long postAuthor = activity.getActor().getId();
+        if (postAuthor != inActorId)
+        {
+            recipients.put(NotificationType.COMMENT_TO_PERSONAL_POST, Collections.singletonList(postAuthor));
+        }
+
+        // Adds stream owner as a recipient
+        if (inDestinationId != postAuthor && inDestinationId != inActorId)
+        {
+            recipients.put(NotificationType.COMMENT_TO_PERSONAL_STREAM, Collections.singletonList(inDestinationId));
+        }
+
+        // Adds recipient who previously commented on this post
+        List<Long> commentToCommentedRecipients = new ArrayList<Long>();
+        for (long commentorId : commentorsMapper.execute(activityId))
+        {
+            if (commentorId != postAuthor && commentorId != inDestinationId && commentorId != inActorId)
+            {
+                commentToCommentedRecipients.add(commentorId);
+
+                // this recipient list will keep replacing the old value in the map when new recipients are found
+                recipients.put(NotificationType.COMMENT_TO_COMMENTED_POST, commentToCommentedRecipients);
+            }
+        }
+
         List<NotificationDTO> notifications = new ArrayList<NotificationDTO>();
 
-        ActivityDTO activity = activitiesMapper.execute(Arrays.asList(inActivityId)).get(0);
-        if (activity != null)
+        for (NotificationType notificationType : recipients.keySet())
         {
-            Map<NotificationType, List<Long>> recipients = new HashMap<NotificationType, List<Long>>();
-
-            // Adds post author as recipient
-            long postAuthor = activity.getActor().getId();
-            if (postAuthor != inActorId)
+            NotificationDTO notif = new NotificationDTO(recipients.get(notificationType), notificationType, inActorId);
+            notif.setActivity(activityId, activity.getBaseObjectType());
+            StreamEntityDTO dest = activity.getDestinationStream();
+            notif.setDestination(dest.getId(), dest.getType(), dest.getUniqueIdentifier(), dest.getDisplayName());
+            notif.setCommentId(inCommentId);
+            if (notif.getType().equals(NotificationType.COMMENT_TO_COMMENTED_POST))
             {
-                recipients.put(NotificationType.COMMENT_TO_PERSONAL_POST, Collections.singletonList(postAuthor));
+                StreamEntityDTO author = activity.getActor();
+                notif.setAuxiliary(author.getType(), author.getUniqueIdentifier(), author.getDisplayName());
             }
-
-            // Adds stream owner as a recipient
-            if (inDestinationId != postAuthor && inDestinationId != inActorId)
-            {
-                recipients
-                        .put(NotificationType.COMMENT_TO_PERSONAL_STREAM, Collections.singletonList(inDestinationId));
-            }
-
-            // Adds recipient who previously commented on this post
-            List<Long> commentToCommentedRecipients = new ArrayList<Long>();
-            for (long commentorId : commentorsMapper.execute(inActivityId))
-            {
-                if (commentorId != postAuthor && commentorId != inDestinationId && commentorId != inActorId)
-                {
-                    commentToCommentedRecipients.add(commentorId);
-
-                    // this recipient list will keep replacing the old value in the map when new recipients are found
-                    recipients.put(NotificationType.COMMENT_TO_COMMENTED_POST, commentToCommentedRecipients);
-                }
-            }
-
-            for (NotificationType notificationType : recipients.keySet())
-            {
-                NotificationDTO notif =
-                        new NotificationDTO(recipients.get(notificationType), notificationType, inActorId);
-                notif.setActivity(inActivityId, activity.getBaseObjectType());
-                StreamEntityDTO dest = activity.getDestinationStream();
-                notif.setDestination(dest.getId(), dest.getType(), dest.getUniqueIdentifier(), dest.getDisplayName());
-                if (notif.getType().equals(NotificationType.COMMENT_TO_COMMENTED_POST))
-                {
-                    StreamEntityDTO author = activity.getActor();
-                    notif.setAuxiliary(author.getType(), author.getUniqueIdentifier(), author.getDisplayName());
-                }
-                notifications.add(notif);
-            }
-
+            notifications.add(notif);
         }
+
         return notifications;
     }
 

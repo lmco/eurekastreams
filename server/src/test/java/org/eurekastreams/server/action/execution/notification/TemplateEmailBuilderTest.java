@@ -286,6 +286,45 @@ public class TemplateEmailBuilderTest
     }
 
     /**
+     * Tests using invocation properties.
+     *
+     * @throws Exception
+     *             Shouldn't.
+     */
+    @Test
+    public void testBuildWithInvocationProperties() throws Exception
+    {
+        notification.setActorId(ACTOR_ID);
+        notification.setActorName(ACTOR_NAME);
+
+        final String template = "$(actor.id)/$(actor.name)/$(key1)/$(key2)/$(key3)";
+        final String expectedText = ACTOR_ID + "/" + ACTOR_NAME + "/value1/value2/valueC";
+
+        setupIgnoreRecipientsExpectations();
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(emailer).setSubject(with(same(message)), with(equal(expectedText)));
+                oneOf(emailer).setTextBody(with(same(message)), with(equal(expectedText)));
+                oneOf(emailer).setHtmlBody(with(same(message)), with(equal(expectedText)));
+            }
+        });
+
+        Map<String, String> extraProperties = new HashMap<String, String>();
+        extraProperties.put("key1", "value1");
+        extraProperties.put("key2", "value2");
+        extraProperties.put("actor.id", "**" + Long.toString(ACTOR_ID + 4) + "**");
+
+        Map<String, String> invocationProperties = new HashMap<String, String>();
+        invocationProperties.put("key2", "valueB");
+        invocationProperties.put("key3", "valueC");
+
+        sut = new TemplateEmailBuilder(emailer, peopleMapper, extraProperties, template, template, template);
+        sut.build(notification, invocationProperties, message);
+        context.assertIsSatisfied();
+    }
+
+    /**
      * Tests with one recipient.
      *
      * @throws Exception

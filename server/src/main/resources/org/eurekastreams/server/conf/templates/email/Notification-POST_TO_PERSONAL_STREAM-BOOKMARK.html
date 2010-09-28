@@ -1,11 +1,12 @@
 <html>
 <body>
 <p>
-$(actor.name) commented on a $(activity.type) in the $(dest.name) stream.
+$(actor.name) posted a $(activity.type) to your stream.
 </p>
-<p>"$(comment.content)"</p>
+<p>"$(activity.content)<br/><br/>
+<a href="$(activity.targetUrl)">$(activity.targetTitle)</a>"</p>
 <p>
-To see the post and comments follow this <a href="$(eureka.web.baseurl)#$(dest.page)/$(dest.uniqueid)?activityId=$(activity.id)">link</a>.
+To see the post follow this <a href="$(eureka.web.baseurl)#$(dest.page)/$(dest.uniqueid)?activityId=$(activity.id)">link</a>.
 </p>
 <p>
 Thank You,<br/>
