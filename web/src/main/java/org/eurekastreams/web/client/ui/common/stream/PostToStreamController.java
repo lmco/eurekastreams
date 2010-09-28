@@ -144,7 +144,7 @@ public class PostToStreamController
                 view.hideError();
                 Attachment attachment = evt.getAttachment();
                 model.setAttachment(attachment);
-                if (attachment == null)
+                if (attachment == null && model.getMessage().length() == 0)
                 {
                     view.hidePostButton();
                 }
