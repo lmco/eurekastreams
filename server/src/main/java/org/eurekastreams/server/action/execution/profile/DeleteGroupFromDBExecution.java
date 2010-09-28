@@ -17,7 +17,7 @@ package org.eurekastreams.server.action.execution.profile;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -47,7 +47,7 @@ import org.eurekastreams.server.persistence.mappers.requests.DeleteGroupResponse
 /**
  * Execution strategy for deleting a group and associated objects from database, and creating the UserActionRequests to
  * clean up cache and search index.
- *
+ * 
  */
 public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<ActionContext>
 {
@@ -83,7 +83,7 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
 
     /**
      * Constructor.
-     *
+     * 
      * @param inDeleteGroupActivityDAO
      *            {@link DeleteGroupActivity}.
      * @param inRemoveGroupFollowersDAO
@@ -108,7 +108,7 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
 
     /**
      * Deleting a group and associated objects from database.
-     *
+     * 
      * @param inActionContext
      *            {@link TaskHandlerActionContext}.
      * @return True if successful.
@@ -203,8 +203,8 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
 
         startSize = endSize;
         // create tasks (1/key) for removing group id from CacheKeys.GROUPS_FOLLOWED_BY_PERSON lists
-        generateRemoveIdsFromListTasks(createKeys(CacheKeys.GROUPS_FOLLOWED_BY_PERSON, followerIds), Arrays
-                .asList(deleteGroupResponse.getGroupId()), inActionContext);
+        generateRemoveIdsFromListTasks(createKeys(CacheKeys.GROUPS_FOLLOWED_BY_PERSON, followerIds), Collections
+                .singletonList(deleteGroupResponse.getGroupId()), inActionContext);
 
         if (log.isDebugEnabled())
         {
@@ -222,23 +222,30 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
             log.debug("Tasks for remove groups activity ids from starred activity lists: " + (endSize - startSize));
         }
 
-        startSize = endSize;
         // get list of activity ids to remove from cache lists, no need to go beyond maxCacheListSize
         List<Long> cachedActivityIds = deleteActivityResponse.getActivityIds().size() > maxCacheListSize // \n
         ? deleteActivityResponse.getActivityIds().subList(0, maxCacheListSize - 1)
                 : deleteActivityResponse.getActivityIds();
 
+        startSize = endSize;
+        // create tasks for removing activities from group's stream from all parent orgs.
+        generateRemoveIdsFromListTasks(createKeys(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE,
+                deleteGroupResponse.getParentOrganizationShortNames()), cachedActivityIds, inActionContext);
+
         if (log.isDebugEnabled())
         {
             endSize = inActionContext.getUserActionRequests().size();
-            log.debug("Tasks for remove activity ids from compositeStreams that contained the group's stream: "
-                    + (endSize - startSize));
+            log.debug("Tasks for remove activity ids from parent orgs of the deleted group: " + (endSize - startSize));
         }
+
+        // create task for removing activities in group's stream from everyone stream
+        generateRemoveIdsFromListTasks(Collections.singletonList(CacheKeys.EVERYONE_ACTIVITY_IDS), cachedActivityIds,
+                inActionContext);
 
         startSize = endSize;
         // purge group from search index.
-        generateDeleteFromSearchIndexTasks(DomainGroup.class, Arrays.asList(deleteGroupResponse.getGroupId()),
-                inActionContext);
+        generateDeleteFromSearchIndexTasks(DomainGroup.class, Collections.singletonList(deleteGroupResponse
+                .getGroupId()), inActionContext);
 
         if (log.isDebugEnabled())
         {
@@ -292,7 +299,7 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
 
     /**
      * Queues UserActionRequest for deleteActivitiesFromLists actions. Queues a task for each key passed in.
-     *
+     * 
      * @param keys
      *            Cache keys to remove ids from
      * @param values
@@ -307,14 +314,14 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
         {
             // Put an action on the queue to delete the activities from the appropriate lists
             inActionContext.getUserActionRequests().add(
-                    new UserActionRequest("deleteIdsFromLists", null, new DeleteIdsFromListsRequest(Arrays.asList(key),
-                            values)));
+                    new UserActionRequest("deleteIdsFromLists", null, new DeleteIdsFromListsRequest(Collections
+                            .singletonList(key), values)));
         }
     }
 
     /**
      * Queues UserActionRequest for deleteFromSearchIndex actions.
-     *
+     * 
      * @param clazz
      *            Class of item to remove.
      * @param ids
@@ -334,7 +341,7 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
 
     /**
      * Queues Single UserActionRequest for deleteKeysFromCache action.
-     *
+     * 
      * @param keys
      *            keys to delete from cache.
      * @param inActionContext
@@ -349,7 +356,7 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
 
     /**
      * Queues UserActionRequest for deleteKeysFromCache action, one for each key.
-     *
+     * 
      * @param keys
      *            keys to delete from cache.
      * @param inActionContext
@@ -361,17 +368,16 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
         Iterator<String> it = keys.iterator();
         while (it.hasNext())
         {
-            inActionContext.getUserActionRequests()
-                    .add(
-                            new UserActionRequest("deleteCacheKeysAction", null, new HashSet<String>(Arrays.asList(it
-                                    .next()))));
+            inActionContext.getUserActionRequests().add(
+                    new UserActionRequest("deleteCacheKeysAction", null, new HashSet<String>(Collections
+                            .singletonList(it.next()))));
         }
     }
 
     /**
      * Utility method for converting Map of personid/starred activity ids to tasks to update the users'
      * CacheKeys.STARRED_BY_PERSON_ID lists in cache.
-     *
+     * 
      * @param inDeleteActivityResponse
      *            {@link BulkActivityDeleteResponse} containing Map.
      * @param inActionContext
@@ -386,14 +392,14 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
 
         for (Long personId : personIds)
         {
-            generateRemoveIdsFromListTasks(Arrays.asList(CacheKeys.STARRED_BY_PERSON_ID + personId),
+            generateRemoveIdsFromListTasks(Collections.singletonList(CacheKeys.STARRED_BY_PERSON_ID + personId),
                     new ArrayList<Long>(starMap.get(personId)), inActionContext);
         }
     }
 
     /**
      * Generate keys to delete from cache as a result of deleting a group.
-     *
+     * 
      * @param inRequest
      *            {@link DeleteGroupCacheUpdateRequest}.
      * @return Keys to delete from cache as a result of deleting a group.
@@ -412,25 +418,29 @@ public class DeleteGroupFromDBExecution implements TaskHandlerExecutionStrategy<
         // remove coordinator ids list for group.
         keysToPurgeFromCache.add(CacheKeys.COORDINATOR_PERSON_IDS_BY_GROUP_ID + inRequest.getGroupId());
 
+        // remove the group stream from cache
+        keysToPurgeFromCache.add(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + inRequest.getStreamScopeId());
+
         return keysToPurgeFromCache;
     }
 
     /**
      * Generate cacheKeys.
-     *
+     * 
      * @param keyRoot
      *            Root of key.
      * @param inIds
      *            Id for key
      * @return List of generated keys.
      */
-    private List<String> createKeys(final String keyRoot, final List<Long> inIds)
+    @SuppressWarnings("unchecked")
+    private List<String> createKeys(final String keyRoot, final List inIds)
     {
-        List<String> keys = new ArrayList<String>();
+        List keys = new ArrayList();
 
-        for (Long id : inIds)
+        for (int i = 0; i < inIds.size(); i++)
         {
-            keys.add(keyRoot + id);
+            keys.add(keyRoot + inIds.get(i));
         }
 
         return keys;
