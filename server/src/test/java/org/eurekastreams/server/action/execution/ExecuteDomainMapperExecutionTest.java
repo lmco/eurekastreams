@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.context.ActionContext;
-import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -51,7 +50,7 @@ public class ExecuteDomainMapperExecutionTest
     private DomainMapper<Serializable, Serializable> domainMapper = context.mock(DomainMapper.class);
 
     /**
-     * {@link TaskHandlerActionContext}.
+     * {@link ActionContext}.
      */
     private ActionContext actionContext = context.mock(ActionContext.class);
 
