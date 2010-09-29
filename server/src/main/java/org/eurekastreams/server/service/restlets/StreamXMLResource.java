@@ -53,8 +53,6 @@ import com.sun.syndication.feed.synd.SyndFeedImpl;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedOutput;
 
-import edu.emory.mathcs.backport.java.util.Collections;
-
 /**
  * REST end point for stream filters.
  *
@@ -109,7 +107,6 @@ public class StreamXMLResource extends SmpResource
 
     /** Extracts the query out of the request path. */
     private RestletQueryRequestParser requestParser;
-
 
     /**
      * Default constructor.
@@ -226,16 +223,20 @@ public class StreamXMLResource extends SmpResource
                 {
                 case BOOKMARK:
                     title = activity.getActor().getDisplayName() + ": "
-                        + activity.getBaseObjectProperties().get("content") + " "
-                        + activity.getBaseObjectProperties().get("targetUrl");
+                            + activity.getBaseObjectProperties().get("content") + " "
+                            + activity.getBaseObjectProperties().get("targetUrl");
                     break;
                 case NOTE:
                     title = activity.getActor().getDisplayName() + ": "
                             + activity.getBaseObjectProperties().get("content");
                     break;
                 case PHOTO:
+                    title = activity.getActor().getDisplayName() + ": "
+                            + activity.getBaseObjectProperties().get("content");
                     break;
                 case VIDEO:
+                    title = activity.getActor().getDisplayName() + ": "
+                            + activity.getBaseObjectProperties().get("content");
                     break;
                 default:
                     break;
@@ -255,7 +256,6 @@ public class StreamXMLResource extends SmpResource
                 }
             }
 
-            Collections.reverse(entries);
             feed.setEntries(entries);
 
         }
