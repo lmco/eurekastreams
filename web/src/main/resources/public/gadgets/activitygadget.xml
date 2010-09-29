@@ -220,25 +220,7 @@
 		
 		function getFooter(prefs_)
 		{
-		      var streamType = prefs_.getString("streamType");
-		      var filterId = prefs_.getString("filterId");
-		      var shortName = prefs_.getString("shortName");
-		      var searchId = prefs_.getString("searchId");
-		      switch(streamType)
-		      {
-		      	case "compositestream":
-		      		return "activity?listId=" + filterId + "&viewId=" + filterId;
-		      	case "streamsearch":
-		      		return "activity?searchId=" + filterId + "&streamSearch=" + shortName + "&viewId=" + searchId;
-		      	case "groupstream":
-		      		return "groups/" + shortName;
-		      	case "personstream":
-		      		return "people/" + shortName;
-		      	case "orgstream":
-		      		return "organizations/" + shortName;
-		      	default:
-		      		return "";
-		      }
+		   return prefs_.getString("streamLocation");
 		}
 		</script>
 

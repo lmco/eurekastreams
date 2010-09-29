@@ -23,7 +23,6 @@ import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.HideNotificationEvent;
 import org.eurekastreams.web.client.events.Observer;
-import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.StreamSearchBeginEvent;
 import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
@@ -38,9 +37,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.InlineHyperlink;
@@ -96,12 +93,12 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
      * Title wrapper.
      */
     FlowPanel titleWrapper = new FlowPanel();
-    
+
     /**
      * Link for group stream titles.
      */
     Hyperlink titleLink = new Hyperlink();
-    
+
     /**
      * In label.
      */
@@ -119,6 +116,11 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
 
     /** Link to add a gadget for the displayed stream. */
     private Hyperlink addGadgetLink;
+
+    /**
+     * Stream to URL transformer.
+     */
+    private StreamToUrlTransformer streamUrlTransformer = new StreamToUrlTransformer();
 
     /**
      * The mode of the list (needed for the "add gadget" link).
@@ -148,7 +150,7 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
         titleLbl = new Label();
         titleLbl.addStyleName("title");
         titleWrapper.add(titleLbl);
-        
+
         titleWrapper.add(titleLink);
         titleLink.addStyleName("title");
         titleLink.setVisible(false);
@@ -217,7 +219,7 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
             {
                 Stream newStream = new Stream();
                 newStream.setRequest(lastRequest);
-                
+
                 Session.getInstance().getEventBus().notifyObservers(new HideNotificationEvent());
                 CustomStreamDialogContent dialogContent = new CustomStreamDialogContent(newStream);
                 Dialog dialog = new Dialog(dialogContent);
@@ -243,51 +245,24 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
             }
         });
 
-        EventBus.getInstance().addObserver(StreamRequestEvent.class, new Observer<StreamRequestEvent>()
+        EventBus.getInstance().addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
         {
-            public void update(final StreamRequestEvent event)
+            public void update(final GotStreamResponseEvent event)
             {
-                if (event.getStreamId() == null)
+                String stream = Session.getInstance().getParameterValue("streamId");
+
+                String url = "";
+
+                if (null == stream)
                 {
-                    JSONObject json = JSONParser.parse(event.getJson()).isObject();
-
-                    String queryString = "";
-                    JSONObject query = json.get("query").isObject();
-
-                    for (String key : query.keySet())
-                    {
-                        queryString += key + "/";
-                        if (null != query.get(key).isArray())
-                        {
-
-                            JSONArray entArr = query.get(key).isArray();
-                            for (int i = 0; i < entArr.size(); i++)
-                            {
-                                JSONObject entity = entArr.get(i).isObject();
-
-                                if (i != 0)
-                                {
-                                    queryString += ",";
-                                }
-
-                                queryString += entity.get("type").isString().stringValue() + ":"
-                                        + entity.get("name").isString().stringValue();
-                            }
-                        }
-                        else
-                        {
-                            queryString += query.get(key).isString().stringValue() + "/";
-                            titleLbl.setVisible(true);
-                            titleLink.setVisible(false);
-                        }
-                    }
-
-                    setAddGadgetLink(event.getStreamName(), "query/" + queryString);
+                    url = History.getToken();
                 }
                 else
                 {
-                    setAddGadgetLink(event.getStreamName(), "saved/" + event.getStreamId());
+                    url = "activity?streamId=" + stream;
                 }
+
+                setAddGadgetLink(titleLbl.getText(), streamUrlTransformer.getUrl(stream, event.getJsonRequest()), url);
             }
         });
     }
@@ -330,7 +305,7 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
 
     /**
      * Set the title text, generating a hyperlink for group stream titles.
-     *
+     * 
      * @param title
      *            the text.
      * @param shortName
@@ -343,13 +318,13 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
         titleLbl.setText(title);
         searchTerm.setVisible(true);
         searchGo.setVisible(true);
-        
+
         if (makeLink)
         {
             String url = Session.getInstance().generateUrl(new CreateUrlRequest(Page.GROUPS, shortName));
             titleLink.setTargetHistoryToken(url);
             titleLink.setHTML(title);
-            
+
             titleLbl.setVisible(false);
             titleLink.setVisible(true);
         }
@@ -381,14 +356,16 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
      *            the gadget title.
      * @param streamQuery
      *            the stream query.
+     * @param location
+     *            the location of the stream.
      */
-    private void setAddGadgetLink(final String gadgetTitle, final String streamQuery)
+    private void setAddGadgetLink(final String gadgetTitle, final String streamQuery, final String location)
     {
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("action", "addGadget");
         params.put("url", "{d7a58391-5375-4c76-b5fc-a431c42a7555}");
         params.put("prefs", "{\"streamQuery\":" + makeJsonString(streamQuery) + ",\"gadgetTitle\":"
-                + makeJsonString(gadgetTitle) + "}");
+                + makeJsonString(gadgetTitle) + ",\"streamLocation\":" + makeJsonString(location) + "}");
         String url = Session.getInstance().generateUrl(new CreateUrlRequest(Page.START, params));
 
         addGadgetLink.setTargetHistoryToken(url);
@@ -405,6 +382,6 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
      * @return JSON string representation.
      */
     private static native String makeJsonString(final String input) /*-{
-                return input == null ? 'null' : '"' + input.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"';
-             }-*/;
+                        return input == null ? 'null' : '"' + input.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"';
+                     }-*/;
 }

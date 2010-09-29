@@ -22,6 +22,7 @@ import org.eurekastreams.web.client.events.HideNotificationEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.SwitchedToActivityDetailViewEvent;
+import org.eurekastreams.web.client.events.SwitchedToCustomStreamEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
@@ -200,6 +201,7 @@ public class CustomStreamPanel extends Composite implements FilterPanel
 
         this.addStyleName("active");
 
+        Session.getInstance().getEventBus().notifyObservers(new SwitchedToCustomStreamEvent());
         Session.getInstance().getEventBus().notifyObservers(new ChangeShowStreamRecipientEvent(true));
     }
 

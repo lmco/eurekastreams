@@ -38,17 +38,22 @@ public class TermsOfServiceDTO implements Serializable
     @SuppressWarnings("unused")
     private TermsOfServiceDTO()
     {
-        //no-op
+        // no-op
     }
-    
+
     /**
      * Constructor.
-     * @param inTermsOfService The terms of service.
+     * 
+     * @param inTermsOfService
+     *            The terms of service.
      */
     public TermsOfServiceDTO(final String inTermsOfService)
     {
-        // make links open in new window.
-        termsOfService = inTermsOfService.replace("<a ", "<a target='_NEW' ");
+        if (null != inTermsOfService)
+        {
+            // make links open in new window.
+            termsOfService = inTermsOfService.replace("<a ", "<a target='_NEW' ");
+        }
     }
 
     /**

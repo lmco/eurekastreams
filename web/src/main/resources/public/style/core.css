@@ -7888,12 +7888,12 @@ body .terms-of-service-modal .agree-button-disabled {
  *****************************************************************************/
 .post-to-stream-container {
 	margin: 10px 10px 0px 10px; 
+	border: 1px solid #bbbbbb; 
 	*zoom: 1;
 }
 
 .post-to-stream {
 	padding: 10px 105px 10px 10px;
-	border: 1px solid #bbbbbb; 
 	*zoom: 1;
 }
 
@@ -8045,6 +8045,17 @@ body .post-expanded-panel .content-warning {
 	margin-left: 5px;
 }
 
+.stream-atom-link
+{
+	background: transparent url(images/feedIconLarge.png);
+	width: 28px;
+	height: 28px;
+	display: inline-block;
+	*display: inline;
+	zoom: 1;
+	float: right;
+}
+
 div.new-messages-notification {
 	margin-left: 35px;
 	margin-right: 25px;
@@ -8147,10 +8158,10 @@ div.new-messages-notification>div.refresh-stream {
 
 body .post-to-stream.small textarea {
 	height: 20px; 
-	*height: 26px;
 	color: #999999;
 	font-weight: bold;
 	margin-bottom: 0;
+	overflow: hidden;
 }
 
 body .post-to-stream.small .content-warning {
@@ -8186,14 +8197,10 @@ body .post-to-stream .over-character-limit {
 	text-align: center;
 	position: absolute !important;
 	top: 0px;
-	right: -87px;
+	right: -90px;
 	display: inline-block; 
 	*display: inline; 
 	*zoom: 1;
-}
-
-.post-to-stream.small .post-info-container { 
-	*right: -85px !important;
 }
 
 /* Activity Stream, Post:  "Post To" stream selector */
@@ -8202,7 +8209,6 @@ body .post-to-stream .over-character-limit {
 	text-align: right;
 	width: 580px; 
 	*top: -5px;
-	z-index: 8 ! important;
 }
 
 .post-to .label {
@@ -8245,6 +8251,12 @@ body .post-to-stream .over-character-limit {
 .post-to .yui-ac-container,.share-message-dialog .post-to .yui-ac-container
 	{
 	margin-top: 3px;
+}
+
+.post-to .yui-ac-container
+{
+	width: 160px;	
+	*width: 158px;	
 }
 
 .post-to .yui-ac-input {
@@ -14490,16 +14502,26 @@ body .url-validator .required-form-label {
     margin-left:0px;
 }
 
+.stream .post-entry-panel .auto-complete textarea
+{
+    width:570px;
+}	
+
 .post-entry-panel .auto-complete textarea
 {
     color:black;
     position:relative;
-    width:570px;
+    width:560px;
+}
+
+.stream .post-entry-panel .yui-ac-container
+{
+    width:588px;
 }
 
 .post-entry-panel .yui-ac-container
 {
-    width:589px;
+    width:578px;
 }
 
 
@@ -14516,8 +14538,7 @@ body .url-validator .required-form-label {
 
 .post-entry-panel .yui-ac-content
 {
-    margin-top:50px;
-    *margin-top:-22px;
+    margin-top:49px;
 }
 
 

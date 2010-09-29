@@ -135,9 +135,20 @@ body .stream-list-item .tab-menu
 	float: left;
 }
 
+.post-to-stream-container .yui-ac
+{
+	zoom: 1;
+}
+
+body .post-to-stream-container textarea
+{
+	padding-bottom: 6px;
+}
+
 body .post-to-stream-container .small textarea
 {
 	margin-bottom: 10px;
+	zoom: 1;
 }
 
 body .post-to .yui-ac-container
@@ -147,11 +158,15 @@ body .post-to .yui-ac-container
     margin-top: 9px;
 }
 
+.yui-ac-container
+{
+	position: absolute ! important;
+}
+
 body .profile-page-container .post-to .yui-ac-container
 {
     margin-left: -150px;	
 }
-
 
 .post-to > span
 {
@@ -176,6 +191,15 @@ body .post-to ul
 	z-index: 1000;
 }
 
+.post-to-stream-container
+{
+	z-index: 4 ! important;
+}
+
+.post-to-stream
+{
+	z-index: 5 ! important;
+}
 
 .stream .stream-container .shadow-container
 {
@@ -251,6 +275,16 @@ body .post-to ul
 {
 	overflow: auto;
 	padding-bottom: 10px;
+}
+
+.post-entry-panel
+{
+	z-index: 90 ! important;
+}
+
+.post-expanded-panel
+{
+	z-index: 89 ! important;
 }
 
 body .org-tree 
