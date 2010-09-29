@@ -1477,7 +1477,10 @@
 	
 	<bean id="moveOrganizationPeopleMapper" class="org.eurekastreams.server.persistence.mappers.db.MoveOrganizationPeopleDBMapper" />
 	
-	<bean id="getListsContainingActivities" class="org.eurekastreams.server.persistence.mappers.db.GetListsContainingActivities" />
+	<bean id="getListsContainingActivities" class="org.eurekastreams.server.persistence.mappers.db.GetListsContainingActivities">
+		<constructor-arg ref="getRecursiveParentOrgIdsMapper" />
+        <constructor-arg ref="getOrgShortNamesByIdsMapper" />
+	</bean>
 	
 	<bean id="getPeopleIdsWithRelatedOrg" class="org.eurekastreams.server.persistence.mappers.db.GetPeopleIdsWithRelatedOrg" />
 	

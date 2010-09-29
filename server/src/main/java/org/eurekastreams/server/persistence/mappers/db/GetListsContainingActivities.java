@@ -25,11 +25,12 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
+import org.eurekastreams.server.persistence.mappers.GetRecursiveParentOrgIds;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 
 /**
  * This mapper finds all cache keys that could contain a reference to one of the activities passed as input. Lists of
- * starred activities are not included.
+ * starred activities are not included, nor are the streams that the activities were posted to .
  */
 public class GetListsContainingActivities extends BaseArgDomainMapper<List<Long>, List<String>>
 {
@@ -37,6 +38,31 @@ public class GetListsContainingActivities extends BaseArgDomainMapper<List<Long>
      * Local instance of logger.
      */
     private final Log logger = LogFactory.make();
+
+    /**
+     * Mapper to get hierarchical parent org ids.
+     */
+    private final GetRecursiveParentOrgIds parentOrgIdsMapper;
+
+    /**
+     * Mapper to get the short names from org ids.
+     */
+    private final GetOrgShortNamesByIdsMapper orgShortNamesFromIdsMapper;
+
+    /**
+     * Constructor.
+     *
+     * @param inParentOrgIdsMapper
+     *            parent org mapper
+     * @param inOrgShortNamesFromIdsMapper
+     *            org short names from ids mapper
+     */
+    public GetListsContainingActivities(final GetRecursiveParentOrgIds inParentOrgIdsMapper,
+            final GetOrgShortNamesByIdsMapper inOrgShortNamesFromIdsMapper)
+    {
+        parentOrgIdsMapper = inParentOrgIdsMapper;
+        orgShortNamesFromIdsMapper = inOrgShortNamesFromIdsMapper;
+    }
 
     /**
      * Execute database queries to find which cached lists of activity ids could contain a reference to a given list of
@@ -50,8 +76,8 @@ public class GetListsContainingActivities extends BaseArgDomainMapper<List<Long>
     public List<String> execute(final List<Long> activityIds)
     {
         Set<String> lists = new HashSet<String>();
-        Set<Long> streamScopeIds = new HashSet<Long>();
         Set<String> authorAccountIds = new HashSet<String>();
+        Set<Long> parentOrgIds = new HashSet<Long>();
 
         if (logger.isTraceEnabled())
         {
@@ -70,7 +96,7 @@ public class GetListsContainingActivities extends BaseArgDomainMapper<List<Long>
         {
             // Add the destination streamscope to the list of streamscopes that need
             // to have their corresponding streamviews looked up for.
-            streamScopeIds.add(activity.getRecipientStreamScope().getId());
+            lists.add(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + activity.getRecipientStreamScope().getId());
 
             // gets the author account ids for later use
             // Actors don't always have to be people, but we want the people here
@@ -80,6 +106,15 @@ public class GetListsContainingActivities extends BaseArgDomainMapper<List<Long>
             {
                 authorAccountIds.add(activity.getActorId());
             }
+            parentOrgIds.add(activity.getRecipientParentOrg().getId());
+        }
+
+        // add all the org streams
+        List<String> parentOrgShortNames = getAllParentOrgShortNames(parentOrgIds);
+        for (String orgShortName : parentOrgShortNames)
+        {
+            logger.trace("Found org containing one of our activities: " + orgShortName);
+            lists.add(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName.toLowerCase());
         }
 
         if (logger.isTraceEnabled())
@@ -109,6 +144,8 @@ public class GetListsContainingActivities extends BaseArgDomainMapper<List<Long>
             lists.add(CacheKeys.ACTIVITIES_BY_FOLLOWING + followerId);
         }
 
+        lists.add(CacheKeys.EVERYONE_ACTIVITY_IDS);
+
         if (logger.isTraceEnabled())
         {
             logger.trace("Retrieve all lists containing the supplied activities count: " + lists.size() + " keys: "
@@ -116,5 +153,28 @@ public class GetListsContainingActivities extends BaseArgDomainMapper<List<Long>
         }
 
         return new ArrayList(lists);
+    }
+
+    /**
+     * Returns all parent org short names up the tree.
+     *
+     * @param inOrgIds
+     *            The id of the org.
+     * @return all parent org ids up the tree
+     */
+    private List<String> getAllParentOrgShortNames(final Set<Long> inOrgIds)
+    {
+        Set<Long> parentIds = new HashSet<Long>();
+        for (Long orgId : inOrgIds)
+        {
+            if (!parentIds.contains(orgId))
+            {
+                logger.trace("Looking for parent orgs of " + orgId);
+                parentIds.addAll(parentOrgIdsMapper.execute(orgId));
+            }
+            // now add the looped org id - we have all orgs up the tree for this one, so don't look for it again
+            parentIds.add(orgId);
+        }
+        return orgShortNamesFromIdsMapper.execute(new ArrayList<Long>(parentIds));
     }
 }

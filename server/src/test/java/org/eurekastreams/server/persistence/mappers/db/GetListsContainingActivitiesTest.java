@@ -15,9 +15,16 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eurekastreams.server.persistence.mappers.GetRecursiveParentOrgIds;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
+import org.eurekastreams.server.persistence.mappers.cache.testhelpers.SimpleMemoryCache;
 import org.junit.Test;
 
 /**
@@ -25,6 +32,7 @@ import org.junit.Test;
  */
 public class GetListsContainingActivitiesTest extends MapperTest
 {
+
     /**
      * Test activity id.
      */
@@ -41,35 +49,53 @@ public class GetListsContainingActivitiesTest extends MapperTest
     @Test
     public void testExecute()
     {
-        assertTrue(true);
-        // TODO: Retest
-        // GetListsContainingActivities sut = new GetListsContainingActivities();
-        // sut.setEntityManager(getEntityManager());
-        //
-        // final int keySize = 11;
-        // final int author1 = 98;
-        // final int author2 = 42;
-        // // Follower id of author 1
-        // final int follower1 = 99;
-        // // Follower id of author 2
-        // final int follower2 = 142;
-        //
-        // List<Long> activityIds = new ArrayList<Long>();
-        // activityIds.add(TEST_ACTIVITY_ID_1);
-        // activityIds.add(TEST_ACTIVITY_ID_2);
-        //
-        // List<String> keys = sut.execute(activityIds);
-        // assertEquals(keySize, keys.size());
-        //
-        // // everyone stream
-        // // TODO: assertTrue(keys.contains(CacheKeys.ACTIVITIES_BY_COMPOSITE_STREAM + everyone));
-        //
-        // // followers of the authors of the two activities
-        // assertTrue(keys.contains(CacheKeys.ACTIVITIES_BY_FOLLOWING + follower1));
-        // assertTrue(keys.contains(CacheKeys.ACTIVITIES_BY_FOLLOWING + follower2));
-        //
-        // // authors of the two activities following themselves.
-        // assertTrue(keys.contains(CacheKeys.ACTIVITIES_BY_FOLLOWING + author1));
-        // assertTrue(keys.contains(CacheKeys.ACTIVITIES_BY_FOLLOWING + author2));
+        final GetOrgShortNamesByIdsMapper orgShortNamesFromIdsMapper = new GetOrgShortNamesByIdsMapper();
+        orgShortNamesFromIdsMapper.setEntityManager(getEntityManager());
+
+        final GetRecursiveParentOrgIds parentOrgIdsMapper = new GetRecursiveParentOrgIds();
+        parentOrgIdsMapper.setEntityManager(getEntityManager());
+        parentOrgIdsMapper.setCache(new SimpleMemoryCache());
+
+        GetListsContainingActivities sut = new GetListsContainingActivities(parentOrgIdsMapper,
+                orgShortNamesFromIdsMapper);
+        sut.setEntityManager(getEntityManager());
+
+        // everyone list, 4 followers, two destination streams, everyone list, the org streams 5, 6, 7
+        final int keySize = 10;
+
+        final int author1 = 98;
+        final int author2 = 42;
+        // Follower id of author 1
+        final int follower1 = 99;
+        // Follower id of author 2
+        final int follower2 = 142;
+
+        List<Long> activityIds = new ArrayList<Long>();
+        activityIds.add(TEST_ACTIVITY_ID_1);
+        activityIds.add(TEST_ACTIVITY_ID_2);
+
+        List<String> keys = sut.execute(activityIds);
+        assertEquals(keySize, keys.size());
+
+        // org streams
+        assertTrue(keys.contains(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + "tstorgname"));
+        assertTrue(keys.contains(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + "child1orgname"));
+        assertTrue(keys.contains(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + "child2orgname"));
+
+        // stream views
+        assertTrue(keys.contains(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + "87433"));
+        assertTrue(keys.contains(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + "2"));
+        assertTrue(keys.contains(CacheKeys.EVERYONE_ACTIVITY_IDS));
+
+        // everyone stream
+        assertTrue(keys.contains(CacheKeys.EVERYONE_ACTIVITY_IDS));
+
+        // followers of the authors of the two activities
+        assertTrue(keys.contains(CacheKeys.ACTIVITIES_BY_FOLLOWING + follower1));
+        assertTrue(keys.contains(CacheKeys.ACTIVITIES_BY_FOLLOWING + follower2));
+
+        // authors of the two activities following themselves.
+        assertTrue(keys.contains(CacheKeys.ACTIVITIES_BY_FOLLOWING + author1));
+        assertTrue(keys.contains(CacheKeys.ACTIVITIES_BY_FOLLOWING + author2));
     }
 }
