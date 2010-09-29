@@ -8045,6 +8045,17 @@ body .post-expanded-panel .content-warning {
 	margin-left: 5px;
 }
 
+.stream-atom-link
+{
+	background: transparent url(images/feedIconLarge.png);
+	width: 28px;
+	height: 28px;
+	display: inline-block;
+	*display: inline;
+	zoom: 1;
+	float: right;
+}
+
 div.new-messages-notification {
 	margin-left: 35px;
 	margin-right: 25px;

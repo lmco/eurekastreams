@@ -17,11 +17,13 @@ package org.eurekastreams.server.domain.stream;
 
 import java.io.Serializable;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 
 import org.eurekastreams.commons.model.DomainEntity;
+import org.hibernate.validator.Length;
 
 /**
  * A stream.
@@ -34,6 +36,13 @@ public class Stream extends DomainEntity implements Serializable, StreamFilter
      * Serial version uid.
      */
     private static final long serialVersionUID = 7278197745679222759L;
+
+    /** Used for validation. */
+    public static final int MAX_NAME_LENGTH = 50;
+
+    /** Used for validation. */
+    public static final String NAME_LENGTH_MESSAGE = "Organization Name must supports up to " + MAX_NAME_LENGTH
+            + " characters.";
 
     /**
      * The name of the view.
@@ -51,7 +60,8 @@ public class Stream extends DomainEntity implements Serializable, StreamFilter
     /**
      * The name of the view.
      */
-    @Column(nullable = false)
+    @Basic(optional = false)
+    @Length(min = 1, max = MAX_NAME_LENGTH, message = NAME_LENGTH_MESSAGE)
     private String name;
 
     /**

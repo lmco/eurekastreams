@@ -22,6 +22,7 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
+import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 
@@ -56,6 +57,11 @@ public class StreamSortPanel extends Composite
      * Map of the links to the sorts.
      */
     final Map<String, Anchor> linkMap = new HashMap<String, Anchor>();
+    
+    /**    
+     * Stream to URL transformer.
+     */
+    private StreamToUrlTransformer streamUrlTransformer = new StreamToUrlTransformer();
 
     /**
      * Constructor.
@@ -70,6 +76,20 @@ public class StreamSortPanel extends Composite
         options.addStyleName("options");
 
         widget.add(options);
+
+        final Anchor atomLink = new Anchor();
+        atomLink.addStyleName("stream-atom-link");
+        widget.add(atomLink);
+
+        EventBus.getInstance().addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
+        {
+            public void update(final GotStreamResponseEvent event)
+            {
+                String stream = Session.getInstance().getParameterValue("streamId");
+                atomLink.setHref("/resources/atom/stream/"
+                        + streamUrlTransformer.getUrl(stream, event.getJsonRequest()));
+            }
+        });
 
         options.add(new Label("Sort:"));
 
