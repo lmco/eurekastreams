@@ -160,6 +160,18 @@
 	<bean
 		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITY_SECURITY_BY_ID"
 		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
+		
+    <bean
+        id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_BY_ID"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />  
+        
+    <bean
+        id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_BY_ACCOUNT_ID"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" /> 
+        
+    <bean
+        id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_BY_OPEN_SOCIAL_ID"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />		
 
 	<bean
 		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.POPULAR_HASH_TAGS_BY_STREAM_TYPE_AND_SHORT_NAME"
@@ -571,6 +583,80 @@
 		<!-- Cache refresher -->
 		<constructor-arg ref="refreshFollowedByActivitiesCacheMapper" />
 	</bean>
+	
+    <bean id="getPersonsByIdsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache Mapper -->
+        <constructor-arg ref="getPersonsByIdsCacheMapper"/>
+        <!-- Database mapper to fall back on if not found in cache -->
+        <constructor-arg ref="getPersonsByIdsDBMapper" />
+        <!-- Data combiner -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
+        </constructor-arg>        
+        <!-- Cache refresher -->
+        <constructor-arg ref="personCacheRefresher"/>                        
+    </bean>
+    
+    <bean id="getPersonsByIdsCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
+        </constructor-arg>
+        <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_BY_ID" />
+        <!-- Is list of lists flag -->
+        <constructor-arg value="False" />
+        <property name="cache" ref="memcachedCache" />
+    </bean>
+    
+    <bean id="personCacheRefresher" class="org.eurekastreams.server.persistence.mappers.cache.MultiRefreshCacheRefreshStrategy">
+        <constructor-arg>
+            <list>
+                <ref local="personByIdRefresher" />
+                <ref local="personByAccountIdRefresher" />
+                <ref local="personByOpenSocialIdRefresher" />
+            </list>
+        </constructor-arg>
+    </bean>
+    
+    <bean id="personByIdRefresher" class="org.eurekastreams.server.persistence.mappers.cache.MultiValueCacheRefreshStrategy">
+        <!-- Prefix -->
+        <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_BY_ID" />
+        <!-- Suffix Transformer -->
+        <constructor-arg ref="PersonToIdTransformer"/>
+         <!-- Value Transformer -->
+        <constructor-arg ref="passThroughTransformer"/>
+        <!-- Cache -->
+        <constructor-arg ref="memcachedCache" />        
+    </bean>
+    
+    <bean id="personByAccountIdRefresher" class="org.eurekastreams.server.persistence.mappers.cache.MultiValueCacheRefreshStrategy">
+        <!-- Prefix -->
+        <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_BY_ACCOUNT_ID" />
+        <!-- Suffix Transformer -->
+        <constructor-arg ref="PersonToAccountIdTransformer"/>
+         <!-- Value Transformer -->
+        <constructor-arg ref="PersonToIdTransformer"/>
+        <!-- Cache -->
+        <constructor-arg ref="memcachedCache" />      
+    </bean>
+    
+    <bean id="personByOpenSocialIdRefresher" class="org.eurekastreams.server.persistence.mappers.cache.MultiValueCacheRefreshStrategy">
+        <!-- Prefix -->
+        <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_BY_OPEN_SOCIAL_ID" />
+        <!-- Suffix Transformer -->
+        <constructor-arg ref="PersonToOpenSocialIdTransformer"/>
+         <!-- Value Transformer -->
+        <constructor-arg ref="PersonToIdTransformer"/>
+        <!-- Cache -->
+        <constructor-arg ref="memcachedCache" />      
+    </bean>
+    
+    <bean id="PersonToIdTransformer" class="org.eurekastreams.server.persistence.mappers.cache.PersonToIdTransformer" />
+    
+    <bean id="PersonToAccountIdTransformer" class="org.eurekastreams.server.persistence.mappers.cache.PersonToAccountIdTransformer" />
+    
+    <bean id="PersonToOpenSocialIdTransformer" class="org.eurekastreams.server.persistence.mappers.cache.PersonToOpenSocialIdTransformer" />
+    
+    <bean id="passThroughTransformer" class="org.eurekastreams.server.persistence.mappers.cache.PassThroughTransformer" />	
 
 	<!-- Organization Hierarchy Cache Loader -->
 	<bean id="organizationCacheLoader"
@@ -1376,6 +1462,16 @@
     <bean id="deleteOrganizationMapper" class="org.eurekastreams.server.persistence.mappers.db.DeleteOrganizationDbMapper" >
         <constructor-arg ref="findByIdMapper"/>
     </bean>
+    
+    <bean id="getPersonIds" class="org.eurekastreams.server.persistence.mappers.db.GetSerializableField" >
+        <constructor-arg value="Person"/>
+        <constructor-arg value="id"/>        
+    </bean>
+    
+    <bean id="getPersonsByIdsDBMapper" class="org.eurekastreams.server.persistence.mappers.db.GetPersonsByIds">
+        <constructor-arg ref="personQueryStrategy" />
+        <constructor-arg ref="getRelatedOrganizationIdsByPersonId" />
+    </bean>    
     
     <bean id="getRelatedEntityCountMapper" class="org.eurekastreams.server.persistence.mappers.db.GetRelatedEntityCount" />
 	

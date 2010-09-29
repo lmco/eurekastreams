@@ -3130,14 +3130,43 @@
                 <constructor-arg ref="memcachedCache" />
                 <constructor-arg>
                     <list>
+                        <!-- <value>queuePersonCacheWarmingTasks</value> -->
                         <value>cacheWarmPeople</value>
                         <value>cacheWarmGroups</value>
-                        <value>cacheWarmOrganizations</value>                                               
+                        <value>cacheWarmOrganizations</value>                         
                     </list>
                 </constructor-arg>
             </bean>
         </constructor-arg>
         <constructor-arg ref="taskHandler" />
+        <constructor-arg value="true" />
+    </bean>
+    
+    <bean id="queuePersonCacheWarmingTasks" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.QueueKeyBasedTasksExecution">
+                <constructor-arg>
+                    <list>
+                        <value>cachePerson</value>
+                    </list>
+                </constructor-arg>
+                <constructor-arg ref="getPersonIds" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="true" />
+    </bean>   
+    
+    <bean id="cachePerson" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="getPersonsByIdsMapper" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="True" />
+            </bean>
+        </constructor-arg>
         <constructor-arg value="true" />
     </bean>
     

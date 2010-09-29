@@ -570,7 +570,7 @@
         <constructor-arg value="id"/>        
     </bean>
     
-    <bean id="getPersonsByIds" class="org.eurekastreams.server.persistence.mappers.db.GetPersonsByIds">
+    <bean id="getPersonsByIdsDBMapper" class="org.eurekastreams.server.persistence.mappers.db.GetPersonsByIds">
         <constructor-arg ref="personQueryStrategy" />
         <constructor-arg ref="getRelatedOrganizationIdsByPersonId" />
     </bean>
