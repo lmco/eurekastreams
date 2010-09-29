@@ -23,6 +23,7 @@
         <intercept-url pattern="/gwt-dnd.css" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/resources/autocomplete/entities/**" access="ROLE_USER"/>
+        <intercept-url pattern="/resources/atom/**" access="ROLE_USER"/>
         <intercept-url pattern="/resources/**" access="ROLE_ANONYMOUS, ROLE_USER"/> 
         <intercept-url pattern="/themes/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/social/**" access="ROLE_ANONYMOUS, ROLE_USER"/>

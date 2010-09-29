@@ -200,38 +200,47 @@
 		<property name="modifiable" value="true" />
 	</bean>	
 	
+    <bean name="restletQueryRequestParser" class="org.eurekastreams.server.service.restlets.support.RestletQueryRequestParser">
+                <constructor-arg>
+                    <list>
+                        <value>minId</value>
+                        <value>maxId</value>
+                    </list>
+                </constructor-arg>
+                <constructor-arg>
+                    <list>
+                        <value>recipient</value>
+                    </list>
+                </constructor-arg>
+                <constructor-arg>
+                    <list>
+                        <value>keywords</value>
+                        <value>followedBy</value>
+                        <value>sortBy</value>
+                        <value>savedBy</value>
+                        <value>organization</value>
+                        <value>parentOrg</value>
+                    </list>
+                </constructor-arg>
+    </bean>
+	
 	<bean name="streamResource" class="org.eurekastreams.server.service.restlets.StreamResource" scope="prototype">
 		<constructor-arg ref="getActivitiesByRequest" />
 		<constructor-arg ref="serviceActionController" />
 		<constructor-arg ref="openSocialPrincipalPopulator" />
 		<constructor-arg ref="findByIdMapper" />
-		<constructor-arg>
-			<bean class="org.eurekastreams.server.service.restlets.support.RestletQueryRequestParser">
-				<constructor-arg>
-					<list>
-						<value>minId</value>
-						<value>maxId</value>
-					</list>
-				</constructor-arg>
-				<constructor-arg>
-					<list>
-						<value>recipient</value>
-					</list>
-				</constructor-arg>
-				<constructor-arg>
-					<list>
-						<value>keywords</value>
-						<value>followedBy</value>
-						<value>sortBy</value>
-						<value>savedBy</value>
-						<value>organization</value>
-						<value>parentOrg</value>
-					</list>
-				</constructor-arg>
-			</bean>
-		</constructor-arg>
+		<constructor-arg ref="restletQueryRequestParser" />
 	</bean>
-	
+	   
+    <bean name="streamXMLResource" class="org.eurekastreams.server.service.restlets.StreamXMLResource" scope="prototype">
+        <constructor-arg ref="getActivitiesByRequest" />
+        <constructor-arg ref="serviceActionController" />
+        <constructor-arg ref="principalPopulator" />
+        <constructor-arg ref="findByIdMapper" />
+        <constructor-arg ref="restletQueryRequestParser" />
+    </bean>
+    
+    
 	
 	<!-- The router maps URLs to resources. -->
 	<bean name="restletRouter" class="org.restlet.ext.spring.SpringRouter">
@@ -426,6 +435,16 @@
                 	<bean class="org.restlet.ext.spring.SpringFinder">
                 		<lookup-method name="createResource" bean="streamResource" />
                 	</bean>
+                </entry>
+                <entry key="/atom/stream/{mode}">
+                    <bean class="org.restlet.ext.spring.SpringFinder">
+                        <lookup-method name="createResource" bean="streamXMLResource" />
+                    </bean>
+                </entry>
+                <entry key="/atom/stream/{mode}/{streamId}">
+                    <bean class="org.restlet.ext.spring.SpringFinder">
+                        <lookup-method name="createResource" bean="streamXMLResource" />
+                    </bean>
                 </entry>
 			</map>
 		</property>
