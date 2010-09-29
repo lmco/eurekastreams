@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
@@ -23,8 +24,8 @@ import org.eurekastreams.server.persistence.mappers.DomainMapper;
 /**
  * Bulk maps activity streams from the database.
  */
-public class BulkActivityStreamsDbMapper extends BaseArgDomainMapper<List<Long>, List<Long>> implements
-        DomainMapper<List<Long>, List<Long>>
+public class BulkActivityStreamsDbMapper extends BaseArgDomainMapper<List<Long>, List<List<Long>>> implements
+        DomainMapper<List<Long>, List<List<Long>>>
 {
     /**
      * Max items to return.
@@ -50,12 +51,19 @@ public class BulkActivityStreamsDbMapper extends BaseArgDomainMapper<List<Long>,
      * @return the list of activity IDs.
      */
     @SuppressWarnings("unchecked")
-    public List<Long> execute(final List<Long> inRequest)
+    public List<List<Long>> execute(final List<Long> inRequest)
     {
-        String query = "SELECT id FROM Activity WHERE recipientStreamScope.id IN (:streamIds) ORDER BY id";
+        List<List<Long>> results = new ArrayList<List<Long>>();
 
-        return getEntityManager().createQuery(query).setParameter("streamIds", inRequest).setMaxResults(maxItems)
-                .getResultList();
+        for (Long id : inRequest)
+        {
+            String query = "SELECT id FROM Activity WHERE recipientStreamScope.id = :streamId ORDER BY id DESC";
+
+            results.add(getEntityManager().createQuery(query).setParameter("streamId", id).setMaxResults(maxItems)
+                    .getResultList());
+        }
+
+        return results;
     }
 
 }

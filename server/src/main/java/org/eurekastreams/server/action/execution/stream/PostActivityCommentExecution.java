@@ -86,11 +86,11 @@ public class PostActivityCommentExecution implements TaskHandlerExecutionStrateg
 
         long personId = inActionContext.getActionContext().getPrincipal().getId();
         long activityId = inRequest.getActivityId();
-        
         CommentDTO results = insertCommentDAO.execute(new InsertActivityCommentRequest(personId, activityId, inRequest
                 .getBody()));
 
-        inActionContext.getUserActionRequests().addAll(getNotificationUserRequests(personId, activityId));
+        inActionContext.getUserActionRequests().addAll(
+                getNotificationUserRequests(personId, activityId, results.getId()));
 
         return results;
     }
@@ -102,9 +102,12 @@ public class PostActivityCommentExecution implements TaskHandlerExecutionStrateg
      *            current user id.
      * @param activityId
      *            id of activity being commented on.
+     * @param commentId
+     *            ID of new comment.
      * @return List of UserActionRequests.
      */
-    private List<UserActionRequest> getNotificationUserRequests(final long personId, final long activityId)
+    private List<UserActionRequest> getNotificationUserRequests(final long personId, final long activityId,
+            final long commentId)
     {
         List<UserActionRequest> queuedRequests = null;
 
@@ -129,8 +132,8 @@ public class PostActivityCommentExecution implements TaskHandlerExecutionStrateg
 
         if (requestType != null)
         {
-            CreateNotificationsRequest notificationRequest = new CreateNotificationsRequest(requestType, personId,
-                    destinationId, activityId);
+            CreateNotificationsRequest notificationRequest =
+                    new CreateNotificationsRequest(requestType, personId, destinationId, commentId);
 
             // create list if it has not already been done.
             queuedRequests = queuedRequests == null ? new ArrayList<UserActionRequest>() : queuedRequests;
@@ -141,5 +144,4 @@ public class PostActivityCommentExecution implements TaskHandlerExecutionStrateg
 
         return queuedRequests;
     }
-
 }

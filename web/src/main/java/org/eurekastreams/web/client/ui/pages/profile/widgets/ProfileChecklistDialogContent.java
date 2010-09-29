@@ -210,7 +210,5 @@ public class ProfileChecklistDialogContent implements DialogContent
      */
     public void show()
     {
-        // TODO Auto-generated method stub
-
     }
 }

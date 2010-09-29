@@ -193,4 +193,15 @@ public final class CacheKeys
      * Cache key for the everyone activity list.
      */
     public static final String EVERYONE_ACTIVITY_IDS = "ActAll";
+
+    /**
+     * Entity activity stream.
+     */
+    public static final String ENTITY_STREAM_BY_SCOPE_ID = "EntStr:";
+
+    /**
+     * Cache key prefix for all activity ids for an organization (recursive) by short name.
+     */
+    public static final String ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE = "OrgActIds:";
+
 }

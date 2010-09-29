@@ -16,6 +16,8 @@
 package org.eurekastreams.server.service.actions.strategies.activity.datasources;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import net.sf.json.JSONObject;
 
@@ -42,23 +44,40 @@ public class LuceneDataSource implements SortedDataSource
     private ProjectionSearchRequestBuilder searchRequestBuilder;
 
     /**
-     * Search builder to retrieve all activity.
+     * Unstemmed request builder.
      */
-    private ProjectionSearchRequestBuilder everyActivityRequestBuilder;
+    private ProjectionSearchRequestBuilder unstemmedRequestBuilder;
+
+    /**
+     * Translates the request to search fields.
+     */
+    private Map<String, String> requestToField;
+
+    /**
+     * Transformers.
+     */
+    private Map<String, PersistenceDataSourceRequestTransformer> transformers;
 
     /**
      * Constructor.
      * 
      * @param inSearchRequestBuilder
      *            the search request builder
-     * @param inEveryActivityRequestBuilder
-     *            search builder to retreive all activity.
+     * @param inUnstemmedRequestBuilder
+     *            the unstemmed request builder.
+     * @param inRequestToField
+     *            maps requests to Lucene fields.
+     * @param inTransformers
+     *            the transformers (more than meets the eye).
      */
     public LuceneDataSource(final ProjectionSearchRequestBuilder inSearchRequestBuilder,
-            final ProjectionSearchRequestBuilder inEveryActivityRequestBuilder)
+            final ProjectionSearchRequestBuilder inUnstemmedRequestBuilder, final Map<String, String> inRequestToField,
+            final Map<String, PersistenceDataSourceRequestTransformer> inTransformers)
     {
         searchRequestBuilder = inSearchRequestBuilder;
-        everyActivityRequestBuilder = inEveryActivityRequestBuilder;
+        unstemmedRequestBuilder = inUnstemmedRequestBuilder;
+        requestToField = inRequestToField;
+        transformers = inTransformers;
     }
 
     /**
@@ -75,38 +94,69 @@ public class LuceneDataSource implements SortedDataSource
     public List<Long> fetch(final JSONObject inRequest, final Long userEntityId)
     {
         JSONObject jsonQuery = inRequest.getJSONObject("query");
-        if (!jsonQuery.containsKey("keywords") && !jsonQuery.containsKey("sortBy"))
+
+        if (log.isInfoEnabled())
+        {
+            log.info("JSON Query: " + jsonQuery.toString());
+        }
+
+        Boolean hasTerm = false;
+
+        for (String term : requestToField.keySet())
+        {
+            if (jsonQuery.containsKey(term))
+            {
+                hasTerm = true;
+                break;
+            }
+        }
+
+        if (!hasTerm
+                && (!jsonQuery.containsKey("sortBy") || (jsonQuery.containsKey("sortBy") && jsonQuery.getString(
+                        "sortBy").equals("date"))))
         {
             log.info("No search term found");
             return null;
         }
 
         String luceneQuery = "";
+        FullTextQuery query = null;
 
-        if (jsonQuery.containsKey("keywords"))
+        for (Entry<String, String> entry : requestToField.entrySet())
         {
-            luceneQuery = jsonQuery.getString("keywords");
+            if (jsonQuery.containsKey(entry.getKey()))
+            {
+                String searchWord = jsonQuery.getString(entry.getKey());
+                // remove semicolons, which can be used to search other fields
+                searchWord = searchWord.replace(":", "");
+
+                if (transformers.containsKey(entry.getKey()))
+                {
+                    searchWord = (String) transformers.get(entry.getKey()).transform(jsonQuery, userEntityId);
+                }
+
+                luceneQuery += "+" + entry.getValue() + ":(" + searchWord + ")";
+            }
         }
 
-        // remove semicolons, which can be used to search other fields
-        luceneQuery = luceneQuery.replace(":", "");
-
-        log.info("Lucene keywords: " + luceneQuery);
-
-        FullTextQuery query = null;
+        if (log.isInfoEnabled())
+        {
+            log.info("Lucene Query: " + luceneQuery);
+        }
 
         if (luceneQuery.length() == 0)
         {
             log.info("Returning all activity");
-            query = everyActivityRequestBuilder
-                    .buildQueryFromNativeSearchString("org.eurekastreams.server.domain.stream.Activity");
+            query = unstemmedRequestBuilder.buildQueryFromNativeSearchString("_hibernate_class:"
+                    + "org.eurekastreams.server.domain.stream.Activity");
         }
         else
         {
             query = searchRequestBuilder.buildQueryFromNativeSearchString(luceneQuery);
+
         }
 
-        if (jsonQuery.containsKey("sortBy") && !"relevance".equals(jsonQuery.getString("sortBy")))
+        if (jsonQuery.containsKey("sortBy"))
         {
             // date
             log.info("Sorting by id, descending");
@@ -116,7 +166,7 @@ public class LuceneDataSource implements SortedDataSource
         log.debug("Native Lucene Query: " + query.toString());
 
         searchRequestBuilder.setPaging(query, 0, inRequest.getInt("count"));
-        
+
         List<Long> activityIds = query.getResultList();
         if (log.isInfoEnabled())
         {

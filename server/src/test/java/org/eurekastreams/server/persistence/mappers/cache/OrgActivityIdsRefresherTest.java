@@ -15,9 +15,10 @@
  */
 package org.eurekastreams.server.persistence.mappers.cache;
 
-import static org.junit.Assert.assertTrue;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
+import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -50,11 +51,6 @@ public class OrgActivityIdsRefresherTest
     private static Cache cache = CONTEXT.mock(Cache.class);
 
     /**
-     * Org dao.
-     */
-    private static GetOrganizationsByIds orgDao = CONTEXT.mock(GetOrganizationsByIds.class);
-
-    /**
      * Setup fixtures.
      */
     @BeforeClass
@@ -62,7 +58,6 @@ public class OrgActivityIdsRefresherTest
     {
         sut = new OrgActivityIdsRefresher();
         sut.setCache(cache);
-        sut.setOrganizationDAO(orgDao);
     }
 
     /**
@@ -71,26 +66,14 @@ public class OrgActivityIdsRefresherTest
     @Test
     public void testRefresh()
     {
-        assertTrue(true);
-        // final Long orgId = 10L;
-        //
-        // final List<Long> activities = new ArrayList<Long>();
-        // activities.add(7L);
-        // activities.add(8L);
-        // activities.add(9L);
-        //
-        // final OrganizationModelView org = CONTEXT.mock(OrganizationModelView.class);
-        //
-        // CONTEXT.checking(new Expectations()
-        // {
-        // {
-        // oneOf(orgDao).execute(with(equal(Arrays.asList(orgId))));
-        // will(returnValue(Arrays.asList(org)));
-        // }
-        // });
-        //
-        // sut.refresh(orgId, activities);
-        //
-        // CONTEXT.assertIsSatisfied();
+        final List<Long> activities = new ArrayList<Long>();
+        CONTEXT.checking(new Expectations()
+        {
+            {
+                oneOf(cache).setList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + "foo", activities);
+            }
+        });
+        sut.refresh("foo", activities);
+        CONTEXT.assertIsSatisfied();
     }
 }

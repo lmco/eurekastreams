@@ -17,14 +17,16 @@ package org.eurekastreams.web.client.ui.common.stream.renderers;
 
 import java.util.List;
 
+import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest;
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest.LikeActionType;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.ActivityLikedChangeEvent;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
-import org.eurekastreams.web.client.events.UpdateHistoryEvent;
+import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.jsni.EffectsFacade;
+import org.eurekastreams.web.client.model.ActivityLikeModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.TimerFactory;
 import org.eurekastreams.web.client.ui.TimerHandler;
@@ -97,6 +99,21 @@ public class LikeCountWidget extends Composite
     private List<PersonModelView> likers;
 
     /**
+     * Activity ID.
+     */
+    private Long thisActivityId;
+
+    /**
+     * Liked status.
+     */
+    private Boolean thisIsLiked;
+
+    /**
+     * The current panel.
+     */
+    private static LikeCountWidget currentPanel;
+
+    /**
      * Link for the like count link.
      */
     private static Anchor innerLikeCountLink = new Anchor();
@@ -104,12 +121,17 @@ public class LikeCountWidget extends Composite
      * The view all link.
      */
     private static Anchor viewAll = new Anchor("view all");
-    
+
     /**
      * Current activity ID being shown.
      */
     private static Long currentActivityId = 0L;
-    
+
+    /**
+     * Current activity like status..
+     */
+    private static Boolean isLiked;
+
     /**
      * The body.
      */
@@ -151,20 +173,39 @@ public class LikeCountWidget extends Composite
                         }
                     });
                 }
-                else
+                else if (DOM.eventGetType(event) == Event.ONMOUSEOVER)
                 {
                     actuallyOut = false;
                 }
             }
         };
 
-        EventBus.getInstance().addObserver(UpdateHistoryEvent.class, new Observer<UpdateHistoryEvent>()
+        final Anchor transparentLikeLink = new Anchor();
+        transparentLikeLink.addStyleName("transparent-like-link");
+
+        transparentLikeLink.addClickHandler(new ClickHandler()
         {
-            public void update(final UpdateHistoryEvent arg1)
+            public void onClick(final ClickEvent arg0)
             {
-                EffectsFacade.nativeFadeOut(usersWhoLikedPanelWrapper.getElement(), false);
+                if (!isLiked)
+                {
+                    ActivityLikeModel.getInstance().update(
+                            new SetActivityLikeRequest(currentActivityId, LikeActionType.ADD_LIKE));
+                }
             }
         });
+
+        usersWhoLikedPanelWrapper.add(transparentLikeLink);
+
+        // Clear when page changes.
+        EventBus.getInstance().addObserver(UpdatedHistoryParametersEvent.class,
+                new Observer<UpdatedHistoryParametersEvent>()
+                {
+                    public void update(final UpdatedHistoryParametersEvent arg1)
+                    {
+                        EffectsFacade.nativeFadeOut(usersWhoLikedPanelWrapper.getElement(), false);
+                    }
+                });
 
         viewAll.setVisible(false);
         viewAll.addClickHandler(new ClickHandler()
@@ -206,7 +247,7 @@ public class LikeCountWidget extends Composite
         userLikedBody.add(likedLabel);
         userLikedBody.add(avatarPanel);
         userLikedBody.add(viewAll);
-        usersWhoLikedPanelWrapper.sinkEvents(Event.ONMOUSEOUT | Event.ONMOUSEOVER);
+        usersWhoLikedPanelWrapper.sinkEvents(Event.ONMOUSEOUT | Event.ONMOUSEOVER | Event.ONCLICK);
 
         hasUsersWhoLikedBeenAddedToRoot = true;
     }
@@ -220,9 +261,14 @@ public class LikeCountWidget extends Composite
      *            like count.
      * @param inLikers
      *            who has liked this activity.
+     * @param inIsLiked
+     *            if the person has liked the current activity.
      */
-    public LikeCountWidget(final Long inActivityId, final Integer inLikeCount, final List<PersonModelView> inLikers)
+    public LikeCountWidget(final Long inActivityId, final Integer inLikeCount, final List<PersonModelView> inLikers,
+            final Boolean inIsLiked)
     {
+        thisActivityId = inActivityId;
+        thisIsLiked = inIsLiked;
 
         initWidget(widget);
 
@@ -235,26 +281,7 @@ public class LikeCountWidget extends Composite
         {
             public void onMouseOver(final MouseOverEvent arg0)
             {
-                currentActivityId = inActivityId;
-                viewAll.setVisible(false);
-                avatarPanel.clear();
-                DOM.setStyleAttribute(usersWhoLikedPanelWrapper.getElement(), "top", likeCountLink.getAbsoluteTop()
-                        + "px");
-                DOM.setStyleAttribute(usersWhoLikedPanelWrapper.getElement(), "left", likeCountLink.getAbsoluteLeft()
-                        + "px");
-
-                for (PersonModelView liker : likers)
-                {
-                    avatarPanel.add(new AvatarLinkPanel(EntityType.PERSON, liker.getUniqueId(), liker.getId(), liker
-                            .getAvatarId(), Size.VerySmall));
-                }
-
-                if (likeCount > MAXLIKERSSHOWN)
-                {
-                    viewAll.setVisible(true);
-                }
-                likedLabel.setText(likeCount + " people liked this");
-                innerLikeCountLink.setText(likeCount.toString());
+                showPanel();
 
                 EffectsFacade.nativeFadeIn(usersWhoLikedPanelWrapper.getElement(), false);
             }
@@ -277,11 +304,39 @@ public class LikeCountWidget extends Composite
                 if (event.getActivityId().equals(inActivityId))
                 {
                     updatePanel(event.getActionType());
+                    currentPanel.showPanel();
                 }
             }
         });
 
         updatePanel(null);
+    }
+
+    /**
+     * Called to update the panel.
+     */
+    private void showPanel()
+    {
+        currentPanel = this;
+        isLiked = thisIsLiked;
+        currentActivityId = thisActivityId;
+        viewAll.setVisible(false);
+        avatarPanel.clear();
+        DOM.setStyleAttribute(usersWhoLikedPanelWrapper.getElement(), "top", likeCountLink.getAbsoluteTop() + "px");
+        DOM.setStyleAttribute(usersWhoLikedPanelWrapper.getElement(), "left", likeCountLink.getAbsoluteLeft() + "px");
+
+        for (PersonModelView liker : likers)
+        {
+            avatarPanel.add(new AvatarLinkPanel(EntityType.PERSON, liker.getUniqueId(), liker.getId(), liker
+                    .getAvatarId(), Size.VerySmall));
+        }
+
+        if (likeCount > MAXLIKERSSHOWN)
+        {
+            viewAll.setVisible(true);
+        }
+        likedLabel.setText(likeCount + " people liked this");
+        innerLikeCountLink.setText(likeCount.toString());
     }
 
     /**
@@ -294,6 +349,7 @@ public class LikeCountWidget extends Composite
     {
         if (null != likeActionType)
         {
+            thisIsLiked = !thisIsLiked;
             if (likeActionType == LikeActionType.ADD_LIKE)
             {
                 PersonModelView currentPerson = new PersonModelView();

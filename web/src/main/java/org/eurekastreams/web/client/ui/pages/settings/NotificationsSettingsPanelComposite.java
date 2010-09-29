@@ -344,7 +344,6 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
          */
         public void onError(final String inErrMessage)
         {
-            // TODO Auto-generated method stub
         }
 
         /**

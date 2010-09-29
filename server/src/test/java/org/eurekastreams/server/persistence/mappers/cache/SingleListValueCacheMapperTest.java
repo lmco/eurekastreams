@@ -15,19 +15,21 @@
  */
 package org.eurekastreams.server.persistence.mappers.cache;
 
+import static org.junit.Assert.assertSame;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests the bulk activity streams refresher. Note that this code doesn't do anything yet.
+ * Test fixture for SingleListCacheMapper.
  */
-public class BulkActivityStreamsRefresherTest
+public class SingleListValueCacheMapperTest
 {
     /**
      * Context for building mock objects.
@@ -40,34 +42,44 @@ public class BulkActivityStreamsRefresherTest
     };
 
     /**
-     * System under test.
+     * Cache.
      */
-    private BulkActivityStreamsRefresher sut;
+    private Cache cache = context.mock(Cache.class);
 
     /**
-     * Mock cache.
+     * Cache key suffix transformer.
      */
-    private Cache cacheMock = context.mock(Cache.class);
+    private CacheKeySuffixTransformer<String> keySuffixTransformer = context.mock(CacheKeySuffixTransformer.class);
 
     /**
-     * Setup the test fixtures.
+     * Cache key prefix.
      */
-    @Before
-    public final void setUp()
-    {
-        sut = new BulkActivityStreamsRefresher();
-        sut.setCache(cacheMock);
-    }
+    private String cacheKeyPrefix;
 
     /**
-     * Tests refreshing.
+     * Test execute.
      */
     @Test
-    public final void testRefresh()
+    public void testExecute()
     {
-        final List<Long> request = new ArrayList<Long>();
-        final List<Long> data = new ArrayList<Long>();
+        SingleListValueCacheMapper sut //
+        = new SingleListValueCacheMapper<String, String>(keySuffixTransformer, "PREFIX:");
+        sut.setCache(cache);
+        final List<String> result = new ArrayList<String>();
 
-        sut.refresh(request, data);
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(keySuffixTransformer).transform("SUFFIX");
+                will(returnValue("FOO"));
+
+                oneOf(cache).getList("PREFIX:FOO");
+                will(returnValue(result));
+            }
+        });
+
+        assertSame(result, sut.execute("SUFFIX"));
+
+        context.assertIsSatisfied();
     }
 }

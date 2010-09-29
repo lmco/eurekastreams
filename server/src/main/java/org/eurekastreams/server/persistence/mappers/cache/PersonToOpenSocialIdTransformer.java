@@ -15,27 +15,25 @@
  */
 package org.eurekastreams.server.persistence.mappers.cache;
 
-import java.util.List;
-
-import org.eurekastreams.server.persistence.mappers.chained.RefreshStrategy;
-import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
- * Refresh multiple activity streams. Placeholder for now.
+ * Transform PersonModelView to open social id.
  */
-public class BulkActivityStreamsRefresher extends CachedDomainMapper implements RefreshStrategy<List<Long>, List<Long>>
+public class PersonToOpenSocialIdTransformer implements Transformer<PersonModelView, String>
 {
+
     /**
-     * Refresh the streams.
+     * Transform PersonModelView to open social id.
      * 
-     * @param request
-     *            the request.
-     * @param data
-     *            the data.
+     * @param inTransformType
+     *            Object to transform.
+     * @return open social id.
      */
-    public void refresh(final List<Long> request, final List<Long> data)
+    @Override
+    public String transform(final PersonModelView inTransformType)
     {
-        // Does nothing for now.
+        return inTransformType.getOpenSocialId();
     }
 
 }

@@ -88,12 +88,6 @@ public class SystemSettings extends DomainEntity implements Serializable
     private String termsOfService;
 
     /**
-     * Determines whether terms of service is to be displayed on an every session or # days basis.
-     */
-    @Basic(optional = true)
-    private boolean isTosDisplayedEverySession = false;
-
-    /**
      * The terms of service prompt interval (in days).
      */
     @Basic(optional = true)
@@ -187,25 +181,6 @@ public class SystemSettings extends DomainEntity implements Serializable
     public void setTermsOfService(final String inTermsOfService)
     {
         this.termsOfService = inTermsOfService;
-    }
-
-    /**
-     * @return the boolean that determines whether terms of service is to be displayed on an every session or # days
-     *         basis.
-     */
-    public boolean getIsTosDisplayedEverySession()
-    {
-        return isTosDisplayedEverySession;
-    }
-
-    /**
-     * @param inIsTosDisplayedEverySession
-     *            the boolean that determines whether terms of service is to be displayed on an every session or # days
-     *            basis.
-     */
-    public void setIsTosDisplayedEverySession(final boolean inIsTosDisplayedEverySession)
-    {
-        this.isTosDisplayedEverySession = inIsTosDisplayedEverySession;
     }
 
     /**

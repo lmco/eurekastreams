@@ -15,8 +15,7 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Organization;
@@ -56,8 +55,13 @@ public class DeleteGroup extends BaseArgDomainMapper<Long, DeleteGroupResponse>
     private final OrganizationHierarchyTraverserBuilder orgTraverserBuilder;
 
     /**
+     * {@link GetOrgShortNamesByIdsMapper} needed to translate org ids into shortnames.
+     */
+    private GetOrgShortNamesByIdsMapper getOrgShortNamesByIdsMapper;
+
+    /**
      * Constructor.
-     *
+     * 
      * @param inGroupMapper
      *            {@link FindByIdMapper}.
      * @param inOrganizationMapper
@@ -66,20 +70,24 @@ public class DeleteGroup extends BaseArgDomainMapper<Long, DeleteGroupResponse>
      *            {@link OrganizationHierarchyTraverserBuilder}.
      * @param inParentOrgIdMapper
      *            {@link GetRecursiveParentOrgIds}.
+     * @param inGetOrgShortNamesByIdsMapper
+     *            {link GetOrgShortNamesByIdsMapper}.
      */
     public DeleteGroup(final FindByIdMapper<DomainGroup> inGroupMapper, final OrganizationMapper inOrganizationMapper,
             final OrganizationHierarchyTraverserBuilder inOrgTraverserBuilder,
-            final GetRecursiveParentOrgIds inParentOrgIdMapper)
+            final GetRecursiveParentOrgIds inParentOrgIdMapper,
+            final GetOrgShortNamesByIdsMapper inGetOrgShortNamesByIdsMapper)
     {
         groupMapper = inGroupMapper;
         organizationMapper = inOrganizationMapper;
         orgTraverserBuilder = inOrgTraverserBuilder;
         parentOrgIdMapper = inParentOrgIdMapper;
+        getOrgShortNamesByIdsMapper = inGetOrgShortNamesByIdsMapper;
     }
 
     /**
      * Deletes a group and adjusts denormalized organization statistics accordingly.
-     *
+     * 
      * @param inRequest
      *            group id.
      * @return Set of organization ids representing parent orgs all the way up the tree, will need these to adjust
@@ -93,12 +101,12 @@ public class DeleteGroup extends BaseArgDomainMapper<Long, DeleteGroupResponse>
         Organization parentOrg = group.getParentOrganization();
         Long parentOrgId = group.getParentOrgId();
 
-        // get set of parentOrgs
-        Set<Long> parentOrgIds = new HashSet<Long>(parentOrgIdMapper.execute(parentOrgId));
+        // get list of parentOrg shortnames
+        List<Long> parentOrgIds = parentOrgIdMapper.execute(parentOrgId);
         parentOrgIds.add(parentOrgId);
 
         DeleteGroupResponse response = new DeleteGroupResponse(groupId, group.getShortName(), new Long(group
-                .getStreamScope().getId()), parentOrgIds);
+                .getStreamScope().getId()), getOrgShortNamesByIdsMapper.execute(parentOrgIds));
 
         // delete the group hibernate should take care of following since we are deleting via entity manager.
         // Hibernate: delete from Group_Capability where domainGroupId=?

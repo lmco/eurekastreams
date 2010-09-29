@@ -40,6 +40,7 @@ import org.eurekastreams.commons.search.analysis.HashTagTextStemmerIndexingAnaly
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.search.bridge.ActivityAuthorClassBridge;
 import org.eurekastreams.server.search.bridge.ActivityContentClassBridge;
 import org.eurekastreams.server.search.bridge.ActivityInterestingClassBridge;
 import org.eurekastreams.server.search.bridge.ActivityLastCommentIdClassBridge;
@@ -67,6 +68,9 @@ import org.hibernate.search.annotations.Store;
         @ClassBridge(index = Index.UN_TOKENIZED,
         // new line
         name = "recipient", store = Store.NO, impl = ActivityRecipientClassBridge.class),
+        @ClassBridge(index = Index.UN_TOKENIZED,
+        // new line
+        name = "author", store = Store.NO, impl = ActivityAuthorClassBridge.class),
         @ClassBridge(index = Index.UN_TOKENIZED,
         // new line
         name = "interesting", store = Store.YES, impl = ActivityInterestingClassBridge.class),

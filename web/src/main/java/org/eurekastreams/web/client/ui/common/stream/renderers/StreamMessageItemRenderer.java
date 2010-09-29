@@ -328,7 +328,8 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
         if (verbRenderer.getAllowLike())
         {
-            LikeCountWidget likeCount = new LikeCountWidget(msg.getEntityId(), msg.getLikeCount(), msg.getLikers());
+            LikeCountWidget likeCount = new LikeCountWidget(msg.getEntityId(), msg.getLikeCount(), msg.getLikers(), msg
+                    .isLiked());
             timestampActions.add(likeCount);
         }
         timestampActions.add(buildActions(msg, mainPanel, commentsPanel, verbRenderer));

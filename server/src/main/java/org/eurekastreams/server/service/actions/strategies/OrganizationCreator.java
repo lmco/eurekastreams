@@ -69,7 +69,7 @@ public class OrganizationCreator extends OrganizationPersister
     }
 
     /**
-     * Returns Organization base on id passed in inFields.
+     * Returns Organization based on id passed in inFields.
      *
      * @param inActionContext
      *            The action context
@@ -141,6 +141,9 @@ public class OrganizationCreator extends OrganizationPersister
 
         // update the statistics with the new count
         getOrgMapper().updateChildOrganizationCount(inOrganization.getParentOrganization());
+        
+        // sets the destination entity id for the organization's stream scope
+        inOrganization.getStreamScope().setDestinationEntityId(inOrganization.getId());
         getOrgMapper().flush();
 
         // kick off an async action to update the coordinators' activity search

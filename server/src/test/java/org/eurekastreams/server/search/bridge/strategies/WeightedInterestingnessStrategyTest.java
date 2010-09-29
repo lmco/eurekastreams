@@ -210,9 +210,7 @@ public class WeightedInterestingnessStrategyTest
             }
         });
 
-        // White box - Days since 2010 * weight
-        Long interestingness = (postedTimeLong - WeightedInterestingnessStrategy.EPOCH_2010)
-                / WeightedInterestingnessStrategy.SECONDS_IN_DAY * TIME_WEIGHT;
+        Long interestingness = postedTimeLong / WeightedInterestingnessStrategy.MILLISECONDS_IN_DAY * TIME_WEIGHT;
         interestingness += commentIds.size() * COMMENT_WEIGHT;
         interestingness += commentorIds.size() * COMMENTOR_WEIGHT;
         interestingness += likers.iterator().next().size() * LIKE_WEIGHT;

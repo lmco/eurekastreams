@@ -26,7 +26,7 @@ import org.eurekastreams.server.persistence.strategies.DescendantOrganizationStr
 /**
  * Find all activity associated with an organization from the database.
  */
-public class OrgActivityIdsDbMapper extends BaseArgDomainMapper<Long, List<Long>>
+public class OrgActivityIdsDbMapper extends BaseArgDomainMapper<String, List<Long>>
 {
     /**
      * Strategy for finding descentents.
@@ -34,13 +34,19 @@ public class OrgActivityIdsDbMapper extends BaseArgDomainMapper<Long, List<Long>
     private DescendantOrganizationStrategy descendantOrganizationStrategy = null;
 
     /**
-     * @param inOrgId
-     *            the ord ID.
+     * @param inOrgShortName
+     *            the org's short name.
      * @return the activity associated with that org.
      */
-    public List<Long> execute(final Long inOrgId)
+    public List<Long> execute(final String inOrgShortName)
     {
-        final String descendentString = descendantOrganizationStrategy.getDescendantOrganizationIdsForJpql(inOrgId,
+        long orgId = descendantOrganizationStrategy.getOrgIdByShortName(inOrgShortName);
+        if (orgId == 0)
+        {
+            // no results - missing org
+            return new ArrayList<Long>();
+        }
+        final String descendentString = descendantOrganizationStrategy.getDescendantOrganizationIdsForJpql(orgId,
                 new HashMap<String, String>());
         final List<Long> descendents = new ArrayList<Long>();
 
@@ -52,7 +58,7 @@ public class OrgActivityIdsDbMapper extends BaseArgDomainMapper<Long, List<Long>
             }
         }
 
-        descendents.add(inOrgId);
+        descendents.add(orgId);
 
         String query = "SELECT id FROM Activity WHERE recipientParentOrg.id in (:orgIds) ORDER BY id DESC";
 

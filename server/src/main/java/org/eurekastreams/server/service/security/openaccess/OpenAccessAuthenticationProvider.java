@@ -71,7 +71,6 @@ public class OpenAccessAuthenticationProvider implements AuthenticationProvider
      */
     public boolean supports(final Class authentication)
     {
-        // TODO Auto-generated method stub
         return true;
     }
 

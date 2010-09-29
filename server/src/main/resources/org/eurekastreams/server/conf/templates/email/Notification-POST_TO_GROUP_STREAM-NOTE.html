@@ -1,8 +1,9 @@
 <html>
 <body>
 <p>
-$(actor.name) posted a $(activity.type) to your stream.
+$(actor.name) posted a $(activity.type) to the $(dest.name) stream.
 </p>
+<p>"$(activity.content)"</p>
 <p>
 To see the post follow this <a href="$(eureka.web.baseurl)#$(dest.page)/$(dest.uniqueid)?activityId=$(activity.id)">link</a>.
 </p>

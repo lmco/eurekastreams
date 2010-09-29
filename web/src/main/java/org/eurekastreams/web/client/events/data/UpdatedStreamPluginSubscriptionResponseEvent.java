@@ -29,7 +29,6 @@ public class UpdatedStreamPluginSubscriptionResponseEvent extends BaseDataRespon
 	public UpdatedStreamPluginSubscriptionResponseEvent(final Boolean inResponse) 
 	{
 		super(inResponse);
-		// TODO Auto-generated constructor stub
 	}
 
 }

@@ -15,32 +15,28 @@
  */
 package org.eurekastreams.server.action.execution;
 
-import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
-import org.eurekastreams.server.persistence.mappers.cache.DomainGroupCacheLoader;
-import org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCacheLoader;
-import org.eurekastreams.server.persistence.mappers.cache.PersonCacheLoader;
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.jmock.Expectations;
-import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Test suite for the {@link InitializeCacheExecution} class.
- *
+ * 
  */
 public class InitializeCacheExecutionTest
 {
-    /**
-     * System under test.
-     */
-    private InitializeCacheExecution sut;
-
-    /**
-     * Context for building mock objects.
-     */
-    private final Mockery context = new JUnit4Mockery()
+    /** Used for mocking objects. */
+    private JUnit4Mockery context = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -48,74 +44,69 @@ public class InitializeCacheExecutionTest
     };
 
     /**
-     * Mocked loader for domain groups.
+     * {@link TaskHandlerActionContext}.
      */
-    private DomainGroupCacheLoader domainGroupCacheLoader = context.mock(DomainGroupCacheLoader.class);
+    private TaskHandlerActionContext actionContext = context.mock(TaskHandlerActionContext.class);
 
     /**
-     * Mocked loader for organizations.
+     * Cache mock.
      */
-    private OrganizationHierarchyCacheLoader organizationCacheLoader = context
-            .mock(OrganizationHierarchyCacheLoader.class);
+    private Cache cache = context.mock(Cache.class);
 
     /**
-     * Mocked loader for people.
-     */
-    private PersonCacheLoader personCacheLoader = context.mock(PersonCacheLoader.class);
-
-    /**
-     * Setup the test.
-     */
-    @Before
-    public final void setUp()
-    {
-        sut = new InitializeCacheExecution(domainGroupCacheLoader, organizationCacheLoader, personCacheLoader);
-    }
-
-    /**
-     * Testing the action.
-     *
-     * @throws Exception
-     *             not expected
+     * Test.
      */
     @Test
-    public void testPerformAction() throws Exception
+    public void testListKeys()
     {
+        InitializeCacheExecution sut = new InitializeCacheExecution(cache, new ArrayList<String>(Arrays.asList("key",
+                "key1")));
+
+        final List<UserActionRequest> list = new ArrayList<UserActionRequest>();
         context.checking(new Expectations()
         {
             {
-                oneOf(domainGroupCacheLoader).getCache();
-                oneOf(domainGroupCacheLoader).initialize();
-                oneOf(organizationCacheLoader).initialize();
-                oneOf(personCacheLoader).initialize();
+                allowing(cache).clear();
+
+                allowing(actionContext).getUserActionRequests();
+                will(returnValue(list));
             }
         });
-        ServiceActionContext currentContext = new ServiceActionContext(null, null);
-        sut.execute(currentContext);
+
+        sut.execute(actionContext);
+
+        assertEquals(2, list.size());
+
         context.assertIsSatisfied();
     }
 
     /**
-     * Testing the action.
-     *
-     * @throws Exception
-     *             not expected
+     * Test.
      */
     @Test
-    public void testPerformActionWithException() throws Exception
+    public void testNullKey()
     {
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(domainGroupCacheLoader).getCache();
-                oneOf(domainGroupCacheLoader).initialize();
-                oneOf(organizationCacheLoader).initialize();
-                oneOf(personCacheLoader).initialize();
-                will(throwException(new Exception()));
-            }
-        });
-        ServiceActionContext currentContext = new ServiceActionContext(null, null);
-        sut.execute(currentContext);
+        List<String> keys = new ArrayList<String>();
+        keys.add(null);
+        InitializeCacheExecution sut = new InitializeCacheExecution(null, keys);
+
+        sut.execute(actionContext);
+
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testEmptyKeys()
+    {
+        List<String> keys = new ArrayList<String>();
+        keys.add("");
+        InitializeCacheExecution sut = new InitializeCacheExecution(null, keys);
+
+        sut.execute(actionContext);
+
         context.assertIsSatisfied();
     }
 }

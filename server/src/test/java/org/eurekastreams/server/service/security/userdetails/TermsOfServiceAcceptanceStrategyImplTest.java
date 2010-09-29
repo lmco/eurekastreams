@@ -32,7 +32,7 @@ import org.junit.Test;
 
 /**
  * Test for TermsOfServiceAcceptanceStrategyImpl class.
- *
+ * 
  */
 public class TermsOfServiceAcceptanceStrategyImplTest
 {
@@ -119,30 +119,6 @@ public class TermsOfServiceAcceptanceStrategyImplTest
     }
 
     /**
-     * Test the isValidTermsOfServiceAcceptanceDate method with show on every session flag returning true.
-     */
-    @Test
-    public void testIsValidTermsOfServiceAcceptanceDateShowEverySession()
-    {
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(systemSettingsDAO).execute(null);
-                will(returnValue(systemSettings));
-
-                oneOf(systemSettings).getTermsOfService();
-                will(returnValue("ToS"));
-
-                oneOf(systemSettings).getIsTosDisplayedEverySession();
-                will(returnValue(true));
-            }
-        });
-
-        assertTrue(!sut.isValidTermsOfServiceAcceptanceDate(new Date()));
-        context.assertIsSatisfied();
-    }
-
-    /**
      * Test the isValidTermsOfServiceAcceptanceDate method with date check passing.
      */
     @Test
@@ -156,9 +132,6 @@ public class TermsOfServiceAcceptanceStrategyImplTest
 
                 oneOf(systemSettings).getTermsOfService();
                 will(returnValue("ToS"));
-
-                oneOf(systemSettings).getIsTosDisplayedEverySession();
-                will(returnValue(false));
 
                 oneOf(systemSettings).getTosPromptInterval();
                 will(returnValue(1));
@@ -183,9 +156,6 @@ public class TermsOfServiceAcceptanceStrategyImplTest
 
                 oneOf(systemSettings).getTermsOfService();
                 will(returnValue("ToS"));
-
-                oneOf(systemSettings).getIsTosDisplayedEverySession();
-                will(returnValue(false));
 
                 oneOf(systemSettings).getTosPromptInterval();
                 will(returnValue(1));

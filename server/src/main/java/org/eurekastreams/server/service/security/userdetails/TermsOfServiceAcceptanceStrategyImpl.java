@@ -23,7 +23,7 @@ import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 
 /**
  * Strategy for determining validity of ToS acceptance date.
- *
+ * 
  */
 public class TermsOfServiceAcceptanceStrategyImpl implements TermsOfServiceAcceptanceStrategy
 {
@@ -39,7 +39,7 @@ public class TermsOfServiceAcceptanceStrategyImpl implements TermsOfServiceAccep
 
     /**
      * Constructor.
-     *
+     * 
      * @param inSystemSettingsDAO
      *            DAO for getting SystemSettings.
      */
@@ -58,13 +58,14 @@ public class TermsOfServiceAcceptanceStrategyImpl implements TermsOfServiceAccep
         SystemSettings settings = systemSettingsDAO.execute(null);
 
         // short circuit if no ToS to display.
-        if (null == settings.getTermsOfService())
+        String tos = settings.getTermsOfService();
+        if (null == tos || tos.equals(""))
         {
             return true;
         }
 
-        // short circuit if ToS is required every session.
-        if (inDateLastAccepted == null || settings.getIsTosDisplayedEverySession())
+        // short circuit if ToS has never been accepted.
+        if (inDateLastAccepted == null)
         {
             return false;
         }

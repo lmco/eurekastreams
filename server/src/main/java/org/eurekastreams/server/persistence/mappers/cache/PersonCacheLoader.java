@@ -21,6 +21,7 @@ import javax.persistence.Query;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.domain.EntityCacheUpdater;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.GetRelatedOrganizationIdsByPersonId;
@@ -35,7 +36,7 @@ import org.hibernate.ScrollableResults;
 /**
  * Cache loader for PersonCache.
  */
-public class PersonCacheLoader extends CachedDomainMapper implements EntityCacheUpdater<Person>
+public class PersonCacheLoader extends CachedDomainMapper implements EntityCacheUpdater<Person>, CacheWarmer
 {
     /**
      * Logger instance.
@@ -59,7 +60,7 @@ public class PersonCacheLoader extends CachedDomainMapper implements EntityCache
 
     /**
      * Constructor.
-     *
+     * 
      * @param inPersonQueryStrategy
      *            the person query strategy to set.
      * @param inGetRelatedOrganizationIdsByPersonIdMapper
@@ -155,7 +156,7 @@ public class PersonCacheLoader extends CachedDomainMapper implements EntityCache
 
     /**
      * Person updater implementation - fired when a person entity is updated.
-     *
+     * 
      * @param inUpdatedPerson
      *            the person just updated
      */
@@ -171,7 +172,7 @@ public class PersonCacheLoader extends CachedDomainMapper implements EntityCache
 
     /**
      * Person persist implementation - fired when a person entity is persisted.
-     *
+     * 
      * @param inPersistedPerson
      *            the person just persisted
      */
@@ -184,5 +185,11 @@ public class PersonCacheLoader extends CachedDomainMapper implements EntityCache
                     + " - doing nothing.");
         }
         // no-op
+    }
+
+    @Override
+    public void execute(final List<UserActionRequest> inRequests)
+    {
+        initialize();
     }
 }

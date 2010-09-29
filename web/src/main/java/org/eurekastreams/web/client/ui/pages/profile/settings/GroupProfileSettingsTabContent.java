@@ -67,7 +67,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * The basic group settings.
- *
+ * 
  */
 public class GroupProfileSettingsTabContent extends FlowPanel
 {
@@ -99,10 +99,11 @@ public class GroupProfileSettingsTabContent extends FlowPanel
      */
     private Label processingSpinny = new Label("Processing...");
 
-
     /**
      * Default constructor.
-     * @param groupName the group name.
+     * 
+     * @param groupName
+     *            the group name.
      */
     public GroupProfileSettingsTabContent(final String groupName)
     {
@@ -128,12 +129,11 @@ public class GroupProfileSettingsTabContent extends FlowPanel
 
         GroupModel.getInstance().authorize(groupName, true);
 
-
     }
 
     /**
      * Setter.
-     *
+     * 
      * @param entity
      *            the group whose settings will be changed
      */
@@ -163,7 +163,8 @@ public class GroupProfileSettingsTabContent extends FlowPanel
         form.addFormElement(new ValueOnlyFormElement(DomainGroupModelView.SHORT_NAME_KEY, group.getShortName()));
 
         AvatarUploadFormElement avatarFormEl = new AvatarUploadFormElement("Avatar",
-                "Select a JPG, PNG or GIF image from your computer. The maximum file size is 4MB.",
+                "Select a JPG, PNG or GIF image from your computer. The maxium file size is 4MB"
+                        + " and will be cropped to 990 x 100 pixels high.",
                 "/eurekastreams/groupavatarupload?groupName=" + group.getShortName(), Session.getInstance()
                         .getActionProcessor(), new AvatarUploadStrategy<DomainGroup>(group, "resizeGroupAvatar",
                         EntityType.GROUP));
@@ -201,8 +202,7 @@ public class GroupProfileSettingsTabContent extends FlowPanel
                 DomainFormatUtility.buildCapabilitiesString(group.getCapabilities()),
                 "Add keywords that describe your group and the topics your members will be talking about. Separate "
                         + "keywords with a comma. Including keywords helps others find your group when searching "
-                        + "profiles.", false,
-                "/resources/autocomplete/capability/", "itemNames", ",");
+                        + "profiles.", false, "/resources/autocomplete/capability/", "itemNames", ",");
         keywords.setMaxLength(MAX_KEYWORDS);
 
         form.addFormElement(keywords);
@@ -296,23 +296,20 @@ public class GroupProfileSettingsTabContent extends FlowPanel
 
         // ---- Notification suppression ----
 
-        BasicCheckBoxFormElement noMemberPostNotif =
-                new BasicCheckBoxFormElement(
-                        "Notification Settings",
-                        DomainGroupModelView.SUPPRESS_POST_NOTIF_TO_MEMBER_KEY,
-                        "Allow group members to receive emails and in-app notifications when activity is posted "
-                                + "to this group",
-                        "Eureka Streams will notify group members and coordinators when new activity has taken place "
-                                + "in this group", false, !group.isSuppressPostNotifToMember());
+        BasicCheckBoxFormElement noMemberPostNotif = new BasicCheckBoxFormElement("Notification Settings",
+                DomainGroupModelView.SUPPRESS_POST_NOTIF_TO_MEMBER_KEY,
+                "Allow group members to receive emails and in-app notifications when activity is posted "
+                        + "to this group",
+                "Eureka Streams will notify group members and coordinators when new activity has taken place "
+                        + "in this group", false, !group.isSuppressPostNotifToMember());
         noMemberPostNotif.setReverseValue(true);
         noMemberPostNotif.addStyleName("group-notif-suppress");
         form.addFormElement(noMemberPostNotif);
 
-        BasicCheckBoxFormElement noCoordPostNotif =
-                new BasicCheckBoxFormElement(null,
-                        DomainGroupModelView.SUPPRESS_POST_NOTIF_TO_COORDINATOR_KEY,
-                        "Allow group coordinators to receive emails and in-app notifications when activity is posted "
-                                + "to this group", false, !group.isSuppressPostNotifToCoordinator());
+        BasicCheckBoxFormElement noCoordPostNotif = new BasicCheckBoxFormElement(null,
+                DomainGroupModelView.SUPPRESS_POST_NOTIF_TO_COORDINATOR_KEY,
+                "Allow group coordinators to receive emails and in-app notifications when activity is posted "
+                        + "to this group", false, !group.isSuppressPostNotifToCoordinator());
         noCoordPostNotif.setReverseValue(true);
         noCoordPostNotif.addStyleName("group-notif-suppress");
         form.addFormElement(noCoordPostNotif);

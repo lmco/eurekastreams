@@ -47,7 +47,8 @@ public class TermsOfServiceDTO implements Serializable
      */
     public TermsOfServiceDTO(final String inTermsOfService)
     {
-        termsOfService = inTermsOfService;
+        // make links open in new window.
+        termsOfService = inTermsOfService.replace("<a ", "<a target='_NEW' ");
     }
 
     /**

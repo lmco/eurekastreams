@@ -361,7 +361,7 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
         }
 
         Query q = getEntityManager().createQuery(
-                "From Person where lower(lastName) LIKE :lprefix and lower(firstName) LIKE :fprefix").setParameter(
+                "From Person where lower(lastName) LIKE :lprefix and lower(displayName) LIKE :fprefix").setParameter(
                 "lprefix", lastName.toLowerCase() + "%").setParameter("fprefix", firstName.toLowerCase() + "%");
 
         return q.getResultList();

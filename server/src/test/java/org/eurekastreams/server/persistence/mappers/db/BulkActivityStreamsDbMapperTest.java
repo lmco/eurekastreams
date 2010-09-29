@@ -63,9 +63,12 @@ public class BulkActivityStreamsDbMapperTest extends MapperTest
         request.add(1L);
         request.add(2L);
 
-        List<Long> results = sut.execute(request);
+        List<List<Long>> results = sut.execute(request);
 
+        
         Assert.assertEquals(expectedSize, results.size());
+        Assert.assertEquals(1, results.get(0).size());
+        Assert.assertEquals(1, results.get(1).size());
     }
 
     /**
@@ -79,8 +82,8 @@ public class BulkActivityStreamsDbMapperTest extends MapperTest
         final List<Long> request = new ArrayList<Long>();
         request.add(0L);
 
-        List<Long> results = sut.execute(request);
+        List<List<Long>> results = sut.execute(request);
 
-        Assert.assertEquals(expectedSize, results.size());
+        Assert.assertEquals(expectedSize, results.get(0).size());
     }
 }

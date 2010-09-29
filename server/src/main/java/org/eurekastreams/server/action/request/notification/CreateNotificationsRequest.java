@@ -34,7 +34,7 @@ public class CreateNotificationsRequest implements Serializable
     {
         /**
          * Someone posted a comment. Actor=person id of who commented, Destination=id of person whose stream was posted
-         * to, Activity=id of post commented on.
+         * to, Activity=id of comment.
          */
         COMMENT,
 
@@ -57,7 +57,7 @@ public class CreateNotificationsRequest implements Serializable
 
         /**
          * Someone posted a comment to an activity on a group stream. Actor=person id of who commented, Destination=id
-         * of group whose stream was posted to, Activity=id of post commented on.
+         * of group whose stream was posted to, Activity=id of comment.
          */
         GROUP_COMMENT,
 
@@ -68,8 +68,8 @@ public class CreateNotificationsRequest implements Serializable
         GROUP_STREAM_POST,
 
         /**
-         * Someone began following a group. Actor=person id who began following, Destination=id of group being
-         * followed, Activity=(not used).
+         * Someone began following a group. Actor=person id who began following, Destination=id of group being followed,
+         * Activity=(not used).
          */
         GROUP_FOLLOWER,
 
@@ -177,7 +177,8 @@ public class CreateNotificationsRequest implements Serializable
     /**
      * @return ID of the "activity" the event pertained to. In the case of requesting creation of a new group,
      *         "activity" is used in a loose sense, namely the object being acted on. Using a linguistic analogy, this
-     *         is the direct object of the sentence.
+     *         is the direct object of the sentence. For commenting, this is the ID of the comment (not of the activity
+     *         which was commented on).
      */
     public long getActivityId()
     {
