@@ -3069,7 +3069,6 @@
         <constructor-arg ref="bulkPeopleByAccountIdMapper" />
         <constructor-arg ref="jpaGroupMapper" />
         <constructor-arg ref="addCachedGroupFollower" />
-        <constructor-arg ref="removeCachedGroupFollower" />
         <constructor-arg ref="getGroupFollowerIds" />
         <constructor-arg ref="deleteRequestForGroupMembershipMapper" />
     </bean>

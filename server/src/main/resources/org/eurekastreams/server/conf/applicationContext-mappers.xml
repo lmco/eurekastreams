@@ -1050,11 +1050,6 @@
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 
-	<bean id="removeCachedGroupFollower"
-		class="org.eurekastreams.server.persistence.mappers.cache.RemoveCachedGroupFollower">
-		<property name="cache" ref="memcachedCache" />
-	</bean>
-
 	<bean id="getCoordinatorIdsByGroupId"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetCoordinatorIdsByGroupId">
 		<property name="cache" ref="memcachedCache" />

@@ -32,7 +32,6 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddCachedGroupFollower;
-import org.eurekastreams.server.persistence.mappers.cache.RemoveCachedGroupFollower;
 import org.eurekastreams.server.persistence.mappers.db.DeleteRequestForGroupMembership;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
@@ -48,7 +47,7 @@ import org.junit.Test;
 
 /**
  * Test class for the {@link SetFollowingGroupStatusExecution} class.
- *
+ * 
  */
 public class SetFollowingGroupStatusExecutionTest
 {
@@ -89,12 +88,6 @@ public class SetFollowingGroupStatusExecutionTest
     private final AddCachedGroupFollower addCachedGroupFollowerMapperMock = context.mock(AddCachedGroupFollower.class);
 
     /**
-     * Mock instance of RemoveCachedGroupFollower.
-     */
-    private final RemoveCachedGroupFollower removeCachedGroupFollowerMapperMock = context
-            .mock(RemoveCachedGroupFollower.class);
-
-    /**
      * Mock instance of GetGroupFollowerIds.
      */
     private final GetGroupFollowerIds groupFollowerIdsMapperMock = context.mock(GetGroupFollowerIds.class);
@@ -115,13 +108,12 @@ public class SetFollowingGroupStatusExecutionTest
     public void setUp()
     {
         sut = new SetFollowingGroupStatusExecution(groupByShortNameMapperMock, personMapperMock, groupMapperMock,
-                addCachedGroupFollowerMapperMock, removeCachedGroupFollowerMapperMock, groupFollowerIdsMapperMock,
-                deleteRequestForGroupMembershipMapper);
+                addCachedGroupFollowerMapperMock, groupFollowerIdsMapperMock, deleteRequestForGroupMembershipMapper);
     }
 
     /**
      * Test the successful SetFollowing method when a group is followed.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
@@ -170,7 +162,7 @@ public class SetFollowingGroupStatusExecutionTest
 
     /**
      * Test the successful SetFollowing method when a group is followed.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
@@ -213,7 +205,7 @@ public class SetFollowingGroupStatusExecutionTest
 
     /**
      * Test the setFollowing method when a group is unfollowed.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
@@ -239,8 +231,6 @@ public class SetFollowingGroupStatusExecutionTest
 
                 oneOf(groupMapperMock).removeFollower(1L, 2L);
 
-                oneOf(removeCachedGroupFollowerMapperMock).execute(1L, 2L);
-
                 oneOf(groupFollowerIdsMapperMock).execute(2L);
                 will(returnValue(targetFollowerIds));
             }
@@ -258,7 +248,7 @@ public class SetFollowingGroupStatusExecutionTest
 
     /**
      * Test a failure case.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
@@ -293,7 +283,7 @@ public class SetFollowingGroupStatusExecutionTest
 
     /**
      * Test an unexpected following status.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
