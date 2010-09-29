@@ -13,27 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.mappers.cache;
+package org.eurekastreams.server.persistence.mappers.db;
 
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
+import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Get all the activities.
- *
+ * Test for GetSerializableField mapper.
+ * 
  */
-public class GetEveryoneActivityCacheMapper extends CachedDomainMapper implements DomainMapper<Long, List<Long>>
+public class GetSerializableFieldTest extends MapperTest
 {
     /**
-     * Get all the activities.
-     * @param inRequest ignored
-     * @return the IDs.
+     * System under test. Autowired mapper is config'ed to grab ids from Person table.
      */
-    @Override
-    public List<Long> execute(final Long inRequest)
+    @Autowired
+    private GetSerializableField sut;
+
+    /**
+     * Test for person ids.
+     */
+    @Test
+    public void test()
     {
-        return getCache().getList("TODO");
+        assertEquals(5, sut.execute(null).size());
     }
+
 }

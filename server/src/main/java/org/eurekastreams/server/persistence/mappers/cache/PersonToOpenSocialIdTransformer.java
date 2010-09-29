@@ -13,33 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.mappers.db;
+package org.eurekastreams.server.persistence.mappers.cache;
 
-import static org.junit.Assert.assertEquals;
-
-import org.eurekastreams.server.persistence.mappers.MapperTest;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
- * Test for GetIds mapper.
- * 
+ * Transform PersonModelView to open social id.
  */
-public class GetIdsTest extends MapperTest
+public class PersonToOpenSocialIdTransformer implements Transformer<PersonModelView, String>
 {
-    /**
-     * System under test.
-     */
-    @Autowired
-    private GetIds sut;
 
     /**
-     * Test for person ids.
+     * Transform PersonModelView to open social id.
+     * 
+     * @param inTransformType
+     *            Object to transform.
+     * @return open social id.
      */
-    @Test
-    public void test()
+    @Override
+    public String transform(final PersonModelView inTransformType)
     {
-        assertEquals(5, sut.execute(null).size());
+        return inTransformType.getOpenSocialId();
     }
 
 }

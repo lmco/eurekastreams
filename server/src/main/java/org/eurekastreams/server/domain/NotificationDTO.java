@@ -134,6 +134,11 @@ public class NotificationDTO implements Serializable
     /** Name of the auxiliary entity. */
     private String auxiliaryName;
 
+    /* -- Miscellaneous fields: These are hacks because of the one-size-fits-all nature of this class. -- */
+
+    /** Comment ID. */
+    private long commentId;
+
     /**
      * Constructor (for GWT serialization).
      */
@@ -486,4 +491,20 @@ public class NotificationDTO implements Serializable
         auxiliaryName = inName;
     }
 
+    /**
+     * @return the comment id.
+     */
+    public long getCommentId()
+    {
+        return commentId;
+    }
+
+    /**
+     * @param inCommentId
+     *            the comment id to set.
+     */
+    public void setCommentId(final long inCommentId)
+    {
+        commentId = inCommentId;
+    }
 }

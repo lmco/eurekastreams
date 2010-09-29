@@ -27,7 +27,7 @@ import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.GetRecursiveParentOrgIds;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.db.GetOrgShortNamesByIdsMapper;
-import org.eurekastreams.server.search.modelview.OrganizationModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Adds data to the cache for a newly created activity.
@@ -55,11 +55,6 @@ public class PostCachedActivity extends CachedDomainMapper
     private final GetRecursiveParentOrgIds parentOrgIdsMapper;
 
     /**
-     * Local instance of the {@link GetOrganizationsByShortNames} mapper.
-     */
-    private final GetOrganizationsByShortNames organizationsByShortNameMapper;
-
-    /**
      * Local instance of the {@link GetDomainGroupsByShortNames} mapper.
      */
     private final GetDomainGroupsByShortNames bulkDomainGroupsByShortNameMapper;
@@ -78,8 +73,6 @@ public class PostCachedActivity extends CachedDomainMapper
      *            people by account id mapper.
      * @param inParentOrgIdsMapper
      *            ids for parent orgs mapper.
-     * @param inOrganizationsByShortNameMapper
-     *            orgs by short names mapper.
      * @param inBulkDomainGroupsByShortNameMapper
      *            groups by short names mapper.
      * @param inOrgShortNamesFromIdsMapper
@@ -88,14 +81,12 @@ public class PostCachedActivity extends CachedDomainMapper
     public PostCachedActivity(final GetFollowerIds inPersonFollowersMapper,
             final GetPeopleByAccountIds inBulkPeopleByAccountIdMapper,
             final GetRecursiveParentOrgIds inParentOrgIdsMapper,
-            final GetOrganizationsByShortNames inOrganizationsByShortNameMapper,
             final GetDomainGroupsByShortNames inBulkDomainGroupsByShortNameMapper,
             final GetOrgShortNamesByIdsMapper inOrgShortNamesFromIdsMapper)
     {
         personFollowersMapper = inPersonFollowersMapper;
         bulkPeopleByAccountIdMapper = inBulkPeopleByAccountIdMapper;
         parentOrgIdsMapper = inParentOrgIdsMapper;
-        organizationsByShortNameMapper = inOrganizationsByShortNameMapper;
         bulkDomainGroupsByShortNameMapper = inBulkDomainGroupsByShortNameMapper;
         orgShortNamesFromIdsMapper = inOrgShortNamesFromIdsMapper;
     }
@@ -109,13 +100,20 @@ public class PostCachedActivity extends CachedDomainMapper
      */
     public void execute(final ActivityDTO activity)
     {
-        // Gets the followers and add to their followed stream if the
-        // activity is posted to a Person's stream.
-        if (activity.getDestinationStream().getType() == EntityType.PERSON)
+        StreamEntityDTO destinationStream = activity.getDestinationStream();
+        EntityType type = destinationStream.getType();
+        Long parentOrgId;
+
+        if (type == EntityType.PERSON)
         {
             List<String> param = new ArrayList<String>();
-            param.add(activity.getDestinationStream().getUniqueIdentifier());
-            long personId = bulkPeopleByAccountIdMapper.execute(param).get(0).getEntityId();
+            param.add(destinationStream.getUniqueIdentifier());
+            PersonModelView person = bulkPeopleByAccountIdMapper.execute(param).get(0);
+
+            long personId = person.getEntityId();
+
+            parentOrgId = person.getParentOrganizationId();
+
             List<Long> followers = personFollowersMapper.execute(personId);
 
             for (Long follower : followers)
@@ -123,13 +121,22 @@ public class PostCachedActivity extends CachedDomainMapper
                 getCache().addToTopOfList(CacheKeys.ACTIVITIES_BY_FOLLOWING + follower, activity.getId());
             }
         }
+        else if (type == EntityType.GROUP)
+        {
+            parentOrgId = bulkDomainGroupsByShortNameMapper.execute(
+                    Arrays.asList(destinationStream.getUniqueIdentifier())).get(0).getParentOrganizationId();
+        }
+        else
+        {
+            throw new RuntimeException("Unexpected Activity destination stream type: " + type);
+        }
 
         // add to everyone list
         log.trace("Adding activity id " + activity.getId() + " into everyone activity list.");
         getCache().addToTopOfList(CacheKeys.EVERYONE_ACTIVITY_IDS, activity.getId());
 
         // climb up the tree, adding activity to each org
-        for (String orgShortName : getAllParentOrgShortNames(activity))
+        for (String orgShortName : getAllParentOrgShortNames(parentOrgId))
         {
             log.trace("Adding activity id " + activity.getId() + " to organization cache list " + orgShortName);
             getCache().addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName,
@@ -140,36 +147,15 @@ public class PostCachedActivity extends CachedDomainMapper
     /**
      * Returns all parent org short names up the tree.
      *
-     * @param inActivity
-     *            The activity.
+     * @param inOrgId
+     *            The id of the org.
      * @return all parent org ids up the tree
      */
-    private List<String> getAllParentOrgShortNames(final ActivityDTO inActivity)
+    private List<String> getAllParentOrgShortNames(final Long inOrgId)
     {
-        final StreamEntityDTO destinationStream = inActivity.getDestinationStream();
-        String parentOrgShortName = null;
-
-        switch (destinationStream.getType())
-        {
-        case PERSON:
-            parentOrgShortName = bulkPeopleByAccountIdMapper.execute(
-                    Arrays.asList(destinationStream.getUniqueIdentifier())).get(0).getParentOrganizationShortName();
-            break;
-        case GROUP:
-            parentOrgShortName = bulkDomainGroupsByShortNameMapper.execute(
-                    Arrays.asList(destinationStream.getUniqueIdentifier())).get(0).getParentOrganizationShortName();
-            break;
-        default:
-            throw new RuntimeException("Unexpected Activity destination stream type: " + destinationStream.getType());
-        }
-
-        // gets the org itself
-        final OrganizationModelView parentOrg = organizationsByShortNameMapper.execute(
-                Arrays.asList(parentOrgShortName)).get(0);
-
         // gets the org ids of all org parents of the activity's parent org
-        List<Long> parentIds = parentOrgIdsMapper.execute(parentOrg.getEntityId());
-        parentIds.add(parentOrg.getEntityId());
+        List<Long> parentIds = parentOrgIdsMapper.execute(inOrgId);
+        parentIds.add(inOrgId);
 
         return orgShortNamesFromIdsMapper.execute(parentIds);
     }

@@ -68,9 +68,9 @@ public class DeleteGroupTest extends MapperTest
         assertEquals(2, response.getGroupId().longValue());
         assertEquals("group2", response.getGroupShortName());
         assertEquals(groupStreamScopeId, response.getStreamScopeId().longValue());
-        assertEquals(2, response.getParentOrganizationIds().size());
-        assertTrue(response.getParentOrganizationIds().contains(5L));
-        assertTrue(response.getParentOrganizationIds().contains(7L));
+        assertEquals(2, response.getParentOrganizationShortNames().size());
+        assertTrue(response.getParentOrganizationShortNames().contains("tstorgname"));
+        assertTrue(response.getParentOrganizationShortNames().contains("child2orgname"));
 
         // verify associated items are gone as expected.
         // TODO: This could be filled out with more related entities to ensure cascading doesn't change for DomainGroup.

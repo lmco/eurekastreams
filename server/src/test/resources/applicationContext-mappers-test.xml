@@ -34,9 +34,6 @@
 		<property name="cache" ref="testCache" />
 	</bean>
 	
-	<bean id="getEveryoneActivityCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.GetEveryoneActivityCacheMapper">
-	   <property name="cache" ref="testCache" />
-	</bean>
 	<bean id="refreshEveryoneActivityCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.RefreshEveryoneActivityCacheMapper">
 	   <property name="cache" ref="testCache" />
     </bean>
@@ -415,7 +412,6 @@
 		<constructor-arg ref="getFollowerIds" />
 		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
 		<constructor-arg ref="getRecursiveParentOrgIdsMapper" />
-		<constructor-arg ref="bulkOrganizationsByShortNameMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 		<constructor-arg>
 			<bean class="org.eurekastreams.server.persistence.mappers.db.GetOrgShortNamesByIdsMapper" />
@@ -544,6 +540,7 @@
 		      <bean class="org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder" />
 		</constructor-arg>
 		<constructor-arg ref="getRecursiveParentOrgIdsMapper" />
+		<constructor-arg ref="getOrgShortNamesByIdsMapper" />
 	</bean>
 
 	<bean id="getRelatedOrganizationIdsByPersonId" class="org.eurekastreams.server.persistence.mappers.GetRelatedOrganizationIdsByPersonId" />
@@ -568,8 +565,14 @@
         <constructor-arg ref="findByIdMapper"/>
     </bean>
     
-    <bean id="getPersonIds" class="org.eurekastreams.server.persistence.mappers.db.GetIds" >
+    <bean id="getPersonIds" class="org.eurekastreams.server.persistence.mappers.db.GetSerializableField" >
         <constructor-arg value="Person"/>
+        <constructor-arg value="id"/>        
+    </bean>
+    
+    <bean id="getPersonsByIds" class="org.eurekastreams.server.persistence.mappers.db.GetPersonsByIds">
+        <constructor-arg ref="personQueryStrategy" />
+        <constructor-arg ref="getRelatedOrganizationIdsByPersonId" />
     </bean>
     
     <bean id="getRelatedEntityCountMapper" class="org.eurekastreams.server.persistence.mappers.db.GetRelatedEntityCount" />
@@ -592,4 +595,6 @@
 	
 	<bean id="getGadgetsByGadgetDefAndConsumerKey" class="org.eurekastreams.server.persistence.mappers.opensocial.GetGadgetsByGadgetDefAndConsumerKey" />
 
+	<bean id="getOrgShortNamesByIdsMapper"
+		class="org.eurekastreams.server.persistence.mappers.db.GetOrgShortNamesByIdsMapper" />
 </beans>

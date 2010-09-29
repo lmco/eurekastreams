@@ -6,6 +6,8 @@
       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
+	<import resource="applicationContext-actions-notifications.xml" />
+	  
     <!--
         This spring file contains the configuration for the actions and their
         associated strategies.  This includes ServiceActions, TaskHandlerServiceActions,
@@ -70,36 +72,6 @@
     <!-- ******************** -->
     <!-- Action configuration -->
     <!-- ******************** -->
-    
-    <bean id="updateNotificationsOnPersonNameChange" class="org.eurekastreams.commons.actions.async.AsyncAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.notification.UpdateNotificationsOnNameChangeExecution">
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.action.execution.notification.UpdateNotificationsOnPersonNameChangeRequestGenerator">
-                        <constructor-arg ref="findByIdMapper" />        
-                    </bean>
-                </constructor-arg>
-                <constructor-arg ref="updateNotificationsOnNameChangeMapper" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="false" />
-    </bean>  
-    
-    <bean id="updateNotificationsOnGroupNameChange" class="org.eurekastreams.commons.actions.async.AsyncAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.notification.UpdateNotificationsOnNameChangeExecution">
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.action.execution.notification.UpdateNotificationsOnGroupNameChangeRequestGenerator">
-                        <constructor-arg ref="findByIdMapper" />        
-                    </bean>
-                </constructor-arg>
-                <constructor-arg ref="updateNotificationsOnNameChangeMapper" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="false" />
-    </bean> 
     
     <bean id="authorizeUpdateGroup" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <!-- Validation -->
@@ -1675,6 +1647,34 @@
         <constructor-arg value="true" />
     </bean>
 
+    <bean id="updatePersonalSettings" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg>
+            <bean
+                class="org.eurekastreams.server.action.validation.settings.UpdateSettingsValidation">
+                <constructor-arg>
+                    <util:list>
+                    </util:list>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean
+                class="org.eurekastreams.server.action.execution.settings.UpdateSettingsExecution">
+                <constructor-arg>
+                    <util:list>
+                        <bean
+                            class="org.eurekastreams.server.action.execution.settings.NotificationFilterPreferencesUpdater">
+                            <constructor-arg ref="notifierIdToDisplayMap" />
+                            <constructor-arg ref="setUserNotificationFilterPreferences" />
+                        </bean>
+                    </util:list>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+    </bean>
+	
     <bean id="securityTrimmer" 
             class="org.eurekastreams.server.action.execution.stream.ActivitySecurityTrimmer">
             <constructor-arg ref="bulkActivitySecurityMapper" />
@@ -1882,45 +1882,6 @@
         <constructor-arg ref="getOrgCoordinators" />
     </bean>
 
-    <bean id="getApplicationAlerts" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.notification.GetApplicationAlertsExecution">
-                <constructor-arg ref="getApplicationAlertsByUserId" />
-                <!-- Max alerts to display. -->
-                <constructor-arg type="int" value="50" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>
-
-    <bean id="getUnreadApplicationAlertCount" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.notification.GetUnreadApplicationAlertCountExecution">
-                <constructor-arg ref="getCachedAlertCountByUserId" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>
-
-    <bean id="setAllApplicationAlertsAsRead" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.notification.SetAllApplicationAlertsAsReadExecution">
-                <constructor-arg ref="setAllApplicationAlertsAsReadByUserId" />
-                <constructor-arg ref="syncUnreadApplicationAlertCountCacheByUserId" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="false" />
-    </bean>
-
     <bean id="postActivityValidationStrategy"
         class="org.eurekastreams.server.action.validation.stream.PostActivityValidationStrategy">
         <constructor-arg ref="verbValidators" />
@@ -2106,49 +2067,6 @@
     <bean id="postActivityAsyncAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="postActivityAsyncExecutionStrategy" />
-        <constructor-arg value="false" />
-    </bean>
-
-    <bean id="updatePersonalSettings" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.validation.settings.UpdateSettingsValidation">
-                <constructor-arg>
-                    <util:list>
-                    </util:list>
-                </constructor-arg>
-            </bean>
-        </constructor-arg>
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.settings.UpdateSettingsExecution">
-                <constructor-arg>
-                    <util:list>
-                        <bean
-                            class="org.eurekastreams.server.action.execution.settings.NotificationFilterPreferencesUpdater">
-                            <constructor-arg ref="notifierIdToDisplayMap" />
-                            <constructor-arg ref="setUserNotificationFilterPreferences" />
-                        </bean>
-                    </util:list>
-                </constructor-arg>
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="false" />
-    </bean>
-
-    <bean id="deleteOldApplicationAlerts" class="org.eurekastreams.commons.actions.async.AsyncAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.notification.DeleteOldApplicationAlertsExecution">
-                <constructor-arg ref="deleteApplicationAlertsByDate" />
-                <constructor-arg ref="getUserIdsWithUnreadApplicationAlertsByDate" />
-                <constructor-arg ref="syncUnreadApplicationAlertCountCacheByUserId" />
-                <!-- Age (in days) at which alerts should be deleted. -->
-                <constructor-arg type="int" value="14" />
-            </bean>
-        </constructor-arg>
         <constructor-arg value="false" />
     </bean>
 
@@ -2766,398 +2684,9 @@
         <constructor-arg ref="taskHandler" />
     </bean>
 
-    <!--
-    *************
-    Notifications
-    ************* 
-     -->
     <bean id="applicationProperties"
         class="org.eurekastreams.server.service.utility.ResourcePropertyFileLoaderFactoryBean">
         <constructor-arg value="classpath:conf/eurekastreams-server.properties" />
-    </bean>
-
-    <bean id="baseTemplateEmailBuilder"
-        class="org.eurekastreams.server.action.execution.notification.TemplateEmailBuilder"
-        abstract="true">
-        <constructor-arg ref="emailerFactory" />
-        <constructor-arg ref="bulkPeopleMapper" />
-        <constructor-arg ref="applicationProperties" />
-    </bean>
-
-    <bean id="baseResourceContentLoader"
-        class="org.eurekastreams.server.service.utility.ResourceContentLoaderFactoryBean"
-        abstract="true" />
-
-        
-    <bean id="flaggedActivityNotificationEmailBuilder" parent="baseTemplateEmailBuilder">
-        <constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) flagged a $(activity.type) in the $(dest.name) organization" />
-        <constructor-arg>
-            <bean parent="baseResourceContentLoader">
-                <constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-FLAG_ACTIVITY.txt" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg>
-            <bean parent="baseResourceContentLoader">
-                <constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-FLAG_ACTIVITY.html" />
-            </bean>
-        </constructor-arg>
-    </bean>
-
-    <bean id="postToGroupStreamNotificationEmailBuilder" parent="baseTemplateEmailBuilder">
-        <constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) posted a $(activity.type) to the $(dest.name) stream" />
-        <constructor-arg>
-            <bean parent="baseResourceContentLoader">
-                <constructor-arg
-                    value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_GROUP_STREAM.txt" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg>
-            <bean parent="baseResourceContentLoader">
-                <constructor-arg
-                    value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_GROUP_STREAM.html" />
-            </bean>
-        </constructor-arg>
-    </bean>
-    
-    <bean id="createEmailNotification" class="org.eurekastreams.commons.actions.async.AsyncAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.notification.CreateEmailNotificationExecution">
-                <constructor-arg ref="emailerFactory" />
-                <constructor-arg>
-                    <map>
-                        <entry key="LIKE_ACTIVITY">
-                            <bean parent="baseTemplateEmailBuilder">
-                                <constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) liked $(activity.type)" />
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg
-                                            value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-LIKE_ACTIVITY.txt" />
-                                    </bean>
-                                </constructor-arg>
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg
-                                            value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-LIKE_ACTIVITY.html" />
-                                    </bean>
-                                </constructor-arg>
-                            </bean>
-                        </entry>
-                        <entry key="POST_TO_PERSONAL_STREAM">
-                            <bean parent="baseTemplateEmailBuilder">
-                                <constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) posted a $(activity.type) to your stream" />
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg
-                                            value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_PERSONAL_STREAM.txt" />
-                                    </bean>
-                                </constructor-arg>
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg
-                                            value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-POST_TO_PERSONAL_STREAM.html" />
-                                    </bean>
-                                </constructor-arg>
-                            </bean>
-                        </entry>
-                        <entry key="FOLLOW_PERSON">
-                            <bean parent="baseTemplateEmailBuilder">
-                                <constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) is following your stream" />
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg
-                                            value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-FOLLOW_PERSON.txt" />
-                                    </bean>
-                                </constructor-arg>
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg
-                                            value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-FOLLOW_PERSON.html" />
-                                    </bean>
-                                </constructor-arg>
-                            </bean>
-                        </entry>
-                        <entry key="COMMENT_TO_PERSONAL_STREAM">
-                            <bean parent="baseTemplateEmailBuilder">
-                                <constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) commented on a $(activity.type) in your stream" />
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg
-                                            value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_PERSONAL_STREAM.txt" />
-                                    </bean>
-                                </constructor-arg>
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg
-                                            value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_PERSONAL_STREAM.html" />
-                                    </bean>
-                                </constructor-arg>
-                            </bean>
-                        </entry>
-                        <entry key="COMMENT_TO_PERSONAL_POST">
-                            <bean parent="baseTemplateEmailBuilder">
-                                <constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) commented on your $(activity.type)" />
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg
-                                            value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_PERSONAL_POST.txt" />
-                                    </bean>
-                                </constructor-arg>
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg
-                                            value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_PERSONAL_POST.html" />
-                                    </bean>
-                                </constructor-arg>
-                            </bean>
-                        </entry>
-                        <entry key="COMMENT_TO_COMMENTED_POST">
-                            <bean parent="baseTemplateEmailBuilder">
-                                <constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) also commented on $(aux.name)'s $(activity.type)" />
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg
-                                            value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_COMMENTED_POST.txt" />
-                                    </bean>
-                                </constructor-arg>
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg
-                                            value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_COMMENTED_POST.html" />
-                                    </bean>
-                                </constructor-arg>
-                            </bean>
-                        </entry>
-                        <entry key="POST_TO_GROUP_STREAM" value-ref="postToGroupStreamNotificationEmailBuilder" />
-                        <entry key="POST_TO_JOINED_GROUP" value-ref="postToGroupStreamNotificationEmailBuilder" />
-                        <entry key="COMMENT_TO_GROUP_STREAM">
-                            <bean parent="baseTemplateEmailBuilder">
-                                <constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) commented on a $(activity.type) in the $(dest.name) stream" />
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg
-                                            value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_GROUP_STREAM.txt" />
-                                    </bean>
-                                </constructor-arg>
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg
-                                            value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_GROUP_STREAM.html" />
-                                    </bean>
-                                </constructor-arg>
-                            </bean>
-                        </entry>
-                        <entry key="FOLLOW_GROUP">
-                            <bean parent="baseTemplateEmailBuilder">
-                                <constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) joined the $(dest.name) group" />
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg
-                                            value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-FOLLOW_GROUP.txt" />
-                                    </bean>
-                                </constructor-arg>
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg
-                                            value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-FOLLOW_GROUP.html" />
-                                    </bean>
-                                </constructor-arg>
-                            </bean>
-                        </entry>
-                        <entry key="FLAG_PERSONAL_ACTIVITY" value-ref="flaggedActivityNotificationEmailBuilder" />
-                        <entry key="FLAG_GROUP_ACTIVITY" value-ref="flaggedActivityNotificationEmailBuilder" />
-                        <entry key="REQUEST_NEW_GROUP">
-                            <bean parent="baseTemplateEmailBuilder">
-                                <constructor-arg value="$(eureka.notification.email.subjectprefix)The $(aux.name) group is pending approval in the $(dest.name) organization" />
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_NEW_GROUP.txt" />
-                                    </bean>
-                                </constructor-arg>
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_NEW_GROUP.html" />
-                                    </bean>
-                                </constructor-arg>
-                            </bean>
-                        </entry>
-                        <entry key="REQUEST_NEW_GROUP_APPROVED">
-                            <bean parent="baseTemplateEmailBuilder">
-                                <constructor-arg value="$(eureka.notification.email.subjectprefix)Pending group request for the $(aux.name) group has been approved" />
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_NEW_GROUP_APPROVED.txt" />
-                                    </bean>
-                                </constructor-arg>
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_NEW_GROUP_APPROVED.html" />
-                                    </bean>
-                                </constructor-arg>
-                            </bean>
-                        </entry>
-                        <entry key="REQUEST_NEW_GROUP_DENIED">
-                            <bean parent="baseTemplateEmailBuilder">
-                                <constructor-arg value="$(eureka.notification.email.subjectprefix)Pending group request for the $(aux.name) group has been denied" />
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_NEW_GROUP_DENIED.txt" />
-                                    </bean>
-                                </constructor-arg>
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_NEW_GROUP_DENIED.html" />
-                                    </bean>
-                                </constructor-arg>
-                            </bean>
-                        </entry>
-                        <entry key="REQUEST_GROUP_ACCESS">
-                            <bean parent="baseTemplateEmailBuilder">
-                                <constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) requested to join the $(dest.name) private group" />
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS.txt" />
-                                    </bean>
-                                </constructor-arg>
-                                <constructor-arg>
-                                    <bean parent="baseResourceContentLoader">
-                                        <constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS.html" />
-                                    </bean>
-                                </constructor-arg>
-                            </bean>
-                        </entry>
-                    </map>
-                </constructor-arg>
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>
-
-    <util:map id="translators">
-        <entry key="FOLLOWER">
-            <bean class="org.eurekastreams.server.action.execution.notification.translator.FollowerTranslator" />
-        </entry>
-        <entry key="LIKE">
-            <bean class="org.eurekastreams.server.action.execution.notification.translator.LikeTranslator" />
-        </entry>
-        <entry key="COMMENT">
-            <bean class="org.eurekastreams.server.action.execution.notification.translator.CommentTranslator">
-                <constructor-arg ref="getCommentorIdsByActivityId" />
-                <constructor-arg ref="bulkActivitiesMapper" />
-            </bean>
-        </entry>
-        <entry key="STREAM_POST">
-            <bean class="org.eurekastreams.server.action.execution.notification.translator.StreamPostTranslator" />
-        </entry>
-        <entry key="GROUP_FOLLOWER">
-            <bean class="org.eurekastreams.server.action.execution.notification.translator.GroupFollowerTranslator">
-                <constructor-arg ref="getCoordinatorIdsByGroupId" />
-            </bean>
-        </entry>
-        <entry key="GROUP_COMMENT">
-            <bean class="org.eurekastreams.server.action.execution.notification.translator.GroupCommentTranslator">
-                <constructor-arg ref="getCommentorIdsByActivityId" />
-                <constructor-arg ref="bulkActivitiesMapper" />
-                <constructor-arg><null /></constructor-arg>
-                <!-- Replace above with <constructor-arg ref="getCoordinatorIdsByGroupId" /> to notify group coordinators when comments are posted to group streams.
--->
-            </bean>
-        </entry>
-        <entry key="GROUP_STREAM_POST">
-            <bean class="org.eurekastreams.server.action.execution.notification.translator.GroupStreamPostTranslator">
-                <constructor-arg ref="getCoordinatorIdsByGroupId" />
-                <constructor-arg ref="getGroupFollowerIds" />
-                <constructor-arg ref="findByIdMapper" />
-            </bean>
-        </entry>
-        <entry key="FLAG_ACTIVITY">
-            <bean class="org.eurekastreams.server.action.execution.notification.translator.FlagTranslator">
-                <constructor-arg ref="bulkActivitiesMapper"/>
-                <constructor-arg ref="getOrgCoordinators" />
-            </bean>
-        </entry>
-        <entry key="REQUEST_NEW_GROUP">
-            <bean class="org.eurekastreams.server.action.execution.notification.translator.RequestNewGroupTranslator">
-                <constructor-arg ref="findByIdMapper" />
-                <constructor-arg ref="getOrgCoordinators" />
-            </bean>
-        </entry>
-        <entry key="REQUEST_GROUP_ACCESS">
-            <bean class="org.eurekastreams.server.action.execution.notification.translator.RequestGroupAccessTranslator">
-                <constructor-arg ref="getCoordinatorIdsByGroupId" />
-            </bean>
-        </entry>
-    </util:map>
-
-    <util:map id="notificationTypeToCategoryMap" key-type="org.eurekastreams.server.domain.NotificationType" value-type="org.eurekastreams.server.domain.NotificationFilterPreference$Category">
-        <entry key="POST_TO_PERSONAL_STREAM" value="POST_TO_PERSONAL_STREAM" />
-        <entry key="COMMENT_TO_PERSONAL_STREAM" value="COMMENT" />
-        <entry key="COMMENT_TO_PERSONAL_POST" value="COMMENT" />
-        <entry key="COMMENT_TO_COMMENTED_POST" value="COMMENT" />
-        <entry key="FOLLOW_PERSON" value="FOLLOW_PERSON" />
-        <entry key="POST_TO_GROUP_STREAM" value="POST_TO_GROUP_STREAM" />
-        <entry key="COMMENT_TO_GROUP_STREAM" value="COMMENT_IN_GROUP_STREAM" />
-        <entry key="FOLLOW_GROUP" value="FOLLOW_GROUP" />
-        <entry key="FLAG_PERSONAL_ACTIVITY" value="FLAG_ACTIVITY" />
-        <entry key="FLAG_GROUP_ACTIVITY" value="FLAG_ACTIVITY" />
-        <entry key="REQUEST_NEW_GROUP" value="REQUEST_NEW_GROUP" />
-        <entry key="REQUEST_GROUP_ACCESS" value="REQUEST_GROUP_ACCESS" />
-        <entry key="POST_TO_JOINED_GROUP" value="POST_TO_JOINED_GROUP" />
-        <entry key="LIKE_ACTIVITY" value="LIKE" />
-    </util:map>
-    
-    <bean id="emailNotifier"
-        class="org.eurekastreams.server.action.execution.notification.AsyncNotifier">
-        <constructor-arg value="createEmailNotification" />
-    </bean>
-
-    <bean id="applicationAlertNotifier" class="org.eurekastreams.server.action.execution.notification.ApplicationAlertNotifier">
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
-        </constructor-arg>
-        <constructor-arg ref="syncUnreadApplicationAlertCountCacheByUserId" />
-    </bean>
-    
-    <!-- all notifiers, by ID -->
-    <util:map id="notifiersByIdMap">
-        <entry key="APP_ALERT" value-ref="applicationAlertNotifier" />
-        <entry key="EMAIL" value-ref="emailNotifier" />
-    </util:map>
-
-    <!--
-        names of notifiers which can be disabled, by ID, in order by columns
-        on display
-    -->
-    <util:map id="notifierIdToDisplayMap" map-class="java.util.LinkedHashMap">
-        <entry key="EMAIL" value="Email" />
-        <entry key="APP_ALERT" value="In-App" />
-    </util:map>
-
-    <bean id="createNotificationsAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.validation.notification.CreateNotificationsValidation">
-                <constructor-arg ref="translators" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.notification.CreateNotificationsExecution">
-                <constructor-arg ref="translators" />
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.action.execution.notification.NotificationPopulator">
-                        <constructor-arg ref="bulkPeopleMapper" />
-                        <constructor-arg ref="bulkDomainGroupsMapper" />
-                        <constructor-arg ref="bulkOrganizationsMapper" />
-                        <constructor-arg ref="bulkActivitiesMapper" />
-                    </bean>
-                </constructor-arg>
-                <constructor-arg ref="notifiersByIdMap" />
-                <constructor-arg ref="getNotificationFilterPreferencesByPeopleIds" />
-                <constructor-arg ref="notificationTypeToCategoryMap" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="false" />
-        <constructor-arg ref="taskHandler" />
     </bean>
 
     <bean id="setTabLayout" class="org.eurekastreams.commons.actions.service.ServiceAction">

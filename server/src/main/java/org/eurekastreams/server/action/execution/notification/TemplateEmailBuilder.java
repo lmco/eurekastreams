@@ -107,10 +107,35 @@ public class TemplateEmailBuilder implements NotificationEmailBuilder
     @Override
     public void build(final NotificationDTO notif, final MimeMessage inMessage) throws Exception
     {
+        build(notif, null, inMessage);
+    }
+
+    /**
+     * Builds the email message from the notification and initial properties.
+     *
+     * @param notif
+     *            Notification for which to build message.
+     * @param invocationProperties
+     *            Initial properties to use.
+     * @param inMessage
+     *            Email message.
+     * @throws Exception
+     *             On error.
+     */
+    public void build(final NotificationDTO notif, final Map<String, String> invocationProperties,
+            final MimeMessage inMessage) throws Exception
+    {
         // -- build properties --
 
-        // from system configuration
         Map<String, String> properties = new HashMap<String, String>();
+
+        // from upstream builders
+        if (invocationProperties != null)
+        {
+            properties.putAll(invocationProperties);
+        }
+
+        // from system configuration
         if (extraProperties != null)
         {
             properties.putAll(extraProperties);

@@ -37,18 +37,14 @@ import org.eurekastreams.web.client.ui.common.form.FormBuilder;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder.Method;
 import org.eurekastreams.web.client.ui.common.form.elements.ActivityExpirationFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicCheckBoxFormElement;
-import org.eurekastreams.web.client.ui.common.form.elements.BasicRadioButtonFormElement;
-import org.eurekastreams.web.client.ui.common.form.elements.BasicRadioButtonGroupFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextBoxFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.HideableRichTextAreaFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.HideableTextAreaFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.StreamScopeFormElement;
-import org.eurekastreams.web.client.ui.common.form.elements.ValueOnlyFormElement;
+import org.eurekastreams.web.client.ui.common.form.elements.TermsOfServicePromptIntervalFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.userassociation.UserAssociationFormElement;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.History;
@@ -58,7 +54,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineHyperlink;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 // TODO form needs to handle return input from action. it is not displaying errors back to the user. example.
@@ -123,22 +118,6 @@ public class SystemSettingsPanelComposite extends FlowPanel
     private HideableRichTextAreaFormElement tosElement;
 
     /**
-     * The TOS prompt interval element. The TOS section has three variables. That is why these are not in one form
-     * element.
-     */
-    private BasicRadioButtonGroupFormElement promptInt;
-    /**
-     * The every session element, This is a value only element because the Prompt element contains two types of data. 1.
-     * whether to prompt every session and 2. if not, how often. This data is synced with a clicklistener.
-     */
-    private ValueOnlyFormElement everySession;
-
-    /**
-     * The text box that contains the value for the number fo days before you should prompt.
-     */
-    private TextBox promptInterval = new TextBox();
-
-    /**
      * The extra CL to hide the prompt Int form element.
      */
     private ClickListener hideTOSIntPanel;
@@ -147,6 +126,11 @@ public class SystemSettingsPanelComposite extends FlowPanel
      * The membership refresh button.
      */
     private Label membershipRefreshButton;
+    
+    /**
+     * The ToS prompt interval form element.
+     */
+    private TermsOfServicePromptIntervalFormElement promptInterval;
 
     /**
      * Scopes.
@@ -172,12 +156,12 @@ public class SystemSettingsPanelComposite extends FlowPanel
                 if (tosElement.isChecked())
                 {
 
-                    promptInt.setVisible(true);
+                    promptInterval.setVisible(true);
                 }
                 else
                 {
 
-                    promptInt.setVisible(false);
+                    promptInterval.setVisible(false);
                 }
             }
         };
@@ -278,11 +262,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
 
         if (!tosElement.isChecked())
         {
-            promptInterval.setText("1");
-        }
-        else if ((Boolean) promptInt.getValue())
-        {
-            promptInterval.setText("1");
+            promptInterval.setValue(1);
         }
     }
 
@@ -341,11 +321,6 @@ public class SystemSettingsPanelComposite extends FlowPanel
 
         tosElement.addStyleName("hideable-textarea");
 
-        promptInt = new BasicRadioButtonGroupFormElement("Prompt Interval ", "isTosDisplayedEverySession",
-                "isTosDisplayedEverySession", "");
-        promptInt.addStyleName("tos-prompt-interval");
-        everySession = new ValueOnlyFormElement("tosPromptInterval", new Integer(1));
-
         Integer promptVal = systemSettingValues.getTosPromptInterval();
 
         if (null == promptVal)
@@ -353,47 +328,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
             promptVal = 1;
         }
 
-        promptInterval.setValue(Integer.toString(promptVal));
-        promptInterval.addStyleName("prompt-interval");
-        promptInterval.setMaxLength(5);
-
-        ClickListener everySessionListener = new ClickListener()
-        {
-            public void onClick(final Widget arg0)
-            {
-                if ((Boolean) promptInt.getValue())
-                {
-                    everySession.setValue(new Integer(1));
-                }
-                else
-                {
-                    // TODO take into account this could be passed a non int.
-                    everySession.setValue(Integer.parseInt(promptInterval.getText()));
-                }
-            }
-        };
-
-        promptInt.addRadioButton("every session", "", true, systemSettingValues.getIsTosDisplayedEverySession(),
-                everySessionListener);
-        BasicRadioButtonFormElement rbElement = promptInt.addRadioButton("every", "", false, !systemSettingValues
-                .getIsTosDisplayedEverySession(), everySessionListener);
-
-        rbElement.add(promptInterval);
-        rbElement.add(new InlineLabel("days"));
-
-        everySessionListener.onClick(null);
-
-        promptInterval.addChangeHandler(new ChangeHandler()
-        {
-            public void onChange(final ChangeEvent event)
-            {
-                if (!(Boolean) promptInt.getValue())
-                {
-                    everySession.setValue(Integer.parseInt(promptInterval.getText()));
-                }
-            }
-        });
-
+        promptInterval = new TermsOfServicePromptIntervalFormElement(promptVal, "tosPromptInterval");
         form.addFormElement(new UserAssociationFormElement(systemSettingValues));
 
         BasicCheckBoxFormElement sendEmails = new BasicCheckBoxFormElement("", "sendWelcomeEmails",
@@ -419,8 +354,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
         form.addFormElement(hideablePluginWarning);
         form.addFormDivider();
         form.addFormElement(tosElement);
-        form.addFormElement(promptInt);
-        form.addFormElement(everySession);
+        form.addFormElement(promptInterval);
         form.addFormDivider();
 
         // Help Page
@@ -432,7 +366,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
 
         if (!tosElement.isChecked())
         {
-            promptInt.setVisible(false);
+            promptInterval.setVisible(false);
         }
 
         this.add(form);

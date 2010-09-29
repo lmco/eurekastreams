@@ -1,5 +1,7 @@
 $(actor.name) commented on your $(activity.type).
 
+"$(comment.content)"
+
 To see the post and comments follow this link:
 $(eureka.web.baseurl)#$(dest.page)/$(dest.uniqueid)?activityId=$(activity.id)
 
