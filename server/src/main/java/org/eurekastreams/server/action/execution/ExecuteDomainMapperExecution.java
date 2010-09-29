@@ -16,6 +16,8 @@
 package org.eurekastreams.server.action.execution;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
@@ -33,14 +35,23 @@ public class ExecuteDomainMapperExecution implements ExecutionStrategy<ActionCon
     private DomainMapper<Serializable, Serializable> domainMapper;
 
     /**
+     * Flag indicating if param should be put in list before calling domain mapper.
+     */
+    private boolean putParamInList;
+
+    /**
      * Constructor.
      * 
      * @param inDomainMapper
      *            {@link DomainMapper}.
+     * @param inPutParamInList
+     *            flag to indicate if parameter should be inserted into a list before being sent to DomainMapper.
      */
-    public ExecuteDomainMapperExecution(final DomainMapper<Serializable, Serializable> inDomainMapper)
+    public ExecuteDomainMapperExecution(final DomainMapper<Serializable, Serializable> inDomainMapper,
+            final boolean inPutParamInList)
     {
         domainMapper = inDomainMapper;
+        putParamInList = inPutParamInList;
     }
 
     /**
@@ -53,7 +64,9 @@ public class ExecuteDomainMapperExecution implements ExecutionStrategy<ActionCon
     @Override
     public Serializable execute(final ActionContext inActionContext)
     {
-        return domainMapper.execute(inActionContext.getParams());
+
+        return putParamInList ? domainMapper.execute(new ArrayList<Serializable>(Arrays.asList(inActionContext
+                .getParams()))) : domainMapper.execute(inActionContext.getParams());
     }
 
 }

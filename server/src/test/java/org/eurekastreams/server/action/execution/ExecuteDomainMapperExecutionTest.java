@@ -65,7 +65,7 @@ public class ExecuteDomainMapperExecutionTest
     @Test
     public void test()
     {
-        ExecuteDomainMapperExecution sut = new ExecuteDomainMapperExecution(domainMapper);
+        ExecuteDomainMapperExecution sut = new ExecuteDomainMapperExecution(domainMapper, false);
 
         context.checking(new Expectations()
         {
@@ -74,6 +74,33 @@ public class ExecuteDomainMapperExecutionTest
                 will(returnValue("foo"));
 
                 allowing(domainMapper).execute("foo");
+                will(returnValue(results));
+            }
+        });
+
+        Serializable result = sut.execute(actionContext);
+
+        assertNotNull(result);
+        assertTrue(((List<Long>) result).contains(5L));
+
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testList()
+    {
+        ExecuteDomainMapperExecution sut = new ExecuteDomainMapperExecution(domainMapper, true);
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(actionContext).getParams();
+                will(returnValue("foo"));
+
+                allowing(domainMapper).execute(with(any(ArrayList.class)));
                 will(returnValue(results));
             }
         });
