@@ -92,10 +92,10 @@ public class PersonCacheLoader extends CachedDomainMapper implements EntityCache
         long start = System.currentTimeMillis();
         long stepStart;
 
-        log.info("Querying and building person cache");
-        stepStart = System.currentTimeMillis();
-        queryAllPeople();
-        log.info("Done: " + (System.currentTimeMillis() - stepStart) + " ms.");
+        // log.info("Querying and building person cache");
+        // stepStart = System.currentTimeMillis();
+        // queryAllPeople();
+        // log.info("Done: " + (System.currentTimeMillis() - stepStart) + " ms.");
 
         log.info("Querying and building following targets for person cache");
         stepStart = System.currentTimeMillis();

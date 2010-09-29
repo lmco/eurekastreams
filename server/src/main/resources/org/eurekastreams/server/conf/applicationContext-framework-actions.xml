@@ -3130,7 +3130,7 @@
                 <constructor-arg ref="memcachedCache" />
                 <constructor-arg>
                     <list>
-                        <!-- <value>queuePersonCacheWarmingTasks</value> -->
+                        <value>queuePersonCacheWarmingTasks</value>
                         <value>cacheWarmPeople</value>
                         <value>cacheWarmGroups</value>
                         <value>cacheWarmOrganizations</value>                         

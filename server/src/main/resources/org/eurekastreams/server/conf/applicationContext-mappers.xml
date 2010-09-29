@@ -657,7 +657,14 @@
     <bean id="PersonToOpenSocialIdTransformer" class="org.eurekastreams.server.persistence.mappers.cache.PersonToOpenSocialIdTransformer" />
     
     <bean id="passThroughTransformer" class="org.eurekastreams.server.persistence.mappers.cache.PassThroughTransformer" />	
-
+    
+    <bean id="nullResultPartialMapper" class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.NullMapper">
+            </bean>
+        </constructor-arg>
+    </bean>
+    
 	<!-- Organization Hierarchy Cache Loader -->
 	<bean id="organizationCacheLoader"
 		class="org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCacheLoader">

@@ -17,14 +17,12 @@ package org.eurekastreams.server.persistence.mappers.cache;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.GetRelatedOrganizationIdsByPersonId;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.eurekastreams.server.persistence.mappers.cache.testhelpers.SimpleMemoryCache;
 import org.eurekastreams.server.persistence.strategies.PersonQueryStrategy;
-import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -112,17 +110,8 @@ public class PersonCacheLoaderTest extends MapperTest
     @Test
     public void testInitialize()
     {
-        final long fordpId = 42L;
         personCacheLoader.initialize();
 
-        PersonModelView ford = (PersonModelView) cache.get(CacheKeys.PERSON_BY_ID + fordpId);
-        assertEquals("fordp", ford.getAccountId());
-        assertEquals(2, ford.getRelatedOrganizationIds().size());
-        assertTrue(ford.getRelatedOrganizationIds().contains(5L));
-        assertTrue(ford.getRelatedOrganizationIds().contains(6L));
-
-        assertEquals(fordpId, cache.get(CacheKeys.PERSON_BY_ACCOUNT_ID + "fordp"));
-        assertEquals(fordpId, cache.get(CacheKeys.PERSON_BY_OPEN_SOCIAL_ID + "2d359911-0977-418a-9490-57e8252b1a42"));
         assertEquals(2, (cache.getList(CacheKeys.FOLLOWERS_BY_PERSON + "99")).size());
         assertEquals(2, (cache.getList(CacheKeys.PEOPLE_FOLLOWED_BY_PERSON + "98")).size());
     }
@@ -136,8 +125,6 @@ public class PersonCacheLoaderTest extends MapperTest
         final long smithersId = 98L;
         personCacheLoader.initialize();
 
-        // make sure the person is in cache
-        assertNotNull(cache.get(CacheKeys.PERSON_BY_ID + smithersId));
         assertNotNull(cache.getList(CacheKeys.FOLLOWERS_BY_PERSON + smithersId));
 
         // update the person
