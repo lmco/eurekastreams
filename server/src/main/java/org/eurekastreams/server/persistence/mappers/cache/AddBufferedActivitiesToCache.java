@@ -36,7 +36,7 @@ public class AddBufferedActivitiesToCache extends CachedDomainMapper
     /**
      * Cache.
      */
-    private MemcachedCache cache;
+    private Cache cache;
     /**
      * Gets the associated stream views given an activity.
      */
@@ -44,7 +44,7 @@ public class AddBufferedActivitiesToCache extends CachedDomainMapper
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inBulkActivitiesMapper
      *            The bulk activities mapper.
      * @param inCache
@@ -53,8 +53,7 @@ public class AddBufferedActivitiesToCache extends CachedDomainMapper
      *            Gets the associated stream views given an activity.
      */
     public AddBufferedActivitiesToCache(final DomainMapper<List<Long>, List<ActivityDTO>> inBulkActivitiesMapper,
-            final MemcachedCache inCache,
-            final GetCompositeStreamIdsByAssociatedActivity inGetCompositeStreamsByActivity)
+            final Cache inCache, final GetCompositeStreamIdsByAssociatedActivity inGetCompositeStreamsByActivity)
     {
         bulkActivitiesMapper = inBulkActivitiesMapper;
         cache = inCache;
@@ -63,7 +62,7 @@ public class AddBufferedActivitiesToCache extends CachedDomainMapper
 
     /**
      * Execute.
-     *
+     * 
      * @return true.
      */
     public Boolean execute()
