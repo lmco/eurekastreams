@@ -20,7 +20,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
@@ -30,9 +32,11 @@ import org.eurekastreams.server.persistence.DomainEntityMapperTest;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.TabMapper;
+import org.eurekastreams.server.persistence.mappers.db.GetReadOnlyStreamsDbMapper;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
+import org.jsecurity.util.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +55,11 @@ public class PersonCreatorTest extends DomainEntityMapperTest
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
+
+    /**
+     * List of the names of readonly streams to add to a person, in order.
+     */
+    private List<String> readOnlyStreamsNameList;
 
     /**
      * System under test.
@@ -96,7 +105,14 @@ public class PersonCreatorTest extends DomainEntityMapperTest
     @Before
     public final void load()
     {
-        sut = new PersonCreator(personMapperMock, tabMapperMock, organizationMapperMock);
+        GetReadOnlyStreamsDbMapper readonlyStreamsMapper = new GetReadOnlyStreamsDbMapper();
+        (readonlyStreamsMapper).setEntityManager(getEntityManager());
+
+        List<String> streamNames = new ArrayList<String>(CollectionUtils.asList("Everyone", "My saved items",
+                "EUREKA:PARENT_ORG_TAG", "Following"));
+
+        sut = new PersonCreator(personMapperMock, tabMapperMock, organizationMapperMock, readonlyStreamsMapper,
+                streamNames);
     }
 
     /**
@@ -132,6 +148,14 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         assertEquals("", p.getMiddleName());
         assertEquals("Flanders", p.getLastName());
         assertEquals("Ned-diddly", p.getPreferredName());
+
+        // test stream order
+        // IDs: 1, 5, 4, 3
+        assertEquals(4, p.getStreams().size());
+        assertEquals(1, p.getStreams().get(0).getId());
+        assertEquals(5, p.getStreams().get(1).getId());
+        assertEquals(4, p.getStreams().get(2).getId());
+        assertEquals(3, p.getStreams().get(3).getId());
     }
 
     /**
@@ -158,7 +182,16 @@ public class PersonCreatorTest extends DomainEntityMapperTest
             }
         });
 
-        Person p = sut.get(null, inFields);
+        // new SUT to test different stream order
+        GetReadOnlyStreamsDbMapper readonlyStreamsMapper = new GetReadOnlyStreamsDbMapper();
+        (readonlyStreamsMapper).setEntityManager(getEntityManager());
+        List<String> streamNames = new ArrayList<String>(CollectionUtils.asList("My saved items", "Everyone",
+                "EUREKA:PARENT_ORG_TAG"));
+
+        PersonCreator localSut = new PersonCreator(personMapperMock, tabMapperMock, organizationMapperMock,
+                readonlyStreamsMapper, streamNames);
+
+        Person p = localSut.get(null, inFields);
         context.assertIsSatisfied();
 
         assertNotNull(p);
@@ -170,6 +203,13 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         assertEquals("Flanders", p.getLastName());
         assertEquals("Ned-diddly", p.getPreferredName());
         assertEquals(orgMock, p.getParentOrganization());
+
+        // test stream order
+        // IDs: 1, 5, 4, 3
+        assertEquals(3, p.getStreams().size());
+        assertEquals(5, p.getStreams().get(0).getId());
+        assertEquals(1, p.getStreams().get(1).getId());
+        assertEquals(4, p.getStreams().get(2).getId());
     }
 
     /**
@@ -191,10 +231,10 @@ public class PersonCreatorTest extends DomainEntityMapperTest
                 exactly(3).of(testPerson).getId();
                 will(returnValue(2L));
                 oneOf(personMapperMock).addFollower(2L, 2L);
-                
+
                 oneOf(testPerson).getStreamScope();
                 will(returnValue(streamScope));
-                
+
                 oneOf(streamScope).setDestinationEntityId(2L);
 
                 oneOf(personMapperMock).flush();
@@ -215,7 +255,12 @@ public class PersonCreatorTest extends DomainEntityMapperTest
     @Test
     public final void testPersistFromDB() throws Exception
     {
-        sut = new PersonCreator(personMapper, tabMapper, organizationMapper);
+        GetReadOnlyStreamsDbMapper readonlyStreamsMapper = new GetReadOnlyStreamsDbMapper();
+        (readonlyStreamsMapper).setEntityManager(getEntityManager());
+        List<String> streamNames = new ArrayList<String>(CollectionUtils.asList("My saved items", "Everyone",
+                "EUREKA:PARENT_ORG_TAG"));
+
+        sut = new PersonCreator(personMapper, tabMapper, organizationMapper, readonlyStreamsMapper, streamNames);
         final Organization org = organizationMapper.getRootOrganization();
 
         final HashMap<String, Serializable> inFields = new HashMap<String, Serializable>();

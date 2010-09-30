@@ -37,6 +37,7 @@ import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.TabMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * Create person resource strategy.
@@ -59,6 +60,16 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
     private OrganizationMapper organizationMapper;
 
     /**
+     * Mapper to get the readonly streams.
+     */
+    private DomainMapper<Long, List<Stream>> readonlyStreamsMapper;
+
+    /**
+     * List of the names of readonly streams to add to a person, in order.
+     */
+    private List<String> readOnlyStreamsNameList;
+
+    /**
      * Constructor.
      *
      * @param inPersonMapper
@@ -67,13 +78,21 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
      *            tab mapper.
      * @param inOrganizationMapper
      *            org mapper
+     * @param inReadonlyStreamsMapper
+     *            mapper to get the readonly streams
+     * @param inReadOnlyStreamsNameList
+     *            List of the names of readonly streams to add to a person, in order
      */
     public PersonCreator(final PersonMapper inPersonMapper, final TabMapper inTabMapper,
-            final OrganizationMapper inOrganizationMapper)
+            final OrganizationMapper inOrganizationMapper,
+            final DomainMapper<Long, List<Stream>> inReadonlyStreamsMapper, //
+            final List<String> inReadOnlyStreamsNameList)
     {
         personMapper = inPersonMapper;
         tabMapper = inTabMapper;
         organizationMapper = inOrganizationMapper;
+        readonlyStreamsMapper = inReadonlyStreamsMapper;
+        readOnlyStreamsNameList = inReadOnlyStreamsNameList;
     }
 
     /**
@@ -128,8 +147,8 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
         Set<StreamScope> defaultScopeList = new HashSet<StreamScope>();
         defaultScopeList.add(personScope);
 
-        List<Stream> streams = new ArrayList<Stream>();
-        // TODO: person.setStreams(/*TODO*/);
+        List<Stream> streams = getStreamsForPerson();
+
         person.setStreams(streams);
 
         // Set hidden line indexes.
@@ -179,4 +198,27 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
         personMapper.flush();
     }
 
+    /**
+     * Get the ordered list of streams for the new person.
+     *
+     * @return the ordered list of streams for the new person
+     */
+    private List<Stream> getStreamsForPerson()
+    {
+        List<Stream> allStreams = readonlyStreamsMapper.execute(0L);
+        List<Stream> output = new ArrayList<Stream>();
+        for (String listName : readOnlyStreamsNameList)
+        {
+            for (Stream stream : allStreams)
+            {
+                if (stream.getName().equalsIgnoreCase(listName))
+                {
+                    output.add(stream);
+                    allStreams.remove(stream);
+                    break;
+                }
+            }
+        }
+        return output;
+    }
 }

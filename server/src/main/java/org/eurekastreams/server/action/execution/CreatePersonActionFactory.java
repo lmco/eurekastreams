@@ -15,10 +15,14 @@
  */
 package org.eurekastreams.server.action.execution;
 
+import java.util.List;
+
 import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.TabMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.service.actions.strategies.PersonCreator;
 import org.eurekastreams.server.service.actions.strategies.UpdaterStrategy;
 
@@ -38,17 +42,35 @@ public class CreatePersonActionFactory
     private OrganizationMapper organizationMapper;
 
     /**
+     * Mapper to get the readonly streams.
+     */
+    private DomainMapper<Long, List<Stream>> readonlyStreamsMapper;
+
+    /**
+     * List of the names of readonly streams to add to a person, in order.
+     */
+    private List<String> readOnlyStreamsNameList;
+
+    /**
      * Constructor.
      *
      * @param inTabMapper
      *            TabMapper.
      * @param inOrganizationMapper
      *            OrganizationMapper.
+     * @param inReadonlyStreamsMapper
+     *            mapper to get back all readonly streams
+     * @param inReadOnlyStreamsNameList
+     *            list of stream names to add to the new user, in order
      */
-    public CreatePersonActionFactory(final TabMapper inTabMapper, final OrganizationMapper inOrganizationMapper)
+    public CreatePersonActionFactory(final TabMapper inTabMapper, final OrganizationMapper inOrganizationMapper,
+            final DomainMapper<Long, List<Stream>> inReadonlyStreamsMapper, //
+            final List<String> inReadOnlyStreamsNameList)
     {
         tabMapper = inTabMapper;
         organizationMapper = inOrganizationMapper;
+        readonlyStreamsMapper = inReadonlyStreamsMapper;
+        readOnlyStreamsNameList = inReadOnlyStreamsNameList;
     }
 
     /**
@@ -64,6 +86,6 @@ public class CreatePersonActionFactory
             final UpdaterStrategy inUpdater)
     {
         return new PersistResourceExecution<Person>(inPersonMapper, this, inUpdater, new PersonCreator(inPersonMapper,
-                tabMapper, organizationMapper));
+                tabMapper, organizationMapper, readonlyStreamsMapper, readOnlyStreamsNameList));
     }
 }
