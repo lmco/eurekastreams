@@ -123,7 +123,7 @@ public class StreamXMLResourceTest
 
         sut =
                 new StreamXMLResource(action, serviceActionController, principalPopulator, streamMapper,
-                        new RestletQueryRequestParser(globalWords, multipleEntityWords, otherWords));
+                        new RestletQueryRequestParser(globalWords, multipleEntityWords, otherWords), "");
 
         ActivityDTO activity = new ActivityDTO();
         StreamEntityDTO actor = new StreamEntityDTO();
@@ -157,23 +157,19 @@ public class StreamXMLResourceTest
     }
 
     /**
-     * Test representing as JSONP.
+     * Test.
      *
      * @throws Exception
      *             exception.
      */
     @Test
-    public void representJsonP() throws Exception
+    public void represent() throws Exception
     {
-        // callback in attributes, JSONP response
-        final String callback = "callback";
-        final String jsonReq = "";
-        final String osId = "guid";
         sut.setPathOverride("/resources/atom/stream/query/keywords/test");
 
         final Request request = context.mock(Request.class);
         final Map<String, Object> attributes = new HashMap<String, Object>();
-        attributes.put("query", jsonReq);
+        attributes.put("query", "");
         attributes.put("mode", "query");
 
         SecurityContext originalContext = SecurityContextHolder.getContext();
@@ -207,7 +203,7 @@ public class StreamXMLResourceTest
     }
 
     /**
-     * Test representing as JSON.
+     * Test.
      *
      * @throws Exception
      *             exception.
@@ -215,9 +211,7 @@ public class StreamXMLResourceTest
     @Test
     public void representTest() throws Exception
     {
-        // no callback in attributes, JSON response
         final String query = "";
-        final String osId = "guid";
         sut.setPathOverride("/resources/atom/stream/query/keywords/test");
 
         final Request request = context.mock(Request.class);
@@ -255,7 +249,7 @@ public class StreamXMLResourceTest
     }
 
     /**
-     * Test representing as JSON with a bad request.
+     * Test representing as ATOM with a bad request.
      *
      * @throws Exception
      *             exception.
@@ -263,7 +257,6 @@ public class StreamXMLResourceTest
     @Test
     public void representTestBadParse() throws Exception
     {
-        // no callback in attributes, JSON response
         final String query = "";
         final String osId = "guid";
         sut.setPathOverride("/resources/atom/stream/query/keywords/test");
@@ -313,15 +306,12 @@ public class StreamXMLResourceTest
     @Test
     public void representTestServiceException() throws Exception
     {
-        // no callback in attributes, JSON response
         final String query = "";
-        final String osId = "guid";
         sut.setPathOverride("/resources/atom/stream/query/unrecognized/test");
 
         final Request request = context.mock(Request.class);
         final Map<String, Object> attributes = new HashMap<String, Object>();
         attributes.put("query", query);
-        attributes.put("openSocialId", osId);
         attributes.put("mode", "query");
 
         SecurityContext originalContext = SecurityContextHolder.getContext();

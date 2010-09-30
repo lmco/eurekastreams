@@ -107,6 +107,10 @@ public class StreamXMLResource extends SmpResource
 
     /** Extracts the query out of the request path. */
     private RestletQueryRequestParser requestParser;
+    /**
+     * The base url for eurkea.
+     */
+    private String baseUrl;
 
     /**
      * Default constructor.
@@ -121,16 +125,18 @@ public class StreamXMLResource extends SmpResource
      *            the stream mapper.
      * @param inRequestParser
      *            Extracts the query out of the request path.
+     * @param inBaseUrl the base url for eureka.
      */
     public StreamXMLResource(final ServiceAction inAction, final ActionController inServiceActionController,
             final PrincipalPopulator inPrincipalPopulator, final FindByIdMapper<Stream> inStreamMapper,
-            final RestletQueryRequestParser inRequestParser)
+            final RestletQueryRequestParser inRequestParser, final String inBaseUrl)
     {
         action = inAction;
         serviceActionController = inServiceActionController;
         principalPopulator = inPrincipalPopulator;
         streamMapper = inStreamMapper;
         requestParser = inRequestParser;
+        baseUrl = inBaseUrl;
     }
 
     /**
@@ -156,7 +162,7 @@ public class StreamXMLResource extends SmpResource
      *
      * @param variant
      *            the variant.
-     * @return the JSON.
+     * @return the ATOM.
      * @throws ResourceException
      *             the exception.
      */
@@ -164,7 +170,10 @@ public class StreamXMLResource extends SmpResource
     @Override
     public Representation represent(final Variant variant) throws ResourceException
     {
-        log.debug("Path: " + getPath());
+        if (log.isDebugEnabled())
+        {
+            log.debug("Path: " + getPath());
+        }
 
         SyndFeed feed = new SyndFeedImpl();
         feed.setFeedType("atom_1.0");
@@ -180,7 +189,7 @@ public class StreamXMLResource extends SmpResource
                 queryJson = requestParser.parseRequest(getPath(), 5);
 
                 feed.setTitle("Eureka Activity Stream Feed");
-                feed.setLink("http://rome.dev.java.net");
+                feed.setLink(baseUrl);
                 feed.setDescription("");
             }
             else if (mode.equals("saved"))
@@ -188,7 +197,7 @@ public class StreamXMLResource extends SmpResource
                 Stream stream = streamMapper.execute(new FindByIdRequest("Stream", streamId));
 
                 feed.setTitle(stream.getName());
-                feed.setLink("http://rome.dev.java.net");
+                feed.setLink(baseUrl);
                 feed.setDescription(stream.getName());
 
                 if (stream == null)
@@ -261,7 +270,8 @@ public class StreamXMLResource extends SmpResource
         }
         catch (Exception ex)
         {
-            status = "Error: " + ex.toString();
+            // Log the error, but return an empty feed, so don't throw an error.
+            log.error("Error:" + ex.toString());
         }
 
         log.debug(status);
@@ -289,7 +299,7 @@ public class StreamXMLResource extends SmpResource
     }
 
     /**
-     * Overrides the path.
+     * Overrides the request path.
      *
      * @param inPathOverride
      *            the string to override the path with.
@@ -300,7 +310,7 @@ public class StreamXMLResource extends SmpResource
     }
 
     /**
-     * Get the path.
+     * Get the request path.
      *
      * @return the path.
      */
