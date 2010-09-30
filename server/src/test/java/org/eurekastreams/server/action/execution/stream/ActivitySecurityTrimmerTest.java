@@ -103,6 +103,9 @@ public class ActivitySecurityTrimmerTest
 
                 allowing(asd).isDestinationStreamPublic();
                 will(returnValue(true));
+
+                allowing(asd).getExists();
+                will(returnValue(true));
                 
                 oneOf(asd).getId();
                 will(returnValue(activityId));
@@ -114,6 +117,34 @@ public class ActivitySecurityTrimmerTest
         context.assertIsSatisfied();
     }
 
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testActivityDoesNotExist()
+    {
+        final Collection<ActivitySecurityDTO> asdCollection = new ArrayList<ActivitySecurityDTO>();
+        asdCollection.add(asd);
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(getVisibleGroupsForUserMapper).execute(userId);
+                will(returnValue(new HashSet<Long>()));
+                
+                allowing(securityMapper).execute(with(any(List.class)));
+                will(returnValue(asdCollection));
+
+                allowing(asd).getExists();
+                will(returnValue(false));
+            }
+        });
+        
+        Assert.assertEquals(0, sut.trim(Arrays.asList(activityId), userId).size());
+        context.assertIsSatisfied();
+    }
+    
     /**
      * Test.
      */
@@ -140,6 +171,9 @@ public class ActivitySecurityTrimmerTest
 
                 allowing(asd).getDestinationEntityId();
                 will(returnValue(destinationEntityId));
+
+                allowing(asd).getExists();
+                will(returnValue(true));
                 
                 oneOf(asd).getId();
                 will(returnValue(activityId));
@@ -173,6 +207,9 @@ public class ActivitySecurityTrimmerTest
 
                 allowing(getVisibleGroupsForUserMapper).execute(userId);
                 will(returnValue(visibleDestinationEntityIds));
+
+                allowing(asd).getExists();
+                will(returnValue(true));
 
                 allowing(asd).getDestinationEntityId();
                 will(returnValue(destinationEntityId + 1));

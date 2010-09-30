@@ -73,7 +73,9 @@ public class ActivitySecurityTrimmer
 
         for (ActivitySecurityDTO actSec : securityDTOs)
         {
-            if (actSec.isDestinationStreamPublic() || accessibleGroupIds.contains(actSec.getDestinationEntityId()))
+            if (actSec.getExists()
+                    && (actSec.isDestinationStreamPublic() || accessibleGroupIds.contains(actSec
+                            .getDestinationEntityId())))
             {
                 visibleActivities.add(actSec.getId());
             }

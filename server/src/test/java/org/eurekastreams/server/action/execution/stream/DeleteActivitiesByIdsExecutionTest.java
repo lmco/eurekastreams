@@ -115,7 +115,7 @@ public class DeleteActivitiesByIdsExecutionTest
 
         sut.execute(actionContext);
         // assert that the UserActionRequest list that came out is valid.
-        assertEquals(6, actionContext.getUserActionRequests().size());
+        assertEquals(8, actionContext.getUserActionRequests().size());
         assertEquals("deleteFromSearchIndexAction", actionContext.getUserActionRequests().get(0).getActionKey());
         assertEquals("deleteIdsFromLists", actionContext.getUserActionRequests().get(1).getActionKey());
         // There should be four individual deleteCacheKeysAction UserActionRequests, 2 for the two activities,

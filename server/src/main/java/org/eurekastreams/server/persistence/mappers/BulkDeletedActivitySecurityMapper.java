@@ -16,7 +16,6 @@
 package org.eurekastreams.server.persistence.mappers;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.eurekastreams.server.domain.stream.ActivitySecurityDTO;

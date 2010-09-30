@@ -125,10 +125,9 @@ public class DeleteActivitiesByIdsExecution implements TaskHandlerExecutionStrat
                 .getActivityIds())), inActionContext);
 
         // Clean up security records.
-        generateIndividualDeleteKeyFromCacheTasks(new HashSet<String>(createKeys(CacheKeys.ACTIVITY_SECURITY_BY_ID, response
-                .getActivityIds())), inActionContext);
+        generateIndividualDeleteKeyFromCacheTasks(new HashSet<String>(createKeys(CacheKeys.ACTIVITY_SECURITY_BY_ID,
+                response.getActivityIds())), inActionContext);
 
-        
         if (log.isInfoEnabled())
         {
             log.info("Queuing UserActionRequests for removing expired activitys' comment ids from cache: "

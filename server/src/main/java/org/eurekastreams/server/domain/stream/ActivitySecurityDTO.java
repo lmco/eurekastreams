@@ -54,6 +54,8 @@ public class ActivitySecurityDTO implements Serializable
      *            the activity ID.
      * @param inDestinationEntityId
      *            the destination stream's entity ID.
+     * @param inIsDestinationStreamPublic
+     *            if the destination stream is public.
      */
     public ActivitySecurityDTO(final Long inId, final Long inDestinationEntityId,
             final Boolean inIsDestinationStreamPublic)
@@ -152,11 +154,11 @@ public class ActivitySecurityDTO implements Serializable
     /**
      * Set if the activity exists.
      * 
-     * @param exists
+     * @param inExists
      *            the exists to set
      */
-    public void setExists(Boolean exists)
+    public void setExists(final Boolean inExists)
     {
-        this.exists = exists;
+        this.exists = inExists;
     }
 }
