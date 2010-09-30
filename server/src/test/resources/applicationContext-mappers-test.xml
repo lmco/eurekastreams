@@ -43,9 +43,6 @@
         class="org.eurekastreams.server.persistence.mappers.db.GetPeopleWhoLikedActivityDbMapper"/>
         
 
-    <bean id="getFollowedByActivityCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.GetFollowedByActivityCacheMapper">
-       <property name="cache" ref="testCache" />
-    </bean>
     <bean id="refreshFollowedByActivitiesCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.RefreshFollowedByActivitiesCacheMapper">
        <property name="cache" ref="testCache" />
     </bean>
