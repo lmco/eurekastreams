@@ -46,8 +46,8 @@ import org.eurekastreams.server.domain.stream.plugins.FeedSubscriber;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.InsertMapper;
 import org.eurekastreams.server.persistence.mappers.UpdateMapper;
+import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
-import org.eurekastreams.server.persistence.mappers.cache.MemcachedCache;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 import org.eurekastreams.server.service.actions.strategies.activity.plugins.ObjectMapper;
@@ -64,7 +64,7 @@ import com.sun.syndication.feed.synd.SyndFeed;
  * Goes out to the interwebs, grabs a feed, parses it, stores it in DB and queues it up to be stored in cache. The
  * reason for the queueing is so I don't update the same exact list 100s of times instead of once. This cuts down by
  * multiple orders of magnitude
- *
+ * 
  */
 public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 {
@@ -116,7 +116,7 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
     /**
      * The cache.
      */
-    private MemcachedCache cache;
+    private Cache cache;
 
     /**
      * Feed fetcher factory, really only needed for testing.
@@ -149,7 +149,7 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inStandardFeedMappers
      *            Standard feed mappers.
      * @param inSpecificUrlMappers
@@ -173,7 +173,7 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
      */
     public RefreshFeedExecution(final HashMap<BaseObjectType, ObjectMapper> inStandardFeedMappers,
             final List<SpecificUrlObjectMapper> inSpecificUrlMappers,
-            final InsertMapper<Activity> inActivityDBInserter, final MemcachedCache inCache,
+            final InsertMapper<Activity> inActivityDBInserter, final Cache inCache,
             final FeedFactory inFeedFetcherFactory, final FindByIdMapper<Person> inPersonFinder,
             final FindByIdMapper<DomainGroup> inGroupFinder, final FindByIdMapper<Feed> inFeedFinder,
             final GadgetMetaDataFetcher inMetaDataFetcher, final UpdateMapper<Feed> inUpdateFeedMapper)
@@ -192,7 +192,7 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 
     /**
      * {@inheritDoc}.
-     *
+     * 
      * Grab all the feeds, set them as pending, and fire off an async job. to refresh each one.
      */
     public Serializable execute(final ActionContext inActionContext) throws ExecutionException
@@ -263,8 +263,8 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
                             activity.setAppType(EntityType.PLUGIN);
                             activity.setAppId(feed.getPlugin().getId());
                             activity.setAppSource(feed.getUrl());
-                            final Map<String, GeneralGadgetDefinition> gadgetDefs =
-                                    new HashMap<String, GeneralGadgetDefinition>();
+                            final Map<String, GeneralGadgetDefinition> gadgetDefs = //
+                            new HashMap<String, GeneralGadgetDefinition>();
                             gadgetDefs.put(feed.getPlugin().getUrl(), feed.getPlugin());
                             try
                             {
@@ -287,8 +287,8 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
                             {
                                 BaseObjectType type = feed.getPlugin().getObjectType();
 
-                                ActivityStreamsModule activityModule =
-                                        (ActivityStreamsModule) entry.getModule(ActivityStreamsModule.URI);
+                                ActivityStreamsModule activityModule = (ActivityStreamsModule) entry
+                                        .getModule(ActivityStreamsModule.URI);
                                 if (activityModule != null)
                                 {
                                     type = BaseObjectType.valueOf(activityModule.getObjectType());
@@ -311,9 +311,8 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 
                                 if (feedSubscriber.getEntityType().equals(EntityType.PERSON))
                                 {
-                                    Person person =
-                                            personFinder.execute(new FindByIdRequest("Person", feedSubscriber
-                                                    .getEntityId()));
+                                    Person person = personFinder.execute(new FindByIdRequest("Person", feedSubscriber
+                                            .getEntityId()));
                                     activityForIndividual.setActorId(person.getAccountId());
                                     activityForIndividual.setRecipientParentOrg(person.getParentOrganization());
                                     activityForIndividual.setRecipientStreamScope(person.getStreamScope());
@@ -321,9 +320,8 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
                                 }
                                 else if (feedSubscriber.getEntityType().equals(EntityType.GROUP))
                                 {
-                                    DomainGroup group =
-                                            groupFinder.execute(new FindByIdRequest("DomainGroup", feedSubscriber
-                                                    .getEntityId()));
+                                    DomainGroup group = groupFinder.execute(new FindByIdRequest("DomainGroup",
+                                            feedSubscriber.getEntityId()));
 
                                     activityForIndividual.setActorId(group.getShortName());
                                     activityForIndividual.setRecipientParentOrg(group.getParentOrganization());
@@ -383,7 +381,7 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 
     /**
      * Returns the subscribers applicable to receive feed results returned for a given requestor.
-     *
+     * 
      * @param requestorId
      *            The requestor.
      * @param feed
@@ -410,7 +408,7 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 
     /**
      * Get the update frequeuncy in minutes given the period and frequency.
-     *
+     * 
      * @param updatePeriod
      *            Period, hourly, daily, weekly, etc.
      * @param updateFrequency

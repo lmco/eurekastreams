@@ -13,28 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.mappers.cache;
+package org.eurekastreams.server.persistence.mappers.db;
 
 import java.util.List;
 
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
+import org.eurekastreams.server.domain.stream.Stream;
+import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 /**
- * Generate the memcached key for followed by.
- *
+ * Database mapper to get all of the readonly Streams.
  */
-public class GetFollowedByActivityCacheMapper extends CachedDomainMapper implements DomainMapper<Long, List<Long>>
+public class GetReadOnlyStreamsDbMapper extends BaseArgDomainMapper<Long, List<Stream>>
 {
     /**
-     * Get the keys for followed by.
-     * @param inRequest the JSON request object.
-     * @return the key for followed by.
+     * Get all of the readonly Streams.
+     *
+     * @param ignoredInput
+     *            ignored
+     * @return a list of all readonly streams
      */
     @Override
-    public List<Long> execute(final Long inRequest)
+    public List<Stream> execute(final Long ignoredInput)
     {
-        return getCache().getList(CacheKeys.ACTIVITIES_BY_FOLLOWING + inRequest);
+        return getEntityManager().createQuery("FROM Stream WHERE readonly=:readonly").setParameter("readonly", true)
+                .getResultList();
     }
-
 }

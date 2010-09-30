@@ -43,9 +43,6 @@
         class="org.eurekastreams.server.persistence.mappers.db.GetPeopleWhoLikedActivityDbMapper"/>
         
 
-    <bean id="getFollowedByActivityCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.GetFollowedByActivityCacheMapper">
-       <property name="cache" ref="testCache" />
-    </bean>
     <bean id="refreshFollowedByActivitiesCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.RefreshFollowedByActivitiesCacheMapper">
        <property name="cache" ref="testCache" />
     </bean>
@@ -56,9 +53,17 @@
     
     <bean id="getFollowedByActivities" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<constructor-arg>
-			<!-- Wrap the cache mapper with a partial mapper wrapper -->
-			<bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
-				<constructor-arg ref="getFollowedByActivityCacheMapper" />
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+				<constructor-arg>
+					<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleListValueCacheMapper">
+						<constructor-arg>
+							<bean class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
+						</constructor-arg>
+						<constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITIES_BY_FOLLOWING" />
+						<property name="cache" ref="testCache" />
+					</bean>
+				</constructor-arg>
 			</bean>
 		</constructor-arg>
 		
@@ -167,6 +172,9 @@
 	
 	<bean
 		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITY_BY_ID"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
+
+	<bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITIES_BY_FOLLOWING"
 		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
 
 	<bean id="bulkActivityMapperWithCache"

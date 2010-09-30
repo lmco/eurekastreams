@@ -6,8 +6,12 @@
 	<HashTag id="4" content="#java" version="1" />
 	<HashTag id="5" content="#soda" version="1" />
 
-	<Stream id="1" version="0" readonly="true" name="everyone" request="{ query : {} }" />
+	<Stream id="1" version="0" readonly="true" name="Everupme" request="{ query : {} }" />
 	<Stream id="2" version="0" readonly="false" name="my search" request="{ query : { keywords : 'search'} }" />
+	<Stream id="3" version="0" readonly="true" name="Following" request="{query:{followedBy:'%%CURRENT_USER_ACCOUNT_ID%%'}}" />
+	<Stream id="4" version="0" readonly="true" name="EUREKA:PARENT_ORG_TAG" request="{query:{parentOrg:'%%CURRENT_USER_ACCOUNT_ID%%'}}" />
+	<Stream id="5" version="0" readonly="true" name="My saved items" request="{query:{savedBy:'%%CURRENT_USER_ACCOUNT_ID%%'}}" />
+	<Stream id="6" version="0" readonly="false" name="Potato" request="{query:{}}" />
 
 	<!-- Gadget Categories -->
 	<GalleryItemCategory id="4565" name="News" version="3467"

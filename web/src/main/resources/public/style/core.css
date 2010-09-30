@@ -8047,13 +8047,14 @@ body .post-expanded-panel .content-warning {
 
 .stream-atom-link
 {
-	background: transparent url(images/feed-icon-28x28.png);
-	width: 28px;
-	height: 28px;
+	background: transparent url(images/feed-icon-16x16.png);
+	width: 16px;
+	height: 16px;
 	display: inline-block;
 	*display: inline;
 	zoom: 1;
 	float: right;
+	margin-top:7px;
 }
 
 div.new-messages-notification {
