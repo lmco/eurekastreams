@@ -28,7 +28,6 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddCachedPersonFollower;
-import org.eurekastreams.server.persistence.mappers.cache.RemoveCachedPersonFollower;
 import org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -76,11 +75,6 @@ public class SetFollowingPersonStatusExecutionTest
     private final AddCachedPersonFollower addCachedMapperMock = context.mock(AddCachedPersonFollower.class);
 
     /**
-     * Mock instance of RemoveCachedPersonFollower.
-     */
-    private final RemoveCachedPersonFollower removeCachedMapperMock = context.mock(RemoveCachedPersonFollower.class);
-
-    /**
      * Mock instance of GetFollowerIds.
      */
     private final GetFollowerIds followerIdsMapperMock = context.mock(GetFollowerIds.class);
@@ -97,7 +91,7 @@ public class SetFollowingPersonStatusExecutionTest
     public void setUp()
     {
         sut = new SetFollowingPersonStatusExecution(personMapperMock, peopleByAccountIdsMapperMock,
-                addCachedMapperMock, removeCachedMapperMock, followerIdsMapperMock);
+                addCachedMapperMock, followerIdsMapperMock);
     }
 
     /**
@@ -172,8 +166,6 @@ public class SetFollowingPersonStatusExecutionTest
                 will(returnValue(testTarget));
 
                 oneOf(personMapperMock).removeFollower(1L, 2L);
-
-                oneOf(removeCachedMapperMock).execute(1L, 2L);
 
                 oneOf(followerIdsMapperMock).execute(2L);
                 will(returnValue(targetFollowerIds));
