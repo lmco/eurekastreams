@@ -183,6 +183,9 @@
 	<bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.EVERYONE_ACTIVITY_IDS"
 		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
 
+	<bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITIES_BY_FOLLOWING"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
+
 	<!--
 		Mapper that goes to cache for the popular hashtags for a stream.  If it exists, it checks how long ago it was generated. 
 		If it was too long ago, it throws the cached value away and falls back to the database, then stores that result in cache.
@@ -547,10 +550,6 @@
 	<bean id="getEveryoneActivityDbMapper"
 		class="org.eurekastreams.server.persistence.mappers.db.GetEveryoneActivityDbMapper">
 	</bean>
-	<bean id="getFollowedByActivityCacheMapper"
-		class="org.eurekastreams.server.persistence.mappers.cache.GetFollowedByActivityCacheMapper">
-		<property name="cache" ref="memcachedCache" />
-	</bean>
 	<bean id="refreshFollowedByActivitiesCacheMapper"
 		class="org.eurekastreams.server.persistence.mappers.cache.RefreshFollowedByActivitiesCacheMapper">
 		<property name="cache" ref="memcachedCache" />
@@ -567,7 +566,15 @@
 			<!-- Wrap the cache mapper with a partial mapper wrapper -->
 			<bean
 				class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
-				<constructor-arg ref="getFollowedByActivityCacheMapper" />
+				<constructor-arg>
+					<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleListValueCacheMapper">
+						<constructor-arg>
+							<bean class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
+						</constructor-arg>
+						<constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITIES_BY_FOLLOWING" />
+						<property name="cache" ref="memcachedCache" />
+					</bean>
+				</constructor-arg>
 			</bean>
 		</constructor-arg>
 
@@ -584,6 +591,23 @@
 		<constructor-arg ref="refreshFollowedByActivitiesCacheMapper" />
 	</bean>
 	
+	<bean id="getFollowedByActivities_FORCE_REFRESH"
+		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		<constructor-arg ref="nullResultPartialMapper" />
+
+		<!-- Database mapper to fall back on if not found in cache -->
+		<constructor-arg ref="getFollowedByActivitiesDbMapper" />
+
+		<constructor-arg>
+			<!-- Results combiner - just returns the first non-null value -->
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
+		</constructor-arg>
+
+		<!-- Cache refresher -->
+		<constructor-arg ref="refreshFollowedByActivitiesCacheMapper" />
+	</bean>
+
     <bean id="getPersonsByIdsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache Mapper -->
         <constructor-arg ref="getPersonsByIdsCacheMapper"/>
@@ -1184,11 +1208,6 @@
 		class="org.eurekastreams.server.persistence.mappers.cache.AddCachedPersonFollower">
 		<constructor-arg ref="getFollowedPersonIds" />
 		<constructor-arg ref="getFollowerIds" />
-		<property name="cache" ref="memcachedCache" />
-	</bean>
-
-	<bean id="removeCachedPersonFollower"
-		class="org.eurekastreams.server.persistence.mappers.cache.RemoveCachedPersonFollower">
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 

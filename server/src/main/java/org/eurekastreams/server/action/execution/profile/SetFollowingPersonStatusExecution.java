@@ -17,6 +17,7 @@ package org.eurekastreams.server.action.execution.profile;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -29,16 +30,17 @@ import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
+import org.eurekastreams.server.action.request.stream.DeleteIdsFromListsRequest;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddCachedPersonFollower;
-import org.eurekastreams.server.persistence.mappers.cache.RemoveCachedPersonFollower;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * This class provides the Following Strategy for a Person object.
- *
+ * 
  */
 public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
@@ -63,43 +65,35 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
     private final AddCachedPersonFollower addCachedFollowerMapper;
 
     /**
-     * Local instance of the Cached Mapper for removing the follower status.
-     */
-    private final RemoveCachedPersonFollower removeCachedFollowerMapper;
-
-    /**
      * Local instance of the cache mapper for retrieving followers of a user.
      */
     private final GetFollowerIds followerIdsMapper;
 
     /**
      * Constructor for the FollowingPersonStrategy.
-     *
+     * 
      * @param inMapper
      *            - instance of the GetPeopleByAccountIds for this class.
      * @param inCachedPersonMapper
      *            - instance of the GetPeopleByAccountIds mapper for this class.
      * @param inAddCachedFollowerMapper
      *            - instance of AddCachedPersonFollower mapper.
-     * @param inRemoveCachedFollowerMapper
-     *            - instance of RemoveCachedPersonFollower mapper.
      * @param inFollowerIdsMapper
      *            - instance of GetFollowerIds mapper.
      */
     public SetFollowingPersonStatusExecution(final PersonMapper inMapper,
             final GetPeopleByAccountIds inCachedPersonMapper, final AddCachedPersonFollower inAddCachedFollowerMapper,
-            final RemoveCachedPersonFollower inRemoveCachedFollowerMapper, final GetFollowerIds inFollowerIdsMapper)
+            final GetFollowerIds inFollowerIdsMapper)
     {
         mapper = inMapper;
         cachedPersonMapper = inCachedPersonMapper;
         addCachedFollowerMapper = inAddCachedFollowerMapper;
-        removeCachedFollowerMapper = inRemoveCachedFollowerMapper;
         followerIdsMapper = inFollowerIdsMapper;
     }
 
     /**
      * {@inheritDoc}.
-     *
+     * 
      * This method performs the concrete implementation for the setting the Following status of a person following
      * another person.
      */
@@ -129,11 +123,10 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
             addCachedFollowerMapper.execute(followerResult.getEntityId(), targetResult.getEntityId());
 
             logger.trace("Submit async action to update all cached activities.");
-            // Post an async action to update the cache with the rest of the followers.
 
-            // TODO:
-            // currentRequests.add(new UserActionRequest("refreshCachedFollowingCompositeStreamAction",
-            // new NoCurrentUserDetails(), actionRequest));
+            // Post an async action to update the cache for the user's list of following activity ids.
+            currentRequests
+                    .add(new UserActionRequest("refreshFollowedByActivities", null, followerResult.getEntityId()));
 
             // queues up new follower notifications.
             currentRequests.add(new UserActionRequest("createNotificationsAction", null,
@@ -145,11 +138,21 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
 
             mapper.removeFollower(followerResult.getEntityId(), targetResult.getEntityId());
 
-            removeCachedFollowerMapper.execute(followerResult.getEntityId(), targetResult.getEntityId());
+            // Remove the current user that is severing a relationship with the target
+            // from the list of followers for that target user.
+            currentRequests.add(new UserActionRequest("deleteIdsFromLists", null, new DeleteIdsFromListsRequest(
+                    Collections.singletonList(CacheKeys.FOLLOWERS_BY_PERSON + targetResult.getEntityId()), Collections
+                            .singletonList(followerResult.getEntityId()))));
 
-            // TODO: Update the cache list of followers' activities by removing the activities for the
-            // entity being unfollowed.
+            // Remove the target user the current user is no longer following from the list of
+            // users that the current is already following.
+            currentRequests.add(new UserActionRequest("deleteIdsFromLists", null, new DeleteIdsFromListsRequest(
+                    Collections.singletonList(CacheKeys.PEOPLE_FOLLOWED_BY_PERSON + followerResult.getEntityId()),
+                    Collections.singletonList(targetResult.getEntityId()))));
 
+            // Post an async action to update the cache for the user's list of following activity ids.
+            currentRequests
+                    .add(new UserActionRequest("refreshFollowedByActivities", null, followerResult.getEntityId()));
             break;
         default:
             // do nothing.
