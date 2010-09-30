@@ -8047,9 +8047,9 @@ body .post-expanded-panel .content-warning {
 
 .stream-atom-link
 {
-	background: transparent url(images/feedIconLarge.png);
-	width: 28px;
-	height: 28px;
+	background: transparent url(images/feed-icon-16x16.png);
+	width: 16px;
+	height: 16px;
 	display: inline-block;
 	*display: inline;
 	zoom: 1;
