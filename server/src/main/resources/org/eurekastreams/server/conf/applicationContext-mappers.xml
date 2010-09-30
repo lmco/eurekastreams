@@ -1542,4 +1542,7 @@
 		
 	<bean id="getOrgShortNamesByIdsMapper"
 		class="org.eurekastreams.server.persistence.mappers.db.GetOrgShortNamesByIdsMapper" />
+		
+	<bean id="getReadOnlyStreamsDbMapper"
+		class="org.eurekastreams.server.persistence.mappers.db.GetReadOnlyStreamsDbMapper" />
 </beans>

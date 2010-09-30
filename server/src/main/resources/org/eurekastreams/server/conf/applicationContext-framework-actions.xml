@@ -7,7 +7,19 @@
       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
 	<import resource="applicationContext-actions-notifications.xml" />
-	  
+	
+    <!-- List of the Streams to assign a new person by name, ordered -->
+	<bean id="newPersonDefaultStreamOrder" class="org.springframework.beans.factory.config.ListFactoryBean">
+		<property name="sourceList">
+			<list>
+        		<value>Following</value>
+        		<value>EUREKA:PARENT_ORG_TAG</value>
+        		<value>Everyone</value>
+        		<value>My saved items</value>
+        	</list>
+		</property>
+	</bean>
+	
     <!--
         This spring file contains the configuration for the actions and their
         associated strategies.  This includes ServiceActions, TaskHandlerServiceActions,
@@ -3214,6 +3226,8 @@
     <bean id="createPersonActionFactory" class="org.eurekastreams.server.action.execution.CreatePersonActionFactory">
         <constructor-arg ref="jpaTabMapper" />
         <constructor-arg ref="jpaOrganizationMapper" />
+        <constructor-arg ref="getReadOnlyStreamsDbMapper" />
+        <constructor-arg ref="newPersonDefaultStreamOrder" />
     </bean>
     
     
@@ -3561,6 +3575,8 @@
         <constructor-arg ref="jpaPersonMapper" />
         <constructor-arg ref="jpaTabMapper" />
         <constructor-arg ref="jpaOrganizationMapper" />
+        <constructor-arg ref="getReadOnlyStreamsDbMapper" />
+        <constructor-arg ref="newPersonDefaultStreamOrder" />
     </bean>
 
     <bean id="personUpdater" class="org.eurekastreams.server.service.actions.strategies.PersonUpdater">
