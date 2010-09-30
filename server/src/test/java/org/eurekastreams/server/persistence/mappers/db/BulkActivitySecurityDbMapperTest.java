@@ -22,6 +22,7 @@ import junit.framework.Assert;
 
 import org.eurekastreams.server.domain.stream.ActivitySecurityDTO;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.persistence.mappers.chained.PartialMapperResponse;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -70,12 +71,12 @@ public class BulkActivitySecurityDbMapperTest extends MapperTest
         final List<Long> activites = new ArrayList<Long>();
         activites.add(activityId);
 
-        final List<ActivitySecurityDTO> results = sut.execute(activites);
+        final PartialMapperResponse<List<Long>, List<ActivitySecurityDTO>> results = sut.execute(activites);
 
-        Assert.assertEquals(1, results.size());
-        Assert.assertEquals(activityId, results.get(0).getId());
-        Assert.assertEquals(destinationEntityId, results.get(0).getDestinationEntityId());
-        Assert.assertTrue(results.get(0).isDestinationStreamPublic());
+        Assert.assertEquals(1, results.getResponse().size());
+        Assert.assertEquals(activityId, results.getResponse().get(0).getId());
+        Assert.assertEquals(destinationEntityId, results.getResponse().get(0).getDestinationEntityId());
+        Assert.assertTrue(results.getResponse().get(0).isDestinationStreamPublic());
 
         context.assertIsSatisfied();
     }

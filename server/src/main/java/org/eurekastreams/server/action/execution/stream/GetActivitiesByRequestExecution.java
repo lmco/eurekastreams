@@ -145,8 +145,18 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
         PagedSet<ActivityDTO> pagedSet = new PagedSet<ActivityDTO>();
         pagedSet.setTotal(results.size());
 
+        if (log.isTraceEnabled())
+        {
+            log.trace(results.size() + " Items found.");
+        }
+
         if (results.size() > currentMax)
         {
+            if (log.isTraceEnabled())
+            {
+                log.trace("Removing extra item");
+            }
+
             results.remove(currentMax);
         }
 

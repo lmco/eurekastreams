@@ -15,17 +15,20 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.server.domain.stream.ActivitySecurityDTO;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.chained.PartialMapperResponse;
 
 /**
  * Maps activity security information from the DB.
  */
-public class BulkActivitySecurityDbMapper extends BaseArgDomainMapper<List<Long>, List<ActivitySecurityDTO>> implements
-        DomainMapper<List<Long>, List<ActivitySecurityDTO>>
+public class BulkActivitySecurityDbMapper extends
+        BaseArgDomainMapper<List<Long>, PartialMapperResponse<List<Long>, List<ActivitySecurityDTO>>> implements
+        DomainMapper<List<Long>, PartialMapperResponse<List<Long>, List<ActivitySecurityDTO>>>
 {
     /**
      * @param inRequest
@@ -33,13 +36,31 @@ public class BulkActivitySecurityDbMapper extends BaseArgDomainMapper<List<Long>
      * @return security information for the activites in the request.
      */
     @SuppressWarnings("unchecked")
-    public List<ActivitySecurityDTO> execute(final List<Long> inRequest)
+    public PartialMapperResponse<List<Long>, List<ActivitySecurityDTO>> execute(final List<Long> inRequest)
     {
         String q = "select new org.eurekastreams.server.domain.stream.ActivitySecurityDTO "
                 + "(id, recipientStreamScope.destinationEntityId, isDestinationStreamPublic) "
-                + "from Activity where id in (:activityIds)";
+                + "from Activity where id in (:activityIds) ORDER BY id";
 
-        return getEntityManager().createQuery(q).setParameter("activityIds", inRequest).getResultList();
+        List<ActivitySecurityDTO> securityDTOs = getEntityManager().createQuery(q).setParameter("activityIds",
+                inRequest).getResultList();
+
+        List<Long> missingActivity = new ArrayList<Long>(inRequest);
+
+        // Remove activity we've already found.
+        for (ActivitySecurityDTO foundDTO : securityDTOs)
+        {
+            missingActivity.remove(foundDTO.getId());
+        }
+
+        if (missingActivity.size() == 0)
+        {
+            return new PartialMapperResponse<List<Long>, List<ActivitySecurityDTO>>(securityDTOs);
+        }
+        else
+        {
+            return new PartialMapperResponse<List<Long>, List<ActivitySecurityDTO>>(securityDTOs, missingActivity);
+        }
     }
 
 }

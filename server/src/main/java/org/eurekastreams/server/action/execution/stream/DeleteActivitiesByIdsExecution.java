@@ -39,10 +39,10 @@ import org.eurekastreams.server.persistence.mappers.requests.BulkActivityDeleteR
 
 /**
  * This execution strategy is responsible for deleting a batch of activities based on a list of activity ids supplied.
- *
+ * 
  * This execution strategy will handle deleting the activities directly from the db and cache and then offload cached
  * list updates to an async job.
- *
+ * 
  */
 public class DeleteActivitiesByIdsExecution implements TaskHandlerExecutionStrategy<ActionContext>
 {
@@ -63,7 +63,7 @@ public class DeleteActivitiesByIdsExecution implements TaskHandlerExecutionStrat
 
     /**
      * Constructor.
-     *
+     * 
      * @param inListsMapper
      *            the lists containing activity references mapper.
      * @param inDeleteMapper
@@ -124,6 +124,11 @@ public class DeleteActivitiesByIdsExecution implements TaskHandlerExecutionStrat
         generateIndividualDeleteKeyFromCacheTasks(new HashSet<String>(createKeys(CacheKeys.ACTIVITY_BY_ID, response
                 .getActivityIds())), inActionContext);
 
+        // Clean up security records.
+        generateIndividualDeleteKeyFromCacheTasks(new HashSet<String>(createKeys(CacheKeys.ACTIVITY_SECURITY_BY_ID, response
+                .getActivityIds())), inActionContext);
+
+        
         if (log.isInfoEnabled())
         {
             log.info("Queuing UserActionRequests for removing expired activitys' comment ids from cache: "
@@ -138,7 +143,7 @@ public class DeleteActivitiesByIdsExecution implements TaskHandlerExecutionStrat
 
     /**
      * Queues UserActionRequest for deleteKeysFromCache action, one for each key.
-     *
+     * 
      * @param keys
      *            keys to delete from cache.
      * @param inActionContext
@@ -159,7 +164,7 @@ public class DeleteActivitiesByIdsExecution implements TaskHandlerExecutionStrat
 
     /**
      * Generate cacheKeys.
-     *
+     * 
      * @param keyRoot
      *            Root of key.
      * @param inIds

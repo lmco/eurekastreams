@@ -157,6 +157,9 @@ public class DeleteActivityCacheUpdate extends BaseArgCachedDomainMapper<DeleteA
         // remove activity from cache.
         getCache().delete(CacheKeys.ACTIVITY_BY_ID + activityId);
 
+        // remove activity from cache.
+        getCache().delete(CacheKeys.ACTIVITY_SECURITY_BY_ID + activityId);
+
         return true;
     }
 

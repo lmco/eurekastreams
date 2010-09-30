@@ -317,8 +317,26 @@
 		<constructor-arg>
 			<!-- Database mapper to fall back on if not found in cache -->
 			<bean
-				class="org.eurekastreams.server.persistence.mappers.db.BulkActivitySecurityDbMapper">
-			</bean>
+				class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+				<constructor-arg>
+					<bean
+						class="org.eurekastreams.server.persistence.mappers.db.BulkActivitySecurityDbMapper" />
+				</constructor-arg>
+		
+				<constructor-arg>
+					<bean
+						class="org.eurekastreams.server.persistence.mappers.BulkDeletedActivitySecurityMapper" />
+				</constructor-arg>
+		
+				<constructor-arg>
+					<bean
+						class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
+				</constructor-arg>
+		
+		        <constructor-arg>
+		            <bean class="org.eurekastreams.server.persistence.mappers.cache.NullCacheRefresher" />
+		        </constructor-arg>
+			</bean>		
 		</constructor-arg>
 
 		<constructor-arg>

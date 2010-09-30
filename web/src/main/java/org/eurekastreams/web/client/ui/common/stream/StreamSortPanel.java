@@ -57,8 +57,8 @@ public class StreamSortPanel extends Composite
      * Map of the links to the sorts.
      */
     final Map<String, Anchor> linkMap = new HashMap<String, Anchor>();
-    
-    /**    
+
+    /**
      * Stream to URL transformer.
      */
     private StreamToUrlTransformer streamUrlTransformer = new StreamToUrlTransformer();
@@ -85,6 +85,9 @@ public class StreamSortPanel extends Composite
         {
             public void update(final GotStreamResponseEvent event)
             {
+                atomLink.setVisible(Session.getInstance().getParameterValue("search") == null
+                        || Session.getInstance().getParameterValue("search").length() == 0);
+
                 String stream = Session.getInstance().getParameterValue("streamId");
                 atomLink.setHref("/resources/atom/stream/"
                         + streamUrlTransformer.getUrl(stream, event.getJsonRequest()));
