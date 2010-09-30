@@ -8054,6 +8054,7 @@ body .post-expanded-panel .content-warning {
 	*display: inline;
 	zoom: 1;
 	float: right;
+	margin-top:7px;
 }
 
 div.new-messages-notification {
