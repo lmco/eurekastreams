@@ -18,19 +18,22 @@ package org.eurekastreams.server.persistence.mappers.db;
 import java.util.List;
 
 import org.eurekastreams.server.domain.stream.Stream;
-import org.eurekastreams.server.persistence.mappers.BaseNoArgDomainMapper;
+import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 /**
  * Database mapper to get all of the readonly Streams.
  */
-public class GetReadOnlyStreamsDbMapper extends BaseNoArgDomainMapper<List<Stream>>
+public class GetReadOnlyStreamsDbMapper extends BaseArgDomainMapper<Long, List<Stream>>
 {
     /**
      * Get all of the readonly Streams.
+     *
+     * @param ignoredInput
+     *            ignored
      * @return a list of all readonly streams
      */
     @Override
-    public List<Stream> execute()
+    public List<Stream> execute(final Long ignoredInput)
     {
         return getEntityManager().createQuery("FROM Stream WHERE readonly=:readonly").setParameter("readonly", true)
                 .getResultList();

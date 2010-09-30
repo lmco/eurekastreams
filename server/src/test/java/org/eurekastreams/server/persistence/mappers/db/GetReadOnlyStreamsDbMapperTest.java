@@ -38,7 +38,7 @@ public class GetReadOnlyStreamsDbMapperTest extends MapperTest
         GetReadOnlyStreamsDbMapper sut = new GetReadOnlyStreamsDbMapper();
         sut.setEntityManager(getEntityManager());
 
-        List<Stream> streams = sut.execute();
+        List<Stream> streams = sut.execute(4L);
         assertEquals(4, streams.size());
 
         boolean followingFound = false;
