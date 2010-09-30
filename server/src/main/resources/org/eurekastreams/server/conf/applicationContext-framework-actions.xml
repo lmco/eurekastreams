@@ -3162,7 +3162,7 @@
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
-                <constructor-arg ref="getPersonsByIdsMapper" />
+                <constructor-arg ref="getPersonsByIdsMapper_CACHEWARM" />
                 <!-- put id in list before calling mapper. -->    
                 <constructor-arg value="True" />
             </bean>
