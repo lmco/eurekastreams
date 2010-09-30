@@ -37,18 +37,12 @@ import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.TabMapper;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * Create person resource strategy.
  */
 public class PersonCreator implements ResourcePersistenceStrategy<Person>
 {
-    /**
-     * Mapper to get all the readonly streams
-     */
-    private DomainMapper<List<Stream>> readonlyStreamMapper;
-
     /**
      * The person mapper.
      */
