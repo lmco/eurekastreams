@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import junit.framework.Assert;
 import net.sf.json.JSONObject;
 
-import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -114,7 +113,7 @@ public class SingleUserPersistenceRequestTransformerTest
     /**
      * Tests the transformation.
      */
-    @Test(expected = AuthorizationException.class)
+    @Test
     public void transformTestNotMatchingId()
     {
         SingleUserPersistenceRequestTransformer sut = new SingleUserPersistenceRequestTransformer(personMapper,
@@ -134,7 +133,7 @@ public class SingleUserPersistenceRequestTransformerTest
             }
         });
 
-        sut.transform(jsonReq, entityId);
+        Assert.assertEquals(new Long(0L), sut.transform(jsonReq, entityId));
         context.assertIsSatisfied();
     }
     

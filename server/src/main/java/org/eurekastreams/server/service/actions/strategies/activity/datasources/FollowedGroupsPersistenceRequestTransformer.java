@@ -22,7 +22,6 @@ import java.util.List;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
-import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetFollowedGroupIds;
@@ -30,7 +29,7 @@ import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
 /**
- * Transforms a followedGroups request.
+ * Transforms a JSON request into a list of IDs that correspond to the group the person follows.
  */
 public class FollowedGroupsPersistenceRequestTransformer implements PersistenceDataSourceRequestTransformer
 {
@@ -47,7 +46,7 @@ public class FollowedGroupsPersistenceRequestTransformer implements PersistenceD
     /**
      * Followed groups mapper.
      */
-    private GetFollowedGroupIds followeGroupsMapper;
+    private GetFollowedGroupIds followedGroupsMapper;
 
     /**
      * Group mapper.
@@ -68,12 +67,12 @@ public class FollowedGroupsPersistenceRequestTransformer implements PersistenceD
             final GetFollowedGroupIds inFolloweGroupsMapper, final GetDomainGroupsByIds inGroupMapper)
     {
         personMapper = inPersonMapper;
-        followeGroupsMapper = inFolloweGroupsMapper;
+        followedGroupsMapper = inFolloweGroupsMapper;
         groupMapper = inGroupMapper;
     }
 
     /**
-     * Transformation.
+     * Transforms a JSON request into a list of IDs that correspond to the group the person follows.
      * 
      * @param request
      *            the request.
@@ -89,34 +88,24 @@ public class FollowedGroupsPersistenceRequestTransformer implements PersistenceD
         // Request user.
         Long requestAccountId = personMapper.fetchId(accountId);
 
+        ArrayList<Long> results = new ArrayList<Long>();
+
         // If it doesn't require the current user, or the request is for the current user.
         if (userEntityId.equals(requestAccountId))
         {
             // List of group IDs.
-            List<Long> groupIds = followeGroupsMapper.execute(requestAccountId);
+            List<Long> groupIds = followedGroupsMapper.execute(requestAccountId);
 
             // List of Group Model Views.
             List<DomainGroupModelView> groupList = groupMapper.execute(groupIds);
-
-            ArrayList<Long> results = new ArrayList<Long>();
 
             for (DomainGroupModelView group : groupList)
             {
                 results.add(group.getStreamId());
             }
 
-            return results;
-        }
-        else
-        {
-            if (log.isDebugEnabled())
-            {
-                log.debug("User was: " + userEntityId + " Request from: " + requestAccountId);
-            }
-
-            throw new AuthorizationException("Insufficent priveledges to access stream.");
         }
 
+        return results;
     }
-
 }

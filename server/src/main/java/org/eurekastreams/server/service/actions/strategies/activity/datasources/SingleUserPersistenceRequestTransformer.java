@@ -21,12 +21,11 @@ import java.util.ArrayList;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
-import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 
 /**
- * Transforms JSON request to a request for a single person.
+ * Transforms JSON request to a request for a single person by ID.
  */
 public class SingleUserPersistenceRequestTransformer implements PersistenceDataSourceRequestTransformer
 {
@@ -77,7 +76,7 @@ public class SingleUserPersistenceRequestTransformer implements PersistenceDataS
     }
 
     /**
-     * Transforms the request.
+     * Transforms JSON request to a request for a single person by ID.
      * 
      * @param request
      *            the JSON request.
@@ -114,7 +113,7 @@ public class SingleUserPersistenceRequestTransformer implements PersistenceDataS
                 log.debug("User was: " + userEntityId + " Request from: " + requestAccountId);
             }
             
-            throw new AuthorizationException("Insufficent priveledges to access stream.");
+            return 0L;
         }
     }
 }
