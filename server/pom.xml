@@ -152,6 +152,12 @@
             <version>2.0</version>
         </dependency>
       
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>r06</version>
+      </dependency>
+      
 		<!-- Needed to support Hibernate -->
 		<dependency>
 			<groupId>cglib</groupId>
