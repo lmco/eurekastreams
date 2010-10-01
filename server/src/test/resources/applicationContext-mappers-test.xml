@@ -34,9 +34,6 @@
 		<property name="cache" ref="testCache" />
 	</bean>
 	
-	<bean id="refreshEveryoneActivityCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.RefreshEveryoneActivityCacheMapper">
-	   <property name="cache" ref="testCache" />
-    </bean>
 	<bean id="getEveryoneActivityDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetEveryoneActivityDbMapper">
     </bean>
 	<bean id="getPeopleWhoLikedActivityDbMapper"

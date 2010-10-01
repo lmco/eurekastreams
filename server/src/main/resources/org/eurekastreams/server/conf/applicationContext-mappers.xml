@@ -561,10 +561,6 @@
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 
-	<bean id="refreshEveryoneActivityCacheMapper"
-		class="org.eurekastreams.server.persistence.mappers.cache.RefreshEveryoneActivityCacheMapper">
-		<property name="cache" ref="memcachedCache" />
-	</bean>
 	<bean id="getEveryoneActivityDbMapper"
 		class="org.eurekastreams.server.persistence.mappers.db.GetEveryoneActivityDbMapper">
 	</bean>
