@@ -469,11 +469,6 @@
 		class="org.eurekastreams.server.persistence.mappers.cache.PersonCacheLoader">
 		<constructor-arg ref="personQueryStrategy" />
 		<constructor-arg ref="getRelatedOrganizationIdsByPersonId"/>
-		<constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.cache.RemovePersonFromCacheMapper">
-				<property name="cache" ref="testCache" />
-			</bean>
-		</constructor-arg>
         <property name="cache" ref="testCache" />
 	</bean>
 	

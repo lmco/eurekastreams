@@ -122,6 +122,10 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
             mapper.addFollower(followerResult.getEntityId(), targetResult.getEntityId());
             addCachedFollowerMapper.execute(followerResult.getEntityId(), targetResult.getEntityId());
 
+            // Queue async action to remove the newly followed person from cache (to sync follower counts)
+            currentRequests.add(new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections
+                    .singleton(Collections.singletonList(CacheKeys.PERSON_BY_ID + targetResult.getEntityId()))));
+
             logger.trace("Submit async action to update all cached activities.");
 
             // Post an async action to update the cache for the user's list of following activity ids.
@@ -132,11 +136,16 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
             currentRequests.add(new UserActionRequest("createNotificationsAction", null,
                     new CreateNotificationsRequest(RequestType.FOLLOWER, followerResult.getEntityId(), targetResult
                             .getEntityId(), 0)));
+
             break;
         case NOTFOLLOWING:
             logger.trace("Remove new following from the list of following.");
 
             mapper.removeFollower(followerResult.getEntityId(), targetResult.getEntityId());
+
+            // Queue async action to remove the newly followed person from cache (to sync follower counts)
+            currentRequests.add(new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections
+                    .singleton(Collections.singletonList(CacheKeys.PERSON_BY_ID + targetResult.getEntityId()))));
 
             // Remove the current user that is severing a relationship with the target
             // from the list of followers for that target user.

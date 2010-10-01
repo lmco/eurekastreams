@@ -17,13 +17,13 @@ package org.eurekastreams.server.persistence.mappers.cache;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.GetRelatedOrganizationIdsByPersonId;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.eurekastreams.server.persistence.mappers.cache.testhelpers.SimpleMemoryCache;
 import org.eurekastreams.server.persistence.strategies.PersonQueryStrategy;
-import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -71,11 +71,6 @@ public class PersonCacheLoaderTest extends MapperTest
     getRelatedOrganizationIdsByPersonIdMapper = new GetRelatedOrganizationIdsByPersonId();
 
     /**
-     * Mapper to remove a person from cache.
-     */
-    private RemovePersonFromCacheMapper removePersonFromCacheMapper;
-
-    /**
      * Setup method.
      */
     @Before
@@ -84,9 +79,7 @@ public class PersonCacheLoaderTest extends MapperTest
         getRelatedOrganizationIdsByPersonIdMapper.setEntityManager(getEntityManager());
 
         cache = new SimpleMemoryCache();
-        removePersonFromCacheMapper = context.mock(RemovePersonFromCacheMapper.class);
-        personCacheLoader = new PersonCacheLoader(personQueryStrategy, getRelatedOrganizationIdsByPersonIdMapper,
-                removePersonFromCacheMapper);
+        personCacheLoader = new PersonCacheLoader(personQueryStrategy, getRelatedOrganizationIdsByPersonIdMapper);
         personCacheLoader.setEntityManager(getEntityManager());
         personCacheLoader.setCache(cache);
 
@@ -131,15 +124,9 @@ public class PersonCacheLoaderTest extends MapperTest
         final Person smithersPerson = getEntityManager().find(Person.class, smithersId);
         smithersPerson.setAvatarId("HeyNowNiceAvatarId");
 
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(removePersonFromCacheMapper).execute(smithersPerson);
-            }
-        });
-
         // update the cache
         personCacheLoader.onPostUpdate(smithersPerson);
+        assertNull(cache.getList(CacheKeys.PERSON_BY_ID + smithersId));
 
         // but not for followers
         assertNotNull(cache.getList(CacheKeys.FOLLOWERS_BY_PERSON + smithersId));

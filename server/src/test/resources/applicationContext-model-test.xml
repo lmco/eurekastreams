@@ -81,11 +81,6 @@
 	</bean>
 	<bean id="jpaPersonMapper" class="org.eurekastreams.server.persistence.PersonMapper">
 		<constructor-arg ref="queryOptimizer" />
-		<constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.cache.RemovePersonFromCacheMapper">
-				<property name="cache" ref="testCache" />
-			</bean>
-		</constructor-arg>
 		<property name="descendantOrgStrategy" ref="descendantOrgStrategy" />
 	</bean>
 	<bean id="jpaPluginDefinitionMapper" class="org.eurekastreams.server.persistence.PluginDefinitionMapper">
