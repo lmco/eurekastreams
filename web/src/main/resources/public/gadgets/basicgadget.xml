@@ -2,7 +2,7 @@
 <Module>
  <ModulePrefs title="Basic Gadget" description="This is a sample gadget to test functionality" thumbnail="${build.web.baseurl}/style/images/eureka-gadget-placeholder.png" 
             title_url="http://eurekastreams.org" author="Eureka Framework" author_email="support@eurekastreams.org">
-   <Require feature="opensocial-0.8"></Require>
+   <Require feature="opensocial-0.9"></Require>
    <Require feature="osapi"></Require>
    <Require feature="dynamic-height"></Require>
    <Require feature="settitle"></Require>
@@ -75,6 +75,7 @@
         <input type="button" value="Uncomplete Task" onClick="eurekastreams.checklist.completeTask('TaskA', false);"/><br>
         <input type="button" value="Change Title" onClick="gadgets.window.setTitle('This title is better');"/><br>
         <input type="button" value="Post Activity" onClick="postActivity();"/><br>
+        <input type="button" value="List Container Methods" onClick="listMethods();"/><br>
         <div id="canvasbutton"><input type="button" value="Switch to Canvas" onClick="gadgets.views.requestNavigateTo('canvas', 'movetocanvas'); return false;"/><br></div>
         <div id="homebutton"><input type="button" value="Switch to Home" onClick="gadgets.views.requestNavigateTo('home', 'movetohome'); return false;"/><br></div>
         AppData Key:   name1<br>
@@ -153,6 +154,20 @@
 			  		alert('we posted the awesome activity');
 			  	});
 			}
+            
+                        function listMethods() 
+            {
+              alert('retrieving container methods.');
+                var url = "http://sterleck.dev.smp.isgs.lmco.com:50219/rpc?method=system.listMethods";
+                var params = {};
+                params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.TEXT;
+                params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.GET;
+        
+                gadgets.io.makeRequest(url, function (response)
+                {
+                  alert('Retrieved response: ' + gadgets.json.stringify(response));
+                }, params);
+            }
 			
             function deleteAppData()
             {

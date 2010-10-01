@@ -57,6 +57,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
+import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 import com.google.inject.spring.SpringIntegration;
 
@@ -81,29 +82,31 @@ public class SocialAPIGuiceModule extends AbstractModule
                 DataServiceServletFetcher.class);
 
         bind(Boolean.class).annotatedWith(Names.named(AnonymousAuthenticationHandler.ALLOW_UNAUTHENTICATED))
-                .toInstance(Boolean.FALSE);
+                .toInstance(Boolean.TRUE);
         bind(XStreamConfiguration.class).to(XStream081Configuration.class);
         bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.xml")).to(
+
                 BeanXStreamConverter.class);
         bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.json")).to(
                 BeanJsonConverter.class);
         bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.atom")).to(
                 BeanXStreamAtomConverter.class);
 
-        bind(new TypeLiteral<List<AuthenticationHandler>>()
-        {
-        }).toProvider(AuthenticationHandlerProvider.class);
-
-        bind(new TypeLiteral<Set<Object>>()
-        {
-        }).annotatedWith(Names.named("org.apache.shindig.social.handlers")).toInstance(getHandlers());
-
-        bind(Long.class).annotatedWith(Names.named("org.apache.shindig.serviceExpirationDurationMinutes")).toInstance(
-                SERVICE_EXPIRATION_IN_MINS);
-
         ApplicationContext appContext = new ClassPathXmlApplicationContext(
                 "classpath*:conf/applicationContext-container.xml");
         bind(BeanFactory.class).toInstance(appContext);
+
+        bind(new TypeLiteral<List<AuthenticationHandler>>() { }).toProvider(
+                AuthenticationHandlerProvider.class);
+
+        Multibinder<Object> handlerBinder = 
+            Multibinder.newSetBinder(this.binder(), Object.class, Names.named("org.apache.shindig.handlers"));
+        for (Class handler : getHandlers()) 
+        {
+          handlerBinder.addBinding().toInstance(handler);
+        }
+        bind(Long.class).annotatedWith(Names.named("org.apache.shindig.serviceExpirationDurationMinutes"))
+                .toInstance(SERVICE_EXPIRATION_IN_MINS);
 
         bind(ActivityService.class).to(ActivityServiceImpl.class);
         bind(AppDataService.class).to(AppDataServiceImpl.class);
@@ -145,12 +148,13 @@ public class SocialAPIGuiceModule extends AbstractModule
     }
 
     /**
-     * Hook to provide a Set of request handlers. Subclasses may override to add or replace additional handlers.
-     * @return retrieve a list of handlers for the OpenSocial API handlers.
+     * Hook to provide a Set of request handlers.  Subclasses may override
+     * to add or replace additional handlers.
+     * @return Set of Handlers.
      */
-    protected Set<Object> getHandlers()
+    protected Set<Class<?>> getHandlers() 
     {
-        return ImmutableSet.<Object> of(ActivityHandler.class, AppDataHandler.class, PersonHandler.class,
-                MessageHandler.class);
+      return ImmutableSet.<Class<?>>of(ActivityHandler.class, AppDataHandler.class,
+          PersonHandler.class, MessageHandler.class);
     }
 }

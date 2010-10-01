@@ -125,17 +125,17 @@ public class CreateOAuthRequestTokenExecutionTest
 
         OAuthEntry results = (OAuthEntry) sut.execute(actionContext);
         assertNotNull(results);
-        assertEquals(results.callbackUrl, TEST_CALLBACK_URL);
-        assertEquals(results.consumerKey, TEST_CONSUMER_KEY);
-        assertEquals(results.oauthVersion, TEST_OAUTH_VERSION);
-        assertEquals(results.type, OAuthEntry.Type.REQUEST);
-        assertNotNull(results.token);
-        assertNotNull(results.tokenSecret);
-        assertEquals(results.container, TEST_OAUTH_CONTAINER);
-        assertEquals(results.domain, TEST_OAUTH_DOMAIN);
-        assertEquals(results.callbackUrl, TEST_CALLBACK_URL);
-        assertEquals(results.callbackUrlSigned, true);
-        
+        assertEquals(results.getCallbackUrl(), TEST_CALLBACK_URL);
+        assertEquals(results.getConsumerKey(), TEST_CONSUMER_KEY);
+        assertEquals(results.getOauthVersion(), TEST_OAUTH_VERSION);
+        assertEquals(results.getType(), OAuthEntry.Type.REQUEST);
+        assertNotNull(results.getToken());
+        assertNotNull(results.getTokenSecret());
+        assertEquals(results.getContainer(), TEST_OAUTH_CONTAINER);
+        assertEquals(results.getDomain(), TEST_OAUTH_DOMAIN);
+        assertEquals(results.getCallbackUrl(), TEST_CALLBACK_URL);
+        assertEquals(results.isCallbackUrlSigned(), true);
+
         context.assertIsSatisfied();
     }
 
@@ -161,16 +161,16 @@ public class CreateOAuthRequestTokenExecutionTest
 
         OAuthEntry results = sut.execute(actionContext);
         assertNotNull(results);
-        assertEquals(results.callbackUrl, null);
-        assertEquals(results.consumerKey, TEST_CONSUMER_KEY);
-        assertEquals(results.oauthVersion, TEST_OAUTH_VERSION);
-        assertEquals(results.type, OAuthEntry.Type.REQUEST);
-        assertNotNull(results.token);
-        assertNotNull(results.tokenSecret);
-        assertEquals(results.container, TEST_OAUTH_CONTAINER);
-        assertEquals(results.domain, TEST_OAUTH_DOMAIN);
-        assertEquals(results.callbackUrl, null);
-        assertEquals(results.callbackUrlSigned, false);
+        assertEquals(results.getCallbackUrl(), null);
+        assertEquals(results.getConsumerKey(), TEST_CONSUMER_KEY);
+        assertEquals(results.getOauthVersion(), TEST_OAUTH_VERSION);
+        assertEquals(results.getType(), OAuthEntry.Type.REQUEST);
+        assertNotNull(results.getToken());
+        assertNotNull(results.getTokenSecret());
+        assertEquals(results.getContainer(), TEST_OAUTH_CONTAINER);
+        assertEquals(results.getDomain(), TEST_OAUTH_DOMAIN);
+        assertEquals(results.getCallbackUrl(), null);
+        assertEquals(results.isCallbackUrlSigned(), false);
 
         context.assertIsSatisfied();
     }

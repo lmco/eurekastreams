@@ -229,11 +229,9 @@ public class GadgetPanel extends FlowPanel
                 {
                     if (initallyMinimized)
                     {
-                        gadgetRenderer.registerSingleGadgetInContainer(gadgetRenderZoneId, gadget.getGadgetDefinition()
+                        gadgetRenderer.registerSingleGadgetInContainer(gadget.getGadgetDefinition()
                                 .getUrl(), gadgetIdModifier, gadget.getGadgetDefinition().getId(), gadget
                                 .getGadgetUserPref());
-
-                        gadgetRenderer.addGadgetChrome(gadgetRenderZoneId, gadgetIdModifier);
 
                         gadgetRenderer.renderGadget(gadgetIdModifier.toString());
 
@@ -272,11 +270,9 @@ public class GadgetPanel extends FlowPanel
                 {
                     if (initallyMinimized)
                     {
-                        gadgetRenderer.registerSingleGadgetInContainer(gadgetRenderZoneId, gadget.getGadgetDefinition()
+                        gadgetRenderer.registerSingleGadgetInContainer(gadget.getGadgetDefinition()
                                 .getUrl(), gadgetIdModifier, gadget.getGadgetDefinition().getId(), gadget
                                 .getGadgetUserPref());
-
-                        gadgetRenderer.addGadgetChrome(gadgetRenderZoneId, gadgetIdModifier);
 
                         gadgetRenderer.renderGadget(gadgetIdModifier.toString());
 
@@ -301,10 +297,8 @@ public class GadgetPanel extends FlowPanel
 
         if (!initallyMinimized)
         {
-            gadgetRenderer.registerSingleGadgetInContainer(gadgetRenderZoneId, gadget.getGadgetDefinition().getUrl(),
+            gadgetRenderer.registerSingleGadgetInContainer(gadget.getGadgetDefinition().getUrl(),
                     gadgetIdModifier, gadget.getGadgetDefinition().getId(), gadget.getGadgetUserPref());
-
-            gadgetRenderer.addGadgetChrome(gadgetRenderZoneId, gadgetIdModifier);
         }
     }
 

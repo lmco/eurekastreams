@@ -45,8 +45,6 @@ public class GadgetRenderer
     /**
      * Will Register a Single Gadget in the container and render it.
      *
-     * @param chromeId
-     *            the div id where you want to gadget rendered at
      * @param url
      *            Gadget xml url path
      * @param id
@@ -56,10 +54,10 @@ public class GadgetRenderer
      * @param userPrefs
      *            String based JSON representation of the gadget's user preferences.
      */
-    public final void registerSingleGadgetInContainer(final String chromeId, final String url, final Long id,
+    public final void registerSingleGadgetInContainer(final String url, final Long id,
             final Long gadgetDefId, final String userPrefs)
     {
-        registerSingleGadgetInContainer(chromeId, url, id, "home", gadgetDefId, userPrefs);
+        registerSingleGadgetInContainer(url, id, "home", gadgetDefId, userPrefs);
     }
 
     /**
@@ -84,12 +82,9 @@ public class GadgetRenderer
     /**
      * Will Register a Single Gadget in the container and render it. called when specifying a view
      *
-     * @param chromeId
      * @param url
      * @param view
      *            (canvas, home, etc. null for default)
-     * @param chromeId
-     *            id of the chrome.
      * @param url
      *            the url of the gadget.
      * @param id
@@ -99,21 +94,21 @@ public class GadgetRenderer
      * @param userPrefs
      *            String based JSON representation of the gadget's user preferences.
      */
-    public final native void registerSingleGadgetInContainer(final String chromeId, final String url, final Long id,
+    public final native void registerSingleGadgetInContainer(final String url, final Long id,
             final String view, final Long gadgetDefId, final String userPrefs)
     /*-{
-        var gadget = $wnd.gadgets.container.getGadget(id);
+        var gadget = $wnd.shindig.container.getGadget(id);
 
-        gadget = $wnd.gadgets.container.createGadget({specUrl: url, title:'', appId: gadgetDefId});
+        gadget = $wnd.shindig.container.createGadget({specUrl: url, title:'', appId: gadgetDefId, id: id});
         if(userPrefs != null && userPrefs != "")
         {
-            gadget.userPrefs_ = $wnd.gadgets.json.parse(userPrefs);
+            gadget.userPrefs = $wnd.gadgets.json.parse(userPrefs);
         }
         gadget.setServerBase('/gadgets/');
-        gadget.secureToken = escape($wnd.eurekastreams.container.generateSecureToken(
+        gadget.secureToken = escape($wnd.eurekastreams.util.generateSecureToken(
             $wnd.OWNER, $wnd.VIEWER, gadgetDefId, url));
-        $wnd.gadgets.container.setView(view);
-        $wnd.gadgets.container.addGadgetWithId(gadget,id);
+        $wnd.shindig.container.setView(view);
+        $wnd.shindig.container.addGadget(gadget);
 
     }-*/;
 
@@ -153,7 +148,7 @@ public class GadgetRenderer
      */
     public native void openPreferences(final String moduleID)
     /*-{
-       $wnd.gadgets.container.getGadget(moduleID).handleOpenUserPrefsDialog();
+       $wnd.shindig.container.getGadget(moduleID).handleOpenUserPrefsDialog();
     }-*/;
 
     /**
@@ -164,21 +159,7 @@ public class GadgetRenderer
      */
     public native void refreshGadget(final String moduleID)
     /*-{
-      $wnd.gadgets.container.getGadget(moduleID).refresh();
-    }-*/;
-
-
-    /**
-     * Add the gadget chome.
-     *
-     * @param chromeId
-     *            the chome id.
-     * @param id
-     *            the gadget id.
-     */
-    public final native void addGadgetChrome(final String chromeId, final Long id)
-    /*-{
-        $wnd.gadgets.container.layoutManager.addGadgetChromeId(chromeId, id);
+      $wnd.shindig.container.getGadget(moduleID).refresh();
     }-*/;
 
     /**
@@ -190,7 +171,7 @@ public class GadgetRenderer
      */
     public final native void renderGadget(final String moduleID)
     /*-{
-      $wnd.gadgets.container.renderGadget($wnd.gadgets.container.getGadget(moduleID));
+      $wnd.shindig.container.renderGadget($wnd.shindig.container.getGadget(moduleID));
     }-*/;
 
     /**
@@ -206,7 +187,7 @@ public class GadgetRenderer
      */
     public final native void refreshGadgetIFrameUrl(final String moduleId, final String viewParams)
     /*-{
-        $wnd.gadgets.container.refreshGadgetIFrameUrl($wnd.gadgets.container.getGadget(moduleId), viewParams);
+        $wnd.eurekastreams.util.refreshGadgetIFrameUrl($wnd.shindig.container.getGadget(moduleId), viewParams);
     }-*/;
 
     /**
@@ -218,7 +199,7 @@ public class GadgetRenderer
      */
     public final native void gadgetIFrameUrlRefreshing(final String moduleId)
     /*-{
-        $wnd.gadgets.container.gadgetIFrameUrlRefreshing($wnd.gadgets.container.getGadget(moduleId));
+        $wnd.eurekastreams.util.gadgetIFrameUrlRefreshing($wnd.shindig.container.getGadget(moduleId));
     }-*/;
 
     /**
@@ -229,7 +210,7 @@ public class GadgetRenderer
      */
     public final native void changeContainerViewNative(final String view)
     /*-{
-      $wnd.gadgets.container.setView(view);
+      $wnd.shindig.container.setView(view);
     }-*/;
 
     /**
@@ -240,8 +221,8 @@ public class GadgetRenderer
     // gadgetIDs is an incrementor of gadgets. it also appears to be how
     // prefeances are retrieved
     /*-{
-      $wnd.gadgets.container.layoutManager.gadgetChromeIds_ = [];
-      $wnd.gadgets.container.gadgets_={};
+      $wnd.shindig.container.layoutManager.gadgetChromeIds_ = [];
+      $wnd.shindig.container.gadgets_={};
     }-*/;
 
     /**
@@ -250,7 +231,7 @@ public class GadgetRenderer
     public final native void refreshGadgetsInContainer()
     // TODO this is untested.
     /*-{
-      $wnd.gadgets.container.refreshGadgets();
+      $wnd.shindig.container.refreshGadgets();
     }-*/;
 
     /**
@@ -258,7 +239,7 @@ public class GadgetRenderer
      */
     public final native void renderGagdets()
     /*-{
-      $wnd.gadgets.container.renderGadgets();
+      $wnd.shindig.container.renderGadgets();
     }-*/;
 
 }

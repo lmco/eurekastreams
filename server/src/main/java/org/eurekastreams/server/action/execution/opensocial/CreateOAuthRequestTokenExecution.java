@@ -86,21 +86,21 @@ public class CreateOAuthRequestTokenExecution implements ExecutionStrategy<Princ
     {
         CreateOAuthRequestTokenRequest currentRequest = (CreateOAuthRequestTokenRequest) inActionContext.getParams();
         OAuthEntry entry = new OAuthEntry();
-        entry.appId = currentRequest.getConsumerKey();
-        entry.consumerKey = currentRequest.getConsumerKey();
-        entry.domain = oauthDomain;
-        entry.container = oauthContainer;
+        entry.setAppId(currentRequest.getConsumerKey());
+        entry.setConsumerKey(currentRequest.getConsumerKey());
+        entry.setDomain(oauthDomain);
+        entry.setContainer(oauthContainer);
 
-        entry.token = UUID.randomUUID().toString();
-        entry.tokenSecret = UUID.randomUUID().toString();
+        entry.setToken(UUID.randomUUID().toString());
+        entry.setTokenSecret(UUID.randomUUID().toString());
 
-        entry.type = OAuthEntry.Type.REQUEST;
-        entry.issueTime = new Date();
-        entry.oauthVersion = currentRequest.getOauthVersion();
+        entry.setType(OAuthEntry.Type.REQUEST);
+        entry.setIssueTime(new Date());
+        entry.setOauthVersion(currentRequest.getOauthVersion());
         if (currentRequest.getSignedCallbackUrl() != null)
         {
-            entry.callbackUrlSigned = true;
-            entry.callbackUrl = currentRequest.getSignedCallbackUrl();
+            entry.setCallbackUrlSigned(true);
+            entry.setCallbackUrl(currentRequest.getSignedCallbackUrl());
         }
 
         OAuthDomainEntry dto = oauthConversionStrat.convertToEntryDTO(entry);
