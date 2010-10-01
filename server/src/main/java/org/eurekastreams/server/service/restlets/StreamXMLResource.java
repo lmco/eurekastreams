@@ -190,14 +190,16 @@ public class StreamXMLResource extends SmpResource
 
                 feed.setTitle("Eureka Activity Stream Feed");
                 feed.setLink(baseUrl);
+
                 feed.setDescription("");
             }
             else if (mode.equals("saved"))
             {
                 Stream stream = streamMapper.execute(new FindByIdRequest("Stream", streamId));
 
-                feed.setTitle(stream.getName());
+                feed.setTitle("Eureka Streams: " + stream.getName());
                 feed.setLink(baseUrl);
+
                 feed.setDescription(stream.getName());
 
                 if (stream == null)
@@ -219,6 +221,17 @@ public class StreamXMLResource extends SmpResource
 
             PagedSet<ActivityDTO> activities = (PagedSet<ActivityDTO>) serviceActionController.execute(
                     (ServiceActionContext) ac, action);
+
+            feed.setUri(baseUrl + getRequest().getResourceRef().getPath());
+
+            if (activities.getPagedSet().size() > 0)
+            {
+                feed.setPublishedDate(activities.getPagedSet().get(0).getPostedTime());
+            }
+            else
+            {
+                feed.setPublishedDate(new Date());
+            }
 
             List entries = new ArrayList();
 
@@ -255,7 +268,9 @@ public class StreamXMLResource extends SmpResource
                 {
                     entry = new SyndEntryImpl();
                     entry.setTitle(title);
-                    entry.setLink("/#activity?activityId=" + activity.getId());
+                    entry.setAuthor(activity.getActor().getDisplayName());
+                    entry.setLink(baseUrl + "/#activity?activityId=" + activity.getId());
+                    entry.setUri(baseUrl + "/#activity?activityId=" + activity.getId());
                     entry.setPublishedDate(activity.getPostedTime());
                     description = new SyndContentImpl();
                     description.setType("text/plain");
@@ -292,7 +307,7 @@ public class StreamXMLResource extends SmpResource
             log.error("error in feed");
         }
 
-        Representation rep = new StringRepresentation(writer.toString(), MediaType.APPLICATION_ATOM_XML);
+        Representation rep = new StringRepresentation(writer.toString(), MediaType.TEXT_XML);
         rep.setExpirationDate(new Date(0L));
 
         return rep;

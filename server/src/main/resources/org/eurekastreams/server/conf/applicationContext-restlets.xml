@@ -241,7 +241,7 @@
         <constructor-arg ref="principalPopulator" />
         <constructor-arg ref="findByIdMapper" />
         <constructor-arg ref="restletQueryRequestParser" />
-        <constructor-arg value="${eureka.infosite.url}" />
+        <constructor-arg value="${eureka.web.baseurl}" />
     </bean>
     
     
