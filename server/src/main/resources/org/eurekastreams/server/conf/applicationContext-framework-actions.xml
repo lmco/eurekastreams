@@ -2492,6 +2492,9 @@
                 class="org.eurekastreams.server.action.execution.opensocial.GetUserActivitiesExecution">
                 <constructor-arg ref="bulkActivitiesMapper" />
                 <constructor-arg ref="bulkPeopleByOpenSocialIdMapper" />
+                <constructor-arg ref="getActivitiesByRequestExecutor" />
+                <!-- Max number of activities to get from open social ids -->
+                <constructor-arg ref="1000" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />

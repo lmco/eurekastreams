@@ -67,12 +67,8 @@ public class GetUserActivitiesExecution implements ExecutionStrategy<PrincipalAc
     /**
      * Constructor.
      *
-     * @param inGetStreamByOwnerId
-     *            - instance of the {@link GetStreamByOwnerId} mapper.
      * @param inBulkActivitiesMapper
      *            - instance of the {@link BulkActivitiesMapper}.
-     * @param inCompositeStreamActivityIdsMapper
-     *            - instance of the {@link CompositeStreamActivityIdsMapper}.
      * @param inGetPeopleByOpenSocialIds
      *            - instance of the {@link GetPeopleByOpenSocialIds} mapper.
      * @param inGetActivitiesByRequestExecution
@@ -101,18 +97,8 @@ public class GetUserActivitiesExecution implements ExecutionStrategy<PrincipalAc
     {
         GetUserActivitiesRequest currentRequest = (GetUserActivitiesRequest) inActionContext.getParams();
         LinkedList<ActivityDTO> currentActivityDTOs = new LinkedList<ActivityDTO>();
-        // if the user has provided activities to retrieve in the parameters, retrieve the corresponding
-        // ActivityDTO objects.
-        if (currentRequest.getActivityIds().size() > 0)
-        {
-            List<Long> activityIds = currentRequest.getActivityIds();
-            if (!activityIds.isEmpty())
-            {
-                currentActivityDTOs.addAll(bulkActivitiesMapper.execute(activityIds));
-            }
-        }
 
-        if (currentRequest.getOpenSocialIds().size() > 0)
+        if (currentRequest.getOpenSocialIds() != null && currentRequest.getOpenSocialIds().size() > 0)
         {
             List<PersonModelView> users = getPeopleByOpenSocialIds.execute(new ArrayList<String>(currentRequest
                     .getOpenSocialIds()));
@@ -171,6 +157,27 @@ public class GetUserActivitiesExecution implements ExecutionStrategy<PrincipalAc
                         .execute(context);
 
                 currentActivityDTOs.addAll(activities.getPagedSet());
+            }
+        }
+
+        // if the user has provided activities to retrieve in the parameters, retrieve the corresponding
+        // ActivityDTO objects.
+        if (currentRequest.getActivityIds() != null && currentRequest.getActivityIds().size() > 0)
+        {
+            List<Long> activityIds = new ArrayList<Long>(currentRequest.getActivityIds());
+            System.out.println("Before: " + activityIds.size());
+            // only look for IDs that aren't yet in the list
+            for (ActivityDTO act : currentActivityDTOs)
+            {
+                if (activityIds.contains(act.getId()))
+                {
+                    activityIds.remove(act.getId());
+                }
+            }
+
+            if (!activityIds.isEmpty())
+            {
+                currentActivityDTOs.addAll(bulkActivitiesMapper.execute(activityIds));
             }
         }
 

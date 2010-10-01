@@ -117,6 +117,50 @@ public class GetUserActivitiesExecutionTest
     }
 
     /**
+     * Test execute with null open social ids or activity ids.
+     */
+    @Test
+    public void testExecuteNullRequests()
+    {
+        final PagedSet<ActivityDTO> activities = context.mock(PagedSet.class);
+        final ExecutionStrategyFake executionStrategy = new ExecutionStrategyFake(activities);
+        GetUserActivitiesExecution sut = new GetUserActivitiesExecution(bulkActivitiesMapper, getPeopleByOpenSocialIds,
+                executionStrategy, maxActivitiesToReturnByOpenSocialId);
+
+        final Principal principal = context.mock(Principal.class);
+        final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
+
+        final GetUserActivitiesRequest request = context.mock(GetUserActivitiesRequest.class);
+
+        final List<Long> activityIds = null;
+        final Set<String> openSocialIds = null;
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(actionContext).getPrincipal();
+                will(returnValue(principal));
+
+                oneOf(actionContext).getParams();
+                will(returnValue(request));
+
+                // activity ids
+                allowing(request).getActivityIds();
+                will(returnValue(activityIds));
+
+                // open social ids
+                allowing(request).getOpenSocialIds();
+                will(returnValue(openSocialIds));
+            }
+        });
+
+        LinkedList<ActivityDTO> results = sut.execute(actionContext);
+        assertEquals(0, results.size());
+
+        context.assertIsSatisfied();
+    }
+
+    /**
      * Test execute with open social ids, no activity ids.
      */
     @Test
@@ -193,6 +237,247 @@ public class GetUserActivitiesExecutionTest
     }
 
     /**
+     * Test execute with open social ids, and an activity id that's already been found by destination stream.
+     */
+    @Test
+    public void testExecuteActivityIdsOnly()
+    {
+        final Long act1Id = 827L;
+        final Long act2Id = 82337L;
+
+        final List<ActivityDTO> activityList = new ArrayList<ActivityDTO>();
+        ActivityDTO a1 = new ActivityDTO();
+        ActivityDTO a2 = new ActivityDTO();
+        a1.setId(act1Id);
+        a2.setId(act2Id);
+        activityList.add(a1);
+        activityList.add(a2);
+
+        final ExecutionStrategyFake executionStrategy = new ExecutionStrategyFake(null);
+        GetUserActivitiesExecution sut = new GetUserActivitiesExecution(bulkActivitiesMapper, getPeopleByOpenSocialIds,
+                executionStrategy, maxActivitiesToReturnByOpenSocialId);
+
+        final Principal principal = context.mock(Principal.class);
+        final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
+
+        final GetUserActivitiesRequest request = context.mock(GetUserActivitiesRequest.class);
+
+        final List<Long> activityIds = new ArrayList<Long>();
+        activityIds.add(act1Id);
+        activityIds.add(act2Id);
+
+        // no open social ids
+        final Set<String> openSocialIds = new HashSet<String>();
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(actionContext).getPrincipal();
+                will(returnValue(principal));
+
+                oneOf(actionContext).getParams();
+                will(returnValue(request));
+
+                // activity ids
+                allowing(request).getActivityIds();
+                will(returnValue(activityIds));
+
+                // open social ids
+                allowing(request).getOpenSocialIds();
+                will(returnValue(openSocialIds));
+
+                oneOf(bulkActivitiesMapper).execute(with(any(List.class)));
+                will(returnValue(activityList));
+            }
+        });
+
+        List<ActivityDTO> results = sut.execute(actionContext);
+        assertEquals(2, results.size());
+        assertTrue(results.contains(a1));
+        assertTrue(results.contains(a2));
+
+        // make sure not used
+        assertEquals(null, executionStrategy.getContextPassedIn());
+
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test execute with open social ids, and an activity id that's already been found by destination stream.
+     */
+    @Test
+    public void testExecuteOpenSocialIdsAndActivityIdWhichWasAlreadyFoundByOpenSocialId()
+    {
+        final Long act1Id = 827L;
+        final Long act2Id = 82337L;
+
+        final PagedSet<ActivityDTO> activities = context.mock(PagedSet.class);
+        final List<ActivityDTO> activityList = new ArrayList<ActivityDTO>();
+        ActivityDTO a1 = new ActivityDTO();
+        ActivityDTO a2 = new ActivityDTO();
+        a1.setId(act1Id);
+        a2.setId(act2Id);
+        activityList.add(a1);
+        activityList.add(a2);
+
+        final ExecutionStrategyFake executionStrategy = new ExecutionStrategyFake(activities);
+        GetUserActivitiesExecution sut = new GetUserActivitiesExecution(bulkActivitiesMapper, getPeopleByOpenSocialIds,
+                executionStrategy, maxActivitiesToReturnByOpenSocialId);
+
+        final Principal principal = context.mock(Principal.class);
+        final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
+
+        final GetUserActivitiesRequest request = context.mock(GetUserActivitiesRequest.class);
+
+        final List<Long> activityIds = new ArrayList<Long>();
+        activityIds.add(act1Id);
+
+        final Set<String> openSocialIds = new HashSet<String>();
+        openSocialIds.add("grape");
+        openSocialIds.add("potato");
+
+        final List<PersonModelView> people = new ArrayList<PersonModelView>();
+        PersonModelView p1 = new PersonModelView();
+        PersonModelView p2 = new PersonModelView();
+        people.add(p1);
+        people.add(p2);
+
+        p1.setAccountId("ACCT1");
+        p2.setAccountId("ACCT2");
+
+        String expectedJson = "{\"count\":" + maxActivitiesToReturnByOpenSocialId
+                + ",\"query\":{\"recipient\":[{\"name\":\"ACCT1\",\"type\":\"PERSON\"},"
+                + "{\"name\":\"ACCT2\",\"type\":\"PERSON\"}]}}";
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(actionContext).getPrincipal();
+                will(returnValue(principal));
+
+                oneOf(actionContext).getParams();
+                will(returnValue(request));
+
+                // activity ids
+                allowing(request).getActivityIds();
+                will(returnValue(activityIds));
+
+                // open social ids
+                allowing(request).getOpenSocialIds();
+                will(returnValue(openSocialIds));
+
+                oneOf(getPeopleByOpenSocialIds).execute(with(any(ArrayList.class)));
+                will(returnValue(people));
+
+                oneOf(activities).getPagedSet();
+                will(returnValue(activityList));
+            }
+        });
+
+        List<ActivityDTO> results = sut.execute(actionContext);
+        assertEquals(2, results.size());
+        assertTrue(results.contains(a1));
+        assertTrue(results.contains(a2));
+
+        String receievedJson = (String) executionStrategy.getContextPassedIn().getParams();
+        assertEquals(expectedJson, receievedJson);
+
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test execute with open social ids, and an activity id that's already been found by destination stream.
+     */
+    @Test
+    public void testExecuteOpenSocialIdsAndActivityId()
+    {
+        final Long act1Id = 827L;
+        final Long act2Id = 82337L;
+
+        final Long newActId = 8888L;
+        final ActivityDTO newAct = new ActivityDTO();
+        final List<ActivityDTO> responseById = new ArrayList<ActivityDTO>();
+        responseById.add(newAct);
+
+        final PagedSet<ActivityDTO> activities = context.mock(PagedSet.class);
+        final List<ActivityDTO> activityList = new ArrayList<ActivityDTO>();
+        ActivityDTO a1 = new ActivityDTO();
+        ActivityDTO a2 = new ActivityDTO();
+        a1.setId(act1Id);
+        a2.setId(act2Id);
+        activityList.add(a1);
+        activityList.add(a2);
+
+        final ExecutionStrategyFake executionStrategy = new ExecutionStrategyFake(activities);
+        GetUserActivitiesExecution sut = new GetUserActivitiesExecution(bulkActivitiesMapper, getPeopleByOpenSocialIds,
+                executionStrategy, maxActivitiesToReturnByOpenSocialId);
+
+        final Principal principal = context.mock(Principal.class);
+        final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
+
+        final GetUserActivitiesRequest request = context.mock(GetUserActivitiesRequest.class);
+
+        final List<Long> activityIds = new ArrayList<Long>();
+        activityIds.add(newActId);
+
+        final Set<String> openSocialIds = new HashSet<String>();
+        openSocialIds.add("grape");
+        openSocialIds.add("potato");
+
+        final List<PersonModelView> people = new ArrayList<PersonModelView>();
+        PersonModelView p1 = new PersonModelView();
+        PersonModelView p2 = new PersonModelView();
+        people.add(p1);
+        people.add(p2);
+
+        p1.setAccountId("ACCT1");
+        p2.setAccountId("ACCT2");
+
+        String expectedJson = "{\"count\":" + maxActivitiesToReturnByOpenSocialId
+                + ",\"query\":{\"recipient\":[{\"name\":\"ACCT1\",\"type\":\"PERSON\"},"
+                + "{\"name\":\"ACCT2\",\"type\":\"PERSON\"}]}}";
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(actionContext).getPrincipal();
+                will(returnValue(principal));
+
+                oneOf(actionContext).getParams();
+                will(returnValue(request));
+
+                // activity ids
+                allowing(request).getActivityIds();
+                will(returnValue(activityIds));
+
+                // open social ids
+                allowing(request).getOpenSocialIds();
+                will(returnValue(openSocialIds));
+
+                oneOf(getPeopleByOpenSocialIds).execute(with(any(ArrayList.class)));
+                will(returnValue(people));
+
+                oneOf(bulkActivitiesMapper).execute(with(any(List.class)));
+                will(returnValue(responseById));
+
+                oneOf(activities).getPagedSet();
+                will(returnValue(activityList));
+            }
+        });
+
+        List<ActivityDTO> results = sut.execute(actionContext);
+        assertEquals(3, results.size());
+        assertTrue(results.contains(a1));
+        assertTrue(results.contains(a2));
+        assertTrue(results.contains(newAct));
+
+        String receievedJson = (String) executionStrategy.getContextPassedIn().getParams();
+        assertEquals(expectedJson, receievedJson);
+
+        context.assertIsSatisfied();
+    }
+
+    /**
      * Fake execution strategy.
      */
     private class ExecutionStrategyFake implements ExecutionStrategy<PrincipalActionContext>
@@ -223,6 +508,9 @@ public class GetUserActivitiesExecutionTest
          *
          * @param inActionContext
          *            the request
+         * @return result that was passedinto constructor
+         * @throws exception
+         *             ... never
          */
         @Override
         public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
