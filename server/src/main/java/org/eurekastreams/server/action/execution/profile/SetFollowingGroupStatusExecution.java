@@ -44,7 +44,7 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Class responsible for providing the strategy that updates the appropriate lists when a group is followed.
- * 
+ *
  */
 public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
@@ -80,7 +80,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
 
     /**
      * Constructor for the SetFollowingGroupStatusExecution.
-     * 
+     *
      * @param inGroupMapper
      *            - instance of the GetDomainGroupsByShortNames mapper.
      * @param inPersonMapper
@@ -90,7 +90,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
      * @param inAddCachedGroupFollowerMapper
      *            - instance of the AddCachedGroupFollower mapper.
      * @param inFollowerIdsMapper
-     *            - instance of the RemoveCachedActivitiesFromList mapper.
+     *            - mapper to get the follower ids for a group
      * @param inDeleteRequestForGroupMembershipMapper
      *            Mapper to remove group access requests.
      */
@@ -110,7 +110,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
 
     /**
      * {@inheritDoc}.
-     * 
+     *
      * This method sets the following status based on the passed in request object. There is an extra block of code here
      * that handles an additional request object type that passes in the follower and target ids by string name instead
      * of their long id's. This extra support is needed for the GroupCreator object that gets called from the back end
