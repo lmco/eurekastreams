@@ -631,7 +631,7 @@ public class PersonMapperTest extends DomainEntityMapperTest
     @Test(expected = NullPointerException.class)
     public void testGetDescendantOrgStrategyWhenNotSet()
     {
-        PersonMapper personMapper = new PersonMapper(queryOptimizer, null);
+        PersonMapper personMapper = new PersonMapper(queryOptimizer);
         personMapper.getDescendantOrgStrategy();
     }
 

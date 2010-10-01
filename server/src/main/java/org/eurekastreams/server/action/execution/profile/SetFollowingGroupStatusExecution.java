@@ -159,6 +159,10 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             // Update the cache list of followers
             addCachedGroupFollowerMapper.execute(followerId, targetId);
 
+            // Queue async action to remove the newly followed group from cache (to sync follower counts)
+            taskRequests.add(new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections
+                    .singleton(CacheKeys.GROUP_BY_ID + targetId)));
+            
             // remove any requests from the user for group membership
             deleteRequestForGroupMembershipMapper.execute(new RequestForGroupMembershipRequest(targetId, followerId));
 
@@ -171,6 +175,10 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             // Update the db and cache for list of followers and following.
             domainGroupMapper.removeFollower(followerId, targetId);
 
+            // Queue async action to remove the newly followed group from cache (to sync follower counts)
+            taskRequests.add(new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections
+                    .singleton(CacheKeys.GROUP_BY_ID + targetId)));
+            
             // Remove the current user that is severing a relationship with the target group
             // from the list of followers for that target group.
             taskRequests.add(new UserActionRequest("deleteIdsFromLists", null, new DeleteIdsFromListsRequest(
