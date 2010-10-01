@@ -31,6 +31,9 @@ import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 /**
  * This mapper finds all cache keys that could contain a reference to one of the activities passed as input. Lists of
  * starred activities are not included, nor are the streams that the activities were posted to .
+ *
+ * NOTE: This is probably incomplete. This is used for deleting activities. Rather than maintain these lists, we're
+ * looking into ignoring deleted activity ids in lists and removing those ids as they're found.
  */
 public class GetListsContainingActivities extends BaseArgDomainMapper<List<Long>, List<String>>
 {
