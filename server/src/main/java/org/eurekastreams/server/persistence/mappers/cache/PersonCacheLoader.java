@@ -54,27 +54,18 @@ public class PersonCacheLoader extends CachedDomainMapper implements EntityCache
     private PersonQueryStrategy personQueryStrategy;
 
     /**
-     * Mapper to remove a person from cache.
-     */
-    private RemovePersonFromCacheMapper removePersonFromCacheMapper;
-
-    /**
      * Constructor.
      * 
      * @param inPersonQueryStrategy
      *            the person query strategy to set.
      * @param inGetRelatedOrganizationIdsByPersonIdMapper
      *            mapper to get related org ids for people
-     * @param inRemovePersonFromCacheMapper
-     *            mapper to remove person from cache
      */
     public PersonCacheLoader(final PersonQueryStrategy inPersonQueryStrategy,
-            final GetRelatedOrganizationIdsByPersonId inGetRelatedOrganizationIdsByPersonIdMapper,
-            final RemovePersonFromCacheMapper inRemovePersonFromCacheMapper)
+            final GetRelatedOrganizationIdsByPersonId inGetRelatedOrganizationIdsByPersonIdMapper)
     {
         personQueryStrategy = inPersonQueryStrategy;
         getRelatedOrganizationIdsByPersonIdMapper = inGetRelatedOrganizationIdsByPersonIdMapper;
-        removePersonFromCacheMapper = inRemovePersonFromCacheMapper;
     }
 
     /**
@@ -167,7 +158,7 @@ public class PersonCacheLoader extends CachedDomainMapper implements EntityCache
         {
             log.info("Person.onPostUpdate - removing person #" + inUpdatedPerson.getId() + " from cache");
         }
-        removePersonFromCacheMapper.execute(inUpdatedPerson);
+        getCache().delete(CacheKeys.PERSON_BY_ID + inUpdatedPerson.getId());
     }
 
     /**

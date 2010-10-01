@@ -27,7 +27,6 @@ import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.eurekastreams.server.persistence.mappers.cache.testhelpers.SimpleMemoryCache;
 import org.eurekastreams.server.persistence.strategies.DomainGroupQueryStrategy;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
-import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -68,19 +67,13 @@ public class DomainGroupCacheLoaderTest extends MapperTest
     private DomainGroupQueryStrategy domainGroupQueryStrategy;
 
     /**
-     * Mapper to remove domain group from cache.
-     */
-    private RemoveDomainGroupFromCacheMapper removeDomainGroupFromCacheMapper;
-
-    /**
      * Setup method.
      */
     @Before
     public void setup()
     {
         cache = new SimpleMemoryCache();
-        removeDomainGroupFromCacheMapper = context.mock(RemoveDomainGroupFromCacheMapper.class);
-        domainGroupCacheLoader = new DomainGroupCacheLoader(domainGroupQueryStrategy, removeDomainGroupFromCacheMapper);
+        domainGroupCacheLoader = new DomainGroupCacheLoader(domainGroupQueryStrategy);
         domainGroupCacheLoader.setEntityManager(getEntityManager());
         domainGroupCacheLoader.setCache(cache);
 
@@ -167,13 +160,6 @@ public class DomainGroupCacheLoaderTest extends MapperTest
 
         // update it
         final DomainGroup domainGroup = getEntityManager().find(DomainGroup.class, 1L);
-
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(removeDomainGroupFromCacheMapper).execute(domainGroup);
-            }
-        });
 
         // invoke SUT
         domainGroupCacheLoader.onPostUpdate(domainGroup);

@@ -28,7 +28,6 @@ import org.eurekastreams.server.domain.Followable;
 import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.persistence.mappers.cache.RemovePersonFromCacheMapper;
 import org.eurekastreams.server.persistence.strategies.DescendantOrganizationStrategy;
 
 /**
@@ -43,23 +42,14 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
     private static Log logger = LogFactory.getLog(PersonMapper.class);
 
     /**
-     * Mapper to remove a person from cache.
-     */
-    private RemovePersonFromCacheMapper removePersonFromCacheMapper;
-
-    /**
      * Constructor.
      *
      * @param inQueryOptimizer
      *            the QueryOptimizer to use for specialized functions.
-     * @param inRemovePersonFromCacheMapper
-     *            mapper to remove a person from cache
      */
-    public PersonMapper(final QueryOptimizer inQueryOptimizer,
-            final RemovePersonFromCacheMapper inRemovePersonFromCacheMapper)
+    public PersonMapper(final QueryOptimizer inQueryOptimizer)
     {
         super(inQueryOptimizer);
-        removePersonFromCacheMapper = inRemovePersonFromCacheMapper;
     }
 
     /**
@@ -182,8 +172,6 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
         Person followingEntity = findById(followingId);
 
         getFullTextSession().index(followingEntity);
-        // persist to refresh the cache for this person
-        removePersonFromCacheMapper.execute(followingEntity);
     }
 
     /**
@@ -246,9 +234,6 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
 
         // reindex the following in the search index
         getFullTextSession().index(followingEntity);
-
-        // persist to refresh the cache for this person
-        removePersonFromCacheMapper.execute(followingEntity);
     }
 
     /**

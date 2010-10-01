@@ -26,9 +26,6 @@ import org.eurekastreams.server.persistence.mappers.cache.testhelpers.SimpleMemo
 import org.eurekastreams.server.persistence.mappers.stream.GetFollowedPersonIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds;
 import org.eurekastreams.server.persistence.strategies.PersonQueryStrategy;
-import org.jmock.Mockery;
-import org.jmock.integration.junit4.JUnit4Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,16 +36,6 @@ import org.junit.Test;
  */
 public class AddCachedPersonFollowerTest extends MapperTest
 {
-    /**
-     * Context for building mock objects.
-     */
-    private final Mockery context = new JUnit4Mockery()
-    {
-        {
-            setImposteriser(ClassImposteriser.INSTANCE);
-        }
-    };
-
     /**
      * Cache fed into the loader.
      */
@@ -95,11 +82,6 @@ public class AddCachedPersonFollowerTest extends MapperTest
     private static final Long TEST_PERSON_ID_4 = new Long(42L);
 
     /**
-     * Mapper to remove domain group from cache.
-     */
-    private RemovePersonFromCacheMapper removePersonFromCacheMapper;
-
-    /**
      * Mapper to get related org ids for people.
      */
     private GetRelatedOrganizationIdsByPersonId
@@ -117,8 +99,7 @@ public class AddCachedPersonFollowerTest extends MapperTest
         getRelatedOrganizationIdsByPersonIdMapper.setEntityManager(getEntityManager());
 
         // Setup the cache loader to get dataset data into the cache.
-        personCacheLoader = new PersonCacheLoader(new PersonQueryStrategy(), getRelatedOrganizationIdsByPersonIdMapper,
-                removePersonFromCacheMapper);
+        personCacheLoader = new PersonCacheLoader(new PersonQueryStrategy(), getRelatedOrganizationIdsByPersonIdMapper);
         personCacheLoader.setCache(cache);
         personCacheLoader.setEntityManager(getEntityManager());
         personCacheLoader.initialize();
@@ -148,7 +129,6 @@ public class AddCachedPersonFollowerTest extends MapperTest
     /**
      * Method to test execute.
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testExecute()
     {
@@ -186,7 +166,6 @@ public class AddCachedPersonFollowerTest extends MapperTest
     /**
      * Method to test execute.
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testExecuteFollowingAPersonAlreadyFollowed()
     {
