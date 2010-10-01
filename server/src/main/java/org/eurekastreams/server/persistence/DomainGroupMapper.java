@@ -28,7 +28,6 @@ import org.eurekastreams.server.domain.Followable;
 import org.eurekastreams.server.domain.GroupFollower;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.persistence.mappers.cache.RemoveDomainGroupFromCacheMapper;
 import org.eurekastreams.server.persistence.strategies.DescendantOrganizationStrategy;
 
 /**
@@ -42,20 +41,11 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
      *
      * @param inQueryOptimizer
      *            the QueryOptimizer to use for specialized functions.
-     * @param inRemoveGroupFromCacheMapper
-     *            mapper to remove group from cache
      */
-    public DomainGroupMapper(final QueryOptimizer inQueryOptimizer,
-            final RemoveDomainGroupFromCacheMapper inRemoveGroupFromCacheMapper)
+    public DomainGroupMapper(final QueryOptimizer inQueryOptimizer)
     {
         super(inQueryOptimizer);
-        removeGroupFromCacheMapper = inRemoveGroupFromCacheMapper;
     }
-
-    /**
-     * Mapper to remove group from cache.
-     */
-    private RemoveDomainGroupFromCacheMapper removeGroupFromCacheMapper;
 
     /**
      * The descendant organization strategy.
@@ -158,9 +148,6 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
 
         // reindex the following in the search index
         getFullTextSession().index(followingEntity);
-
-        // remove the group from cache
-        removeGroupFromCacheMapper.execute(followingEntity);
     }
 
     /**
@@ -283,9 +270,6 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
 
         // reindex the following in the search index
         getFullTextSession().index(followingEntity);
-
-        // remove the group from cache
-        removeGroupFromCacheMapper.execute(followingEntity);
     }
 
     /**

@@ -60,20 +60,11 @@ public class DomainGroupCacheLoader extends CachedDomainMapper implements Entity
      * 
      * @param inDomainGroupQueryStrategy
      *            the person query strategy to set.
-     * @param inRemoveDomainGroupFromCacheMapper
-     *            the mapper to remove a group from cache
      */
-    public DomainGroupCacheLoader(final DomainGroupQueryStrategy inDomainGroupQueryStrategy,
-            final RemoveDomainGroupFromCacheMapper inRemoveDomainGroupFromCacheMapper)
+    public DomainGroupCacheLoader(final DomainGroupQueryStrategy inDomainGroupQueryStrategy)
     {
         domainGroupQueryStrategy = inDomainGroupQueryStrategy;
-        removeDomainGroupFromCacheMapper = inRemoveDomainGroupFromCacheMapper;
     }
-
-    /**
-     * Mapper to remove a group from cache.
-     */
-    private RemoveDomainGroupFromCacheMapper removeDomainGroupFromCacheMapper;
 
     /**
      * Initialize the Organization hierarchy cache - intended to run on system start-up.
@@ -187,7 +178,7 @@ public class DomainGroupCacheLoader extends CachedDomainMapper implements Entity
         {
             log.info("DomainGroup.onPostUpdate - removing group #" + inUpdatedDomainGroup.getId() + " from cache");
         }
-        removeDomainGroupFromCacheMapper.execute(inUpdatedDomainGroup);
+        getCache().delete(CacheKeys.GROUP_BY_ID + inUpdatedDomainGroup.getId());
     }
 
     /**

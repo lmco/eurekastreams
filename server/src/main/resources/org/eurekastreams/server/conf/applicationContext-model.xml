@@ -46,7 +46,6 @@
 	<bean id="jpaGroupMapper" class="org.eurekastreams.server.persistence.DomainGroupMapper">
 		<constructor-arg ref="queryOptimizer" />
 		<property name="descendantOrgStrategy" ref="descendantOrgStrategy" />
-		<constructor-arg ref="removeDomainGroupFromCacheMapper" />
 	</bean>
 	<bean id="jpaOrganizationMapper" class="org.eurekastreams.server.persistence.OrganizationMapper">
 		<constructor-arg ref="queryOptimizer" />

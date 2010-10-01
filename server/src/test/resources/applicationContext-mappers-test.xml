@@ -456,11 +456,6 @@
 	<bean id="domainGroupCacheLoader"
 		class="org.eurekastreams.server.persistence.mappers.cache.DomainGroupCacheLoader">
 		<constructor-arg ref="domainGroupQueryStrategy"/>
-		<constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.cache.RemoveDomainGroupFromCacheMapper">
-				<property name="cache" ref="testCache" />
-			</bean>
-		</constructor-arg>
 		<property name="cache" ref="testCache" />
 	</bean>
 

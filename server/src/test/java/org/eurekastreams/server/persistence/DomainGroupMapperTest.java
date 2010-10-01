@@ -37,7 +37,6 @@ import org.eurekastreams.server.persistence.mappers.GetRelatedOrganizationIdsByP
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.DomainGroupCacheLoader;
 import org.eurekastreams.server.persistence.mappers.cache.PersonCacheLoader;
-import org.eurekastreams.server.persistence.mappers.cache.RemoveDomainGroupFromCacheMapper;
 import org.eurekastreams.server.persistence.mappers.cache.testhelpers.SimpleMemoryCache;
 import org.eurekastreams.server.persistence.strategies.DescendantOrganizationStrategy;
 import org.eurekastreams.server.persistence.strategies.DomainGroupQueryStrategy;
@@ -89,11 +88,6 @@ public class DomainGroupMapperTest extends DomainEntityMapperTest
     };
 
     /**
-     * Mapper to remove domain group from cache.
-     */
-    private RemoveDomainGroupFromCacheMapper removeDomainGroupFromCacheMapper;
-
-    /**
      * Mapper to get related org ids for people.
      */
     private GetRelatedOrganizationIdsByPersonId
@@ -108,10 +102,9 @@ public class DomainGroupMapperTest extends DomainEntityMapperTest
     {
         DomainGroup.setEntityCacheUpdater(null);
         cache = new SimpleMemoryCache();
-        removeDomainGroupFromCacheMapper = context.mock(RemoveDomainGroupFromCacheMapper.class);
 
         getRelatedOrganizationIdsByPersonIdMapper.setEntityManager(getEntityManager());
-        groupCacheLoader = new DomainGroupCacheLoader(new DomainGroupQueryStrategy(), removeDomainGroupFromCacheMapper);
+        groupCacheLoader = new DomainGroupCacheLoader(new DomainGroupQueryStrategy());
 
         groupCacheLoader.setEntityManager(getEntityManager());
 
@@ -332,8 +325,7 @@ public class DomainGroupMapperTest extends DomainEntityMapperTest
     @Test(expected = NullPointerException.class)
     public void testGetDescendantOrgStrategyWhenNotSet()
     {
-        DomainGroupMapper domainGroupMapper = new DomainGroupMapper(new QueryOptimizer(),
-                removeDomainGroupFromCacheMapper);
+        DomainGroupMapper domainGroupMapper = new DomainGroupMapper(new QueryOptimizer());
         domainGroupMapper.getDescendantOrgStrategy();
     }
 
@@ -344,8 +336,7 @@ public class DomainGroupMapperTest extends DomainEntityMapperTest
     public void testGetDescendantOrgStrategyWhenSet()
     {
         DescendantOrganizationStrategy strategy = new DescendantOrganizationStrategy();
-        DomainGroupMapper domainGroupMapper = new DomainGroupMapper(new QueryOptimizer(),
-                removeDomainGroupFromCacheMapper);
+        DomainGroupMapper domainGroupMapper = new DomainGroupMapper(new QueryOptimizer());
         domainGroupMapper.setDescendantOrgStrategy(strategy);
         assertSame(strategy, domainGroupMapper.getDescendantOrgStrategy());
     }

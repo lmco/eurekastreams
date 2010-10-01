@@ -742,7 +742,6 @@
 	<bean id="domainGroupCacheLoader"
 		class="org.eurekastreams.server.persistence.mappers.cache.DomainGroupCacheLoader">
 		<constructor-arg ref="domainGroupQueryStrategy" />
-		<constructor-arg ref="removeDomainGroupFromCacheMapper" />
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 
@@ -1385,12 +1384,6 @@
 
 	<bean id="indexEntity"
 		class="org.eurekastreams.server.persistence.mappers.IndexEntity" />
-
-
-	<bean id="removeDomainGroupFromCacheMapper"
-		class="org.eurekastreams.server.persistence.mappers.cache.RemoveDomainGroupFromCacheMapper">
-		<property name="cache" ref="memcachedCache" />
-	</bean>
 
 	<bean
 		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID"

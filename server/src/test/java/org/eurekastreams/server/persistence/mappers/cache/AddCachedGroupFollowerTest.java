@@ -86,11 +86,6 @@ public class AddCachedGroupFollowerTest extends MapperTest
     private static final Long TEST_GROUP_ID_1 = new Long(1L);
 
     /**
-     * Mapper to remove domain group from cache.
-     */
-    private RemoveDomainGroupFromCacheMapper removeDomainGroupFromCacheMapper;
-
-    /**
      * Setup method to prepare the test suite.
      */
     @Before
@@ -98,8 +93,7 @@ public class AddCachedGroupFollowerTest extends MapperTest
     {
         cache = new SimpleMemoryCache();
 
-        domainGroupCacheLoader = new DomainGroupCacheLoader(new DomainGroupQueryStrategy(),
-                removeDomainGroupFromCacheMapper);
+        domainGroupCacheLoader = new DomainGroupCacheLoader(new DomainGroupQueryStrategy());
         domainGroupCacheLoader.setCache(cache);
         domainGroupCacheLoader.setEntityManager(getEntityManager());
         domainGroupCacheLoader.initialize();

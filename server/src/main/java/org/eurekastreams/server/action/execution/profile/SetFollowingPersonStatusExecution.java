@@ -124,7 +124,7 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
 
             // Queue async action to remove the newly followed person from cache (to sync follower counts)
             currentRequests.add(new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections
-                    .singleton(Collections.singletonList(CacheKeys.PERSON_BY_ID + targetResult.getEntityId()))));
+                    .singleton(CacheKeys.PERSON_BY_ID + targetResult.getEntityId())));
 
             logger.trace("Submit async action to update all cached activities.");
 
@@ -145,7 +145,7 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
 
             // Queue async action to remove the newly followed person from cache (to sync follower counts)
             currentRequests.add(new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections
-                    .singleton(Collections.singletonList(CacheKeys.PERSON_BY_ID + targetResult.getEntityId()))));
+                    .singleton(CacheKeys.PERSON_BY_ID + targetResult.getEntityId())));
 
             // Remove the current user that is severing a relationship with the target
             // from the list of followers for that target user.
