@@ -101,7 +101,7 @@ public class LuceneDataSourceTest
         context.checking(new Expectations()
         {
             {
-                oneOf(builder).buildQueryFromNativeSearchString("+content:(hithere(foo))");
+                oneOf(builder).buildQueryFromNativeSearchString("+content:(hithere(foo)) ");
                 will(returnValue(ftq));
 
                 oneOf(ftq).getResultList();
@@ -136,7 +136,7 @@ public class LuceneDataSourceTest
         context.checking(new Expectations()
         {
             {
-                oneOf(builder).buildQueryFromNativeSearchString("+content:(hithere(foo))");
+                oneOf(builder).buildQueryFromNativeSearchString("+content:(hithere(foo)) ");
                 will(returnValue(ftq));
 
                 oneOf(ftq).getResultList();

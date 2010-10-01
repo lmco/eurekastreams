@@ -2838,7 +2838,10 @@
 
     
     <bean id="modifyStreamForCurrentUser" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean
+                class="org.eurekastreams.server.action.validation.stream.ModifyStreamForCurrentUserValidation" />
+        </constructor-arg>
         <constructor-arg>
             <bean
                 class="org.eurekastreams.server.action.authorization.stream.ModifyStreamForCurrentUserAuthorization">

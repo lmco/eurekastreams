@@ -1,30 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-    <ModulePrefs title="Activity App" thumbnail="${build.web.baseurl}/style/images/eureka-gadget-placeholder.png" title_url="http://eurekastreams.org" author="Eureka Streams" author_email="support@eurekastreams.org">
-        <Require feature="opensocial-0.9" />
-        <Require feature="views" />
-        <Require feature="dynamic-height" />
-        <Require feature="opensocial-templates">
-            <Param name="client">true</Param>
-        </Require>
-        <Require feature="opensocial-data"/>
-        <Require feature="opensocial-data-context"/>
-        <Require feature="settitle" />
-        <Require feature="eurekastreams-core" />
-        <Require feature="xmlutil"/>
-        <Optional feature="content-rewrite">
-        	<Param name="include-tags"/>
-        </Optional>
-    </ModulePrefs>
- <UserPref name="filterId" datatype="hidden" default_value="0" />
- <UserPref name="filterType"  datatype="hidden"  default_value="compositestream" />
- <UserPref name="streamType"  datatype="hidden"  default_value="" />
- <UserPref name="shortName"  datatype="hidden"  default_value="" />
- <UserPref name="searchId" datatype="hidden" default_value="0" />
- <UserPref name="gadgetTitle" datatype="text" default_value="Activity App"/>
- <UserPref name="streamQuery" datatype="text" default_value=""/>
- 
-    <Content type="html" view="canvas">
+	<ModulePrefs title="Activity App"
+		thumbnail="${build.web.baseurl}/style/images/eureka-gadget-placeholder.png"
+		title_url="http://eurekastreams.org" author="Eureka Streams"
+		author_email="support@eurekastreams.org">
+		<Require feature="opensocial-0.9" />
+		<Require feature="views" />
+		<Require feature="dynamic-height" />
+		<Require feature="opensocial-templates">
+			<Param name="client">true</Param>
+		</Require>
+		<Require feature="opensocial-data" />
+		<Require feature="opensocial-data-context" />
+		<Require feature="settitle" />
+		<Require feature="eurekastreams-core" />
+		<Require feature="xmlutil" />
+		<Optional feature="content-rewrite">
+			<Param name="include-tags" />
+		</Optional>
+	</ModulePrefs>
+	<UserPref name="filterId" datatype="hidden" default_value="0" />
+	<UserPref name="filterType" datatype="hidden" default_value="compositestream" />
+	<UserPref name="streamType" datatype="hidden" default_value="" />
+	<UserPref name="shortName" datatype="hidden" default_value="" />
+	<UserPref name="searchId" datatype="hidden" default_value="0" />
+	<UserPref name="gadgetTitle" datatype="text" default_value="Activity App" />
+	<UserPref name="streamQuery" datatype="text" default_value="" />
+
+	<Content type="html" view="canvas">
     <![CDATA[
         <style type="text/css">
         .stream-message-item .message-body
@@ -34,10 +37,10 @@
         }
         </style>
     ]]>
-    </Content>
-    
- 
-    <Content type="html" view="default, profile, canvas">
+	</Content>
+
+
+	<Content type="html" view="default, profile, canvas">
     <![CDATA[
         <script type="text/javascript" src="${build.web.baseurl}/scripts/external-js-min.js"></script>
         <link type="text/css" rel="stylesheet" href="${build.web.baseurl}/style/core.css" type="text/css" />
@@ -190,32 +193,8 @@
 		// of the ampersand and a second parameter
 		function activityNav(activityId)
 		{
-		      var prefs_ = new gadgets.Prefs();
-		      var streamType = prefs_.getString("streamType");
-              var filterId = prefs_.getString("filterId");
-              var shortName = prefs_.getString("shortName");
-              var searchId = prefs_.getString("searchId");
-              switch(streamType)
-              {
-                case "compositestream":
-                    eurekastreams.core.navigate("activity?activityId=" + activityId + "&showComment=true&listId=" + filterId + "&viewId=" + filterId);
-                    break;
-                case "streamsearch":
-                    eurekastreams.core.navigate("activity?activityId=" + activityId + "&showComment=true&searchId=" + filterId + "&streamSearch=" + shortName + "&viewId=" + searchId);
-                    break;
-                case "groupstream":
-                    eurekastreams.core.navigate("groups/" + shortName + "/?tab=Stream&showComment=true&activityId=" + activityId);
-                    break;
-                case "personstream":
-                    eurekastreams.core.navigate("people/" + shortName + "/?tab=Stream&showComment=true&activityId=" + activityId);
-                    break;
-                case "orgstream":
-                    eurekastreams.core.navigate("organizations/" + shortName + "/?tab=Stream&showComment=true&activityId=" + activityId);
-                    break;
-                default:
-                    return "";
-              }
-			
+		    var prefs_ = new gadgets.Prefs();
+            eurekastreams.core.navigate(prefs_.getString("streamLocation") + "&showComment=true&activityId=" + activityId);
 		}
 		
 		function getFooter(prefs_)
@@ -308,7 +287,7 @@
             <div id="activity-view"></div>
         </script>
     ]]>
-    </Content>
-    
-    
+	</Content>
+
+
 </Module>

@@ -25,7 +25,7 @@ import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShor
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 
 /**
- * Transforms an authored by request.
+ * Transforms a JSON request into a space separated list of author ids, prepended with 'p' for Person, 'g' for Group.
  */
 public class AuthoredByPersistenceRequestTransformer implements PersistenceDataSourceRequestTransformer
 {
@@ -55,7 +55,8 @@ public class AuthoredByPersistenceRequestTransformer implements PersistenceDataS
     }
 
     /**
-     * Transform.
+     * Transforms a JSON request into a space separated list of author ids, prepended with 'p' for Person, 'g' for
+     * Group.
      * 
      * @param request
      *            the request.
@@ -91,7 +92,7 @@ public class AuthoredByPersistenceRequestTransformer implements PersistenceDataS
                 authorsRequest.append(groupMapper.fetchId(author.getString("name")));
                 break;
             default:
-                throw new RuntimeException("Unhandled type.");
+                throw new IllegalArgumentException("Unhandled type.");
             }
         }
 

@@ -21,7 +21,6 @@ import java.util.List;
 import junit.framework.Assert;
 import net.sf.json.JSONObject;
 
-import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetFollowedGroupIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
@@ -128,7 +127,7 @@ public class FollowedGroupsPersistenceRequestTransformerTest
     /**
      * Tests the transformation.
      */
-    @Test(expected = AuthorizationException.class)
+    @Test
     public void transformTestNotMatchingId()
     {
         final Long entityId = 10L;
@@ -145,7 +144,8 @@ public class FollowedGroupsPersistenceRequestTransformerTest
             }
         });
 
-        sut.transform(jsonReq, entityId);
+        List<Long> groups = (List<Long>) sut.transform(jsonReq, entityId);
+        Assert.assertEquals(0, groups.size());
 
         context.assertIsSatisfied();
     }
