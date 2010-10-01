@@ -1,8 +1,11 @@
-<!DOCTYPE web-app PUBLIC
- "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
- "http://java.sun.com/dtd/web-app_2_3.dtd" >
+<?xml version="1.0" encoding="UTF-8"?>
 
-<web-app>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         id="EurekaStreams"
+         version="2.5">
 	<display-name>GWT-Maven-Archetype</display-name>
 
 	<context-param>
@@ -41,6 +44,16 @@
   	<param-name>log4jRefreshInterval</param-name>
   	<param-value>60000</param-value>
   </context-param>
+  <context-param>
+    <param-name>system.properties</param-name>
+     <param-value>
+        shindig.host=localhost
+        
+        aKey=/shindig/gadgets/proxy?container=default&amp;url=
+        shindig.port=
+        
+     </param-value>
+  </context-param> 
   
   <listener>
   	<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
@@ -89,6 +102,17 @@
     <filter-class>org.apache.shindig.auth.AuthenticationServletFilter</filter-class>
   </filter>
   
+  <filter-mapping>
+    <filter-name>authFilter</filter-name>
+    <url-pattern>/social/*</url-pattern>
+    <url-pattern>/gadgets/ifr</url-pattern>
+    <url-pattern>/gadgets/makeRequest</url-pattern>
+    <url-pattern>/gadgets/api/rpc/*</url-pattern>
+    <url-pattern>/gadgets/api/rest/*</url-pattern>
+    <url-pattern>/rpc/*</url-pattern>
+    <url-pattern>/rest/*</url-pattern>
+  </filter-mapping>
+  
   <!-- spring security filter config -->
   <filter>
     <filter-name>springSecurityFilterChain</filter-name>
@@ -103,31 +127,6 @@
   <filter-mapping>
     <filter-name>springSecurityFilterChain</filter-name>
     <url-pattern>/*</url-pattern>
-  </filter-mapping>
-
-  <filter-mapping>
-    <filter-name>authFilter</filter-name>
-    <url-pattern>/social/*</url-pattern>
-  </filter-mapping>
-
-  <filter-mapping>
-    <filter-name>authFilter</filter-name>
-    <url-pattern>/gadgets/ifr</url-pattern>
-  </filter-mapping>
-
-  <filter-mapping>
-    <filter-name>authFilter</filter-name>
-    <url-pattern>/gadgets/makeRequest</url-pattern>
-  </filter-mapping>
-
-  <filter-mapping>
-    <filter-name>authFilter</filter-name>
-    <url-pattern>/gadgets/api/rpc/*</url-pattern>
-  </filter-mapping>
-
-  <filter-mapping>
-    <filter-name>authFilter</filter-name>
-    <url-pattern>/gadgets/api/rest/*</url-pattern>
   </filter-mapping>
   
   <listener>
@@ -153,6 +152,13 @@
     <servlet-name>xml-to-html</servlet-name>
     <servlet-class>
       org.apache.shindig.gadgets.servlet.GadgetRenderingServlet
+    </servlet-class>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>accel</servlet-name>
+    <servlet-class>
+      org.apache.shindig.gadgets.servlet.HtmlAccelServlet
     </servlet-class>
   </servlet>
 
@@ -202,55 +208,28 @@
     <servlet-class>org.apache.shindig.gadgets.servlet.JsServlet</servlet-class>
   </servlet>
 
-  <!-- Serve social REST api -->
   <servlet>
-    <servlet-name>socialRestapiServlet</servlet-name>
+    <servlet-name>restapiServlet</servlet-name>
     <servlet-class>
       org.apache.shindig.protocol.DataServiceServlet
     </servlet-class>
     <init-param>
       <param-name>handlers</param-name>
-      <param-value>org.apache.shindig.social.handlers</param-value>
+      <param-value>org.apache.shindig.handlers</param-value>
     </init-param>
   </servlet>
 
   <!-- Serve social RPC api -->
   <servlet>
-    <servlet-name>socialJsonRpcServlet</servlet-name>
+    <servlet-name>jsonRpcServlet</servlet-name>
     <servlet-class>
       org.apache.shindig.protocol.JsonRpcServlet
     </servlet-class>
     <init-param>
       <param-name>handlers</param-name>
-      <param-value>org.apache.shindig.social.handlers</param-value>
+      <param-value>org.apache.shindig.handlers</param-value>
     </init-param>
   </servlet>
-
-  <!-- Serve gadgets RPC api -->
-  <servlet>
-    <servlet-name>gadgetsJsonRpcServlet</servlet-name>
-    <servlet-class>
-      org.apache.shindig.protocol.JsonRpcServlet
-    </servlet-class>
-    <init-param>
-      <param-name>handlers</param-name>
-      <param-value>org.apache.shindig.gadgets.handlers</param-value>
-    </init-param>
-  </servlet>
-
-  <!-- Serve gadgets REST api -->
-  <servlet>
-    <servlet-name>gadgetsRestapiServlet</servlet-name>
-    <servlet-class>
-      org.apache.shindig.protocol.DataServiceServlet
-    </servlet-class>
-    <init-param>
-      <param-name>handlers</param-name>
-      <param-value>org.apache.shindig.gadgets.handlers</param-value>
-    </init-param>
-  </servlet>
-  
-  
   
   <servlet>
     <servlet-name>getImageServlet</servlet-name>
@@ -318,15 +297,19 @@
     <servlet-name>makeRequest</servlet-name>
     <url-pattern>/gadgets/makeRequest</url-pattern>
   </servlet-mapping>
-
+  
   <servlet-mapping>
-    <servlet-name>gadgetsJsonRpcServlet</servlet-name>
+    <servlet-name>jsonRpcServlet</servlet-name>
+    <url-pattern>/rpc/*</url-pattern>
     <url-pattern>/gadgets/api/rpc/*</url-pattern>
+    <url-pattern>/social/rpc/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
-    <servlet-name>gadgetsRestapiServlet</servlet-name>
+    <servlet-name>restapiServlet</servlet-name>
+    <url-pattern>/rest/*</url-pattern>
     <url-pattern>/gadgets/api/rest/*</url-pattern>
+    <url-pattern>/social/rest/*</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>
@@ -345,18 +328,13 @@
   </servlet-mapping>
 
   <servlet-mapping>
+    <servlet-name>accel</servlet-name>
+    <url-pattern>/gadgets/accel</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
     <servlet-name>metadata</servlet-name>
     <url-pattern>/gadgets/metadata</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>socialRestapiServlet</servlet-name>
-    <url-pattern>/social/rest/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>socialJsonRpcServlet</servlet-name>
-    <url-pattern>/social/rpc/*</url-pattern>
   </servlet-mapping>
 
   <!--  End of Shindig Configuration -->

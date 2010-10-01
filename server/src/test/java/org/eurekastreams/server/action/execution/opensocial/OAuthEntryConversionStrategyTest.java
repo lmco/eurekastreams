@@ -92,21 +92,21 @@ public class OAuthEntryConversionStrategyTest
                 
         OAuthEntry entry = sut.convertToEntry(dto);
         
-        assertEquals(entry.appId, dto.getAppId());
-        assertEquals(entry.authorized, dto.isAuthorized());
-        assertEquals(entry.callbackToken, dto.getCallbackToken());
-        assertEquals(entry.callbackTokenAttempts, dto.getCallbackTokenAttempts());
-        assertEquals(entry.callbackUrl, dto.getCallbackUrl());
-        assertEquals(entry.callbackUrlSigned, dto.isCallbackUrlSigned());
-        assertEquals(entry.consumerKey, dto.getConsumer().getConsumerKey());
-        assertEquals(entry.container, dto.getContainer());
-        assertEquals(entry.domain, dto.getDomain());
-        assertEquals(entry.issueTime, dto.getIssueTime());
-        assertEquals(entry.oauthVersion, dto.getOauthVersion());
-        assertEquals(entry.token, dto.getToken());
-        assertEquals(entry.tokenSecret, dto.getTokenSecret());
-        assertEquals(entry.type, Type.valueOf(dto.getType()));
-        assertEquals(entry.userId, dto.getUserId());
+        assertEquals(entry.getAppId(), dto.getAppId());
+        assertEquals(entry.isAuthorized(), dto.isAuthorized());
+        assertEquals(entry.getCallbackToken(), dto.getCallbackToken());
+        assertEquals(entry.getCallbackTokenAttempts(), dto.getCallbackTokenAttempts());
+        assertEquals(entry.getCallbackUrl(), dto.getCallbackUrl());
+        assertEquals(entry.isCallbackUrlSigned(), dto.isCallbackUrlSigned());
+        assertEquals(entry.getConsumerKey(), dto.getConsumer().getConsumerKey());
+        assertEquals(entry.getContainer(), dto.getContainer());
+        assertEquals(entry.getDomain(), dto.getDomain());
+        assertEquals(entry.getIssueTime(), dto.getIssueTime());
+        assertEquals(entry.getOauthVersion(), dto.getOauthVersion());
+        assertEquals(entry.getToken(), dto.getToken());
+        assertEquals(entry.getTokenSecret(), dto.getTokenSecret());
+        assertEquals(entry.getType(), Type.valueOf(dto.getType()));
+        assertEquals(entry.getUserId(), dto.getUserId());
 
     }
     
@@ -117,45 +117,46 @@ public class OAuthEntryConversionStrategyTest
     public void testSuccessfulEntryToDto()
     {
         OAuthEntry entry = new OAuthEntry();
-        entry.appId = "appid";
-        entry.authorized = true;
-        entry.callbackToken = "callbacktoken";
-        entry.callbackTokenAttempts = 0;
-        entry.callbackUrl = "callbackurl";
-        entry.callbackUrlSigned = true;
-        entry.consumerKey = "testkey";
-        entry.container = "container";
-        entry.domain = "domain";
-        entry.issueTime = new Date();
-        entry.oauthVersion = "1.0";
-        entry.token = "token";
-        entry.tokenSecret = "secret";
-        entry.type = Type.ACCESS;
-        entry.userId = "userId";
+        entry.setAppId("appid");
+        entry.setAuthorized(true);
+        entry.setCallbackToken("callbacktoken");
+        entry.setCallbackTokenAttempts(0);
+        entry.setCallbackUrl("callbackurl");
+        entry.setCallbackUrlSigned(true);
+        entry.setConsumerKey("testkey");
+        entry.setContainer("container");
+        entry.setDomain("domain");
+        entry.setIssueTime(new Date());
+        entry.setOauthVersion("1.0");
+        entry.setToken("token");
+        entry.setTokenSecret("secret");
+        entry.setType(Type.ACCESS);
+        entry.setUserId("userId");
         
         context.checking(new Expectations()
         {
             {
                 oneOf(mapper).execute("testkey");
-                will(returnValue(new OAuthConsumer(null, null, null, null, null)));
+                will(returnValue(new OAuthConsumer(null, null, "testkey", null, null)));
             }
         });
 
         OAuthDomainEntry dto = sut.convertToEntryDTO(entry);
-        assertEquals(entry.appId, dto.getAppId());
-        assertEquals(entry.authorized, dto.isAuthorized());
-        assertEquals(entry.callbackToken, dto.getCallbackToken());
-        assertEquals(entry.callbackTokenAttempts, dto.getCallbackTokenAttempts());
-        assertEquals(entry.callbackUrl, dto.getCallbackUrl());
-        assertEquals(entry.callbackUrlSigned, dto.isCallbackUrlSigned());
-        assertEquals(entry.container, dto.getContainer());
-        assertEquals(entry.domain, dto.getDomain());
-        assertEquals(entry.issueTime, dto.getIssueTime());
-        assertEquals(entry.oauthVersion, dto.getOauthVersion());
-        assertEquals(entry.token, dto.getToken());
-        assertEquals(entry.tokenSecret, dto.getTokenSecret());
-        assertEquals(entry.type.toString(), dto.getType());
-        assertEquals(entry.userId, dto.getUserId());
+        assertEquals(entry.getAppId(), dto.getAppId());
+        assertEquals(entry.isAuthorized(), dto.isAuthorized());
+        assertEquals(entry.getCallbackToken(), dto.getCallbackToken());
+        assertEquals(entry.getCallbackTokenAttempts(), dto.getCallbackTokenAttempts());
+        assertEquals(entry.getCallbackUrl(), dto.getCallbackUrl());
+        assertEquals(entry.isCallbackUrlSigned(), dto.isCallbackUrlSigned());
+        assertEquals(entry.getConsumerKey(), dto.getConsumer().getConsumerKey());
+        assertEquals(entry.getContainer(), dto.getContainer());
+        assertEquals(entry.getDomain(), dto.getDomain());
+        assertEquals(entry.getIssueTime(), dto.getIssueTime());
+        assertEquals(entry.getOauthVersion(), dto.getOauthVersion());
+        assertEquals(entry.getToken(), dto.getToken());
+        assertEquals(entry.getTokenSecret(), dto.getTokenSecret());
+        assertEquals(entry.getType(), Type.valueOf(dto.getType()));
+        assertEquals(entry.getUserId(), dto.getUserId());
         context.assertIsSatisfied();
     }
 }

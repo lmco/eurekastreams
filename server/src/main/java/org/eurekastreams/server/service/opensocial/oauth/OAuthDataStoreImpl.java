@@ -203,8 +203,8 @@ public class OAuthDataStoreImpl implements OAuthDataStore
     {
         try
         {
-            ServiceActionContext currentContext = new ServiceActionContext(entry.token, principalPopulator
-                    .getPrincipal(entry.userId));
+            ServiceActionContext currentContext = new ServiceActionContext(entry.getToken(), principalPopulator
+                    .getPrincipal(entry.getUserId()));
             actionController.execute(currentContext, authorizeOAuthTokenAction);
         }
         catch (ExecutionException ex)
@@ -228,7 +228,7 @@ public class OAuthDataStoreImpl implements OAuthDataStore
         try
         {
             ServiceActionContext currentContext = new ServiceActionContext(entry, principalPopulator
-                    .getPrincipal(entry.userId));
+                    .getPrincipal(entry.getUserId()));
             return (OAuthEntry) actionController.execute(currentContext, updateRequestToAccessTokenAction);
         }
         catch (Exception ex)
@@ -297,7 +297,7 @@ public class OAuthDataStoreImpl implements OAuthDataStore
     {
         try
         {
-            ServiceActionContext currentContext = new ServiceActionContext(entry.token, null);
+            ServiceActionContext currentContext = new ServiceActionContext(entry.getToken(), null);
             actionController.execute(currentContext, disableOAuthTokenAction);
         }
         catch (Exception ex)
@@ -316,7 +316,7 @@ public class OAuthDataStoreImpl implements OAuthDataStore
     {
         try
         {
-            ServiceActionContext currentContext = new ServiceActionContext(entry.token, null);
+            ServiceActionContext currentContext = new ServiceActionContext(entry.getToken(), null);
             actionController.execute(currentContext, removeOAuthTokenAction);
         }
         catch (Exception ex)

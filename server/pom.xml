@@ -68,11 +68,6 @@
 			<artifactId>jsecurity</artifactId>
 			<version>0.9.0</version>
 		</dependency>
-      		<dependency>
-        		<groupId>com.google.collections</groupId>
-        		<artifactId>google-collections</artifactId>
-        		<version>1.0-rc2</version>
-		</dependency>
   		<dependency>
     		<groupId>com.ibm.icu</groupId>
     		<artifactId>icu4j</artifactId>
@@ -83,25 +78,25 @@
 			<artifactId>wstx-asl</artifactId>
 			<version>3.2.7</version>
 		</dependency>
-		<dependency>
-        		<groupId>net.oauth.core</groupId>
-        		<artifactId>oauth</artifactId>
-        		<version>20090531</version>
-        		<scope>compile</scope>
-      		</dependency>
-      		<dependency>
-        		<groupId>net.oauth.core</groupId>
-        		<artifactId>oauth-provider</artifactId>
-        		<version>20090531</version>
-        		<scope>compile</scope>
-      		</dependency>
-      		<dependency>
-        		<groupId>net.oauth.core</groupId>
-        		<artifactId>oauth-httpclient3</artifactId>
-        		<version>20090531</version>
-                        <scope>compile</scope>
-                </dependency>		
-                <dependency>
+        <dependency>
+            <groupId>net.oauth.core</groupId>
+            <artifactId>oauth</artifactId>
+            <version>20100527</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.oauth.core</groupId>
+            <artifactId>oauth-provider</artifactId>
+            <version>20100527</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.oauth.core</groupId>
+            <artifactId>oauth-httpclient4</artifactId>
+            <version>20090913</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
 			<groupId>org.apache.shindig</groupId>
 			<artifactId>shindig-server</artifactId>
 			<version>${build.gadget.shindig.version}</version>
@@ -146,11 +141,17 @@
 			<artifactId>guice</artifactId>
 			<version>2.0</version>
 		</dependency>
-		<dependency>
+        <dependency>
 			<groupId>com.google.inject.extensions</groupId>
 			<artifactId>guice-spring</artifactId>
 			<version>2.0</version>
 		</dependency>
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-multibindings</artifactId>
+            <version>2.0</version>
+        </dependency>
+      
 		<!-- Needed to support Hibernate -->
 		<dependency>
 			<groupId>cglib</groupId>
@@ -191,48 +192,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<!--
-				This dependency is here because search includes an older version
-			-->
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-annotations</artifactId>
-			<version>3.4.0.GA</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-commons-annotations
-					</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-commons-annotations
-			</artifactId>
-			<version>3.3.0.ga</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>3.3.0.SP1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<version>3.4.0.GA</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<version>3.1.0.GA</version>
-		</dependency>
-		<dependency>
 			<groupId>hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
 			<version>1.8.0.7</version>
@@ -251,7 +210,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.5.0</version>
+			<version>1.5.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -370,9 +329,12 @@
 			<exclusions>
 				<exclusion>
 					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-commons-annotations
-					</artifactId>
+					<artifactId>hibernate-commons-annotations</artifactId>
 				</exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -385,12 +347,55 @@
 					<groupId>org.hibernate</groupId>
 					<artifactId>hibernate</artifactId>
 				</exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>3.3.0.SP1</version>
+			<exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>3.4.0.GA</version>
+			<exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>3.1.0.GA</version>
+			<exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-search</artifactId>
 			<version>3.1.0.GA</version>
+			<exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+			</exclusions>
 		</dependency>
         <!-- Spring AOP dependencies -->
         <dependency>
@@ -456,11 +461,11 @@
 						<artifactId>hibernate-entitymanager</artifactId>
 						<version>3.4.0.GA</version>
 					</dependency>
-					<dependency>
+					<!--  <dependency>
 						<groupId>org.slf4j</groupId>
 						<artifactId>slf4j-log4j12</artifactId>
 						<version>1.5.0</version>
-					</dependency>
+					</dependency> -->
 				</dependencies>
 			</plugin>
             <plugin>

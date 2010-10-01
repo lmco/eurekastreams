@@ -73,7 +73,7 @@ public class OAuthAuthorizeExecution implements ExecutionStrategy<PrincipalActio
 
         log.trace("Authorizing OAuth token for user: " + accountId);
         OAuthEntry tokenEntry = new OAuthEntry();
-        tokenEntry.token = token;
+        tokenEntry.setToken(token);
 
         try
         {
@@ -90,7 +90,7 @@ public class OAuthAuthorizeExecution implements ExecutionStrategy<PrincipalActio
             throw new ExecutionException(ex);
         }
 
-        OAuthDomainEntry currentEntry = entryMapper.execute(tokenEntry.token);
+        OAuthDomainEntry currentEntry = entryMapper.execute(tokenEntry.getToken());
         log.trace("Authorization for user: " + accountId + " complete.");
         String callbackUrl = "";
         if (currentEntry.getCallbackUrl() != null && currentEntry.getCallbackUrl().length() > 0)

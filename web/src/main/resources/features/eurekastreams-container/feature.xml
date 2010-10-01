@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<feature>
+  <name>eurekastreams-container</name>
+  <dependency>eurekastreams-core</dependency>
+  <dependency>eurekastreams-streamplugin</dependency>
+  <container>
+    <script src="eurekastreams-container.js"/>
+    <script src="eurekastreams-util.js"/>
+  </container>
+</feature>

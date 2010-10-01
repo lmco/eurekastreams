@@ -196,9 +196,8 @@ public class StreamPluginConfigurationPanel extends FlowPanel
 
         setUpAPI();
 
-        gadgetRenderer.registerSingleGadgetInContainer("gadget-zone-render-zone-" + random.toString(), pluginDefinition
+        gadgetRenderer.registerSingleGadgetInContainer(pluginDefinition
                 .getUrl(), Long.valueOf(random), pluginDefinition.getId(), null);
-        gadgetRenderer.addGadgetChrome("gadget-zone-render-zone-" + random.toString(), Long.valueOf(random));
 
         DeferredCommand.addCommand(new Command()
         {

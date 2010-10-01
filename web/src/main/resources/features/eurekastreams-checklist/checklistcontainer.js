@@ -42,7 +42,7 @@ eurekastreams.checklist.container = function()
             {
                 var postData = "{ tasks : "
                         + gadgets.json.stringify(jsonTaskArray) + "}";
-                eurekastreams.container.sendRequestToServer("/resources/gadgets/"
+                eurekastreams.util.sendRequestToServer("/resources/gadgets/"
                         + gadgetDefId + "/checklist", "PUT", postData, null, true);
             }
         },
@@ -76,7 +76,7 @@ eurekastreams.checklist.container = function()
             {
                 var postData = "{ 'name' : '"
                         + taskName + "' }";
-                eurekastreams.container.sendRequestToServer("/resources/" + resourcePath
+                eurekastreams.util.sendRequestToServer("/resources/" + resourcePath
                         + "/" + accountId + "/gadgets/" + gadgetDefId
                         + "/completedTasks", "POST",  postData, function()
                 {
@@ -86,7 +86,7 @@ eurekastreams.checklist.container = function()
             else
             {
                 taskName = taskName.replace(/ /g, "%20");
-                eurekastreams.container.sendRequestToServer("/resources/" + resourcePath
+                eurekastreams.util.sendRequestToServer("/resources/" + resourcePath
                         + "/" + accountId + "/gadgets/" + gadgetDefId
                         + "/completedTasks/" + taskName, "DELETE", null, function()
                 {

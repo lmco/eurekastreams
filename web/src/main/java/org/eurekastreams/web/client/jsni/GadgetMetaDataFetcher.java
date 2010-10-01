@@ -387,7 +387,7 @@ public class GadgetMetaDataFetcher extends FlowPanel
                                                         };
 
 
-            $wnd.eurekastreams.container.sendRequestToServer("/gadgets/metadata",
+            $wnd.eurekastreams.util.sendRequestToServer("/gadgets/metadata",
                                                     "POST", request,
                                                             callback, true);
 

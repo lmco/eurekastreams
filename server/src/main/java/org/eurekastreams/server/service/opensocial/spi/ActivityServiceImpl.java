@@ -37,7 +37,6 @@ import org.apache.shindig.social.opensocial.model.Activity;
 import org.apache.shindig.social.opensocial.spi.ActivityService;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
-import org.apache.shindig.social.opensocial.spi.SocialSpiException;
 import org.apache.shindig.social.opensocial.spi.UserId;
 import org.eurekastreams.commons.actions.TaskHandlerAction;
 import org.eurekastreams.commons.actions.context.Principal;
@@ -238,7 +237,7 @@ public class ActivityServiceImpl implements ActivityService
         {
             log.error("Error occurred deleting OpenSocial Application Data " + e.toString());
 
-            throw new SocialSpiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
+            throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
         }
         return ImmediateFuture.newInstance(null);
     }

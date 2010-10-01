@@ -75,13 +75,13 @@ public class UpdateRequestToAccessTokenExecution implements ExecutionStrategy<Pr
         OAuthEntry requestEntry = (OAuthEntry) inActionContext.getParams();
         OAuthEntry accessEntry = new OAuthEntry(requestEntry);
 
-        accessEntry.token = UUID.randomUUID().toString();
-        accessEntry.tokenSecret = UUID.randomUUID().toString();
+        accessEntry.setToken(UUID.randomUUID().toString());
+        accessEntry.setTokenSecret(UUID.randomUUID().toString());
 
-        accessEntry.type = OAuthEntry.Type.ACCESS;
-        accessEntry.issueTime = new Date();
+        accessEntry.setType(OAuthEntry.Type.ACCESS);
+        accessEntry.setIssueTime(new Date());
 
-        deleteMapper.execute(requestEntry.token);
+        deleteMapper.execute(requestEntry.getToken());
         insertMapper.execute(new PersistenceRequest<OAuthDomainEntry>(conversionStrat.convertToEntryDTO(accessEntry)));
 
         return accessEntry;

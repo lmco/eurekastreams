@@ -51,21 +51,21 @@ public class OAuthEntryConversionStrategy
     public OAuthDomainEntry convertToEntryDTO(final OAuthEntry entry)
     {
         OAuthDomainEntry dto = new OAuthDomainEntry();
-        dto.setAppId(entry.appId);
-        dto.setAuthorized(entry.authorized);
-        dto.setCallbackToken(entry.callbackToken);
-        dto.setCallbackTokenAttempts(entry.callbackTokenAttempts);
-        dto.setCallbackUrl(entry.callbackUrl);
-        dto.setCallbackUrlSigned(entry.callbackUrlSigned);
-        dto.setConsumer(mapper.execute(entry.consumerKey));
-        dto.setContainer(entry.container);
-        dto.setDomain(entry.domain);
-        dto.setIssueTime(entry.issueTime);
-        dto.setOauthVersion(entry.oauthVersion);
-        dto.setToken(entry.token);
-        dto.setTokenSecret(entry.tokenSecret);
-        dto.setType(entry.type.toString());
-        dto.setUserId(entry.userId);
+        dto.setAppId(entry.getAppId());
+        dto.setAuthorized(entry.isAuthorized());
+        dto.setCallbackToken(entry.getCallbackToken());
+        dto.setCallbackTokenAttempts(entry.getCallbackTokenAttempts());
+        dto.setCallbackUrl(entry.getCallbackUrl());
+        dto.setCallbackUrlSigned(entry.isCallbackUrlSigned());
+        dto.setConsumer(mapper.execute(entry.getConsumerKey()));
+        dto.setContainer(entry.getContainer());
+        dto.setDomain(entry.getDomain());
+        dto.setIssueTime(entry.getIssueTime());
+        dto.setOauthVersion(entry.getOauthVersion());
+        dto.setToken(entry.getToken());
+        dto.setTokenSecret(entry.getTokenSecret());
+        dto.setType(entry.getType().toString());
+        dto.setUserId(entry.getUserId());
         return dto;
     }
 
@@ -78,21 +78,21 @@ public class OAuthEntryConversionStrategy
     public OAuthEntry convertToEntry(final OAuthDomainEntry dto)
     {
         OAuthEntry entry = new OAuthEntry();
-        entry.appId = dto.getAppId();
-        entry.authorized = dto.isAuthorized();
-        entry.callbackToken = dto.getCallbackToken();
-        entry.callbackTokenAttempts = dto.getCallbackTokenAttempts();
-        entry.callbackUrl = dto.getCallbackUrl();
-        entry.callbackUrlSigned = dto.isCallbackUrlSigned();
-        entry.consumerKey = dto.getConsumer().getConsumerKey();
-        entry.container = dto.getContainer();
-        entry.domain = dto.getDomain();
-        entry.issueTime = dto.getIssueTime();
-        entry.oauthVersion = dto.getOauthVersion();
-        entry.token = dto.getToken();
-        entry.tokenSecret = dto.getTokenSecret();
-        entry.type = Type.valueOf(dto.getType());
-        entry.userId = dto.getUserId();
+        entry.setAppId(dto.getAppId());
+        entry.setAuthorized(dto.isAuthorized());
+        entry.setCallbackToken(dto.getCallbackToken());
+        entry.setCallbackTokenAttempts(dto.getCallbackTokenAttempts());
+        entry.setCallbackUrl(dto.getCallbackUrl());
+        entry.setCallbackUrlSigned(dto.isCallbackUrlSigned());
+        entry.setConsumerKey(dto.getConsumer().getConsumerKey());
+        entry.setContainer(dto.getContainer());
+        entry.setDomain(dto.getDomain());
+        entry.setIssueTime(dto.getIssueTime());
+        entry.setOauthVersion(dto.getOauthVersion());
+        entry.setToken(dto.getToken());
+        entry.setTokenSecret(dto.getTokenSecret());
+        entry.setType(Type.valueOf(dto.getType()));
+        entry.setUserId(dto.getUserId());
         return entry;
     }
 }

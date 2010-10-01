@@ -21,9 +21,9 @@ import java.util.Set;
 
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.testing.FakeGadgetToken;
+import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.social.opensocial.model.Person;
 import org.apache.shindig.social.opensocial.spi.GroupId;
-import org.apache.shindig.social.opensocial.spi.SocialSpiException;
 import org.apache.shindig.social.opensocial.spi.UserId;
 import org.apache.shindig.social.opensocial.spi.UserId.Type;
 import org.eurekastreams.commons.actions.context.Principal;
@@ -178,7 +178,7 @@ public class AppDataServiceTest
      * @throws Exception
      *             - covers all errors
      */
-    @Test(expected = SocialSpiException.class)
+    @Test(expected = ProtocolException.class)
     public void testGetPersonDataWithNullUserId() throws Exception
     {
         context.checking(new Expectations()
@@ -213,7 +213,7 @@ public class AppDataServiceTest
      * @throws Exception
      *             - covers all errors
      */
-    @Test(expected = SocialSpiException.class)
+    @Test(expected = ProtocolException.class)
     public void testGetPersonDataException() throws Exception
     {
         context.checking(new Expectations()
@@ -266,7 +266,7 @@ public class AppDataServiceTest
      * @throws Exception
      *             - covers all errors
      */
-    @Test(expected = SocialSpiException.class)
+    @Test(expected = ProtocolException.class)
     public void testDeletePersonDataException() throws Exception
     {
         context.checking(new Expectations()
@@ -321,7 +321,7 @@ public class AppDataServiceTest
      * @throws Exception
      *             errors to be caught by caller.
      */
-    @Test(expected = SocialSpiException.class)
+    @Test(expected = ProtocolException.class)
     public void testUpdatePersonDataException() throws Exception
     {
         context.checking(new Expectations()
