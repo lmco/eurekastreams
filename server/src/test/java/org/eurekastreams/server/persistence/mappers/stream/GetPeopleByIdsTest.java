@@ -101,7 +101,6 @@ public class GetPeopleByIdsTest extends CachedMapperTest
         assertEquals("child2orgname", person.getParentOrganizationShortName());
         assertEquals(7, person.getParentOrganizationId());
         assertEquals(0, person.getCompositeStreamHiddenLineIndex());
-        assertEquals(2, person.getCompositeStreamSearchHiddenLineIndex());
         assertEquals("smithers@gmail.com", person.getEmail());
         assertEquals("skljk klsdjlsdlsj lkj5", person.getDescription());
     }

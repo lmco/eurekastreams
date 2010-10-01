@@ -277,15 +277,12 @@ public class PersonTest
         sut.setParentOrgId(parentOrgId);
 
         assertTrue(0 == sut.getStreamViewHiddenLineIndex());
-        assertTrue(0 == sut.getStreamSearchHiddenLineIndex());
         assertTrue(0 == sut.getGroupStreamHiddenLineIndex());
 
         sut.setStreamViewHiddenLineIndex(updatesCount);
-        sut.setStreamSearchHiddenLineIndex(updatesCount);
         sut.setGroupStreamHiddenLineIndex(updatesCount);
 
         assertTrue(updatesCount == sut.getStreamViewHiddenLineIndex());
-        assertTrue(updatesCount == sut.getStreamSearchHiddenLineIndex());
         assertTrue(updatesCount == sut.getGroupStreamHiddenLineIndex());
 
         assertEquals("title" + message, title, sut.getTitle());

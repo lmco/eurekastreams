@@ -604,12 +604,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     private Integer streamViewHiddenLineIndex = 0;
 
     /**
-     * StreamSearch hidden line index for user.
-     */
-    @Basic(optional = false)
-    private Integer streamSearchHiddenLineIndex = 0;
-
-    /**
      * GroupStream hidden line index for user.
      */
     @Basic(optional = false)
@@ -1642,23 +1636,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     public void setStreamViewHiddenLineIndex(final Integer inStreamViewHiddenLineIndex)
     {
         this.streamViewHiddenLineIndex = inStreamViewHiddenLineIndex;
-    }
-
-    /**
-     * @return the streamSearchHiddenLineIndex
-     */
-    public Integer getStreamSearchHiddenLineIndex()
-    {
-        return streamSearchHiddenLineIndex;
-    }
-
-    /**
-     * @param inStreamSearchHiddenLineIndex
-     *            the streamViewHiddenLineIndex to set
-     */
-    public void setStreamSearchHiddenLineIndex(final Integer inStreamSearchHiddenLineIndex)
-    {
-        this.streamSearchHiddenLineIndex = inStreamSearchHiddenLineIndex;
     }
 
     /**

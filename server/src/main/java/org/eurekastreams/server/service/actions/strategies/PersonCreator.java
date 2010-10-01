@@ -153,7 +153,6 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
 
         // Set hidden line indexes.
         person.setStreamViewHiddenLineIndex(streams.size() - 1);
-        person.setStreamSearchHiddenLineIndex(2);
         person.setGroupStreamHiddenLineIndex(3);
 
         // if organization is not supplied, get root from Org mapper

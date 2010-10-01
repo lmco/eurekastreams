@@ -165,11 +165,6 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     private int compositeStreamHiddenLineIndex = UNINITIALIZED_INTEGER_VALUE;
 
     /**
-     * Line index for stream searches.
-     */
-    private int compositeStreamSearchHiddenLineIndex = UNINITIALIZED_INTEGER_VALUE;
-
-    /**
      * Line index for group streams.
      */
     private int groupStreamHiddenLineIndex = UNINITIALIZED_INTEGER_VALUE;
@@ -341,10 +336,6 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
         if (properties.containsKey("compositeStreamHiddenLineIndex"))
         {
             setCompositeStreamHiddenLineIndex((Integer) properties.get("compositeStreamHiddenLineIndex"));
-        }
-        if (properties.containsKey("compositeStreamSearchHiddenLineIndex"))
-        {
-            setCompositeStreamSearchHiddenLineIndex((Integer) properties.get("compositeStreamSearchHiddenLineIndex"));
         }
         if (properties.containsKey("groupStreamHiddenLineIndex"))
         {
@@ -677,23 +668,6 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     public void setCompositeStreamHiddenLineIndex(final int inCompositeStreamHiddenLineIndex)
     {
         compositeStreamHiddenLineIndex = inCompositeStreamHiddenLineIndex;
-    }
-
-    /**
-     * @return the compositeStreamSearchHiddenLineIndex
-     */
-    public int getCompositeStreamSearchHiddenLineIndex()
-    {
-        return compositeStreamSearchHiddenLineIndex;
-    }
-
-    /**
-     * @param inCompositeStreamSearchHiddenLineIndex
-     *            the compositeStreamSearchHiddenLineIndex to set
-     */
-    public void setCompositeStreamSearchHiddenLineIndex(final int inCompositeStreamSearchHiddenLineIndex)
-    {
-        compositeStreamSearchHiddenLineIndex = inCompositeStreamSearchHiddenLineIndex;
     }
 
     /**
