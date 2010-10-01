@@ -190,11 +190,14 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
             final Map<String, Serializable> inFields, final Person inPerson) throws Exception
     {
         personMapper.insert(inPerson);
-        personMapper.addFollower(inPerson.getId(), inPerson.getId());
 
         // sets the destination entity id for the person's stream scope
         inPerson.getStreamScope().setDestinationEntityId(inPerson.getId());
+
         personMapper.flush();
+
+        // this has to be the last thing we do, since it updates the person behind the back of the object model
+        personMapper.addFollower(inPerson.getId(), inPerson.getId());
     }
 
     /**
