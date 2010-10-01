@@ -27,7 +27,7 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 
 /**
- * Transforms JSON request to a request for a single person.
+ * Transforms JSON request to a request for multiple people buy their IDs.
  */
 public class MultiUserPersistenceRequestTransformer implements PersistenceDataSourceRequestTransformer
 {
@@ -61,18 +61,16 @@ public class MultiUserPersistenceRequestTransformer implements PersistenceDataSo
     }
 
     /**
-     * Transforms the request.
+     * Transforms JSON request to a request for multiple people buy their IDs.
      * 
      * @param request
      *            the JSON request.
      * @param userEntityId
      *            the user entity ID.
-     * @return the request for the saved activity mapper.
+     * @return the request for the mapper.
      */
     public Serializable transform(final JSONObject request, final Long userEntityId)
     {
-        String accountId = request.getString(reqKey);
-
         JSONArray entities = request.getJSONArray(reqKey);
 
         ArrayList<Long> peopleIds = new ArrayList<Long>();
@@ -88,7 +86,7 @@ public class MultiUserPersistenceRequestTransformer implements PersistenceDataSo
                 peopleIds.add(personMapper.fetchId(req.getString("name")));
                 break;
             default:
-                throw new RuntimeException("Unhandled type.");
+                throw new IllegalArgumentException("Unhandled type.");
             }
         }
 

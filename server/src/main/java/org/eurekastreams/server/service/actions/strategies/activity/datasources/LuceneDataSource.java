@@ -95,11 +95,6 @@ public class LuceneDataSource implements SortedDataSource
     {
         JSONObject jsonQuery = inRequest.getJSONObject("query");
 
-        if (log.isInfoEnabled())
-        {
-            log.info("JSON Query: " + jsonQuery.toString());
-        }
-
         Boolean hasTerm = false;
 
         for (String term : requestToField.keySet())
@@ -111,11 +106,13 @@ public class LuceneDataSource implements SortedDataSource
             }
         }
 
+        // As an optimizing, the LuceneDataSource is not execute if there is not search term, and
+        // the sort is by date, since it can just fall back to memcached.
         if (!hasTerm
                 && (!jsonQuery.containsKey("sortBy") || (jsonQuery.containsKey("sortBy") && jsonQuery.getString(
                         "sortBy").equals("date"))))
         {
-            log.info("No search term found");
+            log.debug("No search term found");
             return null;
         }
 
@@ -124,29 +121,26 @@ public class LuceneDataSource implements SortedDataSource
 
         for (Entry<String, String> entry : requestToField.entrySet())
         {
-            if (jsonQuery.containsKey(entry.getKey()))
+            String req = entry.getKey();
+
+            if (jsonQuery.containsKey(req))
             {
-                String searchWord = jsonQuery.getString(entry.getKey());
+                String searchWord = jsonQuery.getString(req);
                 // remove semicolons, which can be used to search other fields
                 searchWord = searchWord.replace(":", "");
 
-                if (transformers.containsKey(entry.getKey()))
+                if (transformers.containsKey(req))
                 {
-                    searchWord = (String) transformers.get(entry.getKey()).transform(jsonQuery, userEntityId);
+                    searchWord = (String) transformers.get(req).transform(jsonQuery, userEntityId);
                 }
 
-                luceneQuery += "+" + entry.getValue() + ":(" + searchWord + ")";
+                luceneQuery += "+" + entry.getValue() + ":(" + searchWord + ") ";
             }
-        }
-
-        if (log.isInfoEnabled())
-        {
-            log.info("Lucene Query: " + luceneQuery);
         }
 
         if (luceneQuery.length() == 0)
         {
-            log.info("Returning all activity");
+            log.debug("Returning all activity");
             query = unstemmedRequestBuilder.buildQueryFromNativeSearchString("_hibernate_class:"
                     + "org.eurekastreams.server.domain.stream.Activity");
         }
@@ -158,12 +152,13 @@ public class LuceneDataSource implements SortedDataSource
 
         if (jsonQuery.containsKey("sortBy"))
         {
-            // date
-            log.info("Sorting by id, descending");
             query.setSort(new Sort(new SortField(jsonQuery.getString("sortBy"), true)));
         }
 
-        log.debug("Native Lucene Query: " + query.toString());
+        if (log.isDebugEnabled())
+        {
+            log.debug("Native Lucene Query: " + query.toString());
+        }
 
         searchRequestBuilder.setPaging(query, 0, inRequest.getInt("count"));
 

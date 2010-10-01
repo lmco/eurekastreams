@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.web.client.ui.common.stream;
 
+import org.eurekastreams.web.client.ui.Session;
+
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -67,6 +69,9 @@ public class StreamToUrlTransformer
                     queryString += query.get(key).isString().stringValue() + "/";
                 }
             }
+
+            queryString = queryString.replace("%%CURRENT_USER_ACCOUNT_ID%%", Session.getInstance().getCurrentPerson()
+                    .getAccountId());
 
             return "query/" + queryString;
         }
