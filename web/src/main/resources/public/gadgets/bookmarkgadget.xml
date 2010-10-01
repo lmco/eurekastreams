@@ -2,8 +2,7 @@
 <Module>
     <ModulePrefs title="Bookmarks" thumbnail="${build.web.baseurl}/style/images/bookmarksGadgetThumbnail.png" title_url="http://eurekastreams.org" author="Eureka Streams"
         description="App to store custom bookmarks and search predefined bookmarks." author_email="support@eurekastreams.org">
-        <Require feature="opensocial-0.8" />
-        <Require feature="osapi" />
+        <Require feature="opensocial-0.9" />
         <Require feature="views" />
         <Require feature="dynamic-height" />
         <Require feature="opensocial-templates">
@@ -149,7 +148,7 @@
                     
                     //save the link back to the app data store.
                     var req = opensocial.newDataRequest();
-                    req.add(req.newUpdatePersonAppDataRequest(opensocial.IdSpec.PersonId.VIEWER, 'bookmarks', gadgets.json.stringify(bookmarksJSON.bookmarks)));
+                    req.add(req.newUpdatePersonAppDataRequest('bookmarks', gadgets.json.stringify(bookmarksJSON.bookmarks)));
                     req.send(function(response)
                     {
                         if(response.hadError())

@@ -112,11 +112,6 @@ public class TabContainerPanel extends AbsolutePanel
      */
     public void init()
     {
-        if (null != firstTab)
-        {
-            activateTab(firstTab);
-        }
-
         Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
                 new Observer<UpdatedHistoryParametersEvent>()
                 {

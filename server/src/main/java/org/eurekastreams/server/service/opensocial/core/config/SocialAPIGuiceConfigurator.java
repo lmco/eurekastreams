@@ -56,6 +56,7 @@ import org.springframework.context.ApplicationContext;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Binder;
 import com.google.inject.TypeLiteral;
+import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 import com.google.inject.spring.SpringIntegration;
 
@@ -80,7 +81,7 @@ public class SocialAPIGuiceConfigurator implements SpringGuiceConfigurator
                 DataServiceServletFetcher.class);
 
         inBinder.bind(Boolean.class).annotatedWith(Names.named(AnonymousAuthenticationHandler.ALLOW_UNAUTHENTICATED))
-                .toInstance(Boolean.FALSE);
+                .toInstance(Boolean.TRUE);
         inBinder.bind(XStreamConfiguration.class).to(XStream081Configuration.class);
         inBinder.bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.xml")).to(
                 BeanXStreamConverter.class);
@@ -89,14 +90,15 @@ public class SocialAPIGuiceConfigurator implements SpringGuiceConfigurator
         inBinder.bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.atom")).to(
                 BeanXStreamAtomConverter.class);
 
-        inBinder.bind(new TypeLiteral<List<AuthenticationHandler>>()
-        {
-        }).toProvider(AuthenticationHandlerProvider.class);
+        inBinder.bind(new TypeLiteral<List<AuthenticationHandler>>() { }).toProvider(
+                AuthenticationHandlerProvider.class);
 
-        inBinder.bind(new TypeLiteral<Set<Object>>()
+        Multibinder<Object> handlerBinder = 
+            Multibinder.newSetBinder(inBinder, Object.class, Names.named("org.apache.shindig.handlers"));
+        for (Class handler : getHandlers()) 
         {
-        }).annotatedWith(Names.named("org.apache.shindig.social.handlers")).toInstance(getHandlers());
-
+          handlerBinder.addBinding().toInstance(handler);
+        }
         inBinder.bind(Long.class).annotatedWith(Names.named("org.apache.shindig.serviceExpirationDurationMinutes"))
                 .toInstance(SERVICE_EXPIRATION_IN_MINS);
 
@@ -140,13 +142,13 @@ public class SocialAPIGuiceConfigurator implements SpringGuiceConfigurator
     }
 
     /**
-     * Hook to provide a Set of request handlers. Subclasses may override to add or replace additional handlers.
-     * 
-     * @return retrieve a list of handlers for the OpenSocial API handlers.
+     * Hook to provide a Set of request handlers.  Subclasses may override
+     * to add or replace additional handlers.
+     * @return Set of Handlers.
      */
-    protected Set<Object> getHandlers()
+    protected Set<Class<?>> getHandlers() 
     {
-        return ImmutableSet.<Object> of(ActivityHandler.class, AppDataHandler.class, PersonHandler.class,
-                MessageHandler.class);
+      return ImmutableSet.<Class<?>>of(ActivityHandler.class, AppDataHandler.class,
+          PersonHandler.class, MessageHandler.class);
     }
 }

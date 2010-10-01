@@ -31,7 +31,6 @@ import net.oauth.OAuth.Parameter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.shindig.auth.OAuthConstants;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.restlet.data.MediaType;
@@ -107,17 +106,17 @@ public class OAuthAccessTokenResource extends SmpResource
                 throw new OAuthProblemException(OAuth.Problems.TOKEN_REJECTED);
             }
 
-            if (entry.callbackToken != null)
+            if (entry.getCallbackToken() != null)
             {
                 // We're using the fixed protocol
-                String clientCallbackToken = requestMessage.getParameter(OAuthConstants.OAUTH_VERIFIER);
-                if (!entry.callbackToken.equals(clientCallbackToken))
+                String clientCallbackToken = requestMessage.getParameter(OAuth.OAUTH_VERIFIER);
+                if (!entry.getCallbackToken().equals(clientCallbackToken))
                 {
                     dataStore.disableToken(entry);
                     throw new ResourceException(Status.CLIENT_ERROR_FORBIDDEN, "This token is not authorized");
                 }
             }
-            else if (!entry.authorized)
+            else if (!entry.isAuthorized())
             {
                 // Old protocol. Catch consumers trying to convert a token to one that's not authorized
                 dataStore.disableToken(entry);
@@ -127,8 +126,8 @@ public class OAuthAccessTokenResource extends SmpResource
             // turn request token into access token
             OAuthEntry accessEntry = dataStore.convertToAccessToken(entry);
 
-            List<Parameter> params = OAuth.newList(OAuth.OAUTH_TOKEN, accessEntry.token, OAuth.OAUTH_TOKEN_SECRET,
-                    accessEntry.tokenSecret, "user_id", entry.userId);
+            List<Parameter> params = OAuth.newList(OAuth.OAUTH_TOKEN, accessEntry.getToken(), OAuth.OAUTH_TOKEN_SECRET,
+                    accessEntry.getTokenSecret(), "user_id", entry.getUserId());
 
             Representation rep = new StringRepresentation(OAuth.formEncode(params), MediaType.TEXT_PLAIN);
             return rep;
@@ -168,7 +167,7 @@ public class OAuthAccessTokenResource extends SmpResource
             throw new OAuthProblemException(OAuth.Problems.TOKEN_REJECTED);
         }
 
-        if (entry.type != OAuthEntry.Type.REQUEST)
+        if (entry.getType() != OAuthEntry.Type.REQUEST)
         {
             throw new OAuthProblemException(OAuth.Problems.TOKEN_USED);
         }
@@ -187,7 +186,7 @@ public class OAuthAccessTokenResource extends SmpResource
             throw e;
         }
 
-        String consumerKey = entry.consumerKey;
+        String consumerKey = entry.getConsumerKey();
         if (!consumerKey.equals(requestMessage.getConsumerKey()))
         {
             throw new OAuthProblemException(OAuth.Problems.CONSUMER_KEY_REFUSED);
@@ -202,8 +201,8 @@ public class OAuthAccessTokenResource extends SmpResource
 
         OAuthAccessor accessor = new OAuthAccessor(consumer);
 
-        accessor.requestToken = entry.token;
-        accessor.tokenSecret = entry.tokenSecret;
+        accessor.requestToken = entry.getToken();
+        accessor.tokenSecret = entry.getTokenSecret();
 
         VALIDATOR.validateMessage(requestMessage, accessor);
 

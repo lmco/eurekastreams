@@ -29,7 +29,6 @@ import net.oauth.OAuthValidator;
 import net.oauth.SimpleOAuthValidator;
 import net.oauth.OAuth.Parameter;
 
-import org.apache.shindig.auth.OAuthConstants;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.restlet.data.MediaType;
@@ -122,11 +121,11 @@ public class OAuthRequestTokenResource extends SmpResource
             OAuthEntry entry = dataStore.generateRequestToken(consumerKey, requestMessage
                     .getParameter(OAuth.OAUTH_VERSION), callback);
 
-            List<Parameter> responseParams = OAuth.newList(OAuth.OAUTH_TOKEN, entry.token, OAuth.OAUTH_TOKEN_SECRET,
-                    entry.tokenSecret);
+            List<Parameter> responseParams = OAuth.newList(OAuth.OAUTH_TOKEN, entry.getToken(), 
+                    OAuth.OAUTH_TOKEN_SECRET, entry.getTokenSecret());
             if (callback != null)
             {
-                responseParams.add(new Parameter(OAuthConstants.OAUTH_CALLBACK_CONFIRMED, "true"));
+                responseParams.add(new Parameter(OAuth.OAUTH_CALLBACK_CONFIRMED, "true"));
             }
 
             Representation rep = new StringRepresentation(OAuth.formEncode(responseParams), MediaType.TEXT_PLAIN);

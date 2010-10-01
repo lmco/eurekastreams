@@ -294,7 +294,7 @@ public class StartPageTabContent extends FlowPanel
      */
     private static native void saveUserPrefs(final Long id)
     /*-{
-           var gadget = $wnd.gadgets.container.getGadget(id);
+           var gadget = $wnd.shindig.container.getGadget(id);
            gadget.setUserPrefs(gadget.userPrefs_);
     }-*/;
 

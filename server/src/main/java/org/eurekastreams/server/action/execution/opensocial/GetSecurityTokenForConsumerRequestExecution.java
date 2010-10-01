@@ -64,7 +64,7 @@ public class GetSecurityTokenForConsumerRequestExecution implements ExecutionStr
         String userId = inActionContext.getPrincipal().getOpenSocialId();
         String consumerKey = (String) inActionContext.getParams();
         return new SecurityTokenResponse(new OAuthSecurityToken(userId, null, consumerKey, domain, container,
-                AuthenticationMode.OAUTH_CONSUMER_REQUEST.name()));
+                null, AuthenticationMode.OAUTH_CONSUMER_REQUEST.name()));
     }
 
 }

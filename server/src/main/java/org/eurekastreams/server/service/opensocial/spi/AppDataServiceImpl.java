@@ -28,9 +28,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.protocol.DataCollection;
+import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.social.opensocial.spi.AppDataService;
 import org.apache.shindig.social.opensocial.spi.GroupId;
-import org.apache.shindig.social.opensocial.spi.SocialSpiException;
 import org.apache.shindig.social.opensocial.spi.UserId;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
@@ -153,7 +153,7 @@ public class AppDataServiceImpl implements AppDataService
         {
             log.error("Error occurred deleting OpenSocial Application Data " + e.toString());
 
-            throw new SocialSpiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
+            throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
         }
         return ImmediateFuture.newInstance(null);
     }
@@ -227,7 +227,7 @@ public class AppDataServiceImpl implements AppDataService
         {
             log.error("Error occurred retrieving appData " + e.toString());
 
-            throw new SocialSpiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
+            throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
         }
 
         DataCollection dc = new DataCollection(results);
@@ -275,7 +275,7 @@ public class AppDataServiceImpl implements AppDataService
         catch (Exception e)
         {
             log.error("Error occurred updating AppData " + e.toString());
-            throw new SocialSpiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
+            throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
         }
 
         return ImmediateFuture.newInstance(null);
