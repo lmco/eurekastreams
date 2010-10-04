@@ -61,7 +61,7 @@ public class UpdatePersonValidationTest
     /**
      * email address validator.
      */
-    private EmailAddressValidator emailValidator = new EmailAddressValidator("*@*", "");
+    private EmailAddressValidator emailValidator = new EmailAddressValidator(".*@.*", "");
 
     /**
      * Mocked get Org Names.
@@ -269,7 +269,6 @@ public class UpdatePersonValidationTest
         {
             context.assertIsSatisfied();
             assertEquals(9, e.getErrors().size());
-            assertTrue(e.getErrors().containsValue(Person.EMAIL_MESSAGE));
             assertTrue(e.getErrors().containsValue(Person.TITLE_MESSAGE));
             assertTrue(e.getErrors().containsValue(UpdatePersonValidation.PREFERREDNAME_MESSAGE));
             assertTrue(e.getErrors().containsValue(Person.JOB_DESCRIPTION_MESSAGE));
