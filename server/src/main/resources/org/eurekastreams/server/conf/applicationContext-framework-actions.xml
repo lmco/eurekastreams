@@ -2494,7 +2494,7 @@
                 <constructor-arg ref="bulkPeopleByOpenSocialIdMapper" />
                 <constructor-arg ref="getActivitiesByRequestExecutor" />
                 <!-- Max number of activities to get from open social ids -->
-                <constructor-arg ref="1000" />
+                <constructor-arg value="1000" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
