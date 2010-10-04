@@ -536,6 +536,17 @@
         <constructor-arg value="true" />   
     </bean>
     
+    <bean id="refreshOrgActivities" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />        
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="parentOrgActivityIdMapper_FORCE_REFRESH" /> 
+                <constructor-arg value="false" />        
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />   
+    </bean>
+
     <bean id="postActivityCommentAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>

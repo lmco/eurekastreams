@@ -49,7 +49,7 @@ import org.hibernate.validator.InvalidStateException;
 import org.hibernate.validator.InvalidValue;
 
 /**
- * Class to update an Organization.
+ * Class to update a Group.
  * 
  */
 public class GroupUpdater extends GroupPersister
