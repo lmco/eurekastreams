@@ -26,7 +26,26 @@ import org.eurekastreams.commons.exceptions.ValidationException;
  */
 public class EmailAddressValidator
 {
+    /**
+     * Valid email regex.
+     */
+    private String validEmailRegex;
 
+    /**
+     * Invalid email error message.
+     */
+    private String inValidEmailError;
+
+    /**
+     * Default constructor.
+     * @param inValidEmailRegex valid email regex.
+     * @param inInValidEamilError invalid email error message.
+     */
+    public EmailAddressValidator(final String inValidEmailRegex, final String inInValidEamilError)
+    {
+        validEmailRegex = inValidEmailRegex;
+        inValidEmailError = inInValidEamilError;
+    }
     /**
      * @param emailAddress
      *            email to test.
@@ -41,6 +60,11 @@ public class EmailAddressValidator
             if (!fullAddress(emailAddress))
             {
                 throw new ValidationException("Please enter a properly formatted email address.");
+            }
+
+            if (!emailAddress.matches(validEmailRegex))
+            {
+                throw new ValidationException(inValidEmailError);
             }
         }
         catch (AddressException ex)
