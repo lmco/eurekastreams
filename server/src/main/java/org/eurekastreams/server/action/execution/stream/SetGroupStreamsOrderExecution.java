@@ -117,6 +117,7 @@ public class SetGroupStreamsOrderExecution implements ExecutionStrategy<Principa
 
         reorderMapper.execute(userEntityId, followedGroupIds);
 
+        //TODO - this db code should be in a db mapper, not here in this action execution strategy
         // Update hidden line index
         String queryString = "update versioned Person set groupStreamHiddenLineIndex = :newIndex where id = :id";
         Query q = entityManager.createQuery(queryString)

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,14 +15,21 @@
  */
 package org.eurekastreams.server.action.execution.opensocial;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
+import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.action.request.opensocial.GetUserActivitiesRequest;
+import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds;
@@ -48,18 +55,36 @@ public class GetUserActivitiesExecution implements ExecutionStrategy<PrincipalAc
     private final GetPeopleByOpenSocialIds getPeopleByOpenSocialIds;
 
     /**
+     * Mapper to get activities by JSON request.
+     */
+    private final ExecutionStrategy<PrincipalActionContext> getActivitiesByRequestExecution;
+
+    /**
+     * Max number of activities to fetch by open social id.
+     */
+    private final Long maxActivitiesToReturnByOpenSocialId;
+
+    /**
      * Constructor.
      *
      * @param inBulkActivitiesMapper
      *            - instance of the {@link BulkActivitiesMapper}.
      * @param inGetPeopleByOpenSocialIds
      *            - instance of the {@link GetPeopleByOpenSocialIds} mapper.
+     * @param inGetActivitiesByRequestExecution
+     *            execution strategy to get activities by JSON
+     * @param inMaxActivitiesToReturnByOpenSocialId
+     *            the maximum number of activities to fetch by people open social ids
      */
     public GetUserActivitiesExecution(final DomainMapper<List<Long>, List<ActivityDTO>> inBulkActivitiesMapper,
-            final GetPeopleByOpenSocialIds inGetPeopleByOpenSocialIds)
+            final GetPeopleByOpenSocialIds inGetPeopleByOpenSocialIds,
+            final ExecutionStrategy<PrincipalActionContext> inGetActivitiesByRequestExecution,
+            final Long inMaxActivitiesToReturnByOpenSocialId)
     {
         bulkActivitiesMapper = inBulkActivitiesMapper;
         getPeopleByOpenSocialIds = inGetPeopleByOpenSocialIds;
+        getActivitiesByRequestExecution = inGetActivitiesByRequestExecution;
+        maxActivitiesToReturnByOpenSocialId = inMaxActivitiesToReturnByOpenSocialId;
     }
 
     /**
@@ -70,29 +95,92 @@ public class GetUserActivitiesExecution implements ExecutionStrategy<PrincipalAc
     @Override
     public LinkedList<ActivityDTO> execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        List<Long> activityIds = new ArrayList<Long>();
         GetUserActivitiesRequest currentRequest = (GetUserActivitiesRequest) inActionContext.getParams();
         LinkedList<ActivityDTO> currentActivityDTOs = new LinkedList<ActivityDTO>();
-        // if the user has provided activities to retrieve in the parameters, retrieve the corresponding
-        // ActivityDTO objects.
-        if (currentRequest.getActivityIds().size() > 0)
-        {
-            activityIds.addAll(currentRequest.getActivityIds());
-        }
 
-        if (currentRequest.getOpenSocialIds().size() > 0)
+        if (currentRequest.getOpenSocialIds() != null && currentRequest.getOpenSocialIds().size() > 0)
         {
-            List<PersonModelView> currentUsers = getPeopleByOpenSocialIds.execute(new ArrayList<String>(currentRequest
+            List<PersonModelView> users = getPeopleByOpenSocialIds.execute(new ArrayList<String>(currentRequest
                     .getOpenSocialIds()));
 
-            // for (PersonModelView currentUser : currentUsers)
-            // {
-            // // TODO: add all activities from this person
-            // }
+            if (users.size() > 0)
+            {
+                final JSONObject json = new JSONObject();
+                json.put("count", maxActivitiesToReturnByOpenSocialId);
+
+                JSONArray recipients = new JSONArray();
+                for (PersonModelView user : users)
+                {
+                    JSONObject recipient = new JSONObject();
+                    recipient.put("type", "PERSON");
+                    recipient.put("name", user.getAccountId());
+
+                    recipients.add(recipient);
+                }
+                JSONObject query = new JSONObject();
+                query.put("recipient", recipients);
+                json.put("query", query);
+
+                PrincipalActionContext context = new PrincipalActionContext()
+                {
+                    @Override
+                    public Principal getPrincipal()
+                    {
+                        return inActionContext.getPrincipal();
+                    }
+
+                    @Override
+                    public String getActionId()
+                    {
+                        return null;
+                    }
+
+                    @Override
+                    public Serializable getParams()
+                    {
+                        return json.toString();
+                    }
+
+                    @Override
+                    public Map<String, Object> getState()
+                    {
+                        return null;
+                    }
+
+                    @Override
+                    public void setActionId(final String inActionId)
+                    {
+                    }
+                };
+
+                PagedSet<ActivityDTO> activities = (PagedSet<ActivityDTO>) getActivitiesByRequestExecution
+                        .execute(context);
+
+                currentActivityDTOs.addAll(activities.getPagedSet());
+            }
         }
 
-        currentActivityDTOs.addAll(bulkActivitiesMapper.execute(activityIds));
+        // if the user has provided activities to retrieve in the parameters, retrieve the corresponding
+        // ActivityDTO objects.
+        if (currentRequest.getActivityIds() != null && currentRequest.getActivityIds().size() > 0)
+        {
+            List<Long> activityIds = new ArrayList<Long>(currentRequest.getActivityIds());
+            System.out.println("Before: " + activityIds.size());
+            // only look for IDs that aren't yet in the list
+            for (ActivityDTO act : currentActivityDTOs)
+            {
+                if (activityIds.contains(act.getId()))
+                {
+                    activityIds.remove(act.getId());
+                }
+            }
+
+            if (!activityIds.isEmpty())
+            {
+                currentActivityDTOs.addAll(bulkActivitiesMapper.execute(activityIds));
+            }
+        }
+
         return currentActivityDTOs;
     }
-
 }
