@@ -176,7 +176,7 @@ public class UpdatePersonValidation implements ValidationStrategy<ServiceActionC
             }
             catch (ValidationException ex)
             {
-                ve.addError(PersonModelView.EMAIL_KEY, Person.EMAIL_MESSAGE);
+                ve.addError(PersonModelView.EMAIL_KEY, ex.getMessage());
             }
         }
 

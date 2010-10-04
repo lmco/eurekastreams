@@ -61,7 +61,7 @@ public class UpdatePersonValidationTest
     /**
      * email address validator.
      */
-    private EmailAddressValidator emailValidator = new EmailAddressValidator();
+    private EmailAddressValidator emailValidator = new EmailAddressValidator("*@*", "");
 
     /**
      * Mocked get Org Names.
