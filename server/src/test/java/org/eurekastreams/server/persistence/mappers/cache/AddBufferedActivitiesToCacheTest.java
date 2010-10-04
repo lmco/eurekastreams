@@ -113,7 +113,43 @@ public class AddBufferedActivitiesToCacheTest
         });
 
         sut.execute();
+        context.assertIsSatisfied();
+    }
 
+    /**
+     * Test the execution with no activities.
+     */
+    @Test
+    public void testExecuteWithNoActivities()
+    {
+        AddBufferedActivitiesToCache sut = new AddBufferedActivitiesToCache(bulkActivitiesMapper, cache,
+                getCompositeStreamsByActivity);
+
+        final List<Long> activityIds = null;
+
+        final ActivityDTO activity1 = context.mock(ActivityDTO.class);
+        final ActivityDTO activity2 = context.mock(ActivityDTO.class, "a2");
+
+        final List<ActivityDTO> activities = new LinkedList<ActivityDTO>();
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(activity1).getId();
+                will(returnValue(7L));
+
+                allowing(activity2).getId();
+                will(returnValue(8L));
+
+                oneOf(cache).setListCAS(CacheKeys.BUFFERED_ACTIVITIES, null);
+                will(returnValue(activityIds));
+
+                oneOf(bulkActivitiesMapper).execute(activityIds);
+                will(returnValue(activities));
+            }
+        });
+
+        sut.execute();
         context.assertIsSatisfied();
     }
 }
