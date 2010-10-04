@@ -3320,8 +3320,8 @@
             <bean class="org.eurekastreams.server.action.validation.UpdatePersonValidation">
                 <constructor-arg>
                      <bean class="org.eurekastreams.server.action.validation.EmailAddressValidator">
-                        <constructor-arg value=".+@lmco\.com" />
-                        <constructor-arg value="Email must be good." />
+                        <constructor-arg value="${eureka.profile.emailregex}" />
+                        <constructor-arg value="${eureka.profile.emailregexerror}" />
                      </bean>
                 </constructor-arg>
                 <constructor-arg ref="bulkOrganizationsByShortNameMapper"/>
