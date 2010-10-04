@@ -3320,7 +3320,7 @@
             <bean class="org.eurekastreams.server.action.validation.UpdatePersonValidation">
                 <constructor-arg>
                      <bean class="org.eurekastreams.server.action.validation.EmailAddressValidator">
-                        <constructor-arg value="*@lmco\.com" />
+                        <constructor-arg value=".+@lmco\.com" />
                         <constructor-arg value="Email must be good." />
                      </bean>
                 </constructor-arg>
