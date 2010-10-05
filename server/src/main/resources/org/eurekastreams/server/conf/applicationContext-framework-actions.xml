@@ -3168,8 +3168,9 @@
                 <constructor-arg>
                     <list>
                         <value>queuePersonCacheWarmingTasks</value>
+                        <value>queueGroupCacheWarmingTasks</value>
                         <value>cacheWarmGroups</value>
-                        <value>cacheWarmOrganizations</value>                      
+                        <value>cacheWarmOrganizations</value>                     
                     </list>
                 </constructor-arg>
             </bean>
@@ -3196,6 +3197,23 @@
         <constructor-arg ref="taskHandler" />
         <constructor-arg value="true" />
     </bean>   
+    
+    <bean id="queueGroupCacheWarmingTasks" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.QueueKeyBasedTasksExecution">
+                <constructor-arg>
+                    <list>
+                        <!-- <value>cacheGroup</value> -->
+                        <value>cacheFollowerPersonIdsForGroupList</value>
+                    </list>
+                </constructor-arg>
+                <constructor-arg ref="getGroupIds" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="true" />
+    </bean>
     
     <bean id="cachePerson" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -3244,6 +3262,18 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean> 
+    
+    <bean id="cacheFollowerPersonIdsForGroupList" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper_FORCE_REFRESH" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="False" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
     
     <bean id="cacheWarmGroups" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
         <constructor-arg ref="noValidationStrategy" />

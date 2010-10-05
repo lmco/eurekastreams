@@ -1667,6 +1667,11 @@
         <constructor-arg value="id"/>        
     </bean>
     
+    <bean id="getGroupIds" class="org.eurekastreams.server.persistence.mappers.db.GetSerializableField" >
+        <constructor-arg value="DomainGroup"/>
+        <constructor-arg value="id"/>        
+    </bean>    
+    
     <bean id="getPersonsByIdsDBMapper" class="org.eurekastreams.server.persistence.mappers.db.GetPersonsByIds">
         <constructor-arg ref="personQueryStrategy" />
         <constructor-arg ref="getRelatedOrganizationIdsByPersonId" />
