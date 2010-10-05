@@ -2604,6 +2604,7 @@
 		abstract="true">
 		<constructor-arg ref="emailerFactory" />
 		<constructor-arg ref="bulkPeopleMapper" />
+		<constructor-arg ref="findSystemSettings" />
 		<constructor-arg ref="applicationProperties" />
 	</bean>
 

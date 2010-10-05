@@ -32,7 +32,10 @@ import org.eurekastreams.server.action.execution.notification.TemplateEmailBuild
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
+import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.EmailerFactory;
@@ -97,6 +100,10 @@ public class TemplateEmailBuilderTest
     /** Fixture: For getting person info. */
     private GetPeopleByIds peopleMapper = context.mock(GetPeopleByIds.class);
 
+    /** Fixture: For getting system settings. */
+    private DomainMapper<MapperRequest<SystemSettings>, SystemSettings> systemSettingsMapper =
+            context.mock(DomainMapper.class);
+
     /** Fixture: message. */
     private MimeMessage message = context.mock(MimeMessage.class);
 
@@ -115,8 +122,23 @@ public class TemplateEmailBuilderTest
         }
     };
 
+    /** Fixture: system settings. */
+    private SystemSettings systemSettings = new SystemSettings();
+
     /** Fixture: notification. */
     private NotificationDTO notification;
+
+    /**
+     * Constructor; one-time setup.
+     */
+    public TemplateEmailBuilderTest()
+    {
+        systemSettings.setSiteLabel("SiteLabel");
+        systemSettings.setSupportEmailAddress("SupportEmailAddress");
+        systemSettings.setSupportPhoneNumber("SupportPhoneNumber");
+        systemSettings.setSupportStreamGroupDisplayName("SupportStreamGroupDisplayName");
+        systemSettings.setSupportStreamGroupShortName("SupportStreamGroupShortName");
+    }
 
     /**
      * Common setup before each test.
@@ -128,6 +150,14 @@ public class TemplateEmailBuilderTest
     public void setUp() throws Exception
     {
         notification = new NotificationDTO(Collections.singletonList(RECIPIENT1_ID), NOTIFICATION_TYPE, 0L);
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(systemSettingsMapper).execute(with(any(MapperRequest.class)));
+                will(returnValue(systemSettings));
+            }
+        });
     }
 
     /**
@@ -171,7 +201,9 @@ public class TemplateEmailBuilderTest
             }
         });
 
-        sut = new TemplateEmailBuilder(emailer, peopleMapper, null, "S:" + template, "T:" + template, "H:" + template);
+        sut =
+                new TemplateEmailBuilder(emailer, peopleMapper, systemSettingsMapper, null, "S:" + template, "T:"
+                        + template, "H:" + template);
         sut.build(notification, message);
         context.assertIsSatisfied();
     }
@@ -231,9 +263,8 @@ public class TemplateEmailBuilderTest
     {
         notification.setDestination(DESTINATION_ID, EntityType.ORGANIZATION, "myorg", "My Organization");
 
-        coreDataUseTest(
-                "$(dest.id)/$(dest.type)/$(dest.uniqueid)/$(dest.name)/$(dest.page)",
-                DESTINATION_ID + "/ORGANIZATION/myorg/My Organization/organizations");
+        coreDataUseTest("$(dest.id)/$(dest.type)/$(dest.uniqueid)/$(dest.name)/$(dest.page)", DESTINATION_ID
+                + "/ORGANIZATION/myorg/My Organization/organizations");
     }
 
     /**
@@ -280,7 +311,9 @@ public class TemplateEmailBuilderTest
         extraProperties.put("key1", "value1");
         extraProperties.put("actor.id", "**" + Long.toString(ACTOR_ID + 4) + "**");
 
-        sut = new TemplateEmailBuilder(emailer, peopleMapper, extraProperties, template, template, template);
+        sut =
+                new TemplateEmailBuilder(emailer, peopleMapper, systemSettingsMapper, extraProperties, template,
+                        template, template);
         sut.build(notification, message);
         context.assertIsSatisfied();
     }
@@ -319,7 +352,9 @@ public class TemplateEmailBuilderTest
         invocationProperties.put("key2", "valueB");
         invocationProperties.put("key3", "valueC");
 
-        sut = new TemplateEmailBuilder(emailer, peopleMapper, extraProperties, template, template, template);
+        sut =
+                new TemplateEmailBuilder(emailer, peopleMapper, systemSettingsMapper, extraProperties, template,
+                        template, template);
         sut.build(notification, invocationProperties, message);
         context.assertIsSatisfied();
     }
@@ -348,7 +383,7 @@ public class TemplateEmailBuilderTest
             }
         });
 
-        sut = new TemplateEmailBuilder(emailer, peopleMapper, null, "", "", "");
+        sut = new TemplateEmailBuilder(emailer, peopleMapper, systemSettingsMapper, null, "", "", "");
         sut.build(notification, message);
 
         context.assertIsSatisfied();
@@ -382,7 +417,7 @@ public class TemplateEmailBuilderTest
             }
         });
 
-        sut = new TemplateEmailBuilder(emailer, peopleMapper, null, "", "", "");
+        sut = new TemplateEmailBuilder(emailer, peopleMapper, systemSettingsMapper, null, "", "", "");
         sut.build(notification, message);
 
         context.assertIsSatisfied();
@@ -413,5 +448,38 @@ public class TemplateEmailBuilderTest
         HtmlEncodingLookup decorator = new HtmlEncodingLookup(decorated);
         assertNull(decorator.lookup("isNull"));
         assertEquals("&lt;this &amp; that&gt;", decorator.lookup("needsHelp"));
+    }
+
+    /**
+     * Tests using system settings.
+     *
+     * @throws Exception
+     *             Shouldn't.
+     */
+    @Test
+    public void testBuildWithSystemSettings() throws Exception
+    {
+        final String template =
+                "$(settings.sitelabel)/$(settings.support.email)/$(settings.support.phone)/$(settings.support.name)"
+                        + "/$(settings.support.uniqueid)";
+        final String expectedText =
+                "SiteLabel/SupportEmailAddress/SupportPhoneNumber/SupportStreamGroupDisplayName"
+                        + "/SupportStreamGroupShortName";
+
+        setupIgnoreRecipientsExpectations();
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(emailer).setSubject(with(same(message)), with(equal("S:" + expectedText)));
+                oneOf(emailer).setTextBody(with(same(message)), with(equal("T:" + expectedText)));
+                oneOf(emailer).setHtmlBody(with(same(message)), with(equal("H:" + expectedText)));
+            }
+        });
+
+        sut =
+                new TemplateEmailBuilder(emailer, peopleMapper, systemSettingsMapper, null, "S:" + template, "T:"
+                        + template, "H:" + template);
+        sut.build(notification, message);
+        context.assertIsSatisfied();
     }
 }
