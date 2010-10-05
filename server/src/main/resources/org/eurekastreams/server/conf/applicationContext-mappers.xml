@@ -1334,7 +1334,6 @@
 		class="org.eurekastreams.server.persistence.mappers.cache.PostActivityUpdateStreamsByActorMapper">
 		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-		<constructor-arg ref="bulkOrganizationsByShortNameMapper" />
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 
