@@ -2506,6 +2506,7 @@
                 <constructor-arg ref="getActivitiesByRequestExecutor" />
                 <!-- Max number of activities to get from open social ids -->
                 <constructor-arg value="1000" />
+                <constructor-arg ref="securityTrimmer" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />

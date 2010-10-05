@@ -28,6 +28,7 @@ import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.server.action.execution.stream.ActivitySecurityTrimmer;
 import org.eurekastreams.server.action.request.opensocial.GetUserActivitiesRequest;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
@@ -40,7 +41,7 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
  * get activities back from this strategy: - Pass in a list of activity ids and the corresponding ActivityDTO objects
  * will be returned. - Pass in just the user id and all of the activities that user posted to their own stream will be
  * returned.
- *
+ * 
  */
 public class GetUserActivitiesExecution implements ExecutionStrategy<PrincipalActionContext>
 {
@@ -65,8 +66,13 @@ public class GetUserActivitiesExecution implements ExecutionStrategy<PrincipalAc
     private final Long maxActivitiesToReturnByOpenSocialId;
 
     /**
+     * Security trimmer.
+     */
+    private final ActivitySecurityTrimmer securityTrimmer;
+
+    /**
      * Constructor.
-     *
+     * 
      * @param inBulkActivitiesMapper
      *            - instance of the {@link BulkActivitiesMapper}.
      * @param inGetPeopleByOpenSocialIds
@@ -75,21 +81,24 @@ public class GetUserActivitiesExecution implements ExecutionStrategy<PrincipalAc
      *            execution strategy to get activities by JSON
      * @param inMaxActivitiesToReturnByOpenSocialId
      *            the maximum number of activities to fetch by people open social ids
+     * @param inSecurityTrimmer
+     *            the security trimmer.
      */
     public GetUserActivitiesExecution(final DomainMapper<List<Long>, List<ActivityDTO>> inBulkActivitiesMapper,
             final GetPeopleByOpenSocialIds inGetPeopleByOpenSocialIds,
             final ExecutionStrategy<PrincipalActionContext> inGetActivitiesByRequestExecution,
-            final Long inMaxActivitiesToReturnByOpenSocialId)
+            final Long inMaxActivitiesToReturnByOpenSocialId, final ActivitySecurityTrimmer inSecurityTrimmer)
     {
         bulkActivitiesMapper = inBulkActivitiesMapper;
         getPeopleByOpenSocialIds = inGetPeopleByOpenSocialIds;
         getActivitiesByRequestExecution = inGetActivitiesByRequestExecution;
         maxActivitiesToReturnByOpenSocialId = inMaxActivitiesToReturnByOpenSocialId;
+        securityTrimmer = inSecurityTrimmer;
     }
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * This execute method retrieves the ActivityDTO objects for the parameters passed in.
      */
     @Override
@@ -174,6 +183,8 @@ public class GetUserActivitiesExecution implements ExecutionStrategy<PrincipalAc
                     activityIds.remove(act.getId());
                 }
             }
+
+            activityIds = securityTrimmer.trim(activityIds, inActionContext.getPrincipal().getId());
 
             if (!activityIds.isEmpty())
             {
