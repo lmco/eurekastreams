@@ -3597,10 +3597,13 @@
         <constructor-arg>
              <!-- Validation -->
             <bean class="org.eurekastreams.server.action.validation.UpdatePersonValidation">
-	            <constructor-arg>
-	                 <bean class="org.eurekastreams.server.action.validation.EmailAddressValidator"/>
-	            </constructor-arg>
-	            <constructor-arg ref="bulkOrganizationsByShortNameMapper"/>
+                <constructor-arg>
+                     <bean class="org.eurekastreams.server.action.validation.EmailAddressValidator">
+                        <constructor-arg value="${eureka.profile.emailregex}" />
+                        <constructor-arg value="${eureka.profile.emailregexerror}" />
+                     </bean>
+                </constructor-arg>
+                <constructor-arg ref="bulkOrganizationsByShortNameMapper"/>
             </bean>
         </constructor-arg>
         <constructor-arg>
