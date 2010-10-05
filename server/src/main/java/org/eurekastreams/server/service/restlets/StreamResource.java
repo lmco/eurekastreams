@@ -45,7 +45,7 @@ import org.restlet.resource.Variant;
 
 /**
  * REST end point for stream filters.
- *
+ * 
  */
 public class StreamResource extends SmpResource
 {
@@ -110,7 +110,7 @@ public class StreamResource extends SmpResource
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inAction
      *            the action.
      * @param inServiceActionController
@@ -135,7 +135,7 @@ public class StreamResource extends SmpResource
 
     /**
      * init the params.
-     *
+     * 
      * @param request
      *            the request object.
      */
@@ -155,7 +155,7 @@ public class StreamResource extends SmpResource
 
     /**
      * GET the activites.
-     *
+     * 
      * @param variant
      *            the variant.
      * @return the JSON.
@@ -166,7 +166,10 @@ public class StreamResource extends SmpResource
     @Override
     public Representation represent(final Variant variant) throws ResourceException
     {
-        log.debug("Path: " + getPath());
+        if (log.isDebugEnabled())
+        {
+            log.debug("Path: " + getPath());
+        }
 
         JSONObject responseJson = new JSONObject();
         String status = GOOD_STATUS;
@@ -194,11 +197,15 @@ public class StreamResource extends SmpResource
                 throw new Exception("Unknown request mode.");
             }
 
-            log.debug("Making request using: " + queryJson);
-            PrincipalActionContext ac =
-                    new ServiceActionContext(queryJson.toString(), principalPopulator.getPrincipal(openSocialId));
-            PagedSet<ActivityDTO> activities =
-                    (PagedSet<ActivityDTO>) serviceActionController.execute((ServiceActionContext) ac, action);
+            if (log.isDebugEnabled())
+            {
+                log.debug("Making request using: " + queryJson);
+            }
+
+            PrincipalActionContext ac = new ServiceActionContext(queryJson.toString(), principalPopulator
+                    .getPrincipal(openSocialId));
+            PagedSet<ActivityDTO> activities = (PagedSet<ActivityDTO>) serviceActionController.execute(
+                    (ServiceActionContext) ac, action);
 
             responseJson.put("query", queryJson.getJSONObject("query"));
 
@@ -214,8 +221,8 @@ public class StreamResource extends SmpResource
                 jsonActivity.put("destinationDisplayName", activity.getDestinationStream().getDisplayName());
                 jsonActivity.put("destinationUniqueIdentifier", activity.getDestinationStream().getUniqueIdentifier());
                 jsonActivity.put("destinationType", activity.getDestinationStream().getType());
-                jsonActivity.put("actorAvatarPath", actorUrlGen.getSmallAvatarUrl(activity.getActor().getId(),
-                        activity.getActor().getAvatarId()));
+                jsonActivity.put("actorAvatarPath", actorUrlGen.getSmallAvatarUrl(activity.getActor().getId(), activity
+                        .getActor().getAvatarId()));
                 jsonActivity.put("actorDisplayName", activity.getActor().getDisplayName());
                 jsonActivity.put("actorUniqueIdentifier", activity.getActor().getUniqueIdentifier());
                 jsonActivity.put("actorType", activity.getActor().getType());
@@ -265,7 +272,7 @@ public class StreamResource extends SmpResource
 
     /**
      * Overrides the path.
-     *
+     * 
      * @param inPathOverride
      *            the string to override the path with.
      */
@@ -276,7 +283,7 @@ public class StreamResource extends SmpResource
 
     /**
      * Get the path.
-     *
+     * 
      * @return the path.
      */
     public String getPath()

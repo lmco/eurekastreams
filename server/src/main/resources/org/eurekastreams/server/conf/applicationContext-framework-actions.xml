@@ -2661,6 +2661,19 @@
         <constructor-arg value="false" />
     </bean>
 
+    <bean id="setStreamOrder" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean
+                class="org.eurekastreams.server.action.execution.stream.SetStreamOrderExecution">
+                <constructor-arg ref="findByIdMapper" />
+                <constructor-arg ref="reorderStreams" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+    </bean>
+
     <bean id="getFlaggedActivitiesForOrganization" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
