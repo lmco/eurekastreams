@@ -24,6 +24,7 @@ import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.server.action.request.opensocial.GetUserActivitiesRequest;
 import org.eurekastreams.server.domain.stream.StreamFilter;
+import org.eurekastreams.server.persistence.mappers.cache.GetPrivateCoordinatedAndFollowedGroupIdsForUser;
 import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 import org.eurekastreams.server.persistence.mappers.stream.CompositeStreamActivityIdsMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds;
@@ -37,7 +38,7 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link GetUserActivitiesExecution} class.
- *
+ * 
  */
 public class GetUserActivitiesExecutionTest
 {
@@ -79,6 +80,12 @@ public class GetUserActivitiesExecutionTest
             .mock(GetPeopleByOpenSocialIds.class);
 
     /**
+     * Mapper to get the list of group ids that includes private groups the current user can see activity for.
+     */
+    private GetPrivateCoordinatedAndFollowedGroupIdsForUser getVisibleGroupsForUserMapper = context
+            .mock(GetPrivateCoordinatedAndFollowedGroupIdsForUser.class);
+
+    /**
      * Mocked instance of {@link StreamFilter}.
      */
     private final StreamFilter streamFilterMock = context.mock(StreamFilter.class);
@@ -87,6 +94,11 @@ public class GetUserActivitiesExecutionTest
      * Mocked principal object for test.
      */
     private Principal principal = context.mock(Principal.class);
+    
+    /**
+     * Principal ID.
+     */
+    private Long principalId = 1L;
 
     /**
      * Prepare the test suite.
@@ -95,7 +107,7 @@ public class GetUserActivitiesExecutionTest
     public void setup()
     {
         sut = new GetUserActivitiesExecution(getStreamByOwnerIdMock, bulkActivitiesMapperMock,
-                compositeStreamActivityIdsMapper, getPeopleByOpenSocialIdsMapper);
+                compositeStreamActivityIdsMapper, getPeopleByOpenSocialIdsMapper, getVisibleGroupsForUserMapper);
     }
 
     /**
@@ -119,6 +131,11 @@ public class GetUserActivitiesExecutionTest
                 allowing(getPeopleByOpenSocialIdsMapper).execute(userIds);
 
                 allowing(bulkActivitiesMapperMock).execute(activityIds, userId);
+                
+                oneOf(principal).getId();
+                will(returnValue(principalId));
+                
+                oneOf(getVisibleGroupsForUserMapper).execute(principalId);
             }
         });
 
@@ -160,6 +177,11 @@ public class GetUserActivitiesExecutionTest
                 allowing(compositeStreamActivityIdsMapper).execute(compStreamId, longUserId);
 
                 allowing(bulkActivitiesMapperMock).execute(activityIds, userId);
+                
+                oneOf(principal).getId();
+                will(returnValue(principalId));
+                
+                oneOf(getVisibleGroupsForUserMapper).execute(principalId);
             }
         });
 

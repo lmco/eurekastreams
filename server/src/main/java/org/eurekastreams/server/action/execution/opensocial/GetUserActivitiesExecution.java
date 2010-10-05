@@ -18,6 +18,7 @@ package org.eurekastreams.server.action.execution.opensocial;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
@@ -25,6 +26,7 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.action.request.opensocial.GetUserActivitiesRequest;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamFilter;
+import org.eurekastreams.server.persistence.mappers.cache.GetPrivateCoordinatedAndFollowedGroupIdsForUser;
 import org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesMapper;
 import org.eurekastreams.server.persistence.mappers.stream.CompositeStreamActivityIdsMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds;
@@ -36,7 +38,7 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
  * get activities back from this strategy: - Pass in a list of activity ids and the corresponding ActivityDTO objects
  * will be returned. - Pass in just the user id and all of the activities that user posted to their own stream will be
  * returned.
- *
+ * 
  */
 public class GetUserActivitiesExecution implements ExecutionStrategy<PrincipalActionContext>
 {
@@ -62,8 +64,13 @@ public class GetUserActivitiesExecution implements ExecutionStrategy<PrincipalAc
     private final GetPeopleByOpenSocialIds getPeopleByOpenSocialIds;
 
     /**
+     * Mapper to get the list of group ids that includes private groups the current user can see activity for.
+     */
+    private GetPrivateCoordinatedAndFollowedGroupIdsForUser getVisibleGroupsForUserMapper;
+
+    /**
      * Constructor.
-     *
+     * 
      * @param inGetStreamByOwnerId
      *            - instance of the {@link GetStreamByOwnerId} mapper.
      * @param inBulkActivitiesMapper
@@ -72,21 +79,26 @@ public class GetUserActivitiesExecution implements ExecutionStrategy<PrincipalAc
      *            - instance of the {@link CompositeStreamActivityIdsMapper}.
      * @param inGetPeopleByOpenSocialIds
      *            - instance of the {@link GetPeopleByOpenSocialIds} mapper.
+     * @param inGetVisibleGroupsForUserMapper
+     *            Mapper to get the list of group ids that includes private groups the current user can see activity
+     *            for.
      */
     public GetUserActivitiesExecution(final GetStreamByOwnerId inGetStreamByOwnerId,
             final BulkActivitiesMapper inBulkActivitiesMapper,
             final CompositeStreamActivityIdsMapper inCompositeStreamActivityIdsMapper,
-            final GetPeopleByOpenSocialIds inGetPeopleByOpenSocialIds)
+            final GetPeopleByOpenSocialIds inGetPeopleByOpenSocialIds,
+            final GetPrivateCoordinatedAndFollowedGroupIdsForUser inGetVisibleGroupsForUserMapper)
     {
         getStreamByOwnerIdMapper = inGetStreamByOwnerId;
         bulkActivitiesMapper = inBulkActivitiesMapper;
         compositeStreamActivityIdsMapper = inCompositeStreamActivityIdsMapper;
         getPeopleByOpenSocialIds = inGetPeopleByOpenSocialIds;
+        getVisibleGroupsForUserMapper = inGetVisibleGroupsForUserMapper;
     }
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * This execute method retrieves the ActivityDTO objects for the parameters passed in.
      */
     @Override
@@ -118,7 +130,21 @@ public class GetUserActivitiesExecution implements ExecutionStrategy<PrincipalAc
             }
         }
 
-        return currentActivityDTOs;
+        Set<Long> permissionedGroupIds = getVisibleGroupsForUserMapper.execute(inActionContext.getPrincipal().getId());
+
+        LinkedList<ActivityDTO> visibleActivityDTOs = new LinkedList<ActivityDTO>();
+
+        // Security Filtering
+        for (ActivityDTO theActivity : currentActivityDTOs)
+        {
+            if (theActivity.getIsDestinationStreamPublic()
+                    || permissionedGroupIds.contains(theActivity.getDestinationStream().getDestinationEntityId()))
+            {
+                visibleActivityDTOs.add(theActivity);
+            }
+        }
+
+        return visibleActivityDTOs;
     }
 
 }

@@ -2287,6 +2287,8 @@
 				<constructor-arg ref="bulkActivitiesMapper" />
 				<constructor-arg ref="compositeStreamActivityIdsMapper" />
 				<constructor-arg ref="bulkPeopleByOpenSocialIdMapper" />
+                <constructor-arg
+                    ref="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper" />				
 			</bean>
 		</constructor-arg>
 		<constructor-arg value="true" />
