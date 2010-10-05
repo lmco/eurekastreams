@@ -16,7 +16,6 @@
 package org.eurekastreams.server.action.execution.stream;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -77,7 +76,7 @@ public class SetStreamOrderExecution implements ExecutionStrategy<PrincipalActio
 
         Person person = personMapper.execute(new FindByIdRequest("Person", inActionContext.getPrincipal().getId()));
 
-        List<Stream> streams = new ArrayList<Stream>(person.getStreams());
+        List<Stream> streams = person.getStreams();
 
         // Find the tab to be moved
         int oldIndex = -1;
