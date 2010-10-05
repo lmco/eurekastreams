@@ -24,26 +24,22 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Test for GetFollowedPersonIdsForPersonByIdDbMapper.
+ * Test for GetFollowerPersonIdsForGroupByIdDbMapper.
  * 
  */
-public class GetFollowedPersonIdsForPersonByIdDbMapperTest extends MapperTest
+public class GetFollowerPersonIdsForGroupByIdDbMapperTest extends MapperTest
 {
-    /**
-     * Test user id.
-     */
-    private final long mrburnsId = 99;
 
     /**
-     * Test user id.
+     * Group id.
      */
-    private final long smithersId = 98;
+    private final long groupId = 1L;
 
     /**
      * System under test.
      */
     @Autowired
-    private GetFollowedPersonIdsForPersonByIdDbMapper sut;
+    private GetFollowerPersonIdsForGroupByIdDbMapper sut;
 
     /**
      * test.
@@ -52,10 +48,8 @@ public class GetFollowedPersonIdsForPersonByIdDbMapperTest extends MapperTest
     @Test
     public void testExecute()
     {
-        List<Long> results = sut.execute(smithersId);
-        assertEquals(2, results.size());
-        assertEquals(new Long(mrburnsId), results.get(1));
-        assertEquals(new Long(smithersId), results.get(0));
+        List<Long> results = sut.execute(groupId);
+        assertEquals(3, results.size());
     }
 
 }
