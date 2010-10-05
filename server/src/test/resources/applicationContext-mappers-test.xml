@@ -569,6 +569,10 @@
         <constructor-arg ref="getRelatedOrganizationIdsByPersonId" />
     </bean>
     
+    <bean id="getGroupsByIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetGroupsByIdsDbMapper">
+        <constructor-arg ref="domainGroupQueryStrategy" />
+    </bean>
+    
     <bean id="getFollowedGroupIdsForPersonByIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFollowedGroupIdsForPersonByIdDbMapper" />
     
     <bean id="getFollowerPersonIdsForGroupByIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFollowerPersonIdsForGroupByIdDbMapper" />
