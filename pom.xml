@@ -177,6 +177,7 @@
         <build.maven.snapshotrepo>http://example.com/content/repositories/snapshots</build.maven.snapshotrepo>
         <build.infosite.url>http://eurekastreams.org</build.infosite.url>
         <build.infosite.text>eurekastreams.org</build.infosite.text>
+		 <build.taskqueueprocessor.additional-jsw-jar></build.taskqueueprocessor.additional-jsw-jar>
     </properties>
     <build>
         <plugins>

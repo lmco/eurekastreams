@@ -133,28 +133,27 @@
 							<encoding>UTF-8</encoding>
 						</configuration>
 					</plugin>
-		            <plugin>
-		                <groupId>org.apache.maven.plugins</groupId>
-		                <artifactId>maven-dependency-plugin</artifactId>
-		                <executions>
-		                  <execution>
-		                    <id>unpack-shared-resources</id>
-		                    <goals>
-		                      <goal>unpack-dependencies</goal>
-		                    </goals>
-		                    <phase>generate-resources</phase>
-		                    <configuration>
-		                     <outputDirectory>${project.build.directory}/sharedresources</outputDirectory>
-		                     <includeArtifacIds>${build.maven.sharedresources.artifactid}</includeArtifacIds>
-		                     <includeGroupIds>org.eurekastreams</includeGroupIds>
-		                     <includeTypes>zip</includeTypes>
-		                     <includeScope>provided</includeScope>
-		                     <includeClassifiers>resources</includeClassifiers>
-		                     <excludeTransitive>true</excludeTransitive>
-		                    </configuration>
-		                  </execution>
-		                </executions>
-		              </plugin>
+					
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+						  <execution>
+							<id>unpack-shared-resources</id>
+							<goals>
+							  <goal>unpack-dependencies</goal>
+							</goals>
+							<phase>generate-resources</phase>
+							<configuration>
+								 <outputDirectory>${project.build.directory}/unpack</outputDirectory>
+								 <includeGroupIds>${project.groupId}</includeGroupIds>
+								 <includeTypes>zip</includeTypes>
+								 <includeScopes>provided</includeScopes>
+								 <excludeTransitive>true</excludeTransitive>
+							</configuration>
+						  </execution>
+						</executions>
+					</plugin>
 				    <plugin>
 				        <groupId>org.codehaus.mojo</groupId>
 				        <artifactId>exec-maven-plugin</artifactId>
@@ -179,14 +178,85 @@
 				          </systemProperties>
 				        </configuration>
 				    </plugin>
-				    <!-- Applicaiton Assembler -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>1.1</version>
+						<executions>
+							<execution>
+								<id>create lib folder</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<executable>mkdir</executable>
+									<arguments>
+											<argument>-p</argument>
+											<argument>${project.build.directory}/unpack/lib-bin</argument>
+											<argument>${project.build.directory}/unpack/lib-java</argument>
+									</arguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>2.4.3</version>
+						<executions>
+						  <execution>
+							<id>copy extra jars</id>
+							<phase>prepare-package</phase>
+							<goals>
+							  <goal>copy-resources</goal>
+							</goals>
+							<configuration>
+							  <outputDirectory>${project.build.directory}/jsw/taskqueueprocessor/repo</outputDirectory>
+							  <resources>          
+								<resource>
+								  <directory>${project.build.directory}/unpack/lib-java</directory>
+								  <filtering>false</filtering>
+								</resource>
+							  </resources>              
+							</configuration>            
+						  </execution>
+						  <execution>
+							<id>copy extra libs</id>
+							<phase>prepare-package</phase>
+							<goals>
+							  <goal>copy-resources</goal>
+							</goals>
+							<configuration>
+							  <outputDirectory>${project.build.directory}/jsw/taskqueueprocessor/lib</outputDirectory>
+							  <resources>          
+								<resource>
+								  <directory>${project.build.directory}/unpack/lib-bin</directory>
+								  <filtering>false</filtering>
+								</resource>
+							  </resources>              
+							</configuration>            
+						  </execution>
+						</executions>
+					</plugin>
+					
+				    <!-- Application Assembler -->
 					<plugin>
 					 <groupId>org.codehaus.mojo</groupId>
 					 <artifactId>appassembler-maven-plugin</artifactId>
 					 <version>1.0</version>
+		             <executions>
+		                <execution>
+		                <id>generate-jsw-scripts</id>
+		                <phase>package</phase>
+			                <goals>
+			                   <goal>create-repository</goal>
+		                       <goal>generate-daemons</goal>
+			                </goals>
+		                </execution>
+		             </executions>			 
 					 <configuration>
 					     <assembleDirectory>${project.build.directory}/jsw/taskqueueprocessor</assembleDirectory>
-					     <repositoryLayout>default</repositoryLayout>
+					     <repositoryLayout>flat</repositoryLayout>
 					     <target>${project.build.directory}</target>
 					     <defaultJvmSettings>
 					         <initialMemorySize>2048M</initialMemorySize>
@@ -245,22 +315,16 @@
 				                      <name>wrapper.java.command</name>
 				                      <value>/usr/java/latest/bin/java</value>
 				                    </property>
+									  <property>
+				                      <name>configuration.directory.in.classpath.last</name>
+				                      <value>${build.taskqueueprocessor.additional-jsw-jar}</value>
+				                    </property>
 				                  </configuration>
 				                </generatorConfiguration>
 				              </generatorConfigurations>
 				            </daemon>
 				          </daemons>
 				      </configuration>
-		             <executions>
-		                <execution>
-		                <id>generate-jsw-scripts</id>
-		                <phase>package</phase>
-			                <goals>
-			                   <goal>create-repository</goal>
-		                       <goal>generate-daemons</goal>
-			                </goals>
-		                </execution>
-		             </executions>			 
 					</plugin>					
 				</plugins>
 		        <resources>
@@ -269,7 +333,7 @@
 		                <filtering>true</filtering>
 		            </resource>
 		            <resource>
-		                <directory>${project.build.directory}/sharedresources</directory>
+		                <directory>${project.build.directory}/unpack/resources</directory>
 		                <filtering>true</filtering>
 		            </resource>
 		        </resources>
