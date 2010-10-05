@@ -1,1 +1,0 @@
-This folder is where library extensions could be placed.  The contents of this folder, minus this README document, will be placed in the /usr/local/lib folder on the target server.

@@ -7,7 +7,7 @@
   <fileSets>
     <fileSet>
       <directory>src/main/resources</directory>
-      <outputDirectory></outputDirectory>
+      <outputDirectory>/resources</outputDirectory>
     </fileSet>
   </fileSets>
 </assembly>
