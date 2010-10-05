@@ -169,7 +169,7 @@ public class ActivityTemplateEmailBuilderTest
         {
             {
                 allowing(activitiesMapper).execute(Collections.singletonList(ACTIVITY_ID));
-                will(returnValue(null));
+                will(returnValue(Collections.EMPTY_LIST));
             }
         });
 
