@@ -171,7 +171,15 @@
         
     <bean
         id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_BY_OPEN_SOCIAL_ID"
-        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />		
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />	
+        
+    <bean
+        id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PEOPLE_FOLLOWED_BY_PERSON"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />	
+        
+    <bean
+        id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.FOLLOWERS_BY_PERSON"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />                
 
 	<bean
 		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.POPULAR_HASH_TAGS_BY_STREAM_TYPE_AND_SHORT_NAME"
@@ -648,6 +656,110 @@
 		<!-- Cache refresher -->
 		<constructor-arg ref="refreshFollowedByActivitiesCacheMapper" />
 	</bean>
+
+    <bean id="getFollowedPersonIdsForPersonByIdMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache Mapper -->
+        <constructor-arg ref="getFollowedPersonIdsForPersonByIdCacheMapper"/>
+        <!-- Database mapper to fall back on if not found in cache -->
+        <constructor-arg ref="getFollowedPersonIdsForPersonByIdDbMapper" />
+        <!-- Data combiner -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
+        </constructor-arg>        
+        <!-- Cache refresher -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleListValueCacheRefreshStrategy">
+                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PEOPLE_FOLLOWED_BY_PERSON" />
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
+                </constructor-arg>
+                <property name="cache" ref="memcachedCache" />
+            </bean> 
+        </constructor-arg>                       
+    </bean>
+        
+    <bean id="getFollowedPersonIdsForPersonByIdMapper_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache Mapper -->
+        <constructor-arg ref="nullResultPartialMapper"/>
+        <!-- Database mapper to fall back on if not found in cache -->
+        <constructor-arg ref="getFollowedPersonIdsForPersonByIdDbMapper" />
+        <!-- Data combiner -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
+        </constructor-arg>        
+        <!-- Cache refresher -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleListValueCacheRefreshStrategy">
+                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PEOPLE_FOLLOWED_BY_PERSON" />
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
+                </constructor-arg>
+                <property name="cache" ref="memcachedCache" />
+            </bean> 
+        </constructor-arg>                        
+    </bean> 
+    
+    <bean id="getFollowedPersonIdsForPersonByIdCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
+        </constructor-arg>
+        <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PEOPLE_FOLLOWED_BY_PERSON" />
+        <!-- Is list of lists flag -->
+        <constructor-arg value="False" />
+        <property name="cache" ref="memcachedCache" />
+    </bean> 
+    
+    <bean id="getFollowerPersonIdsForPersonByIdMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache Mapper -->
+        <constructor-arg ref="getFollowerPersonIdsForPersonByIdCacheMapper"/>
+        <!-- Database mapper to fall back on if not found in cache -->
+        <constructor-arg ref="getFollowerPersonIdsForPersonByIdDbMapper" />
+        <!-- Data combiner -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
+        </constructor-arg>        
+        <!-- Cache refresher -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleListValueCacheRefreshStrategy">
+                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.FOLLOWERS_BY_PERSON" />
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
+                </constructor-arg>
+                <property name="cache" ref="memcachedCache" />
+            </bean> 
+        </constructor-arg>                       
+    </bean>
+        
+    <bean id="getFollowerPersonIdsForPersonByIdMapper_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache Mapper -->
+        <constructor-arg ref="nullResultPartialMapper"/>
+        <!-- Database mapper to fall back on if not found in cache -->
+        <constructor-arg ref="getFollowerPersonIdsForPersonByIdDbMapper" />
+        <!-- Data combiner -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
+        </constructor-arg>        
+        <!-- Cache refresher -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleListValueCacheRefreshStrategy">
+                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.FOLLOWERS_BY_PERSON" />
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
+                </constructor-arg>
+                <property name="cache" ref="memcachedCache" />
+            </bean> 
+        </constructor-arg>                        
+    </bean> 
+    
+    <bean id="getFollowerPersonIdsForPersonByIdCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
+        </constructor-arg>
+        <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.FOLLOWERS_BY_PERSON" />
+        <!-- Is list of lists flag -->
+        <constructor-arg value="False" />
+        <property name="cache" ref="memcachedCache" />
+    </bean>
 
     <bean id="getPersonsByIdsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache Mapper -->
@@ -1508,7 +1620,11 @@
     <bean id="getPersonsByIdsDBMapper" class="org.eurekastreams.server.persistence.mappers.db.GetPersonsByIds">
         <constructor-arg ref="personQueryStrategy" />
         <constructor-arg ref="getRelatedOrganizationIdsByPersonId" />
-    </bean>    
+    </bean>  
+    
+    <bean id="getFollowerPersonIdsForPersonByIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFollowerPersonIdsForPersonByIdDbMapper" />
+    
+    <bean id="getFollowedPersonIdsForPersonByIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFollowedPersonIdsForPersonByIdDbMapper" />      
     
     <bean id="getRelatedEntityCountMapper" class="org.eurekastreams.server.persistence.mappers.db.GetRelatedEntityCount" />
 	
