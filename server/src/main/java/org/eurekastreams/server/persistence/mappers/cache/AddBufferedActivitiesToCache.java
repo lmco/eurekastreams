@@ -89,7 +89,6 @@ public class AddBufferedActivitiesToCache extends CachedDomainMapper
                 }
                 activitesByFollower.get(followerId).add(activity.getId());
             }
-
         }
 
         if (!allActivityIds.isEmpty())

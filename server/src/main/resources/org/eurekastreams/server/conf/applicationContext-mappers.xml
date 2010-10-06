@@ -1366,9 +1366,7 @@
 	<bean id="getCompositeStreamIdsByAssociatedActivity"
 		class="org.eurekastreams.server.persistence.mappers.cache.GetCompositeStreamIdsByAssociatedActivity">
 		<constructor-arg ref="getFollowerIds" />
-		<constructor-arg ref="getGroupFollowerIds" />
 		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
-		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 	</bean>
 
 	<bean id="postCachedActivity"

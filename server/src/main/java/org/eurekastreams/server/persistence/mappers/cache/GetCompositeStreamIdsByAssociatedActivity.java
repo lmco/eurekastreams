@@ -22,14 +22,12 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds;
-import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 
 /**
  * Gets all of the composite streams an activity should be added to.
- *
+ * 
  */
 public class GetCompositeStreamIdsByAssociatedActivity extends CachedDomainMapper
 {
@@ -39,47 +37,29 @@ public class GetCompositeStreamIdsByAssociatedActivity extends CachedDomainMappe
     private GetFollowerIds personFollowersMapper;
 
     /**
-     * Mapper to get followers of a group.
-     */
-    private GetGroupFollowerIds groupFollowersMapper;
-
-    /**
      * Mapper to get people by account ids.
      */
     private GetPeopleByAccountIds bulkPeopleByAccountIdMapper;
 
     /**
-     * Mapper to get groups by short name.
-     */
-    private GetDomainGroupsByShortNames bulkDomainGroupsByShortNameMapper;
-
-    /**
      * Default constructor.
-     *
+     * 
      * @param inPersonFollowersMapper
      *            the person follower mapper.
-     * @param inGroupFollowersMapper
-     *            the group follower mapper.
      * @param inBulkPeopleByAccountIdMapper
      *            the get people by account id mapper.
-     * @param inBulkDomainGroupsByShortNameMapper
-     *            the bulk domain group by short name mapper.
      */
     public GetCompositeStreamIdsByAssociatedActivity(final GetFollowerIds inPersonFollowersMapper,
-            final GetGroupFollowerIds inGroupFollowersMapper,
-            final GetPeopleByAccountIds inBulkPeopleByAccountIdMapper,
-            final GetDomainGroupsByShortNames inBulkDomainGroupsByShortNameMapper)
+            final GetPeopleByAccountIds inBulkPeopleByAccountIdMapper)
     {
         personFollowersMapper = inPersonFollowersMapper;
-        groupFollowersMapper = inGroupFollowersMapper;
         bulkPeopleByAccountIdMapper = inBulkPeopleByAccountIdMapper;
-        bulkDomainGroupsByShortNameMapper = inBulkDomainGroupsByShortNameMapper;
     }
 
     /**
      * Returns a list of followers that get this activity. Separate from the composite streams Because its stored in
      * cache differently.
-     *
+     * 
      * @param activity
      *            the activity.
      * @return A list of IDs of following composite streams.
@@ -98,8 +78,8 @@ public class GetCompositeStreamIdsByAssociatedActivity extends CachedDomainMappe
         }
         else if (destinationStream.getType() == EntityType.GROUP)
         {
-            long groupId = bulkDomainGroupsByShortNameMapper.execute(param).get(0).getEntityId();
-            followers = groupFollowersMapper.execute(groupId);
+            // Empty for groups, group activity doesn't show up in following streams.
+            followers = new ArrayList<Long>();
         }
         else
         {
