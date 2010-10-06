@@ -1,3 +1,6 @@
+$(settings.sitelabel)
+
+
 $(actor.name) commented on a $(activity.type) in the $(dest.name) stream.
 
 "$(comment.content)"

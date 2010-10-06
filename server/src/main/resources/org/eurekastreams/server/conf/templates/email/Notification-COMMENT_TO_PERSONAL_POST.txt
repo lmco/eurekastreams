@@ -1,3 +1,6 @@
+$(settings.sitelabel)
+
+
 $(actor.name) commented on your $(activity.type).
 
 "$(comment.content)"

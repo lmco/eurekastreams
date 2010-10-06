@@ -18,6 +18,7 @@ package org.eurekastreams.server.persistence.mappers.ldap;
 
 import static org.eurekastreams.commons.test.IsEqualInternally.equalInternally;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -83,5 +84,26 @@ public class LdapSingleValueLookupMapperTest
         String result = sut.execute(NTID);
         context.assertIsSatisfied();
         assertEquals(UPN, result);
+    }
+
+    /**
+     * Tests mapping.
+     */
+    @Test
+    public void testExecuteNoResults()
+    {
+        final LdapLookupRequest rqst = new LdapLookupRequest(NTID);
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(ldapQueryMapper).execute(with(equalInternally(rqst)));
+                will(returnValue(Collections.EMPTY_LIST));
+            }
+        });
+
+        String result = sut.execute(NTID);
+        context.assertIsSatisfied();
+        assertNull(result);
     }
 }

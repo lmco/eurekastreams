@@ -28,6 +28,7 @@ import org.eurekastreams.server.AnonymousClassInterceptor;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
+import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -84,9 +85,12 @@ public class ActivityTemplateEmailBuilderTest
         builders.put(BaseObjectType.BOOKMARK, builderBookmark);
         activity = new ActivityDTO();
         activity.setBaseObjectProperties(new HashMap<String, String>());
-        activity.getBaseObjectProperties().put("content", "This is the text");
+        activity.getBaseObjectProperties().put("content", "This is the text, %EUREKA:ACTORNAME%.");
         activity.getBaseObjectProperties().put("targetUrl", "http://www.eurekastreams.org");
         activity.getBaseObjectProperties().put("targetTitle", "Eureka Streams");
+        StreamEntityDTO actor = new StreamEntityDTO();
+        actor.setDisplayName("John Doe");
+        activity.setActor(actor);
     }
 
     /**
@@ -127,7 +131,7 @@ public class ActivityTemplateEmailBuilderTest
         context.assertIsSatisfied();
         Map map = intMap.getObject();
         assertEquals(3, map.size());
-        assertEquals("This is the text", map.get("activity.content"));
+        assertEquals("This is the text, John Doe.", map.get("activity.content"));
         assertEquals("http://www.eurekastreams.org", map.get("activity.targetUrl"));
         assertEquals("Eureka Streams", map.get("activity.targetTitle"));
     }

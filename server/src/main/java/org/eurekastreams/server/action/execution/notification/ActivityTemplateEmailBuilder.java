@@ -34,6 +34,12 @@ import org.eurekastreams.server.persistence.mappers.DomainMapper;
  */
 public class ActivityTemplateEmailBuilder implements NotificationEmailBuilder
 {
+    /** Key for the content (requires filtering). */
+    private static final String CONTENT_KEY = "content";
+
+    /** Tag to replace. */
+    private static final String REPLACEMENT_TAG = "%EUREKA:ACTORNAME%";
+
     /** List of builders to choose from. */
     private Map<BaseObjectType, TemplateEmailBuilder> builders;
 
@@ -81,7 +87,13 @@ public class ActivityTemplateEmailBuilder implements NotificationEmailBuilder
         Map<String, String> properties = new HashMap<String, String>();
         for (Map.Entry<String, String> entry : activity.getBaseObjectProperties().entrySet())
         {
-            properties.put("activity." + entry.getKey(), entry.getValue());
+            String key = entry.getKey();
+            String value = entry.getValue();
+            if (CONTENT_KEY.equals(key))
+            {
+                value = value.replace(REPLACEMENT_TAG, activity.getActor().getDisplayName());
+            }
+            properties.put("activity." + key, value);
         }
         builder.build(inNotification, properties, inMessage);
     }
