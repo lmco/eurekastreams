@@ -16,6 +16,7 @@
 package org.eurekastreams.server.domain.strategies;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -111,6 +112,32 @@ public class HashTagExtractorTest
         String content = "Did you know that #potatoes are made of #frenchfries?";
         assertNull(sut.extract(content, 9 * 4 + 5)); // 41
         assertNull(sut.extract(content, 9 * 5 + 7)); // 52
+    }
+
+    /**
+     * Test extract finds one after a newline.
+     */
+    @Test
+    public void testExtractHashTagAfterNewline()
+    {
+        String content = "Did you know that\n#potatoes are made of frenchfries?";
+        Substring expectedResult = new Substring(9 * 2, 9, "#potatoes");
+        Substring result = sut.extract(content, -1);
+        assertNotNull(result);
+        assertTrue(IsEqualInternally.areEqualInternally(expectedResult, result));
+    }
+
+    /**
+     * Test extract finds one after a tab.
+     */
+    @Test
+    public void testExtractHashTagAfterTab()
+    {
+        String content = "Did you know that\t#potatoes are made of frenchfries?";
+        Substring expectedResult = new Substring(9 * 2, 9, "#potatoes");
+        Substring result = sut.extract(content, -1);
+        assertNotNull(result);
+        assertTrue(IsEqualInternally.areEqualInternally(expectedResult, result));
     }
 
     /**
