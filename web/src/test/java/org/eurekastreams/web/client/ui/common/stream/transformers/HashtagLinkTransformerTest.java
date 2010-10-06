@@ -367,6 +367,46 @@ public class HashtagLinkTransformerTest
     }
 
     /**
+     * Test extract finds one after a newline.
+     */
+    @Test
+    public void testExtractHashTagAfterNewline()
+    {
+        String input = "hello there,\t#what's up?";
+        String expected = "hello there,\t<a href=\"FOOBAR-what\">#what</a>'s up?";
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(linkBuilder).buildHashtagSearchLink("#what", null);
+                will(returnValue("FOOBAR-what"));
+            }
+        });
+
+        assertEquals(expected, sut.transform(input));
+    }
+
+    /**
+     * Test extract finds one after a tab.
+     */
+    @Test
+    public void testExtractHashTagAfterTab()
+    {
+        String input = "hello there,\n#what's up?";
+        String expected = "hello there,\n<a href=\"FOOBAR-what\">#what</a>'s up?";
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(linkBuilder).buildHashtagSearchLink("#what", null);
+                will(returnValue("FOOBAR-what"));
+            }
+        });
+
+        assertEquals(expected, sut.transform(input));
+    }
+
+    /**
      * Test.
      */
     @Test

@@ -29,7 +29,7 @@ public class HashtagLinkTransformer
     /**
      * The characters allowed before a hashtag.
      */
-    private static final String VALID_CHARS_BEFORE_HASHTAG = "-.,<>()#[]@!$&'()*+,;=% \t\"";
+    private static final String VALID_CHARS_BEFORE_HASHTAG = "-.,<>()#[]@!$&'()*+,;=% \t\"\n";
 
     /**
      * The characters in a valid url.
