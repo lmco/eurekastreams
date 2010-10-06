@@ -3169,7 +3169,6 @@
                     <list>
                         <value>queuePersonCacheWarmingTasks</value>
                         <value>queueGroupCacheWarmingTasks</value>
-                        <value>cacheWarmGroups</value>
                         <value>cacheWarmOrganizations</value>                    
                     </list>
                 </constructor-arg>
@@ -3206,6 +3205,7 @@
                     <list>
                         <value>cacheGroup</value>
                         <value>cacheFollowerPersonIdsForGroupList</value>
+                        <value>cacheGroupCoordinatorIdsForGroupList</value>
                     </list>
                 </constructor-arg>
                 <constructor-arg ref="getGroupIds" />
@@ -3286,6 +3286,18 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>
+    
+    <bean id="cacheGroupCoordinatorIdsForGroupList" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper_FORCE_REFRESH" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="False" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>    
     
     <bean id="cacheWarmGroups" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
         <constructor-arg ref="noValidationStrategy" />
