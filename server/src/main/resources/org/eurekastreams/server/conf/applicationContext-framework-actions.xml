@@ -2512,9 +2512,22 @@
         <constructor-arg value="true" />
     </bean>
 
+    <bean id="headerConnectionFacadeDecorator" 
+        class="org.eurekastreams.server.service.actions.strategies.links.HeadersConnectionFacadeDecorator">
+        <constructor-arg>
+            <util:map>
+                <entry key="User-Agent" value="Mozilla/4.76" />
+            </util:map>
+        </constructor-arg>
+    </bean>
+    
+    <util:list id="connectionFacadeDecorators">
+        <ref bean="headerConnectionFacadeDecorator"/>
+    </util:list>
+    
     <bean id="connectionFacade"
         class="org.eurekastreams.server.service.actions.strategies.links.ConnectionFacade">
-        <property name="userAgent" value="Mozilla/4.76" />
+        <constructor-arg ref="connectionFacadeDecorators" />
         <property name="connectionTimeOut" value="6000" />
         <property name="proxyHost" value="${eureka.proxy.host}" />
         <property name="proxyPort" value="${eureka.proxy.port}" />

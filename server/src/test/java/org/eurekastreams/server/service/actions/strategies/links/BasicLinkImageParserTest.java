@@ -58,6 +58,11 @@ public class BasicLinkImageParserTest
      * The max number of images to parse.
      */
     private static final int MAX_IMAGES = 5;
+    
+    /**
+     * Test account to use.
+     */
+    private static final String TEST_ACCOUNT = "testaccount";
 
     /**
      * Setup test fixtures.
@@ -87,7 +92,7 @@ public class BasicLinkImageParserTest
 
         // Shouldn't bother downloading images that have tags saying they're too small.
 
-        sut.parseInformation(html, link);
+        sut.parseInformation(html, link, TEST_ACCOUNT);
     }
 
     /**
@@ -104,7 +109,7 @@ public class BasicLinkImageParserTest
 
         // Shouldn't bother downloading images, this is an image.
 
-        sut.parseInformation(html, link);
+        sut.parseInformation(html, link, TEST_ACCOUNT);
         Assert.assertTrue(link.getImageUrls().contains(link.getUrl()));
     }
 
@@ -122,7 +127,7 @@ public class BasicLinkImageParserTest
 
         // Shouldn't bother downloading images that have tags saying they're too small.
 
-        sut.parseInformation(html, link);
+        sut.parseInformation(html, link, TEST_ACCOUNT);
     }
 
     /**
@@ -144,15 +149,15 @@ public class BasicLinkImageParserTest
         context.checking(new Expectations()
         {
             {
-                oneOf(urlUtils).getImgHeight("http://www.someurl.com/someimg1.png");
+                oneOf(urlUtils).getImgHeight("http://www.someurl.com/someimg1.png", TEST_ACCOUNT);
                 will(returnValue(BasicLinkImageParser.MIN_IMG_SIZE - 1));
 
-                 oneOf(urlUtils).getImgWidth("http://www.someurl.com/someimg1.png");
+                 oneOf(urlUtils).getImgWidth("http://www.someurl.com/someimg1.png", TEST_ACCOUNT);
                  will(returnValue(BasicLinkImageParser.MIN_IMG_SIZE + 1));
             }
         });
 
-        sut.parseInformation(html, link);
+        sut.parseInformation(html, link, TEST_ACCOUNT);
 
         context.assertIsSatisfied();
     }
@@ -174,15 +179,15 @@ public class BasicLinkImageParserTest
         context.checking(new Expectations()
         {
             {
-                oneOf(urlUtils).getImgHeight("http://www.someurl.com/someimg1.png");
+                oneOf(urlUtils).getImgHeight("http://www.someurl.com/someimg1.png", TEST_ACCOUNT);
                 will(returnValue(BasicLinkImageParser.MIN_IMG_SIZE + 1));
 
-                oneOf(urlUtils).getImgWidth("http://www.someurl.com/someimg1.png");
+                oneOf(urlUtils).getImgWidth("http://www.someurl.com/someimg1.png", TEST_ACCOUNT);
                 will(returnValue(BasicLinkImageParser.MIN_IMG_SIZE - 1));
             }
         });
 
-        sut.parseInformation(html, link);
+        sut.parseInformation(html, link, TEST_ACCOUNT);
 
         Assert.assertFalse(link.getImageUrls().contains("http://www.someurl.com/someimg1.png"));
 
@@ -206,15 +211,15 @@ public class BasicLinkImageParserTest
         context.checking(new Expectations()
         {
             {
-                oneOf(urlUtils).getImgHeight("http://www.someurl.com/someimg1.png");
+                oneOf(urlUtils).getImgHeight("http://www.someurl.com/someimg1.png", TEST_ACCOUNT);
                 will(returnValue(BasicLinkImageParser.MIN_IMG_SIZE - 1));
 
-                 oneOf(urlUtils).getImgWidth("http://www.someurl.com/someimg1.png");
+                 oneOf(urlUtils).getImgWidth("http://www.someurl.com/someimg1.png", TEST_ACCOUNT);
                  will(returnValue(BasicLinkImageParser.MIN_IMG_SIZE - 1));
             }
         });
 
-        sut.parseInformation(html, link);
+        sut.parseInformation(html, link, TEST_ACCOUNT);
 
         Assert.assertFalse(link.getImageUrls().contains("http://www.someurl.com/someimg1.png"));
 
@@ -238,15 +243,15 @@ public class BasicLinkImageParserTest
         context.checking(new Expectations()
         {
             {
-                oneOf(urlUtils).getImgHeight("http://www.someurl.com/someimg1.png");
+                oneOf(urlUtils).getImgHeight("http://www.someurl.com/someimg1.png", TEST_ACCOUNT);
                 will(returnValue(BasicLinkImageParser.MIN_IMG_SIZE + 1));
 
-                oneOf(urlUtils).getImgWidth("http://www.someurl.com/someimg1.png");
+                oneOf(urlUtils).getImgWidth("http://www.someurl.com/someimg1.png", TEST_ACCOUNT);
                 will(returnValue(BasicLinkImageParser.MIN_IMG_SIZE + 1));
             }
         });
 
-        sut.parseInformation(html, link);
+        sut.parseInformation(html, link, TEST_ACCOUNT);
 
         Assert.assertTrue(link.getImageUrls().contains("http://www.someurl.com/someimg1.png"));
 
@@ -270,10 +275,10 @@ public class BasicLinkImageParserTest
         context.checking(new Expectations()
         {
             {
-                oneOf(urlUtils).getImgHeight("http://www.someurl.com/someimg1.png");
+                oneOf(urlUtils).getImgHeight("http://www.someurl.com/someimg1.png", TEST_ACCOUNT);
                 will(returnValue(BasicLinkImageParser.MIN_IMG_SIZE + 1));
 
-                oneOf(urlUtils).getImgWidth("http://www.someurl.com/someimg1.png");
+                oneOf(urlUtils).getImgWidth("http://www.someurl.com/someimg1.png", TEST_ACCOUNT);
                 will(returnValue(BasicLinkImageParser.MIN_IMG_SIZE + 1));
 
                 oneOf(urlUtils).getProtocol("http://www.someurl.com");
@@ -285,7 +290,7 @@ public class BasicLinkImageParserTest
             }
         });
 
-        sut.parseInformation(html, link);
+        sut.parseInformation(html, link, TEST_ACCOUNT);
 
         Assert.assertTrue(link.getImageUrls().contains("http://www.someurl.com/someimg1.png"));
 
@@ -309,16 +314,16 @@ public class BasicLinkImageParserTest
         context.checking(new Expectations()
         {
             {
-                oneOf(urlUtils).getImgHeight("http://www.someurl.com/someimg1.png");
+                oneOf(urlUtils).getImgHeight("http://www.someurl.com/someimg1.png", TEST_ACCOUNT);
                 will(returnValue(BasicLinkImageParser.MIN_IMG_SIZE + 1));
 
-                oneOf(urlUtils).getImgWidth("http://www.someurl.com/someimg1.png");
+                oneOf(urlUtils).getImgWidth("http://www.someurl.com/someimg1.png", TEST_ACCOUNT);
                 will(returnValue(BasicLinkImageParser.MIN_IMG_SIZE + 1));
 
             }
         });
 
-        sut.parseInformation(html, link);
+        sut.parseInformation(html, link, TEST_ACCOUNT);
 
         Assert.assertTrue(link.getImageUrls().contains("http://www.someurl.com/someimg1.png"));
 
@@ -342,16 +347,16 @@ public class BasicLinkImageParserTest
         context.checking(new Expectations()
         {
             {
-                oneOf(urlUtils).getImgHeight("http://www.someurl.com/someimg1.png");
+                oneOf(urlUtils).getImgHeight("http://www.someurl.com/someimg1.png", TEST_ACCOUNT);
                 will(returnValue(BasicLinkImageParser.MIN_IMG_SIZE + 1));
 
-                oneOf(urlUtils).getImgWidth("http://www.someurl.com/someimg1.png");
+                oneOf(urlUtils).getImgWidth("http://www.someurl.com/someimg1.png", TEST_ACCOUNT);
                 will(returnValue(BasicLinkImageParser.MIN_IMG_SIZE + 1));
 
             }
         });
 
-        sut.parseInformation(html, link);
+        sut.parseInformation(html, link, TEST_ACCOUNT);
 
         Assert.assertTrue(link.getImageUrls().contains("http://www.someurl.com/someimg1.png"));
 
@@ -375,13 +380,13 @@ public class BasicLinkImageParserTest
         context.checking(new Expectations()
         {
             {
-                oneOf(urlUtils).getImgHeight("http://\\f\\2w\\asomeimg1.png");
+                oneOf(urlUtils).getImgHeight("http://\\f\\2w\\asomeimg1.png", TEST_ACCOUNT);
                 will(throwException(new MalformedURLException()));
 
             }
         });
 
-        sut.parseInformation(html, link);
+        sut.parseInformation(html, link, TEST_ACCOUNT);
 
         context.assertIsSatisfied();
     }
@@ -403,13 +408,13 @@ public class BasicLinkImageParserTest
         context.checking(new Expectations()
         {
             {
-                oneOf(urlUtils).getImgHeight("http://\\f\\2w\\asomeimg1.png");
+                oneOf(urlUtils).getImgHeight("http://\\f\\2w\\asomeimg1.png", TEST_ACCOUNT);
                 will(throwException(new IOException()));
 
             }
         });
 
-        sut.parseInformation(html, link);
+        sut.parseInformation(html, link, TEST_ACCOUNT);
 
         context.assertIsSatisfied();
     }

@@ -63,6 +63,11 @@ public class HtmlLinkParserTest
             "titleParser");
 
     /**
+     * Test user account.
+     */
+    private static final String TEST_ACCOUNT= "testAccount";
+    
+    /**
      * Setup test fixtures.
      */
     @Before
@@ -86,13 +91,13 @@ public class HtmlLinkParserTest
         context.checking(new Expectations()
         {
             {
-                oneOf(descriptionParser).parseInformation(html, link);
-                oneOf(imageParser).parseInformation(html, link);
-                oneOf(titleParser).parseInformation(html, link);
+                oneOf(descriptionParser).parseInformation(html, link, TEST_ACCOUNT);
+                oneOf(imageParser).parseInformation(html, link, TEST_ACCOUNT);
+                oneOf(titleParser).parseInformation(html, link, TEST_ACCOUNT);
             }
         });
 
-        sut.parseLinkInformation(html, link);
+        sut.parseLinkInformation(html, link, TEST_ACCOUNT);
 
         context.assertIsSatisfied();
     }

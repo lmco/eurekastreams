@@ -108,7 +108,7 @@ public class GetParsedLinkInformationExecution implements ExecutionStrategy<Prin
             {
                 url = "http://" + url;
             }
-            url = connection.getFinalUrl(url);
+            url = connection.getFinalUrl(url, inActionContext.getPrincipal().getAccountId());
             UniqueStringRequest req = new UniqueStringRequest(url);
 
             theLink = mapper.execute(req);
@@ -126,7 +126,7 @@ public class GetParsedLinkInformationExecution implements ExecutionStrategy<Prin
                 // Attempt to retrieve the contents of the resource.
                 try
                 {
-                    htmlString = connection.downloadFile(url);
+                    htmlString = connection.downloadFile(url, inActionContext.getPrincipal().getAccountId());
                     htmlString = htmlString.replace("\\s+", " ");
 
                     host = connection.getHost(url);
@@ -156,7 +156,8 @@ public class GetParsedLinkInformationExecution implements ExecutionStrategy<Prin
                     if (match.find())
                     {
                         log.debug("Found: " + strategy.getRegex());
-                        strategy.parseLinkInformation(htmlString, theLink);
+                        strategy.parseLinkInformation(htmlString, theLink, 
+                                inActionContext.getPrincipal().getAccountId());
                         break;
                     }
                     else

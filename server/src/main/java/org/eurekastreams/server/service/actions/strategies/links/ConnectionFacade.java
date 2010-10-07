@@ -90,11 +90,6 @@ public class ConnectionFacade
     private Map<String, ImageDimensions> imgMap = new WeakHashMap<String, ImageDimensions>();
 
     /**
-     * The user agent to use for requests.
-     */
-    private String userAgent = "";
-
-    /**
      * Max time for connections.
      */
     private int connectionTimeOut = MIN_TIMEOUT;
@@ -113,6 +108,22 @@ public class ConnectionFacade
      * HTTP redirect codes.
      */
     private List<Integer> redirectCodes = new ArrayList<Integer>();
+
+    /**
+     * List of decorators that can add headers to the connection.
+     */
+    private List<ConnectionFacadeDecorator> decorators;
+
+    /**
+     * Constructor.
+     * 
+     * @param inDecorators
+     *            - List of ConnectionFacadeDecorator instances.
+     */
+    public ConnectionFacade(final List<ConnectionFacadeDecorator> inDecorators)
+    {
+        decorators = inDecorators;
+    }
 
     /**
      * @return the redirectCodes
@@ -166,23 +177,6 @@ public class ConnectionFacade
     }
 
     /**
-     * @return the userAgent
-     */
-    public final String getUserAgent()
-    {
-        return userAgent;
-    }
-
-    /**
-     * @param inUserAgent
-     *            the userAgent to set
-     */
-    public final void setUserAgent(final String inUserAgent)
-    {
-        this.userAgent = inUserAgent;
-    }
-
-    /**
      * @return the connectionTimeOut
      */
     public final int getConnectionTimeOut()
@@ -207,17 +201,20 @@ public class ConnectionFacade
 
     /**
      * Download a file.
-     *
+     * 
      * @param url
      *            the URL as a string.
+     * @param inAccountId
+     *            accountid of the user making the request.
      * @return the file as a string.
      * @throws IOException
      *             of URL can't be opened.
      */
-    public String downloadFile(final String url) throws IOException
+    public String downloadFile(final String url, final String inAccountId) throws IOException
     {
         String s = "";
-        DataInputStream data = new DataInputStream(new BufferedInputStream(getConnection(url).getInputStream()));
+        DataInputStream data = new DataInputStream(new BufferedInputStream(getConnection(url, inAccountId)
+                .getInputStream()));
 
         /**
          * I'd like to use a more robust parsing library here.
@@ -236,44 +233,50 @@ public class ConnectionFacade
 
     /**
      * Get the height of an image by URL.
-     *
+     * 
      * @param url
      *            the url.
+     * @param inAccountId
+     *            account id of the user making the request.
      * @return the image height.
      * @throws IOException
      *             on bad url.
      */
-    public int getImgHeight(final String url) throws IOException
+    public int getImgHeight(final String url, final String inAccountId) throws IOException
     {
-        ImageDimensions dimensions = getImgDimensions(url);
+        ImageDimensions dimensions = getImgDimensions(url, inAccountId);
 
         return dimensions.getHeight();
     }
 
     /**
      * Get the width of an image by URL.
-     *
+     * 
      * @param url
      *            the url.
+     * @param inAccountId
+     *            account id of the user making the request.
      * @return the image height.
      * @throws IOException
      *             on bad url.
      */
-    public int getImgWidth(final String url) throws IOException
+    public int getImgWidth(final String url, final String inAccountId) throws IOException
     {
-        ImageDimensions dimensions = getImgDimensions(url);
+        ImageDimensions dimensions = getImgDimensions(url, inAccountId);
 
         return dimensions.getHeight();
     }
 
     /**
      * Get the connection.
-     *
+     * 
      * @param url
      *            the url.
+     * @param inAccountId
+     *            account id of the user making the request.
      * @return the connection.
      */
-    private HttpURLConnection getConnection(final String url)
+    private HttpURLConnection getConnection(final String url, final String inAccountId)
     {
         HttpURLConnection connection = null;
 
@@ -331,7 +334,7 @@ public class ConnectionFacade
 
                 connection.setConnectTimeout(connectionTimeOut);
 
-                connection.addRequestProperty("User-Agent", userAgent);
+                // Loop through the Header decorators and the map of headers that they contain.
 
             }
             else
@@ -341,7 +344,12 @@ public class ConnectionFacade
 
                 connection = (HttpURLConnection) theUrl.openConnection();
                 connection.setConnectTimeout(connectionTimeOut);
-                connection.addRequestProperty("User-Agent", userAgent);
+            }
+
+            // Decorate the connection.
+            for (ConnectionFacadeDecorator decorator : decorators)
+            {
+                decorator.decorate(connection, inAccountId);
             }
         }
         catch (Exception e)
@@ -354,20 +362,22 @@ public class ConnectionFacade
 
     /**
      * Get the dimensions of an image by URL.
-     *
+     * 
      * @param url
      *            the url.
+     * @param inAccountId
+     *            account id of the user making the request.
      * @return the image height.
      * @throws IOException
      *             on bad url.
      */
-    private ImageDimensions getImgDimensions(final String url) throws IOException
+    private ImageDimensions getImgDimensions(final String url, final String inAccountId) throws IOException
     {
         if (!imgMap.containsKey(url))
         {
             log.info("Downloading image: " + url);
 
-            InputStream connectionStream = getConnection(url).getInputStream();
+            InputStream connectionStream = getConnection(url, inAccountId).getInputStream();
             if (null != connectionStream)
             {
                 BufferedImage img = ImageIO.read(connectionStream);
@@ -400,7 +410,7 @@ public class ConnectionFacade
 
         /**
          * Constructor.
-         *
+         * 
          * @param inHeight
          *            height.
          * @param inWidth
@@ -431,11 +441,11 @@ public class ConnectionFacade
 
     /**
      * Get the file host.
-     *
+     * 
      * @param url
      *            the url.
      * @return the host.
-     *
+     * 
      * @throws MalformedURLException
      *             on bad URL.
      */
@@ -448,11 +458,11 @@ public class ConnectionFacade
 
     /**
      * Get the protocol of a URL.
-     *
+     * 
      * @param url
      *            the url.
      * @return the protocol.
-     *
+     * 
      * @throws MalformedURLException
      *             on bad URL.
      */
@@ -465,11 +475,11 @@ public class ConnectionFacade
 
     /**
      * Get the path of a URL.
-     *
+     * 
      * @param url
      *            the url.
      * @return the protocol.
-     *
+     * 
      * @throws MalformedURLException
      *             on bad URL.
      */
@@ -482,7 +492,7 @@ public class ConnectionFacade
 
     /**
      * Used to cache URLs.
-     *
+     * 
      * @param url
      *            the url as a String.
      * @return the URL object.
@@ -501,16 +511,18 @@ public class ConnectionFacade
 
     /**
      * Get the final URL after redirect.
-     *
+     * 
      * @param url
      *            the initial url.
+     * @param inAccountId
+     *            account id of the user making the request.
      * @return the final url.
      * @throws IOException
      *             shouldn't happen.
      */
-    public String getFinalUrl(final String url) throws IOException
+    public String getFinalUrl(final String url, final String inAccountId) throws IOException
     {
-        HttpURLConnection connection = getConnection(url);
+        HttpURLConnection connection = getConnection(url, inAccountId);
         if (redirectCodes.contains(connection.getResponseCode()))
         {
             String redirUrl = connection.getHeaderField("Location");
