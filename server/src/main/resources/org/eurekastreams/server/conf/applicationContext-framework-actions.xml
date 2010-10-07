@@ -843,6 +843,7 @@
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.profile.DomainGroupCacheUpdaterAsyncExecution">
+                <constructor-arg ref="getActivityIdsAuthoredByOrOriginallyAuthoredByEntityDBMapper" />
                 <constructor-arg ref="saveDomainGroupCoordinatorsListToCacheMapper" />
                 <constructor-arg ref="jpaGroupMapper" />
                 <constructor-arg ref="addPrivateGroupIdToCachedCoordinatorAccessList" />

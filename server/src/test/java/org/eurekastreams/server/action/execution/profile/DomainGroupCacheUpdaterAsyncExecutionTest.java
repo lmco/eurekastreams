@@ -16,16 +16,19 @@
 package org.eurekastreams.server.action.execution.profile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.action.request.profile.DomainGroupCacheUpdaterRequest;
 import org.eurekastreams.server.domain.DomainGroup;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddPrivateGroupIdToCachedCoordinatorAccessList;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.cache.SaveDomainGroupCoordinatorsListToCache;
+import org.eurekastreams.server.persistence.mappers.db.GetActivityIdsAuthoredByOrOriginallyAuthoredByEntity;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -36,7 +39,7 @@ import org.springframework.security.userdetails.UserDetails;
 
 /**
  * This class is responsible for testing the functionality of the DomainGroupCacheUpdaterAsyncAction.
- *
+ * 
  */
 public class DomainGroupCacheUpdaterAsyncExecutionTest
 {
@@ -53,8 +56,8 @@ public class DomainGroupCacheUpdaterAsyncExecutionTest
     /**
      * Mocked instance of the {@link SaveDomainGroupCoordinatorsListToCache} mapper.
      */
-    private SaveDomainGroupCoordinatorsListToCache groupCoordinatorCacheMock =
-        context.mock(SaveDomainGroupCoordinatorsListToCache.class);
+    private SaveDomainGroupCoordinatorsListToCache groupCoordinatorCacheMock = context
+            .mock(SaveDomainGroupCoordinatorsListToCache.class);
 
     /**
      * Mocked instance of the {@link DomainGroupMapper}.
@@ -64,8 +67,8 @@ public class DomainGroupCacheUpdaterAsyncExecutionTest
     /**
      * Mocked instance of the {@link AddPrivateGroupIdToCachedCoordinatorAccessList} cache mapper.
      */
-    private AddPrivateGroupIdToCachedCoordinatorAccessList privateGroupIdCachedCoordAccessListMock =
-        context.mock(AddPrivateGroupIdToCachedCoordinatorAccessList.class);
+    private AddPrivateGroupIdToCachedCoordinatorAccessList privateGroupIdCachedCoordAccessListMock = context
+            .mock(AddPrivateGroupIdToCachedCoordinatorAccessList.class);
 
     /**
      * Mocked instance of the cache client.
@@ -75,8 +78,7 @@ public class DomainGroupCacheUpdaterAsyncExecutionTest
     /**
      * Mock.
      */
-    private PrincipalActionContext actionContext =
-    			context.mock(PrincipalActionContext.class);
+    private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
 
     /**
      * Mocked user details.
@@ -96,9 +98,13 @@ public class DomainGroupCacheUpdaterAsyncExecutionTest
     /**
      * Mocked domain group.
      */
-    private DomainGroupCacheUpdaterRequest request =
-    			context.mock(DomainGroupCacheUpdaterRequest.class);
+    private DomainGroupCacheUpdaterRequest request = context.mock(DomainGroupCacheUpdaterRequest.class);
 
+    /**
+     * Mocked authored by mapper.
+     */
+    private GetActivityIdsAuthoredByOrOriginallyAuthoredByEntity getActivityIdsAuthordedByEntityDbMapper = context
+            .mock(GetActivityIdsAuthoredByOrOriginallyAuthoredByEntity.class);
 
     /**
      * group id.
@@ -106,19 +112,30 @@ public class DomainGroupCacheUpdaterAsyncExecutionTest
     private final Long groupId = 37271L;
 
     /**
+     * group name.
+     */
+    private final String groupName = "groupname";
+
+    /**
+     * Activity IDs for the group.
+     */
+    private List<Long> activityIds = Arrays.asList(5L, 6L, 7L);
+    
+    /**
      * Prepare the system under test.
      */
     @Before
     public void setup()
     {
-        sut = new DomainGroupCacheUpdaterAsyncExecution(
-                groupCoordinatorCacheMock,
-                groupMapper, privateGroupIdCachedCoordAccessListMock, cacheMock);
+        sut = new DomainGroupCacheUpdaterAsyncExecution(getActivityIdsAuthordedByEntityDbMapper,
+                groupCoordinatorCacheMock, groupMapper, privateGroupIdCachedCoordAccessListMock, cacheMock);
     }
 
     /**
      * Test the update execution of perform action with a private group.
-     * @throws Exception - on error.
+     * 
+     * @throws Exception
+     *             - on error.
      */
     @Test
     public void testPerformActionWithPrivateGroupUpdate() throws Exception
@@ -135,13 +152,13 @@ public class DomainGroupCacheUpdaterAsyncExecutionTest
         context.checking(new Expectations()
         {
             {
-            	oneOf(actionContext).getParams();
-            	will(returnValue(request));
+                oneOf(actionContext).getParams();
+                will(returnValue(request));
 
-            	allowing(request).getDomainGroupId();
-            	will(returnValue(groupId));
+                allowing(request).getDomainGroupId();
+                will(returnValue(groupId));
 
-            	oneOf(groupMapper).findById(groupId);
+                oneOf(groupMapper).findById(groupId);
                 will(returnValue(groupMock));
 
                 oneOf(groupMock).isPublicGroup();
@@ -152,15 +169,20 @@ public class DomainGroupCacheUpdaterAsyncExecutionTest
 
                 oneOf(request).getIsUpdate();
                 will(returnValue(true));
+                
+                allowing(groupMock).getShortName();
+                will(returnValue(groupName));
 
-                oneOf(cacheMock).addToSet(
-                        CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + coord1,
+                oneOf(getActivityIdsAuthordedByEntityDbMapper).execute(groupName, EntityType.GROUP);
+                will(returnValue(activityIds));
+                
+                exactly(activityIds.size()).of(cacheMock).delete(with(any(String.class)));
+                
+                oneOf(cacheMock).addToSet(CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + coord1,
                         groupId);
-                oneOf(cacheMock).addToSet(
-                        CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + coord2,
+                oneOf(cacheMock).addToSet(CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + coord2,
                         groupId);
-                oneOf(cacheMock).addToSet(
-                        CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + coord3,
+                oneOf(cacheMock).addToSet(CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + coord3,
                         groupId);
             }
         });
@@ -171,9 +193,11 @@ public class DomainGroupCacheUpdaterAsyncExecutionTest
     }
 
     /**
-     * Test the create execution of perform action with a private group the is not pending.
-     * If pending the cache update will be skipped.  The update should happen when group is approved.
-     * @throws Exception - on error.
+     * Test the create execution of perform action with a private group the is not pending. If pending the cache update
+     * will be skipped. The update should happen when group is approved.
+     * 
+     * @throws Exception
+     *             - on error.
      */
     @Test
     public void testPerformActionWithPrivateGroupCreateNotPending() throws Exception
@@ -190,11 +214,11 @@ public class DomainGroupCacheUpdaterAsyncExecutionTest
         context.checking(new Expectations()
         {
             {
-            	oneOf(actionContext).getParams();
-            	will(returnValue(request));
+                oneOf(actionContext).getParams();
+                will(returnValue(request));
 
-            	allowing(request).getDomainGroupId();
-            	will(returnValue(groupId));
+                allowing(request).getDomainGroupId();
+                will(returnValue(groupId));
 
                 oneOf(groupMapper).findById(groupId);
                 will(returnValue(groupMock));
@@ -207,7 +231,15 @@ public class DomainGroupCacheUpdaterAsyncExecutionTest
 
                 oneOf(groupMock).isPublicGroup();
                 will(returnValue(false));
+                
+                allowing(groupMock).getShortName();
+                will(returnValue(groupName));
 
+                oneOf(getActivityIdsAuthordedByEntityDbMapper).execute(groupName, EntityType.GROUP);
+                will(returnValue(activityIds));
+                
+                exactly(activityIds.size()).of(cacheMock).delete(with(any(String.class)));
+                
                 oneOf(groupMock).isPending();
                 will(returnValue(false));
 
@@ -221,9 +253,11 @@ public class DomainGroupCacheUpdaterAsyncExecutionTest
     }
 
     /**
-     * Test the create execution of perform action with a private group that is pending.
-     * If pending the cache update will be skipped.  The update should happen when group is approved.
-     * @throws Exception - on error.
+     * Test the create execution of perform action with a private group that is pending. If pending the cache update
+     * will be skipped. The update should happen when group is approved.
+     * 
+     * @throws Exception
+     *             - on error.
      */
     @Test
     public void testPerformActionWithPrivateGroupCreatePending() throws Exception
@@ -240,11 +274,11 @@ public class DomainGroupCacheUpdaterAsyncExecutionTest
         context.checking(new Expectations()
         {
             {
-            	oneOf(actionContext).getParams();
-            	will(returnValue(request));
+                oneOf(actionContext).getParams();
+                will(returnValue(request));
 
-            	allowing(request).getDomainGroupId();
-            	will(returnValue(groupId));
+                allowing(request).getDomainGroupId();
+                will(returnValue(groupId));
 
                 oneOf(groupMapper).findById(groupId);
                 will(returnValue(groupMock));
@@ -254,7 +288,15 @@ public class DomainGroupCacheUpdaterAsyncExecutionTest
 
                 oneOf(request).getIsUpdate();
                 will(returnValue(false));
+               
+                allowing(groupMock).getShortName();
+                will(returnValue(groupName));
 
+                oneOf(getActivityIdsAuthordedByEntityDbMapper).execute(groupName, EntityType.GROUP);
+                will(returnValue(activityIds));
+                
+                exactly(activityIds.size()).of(cacheMock).delete(with(any(String.class)));
+                
                 oneOf(groupMock).isPublicGroup();
                 will(returnValue(false));
 
@@ -270,7 +312,9 @@ public class DomainGroupCacheUpdaterAsyncExecutionTest
 
     /**
      * Test the execution of perform action with a public group.
-     * @throws Exception - on error.
+     * 
+     * @throws Exception
+     *             - on error.
      */
     @Test
     public void testPerformActionWithPublicGroup() throws Exception
@@ -287,15 +331,22 @@ public class DomainGroupCacheUpdaterAsyncExecutionTest
         context.checking(new Expectations()
         {
             {
-            	oneOf(actionContext).getParams();
-            	will(returnValue(request));
+                oneOf(actionContext).getParams();
+                will(returnValue(request));
 
-            	allowing(request).getDomainGroupId();
-            	will(returnValue(groupId));
+                allowing(request).getDomainGroupId();
+                will(returnValue(groupId));
 
                 oneOf(groupMapper).findById(groupId);
                 will(returnValue(groupMock));
+                
+                allowing(groupMock).getShortName();
+                will(returnValue(groupName));
 
+                oneOf(getActivityIdsAuthordedByEntityDbMapper).execute(groupName, EntityType.GROUP);
+                will(returnValue(activityIds));
+                
+                exactly(activityIds.size()).of(cacheMock).delete(with(any(String.class)));
                 oneOf(groupCoordinatorCacheMock).execute(groupMock);
                 will(returnValue(coordIds));
 
