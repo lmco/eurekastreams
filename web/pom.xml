@@ -405,6 +405,28 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <id>create lib folder</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>mkdir</executable>
+                            <arguments>
+									<argument>-p</argument>
+									<argument>${project.build.directory}/unpack/lib-bin</argument>
+									<argument>${project.build.directory}/unpack/lib-java</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
@@ -415,29 +437,11 @@
                     </goals>
                     <phase>generate-resources</phase>
                     <configuration>
-                     <artifactItems>
-                        <artifactItem>
-                            <groupId>${project.gorupId}</groupId>
-                            <artifactId>eurekastreams-database</artifactId>
-                            <version>${project.version}</version>
-                            <type>zip</type>
-                            <overWrite>false</overWrite>
-                            <outputDirectory>${project.build.directory}/databaseresources</outputDirectory>
-                        </artifactItem>
-                        <artifactItem>
-                            <groupId>${project.gorupId}</groupId>
-                            <artifactId>${build.maven.sharedresources.artifactid}</artifactId>
-                            <version>1.0-SNAPSHOT</version>
-                            <type>zip</type>
-                            <overWrite>false</overWrite>
-                            <outputDirectory>${project.build.directory}/sharedresources</outputDirectory>
-                        </artifactItem>
-                     </artifactItems>
-                     <outputDirectory>${project.build.directory}/unpackedresources</outputDirectory>
-                     <includeGroupIds>${project.groupId}</includeGroupIds>
-                     <includeTypes>zip</includeTypes>
-                     <includeScopes>provided</includeScopes>
-                     <excludeTransitive>true</excludeTransitive>
+						 <outputDirectory>${project.build.directory}/unpack</outputDirectory>
+						 <includeGroupIds>${project.groupId}</includeGroupIds>
+						 <includeTypes>zip</includeTypes>
+						 <includeScopes>provided</includeScopes>
+						 <excludeTransitive>true</excludeTransitive>
                     </configuration>
                   </execution>
                 </executions>
@@ -467,21 +471,21 @@
             </resource>
             <resource>
                 <targetPath>db/schema</targetPath>
-                <directory>${project.build.directory}/unpackedresources/schema</directory>
+                <directory>${project.build.directory}/unpack/resources/schema</directory>
                 <excludes>
                     <exclude>*/*.*</exclude>
                 </excludes>
             </resource>
             <resource>
                 <targetPath>db/migration</targetPath>
-                <directory>${project.build.directory}/unpackedresources/migration</directory>
+                <directory>${project.build.directory}/unpack/resources/migration</directory>
             </resource>
                         <resource>
                 <targetPath>db/scripts</targetPath>
-                <directory>${project.build.directory}/unpackedresources/scripts</directory>
+                <directory>${project.build.directory}/unpack/resources/scripts</directory>
             </resource>
             <resource>
-                <directory>${project.build.directory}/unpackedresources</directory>
+                <directory>${project.build.directory}/unpack/resources</directory>
                 <excludes>
                     <exclude>datapopulation/**</exclude>
                     <exclude>schema/**</exclude>
@@ -650,6 +654,10 @@
                         <artifactId>maven-war-plugin</artifactId>
                         <configuration>
                             <webResources>
+                                <resource>
+                                    <directory>${project.build.directory}/unpack/lib-java</directory>
+                                    <targetPath>WEB-INF/lib</targetPath>
+                                </resource>
                                 <resource>
                                     <directory>${project.build.directory}/classes/public/gadgets</directory>
                                     <targetPath>org/eurekastreams/gadgets</targetPath>
@@ -876,13 +884,13 @@
                                     </sources>
                                 </mapping>
                                 <mapping>   
-                                    <directory>/usr/local/lib</directory>
+                                    <directory>/usr/lib</directory>
                                     <filemode>555</filemode>
                                     <username>root</username>
                                     <groupname>root</groupname>
                                     <sources>
                                         <source>
-                                            <location>${project.build.directory}/classes/libeurekastreams</location>
+                                            <location>${project.build.directory}/unpack/lib-bin</location>
                                             <excludes>
                                                 <exclude>README.txt</exclude>
                                             </excludes>
@@ -937,7 +945,7 @@
                                     <outputDirectory>${project.build.directory}/classes/db/schema</outputDirectory>
                                     <resources>
                                         <resource>
-                                            <directory>${project.build.directory}/unpackedresources/database/schema/dev</directory>
+                                            <directory>${project.build.directory}/unpack/resources/database/schema/dev</directory>
                                             <includes>
                                                 <include>*.sql</include>
                                             </includes>
@@ -994,7 +1002,7 @@
                                     <outputDirectory>${project.build.directory}/classes/db/schema</outputDirectory>
                                     <resources>
                                         <resource>
-                                            <directory>${project.build.directory}/unpackedresources/database/schema/int</directory>
+                                            <directory>${project.build.directory}/unpack/resources/database/schema/int</directory>
                                             <includes>
                                                 <include>*.sql</include>
                                             </includes>
@@ -1032,7 +1040,7 @@
                                     <outputDirectory>${project.build.directory}/classes/db/schema</outputDirectory>
                                     <resources>
                                         <resource>
-                                            <directory>${project.build.directory}/unpackedresources/database/schema/uat</directory>
+                                            <directory>${project.build.directory}/unpack/resources/database/schema/uat</directory>
                                             <includes>
                                                 <include>*.sql</include>
                                             </includes>

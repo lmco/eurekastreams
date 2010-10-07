@@ -1,3 +1,6 @@
+$(settings.sitelabel)
+
+
 $(actor.name) also commented on $(aux.name)'s $(activity.type).
 
 "$(comment.content)"

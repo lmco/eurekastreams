@@ -13,25 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.action.execution;
+package org.eurekastreams.server.persistence.mappers.cache;
 
-import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.server.persistence.mappers.cache.CacheWarmer;
+import static org.junit.Assert.assertEquals;
+
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.jmock.Expectations;
+import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
 /**
- * Test for CacheWarmerExecution.
+ * Test for GroupToShortNameTransformer.
  * 
  */
-public class CacheWarmerExecutionTest
+public class GroupToShortNameTransformerTest
 {
     /**
-     * Context for mocking.
+     * Context for building mock objects.
      */
-    private final JUnit4Mockery context = new JUnit4Mockery()
+    private final Mockery context = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -39,39 +41,31 @@ public class CacheWarmerExecutionTest
     };
 
     /**
-     * {@link CacheWarmer}.
+     * {@link DomainGroupModelView}.
      */
-    private CacheWarmer cacheWarmer = context.mock(CacheWarmer.class);
-
-    /**
-     * {@link TaskHandlerActionContext}.
-     */
-    @SuppressWarnings("unchecked")
-    private TaskHandlerActionContext taskHandlerActionContextMock = context.mock(TaskHandlerActionContext.class);
+    private DomainGroupModelView objectToTransform = context.mock(DomainGroupModelView.class);
 
     /**
      * System under test.
      */
-    private CacheWarmerExecution sut = new CacheWarmerExecution(cacheWarmer);
+    private GroupToShortNameTransformer sut = new GroupToShortNameTransformer();
 
     /**
      * Test.
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void test()
     {
         context.checking(new Expectations()
         {
             {
-                oneOf(taskHandlerActionContextMock).getUserActionRequests();
-                will(returnValue(null));
-
-                oneOf(cacheWarmer).execute(null);
+                oneOf(objectToTransform).getShortName();
+                will(returnValue("blah"));
             }
         });
 
-        sut.execute(taskHandlerActionContextMock);
+        assertEquals("blah", sut.transform(objectToTransform));
         context.assertIsSatisfied();
     }
+
 }

@@ -24,9 +24,7 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
-import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds;
-import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -39,7 +37,7 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link GetCompositeStreamIdsByAssociatedActivity} class.
- *
+ * 
  */
 public class GetCompositeStreamIdsByAssociatedActivityTest extends MapperTest
 {
@@ -69,20 +67,9 @@ public class GetCompositeStreamIdsByAssociatedActivityTest extends MapperTest
     private GetFollowerIds personFollowersMapperMock = context.mock(GetFollowerIds.class);
 
     /**
-     * Mapper to get followers of a group.
-     */
-    private GetGroupFollowerIds groupFollowersMapperMock = context.mock(GetGroupFollowerIds.class);
-
-    /**
      * Mapper to get people by account ids.
      */
     private GetPeopleByAccountIds bulkPeopleByAccountIdMapperMock = context.mock(GetPeopleByAccountIds.class);
-
-    /**
-     * Mapper to get groups by short name.
-     */
-    private GetDomainGroupsByShortNames bulkDomainGroupsByShortNameMapperMock = context
-            .mock(GetDomainGroupsByShortNames.class);
 
     /**
      * Test person id for fordp.
@@ -95,12 +82,10 @@ public class GetCompositeStreamIdsByAssociatedActivityTest extends MapperTest
     @Before
     public void setup()
     {
-        sut = new GetCompositeStreamIdsByAssociatedActivity(personFollowersMapperMock, groupFollowersMapperMock,
-                bulkPeopleByAccountIdMapperMock, bulkDomainGroupsByShortNameMapperMock);
+        sut = new GetCompositeStreamIdsByAssociatedActivity(personFollowersMapperMock, bulkPeopleByAccountIdMapperMock);
         sut.setCache(cacheMock);
         sut.setEntityManager(getEntityManager());
     }
-
 
     /**
      * Test retrieving followers with entity type of Person for the Destination Stream.
@@ -165,19 +150,6 @@ public class GetCompositeStreamIdsByAssociatedActivityTest extends MapperTest
 
         final List<DomainGroupModelView> testGroupModelViewList = new ArrayList<DomainGroupModelView>();
         testGroupModelViewList.add(testGroupModelView);
-
-        final List<Long> followerIds = new ArrayList<Long>();
-
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(bulkDomainGroupsByShortNameMapperMock).execute(with(any(List.class)));
-                will(returnValue(testGroupModelViewList));
-
-                oneOf(groupFollowersMapperMock).execute(with(5L));
-                will(returnValue(followerIds));
-            }
-        });
 
         List<Long> results = sut.getFollowers(testActivity);
         Assert.assertEquals(0, results.size());

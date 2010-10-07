@@ -15,22 +15,26 @@
  */
 package org.eurekastreams.server.persistence.mappers.cache;
 
-import java.util.List;
-
-import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
 /**
- * Interface for cache warming implementations.
+ * Transform DomainGroupModelView to short name.
  * 
  */
-public interface CacheWarmer
+public class GroupToShortNameTransformer implements Transformer<DomainGroupModelView, String>
 {
+
     /**
-     * Load objects from Db into cache.
+     * Transform DomainGroupModelView to short name.
      * 
-     * @param inUserActionRequests
-     *            List of {@link UserActionRequest}s that cacheWarmer can populate to have requests queued up for
-     *            execution.
+     * @param inTransformType
+     *            Object to transform.
+     * @return id.
      */
-    void execute(final List<UserActionRequest> inUserActionRequests);
+    @Override
+    public String transform(final DomainGroupModelView inTransformType)
+    {
+        return inTransformType.getShortName();
+    }
+
 }

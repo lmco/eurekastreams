@@ -35,8 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- *
- *
+ * Tests CommentTemplateEmailBuilder.
  */
 public class CommentTemplateEmailBuilderTest
 {

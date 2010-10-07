@@ -26,7 +26,10 @@ import org.apache.commons.lang.text.StrLookup;
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationDTO;
+import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.EmailerFactory;
@@ -70,16 +73,21 @@ public class TemplateEmailBuilder implements NotificationEmailBuilder
     /** For getting person info. */
     private GetPeopleByIds peopleMapper;
 
+    /** For getting system settings. */
+    private DomainMapper<MapperRequest<SystemSettings>, SystemSettings> systemSettingsMapper;
+
     /** Extra properties to include during resolution. */
     private Map<String, String> extraProperties;
 
     /**
      * Constructor.
-     *
+     * 
      * @param inEmailer
      *            For sending email.
      * @param inPeopleMapper
      *            For getting person info.
+     * @param inSystemSettingsMapper
+     *            For getting system settings.
      * @param inExtraProperties
      *            Extra properties to include during resolution.
      * @param inSubjectTemplate
@@ -90,11 +98,13 @@ public class TemplateEmailBuilder implements NotificationEmailBuilder
      *            Template for the HTML version of the body.
      */
     public TemplateEmailBuilder(final EmailerFactory inEmailer, final GetPeopleByIds inPeopleMapper,
+            final DomainMapper<MapperRequest<SystemSettings>, SystemSettings> inSystemSettingsMapper,
             final Map<String, String> inExtraProperties,
             final String inSubjectTemplate, final String inTextBodyTemplate, final String inHtmlBodyTemplate)
     {
         emailer = inEmailer;
         peopleMapper = inPeopleMapper;
+        systemSettingsMapper = inSystemSettingsMapper;
         extraProperties = inExtraProperties;
         subjectTemplate = inSubjectTemplate;
         textBodyTemplate = inTextBodyTemplate;
@@ -128,6 +138,14 @@ public class TemplateEmailBuilder implements NotificationEmailBuilder
         // -- build properties --
 
         Map<String, String> properties = new HashMap<String, String>();
+
+        // from system settings
+        SystemSettings systemSettings = systemSettingsMapper.execute(null);
+        properties.put("settings.sitelabel", systemSettings.getSiteLabel());
+        properties.put("settings.support.email", systemSettings.getSupportEmailAddress());
+        properties.put("settings.support.phone", systemSettings.getSupportPhoneNumber());
+        properties.put("settings.support.name", systemSettings.getSupportStreamGroupDisplayName());
+        properties.put("settings.support.uniqueid", systemSettings.getSupportStreamGroupShortName());
 
         // from upstream builders
         if (invocationProperties != null)

@@ -1,3 +1,6 @@
+$(settings.sitelabel)
+
+
 $(actor.name) posted a $(activity.type) to your stream.
 
 "$(activity.content)"

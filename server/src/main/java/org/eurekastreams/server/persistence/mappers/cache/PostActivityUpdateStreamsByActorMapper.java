@@ -15,24 +15,21 @@
  */
 package org.eurekastreams.server.persistence.mappers.cache;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
- * This mapper adds an activity to the composite streams that are related to the actor posting the activity.
- * 
+ * This mapper adds an activity to the entity streams that are related to the actor posting the activity.
  */
 public class PostActivityUpdateStreamsByActorMapper extends CachedDomainMapper
 {
-
     /**
      * Local instance of the {@link GetPeopleByAccountIds} mapper.
      */
@@ -44,31 +41,22 @@ public class PostActivityUpdateStreamsByActorMapper extends CachedDomainMapper
     private final GetDomainGroupsByShortNames bulkDomainGroupsByShortNameMapper;
 
     /**
-     * Local instance of the {@link GetOrganizationsByShortNames} mapper.
-     */
-    private final GetOrganizationsByShortNames organizationsByShortNameDAO;
-
-    /**
      * Constructor for the {@link PostActivityUpdateStreamsByActorMapper}.
      * 
      * @param inBulkPeopleByAccountIdMapper
      *            - instance of the {@link GetPeopleByAccountIds} mapper.
      * @param inBulkDomainGroupsByShortNameMapper
      *            - instance of the {@link GetDomainGroupsByShortNames} mapper.
-     * @param inOrganizationsByShortNameDAO
-     *            - instance of the {@link GetOrganizationsByShortNames} mapper.
      */
     public PostActivityUpdateStreamsByActorMapper(final GetPeopleByAccountIds inBulkPeopleByAccountIdMapper,
-            final GetDomainGroupsByShortNames inBulkDomainGroupsByShortNameMapper,
-            final GetOrganizationsByShortNames inOrganizationsByShortNameDAO)
+            final GetDomainGroupsByShortNames inBulkDomainGroupsByShortNameMapper)
     {
         bulkPeopleByAccountIdMapper = inBulkPeopleByAccountIdMapper;
         bulkDomainGroupsByShortNameMapper = inBulkDomainGroupsByShortNameMapper;
-        organizationsByShortNameDAO = inOrganizationsByShortNameDAO;
     }
 
     /**
-     * Post the provided {@link ActivityDTO} into the cached composite streams related to the actor.
+     * Post the provided {@link ActivityDTO} into the entity stream related to the actor.
      * 
      * @param activity
      *            - {@link ActivityDTO} to be posted into the streams.
@@ -77,26 +65,25 @@ public class PostActivityUpdateStreamsByActorMapper extends CachedDomainMapper
     {
         long activityId = activity.getId();
 
-        // Remove from entity stream.
+        // Add to the appropriate entity stream.
         EntityType streamType = activity.getDestinationStream().getType();
 
         switch (streamType)
         {
         case GROUP:
             DomainGroupModelView group = bulkDomainGroupsByShortNameMapper.execute(
-                    Arrays.asList(activity.getDestinationStream().getUniqueIdentifier())).get(0);
+                    Collections.singletonList(activity.getDestinationStream().getUniqueIdentifier())).get(0);
 
             getCache().addToTopOfList(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + group.getStreamId(), activityId);
             break;
         case PERSON:
             PersonModelView person = bulkPeopleByAccountIdMapper.execute(
-                    Arrays.asList(activity.getDestinationStream().getUniqueIdentifier())).get(0);
+                    Collections.singletonList(activity.getDestinationStream().getUniqueIdentifier())).get(0);
 
             getCache().addToTopOfList(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + person.getStreamId(), activityId);
-
             break;
         default:
-            break;            
+            break;
         }
     }
 }

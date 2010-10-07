@@ -180,6 +180,7 @@
         <build.infosite.text>eurekastreams.org</build.infosite.text>
         <build.profile.emailregex>.*@.*</build.profile.emailregex>
         <build.profile.emailregexerror>Please enter a properly formatted email address.</build.profile.emailregexerror>
+        <build.taskqueueprocessor.additional-jsw-jar></build.taskqueueprocessor.additional-jsw-jar>
     </properties>
     <build>
         <plugins>

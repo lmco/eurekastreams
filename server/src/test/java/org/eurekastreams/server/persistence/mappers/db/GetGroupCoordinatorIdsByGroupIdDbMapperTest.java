@@ -16,6 +16,7 @@
 package org.eurekastreams.server.persistence.mappers.db;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -24,38 +25,45 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Test for GetFollowedPersonIdsForPersonByIdDbMapper.
+ * Test for GetGroupCoordinatorIdsByGroupIdDbMapper.
  * 
  */
-public class GetFollowedPersonIdsForPersonByIdDbMapperTest extends MapperTest
+public class GetGroupCoordinatorIdsByGroupIdDbMapperTest extends MapperTest
 {
-    /**
-     * Test user id.
-     */
-    private final long mrburnsId = 99;
-
-    /**
-     * Test user id.
-     */
-    private final long smithersId = 98;
-
     /**
      * System under test.
      */
     @Autowired
-    private GetFollowedPersonIdsForPersonByIdDbMapper sut;
+    private GetGroupCoordinatorIdsByGroupIdDbMapper sut;
 
     /**
-     * test.
+     * Id for dataset.xml group with coordinators.
      */
-    @SuppressWarnings("unchecked")
+    private final long groupId = 1L;
+
+    /**
+     * Id for dataset.xml coordinator.
+     */
+    private final long smithersId = 98L;
+
+    /**
+     * Id for dataset.xml coordinator.
+     */
+    private final long fordId = 42L;
+
+    /**
+     * test execute method.
+     */
     @Test
     public void testExecute()
     {
-        List<Long> results = sut.execute(smithersId);
+        // exercise sut.
+        List<Long> results = sut.execute(groupId);
+
+        // assert results are as expected
         assertEquals(2, results.size());
-        assertEquals(new Long(mrburnsId), results.get(1));
-        assertEquals(new Long(smithersId), results.get(0));
+        assertTrue(results.contains(smithersId));
+        assertTrue(results.contains(fordId));
     }
 
 }

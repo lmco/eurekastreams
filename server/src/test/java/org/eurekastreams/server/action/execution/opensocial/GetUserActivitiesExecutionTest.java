@@ -29,6 +29,7 @@ import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.server.action.execution.stream.ActivitySecurityTrimmer;
 import org.eurekastreams.server.action.request.opensocial.GetUserActivitiesRequest;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
@@ -68,6 +69,11 @@ public class GetUserActivitiesExecutionTest
     private final GetPeopleByOpenSocialIds getPeopleByOpenSocialIds = context.mock(GetPeopleByOpenSocialIds.class);
 
     /**
+     * Local instance of the {@link ActivitySecurityTrimmer}.
+     */
+    private final ActivitySecurityTrimmer securityTrimmer = context.mock(ActivitySecurityTrimmer.class);
+
+    /**
      * Max number of activities to fetch by open social id.
      */
     private final Long maxActivitiesToReturnByOpenSocialId = 8328L;
@@ -81,7 +87,7 @@ public class GetUserActivitiesExecutionTest
         final PagedSet<ActivityDTO> activities = context.mock(PagedSet.class);
         final ExecutionStrategyFake executionStrategy = new ExecutionStrategyFake(activities);
         GetUserActivitiesExecution sut = new GetUserActivitiesExecution(bulkActivitiesMapper, getPeopleByOpenSocialIds,
-                executionStrategy, maxActivitiesToReturnByOpenSocialId);
+                executionStrategy, maxActivitiesToReturnByOpenSocialId, securityTrimmer);
 
         final Principal principal = context.mock(Principal.class);
         final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
@@ -125,7 +131,7 @@ public class GetUserActivitiesExecutionTest
         final PagedSet<ActivityDTO> activities = context.mock(PagedSet.class);
         final ExecutionStrategyFake executionStrategy = new ExecutionStrategyFake(activities);
         GetUserActivitiesExecution sut = new GetUserActivitiesExecution(bulkActivitiesMapper, getPeopleByOpenSocialIds,
-                executionStrategy, maxActivitiesToReturnByOpenSocialId);
+                executionStrategy, maxActivitiesToReturnByOpenSocialId, securityTrimmer);
 
         final Principal principal = context.mock(Principal.class);
         final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
@@ -175,7 +181,7 @@ public class GetUserActivitiesExecutionTest
 
         final ExecutionStrategyFake executionStrategy = new ExecutionStrategyFake(activities);
         GetUserActivitiesExecution sut = new GetUserActivitiesExecution(bulkActivitiesMapper, getPeopleByOpenSocialIds,
-                executionStrategy, maxActivitiesToReturnByOpenSocialId);
+                executionStrategy, maxActivitiesToReturnByOpenSocialId, securityTrimmer);
 
         final Principal principal = context.mock(Principal.class);
         final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
@@ -255,9 +261,10 @@ public class GetUserActivitiesExecutionTest
 
         final ExecutionStrategyFake executionStrategy = new ExecutionStrategyFake(null);
         GetUserActivitiesExecution sut = new GetUserActivitiesExecution(bulkActivitiesMapper, getPeopleByOpenSocialIds,
-                executionStrategy, maxActivitiesToReturnByOpenSocialId);
+                executionStrategy, maxActivitiesToReturnByOpenSocialId, securityTrimmer);
 
         final Principal principal = context.mock(Principal.class);
+        final Long principalId = 1L;
         final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
 
         final GetUserActivitiesRequest request = context.mock(GetUserActivitiesRequest.class);
@@ -285,6 +292,12 @@ public class GetUserActivitiesExecutionTest
                 // open social ids
                 allowing(request).getOpenSocialIds();
                 will(returnValue(openSocialIds));
+                
+                oneOf(principal).getId();
+                will(returnValue(principalId));
+                
+                oneOf(securityTrimmer).trim(activityIds, principalId);
+                will(returnValue(activityIds));
 
                 oneOf(bulkActivitiesMapper).execute(with(any(List.class)));
                 will(returnValue(activityList));
@@ -322,9 +335,10 @@ public class GetUserActivitiesExecutionTest
 
         final ExecutionStrategyFake executionStrategy = new ExecutionStrategyFake(activities);
         GetUserActivitiesExecution sut = new GetUserActivitiesExecution(bulkActivitiesMapper, getPeopleByOpenSocialIds,
-                executionStrategy, maxActivitiesToReturnByOpenSocialId);
+                executionStrategy, maxActivitiesToReturnByOpenSocialId, securityTrimmer);
 
         final Principal principal = context.mock(Principal.class);
+        final Long principalId = 1L;
         final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
 
         final GetUserActivitiesRequest request = context.mock(GetUserActivitiesRequest.class);
@@ -367,7 +381,13 @@ public class GetUserActivitiesExecutionTest
                 will(returnValue(openSocialIds));
 
                 oneOf(getPeopleByOpenSocialIds).execute(with(any(ArrayList.class)));
-                will(returnValue(people));
+                will(returnValue(people));                
+                
+                oneOf(principal).getId();
+                will(returnValue(principalId));
+                
+                oneOf(securityTrimmer).trim(new ArrayList<Long>(), principalId);
+                will(returnValue(new ArrayList<Long>()));
 
                 oneOf(activities).getPagedSet();
                 will(returnValue(activityList));
@@ -410,9 +430,10 @@ public class GetUserActivitiesExecutionTest
 
         final ExecutionStrategyFake executionStrategy = new ExecutionStrategyFake(activities);
         GetUserActivitiesExecution sut = new GetUserActivitiesExecution(bulkActivitiesMapper, getPeopleByOpenSocialIds,
-                executionStrategy, maxActivitiesToReturnByOpenSocialId);
+                executionStrategy, maxActivitiesToReturnByOpenSocialId, securityTrimmer);
 
         final Principal principal = context.mock(Principal.class);
+        final Long principalId = 1L;
         final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
 
         final GetUserActivitiesRequest request = context.mock(GetUserActivitiesRequest.class);
@@ -459,7 +480,13 @@ public class GetUserActivitiesExecutionTest
 
                 oneOf(bulkActivitiesMapper).execute(with(any(List.class)));
                 will(returnValue(responseById));
-
+                
+                oneOf(principal).getId();
+                will(returnValue(principalId));
+                
+                oneOf(securityTrimmer).trim(activityIds, principalId);
+                will(returnValue(activityIds));
+                
                 oneOf(activities).getPagedSet();
                 will(returnValue(activityList));
             }
@@ -494,7 +521,7 @@ public class GetUserActivitiesExecutionTest
 
         /**
          * Constructor.
-         *
+         * 
          * @param inResult
          *            the result to return.
          */
@@ -505,7 +532,7 @@ public class GetUserActivitiesExecutionTest
 
         /**
          * Execute - return the result.
-         *
+         * 
          * @param inActionContext
          *            the request
          * @return result that was passedinto constructor
@@ -521,7 +548,7 @@ public class GetUserActivitiesExecutionTest
 
         /**
          * Get the context passed into execute().
-         *
+         * 
          * @return the context passed into execute
          */
         public PrincipalActionContext getContextPassedIn()

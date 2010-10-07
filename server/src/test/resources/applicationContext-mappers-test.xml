@@ -406,9 +406,7 @@
     <bean id="getCompositeStreamIdsByAssociatedActivity"
         class="org.eurekastreams.server.persistence.mappers.cache.GetCompositeStreamIdsByAssociatedActivity">
         <constructor-arg ref="getFollowerIds" />
-        <constructor-arg ref="getGroupFollowerIds" />
         <constructor-arg ref="bulkPeopleByAccountIdMapper" />
-        <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
         <property name="cache" ref="testCache" />
     </bean>	
 	
@@ -428,7 +426,6 @@
 	   class="org.eurekastreams.server.persistence.mappers.cache.PostActivityUpdateStreamsByActorMapper">
 	   <constructor-arg ref="bulkPeopleByAccountIdMapper" />
 	   <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-	   <constructor-arg ref="bulkOrganizationsByShortNameMapper" />
 	   <property name="cache" ref="testCache" />
 	</bean>
 
@@ -569,6 +566,24 @@
         <constructor-arg ref="personQueryStrategy" />
         <constructor-arg ref="getRelatedOrganizationIdsByPersonId" />
     </bean>
+    
+    <bean id="getGroupsByIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetGroupsByIdsDbMapper">
+        <constructor-arg ref="domainGroupQueryStrategy" />
+    </bean>
+        
+    <bean id="getOrganizationsByIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetOrganizationsByIdsDbMapper" />
+    
+    <bean id="getParentOrgIdsRecursiveByOrgIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetParentOrgIdsRecursiveByOrgIdDbMapper" />
+    
+    <bean id="getChildOrgIdsRecursiveByOrgIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetChildOrgIdsRecursiveByOrgIdDbMapper" />
+      
+    <bean id="getChildOrgIdsByOrgIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetChildOrgIdsByOrgIdDbMapper" />    
+        
+    <bean id="getGroupCoordinatorIdsByGroupIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetGroupCoordinatorIdsByGroupIdDbMapper" />
+    
+    <bean id="getFollowedGroupIdsForPersonByIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFollowedGroupIdsForPersonByIdDbMapper" />
+    
+    <bean id="getFollowerPersonIdsForGroupByIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFollowerPersonIdsForGroupByIdDbMapper" />
     
     <bean id="getFollowerPersonIdsForPersonByIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFollowerPersonIdsForPersonByIdDbMapper" />
     
