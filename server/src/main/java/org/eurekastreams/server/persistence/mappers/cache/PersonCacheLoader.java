@@ -21,7 +21,6 @@ import javax.persistence.Query;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.domain.EntityCacheUpdater;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.GetRelatedOrganizationIdsByPersonId;
@@ -36,7 +35,7 @@ import org.hibernate.ScrollableResults;
 /**
  * Cache loader for PersonCache.
  */
-public class PersonCacheLoader extends CachedDomainMapper implements EntityCacheUpdater<Person>, CacheWarmer
+public class PersonCacheLoader extends CachedDomainMapper implements EntityCacheUpdater<Person>
 {
     /**
      * Logger instance.
@@ -176,11 +175,5 @@ public class PersonCacheLoader extends CachedDomainMapper implements EntityCache
                     + " - doing nothing.");
         }
         // no-op
-    }
-
-    @Override
-    public void execute(final List<UserActionRequest> inRequests)
-    {
-        initialize();
     }
 }

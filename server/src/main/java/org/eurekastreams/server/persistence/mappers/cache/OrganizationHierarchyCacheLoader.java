@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.domain.EntityCacheUpdater;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
@@ -33,8 +32,7 @@ import org.eurekastreams.server.search.modelview.OrganizationModelView;
 /**
  * Responsible for the maintenance of the OrganizationHierarchyCache.
  */
-public class OrganizationHierarchyCacheLoader extends CachedDomainMapper implements EntityCacheUpdater<Organization>,
-        CacheWarmer
+public class OrganizationHierarchyCacheLoader extends CachedDomainMapper implements EntityCacheUpdater<Organization>
 {
     /**
      * Logger instance.
@@ -318,11 +316,5 @@ public class OrganizationHierarchyCacheLoader extends CachedDomainMapper impleme
     public void setOrganizationMapper(final GetOrganizationsByIds inOrganizationMapper)
     {
         this.organizationMapper = inOrganizationMapper;
-    }
-
-    @Override
-    public void execute(final List<UserActionRequest> inRequests)
-    {
-        initialize();
     }
 }
