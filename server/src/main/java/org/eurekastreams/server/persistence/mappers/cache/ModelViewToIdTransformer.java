@@ -15,26 +15,25 @@
  */
 package org.eurekastreams.server.persistence.mappers.cache;
 
-import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.commons.search.modelview.ModelView;
 
 /**
- * Transform PersonModelView to person id.
+ * Transform ModelView to entity id.
  * 
  */
-public class PersonToIdTransformer implements Transformer<PersonModelView, Long>
+public class ModelViewToIdTransformer implements Transformer<ModelView, Long>
 {
-
     /**
-     * Transform PersonModelView to person id.
+     * Transform ModelView to entity id.
      * 
      * @param inTransformType
      *            Object to transform.
      * @return id.
      */
     @Override
-    public Long transform(final PersonModelView inTransformType)
+    public Long transform(final ModelView inTransformType)
     {
-        return inTransformType.getId();
+        return inTransformType.getEntityId();
     }
 
 }
