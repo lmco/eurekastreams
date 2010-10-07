@@ -17,6 +17,7 @@ package org.eurekastreams.server.persistence.mappers.cache;
 
 import static org.junit.Assert.assertEquals;
 
+import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -25,10 +26,10 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
 /**
- * Test for PersonToIdTransformer.
+ * Test for ModelViewToIdTransformer.
  * 
  */
-public class PersonToIdTransformerTest
+public class ModelViewToIdTransformerTest
 {
     /**
      * Context for building mock objects.
@@ -41,14 +42,14 @@ public class PersonToIdTransformerTest
     };
 
     /**
-     * {@link PersonModelView}.
+     * {@link ModelView}.
      */
-    private PersonModelView person = context.mock(PersonModelView.class);
+    private ModelView mv = context.mock(PersonModelView.class);
 
     /**
      * System under test.
      */
-    private PersonToIdTransformer sut = new PersonToIdTransformer();
+    private ModelViewToIdTransformer sut = new ModelViewToIdTransformer();
 
     /**
      * Test.
@@ -59,12 +60,12 @@ public class PersonToIdTransformerTest
         context.checking(new Expectations()
         {
             {
-                oneOf(person).getId();
+                oneOf(mv).getEntityId();
                 will(returnValue(1L));
             }
         });
 
-        assertEquals(1L, sut.transform(person).longValue());
+        assertEquals(1L, sut.transform(mv).longValue());
         context.assertIsSatisfied();
     }
 

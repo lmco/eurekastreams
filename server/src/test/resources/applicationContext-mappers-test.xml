@@ -571,6 +571,14 @@
         <constructor-arg ref="domainGroupQueryStrategy" />
     </bean>
         
+    <bean id="getOrganizationsByIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetOrganizationsByIdsDbMapper" />
+    
+    <bean id="getParentOrgIdsRecursiveByOrgIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetParentOrgIdsRecursiveByOrgIdDbMapper" />
+    
+    <bean id="getChildOrgIdsRecursiveByOrgIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetChildOrgIdsRecursiveByOrgIdDbMapper" />
+      
+    <bean id="getChildOrgIdsByOrgIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetChildOrgIdsByOrgIdDbMapper" />    
+        
     <bean id="getGroupCoordinatorIdsByGroupIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetGroupCoordinatorIdsByGroupIdDbMapper" />
     
     <bean id="getFollowedGroupIdsForPersonByIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFollowedGroupIdsForPersonByIdDbMapper" />

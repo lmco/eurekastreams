@@ -3184,7 +3184,7 @@
                     <list>
                         <value>queuePersonCacheWarmingTasks</value>
                         <value>queueGroupCacheWarmingTasks</value>
-                        <value>cacheWarmOrganizations</value>                    
+                        <value>queueOrganizationCacheWarmingTasks</value>                  
                     </list>
                 </constructor-arg>
             </bean>
@@ -3229,6 +3229,37 @@
         <constructor-arg ref="taskHandler" />
         <constructor-arg value="true" />
     </bean>
+    
+    <bean id="queueOrganizationCacheWarmingTasks" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.QueueKeyBasedTasksExecution">
+                <constructor-arg>
+                    <list>
+                        <value>cacheOrganization</value>
+                        <value>cacheDirectChildernForOrganizationList</value>
+                        <value>cacheRecursiveChildrenForOrganizationList</value>
+                        <value>cacheRecursiveParentsForOrganizationList</value>
+                    </list>
+                </constructor-arg>
+                <constructor-arg ref="getOrganizationIds" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="true" />
+    </bean>  
+    
+    <bean id="cacheOrganization" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="getOrganizationsByIdsMapper_FORCE_REFRESH" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="True" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>      
     
     <bean id="cacheGroup" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -3312,40 +3343,43 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
-    </bean>    
+    </bean>   
     
-    <bean id="cacheWarmGroups" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+    <bean id="cacheDirectChildernForOrganizationList" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.CacheWarmerExecution">
-                <constructor-arg ref="domainGroupCacheLoader" />
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="getChildOrgIdsByOrgIdMapper_FORCE_REFRESH" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="False" />
             </bean>
         </constructor-arg>
-        <constructor-arg ref="taskHandler" />
-        <constructor-arg value="true" />
-    </bean> 
-    
-    <bean id="cacheWarmOrganizations" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.CacheWarmerExecution">
-                <constructor-arg ref="organizationCacheLoader" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg ref="taskHandler" />
-        <constructor-arg value="true" />
-    </bean>    
-    
-    <bean id="cacheWarmPeople" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.CacheWarmerExecution">
-                <constructor-arg ref="personCacheLoader" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg ref="taskHandler" />
         <constructor-arg value="true" />
     </bean>
+    
+    <bean id="cacheRecursiveChildrenForOrganizationList" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="getChildOrgIdsRecursiveByOrgIdMapper_FORCE_REFRESH" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="False" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
+    
+    <bean id="cacheRecursiveParentsForOrganizationList" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper_FORCE_REFRESH" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="False" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>             
     
     <bean id="createPersonActionFactory" class="org.eurekastreams.server.action.execution.CreatePersonActionFactory">
         <constructor-arg ref="jpaTabMapper" />

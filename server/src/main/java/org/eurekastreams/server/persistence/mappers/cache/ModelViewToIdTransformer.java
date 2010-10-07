@@ -15,22 +15,25 @@
  */
 package org.eurekastreams.server.persistence.mappers.cache;
 
-import java.util.List;
-
-import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.commons.search.modelview.ModelView;
 
 /**
- * Interface for cache warming implementations.
+ * Transform ModelView to entity id.
  * 
  */
-public interface CacheWarmer
+public class ModelViewToIdTransformer implements Transformer<ModelView, Long>
 {
     /**
-     * Load objects from Db into cache.
+     * Transform ModelView to entity id.
      * 
-     * @param inUserActionRequests
-     *            List of {@link UserActionRequest}s that cacheWarmer can populate to have requests queued up for
-     *            execution.
+     * @param inTransformType
+     *            Object to transform.
+     * @return id.
      */
-    void execute(final List<UserActionRequest> inUserActionRequests);
+    @Override
+    public Long transform(final ModelView inTransformType)
+    {
+        return inTransformType.getEntityId();
+    }
+
 }

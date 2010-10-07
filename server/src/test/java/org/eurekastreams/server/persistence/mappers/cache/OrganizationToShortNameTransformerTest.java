@@ -17,7 +17,7 @@ package org.eurekastreams.server.persistence.mappers.cache;
 
 import static org.junit.Assert.assertEquals;
 
-import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -25,11 +25,12 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
 /**
- * Test for GroupToIdTransformer.
+ * Transform OrganizationModelView to short name.
  * 
  */
-public class GroupToIdTransformerTest
+public class OrganizationToShortNameTransformerTest
 {
+
     /**
      * Context for building mock objects.
      */
@@ -41,14 +42,14 @@ public class GroupToIdTransformerTest
     };
 
     /**
-     * {@link DomainGroupModelView}.
+     * {@link OrganizationModelView}.
      */
-    private DomainGroupModelView objectToTransform = context.mock(DomainGroupModelView.class);
+    private OrganizationModelView objectToTransform = context.mock(OrganizationModelView.class);
 
     /**
      * System under test.
      */
-    private GroupToIdTransformer sut = new GroupToIdTransformer();
+    private OrganizationToShortNameTransformer sut = new OrganizationToShortNameTransformer();
 
     /**
      * Test.
@@ -59,12 +60,12 @@ public class GroupToIdTransformerTest
         context.checking(new Expectations()
         {
             {
-                oneOf(objectToTransform).getId();
-                will(returnValue(5L));
+                oneOf(objectToTransform).getShortName();
+                will(returnValue("blah"));
             }
         });
 
-        assertEquals(5L, sut.transform(objectToTransform).longValue());
+        assertEquals("blah", sut.transform(objectToTransform));
         context.assertIsSatisfied();
     }
 

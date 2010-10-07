@@ -15,26 +15,25 @@
  */
 package org.eurekastreams.server.persistence.mappers.cache;
 
-import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.OrganizationModelView;
 
 /**
- * Transform DomainGroupModelView to id.
+ * Transform OrganizationModelView to short name.
  * 
  */
-public class GroupToIdTransformer implements Transformer<DomainGroupModelView, Long>
+public class OrganizationToShortNameTransformer implements Transformer<OrganizationModelView, String>
 {
-
     /**
-     * Transform DomainGroupModelView to id.
+     * Transform OrganizationModelView to short name.
      * 
      * @param inTransformType
      *            Object to transform.
      * @return id.
      */
     @Override
-    public Long transform(final DomainGroupModelView inTransformType)
+    public String transform(final OrganizationModelView inTransformType)
     {
-        return inTransformType.getId();
+        return inTransformType.getShortName();
     }
 
 }
