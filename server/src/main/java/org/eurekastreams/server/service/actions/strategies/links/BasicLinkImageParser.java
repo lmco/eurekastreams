@@ -80,8 +80,10 @@ public class BasicLinkImageParser implements HtmlLinkInformationParserStrategy
      *            the HTML as a string.
      * @param link
      *            the link.
+     * @param inAccountId
+     *            account id of the user making the request for the link image.
      */
-    public void parseInformation(final String htmlString, final LinkInformation link)
+    public void parseInformation(final String htmlString, final LinkInformation link, final String inAccountId)
     {
         Set<String> imageUrls = new HashSet<String>();
 
@@ -152,8 +154,8 @@ public class BasicLinkImageParser implements HtmlLinkInformationParserStrategy
                             log.trace("New Image Url: " + imgUrl);
                         }
 
-                        int height = urlUtilities.getImgHeight(imgUrl);
-                        int width = urlUtilities.getImgWidth(imgUrl);
+                        int height = urlUtilities.getImgHeight(imgUrl, inAccountId);
+                        int width = urlUtilities.getImgWidth(imgUrl, inAccountId);
 
                         if (height > MIN_IMG_SIZE && width > MIN_IMG_SIZE)
                         {

@@ -55,8 +55,10 @@ public class MetaDescriptionParser implements HtmlLinkInformationParserStrategy
      *            the HTML as a string.
      * @param link
      *            the LinkInformation.
+     * @param inAccountId
+     *            account id of the user making the request.
      */
-    public void parseInformation(final String htmlString, final LinkInformation link)
+    public void parseInformation(final String htmlString, final LinkInformation link, final String inAccountId)
     {
         Pattern descriptionPattern = Pattern.compile("<meta name=\"description\" content=\"(.*?)\"",
                 Pattern.CASE_INSENSITIVE);

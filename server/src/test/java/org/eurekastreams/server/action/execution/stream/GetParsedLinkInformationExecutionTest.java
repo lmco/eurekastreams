@@ -41,7 +41,7 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link GetParsedLinkInformationExecution} class.
- *
+ * 
  */
 public class GetParsedLinkInformationExecutionTest
 {
@@ -104,6 +104,11 @@ public class GetParsedLinkInformationExecutionTest
     private Principal principalMock = context.mock(Principal.class);
 
     /**
+     * TEst account.
+     */
+    private static final String TEST_ACCOUNT = "testaccount";
+
+    /**
      * Setup test fixtures.
      */
     @Before
@@ -121,7 +126,7 @@ public class GetParsedLinkInformationExecutionTest
 
     /**
      * Perform action test.
-     *
+     * 
      * @throws Exception
      *             shouldn't happen.
      */
@@ -135,15 +140,28 @@ public class GetParsedLinkInformationExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(fileDownloader).downloadFile(theUrl);
+                oneOf(principalMock).getAccountId();
+                will(returnValue(TEST_ACCOUNT));
+                
+                oneOf(fileDownloader).downloadFile(theUrl, TEST_ACCOUNT);
                 will(returnValue(theHtml));
 
-                oneOf(fileDownloader).getFinalUrl(theUrl);
+                oneOf(principalMock).getAccountId();
+                will(returnValue(TEST_ACCOUNT));
+                
+                oneOf(fileDownloader).getFinalUrl(theUrl, TEST_ACCOUNT);
                 will(returnValue(theUrl));
 
-                oneOf(titleParser).parseInformation(with(equal(theHtml)), with(any(LinkInformation.class)));
-                oneOf(descParser).parseInformation(with(equal(theHtml)), with(any(LinkInformation.class)));
-                oneOf(imgParser).parseInformation(with(equal(theHtml)), with(any(LinkInformation.class)));
+                oneOf(principalMock).getAccountId();
+                
+                oneOf(titleParser).parseInformation(with(equal(theHtml)), with(any(LinkInformation.class)),
+                        with(any(String.class)));
+                
+                oneOf(descParser).parseInformation(with(equal(theHtml)), with(any(LinkInformation.class)),
+                        with(any(String.class)));
+                
+                oneOf(imgParser).parseInformation(with(equal(theHtml)), with(any(LinkInformation.class)),
+                        with(any(String.class)));
 
                 oneOf(mapperMock).execute(with(any(UniqueStringRequest.class)));
                 will(returnValue(null));
@@ -166,7 +184,7 @@ public class GetParsedLinkInformationExecutionTest
 
     /**
      * Perform action test.
-     *
+     * 
      * @throws Exception
      *             shouldn't happen.
      */
@@ -180,16 +198,32 @@ public class GetParsedLinkInformationExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(fileDownloader).downloadFile(fixedUrl);
+                oneOf(principalMock).getAccountId();
+                will(returnValue(TEST_ACCOUNT));
+                
+                oneOf(fileDownloader).downloadFile(fixedUrl, TEST_ACCOUNT);
                 will(returnValue(theHtml));
 
-                oneOf(fileDownloader).getFinalUrl(fixedUrl);
+                oneOf(principalMock).getAccountId();
+                will(returnValue(TEST_ACCOUNT));
+                
+                oneOf(fileDownloader).getFinalUrl(fixedUrl, TEST_ACCOUNT);
                 will(returnValue(fixedUrl));
 
-                oneOf(titleParser).parseInformation(with(equal(theHtml)), with(any(LinkInformation.class)));
-                oneOf(descParser).parseInformation(with(equal(theHtml)), with(any(LinkInformation.class)));
-                oneOf(imgParser).parseInformation(with(equal(theHtml)), with(any(LinkInformation.class)));
+                oneOf(principalMock).getAccountId();
+                
+                oneOf(titleParser).parseInformation(with(equal(theHtml)), with(any(LinkInformation.class)),
+                        with(any(String.class)));
+                
+                
+                oneOf(descParser).parseInformation(with(equal(theHtml)), with(any(LinkInformation.class)),
+                        with(any(String.class)));
+                
+                
+                oneOf(imgParser).parseInformation(with(equal(theHtml)), with(any(LinkInformation.class)),
+                        with(any(String.class)));
 
+                
                 oneOf(mapperMock).execute(with(any(UniqueStringRequest.class)));
                 will(returnValue(null));
 
@@ -211,7 +245,7 @@ public class GetParsedLinkInformationExecutionTest
 
     /**
      * Perform action test when the link is cached.
-     *
+     * 
      * @throws Exception
      *             shouldn't happen.
      */
@@ -226,7 +260,10 @@ public class GetParsedLinkInformationExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(fileDownloader).getFinalUrl((String) params[0]);
+                oneOf(principalMock).getAccountId();
+                will(returnValue(TEST_ACCOUNT));
+                
+                oneOf(fileDownloader).getFinalUrl((String) params[0], TEST_ACCOUNT);
                 will(returnValue(params[0]));
 
                 oneOf(mapperMock).execute(with(any(UniqueStringRequest.class)));

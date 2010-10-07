@@ -41,8 +41,10 @@ public class YoutubeVideoThumbnailParser implements HtmlLinkInformationParserStr
      *            the HTML as a string.
      * @param link
      *            the LinkInformation.
+     * @param inAccountId
+     *            the account id of the user making the request.
      */
-    public void parseInformation(final String htmlString, final LinkInformation link)
+    public void parseInformation(final String htmlString, final LinkInformation link, final String inAccountId)
     {
         String videoId = "";
 

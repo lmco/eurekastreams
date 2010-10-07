@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,19 @@
  */
 package org.eurekastreams.server.service.actions.strategies.links;
 
-import org.eurekastreams.server.domain.stream.LinkInformation;
+import java.net.HttpURLConnection;
 
 /**
- * Parses information out of an HTML document. */
-public interface HtmlLinkInformationParserStrategy
+ * Interface that describes a decorator for a connection facade.  Each decorator
+ * takes in an HttpUrlConnection to decorate..
+ *
+ */
+public interface ConnectionFacadeDecorator
 {
     /**
-     * Parse the HTML.
-     * 
-     * @param htmlString
-     *            the HTML as a string.
-     * @param link
-     *            the link.
-     * @param inAccountId
-     *            account id of the user requesting link information to be parsed.
+     * Retrieve the list of headers that need to be added to the connection.
+     * @param inConnection - HttpUrlConnection to decorate.
+     * @param inAccountId - Account id of the user making the request.
      */
-    void parseInformation(String htmlString, LinkInformation link, String inAccountId);
+    void decorate(final HttpURLConnection inConnection, final String inAccountId);
 }

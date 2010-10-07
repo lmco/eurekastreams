@@ -17,6 +17,8 @@ package org.eurekastreams.server.service.actions.strategies.links;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+
 import org.junit.Test;
 
 /**
@@ -32,7 +34,8 @@ public class ConnectionFacadeImageDimensionsTest
     {
         final int height = 382;
         final int width = 847;
-        ConnectionFacade.ImageDimensions sut = (new ConnectionFacade()).new ImageDimensions(height, width);
+        ConnectionFacade.ImageDimensions sut = (new ConnectionFacade(new ArrayList<ConnectionFacadeDecorator>()))
+            .new ImageDimensions(height, width);
         assertEquals(height, sut.getHeight());
         assertEquals(width, sut.getWidth());
     }

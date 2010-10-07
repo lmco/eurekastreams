@@ -35,7 +35,7 @@ public class ConnectionFacadeTest
     @Test
     public void testRedirectCodesProperty()
     {
-        ConnectionFacade sut = new ConnectionFacade();
+        ConnectionFacade sut = new ConnectionFacade(new ArrayList<ConnectionFacadeDecorator>());
         List<Integer> redirectCodes = new ArrayList<Integer>();
         sut.setRedirectCodes(redirectCodes);
         assertSame(redirectCodes, sut.getRedirectCodes());
@@ -47,7 +47,7 @@ public class ConnectionFacadeTest
     @Test
     public void testProxyPortProperty()
     {
-        ConnectionFacade sut = new ConnectionFacade();
+        ConnectionFacade sut = new ConnectionFacade(new ArrayList<ConnectionFacadeDecorator>());
         String proxyPort = "1234";
         sut.setProxyPort(proxyPort);
         assertEquals(proxyPort, sut.getProxyPort());
@@ -59,22 +59,10 @@ public class ConnectionFacadeTest
     @Test
     public void testProxyHostProperty()
     {
-        ConnectionFacade sut = new ConnectionFacade();
+        ConnectionFacade sut = new ConnectionFacade(new ArrayList<ConnectionFacadeDecorator>());
         String proxyHost = "some.proxy.host";
         sut.setProxyHost(proxyHost);
         assertEquals(proxyHost, sut.getProxyHost());
-    }
-
-    /**
-     * Test the getter and setter for the proxyHost property.
-     */
-    @Test
-    public void testUserAgentProperty()
-    {
-        ConnectionFacade sut = new ConnectionFacade();
-        String userAgent = "SOME USER/AGENT";
-        sut.setUserAgent(userAgent);
-        assertEquals(userAgent, sut.getUserAgent());
     }
 
     /**
@@ -83,7 +71,7 @@ public class ConnectionFacadeTest
     @Test
     public void testConnectionTimeoutProperty()
     {
-        ConnectionFacade sut = new ConnectionFacade();
+        ConnectionFacade sut = new ConnectionFacade(new ArrayList<ConnectionFacadeDecorator>());
         final int connectionTimeout = 834;
         sut.setConnectionTimeOut(connectionTimeout);
         assertEquals(connectionTimeout, sut.getConnectionTimeOut());
@@ -95,7 +83,7 @@ public class ConnectionFacadeTest
     @Test
     public void testConnectionTimeoutPropertyAtLowerBoundary()
     {
-        ConnectionFacade sut = new ConnectionFacade();
+        ConnectionFacade sut = new ConnectionFacade(new ArrayList<ConnectionFacadeDecorator>());
         final int connectionTimeout = 0;
         sut.setConnectionTimeOut(connectionTimeout);
         assertEquals(connectionTimeout, sut.getConnectionTimeOut());
@@ -107,7 +95,7 @@ public class ConnectionFacadeTest
     @Test
     public void testConnectionTimeoutPropertyAtMaxBoundary()
     {
-        ConnectionFacade sut = new ConnectionFacade();
+        ConnectionFacade sut = new ConnectionFacade(new ArrayList<ConnectionFacadeDecorator>());
         final int connectionTimeout = 30000;
         sut.setConnectionTimeOut(connectionTimeout);
         assertEquals(connectionTimeout, sut.getConnectionTimeOut());
@@ -120,7 +108,7 @@ public class ConnectionFacadeTest
     @Test(expected = InvalidParameterException.class)
     public void testConnectionTimeoutPropertyLessThanMinValue()
     {
-        ConnectionFacade sut = new ConnectionFacade();
+        ConnectionFacade sut = new ConnectionFacade(new ArrayList<ConnectionFacadeDecorator>());
         final int connectionTimeout = -1;
         sut.setConnectionTimeOut(connectionTimeout);
     }
@@ -131,7 +119,7 @@ public class ConnectionFacadeTest
     @Test(expected = InvalidParameterException.class)
     public void testConnectionTimeoutPropertyMoreThanMaxValue()
     {
-        ConnectionFacade sut = new ConnectionFacade();
+        ConnectionFacade sut = new ConnectionFacade(new ArrayList<ConnectionFacadeDecorator>());
         final int connectionTimeout = 300001;
         sut.setConnectionTimeOut(connectionTimeout);
     }

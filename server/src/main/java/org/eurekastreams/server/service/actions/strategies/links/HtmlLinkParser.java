@@ -49,12 +49,14 @@ public class HtmlLinkParser
      *            the HTML as a string.
      * @param link
      *            the link.
+     * @param inAccountId
+     *            accountid of the user requesting images to be parsed.
      */
-    public void parseLinkInformation(final String htmlString, final LinkInformation link)
+    public void parseLinkInformation(final String htmlString, final LinkInformation link, final String inAccountId)
     {
-        titleParser.parseInformation(htmlString, link);
-        descriptionParser.parseInformation(htmlString, link);
-        imageParser.parseInformation(htmlString, link);
+        titleParser.parseInformation(htmlString, link, inAccountId);
+        descriptionParser.parseInformation(htmlString, link, inAccountId);
+        imageParser.parseInformation(htmlString, link, inAccountId);
     }
 
     /**
