@@ -24,7 +24,6 @@ import javax.persistence.Query;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.EntityCacheUpdater;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
@@ -38,7 +37,7 @@ import org.hibernate.ScrollableResults;
 /**
  * Cache loader for Groups.
  */
-public class DomainGroupCacheLoader extends CachedDomainMapper implements EntityCacheUpdater<DomainGroup>, CacheWarmer
+public class DomainGroupCacheLoader extends CachedDomainMapper implements EntityCacheUpdater<DomainGroup>
 {
     /**
      * Logger instance.
@@ -196,12 +195,6 @@ public class DomainGroupCacheLoader extends CachedDomainMapper implements Entity
                     + " - doing nothing.");
         }
         // no-op - cache will be loaded when someone requests this domain group
-    }
-
-    @Override
-    public void execute(final List<UserActionRequest> inRequests)
-    {
-        initialize();
     }
 
 }

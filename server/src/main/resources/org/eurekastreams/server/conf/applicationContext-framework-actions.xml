@@ -3380,39 +3380,6 @@
         <constructor-arg value="true" />
     </bean>             
     
-    <bean id="cacheWarmGroups" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.CacheWarmerExecution">
-                <constructor-arg ref="domainGroupCacheLoader" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg ref="taskHandler" />
-        <constructor-arg value="true" />
-    </bean> 
-    
-    <bean id="cacheWarmOrganizations" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.CacheWarmerExecution">
-                <constructor-arg ref="organizationCacheLoader" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg ref="taskHandler" />
-        <constructor-arg value="true" />
-    </bean>    
-    
-    <bean id="cacheWarmPeople" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.CacheWarmerExecution">
-                <constructor-arg ref="personCacheLoader" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg ref="taskHandler" />
-        <constructor-arg value="true" />
-    </bean>
-    
     <bean id="createPersonActionFactory" class="org.eurekastreams.server.action.execution.CreatePersonActionFactory">
         <constructor-arg ref="jpaTabMapper" />
         <constructor-arg ref="jpaOrganizationMapper" />
