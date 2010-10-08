@@ -15,7 +15,8 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
@@ -23,7 +24,7 @@ import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
  * Return list of direct child org ids for given org id.
  * 
  */
-public class GetChildOrgIdsByOrgIdDbMapper extends BaseArgDomainMapper<Long, List<Long>>
+public class GetChildOrgIdsByOrgIdDbMapper extends BaseArgDomainMapper<Long, Set<Long>>
 {
     /**
      * Return list of direct child org ids for given org id.
@@ -34,12 +35,12 @@ public class GetChildOrgIdsByOrgIdDbMapper extends BaseArgDomainMapper<Long, Lis
      */
     @SuppressWarnings("unchecked")
     @Override
-    public List<Long> execute(final Long inRequest)
+    public Set<Long> execute(final Long inRequest)
     {
-        return getEntityManager().createQuery(
+        return new HashSet<Long>(getEntityManager().createQuery(
                 "SELECT id FROM Organization WHERE "
                         + "parentOrganization.id = :parentOrgId AND id != parentOrganization.id").setParameter(
-                "parentOrgId", inRequest).getResultList();
+                "parentOrgId", inRequest).getResultList());
     }
 
 }

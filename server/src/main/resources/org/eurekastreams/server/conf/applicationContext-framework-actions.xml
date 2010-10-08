@@ -3249,9 +3249,9 @@
                 <constructor-arg>
                     <list>
                         <value>cacheOrganization</value>
-                        <!-- <value>cacheDirectChildernForOrganizationList</value> -->
-                        <!--  <value>cacheRecursiveChildrenForOrganizationList</value>-->
-                        <!--<value>cacheRecursiveParentsForOrganizationList</value>-->
+                        <value>cacheDirectChildernForOrganizationList</value>
+                        <value>cacheRecursiveChildrenForOrganizationList</value>
+                        <value>cacheRecursiveParentsForOrganizationList</value>
                     </list>
                 </constructor-arg>
                 <constructor-arg ref="getOrganizationIds" />

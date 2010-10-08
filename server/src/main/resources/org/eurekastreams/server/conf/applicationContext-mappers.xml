@@ -725,7 +725,7 @@
         </constructor-arg>        
         <!-- Cache refresher -->
         <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleListValueCacheRefreshStrategy">
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
                 <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_RECURSIVE_CHILDREN" />
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
@@ -746,7 +746,7 @@
         </constructor-arg>        
         <!-- Cache refresher -->
         <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleListValueCacheRefreshStrategy">
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
                 <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_DIRECT_CHILDREN" />
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
