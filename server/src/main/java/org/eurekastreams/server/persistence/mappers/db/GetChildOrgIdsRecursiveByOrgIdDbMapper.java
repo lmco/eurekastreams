@@ -54,6 +54,7 @@ public class GetChildOrgIdsRecursiveByOrgIdDbMapper extends BaseArgDomainMapper<
     @SuppressWarnings("unchecked")
     private void recurse(final Long inOrgId, final Set<Long> inOrgChildIds)
     {
+        // TODO:This could be optimized with "IN" clauses when time is available.
         String queryString = "SELECT id FROM Organization WHERE "
                 + "parentOrganization.id = :parentOrgId AND id != parentOrganization.id";
         Query query = getHibernateSession().createQuery(queryString);
