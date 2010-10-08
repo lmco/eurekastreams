@@ -32,6 +32,11 @@ public class YoutubeVideoThumbnailParserTest
     private YoutubeVideoThumbnailParser sut;
 
     /**
+     * Test account.
+     */
+    private static final String TEST_ACCOUNT = "testaccount";
+    
+    /**
      * Setup test fixtures.
      */
     @Before
@@ -51,7 +56,7 @@ public class YoutubeVideoThumbnailParserTest
         // No video ID.
         link.setUrl("http://www.youtube.com?something=something");
 
-        sut.parseInformation(html, link);
+        sut.parseInformation(html, link, TEST_ACCOUNT);
 
         Assert.assertEquals(0, link.getImageUrls().size());
     }
@@ -66,7 +71,7 @@ public class YoutubeVideoThumbnailParserTest
         final LinkInformation link = new LinkInformation();
         link.setUrl("http://www.youtube.com?v=0123456789A");
 
-        sut.parseInformation(html, link);
+        sut.parseInformation(html, link, TEST_ACCOUNT);
 
         // TODO check content of image url.
         Assert.assertEquals(1, link.getImageUrls().size());

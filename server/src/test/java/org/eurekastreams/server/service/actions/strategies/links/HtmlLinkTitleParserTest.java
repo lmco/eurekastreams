@@ -33,6 +33,11 @@ public class HtmlLinkTitleParserTest
     private HtmlLinkTitleParser sut;
 
     /**
+     * Test account.
+     */
+    private static final String TEST_ACCOUNT = "testaccount";
+    
+    /**
      * Setup test fixtures.
      */
     @Before
@@ -52,7 +57,7 @@ public class HtmlLinkTitleParserTest
         final LinkInformation link = new LinkInformation();
         link.setUrl("http:///www.someurl.com");
 
-        sut.parseInformation(html, link);
+        sut.parseInformation(html, link, TEST_ACCOUNT);
 
         Assert.assertEquals(link.getUrl(), link.getTitle());
     }
@@ -66,7 +71,7 @@ public class HtmlLinkTitleParserTest
         final String html = "<html><title>Some webpage</title></html>";
         final LinkInformation link = new LinkInformation();
 
-        sut.parseInformation(html, link);
+        sut.parseInformation(html, link, TEST_ACCOUNT);
 
         Assert.assertEquals("Some webpage", link.getTitle());
     }

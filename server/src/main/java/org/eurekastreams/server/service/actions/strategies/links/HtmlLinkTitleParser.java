@@ -54,8 +54,10 @@ public class HtmlLinkTitleParser implements HtmlLinkInformationParserStrategy
      * @param htmlString
      *            the HTML of the page as a String.
      * @param link the link information.
+     * @param inAccountId
+     *          account id of the user making the request.
      */
-    public void parseInformation(final String htmlString, final LinkInformation link)
+    public void parseInformation(final String htmlString, final LinkInformation link, final String inAccountId)
     {
         Pattern titlePattern = Pattern.compile("<title>(.*?)</title>", Pattern.CASE_INSENSITIVE);
         Matcher matcher = titlePattern.matcher(htmlString);
