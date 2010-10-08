@@ -15,9 +15,15 @@
  */
 package org.eurekastreams.server.action.validation.stream;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
+
+import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ValidationStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.stream.Stream;
 
 /**
@@ -25,6 +31,16 @@ import org.eurekastreams.server.domain.stream.Stream;
  */
 public class ModifyStreamForCurrentUserValidation implements ValidationStrategy<PrincipalActionContext>
 {
+    /**
+     * Local logger instance for this class.
+     */
+    private final Log log = LogFactory.make();
+    
+    /**
+     * Max number of streams.
+     */
+    private static final int MAX_STREAMS = 25;
+
     /**
      * Validates modifying the current user's streams.
      * 
@@ -36,12 +52,53 @@ public class ModifyStreamForCurrentUserValidation implements ValidationStrategy<
     @Override
     public void validate(final PrincipalActionContext inActionContext) throws ValidationException
     {
+        ValidationException valEx = new ValidationException();
+
         Stream stream = (Stream) inActionContext.getParams();
+
+        JSONObject object = null;
+        try
+        {
+            object = JSONObject.fromObject(stream.getRequest());
+        }
+        catch (JSONException ex)
+        {
+            valEx.addError("stream", "Malformed JSON. Try again later.");
+            throw valEx;
+        }
 
         if (stream.getName() == null || stream.getName().length() == 0)
         {
-            throw new ValidationException("Stream must have a name.");
+            valEx.addError("name", "Stream must have a name.");
+            throw valEx;
+        }
+
+        JSONObject query = object.getJSONObject("query");
+
+        for (Object key : query.keySet())
+        {
+            String keyStr = (String) key;
+
+            try
+            {
+                JSONArray arr = query.getJSONArray(keyStr);
+
+                if (arr.size() == 0)
+                {
+                    valEx.addError("stream", "Add at least one stream");
+                    throw valEx;
+                }
+                else if (arr.size() > MAX_STREAMS)
+                {
+                    valEx.addError("stream", "Maximum number of streams allowed is " + MAX_STREAMS);
+                    throw valEx;
+                }
+            }
+            catch (JSONException ex)
+            {
+                // do nothing.
+                log.trace("Item is not an array. Ignored");
+            }
         }
     }
-
 }

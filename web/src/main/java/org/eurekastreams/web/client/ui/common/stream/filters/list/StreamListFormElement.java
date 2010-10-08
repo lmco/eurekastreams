@@ -253,8 +253,8 @@ public class StreamListFormElement extends FlowPanel implements FormElement
      *            the person.
      * @return the person.
      */
-    private String getEntityDisplayName(final EntityType type, 
-            final String accountId, final List<Serializable> entities)
+    private String getEntityDisplayName(final EntityType type, final String accountId, 
+            final List<Serializable> entities)
     {
         for (Serializable entity : entities)
         {
@@ -311,6 +311,8 @@ public class StreamListFormElement extends FlowPanel implements FormElement
         }
         else if (value.equals(StreamJsonRequestFactory.RECIPIENT_KEY))
         {
+            StreamJsonRequestFactory.initRecipient(jsonObject);
+
             for (StreamScope scope : (LinkedList<StreamScope>) scopes.getValue())
             {
                 jsonObject = StreamJsonRequestFactory.addRecipient(EntityType.valueOf(scope.getScopeType().toString()),
@@ -319,6 +321,8 @@ public class StreamListFormElement extends FlowPanel implements FormElement
         }
         else if (value.equals(StreamJsonRequestFactory.LIKER_KEY))
         {
+            StreamJsonRequestFactory.initLikers(jsonObject);
+
             for (StreamScope scope : (LinkedList<StreamScope>) scopes.getValue())
             {
                 jsonObject = StreamJsonRequestFactory.addLiker(EntityType.valueOf(scope.getScopeType().toString()),
@@ -327,6 +331,8 @@ public class StreamListFormElement extends FlowPanel implements FormElement
         }
         else if (value.equals(StreamJsonRequestFactory.AUTHOR_KEY))
         {
+            StreamJsonRequestFactory.initAuthors(jsonObject);
+
             for (StreamScope scope : (LinkedList<StreamScope>) scopes.getValue())
             {
                 jsonObject = StreamJsonRequestFactory.addAuthor(EntityType.valueOf(scope.getScopeType().toString()),

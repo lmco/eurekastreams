@@ -174,6 +174,58 @@ public final class StreamJsonRequestFactory
     }
 
     /**
+     * Init the recipient array.
+     * 
+     * @param json
+     *            the JSON object.
+     */
+    public static void initRecipient(final JSONObject json)
+    {
+        initEntity(RECIPIENT_KEY, json);
+    }
+
+    /**
+     * Init the likers array.
+     * 
+     * @param json
+     *            the JSON object.
+     */
+    public static void initLikers(final JSONObject json)
+    {
+        initEntity(LIKER_KEY, json);
+    }
+
+    /**
+     * Init the authors array.
+     * 
+     * @param json
+     *            the JSON object.
+     */
+    public static void initAuthors(final JSONObject json)
+    {
+        initEntity(AUTHOR_KEY, json);
+    }
+
+    /**
+     * Init an entity array.
+     * 
+     * @param key
+     *            the key.
+     * @param json
+     *            the JSON object.
+     */
+    private static void initEntity(final String key, final JSONObject json)
+    {
+        JSONObject query = json.get("query").isObject();
+
+        if (!query.containsKey(key))
+        {
+            JSONArray entityArray = new JSONArray();
+            query.put(key, entityArray);
+        }
+    }
+
+    /**
      * Adds an entity to a request.
      * 
      * @param key
@@ -230,7 +282,6 @@ public final class StreamJsonRequestFactory
         return json;
     }
 
-    
     /**
      * Sets the search term in a request..
      * 
@@ -280,7 +331,6 @@ public final class StreamJsonRequestFactory
         query.put(PARENT_ORG_KEY, new JSONString(Session.getInstance().getCurrentPerson().getAccountId()));
         return json;
     }
-    
 
     /**
      * Sets the source as the current user's joined groups..

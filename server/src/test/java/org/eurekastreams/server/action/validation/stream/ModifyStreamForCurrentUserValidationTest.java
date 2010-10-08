@@ -39,6 +39,7 @@ public class ModifyStreamForCurrentUserValidationTest
     {
         Stream stream = new Stream();
         stream.setName("something");
+        stream.setRequest("{ query : { recipient: [ { name: 'something', type: 'GROUP' } ] } }");
 
         PrincipalActionContext actionContext = new ServiceActionContext(stream, null);
 
@@ -67,6 +68,67 @@ public class ModifyStreamForCurrentUserValidationTest
     {
         Stream stream = new Stream();
         stream.setName(null);
+
+        PrincipalActionContext actionContext = new ServiceActionContext(stream, null);
+
+        sut.validate(actionContext);
+    }
+
+    /**
+     * Tests with empty array.
+     */
+    @Test(expected = ValidationException.class)
+    public void testEmptyArray()
+    {
+        Stream stream = new Stream();
+        stream.setName("something");
+        stream.setRequest("{ query : { recipient: [  ] } }");
+
+        PrincipalActionContext actionContext = new ServiceActionContext(stream, null);
+
+        sut.validate(actionContext);
+    }
+
+    /**
+     * Tests with array that is too large.
+     */
+    @Test(expected = ValidationException.class)
+    public void testArrayTooLarge()
+    {
+        final int tooLarge = 26;
+
+        Stream stream = new Stream();
+        stream.setName("something");
+        String request = "{ query : { recipient: [  ";
+
+        for (int i = 0; i < tooLarge; i++)
+        {
+            if (i > 0)
+            {
+                request += ",";
+            }
+            request += "{ name: 'something" + i + "', type: 'GROUP' }";
+        }
+
+        request += "] } }";
+        
+        stream.setRequest(request);
+
+        PrincipalActionContext actionContext = new ServiceActionContext(stream, null);
+
+        sut.validate(actionContext);
+    }
+    
+    /**
+     * Tests with malformed JSON.
+     */
+    @Test(expected = ValidationException.class)
+    public void testMalformedJSON()
+    {
+        Stream stream = new Stream();
+        stream.setName("something");
+        // Missing open curly brace
+        stream.setRequest(" query : { recipient: [  ] } }");
 
         PrincipalActionContext actionContext = new ServiceActionContext(stream, null);
 
