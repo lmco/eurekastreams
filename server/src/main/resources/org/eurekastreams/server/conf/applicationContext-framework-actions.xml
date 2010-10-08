@@ -843,6 +843,7 @@
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.profile.DomainGroupCacheUpdaterAsyncExecution">
+                <constructor-arg ref="getActivityIdsAuthoredByOrOriginallyAuthoredByEntityDBMapper" />
                 <constructor-arg ref="saveDomainGroupCoordinatorsListToCacheMapper" />
                 <constructor-arg ref="jpaGroupMapper" />
                 <constructor-arg ref="addPrivateGroupIdToCachedCoordinatorAccessList" />
@@ -3249,9 +3250,9 @@
                 <constructor-arg>
                     <list>
                         <value>cacheOrganization</value>
-                        <!-- <value>cacheDirectChildernForOrganizationList</value> -->
-                        <!--  <value>cacheRecursiveChildrenForOrganizationList</value>-->
-                        <!--<value>cacheRecursiveParentsForOrganizationList</value>-->
+                        <value>cacheDirectChildernForOrganizationList</value>
+                        <value>cacheRecursiveChildrenForOrganizationList</value>
+                        <value>cacheRecursiveParentsForOrganizationList</value>
                     </list>
                 </constructor-arg>
                 <constructor-arg ref="getOrganizationIds" />

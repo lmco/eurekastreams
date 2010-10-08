@@ -18,7 +18,7 @@ package org.eurekastreams.server.persistence.mappers.db;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
+import java.util.Set;
 
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.eurekastreams.server.persistence.mappers.OrgTreeBuilderTestHelper;
@@ -64,7 +64,7 @@ public class GetChildOrgIdsByOrgIdDbMapperTest extends MapperTest
     @Test
     public void testExecute1()
     {
-        List<Long> childOrgIds = sut.execute(5L);
+        Set<Long> childOrgIds = sut.execute(5L);
         assertEquals(2, childOrgIds.size());
         assertTrue(childOrgIds.contains(6L));
         assertTrue(childOrgIds.contains(7L));
@@ -76,7 +76,7 @@ public class GetChildOrgIdsByOrgIdDbMapperTest extends MapperTest
     @Test
     public void testExecute2()
     {
-        List<Long> childOrgIds = sut.execute(6L);
+        Set<Long> childOrgIds = sut.execute(6L);
         assertEquals(2, childOrgIds.size());
         assertTrue(childOrgIds.contains(otb.getOrg6a().getId()));
         assertTrue(childOrgIds.contains(otb.getOrg6b().getId()));
@@ -88,7 +88,7 @@ public class GetChildOrgIdsByOrgIdDbMapperTest extends MapperTest
     @Test
     public void testExecute3()
     {
-        List<Long> childOrgIds = sut.execute(otb.getOrg7a1().getId());
+        Set<Long> childOrgIds = sut.execute(otb.getOrg7a1().getId());
         assertEquals(0, childOrgIds.size());
     }
 }

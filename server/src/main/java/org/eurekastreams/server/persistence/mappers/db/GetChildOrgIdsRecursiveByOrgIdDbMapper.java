@@ -15,8 +15,9 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.hibernate.Query;
@@ -25,7 +26,7 @@ import org.hibernate.Query;
  * Return a list of all children org ids recursively.
  * 
  */
-public class GetChildOrgIdsRecursiveByOrgIdDbMapper extends BaseArgDomainMapper<Long, List<Long>>
+public class GetChildOrgIdsRecursiveByOrgIdDbMapper extends BaseArgDomainMapper<Long, Set<Long>>
 {
 
     /**
@@ -35,9 +36,9 @@ public class GetChildOrgIdsRecursiveByOrgIdDbMapper extends BaseArgDomainMapper<
      *            the ID of the organization to fetch child organizations for
      * @return list of all children org ids recursively.
      */
-    public List<Long> execute(final Long inOrgId)
+    public Set<Long> execute(final Long inOrgId)
     {
-        List<Long> recursiveOrgIds = new ArrayList<Long>();
+        Set<Long> recursiveOrgIds = new HashSet<Long>();
         recurse(inOrgId, recursiveOrgIds);
         return recursiveOrgIds;
     }
@@ -51,8 +52,9 @@ public class GetChildOrgIdsRecursiveByOrgIdDbMapper extends BaseArgDomainMapper<
      *            the Set to store the IDs of the children organizations in
      */
     @SuppressWarnings("unchecked")
-    private void recurse(final Long inOrgId, final List<Long> inOrgChildIds)
+    private void recurse(final Long inOrgId, final Set<Long> inOrgChildIds)
     {
+        // TODO:This could be optimized with "IN" clauses when time is available.
         String queryString = "SELECT id FROM Organization WHERE "
                 + "parentOrganization.id = :parentOrgId AND id != parentOrganization.id";
         Query query = getHibernateSession().createQuery(queryString);
