@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.GetDirectChildOrgIds;
 import org.eurekastreams.server.persistence.mappers.GetRecursiveChildOrgIds;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames;
@@ -47,9 +46,9 @@ public class OrganizationHierarchyCache extends CachedDomainMapper
     private DomainMapper<Long, List<Long>> getRecursiveParentOrgIdsMapper;
 
     /**
-     * Mapper to get the direct child org ids.
+     * Mapper to get set of child org ids for an org.
      */
-    private GetDirectChildOrgIds getDirectChildOrgIdsMapper;
+    private DomainMapper<Long, Set<Long>> getDirectChildOrgIdsMapper;
 
     /**
      * Mapper to get organizations from short names.
@@ -171,7 +170,7 @@ public class OrganizationHierarchyCache extends CachedDomainMapper
      * @param inGetDirectChildOrgIdsMapper
      *            the getDirectChildOrgIdsMapper to set
      */
-    public void setGetDirectChildOrgIdsMapper(final GetDirectChildOrgIds inGetDirectChildOrgIdsMapper)
+    public void setGetDirectChildOrgIdsMapper(final DomainMapper<Long, Set<Long>> inGetDirectChildOrgIdsMapper)
     {
         this.getDirectChildOrgIdsMapper = inGetDirectChildOrgIdsMapper;
     }

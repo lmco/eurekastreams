@@ -42,16 +42,16 @@ public class SingleValueCacheMapper<KeySuffixType, CachedValueType> extends Cach
     /**
      * Constructor.
      *
-     * @param inKeySuffixTransformer
-     *            the key suffix transformer
      * @param inCacheKeyPrefix
      *            the cache key prefix
+     * @param inKeySuffixTransformer
+     *            the key suffix transformer
      */
-    public SingleValueCacheMapper(final CacheKeySuffixTransformer<KeySuffixType> inKeySuffixTransformer,
-            final String inCacheKeyPrefix)
+    public SingleValueCacheMapper(final String inCacheKeyPrefix,
+            final CacheKeySuffixTransformer<KeySuffixType> inKeySuffixTransformer)
     {
-        keySuffixTransformer = inKeySuffixTransformer;
         cacheKeyPrefix = inCacheKeyPrefix;
+        keySuffixTransformer = inKeySuffixTransformer;
     }
 
     /**

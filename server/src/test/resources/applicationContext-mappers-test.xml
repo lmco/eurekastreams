@@ -115,10 +115,7 @@
 		<property name="cache" ref="testCache" />
 	</bean>
 
-	<bean id="getDirectOrgIdsMapper"
-		class="org.eurekastreams.server.persistence.mappers.GetDirectChildOrgIds">
-		<property name="cache" ref="testCache" />
-	</bean>
+	<bean id="getChildOrgIdsByOrgIdMapper" class="org.eurekastreams.server.persistence.mappers.db.GetChildOrgIdsByOrgIdDbMapper" />
 	
 	<bean id="getPersonIdsWithStarredActivity"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPersonIdsWithStarredActivity">
@@ -222,40 +219,7 @@
     	<property name="cache" ref="testCache" />
     </bean>
     
-	<bean id="getRecursiveParentOrgIdsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
-		<!-- Cache Mapper -->
-		<constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
-				<constructor-arg>
-						<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleListValueCacheMapper">
-						<constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_PARENTS_RECURSIVE" />
-						<constructor-arg>
-							<bean class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
-						</constructor-arg>
-						<property name="cache" ref="testCache" />
-					</bean>
-				</constructor-arg>
-			</bean>
-		</constructor-arg>
-        <!-- Database mapper to fall back on if not found in cache -->
-        <constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.db.GetParentOrgIdsRecursiveByOrgIdDbMapper" />
-		</constructor-arg>
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>
-        <!-- Cache refresher -->
-        <constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleListValueCacheRefreshStrategy">
-				<constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_PARENTS_RECURSIVE" />
-				<constructor-arg>
-					<bean class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
-				</constructor-arg>
-				<property name="cache" ref="testCache" />
-			</bean>
-		</constructor-arg>
-    </bean>
+    <bean id="getRecursiveParentOrgIdsMapper" class="org.eurekastreams.server.persistence.mappers.db.GetParentOrgIdsRecursiveByOrgIdDbMapper" />
     
     <bean id="getRecursiveOrgCoordinators"
 		class="org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators">
@@ -604,11 +568,7 @@
         
     <bean id="getOrganizationsByIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetOrganizationsByIdsDbMapper" />
     
-    <bean id="getParentOrgIdsRecursiveByOrgIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetParentOrgIdsRecursiveByOrgIdDbMapper" />
-    
     <bean id="getChildOrgIdsRecursiveByOrgIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetChildOrgIdsRecursiveByOrgIdDbMapper" />
-      
-    <bean id="getChildOrgIdsByOrgIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetChildOrgIdsByOrgIdDbMapper" />    
         
     <bean id="getGroupCoordinatorIdsByGroupIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetGroupCoordinatorIdsByGroupIdDbMapper" />
     

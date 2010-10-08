@@ -59,7 +59,7 @@ public class SingleValueCacheMapperTest
     @Test
     public void testExecute()
     {
-        SingleValueCacheMapper sut = new SingleValueCacheMapper<String, String>(keySuffixTransformer, "PREFIX:");
+        SingleValueCacheMapper sut = new SingleValueCacheMapper<String, String>("PREFIX:", keySuffixTransformer);
         sut.setCache(cache);
 
         context.checking(new Expectations()
