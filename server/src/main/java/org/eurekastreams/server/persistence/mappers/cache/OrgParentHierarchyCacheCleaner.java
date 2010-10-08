@@ -51,8 +51,8 @@ public class OrgParentHierarchyCacheCleaner extends CachedDomainMapper
         List<Long> parentOrgIds = getRecursiveParentOrgIdsMapper.execute(inOrgId);
 
         // Note: When a new organization is created, the @PostPersist method calls OrganizationHierarchyCacheLoader's
-        // onPostPersist, which deletes the global cache entry CacheKeys.ORGANIZATION_TREE_DTO and the cache entry
-        // CacheKeys.ORGANIZATION_DIRECT_CHILDREN for the new org's parent. If that were not the case, we'd need to do
+        // onPostPersist, which deletes the global cache entry CacheKeys.ORGANIZATION_TREE_DTO for the new org's parent.
+        // If that were not the case, we'd need to do
         // it here (otherwise the parent's cached child org list would be missing the new org).
 
         for (Long recursiveParentOrgId : parentOrgIds)

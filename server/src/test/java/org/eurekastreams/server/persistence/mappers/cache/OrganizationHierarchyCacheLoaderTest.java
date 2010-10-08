@@ -61,13 +61,6 @@ public class OrganizationHierarchyCacheLoaderTest extends CachedMapperTest
 
         assertNotNull(getCache().get("Org:5"));
 
-        // test direct children of all orgs:
-        assertEquals(2, orgCache.getDirectChildOrganizations(5).size());
-        assertEquals(0, orgCache.getDirectChildOrganizations(6).size());
-        assertEquals(0, orgCache.getDirectChildOrganizations(7).size());
-        assertTrue(orgCache.getDirectChildOrganizations(5).contains(6L));
-        assertTrue(orgCache.getDirectChildOrganizations(5).contains(7L));
-
         // test recursive children of all orgs
         assertEquals(2, orgCache.getRecursiveChildOrganizations(5).size());
         assertEquals(0, orgCache.getRecursiveChildOrganizations(6).size());
@@ -109,13 +102,6 @@ public class OrganizationHierarchyCacheLoaderTest extends CachedMapperTest
 
         // populate cache
         sut.initialize();
-
-        // test direct children of all orgs:
-        assertEquals(1, orgCache.getDirectChildOrganizations(5).size());
-        assertEquals(1, orgCache.getDirectChildOrganizations(6).size());
-        assertEquals(0, orgCache.getDirectChildOrganizations(7).size());
-        assertTrue(orgCache.getDirectChildOrganizations(5).contains(6L));
-        assertTrue(orgCache.getDirectChildOrganizations(6).contains(7L));
 
         // ** test recursive children of all orgs
         assertEquals(2, orgCache.getRecursiveChildOrganizations(5).size());
@@ -181,14 +167,12 @@ public class OrganizationHierarchyCacheLoaderTest extends CachedMapperTest
 
         // stick something random in the org tree cache to make sure it's deleted on persist
         getCache().set(CacheKeys.ORGANIZATION_TREE_DTO, "FOO");
-        getCache().set(CacheKeys.ORGANIZATION_DIRECT_CHILDREN + 6L, "BAR");
 
         // SUT: call post-update
         sut.onPostPersist(o);
 
         // make sure the org tree and parent org ids were blown out of cache
         assertNull(getCache().get(CacheKeys.ORGANIZATION_TREE_DTO));
-        assertNull(getCache().get(CacheKeys.ORGANIZATION_DIRECT_CHILDREN + 6L));
     }
 
     /**

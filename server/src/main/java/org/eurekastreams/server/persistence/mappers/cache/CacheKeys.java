@@ -135,11 +135,6 @@ public final class CacheKeys
     public static final String ORGANIZATION_PARENTS_RECURSIVE = "OrgParents:";
 
     /**
-     * Key for the list of an Organization's direct children Organization ids.
-     */
-    public static final String ORGANIZATION_DIRECT_CHILDREN = "OrgChld:";
-
-    /**
      * Key for the list of an Organization's children, recursively.
      */
     public static final String ORGANIZATION_RECURSIVE_CHILDREN = "OrgChldRec:";

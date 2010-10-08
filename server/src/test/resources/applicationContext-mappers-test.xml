@@ -114,8 +114,6 @@
 		class="org.eurekastreams.server.persistence.mappers.GetRecursiveChildOrgIds">
 		<property name="cache" ref="testCache" />
 	</bean>
-
-	<bean id="getChildOrgIdsByOrgIdMapper" class="org.eurekastreams.server.persistence.mappers.db.GetChildOrgIdsByOrgIdDbMapper" />
 	
 	<bean id="getPersonIdsWithStarredActivity"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPersonIdsWithStarredActivity">

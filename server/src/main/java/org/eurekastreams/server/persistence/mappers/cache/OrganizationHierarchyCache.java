@@ -46,11 +46,6 @@ public class OrganizationHierarchyCache extends CachedDomainMapper
     private DomainMapper<Long, List<Long>> getRecursiveParentOrgIdsMapper;
 
     /**
-     * Mapper to get set of child org ids for an org.
-     */
-    private DomainMapper<Long, Set<Long>> getDirectChildOrgIdsMapper;
-
-    /**
      * Mapper to get organizations from short names.
      */
     private GetOrganizationsByShortNames getOrganizationsByShortNamesMapper;
@@ -91,18 +86,6 @@ public class OrganizationHierarchyCache extends CachedDomainMapper
         ArrayList<Long> results = new ArrayList<Long>(getParentOrganizations(organizationId));
         results.add(organizationId);
         return results;
-    }
-
-    /**
-     * Get the direct child organizations of the organization with the input organization id.
-     *
-     * @param organizationId
-     *            the org to fetch children for
-     * @return a set of organization ids of and all direct children, not including the input organization id
-     */
-    public Set<Long> getDirectChildOrganizations(final long organizationId)
-    {
-        return getDirectChildOrgIdsMapper.execute(organizationId);
     }
 
     /**
@@ -164,15 +147,6 @@ public class OrganizationHierarchyCache extends CachedDomainMapper
     public void setGetRecursiveChildOrgIdsMapper(final GetRecursiveChildOrgIds inGetRecursiveChildOrgIdsMapper)
     {
         this.getRecursiveChildOrgIdsMapper = inGetRecursiveChildOrgIdsMapper;
-    }
-
-    /**
-     * @param inGetDirectChildOrgIdsMapper
-     *            the getDirectChildOrgIdsMapper to set
-     */
-    public void setGetDirectChildOrgIdsMapper(final DomainMapper<Long, Set<Long>> inGetDirectChildOrgIdsMapper)
-    {
-        this.getDirectChildOrgIdsMapper = inGetDirectChildOrgIdsMapper;
     }
 
     /**

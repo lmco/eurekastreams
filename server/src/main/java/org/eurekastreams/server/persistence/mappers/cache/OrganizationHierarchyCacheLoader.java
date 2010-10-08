@@ -98,12 +98,12 @@ public class OrganizationHierarchyCacheLoader extends CachedDomainMapper impleme
     /**
      * Query the database for all organizations, only requesting the id and parent org id. Populate the direct children
      * organization cache collection. This should be as efficient as possible, making a single query to the database.
-     * 
+     *
      * Remarks: Consider chunking this in batches of configurable size
-     * 
+     *
      * @param childOrgMap
      *            map to store OrgId -> Child OrgIds
-     * 
+     *
      * @return the root org id
      */
     private Long queryAllOrganizations(final Map<Long, List<Long>> childOrgMap)
@@ -148,7 +148,7 @@ public class OrganizationHierarchyCacheLoader extends CachedDomainMapper impleme
     /**
      * Return a set of all children organization ids recursively while populating the recursive children collection for
      * the input and org and all recursive children.
-     * 
+     *
      * @param inOrgId
      *            the org to recurse
      * @param childOrgMap
@@ -185,7 +185,7 @@ public class OrganizationHierarchyCacheLoader extends CachedDomainMapper impleme
 
     /**
      * Populate the parent org hash using the child org hash and root org.
-     * 
+     *
      * @param parentOrgId
      *            the starting point for the parent org populating
      * @param childMap
@@ -194,7 +194,7 @@ public class OrganizationHierarchyCacheLoader extends CachedDomainMapper impleme
      *            Map of org id to recursive children org id
      * @param parentMap
      *            Map of org id to recursive parent org id
-     * 
+     *
      */
     private void populateParentOrgCache(final Long parentOrgId, final Map<Long, List<Long>> childMap,
             final Map<Long, List<Long>> recursiveChildMap, final Map<Long, List<Long>> parentMap)
@@ -229,7 +229,7 @@ public class OrganizationHierarchyCacheLoader extends CachedDomainMapper impleme
 
     /**
      * Write the org hierarchy information to cache.
-     * 
+     *
      * @param rootOrgId
      *            The root organization id
      * @param childMap
@@ -248,12 +248,6 @@ public class OrganizationHierarchyCacheLoader extends CachedDomainMapper impleme
             getCache().setList(CacheKeys.ORGANIZATION_PARENTS_RECURSIVE + orgId, parentMap.get(orgId));
         }
 
-        // write the org children
-        for (Long orgId : childMap.keySet())
-        {
-            getCache().set(CacheKeys.ORGANIZATION_DIRECT_CHILDREN + orgId, new HashSet<Long>(childMap.get(orgId)));
-        }
-
         // write the recursive org children
         for (Long orgId : recursiveChildMap.keySet())
         {
@@ -265,7 +259,7 @@ public class OrganizationHierarchyCacheLoader extends CachedDomainMapper impleme
     /**
      * Organization updater implementation - fired when an organization entity is updated. Nothing that we currently
      * store in cache can change, so this method does nothing right now.
-     * 
+     *
      * @param inUpdatedOrganization
      *            the organization just updated
      */
@@ -282,7 +276,7 @@ public class OrganizationHierarchyCacheLoader extends CachedDomainMapper impleme
 
     /**
      * Organization persist implementation - fired when an organization entity is persisted.
-     * 
+     *
      * @param inNewOrganization
      *            the organization just created
      */
@@ -306,7 +300,6 @@ public class OrganizationHierarchyCacheLoader extends CachedDomainMapper impleme
         getCache().delete(CacheKeys.ORGANIZATION_TREE_DTO);
 
         log.info("Deleting direct children org id cache of parent org to " + orgId + ": " + parentOrgId);
-        getCache().delete(CacheKeys.ORGANIZATION_DIRECT_CHILDREN + parentOrgId);
     }
 
     /**

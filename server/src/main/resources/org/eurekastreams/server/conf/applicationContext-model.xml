@@ -23,7 +23,6 @@
 		<property name="getOrganizationsByShortNames" ref="bulkOrganizationsByShortNameMapper" />
 		<property name="getRecursiveChildOrgIdsMapper" ref="getRecursiveChildOrgIdsMapper" />
 		<property name="getRecursiveParentOrgIdsMapper" ref="getParentOrgIdsRecursiveByOrgIdMapper" />
-		<property name="getDirectChildOrgIdsMapper" ref="getChildOrgIdsByOrgIdMapper" />
 		<property name="getOrganizationsByShortNamesMapper" ref="bulkOrganizationsByShortNameMapper" />
 	</bean>
 

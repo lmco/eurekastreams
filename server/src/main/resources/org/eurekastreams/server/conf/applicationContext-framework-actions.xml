@@ -3250,7 +3250,6 @@
                 <constructor-arg>
                     <list>
                         <value>cacheOrganization</value>
-                        <value>cacheDirectChildernForOrganizationList</value>
                         <value>cacheRecursiveChildrenForOrganizationList</value>
                         <value>cacheRecursiveParentsForOrganizationList</value>
                     </list>
@@ -3357,18 +3356,6 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>   
-    
-    <bean id="cacheDirectChildernForOrganizationList" class="org.eurekastreams.commons.actions.async.AsyncAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
-                <constructor-arg ref="getChildOrgIdsByOrgIdMapper_FORCE_REFRESH" />
-                <!-- put id in list before calling mapper. -->    
-                <constructor-arg value="False" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>
     
     <bean id="cacheRecursiveChildrenForOrganizationList" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />

@@ -205,10 +205,6 @@
         class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />  
         
     <bean
-        id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_DIRECT_CHILDREN"
-        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
-        
-    <bean
         id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_RECURSIVE_CHILDREN"
         class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />                      
         
@@ -750,60 +746,6 @@
 				<property name="cache" ref="memcachedCache" />
 			</bean>
 		</constructor-arg> 
-    </bean>
-    
-    <bean id="getChildOrgIdsByOrgIdMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
-        <!-- Cache Mapper -->
-        <constructor-arg>
-        	<bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
-				<constructor-arg>
-					<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleListValueCacheMapper">
-						<constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_DIRECT_CHILDREN" />
-		                <constructor-arg>
-		                    <bean class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
-		                </constructor-arg>
-		                <property name="cache" ref="memcachedCache" />
-					</bean>
-				</constructor-arg>
-			</bean>
-		</constructor-arg>
-        <!-- Database mapper to fall back on if not found in cache -->
-        <constructor-arg ref="getChildOrgIdsByOrgIdDbMapper" />
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>        
-        <!-- Cache refresher -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
-                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_DIRECT_CHILDREN" />
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
-                </constructor-arg>
-                <property name="cache" ref="memcachedCache" />
-            </bean> 
-        </constructor-arg>                       
-    </bean>
-    
-    <bean id="getChildOrgIdsByOrgIdMapper_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
-        <!-- Cache Mapper -->
-        <constructor-arg ref="nullResultPartialMapper"/>
-        <!-- Database mapper to fall back on if not found in cache -->
-        <constructor-arg ref="getChildOrgIdsByOrgIdDbMapper" />
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>        
-        <!-- Cache refresher -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
-                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_DIRECT_CHILDREN" />
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
-                </constructor-arg>
-                <property name="cache" ref="memcachedCache" />
-            </bean> 
-        </constructor-arg>                       
     </bean>
 		
 	<bean id="getGroupCoordinatorIdsByGroupIdMapper_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
@@ -1945,8 +1887,6 @@
     
     <bean id="getChildOrgIdsRecursiveByOrgIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetChildOrgIdsRecursiveByOrgIdDbMapper" />
       
-    <bean id="getChildOrgIdsByOrgIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetChildOrgIdsByOrgIdDbMapper" />
-    
     <bean id="getGroupCoordinatorIdsByGroupIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetGroupCoordinatorIdsByGroupIdDbMapper" />
     
     <bean id="getFollowedGroupIdsForPersonByIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFollowedGroupIdsForPersonByIdDbMapper" />
