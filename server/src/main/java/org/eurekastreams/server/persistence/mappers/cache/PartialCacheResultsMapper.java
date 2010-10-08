@@ -41,7 +41,7 @@ public class PartialCacheResultsMapper<KeySuffixType, CachedValueType> extends C
     /**
      * Cache key suffix transformer.
      */
-    private CacheKeySuffixTransformer<KeySuffixType> keySuffixTransformer;
+    private Transformer<KeySuffixType, String> keySuffixTransformer;
 
     /**
      * Cache key prefix.
@@ -63,7 +63,7 @@ public class PartialCacheResultsMapper<KeySuffixType, CachedValueType> extends C
      * @param isListOfLists
      *            if the mapper is returning a list of lists.
      */
-    public PartialCacheResultsMapper(final CacheKeySuffixTransformer<KeySuffixType> inKeySuffixTransformer,
+    public PartialCacheResultsMapper(final Transformer<KeySuffixType, String> inKeySuffixTransformer,
             final String inCacheKeyPrefix, final Boolean isListOfLists)
     {
         keySuffixTransformer = inKeySuffixTransformer;
@@ -131,8 +131,8 @@ public class PartialCacheResultsMapper<KeySuffixType, CachedValueType> extends C
         else
         {
             // partial response
-            return new PartialMapperResponse<List<KeySuffixType>, 
-                List<CachedValueType>>(foundResults, suffixesNotFound);
+            return new PartialMapperResponse<List<KeySuffixType>, //
+            List<CachedValueType>>(foundResults, suffixesNotFound);
         }
     }
 }

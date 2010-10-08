@@ -49,7 +49,7 @@ public class PartialCacheResultsMapperTest
     /**
      * Mocked cache key suffix transformer.
      */
-    private CacheKeySuffixTransformer<String> suffixKeyTransformer = context.mock(CacheKeySuffixTransformer.class);
+    private Transformer<String, String> suffixKeyTransformer = context.mock(Transformer.class);
 
     /**
      * Cache to use.

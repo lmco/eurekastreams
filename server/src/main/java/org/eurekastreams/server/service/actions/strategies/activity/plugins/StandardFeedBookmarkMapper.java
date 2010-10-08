@@ -25,7 +25,7 @@ import com.sun.syndication.feed.synd.SyndEntryImpl;
 
 /**
  * Mapper for bookmarks.
- * 
+ *
  */
 public class StandardFeedBookmarkMapper implements ObjectMapper
 {
@@ -33,10 +33,10 @@ public class StandardFeedBookmarkMapper implements ObjectMapper
 	 * Max length.
 	 */
 	private static final int MAXLENGTH = 250;
-	
+
     /**
      * Gets the base object.
-     * 
+     *
      * @param entry
      *            the entry.
      * @return the object.
@@ -57,6 +57,7 @@ public class StandardFeedBookmarkMapper implements ObjectMapper
         {
         	object.put("description", "");
         }
+
         object.put("targetUrl", stripHTML(entry.getLink()));
         object.put("targetTitle", stripHTML(entry.getTitle()));
         if (media != null && media.getMetadata().getThumbnail().length > 0)
@@ -80,13 +81,13 @@ public class StandardFeedBookmarkMapper implements ObjectMapper
     	{
     		return out.substring(0, MAXLENGTH);
     	}
-    	
+
     	return out;
     }
-    
+
     /**
      * get BOOKMARK.
-     * 
+     *
      * @return BOOKMARK.
      */
     @Override

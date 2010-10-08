@@ -64,7 +64,7 @@ import com.sun.syndication.feed.synd.SyndFeed;
  * Goes out to the interwebs, grabs a feed, parses it, stores it in DB and queues it up to be stored in cache. The
  * reason for the queueing is so I don't update the same exact list 100s of times instead of once. This cuts down by
  * multiple orders of magnitude
- * 
+ *
  */
 public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 {
@@ -149,7 +149,7 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inStandardFeedMappers
      *            Standard feed mappers.
      * @param inSpecificUrlMappers
@@ -192,11 +192,13 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 
     /**
      * {@inheritDoc}.
-     * 
+     *
      * Grab all the feeds, set them as pending, and fire off an async job. to refresh each one.
      */
     public Serializable execute(final ActionContext inActionContext) throws ExecutionException
     {
+        Boolean brokenFeed = true;
+        String lastSeenGUID = "";
         RefreshFeedRequest request = (RefreshFeedRequest) inActionContext.getParams();
         Feed feed = feedFinder.execute(new FindByIdRequest("Feed", request.getFeedId()));
         Date lastPostDate = feed.getLastPostDate();
@@ -246,64 +248,33 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
                     }
                 }
 
+                Boolean foundGUIDMatch = false;
+
+                if (syndFeed.getEntries().size() > 0)
+                {
+                    SyndEntryImpl entry = (SyndEntryImpl) syndFeed.getEntries().get(0);
+                    lastSeenGUID = entry.getUri();
+                }
+
                 // iterate through each entry in the feed instance
                 for (Object entryObject : syndFeed.getEntries())
                 {
                     try
                     {
                         SyndEntryImpl entry = (SyndEntryImpl) entryObject;
-                        if (feed.getLastPostDate() == null || entry.getPublishedDate().after(feed.getLastPostDate()))
+
+                        if (lastPostDate == null || entry.getPublishedDate().after(lastPostDate))
                         {
-                            if (lastPostDate == null || entry.getPublishedDate().after(lastPostDate))
-                            {
-                                lastPostDate = entry.getPublishedDate();
-                            }
+                            lastPostDate = entry.getPublishedDate();
+                        }
 
-                            Activity activity = new Activity();
-                            activity.setAppType(EntityType.PLUGIN);
-                            activity.setAppId(feed.getPlugin().getId());
-                            activity.setAppSource(feed.getUrl());
-                            final Map<String, GeneralGadgetDefinition> gadgetDefs = //
-                            new HashMap<String, GeneralGadgetDefinition>();
-                            gadgetDefs.put(feed.getPlugin().getUrl(), feed.getPlugin());
-                            try
-                            {
-                                List<GadgetMetaDataDTO> meta = metaDataFetcher.getGadgetsMetaData(gadgetDefs);
+                        Activity activity =
+                            getActivityFromATOMEntry(feed, entry, selectedObjectMapper, foundSpecificMapper);
+                        // We were able to parse at least one good entry to completion, so the feed isn't broken.
+                        brokenFeed = false;
 
-                                if (meta.size() > 0)
-                                {
-                                    activity.setAppName(meta.get(0).getTitle());
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                log.error("Error getting plugin definition");
-                                activity.setAppName(feed.getTitle());
-                            }
-                            activity.setPostedTime(entry.getPublishedDate());
-                            activity.setUpdated(entry.getUpdatedDate());
-                            activity.setVerb(ActivityVerb.POST);
-                            if (!foundSpecificMapper)
-                            {
-                                BaseObjectType type = feed.getPlugin().getObjectType();
-
-                                ActivityStreamsModule activityModule = (ActivityStreamsModule) entry
-                                        .getModule(ActivityStreamsModule.URI);
-                                if (activityModule != null)
-                                {
-                                    type = BaseObjectType.valueOf(activityModule.getObjectType());
-                                    entry = activityModule.getAtomEntry();
-                                }
-
-                                if (!standardFeedMappers.containsKey(type))
-                                {
-                                    type = BaseObjectType.NOTE;
-                                }
-                                selectedObjectMapper = standardFeedMappers.get(type);
-                            }
-                            activity.setBaseObjectType(selectedObjectMapper.getBaseObjectType());
-                            activity.setBaseObject(selectedObjectMapper.getBaseObject(entry));
-
+                        if (!foundGUIDMatch && !feed.getLastSeenGUID().equals(entry.getUri()))
+                        {
                             // create activities per subscriber
                             for (FeedSubscriber feedSubscriber : subscribers)
                             {
@@ -331,7 +302,12 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
                                 activityForIndividual.setActorType(feedSubscriber.getEntityType());
                                 insertedActivities.add(activityForIndividual);
                             }
-                        } // end if
+
+                        }
+                        else
+                        {
+                            foundGUIDMatch = true;
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -370,6 +346,8 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
         }
         finally
         {
+            feed.setLastSeenGUID(lastSeenGUID);
+            feed.setIsFeedBroken(brokenFeed);
             feed.setLastPostDate(lastPostDate);
             feed.setLastUpdated(new Date().getTime() / MS_IN_MIN);
             feed.setUpdateFrequency(updateFrequency);
@@ -380,8 +358,69 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
     }
 
     /**
+     * Get the Activity object from an ATOM entry.
+     * @param feed the feed.
+     * @param inEntry the entry.
+     * @param inSelectedObjectMapper the mapper.
+     * @param foundSpecificMapper is this a specific mapper or no?
+     * @return the activity.
+     */
+    private Activity getActivityFromATOMEntry(
+            final Feed feed, final SyndEntryImpl inEntry, final ObjectMapper inSelectedObjectMapper,
+            final boolean foundSpecificMapper)
+    {
+        SyndEntryImpl entry = inEntry;
+        ObjectMapper selectedObjectMapper = inSelectedObjectMapper;
+        Activity activity = new Activity();
+        activity.setAppType(EntityType.PLUGIN);
+        activity.setAppId(feed.getPlugin().getId());
+        activity.setAppSource(feed.getUrl());
+        final Map<String, GeneralGadgetDefinition> gadgetDefs = //
+        new HashMap<String, GeneralGadgetDefinition>();
+        gadgetDefs.put(feed.getPlugin().getUrl(), feed.getPlugin());
+        try
+        {
+            List<GadgetMetaDataDTO> meta = metaDataFetcher.getGadgetsMetaData(gadgetDefs);
+
+            if (meta.size() > 0)
+            {
+                activity.setAppName(meta.get(0).getTitle());
+            }
+        }
+        catch (Exception ex)
+        {
+            log.error("Error getting plugin definition");
+            activity.setAppName(feed.getTitle());
+        }
+        activity.setPostedTime(entry.getPublishedDate());
+        activity.setUpdated(entry.getUpdatedDate());
+        activity.setVerb(ActivityVerb.POST);
+        if (!foundSpecificMapper)
+        {
+            BaseObjectType type = feed.getPlugin().getObjectType();
+
+            ActivityStreamsModule activityModule = (ActivityStreamsModule) entry.getModule(ActivityStreamsModule.URI);
+            if (activityModule != null)
+            {
+                type = BaseObjectType.valueOf(activityModule.getObjectType());
+                entry = activityModule.getAtomEntry();
+            }
+
+            if (!standardFeedMappers.containsKey(type))
+            {
+                type = BaseObjectType.NOTE;
+            }
+            selectedObjectMapper = standardFeedMappers.get(type);
+        }
+        activity.setBaseObjectType(selectedObjectMapper.getBaseObjectType());
+        activity.setBaseObject(selectedObjectMapper.getBaseObject(entry));
+
+        return activity;
+    }
+
+    /**
      * Returns the subscribers applicable to receive feed results returned for a given requestor.
-     * 
+     *
      * @param requestorId
      *            The requestor.
      * @param feed
@@ -408,7 +447,7 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 
     /**
      * Get the update frequeuncy in minutes given the period and frequency.
-     * 
+     *
      * @param updatePeriod
      *            Period, hourly, daily, weekly, etc.
      * @param updateFrequency

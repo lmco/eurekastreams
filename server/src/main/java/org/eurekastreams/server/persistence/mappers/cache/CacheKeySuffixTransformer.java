@@ -17,15 +17,18 @@ package org.eurekastreams.server.persistence.mappers.cache;
 
 /**
  * Transform a cache key suffix to what's expected in cache.
- *
+ * 
+ * @deprecated Use Transformer interface directly.
+ * 
  * @param <SuffixType>
  *            the type of suffix to transform to String
  */
-public interface CacheKeySuffixTransformer<SuffixType>
+@Deprecated
+public interface CacheKeySuffixTransformer<SuffixType> extends Transformer<SuffixType, String>
 {
     /**
      * Transform the input suffix for cache key lookup.
-     *
+     * 
      * @param suffix
      *            the suffix to transform
      * @return a transformed string version of the key suffix

@@ -3250,9 +3250,9 @@
                 <constructor-arg>
                     <list>
                         <value>cacheOrganization</value>
-                        <!-- <value>cacheDirectChildernForOrganizationList</value> -->
-                        <!--  <value>cacheRecursiveChildrenForOrganizationList</value>-->
-                        <!--<value>cacheRecursiveParentsForOrganizationList</value>-->
+                        <value>cacheDirectChildernForOrganizationList</value>
+                        <value>cacheRecursiveChildrenForOrganizationList</value>
+                        <value>cacheRecursiveParentsForOrganizationList</value>
                     </list>
                 </constructor-arg>
                 <constructor-arg ref="getOrganizationIds" />
@@ -3485,8 +3485,8 @@
             <bean class="org.eurekastreams.server.action.validation.UpdatePersonValidation">
                 <constructor-arg>
                      <bean class="org.eurekastreams.server.action.validation.EmailAddressValidator">
-                        <constructor-arg value=".+@lmco\.com" />
-                        <constructor-arg value="Email must be good." />
+                        <constructor-arg value="${eureka.profile.emailregex}" />
+                        <constructor-arg value="${eureka.profile.emailregexerror}" />
                      </bean>
                 </constructor-arg>
                 <constructor-arg ref="bulkOrganizationsByShortNameMapper"/>
