@@ -245,6 +245,9 @@ public class RefreshFeedExecutionTest
                 allowing(feed).getUrl();
                 will(returnValue(FEED_URL));
 
+                allowing(feed).getLastSeenGUID();
+                will(returnValue(""));
+
                 allowing(feed).getLastPostDate();
                 will(returnValue(new Date(2)));
 
@@ -302,6 +305,8 @@ public class RefreshFeedExecutionTest
                 oneOf(feed).setLastPostDate(with(any(Date.class)));
                 oneOf(feed).setLastUpdated(with(any(Long.class)));
                 oneOf(feed).setPending(false);
+                oneOf(feed).setLastSeenGUID(with(any(String.class)));
+                oneOf(feed).setIsFeedBroken(with(any(Boolean.class)));
             }
         });
 
@@ -517,6 +522,9 @@ public class RefreshFeedExecutionTest
                 allowing(entry1).getUpdatedDate();
                 will(returnValue(new Date(3)));
 
+                allowing(entry1).getUri();
+                will(returnValue("uri"));
+
                 oneOf(flickrObjectMapper).getBaseObjectType();
                 oneOf(flickrObjectMapper).getBaseObject(entry1);
 
@@ -543,7 +551,7 @@ public class RefreshFeedExecutionTest
 
     /**
      * Test with 1 old entry, 1 activitystreams entry, 1 unsupported activitystreams object, and 1 standard note object.
-     * 
+     *
      * @throws Exception
      *             exception feed throws.
      */
@@ -588,6 +596,15 @@ public class RefreshFeedExecutionTest
                 // ENTRY 1
                 allowing(entry1).getPublishedDate();
                 will(returnValue(new Date(1)));
+                allowing(entry1).getUpdatedDate();
+
+                allowing(entry1).getUri();
+                will(returnValue(""));
+
+
+                oneOf(entry1).getModule(ActivityStreamsModule.URI);
+                will(returnValue(null));
+
 
                 // ENTRY 2
                 allowing(entry2).getPublishedDate();
@@ -596,12 +613,20 @@ public class RefreshFeedExecutionTest
                 allowing(entry2).getUpdatedDate();
                 will(throwException(new Exception()));
 
+
+                allowing(entry2).getUri();
+                will(returnValue("uri"));
+
                 // ENTRY 3
                 allowing(entry3).getPublishedDate();
                 will(returnValue(new Date(4)));
 
                 allowing(entry3).getUpdatedDate();
                 will(returnValue(new Date(4)));
+
+
+                allowing(entry3).getUri();
+                will(returnValue("uri"));
 
                 oneOf(entry3).getModule(ActivityStreamsModule.URI);
                 will(returnValue(activityModule));
@@ -622,14 +647,19 @@ public class RefreshFeedExecutionTest
                 allowing(entry4).getUpdatedDate();
                 will(returnValue(new Date(5)));
 
+
+                allowing(entry4).getUri();
+                will(returnValue("uri"));
+
                 oneOf(entry4).getModule(ActivityStreamsModule.URI);
                 will(returnValue(null));
 
                 allowing(atomFeed1).getEntries();
                 will(returnValue(entryList));
 
-                oneOf(bookmarkMapper).getBaseObjectType();
+                allowing(bookmarkMapper).getBaseObjectType();
                 oneOf(bookmarkMapper).getBaseObject(entry4);
+                oneOf(bookmarkMapper).getBaseObject(entry1);
 
             }
         });

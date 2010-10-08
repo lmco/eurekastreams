@@ -39,20 +39,20 @@ import org.eurekastreams.commons.model.DomainEntity;
 @Entity
 public class Feed extends DomainEntity implements Serializable
 {
-	/**
-	 * 
+    /**
+	 *
 	 */
-	@Transient
-	private String timeAgo;	
-	
+    @Transient
+    private String timeAgo;
+
     /**
      * This is a list of the subscribers to this feed.
      */
     @SuppressWarnings("unused")
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "feedId")
-    private List<FeedSubscriber> feedSubscribers;	
-	
+    private List<FeedSubscriber> feedSubscribers;
+
     /**
      * Pending.
      */
@@ -64,31 +64,43 @@ public class Feed extends DomainEntity implements Serializable
      */
     @Basic(optional = false)
     private String url;
-    
+
     /**
      * Title of the feed.
      */
     @Basic(optional = false)
-    private String title;    
-    
+    private String title;
+
     /**
      * Date the feed was last updated in total minutes in epoch time.
      */
     @Column(nullable = true)
     private Long updated;
-    
+
     /**
      * Number of minutes we must wait before we can poll the feed again.
      */
     @Column(nullable = true)
     private Long updateFrequency;
-    
+
     /**
      * The latest time for a post.
      */
     @Column(nullable = true)
-    private Date lastPostDate;    
-    
+    private Date lastPostDate;
+
+    /**
+     * The latest time for a post.
+     */
+    @Column(nullable = true)
+    private String lastSeenGUID;
+
+    /**
+     * The latest time for a post.
+     */
+    @Column(nullable = true)
+    private Boolean broken;
+
     /**
      * The plugin the feed belongs to.
      */
@@ -101,39 +113,43 @@ public class Feed extends DomainEntity implements Serializable
      */
     public Feed()
     {
-    	feedSubscribers = new ArrayList<FeedSubscriber>();
+        feedSubscribers = new ArrayList<FeedSubscriber>();
     }
-    
+
     /**
      * Set the url.
-     * @param inUrl the url.
+     *
+     * @param inUrl
+     *            the url.
      */
     public void setUrl(final String inUrl)
     {
         url = inUrl;
-    }    
-    
+    }
+
     /**
      * Gets the URL.
+     *
      * @return the url.
      */
     public String getUrl()
     {
-    	return url;
+        return url;
     }
-    
+
     /**
      * Gets pending.
+     *
      * @return pending.
      */
     public boolean getPending()
     {
-    	return pending;
+        return pending;
     }
-    
+
     /**
      * Get the plugin associated with the feed.
-     * 
+     *
      * @return the plugin.
      */
     public PluginDefinition getPlugin()
@@ -143,7 +159,7 @@ public class Feed extends DomainEntity implements Serializable
 
     /**
      * Get the last post date of the latest entry.
-     * 
+     *
      * @return the date.
      */
     public Date getLastPostDate()
@@ -153,7 +169,7 @@ public class Feed extends DomainEntity implements Serializable
 
     /**
      * Set the last post date of the latest entry.
-     * 
+     *
      * @param inDate
      *            the date.
      */
@@ -164,7 +180,7 @@ public class Feed extends DomainEntity implements Serializable
 
     /**
      * Set the last updated time.
-     * 
+     *
      * @param inUpdated
      *            last updated time.
      */
@@ -175,16 +191,17 @@ public class Feed extends DomainEntity implements Serializable
 
     /**
      * Get the last updated time.
-     * 
+     *
      * @return the time.
      */
     public Long getLastUpdated()
     {
-        return updated; 
+        return updated;
     }
+
     /**
      * Set the update frequency in minutes.
-     * 
+     *
      * @param inUpdateFrequency
      *            the frequency.
      */
@@ -195,7 +212,7 @@ public class Feed extends DomainEntity implements Serializable
 
     /**
      * Sets pending.
-     * 
+     *
      * @param inPending
      *            pending.
      */
@@ -203,20 +220,21 @@ public class Feed extends DomainEntity implements Serializable
     {
         pending = inPending;
     }
-    
 
     /**
      * Set the plugin.
-     * @param inPlugin the plugin.
+     *
+     * @param inPlugin
+     *            the plugin.
      */
     public void setPlugin(final PluginDefinition inPlugin)
     {
         streamPlugin = inPlugin;
     }
-    
+
     /**
      * Gets the people users.
-     * 
+     *
      * @return the people.
      */
     public List<FeedSubscriber> getFeedSubscribers()
@@ -226,38 +244,87 @@ public class Feed extends DomainEntity implements Serializable
 
     /**
      * Set the title.
-     * @param inTitle the title.
+     *
+     * @param inTitle
+     *            the title.
      */
     public void setTitle(final String inTitle)
     {
-    	title = inTitle;
+        title = inTitle;
     }
-    
+
     /**
      * Get the title.
+     *
      * @return the title.
      */
     public String getTitle()
     {
-    	return title;
+        return title;
     }
 
     /**
      * Return the time ago.
+     *
      * @return the postedTimeAgo
      */
     public String getTimeAgo()
     {
         return timeAgo;
     }
-    
+
     /**
-	 * Set the time ago.
-	 * @param inTimeAgo the time ago.
+     * Set the time ago.
+     *
+     * @param inTimeAgo
+     *            the time ago.
      */
     public void setTimeAgo(final String inTimeAgo)
     {
-    	timeAgo = inTimeAgo;
-    }    
-   
+        timeAgo = inTimeAgo;
+    }
+
+    /**
+     * Return the last seen GUID.
+     *
+     * @return the guid.
+     */
+    public String getLastSeenGUID()
+    {
+        return lastSeenGUID;
+    }
+
+    /**
+     * Set the last seen guid.
+     *
+     * @param inLastSeenGUID
+     *            the guid.
+     */
+    public void setLastSeenGUID(final String inLastSeenGUID)
+    {
+        lastSeenGUID = inLastSeenGUID;
+    }
+
+
+    /**
+     * Return if the feed is broken.
+     *
+     * @return whether or not the feed is broken.
+     */
+    public Boolean getIsFeedBroken()
+    {
+        return broken;
+    }
+
+    /**
+     * Set if the feed is broken.
+     *
+     * @param inBroken
+     *            whether or not the feed is broken.
+     */
+    public void setIsFeedBroken(final Boolean inBroken)
+    {
+        broken = inBroken;
+    }
+
 }
