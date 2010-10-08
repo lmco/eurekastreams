@@ -20,15 +20,17 @@ import java.util.List;
 import org.eurekastreams.commons.model.DomainEntity;
 import org.eurekastreams.server.domain.Bannerable;
 import org.eurekastreams.server.domain.OrganizationChild;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
-import org.eurekastreams.server.persistence.mappers.GetRecursiveParentOrgIds;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 
 /**
  * Strategy for retrieving the banner id of the first banner-configured org in the parent org hierarchy.
- * @param <T> extends DomainEntity.
+ *
+ * @param <T>
+ *            extends DomainEntity.
  */
 public class GetBannerIdByParentOrganizationStrategy<T extends DomainEntity>
 {
@@ -38,9 +40,9 @@ public class GetBannerIdByParentOrganizationStrategy<T extends DomainEntity>
     private final GetOrganizationsByIds orgMapper;
 
     /**
-     * Local instance of the {@link GetRecursiveParentOrgIds} mapper.
+     * mapper to get all parent org ids for an org id.
      */
-    private final GetRecursiveParentOrgIds recursiveParentOrgsMapper;
+    private DomainMapper<Long, List<Long>> recursiveParentOrgsMapper;
 
     /**
      * Local instance of the FindByIdMapper.
@@ -58,12 +60,14 @@ public class GetBannerIdByParentOrganizationStrategy<T extends DomainEntity>
      * @param inOrgMapper
      *            - instance of the {@link GetOrganizationsByIds} mapper.
      * @param inRecursiveParentOrgsMapper
-     *            - instance of the {@link GetRecursiveParentOrgIds} mapper.
-     * @param inEntityMapper - FindByIdMapper instance to be used for the type of entity configured.
-     * @param inEntityName - name of the entity for the find by id mapper.
+     *            mapper to get all parent org ids for an org id.
+     * @param inEntityMapper
+     *            - FindByIdMapper instance to be used for the type of entity configured.
+     * @param inEntityName
+     *            - name of the entity for the find by id mapper.
      */
     public GetBannerIdByParentOrganizationStrategy(final GetOrganizationsByIds inOrgMapper,
-            final GetRecursiveParentOrgIds inRecursiveParentOrgsMapper, final FindByIdMapper<T> inEntityMapper,
+            final DomainMapper<Long, List<Long>> inRecursiveParentOrgsMapper, final FindByIdMapper<T> inEntityMapper,
             final String inEntityName)
     {
         orgMapper = inOrgMapper;
@@ -110,8 +114,7 @@ public class GetBannerIdByParentOrganizationStrategy<T extends DomainEntity>
     }
 
     /**
-     * This method retrieves the first banner found in the parent org hierarchy of the parent of
-     * the supplied entity id.
+     * This method retrieves the first banner found in the parent org hierarchy of the parent of the supplied entity id.
      *
      * @param inEntity
      *            - entity for which the parent org will be looked up and the configured banner will be retrieved.

@@ -23,8 +23,8 @@ import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverser
 import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
-import org.eurekastreams.server.persistence.mappers.GetRecursiveParentOrgIds;
 import org.eurekastreams.server.persistence.mappers.requests.DeleteGroupResponse;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 
@@ -44,9 +44,9 @@ public class DeleteGroup extends BaseArgDomainMapper<Long, DeleteGroupResponse>
     private OrganizationMapper organizationMapper;
 
     /**
-     * {@link GetRecursiveParentOrgIds}.
+     * mapper to get all parent org ids for an org id.
      */
-    private GetRecursiveParentOrgIds parentOrgIdMapper;
+    private DomainMapper<Long, List<Long>> parentOrgIdMapper;
 
     /**
      * The organization hierarchy traverser builder - needed because this class is reused by all threads, we can't share
@@ -69,13 +69,13 @@ public class DeleteGroup extends BaseArgDomainMapper<Long, DeleteGroupResponse>
      * @param inOrgTraverserBuilder
      *            {@link OrganizationHierarchyTraverserBuilder}.
      * @param inParentOrgIdMapper
-     *            {@link GetRecursiveParentOrgIds}.
+     *            mapper to get all parent org ids for an org
      * @param inGetOrgShortNamesByIdsMapper
      *            {link GetOrgShortNamesByIdsMapper}.
      */
     public DeleteGroup(final FindByIdMapper<DomainGroup> inGroupMapper, final OrganizationMapper inOrganizationMapper,
             final OrganizationHierarchyTraverserBuilder inOrgTraverserBuilder,
-            final GetRecursiveParentOrgIds inParentOrgIdMapper,
+            final DomainMapper<Long, List<Long>> inParentOrgIdMapper,
             final GetOrgShortNamesByIdsMapper inGetOrgShortNamesByIdsMapper)
     {
         groupMapper = inGroupMapper;

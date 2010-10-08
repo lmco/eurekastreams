@@ -28,7 +28,6 @@ import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.stream.SyncGroupActivityRecipientParentOrganizationRequest;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.GetRecursiveParentOrgIds;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.db.GetActivityIdsPostedToStreamByUniqueKeyAndScopeType;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
@@ -38,7 +37,7 @@ import org.eurekastreams.server.search.modelview.OrganizationModelView;
 /**
  * Sync the recipientParentOrg for all activities posted to a group in the DB and queue up task to sync a the groups up
  * in cache and search index upon successful DB update.
- * 
+ *
  */
 public class SyncGroupActivityRecipientParentOrganizationExecution implements
         TaskHandlerExecutionStrategy<ActionContext>
@@ -65,13 +64,13 @@ public class SyncGroupActivityRecipientParentOrganizationExecution implements
     private GetOrganizationsByIds getOrgByIdMapper;
 
     /**
-     * Mapper to get recursive org parents.
+     * mapper to get all parent org ids for an org id.
      */
-    private GetRecursiveParentOrgIds getRecursiveOrgParentMapper;
+    private DomainMapper<Long, List<Long>> getRecursiveOrgParentMapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inSyncActivityRecipientParentOrg
      *            Mapper to update recipient parent org id for all activites for a group.
      * @param inActivityIdMapper
@@ -88,7 +87,7 @@ public class SyncGroupActivityRecipientParentOrganizationExecution implements
             final GetActivityIdsPostedToStreamByUniqueKeyAndScopeType inActivityIdMapper,
             final GetOrganizationsByShortNames inGetOrgByShortNameMapper,
             final GetOrganizationsByIds inGetOrgByIdMapper, //
-            final GetRecursiveParentOrgIds inGetRecursiveOrgParentMapper)
+            final DomainMapper<Long, List<Long>> inGetRecursiveOrgParentMapper)
     {
         syncActivityRecipientParentOrg = inSyncActivityRecipientParentOrg;
         activityIdMapper = inActivityIdMapper;
@@ -100,7 +99,7 @@ public class SyncGroupActivityRecipientParentOrganizationExecution implements
     /**
      * Sync the recipientParentOrg for all activities posted to a group in the DB and queue up task to sync a the groups
      * up in cache and search index upon successful DB update.
-     * 
+     *
      * @param inActionContext
      *            {@link ActionContext}.
      * @return null;

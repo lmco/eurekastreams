@@ -63,7 +63,7 @@ public class SingleListValueCacheMapperTest
     public void testExecute()
     {
         SingleListValueCacheMapper sut //
-        = new SingleListValueCacheMapper<String, String>(keySuffixTransformer, "PREFIX:");
+        = new SingleListValueCacheMapper<String, String>("PREFIX:", keySuffixTransformer);
         sut.setCache(cache);
         final List<String> result = new ArrayList<String>();
 

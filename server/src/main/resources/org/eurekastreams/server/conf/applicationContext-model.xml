@@ -22,7 +22,7 @@
 		<property name="cache" ref="memcachedCache" />
 		<property name="getOrganizationsByShortNames" ref="bulkOrganizationsByShortNameMapper" />
 		<property name="getRecursiveChildOrgIdsMapper" ref="getRecursiveChildOrgIdsMapper" />
-		<property name="getRecursiveParentOrgIdsMapper" ref="getRecursiveParentOrgIdsMapper" />
+		<property name="getRecursiveParentOrgIdsMapper" ref="getParentOrgIdsRecursiveByOrgIdMapper" />
 		<property name="getDirectChildOrgIdsMapper" ref="getDirectOrgIdsMapper" />
 		<property name="getOrganizationsByShortNamesMapper" ref="bulkOrganizationsByShortNameMapper" />
 	</bean>

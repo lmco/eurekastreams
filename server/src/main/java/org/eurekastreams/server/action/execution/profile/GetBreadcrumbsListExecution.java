@@ -29,13 +29,13 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.profile.GetBreadcrumbsListRequest;
 import org.eurekastreams.server.domain.BreadcrumbDTO;
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.persistence.mappers.GetRecursiveParentOrgIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 
 /**
  * Generates a list of breadcrumbs for a given organization's parents.
- * 
+ *
  */
 public class GetBreadcrumbsListExecution implements ExecutionStrategy<ServiceActionContext>
 {
@@ -45,9 +45,9 @@ public class GetBreadcrumbsListExecution implements ExecutionStrategy<ServiceAct
     private final Log log = LogFactory.make();
 
     /**
-     * Mapper to get the ids of this organization's parent hierarchy.
+     * mapper to get all parent org ids for an org id.
      */
-    private final GetRecursiveParentOrgIds idsMapper;
+    private DomainMapper<Long, List<Long>> idsMapper;
 
     /**
      * Mapper to get org details in bulk.
@@ -56,13 +56,13 @@ public class GetBreadcrumbsListExecution implements ExecutionStrategy<ServiceAct
 
     /**
      * Constructor.
-     * 
+     *
      * @param inIdsMapper
-     *            - instance of the {@link GetRecursiveParentOrgIds} mapper for this action.
+     *            mapper to get all parent org ids for an org id.
      * @param inOrgMapper
      *            - instance of the {@link GetOrganizationsByIds} mapper for this action.
      */
-    public GetBreadcrumbsListExecution(final GetRecursiveParentOrgIds inIdsMapper,
+    public GetBreadcrumbsListExecution(final DomainMapper<Long, List<Long>> inIdsMapper,
             final GetOrganizationsByIds inOrgMapper)
     {
         idsMapper = inIdsMapper;
@@ -71,7 +71,7 @@ public class GetBreadcrumbsListExecution implements ExecutionStrategy<ServiceAct
 
     /**
      * {@inheritDoc}. Uses cache mappers to generate breadcrumbs of recursive parents of an org.
-     * 
+     *
      * @return List of {@link BreadcrumbDTO} objects relating to the passed in org.
      */
     @Override

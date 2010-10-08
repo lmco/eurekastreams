@@ -25,7 +25,7 @@ import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.HashTag;
 import org.eurekastreams.server.domain.stream.StreamHashTag;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
-import org.eurekastreams.server.persistence.mappers.GetRecursiveParentOrgIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.InsertMapper;
 import org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
@@ -65,9 +65,9 @@ public class StoreStreamHashTagsForActivityStrategyImpl implements StoreStreamHa
     private final InsertMapper<StreamHashTag> streamHashTagInsertMapper;
 
     /**
-     * Mapper to get all organization ids up the tree.
+     * mapper to get all parent org ids for an org id.
      */
-    private final GetRecursiveParentOrgIds getRecursiveParentOrgIds;
+    private DomainMapper<Long, List<Long>> getRecursiveParentOrgIds;
 
     /**
      * Get organizations by ids mapper.
@@ -94,7 +94,7 @@ public class StoreStreamHashTagsForActivityStrategyImpl implements StoreStreamHa
             final ActivityContentExtractor inContentExtractor,
             final DecoratedPartialResponseDomainMapper<List<String>, List<HashTag>> inHashTagMapper,
             final InsertMapper<StreamHashTag> inStreamHashTagInsertMapper,
-            final GetRecursiveParentOrgIds inGetRecursiveParentOrgIds,
+            final DomainMapper<Long, List<Long>> inGetRecursiveParentOrgIds,
             final GetOrganizationsByIds inOrganizationsByIdsMapper)
     {
         hashTagExtractor = inHashTagExtractor;

@@ -23,7 +23,7 @@ import java.util.List;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
-import org.eurekastreams.server.persistence.mappers.GetRecursiveParentOrgIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.db.GetOrgShortNamesByIdsMapper;
@@ -61,9 +61,9 @@ public class PostCachedActivityTest
     private final GetPeopleByAccountIds bulkPeopleByAccountIdMapper = context.mock(GetPeopleByAccountIds.class);
 
     /**
-     * Mapper to get hierarchical parent org ids.
+     * mapper to get all parent org ids for an org id.
      */
-    private final GetRecursiveParentOrgIds parentOrgIdsMapper = context.mock(GetRecursiveParentOrgIds.class);
+    private DomainMapper<Long, List<Long>> parentOrgIdsMapper = context.mock(DomainMapper.class);
 
     /**
      * Local instance of the {@link GetDomainGroupsByShortNames} mapper.

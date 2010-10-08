@@ -28,7 +28,7 @@ import org.eurekastreams.server.domain.stream.HashTag;
 import org.eurekastreams.server.domain.stream.StreamHashTag;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
-import org.eurekastreams.server.persistence.mappers.GetRecursiveParentOrgIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.InsertMapper;
 import org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
@@ -78,9 +78,9 @@ public class StoreStreamHashTagsForActivityStrategyImplTest
     private final InsertMapper<StreamHashTag> streamHashTagInsertMapper = context.mock(InsertMapper.class);
 
     /**
-     * Mapper to get all organization ids up the tree.
+     * mapper to get all parent org ids for an org id.
      */
-    private final GetRecursiveParentOrgIds getRecursiveParentOrgIds = context.mock(GetRecursiveParentOrgIds.class);
+    private DomainMapper<Long, List<Long>> getRecursiveParentOrgIds = context.mock(DomainMapper.class);
 
     /**
      * Get organizations by ids mapper.

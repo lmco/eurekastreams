@@ -27,7 +27,6 @@ import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.stream.SyncGroupActivityRecipientParentOrganizationRequest;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.GetRecursiveParentOrgIds;
 import org.eurekastreams.server.persistence.mappers.db.GetActivityIdsPostedToStreamByUniqueKeyAndScopeType;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames;
@@ -40,7 +39,7 @@ import org.junit.Test;
 
 /**
  * Test for SyncGroupActivityRecipientParentOrganizationExecution.
- * 
+ *
  */
 @SuppressWarnings("unchecked")
 public class SyncGroupActivityRecipientParentOrganizationExecutionTest
@@ -58,7 +57,8 @@ public class SyncGroupActivityRecipientParentOrganizationExecutionTest
     /**
      * Mapper to update recipient parent org id for all activites for a group.
      */
-    private DomainMapper<String, Integer> syncActivityRecipientParentOrg = context.mock(DomainMapper.class);
+    private DomainMapper<String, Integer> syncActivityRecipientParentOrg = context.mock(DomainMapper.class,
+            "syncActivityRecipientParentOrg");
 
     /**
      * Mapper to get Orgs by short name.
@@ -71,9 +71,10 @@ public class SyncGroupActivityRecipientParentOrganizationExecutionTest
     private GetOrganizationsByIds getOrgByIdMapper = context.mock(GetOrganizationsByIds.class);
 
     /**
-     * Mapper to get recursive org parents.
+     * mapper to get all parent org ids for an org id.
      */
-    private GetRecursiveParentOrgIds getRecursiveOrgParentMapper = context.mock(GetRecursiveParentOrgIds.class);
+    private DomainMapper<Long, List<Long>> getRecursiveOrgParentMapper = context.mock(DomainMapper.class,
+            "getRecursiveOrgParentMapper");
 
     /**
      * Mapper to get activity ids posted to a group.
@@ -182,16 +183,16 @@ public class SyncGroupActivityRecipientParentOrganizationExecutionTest
 
                 allowing(getOrgByIdMapper).execute(with(any(List.class)));
                 will(returnValue(new ArrayList<OrganizationModelView>(Arrays.asList(rootOrg, oldParent, newParent))));
-                
+
                 allowing(rootOrg).getShortName();
                 will(returnValue("rootorg"));
-                
+
                 allowing(oldParent).getShortName();
                 will(returnValue("oldParent"));
 
                 allowing(newParent).getShortName();
                 will(returnValue("newParent"));
-}
+            }
         });
 
         sut.execute(taskHandlerActionContext);

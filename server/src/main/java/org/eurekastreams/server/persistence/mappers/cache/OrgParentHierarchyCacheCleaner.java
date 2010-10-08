@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eurekastreams.server.persistence.mappers.GetRecursiveParentOrgIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
@@ -33,9 +33,9 @@ public class OrgParentHierarchyCacheCleaner extends CachedDomainMapper
     private Log log = LogFactory.getLog(OrgParentHierarchyCacheCleaner.class);
 
     /**
-     * Mapper to get all recursive parent organization ids for an org.
+     * mapper to get all parent org ids for an org id.
      */
-    private GetRecursiveParentOrgIds getRecursiveParentOrgIdsMapper;
+    private DomainMapper<Long, List<Long>> getRecursiveParentOrgIdsMapper;
 
     /**
      * Clear the Recursive Org Children ID cache for every Org up the tree from an input org.
@@ -72,7 +72,7 @@ public class OrgParentHierarchyCacheCleaner extends CachedDomainMapper
      * @param inGetRecursiveParentOrgIdsMapper
      *            the getRecursiveParentOrgIdsMapper to set
      */
-    public void setGetRecursiveParentOrgIdsMapper(final GetRecursiveParentOrgIds inGetRecursiveParentOrgIdsMapper)
+    public void setGetRecursiveParentOrgIdsMapper(final DomainMapper<Long, List<Long>> inGetRecursiveParentOrgIdsMapper)
     {
         this.getRecursiveParentOrgIdsMapper = inGetRecursiveParentOrgIdsMapper;
     }

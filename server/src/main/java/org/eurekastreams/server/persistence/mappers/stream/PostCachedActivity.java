@@ -24,7 +24,7 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
-import org.eurekastreams.server.persistence.mappers.GetRecursiveParentOrgIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.db.GetOrgShortNamesByIdsMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -50,9 +50,9 @@ public class PostCachedActivity extends CachedDomainMapper
     private final GetPeopleByAccountIds bulkPeopleByAccountIdMapper;
 
     /**
-     * Mapper to get hierarchical parent org ids.
+     * mapper to get all parent org ids for an org id.
      */
-    private final GetRecursiveParentOrgIds parentOrgIdsMapper;
+    private DomainMapper<Long, List<Long>> parentOrgIdsMapper;
 
     /**
      * Local instance of the {@link GetDomainGroupsByShortNames} mapper.
@@ -80,7 +80,7 @@ public class PostCachedActivity extends CachedDomainMapper
      */
     public PostCachedActivity(final GetFollowerIds inPersonFollowersMapper,
             final GetPeopleByAccountIds inBulkPeopleByAccountIdMapper,
-            final GetRecursiveParentOrgIds inParentOrgIdsMapper,
+            final DomainMapper<Long, List<Long>> inParentOrgIdsMapper,
             final GetDomainGroupsByShortNames inBulkDomainGroupsByShortNameMapper,
             final GetOrgShortNamesByIdsMapper inOrgShortNamesFromIdsMapper)
     {

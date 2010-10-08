@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.server.domain.Organization;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
-import org.eurekastreams.server.persistence.mappers.GetRecursiveParentOrgIds;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
@@ -58,9 +58,9 @@ public class GetBannerIdByParentOrganizationStrategyTest
     private GetOrganizationsByIds orgMapperMock = context.mock(GetOrganizationsByIds.class);
 
     /**
-     * Mocked instance of the {@link GetRecursiveParentOrgIds} mapper.
+     * mapper to get all parent org ids for an org id.
      */
-    private GetRecursiveParentOrgIds recursiveParentOrgIdsMock = context.mock(GetRecursiveParentOrgIds.class);
+    private DomainMapper<Long, List<Long>> recursiveParentOrgIdsMock = context.mock(DomainMapper.class);
 
     /**
      * Mocked instance of the FindByIdMapper.

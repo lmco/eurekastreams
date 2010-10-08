@@ -21,10 +21,13 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eurekastreams.server.persistence.mappers.GetRecursiveParentOrgIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
-import org.eurekastreams.server.persistence.mappers.cache.testhelpers.SimpleMemoryCache;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
 /**
@@ -32,6 +35,15 @@ import org.junit.Test;
  */
 public class GetListsContainingActivitiesTest extends MapperTest
 {
+    /**
+     * Context for building mock objects.
+     */
+    private final Mockery context = new JUnit4Mockery()
+    {
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
 
     /**
      * Test activity id.
@@ -52,9 +64,21 @@ public class GetListsContainingActivitiesTest extends MapperTest
         final GetOrgShortNamesByIdsMapper orgShortNamesFromIdsMapper = new GetOrgShortNamesByIdsMapper();
         orgShortNamesFromIdsMapper.setEntityManager(getEntityManager());
 
-        final GetRecursiveParentOrgIds parentOrgIdsMapper = new GetRecursiveParentOrgIds();
-        parentOrgIdsMapper.setEntityManager(getEntityManager());
-        parentOrgIdsMapper.setCache(new SimpleMemoryCache());
+        final DomainMapper<Long, List<Long>> parentOrgIdsMapper = context.mock(DomainMapper.class);
+
+        final List<Long> parentOrgIds = new ArrayList<Long>();
+        parentOrgIds.add(5L);
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(parentOrgIdsMapper).execute(6L);
+                will(returnValue(parentOrgIds));
+
+                oneOf(parentOrgIdsMapper).execute(7L);
+                will(returnValue(parentOrgIds));
+            }
+        });
 
         GetListsContainingActivities sut = new GetListsContainingActivities(parentOrgIdsMapper,
                 orgShortNamesFromIdsMapper);
@@ -97,5 +121,7 @@ public class GetListsContainingActivitiesTest extends MapperTest
         // authors of the two activities following themselves.
         assertTrue(keys.contains(CacheKeys.ACTIVITIES_BY_FOLLOWING + author1));
         assertTrue(keys.contains(CacheKeys.ACTIVITIES_BY_FOLLOWING + author2));
+
+        context.assertIsSatisfied();
     }
 }

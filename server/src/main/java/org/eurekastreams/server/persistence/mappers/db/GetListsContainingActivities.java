@@ -25,7 +25,7 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
-import org.eurekastreams.server.persistence.mappers.GetRecursiveParentOrgIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 
 /**
@@ -43,9 +43,9 @@ public class GetListsContainingActivities extends BaseArgDomainMapper<List<Long>
     private final Log logger = LogFactory.make();
 
     /**
-     * Mapper to get hierarchical parent org ids.
+     * mapper to get all parent org ids for an org id.
      */
-    private final GetRecursiveParentOrgIds parentOrgIdsMapper;
+    private DomainMapper<Long, List<Long>> parentOrgIdsMapper;
 
     /**
      * Mapper to get the short names from org ids.
@@ -60,7 +60,7 @@ public class GetListsContainingActivities extends BaseArgDomainMapper<List<Long>
      * @param inOrgShortNamesFromIdsMapper
      *            org short names from ids mapper
      */
-    public GetListsContainingActivities(final GetRecursiveParentOrgIds inParentOrgIdsMapper,
+    public GetListsContainingActivities(final DomainMapper<Long, List<Long>> inParentOrgIdsMapper,
             final GetOrgShortNamesByIdsMapper inOrgShortNamesFromIdsMapper)
     {
         parentOrgIdsMapper = inParentOrgIdsMapper;

@@ -18,7 +18,7 @@ package org.eurekastreams.server.persistence.mappers.cache;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eurekastreams.server.persistence.mappers.GetRecursiveParentOrgIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -53,13 +53,13 @@ public class OrgParentHierarchyCacheCleanerTest extends MapperTest
     private Cache cache = context.mock(Cache.class);
 
     /**
-     * Mapper to get the recursive parent org ids.
+     * mapper to get all parent org ids for an org id.
      */
-    private GetRecursiveParentOrgIds getRecursiveParentOrgIdsMapper = context.mock(GetRecursiveParentOrgIds.class);
+    private DomainMapper<Long, List<Long>> getRecursiveParentOrgIdsMapper = context.mock(DomainMapper.class);
 
     /**
      * Setup.
-     * 
+     *
      * @throws Exception
      *             on error
      */
