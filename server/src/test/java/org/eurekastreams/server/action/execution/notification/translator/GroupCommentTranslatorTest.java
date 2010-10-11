@@ -29,7 +29,6 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetCommentorIdsByActivityId;
-import org.eurekastreams.server.persistence.mappers.stream.GetCoordinatorIdsByGroupId;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -54,15 +53,15 @@ public class GroupCommentTranslatorTest
     private GetCommentorIdsByActivityId commentorsMapper = context.mock(GetCommentorIdsByActivityId.class);
 
     /** Mock activities mapper. */
-    private DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper =
-            context.mock(DomainMapper.class, "activitiesMapper");
+    private DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper = context.mock(DomainMapper.class,
+            "activitiesMapper");
 
     /** Mock activities mapper. */
-    private GetCoordinatorIdsByGroupId coordinatorsMapper = context.mock(GetCoordinatorIdsByGroupId.class);
+    private DomainMapper<Long, List<Long>> coordinatorsMapper = context.mock(DomainMapper.class);
 
     /** Mapper to get the comment. */
-    private DomainMapper<List<Long>, List<CommentDTO>> commentsMapper =
-            context.mock(DomainMapper.class, "commentsMapper");
+    private DomainMapper<List<Long>, List<CommentDTO>> commentsMapper = context.mock(DomainMapper.class,
+            "commentsMapper");
 
     /** System under test. */
     private GroupCommentTranslator sut;

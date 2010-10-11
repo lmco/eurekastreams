@@ -1215,7 +1215,7 @@
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.authorization.profile.GetFollowersAuthorizationStrategy">
-                <constructor-arg ref="getCoordinatorIdsByGroupId" />
+                <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" />
                 <constructor-arg ref="getGroupFollowerIds" />
                 <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
                 <constructor-arg ref="getRecursiveOrgCoordinators"/>
@@ -1239,7 +1239,7 @@
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.authorization.profile.GetFollowersAuthorizationStrategy">
-                <constructor-arg ref="getCoordinatorIdsByGroupId" />
+                <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" />
                 <constructor-arg ref="getGroupFollowerIds" />
                 <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
                 <constructor-arg ref="getRecursiveOrgCoordinators"/>

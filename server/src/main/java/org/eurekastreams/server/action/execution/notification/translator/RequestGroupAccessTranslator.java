@@ -22,7 +22,7 @@ import java.util.List;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
-import org.eurekastreams.server.persistence.mappers.stream.GetCoordinatorIdsByGroupId;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * Translates the event of someone requesting access to a private group to appropriate notifications.
@@ -32,15 +32,15 @@ public class RequestGroupAccessTranslator implements NotificationTranslator
     /**
      * Mapper to get group coordinator ids.
      */
-    private GetCoordinatorIdsByGroupId coordinatorMapper;
+    private DomainMapper<Long, List<Long>> coordinatorMapper;
 
     /**
      * Constructor.
-     *
+     * 
      * @param inCoordinatorMapper
      *            coordinator mapper to set.
      */
-    public RequestGroupAccessTranslator(final GetCoordinatorIdsByGroupId inCoordinatorMapper)
+    public RequestGroupAccessTranslator(final DomainMapper<Long, List<Long>> inCoordinatorMapper)
     {
         coordinatorMapper = inCoordinatorMapper;
     }

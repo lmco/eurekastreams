@@ -24,7 +24,7 @@ import java.util.List;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
-import org.eurekastreams.server.persistence.mappers.stream.GetCoordinatorIdsByGroupId;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.hamcrest.Matchers;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -34,10 +34,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-
 /**
  * Tests the group follower notification translator.
- *
+ * 
  */
 public class GroupFollowerTranslatorTest
 {
@@ -68,7 +67,7 @@ public class GroupFollowerTranslatorTest
     };
 
     /** Mock coordinator mapper. */
-    private GetCoordinatorIdsByGroupId mapper = context.mock(GetCoordinatorIdsByGroupId.class);
+    private DomainMapper<Long, List<Long>> mapper = context.mock(DomainMapper.class);
 
     /**
      * Setup test.

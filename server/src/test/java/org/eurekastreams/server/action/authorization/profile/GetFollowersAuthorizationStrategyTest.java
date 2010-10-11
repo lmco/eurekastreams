@@ -17,14 +17,15 @@ package org.eurekastreams.server.action.authorization.profile;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators;
-import org.eurekastreams.server.persistence.mappers.stream.GetCoordinatorIdsByGroupId;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
@@ -51,15 +52,15 @@ public class GetFollowersAuthorizationStrategyTest
     };
 
     /**
-     * Mocked GetCoordinatorIdsByGroupId.
+     * Mocked mapper to get coord ids for group.
      */
-    private GetCoordinatorIdsByGroupId coordMapper = context.mock(GetCoordinatorIdsByGroupId.class);
-    
+    private DomainMapper<Long, List<Long>> coordMapper = context.mock(DomainMapper.class);
+
     /**
      * Mocked GetGroupFollowerIds.
      */
     private GetGroupFollowerIds groupFollowerIdsMapper = context.mock(GetGroupFollowerIds.class);
-    
+
     /**
      * Mocked GetDomainGroupsByShortNames.
      */
@@ -144,7 +145,7 @@ public class GetFollowersAuthorizationStrategyTest
 
     /**
      * Perform the action security test given the entity type of person as access granted.
-     *
+     * 
      * @throws Exception
      *             shouldn't happen.
      */
@@ -192,7 +193,7 @@ public class GetFollowersAuthorizationStrategyTest
     /**
      * Perform the action security test given the entity type of group as access granted. Not a public group or a
      * coordinator, is following.
-     *
+     * 
      * @throws Exception
      *             shouldn't happen.
      */
@@ -220,7 +221,7 @@ public class GetFollowersAuthorizationStrategyTest
 
     /**
      * Perform the action security test given the entity type of group as access granted. A public group.
-     *
+     * 
      * @throws Exception
      *             shouldn't happen.
      */
@@ -243,7 +244,7 @@ public class GetFollowersAuthorizationStrategyTest
     /**
      * Perform the action security test given the entity type of group as access granted. Not a public group. Is a
      * coordinator.
-     *
+     * 
      * @throws Exception
      *             shouldn't happen.
      */
@@ -269,7 +270,7 @@ public class GetFollowersAuthorizationStrategyTest
     /**
      * Perform the action security test given the entity type of group as access granted. Not a public group. Is a
      * coordinator.
-     *
+     * 
      * @throws Exception
      *             shouldn't happen.
      */
@@ -304,7 +305,7 @@ public class GetFollowersAuthorizationStrategyTest
     /**
      * Perform the action security test given the entity type of group as access denied. No a public group, not a
      * coordinator, not following.
-     *
+     * 
      * @throws Exception
      *             shouldn't happen.
      */
@@ -337,7 +338,7 @@ public class GetFollowersAuthorizationStrategyTest
 
     /**
      * Perform the action security test for an entity type of neither person nor group.
-     *
+     * 
      * @throws Exception
      *             shouldn't happen.
      */

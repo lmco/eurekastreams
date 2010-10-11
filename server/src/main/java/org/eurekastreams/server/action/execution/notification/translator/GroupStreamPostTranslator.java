@@ -27,7 +27,6 @@ import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
-import org.eurekastreams.server.persistence.mappers.stream.GetCoordinatorIdsByGroupId;
 
 /**
  * Translates the event of someone posting to a group stream to appropriate notifications.
@@ -37,7 +36,7 @@ public class GroupStreamPostTranslator implements NotificationTranslator
     /**
      * Mapper to get group coordinator ids.
      */
-    private GetCoordinatorIdsByGroupId coordinatorMapper;
+    private DomainMapper<Long, List<Long>> coordinatorMapper;
 
     /** Mapper to get list of members of a group. */
     private DomainMapper<Long, List<Long>> memberMapper;
@@ -47,7 +46,7 @@ public class GroupStreamPostTranslator implements NotificationTranslator
 
     /**
      * Constructor.
-     *
+     * 
      * @param inCoordinatorMapper
      *            coordinator mapper to set.
      * @param inMemberMapper
@@ -55,7 +54,7 @@ public class GroupStreamPostTranslator implements NotificationTranslator
      * @param inGroupFinder
      *            Group finder.
      */
-    public GroupStreamPostTranslator(final GetCoordinatorIdsByGroupId inCoordinatorMapper,
+    public GroupStreamPostTranslator(final DomainMapper<Long, List<Long>> inCoordinatorMapper,
             final DomainMapper<Long, List<Long>> inMemberMapper, final FindByIdMapper<DomainGroup> inGroupFinder)
     {
         coordinatorMapper = inCoordinatorMapper;
@@ -71,8 +70,8 @@ public class GroupStreamPostTranslator implements NotificationTranslator
             final long inActivityId)
     {
         // get group notification suppression settings
-        DomainGroup group =
-                groupFinder.execute(new FindByIdRequest(DomainGroup.getDomainEntityName(), inDestinationId));
+        DomainGroup group = groupFinder
+                .execute(new FindByIdRequest(DomainGroup.getDomainEntityName(), inDestinationId));
         if (group.isSuppressPostNotifToCoordinator() && group.isSuppressPostNotifToMember())
         {
             return Collections.EMPTY_LIST;

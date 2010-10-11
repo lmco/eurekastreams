@@ -23,7 +23,7 @@ import java.util.List;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
-import org.eurekastreams.server.persistence.mappers.stream.GetCoordinatorIdsByGroupId;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * Translates the event of someone beginning to follow a group stream to appropriate notifications.
@@ -33,15 +33,15 @@ public class GroupFollowerTranslator implements NotificationTranslator
     /**
      * Mapper to get group coordinator ids.
      */
-    private GetCoordinatorIdsByGroupId coordinatorMapper;
+    private DomainMapper<Long, List<Long>> coordinatorMapper;
 
     /**
      * Constructor.
-     *
+     * 
      * @param inCoordinatorMapper
      *            coordinator mapper to set.
      */
-    public GroupFollowerTranslator(final GetCoordinatorIdsByGroupId inCoordinatorMapper)
+    public GroupFollowerTranslator(final DomainMapper<Long, List<Long>> inCoordinatorMapper)
     {
         coordinatorMapper = inCoordinatorMapper;
     }
@@ -63,7 +63,7 @@ public class GroupFollowerTranslator implements NotificationTranslator
             coordinatorIds.remove(inActorId);
         }
 
-        return (Collections.singletonList(new NotificationDTO(coordinatorIds, NotificationType.FOLLOW_GROUP,
-                inActorId, inDestinationId, EntityType.GROUP, 0L)));
+        return (Collections.singletonList(new NotificationDTO(coordinatorIds, NotificationType.FOLLOW_GROUP, inActorId,
+                inDestinationId, EntityType.GROUP, 0L)));
     }
 }

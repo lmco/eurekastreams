@@ -23,8 +23,8 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators;
-import org.eurekastreams.server.persistence.mappers.stream.GetCoordinatorIdsByGroupId;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
@@ -37,18 +37,18 @@ public class GetFollowersAuthorizationStrategy implements AuthorizationStrategy<
     /**
      * Mapper to get coordinators for a group.
      */
-    private GetCoordinatorIdsByGroupId coordMapper;
-    
+    private DomainMapper<Long, List<Long>> coordMapper;
+
     /**
      * Mapper to get group followers.
      */
     private GetGroupFollowerIds groupFollowerIdsMapper;
-    
+
     /**
      * Mapper to get group info by short name.
      */
     private GetDomainGroupsByShortNames groupMapper;
-    
+
     /**
      * Mapper to get all the coordinators of an org, traversing up the tree.
      */
@@ -56,7 +56,7 @@ public class GetFollowersAuthorizationStrategy implements AuthorizationStrategy<
 
     /**
      * Constructor.
-     *
+     * 
      * @param inCoordMapper
      *            the group coordinator mapper.
      * @param inGroupFollowerIdsMapper
@@ -66,7 +66,7 @@ public class GetFollowersAuthorizationStrategy implements AuthorizationStrategy<
      * @param inOrgPermissionsChecker
      *            Mapper to get all the coordinators of an org, traversing up the tree.
      */
-    public GetFollowersAuthorizationStrategy(final GetCoordinatorIdsByGroupId inCoordMapper,
+    public GetFollowersAuthorizationStrategy(final DomainMapper<Long, List<Long>> inCoordMapper,
             final GetGroupFollowerIds inGroupFollowerIdsMapper, final GetDomainGroupsByShortNames inGroupMapper,
             final GetRecursiveOrgCoordinators inOrgPermissionsChecker)
     {
@@ -78,7 +78,7 @@ public class GetFollowersAuthorizationStrategy implements AuthorizationStrategy<
 
     /**
      * Authorization strategy for GetPendingGroups.
-     *
+     * 
      * @param inActionContext
      *            the action context
      */
@@ -99,7 +99,7 @@ public class GetFollowersAuthorizationStrategy implements AuthorizationStrategy<
             long userId = inActionContext.getPrincipal().getId();
             String groupShortName = actionRequest.getEntityId();
             List<DomainGroupModelView> groups = groupMapper.execute(Collections.singletonList(groupShortName));
-            
+
             if (groups.size() > 0)
             {
                 DomainGroupModelView group = groups.get(0);
@@ -118,7 +118,7 @@ public class GetFollowersAuthorizationStrategy implements AuthorizationStrategy<
                     + "of a private group");
         }
     }
-    
+
     /**
      * Checks to see if user is coordinator for a group.
      * 

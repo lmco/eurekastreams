@@ -30,7 +30,6 @@ import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
-import org.eurekastreams.server.persistence.mappers.stream.GetCoordinatorIdsByGroupId;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -75,7 +74,7 @@ public class GroupStreamPostTranslatorTest
     };
 
     /** Mock coordinator mapper. */
-    private GetCoordinatorIdsByGroupId mapper = context.mock(GetCoordinatorIdsByGroupId.class);
+    private DomainMapper<Long, List<Long>> mapper = context.mock(DomainMapper.class, "coordIdMapper");
 
     /** Fixture: Mapper to get list of members of a group. */
     private DomainMapper<Long, List<Long>> memberMapper = context.mock(DomainMapper.class);

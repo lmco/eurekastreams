@@ -239,7 +239,7 @@
 	
 	<bean id="getAllPersonIdsWhoHaveGroupCoordinatorAccess"
 		class="org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess">
-		<constructor-arg ref="getCoordinatorIdsByGroupId"/>
+		<constructor-arg ref="getGroupCoordinatorIdsByGroupIdDbMapper"/>
 		<constructor-arg ref="bulkDomainGroupsMapper"/>
 		<constructor-arg ref="bulkOrganizationsByShortNameMapper"/>
 		<constructor-arg ref="getRecursiveOrgCoordinators"/>
@@ -270,11 +270,6 @@
 
 	--><bean id="getFollowedPersonIds"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetFollowedPersonIds">
-		<property name="cache" ref="testCache" />
-	</bean>
-
-	<bean id="getCoordinatorIdsByGroupId"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetCoordinatorIdsByGroupId">
 		<property name="cache" ref="testCache" />
 	</bean>
 

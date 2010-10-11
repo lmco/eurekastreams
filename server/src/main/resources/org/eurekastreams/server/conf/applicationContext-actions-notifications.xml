@@ -27,7 +27,7 @@
         </entry>
         <entry key="GROUP_FOLLOWER">
             <bean class="org.eurekastreams.server.action.execution.notification.translator.GroupFollowerTranslator">
-                <constructor-arg ref="getCoordinatorIdsByGroupId" />
+                <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" />
             </bean>
         </entry>
         <entry key="GROUP_COMMENT">
@@ -35,13 +35,13 @@
 				<constructor-arg ref="getCommentorIdsByActivityId" />
 				<constructor-arg ref="bulkActivitiesMapper" />
 				<constructor-arg><null /></constructor-arg>
-				<!-- Replace above with <constructor-arg ref="getCoordinatorIdsByGroupId" /> to notify group coordinators when comments are posted to group streams. -->
+				<!-- Replace above with <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" /> to notify group coordinators when comments are posted to group streams. -->
 				<constructor-arg ref="getCommentsById" />
             </bean>
         </entry>
         <entry key="GROUP_STREAM_POST">
             <bean class="org.eurekastreams.server.action.execution.notification.translator.GroupStreamPostTranslator">
-                <constructor-arg ref="getCoordinatorIdsByGroupId" />
+                <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" />
                 <constructor-arg ref="getGroupFollowerIds" />
                 <constructor-arg ref="findByIdMapper" />
             </bean>
@@ -60,7 +60,7 @@
         </entry>
         <entry key="REQUEST_GROUP_ACCESS">
             <bean class="org.eurekastreams.server.action.execution.notification.translator.RequestGroupAccessTranslator">
-                <constructor-arg ref="getCoordinatorIdsByGroupId" />
+                <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" />
             </bean>
         </entry>
     </util:map>

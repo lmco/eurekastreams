@@ -28,7 +28,6 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetCommentorIdsByActivityId;
-import org.eurekastreams.server.persistence.mappers.stream.GetCoordinatorIdsByGroupId;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 
 /**
@@ -49,14 +48,14 @@ public class GroupCommentTranslator implements NotificationTranslator
     /**
      * Mapper to get group coordinator ids.
      */
-    private GetCoordinatorIdsByGroupId coordinatorMapper;
+    private DomainMapper<Long, List<Long>> coordinatorMapper;
 
     /** Mapper to get the comment. */
     private DomainMapper<List<Long>, List<CommentDTO>> commentsMapper;
 
     /**
      * Constructor.
-     *
+     * 
      * @param inCommentorsMapper
      *            commentors mapper to set.
      * @param inActivitiesMapper
@@ -68,7 +67,7 @@ public class GroupCommentTranslator implements NotificationTranslator
      */
     public GroupCommentTranslator(final GetCommentorIdsByActivityId inCommentorsMapper,
             final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper,
-            final GetCoordinatorIdsByGroupId inCoordinatorMapper,
+            final DomainMapper<Long, List<Long>> inCoordinatorMapper,
             final DomainMapper<List<Long>, List<CommentDTO>> inCommentsMapper)
     {
         commentorsMapper = inCommentorsMapper;
@@ -79,7 +78,7 @@ public class GroupCommentTranslator implements NotificationTranslator
 
     /**
      * Gets a list of people to notify when a new comment is added.
-     *
+     * 
      * @param inActorId
      *            ID of actor that made the comment.
      * @param inDestinationId
