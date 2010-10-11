@@ -36,7 +36,11 @@ import org.hibernate.ScrollableResults;
 
 /**
  * Cache loader for Groups.
+ * 
+ * @deprecated This is only still around until it can be refactored out of the unit tests. New cache warming and
+ *             EntityCacheUpdaters are in place in production code.
  */
+@Deprecated
 public class DomainGroupCacheLoader extends CachedDomainMapper implements EntityCacheUpdater<DomainGroup>
 {
     /**

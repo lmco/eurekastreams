@@ -20,6 +20,7 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.commons.task.TaskHandler;
 import org.eurekastreams.server.domain.DomainGroup;
+import org.eurekastreams.server.domain.EntityCacheUpdater;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 
@@ -35,17 +36,17 @@ public class CacheInitializer
 
     /**
      * Wires entity cache updaters to their domain entities.
-     *
-     * @param inDomainGroupCacheLoader
-     *            the domain group cache loader
-     * @param inOrgHierarchyCacheLoader
-     *            the organization hierarchy cache loader
-     * @param inPersonCacheLoader
-     *            the person cache loader
+     * 
+     * @param inDomainGroupEntityCacheUpdater
+     *            the domain group EntityCacheUpdater
+     * @param inOrgEntityCacheUpdater
+     *            the organization EntityCacheUpdater
+     * @param inPersonEntityCacheUpdater
+     *            the person EntityCacheUpdater
      */
-    public void wireCacheUpdaters(final DomainGroupCacheLoader inDomainGroupCacheLoader,
-            final OrganizationHierarchyCacheLoader inOrgHierarchyCacheLoader,
-            final PersonCacheLoader inPersonCacheLoader)
+    @SuppressWarnings("unchecked")
+    public void wireCacheUpdaters(final EntityCacheUpdater inDomainGroupEntityCacheUpdater,
+            final EntityCacheUpdater inOrgEntityCacheUpdater, final EntityCacheUpdater inPersonEntityCacheUpdater)
     {
         // set the updaters
         if (logger.isInfoEnabled())
@@ -53,20 +54,19 @@ public class CacheInitializer
             logger.info("Wiring up cache updaters for Person, DomainGroup, Organization.");
         }
 
-        DomainGroup.setEntityCacheUpdater(inDomainGroupCacheLoader);
-        Organization.setEntityCacheUpdater(inOrgHierarchyCacheLoader);
-        Person.setEntityCacheUpdater(inPersonCacheLoader);
+        DomainGroup.setEntityCacheUpdater(inDomainGroupEntityCacheUpdater);
+        Organization.setEntityCacheUpdater(inOrgEntityCacheUpdater);
+        Person.setEntityCacheUpdater(inPersonEntityCacheUpdater);
     }
 
     /**
      * Submits async job to warm cache.
-     *
+     * 
      * @param inActionSubmitter
      *            the async action submitter
      */
     public void initializeCache(final TaskHandler inActionSubmitter)
     {
-        // set the updaters
         if (logger.isInfoEnabled())
         {
             logger.info("initializeCache.");
@@ -75,10 +75,6 @@ public class CacheInitializer
         // put the cache warming action on the queue.
         try
         {
-            // ******************
-            // TODO: When clustering becomes available, we need to ensure that this cache warming only
-            // happens once and not on each node.
-            // ******************
             inActionSubmitter.handleTask(new UserActionRequest("initializeCache", null, null));
         }
         catch (Exception ex)

@@ -72,9 +72,9 @@
 		<property name="targetMethod" value="wireCacheUpdaters" />
 		<property name="arguments">
 			<list>
-				<ref bean="domainGroupCacheLoader" />
-				<ref bean="organizationCacheLoader" />
-				<ref bean="personCacheLoader" />
+				<ref bean="domainGroupEntityCacheUpdater" />
+				<ref bean="organizationEntityCacheUpdater" />
+				<ref bean="personEntityCacheUpdater" />
 			</list>
 		</property>
 	</bean>
@@ -1114,12 +1114,17 @@
         </constructor-arg>
     </bean>
     
-	<!-- Organization Hierarchy Cache Loader -->
-	<bean id="organizationCacheLoader"
-		class="org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCacheLoader">
-		<property name="cache" ref="memcachedCache" />
-		<property name="organizationMapper" ref="bulkOrganizationsMapper" />
-	</bean>
+    <bean id="personEntityCacheUpdater" class="org.eurekastreams.server.persistence.mappers.cache.PersonEntityCacheUpdater">
+        <property name="cache" ref="memcachedCache" />
+    </bean>
+    
+    <bean id="organizationEntityCacheUpdater" class="org.eurekastreams.server.persistence.mappers.cache.OrganizationEntityCacheUpdater">
+        <property name="cache" ref="memcachedCache" />
+    </bean>
+    
+    <bean id="domainGroupEntityCacheUpdater" class="org.eurekastreams.server.persistence.mappers.cache.DomainGroupEntityCacheUpdater">
+        <property name="cache" ref="memcachedCache" />
+    </bean>    
 
 	<bean id="orgParentHierarchyCacheCleaner"
 		class="org.eurekastreams.server.persistence.mappers.cache.OrgParentHierarchyCacheCleaner">
@@ -1131,25 +1136,7 @@
 		class="org.eurekastreams.server.persistence.mappers.GetStreamScopeById" />
 
 	<bean id="getStreamScopeProxyById"
-		class="org.eurekastreams.server.persistence.mappers.GetStreamScopeProxyById" />
-
-	<!--
-		Domain Group Cache Loader - will be injected into actions/mappers that
-		need to update the cache
-	-->
-	<bean id="domainGroupCacheLoader"
-		class="org.eurekastreams.server.persistence.mappers.cache.DomainGroupCacheLoader">
-		<constructor-arg ref="domainGroupQueryStrategy" />
-		<property name="cache" ref="memcachedCache" />
-	</bean>
-
-	<!-- Person Cache Loader -->
-	<bean id="personCacheLoader"
-		class="org.eurekastreams.server.persistence.mappers.cache.PersonCacheLoader">
-		<constructor-arg ref="personQueryStrategy" />
-		<constructor-arg ref="getRelatedOrganizationIdsByPersonId" />
-		<property name="cache" ref="memcachedCache" />
-	</bean>
+		class="org.eurekastreams.server.persistence.mappers.GetStreamScopeProxyById" />		
 
 	<bean id="followedActivityIdsLoader"
 		class="org.eurekastreams.server.persistence.mappers.cache.FollowedActivityIdsLoaderImpl" />

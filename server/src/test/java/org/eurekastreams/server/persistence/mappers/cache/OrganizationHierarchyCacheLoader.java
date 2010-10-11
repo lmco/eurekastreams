@@ -31,7 +31,11 @@ import org.eurekastreams.server.search.modelview.OrganizationModelView;
 
 /**
  * Responsible for the maintenance of the OrganizationHierarchyCache.
+ * 
+ * @deprecated This is only still around until it can be refactored out of the unit tests. New cache warming and
+ *             EntityCacheUpdaters are in place in production code.
  */
+@Deprecated
 public class OrganizationHierarchyCacheLoader extends CachedDomainMapper implements EntityCacheUpdater<Organization>
 {
     /**
@@ -98,12 +102,12 @@ public class OrganizationHierarchyCacheLoader extends CachedDomainMapper impleme
     /**
      * Query the database for all organizations, only requesting the id and parent org id. Populate the direct children
      * organization cache collection. This should be as efficient as possible, making a single query to the database.
-     *
+     * 
      * Remarks: Consider chunking this in batches of configurable size
-     *
+     * 
      * @param childOrgMap
      *            map to store OrgId -> Child OrgIds
-     *
+     * 
      * @return the root org id
      */
     private Long queryAllOrganizations(final Map<Long, List<Long>> childOrgMap)
@@ -148,7 +152,7 @@ public class OrganizationHierarchyCacheLoader extends CachedDomainMapper impleme
     /**
      * Return a set of all children organization ids recursively while populating the recursive children collection for
      * the input and org and all recursive children.
-     *
+     * 
      * @param inOrgId
      *            the org to recurse
      * @param childOrgMap
@@ -185,7 +189,7 @@ public class OrganizationHierarchyCacheLoader extends CachedDomainMapper impleme
 
     /**
      * Populate the parent org hash using the child org hash and root org.
-     *
+     * 
      * @param parentOrgId
      *            the starting point for the parent org populating
      * @param childMap
@@ -194,7 +198,7 @@ public class OrganizationHierarchyCacheLoader extends CachedDomainMapper impleme
      *            Map of org id to recursive children org id
      * @param parentMap
      *            Map of org id to recursive parent org id
-     *
+     * 
      */
     private void populateParentOrgCache(final Long parentOrgId, final Map<Long, List<Long>> childMap,
             final Map<Long, List<Long>> recursiveChildMap, final Map<Long, List<Long>> parentMap)
@@ -229,7 +233,7 @@ public class OrganizationHierarchyCacheLoader extends CachedDomainMapper impleme
 
     /**
      * Write the org hierarchy information to cache.
-     *
+     * 
      * @param rootOrgId
      *            The root organization id
      * @param childMap
@@ -259,7 +263,7 @@ public class OrganizationHierarchyCacheLoader extends CachedDomainMapper impleme
     /**
      * Organization updater implementation - fired when an organization entity is updated. Nothing that we currently
      * store in cache can change, so this method does nothing right now.
-     *
+     * 
      * @param inUpdatedOrganization
      *            the organization just updated
      */
@@ -276,7 +280,7 @@ public class OrganizationHierarchyCacheLoader extends CachedDomainMapper impleme
 
     /**
      * Organization persist implementation - fired when an organization entity is persisted.
-     *
+     * 
      * @param inNewOrganization
      *            the organization just created
      */
