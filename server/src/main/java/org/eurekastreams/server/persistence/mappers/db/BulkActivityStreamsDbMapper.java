@@ -22,7 +22,7 @@ import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
- * Bulk maps activity streams from the database.
+ * Get activities from the database posted to the input stream scope id.
  */
 public class BulkActivityStreamsDbMapper extends BaseArgDomainMapper<List<Long>, List<List<Long>>> implements
         DomainMapper<List<Long>, List<List<Long>>>
@@ -34,7 +34,7 @@ public class BulkActivityStreamsDbMapper extends BaseArgDomainMapper<List<Long>,
 
     /**
      * Set the max items to return.
-     * 
+     *
      * @param inMaxItems
      *            the max items.
      */
@@ -44,11 +44,11 @@ public class BulkActivityStreamsDbMapper extends BaseArgDomainMapper<List<Long>,
     }
 
     /**
-     * Executes the mapper.
-     * 
+     * Get activities from the database posted to the input stream scope id.
+     *
      * @param inRequest
-     *            the request.
-     * @return the list of activity IDs.
+     *            list of stream scope ids to find activity posted to
+     * @return a list of lists representing activities posted to stream scopes represented by their input ids
      */
     @SuppressWarnings("unchecked")
     public List<List<Long>> execute(final List<Long> inRequest)
