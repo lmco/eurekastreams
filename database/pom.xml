@@ -196,7 +196,7 @@
                                     <outputDirectory>${project.build.directory}/classes/db/schema</outputDirectory>
                                     <resources>
                                         <resource>
-                                            <directory>${project.build.directory}/sharedresources/database/schema/int</directory>
+                                            <directory>${project.build.directory}/sharedresources/resources/database/schema/int</directory>
                                             <includes>
                                                 <include>*.sql</include>
                                             </includes>
@@ -234,7 +234,7 @@
                                     <outputDirectory>${project.build.directory}/classes/db/schema</outputDirectory>
                                     <resources>
                                         <resource>
-                                            <directory>${project.build.directory}/sharedresources/database/schema/uat</directory>
+                                            <directory>${project.build.directory}/sharedresources/resources/database/schema/uat</directory>
                                             <includes>
                                                 <include>*.sql</include>
                                             </includes>
@@ -272,7 +272,7 @@
                                     <outputDirectory>${project.build.directory}/classes/db/schema</outputDirectory>
                                     <resources>
                                         <resource>
-                                            <directory>${project.build.directory}/sharedresources/database/schema/perf</directory>
+                                            <directory>${project.build.directory}/sharedresources/resources/database/schema/perf</directory>
                                             <includes>
                                                 <include>*.sql</include>
                                             </includes>
