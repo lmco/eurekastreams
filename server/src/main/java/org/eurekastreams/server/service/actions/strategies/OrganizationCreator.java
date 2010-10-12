@@ -144,7 +144,6 @@ public class OrganizationCreator extends OrganizationPersister
         
         // sets the destination entity id for the organization's stream scope
         inOrganization.getStreamScope().setDestinationEntityId(inOrganization.getId());
-        getOrgMapper().flush();
 
         // kick off an async action to update the coordinators' activity search
         // strings
