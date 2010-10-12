@@ -8915,11 +8915,6 @@ body .previous-arrow:hover {
 	font-size: 12px;
 }
 
-gwt-MenuBarPopup {
-	zoom: 1;
-	position: absolute;
-}
-
 .gwt-MenuBarPopup .gwt-MenuBar-vertical {
 	background-color: white;
 	border: 1px solid #333333;
@@ -9061,7 +9056,7 @@ gwt-MenuBarPopup {
 .posting-disabled-box>div {
 	background: url(images/information-circle-icon.png) no-repeat 0 0;
 	margin: 0px auto;
-	width: 275px;
+	width: 300px;
 	padding: 0px 20px;
 	height: 16px;
 }
@@ -9772,6 +9767,8 @@ body .shortname-form-element input {
 
 .gwt-MenuBarPopup {
 	z-index: 100000;
+	margin-left: -2px;
+	*margin-top: -1px;
 }
 
 .edit-button a {
@@ -10138,6 +10135,10 @@ body .options>li>.option-title:hover {
 
 .options .connection-filter-button.active, .options .sort-option.active {
 	background-color: #FFE488;
+}
+
+.sort-option {
+	*top: 0px;	
 }
 
 .connection-edit-panel {
@@ -11476,10 +11477,9 @@ div.profile-settings-tab-container div.tab-container {
 	background-color: #FFFFFF;
 	border: #bbbbbb solid 1px;
 	padding: 20px;
-	width: 600px;
 	font-family: Verdana;
 	font-size: 12px;
-	margin-left: 20px;
+	margin: 0 10px;
 	display: inline-block;
 }
 

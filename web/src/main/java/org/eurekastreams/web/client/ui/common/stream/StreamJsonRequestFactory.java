@@ -210,7 +210,7 @@ public final class StreamJsonRequestFactory
      * Init an entity array.
      * 
      * @param key
-     *            the key.
+     *  jj          the key.
      * @param json
      *            the JSON object.
      */

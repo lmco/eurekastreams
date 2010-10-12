@@ -24,7 +24,6 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.ActivityLikedChangeEvent;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
-import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.jsni.EffectsFacade;
 import org.eurekastreams.web.client.model.ActivityLikeModel;
 import org.eurekastreams.web.client.ui.Session;
@@ -177,6 +176,10 @@ public class LikeCountWidget extends Composite
                 {
                     actuallyOut = false;
                 }
+                else if (DOM.eventGetType(event) == Event.ONCLICK)
+                {
+                    EffectsFacade.nativeFadeOut(usersWhoLikedPanelWrapper.getElement(), false);
+                }
             }
         };
 
@@ -191,21 +194,13 @@ public class LikeCountWidget extends Composite
                 {
                     ActivityLikeModel.getInstance().update(
                             new SetActivityLikeRequest(currentActivityId, LikeActionType.ADD_LIKE));
+                    
+                    arg0.stopPropagation();
                 }
             }
         });
 
         usersWhoLikedPanelWrapper.add(transparentLikeLink);
-
-        // Clear when page changes.
-        EventBus.getInstance().addObserver(UpdatedHistoryParametersEvent.class,
-                new Observer<UpdatedHistoryParametersEvent>()
-                {
-                    public void update(final UpdatedHistoryParametersEvent arg1)
-                    {
-                        EffectsFacade.nativeFadeOut(usersWhoLikedPanelWrapper.getElement(), false);
-                    }
-                });
 
         viewAll.setVisible(false);
         viewAll.addClickHandler(new ClickHandler()

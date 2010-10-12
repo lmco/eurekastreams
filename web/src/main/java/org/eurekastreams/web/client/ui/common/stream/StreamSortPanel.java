@@ -164,7 +164,7 @@ public class StreamSortPanel extends Composite
      * @param setHistory
      *            if the history should be set.
      */
-    private void updateSelected(final String updatedSort, final boolean setHistory)
+    public void updateSelected(final String updatedSort, final boolean setHistory)
     {
         sort = updatedSort;
         if (null != activeSort)

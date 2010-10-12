@@ -215,7 +215,7 @@ public class StreamPanel extends FlowPanel
             {
                 JSONObject jsonObj = StreamJsonRequestFactory.getJSONRequest(jsonQuery);
                 jsonObj = StreamJsonRequestFactory.setMaxId(lastSeenId, jsonObj);
-                
+
                 // Must be sorted by date to request more.
                 jsonObj = StreamJsonRequestFactory.setSort("date", jsonObj);
 
@@ -259,7 +259,14 @@ public class StreamPanel extends FlowPanel
         {
             public void update(final MessageStreamAppendEvent evt)
             {
-                EventBus.getInstance().notifyObservers(StreamReinitializeRequestEvent.getEvent());
+                if ("date".equals(sortPanel.getSort()))
+                {
+                    EventBus.getInstance().notifyObservers(StreamReinitializeRequestEvent.getEvent());
+                }
+                else
+                {
+                    sortPanel.updateSelected("date", true);
+                }
             }
         });
 
@@ -459,7 +466,8 @@ public class StreamPanel extends FlowPanel
         else
         {
             FlowPanel postingDisabledMessage = new FlowPanel();
-            postingDisabledMessage.getElement().setInnerHTML("Posting messages has been disabled by this group");
+
+            postingDisabledMessage.getElement().setInnerHTML("Posting messages has been disabled for this stream.");
             postingDisabled.addStyleName("posting-disabled-box");
             postingDisabled.add(postingDisabledMessage);
             postContent.add(postingDisabled);
