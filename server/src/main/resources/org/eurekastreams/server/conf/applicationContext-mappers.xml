@@ -876,15 +876,38 @@
             <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
         </constructor-arg>        
         <!-- Cache refresher -->
+        <constructor-arg ref="getFollowerPersonIdsForGroupByIdCacheRefresher"/>                       
+    </bean>    
+    
+    <bean id="getFollowerPersonIdsForGroupByIdMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache Mapper -->
+        <constructor-arg ref="getFollowerPersonIdsForGroupByIdCacheMapper"/>
+        <!-- Database mapper to fall back on if not found in cache -->
+        <constructor-arg ref="getFollowerPersonIdsForGroupByIdDbMapper" />
+        <!-- Data combiner -->
         <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleListValueCacheRefreshStrategy">
-                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.FOLLOWERS_BY_GROUP" />
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
-                </constructor-arg>
-                <property name="cache" ref="memcachedCache" />
-            </bean> 
-        </constructor-arg>                       
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
+        </constructor-arg>        
+        <!-- Cache refresher -->
+        <constructor-arg ref="getFollowerPersonIdsForGroupByIdCacheRefresher"/>                       
+    </bean>  
+    
+    <bean id="getFollowerPersonIdsForGroupByIdCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
+        </constructor-arg>
+        <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.FOLLOWERS_BY_GROUP" />
+        <!-- Is list of lists flag -->
+        <constructor-arg value="False" />
+        <property name="cache" ref="memcachedCache" />
+    </bean>
+        
+    <bean id="getFollowerPersonIdsForGroupByIdCacheRefresher" class="org.eurekastreams.server.persistence.mappers.cache.SingleListValueCacheRefreshStrategy">
+        <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.FOLLOWERS_BY_GROUP" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
+        </constructor-arg>
+        <property name="cache" ref="memcachedCache" />
     </bean>    
 	
 
