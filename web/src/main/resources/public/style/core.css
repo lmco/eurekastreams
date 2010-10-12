@@ -6650,6 +6650,10 @@ div.banner-container {
 	text-indent: -1000em;
 }
 
+.modal-close:hover {
+	background: url(images/modalCloseBtnHover.png) no-repeat;
+}
+
 .modal-close a {
 	display: inline-block;
 	overflow: hidden;
