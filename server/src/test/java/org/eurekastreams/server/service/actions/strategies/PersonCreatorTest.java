@@ -236,8 +236,6 @@ public class PersonCreatorTest extends DomainEntityMapperTest
                 will(returnValue(streamScope));
 
                 oneOf(streamScope).setDestinationEntityId(2L);
-
-                oneOf(personMapperMock).flush();
             }
         });
 

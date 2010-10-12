@@ -239,7 +239,6 @@ public class OrganizationCreatorTest
                 oneOf(streamScope).setDestinationEntityId(newOrgId);
 
                 oneOf(orgMapperMock).updateChildOrganizationCount(with(same(parentOrg)));
-                oneOf(orgMapperMock).flush();
             }
         });
 

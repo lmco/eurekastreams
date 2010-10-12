@@ -311,9 +311,6 @@ public class GroupCreatorTest
                 
                 oneOf(streamScope).setDestinationEntityId(id);
 
-                oneOf(groupMapperMock).flush();
-
-
                 // TODO: consider making a fake so we can make sure the right
                 // action was called
                 // oneOf(taskHandler).handleTask(with(any(UserActionRequest.class)));
@@ -426,9 +423,6 @@ public class GroupCreatorTest
                 will(returnValue(streamScope));
                 
                 oneOf(streamScope).setDestinationEntityId(id);
-
-                oneOf(groupMapperMock).flush();
-
             }
         });
 
@@ -517,8 +511,6 @@ public class GroupCreatorTest
                 will(returnValue(streamScope));
                 
                 oneOf(streamScope).setDestinationEntityId(id);
-
-                oneOf(groupMapperMock).flush();
             }
         });
 

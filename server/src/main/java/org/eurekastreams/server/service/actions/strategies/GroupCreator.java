@@ -201,7 +201,6 @@ public class GroupCreator extends GroupPersister
         
         // sets the destination entity id for the group's stream scope
         inGroup.getStreamScope().setDestinationEntityId(inGroup.getId());
-        getGroupMapper().flush();
 
         OrganizationHierarchyTraverser orgTraverser = orgTraverserBuilder.getOrganizationHierarchyTraverser();
         orgTraverser.traverseHierarchy(inGroup);
