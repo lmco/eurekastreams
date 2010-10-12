@@ -36,21 +36,9 @@ public class StreamRequestEvent
     private Long streamId;
 
     /**
-     * Constructor.
-     * 
-     * @param inStreamName
-     *            the stream name.
-     * @param inStreamId
-     *            the stream ID.
-     * @param inJson
-     *            the json.
+     * Force reload.
      */
-    public StreamRequestEvent(final String inStreamName, final Long inStreamId, final String inJson)
-    {
-        streamName = inStreamName;
-        streamId = inStreamId;
-        json = inJson;
-    }
+    private Boolean forceReload = false;;
 
     /**
      * Constructor.
@@ -62,8 +50,60 @@ public class StreamRequestEvent
      */
     public StreamRequestEvent(final String inStreamName, final String inJson)
     {
+        this(inStreamName, inJson, false);
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param inStreamName
+     *            the stream name.
+     * @param inJson
+     *            the json.
+     * @param inForceReload
+     *            if a reload should be forced.
+     */
+    public StreamRequestEvent(final String inStreamName, final String inJson, final Boolean inForceReload)
+    {
         streamName = inStreamName;
         json = inJson;
+        forceReload = inForceReload;
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param inStreamName
+     *            the stream name.
+     * @param inStreamId
+     *            the stream ID.
+     * @param inJson
+     *            the json.
+     */
+    public StreamRequestEvent(final String inStreamName, final Long inStreamId, final String inJson)
+    {
+        this(inStreamName, inStreamId, inJson, false);
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param inStreamName
+     *            the stream name.
+     * @param inStreamId
+     *            the stream ID.
+     * @param inJson
+     *            the json.
+     * @param inForceReload
+     *            if a reload should be forced.
+     */
+    public StreamRequestEvent(final String inStreamName, final Long inStreamId, final String inJson,
+            final Boolean inForceReload)
+    {
+        streamName = inStreamName;
+        streamId = inStreamId;
+        json = inJson;
+        forceReload = inForceReload;
     }
 
     /**
@@ -94,5 +134,15 @@ public class StreamRequestEvent
     public Long getStreamId()
     {
         return streamId;
+    }
+
+    /**
+     * Get if a reload should be forced.
+     * 
+     * @return if a reload should be forced.
+     */
+    public Boolean getForceReload()
+    {
+        return forceReload;
     }
 }

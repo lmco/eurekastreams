@@ -251,7 +251,7 @@ public class StreamPanel extends FlowPanel
                 {
                     public void update(final StreamReinitializeRequestEvent event)
                     {
-                        EventBus.getInstance().notifyObservers(new StreamRequestEvent(streamName, jsonQuery));
+                        EventBus.getInstance().notifyObservers(new StreamRequestEvent(streamName, jsonQuery, true));
                     }
                 });
 
@@ -274,81 +274,86 @@ public class StreamPanel extends FlowPanel
         {
             public void update(final StreamRequestEvent event)
             {
-                streamName = event.getStreamName();
-                jsonQuery = event.getJson();
-                if (activityId != 0L)
+                if (event.getForceReload() || !event.getJson().equals(jsonQuery))
                 {
-                    ActivityModel.getInstance().fetch(activityId, false);
-                }
-                else
-                {
-                    setListMode();
-                    stream.reinitialize();
-                    boolean showTitleAsLink = false;
-                    String shortName = "";
 
-                    String updatedJson = jsonQuery;
-
-                    JSONObject queryObject = JSONParser.parse(updatedJson).isObject().get("query").isObject();
-
-                    // Only show cancel option if search is not part of the view.
-                    Boolean canChange = !queryObject.containsKey("keywords");
-
-                    if (queryObject.containsKey("keywords"))
+                    streamName = event.getStreamName();
+                    jsonQuery = event.getJson();
+                    if (activityId != 0L)
                     {
-                        final String streamSearchText = queryObject.get("keywords").isString().stringValue();
-
-                        streamSearch.setSearchTerm(streamSearchText);
-
-                        updatedJson = StreamJsonRequestFactory.setSearchTerm(streamSearchText,
-                                StreamJsonRequestFactory.getJSONRequest(updatedJson)).toString();
+                        ActivityModel.getInstance().fetch(activityId, false);
                     }
-                    else if (search.length() > 0)
-                    {
-                        streamSearch.setSearchTerm(search);
-
-                        updatedJson = StreamJsonRequestFactory.setSearchTerm(search,
-                                StreamJsonRequestFactory.getJSONRequest(updatedJson)).toString();
-
-                    }
-                    // see if the stream belongs to a group and set up the stream title as a link
-                    else if (queryObject.containsKey("recipient") && queryObject.get("recipient").isArray().size() == 1)
-                    {
-                        JSONArray recipientArr = queryObject.get("recipient").isArray();
-                        JSONObject recipientObj = recipientArr.get(0).isObject();
-
-                        if (recipientObj.get("type").isString().stringValue().equals("GROUP"))
-                        {
-                            shortName = recipientObj.get("name").isString().stringValue();
-
-                            // only show the link if viewing the stream on the activity page
-                            if (Session.getInstance().getUrlPage() == Page.ACTIVITY)
-                            {
-                                showTitleAsLink = true;
-                            }
-                        }
-                    }
-
                     else
                     {
-                        streamSearch.onSearchCanceled();
-                    }
+                        setListMode();
+                        stream.reinitialize();
+                        boolean showTitleAsLink = false;
+                        String shortName = "";
 
-                    sort = sortPanel.getSort();
+                        String updatedJson = jsonQuery;
 
-                    updatedJson = StreamJsonRequestFactory.setSort(sort,
-                            StreamJsonRequestFactory.getJSONRequest(updatedJson)).toString();
+                        JSONObject queryObject = JSONParser.parse(updatedJson).isObject().get("query").isObject();
 
-                    if (!sortPanel.getSort().equals("date"))
-                    {
-                        updatedJson = StreamJsonRequestFactory.setMaxResults(NON_DATE_SORT_MAX_RESULTS,
+                        // Only show cancel option if search is not part of the view.
+                        Boolean canChange = !queryObject.containsKey("keywords");
+
+                        if (queryObject.containsKey("keywords"))
+                        {
+                            final String streamSearchText = queryObject.get("keywords").isString().stringValue();
+
+                            streamSearch.setSearchTerm(streamSearchText);
+
+                            updatedJson = StreamJsonRequestFactory.setSearchTerm(streamSearchText,
+                                    StreamJsonRequestFactory.getJSONRequest(updatedJson)).toString();
+                        }
+                        else if (search.length() > 0)
+                        {
+                            streamSearch.setSearchTerm(search);
+
+                            updatedJson = StreamJsonRequestFactory.setSearchTerm(search,
+                                    StreamJsonRequestFactory.getJSONRequest(updatedJson)).toString();
+
+                        }
+                        // see if the stream belongs to a group and set up the stream title as a link
+                        else if (queryObject.containsKey("recipient")
+                                && queryObject.get("recipient").isArray().size() == 1)
+                        {
+                            JSONArray recipientArr = queryObject.get("recipient").isArray();
+                            JSONObject recipientObj = recipientArr.get(0).isObject();
+
+                            if (recipientObj.get("type").isString().stringValue().equals("GROUP"))
+                            {
+                                shortName = recipientObj.get("name").isString().stringValue();
+
+                                // only show the link if viewing the stream on the activity page
+                                if (Session.getInstance().getUrlPage() == Page.ACTIVITY)
+                                {
+                                    showTitleAsLink = true;
+                                }
+                            }
+                        }
+
+                        else
+                        {
+                            streamSearch.onSearchCanceled();
+                        }
+
+                        sort = sortPanel.getSort();
+
+                        updatedJson = StreamJsonRequestFactory.setSort(sort,
                                 StreamJsonRequestFactory.getJSONRequest(updatedJson)).toString();
+
+                        if (!sortPanel.getSort().equals("date"))
+                        {
+                            updatedJson = StreamJsonRequestFactory.setMaxResults(NON_DATE_SORT_MAX_RESULTS,
+                                    StreamJsonRequestFactory.getJSONRequest(updatedJson)).toString();
+                        }
+
+                        streamSearch.setTitleText(streamName, shortName, showTitleAsLink);
+                        streamSearch.setCanChange(canChange);
+
+                        StreamModel.getInstance().fetch(updatedJson, false);
                     }
-
-                    streamSearch.setTitleText(streamName, shortName, showTitleAsLink);
-                    streamSearch.setCanChange(canChange);
-
-                    StreamModel.getInstance().fetch(updatedJson, false);
                 }
             }
         });
