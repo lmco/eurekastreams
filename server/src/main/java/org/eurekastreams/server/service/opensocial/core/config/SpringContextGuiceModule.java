@@ -56,6 +56,7 @@ public class SpringContextGuiceModule extends AbstractModule
 
         for (SpringGuiceConfigurator configurator : list)
         {
+            log.debug("About to configure Guice using configurator:  " + configurator);
             configurator.configure(binder(), appContext);
         }
     }

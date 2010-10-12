@@ -22,17 +22,17 @@ import org.eurekastreams.server.persistence.mappers.requests.LdapLookupRequest;
 
 /**
  * Uses an LDAP query to look up a single entry in LDAP and return a single attribute (e.g. given a user's account id,
- * return the UPN).
+ * return the UPN). This is essentially just an adapter to convert the request and response types so it can be used with
+ * other String-to-String mappers.
  */
 public class LdapSingleValueLookupMapper implements DomainMapper<String, String>
 {
     /** Mapper to query LDAP. */
     private DomainMapper<LdapLookupRequest, List<String>> ldapQueryMapper;
 
-
     /**
      * Constructor.
-     * 
+     *
      * @param inLdapQueryMapper
      *            Mapper to query LDAP.
      */
@@ -47,7 +47,7 @@ public class LdapSingleValueLookupMapper implements DomainMapper<String, String>
     @Override
     public String execute(final String inRequest)
     {
-        // use LDAP mapper to fetch user principal name (UPN) for user
+        // use LDAP mapper to fetch desired attribute for user
         List<String> results = ldapQueryMapper.execute(new LdapLookupRequest(inRequest));
 
         return results.isEmpty() ? null : results.get(0);

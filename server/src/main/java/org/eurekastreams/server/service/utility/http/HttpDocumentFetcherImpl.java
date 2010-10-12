@@ -63,8 +63,8 @@ public class HttpDocumentFetcherImpl implements HttpDocumentFetcher
      *             On error.
      */
     public Document fetchDocument(final String url, final Map<String, String> httpHeaders, final String proxyHost,
-            final String proxyPort, final int timeout, final DocumentBuilderFactory domFactory) throws
-            IOException, ParserConfigurationException, SAXException
+            final String proxyPort, final int timeout, final DocumentBuilderFactory domFactory) throws IOException,
+            ParserConfigurationException, SAXException
     {
         HttpConnectionManagerParams managerParams = new HttpConnectionManagerParams();
         managerParams.setSoTimeout(timeout);
@@ -88,9 +88,12 @@ public class HttpDocumentFetcherImpl implements HttpDocumentFetcher
 
         GetMethod get = new GetMethod(url);
 
-        for (Map.Entry<String, String> header : httpHeaders.entrySet())
+        if (httpHeaders != null)
         {
-            get.setRequestHeader(header.getKey(), header.getValue());
+            for (Map.Entry<String, String> header : httpHeaders.entrySet())
+            {
+                get.setRequestHeader(header.getKey(), header.getValue());
+            }
         }
 
         try
