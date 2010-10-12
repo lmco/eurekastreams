@@ -122,6 +122,16 @@ public class StreamPanel extends FlowPanel
     private Long activityId = 0L;
 
     /**
+     * Stream ID.
+     */
+    private Long streamId = 0L;
+    
+    /**
+     * Group ID.
+     */
+    private Long groupId = 0L;
+
+    /**
      * Search string.
      */
     private String search = "";
@@ -414,6 +424,8 @@ public class StreamPanel extends FlowPanel
         Boolean hasChanged = false;
 
         Long newActivityId = 0L;
+        Long newStreamId = 0L;
+        Long newGroupId = 0L;
         String newSearch = "";
         String newSort = sortPanel.getSort();
 
@@ -424,14 +436,29 @@ public class StreamPanel extends FlowPanel
                 newActivityId = Long.parseLong(history.get("activityId"));
             }
 
+            if (history.containsKey("streamId"))
+            {
+                newStreamId = Long.parseLong(history.get("streamId"));
+            }
+
+            if (history.containsKey("groupId"))
+            {
+                newGroupId = Long.parseLong(history.get("groupId"));
+            }
+
             if (history.containsKey("search"))
             {
                 newSearch = history.get("search");
             }
         }
 
-        hasChanged = !(newActivityId.equals(activityId) && newSearch.equals(search) && newSort.equals(sort));
+        // Only process if the stream/group ID has not changed. Handled elsewhere otherwise.
+        if (streamId.equals(newStreamId) && groupId.equals(newGroupId))
+        {
+            hasChanged = !(newActivityId.equals(activityId) && newSearch.equals(search) && newSort.equals(sort));
+        }
 
+        streamId = newStreamId;
         activityId = newActivityId;
         search = newSearch;
         sort = newSort;
