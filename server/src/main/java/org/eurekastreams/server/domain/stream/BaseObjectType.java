@@ -39,5 +39,10 @@ public enum BaseObjectType
     /**
      * Video.
      */
-    VIDEO
+    VIDEO,
+
+    /**
+     * File (document).
+     */
+    FILE
 }
