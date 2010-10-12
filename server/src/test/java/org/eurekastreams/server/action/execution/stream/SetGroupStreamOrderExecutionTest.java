@@ -26,9 +26,9 @@ import javax.persistence.Query;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.server.action.request.stream.SetStreamOrderRequest;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
-import org.eurekastreams.server.persistence.mappers.stream.GetFollowedGroupIds;
 import org.eurekastreams.server.persistence.mappers.stream.ReorderFollowedGroupIds;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -61,7 +61,7 @@ public class SetGroupStreamOrderExecutionTest
     /**
      * Mapper to get the list of group ids that the user follows.
      */
-    private GetFollowedGroupIds groupIdsMapper = context.mock(GetFollowedGroupIds.class);
+    private DomainMapper<Long, List<Long>> groupIdsMapper = context.mock(DomainMapper.class);
 
     /**
      * Mapper that persists the reordered list to the db.
@@ -72,18 +72,16 @@ public class SetGroupStreamOrderExecutionTest
      * EntityManager to use for all ORM operations.
      */
     private EntityManager entityManager = context.mock(EntityManager.class);
-    
+
     /**
      * Cache instance to use for clearing the updated person's cache entry.
      */
     private Cache cache = context.mock(Cache.class);
-    
+
     /**
      * Mocked instance of the Principal object.
      */
     private Principal principalMock = context.mock(Principal.class);
-
-    
 
     /**
      * Prepare the sut.
@@ -107,7 +105,7 @@ public class SetGroupStreamOrderExecutionTest
         final Query query = context.mock(Query.class);
 
         final Long personId = 12L;
-        
+
         final List<Long> groupIdList = new ArrayList<Long>();
         groupIdList.add(0L);
         groupIdList.add(5L);
@@ -122,23 +120,23 @@ public class SetGroupStreamOrderExecutionTest
                 will(returnValue(groupIdList));
 
                 oneOf(reorderMapper).execute(with(any(Long.class)), with(any(List.class)));
-                
+
                 oneOf(entityManager).createQuery(with(any(String.class)));
                 will(returnValue(query));
-                
+
                 allowing(query).setParameter(with(any(String.class)), with(any(Integer.class)));
                 will(returnValue(query));
-                
+
                 oneOf(query).executeUpdate();
-                
+
                 oneOf(cache).delete(CacheKeys.PERSON_BY_ID + personId);
             }
         });
         ServiceActionContext currentContext = new ServiceActionContext(request, principalMock);
         sut.execute(currentContext);
-        
+
         context.assertIsSatisfied();
-        
+
         // make sure list is reordered
         assertEquals(new Long(5), groupIdList.get(0));
     }

@@ -514,7 +514,7 @@
                 <constructor-arg>
                     <bean
                         class="org.eurekastreams.server.action.execution.stream.GetCurrentUserFollowedGroupsExecution">
-                        <constructor-arg ref="getFollowedGroupIds" />
+                        <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
                         <constructor-arg ref="bulkDomainGroupsMapper" />
                         <constructor-arg ref="bulkPeopleMapper" />
                         <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
@@ -1187,7 +1187,7 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.profile.GetFollowingExecution">
                 <constructor-arg ref="bulkPeopleByAccountIdMapper" />
-                <constructor-arg ref="getFollowedGroupIds" />
+                <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
                 <constructor-arg ref="bulkDomainGroupsMapper" />
             </bean>
         </constructor-arg>
@@ -1828,7 +1828,7 @@
                                 <bean 
                                     class="org.eurekastreams.server.service.actions.strategies.activity.datasources.FollowedGroupsPersistenceRequestTransformer">
                                     <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
-                                    <constructor-arg ref="getFollowedGroupIds" />
+                                    <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
                                     <constructor-arg ref="bulkDomainGroupsMapper" />   
                                 </bean>
                             </entry>                                                        
@@ -2652,7 +2652,7 @@
         <constructor-arg>
             <bean
                 class="org.eurekastreams.server.action.execution.stream.GetCurrentUserFollowedGroupsExecution">
-                <constructor-arg ref="getFollowedGroupIds" />
+                <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
                 <constructor-arg ref="bulkDomainGroupsMapper" />
                 <constructor-arg ref="bulkPeopleMapper" />
                 <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
@@ -2667,7 +2667,7 @@
         <constructor-arg>
             <bean
                 class="org.eurekastreams.server.action.execution.stream.SetGroupStreamsOrderExecution">
-                <constructor-arg ref="getFollowedGroupIds" />
+                <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
                 <constructor-arg ref="reorderFollowedGroupIds" />
                 <constructor-arg ref="memcachedCache" />
             </bean>

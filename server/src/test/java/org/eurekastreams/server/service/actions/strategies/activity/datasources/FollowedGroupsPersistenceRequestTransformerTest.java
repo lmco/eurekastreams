@@ -21,8 +21,8 @@ import java.util.List;
 import junit.framework.Assert;
 import net.sf.json.JSONObject;
 
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds;
-import org.eurekastreams.server.persistence.mappers.stream.GetFollowedGroupIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.jmock.Expectations;
@@ -55,7 +55,7 @@ public class FollowedGroupsPersistenceRequestTransformerTest
     /**
      * Followed groups mapper.
      */
-    private GetFollowedGroupIds followeGroupsMapper = context.mock(GetFollowedGroupIds.class);
+    private DomainMapper<Long, List<Long>> followeGroupsMapper = context.mock(DomainMapper.class);
 
     /**
      * Group mapper.
@@ -118,8 +118,8 @@ public class FollowedGroupsPersistenceRequestTransformerTest
             }
         });
 
-        Assert.assertEquals(Arrays.asList(group1.getStreamId(), group2.getStreamId(), group3
-                .getStreamId()), sut.transform(jsonReq, entityId));
+        Assert.assertEquals(Arrays.asList(group1.getStreamId(), group2.getStreamId(), group3.getStreamId()), sut
+                .transform(jsonReq, entityId));
 
         context.assertIsSatisfied();
     }

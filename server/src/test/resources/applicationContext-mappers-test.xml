@@ -273,11 +273,6 @@
 		<property name="cache" ref="testCache" />
 	</bean>
 
-	<bean id="getFollowedGroupIds"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetFollowedGroupIds">
-		<property name="cache" ref="testCache" />
-	</bean>
-
 	<bean id="reorderFollowedGroupIds"
 		class="org.eurekastreams.server.persistence.mappers.stream.ReorderFollowedGroupIds">
 		<property name="cache" ref="testCache" />

@@ -20,10 +20,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.CachedMapperTest;
-import org.eurekastreams.server.persistence.mappers.stream.GetFollowedGroupIds;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -34,8 +35,7 @@ import org.junit.Test;
 /**
  * Test fixture for GetPrivateCoordinatedAndFollowedGroupIdsForUser.
  */
-public class GetPrivateCoordinatedAndFollowedGroupIdsForUserTest extends
-        CachedMapperTest
+public class GetPrivateCoordinatedAndFollowedGroupIdsForUserTest extends CachedMapperTest
 {
     /**
      * Context for building mock objects.
@@ -48,17 +48,14 @@ public class GetPrivateCoordinatedAndFollowedGroupIdsForUserTest extends
     };
 
     /**
-     * Mapper to get all private group ids that a user can view with org or
-     * group coordinator access.
+     * Mapper to get all private group ids that a user can view with org or group coordinator access.
      */
-    private GetPrivateGroupsByUserId getPrivateGroupIdsMapper = context
-            .mock(GetPrivateGroupsByUserId.class);
+    private GetPrivateGroupsByUserId getPrivateGroupIdsMapper = context.mock(GetPrivateGroupsByUserId.class);
 
     /**
      * Mapper to get the group ids followed by a person.
      */
-    private GetFollowedGroupIds getFollowedGroupIdsMapper = context
-            .mock(GetFollowedGroupIds.class);
+    private DomainMapper<Long, List<Long>> getFollowedGroupIdsMapper = context.mock(DomainMapper.class);
 
     /**
      * Mapper to get the group ids.
@@ -84,24 +81,20 @@ public class GetPrivateCoordinatedAndFollowedGroupIdsForUserTest extends
     /**
      * Cache key for followed group ids of the test person.
      */
-    private final String keyFollowed = CacheKeys.GROUPS_FOLLOWED_BY_PERSON
-            + personId;
+    private final String keyFollowed = CacheKeys.GROUPS_FOLLOWED_BY_PERSON + personId;
 
     /**
      * Cache key for private group ids of the test person.
      */
-    private final String keyPrivate = CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR
-            + personId;
+    private final String keyPrivate = CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + personId;
 
     /**
-     * ArrayList of followed group ids - either to be put in cache or returned
-     * by mocked mapper.
+     * ArrayList of followed group ids - either to be put in cache or returned by mocked mapper.
      */
     private final ArrayList<Long> followedGroupIds = new ArrayList<Long>();
 
     /**
-     * Set of private group ids - either to be put in cache or returned by
-     * mocked mapper.
+     * Set of private group ids - either to be put in cache or returned by mocked mapper.
      */
     private final Set<Long> privateGroupIds = new HashSet<Long>();
 

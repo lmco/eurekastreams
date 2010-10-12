@@ -26,9 +26,9 @@ import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.action.request.stream.SetStreamOrderRequest;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
-import org.eurekastreams.server.persistence.mappers.stream.GetFollowedGroupIds;
 import org.eurekastreams.server.persistence.mappers.stream.ReorderFollowedGroupIds;
 
 /**
@@ -41,7 +41,7 @@ public class SetGroupStreamsOrderExecution implements ExecutionStrategy<Principa
     /**
      * Mapper to get the list of group ids that the user follows.
      */
-    private GetFollowedGroupIds groupIdsMapper;
+    private DomainMapper<Long, List<Long>> groupIdsMapper;
 
     /**
      * Mapper that persists the reordered list to the db.
@@ -52,12 +52,12 @@ public class SetGroupStreamsOrderExecution implements ExecutionStrategy<Principa
      * EntityManager to use for all ORM operations.
      */
     private EntityManager entityManager;
-    
+
     /**
      * Cache instance to use for clearing the updated person's cache entry.
      */
     private Cache cache;
-    
+
     /**
      * Set the entity manager to use for all ORM operations.
      * 
@@ -80,7 +80,7 @@ public class SetGroupStreamsOrderExecution implements ExecutionStrategy<Principa
      * @param inCache
      *            the cache.
      */
-    public SetGroupStreamsOrderExecution(final GetFollowedGroupIds inGroupIdsMapper,
+    public SetGroupStreamsOrderExecution(final DomainMapper<Long, List<Long>> inGroupIdsMapper,
             final ReorderFollowedGroupIds inReorderMapper, final Cache inCache)
     {
         groupIdsMapper = inGroupIdsMapper;
@@ -89,8 +89,8 @@ public class SetGroupStreamsOrderExecution implements ExecutionStrategy<Principa
     }
 
     /**
-     * {@inheritDoc}
-     * Using the injected mappers, this method performs the group stream list reordering for the current uset.
+     * {@inheritDoc} Using the injected mappers, this method performs the group stream list reordering for the current
+     * uset.
      */
     @Override
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
@@ -117,16 +117,16 @@ public class SetGroupStreamsOrderExecution implements ExecutionStrategy<Principa
 
         reorderMapper.execute(userEntityId, followedGroupIds);
 
-        //TODO - this db code should be in a db mapper, not here in this action execution strategy
+        // TODO - this db code should be in a db mapper, not here in this action execution strategy
         // Update hidden line index
         String queryString = "update versioned Person set groupStreamHiddenLineIndex = :newIndex where id = :id";
-        Query q = entityManager.createQuery(queryString)
-            .setParameter("newIndex", request.getHiddenLineIndex().intValue()).setParameter("id", userEntityId);
+        Query q = entityManager.createQuery(queryString).setParameter("newIndex",
+                request.getHiddenLineIndex().intValue()).setParameter("id", userEntityId);
         q.executeUpdate();
-        
-        //Deletes the person from cache; will be added to cache the next time it is requested
-        //Normally this is done by onPostUpdate in the PersonCacheLoader but the update query doesn't use the
-        //person entity directly, which saves db calls.
+
+        // Deletes the person from cache; will be added to cache the next time it is requested
+        // Normally this is done by onPostUpdate in the PersonCacheLoader but the update query doesn't use the
+        // person entity directly, which saves db calls.
         cache.delete(CacheKeys.PERSON_BY_ID + userEntityId);
 
         return Boolean.TRUE;

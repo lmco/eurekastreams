@@ -608,7 +608,7 @@
 		class="org.eurekastreams.server.persistence.mappers.GetFollowedEntitiesByPrefix">
 		<property name="getPeopleByAccountIdsMapper" ref="bulkPeopleByAccountIdMapper" />
 		<property name="getFollowedPersonIdsMapper" ref="getFollowedPersonIds" />
-		<property name="getFollowedGroupIdsMapper" ref="getFollowedGroupIds" />
+		<property name="getFollowedGroupIdsMapper" ref="getFollowedGroupIdsForPersonByIdMapper" />
 	</bean>
 
 	<bean id="insertStarredActivity"
@@ -1501,11 +1501,6 @@
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 
-	<bean id="getFollowedGroupIds"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetFollowedGroupIds">
-		<property name="cache" ref="memcachedCache" />
-	</bean>
-
 	<bean id="reorderFollowedGroupIds"
 		class="org.eurekastreams.server.persistence.mappers.stream.ReorderFollowedGroupIds">
 		<property name="cache" ref="memcachedCache" />
@@ -1583,7 +1578,7 @@
 
 	<bean id="addCachedGroupFollower"
 		class="org.eurekastreams.server.persistence.mappers.cache.AddCachedGroupFollower">
-		<constructor-arg ref="getFollowedGroupIds" />
+		<constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
 		<constructor-arg ref="getGroupFollowerIds" />
 		<property name="cache" ref="memcachedCache" />
 	</bean>
@@ -1664,7 +1659,7 @@
 	<bean id="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper"
 		class="org.eurekastreams.server.persistence.mappers.cache.GetPrivateCoordinatedAndFollowedGroupIdsForUser">
 		<constructor-arg ref="getPrivateGroupsByUserId" />
-		<constructor-arg ref="getFollowedGroupIds" />
+		<constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 
