@@ -665,6 +665,15 @@
                                 <resource>
                                     <directory>${project.build.directory}/classes/public</directory>
                                     <targetPath></targetPath>
+                                    <includes>
+                                        <include>*.*</include>
+                                        <include>plugins/**</include>
+                                        <include>scripts/**</include>
+                                        <include>style/**</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>gadgets</exclude>
+                                    </excludes>
                                 </resource>
                                 <resource>
                                     <directory>${project.build.directory}/classes/conf</directory>
@@ -680,7 +689,8 @@
                                 file.
                             -->
                             <webXml>${project.build.directory}/web.xml</webXml>
-                            <warSourceExcludes>.gwt-tmp/**,WEB-INF/classes/javax/**,WEB-INF/classes/public/**</warSourceExcludes>
+                            <warSourceExcludes>.gwt-tmp/**,WEB-INF/classes/javax/**</warSourceExcludes>
+                            <packagingExcludes>WEB-INF/classes/public/**, WEB-INF/classes/database/**,WEB-INF/classes/db/**,WEB-INF/classes/scripts/**</packagingExcludes>
                             <warName>${project.build.finalName}</warName>
                             <!--
                                 this is a workaround because of a bug in
@@ -695,6 +705,9 @@
                                     <excludes>
                                         <exclude>WEB-INF/web.xml</exclude>
                                         <exclude>WEB-INF/lib/rome-0.9.jar</exclude>
+                                        <exclude>samplecontainer/**</exclude>
+                                        <exclude>sampledata/**</exclude>
+                                        <exclude>container/**</exclude>
                                     </excludes>
                                 </overlay>
                             </overlays>
@@ -791,44 +804,7 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
-        <profile>
-            <id>No database deployment</id>
-            <activation>
-                <property>
-                    <name>NoDatabaseInstall</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>copy-nodatabaseinstallrpmscript-resources</id>
-                                <phase>process-resources</phase>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.directory}/classes/scripts</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>src/main/scripts/nodatabaseinstall</directory>
-                                            <includes>
-                                                <include>postinstall.sh</include>
-                                            </includes>
-                                        </resource>
-                                    </resources>
-                                    <overwrite>true</overwrite>
-                                </configuration>
-                            </execution>
-                     </executions>
-                  </plugin>
-              </plugins>
-           </build>
-        </profile>        
+        </profile>      
         <profile>
             <id>RPM Build</id>
             <activation>
@@ -869,17 +845,6 @@
                                     <sources>
                                         <source>
                                             <location>${project.build.directory}/ROOT.war</location>
-                                        </source>
-                                    </sources>
-                                </mapping>
-                                <mapping>	
-                                    <directory>/var/eureka/db</directory>
-                                    <filemode>555</filemode>
-                                    <username>root</username>
-                                    <groupname>root</groupname>
-                                    <sources>
-                                        <source>
-                                            <location>${project.build.directory}/classes/db</location>
                                         </source>
                                     </sources>
                                 </mapping>
