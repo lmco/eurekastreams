@@ -33,18 +33,18 @@ import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest
 import org.eurekastreams.server.action.request.stream.DeleteIdsFromListsRequest;
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddCachedGroupFollower;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.db.DeleteRequestForGroupMembership;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Class responsible for providing the strategy that updates the appropriate lists when a group is followed.
- *
+ * 
  */
 public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
@@ -71,7 +71,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
     /**
      * Local instance of the GetGroupFollowerIds mapper.
      */
-    private final GetGroupFollowerIds followerIdsMapper;
+    private final DomainMapper<Long, List<Long>> followerIdsMapper;
 
     /**
      * Mapper to remove group access requests.
@@ -80,7 +80,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
 
     /**
      * Constructor for the SetFollowingGroupStatusExecution.
-     *
+     * 
      * @param inGroupMapper
      *            - instance of the GetDomainGroupsByShortNames mapper.
      * @param inPersonMapper
@@ -97,7 +97,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
     public SetFollowingGroupStatusExecution(final GetDomainGroupsByShortNames inGroupMapper,
             final GetPeopleByAccountIds inPersonMapper, final DomainGroupMapper inDomainGroupMapper,
             final AddCachedGroupFollower inAddCachedGroupFollowerMapper,
-            final GetGroupFollowerIds inFollowerIdsMapper,
+            final DomainMapper<Long, List<Long>> inFollowerIdsMapper,
             final DeleteRequestForGroupMembership inDeleteRequestForGroupMembershipMapper)
     {
         groupMapper = inGroupMapper;
@@ -110,7 +110,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
 
     /**
      * {@inheritDoc}.
-     *
+     * 
      * This method sets the following status based on the passed in request object. There is an extra block of code here
      * that handles an additional request object type that passes in the follower and target ids by string name instead
      * of their long id's. This extra support is needed for the GroupCreator object that gets called from the back end
@@ -162,7 +162,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             // Queue async action to remove the newly followed group from cache (to sync follower counts)
             taskRequests.add(new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections
                     .singleton(CacheKeys.GROUP_BY_ID + targetId)));
-            
+
             // remove any requests from the user for group membership
             deleteRequestForGroupMembershipMapper.execute(new RequestForGroupMembershipRequest(targetId, followerId));
 
@@ -178,7 +178,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             // Queue async action to remove the newly followed group from cache (to sync follower counts)
             taskRequests.add(new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections
                     .singleton(CacheKeys.GROUP_BY_ID + targetId)));
-            
+
             // Remove the current user that is severing a relationship with the target group
             // from the list of followers for that target group.
             taskRequests.add(new UserActionRequest("deleteIdsFromLists", null, new DeleteIdsFromListsRequest(

@@ -27,9 +27,9 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.profile.GetCurrentUserFollowingStatusRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds;
-import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
@@ -54,7 +54,7 @@ public class GetCurrentUserFollowingStatusExecution implements ExecutionStrategy
     /**
      * Mapper to get followers of a group.
      */
-    private GetGroupFollowerIds groupFollowerIdsMapper;
+    private DomainMapper<Long, List<Long>> groupFollowerIdsMapper;
 
     /**
      * Mapper to get followers of a person.
@@ -93,7 +93,7 @@ public class GetCurrentUserFollowingStatusExecution implements ExecutionStrategy
      *            instance of GetPeopleByAccountIds.
      */
     public GetCurrentUserFollowingStatusExecution(final GetPeopleByOpenSocialIds inGetPeopleByOpenSocialIdsMapper,
-            final String inPattern, final GetGroupFollowerIds inGroupFollowerIdsMapper,
+            final String inPattern, final DomainMapper<Long, List<Long>> inGroupFollowerIdsMapper,
             final GetFollowerIds inGollowerIdsMapper, final GetDomainGroupsByShortNames inGroupsByNameMapper,
             final GetPeopleByAccountIds inPeopleByAccountMapper)
     {

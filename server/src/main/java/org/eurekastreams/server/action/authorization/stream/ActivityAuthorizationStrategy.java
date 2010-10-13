@@ -16,6 +16,7 @@
 package org.eurekastreams.server.action.authorization.stream;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.AuthorizationStrategy;
@@ -26,9 +27,9 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.ActivityRestrictionEntity;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -54,7 +55,7 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
      * Groups by shortName DAO.
      */
     private final GetDomainGroupsByShortNames groupByShortNameDAO;
-    
+
     /**
      * People by accountId DAO.
      */
@@ -63,7 +64,7 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
     /**
      * Group follower ids DAO.
      */
-    private final GetGroupFollowerIds groupFollowersDAO;
+    private final DomainMapper<Long, List<Long>> groupFollowersDAO;
 
     /**
      * Local instance of actor retrieval strategy for determining who made the request to interact with the activity.
@@ -88,7 +89,7 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
 
     /**
      * Constructor.
-     *
+     * 
      * @param inGroupByShortNameDAO
      *            Groups by shortName DAO.
      * @param inGroupFollowersDAO
@@ -106,7 +107,8 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
      */
     @SuppressWarnings("unchecked")
     public ActivityAuthorizationStrategy(final GetDomainGroupsByShortNames inGroupByShortNameDAO,
-            final GetGroupFollowerIds inGroupFollowersDAO, final ActorRetrievalStrategy inActorRetrievalStrategy,
+            final DomainMapper<Long, List<Long>> inGroupFollowersDAO,
+            final ActorRetrievalStrategy inActorRetrievalStrategy,
             final GetAllPersonIdsWhoHaveGroupCoordinatorAccess inGroupCoordMapper,
             final ActivityDTOFromParamsStrategy inActivityDTOStrategy, final ActivityInteractionType inType,
             final GetPeopleByAccountIds inPersonByAccountDAO)
@@ -122,7 +124,7 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
 
     /**
      * Determines if user has permission to modify (Post|Comment|View on) an activity.
-     *
+     * 
      * @param inActionContext
      *            the action context
      */
@@ -153,8 +155,7 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
                 performGroupAuthorization(inActionContext.getPrincipal(), activity);
                 break;
             default:
-                throw new AuthorizationException(
-                        "This Action only accepts activities for accepted destination types.");
+                throw new AuthorizationException("This Action only accepts activities for accepted destination types.");
             }
         }
 
@@ -162,7 +163,7 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
 
     /**
      * Helper method to perform group authorization.
-     *
+     * 
      * @param inUser
      *            - UserDetails of the user making the request.
      * @param inActivity
@@ -175,8 +176,8 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
             // get the group info from cache:
             StreamEntityDTO theStreamScope = inActivity.getDestinationStream();
 
-            DomainGroupModelView cachedGroup =
-                groupByShortNameDAO.execute(Collections.singletonList(theStreamScope.getUniqueIdentifier())).get(0);
+            DomainGroupModelView cachedGroup = groupByShortNameDAO.execute(
+                    Collections.singletonList(theStreamScope.getUniqueIdentifier())).get(0);
 
             long senderId = actorRetrievalStrategy.getActorId(inUser, inActivity);
             boolean isUserCoordinator = groupCoordMapper.execute(cachedGroup.getId()).contains(senderId);
@@ -203,8 +204,7 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
                 return;
             }
 
-            if (groupFollowersDAO.execute(cachedGroup.getId()).contains(senderId)
-                    && cachedGroup.isStreamPostable())
+            if (groupFollowersDAO.execute(cachedGroup.getId()).contains(senderId) && cachedGroup.isStreamPostable())
             {
                 // user is a follower
                 return;
@@ -219,7 +219,7 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
 
     /**
      * Returns the Entity's configuration for stream posting or commenting based on the passed in entity context.
-     *
+     * 
      * @param inEntity
      *            The entity to check.
      * @param inInteractionType
@@ -244,7 +244,7 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
 
     /**
      * Helper method to perform Person authorization.
-     *
+     * 
      * @param inUser
      *            - UserDetails of the user making the request.
      * @param inActivity
@@ -257,8 +257,8 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
             // Check to see if the stream is locked down and if they have permission to post to it.
             String targetStreamOwnerAccountId = inActivity.getDestinationStream().getUniqueIdentifier();
 
-            PersonModelView targetStreamOwner =
-                personByAccountDAO.execute(Collections.singletonList(targetStreamOwnerAccountId)).get(0);
+            PersonModelView targetStreamOwner = personByAccountDAO.execute(
+                    Collections.singletonList(targetStreamOwnerAccountId)).get(0);
 
             boolean isActorTheStreamOwner = actorRetrievalStrategy.getActorAccountId(inUser, inActivity).equals(
                     targetStreamOwnerAccountId);

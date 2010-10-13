@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eurekastreams.commons.actions.context.Principal;
@@ -33,9 +34,9 @@ import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.RestrictedDomainGroup;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -45,7 +46,7 @@ import org.junit.Test;
 
 /**
  * Test for GetGroupExecution class.
- *
+ * 
  */
 public class GetGroupExecutionTest
 {
@@ -126,12 +127,12 @@ public class GetGroupExecutionTest
      */
     private GetBannerIdByParentOrganizationStrategy getBannerIdMapperMock = context
             .mock(GetBannerIdByParentOrganizationStrategy.class);
-    
+
     /**
      * {@link GetGroupFollowerIds}.
      */
-    private GetGroupFollowerIds getGroupFollowerIdsMapper = context
-            .mock(GetGroupFollowerIds.class);
+    private DomainMapper<Long, List<Long>> getGroupFollowerIdsMapper = context.mock(DomainMapper.class,
+            "getGroupFollowerIdsMapper");
 
     /**
      * Set up the SUT.
@@ -145,7 +146,7 @@ public class GetGroupExecutionTest
 
     /**
      * Test the performAction method with an existing group.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -195,7 +196,7 @@ public class GetGroupExecutionTest
 
     /**
      * Test the performAction method with a group that is not in the database.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -228,7 +229,7 @@ public class GetGroupExecutionTest
 
     /**
      * Try to view a private group where the user is a coordinator.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -288,7 +289,7 @@ public class GetGroupExecutionTest
 
     /**
      * Try to view a private group where the user is a follower of the group.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -351,7 +352,7 @@ public class GetGroupExecutionTest
 
     /**
      * Attempt to view a private group by someone who isn't allowed.
-     *
+     * 
      * @throws Exception
      *             should throw AuthorizationException
      */

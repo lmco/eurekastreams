@@ -26,7 +26,6 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
 /**
@@ -42,7 +41,7 @@ public class GetFollowersAuthorizationStrategy implements AuthorizationStrategy<
     /**
      * Mapper to get group followers.
      */
-    private GetGroupFollowerIds groupFollowerIdsMapper;
+    private DomainMapper<Long, List<Long>> groupFollowerIdsMapper;
 
     /**
      * Mapper to get group info by short name.
@@ -67,8 +66,8 @@ public class GetFollowersAuthorizationStrategy implements AuthorizationStrategy<
      *            Mapper to get all the coordinators of an org, traversing up the tree.
      */
     public GetFollowersAuthorizationStrategy(final DomainMapper<Long, List<Long>> inCoordMapper,
-            final GetGroupFollowerIds inGroupFollowerIdsMapper, final GetDomainGroupsByShortNames inGroupMapper,
-            final GetRecursiveOrgCoordinators inOrgPermissionsChecker)
+            final DomainMapper<Long, List<Long>> inGroupFollowerIdsMapper,
+            final GetDomainGroupsByShortNames inGroupMapper, final GetRecursiveOrgCoordinators inOrgPermissionsChecker)
     {
         coordMapper = inCoordMapper;
         groupFollowerIdsMapper = inGroupFollowerIdsMapper;

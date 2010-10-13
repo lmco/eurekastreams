@@ -325,12 +325,6 @@
 		<property name="cache" ref="testCache" />
 	</bean>
 
-	<bean id="getGroupFollowerIds"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds">
-		<property name="cache" ref="testCache" />
-	</bean>
-
-
 	<bean id="getStarredActivityIds"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetStarredActivityIds">
 		<property name="cache" ref="testCache" />
@@ -368,7 +362,7 @@
 	<bean id="deleteActivityCacheUpdate"
 		class="org.eurekastreams.server.persistence.mappers.stream.DeleteActivityCacheUpdate">
 		<constructor-arg ref="getFollowerIds" />
-		<constructor-arg ref="getGroupFollowerIds" />
+		<constructor-arg ref="getFollowerPersonIdsForGroupByIdDbMapper" />
 		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 		<constructor-arg ref="getPeopleWhoLikedActivityDbMapper" />

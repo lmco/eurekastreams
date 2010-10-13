@@ -1528,7 +1528,7 @@
 	<bean id="deleteActivityCacheUpdateDAO"
 		class="org.eurekastreams.server.persistence.mappers.stream.DeleteActivityCacheUpdate">
 		<constructor-arg ref="getFollowerIds" />
-		<constructor-arg ref="getGroupFollowerIds" />
+		<constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
 		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 		<constructor-arg ref="getPeopleWhoLikedActivity" />
@@ -1605,11 +1605,6 @@
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 
-	<bean id="getGroupFollowerIds"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds">
-		<property name="cache" ref="memcachedCache" />
-	</bean>
-
 	<bean id="addCachedPersonFollower"
 		class="org.eurekastreams.server.persistence.mappers.cache.AddCachedPersonFollower">
 		<constructor-arg ref="getFollowedPersonIds" />
@@ -1620,7 +1615,7 @@
 	<bean id="addCachedGroupFollower"
 		class="org.eurekastreams.server.persistence.mappers.cache.AddCachedGroupFollower">
 		<constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
-		<constructor-arg ref="getGroupFollowerIds" />
+		<constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 

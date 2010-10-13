@@ -27,7 +27,6 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -59,7 +58,8 @@ public class GetFollowersAuthorizationStrategyTest
     /**
      * Mocked GetGroupFollowerIds.
      */
-    private GetGroupFollowerIds groupFollowerIdsMapper = context.mock(GetGroupFollowerIds.class);
+    private DomainMapper<Long, List<Long>> groupFollowerIdsMapper = context.mock(DomainMapper.class,
+            "groupFollowerIdsMapper");
 
     /**
      * Mocked GetDomainGroupsByShortNames.

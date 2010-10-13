@@ -24,7 +24,7 @@ import java.util.List;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.eurekastreams.server.persistence.mappers.cache.testhelpers.SimpleMemoryCache;
 import org.eurekastreams.server.persistence.mappers.db.GetFollowedGroupIdsForPersonByIdDbMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
+import org.eurekastreams.server.persistence.mappers.db.GetFollowerPersonIdsForGroupByIdDbMapper;
 import org.eurekastreams.server.persistence.strategies.DomainGroupQueryStrategy;
 import org.junit.After;
 import org.junit.Before;
@@ -48,7 +48,7 @@ public class AddCachedGroupFollowerTest extends MapperTest
     /**
      * Local instance of GetGroupFollowerIds for test.
      */
-    private GetGroupFollowerIds followerIdsMapper;
+    private GetFollowerPersonIdsForGroupByIdDbMapper followerIdsMapper;
 
     /**
      * System under test.
@@ -101,8 +101,7 @@ public class AddCachedGroupFollowerTest extends MapperTest
         followedGroupIdsMapper = new GetFollowedGroupIdsForPersonByIdDbMapper();
         followedGroupIdsMapper.setEntityManager(getEntityManager());
 
-        followerIdsMapper = new GetGroupFollowerIds();
-        followerIdsMapper.setCache(cache);
+        followerIdsMapper = new GetFollowerPersonIdsForGroupByIdDbMapper();
         followerIdsMapper.setEntityManager(getEntityManager());
 
         mapper = new AddCachedGroupFollower(followedGroupIdsMapper, followerIdsMapper);

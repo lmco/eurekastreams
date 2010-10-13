@@ -42,7 +42,7 @@
         <entry key="GROUP_STREAM_POST">
             <bean class="org.eurekastreams.server.action.execution.notification.translator.GroupStreamPostTranslator">
                 <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" />
-                <constructor-arg ref="getGroupFollowerIds" />
+                <constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
                 <constructor-arg ref="findByIdMapper" />
             </bean>
         </entry>
