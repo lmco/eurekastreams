@@ -1457,7 +1457,7 @@
 	<bean id="getAllPersonIdsWhoHaveGroupCoordinatorAccess"
 		class="org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess">
 		<constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" />
-		<constructor-arg ref="bulkDomainGroupsMapper" />
+		<constructor-arg ref="getGroupsByIdsMapper" />
 		<constructor-arg ref="bulkOrganizationsByShortNameMapper" />
 		<constructor-arg ref="getRecursiveOrgCoordinators" />
 		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
@@ -1493,12 +1493,6 @@
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 
-	<bean id="bulkDomainGroupsMapper"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds">
-		<constructor-arg ref="domainGroupQueryStrategy" />
-		<property name="cache" ref="memcachedCache" />
-	</bean>
-
 	<bean id="bulkPeopleByAccountIdMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds">
 		<property name="bulkPeopleMapper" ref="bulkPeopleMapper" />
@@ -1516,7 +1510,7 @@
 
 	<bean id="bulkDomainGroupsByShortNameMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames">
-		<property name="bulkDomainGroupsMapper" ref="bulkDomainGroupsMapper" />
+		<property name="bulkDomainGroupsMapper" ref="getGroupsByIdsMapper" />
 	</bean>
 
 	<bean id="getOrderedCommentIdsByActivityId"

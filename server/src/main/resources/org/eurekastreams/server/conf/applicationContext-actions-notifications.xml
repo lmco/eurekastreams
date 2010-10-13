@@ -121,7 +121,7 @@
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.execution.notification.NotificationPopulator">
                         <constructor-arg ref="bulkPeopleMapper" />
-                        <constructor-arg ref="bulkDomainGroupsMapper" />
+                        <constructor-arg ref="getGroupsByIdsMapper" />
                         <constructor-arg ref="getOrganizationsByIdsMapper" />
                         <constructor-arg ref="bulkActivitiesMapper" />
                     </bean>

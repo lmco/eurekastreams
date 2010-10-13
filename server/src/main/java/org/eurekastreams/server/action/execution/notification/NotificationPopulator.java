@@ -23,7 +23,6 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
@@ -38,7 +37,7 @@ public class NotificationPopulator
     private GetPeopleByIds peopleMapper;
 
     /** For getting group info. */
-    private GetDomainGroupsByIds groupMapper;
+    private DomainMapper<List<Long>, List<DomainGroupModelView>> groupMapper;
 
     /** For getting org info. */
     private DomainMapper<List<Long>, List<OrganizationModelView>> orgMapper;
@@ -48,7 +47,7 @@ public class NotificationPopulator
 
     /**
      * Constructor.
-     *
+     * 
      * @param inPeopleMapper
      *            For getting person info.
      * @param inGroupMapper
@@ -58,7 +57,8 @@ public class NotificationPopulator
      * @param inActivitiesMapper
      *            For getting activity info.
      */
-    public NotificationPopulator(final GetPeopleByIds inPeopleMapper, final GetDomainGroupsByIds inGroupMapper,
+    public NotificationPopulator(final GetPeopleByIds inPeopleMapper,
+            final DomainMapper<List<Long>, List<DomainGroupModelView>> inGroupMapper,
             final DomainMapper<List<Long>, List<OrganizationModelView>> inOrgMapper,
             final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper)
     {
@@ -70,7 +70,7 @@ public class NotificationPopulator
 
     /**
      * Populates a notification with any details not initially provided.
-     *
+     * 
      * @param notif
      *            The notification.
      */
@@ -103,7 +103,8 @@ public class NotificationPopulator
             }
             else if (EntityType.GROUP.equals(notif.getDestinationType()))
             {
-                DomainGroupModelView dest = groupMapper.execute(notif.getDestinationId());
+                DomainGroupModelView dest = groupMapper.execute(Collections.singletonList(notif.getDestinationId()))
+                        .get(0);
                 notif.setDestinationUniqueId(dest.getShortName());
                 notif.setDestinationName(dest.getName());
             }
@@ -119,7 +120,7 @@ public class NotificationPopulator
 
     /**
      * Convenience routine to test if a string is not present.
-     *
+     * 
      * @param theString
      *            String to test.
      * @return True if null/empty.

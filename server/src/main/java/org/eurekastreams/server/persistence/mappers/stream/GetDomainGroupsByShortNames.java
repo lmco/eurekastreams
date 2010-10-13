@@ -18,6 +18,7 @@ package org.eurekastreams.server.persistence.mappers.stream;
 import java.util.List;
 
 import org.eurekastreams.server.domain.DomainGroup;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
@@ -29,25 +30,26 @@ public class GetDomainGroupsByShortNames extends GetItemsByPointerIds<DomainGrou
     /**
      * Bulk mapper.
      */
-    private GetDomainGroupsByIds bulkDomainGroupsMapper;
+    private DomainMapper<List<Long>, List<DomainGroupModelView>> bulkDomainGroupsMapper;
 
     /**
      * Sets bulk mapper.
-     *
+     * 
      * @param inBulkDomainGroupsMapper
      *            the bulk mapper.
      */
-    public void setBulkDomainGroupsMapper(final GetDomainGroupsByIds inBulkDomainGroupsMapper)
+    public void setBulkDomainGroupsMapper(
+            final DomainMapper<List<Long>, List<DomainGroupModelView>> inBulkDomainGroupsMapper)
     {
         bulkDomainGroupsMapper = inBulkDomainGroupsMapper;
     }
 
     /**
      * Execute bulk mapper.
-     *
+     * 
      * @param ids
      *            the list of ids.
-     *
+     * 
      * @return list of groups.
      */
     @Override
@@ -58,7 +60,7 @@ public class GetDomainGroupsByShortNames extends GetItemsByPointerIds<DomainGrou
 
     /**
      * Get prefix.
-     *
+     * 
      * @return prefix.
      */
     @Override
@@ -69,7 +71,7 @@ public class GetDomainGroupsByShortNames extends GetItemsByPointerIds<DomainGrou
 
     /**
      * Get class.
-     *
+     * 
      * @return class.
      */
     @SuppressWarnings("unchecked")
@@ -81,7 +83,7 @@ public class GetDomainGroupsByShortNames extends GetItemsByPointerIds<DomainGrou
 
     /**
      * Get property name.
-     *
+     * 
      * @return property name.
      */
     @Override

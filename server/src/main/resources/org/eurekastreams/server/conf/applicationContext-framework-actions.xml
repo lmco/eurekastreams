@@ -515,7 +515,7 @@
                     <bean
                         class="org.eurekastreams.server.action.execution.stream.GetCurrentUserFollowedGroupsExecution">
                         <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
-                        <constructor-arg ref="bulkDomainGroupsMapper" />
+                        <constructor-arg ref="getGroupsByIdsMapper" />
                         <constructor-arg ref="bulkPeopleMapper" />
                         <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
                     </bean>
@@ -1188,7 +1188,7 @@
             <bean class="org.eurekastreams.server.action.execution.profile.GetFollowingExecution">
                 <constructor-arg ref="bulkPeopleByAccountIdMapper" />
                 <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
-                <constructor-arg ref="bulkDomainGroupsMapper" />
+                <constructor-arg ref="getGroupsByIdsMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -1829,7 +1829,7 @@
                                     class="org.eurekastreams.server.service.actions.strategies.activity.datasources.FollowedGroupsPersistenceRequestTransformer">
                                     <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
                                     <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
-                                    <constructor-arg ref="bulkDomainGroupsMapper" />   
+                                    <constructor-arg ref="getGroupsByIdsMapper" />   
                                 </bean>
                             </entry>                                                        
                             <entry key="likedBy">
@@ -2653,7 +2653,7 @@
             <bean
                 class="org.eurekastreams.server.action.execution.stream.GetCurrentUserFollowedGroupsExecution">
                 <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
-                <constructor-arg ref="bulkDomainGroupsMapper" />
+                <constructor-arg ref="getGroupsByIdsMapper" />
                 <constructor-arg ref="bulkPeopleMapper" />
                 <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
             </bean>

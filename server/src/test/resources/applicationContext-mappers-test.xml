@@ -234,7 +234,7 @@
 	<bean id="getAllPersonIdsWhoHaveGroupCoordinatorAccess"
 		class="org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess">
 		<constructor-arg ref="getGroupCoordinatorIdsByGroupIdDbMapper"/>
-		<constructor-arg ref="bulkDomainGroupsMapper"/>
+		<constructor-arg ref="getGroupsByIdsDbMapper"/>
 		<constructor-arg ref="bulkOrganizationsByShortNameMapper"/>
 		<constructor-arg ref="getRecursiveOrgCoordinators"/>
 		<constructor-arg ref="bulkPeopleByAccountIdMapper"/>
@@ -299,15 +299,9 @@
 		<property name="bulkOrganizationsMapper" ref="getOrganizationsByIdsDbMapper" />
 	</bean>
 
-	<bean id="bulkDomainGroupsMapper"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds">
-		<constructor-arg ref="domainGroupQueryStrategy"/>
-		<property name="cache" ref="testCache" />
-	</bean>
-
 	<bean id="bulkDomainGroupsByShortNameMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames">
-		<property name="bulkDomainGroupsMapper" ref="bulkDomainGroupsMapper" />
+		<property name="bulkDomainGroupsMapper" ref="getGroupsByIdsDbMapper" />
 	</bean>
 
 	<bean id="getStreamScopeProxyById"

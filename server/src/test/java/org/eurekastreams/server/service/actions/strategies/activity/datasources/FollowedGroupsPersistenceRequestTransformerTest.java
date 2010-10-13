@@ -22,7 +22,6 @@ import junit.framework.Assert;
 import net.sf.json.JSONObject;
 
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.jmock.Expectations;
@@ -60,7 +59,8 @@ public class FollowedGroupsPersistenceRequestTransformerTest
     /**
      * Group mapper.
      */
-    private GetDomainGroupsByIds groupMapper = context.mock(GetDomainGroupsByIds.class);
+    private DomainMapper<List<Long>, List<DomainGroupModelView>> groupMapper = context.mock(DomainMapper.class,
+            "groupMapper");
 
     /**
      * System under test.

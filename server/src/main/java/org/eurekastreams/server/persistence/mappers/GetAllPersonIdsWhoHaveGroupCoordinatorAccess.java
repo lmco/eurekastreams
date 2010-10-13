@@ -22,7 +22,6 @@ import java.util.Set;
 
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
@@ -52,9 +51,9 @@ public class GetAllPersonIdsWhoHaveGroupCoordinatorAccess extends CachedDomainMa
      *            the cache
      */
     public GetAllPersonIdsWhoHaveGroupCoordinatorAccess(final DomainMapper<Long, List<Long>> inGroupCoordMapper,
-            final GetDomainGroupsByIds inGroupMapper, final GetOrganizationsByShortNames inOrgMapper,
-            final GetRecursiveOrgCoordinators inOrgCoordinators, final GetPeopleByAccountIds inPeopleMapper,
-            final Cache inCache)
+            final DomainMapper<List<Long>, List<DomainGroupModelView>> inGroupMapper,
+            final GetOrganizationsByShortNames inOrgMapper, final GetRecursiveOrgCoordinators inOrgCoordinators,
+            final GetPeopleByAccountIds inPeopleMapper, final Cache inCache)
     {
         groupCoordMapper = inGroupCoordMapper;
         groupMapper = inGroupMapper;
@@ -77,7 +76,7 @@ public class GetAllPersonIdsWhoHaveGroupCoordinatorAccess extends CachedDomainMa
     /**
      * group mapper.
      */
-    private GetDomainGroupsByIds groupMapper;
+    private DomainMapper<List<Long>, List<DomainGroupModelView>> groupMapper;
 
     /**
      * org mapper.
