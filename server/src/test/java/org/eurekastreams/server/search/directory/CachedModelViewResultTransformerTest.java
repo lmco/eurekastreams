@@ -27,8 +27,8 @@ import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
@@ -67,7 +67,8 @@ public class CachedModelViewResultTransformerTest
     /**
      * The mapper to get the organizations by ids.
      */
-    private GetOrganizationsByIds getOrgsByIdsMapperMock = context.mock(GetOrganizationsByIds.class);
+    private DomainMapper<List<Long>, List<OrganizationModelView>> getOrgsByIdsMapperMock = context
+            .mock(DomainMapper.class);
 
     /**
      * The mapper to get the domain groups by ids.
@@ -86,13 +87,12 @@ public class CachedModelViewResultTransformerTest
     @SuppressWarnings("unchecked")
     public void testTransformTuple()
     {
-        final Class<?> entityClass = DomainGroup.class;
+        final Class< ? > entityClass = DomainGroup.class;
         final Long entityId = 183874L;
 
         CachedModelViewResultTransformer sut = new CachedModelViewResultTransformer();
-        Map<String, Object> map =
-                (Map<String, Object>) sut.transformTuple(new Object[] { entityClass, entityId }, new String[] {
-                        HIBERNATE_CLASS_PROPERTY_NAME, HIBERNATE_ID_PROPERTY_NAME });
+        Map<String, Object> map = (Map<String, Object>) sut.transformTuple(new Object[] { entityClass, entityId },
+                new String[] { HIBERNATE_CLASS_PROPERTY_NAME, HIBERNATE_ID_PROPERTY_NAME });
 
         assertEquals(entityClass, map.get(HIBERNATE_CLASS_PROPERTY_NAME));
         assertEquals(entityId, map.get(HIBERNATE_ID_PROPERTY_NAME));
@@ -205,7 +205,7 @@ public class CachedModelViewResultTransformerTest
      *            the entity id
      * @return a Map of String,Object to use to test with transformList
      */
-    private Map<String, Object> buildMap(final Class<?> inEntityClass, final Long inEntityId)
+    private Map<String, Object> buildMap(final Class< ? > inEntityClass, final Long inEntityId)
     {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(HIBERNATE_CLASS_PROPERTY_NAME, inEntityClass);

@@ -26,9 +26,9 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.stream.GroupStreamDTO;
 import org.eurekastreams.server.domain.stream.StreamFilter;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds;
-import org.eurekastreams.server.persistence.mappers.stream.GetFollowedGroupIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -47,7 +47,7 @@ public class GetCurrentUserFollowedGroupsExecution implements ExecutionStrategy<
     /**
      * Mapper to get the ids of all groups followed by this user.
      */
-    private GetFollowedGroupIds idsMapper;
+    private DomainMapper<Long, List<Long>> idsMapper;
 
     /**
      * Mapper to get populated Domain Group objects given the group's id.
@@ -66,7 +66,7 @@ public class GetCurrentUserFollowedGroupsExecution implements ExecutionStrategy<
 
     /**
      * Constructor.
-     *
+     * 
      * @param inIdsMapper
      *            ids mapper to set.
      * @param inGroupsMapper
@@ -76,7 +76,7 @@ public class GetCurrentUserFollowedGroupsExecution implements ExecutionStrategy<
      * @param inGroupPermissionChecker
      *            Group permission checker.
      */
-    public GetCurrentUserFollowedGroupsExecution(final GetFollowedGroupIds inIdsMapper,
+    public GetCurrentUserFollowedGroupsExecution(final DomainMapper<Long, List<Long>> inIdsMapper,
             final GetDomainGroupsByIds inGroupsMapper, final GetPeopleByIds inPeopleMapper,
             final GetAllPersonIdsWhoHaveGroupCoordinatorAccess inGroupPermissionChecker)
     {

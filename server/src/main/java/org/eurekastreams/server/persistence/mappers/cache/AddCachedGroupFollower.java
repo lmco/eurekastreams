@@ -19,14 +19,14 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetFollowedGroupIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
 
 /**
- * This class is responsible for updating the cache of the list of followers and following
- * when a follow relationship is added.
- *
+ * This class is responsible for updating the cache of the list of followers and following when a follow relationship is
+ * added.
+ * 
  */
 public class AddCachedGroupFollower extends CachedDomainMapper
 {
@@ -34,56 +34,62 @@ public class AddCachedGroupFollower extends CachedDomainMapper
      * Local instance of the logger.
      */
     private final Log logger = LogFactory.getLog(AddCachedGroupFollower.class);
-    
+
     /**
-     * Local instance of the GetFollowedPersonIds mapper.  This is the mapper that retrieves
-     * the users that are following the the target user.
+     * Local instance of the GetFollowedPersonIds mapper. This is the mapper that retrieves the users that are following
+     * the the target user.
      */
-    private final GetFollowedGroupIds followedMapper;
-    
+    private final DomainMapper<Long, List<Long>> followedMapper;
+
     /**
-     * Local instance of the GetFollowerIds mapper.  This is the mapper that retrieves
-     * the users that the current user is a follower of.
+     * Local instance of the GetFollowerIds mapper. This is the mapper that retrieves the users that the current user is
+     * a follower of.
      */
     private final GetGroupFollowerIds followerMapper;
-    
+
     /**
      * Constructor for the AddCachedGroupFollower mapper.
-     * @param inFollowedMapper - instance of the GetFollowerGroupIds mapper.
-     * @param inFollowerMapper - instance of the GetGroupFollowerIds mapper.
+     * 
+     * @param inFollowedMapper
+     *            - instance of the GetFollowerGroupIds mapper.
+     * @param inFollowerMapper
+     *            - instance of the GetGroupFollowerIds mapper.
      */
-    public AddCachedGroupFollower(final GetFollowedGroupIds inFollowedMapper,
+    public AddCachedGroupFollower(final DomainMapper<Long, List<Long>> inFollowedMapper,
             final GetGroupFollowerIds inFollowerMapper)
     {
         followedMapper = inFollowedMapper;
         followerMapper = inFollowerMapper;
     }
-    
+
     /**
      * This method performs the appropriate cache updates.
-     * @param followerId - id of the user that is initiating a new relationship.
-     * @param followingId - target group of the relationship, the new group being followed.
+     * 
+     * @param followerId
+     *            - id of the user that is initiating a new relationship.
+     * @param followingId
+     *            - target group of the relationship, the new group being followed.
      * @return true on success.
      */
     public Boolean execute(final Long followerId, final Long followingId)
     {
         try
         {
-            //Get the list of users that are following the new target group.
+            // Get the list of users that are following the new target group.
             List<Long> followers = followerMapper.execute(followingId);
             if (!followers.contains(followerId))
             {
-                //Add the current user that is initiating a relationship with the target 
+                // Add the current user that is initiating a relationship with the target
                 // to the list of followers for that target group.
                 getCache().addToTopOfList(CacheKeys.FOLLOWERS_BY_GROUP + followingId, followerId);
             }
-            
-            //Get the list of users that current user is following.
+
+            // Get the list of users that current user is following.
             List<Long> following = followedMapper.execute(followerId);
             if (!following.contains(followingId))
             {
-                //Add the target group the current user is now following to the list of
-                //users that the current is already following.
+                // Add the target group the current user is now following to the list of
+                // users that the current is already following.
                 getCache().addToTopOfList(CacheKeys.GROUPS_FOLLOWED_BY_PERSON + followerId, followingId);
             }
         }

@@ -17,6 +17,7 @@ package org.eurekastreams.server.action.execution.notification;
 
 import static junit.framework.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +29,6 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
@@ -38,8 +38,6 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
-
-
 
 /**
  * Tests NotificationPopulator.
@@ -58,8 +56,6 @@ public class NotificationPopulatorTest
     /** Test data. */
     private static final long DESTINATION_ID = 2332L;
 
-
-
     /** Used for mocking objects. */
     private JUnit4Mockery context = new JUnit4Mockery()
     {
@@ -75,18 +71,18 @@ public class NotificationPopulatorTest
     private GetDomainGroupsByIds groupMapper = context.mock(GetDomainGroupsByIds.class);
 
     /** For getting org details. */
-    private GetOrganizationsByIds orgMapper = context.mock(GetOrganizationsByIds.class);
+    private DomainMapper<List<Long>, List<OrganizationModelView>> orgMapper = context.mock(DomainMapper.class,
+            "orgMapper");
 
     /** Fixture: For getting activity info. */
-    private DomainMapper<List<Long>, List<ActivityDTO>>  activityMapper = context.mock(DomainMapper.class);
+    private DomainMapper<List<Long>, List<ActivityDTO>> activityMapper = context.mock(DomainMapper.class,
+            "activityMapper");
 
     /** Fixture: person. */
     private PersonModelView person = new PersonModelView();
 
-
     /** Fixture: notification. */
     private NotificationDTO notification;
-
 
     /** SUT. */
     private NotificationPopulator sut;
@@ -216,15 +212,18 @@ public class NotificationPopulatorTest
     {
         notification.setDestination(DESTINATION_ID, EntityType.ORGANIZATION);
 
-        final OrganizationModelView org = new OrganizationModelView();
+        OrganizationModelView org = new OrganizationModelView();
         org.setShortName("myorg");
         org.setName("My Org");
+
+        final List<OrganizationModelView> orgs = new ArrayList<OrganizationModelView>();
+        orgs.add(org);
 
         context.checking(new Expectations()
         {
             {
-                allowing(orgMapper).execute(DESTINATION_ID);
-                will(returnValue(org));
+                allowing(orgMapper).execute(Collections.singletonList(DESTINATION_ID));
+                will(returnValue(orgs));
             }
         });
 

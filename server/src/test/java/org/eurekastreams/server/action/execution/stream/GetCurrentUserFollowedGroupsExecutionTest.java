@@ -23,9 +23,9 @@ import java.util.List;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds;
-import org.eurekastreams.server.persistence.mappers.stream.GetFollowedGroupIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -70,7 +70,7 @@ public class GetCurrentUserFollowedGroupsExecutionTest
     /**
      * ID mapper mock.
      */
-    private GetFollowedGroupIds idMapper = context.mock(GetFollowedGroupIds.class);
+    private DomainMapper<Long, List<Long>> idMapper = context.mock(DomainMapper.class);
 
     /**
      * Group mapper mock.
@@ -151,7 +151,7 @@ public class GetCurrentUserFollowedGroupsExecutionTest
 
     /**
      * Test execute method.
-     *
+     * 
      * @throws Exception
      *             on failure.
      */

@@ -17,6 +17,7 @@ package org.eurekastreams.server.action.execution.profile;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
@@ -34,8 +35,9 @@ import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.persistence.mappers.requests.MoveOrganizationPeopleRequest;
 import org.eurekastreams.server.persistence.mappers.requests.MoveOrganizationPeopleResponse;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Delete an organization. This assumes that the organization has no orgs or groups underneath it. People reporting to
@@ -59,7 +61,7 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
      * Mapper for getting organization DTOs.
      */
 
-    private GetOrganizationsByIds orgDTOByIdMapper;
+    private DomainMapper<List<Long>, List<OrganizationModelView>> orgDTOByIdMapper;
 
     /**
      * {@link FindByIdMapper}.
@@ -103,8 +105,8 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
      */
     public DeleteOrganizationExecution(
             final DomainMapper<MoveOrganizationPeopleRequest, MoveOrganizationPeopleResponse> inMovePeopleMapper,
-            final GetOrganizationsByIds inOrgDTOByIdMapper, final FindByIdMapper<Organization> inOrgByIdMapper,
-            final DomainMapper<Long, Boolean> inDeleteOrgMapper,
+            final DomainMapper<List<Long>, List<OrganizationModelView>> inOrgDTOByIdMapper,
+            final FindByIdMapper<Organization> inOrgByIdMapper, final DomainMapper<Long, Boolean> inDeleteOrgMapper,
             final DomainMapper<Long, Set<Long>> inRelatedOrgPersonIdsMapper,
             final OrganizationMapper inOrganizationMapper,
             final OrganizationHierarchyTraverserBuilder inOrgTraverserBuilder)
@@ -135,7 +137,7 @@ public class DeleteOrganizationExecution implements TaskHandlerExecutionStrategy
         Long orgId = (Long) inActionContext.getActionContext().getParams();
 
         // get org DTO and parent org entity (entity needed later)..
-        OrganizationModelView orgDto = orgDTOByIdMapper.execute(orgId);
+        OrganizationModelView orgDto = orgDTOByIdMapper.execute(Collections.singletonList(orgId)).get(0);
         Organization parentOrg = orgByIdMapper.execute(new FindByIdRequest("Organization", orgDto
                 .getParentOrganizationId()));
 

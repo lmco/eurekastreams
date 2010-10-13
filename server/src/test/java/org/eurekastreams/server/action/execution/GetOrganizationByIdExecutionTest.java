@@ -20,9 +20,10 @@ import static org.junit.Assert.assertSame;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.eurekastreams.commons.actions.context.ActionContext;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -33,7 +34,7 @@ import org.junit.Test;
 
 /**
  * Test for GetOrganizationByIdExecution class.
- * 
+ *
  */
 public class GetOrganizationByIdExecutionTest
 {
@@ -60,7 +61,8 @@ public class GetOrganizationByIdExecutionTest
     /**
      * {@link GetOrganizationsByIds} mock.
      */
-    private GetOrganizationsByIds getOrgsByIdsMapperMock = context.mock(GetOrganizationsByIds.class);
+    private DomainMapper<List<Long>, List<OrganizationModelView>> getOrgsByIdsMapperMock = context
+            .mock(DomainMapper.class);
 
     /**
      * {@link ActionContext} mock.

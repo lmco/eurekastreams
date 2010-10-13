@@ -22,7 +22,6 @@ import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.requests.GetEntitiesByPrefixRequest;
-import org.eurekastreams.server.persistence.mappers.stream.GetFollowedGroupIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetFollowedPersonIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DisplayEntityModelView;
@@ -37,8 +36,7 @@ import org.hibernate.criterion.Restrictions;
  * Mapper for returning followed entities by prefix.
  * 
  */
-public class GetFollowedEntitiesByPrefix extends
-        ReadMapper<GetEntitiesByPrefixRequest, List<DisplayEntityModelView>>
+public class GetFollowedEntitiesByPrefix extends ReadMapper<GetEntitiesByPrefixRequest, List<DisplayEntityModelView>>
 {
     /**
      * default max results from query.
@@ -58,7 +56,7 @@ public class GetFollowedEntitiesByPrefix extends
     /**
      * Mapper to get the group ids that a person is following.
      */
-    private GetFollowedGroupIds getFollowedGroupIdsMapper;
+    private DomainMapper<Long, List<Long>> getFollowedGroupIdsMapper;
 
     /**
      * Return list of DisplayEntityModelViews representing people/groups a user is following that match the prefix
@@ -137,7 +135,7 @@ public class GetFollowedEntitiesByPrefix extends
         criteria.add(Restrictions.or(lastName, Restrictions.or(firstName, preferredName)));
 
         // execute query
-        List<Object[]> queryResults = (List<Object[]>) criteria.list();
+        List<Object[]> queryResults = criteria.list();
 
         for (Object[] queryResult : queryResults)
         {
@@ -189,9 +187,9 @@ public class GetFollowedEntitiesByPrefix extends
         criteria.add(Restrictions.in("this.id", followedGroups));
         criteria.add(Restrictions.ilike("this.name", inRequest.getPrefix(), MatchMode.START));
         criteria.add(Restrictions.eq("this.streamPostable", Boolean.TRUE));
-        
+
         // execute query
-        List<Object[]> queryResults = (List<Object[]>) criteria.list();
+        List<Object[]> queryResults = criteria.list();
 
         for (Object[] queryResult : queryResults)
         {
@@ -219,13 +217,14 @@ public class GetFollowedEntitiesByPrefix extends
      * @param inGetFollowedGroupIdsMapper
      *            the getFollowedGroupIdsMapper to set
      */
-    public void setGetFollowedGroupIdsMapper(final GetFollowedGroupIds inGetFollowedGroupIdsMapper)
+    public void setGetFollowedGroupIdsMapper(final DomainMapper<Long, List<Long>> inGetFollowedGroupIdsMapper)
     {
         this.getFollowedGroupIdsMapper = inGetFollowedGroupIdsMapper;
     }
 
     /**
-     * @param inGetPeopleByAccountIdsMapper the getPeopleByAccountIdsMapper to set
+     * @param inGetPeopleByAccountIdsMapper
+     *            the getPeopleByAccountIdsMapper to set
      */
     public void setGetPeopleByAccountIdsMapper(final GetPeopleByAccountIds inGetPeopleByAccountIdsMapper)
     {

@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 
 /**
@@ -31,27 +31,28 @@ public class GetOrganizationByIdExecution implements ExecutionStrategy<ActionCon
     /**
      * Organization by id DAO.
      */
-    private GetOrganizationsByIds organizationByIdDAO;
+    private DomainMapper<List<Long>, List<OrganizationModelView>> organizationByIdDAO;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inOrganizationByIdDAO
      *            Organization by id DAO.
      */
-    public GetOrganizationByIdExecution(final GetOrganizationsByIds inOrganizationByIdDAO)
+    public GetOrganizationByIdExecution(
+            final DomainMapper<List<Long>, List<OrganizationModelView>> inOrganizationByIdDAO)
     {
         organizationByIdDAO = inOrganizationByIdDAO;
     }
 
     /**
      * Finds the specified organization.
-     * 
+     *
      * @param inActionContext
      *            The {@link ActionContext}.
-     * 
+     *
      * @return OrganizationModelView corresponding to the id parameter.
-     * 
+     *
      */
     @Override
     public OrganizationModelView execute(final ActionContext inActionContext)

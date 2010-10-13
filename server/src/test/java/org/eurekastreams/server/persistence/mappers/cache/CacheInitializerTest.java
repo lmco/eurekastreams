@@ -61,8 +61,8 @@ public class CacheInitializerTest
     public void testWireUpdaters()
     {
         final DomainGroupCacheLoader domainGroupCacheLoader = context.mock(DomainGroupCacheLoader.class);
-        final OrganizationHierarchyCacheLoader orgHierarchyCacheLoader = context
-                .mock(OrganizationHierarchyCacheLoader.class);
+        final OrganizationEntityCacheUpdater orgHierarchyCacheLoader = context
+                .mock(OrganizationEntityCacheUpdater.class);
         final PersonCacheLoader personCacheLoader = context.mock(PersonCacheLoader.class);
 
         new CacheInitializer().wireCacheUpdaters(domainGroupCacheLoader, orgHierarchyCacheLoader, personCacheLoader);

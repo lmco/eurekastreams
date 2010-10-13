@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.requests.GetEntitiesByPrefixRequest;
-import org.eurekastreams.server.persistence.mappers.stream.GetFollowedGroupIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetFollowedPersonIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DisplayEntityModelView;
@@ -63,7 +62,7 @@ public class GetFollowedEntitiesByPrefixTest extends MapperTest
      * Ford's id.
      */
     final long fordId = 42L;
-    
+
     /**
      * Ford2's id.
      */
@@ -87,7 +86,7 @@ public class GetFollowedEntitiesByPrefixTest extends MapperTest
     /**
      * Mapper to get the group ids that a person is following.
      */
-    private GetFollowedGroupIds getFollowedGroupIdsMapper = context.mock(GetFollowedGroupIds.class);
+    private DomainMapper<Long, List<Long>> getFollowedGroupIdsMapper = context.mock(DomainMapper.class);
 
     /**
      * Mapper to get the person id of the user by accountid.
@@ -192,7 +191,6 @@ public class GetFollowedEntitiesByPrefixTest extends MapperTest
 
         context.assertIsSatisfied();
     }
-    
 
     /**
      * Test execute not expecting person matching prefix as result.
@@ -215,7 +213,7 @@ public class GetFollowedEntitiesByPrefixTest extends MapperTest
             {
                 oneOf(getPeopleByAccountIdsMapper).fetchId(smithersAccountId);
                 will(returnValue(smithersId));
-                
+
                 oneOf(getFollowedPersonIdsMapper).execute(smithersId);
                 will(returnValue(peopleIdsSmithersIsFollowing));
 
@@ -252,7 +250,7 @@ public class GetFollowedEntitiesByPrefixTest extends MapperTest
             {
                 oneOf(getPeopleByAccountIdsMapper).fetchId(smithersAccountId);
                 will(returnValue(smithersId));
-                
+
                 oneOf(getFollowedPersonIdsMapper).execute(smithersId);
                 will(returnValue(peopleIdsSmithersIsFollowing));
 
@@ -292,7 +290,7 @@ public class GetFollowedEntitiesByPrefixTest extends MapperTest
             {
                 oneOf(getPeopleByAccountIdsMapper).fetchId(smithersAccountId);
                 will(returnValue(smithersId));
-                
+
                 oneOf(getFollowedPersonIdsMapper).execute(smithersId);
                 will(returnValue(peopleIdsSmithersIsFollowing));
 
@@ -331,7 +329,7 @@ public class GetFollowedEntitiesByPrefixTest extends MapperTest
             {
                 oneOf(getPeopleByAccountIdsMapper).fetchId(smithersAccountId);
                 will(returnValue(smithersId));
-                
+
                 oneOf(getFollowedPersonIdsMapper).execute(smithersId);
                 will(returnValue(peopleIdsSmithersIsFollowing));
 

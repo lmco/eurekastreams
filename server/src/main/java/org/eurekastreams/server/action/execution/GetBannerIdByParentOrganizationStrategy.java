@@ -23,8 +23,9 @@ import org.eurekastreams.server.domain.OrganizationChild;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Strategy for retrieving the banner id of the first banner-configured org in the parent org hierarchy.
@@ -37,7 +38,7 @@ public class GetBannerIdByParentOrganizationStrategy<T extends DomainEntity>
     /**
      * Local instance of the {@link GetOrganizationsByIds} mapper.
      */
-    private final GetOrganizationsByIds orgMapper;
+    private final DomainMapper<List<Long>, List<OrganizationModelView>> orgMapper;
 
     /**
      * mapper to get all parent org ids for an org id.
@@ -66,7 +67,8 @@ public class GetBannerIdByParentOrganizationStrategy<T extends DomainEntity>
      * @param inEntityName
      *            - name of the entity for the find by id mapper.
      */
-    public GetBannerIdByParentOrganizationStrategy(final GetOrganizationsByIds inOrgMapper,
+    public GetBannerIdByParentOrganizationStrategy(
+            final DomainMapper<List<Long>, List<OrganizationModelView>> inOrgMapper,
             final DomainMapper<Long, List<Long>> inRecursiveParentOrgsMapper, final FindByIdMapper<T> inEntityMapper,
             final String inEntityName)
     {
@@ -86,7 +88,7 @@ public class GetBannerIdByParentOrganizationStrategy<T extends DomainEntity>
      */
     public void getBannerId(final Long inParentOrgId, final Bannerable inEntity)
     {
-        OrganizationModelView currentParentOrg = orgMapper.execute(inParentOrgId);
+        OrganizationModelView currentParentOrg = orgMapper.execute(Collections.singletonList(inParentOrgId)).get(0);
         inEntity.setBannerId(currentParentOrg.getBannerId());
         inEntity.setBannerEntityId(currentParentOrg.getEntityId());
 

@@ -22,7 +22,6 @@ import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -30,6 +29,8 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Test suite for the {@link GetBannerIdByParentOrganizationStrategy} class.
@@ -55,12 +56,14 @@ public class GetBannerIdByParentOrganizationStrategyTest
     /**
      * Mocked instance of the {@link GetOrganizationsByIds} mapper.
      */
-    private GetOrganizationsByIds orgMapperMock = context.mock(GetOrganizationsByIds.class);
+    private DomainMapper<List<Long>, List<OrganizationModelView>> orgMapperMock = context.mock(DomainMapper.class,
+            "orgMapperMock");
 
     /**
      * mapper to get all parent org ids for an org id.
      */
-    private DomainMapper<Long, List<Long>> recursiveParentOrgIdsMock = context.mock(DomainMapper.class);
+    private DomainMapper<Long, List<Long>> recursiveParentOrgIdsMock = context.mock(DomainMapper.class,
+            "recursiveParentOrgIdsMock");
 
     /**
      * Mocked instance of the FindByIdMapper.
@@ -83,23 +86,24 @@ public class GetBannerIdByParentOrganizationStrategyTest
     @Before
     public void setup()
     {
-        sut = new GetBannerIdByParentOrganizationStrategy(
-                orgMapperMock, recursiveParentOrgIdsMock, findByIdMapperMock, "Organization");
+        sut = new GetBannerIdByParentOrganizationStrategy(orgMapperMock, recursiveParentOrgIdsMock, findByIdMapperMock,
+                "Organization");
     }
 
     /**
-     * Test the successful path through the strategy with the direct parent passed in having a
-     * banner id.
+     * Test the successful path through the strategy with the direct parent passed in having a banner id.
      */
     @Test
     public void testGetBannerWithDirectParentBannerId()
     {
+        final List<OrganizationModelView> orgs = new ArrayList<OrganizationModelView>();
+        orgs.add(orgModelViewMock);
 
         context.checking(new Expectations()
         {
             {
-                oneOf(orgMapperMock).execute(1L);
-                will(returnValue(orgModelViewMock));
+                oneOf(orgMapperMock).execute(Collections.singletonList(1L));
+                will(returnValue(orgs));
 
                 oneOf(orgModelViewMock).getBannerId();
                 will(returnValue("testBanner"));
@@ -122,8 +126,8 @@ public class GetBannerIdByParentOrganizationStrategyTest
     }
 
     /**
-     * Test the succesful path through the strategy where the direct parent does not have the
-     * banner id configured but another parent org further up the tree does.
+     * Test the succesful path through the strategy where the direct parent does not have the banner id configured but
+     * another parent org further up the tree does.
      */
     @Test
     public void testGetBannerWithParentHierarchyBannerId()
@@ -140,11 +144,14 @@ public class GetBannerIdByParentOrganizationStrategyTest
         org2.setBannerId("goodBanner");
         parentOrgs.add(org2);
 
+        final List<OrganizationModelView> orgs = new ArrayList<OrganizationModelView>();
+        orgs.add(orgModelViewMock);
+
         context.checking(new Expectations()
         {
             {
-                oneOf(orgMapperMock).execute(1L);
-                will(returnValue(orgModelViewMock));
+                oneOf(orgMapperMock).execute(Collections.singletonList(1L));
+                will(returnValue(orgs));
 
                 oneOf(orgModelViewMock).getBannerId();
                 will(returnValue(null));
@@ -181,8 +188,7 @@ public class GetBannerIdByParentOrganizationStrategyTest
     }
 
     /**
-     * Test the succesful path through the strategy where no parent has a configured
-     * banner id.
+     * Test the succesful path through the strategy where no parent has a configured banner id.
      */
     @Test
     public void testGetBannerWithNullParentHierarchyBannerId()
@@ -199,17 +205,19 @@ public class GetBannerIdByParentOrganizationStrategyTest
         org2.setBannerId(null);
         parentOrgs.add(org2);
 
+        final List<OrganizationModelView> orgs = new ArrayList<OrganizationModelView>();
+        orgs.add(orgModelViewMock);
+
         context.checking(new Expectations()
         {
             {
-                oneOf(orgMapperMock).execute(1L);
-                will(returnValue(orgModelViewMock));
+                oneOf(orgMapperMock).execute(Collections.singletonList(1L));
+                will(returnValue(orgs));
 
                 oneOf(orgModelViewMock).getBannerId();
                 will(returnValue(null));
 
                 oneOf(orgMock).setBannerId(null);
-
 
                 oneOf(orgModelViewMock).getEntityId();
                 will(returnValue(2L));
@@ -260,6 +268,9 @@ public class GetBannerIdByParentOrganizationStrategyTest
         org2.setBannerId(null);
         parentOrgs.add(org2);
 
+        final List<OrganizationModelView> orgs = new ArrayList<OrganizationModelView>();
+        orgs.add(orgModelViewMock);
+
         context.checking(new Expectations()
         {
             {
@@ -269,8 +280,8 @@ public class GetBannerIdByParentOrganizationStrategyTest
                 oneOf(orgMock).getParentOrgId();
                 will(returnValue(1L));
 
-                oneOf(orgMapperMock).execute(1L);
-                will(returnValue(orgModelViewMock));
+                oneOf(orgMapperMock).execute(Collections.singletonList(1L));
+                will(returnValue(orgs));
 
                 oneOf(orgModelViewMock).getBannerId();
                 will(returnValue(null));

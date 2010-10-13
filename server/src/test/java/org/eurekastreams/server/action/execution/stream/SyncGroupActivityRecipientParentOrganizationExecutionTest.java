@@ -28,7 +28,6 @@ import org.eurekastreams.server.action.request.stream.SyncGroupActivityRecipient
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetActivityIdsPostedToStreamByUniqueKeyAndScopeType;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.jmock.Expectations;
@@ -68,7 +67,7 @@ public class SyncGroupActivityRecipientParentOrganizationExecutionTest
     /**
      * Mapper to get Orgs by id.
      */
-    private GetOrganizationsByIds getOrgByIdMapper = context.mock(GetOrganizationsByIds.class);
+    private DomainMapper<List<Long>, List<OrganizationModelView>> getOrgByIdMapper = context.mock(DomainMapper.class);
 
     /**
      * mapper to get all parent org ids for an org id.

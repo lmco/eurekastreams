@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.eurekastreams.server.domain.EntityTestHelper;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -52,7 +52,7 @@ public class PopulatePeopleWithSkeletonRelatedOrgsCacheMapperTest
     /**
      * Mapper to get organization modelviews by ids.
      */
-    private GetOrganizationsByIds getOrgsByIdsMapper = context.mock(GetOrganizationsByIds.class);
+    private DomainMapper<List<Long>, List<OrganizationModelView>> getOrgsByIdsMapper = context.mock(DomainMapper.class);
 
     /**
      * Mapper to get person modelviews by ids.
