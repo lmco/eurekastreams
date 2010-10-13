@@ -195,7 +195,7 @@
                 <constructor-arg ref="syncParentOrgForGroupActivities" />
                 <constructor-arg ref="getActivityIdsPostedToStreamByUniqueKeyAndScopeType" /> 
                 <constructor-arg ref="bulkOrganizationsByShortNameMapper" />
-                <constructor-arg ref="getOrganizationsByIdsDbMapper" />
+                <constructor-arg ref="getOrganizationsByIdsMapper" />
                 <constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />                             
             </bean>
         </constructor-arg>
@@ -313,7 +313,7 @@
         <constructor-arg>                
             <bean class="org.eurekastreams.server.action.execution.profile.DeleteOrganizationExecution">
                 <constructor-arg ref="moveOrganizationPeopleMapper" />
-                <constructor-arg ref="getOrganizationsByIdsDbMapper" />
+                <constructor-arg ref="getOrganizationsByIdsMapper" />
                 <constructor-arg ref="findByIdMapper" />
                 <constructor-arg ref="deleteOrganizationMapper" />
                 <constructor-arg ref="getPeopleIdsWithRelatedOrg" />   
@@ -827,7 +827,7 @@
                 <constructor-arg ref="populateOrgChildWithSkeletonParentOrgsCacheMapper" />
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.execution.GetBannerIdByParentOrganizationStrategy">
-                        <constructor-arg ref="getOrganizationsByIdsDbMapper" />
+                        <constructor-arg ref="getOrganizationsByIdsMapper" />
                         <constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />
                         <constructor-arg ref="findByIdMapper" />
                         <constructor-arg value="Person" />
@@ -998,7 +998,7 @@
                 <constructor-arg ref="jpaOrganizationMapper" />
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.execution.GetBannerIdByParentOrganizationStrategy">
-                        <constructor-arg ref="getOrganizationsByIdsDbMapper" />
+                        <constructor-arg ref="getOrganizationsByIdsMapper" />
                         <constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />
                         <constructor-arg ref="findByIdMapper" />
                         <constructor-arg value="Organization" />
@@ -1033,7 +1033,7 @@
                 <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.execution.GetBannerIdByParentOrganizationStrategy">
-                        <constructor-arg ref="getOrganizationsByIdsDbMapper" />
+                        <constructor-arg ref="getOrganizationsByIdsMapper" />
                         <constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />
                         <constructor-arg ref="findByIdMapper" />
                         <constructor-arg value="DomainGroup" />
@@ -1551,7 +1551,7 @@
         <constructor-arg>
             <bean
                 class="org.eurekastreams.server.action.execution.GetOrganizationByIdExecution">
-                <constructor-arg ref="getOrganizationsByIdsDbMapper" />
+                <constructor-arg ref="getOrganizationsByIdsMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -2092,7 +2092,7 @@
                     <bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
                 </constructor-arg>
                 <constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />
-                <constructor-arg ref="getOrganizationsByIdsDbMapper" />
+                <constructor-arg ref="getOrganizationsByIdsMapper" />
             </bean>
         </constructor-arg>
     </bean>
@@ -2169,7 +2169,7 @@
     <bean id="getBreadcrumbsListExecutionStrategy"
         class="org.eurekastreams.server.action.execution.profile.GetBreadcrumbsListExecution">
         <constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />
-        <constructor-arg ref="getOrganizationsByIdsDbMapper" />
+        <constructor-arg ref="getOrganizationsByIdsMapper" />
     </bean>
 
     <bean id="getBreadcrumbsList" class="org.eurekastreams.commons.actions.service.ServiceAction">
@@ -3725,7 +3725,7 @@
         class="org.eurekastreams.server.service.actions.strategies.OrganizationUpdater">
         <constructor-arg ref="jpaOrganizationMapper" />
         <constructor-arg ref="jpaPersonMapper" />
-        <constructor-arg ref="getOrganizationsByIdsDbMapper" />
+        <constructor-arg ref="getOrganizationsByIdsMapper" />
         <constructor-arg ref="clearActivityStreamSearchStringCacheOnOrgUpdate" />
     </bean>
 

@@ -676,6 +676,31 @@
 		<constructor-arg ref="refreshFollowedByActivitiesCacheMapper" />
 	</bean>
 	
+	<bean id="getOrganizationsByIdsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache Mapper -->
+        <constructor-arg>
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
+				<constructor-arg>
+					<bean
+						class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
+				</constructor-arg>
+				<constructor-arg
+					ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_BY_ID" />
+				<constructor-arg value="False" />
+				<property name="cache" ref="memcachedCache" />
+			</bean>
+		</constructor-arg>
+        <!-- Database mapper to fall back on if not found in cache -->
+        <constructor-arg ref="getOrganizationsByIdsDbMapper" />
+        <!-- Data combiner -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
+        </constructor-arg>        
+        <!-- Cache refresher -->
+        <constructor-arg ref="organizationCacheRefresher"/>                        
+    </bean>
+	
 	<bean id="getOrganizationsByIdsMapper_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache Mapper -->
         <constructor-arg ref="nullResultPartialMapper"/>
@@ -782,15 +807,17 @@
         <property name="cache" ref="memcachedCache" />
     </bean>
     
-    <bean id="getGroupCoordinatorIdsByGroupIdCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
+    <bean id="getGroupCoordinatorIdsByGroupIdCacheMapper" class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
         <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
-        </constructor-arg>
-        <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.COORDINATOR_PERSON_IDS_BY_GROUP_ID" />
-        <!-- Is list of lists flag -->
-        <constructor-arg value="False" />
-        <property name="cache" ref="memcachedCache" />
-    </bean>    
+		    <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleListValueCacheMapper">
+		        <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.COORDINATOR_PERSON_IDS_BY_GROUP_ID" />
+		        <constructor-arg>
+		            <bean class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
+		        </constructor-arg>
+		        <property name="cache" ref="memcachedCache" />
+		    </bean>
+	    </constructor-arg>
+    </bean> 
 	
 	<bean id="getFollowedByActivities_FORCE_REFRESH"
 		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
@@ -1467,7 +1494,7 @@
 	<bean id="bulkOrganizationsByShortNameMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames">
 		<property name="cache" ref="memcachedCache" />
-		<property name="bulkOrganizationsMapper" ref="getOrganizationsByIdsDbMapper" />
+		<property name="bulkOrganizationsMapper" ref="getOrganizationsByIdsMapper" />
 	</bean>
 
 	<bean id="bulkDomainGroupsByShortNameMapper"
@@ -1647,7 +1674,7 @@
 	<bean id="getOrganizationTreeDTOMapper"
 		class="org.eurekastreams.server.persistence.mappers.GetOrganizationTreeDTO">
 		<constructor-arg ref="getAllOrganizationIdsDbMapper" />
-		<constructor-arg ref="getOrganizationsByIdsDbMapper" />
+		<constructor-arg ref="getOrganizationsByIdsMapper" />
 	</bean>
 	
 	<bean id="getRootOrganizationIdAndShortNameMapper"
@@ -1737,12 +1764,12 @@
 
 	<bean id="populateOrgChildWithSkeletonParentOrgsCacheMapper"
 		class="org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper">
-		<constructor-arg ref="getOrganizationsByIdsDbMapper" />
+		<constructor-arg ref="getOrganizationsByIdsMapper" />
 	</bean>
 
 	<bean id="populatePeopleWithSkeletonRelatedOrgsCacheMapper"
 		class="org.eurekastreams.server.persistence.mappers.cache.PopulatePeopleWithSkeletonRelatedOrgsCacheMapper">
-		<constructor-arg ref="getOrganizationsByIdsDbMapper" />
+		<constructor-arg ref="getOrganizationsByIdsMapper" />
 		<constructor-arg ref="bulkPeopleMapper" />
 	</bean>
 
