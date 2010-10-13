@@ -21,13 +21,15 @@ package org.eurekastreams.server.persistence.mappers.stream;
  * example of an item pointer. The contents of that key in the cache just point to the actual entityId-based key
  * Per:123. This means that two cache reads are required to get the actual object when using item pointers.
  *
+ *@param <PointerType>
+ *            the type of field to lookup the id from
  */
-public class CacheItemPointer
+public class CacheItemPointer<PointerType>
 {
     /**
      * The pointer id.
      */
-    private String pointerId;
+    private PointerType pointerId;
 
     /**
      * The item id.
@@ -39,7 +41,7 @@ public class CacheItemPointer
      *
      * @return the pointer Id.
      */
-    public String getPointerId()
+    public PointerType getPointerId()
     {
         return pointerId;
     }
@@ -50,7 +52,7 @@ public class CacheItemPointer
      * @param inPointerId
      *            the pointerId to set.
      */
-    public void setPointerId(final String inPointerId)
+    public void setPointerId(final PointerType inPointerId)
     {
         pointerId = inPointerId;
     }

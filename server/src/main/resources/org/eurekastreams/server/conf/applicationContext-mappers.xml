@@ -1501,25 +1501,21 @@
 
 	<bean id="bulkPeopleByAccountIdMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds">
-		<property name="cache" ref="memcachedCache" />
 		<property name="bulkPeopleMapper" ref="bulkPeopleMapper" />
 	</bean>
 
 	<bean id="bulkPeopleByOpenSocialIdMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds">
-		<property name="cache" ref="memcachedCache" />
 		<property name="bulkPeopleMapper" ref="bulkPeopleMapper" />
 	</bean>
 
 	<bean id="bulkOrganizationsByShortNameMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames">
-		<property name="cache" ref="memcachedCache" />
 		<property name="bulkOrganizationsMapper" ref="getOrganizationsByIdsMapper" />
 	</bean>
 
 	<bean id="bulkDomainGroupsByShortNameMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames">
-		<property name="cache" ref="memcachedCache" />
 		<property name="bulkDomainGroupsMapper" ref="bulkDomainGroupsMapper" />
 	</bean>
 
