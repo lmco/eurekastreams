@@ -1312,9 +1312,9 @@
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.GetOrganizationTreeExecution">
+        	<bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
                 <constructor-arg ref="getOrganizationTreeDTOMapper" />
+                <constructor-arg value="false" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
