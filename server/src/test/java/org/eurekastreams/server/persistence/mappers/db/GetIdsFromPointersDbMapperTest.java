@@ -16,10 +16,10 @@
 package org.eurekastreams.server.persistence.mappers.db;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
@@ -45,10 +45,12 @@ public class GetIdsFromPointersDbMapperTest extends MapperTest
         accountIds.add("fordp");
         accountIds.add("fordp2");
 
-        Map<String, Long> results = sut.execute(accountIds);
+        List<Long> results = sut.execute(accountIds);
         assertEquals(2, results.size());
-        assertEquals(fordId, results.get("fordp"));
-        assertEquals(ford2Id, results.get("fordp2"));
+        System.out.println(results.get(0));
+        System.out.println(results.get(1));
+        assertTrue(results.contains(fordId));
+        assertTrue(results.contains(ford2Id));
     }
 
     /**
@@ -64,8 +66,7 @@ public class GetIdsFromPointersDbMapperTest extends MapperTest
         accountIds.add("xxx");
         accountIds.add("yyy");
 
-        Map<String, Long> results = sut.execute(accountIds);
-        assertEquals(0, results.size());
+        assertEquals(0, sut.execute(accountIds).size());
     }
 
     /**
@@ -76,7 +77,7 @@ public class GetIdsFromPointersDbMapperTest extends MapperTest
     {
         GetIdsFromPointersDbMapper<String> sut = new GetIdsFromPointersDbMapper<String>("accountId", Person.class);
         sut.setEntityManager(getEntityManager());
-        Map<String, Long> results = sut.execute(new ArrayList<String>());
-        assertEquals(0, results.size());
+
+        assertEquals(0, sut.execute(new ArrayList<String>()).size());
     }
 }

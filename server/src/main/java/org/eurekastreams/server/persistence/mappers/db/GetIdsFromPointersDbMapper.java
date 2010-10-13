@@ -15,18 +15,15 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.CacheItemPointer;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.Transformers;
 
 /**
  * Mapper to get a map of entity ids by a pointer.
@@ -34,8 +31,7 @@ import org.hibernate.transform.Transformers;
  * @param <PointerType>
  *            the type of pointer to lookup the id from
  */
-public class GetIdsFromPointersDbMapper<PointerType> extends
-        BaseArgDomainMapper<List<PointerType>, Map<PointerType, Long>>
+public class GetIdsFromPointersDbMapper<PointerType> extends BaseArgDomainMapper<List<PointerType>, List<Long>>
 {
     /**
      * Name of the pointer field.
@@ -69,17 +65,16 @@ public class GetIdsFromPointersDbMapper<PointerType> extends
      * @return a Map of pointer values to Long entity ids
      */
     @Override
-    public Map<PointerType, Long> execute(final List<PointerType> inPointerValues)
+    public List<Long> execute(final List<PointerType> inPointerValues)
     {
         if (inPointerValues == null || inPointerValues.size() == 0)
         {
-            return new HashMap<PointerType, Long>();
+            return new ArrayList<Long>();
         }
-        Map<PointerType, Long> itemMap = new HashMap<PointerType, Long>();
+
         Criteria criteria = getHibernateSession().createCriteria(entityClass);
         ProjectionList fields = Projections.projectionList();
         fields.add(Projections.property("id").as("itemId"));
-        fields.add(Projections.property(pointerFieldName).as("pointerId"));
         criteria.setProjection(fields);
 
         // Creates the necessary "OR" clauses to get all uncached item pointers
@@ -97,13 +92,6 @@ public class GetIdsFromPointersDbMapper<PointerType> extends
         }
 
         criteria.add(restriction);
-        criteria.setResultTransformer(Transformers.aliasToBean(CacheItemPointer.class));
-        List<CacheItemPointer<PointerType>> results = criteria.list();
-
-        for (CacheItemPointer<PointerType> result : results)
-        {
-            itemMap.put(result.getPointerId(), result.getItemId());
-        }
-        return itemMap;
+        return criteria.list();
     }
 }

@@ -284,21 +284,25 @@
 	<bean id="bulkPeopleByAccountIdMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds">
 		<property name="bulkPeopleMapper" ref="bulkPeopleMapper" />
+		<property name="cache" ref="testCache" />
 	</bean>
 
 	<bean id="bulkPeopleByOpenSocialIdMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds">
 		<property name="bulkPeopleMapper" ref="bulkPeopleMapper" />
+		<property name="cache" ref="testCache" />
 	</bean>
 
 	<bean id="bulkOrganizationsByShortNameMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames">
 		<property name="bulkOrganizationsMapper" ref="getOrganizationsByIdsDbMapper" />
+		<property name="cache" ref="testCache" />
 	</bean>
 
 	<bean id="bulkDomainGroupsByShortNameMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames">
 		<property name="bulkDomainGroupsMapper" ref="getGroupsByIdsDbMapper" />
+		<property name="cache" ref="testCache" />
 	</bean>
 
 	<bean id="getStreamScopeProxyById"

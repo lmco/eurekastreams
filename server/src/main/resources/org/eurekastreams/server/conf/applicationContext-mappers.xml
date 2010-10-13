@@ -26,7 +26,9 @@
 	
 	<bean id="toStringCacheKeySuffixTransformer" 
 		class="org.eurekastreams.server.persistence.mappers.cache.ToStringCacheKeySuffixTransformer" />
-		
+	
+	<bean id="collectionCombiner" class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />	
+	
 	<!--
 		Mapper to get the hash tags from the database - insert if not already
 		in the database
@@ -48,14 +50,7 @@
 				class="org.eurekastreams.server.persistence.mappers.HashTagBuilderMapper" />
 		</constructor-arg>
 
-		<constructor-arg>
-			<!--
-				Combiner to put together the generated and existing hashtags
-				together
-			-->
-			<bean
-				class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
-		</constructor-arg>
+		<constructor-arg ref="collectionCombiner" />
 
 		<constructor-arg>
 			<!-- Database refresher -->
@@ -343,10 +338,7 @@
             </bean>
         </constructor-arg>
 
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
-        </constructor-arg>
+        <constructor-arg ref="collectionCombiner" />
         
         <!-- CACHE REFRESHER -->
         <constructor-arg>
@@ -381,10 +373,7 @@
 						class="org.eurekastreams.server.persistence.mappers.BulkDeletedActivitySecurityMapper" />
 				</constructor-arg>
 		
-				<constructor-arg>
-					<bean
-						class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
-				</constructor-arg>
+				<constructor-arg ref="collectionCombiner" />
 		
 		        <constructor-arg>
 		            <bean class="org.eurekastreams.server.persistence.mappers.cache.NullCacheRefresher" />
@@ -392,10 +381,7 @@
 			</bean>		
 		</constructor-arg>
 
-		<constructor-arg>
-			<bean
-				class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
-		</constructor-arg>
+		<constructor-arg ref="collectionCombiner" />
 
 		<constructor-arg>
 			<!-- Cache refresher -->
@@ -434,10 +420,7 @@
 
 		</constructor-arg>
 
-		<constructor-arg>
-			<bean
-				class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
-		</constructor-arg>
+		<constructor-arg ref="collectionCombiner" />
 
 		<constructor-arg>
 			<bean class="org.eurekastreams.server.persistence.mappers.cache.SetKeyedCollectionCacheMapper">
@@ -486,6 +469,47 @@
 				<property name="cache" ref="memcachedCache" />
 			</bean>
 		</constructor-arg>
+	</bean>
+
+	<!-- Mapper to get people ids by account ids -->
+	<bean id="getPeopleIdsByAccountIds" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		<!-- Cache mapper -->
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
+				<constructor-arg ref="toStringCacheKeySuffixTransformer" />
+				<constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_BY_ACCOUNT_ID" />
+				<constructor-arg value="False" />
+				<property name="cache" ref="memcachedCache" />
+			</bean>
+		</constructor-arg>
+		
+		<!-- Database mapper -->
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.persistence.mappers.db.GetIdsFromPointersDbMapper">
+				<constructor-arg value="accountId" />
+				<constructor-arg value="org.eurekastreams.server.domain.Person" />
+			</bean>
+		</constructor-arg>
+	
+		<!-- Combiner -->
+		<constructor-arg ref="collectionCombiner" />
+	
+		<!-- Refresher -->
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.persistence.mappers.cache.SetKeyedCollectionCacheMapper">
+				<constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_BY_ACCOUNT_ID" />
+				<property name="cache" ref="memcachedCache" />
+			</bean>
+		</constructor-arg>
+	</bean>
+
+	<!-- Mapper to get people by account ids -->
+	<bean id="getPeopleByAccountIdsMapper" class="org.eurekastreams.server.persistence.mappers.GetItemsByPointerIdsMapper">
+		<!-- Mapper to get people ids from account ids -->
+		<constructor-arg ref="getPeopleIdsByAccountIds" />
+		
+		<!-- mapper to look up people by ids -->
+		<constructor-arg ref="getPersonsByIdsMapper" />
 	</bean>
 
 	<bean id="parentOrgActivityIdMapper"
@@ -732,9 +756,7 @@
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getOrganizationsByIdsDbMapper" />
         <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
-        </constructor-arg>        
+        <constructor-arg ref="collectionCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="organizationCacheRefresher"/>                        
     </bean>
@@ -745,9 +767,7 @@
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getOrganizationsByIdsDbMapper" />
         <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
-        </constructor-arg>        
+        <constructor-arg ref="collectionCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="organizationCacheRefresher"/>                        
     </bean>
@@ -872,9 +892,7 @@
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getGroupsByIdsDbMapper" />
         <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
-        </constructor-arg>        
+        <constructor-arg ref="collectionCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="groupCacheRefresher"/>                        
     </bean> 
@@ -885,9 +903,7 @@
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getGroupsByIdsDbMapper" />
         <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
-        </constructor-arg>        
+        <constructor-arg ref="collectionCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="groupCacheRefresher"/>                        
     </bean>     
@@ -1075,9 +1091,7 @@
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getPersonsByIdsDBMapper" />
         <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
-        </constructor-arg>        
+        <constructor-arg ref="collectionCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="personCacheRefresher"/>                        
     </bean>
@@ -1088,9 +1102,7 @@
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getPersonsByIdsDBMapper" />
         <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
-        </constructor-arg>        
+        <constructor-arg ref="collectionCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="personCacheRefresher"/>                        
     </bean>    
@@ -1393,10 +1405,7 @@
 			</bean>
 		</constructor-arg>
 
-		<constructor-arg>
-			<bean
-				class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
-		</constructor-arg>
+		<constructor-arg ref="collectionCombiner" />
 
 		<constructor-arg>
 			<!-- Cache refresher -->
@@ -1499,21 +1508,25 @@
 	<bean id="bulkPeopleByAccountIdMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds">
 		<property name="bulkPeopleMapper" ref="bulkPeopleMapper" />
+		<property name="cache" ref="memcachedCache" />
 	</bean>
 
 	<bean id="bulkPeopleByOpenSocialIdMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds">
 		<property name="bulkPeopleMapper" ref="bulkPeopleMapper" />
+		<property name="cache" ref="memcachedCache" />
 	</bean>
 
 	<bean id="bulkOrganizationsByShortNameMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames">
 		<property name="bulkOrganizationsMapper" ref="getOrganizationsByIdsMapper" />
+		<property name="cache" ref="memcachedCache" />
 	</bean>
 
 	<bean id="bulkDomainGroupsByShortNameMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames">
 		<property name="bulkDomainGroupsMapper" ref="getGroupsByIdsMapper" />
+		<property name="cache" ref="memcachedCache" />
 	</bean>
 
 	<bean id="getOrderedCommentIdsByActivityId"
@@ -1592,10 +1605,7 @@
 				class="org.eurekastreams.server.persistence.mappers.db.GetLikedActivityIdsByUserIdsDbMapper" />
 		</constructor-arg>
 
-		<constructor-arg>
-			<bean
-				class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
-		</constructor-arg>
+		<constructor-arg ref="collectionCombiner" />
 
 		<constructor-arg>
 			<!-- Cache refresher -->
@@ -1853,10 +1863,7 @@
 			<bean
 				class="org.eurekastreams.server.persistence.mappers.db.GetPeopleWhoLikedActivityDbMapper" />
 		</constructor-arg>
-		<constructor-arg>
-			<bean
-				class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
-		</constructor-arg>
+		<constructor-arg ref="collectionCombiner" />
 		<constructor-arg>
 			<!-- Cache refresher -->
 			<bean
