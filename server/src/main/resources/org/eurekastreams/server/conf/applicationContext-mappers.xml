@@ -650,7 +650,7 @@
 	<bean id="getFollowedEntitiesByPrefix"
 		class="org.eurekastreams.server.persistence.mappers.GetFollowedEntitiesByPrefix">
 		<property name="getPeopleByAccountIdsMapper" ref="bulkPeopleByAccountIdMapper" />
-		<property name="getFollowedPersonIdsMapper" ref="getFollowedPersonIds" />
+		<property name="getFollowedPersonIdsMapper" ref="getFollowedPersonIdsForPersonByIdMapper" />
 		<property name="getFollowedGroupIdsMapper" ref="getFollowedGroupIdsForPersonByIdMapper" />
 	</bean>
 
@@ -1551,11 +1551,6 @@
 		<property name="queryOptimizer" ref="queryOptimizer" />
 	</bean>
 
-	<bean id="getFollowedPersonIds"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetFollowedPersonIds">
-		<property name="cache" ref="memcachedCache" />
-	</bean>
-
 	<bean id="reorderFollowedGroupIds"
 		class="org.eurekastreams.server.persistence.mappers.stream.ReorderFollowedGroupIds">
 		<property name="cache" ref="memcachedCache" />
@@ -1618,7 +1613,7 @@
 
 	<bean id="addCachedPersonFollower"
 		class="org.eurekastreams.server.persistence.mappers.cache.AddCachedPersonFollower">
-		<constructor-arg ref="getFollowedPersonIds" />
+		<constructor-arg ref="getFollowedPersonIdsForPersonByIdMapper" />
 		<constructor-arg ref="getFollowerIds" />
 		<property name="cache" ref="memcachedCache" />
 	</bean>

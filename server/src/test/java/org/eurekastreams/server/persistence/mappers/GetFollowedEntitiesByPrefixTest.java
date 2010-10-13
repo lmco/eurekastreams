@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.requests.GetEntitiesByPrefixRequest;
-import org.eurekastreams.server.persistence.mappers.stream.GetFollowedPersonIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DisplayEntityModelView;
 import org.jmock.Expectations;
@@ -81,7 +80,8 @@ public class GetFollowedEntitiesByPrefixTest extends MapperTest
     /**
      * Mapper to get the people ids that a person is following.
      */
-    private GetFollowedPersonIds getFollowedPersonIdsMapper = context.mock(GetFollowedPersonIds.class);
+    private DomainMapper<Long, List<Long>> getFollowedPersonIdsMapper = context.mock(DomainMapper.class,
+            "getFollowedPersonIdsMapper");
 
     /**
      * Mapper to get the group ids that a person is following.

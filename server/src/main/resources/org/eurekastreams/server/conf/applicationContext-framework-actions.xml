@@ -1202,7 +1202,7 @@
                 <constructor-arg ref="bulkPeopleByAccountIdMapper" />
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.persistence.mappers.ExcludeSelfMapperDecorator">
-                        <constructor-arg ref="getFollowedPersonIds" />
+                        <constructor-arg ref="getFollowedPersonIdsForPersonByIdMapper" />
                     </bean>
                 </constructor-arg>
                 <constructor-arg ref="bulkPeopleMapper" />

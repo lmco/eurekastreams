@@ -22,7 +22,6 @@ import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.requests.GetEntitiesByPrefixRequest;
-import org.eurekastreams.server.persistence.mappers.stream.GetFollowedPersonIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DisplayEntityModelView;
 import org.hibernate.Criteria;
@@ -51,7 +50,7 @@ public class GetFollowedEntitiesByPrefix extends ReadMapper<GetEntitiesByPrefixR
     /**
      * Mapper to get the people ids that a person is following.
      */
-    private GetFollowedPersonIds getFollowedPersonIdsMapper;
+    private DomainMapper<Long, List<Long>> getFollowedPersonIdsMapper;
 
     /**
      * Mapper to get the group ids that a person is following.
@@ -208,7 +207,7 @@ public class GetFollowedEntitiesByPrefix extends ReadMapper<GetEntitiesByPrefixR
      * @param inGetFollowedPersonIdsMapper
      *            the getFollowedPersonIdsMapper to set
      */
-    public void setGetFollowedPersonIdsMapper(final GetFollowedPersonIds inGetFollowedPersonIdsMapper)
+    public void setGetFollowedPersonIdsMapper(final DomainMapper<Long, List<Long>> inGetFollowedPersonIdsMapper)
     {
         this.getFollowedPersonIdsMapper = inGetFollowedPersonIdsMapper;
     }

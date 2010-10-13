@@ -262,10 +262,7 @@
 	
 	<bean id="domainGroupQueryStrategy" class="org.eurekastreams.server.persistence.strategies.DomainGroupQueryStrategy" /><!--
 
-	--><bean id="getFollowedPersonIds"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetFollowedPersonIds">
-		<property name="cache" ref="testCache" />
-	</bean>
+	-->
 
 	<bean id="reorderFollowedGroupIds"
 		class="org.eurekastreams.server.persistence.mappers.stream.ReorderFollowedGroupIds">

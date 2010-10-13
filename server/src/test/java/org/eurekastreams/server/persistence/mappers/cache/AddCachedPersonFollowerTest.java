@@ -23,7 +23,7 @@ import java.util.List;
 import org.eurekastreams.server.persistence.mappers.GetRelatedOrganizationIdsByPersonId;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.eurekastreams.server.persistence.mappers.cache.testhelpers.SimpleMemoryCache;
-import org.eurekastreams.server.persistence.mappers.stream.GetFollowedPersonIds;
+import org.eurekastreams.server.persistence.mappers.db.GetFollowedPersonIdsForPersonByIdDbMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds;
 import org.eurekastreams.server.persistence.strategies.PersonQueryStrategy;
 import org.junit.After;
@@ -32,7 +32,7 @@ import org.junit.Test;
 
 /**
  * This class is responsible for testing the AddCachedPersonFollower class.
- *
+ * 
  */
 public class AddCachedPersonFollowerTest extends MapperTest
 {
@@ -44,7 +44,7 @@ public class AddCachedPersonFollowerTest extends MapperTest
     /**
      * Test instance of mapper to retrieve the user ids that a person is following.
      */
-    private GetFollowedPersonIds followedPersonIdsMapper;
+    private GetFollowedPersonIdsForPersonByIdDbMapper followedPersonIdsMapper;
 
     /**
      * Test instance of mapper to retrieve the user ids that are following a person.
@@ -104,8 +104,7 @@ public class AddCachedPersonFollowerTest extends MapperTest
         personCacheLoader.setEntityManager(getEntityManager());
         personCacheLoader.initialize();
 
-        followedPersonIdsMapper = new GetFollowedPersonIds();
-        followedPersonIdsMapper.setCache(cache);
+        followedPersonIdsMapper = new GetFollowedPersonIdsForPersonByIdDbMapper();
         followedPersonIdsMapper.setEntityManager(getEntityManager());
 
         followerIdsMapper = new GetFollowerIds();
