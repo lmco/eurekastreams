@@ -21,7 +21,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
 
 /**
  * This class is responsible for updating the cache of the list of followers and following when a follow relationship is
@@ -45,7 +44,7 @@ public class AddCachedGroupFollower extends CachedDomainMapper
      * Local instance of the GetFollowerIds mapper. This is the mapper that retrieves the users that the current user is
      * a follower of.
      */
-    private final GetGroupFollowerIds followerMapper;
+    private final DomainMapper<Long, List<Long>> followerMapper;
 
     /**
      * Constructor for the AddCachedGroupFollower mapper.
@@ -56,7 +55,7 @@ public class AddCachedGroupFollower extends CachedDomainMapper
      *            - instance of the GetGroupFollowerIds mapper.
      */
     public AddCachedGroupFollower(final DomainMapper<Long, List<Long>> inFollowedMapper,
-            final GetGroupFollowerIds inFollowerMapper)
+            final DomainMapper<Long, List<Long>> inFollowerMapper)
     {
         followedMapper = inFollowedMapper;
         followerMapper = inFollowerMapper;

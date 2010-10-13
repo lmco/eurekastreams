@@ -234,7 +234,7 @@
 	<bean id="getAllPersonIdsWhoHaveGroupCoordinatorAccess"
 		class="org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess">
 		<constructor-arg ref="getGroupCoordinatorIdsByGroupIdDbMapper"/>
-		<constructor-arg ref="bulkDomainGroupsMapper"/>
+		<constructor-arg ref="getGroupsByIdsDbMapper"/>
 		<constructor-arg ref="bulkOrganizationsByShortNameMapper"/>
 		<constructor-arg ref="getRecursiveOrgCoordinators"/>
 		<constructor-arg ref="bulkPeopleByAccountIdMapper"/>
@@ -262,10 +262,7 @@
 	
 	<bean id="domainGroupQueryStrategy" class="org.eurekastreams.server.persistence.strategies.DomainGroupQueryStrategy" /><!--
 
-	--><bean id="getFollowedPersonIds"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetFollowedPersonIds">
-		<property name="cache" ref="testCache" />
-	</bean>
+	-->
 
 	<bean id="reorderFollowedGroupIds"
 		class="org.eurekastreams.server.persistence.mappers.stream.ReorderFollowedGroupIds">
@@ -286,32 +283,22 @@
 
 	<bean id="bulkPeopleByAccountIdMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds">
-		<property name="cache" ref="testCache" />
 		<property name="bulkPeopleMapper" ref="bulkPeopleMapper" />
 	</bean>
 
 	<bean id="bulkPeopleByOpenSocialIdMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds">
-		<property name="cache" ref="testCache" />
 		<property name="bulkPeopleMapper" ref="bulkPeopleMapper" />
 	</bean>
 
 	<bean id="bulkOrganizationsByShortNameMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames">
-		<property name="cache" ref="testCache" />
 		<property name="bulkOrganizationsMapper" ref="getOrganizationsByIdsDbMapper" />
-	</bean>
-
-	<bean id="bulkDomainGroupsMapper"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds">
-		<constructor-arg ref="domainGroupQueryStrategy"/>
-		<property name="cache" ref="testCache" />
 	</bean>
 
 	<bean id="bulkDomainGroupsByShortNameMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames">
-		<property name="cache" ref="testCache" />
-		<property name="bulkDomainGroupsMapper" ref="bulkDomainGroupsMapper" />
+		<property name="bulkDomainGroupsMapper" ref="getGroupsByIdsDbMapper" />
 	</bean>
 
 	<bean id="getStreamScopeProxyById"
@@ -324,12 +311,6 @@
 		class="org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds">
 		<property name="cache" ref="testCache" />
 	</bean>
-
-	<bean id="getGroupFollowerIds"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds">
-		<property name="cache" ref="testCache" />
-	</bean>
-
 
 	<bean id="getStarredActivityIds"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetStarredActivityIds">
@@ -368,7 +349,7 @@
 	<bean id="deleteActivityCacheUpdate"
 		class="org.eurekastreams.server.persistence.mappers.stream.DeleteActivityCacheUpdate">
 		<constructor-arg ref="getFollowerIds" />
-		<constructor-arg ref="getGroupFollowerIds" />
+		<constructor-arg ref="getFollowerPersonIdsForGroupByIdDbMapper" />
 		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 		<constructor-arg ref="getPeopleWhoLikedActivityDbMapper" />

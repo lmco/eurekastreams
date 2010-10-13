@@ -28,7 +28,6 @@ import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
@@ -73,7 +72,8 @@ public class CachedModelViewResultTransformerTest
     /**
      * The mapper to get the domain groups by ids.
      */
-    private GetDomainGroupsByIds getDomainGroupsByIdsMapperMock = context.mock(GetDomainGroupsByIds.class);
+    private DomainMapper<List<Long>, List<DomainGroupModelView>> getDomainGroupsByIdsMapperMock = context.mock(
+            DomainMapper.class, "getDomainGroupsByIdsMapperMock");
 
     /**
      * The mapper to get the people by Ids.
@@ -198,7 +198,7 @@ public class CachedModelViewResultTransformerTest
 
     /**
      * Build a Map of String,Object with the entity class and id.
-     *
+     * 
      * @param inEntityClass
      *            the entity class
      * @param inEntityId
@@ -215,7 +215,7 @@ public class CachedModelViewResultTransformerTest
 
     /**
      * Populate the input modelView with the entity id and return it.
-     *
+     * 
      * @param inModelView
      *            the ModelView to populate the ID of
      * @param inEntityId

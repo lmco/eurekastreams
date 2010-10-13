@@ -28,9 +28,9 @@ import org.eurekastreams.server.action.request.stream.PostActivityRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -77,7 +77,8 @@ public class PostActivityAuthorizationStrategyTest
     /**
      * Mocked instance of the {@link GetGroupFollowerIds}.
      */
-    private final GetGroupFollowerIds getGroupFollowerIdsMapperMock = context.mock(GetGroupFollowerIds.class);
+    private final DomainMapper<Long, List<Long>> getGroupFollowerIdsMapperMock = context.mock(DomainMapper.class,
+            "getGroupFollowerIdsMapperMock");
 
     /**
      * Mocked instance of the {@link GetPeopleByAccountIds}.

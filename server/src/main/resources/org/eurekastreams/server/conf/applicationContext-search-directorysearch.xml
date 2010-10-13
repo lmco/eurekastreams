@@ -32,7 +32,7 @@
 	<bean id="cachedModelViewDirectoryResultTransformer"
 		class="org.eurekastreams.server.search.directory.CachedModelViewResultTransformer">
 		<property name="getOrgsByIdsMapper" ref="getOrganizationsByIdsMapper" />
-		<property name="getDomainGroupsByIdsMapper" ref="bulkDomainGroupsMapper" />
+		<property name="getDomainGroupsByIdsMapper" ref="getGroupsByIdsMapper" />
 		<property name="getPeopleByIdsMapper" ref="bulkPeopleMapper" />
 	</bean>
 

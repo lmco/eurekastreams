@@ -31,10 +31,10 @@ import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddCachedGroupFollower;
 import org.eurekastreams.server.persistence.mappers.db.DeleteRequestForGroupMembership;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -90,7 +90,8 @@ public class SetFollowingGroupStatusExecutionTest
     /**
      * Mock instance of GetGroupFollowerIds.
      */
-    private final GetGroupFollowerIds groupFollowerIdsMapperMock = context.mock(GetGroupFollowerIds.class);
+    private final DomainMapper<Long, List<Long>> groupFollowerIdsMapperMock = context.mock(DomainMapper.class,
+            "groupFollowerIdsMapperMock");
 
     /**
      * Mocked principal object.

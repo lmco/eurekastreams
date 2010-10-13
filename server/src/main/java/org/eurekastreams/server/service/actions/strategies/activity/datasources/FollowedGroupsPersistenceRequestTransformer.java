@@ -24,7 +24,6 @@ import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
@@ -51,7 +50,7 @@ public class FollowedGroupsPersistenceRequestTransformer implements PersistenceD
     /**
      * Group mapper.
      */
-    private GetDomainGroupsByIds groupMapper;
+    private DomainMapper<List<Long>, List<DomainGroupModelView>> groupMapper;
 
     /**
      * Constructor.
@@ -64,7 +63,8 @@ public class FollowedGroupsPersistenceRequestTransformer implements PersistenceD
      *            the group mapper.
      */
     public FollowedGroupsPersistenceRequestTransformer(final GetPeopleByAccountIds inPersonMapper,
-            final DomainMapper<Long, List<Long>> inFolloweGroupsMapper, final GetDomainGroupsByIds inGroupMapper)
+            final DomainMapper<Long, List<Long>> inFolloweGroupsMapper,
+            final DomainMapper<List<Long>, List<DomainGroupModelView>> inGroupMapper)
     {
         personMapper = inPersonMapper;
         followedGroupsMapper = inFolloweGroupsMapper;

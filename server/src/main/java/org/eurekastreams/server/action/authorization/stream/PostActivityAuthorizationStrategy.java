@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.server.action.authorization.stream;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.AuthorizationStrategy;
 import org.eurekastreams.commons.actions.context.Principal;
@@ -23,9 +25,9 @@ import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.stream.PostActivityRequest;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -59,7 +61,7 @@ public class PostActivityAuthorizationStrategy implements AuthorizationStrategy<
     /**
      * Group follower ids DAO.
      */
-    private final GetGroupFollowerIds groupFollowersDAO;
+    private final DomainMapper<Long, List<Long>> groupFollowersDAO;
 
     /**
      * Constructor for the PostActivityAuthorizationStrategy.
@@ -75,7 +77,8 @@ public class PostActivityAuthorizationStrategy implements AuthorizationStrategy<
      */
     public PostActivityAuthorizationStrategy(final GetDomainGroupsByShortNames inDomainGroupsByShortNameMapper,
             final GetAllPersonIdsWhoHaveGroupCoordinatorAccess inGroupCoordMapper,
-            final GetGroupFollowerIds inGroupFollowersDAO, final GetPeopleByAccountIds inPeopleByAccountIdsMapper)
+            final DomainMapper<Long, List<Long>> inGroupFollowersDAO,
+            final GetPeopleByAccountIds inPeopleByAccountIdsMapper)
     {
         domainGroupsByShortNameMapper = inDomainGroupsByShortNameMapper;
         groupCoordMapper = inGroupCoordMapper;

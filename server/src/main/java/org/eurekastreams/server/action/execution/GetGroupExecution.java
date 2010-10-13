@@ -27,9 +27,9 @@ import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.OrganizationChild;
 import org.eurekastreams.server.domain.RestrictedDomainGroup;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
 
 /**
  * Retrieve a DomainGroup based on its short name.
@@ -56,15 +56,15 @@ public class GetGroupExecution implements ExecutionStrategy<PrincipalActionConte
      */
     @SuppressWarnings("unchecked")
     private GetBannerIdByParentOrganizationStrategy getBannerIdStrategy;
-    
+
     /**
      * Mapper to get followers for a group.
      */
-    private GetGroupFollowerIds groupFollowerIdsMapper;
+    private DomainMapper<Long, List<Long>> groupFollowerIdsMapper;
 
     /**
      * Constructor.
-     *
+     * 
      * @param inMapper
      *            injecting the mapper.
      * @param inPopulateOrgChildWithSkeletonParentOrgsCacheMapper
@@ -82,7 +82,7 @@ public class GetGroupExecution implements ExecutionStrategy<PrincipalActionConte
             final PopulateOrgChildWithSkeletonParentOrgsCacheMapper inPopulateOrgChildWithSkeletonParentOrgsCacheMapper,
             final GetAllPersonIdsWhoHaveGroupCoordinatorAccess inGroupCoordinatorIdsDAO,
             final GetBannerIdByParentOrganizationStrategy inGetBannerIdStrategy,
-            final GetGroupFollowerIds inGroupFollowerIdsMapper)
+            final DomainMapper<Long, List<Long>> inGroupFollowerIdsMapper)
     {
         mapper = inMapper;
         populateOrgChildWithSkeletonParentOrgsCacheMapper = inPopulateOrgChildWithSkeletonParentOrgsCacheMapper;
@@ -93,7 +93,7 @@ public class GetGroupExecution implements ExecutionStrategy<PrincipalActionConte
 
     /**
      * Load up the group specified in the parameter.
-     *
+     * 
      * @param inActionContext
      *            {@link PrincipalActionContext}.
      * @return the specified DomainGroup or null if not found.
@@ -139,7 +139,7 @@ public class GetGroupExecution implements ExecutionStrategy<PrincipalActionConte
 
     /**
      * Touch those parts of the group that need to be accessed by the client to make sure they are eagerly loaded.
-     *
+     * 
      * @param group
      *            the group to touch
      */
@@ -159,7 +159,7 @@ public class GetGroupExecution implements ExecutionStrategy<PrincipalActionConte
 
     /**
      * Check whether this group has restricted access and whether the current user is allowed access.
-     *
+     * 
      * @param inPrincipal
      *            user principal.
      * @param inGroup
@@ -170,11 +170,11 @@ public class GetGroupExecution implements ExecutionStrategy<PrincipalActionConte
     {
         // if group is public or user is coordinator recursively or follower, return true, otherwise false.
         return (inGroup.isPublicGroup()
-                || groupCoordinatorIdsDAO.execute(inGroup.getId()).contains(inPrincipal.getId())
-                || isUserFollowingGroup(inPrincipal.getId(), inGroup.getId()));
+                || groupCoordinatorIdsDAO.execute(inGroup.getId()).contains(inPrincipal.getId()) //
+        || isUserFollowingGroup(inPrincipal.getId(), inGroup.getId()));
 
     }
-    
+
     /**
      * Checks to see if user is following a group.
      * 

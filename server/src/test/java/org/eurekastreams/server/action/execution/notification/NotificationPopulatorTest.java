@@ -28,7 +28,6 @@ import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
@@ -68,7 +67,8 @@ public class NotificationPopulatorTest
     private GetPeopleByIds personMapper = context.mock(GetPeopleByIds.class);
 
     /** Fixture: For getting group info. */
-    private GetDomainGroupsByIds groupMapper = context.mock(GetDomainGroupsByIds.class);
+    private DomainMapper<List<Long>, List<DomainGroupModelView>> groupMapper = context.mock(DomainMapper.class,
+            "groupMapper");
 
     /** For getting org details. */
     private DomainMapper<List<Long>, List<OrganizationModelView>> orgMapper = context.mock(DomainMapper.class,
@@ -192,8 +192,8 @@ public class NotificationPopulatorTest
         context.checking(new Expectations()
         {
             {
-                allowing(groupMapper).execute(DESTINATION_ID);
-                will(returnValue(group));
+                allowing(groupMapper).execute(with(any(List.class)));
+                will(returnValue(Collections.singletonList(group)));
             }
         });
 

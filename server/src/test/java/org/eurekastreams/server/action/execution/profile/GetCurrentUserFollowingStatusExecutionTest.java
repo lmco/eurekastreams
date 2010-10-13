@@ -26,9 +26,9 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.action.request.profile.GetCurrentUserFollowingStatusRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds;
-import org.eurekastreams.server.persistence.mappers.stream.GetGroupFollowerIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
@@ -64,22 +64,23 @@ public class GetCurrentUserFollowingStatusExecutionTest
      * Principal mock.
      */
     private Principal principal = context.mock(Principal.class);
-    
+
     /**
      * Group follower mapper mock.
      */
-    private GetGroupFollowerIds getGroupFollowerIds = context.mock(GetGroupFollowerIds.class);
-    
+    private DomainMapper<Long, List<Long>> getGroupFollowerIds = context
+            .mock(DomainMapper.class, "getGroupFollowerIds");
+
     /**
      * Person follower mapper mock.
      */
     private GetFollowerIds getFollowerIds = context.mock(GetFollowerIds.class);
-    
+
     /**
      * Group by shortname mapper mock.
      */
     private GetDomainGroupsByShortNames getDomainGroupsByShortNames = context.mock(GetDomainGroupsByShortNames.class);
-    
+
     /**
      * Person by account id mapper mock.
      */
@@ -198,13 +199,13 @@ public class GetCurrentUserFollowingStatusExecutionTest
                 target.setEntityId(TARGET_USER_ID);
                 oneOf(getPeopleByAccountIds).execute(with(any(List.class)));
                 will(returnValue(Collections.singletonList(target)));
-                
+
                 oneOf(getFollowerIds).execute(TARGET_USER_ID);
                 will(returnValue(Collections.singletonList(CURRENT_USER_ID)));
             }
         });
 
-        assertEquals((Follower.FollowerStatus) sut.execute(actionContext), Follower.FollowerStatus.FOLLOWING);
+        assertEquals(sut.execute(actionContext), Follower.FollowerStatus.FOLLOWING);
         context.assertIsSatisfied();
     }
 
@@ -244,13 +245,13 @@ public class GetCurrentUserFollowingStatusExecutionTest
                 target.setEntityId(TARGET_USER_ID);
                 oneOf(getPeopleByAccountIds).execute(with(any(List.class)));
                 will(returnValue(Collections.singletonList(target)));
-                
+
                 oneOf(getFollowerIds).execute(TARGET_USER_ID);
                 will(returnValue(Collections.singletonList(CURRENT_USER_ID)));
             }
         });
 
-        assertEquals((Follower.FollowerStatus) sut.execute(actionContext), Follower.FollowerStatus.FOLLOWING);
+        assertEquals(sut.execute(actionContext), Follower.FollowerStatus.FOLLOWING);
         context.assertIsSatisfied();
     }
 
@@ -290,13 +291,13 @@ public class GetCurrentUserFollowingStatusExecutionTest
                 target.setEntityId(TARGET_GROUP_ID);
                 oneOf(getDomainGroupsByShortNames).execute(with(any(List.class)));
                 will(returnValue(Collections.singletonList(target)));
-                
+
                 oneOf(getGroupFollowerIds).execute(TARGET_GROUP_ID);
                 will(returnValue(Collections.singletonList(CURRENT_USER_ID)));
             }
         });
 
-        assertEquals((Follower.FollowerStatus) sut.execute(actionContext), Follower.FollowerStatus.FOLLOWING);
+        assertEquals(sut.execute(actionContext), Follower.FollowerStatus.FOLLOWING);
         context.assertIsSatisfied();
     }
 
@@ -338,7 +339,7 @@ public class GetCurrentUserFollowingStatusExecutionTest
             }
         });
 
-        assertEquals((Follower.FollowerStatus) sut.execute(actionContext), Follower.FollowerStatus.DISABLED);
+        assertEquals(sut.execute(actionContext), Follower.FollowerStatus.DISABLED);
         context.assertIsSatisfied();
     }
 
@@ -384,14 +385,14 @@ public class GetCurrentUserFollowingStatusExecutionTest
                 target.setEntityId(TARGET_USER_ID);
                 oneOf(getPeopleByAccountIds).execute(with(any(List.class)));
                 will(returnValue(Collections.singletonList(target)));
-                
+
                 oneOf(getFollowerIds).execute(TARGET_USER_ID);
                 will(returnValue(new ArrayList<PersonModelView>()));
 
             }
         });
 
-        assertEquals((Follower.FollowerStatus) sut.execute(actionContext), Follower.FollowerStatus.NOTFOLLOWING);
+        assertEquals(sut.execute(actionContext), Follower.FollowerStatus.NOTFOLLOWING);
         context.assertIsSatisfied();
     }
 
@@ -427,7 +428,7 @@ public class GetCurrentUserFollowingStatusExecutionTest
             }
         });
 
-        assertEquals((Follower.FollowerStatus) sut.execute(actionContext), Follower.FollowerStatus.DISABLED);
+        assertEquals(sut.execute(actionContext), Follower.FollowerStatus.DISABLED);
         context.assertIsSatisfied();
     }
 

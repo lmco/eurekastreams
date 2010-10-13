@@ -27,8 +27,8 @@ import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.hibernate.transform.ResultTransformer;
 
@@ -66,7 +66,7 @@ public class CachedModelViewResultTransformer implements ResultTransformer
     /**
      * The mapper to get the domain groups by ids.
      */
-    private GetDomainGroupsByIds getDomainGroupsByIdsMapper;
+    private DomainMapper<List<Long>, List<DomainGroupModelView>> getDomainGroupsByIdsMapper;
 
     /**
      * The mapper to get the people by Ids.
@@ -75,7 +75,7 @@ public class CachedModelViewResultTransformer implements ResultTransformer
 
     /**
      * Handle list transformation, receiving a list of Maps of property name to value.
-     *
+     * 
      * @param inCollection
      *            list of maps (property name to value)
      * @return a list of ModelViews from the input list of maps (property name to value)
@@ -185,7 +185,7 @@ public class CachedModelViewResultTransformer implements ResultTransformer
     /**
      * Transform the input list of properties into a Map of property to value. transformList will group these and
      * request the ModelViews in bulk.
-     *
+     * 
      * @param inTuple
      *            the field values
      * @param inAliases
@@ -200,13 +200,13 @@ public class CachedModelViewResultTransformer implements ResultTransformer
 
     /**
      * Convert the input tuple and aliases to a key-value mapping.
-     *
+     * 
      * @param tuple
      *            values returned from Hibernate Search.
-     *
+     * 
      * @param aliases
      *            result keys returned from Hibernate Search.
-     *
+     * 
      * @return a key-value mapping of the Hibernate search tupple/aliases.
      */
     protected Map<String, Object> getMapFromTuplesAndAliases(final Object[] tuple, final String[] aliases)
@@ -221,7 +221,7 @@ public class CachedModelViewResultTransformer implements ResultTransformer
 
     /**
      * Set the GetOrganizationsByIds mapper.
-     *
+     * 
      * @param inGetOrgsByIdsMapper
      *            the getOrgsByIdsMapper to set
      */
@@ -232,18 +232,19 @@ public class CachedModelViewResultTransformer implements ResultTransformer
 
     /**
      * Set the GetDomainGroupsByIds mapper.
-     *
+     * 
      * @param inGetDomainGroupsByIdsMapper
      *            the getDomainGroupsByIdsMapper to set
      */
-    public void setGetDomainGroupsByIdsMapper(final GetDomainGroupsByIds inGetDomainGroupsByIdsMapper)
+    public void setGetDomainGroupsByIdsMapper(
+            final DomainMapper<List<Long>, List<DomainGroupModelView>> inGetDomainGroupsByIdsMapper)
     {
         this.getDomainGroupsByIdsMapper = inGetDomainGroupsByIdsMapper;
     }
 
     /**
      * Set the GetPeopleByIds mapper.
-     *
+     * 
      * @param inGetPeopleByIdsMapper
      *            the getPeopleByIdsMapper to set
      */
