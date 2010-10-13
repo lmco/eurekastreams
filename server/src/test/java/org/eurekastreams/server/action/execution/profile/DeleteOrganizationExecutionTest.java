@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,7 +36,6 @@ import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.persistence.mappers.requests.MoveOrganizationPeopleRequest;
 import org.eurekastreams.server.persistence.mappers.requests.MoveOrganizationPeopleResponse;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -70,7 +70,7 @@ public class DeleteOrganizationExecutionTest
      * Mapper for getting organization DTOs.
      */
 
-    private GetOrganizationsByIds orgDTOByIdMapper = context.mock(GetOrganizationsByIds.class);
+    private DomainMapper<List<Long>, List<OrganizationModelView>> orgDTOByIdMapper = context.mock(DomainMapper.class);
 
     /**
      * {@link FindByIdMapper}.
@@ -166,6 +166,9 @@ public class DeleteOrganizationExecutionTest
         final MoveOrganizationPeopleResponse response = new MoveOrganizationPeopleResponse(movedPeopleIds,
                 movedActivityIds);
 
+        final List<OrganizationModelView> orgs = new ArrayList<OrganizationModelView>();
+        orgs.add(orgDto);
+
         context.checking(new Expectations()
         {
             {
@@ -175,8 +178,8 @@ public class DeleteOrganizationExecutionTest
                 allowing(actionContext).getParams();
                 will(returnValue(orgId));
 
-                allowing(orgDTOByIdMapper).execute(orgId);
-                will(returnValue(orgDto));
+                allowing(orgDTOByIdMapper).execute(Collections.singletonList(orgId));
+                will(returnValue(orgs));
 
                 allowing(orgDto).getParentOrganizationId();
                 will(returnValue(orgParentId));

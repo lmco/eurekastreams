@@ -216,7 +216,7 @@
 				<constructor-arg ref="imageWriter" />
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.execution.GetBannerIdByParentOrganizationStrategy">
-                        <constructor-arg ref="bulkOrganizationsMapper" />
+                        <constructor-arg ref="getOrganizationsByIdsDbMapper" />
                         <constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />
                         <constructor-arg ref="findByIdMapper" />
                         <constructor-arg value="Organization" />
@@ -237,7 +237,7 @@
 				<constructor-arg ref="imageWriter" />
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.execution.GetBannerIdByParentOrganizationStrategy">
-                        <constructor-arg ref="bulkOrganizationsMapper" />
+                        <constructor-arg ref="getOrganizationsByIdsDbMapper" />
                         <constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />
                         <constructor-arg ref="findByIdMapper" />
                         <constructor-arg value="DomainGroup" />
@@ -259,7 +259,7 @@
 		        <constructor-arg ref="populateOrgChildWithSkeletonParentOrgsCacheMapper"/>
 		        <constructor-arg>
                     <bean class="org.eurekastreams.server.action.execution.GetBannerIdByParentOrganizationStrategy">
-				        <constructor-arg ref="bulkOrganizationsMapper" />
+				        <constructor-arg ref="getOrganizationsByIdsDbMapper" />
 				        <constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />
                         <constructor-arg ref="findByIdMapper" />
                         <constructor-arg value="Person" />
@@ -572,7 +572,7 @@
     <bean id="organizationBannerMapper" class="org.eurekastreams.server.persistence.mappers.OrganizationBannerMapper"/>
     
     <bean id="organizationBannerCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.UpdateCachedOrgBannerIdMapper">
-        <constructor-arg ref="bulkOrganizationsMapper"/>
+        <constructor-arg ref="getOrganizationsByIdsDbMapper"/>
         <property name="cache" ref="memcachedCache" />
     </bean>
     

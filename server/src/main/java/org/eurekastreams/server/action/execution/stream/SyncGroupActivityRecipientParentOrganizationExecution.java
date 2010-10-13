@@ -30,7 +30,6 @@ import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.db.GetActivityIdsPostedToStreamByUniqueKeyAndScopeType;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 
@@ -61,7 +60,7 @@ public class SyncGroupActivityRecipientParentOrganizationExecution implements
     /**
      * Mapper to get Orgs by id.
      */
-    private GetOrganizationsByIds getOrgByIdMapper;
+    private DomainMapper<List<Long>, List<OrganizationModelView>> getOrgByIdMapper;
 
     /**
      * mapper to get all parent org ids for an org id.
@@ -86,7 +85,7 @@ public class SyncGroupActivityRecipientParentOrganizationExecution implements
             final DomainMapper<String, Integer> inSyncActivityRecipientParentOrg,
             final GetActivityIdsPostedToStreamByUniqueKeyAndScopeType inActivityIdMapper,
             final GetOrganizationsByShortNames inGetOrgByShortNameMapper,
-            final GetOrganizationsByIds inGetOrgByIdMapper, //
+            final DomainMapper<List<Long>, List<OrganizationModelView>> inGetOrgByIdMapper, //
             final DomainMapper<Long, List<Long>> inGetRecursiveOrgParentMapper)
     {
         syncActivityRecipientParentOrg = inSyncActivityRecipientParentOrg;
@@ -145,7 +144,6 @@ public class SyncGroupActivityRecipientParentOrganizationExecution implements
         {
             inActionContext.getUserActionRequests().add(
                     new UserActionRequest("refreshOrgActivities", null, org.getShortName()));
-
         }
 
         return null;

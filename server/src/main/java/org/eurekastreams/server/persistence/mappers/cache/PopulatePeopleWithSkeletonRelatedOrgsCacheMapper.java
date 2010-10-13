@@ -23,7 +23,7 @@ import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -41,7 +41,7 @@ public class PopulatePeopleWithSkeletonRelatedOrgsCacheMapper
     /**
      * Mapper to get organization modelviews by ids.
      */
-    private GetOrganizationsByIds getOrgsByIdsMapper;
+    private DomainMapper<List<Long>, List<OrganizationModelView>> getOrgsByIdsMapper;
 
     /**
      * Mapper to get person modelviews by ids.
@@ -50,13 +50,14 @@ public class PopulatePeopleWithSkeletonRelatedOrgsCacheMapper
 
     /**
      * Constructor.
-     * 
+     *
      * @param inGetOrgsByIdsMapper
      *            cache mapper to get org modelviews by ids
      * @param inGetPeopleByIdsMapper
      *            cache mapper to get people modelviews by id
      */
-    public PopulatePeopleWithSkeletonRelatedOrgsCacheMapper(final GetOrganizationsByIds inGetOrgsByIdsMapper,
+    public PopulatePeopleWithSkeletonRelatedOrgsCacheMapper(
+            final DomainMapper<List<Long>, List<OrganizationModelView>> inGetOrgsByIdsMapper,
             final GetPeopleByIds inGetPeopleByIdsMapper)
     {
         getOrgsByIdsMapper = inGetOrgsByIdsMapper;
@@ -65,7 +66,7 @@ public class PopulatePeopleWithSkeletonRelatedOrgsCacheMapper
 
     /**
      * Populate the input Person's related organizations with skeleton Orgs from cache.
-     * 
+     *
      * @param inPerson
      *            the person to populate related orgs from.
      */
@@ -75,8 +76,7 @@ public class PopulatePeopleWithSkeletonRelatedOrgsCacheMapper
         // first, we need the related org ids, which are in cache, so get the person
         log.info("Loading related orgs for person " + inPerson.toString()
                 + ", starting by loading the PersonModelView to get the related org ids.");
-        PersonModelView pmv = getPeopleByIdsMapper.execute((List<Long>) Collections.singletonList(inPerson.getId()))
-                .get(0);
+        PersonModelView pmv = getPeopleByIdsMapper.execute(Collections.singletonList(inPerson.getId())).get(0);
 
         log.info("Loading the related organization modelviews by related org ids found in PersonModelView: "
                 + pmv.getRelatedOrganizationIds().toString());

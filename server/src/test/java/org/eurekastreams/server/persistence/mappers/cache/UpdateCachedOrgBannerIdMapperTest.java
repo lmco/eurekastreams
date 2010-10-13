@@ -17,14 +17,19 @@ package org.eurekastreams.server.persistence.mappers.cache;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.UpdateCachedBannerMapperRequest;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * This class contains the test suite for the {@link UpdateCachedOrgBannerIdMapper}.
@@ -55,7 +60,7 @@ public class UpdateCachedOrgBannerIdMapperTest
     /**
      * Cached mapper for retrieving OrganizationModelViews.
      */
-    private GetOrganizationsByIds getOrgMapperMock = context.mock(GetOrganizationsByIds.class);
+    private DomainMapper<List<Long>, List<OrganizationModelView>> getOrgMapperMock = context.mock(DomainMapper.class);
 
     /**
      * Test org id.
@@ -80,11 +85,14 @@ public class UpdateCachedOrgBannerIdMapperTest
         currentOrg.setEntityId(TEST_ORG_ID);
         currentOrg.setBannerId(TEST_BANNER_ID);
 
+        final List<OrganizationModelView> orgs = new ArrayList<OrganizationModelView>();
+        orgs.add(currentOrg);
+
         context.checking(new Expectations()
         {
             {
-                oneOf(getOrgMapperMock).execute(TEST_ORG_ID);
-                will(returnValue(currentOrg));
+                oneOf(getOrgMapperMock).execute(Collections.singletonList(TEST_ORG_ID));
+                will(returnValue(orgs));
 
                 oneOf(cacheMock).set(CacheKeys.ORGANIZATION_BY_ID + TEST_ORG_ID, currentOrg);
             }
@@ -112,11 +120,14 @@ public class UpdateCachedOrgBannerIdMapperTest
         currentOrg.setEntityId(TEST_ORG_ID);
         currentOrg.setBannerId(TEST_BANNER_ID);
 
+        final List<OrganizationModelView> orgs = new ArrayList<OrganizationModelView>();
+        orgs.add(currentOrg);
+
         context.checking(new Expectations()
         {
             {
-                oneOf(getOrgMapperMock).execute(TEST_ORG_ID);
-                will(returnValue(currentOrg));
+                oneOf(getOrgMapperMock).execute(Collections.singletonList(TEST_ORG_ID));
+                will(returnValue(orgs));
 
                 oneOf(cacheMock).set(CacheKeys.ORGANIZATION_BY_ID + TEST_ORG_ID, currentOrg);
             }

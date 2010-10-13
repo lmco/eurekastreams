@@ -15,9 +15,8 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.eurekastreams.commons.hibernate.ModelViewResultTransformer;
 import org.eurekastreams.server.domain.Organization;
@@ -25,28 +24,32 @@ import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.search.factories.OrganizationModelViewFactory;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 /**
- * Get OrganizationModelViews from Db for passed in ids.
- * 
+ * Gets a list of organization objects for a given list of org ids.
  */
 public class GetOrganizationsByIdsDbMapper extends BaseArgDomainMapper<List<Long>, List<OrganizationModelView>>
 {
-
     /**
-     * Get OrganizationModelViews from Db for passed in ids.
-     * 
-     * @param inRequest
-     *            list of ids.
-     * @return List of OrganizationModelViews for provided ids.
+     * Looks in cache for the necessary DTOs and returns them if found. Otherwise, makes a database call, puts them in
+     * cache, and returns them.
+     *
+     * @param ids
+     *            the list of ids that should be found.
+     * @return list of DTO objects.
      */
-    @Override
-    public List<OrganizationModelView> execute(final List<Long> inRequest)
+    @SuppressWarnings("unchecked")
+    public List<OrganizationModelView> execute(final List<Long> ids)
     {
-        Map<String, OrganizationModelView> itemMap = new HashMap<String, OrganizationModelView>();
+        if (ids == null || ids.size() == 0)
+        {
+            return new ArrayList<OrganizationModelView>();
+        }
+
         Criteria criteria = getHibernateSession().createCriteria(Organization.class);
         ProjectionList fields = Projections.projectionList();
         fields.add(getColumn("id"));
@@ -64,9 +67,23 @@ public class GetOrganizationsByIdsDbMapper extends BaseArgDomainMapper<List<Long
         fields.add(Projections.property("stream.id").as("streamId"));
         fields.add(getColumn("bannerId"));
         criteria.setProjection(fields);
+
         criteria.createAlias("streamScope", "stream");
 
-        criteria.add(Restrictions.in("this.id", inRequest));
+        // Creates the necessary "OR" clauses to get all uncached items
+        Criterion restriction = null;
+        for (Long orgId : ids)
+        {
+            if (restriction == null)
+            {
+                restriction = Restrictions.eq("this.id", orgId);
+            }
+            else
+            {
+                restriction = Restrictions.or(Restrictions.eq("this.id", orgId), restriction);
+            }
+        }
+        criteria.add(restriction);
 
         ModelViewResultTransformer<OrganizationModelView> resultTransformer = //
         new ModelViewResultTransformer<OrganizationModelView>(new OrganizationModelViewFactory());
@@ -74,5 +91,4 @@ public class GetOrganizationsByIdsDbMapper extends BaseArgDomainMapper<List<Long
 
         return criteria.list();
     }
-
 }

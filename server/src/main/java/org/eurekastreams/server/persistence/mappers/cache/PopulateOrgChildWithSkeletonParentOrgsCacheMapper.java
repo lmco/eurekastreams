@@ -24,7 +24,7 @@ import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.OrganizationChild;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 
 /**
@@ -41,7 +41,7 @@ public class PopulateOrgChildWithSkeletonParentOrgsCacheMapper
     /**
      * Mapper to get people by ids cached mappers.
      */
-    private GetOrganizationsByIds getOrgsByIdsCacheMapper;
+    private DomainMapper<List<Long>, List<OrganizationModelView>> getOrgsByIdsCacheMapper;
 
     /**
      * Constructor.
@@ -49,7 +49,8 @@ public class PopulateOrgChildWithSkeletonParentOrgsCacheMapper
      * @param inGetOrgsByIdsCacheMapper
      *            mapper to get a cached organization
      */
-    public PopulateOrgChildWithSkeletonParentOrgsCacheMapper(final GetOrganizationsByIds inGetOrgsByIdsCacheMapper)
+    public PopulateOrgChildWithSkeletonParentOrgsCacheMapper(
+            final DomainMapper<List<Long>, List<OrganizationModelView>> inGetOrgsByIdsCacheMapper)
     {
         getOrgsByIdsCacheMapper = inGetOrgsByIdsCacheMapper;
     }

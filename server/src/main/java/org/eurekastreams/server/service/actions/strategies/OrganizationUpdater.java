@@ -36,15 +36,15 @@ import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.ClearPrivateGroupIdsViewableByCoordinatorCacheOnOrgUpdate;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.hibernate.validator.InvalidStateException;
 import org.hibernate.validator.InvalidValue;
 
 /**
  * Class to update an Organization.
- * 
+ *
  */
 public class OrganizationUpdater extends OrganizationPersister
 {
@@ -56,7 +56,7 @@ public class OrganizationUpdater extends OrganizationPersister
     /**
      * Mapper to get org model view from cache (or database if not in cache).
      */
-    private GetOrganizationsByIds cachedOrganizationMapper;
+    private DomainMapper<List<Long>, List<OrganizationModelView>> cachedOrganizationMapper;
 
     /**
      * key for passing original coordinators in map.
@@ -73,7 +73,7 @@ public class OrganizationUpdater extends OrganizationPersister
 
     /**
      * Constructor.
-     * 
+     *
      * @param inOrganizationMapper
      *            The org mapper.
      * @param inPersonMapper
@@ -85,7 +85,7 @@ public class OrganizationUpdater extends OrganizationPersister
      *            updated
      */
     public OrganizationUpdater(final OrganizationMapper inOrganizationMapper, final PersonMapper inPersonMapper,
-            final GetOrganizationsByIds inCachedOrganizationMapper,
+            final DomainMapper<List<Long>, List<OrganizationModelView>> inCachedOrganizationMapper,
             final ClearPrivateGroupIdsViewableByCoordinatorCacheOnOrgUpdate
             // line break
             inClearActivityStreamSearchStringsForOrgCoordinatorMapper)
@@ -99,7 +99,7 @@ public class OrganizationUpdater extends OrganizationPersister
 
     /**
      * Returns Organization base on id passed in inFields.
-     * 
+     *
      * @param inActionContext
      *            Action context
      * @param inFields
@@ -131,7 +131,7 @@ public class OrganizationUpdater extends OrganizationPersister
     /**
      * This method is different from its parent in that it does not attempt to bootstrap people into the organization.
      * We're just updating, not LDAP work gets done here.
-     * 
+     *
      * @param inActionContext
      *            The action context
      * @param inFields
@@ -171,7 +171,7 @@ public class OrganizationUpdater extends OrganizationPersister
 
     /**
      * Persists modified object.
-     * 
+     *
      * @param inActionContext
      *            the action context
      * @param inOrganization

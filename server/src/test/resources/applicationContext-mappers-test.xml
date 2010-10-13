@@ -16,12 +16,6 @@
        <property name="cache" ref="testCache" />
     </bean>
 	
-	<bean id="getOrganizationTreeDTOMapper"
-		class="org.eurekastreams.server.persistence.mappers.GetOrganizationTreeDTO">
-		<property name="cache" ref="testCache" />
-		<property name="getOrganizationsByIdMapper" ref="bulkOrganizationsMapper" />
-	</bean>
-	
 	<bean id="insertLikedActivity"
 		class="org.eurekastreams.server.persistence.mappers.InsertLikedActivity">
 		<property name="cache" ref="testCache" />
@@ -302,15 +296,10 @@
 		<property name="bulkPeopleMapper" ref="bulkPeopleMapper" />
 	</bean>
 
-	<bean id="bulkOrganizationsMapper"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds">
-		<property name="cache" ref="testCache" />
-	</bean>
-
 	<bean id="bulkOrganizationsByShortNameMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames">
 		<property name="cache" ref="testCache" />
-		<property name="bulkOrganizationsMapper" ref="bulkOrganizationsMapper" />
+		<property name="bulkOrganizationsMapper" ref="getOrganizationsByIdsDbMapper" />
 	</bean>
 
 	<bean id="bulkDomainGroupsMapper"
@@ -417,13 +406,6 @@
 		<property name="cache" ref="testCache"/>
 	</bean>
 
-	<!-- Organization Hierarchy Cache Loader -->
-	<bean id="organizationCacheLoader"
-		class="org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCacheLoader">
-		<property name="cache" ref="testCache" />
-		<property name="organizationMapper" ref="bulkOrganizationsMapper" />
-	</bean>
-
 	<bean id="orgParentHierarchyCacheCleaner" class="org.eurekastreams.server.persistence.mappers.cache.OrgParentHierarchyCacheCleaner">
 		<property name="cache" ref="testCache" />
 		<property name="getRecursiveParentOrgIdsMapper" ref="getRecursiveParentOrgIdsMapper"/>
@@ -496,7 +478,7 @@
 	</bean>
 
 	<bean id="populatePeopleWithSkeletonRelatedOrgsCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.PopulatePeopleWithSkeletonRelatedOrgsCacheMapper">
-		<constructor-arg ref="bulkOrganizationsMapper" />
+		<constructor-arg ref="getOrganizationsByIdsDbMapper" />
 		<constructor-arg ref="bulkPeopleMapper" />
 	</bean>
 	

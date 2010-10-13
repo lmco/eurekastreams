@@ -18,6 +18,7 @@ package org.eurekastreams.server.persistence.mappers.stream;
 import java.util.List;
 
 import org.eurekastreams.server.domain.Organization;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 
@@ -29,24 +30,25 @@ public class GetOrganizationsByShortNames extends GetItemsByPointerIds<Organizat
     /**
      * Bulk mapper.
      */
-    private GetOrganizationsByIds bulkOrganizationsMapper;
+    private DomainMapper<List<Long>, List<OrganizationModelView>> bulkOrganizationsMapper;
 
     /**
      * Sets bulk mapper.
-     * 
+     *
      * @param inBulkOrganizationsMapper
      *            the bulk mapper to set.
      */
-    public void setBulkOrganizationsMapper(final GetOrganizationsByIds inBulkOrganizationsMapper)
+    public void setBulkOrganizationsMapper(
+            final DomainMapper<List<Long>, List<OrganizationModelView>> inBulkOrganizationsMapper)
     {
         bulkOrganizationsMapper = inBulkOrganizationsMapper;
     }
 
     /**
      * Execute bulk mapper.
-     * 
+     *
      * @param ids
-     *           the list of ids.
+     *            the list of ids.
      * @return list of orgs.
      */
     @Override
@@ -57,7 +59,7 @@ public class GetOrganizationsByShortNames extends GetItemsByPointerIds<Organizat
 
     /**
      * Get prefix.
-     * 
+     *
      * @return prefix.
      */
     @Override
@@ -68,7 +70,7 @@ public class GetOrganizationsByShortNames extends GetItemsByPointerIds<Organizat
 
     /**
      * Get class.
-     * 
+     *
      * @return class.
      */
     @SuppressWarnings("unchecked")
@@ -80,7 +82,7 @@ public class GetOrganizationsByShortNames extends GetItemsByPointerIds<Organizat
 
     /**
      * Get property name.
-     * 
+     *
      * @return property name.
      */
     @Override

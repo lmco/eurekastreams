@@ -1439,11 +1439,6 @@
 	<bean id="domainGroupQueryStrategy"
 		class="org.eurekastreams.server.persistence.strategies.DomainGroupQueryStrategy" />
 
-	<bean id="bulkOrganizationsMapper"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds">
-		<property name="cache" ref="memcachedCache" />
-	</bean>
-
 	<bean id="bulkPeopleMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds">
 		<constructor-arg ref="personQueryStrategy" />
@@ -1472,7 +1467,7 @@
 	<bean id="bulkOrganizationsByShortNameMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames">
 		<property name="cache" ref="memcachedCache" />
-		<property name="bulkOrganizationsMapper" ref="bulkOrganizationsMapper" />
+		<property name="bulkOrganizationsMapper" ref="getOrganizationsByIdsDbMapper" />
 	</bean>
 
 	<bean id="bulkDomainGroupsByShortNameMapper"
@@ -1651,10 +1646,10 @@
 
 	<bean id="getOrganizationTreeDTOMapper"
 		class="org.eurekastreams.server.persistence.mappers.GetOrganizationTreeDTO">
-		<property name="cache" ref="memcachedCache" />
-		<property name="getOrganizationsByIdMapper" ref="bulkOrganizationsMapper" />
+		<constructor-arg ref="getAllOrganizationIdsDbMapper" />
+		<constructor-arg ref="getOrganizationsByIdsDbMapper" />
 	</bean>
-
+	
 	<bean id="getRootOrganizationIdAndShortNameMapper"
 		class="org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName" />
 
@@ -1742,12 +1737,12 @@
 
 	<bean id="populateOrgChildWithSkeletonParentOrgsCacheMapper"
 		class="org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper">
-		<constructor-arg ref="bulkOrganizationsMapper" />
+		<constructor-arg ref="getOrganizationsByIdsDbMapper" />
 	</bean>
 
 	<bean id="populatePeopleWithSkeletonRelatedOrgsCacheMapper"
 		class="org.eurekastreams.server.persistence.mappers.cache.PopulatePeopleWithSkeletonRelatedOrgsCacheMapper">
-		<constructor-arg ref="bulkOrganizationsMapper" />
+		<constructor-arg ref="getOrganizationsByIdsDbMapper" />
 		<constructor-arg ref="bulkPeopleMapper" />
 	</bean>
 
@@ -1926,6 +1921,8 @@
     <bean id="getGroupsByIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetGroupsByIdsDbMapper">
         <constructor-arg ref="domainGroupQueryStrategy" />
     </bean>
+    
+    <bean id="getAllOrganizationIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetAllOrganizationIdsDbMapper" />
     
     <bean id="getOrganizationsByIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetOrganizationsByIdsDbMapper" />
     

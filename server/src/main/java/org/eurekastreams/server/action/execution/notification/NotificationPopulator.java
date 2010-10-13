@@ -16,6 +16,7 @@
 package org.eurekastreams.server.action.execution.notification;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.eurekastreams.server.domain.EntityType;
@@ -23,7 +24,6 @@ import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByIds;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
@@ -41,14 +41,14 @@ public class NotificationPopulator
     private GetDomainGroupsByIds groupMapper;
 
     /** For getting org info. */
-    private GetOrganizationsByIds orgMapper;
+    private DomainMapper<List<Long>, List<OrganizationModelView>> orgMapper;
 
     /** For getting activity info. */
     private DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inPeopleMapper
      *            For getting person info.
      * @param inGroupMapper
@@ -59,7 +59,7 @@ public class NotificationPopulator
      *            For getting activity info.
      */
     public NotificationPopulator(final GetPeopleByIds inPeopleMapper, final GetDomainGroupsByIds inGroupMapper,
-            final GetOrganizationsByIds inOrgMapper,
+            final DomainMapper<List<Long>, List<OrganizationModelView>> inOrgMapper,
             final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper)
     {
         peopleMapper = inPeopleMapper;
@@ -70,7 +70,7 @@ public class NotificationPopulator
 
     /**
      * Populates a notification with any details not initially provided.
-     * 
+     *
      * @param notif
      *            The notification.
      */
@@ -109,7 +109,8 @@ public class NotificationPopulator
             }
             else if (EntityType.ORGANIZATION.equals(notif.getDestinationType()))
             {
-                OrganizationModelView dest = orgMapper.execute(notif.getDestinationId());
+                OrganizationModelView dest = orgMapper.execute(Collections.singletonList(notif.getDestinationId()))
+                        .get(0);
                 notif.setDestinationUniqueId(dest.getShortName());
                 notif.setDestinationName(dest.getName());
             }
@@ -118,7 +119,7 @@ public class NotificationPopulator
 
     /**
      * Convenience routine to test if a string is not present.
-     * 
+     *
      * @param theString
      *            String to test.
      * @return True if null/empty.

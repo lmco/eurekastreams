@@ -33,7 +33,6 @@ import org.eurekastreams.server.persistence.mappers.InsertMapper;
 import org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 import org.eurekastreams.server.persistence.mappers.stream.ActivityContentExtractor;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -80,12 +79,14 @@ public class StoreStreamHashTagsForActivityStrategyImplTest
     /**
      * mapper to get all parent org ids for an org id.
      */
-    private DomainMapper<Long, List<Long>> getRecursiveParentOrgIds = context.mock(DomainMapper.class);
+    private DomainMapper<Long, List<Long>> getRecursiveParentOrgIds = context.mock(DomainMapper.class,
+            "getRecursiveParentOrgIds");
 
     /**
      * Get organizations by ids mapper.
      */
-    private final GetOrganizationsByIds organizationsByIdsMapper = context.mock(GetOrganizationsByIds.class);
+    private final DomainMapper<List<Long>, List<OrganizationModelView>> organizationsByIdsMapper = context.mock(
+            DomainMapper.class, "organizationsByIdsMapper");
 
     /**
      * Mock activity.

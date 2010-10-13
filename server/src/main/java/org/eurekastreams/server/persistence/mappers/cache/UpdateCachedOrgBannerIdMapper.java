@@ -15,14 +15,16 @@
  */
 package org.eurekastreams.server.persistence.mappers.cache;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.UpdateCachedBannerMapperRequest;
 import org.eurekastreams.server.persistence.mappers.stream.BaseArgCachedDomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 
 /**
- * This mapper updates the banner id in the cached organization model view
- * object based on inputs.
+ * This mapper updates the banner id in the cached organization model view object based on inputs.
  *
  */
 public class UpdateCachedOrgBannerIdMapper extends BaseArgCachedDomainMapper<UpdateCachedBannerMapperRequest, Object>
@@ -30,27 +32,33 @@ public class UpdateCachedOrgBannerIdMapper extends BaseArgCachedDomainMapper<Upd
     /**
      * Local instance of the {@link GetOrganizationsByIds} mapper.
      */
-    private final GetOrganizationsByIds cachedOrgMapper;
+    private final DomainMapper<List<Long>, List<OrganizationModelView>> cachedOrgMapper;
 
     /**
      * Constructor.
-     * @param inCachedOrgMapper instance of the {@link GetOrganizationsByIds} mapper.
+     *
+     * @param inCachedOrgMapper
+     *            instance of the {@link GetOrganizationsByIds} mapper.
      */
-    public UpdateCachedOrgBannerIdMapper(final GetOrganizationsByIds inCachedOrgMapper)
+    public UpdateCachedOrgBannerIdMapper(final DomainMapper<List<Long>, List<OrganizationModelView>> inCachedOrgMapper)
     {
         cachedOrgMapper = inCachedOrgMapper;
     }
 
     /**
      * Retrieve the requested {@link OrganizationModelView}, set the new banner id and save it back to cache.
-     * @param inRequest - instance of {@link UpdateCachedBannerMapperRequest} that contains the entity id and
-     * banner id to update.
+     *
+     * @param inRequest
+     *            - instance of {@link UpdateCachedBannerMapperRequest} that contains the entity id and banner id to
+     *            update.
      * @return - nothing to return.
      */
     @Override
     public Object execute(final UpdateCachedBannerMapperRequest inRequest)
     {
-        OrganizationModelView currentOrgDTO = cachedOrgMapper.execute(inRequest.getEntityId());
+        List<Long> orgIdLists = new ArrayList<Long>();
+        orgIdLists.add(inRequest.getEntityId());
+        OrganizationModelView currentOrgDTO = cachedOrgMapper.execute(orgIdLists).get(0);
         currentOrgDTO.setBannerId(inRequest.getBannerId());
         getCache().set(CacheKeys.ORGANIZATION_BY_ID + inRequest.getEntityId(), currentOrgDTO);
         return null;

@@ -25,20 +25,18 @@ import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.server.action.request.profile.GetBreadcrumbsListRequest;
 import org.eurekastreams.server.domain.BreadcrumbDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.MapperTest;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
+import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Tests the action to create org hierarchy breadcrumbs.
  */
-public class GetBreadcrumbsListExecutionTest extends MapperTest
+public class GetBreadcrumbsListExecutionTest
 {
     /**
      * Context for building mock objects.
@@ -58,13 +56,14 @@ public class GetBreadcrumbsListExecutionTest extends MapperTest
     /**
      * mapper to get all parent org ids for an org id.
      */
-    private DomainMapper<Long, List<Long>> getRecursiveParentOrgIdsMapper = context.mock(DomainMapper.class);
+    private DomainMapper<Long, List<Long>> getRecursiveParentOrgIdsMapper = context.mock(DomainMapper.class,
+            "getRecursiveParentOrgIdsMapper");
 
     /**
      * Org mapper.
      */
-    @Autowired
-    private GetOrganizationsByIds bulkOrganizationsMapper;
+    private DomainMapper<List<Long>, List<OrganizationModelView>> bulkOrganizationsMapper = context.mock(
+            DomainMapper.class, "bulkOrganizationsMapper");
 
     /**
      * Mocked instance of the principal object.
@@ -93,11 +92,21 @@ public class GetBreadcrumbsListExecutionTest extends MapperTest
         final List<Long> parentOrgIds = new ArrayList<Long>();
         parentOrgIds.add(5L);
 
+        final List<OrganizationModelView> orgs = new ArrayList<OrganizationModelView>();
+        OrganizationModelView org = new OrganizationModelView();
+        org.setEntityId(5L);
+        org.setShortName("FOO");
+        org.setName("FOO BAR");
+        orgs.add(org);
+
         context.checking(new Expectations()
         {
             {
                 oneOf(getRecursiveParentOrgIdsMapper).execute(6L);
                 will(returnValue(parentOrgIds));
+
+                oneOf(bulkOrganizationsMapper).execute(parentOrgIds);
+                will(returnValue(orgs));
             }
         });
 
@@ -122,12 +131,16 @@ public class GetBreadcrumbsListExecutionTest extends MapperTest
     public final void testExecute2() throws Exception
     {
         final List<Long> parentOrgIds = new ArrayList<Long>();
+        final List<OrganizationModelView> orgs = new ArrayList<OrganizationModelView>();
 
         context.checking(new Expectations()
         {
             {
                 oneOf(getRecursiveParentOrgIdsMapper).execute(5L);
                 will(returnValue(parentOrgIds));
+
+                oneOf(bulkOrganizationsMapper).execute(parentOrgIds);
+                will(returnValue(orgs));
             }
         });
 

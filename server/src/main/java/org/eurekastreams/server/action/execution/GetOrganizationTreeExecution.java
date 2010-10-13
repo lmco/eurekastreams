@@ -32,7 +32,7 @@ public class GetOrganizationTreeExecution implements ExecutionStrategy<ActionCon
 
     /**
      * Constructor.
-     * 
+     *
      * @param inOrganizationTreeDAO
      *            OrganizationTree DAO.
      */
@@ -43,7 +43,7 @@ public class GetOrganizationTreeExecution implements ExecutionStrategy<ActionCon
 
     /**
      * Gets the entire organization tree.
-     * 
+     *
      * @param inActionContext
      *            {@link ActionContext}.
      * @return {@link OrganizationTreeDTO} representing entire organization tree.
@@ -51,7 +51,7 @@ public class GetOrganizationTreeExecution implements ExecutionStrategy<ActionCon
     @Override
     public OrganizationTreeDTO execute(final ActionContext inActionContext)
     {
-        return organizationTreeDAO.execute();
+        return organizationTreeDAO.execute(null);
     }
 
 }

@@ -30,7 +30,6 @@ import org.eurekastreams.server.action.request.profile.GetBreadcrumbsListRequest
 import org.eurekastreams.server.domain.BreadcrumbDTO;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 
 /**
@@ -52,7 +51,7 @@ public class GetBreadcrumbsListExecution implements ExecutionStrategy<ServiceAct
     /**
      * Mapper to get org details in bulk.
      */
-    private final GetOrganizationsByIds orgMapper;
+    private final DomainMapper<List<Long>, List<OrganizationModelView>> orgMapper;
 
     /**
      * Constructor.
@@ -63,7 +62,7 @@ public class GetBreadcrumbsListExecution implements ExecutionStrategy<ServiceAct
      *            - instance of the {@link GetOrganizationsByIds} mapper for this action.
      */
     public GetBreadcrumbsListExecution(final DomainMapper<Long, List<Long>> inIdsMapper,
-            final GetOrganizationsByIds inOrgMapper)
+            final DomainMapper<List<Long>, List<OrganizationModelView>> inOrgMapper)
     {
         idsMapper = inIdsMapper;
         orgMapper = inOrgMapper;

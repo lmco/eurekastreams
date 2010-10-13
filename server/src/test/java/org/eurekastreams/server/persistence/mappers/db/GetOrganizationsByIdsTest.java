@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,19 +19,19 @@ import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
- * Test for GetOrganizationsByIdsDbMapper.
- * 
+ * Tests getting person DTOs from a list of person ids.
  */
-public class GetOrganizationsByIdsDbMapperTest extends MapperTest
+public class GetOrganizationsByIdsTest extends MapperTest
 {
     /**
      * The main id to test with.
@@ -46,12 +46,21 @@ public class GetOrganizationsByIdsDbMapperTest extends MapperTest
     /**
      * System under test.
      */
-    @Autowired
     private GetOrganizationsByIdsDbMapper mapper;
 
     /**
+     * Setup method.
+     */
+    @Before
+    public void setup()
+    {
+        mapper = new GetOrganizationsByIdsDbMapper();
+        mapper.setEntityManager(getEntityManager());
+    }
+
+    /**
      * Verifies the returned org matches what is expected for org 5.
-     * 
+     *
      * @param org
      *            The returned org.
      */
@@ -74,7 +83,23 @@ public class GetOrganizationsByIdsDbMapperTest extends MapperTest
         List<OrganizationModelView> results = mapper.execute(list);
         assertEquals(1, results.size());
         verifyOrg5(results.get(0));
+
+        // now that the cache should be populated, run the execute again
+        results = mapper.execute(list);
+        assertEquals(1, results.size());
+        verifyOrg5(results.get(0));
     }
+
+    /**
+     * test.
+     */
+    @Test
+    public void testExecuteSingle()
+    {
+        OrganizationModelView result = mapper.execute(Collections.singletonList(ORG_ID)).get(0);
+        verifyOrg5(result);
+    }
+
 
     /**
      * test.
@@ -82,9 +107,17 @@ public class GetOrganizationsByIdsDbMapperTest extends MapperTest
     @Test
     public void testExecuteWithMultipleIds()
     {
-        List<Long> list = new ArrayList<Long>(Arrays.asList(new Long(ORG_ID), new Long(ORG_ID2)));
+        List<Long> list = new ArrayList<Long>();
+        list.add(new Long(ORG_ID));
+        list.add(new Long(ORG_ID2));
         List<OrganizationModelView> results = mapper.execute(list);
         assertEquals(2, results.size());
+
+        results = mapper.execute(list);
+        assertEquals(2, results.size());
+        //Ensure that the order returned is the same as provided.
+        assertEquals(ORG_ID, results.get(0).getEntityId());
+        assertEquals(ORG_ID2, results.get(1).getEntityId());
 
         OrganizationModelView org5 = null;
         OrganizationModelView org6 = null;
@@ -103,5 +136,4 @@ public class GetOrganizationsByIdsDbMapperTest extends MapperTest
         assertEquals(6L, org6.getEntityId());
         assertEquals("Bar", org6.getBannerId());
     }
-
 }

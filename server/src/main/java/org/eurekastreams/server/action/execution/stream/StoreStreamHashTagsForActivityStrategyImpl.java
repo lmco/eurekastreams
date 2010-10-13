@@ -30,7 +30,6 @@ import org.eurekastreams.server.persistence.mappers.InsertMapper;
 import org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 import org.eurekastreams.server.persistence.mappers.stream.ActivityContentExtractor;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 
 /**
@@ -72,7 +71,7 @@ public class StoreStreamHashTagsForActivityStrategyImpl implements StoreStreamHa
     /**
      * Get organizations by ids mapper.
      */
-    private final GetOrganizationsByIds organizationsByIdsMapper;
+    private final DomainMapper<List<Long>, List<OrganizationModelView>> organizationsByIdsMapper;
 
     /**
      * Constructor for the PostActivityAsyncExecutionStrategy class.
@@ -95,7 +94,7 @@ public class StoreStreamHashTagsForActivityStrategyImpl implements StoreStreamHa
             final DecoratedPartialResponseDomainMapper<List<String>, List<HashTag>> inHashTagMapper,
             final InsertMapper<StreamHashTag> inStreamHashTagInsertMapper,
             final DomainMapper<Long, List<Long>> inGetRecursiveParentOrgIds,
-            final GetOrganizationsByIds inOrganizationsByIdsMapper)
+            final DomainMapper<List<Long>, List<OrganizationModelView>> inOrganizationsByIdsMapper)
     {
         hashTagExtractor = inHashTagExtractor;
         contentExtractor = inContentExtractor;

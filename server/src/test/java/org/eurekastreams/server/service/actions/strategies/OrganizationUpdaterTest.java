@@ -39,9 +39,9 @@ import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators;
 import org.eurekastreams.server.persistence.mappers.cache.ClearPrivateGroupIdsViewableByCoordinatorCacheOnOrgUpdate;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.hamcrest.Matchers;
 import org.jmock.Expectations;
@@ -110,7 +110,8 @@ public class OrganizationUpdaterTest
     /**
      * The mock cached org mapper to be used by the action.
      */
-    private GetOrganizationsByIds cachedOrgMapperMock = context.mock(GetOrganizationsByIds.class);
+    private DomainMapper<List<Long>, List<OrganizationModelView>> cachedOrgMapperMock = context
+            .mock(DomainMapper.class);
 
     /**
      * Mapper to get all the coordinators of an org, traversing up the tree.
@@ -158,7 +159,7 @@ public class OrganizationUpdaterTest
 
     /**
      * Build an organization based on the input form being fully filled out with valid data.
-     * 
+     *
      * @throws Exception
      *             not expected
      */
@@ -197,7 +198,7 @@ public class OrganizationUpdaterTest
 
     /**
      * Build an organization based on the input form being fully filled out with valid data.
-     * 
+     *
      * @throws Exception
      *             not expected
      */

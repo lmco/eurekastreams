@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,15 +25,12 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.OrganizationTreeDTO;
-import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
-import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByIds;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 
 /**
- * Mapper to get the Organization Tree DTO from the root downward, using cache.
+ * Mapper to get the Organization Tree DTO from the root downward, using the database only.
  */
-public class GetOrganizationTreeDTO extends CachedDomainMapper
+public class GetOrganizationTreeDTO extends BaseArgDomainMapper<Long, OrganizationTreeDTO>
 {
     /**
      * Logger instance.
@@ -41,40 +38,56 @@ public class GetOrganizationTreeDTO extends CachedDomainMapper
     private Log log = LogFactory.getLog(GetOrganizationTreeDTO.class);
 
     /**
-     * Mapper to get orgs by id, using cache.
+     * Mapper to get all org ids.
      */
-    private GetOrganizationsByIds getOrganizationsByIdMapper;
+    private DomainMapper<Long, List<Long>> getAllOrganizationIdsMapper;
 
     /**
-     * Fetch the OrganizationTreeDTO from cache, or load from DB and put into cache if not present.
-     * 
+     * Mapper to get orgs by id.
+     */
+    private DomainMapper<List<Long>, List<OrganizationModelView>> getOrganizationsByIdMapper;
+
+    /**
+     * Constructor.
+     *
+     * @param inGetAllOrganizationIdsMapper
+     *            mapper to get all organization ids
+     * @param inGetOrganizationsByIdMapper
+     *            mapper to get organization model views by id
+     */
+    public GetOrganizationTreeDTO(final DomainMapper<Long, List<Long>> inGetAllOrganizationIdsMapper,
+            final DomainMapper<List<Long>, List<OrganizationModelView>> inGetOrganizationsByIdMapper)
+    {
+        getAllOrganizationIdsMapper = inGetAllOrganizationIdsMapper;
+        getOrganizationsByIdMapper = inGetOrganizationsByIdMapper;
+    }
+
+    /**
+     * Fetch the OrganizationTreeDTO.
+     *
+     * @param ignored
+     *            not used
+     *
      * @return the OrganizationTreeDTO from the root, downward
      */
-    public OrganizationTreeDTO execute()
+    public OrganizationTreeDTO execute(final Long ignored)
     {
-        OrganizationTreeDTO orgTree = (OrganizationTreeDTO) getCache().get(CacheKeys.ORGANIZATION_TREE_DTO);
-        if (orgTree == null)
-        {
-            log.info("Building Organization Tree for cache.");
+        log.info("Building Organization Tree.");
 
-            // build a hash of all orgs, grouped by parent org id
-            HashMap<Long, Set<OrganizationModelView>> orgHash = new HashMap<Long, Set<OrganizationModelView>>();
-            OrganizationModelView rootOrg = buildOrgTreeHash(orgHash);
+        // build a hash of all orgs, grouped by parent org id
+        HashMap<Long, Set<OrganizationModelView>> orgHash = new HashMap<Long, Set<OrganizationModelView>>();
+        OrganizationModelView rootOrg = buildOrgTreeHash(orgHash);
 
-            // build the org tree
-            orgTree = populateTree(rootOrg, orgHash);
+        // build the org tree
+        OrganizationTreeDTO tree = populateTree(rootOrg, orgHash);
 
-            // store in cache
-            getCache().set(CacheKeys.ORGANIZATION_TREE_DTO, orgTree);
-
-            log.info("Organization Tree built and stored in cache.");
-        }
-        return orgTree;
+        log.info("Organization Tree built.");
+        return tree;
     }
 
     /**
      * Build a Map of org id -> children OrganizationModelViews for all OrganizationModelViews.
-     * 
+     *
      * @param inOrgHash
      *            the org hash to store org id -> OrganizationModelViews
      * @return the root OrganizationModelView
@@ -82,9 +95,10 @@ public class GetOrganizationTreeDTO extends CachedDomainMapper
     private OrganizationModelView buildOrgTreeHash(final Map<Long, Set<OrganizationModelView>> inOrgHash)
     {
         OrganizationModelView rootOrg = null;
-        
+
         // get all of the organization model views
-        List<OrganizationModelView> orgs = getOrganizationsByIdMapper.execute();
+        List<Long> orgIds = getAllOrganizationIdsMapper.execute(null);
+        List<OrganizationModelView> orgs = getOrganizationsByIdMapper.execute(orgIds);
 
         // loop through the orgs, grouping them by parent org id for quicker looping while building the tree
         for (OrganizationModelView org : orgs)
@@ -112,7 +126,7 @@ public class GetOrganizationTreeDTO extends CachedDomainMapper
 
     /**
      * Populate the tree of organizations recursively.
-     * 
+     *
      * @param inOrg
      *            the starting point
      * @param inOrgMap
@@ -140,14 +154,5 @@ public class GetOrganizationTreeDTO extends CachedDomainMapper
         orgTree.setChildren(children);
 
         return orgTree;
-    }
-
-    /**
-     * @param inGetOrganizationsByIdMapper
-     *            the getOrganizationsByIdMapper to set
-     */
-    public void setGetOrganizationsByIdMapper(final GetOrganizationsByIds inGetOrganizationsByIdMapper)
-    {
-        this.getOrganizationsByIdMapper = inGetOrganizationsByIdMapper;
     }
 }

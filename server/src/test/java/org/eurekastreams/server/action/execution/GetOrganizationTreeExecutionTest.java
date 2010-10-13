@@ -28,7 +28,7 @@ import org.junit.Test;
 
 /**
  * Test for GetOrganizationTreeExecution class.
- * 
+ *
  */
 public class GetOrganizationTreeExecutionTest
 {
@@ -75,7 +75,7 @@ public class GetOrganizationTreeExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(organizationTreeDAO).execute();
+                oneOf(organizationTreeDAO).execute(null);
                 will(returnValue(orgTreeDTO));
             }
         });
