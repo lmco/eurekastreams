@@ -878,6 +878,27 @@
         <!-- Cache refresher -->
         <constructor-arg ref="groupCacheRefresher"/>                        
     </bean> 
+    
+    <bean id="getGroupsByIdsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache Mapper -->
+        <constructor-arg ref="getGroupsByIdsCacheMapper"/>
+        <!-- Database mapper to fall back on if not found in cache -->
+        <constructor-arg ref="getGroupsByIdsDbMapper" />
+        <!-- Data combiner -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />
+        </constructor-arg>        
+        <!-- Cache refresher -->
+        <constructor-arg ref="groupCacheRefresher"/>                        
+    </bean>     
+    
+    <bean id="getGroupsByIdsCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
+        <constructor-arg ref="toStringCacheKeySuffixTransformer" />
+        <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.GROUP_BY_ID" />
+        <!-- Is list of lists flag -->
+        <constructor-arg value="False" />
+        <property name="cache" ref="memcachedCache" />
+    </bean>        
 	
 	<bean id="getFollowedGroupIdsForPersonByIdMapper_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache Mapper -->
