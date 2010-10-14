@@ -1554,7 +1554,7 @@
 
 	<bean id="deleteActivityCacheUpdateDAO"
 		class="org.eurekastreams.server.persistence.mappers.stream.DeleteActivityCacheUpdate">
-		<constructor-arg ref="getFollowerIds" />
+		<constructor-arg ref="getFollowerPersonIdsForPersonByIdMapper" />
 		<constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
 		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
@@ -1618,16 +1618,10 @@
 		</constructor-arg>
 	</bean>
 
-
-	<bean id="getFollowerIds"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds">
-		<property name="cache" ref="memcachedCache" />
-	</bean>
-
 	<bean id="addCachedPersonFollower"
 		class="org.eurekastreams.server.persistence.mappers.cache.AddCachedPersonFollower">
 		<constructor-arg ref="getFollowedPersonIdsForPersonByIdMapper" />
-		<constructor-arg ref="getFollowerIds" />
+		<constructor-arg ref="getFollowerPersonIdsForPersonByIdMapper" />
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 
@@ -1651,13 +1645,13 @@
 
 	<bean id="getCompositeStreamIdsByAssociatedActivity"
 		class="org.eurekastreams.server.persistence.mappers.cache.GetCompositeStreamIdsByAssociatedActivity">
-		<constructor-arg ref="getFollowerIds" />
+		<constructor-arg ref="getFollowerPersonIdsForPersonByIdMapper" />
 		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
 	</bean>
 
 	<bean id="postCachedActivity"
 		class="org.eurekastreams.server.persistence.mappers.stream.PostCachedActivity">
-		<constructor-arg ref="getFollowerIds" />
+		<constructor-arg ref="getFollowerPersonIdsForPersonByIdMapper" />
 		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
 		<constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />

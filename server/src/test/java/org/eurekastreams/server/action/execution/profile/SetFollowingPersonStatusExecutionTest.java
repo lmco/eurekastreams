@@ -27,8 +27,8 @@ import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.persistence.PersonMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddCachedPersonFollower;
-import org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
@@ -40,7 +40,7 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link SetFollowingPersonStatusExecution} class.
- *
+ * 
  */
 public class SetFollowingPersonStatusExecutionTest
 {
@@ -77,7 +77,8 @@ public class SetFollowingPersonStatusExecutionTest
     /**
      * Mock instance of GetFollowerIds.
      */
-    private final GetFollowerIds followerIdsMapperMock = context.mock(GetFollowerIds.class);
+    private final DomainMapper<Long, List<Long>> followerIdsMapperMock = context.mock(DomainMapper.class,
+            "followerIdsMapperMock");
 
     /**
      * Mock instance of the principal object.
@@ -96,7 +97,7 @@ public class SetFollowingPersonStatusExecutionTest
 
     /**
      * Test to ensure that following a person works.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
@@ -141,7 +142,7 @@ public class SetFollowingPersonStatusExecutionTest
 
     /**
      * Test to ensure that the RemoveFollowing works.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
@@ -184,7 +185,7 @@ public class SetFollowingPersonStatusExecutionTest
 
     /**
      * Test an exception.
-     *
+     * 
      * @throws Exception
      *             expected.
      */
@@ -217,7 +218,7 @@ public class SetFollowingPersonStatusExecutionTest
 
     /**
      * Test an unexpected following status.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */

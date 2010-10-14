@@ -29,7 +29,6 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
@@ -59,7 +58,7 @@ public class GetCurrentUserFollowingStatusExecution implements ExecutionStrategy
     /**
      * Mapper to get followers of a person.
      */
-    private GetFollowerIds followerIdsMapper;
+    private DomainMapper<Long, List<Long>> followerIdsMapper;
 
     /**
      * Mapper to get a group by shortname.
@@ -94,8 +93,8 @@ public class GetCurrentUserFollowingStatusExecution implements ExecutionStrategy
      */
     public GetCurrentUserFollowingStatusExecution(final GetPeopleByOpenSocialIds inGetPeopleByOpenSocialIdsMapper,
             final String inPattern, final DomainMapper<Long, List<Long>> inGroupFollowerIdsMapper,
-            final GetFollowerIds inGollowerIdsMapper, final GetDomainGroupsByShortNames inGroupsByNameMapper,
-            final GetPeopleByAccountIds inPeopleByAccountMapper)
+            final DomainMapper<Long, List<Long>> inGollowerIdsMapper,
+            final GetDomainGroupsByShortNames inGroupsByNameMapper, final GetPeopleByAccountIds inPeopleByAccountMapper)
     {
         getPeopleByOpenSocialIdsMapper = inGetPeopleByOpenSocialIdsMapper;
         openSocialPattern = inPattern;

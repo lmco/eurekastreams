@@ -21,8 +21,8 @@ import java.util.List;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 
 /**
@@ -34,7 +34,7 @@ public class GetCompositeStreamIdsByAssociatedActivity extends CachedDomainMappe
     /**
      * Mapper to get followers of a person.
      */
-    private GetFollowerIds personFollowersMapper;
+    private DomainMapper<Long, List<Long>> personFollowersMapper;
 
     /**
      * Mapper to get people by account ids.
@@ -49,7 +49,7 @@ public class GetCompositeStreamIdsByAssociatedActivity extends CachedDomainMappe
      * @param inBulkPeopleByAccountIdMapper
      *            the get people by account id mapper.
      */
-    public GetCompositeStreamIdsByAssociatedActivity(final GetFollowerIds inPersonFollowersMapper,
+    public GetCompositeStreamIdsByAssociatedActivity(final DomainMapper<Long, List<Long>> inPersonFollowersMapper,
             final GetPeopleByAccountIds inBulkPeopleByAccountIdMapper)
     {
         personFollowersMapper = inPersonFollowersMapper;

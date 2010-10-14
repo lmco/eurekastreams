@@ -53,7 +53,8 @@ public class PostCachedActivityTest
     /**
      * Mapper to get followers of a person.
      */
-    private final GetFollowerIds personFollowersMapper = context.mock(GetFollowerIds.class);
+    private final DomainMapper<Long, List<Long>> personFollowersMapper = context.mock(DomainMapper.class,
+            "personFollowersMapper");
 
     /**
      * Mapper to get people by account ids.

@@ -32,9 +32,9 @@ import org.eurekastreams.server.action.request.notification.CreateNotificationsR
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
 import org.eurekastreams.server.action.request.stream.DeleteIdsFromListsRequest;
 import org.eurekastreams.server.persistence.PersonMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddCachedPersonFollower;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
-import org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
@@ -67,7 +67,7 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
     /**
      * Local instance of the cache mapper for retrieving followers of a user.
      */
-    private final GetFollowerIds followerIdsMapper;
+    private final DomainMapper<Long, List<Long>> followerIdsMapper;
 
     /**
      * Constructor for the FollowingPersonStrategy.
@@ -83,7 +83,7 @@ public class SetFollowingPersonStatusExecution implements TaskHandlerExecutionSt
      */
     public SetFollowingPersonStatusExecution(final PersonMapper inMapper,
             final GetPeopleByAccountIds inCachedPersonMapper, final AddCachedPersonFollower inAddCachedFollowerMapper,
-            final GetFollowerIds inFollowerIdsMapper)
+            final DomainMapper<Long, List<Long>> inFollowerIdsMapper)
     {
         mapper = inMapper;
         cachedPersonMapper = inCachedPersonMapper;

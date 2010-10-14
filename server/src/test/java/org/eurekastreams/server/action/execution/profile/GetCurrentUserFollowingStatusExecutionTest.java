@@ -28,7 +28,6 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
@@ -74,7 +73,7 @@ public class GetCurrentUserFollowingStatusExecutionTest
     /**
      * Person follower mapper mock.
      */
-    private GetFollowerIds getFollowerIds = context.mock(GetFollowerIds.class);
+    private DomainMapper<Long, List<Long>> getFollowerIds = context.mock(DomainMapper.class, "getFollowerIds");
 
     /**
      * Group by shortname mapper mock.

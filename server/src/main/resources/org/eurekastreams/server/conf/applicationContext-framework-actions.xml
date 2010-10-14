@@ -1226,7 +1226,7 @@
                 <constructor-arg ref="bulkPeopleByAccountIdMapper" />
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.persistence.mappers.ExcludeSelfMapperDecorator">
-                        <constructor-arg ref="getFollowerIds" />
+                        <constructor-arg ref="getFollowerPersonIdsForPersonByIdMapper" />
                     </bean>
                 </constructor-arg>
                 <constructor-arg ref="bulkPeopleMapper" />
@@ -1264,7 +1264,7 @@
                 <constructor-arg ref="bulkPeopleByOpenSocialIdMapper" />
                 <constructor-arg ref="openSocialRegEx" />
                 <constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
-                <constructor-arg ref="getFollowerIds" />
+                <constructor-arg ref="getFollowerPersonIdsForPersonByIdMapper" />
                 <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
                 <constructor-arg ref="bulkPeopleByAccountIdMapper" />
             </bean>
@@ -3181,7 +3181,7 @@
                 <constructor-arg ref="jpaPersonMapper" />
                 <constructor-arg ref="bulkPeopleByAccountIdMapper" />
                 <constructor-arg ref="addCachedPersonFollower" />
-                <constructor-arg ref="getFollowerIds" />
+                <constructor-arg ref="getFollowerPersonIdsForPersonByIdMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />

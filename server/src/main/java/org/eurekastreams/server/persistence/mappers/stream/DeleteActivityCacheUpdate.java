@@ -35,7 +35,7 @@ public class DeleteActivityCacheUpdate extends BaseArgCachedDomainMapper<DeleteA
     /**
      * DAO to get followers of a person.
      */
-    private GetFollowerIds userIdsFollowingPersonDAO;
+    private DomainMapper<Long, List<Long>> userIdsFollowingPersonDAO;
 
     /**
      * DAO to get followers of a group.
@@ -71,7 +71,7 @@ public class DeleteActivityCacheUpdate extends BaseArgCachedDomainMapper<DeleteA
      * @param inGetLikersForActivity
      *            get the likers for the activity.
      */
-    public DeleteActivityCacheUpdate(final GetFollowerIds inUserIdsFollowingPersonDAO,
+    public DeleteActivityCacheUpdate(final DomainMapper<Long, List<Long>> inUserIdsFollowingPersonDAO,
             final DomainMapper<Long, List<Long>> inUserIdsFollowingGroupDAO,
             final GetPeopleByAccountIds inPersonByAccountIdDAO,
             final GetDomainGroupsByShortNames inGroupByShortNameDAO,

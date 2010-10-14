@@ -42,7 +42,7 @@ public class PostCachedActivity extends CachedDomainMapper
     /**
      * Mapper to get followers of a person.
      */
-    private final GetFollowerIds personFollowersMapper;
+    private final DomainMapper<Long, List<Long>> personFollowersMapper;
 
     /**
      * Mapper to get people by account ids.
@@ -66,7 +66,7 @@ public class PostCachedActivity extends CachedDomainMapper
 
     /**
      * Constructor.
-     *
+     * 
      * @param inPersonFollowersMapper
      *            person follower mapper.
      * @param inBulkPeopleByAccountIdMapper
@@ -78,7 +78,7 @@ public class PostCachedActivity extends CachedDomainMapper
      * @param inOrgShortNamesFromIdsMapper
      *            mapper to get org shortnames from ids
      */
-    public PostCachedActivity(final GetFollowerIds inPersonFollowersMapper,
+    public PostCachedActivity(final DomainMapper<Long, List<Long>> inPersonFollowersMapper,
             final GetPeopleByAccountIds inBulkPeopleByAccountIdMapper,
             final DomainMapper<Long, List<Long>> inParentOrgIdsMapper,
             final GetDomainGroupsByShortNames inBulkDomainGroupsByShortNameMapper,
@@ -94,7 +94,7 @@ public class PostCachedActivity extends CachedDomainMapper
     /**
      * Adds a new item in cache for the activity itself and adds the id to all necessary composite stream activity id
      * lists.
-     *
+     * 
      * @param activity
      *            the activity to be added.
      */
@@ -146,7 +146,7 @@ public class PostCachedActivity extends CachedDomainMapper
 
     /**
      * Returns all parent org short names up the tree.
-     *
+     * 
      * @param inOrgId
      *            The id of the org.
      * @return all parent org ids up the tree

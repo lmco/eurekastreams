@@ -23,8 +23,8 @@ import junit.framework.Assert;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
-import org.eurekastreams.server.persistence.mappers.stream.GetFollowerIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -64,7 +64,8 @@ public class GetCompositeStreamIdsByAssociatedActivityTest extends MapperTest
     /**
      * Mapper to get followers of a person.
      */
-    private GetFollowerIds personFollowersMapperMock = context.mock(GetFollowerIds.class);
+    private DomainMapper<Long, List<Long>> personFollowersMapperMock = context.mock(DomainMapper.class,
+            "personFollowersMapperMock");
 
     /**
      * Mapper to get people by account ids.
