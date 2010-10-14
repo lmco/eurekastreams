@@ -153,7 +153,8 @@ public class GetCurrentUserFollowingStatusExecutionTest
     public void setup()
     {
         sut = new GetCurrentUserFollowingStatusExecution(getPeopleByOpenSocialIdsMapper, openSocialRegEx,
-                getGroupFollowerIds, getFollowerIds, getDomainGroupsByShortNames, getPersonModelViewsByAccountIdsMapper);
+                getGroupFollowerIds, getFollowerIds, getDomainGroupsByShortNames, //
+                getPersonModelViewsByAccountIdsMapper);
     }
 
     /**
