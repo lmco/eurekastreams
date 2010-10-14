@@ -223,8 +223,12 @@
                 
     <bean
         id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.COORDINATOR_PERSON_IDS_BY_GROUP_ID"
-        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />            
-                                         
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />  
+        
+    <bean
+        id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.COMMENT_IDS_BY_ACTIVITY_ID"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
+                           
 	<bean
 		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.POPULAR_HASH_TAGS_BY_STREAM_TYPE_AND_SHORT_NAME"
 		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
@@ -907,6 +911,35 @@
 		    </bean>
 	    </constructor-arg>
     </bean> 
+    
+   <bean id="getOrderedCommentIdsByActivityIdMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache Mapper -->
+        <constructor-arg ref="getOrderedCommentIdsByActivityIdCacheMapper"/>
+        <!-- Database mapper to fall back on if not found in cache -->
+        <constructor-arg ref="getOrderedCommentIdsByActivityIdDbMapper" />
+        <!-- Data combiner -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
+        </constructor-arg>        
+        <!-- Cache refresher -->
+        <constructor-arg ref="getOrderedCommentIdsByActivityIdCacheRefresher"/>                       
+    </bean>
+    
+    <bean id="getOrderedCommentIdsByActivityIdCacheRefresher" class="org.eurekastreams.server.persistence.mappers.cache.SingleListValueCacheRefreshStrategy">
+        <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.COMMENT_IDS_BY_ACTIVITY_ID" />
+        <constructor-arg ref="toStringCacheKeySuffixTransformer" />
+        <property name="cache" ref="memcachedCache" />
+    </bean>
+    
+    <bean id="getOrderedCommentIdsByActivityIdCacheMapper" class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleListValueCacheMapper">
+                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.COMMENT_IDS_BY_ACTIVITY_ID" />
+                <constructor-arg ref="toStringCacheKeySuffixTransformer" />
+                <property name="cache" ref="memcachedCache" />
+            </bean>
+        </constructor-arg>
+    </bean>    
 	
 	<bean id="getFollowedByActivities_FORCE_REFRESH"
 		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
@@ -1980,6 +2013,8 @@
     <bean id="getGroupsByIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetGroupsByIdsDbMapper">
         <constructor-arg ref="domainGroupQueryStrategy" />
     </bean>
+    
+    <bean id="getOrderedCommentIdsByActivityIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetOrderedCommentIdsByActivityIdDbMapper" />
     
     <bean id="getAllOrganizationIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetAllOrganizationIdsDbMapper" />
     
