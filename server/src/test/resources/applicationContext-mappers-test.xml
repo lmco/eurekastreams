@@ -502,6 +502,8 @@
     <bean id="getGroupsByIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetGroupsByIdsDbMapper">
         <constructor-arg ref="domainGroupQueryStrategy" />
     </bean>
+    
+    <bean id="getOrderedCommentIdsByActivityIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetOrderedCommentIdsByActivityIdDbMapper" />
         
     <bean id="getOrganizationsByIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetOrganizationsByIdsDbMapper" />
     
