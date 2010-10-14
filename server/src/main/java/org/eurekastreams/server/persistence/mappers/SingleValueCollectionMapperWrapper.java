@@ -35,25 +35,24 @@ public class SingleValueCollectionMapperWrapper<RequestType, ResponseType> imple
     private DomainMapper<List<RequestType>, List<ResponseType>> wrappedMapper;
 
     /**
-     * Whether to return null when anything other than exactly one result is found.
+     * Whether to throw exception when anything other than exactly one result is found - else null.
      */
-    private boolean returnNullWhenSingleResultNotFound;
+    private boolean throwExceptionWhenSingleResultNotFound;
 
     /**
      * Constructor.
      *
      * @param inWrappedMapper
      *            list mapper to wrap.
-     * @param inReturnNullWhenSingleResultNotFound
-     *            Whether to return null when anything other than exactly one result is found - else, throws an
-     *            exception
+     * @param inThrowExceptionWhenSingleResultNotFound
+     *            Whether to throw exception when anything other than exactly one result is found - else null.
      */
     public SingleValueCollectionMapperWrapper(
             final DomainMapper<List<RequestType>, List<ResponseType>> inWrappedMapper,
-            final boolean inReturnNullWhenSingleResultNotFound)
+            final boolean inThrowExceptionWhenSingleResultNotFound)
     {
         wrappedMapper = inWrappedMapper;
-        returnNullWhenSingleResultNotFound = inReturnNullWhenSingleResultNotFound;
+        throwExceptionWhenSingleResultNotFound = inThrowExceptionWhenSingleResultNotFound;
     }
 
     /**
@@ -71,14 +70,14 @@ public class SingleValueCollectionMapperWrapper<RequestType, ResponseType> imple
         List<ResponseType> response = wrappedMapper.execute(request);
         if (response.size() != 1)
         {
-            if (returnNullWhenSingleResultNotFound)
-            {
-                return null;
-            }
-            else
+            if (throwExceptionWhenSingleResultNotFound)
             {
                 throw new RuntimeException("Could not found exactly one response for key: " + inRequest + " - found "
                         + response.size() + " results.");
+            }
+            else
+            {
+                return null;
             }
         }
         return response.get(0);

@@ -17,9 +17,6 @@ package org.eurekastreams.server.search.bridge;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -61,7 +58,7 @@ public class ActivityAuthorClassBridgeTest
     /**
      * Mapper to lookup person ids by account ids.
      */
-    private PeopleAccountIdsToIdsMapperFake peopleAccountIdsToIdsMapper;
+    private DomainMapper<String, Long> personAccountIdToIdMapper = context.mock(DomainMapper.class);
 
     /**
      * Account id of the person we're testing for.
@@ -89,8 +86,7 @@ public class ActivityAuthorClassBridgeTest
     @Before
     public void setup()
     {
-        peopleAccountIdsToIdsMapper = new PeopleAccountIdsToIdsMapperFake();
-        ActivityAuthorClassBridge.setPeopleAccountIdsToIdsMapper(peopleAccountIdsToIdsMapper);
+        ActivityAuthorClassBridge.setGetPersonIdByAccountIdMapper(personAccountIdToIdMapper);
 
         getDomainGroupsByShortNamesMock = context.mock(GetDomainGroupsByShortNames.class);
         ActivityAuthorClassBridge.setGetDomainGroupsByShortNames(getDomainGroupsByShortNamesMock);
@@ -102,7 +98,7 @@ public class ActivityAuthorClassBridgeTest
     @AfterClass
     public static void afterClass()
     {
-        ActivityAuthorClassBridge.setPeopleAccountIdsToIdsMapper(null);
+        ActivityAuthorClassBridge.setGetPersonIdByAccountIdMapper(null);
         ActivityAuthorClassBridge.setGetDomainGroupsByShortNames(null);
     }
 
@@ -137,9 +133,15 @@ public class ActivityAuthorClassBridgeTest
         activity.setActorType(EntityType.PERSON);
         activity.setActorId(testPersonAccountId);
 
-        peopleAccountIdsToIdsMapper.setIdToReturn(testPersonId);
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(personAccountIdToIdMapper).execute(testPersonAccountId);
+                will(returnValue(testPersonId));
+            }
+        });
+
         assertEquals("p" + testPersonId, sut.objectToString(activity));
-        assertEquals(testPersonAccountId, peopleAccountIdsToIdsMapper.getAccountIdPassedIn());
     }
 
     /**
@@ -161,7 +163,7 @@ public class ActivityAuthorClassBridgeTest
     @Test(expected = RuntimeException.class)
     public void testObjectToStringWithoutPeopleByAccountIdMapper()
     {
-        ActivityAuthorClassBridge.setPeopleAccountIdsToIdsMapper(null);
+        ActivityAuthorClassBridge.setGetPersonIdByAccountIdMapper(null);
         sut.objectToString(new Activity());
     }
 
@@ -182,66 +184,5 @@ public class ActivityAuthorClassBridgeTest
     public void testObjectToStringForInvalidType()
     {
         sut.objectToString(new PersonModelView());
-    }
-
-    /**
-     * Fake to help make sure the proper accountid was passed in.
-     */
-    private class PeopleAccountIdsToIdsMapperFake implements DomainMapper<List<String>, List<Long>>
-    {
-        /**
-         * the account id that was passed into execute is stored here.
-         */
-        private String accountIdPassedIn;
-
-        /**
-         * The id to return from execute.
-         */
-        private Long idToReturn;
-
-        @Override
-        public List<Long> execute(final List<String> inRequest)
-        {
-            accountIdPassedIn = inRequest.get(0);
-
-            List ret = new ArrayList<Long>();
-            ret.add(idToReturn);
-            return ret;
-        }
-
-        /**
-         * @return the accountIdPassedIn
-         */
-        public String getAccountIdPassedIn()
-        {
-            return accountIdPassedIn;
-        }
-
-        /**
-         * @param inAccountIdPassedIn
-         *            the accountIdPassedIn to set
-         */
-        public void setAccountIdPassedIn(final String inAccountIdPassedIn)
-        {
-            accountIdPassedIn = inAccountIdPassedIn;
-        }
-
-        /**
-         * @return the idToReturn
-         */
-        public Long getIdToReturn()
-        {
-            return idToReturn;
-        }
-
-        /**
-         * @param inIdToReturn
-         *            the idToReturn to set
-         */
-        public void setIdToReturn(final Long inIdToReturn)
-        {
-            idToReturn = inIdToReturn;
-        }
-
     }
 }

@@ -70,16 +70,16 @@
 	</bean>
 
 	<!--
-		Inject the ActivityAuthorClassBridge with the people account ids -> ids cache mapper.
+		Inject the ActivityAuthorClassBridge with the person account ids -> id mapper.
 	-->
 	<bean
 		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
 		<property name="targetClass"
 			value="org.eurekastreams.server.search.bridge.ActivityAuthorClassBridge" />
-		<property name="targetMethod" value="setPeopleAccountIdsToIdsMapper" />
+		<property name="targetMethod" value="setGetPersonIdByAccountIdMapper" />
 		<property name="arguments">
 			<list>
-				<ref bean="getPeopleIdsByAccountIds" />
+				<ref bean="getPersonIdByAccountIdMapper" />
 			</list>
 		</property>
 	</bean>

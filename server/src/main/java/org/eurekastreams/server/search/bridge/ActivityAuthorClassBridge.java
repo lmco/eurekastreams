@@ -15,9 +15,6 @@
  */
 package org.eurekastreams.server.search.bridge;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.EntityType;
@@ -44,7 +41,7 @@ public class ActivityAuthorClassBridge implements StringBridge
     /**
      * Mapper to lookup people ids by account ids.
      */
-    private static DomainMapper<List<String>, List<Long>> peopleAccountIdsToIdsMapper;
+    private static DomainMapper<String, Long> getPersonIdByAccountIdMapper;
 
     /**
      * Convert the input Message or Activity object into an ID representing the author.
@@ -67,7 +64,7 @@ public class ActivityAuthorClassBridge implements StringBridge
             result = "g" + getDomainGroupsByShortNames.fetchId(activity.getActorId());
             break;
         case PERSON:
-            result = "p" + peopleAccountIdsToIdsMapper.execute(Collections.singletonList(activity.getActorId())).get(0);
+            result = "p" + getPersonIdByAccountIdMapper.execute(activity.getActorId());
             break;
         default:
             throw new RuntimeException("Unknown/unhandled recipient type: " + actorType);
@@ -92,12 +89,11 @@ public class ActivityAuthorClassBridge implements StringBridge
     /**
      * Set the mapper to lookup person ids from account ids.
      *
-     * @param inPeopleAccountIdsToIdsMapper
-     *            mapper to get ids from accountids for people
+     * @param inGetPersonIdByAccountIdMapper
+     *            mapper to get person id from accountid for a person
      */
-    public static void setPeopleAccountIdsToIdsMapper(
-            final DomainMapper<List<String>, List<Long>> inPeopleAccountIdsToIdsMapper)
+    public static void setGetPersonIdByAccountIdMapper(final DomainMapper<String, Long> inGetPersonIdByAccountIdMapper)
     {
-        ActivityAuthorClassBridge.peopleAccountIdsToIdsMapper = inPeopleAccountIdsToIdsMapper;
+        ActivityAuthorClassBridge.getPersonIdByAccountIdMapper = inGetPersonIdByAccountIdMapper;
     }
 }

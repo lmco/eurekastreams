@@ -59,7 +59,7 @@ public class SingleValueCollectionMapperWrapperTest
                 will(returnValue(new ArrayList<String>()));
             }
         });
-        assertNull(new SingleValueCollectionMapperWrapper(wrappedMapper, true).execute("FOO"));
+        assertNull(new SingleValueCollectionMapperWrapper(wrappedMapper, false).execute("FOO"));
         context.assertIsSatisfied();
     }
 
@@ -76,7 +76,7 @@ public class SingleValueCollectionMapperWrapperTest
                 will(returnValue(new ArrayList<String>()));
             }
         });
-        assertNull(new SingleValueCollectionMapperWrapper(wrappedMapper, false).execute("FOO"));
+        assertNull(new SingleValueCollectionMapperWrapper(wrappedMapper, true).execute("FOO"));
         context.assertIsSatisfied();
     }
 
@@ -97,7 +97,7 @@ public class SingleValueCollectionMapperWrapperTest
                 will(returnValue(results));
             }
         });
-        assertNull(new SingleValueCollectionMapperWrapper(wrappedMapper, true).execute("FOO"));
+        assertNull(new SingleValueCollectionMapperWrapper(wrappedMapper, false).execute("FOO"));
         context.assertIsSatisfied();
     }
 
@@ -118,7 +118,7 @@ public class SingleValueCollectionMapperWrapperTest
                 will(returnValue(results));
             }
         });
-        assertNull(new SingleValueCollectionMapperWrapper(wrappedMapper, false).execute("FOO"));
+        assertNull(new SingleValueCollectionMapperWrapper(wrappedMapper, true).execute("FOO"));
         context.assertIsSatisfied();
     }
 }

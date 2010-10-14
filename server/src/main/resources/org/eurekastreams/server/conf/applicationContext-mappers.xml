@@ -476,7 +476,7 @@
 	</bean>
 
 	<!-- Mapper to get people ids by account ids -->
-	<bean id="getPeopleIdsByAccountIds" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+	<bean id="getPeopleIdsByAccountIdsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<!-- Cache mapper -->
 		<constructor-arg>
 			<bean class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
@@ -507,10 +507,16 @@
 		</constructor-arg>
 	</bean>
 
+	<!-- Mapper to get person id by account id - wraps getPeopleIdsByAccountIds - throws exception when not found -->
+	<bean id="getPersonIdByAccountIdMapper" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
+		<constructor-arg ref="getPeopleIdsByAccountIdsMapper" />
+		<constructor-arg value="true" />
+	</bean>
+
 	<!-- Mapper to get people by account ids -->
 	<bean id="getPeopleByAccountIdsMapper" class="org.eurekastreams.server.persistence.mappers.GetItemsByPointerIdsMapper">
 		<!-- Mapper to get people ids from account ids -->
-		<constructor-arg ref="getPeopleIdsByAccountIds" />
+		<constructor-arg ref="getPeopleIdsByAccountIdsMapper" />
 		
 		<!-- mapper to look up people by ids -->
 		<constructor-arg ref="getPersonsByIdsMapper" />
@@ -1151,6 +1157,12 @@
         <!-- Cache refresher -->
         <constructor-arg ref="personCacheRefresher"/>                        
     </bean>
+    
+	<!-- Mapper to get a person by id, throwing exception when not found -->
+	<bean id="getPersonByIdMapper" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
+		<constructor-arg ref="getPersonsByIdsMapper" />
+		<constructor-arg value="true" />
+	</bean>
     
     <bean id="getPersonsByIdsMapper_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache Mapper -->
