@@ -26,7 +26,8 @@ import java.util.List;
  * @param <ResponseType>
  *            the response type the wrapped mapper returns
  */
-public class SingleValueCollectionMapperWrapper<RequestType, ResponseType> implements DomainMapper<RequestType, ResponseType>
+public class SingleValueCollectionMapperWrapper<RequestType, ResponseType> implements
+        DomainMapper<RequestType, ResponseType>
 {
     /**
      * List mapper to wrap.
@@ -34,24 +35,25 @@ public class SingleValueCollectionMapperWrapper<RequestType, ResponseType> imple
     private DomainMapper<List<RequestType>, List<ResponseType>> wrappedMapper;
 
     /**
-     * Whether to return null when no results are found.
+     * Whether to return null when anything other than exactly one result is found.
      */
-    private boolean returnNullWhenNotFound;
+    private boolean returnNullWhenSingleResultNotFound;
 
     /**
      * Constructor.
      *
      * @param inWrappedMapper
      *            list mapper to wrap.
-     * @param inReturnNullWhenNotFound
-     *            if true, this mapper returns null when no values are found. If false, the runtime exception will
-     *            bubble up
+     * @param inReturnNullWhenSingleResultNotFound
+     *            Whether to return null when anything other than exactly one result is found - else, throws an
+     *            exception
      */
-    public SingleValueCollectionMapperWrapper(final DomainMapper<List<RequestType>, List<ResponseType>> inWrappedMapper,
-            final boolean inReturnNullWhenNotFound)
+    public SingleValueCollectionMapperWrapper(
+            final DomainMapper<List<RequestType>, List<ResponseType>> inWrappedMapper,
+            final boolean inReturnNullWhenSingleResultNotFound)
     {
         wrappedMapper = inWrappedMapper;
-        returnNullWhenNotFound = inReturnNullWhenNotFound;
+        returnNullWhenSingleResultNotFound = inReturnNullWhenSingleResultNotFound;
     }
 
     /**
@@ -69,7 +71,7 @@ public class SingleValueCollectionMapperWrapper<RequestType, ResponseType> imple
         List<ResponseType> response = wrappedMapper.execute(request);
         if (response.size() != 1)
         {
-            if (returnNullWhenNotFound)
+            if (returnNullWhenSingleResultNotFound)
             {
                 return null;
             }
