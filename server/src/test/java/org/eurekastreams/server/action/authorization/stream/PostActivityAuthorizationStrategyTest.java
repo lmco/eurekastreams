@@ -31,7 +31,6 @@ import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
@@ -43,7 +42,7 @@ import org.junit.Test;
 
 /**
  * This class tests the authorization strategy for the PostActionAction.
- * 
+ *
  */
 public class PostActivityAuthorizationStrategyTest
 {
@@ -81,9 +80,10 @@ public class PostActivityAuthorizationStrategyTest
             "getGroupFollowerIdsMapperMock");
 
     /**
-     * Mocked instance of the {@link GetPeopleByAccountIds}.
+     * Mapper to get PersonModelView by accountid.
      */
-    private final GetPeopleByAccountIds getPeopleByAccountIdsMapperMock = context.mock(GetPeopleByAccountIds.class);
+    private final DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = context
+            .mock(DomainMapper.class);
 
     /**
      * Test activity.
@@ -147,7 +147,7 @@ public class PostActivityAuthorizationStrategyTest
     public void setup()
     {
         sut = new PostActivityAuthorizationStrategy(getDomainGroupsMapperMock, getGroupCoordMapperMock,
-                getGroupFollowerIdsMapperMock, getPeopleByAccountIdsMapperMock);
+                getGroupFollowerIdsMapperMock, getPersonModelViewByAccountIdMapper);
     }
 
     /**
@@ -219,7 +219,7 @@ public class PostActivityAuthorizationStrategyTest
                 oneOf(testDestination).getType();
                 will(returnValue(EntityType.PERSON));
 
-                oneOf(getPeopleByAccountIdsMapperMock).fetchUniqueResult(with(any(String.class)));
+                oneOf(getPersonModelViewByAccountIdMapper).execute(with(any(String.class)));
                 will(returnValue(testPerson));
             }
         });
@@ -251,7 +251,7 @@ public class PostActivityAuthorizationStrategyTest
                 allowing(testDestination).getUniqueIdentifier();
                 will(returnValue("NOT_PRINCIPAL_ID"));
 
-                oneOf(getPeopleByAccountIdsMapperMock).fetchUniqueResult(with(any(String.class)));
+                oneOf(getPersonModelViewByAccountIdMapper).execute(with(any(String.class)));
                 will(returnValue(testPerson));
 
                 oneOf(testPerson).isStreamPostable();
@@ -358,7 +358,7 @@ public class PostActivityAuthorizationStrategyTest
 
                 allowing(testDestination).getUniqueIdentifier();
 
-                oneOf(getPeopleByAccountIdsMapperMock).fetchUniqueResult(with(any(String.class)));
+                oneOf(getPersonModelViewByAccountIdMapper).execute(with(any(String.class)));
                 will(returnValue(testPerson));
 
                 oneOf(testActivity).getActor();

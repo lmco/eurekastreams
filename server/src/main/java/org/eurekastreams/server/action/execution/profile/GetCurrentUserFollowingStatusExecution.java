@@ -29,14 +29,13 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Action to determine if current user has Follower relationship with another user.
- * 
+ *
  */
 public class GetCurrentUserFollowingStatusExecution implements ExecutionStrategy<PrincipalActionContext>
 {
@@ -66,9 +65,9 @@ public class GetCurrentUserFollowingStatusExecution implements ExecutionStrategy
     private GetDomainGroupsByShortNames groupsByNameMapper;
 
     /**
-     * Mapper to get person by account id.
+     * Mapper to get personmodelviews by accountids.
      */
-    private GetPeopleByAccountIds peopleByAccountMapper;
+    private DomainMapper<List<String>, List<PersonModelView>> getPersonModelViewsByAccountIdsMapper;
 
     /**
      * A Regex pattern to match OpenSocial ids used by the local container.
@@ -77,7 +76,7 @@ public class GetCurrentUserFollowingStatusExecution implements ExecutionStrategy
 
     /**
      * Constructor that sets up the mapper.
-     * 
+     *
      * @param inGetPeopleByOpenSocialIdsMapper
      *            instance of GetPeopleByOpenSocialIdsMapper
      * @param inPattern
@@ -88,25 +87,26 @@ public class GetCurrentUserFollowingStatusExecution implements ExecutionStrategy
      *            instance of GetFollowerIds.
      * @param inGroupsByNameMapper
      *            instance of GetDomainGroupsByShortNames.
-     * @param inPeopleByAccountMapper
-     *            instance of GetPeopleByAccountIds.
+     * @param inGetPersonModelViewsByAccountIdsMapper
+     *            mapper to get personmodelviews by accountids.
      */
     public GetCurrentUserFollowingStatusExecution(final GetPeopleByOpenSocialIds inGetPeopleByOpenSocialIdsMapper,
             final String inPattern, final DomainMapper<Long, List<Long>> inGroupFollowerIdsMapper,
             final DomainMapper<Long, List<Long>> inGollowerIdsMapper,
-            final GetDomainGroupsByShortNames inGroupsByNameMapper, final GetPeopleByAccountIds inPeopleByAccountMapper)
+            final GetDomainGroupsByShortNames inGroupsByNameMapper,
+            final DomainMapper<List<String>, List<PersonModelView>> inGetPersonModelViewsByAccountIdsMapper)
     {
         getPeopleByOpenSocialIdsMapper = inGetPeopleByOpenSocialIdsMapper;
         openSocialPattern = inPattern;
         groupFollowerIdsMapper = inGroupFollowerIdsMapper;
         followerIdsMapper = inGollowerIdsMapper;
         groupsByNameMapper = inGroupsByNameMapper;
-        peopleByAccountMapper = inPeopleByAccountMapper;
+        getPersonModelViewsByAccountIdsMapper = inGetPersonModelViewsByAccountIdsMapper;
     }
 
     /**
      * Returns true or false if the group exists and the current user is a coordinator.
-     * 
+     *
      * @param inActionContext
      *            The action context.
      * @return true if the group exists and the user is authorized, false otherwise
@@ -163,7 +163,7 @@ public class GetCurrentUserFollowingStatusExecution implements ExecutionStrategy
 
     /**
      * Checks to see if a user is following a group.
-     * 
+     *
      * @param userId
      *            id of the user that is being checked as a follower.
      * @param groupShortName
@@ -187,7 +187,7 @@ public class GetCurrentUserFollowingStatusExecution implements ExecutionStrategy
 
     /**
      * Checks to see if a user is following another user.
-     * 
+     *
      * @param userId
      *            id of the user that is being checked as a follower.
      * @param personAccountId
@@ -196,7 +196,8 @@ public class GetCurrentUserFollowingStatusExecution implements ExecutionStrategy
      */
     private Follower.FollowerStatus isUserFollowingUser(final long userId, final String personAccountId)
     {
-        List<PersonModelView> people = peopleByAccountMapper.execute(Collections.singletonList(personAccountId));
+        List<PersonModelView> people = getPersonModelViewsByAccountIdsMapper.execute(Collections
+                .singletonList(personAccountId));
         if (people.size() > 0)
         {
             long followingUserId = people.get(0).getEntityId();

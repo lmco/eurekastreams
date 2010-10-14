@@ -28,7 +28,6 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -81,9 +80,10 @@ public class GetCurrentUserFollowingStatusExecutionTest
     private GetDomainGroupsByShortNames getDomainGroupsByShortNames = context.mock(GetDomainGroupsByShortNames.class);
 
     /**
-     * Person by account id mapper mock.
+     * Mapper to get personmodelviews by accountids.
      */
-    private GetPeopleByAccountIds getPeopleByAccountIds = context.mock(GetPeopleByAccountIds.class);
+    private DomainMapper<List<String>, List<PersonModelView>> getPersonModelViewsByAccountIdsMapper = context
+            .mock(DomainMapper.class);
 
     /**
      * Mocked request object.
@@ -153,13 +153,13 @@ public class GetCurrentUserFollowingStatusExecutionTest
     public void setup()
     {
         sut = new GetCurrentUserFollowingStatusExecution(getPeopleByOpenSocialIdsMapper, openSocialRegEx,
-                getGroupFollowerIds, getFollowerIds, getDomainGroupsByShortNames, getPeopleByAccountIds);
+                getGroupFollowerIds, getFollowerIds, getDomainGroupsByShortNames, getPersonModelViewsByAccountIdsMapper);
     }
 
     /**
      * Test followed entity id is an OpenSocial Id and entity type is a person. Entity id is not current user and
      * followed is true.
-     * 
+     *
      * @throws Exception
      *             exception.
      */
@@ -196,7 +196,7 @@ public class GetCurrentUserFollowingStatusExecutionTest
 
                 PersonModelView target = new PersonModelView();
                 target.setEntityId(TARGET_USER_ID);
-                oneOf(getPeopleByAccountIds).execute(with(any(List.class)));
+                oneOf(getPersonModelViewsByAccountIdsMapper).execute(with(any(List.class)));
                 will(returnValue(Collections.singletonList(target)));
 
                 oneOf(getFollowerIds).execute(TARGET_USER_ID);
@@ -211,7 +211,7 @@ public class GetCurrentUserFollowingStatusExecutionTest
     /**
      * Test followed entity id is an account id and entity type is a person. Entity id is not current user and followed
      * is true.
-     * 
+     *
      * @throws Exception
      *             exception.
      */
@@ -242,7 +242,7 @@ public class GetCurrentUserFollowingStatusExecutionTest
 
                 PersonModelView target = new PersonModelView();
                 target.setEntityId(TARGET_USER_ID);
-                oneOf(getPeopleByAccountIds).execute(with(any(List.class)));
+                oneOf(getPersonModelViewsByAccountIdsMapper).execute(with(any(List.class)));
                 will(returnValue(Collections.singletonList(target)));
 
                 oneOf(getFollowerIds).execute(TARGET_USER_ID);
@@ -257,7 +257,7 @@ public class GetCurrentUserFollowingStatusExecutionTest
     /**
      * Test followed entity id is an short name and entity type is a group. Entity id is not current user and followed
      * is true.
-     * 
+     *
      * @throws Exception
      *             exception.
      */
@@ -302,7 +302,7 @@ public class GetCurrentUserFollowingStatusExecutionTest
 
     /**
      * Test followed entity id is an OpenSocial Id and entity type is a person. Entity id is current user.
-     * 
+     *
      * @throws Exception
      *             exception.
      */
@@ -345,7 +345,7 @@ public class GetCurrentUserFollowingStatusExecutionTest
     /**
      * Test followed entity id is an OpenSocial Id and entity type is a person. Entity id is not current user and not
      * followed.
-     * 
+     *
      * @throws Exception
      *             exception.
      */
@@ -382,7 +382,7 @@ public class GetCurrentUserFollowingStatusExecutionTest
 
                 PersonModelView target = new PersonModelView();
                 target.setEntityId(TARGET_USER_ID);
-                oneOf(getPeopleByAccountIds).execute(with(any(List.class)));
+                oneOf(getPersonModelViewsByAccountIdsMapper).execute(with(any(List.class)));
                 will(returnValue(Collections.singletonList(target)));
 
                 oneOf(getFollowerIds).execute(TARGET_USER_ID);
@@ -397,7 +397,7 @@ public class GetCurrentUserFollowingStatusExecutionTest
 
     /**
      * Test invalid entity type.
-     * 
+     *
      * @throws Exception
      *             exception.
      */

@@ -1266,7 +1266,7 @@
                 <constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
                 <constructor-arg ref="getFollowerPersonIdsForPersonByIdMapper" />
                 <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-                <constructor-arg ref="bulkPeopleByAccountIdMapper" />
+                <constructor-arg ref="getPeopleByAccountIdsMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -1926,7 +1926,7 @@
         <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
         <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
         <constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
-        <constructor-arg ref="bulkPeopleByAccountIdMapper" />
+        <constructor-arg ref="getPersonByAccountIdMapper" />
     </bean>
 
     <bean id="postGroupActivityExecutionStrategy"
@@ -3132,7 +3132,7 @@
 -->
     <bean id="setFollowingGroupStatusExecution" class="org.eurekastreams.server.action.execution.profile.SetFollowingGroupStatusExecution">
         <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-        <constructor-arg ref="bulkPeopleByAccountIdMapper" />
+        <constructor-arg ref="getPersonIdByAccountIdMapper" />
         <constructor-arg ref="jpaGroupMapper" />
         <constructor-arg ref="addCachedGroupFollower" />
         <constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
