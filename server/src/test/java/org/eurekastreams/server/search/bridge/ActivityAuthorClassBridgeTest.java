@@ -17,15 +17,19 @@ package org.eurekastreams.server.search.bridge;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Activity;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -57,7 +61,7 @@ public class ActivityAuthorClassBridgeTest
     /**
      * Mapper to lookup person ids by account ids.
      */
-    private static GetPeopleByAccountIds getPeopleByAccountIdsMock;
+    private PeopleAccountIdsToIdsMapperFake peopleAccountIdsToIdsMapper;
 
     /**
      * Account id of the person we're testing for.
@@ -85,19 +89,21 @@ public class ActivityAuthorClassBridgeTest
     @Before
     public void setup()
     {
-        getPeopleByAccountIdsMock = context.mock(GetPeopleByAccountIds.class);
+        peopleAccountIdsToIdsMapper = new PeopleAccountIdsToIdsMapperFake();
+        ActivityAuthorClassBridge.setPeopleAccountIdsToIdsMapper(peopleAccountIdsToIdsMapper);
+
         getDomainGroupsByShortNamesMock = context.mock(GetDomainGroupsByShortNames.class);
-
-        ActivityAuthorClassBridge.setGetPeopleByAccountIds(getPeopleByAccountIdsMock);
         ActivityAuthorClassBridge.setGetDomainGroupsByShortNames(getDomainGroupsByShortNamesMock);
+    }
 
-        context.checking(new Expectations()
-        {
-            {
-                allowing(getPeopleByAccountIdsMock).fetchId(testPersonAccountId);
-                will(returnValue(testPersonId));
-            }
-        });
+    /**
+     * Fixture teardown.
+     */
+    @AfterClass
+    public static void afterClass()
+    {
+        ActivityAuthorClassBridge.setPeopleAccountIdsToIdsMapper(null);
+        ActivityAuthorClassBridge.setGetDomainGroupsByShortNames(null);
     }
 
     /**
@@ -130,8 +136,10 @@ public class ActivityAuthorClassBridgeTest
         Activity activity = new Activity();
         activity.setActorType(EntityType.PERSON);
         activity.setActorId(testPersonAccountId);
+
+        peopleAccountIdsToIdsMapper.setIdToReturn(testPersonId);
         assertEquals("p" + testPersonId, sut.objectToString(activity));
-        context.assertIsSatisfied();
+        assertEquals(testPersonAccountId, peopleAccountIdsToIdsMapper.getAccountIdPassedIn());
     }
 
     /**
@@ -153,7 +161,7 @@ public class ActivityAuthorClassBridgeTest
     @Test(expected = RuntimeException.class)
     public void testObjectToStringWithoutPeopleByAccountIdMapper()
     {
-        ActivityAuthorClassBridge.setGetPeopleByAccountIds(null);
+        ActivityAuthorClassBridge.setPeopleAccountIdsToIdsMapper(null);
         sut.objectToString(new Activity());
     }
 
@@ -174,5 +182,66 @@ public class ActivityAuthorClassBridgeTest
     public void testObjectToStringForInvalidType()
     {
         sut.objectToString(new PersonModelView());
+    }
+
+    /**
+     * Fake to help make sure the proper accountid was passed in.
+     */
+    private class PeopleAccountIdsToIdsMapperFake implements DomainMapper<List<String>, List<Long>>
+    {
+        /**
+         * the account id that was passed into execute is stored here.
+         */
+        private String accountIdPassedIn;
+
+        /**
+         * The id to return from execute.
+         */
+        private Long idToReturn;
+
+        @Override
+        public List<Long> execute(final List<String> inRequest)
+        {
+            accountIdPassedIn = inRequest.get(0);
+
+            List ret = new ArrayList<Long>();
+            ret.add(idToReturn);
+            return ret;
+        }
+
+        /**
+         * @return the accountIdPassedIn
+         */
+        public String getAccountIdPassedIn()
+        {
+            return accountIdPassedIn;
+        }
+
+        /**
+         * @param inAccountIdPassedIn
+         *            the accountIdPassedIn to set
+         */
+        public void setAccountIdPassedIn(final String inAccountIdPassedIn)
+        {
+            accountIdPassedIn = inAccountIdPassedIn;
+        }
+
+        /**
+         * @return the idToReturn
+         */
+        public Long getIdToReturn()
+        {
+            return idToReturn;
+        }
+
+        /**
+         * @param inIdToReturn
+         *            the idToReturn to set
+         */
+        public void setIdToReturn(final Long inIdToReturn)
+        {
+            idToReturn = inIdToReturn;
+        }
+
     }
 }

@@ -15,10 +15,15 @@
  */
 package org.eurekastreams.server.search.bridge;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Activity;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.hibernate.search.bridge.StringBridge;
 
 /**
@@ -27,18 +32,23 @@ import org.hibernate.search.bridge.StringBridge;
 public class ActivityAuthorClassBridge implements StringBridge
 {
     /**
+     * Logger.
+     */
+    private Log log = LogFactory.make();
+
+    /**
      * Mapper to lookup group ids by short names.
      */
     private static GetDomainGroupsByShortNames getDomainGroupsByShortNames;
 
     /**
-     * Mapper to lookup person ids by account ids.
+     * Mapper to lookup people ids by account ids.
      */
-    private static GetPeopleByAccountIds getPeopleByAccountIds;
+    private static DomainMapper<List<String>, List<Long>> peopleAccountIdsToIdsMapper;
 
     /**
      * Convert the input Message or Activity object into an ID representing the author.
-     * 
+     *
      * @param msgObject
      *            the Message or Activity
      * @return the input Message object with the ID of the author.
@@ -48,15 +58,26 @@ public class ActivityAuthorClassBridge implements StringBridge
     {
         Activity activity = (Activity) msgObject;
         EntityType actorType = activity.getActorType();
+
+        String result = null;
+
         switch (actorType)
         {
         case GROUP:
-            return "g" + getDomainGroupsByShortNames.fetchId(activity.getActorId());
+            result = "g" + getDomainGroupsByShortNames.fetchId(activity.getActorId());
+            break;
         case PERSON:
-            return "p" + getPeopleByAccountIds.fetchId(activity.getActorId());
+            result = "p" + peopleAccountIdsToIdsMapper.execute(Collections.singletonList(activity.getActorId())).get(0);
+            break;
         default:
             throw new RuntimeException("Unknown/unhandled recipient type: " + actorType);
         }
+
+        if (log.isInfoEnabled())
+        {
+            log.info("Bridge converted activity with actorId " + activity.getActorId() + " to " + result);
+        }
+        return result;
     }
 
     /**
@@ -69,11 +90,14 @@ public class ActivityAuthorClassBridge implements StringBridge
     }
 
     /**
-     * @param inGetPeopleByAccountIds
-     *            the getPeopleByAccountIds to set
+     * Set the mapper to lookup person ids from account ids.
+     *
+     * @param inPeopleAccountIdsToIdsMapper
+     *            mapper to get ids from accountids for people
      */
-    public static void setGetPeopleByAccountIds(final GetPeopleByAccountIds inGetPeopleByAccountIds)
+    public static void setPeopleAccountIdsToIdsMapper(
+            final DomainMapper<List<String>, List<Long>> inPeopleAccountIdsToIdsMapper)
     {
-        ActivityAuthorClassBridge.getPeopleByAccountIds = inGetPeopleByAccountIds;
+        ActivityAuthorClassBridge.peopleAccountIdsToIdsMapper = inPeopleAccountIdsToIdsMapper;
     }
 }
