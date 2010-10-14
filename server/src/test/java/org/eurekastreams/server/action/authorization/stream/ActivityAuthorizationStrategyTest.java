@@ -16,7 +16,6 @@
 package org.eurekastreams.server.action.authorization.stream;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,7 +31,6 @@ import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.ActivityInteractionType;
@@ -65,9 +63,10 @@ public class ActivityAuthorizationStrategyTest
     private GetDomainGroupsByShortNames groupByShortNameDAO = context.mock(GetDomainGroupsByShortNames.class);
 
     /**
-     * People by account id DAO.
+     * Mapper to get the personmodelview by account id.
      */
-    private GetPeopleByAccountIds personByAccountDAO = context.mock(GetPeopleByAccountIds.class);
+    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = context
+            .mock(DomainMapper.class);
 
     /**
      * Group follower ids DAO.
@@ -169,7 +168,8 @@ public class ActivityAuthorizationStrategyTest
     public void setUp()
     {
         sut = new ActivityAuthorizationStrategy(groupByShortNameDAO, groupFollowersDAO, actorRetrievalStrat,
-                coordinatorMapperMock, activityDTOStrategyMock, ActivityInteractionType.POST, personByAccountDAO);
+                coordinatorMapperMock, activityDTOStrategyMock, ActivityInteractionType.POST,
+                getPersonModelViewByAccountIdMapper);
 
         context.checking(new Expectations()
         {
@@ -185,7 +185,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Execute with Person as recipient.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */
@@ -214,8 +214,8 @@ public class ActivityAuthorizationStrategyTest
                 oneOf(streamDTO).getUniqueIdentifier();
                 will(returnValue("IOwnThis"));
 
-                oneOf(personByAccountDAO).execute(Collections.singletonList("IOwnThis"));
-                will(returnValue(Collections.singletonList(personDTO)));
+                oneOf(getPersonModelViewByAccountIdMapper).execute("IOwnThis");
+                will(returnValue(personDTO));
 
                 oneOf(actorRetrievalStrat).getActorAccountId(userPrincipal, activityDTO);
                 will(returnValue(ACTOR_ACCOUNT_ID));
@@ -231,7 +231,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Execute with Person as recipient.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */
@@ -260,7 +260,10 @@ public class ActivityAuthorizationStrategyTest
                 oneOf(streamDTO).getUniqueIdentifier();
                 will(returnValue("IOwnThis"));
 
-                oneOf(personByAccountDAO).execute(Collections.singletonList("IOwnThis"));
+                oneOf(actorRetrievalStrat).getActorAccountId(userPrincipal, activityDTO);
+                will(returnValue(ACTOR_ACCOUNT_ID));
+
+                oneOf(getPersonModelViewByAccountIdMapper).execute("IOwnThis");
                 will(throwException(new Exception()));
             }
         });
@@ -271,7 +274,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Execute with public group as recipient.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */
@@ -329,7 +332,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Execute with private group as recipient, user not follower or coordinator.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */
@@ -410,7 +413,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Execute with private group as recipient, user is follower, not coordinator.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */
@@ -476,7 +479,7 @@ public class ActivityAuthorizationStrategyTest
 
     /**
      * Execute with private group as recipient, user is coordinator, not follower.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */

@@ -562,7 +562,7 @@
                     </bean>
                 </constructor-arg>
                 <constructor-arg value="COMMENT" />
-                <constructor-arg ref="bulkPeopleByAccountIdMapper" />
+                <constructor-arg ref="getPersonByAccountIdMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg>

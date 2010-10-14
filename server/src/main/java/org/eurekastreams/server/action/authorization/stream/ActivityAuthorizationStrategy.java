@@ -30,7 +30,6 @@ import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.ActivityInteractionType;
@@ -59,7 +58,7 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
     /**
      * People by accountId DAO.
      */
-    private final GetPeopleByAccountIds personByAccountDAO;
+    private final DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper;
 
     /**
      * Group follower ids DAO.
@@ -89,7 +88,7 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
 
     /**
      * Constructor.
-     * 
+     *
      * @param inGroupByShortNameDAO
      *            Groups by shortName DAO.
      * @param inGroupFollowersDAO
@@ -102,8 +101,8 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
      *            ActivityDTOFromParamsStrategy instance.
      * @param inType
      *            The type of interaction on an activity.
-     * @param inPersonByAccountDAO
-     *            DAO to get a person by nt account.
+     * @param inGetPersonModelViewByAccountIdMapper
+     *            mapper to get a person modelview by account id
      */
     @SuppressWarnings("unchecked")
     public ActivityAuthorizationStrategy(final GetDomainGroupsByShortNames inGroupByShortNameDAO,
@@ -111,20 +110,20 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
             final ActorRetrievalStrategy inActorRetrievalStrategy,
             final GetAllPersonIdsWhoHaveGroupCoordinatorAccess inGroupCoordMapper,
             final ActivityDTOFromParamsStrategy inActivityDTOStrategy, final ActivityInteractionType inType,
-            final GetPeopleByAccountIds inPersonByAccountDAO)
+            final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper)
     {
         groupByShortNameDAO = inGroupByShortNameDAO;
         groupFollowersDAO = inGroupFollowersDAO;
         actorRetrievalStrategy = inActorRetrievalStrategy;
         groupCoordMapper = inGroupCoordMapper;
         activityDTOStrategy = inActivityDTOStrategy;
-        personByAccountDAO = inPersonByAccountDAO;
+        getPersonModelViewByAccountIdMapper = inGetPersonModelViewByAccountIdMapper;
         type = inType;
     }
 
     /**
      * Determines if user has permission to modify (Post|Comment|View on) an activity.
-     * 
+     *
      * @param inActionContext
      *            the action context
      */
@@ -163,7 +162,7 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
 
     /**
      * Helper method to perform group authorization.
-     * 
+     *
      * @param inUser
      *            - UserDetails of the user making the request.
      * @param inActivity
@@ -219,7 +218,7 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
 
     /**
      * Returns the Entity's configuration for stream posting or commenting based on the passed in entity context.
-     * 
+     *
      * @param inEntity
      *            The entity to check.
      * @param inInteractionType
@@ -244,7 +243,7 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
 
     /**
      * Helper method to perform Person authorization.
-     * 
+     *
      * @param inUser
      *            - UserDetails of the user making the request.
      * @param inActivity
@@ -257,15 +256,18 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
             // Check to see if the stream is locked down and if they have permission to post to it.
             String targetStreamOwnerAccountId = inActivity.getDestinationStream().getUniqueIdentifier();
 
-            PersonModelView targetStreamOwner = personByAccountDAO.execute(
-                    Collections.singletonList(targetStreamOwnerAccountId)).get(0);
-
             boolean isActorTheStreamOwner = actorRetrievalStrategy.getActorAccountId(inUser, inActivity).equals(
                     targetStreamOwnerAccountId);
 
-            // Test if the user is the owner of the stream being posted to or the stream
-            // has been authorized for this type of interaction.
-            if (isActorTheStreamOwner || isStreamInteractionAuthorized(targetStreamOwner, type))
+            // Test if the user is the owner of the stream being posted to
+            if(isActorTheStreamOwner)
+            {
+                return;
+            }
+
+            PersonModelView targetStreamOwner = getPersonModelViewByAccountIdMapper.execute(targetStreamOwnerAccountId);
+            // or the stream has been authorized for this type of interaction.
+            if (isStreamInteractionAuthorized(targetStreamOwner, type))
             {
                 return;
             }
@@ -276,5 +278,4 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
         }
         throw new AuthorizationException("Current user does not have access rights to modify activity.");
     }
-
 }
