@@ -211,7 +211,11 @@
         
     <bean
         id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_RECURSIVE_CHILDREN"
-        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />                      
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />   
+                
+    <bean
+        id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_COORDINATORS_BY_ORG_ID"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />                            
         
     <bean
         id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.FOLLOWERS_BY_GROUP"
@@ -848,7 +852,36 @@
                 <property name="cache" ref="memcachedCache" />
             </bean>
         </constructor-arg>
-    </bean>           
+    </bean>  
+    
+   <bean id="getOrganizationCoordinatorIdsByOrganizationIdMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache Mapper -->
+        <constructor-arg ref="getOrganizationCoordinatorIdsByOrganizationIdCacheMapper"/>
+        <!-- Database mapper to fall back on if not found in cache -->
+        <constructor-arg ref="getOrganizationCoordinatorIdsByOrganizationIdDbMapper" />
+        <!-- Data combiner -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
+        </constructor-arg>
+        <!-- Cache refresher -->
+        <constructor-arg ref="getOrganizationCoordinatorIdsByOrganizationIdCacheRefresher"/>
+    </bean>    
+    
+    <bean id="getOrganizationCoordinatorIdsByOrganizationIdCacheRefresher" class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
+        <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_COORDINATORS_BY_ORG_ID" />
+        <constructor-arg ref="toStringCacheKeySuffixTransformer" />
+        <property name="cache" ref="memcachedCache" />
+    </bean>  
+    
+    <bean id="getOrganizationCoordinatorIdsByOrganizationIdCacheMapper" class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
+                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_COORDINATORS_BY_ORG_ID" />
+                <constructor-arg ref="toStringCacheKeySuffixTransformer" />
+                <property name="cache" ref="memcachedCache" />
+            </bean>
+        </constructor-arg>
+    </bean>             
 		
 	<bean id="getGroupCoordinatorIdsByGroupIdMapper_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache Mapper -->
