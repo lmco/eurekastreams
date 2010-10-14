@@ -22,34 +22,31 @@ import java.util.Set;
 import javax.persistence.Query;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.persistence.mappers.ReadMapper;
 
 /**
- * Get a list of coordinator person ids for an Organization, straight from the
- * database.
+ * Get a list of coordinator person ids for an Organization, straight from the database.
  */
-public class GetOrgCoordinatorIds extends ReadMapper<Long, Set<Long>>
+public class GetOrganizationCoordinatorIdsByOrganizationIdDbMapper extends ReadMapper<Long, Set<Long>>
 {
     /**
      * Instance of the logger.
      */
-    private Log log = LogFactory.getLog(GetOrgCoordinatorIds.class);
+    private Log log = LogFactory.make();
 
     /**
      * Get the Set of organization coordinators from the database.
      * 
      * @param inOrganizationId
      *            the id of the organization to query for coordinators
-     * @return a Set of person ids that are coordinators for the organization
-     *         with the input id
+     * @return a Set of person ids that are coordinators for the organization with the input id
      */
     @Override
     @SuppressWarnings("unchecked")
     public Set<Long> execute(final Long inOrganizationId)
     {
-        log.trace("Looking in the database for coordinators for organization #"
-                + inOrganizationId);
+        log.trace("Looking in the database for coordinators for organization #" + inOrganizationId);
 
         String queryString = "SELECT p.id FROM Person p, Organization o "
                 + "WHERE p MEMBER OF o.coordinators AND o.id=:orgId";
@@ -60,8 +57,7 @@ public class GetOrgCoordinatorIds extends ReadMapper<Long, Set<Long>>
 
         if (log.isTraceEnabled())
         {
-            log.trace("Coordinators for org # " + inOrganizationId + ": "
-                    + coordinatorIds.toString());
+            log.trace("Coordinators for org # " + inOrganizationId + ": " + coordinatorIds.toString());
         }
 
         return new HashSet<Long>(coordinatorIds);

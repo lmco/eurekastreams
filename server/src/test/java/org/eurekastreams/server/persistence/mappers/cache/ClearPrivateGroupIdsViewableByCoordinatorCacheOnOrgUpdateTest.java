@@ -18,7 +18,7 @@ package org.eurekastreams.server.persistence.mappers.cache;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eurekastreams.server.persistence.mappers.db.GetOrgCoordinatorIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -45,16 +45,14 @@ public class ClearPrivateGroupIdsViewableByCoordinatorCacheOnOrgUpdateTest
     /**
      * Mapper to get organization coordinator ids straight from the database.
      */
-    private GetOrgCoordinatorIds getOrgCoordinatorIdsFromDbMapper = context
-            .mock(GetOrgCoordinatorIds.class);
+    private DomainMapper<Long, Set<Long>> getOrgCoordinatorIdsFromDbMapper = context.mock(DomainMapper.class);
 
     /**
      * System under test.
      */
     private final ClearPrivateGroupIdsViewableByCoordinatorCacheOnOrgUpdate sut =
     // line break
-    new ClearPrivateGroupIdsViewableByCoordinatorCacheOnOrgUpdate(
-            getOrgCoordinatorIdsFromDbMapper);
+    new ClearPrivateGroupIdsViewableByCoordinatorCacheOnOrgUpdate(getOrgCoordinatorIdsFromDbMapper);
 
     /**
      * Mocked cache.
@@ -96,18 +94,9 @@ public class ClearPrivateGroupIdsViewableByCoordinatorCacheOnOrgUpdateTest
                 oneOf(getOrgCoordinatorIdsFromDbMapper).execute(orgId);
                 will(returnValue(coordinatorIds));
 
-                oneOf(cache)
-                        .delete(
-                                CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR
-                                        + coord1);
-                oneOf(cache)
-                        .delete(
-                                CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR
-                                        + coord2);
-                oneOf(cache)
-                        .delete(
-                                CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR
-                                        + coord3);
+                oneOf(cache).delete(CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + coord1);
+                oneOf(cache).delete(CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + coord2);
+                oneOf(cache).delete(CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + coord3);
             }
         });
 

@@ -25,12 +25,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
-import org.eurekastreams.server.persistence.mappers.db.GetOrgCoordinatorIds;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
- * Mapper to get a Set of Coordinator IDs from a list of organizations, loading
- * from cache if possible, from DB if not, then populating the cache.
+ * Mapper to get a Set of Coordinator IDs from a list of organizations, loading from cache if possible, from DB if not,
+ * then populating the cache.
  */
 public class GetOrgCoordinators extends CachedDomainMapper
 {
@@ -43,11 +42,9 @@ public class GetOrgCoordinators extends CachedDomainMapper
      * Constructor.
      * 
      * @param inGetOrgCoordinatorIdsMapper
-     *            the db mapper to get the coordinator person ids for an
-     *            organization
+     *            the db mapper to get the coordinator person ids for an organization
      */
-    public GetOrgCoordinators(
-            final GetOrgCoordinatorIds inGetOrgCoordinatorIdsMapper)
+    public GetOrgCoordinators(final DomainMapper<Long, Set<Long>> inGetOrgCoordinatorIdsMapper)
     {
         getOrgCoordinatorIdsMapper = inGetOrgCoordinatorIdsMapper;
     }
@@ -55,11 +52,11 @@ public class GetOrgCoordinators extends CachedDomainMapper
     /**
      * Mapper to get org coordinator ids from the database.
      */
-    private GetOrgCoordinatorIds getOrgCoordinatorIdsMapper;
+    private DomainMapper<Long, Set<Long>> getOrgCoordinatorIdsMapper;
 
     /**
-     * Looks in cache for IDs and returns them if found. Otherwise, makes a
-     * database call, puts them in cache, and returns them.
+     * Looks in cache for IDs and returns them if found. Otherwise, makes a database call, puts them in cache, and
+     * returns them.
      * 
      * @param inOrgId
      *            the IDs of the organization to fetch child organizations for
@@ -73,8 +70,8 @@ public class GetOrgCoordinators extends CachedDomainMapper
     }
 
     /**
-     * Looks in cache for IDs and returns them if found. Otherwise, makes a
-     * database call, puts them in cache, and returns them.
+     * Looks in cache for IDs and returns them if found. Otherwise, makes a database call, puts them in cache, and
+     * returns them.
      * 
      * @param inOrgIds
      *            the IDs of the organizations to fetch child organizations for
@@ -93,16 +90,14 @@ public class GetOrgCoordinators extends CachedDomainMapper
             coordinatorKeyList.add(cacheKeyPreFix + orgId);
         }
 
-        Map<String, Object> recursiveOrgCoordIds = getCache().multiGet(
-                coordinatorKeyList);
+        Map<String, Object> recursiveOrgCoordIds = getCache().multiGet(coordinatorKeyList);
 
         // Get all coord Ids from cache.
         Iterator mapIt = recursiveOrgCoordIds.entrySet().iterator();
         while (mapIt.hasNext())
         {
             Map.Entry pairs = (Map.Entry) mapIt.next();
-            Set<Long> orgCoordinators = new HashSet((Collection) pairs
-                    .getValue());
+            Set<Long> orgCoordinators = new HashSet((Collection) pairs.getValue());
             coordinatorIdList.addAll(orgCoordinators);
         }
 
@@ -120,9 +115,7 @@ public class GetOrgCoordinators extends CachedDomainMapper
         // TODO: update this to make one DB call - why loop?
         for (int i = 0; i < uncachedCoordinatorKeys.size(); i++)
         {
-            coordinatorIdList
-                    .addAll(getAndStoreOrgCoordinators(uncachedCoordinatorKeys
-                            .get(i)));
+            coordinatorIdList.addAll(getAndStoreOrgCoordinators(uncachedCoordinatorKeys.get(i)));
         }
 
         return coordinatorIdList;
@@ -138,8 +131,7 @@ public class GetOrgCoordinators extends CachedDomainMapper
     @SuppressWarnings("unchecked")
     private Set<Long> getAndStoreOrgCoordinators(final Long inOrgId)
     {
-        Set<Long> coordinatorResults = getOrgCoordinatorIdsMapper
-                .execute(inOrgId);
+        Set<Long> coordinatorResults = getOrgCoordinatorIdsMapper.execute(inOrgId);
         getCache().set(cacheKeyPreFix + inOrgId, coordinatorResults);
         return new HashSet(coordinatorResults);
     }

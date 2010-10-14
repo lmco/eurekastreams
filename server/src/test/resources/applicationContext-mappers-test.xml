@@ -187,8 +187,8 @@
 	</bean>
 
 	
-	<bean id="getOrgCoordinatorIdsFromDB" 
-		class="org.eurekastreams.server.persistence.mappers.db.GetOrgCoordinatorIds"/>
+	<bean id="getOrganizationCoordinatorIdsByOrganizationIdDbMapper" 
+		class="org.eurekastreams.server.persistence.mappers.db.GetOrganizationCoordinatorIdsByOrganizationIdDbMapper"/>
 		
     <bean id="getTutorialVideosFromDB" 
         class="org.eurekastreams.server.persistence.mappers.db.GetTutorialVideos"/>
@@ -202,7 +202,7 @@
    	</bean>
     
     <bean id="getOrgCoordinators" class="org.eurekastreams.server.persistence.mappers.GetOrgCoordinators">
-    	<constructor-arg ref="getOrgCoordinatorIdsFromDB"/>
+    	<constructor-arg ref="getOrganizationCoordinatorIdsByOrganizationIdDbMapper"/>
     	<property name="cache" ref="testCache" />
     </bean>
     

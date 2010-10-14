@@ -19,26 +19,24 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eurekastreams.server.persistence.mappers.db.GetOrgCoordinatorIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
- * Clear the cache of private group ids visible (via org or group coord status)
- * by people that are coordinators of an organization.
+ * Clear the cache of private group ids visible (via org or group coord status) by people that are coordinators of an
+ * organization.
  */
-public class ClearPrivateGroupIdsViewableByCoordinatorCacheOnOrgUpdate
-        extends CachedDomainMapper
+public class ClearPrivateGroupIdsViewableByCoordinatorCacheOnOrgUpdate extends CachedDomainMapper
 {
     /**
      * Logger.
      */
-    private Log log = LogFactory
-            .getLog(ClearPrivateGroupIdsViewableByCoordinatorCacheOnOrgUpdate.class);
+    private Log log = LogFactory.getLog(ClearPrivateGroupIdsViewableByCoordinatorCacheOnOrgUpdate.class);
 
     /**
      * Mapper to get organization coordinator ids straight from the database.
      */
-    private GetOrgCoordinatorIds getOrgCoordinatorIdsFromDbMapper;
+    private DomainMapper<Long, Set<Long>> getOrgCoordinatorIdsFromDbMapper;
 
     /**
      * Constructor.
@@ -47,34 +45,28 @@ public class ClearPrivateGroupIdsViewableByCoordinatorCacheOnOrgUpdate
      *            the db mapper to get the org coordinator ids for an org
      */
     public ClearPrivateGroupIdsViewableByCoordinatorCacheOnOrgUpdate(
-            final GetOrgCoordinatorIds inGetOrgCoordinatorIdsFromDbMapper)
+            final DomainMapper<Long, Set<Long>> inGetOrgCoordinatorIdsFromDbMapper)
     {
         getOrgCoordinatorIdsFromDbMapper = inGetOrgCoordinatorIdsFromDbMapper;
     }
 
     /**
-     * Clear the activity stream search string for user cache for all
-     * coordinators of an organization.
+     * Clear the activity stream search string for user cache for all coordinators of an organization.
      * 
      * @param inOrganizationId
      *            the id of the organization that's being updated
      */
     public void execute(final Long inOrganizationId)
     {
-        log
-                .info("Clearing the cached security-scoped activity search strings for coordinators of organization #"
-                        + inOrganizationId);
+        log.info("Clearing the cached security-scoped activity search strings for coordinators of organization #"
+                + inOrganizationId);
 
-        Set<Long> coordinatorPeopleIds = getOrgCoordinatorIdsFromDbMapper
-                .execute(inOrganizationId);
+        Set<Long> coordinatorPeopleIds = getOrgCoordinatorIdsFromDbMapper.execute(inOrganizationId);
 
         for (Long id : coordinatorPeopleIds)
         {
-            log
-                    .info("Clearing the cached security-scoped activity search string for user with person id: "
-                            + id);
-            getCache()
-                    .delete(CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + id);
+            log.info("Clearing the cached security-scoped activity search string for user with person id: " + id);
+            getCache().delete(CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + id);
         }
     }
 }

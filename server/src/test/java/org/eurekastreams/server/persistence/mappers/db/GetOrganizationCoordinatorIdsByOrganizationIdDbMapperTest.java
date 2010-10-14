@@ -27,13 +27,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Test fixture for GetOrgCoordinatorIds.
  */
-public class GetOrgCoordinatorIdsTest extends MapperTest
+public class GetOrganizationCoordinatorIdsByOrganizationIdDbMapperTest extends MapperTest
 {
     /**
      * System under test.
      */
     @Autowired
-    private GetOrgCoordinatorIds sut;
+    private GetOrganizationCoordinatorIdsByOrganizationIdDbMapper sut;
 
     /**
      * Test execute on 5 alone.

@@ -1439,8 +1439,8 @@
 		</constructor-arg>
 	</bean>
 
-	<bean id="getOrgCoordinatorIdsFromDB"
-		class="org.eurekastreams.server.persistence.mappers.db.GetOrgCoordinatorIds" />
+	<bean id="getOrganizationCoordinatorIdsByOrganizationIdDbMapper"
+		class="org.eurekastreams.server.persistence.mappers.db.GetOrganizationCoordinatorIdsByOrganizationIdDbMapper" />
 
 	<bean id="getPrivateGroupsByUserId"
 		class="org.eurekastreams.server.persistence.mappers.cache.GetPrivateGroupsByUserId">
@@ -1468,7 +1468,7 @@
 	<bean id="getOrgCoordinators"
 		class="org.eurekastreams.server.persistence.mappers.GetOrgCoordinators">
 		<property name="cache" ref="memcachedCache" />
-		<constructor-arg ref="getOrgCoordinatorIdsFromDB" />
+		<constructor-arg ref="getOrganizationCoordinatorIdsByOrganizationIdDbMapper" />
 	</bean>
 
 	<bean id="getRecursiveOrgCoordinators"
@@ -1713,7 +1713,7 @@
 	<!-- TODO: rename this bean -->
 	<bean id="clearActivityStreamSearchStringCacheOnOrgUpdate"
 		class="org.eurekastreams.server.persistence.mappers.cache.ClearPrivateGroupIdsViewableByCoordinatorCacheOnOrgUpdate">
-		<constructor-arg ref="getOrgCoordinatorIdsFromDB" />
+		<constructor-arg ref="getOrganizationCoordinatorIdsByOrganizationIdDbMapper" />
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 
