@@ -45,7 +45,7 @@ import org.junit.Test;
 
 /**
  * This class performs the test for the implementation of the Shindig PersonService interface.
- * 
+ *
  */
 public class PersonServiceTest
 {
@@ -58,7 +58,7 @@ public class PersonServiceTest
     /**
      * List of people expected to be returned from the search for users by opensocial id.
      */
-    private List<org.eurekastreams.server.domain.Person> people = // \n
+    private final List<org.eurekastreams.server.domain.Person> people = // \n
     new LinkedList<org.eurekastreams.server.domain.Person>();
 
     /**
@@ -87,24 +87,29 @@ public class PersonServiceTest
     private static final String BASE_URL = "http://localhost:8080";
 
     /**
-     * A test UserId object to be used during the tests.
+     * TLD for user account.
      */
-    private UserId testId = new UserId(Type.userId, USERID_ONE);
+    private static final String TLD = "example.com";
 
     /**
      * A test UserId object to be used during the tests.
      */
-    private UserId testId2 = new UserId(Type.userId, USERID_TWO);
+    private final UserId testId = new UserId(Type.userId, USERID_ONE);
+
+    /**
+     * A test UserId object to be used during the tests.
+     */
+    private final UserId testId2 = new UserId(Type.userId, USERID_TWO);
 
     /**
      * A test UserId object with no id specified. Yes, this seems odd, but "null" is what is passed in when the id is
      * not supplied from the container side.
      */
-    private UserId testNullId = new UserId(Type.userId, "null");
+    private final UserId testNullId = new UserId(Type.userId, "null");
     /**
      * A test GroupId object to be used during the tests.
      */
-    private GroupId testGroupId = new GroupId(GroupId.Type.self, GROUPID);
+    private final GroupId testGroupId = new GroupId(GroupId.Type.self, GROUPID);
 
     /**
      * Context for building mock objects.
@@ -119,12 +124,12 @@ public class PersonServiceTest
     /**
      * The mock action to be used.
      */
-    private ServiceAction getPersonAction = context.mock(ServiceAction.class, "getPersonAction");
+    private final ServiceAction getPersonAction = context.mock(ServiceAction.class, "getPersonAction");
 
     /**
      * Mocked instance of the getPeopleAction.
      */
-    private ServiceAction getPeopleAction = context.mock(ServiceAction.class, "getPeopleAction");
+    private final ServiceAction getPeopleAction = context.mock(ServiceAction.class, "getPeopleAction");
 
     /**
      * Service Action Controller.
@@ -145,7 +150,7 @@ public class PersonServiceTest
     /**
      * The Person object needs to be fully qualified because Shindig has a Person object as well.
      */
-    private org.eurekastreams.server.domain.Person eurekastreamsPerson = context
+    private final org.eurekastreams.server.domain.Person eurekastreamsPerson = context
             .mock(org.eurekastreams.server.domain.Person.class);
 
     /**
@@ -155,12 +160,12 @@ public class PersonServiceTest
     public void setUp()
     {
         sut = new PersonServiceImpl(getPersonAction, getPeopleAction, principalPopulator, serviceActionController,
-                BASE_URL);
+                BASE_URL, TLD);
     }
 
     /**
      * Test the getPerson method in the PersonService implementation.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions
      */
@@ -206,7 +211,7 @@ public class PersonServiceTest
                 oneOf(eurekastreamsPerson).getAvatarId();
                 will(returnValue(testPersonAvatarId));
 
-                oneOf(eurekastreamsPerson).getAccountId();
+                allowing(eurekastreamsPerson).getAccountId();
                 will(returnValue(testPersonAccountId));
             }
         });
@@ -220,7 +225,7 @@ public class PersonServiceTest
 
     /**
      * Test forcing an Exception.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions.
      */
@@ -249,7 +254,7 @@ public class PersonServiceTest
 
     /**
      * currentUser Test forcing a NumberFormatException.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions.
      */
@@ -279,7 +284,7 @@ public class PersonServiceTest
 
     /**
      * Test forcing a NumberFormatException.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions.
      */
@@ -291,10 +296,10 @@ public class PersonServiceTest
 
     /**
      * Test stub for unimplemented method. This is necessary for code coverage and because all methods for Shindig need
-     * to be implemented to not cause runtime errors even though we don't currently have implementations 
+     * to be implemented to not cause runtime errors even though we don't currently have implementations
      * for all methods
      * yet.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions
      */
@@ -333,7 +338,7 @@ public class PersonServiceTest
     /**
      * This test exercises the GetPeople method of the OpenSocial implementation in Shindig. This test throws an
      * exception to test error handling.
-     * 
+     *
      * @throws Exception
      *             - on unhandled errors.
      */

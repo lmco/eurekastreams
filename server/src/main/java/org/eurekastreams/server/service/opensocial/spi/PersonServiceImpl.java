@@ -16,6 +16,7 @@
 package org.eurekastreams.server.service.opensocial.spi;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -29,8 +30,10 @@ import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RestfulCollection;
+import org.apache.shindig.social.core.model.AccountImpl;
 import org.apache.shindig.social.core.model.NameImpl;
 import org.apache.shindig.social.core.model.PersonImpl;
+import org.apache.shindig.social.opensocial.model.Account;
 import org.apache.shindig.social.opensocial.model.Person;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
@@ -52,43 +55,46 @@ import com.google.inject.name.Named;
 /**
  * This class is the Eureka Streams implementation of the Shindig interface for retrieving OpenSocial information about
  * People.
- * 
+ *
  */
 public class PersonServiceImpl implements PersonService
 {
     /**
      * Logger.
      */
-    private Log log = LogFactory.getLog(PersonServiceImpl.class);
+    private final Log log = LogFactory.getLog(PersonServiceImpl.class);
 
     /**
      * Get person action.
      */
-    private ServiceAction getPersonAction;
+    private final ServiceAction getPersonAction;
 
     /**
      * Service Action Controller.
      */
-    private ActionController serviceActionController;
+    private final ActionController serviceActionController;
 
     /**
      * Principal populator.
      */
-    private PrincipalPopulatorTransWrapper principalPopulator;
+    private final PrincipalPopulatorTransWrapper principalPopulator;
 
     /**
      * Instance of the GetPersonAction that is used to process Person requests.
      */
-    private ServiceAction getPeopleAction;
+    private final ServiceAction getPeopleAction;
 
     /**
      * Container base url to create profile url from.
      */
-    private String containerBaseUrl;
+    private final String containerBaseUrl;
+
+    /** Top-level domain used for users' accounts. */
+    private final String accountTopLevelDomain;
 
     /**
      * Basic constructor for the PersonService implementation.
-     * 
+     *
      * @param inGetPersonAction
      *            - this is the GetPersonAction that is injected into this class with Spring. By injecting with spring
      *            we can maintain the transaction nature of the Actions even in Shindig where Guice is used to wire up
@@ -103,25 +109,29 @@ public class PersonServiceImpl implements PersonService
      * @param inContainerBaseUrl
      *            - string that contains the base url for the container to be used when generating links for an
      *            opensocial person.
+     * @param inAccountTopLevelDomain
+     *            Top-level domain used for users' accounts.
      */
     @Inject
     public PersonServiceImpl(@Named("getPersonNoContext") final ServiceAction inGetPersonAction,
             @Named("getPeopleByOpenSocialIds") final ServiceAction inGetPeopleAction,
             final PrincipalPopulatorTransWrapper inOpenSocialPrincipalPopulator,
             final ActionController inServiceActionController,
-            @Named("eureka.container.baseurl") final String inContainerBaseUrl)
+            @Named("eureka.container.baseurl") final String inContainerBaseUrl,
+            @Named("eureka.user-account-tld") final String inAccountTopLevelDomain)
     {
         getPersonAction = inGetPersonAction;
         getPeopleAction = inGetPeopleAction;
         containerBaseUrl = inContainerBaseUrl;
         principalPopulator = inOpenSocialPrincipalPopulator;
         serviceActionController = inServiceActionController;
+        accountTopLevelDomain = inAccountTopLevelDomain;
     }
 
     /**
      * This is the implementation method to retrieve a number of people generally associated with a group or by a set of
      * userids.
-     * 
+     *
      * @param userIds
      *            - set of userids to retrieve.
      * @param groupId
@@ -132,9 +142,9 @@ public class PersonServiceImpl implements PersonService
      *            - fields to retrieve with these users.
      * @param token
      *            - security token for this request.
-     * 
+     *
      * @return instance of person
-     * 
+     *
      */
     @SuppressWarnings("unchecked")
     public Future<RestfulCollection<Person>> getPeople(final Set<UserId> userIds, final GroupId groupId,
@@ -155,14 +165,14 @@ public class PersonServiceImpl implements PersonService
 
             log.debug("Sending getPeople userIdList to action: " + userIdList.toString());
 
-            GetPeopleByOpenSocialIdsRequest currentRequest = new GetPeopleByOpenSocialIdsRequest(userIdList, groupId
-                    .getType().toString().toLowerCase());
-            ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalPopulator
-                    .getPrincipal(token.getViewerId()));
+            GetPeopleByOpenSocialIdsRequest currentRequest =
+                    new GetPeopleByOpenSocialIdsRequest(userIdList, groupId.getType().toString().toLowerCase());
+            ServiceActionContext currentContext =
+                    new ServiceActionContext(currentRequest, principalPopulator.getPrincipal(token.getViewerId()));
 
             LinkedList<org.eurekastreams.server.domain.Person> people = // \n
-            (LinkedList<org.eurekastreams.server.domain.Person>) serviceActionController.execute(currentContext,
-                    getPeopleAction);
+                    (LinkedList<org.eurekastreams.server.domain.Person>) serviceActionController.execute(
+                            currentContext, getPeopleAction);
 
             if (log.isDebugEnabled())
             {
@@ -186,14 +196,14 @@ public class PersonServiceImpl implements PersonService
     /**
      * This is the implementation of the getPerson method specified by Shindig. This is how Shindig's OpenSocial api
      * will interact with our database.
-     * 
+     *
      * @param id
      *            - userid making the request.
      * @param fields
      *            - set of fields to be retrieved with this request.
      * @param token
      *            - token that goes with this request.
-     * 
+     *
      * @return instance of Person object
      */
     public Future<Person> getPerson(final UserId id, final Set<String> fields, final SecurityToken token)
@@ -219,12 +229,13 @@ public class PersonServiceImpl implements PersonService
             Principal currentUserPrincipal = principalPopulator.getPrincipal(openSocialId);
 
             // Create the actionContext
-            PrincipalActionContext ac = new ServiceActionContext(currentUserPrincipal.getAccountId(),
-                    currentUserPrincipal);
+            PrincipalActionContext ac =
+                    new ServiceActionContext(currentUserPrincipal.getAccountId(), currentUserPrincipal);
 
             // execute action.
-            currentPerson = (org.eurekastreams.server.domain.Person) serviceActionController.execute(
-                    (ServiceActionContext) ac, getPersonAction);
+            currentPerson =
+                    (org.eurekastreams.server.domain.Person) serviceActionController.execute(
+                            (ServiceActionContext) ac, getPersonAction);
 
             osPerson = convertToOSPerson(currentPerson);
         }
@@ -246,7 +257,7 @@ public class PersonServiceImpl implements PersonService
 
     /**
      * Helper method that converts a passed in eurekastreams Person object into a Shindig Person object.
-     * 
+     *
      * @param inPerson
      *            - eurekastreams person to be converted.
      * @return converted person object.
@@ -260,10 +271,14 @@ public class PersonServiceImpl implements PersonService
         osPerson.setId(inPerson.getOpenSocialId());
         osPerson.setAboutMe(inPerson.getBiography());
         osPerson.setProfileUrl(containerBaseUrl + "/#people/" + inPerson.getAccountId());
-        AvatarUrlGenerator generator = new AvatarUrlGenerator(EntityType.PERSON);
 
+        AvatarUrlGenerator generator = new AvatarUrlGenerator(EntityType.PERSON);
         osPerson.setThumbnailUrl(containerBaseUrl
                 + generator.getSmallAvatarUrl(inPerson.getId(), inPerson.getAvatarId()));
+
+        osPerson.setAccounts(Collections.singletonList((Account) new AccountImpl(accountTopLevelDomain, null, inPerson
+                .getAccountId())));
+
         return osPerson;
     }
 }

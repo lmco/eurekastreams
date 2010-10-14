@@ -181,6 +181,7 @@
         <build.profile.emailregex>.*@.*</build.profile.emailregex>
         <build.profile.emailregexerror>Please enter a properly formatted email address.</build.profile.emailregexerror>
         <build.taskqueueprocessor.additional-jsw-jar></build.taskqueueprocessor.additional-jsw-jar>
+        <build.user-account-tld>example.com</build.user-account-tld>
     </properties>
     <build>
         <plugins>
