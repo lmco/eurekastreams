@@ -33,7 +33,7 @@ import org.junit.Test;
 
 /**
  * Tests for DeleteActivityAuthorization class.
- * 
+ *
  */
 public class DeleteActivityAuthorizationTest
 {
@@ -50,7 +50,7 @@ public class DeleteActivityAuthorizationTest
     /**
      * DAO for looking up activity by id.
      */
-    private DomainMapper<List<Long>, List<ActivityDTO>>  activityDAO = context.mock(DomainMapper.class);
+    private DomainMapper<List<Long>, List<ActivityDTO>> activityDAO = context.mock(DomainMapper.class);
 
     /**
      * Strategy for setting Deletable property on CommentDTOs.
@@ -65,12 +65,17 @@ public class DeleteActivityAuthorizationTest
     /**
      * Activity id.
      */
-    private Long activityId = 5L;
+    private final Long activityId = 5L;
 
     /**
      * user acctounId.
      */
     private String userAcctId = "smithers";
+
+    /**
+     * Current user's id.
+     */
+    private final Long userId = 203L;
 
     /**
      * List of activityId.
@@ -124,7 +129,7 @@ public class DeleteActivityAuthorizationTest
 
     /**
      * Test authorize method.
-     * 
+     *
      * @throws Exception
      *             on error.
      */
@@ -143,10 +148,13 @@ public class DeleteActivityAuthorizationTest
                 allowing(principal).getAccountId();
                 will(returnValue(userAcctId));
 
+                allowing(principal).getId();
+                will(returnValue(userId));
+
                 oneOf(activityDAO).execute(activityIds);
                 will(returnValue(activities));
 
-                oneOf(activityDeletableSetter).execute(userAcctId, activity);
+                oneOf(activityDeletableSetter).execute(userAcctId, userId, activity);
 
                 oneOf(activity).isDeletable();
                 will(returnValue(true));
@@ -159,7 +167,7 @@ public class DeleteActivityAuthorizationTest
 
     /**
      * Test authorize method.
-     * 
+     *
      * @throws Exception
      *             on error.
      */
@@ -178,10 +186,13 @@ public class DeleteActivityAuthorizationTest
                 allowing(principal).getAccountId();
                 will(returnValue(userAcctId));
 
+                allowing(principal).getId();
+                will(returnValue(userId));
+
                 oneOf(activityDAO).execute(activityIds);
                 will(returnValue(activities));
 
-                oneOf(activityDeletableSetter).execute(userAcctId, activity);
+                oneOf(activityDeletableSetter).execute(userAcctId, userId, activity);
 
                 oneOf(activity).isDeletable();
                 will(returnValue(false));
@@ -221,7 +232,7 @@ public class DeleteActivityAuthorizationTest
 
     /**
      * Test authorize method, activity lookup fail.
-     * 
+     *
      * @throws Exception
      *             on error
      */

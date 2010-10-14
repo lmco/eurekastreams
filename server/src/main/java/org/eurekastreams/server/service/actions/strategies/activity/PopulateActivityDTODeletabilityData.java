@@ -41,7 +41,7 @@ public class PopulateActivityDTODeletabilityData implements ActivityFilter
 
     /**
      * Constructor.
-     * 
+     *
      * @param inCommentDeletePropertySetter
      *            comment delete property setter.
      * @param inActivityDeletePropertySetter
@@ -56,7 +56,7 @@ public class PopulateActivityDTODeletabilityData implements ActivityFilter
 
     /**
      * Populates activity and comment DTOs with deletability.
-     * 
+     *
      * @param activities
      *            the DTOs.
      * @param user
@@ -64,16 +64,17 @@ public class PopulateActivityDTODeletabilityData implements ActivityFilter
      */
     public void filter(final List<ActivityDTO> activities, final PersonModelView user)
     {
+
         for (ActivityDTO activity : activities)
         {
-            activityDeletePropertySetter.execute(user.getAccountId(), activity);
+            activityDeletePropertySetter.execute(user.getAccountId(), user.getId(), activity);
             setCommentDeletable(user.getAccountId(), activity);
         }
     }
 
     /**
      * If activity has comments, determine if current user can delete them and set deletable property accordingly.
-     * 
+     *
      * @param userName
      *            The current user's username.
      * @param activity

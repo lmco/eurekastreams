@@ -26,7 +26,7 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -37,7 +37,7 @@ public class PopulateActivityDTODeletabilityDataTest
     /**
      * Mocking context.
      */
-    private static final JUnit4Mockery CONTEXT = new JUnit4Mockery()
+    private final JUnit4Mockery context = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -45,44 +45,67 @@ public class PopulateActivityDTODeletabilityDataTest
     };
 
     /**
-     * System under test.
-     */
-    private static PopulateActivityDTODeletabilityData sut;
-
-    /**
      * Comment delete strategy.
      */
-    private static CommentDeletePropertyStrategy commentDeleteStrategy = CONTEXT
-            .mock(CommentDeletePropertyStrategy.class);
+    private CommentDeletePropertyStrategy commentDeleteStrategy = context.mock(CommentDeletePropertyStrategy.class);
 
     /**
      * Property delete strategy.
      */
-    private static ActivityDeletePropertyStrategy activityDeleteStrategy = CONTEXT
-            .mock(ActivityDeletePropertyStrategy.class);
+    private ActivityDeletePropertyStrategy activityDeleteStrategy = context.mock(ActivityDeletePropertyStrategy.class);
 
     /**
      * Activity.
      */
-    private static ActivityDTO activity = CONTEXT.mock(ActivityDTO.class);
+    private ActivityDTO activity = context.mock(ActivityDTO.class);
 
     /**
      * First comment.
      */
-    private static CommentDTO firstComment = CONTEXT.mock(CommentDTO.class, "firstComment");
+    private CommentDTO firstComment = context.mock(CommentDTO.class, "firstComment");
 
     /**
      * Last comment.
      */
-    private static CommentDTO lastComment = CONTEXT.mock(CommentDTO.class, "lastComment");
+    private CommentDTO lastComment = context.mock(CommentDTO.class, "lastComment");
 
     /**
-     * Setup fixtures.
+     * User's account id.
      */
-    @BeforeClass
-    public static void setup()
+    private final String userAccountId = "accountid";
+
+    /**
+     * User's id.
+     */
+    private final Long userId = 2342L;
+
+    /**
+     * System under test.
+     */
+    private PopulateActivityDTODeletabilityData sut = new PopulateActivityDTODeletabilityData(commentDeleteStrategy,
+            activityDeleteStrategy);
+
+    /**
+     * mocked current user.
+     */
+    private final PersonModelView user = context.mock(PersonModelView.class);
+
+    /**
+     * Setup.
+     */
+    @Before
+    public void setup()
     {
-        sut = new PopulateActivityDTODeletabilityData(commentDeleteStrategy, activityDeleteStrategy);
+        context.checking(new Expectations()
+        {
+            {
+                allowing(user).getAccountId();
+                will(returnValue(userAccountId));
+
+                allowing(user).getId();
+                will(returnValue(userId));
+            }
+        });
     }
 
     /**
@@ -91,13 +114,11 @@ public class PopulateActivityDTODeletabilityDataTest
     @Test
     public void testFilterNoComment()
     {
-        final PersonModelView user = new PersonModelView();
-        user.setAccountId("accountid");
 
-        CONTEXT.checking(new Expectations()
+        context.checking(new Expectations()
         {
             {
-                oneOf(activityDeleteStrategy).execute(user.getAccountId(), activity);
+                oneOf(activityDeleteStrategy).execute(userAccountId, userId, activity);
 
                 oneOf(activity).getFirstComment();
                 will(returnValue(null));
@@ -106,9 +127,8 @@ public class PopulateActivityDTODeletabilityDataTest
 
         sut.filter(Arrays.asList(activity), user);
 
-        CONTEXT.assertIsSatisfied();
+        context.assertIsSatisfied();
     }
-
 
     /**
      * Test filtering with one comment.
@@ -116,14 +136,10 @@ public class PopulateActivityDTODeletabilityDataTest
     @Test
     public void testFilterOneComment()
     {
-
-        final PersonModelView user = new PersonModelView();
-        user.setAccountId("accountid");
-
-        CONTEXT.checking(new Expectations()
+        context.checking(new Expectations()
         {
             {
-                oneOf(activityDeleteStrategy).execute(user.getAccountId(), activity);
+                oneOf(activityDeleteStrategy).execute(userAccountId, userId, activity);
 
                 allowing(activity).getFirstComment();
                 will(returnValue(firstComment));
@@ -137,23 +153,19 @@ public class PopulateActivityDTODeletabilityDataTest
 
         sut.filter(Arrays.asList(activity), user);
 
-        CONTEXT.assertIsSatisfied();
+        context.assertIsSatisfied();
     }
-    
+
     /**
      * Test filtering with comments.
      */
     @Test
     public void testFilterComments()
     {
-
-        final PersonModelView user = new PersonModelView();
-        user.setAccountId("accountid");
-
-        CONTEXT.checking(new Expectations()
+        context.checking(new Expectations()
         {
             {
-                oneOf(activityDeleteStrategy).execute(user.getAccountId(), activity);
+                oneOf(activityDeleteStrategy).execute(userAccountId, userId, activity);
 
                 allowing(activity).getFirstComment();
                 will(returnValue(firstComment));
@@ -167,6 +179,6 @@ public class PopulateActivityDTODeletabilityDataTest
 
         sut.filter(Arrays.asList(activity), user);
 
-        CONTEXT.assertIsSatisfied();
+        context.assertIsSatisfied();
     }
 }

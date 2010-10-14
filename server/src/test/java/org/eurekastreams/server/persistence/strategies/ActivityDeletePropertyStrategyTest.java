@@ -18,10 +18,10 @@ package org.eurekastreams.server.persistence.strategies;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -46,9 +46,10 @@ public class ActivityDeletePropertyStrategyTest
     };
 
     /**
-     * Mapper to get person info.
+     * Mapper to get a PersonModelView from their account id.
      */
-    private GetPeopleByAccountIds personByAccountIdDAO = context.mock(GetPeopleByAccountIds.class);
+    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = context
+            .mock(DomainMapper.class);
 
     /**
      * DAO for looking up group by short name.
@@ -108,8 +109,8 @@ public class ActivityDeletePropertyStrategyTest
     /**
      * Mapper to check if the user has coordinator access to a group.
      */
-    private GetAllPersonIdsWhoHaveGroupCoordinatorAccess groupAccessMapper =
-            context.mock(GetAllPersonIdsWhoHaveGroupCoordinatorAccess.class);
+    private GetAllPersonIdsWhoHaveGroupCoordinatorAccess groupAccessMapper = context
+            .mock(GetAllPersonIdsWhoHaveGroupCoordinatorAccess.class);
 
     /**
      * System under test.
@@ -122,9 +123,8 @@ public class ActivityDeletePropertyStrategyTest
     @Before
     public void setup()
     {
-        sut =
-                new ActivityDeletePropertyStrategy(personByAccountIdDAO, groupByShortNameDAO, groupAccessMapper,
-                        orgCoordinatorDAO);
+        sut = new ActivityDeletePropertyStrategy(getPersonModelViewByAccountIdMapper, groupByShortNameDAO,
+                groupAccessMapper, orgCoordinatorDAO);
     }
 
     /**
@@ -140,7 +140,7 @@ public class ActivityDeletePropertyStrategyTest
             }
         });
 
-        sut.execute(null, activity);
+        sut.execute(null, null, activity);
         context.assertIsSatisfied();
     }
 
@@ -166,7 +166,7 @@ public class ActivityDeletePropertyStrategyTest
             }
         });
 
-        sut.execute(userAcctId, activity);
+        sut.execute(userAcctId, userPersonId, activity);
         context.assertIsSatisfied();
     }
 
@@ -200,7 +200,7 @@ public class ActivityDeletePropertyStrategyTest
             }
         });
 
-        sut.execute(userAcctId, activity);
+        sut.execute(userAcctId, userPersonId, activity);
         context.assertIsSatisfied();
     }
 
@@ -232,9 +232,6 @@ public class ActivityDeletePropertyStrategyTest
                 oneOf(activityDestinationStream).getType();
                 will(returnValue(EntityType.GROUP));
 
-                oneOf(personByAccountIdDAO).fetchId(userAcctId);
-                will(returnValue(userPersonId));
-
                 oneOf(activityDestinationStream).getUniqueIdentifier();
                 will(returnValue(groupShortName));
 
@@ -248,7 +245,7 @@ public class ActivityDeletePropertyStrategyTest
             }
         });
 
-        sut.execute(userAcctId, activity);
+        sut.execute(userAcctId, userPersonId, activity);
         context.assertIsSatisfied();
     }
 
@@ -285,13 +282,10 @@ public class ActivityDeletePropertyStrategyTest
                 oneOf(activityDestinationStream).getType();
                 will(returnValue(EntityType.PERSON));
 
-                oneOf(personByAccountIdDAO).fetchId(userAcctId);
-                will(returnValue(userPersonId));
-
                 oneOf(activityDestinationStream).getUniqueIdentifier();
                 will(returnValue(activityDestinationStreamAcctId));
 
-                oneOf(personByAccountIdDAO).fetchUniqueResult(activityDestinationStreamAcctId);
+                oneOf(getPersonModelViewByAccountIdMapper).execute(activityDestinationStreamAcctId);
                 will(returnValue(activityDestinationPersonModelView));
 
                 oneOf(activityDestinationPersonModelView).getParentOrganizationId();
@@ -304,7 +298,7 @@ public class ActivityDeletePropertyStrategyTest
             }
         });
 
-        sut.execute(userAcctId, activity);
+        sut.execute(userAcctId, userPersonId, activity);
         context.assertIsSatisfied();
     }
 
@@ -343,9 +337,6 @@ public class ActivityDeletePropertyStrategyTest
                 oneOf(activityDestinationStream).getType();
                 will(returnValue(EntityType.GROUP));
 
-                oneOf(personByAccountIdDAO).fetchId(userAcctId);
-                will(returnValue(userPersonId));
-
                 oneOf(activityDestinationStream).getUniqueIdentifier();
                 will(returnValue(groupShortName));
 
@@ -362,7 +353,7 @@ public class ActivityDeletePropertyStrategyTest
             }
         });
 
-        sut.execute(userAcctId, activity);
+        sut.execute(userAcctId, userPersonId, activity);
         context.assertIsSatisfied();
     }
 }

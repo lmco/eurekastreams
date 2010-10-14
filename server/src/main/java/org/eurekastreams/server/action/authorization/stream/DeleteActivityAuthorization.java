@@ -29,7 +29,7 @@ import org.eurekastreams.server.persistence.strategies.ActivityDeletePropertyStr
 
 /**
  * Authorization strategy for deleting an activity.
- * 
+ *
  */
 public class DeleteActivityAuthorization implements AuthorizationStrategy<PrincipalActionContext>
 {
@@ -48,7 +48,7 @@ public class DeleteActivityAuthorization implements AuthorizationStrategy<Princi
 
     /**
      * Constructor.
-     * 
+     *
      * @param inActivityByIdDAO
      *            DAO for looking up activity by id.
      * @param inActivityDeletePropertySetter
@@ -63,7 +63,7 @@ public class DeleteActivityAuthorization implements AuthorizationStrategy<Princi
 
     /**
      * Authorize.
-     * 
+     *
      * @param inActionContext
      *            {@link PrincipalActionContext}.
      */
@@ -75,7 +75,8 @@ public class DeleteActivityAuthorization implements AuthorizationStrategy<Princi
         try
         {
             String currentUserAccountId = inActionContext.getPrincipal().getAccountId();
-            activityDeletePropertySetter.execute(currentUserAccountId, activity);
+            Long currentUserId = inActionContext.getPrincipal().getId();
+            activityDeletePropertySetter.execute(currentUserAccountId, currentUserId, activity);
         }
         catch (Exception ex)
         {
@@ -94,12 +95,11 @@ public class DeleteActivityAuthorization implements AuthorizationStrategy<Princi
 
     /**
      * Get {@link ActivityDTO}.
-     * 
+     *
      * @param inActivityId
      *            The activity id.
      * @return {@link ActivityDTO}.
      */
-    @SuppressWarnings("serial")
     private ActivityDTO getActivityById(final long inActivityId)
     {
         List<ActivityDTO> activities = activityDAO.execute(Arrays.asList(inActivityId));

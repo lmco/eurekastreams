@@ -245,14 +245,6 @@
 		<constructor-arg ref="getRecursiveOrgCoordinators" />
 	</bean>
 	
-	<bean id="activityDeletePropertyStrategy"
-		class="org.eurekastreams.server.persistence.strategies.ActivityDeletePropertyStrategy">
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
-		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-		<constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
-		<constructor-arg ref="getRecursiveOrgCoordinators" />
-	</bean>
-	
 	<bean id="personQueryStrategy" class="org.eurekastreams.server.persistence.strategies.PersonQueryStrategy" />
 	
 	<bean id="domainGroupQueryStrategy" class="org.eurekastreams.server.persistence.strategies.DomainGroupQueryStrategy" /><!--

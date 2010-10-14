@@ -522,6 +522,12 @@
 		<constructor-arg ref="getPersonsByIdsMapper" />
 	</bean>
 
+	<!-- Mapper to get person model view by account id - wraps getPeopleByAccountIdsMapper - throws exception when not found -->
+	<bean id="getPersonByAccountIdMapper" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
+		<constructor-arg ref="getPeopleByAccountIdsMapper" />
+		<constructor-arg value="true" />
+	</bean>
+
 	<bean id="parentOrgActivityIdMapper"
 		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
 		<constructor-arg>
@@ -1525,7 +1531,7 @@
 
 	<bean id="activityDeletePropertyStrategy"
 		class="org.eurekastreams.server.persistence.strategies.ActivityDeletePropertyStrategy">
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="getPersonByAccountIdMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 		<constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
 		<constructor-arg ref="getRecursiveOrgCoordinators" />
