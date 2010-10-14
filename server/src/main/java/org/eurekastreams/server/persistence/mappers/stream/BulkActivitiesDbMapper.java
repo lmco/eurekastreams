@@ -21,9 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.hibernate.ModelViewResultTransformer;
-import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
@@ -45,14 +43,14 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
         DomainMapper<List<Long>, List<ActivityDTO>>
 {
     /**
-     * Logger.
+     * Mapper to get PersonModelView by account id.
      */
-    private static Log log = LogFactory.make();
+    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper;
 
     /**
-     * Mapper to get person info.
+     * Mapper to get PersonModelViews by account ids.
      */
-    private GetPeopleByAccountIds peopleMapper;
+    private DomainMapper<List<String>, List<PersonModelView>> getPersonModelViewsByAccountIdsMapper;
 
     /**
      * Group Mapper.
@@ -70,20 +68,24 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
     private GetCommentsById commentsByIdDAO;
 
     /**
-     * @param inPeopleMapper
-     *            the people mapper.
+     * @param inGetPersonModelViewByAccountIdMapper
+     *            Mapper to get single PersonModelView by account id.
+     * @param inGetPersonModelViewsByAccountIdsMapper
+     *            Mapper to get multiple PersonModelViews by account ids.
      * @param inGroupMapper
-     *            the group mapper.
+     *            mapper to get domain groups by short name
      * @param inCommentIdListDAO
      *            comment ID list DAO.
      * @param inCommentsByIdDAO
      *            comments by ID DAO.
      */
-    public BulkActivitiesDbMapper(final GetPeopleByAccountIds inPeopleMapper,
+    public BulkActivitiesDbMapper(final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper,
+            final DomainMapper<List<String>, List<PersonModelView>> inGetPersonModelViewsByAccountIdsMapper,
             final GetDomainGroupsByShortNames inGroupMapper, final GetOrderedCommentIdsByActivityId inCommentIdListDAO,
             final GetCommentsById inCommentsByIdDAO)
     {
-        peopleMapper = inPeopleMapper;
+        getPersonModelViewByAccountIdMapper = inGetPersonModelViewByAccountIdMapper;
+        getPersonModelViewsByAccountIdsMapper = inGetPersonModelViewsByAccountIdsMapper;
         groupMapper = inGroupMapper;
         commentIdListDAO = inCommentIdListDAO;
         commentsByIdDAO = inCommentsByIdDAO;
@@ -146,8 +148,8 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
             {
                 if (activity.getDestinationStream().getType() == EntityType.PERSON)
                 {
-                    PersonModelView person = peopleMapper.fetchUniqueResult(activity.getDestinationStream()
-                            .getUniqueIdentifier());
+                    PersonModelView person = getPersonModelViewByAccountIdMapper.execute(activity
+                            .getDestinationStream().getUniqueIdentifier());
                     activity.getDestinationStream().setDisplayName(person.getDisplayName());
 
                 }
@@ -163,7 +165,7 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
             {
                 List<String> peopleIds = new ArrayList<String>();
                 peopleIds.add(activity.getActor().getUniqueIdentifier());
-                List<PersonModelView> people = peopleMapper.execute(peopleIds);
+                List<PersonModelView> people = getPersonModelViewsByAccountIdsMapper.execute(peopleIds);
                 if (people.size() > 0)
                 {
                     activity.getActor().setId(people.get(0).getEntityId());
@@ -188,7 +190,7 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
             {
                 List<String> peopleIds = new ArrayList<String>();
                 peopleIds.add(activity.getOriginalActor().getUniqueIdentifier());
-                List<PersonModelView> people = peopleMapper.execute(peopleIds);
+                List<PersonModelView> people = getPersonModelViewsByAccountIdsMapper.execute(peopleIds);
                 if (people.size() > 0)
                 {
                     activity.getOriginalActor().setId(people.get(0).getEntityId());

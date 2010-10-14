@@ -1476,7 +1476,8 @@
 		<constructor-arg>
 			<bean
 				class="org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesDbMapper">
-				<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+				<constructor-arg ref="getPersonByAccountIdMapper" /> 
+				<constructor-arg ref="getPeopleByAccountIdsMapper" />
 				<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 				<constructor-arg ref="getOrderedCommentIdsByActivityId" />
 				<constructor-arg ref="getCommentsById" />

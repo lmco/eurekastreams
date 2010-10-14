@@ -138,10 +138,39 @@
 	<bean id="testCache"
 		class="org.eurekastreams.server.persistence.mappers.cache.testhelpers.SimpleMemoryCache" />
 
+	<!-- Mapper to get people by account ids -->
+	<bean id="getPeopleByAccountIdsMapper" class="org.eurekastreams.server.persistence.mappers.GetItemsByPointerIdsMapper">
+		<!-- Mapper to get people ids from account ids -->
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.persistence.mappers.db.GetIdsFromPointersDbMapper">
+				<constructor-arg value="accountId" />
+				<constructor-arg value="org.eurekastreams.server.domain.Person" />
+			</bean>
+		</constructor-arg>
+		
+		<!-- mapper to look up people by ids -->
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.persistence.mappers.db.GetPersonsByIds">
+		        <constructor-arg>
+		        	<bean class="org.eurekastreams.server.persistence.strategies.PersonQueryStrategy" />
+		        </constructor-arg>
+		        <constructor-arg>
+		        	<bean class="org.eurekastreams.server.persistence.mappers.GetRelatedOrganizationIdsByPersonId" />
+		        </constructor-arg>
+		    </bean>
+		</constructor-arg>
+	</bean>
+
+	<!-- Mapper to get person model view by account id - wraps getPeopleByAccountIdsMapper - throws exception when not found -->
+	<bean id="getPersonByAccountIdMapper" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
+		<constructor-arg ref="getPeopleByAccountIdsMapper" />
+		<constructor-arg value="true" />
+	</bean>
 
 	<bean id="bulkActivitiesMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.BulkActivitiesDbMapper">
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="getPersonByAccountIdMapper" /> 
+		<constructor-arg ref="getPeopleByAccountIdsMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 		<constructor-arg ref="getOrderedCommentIdsByActivityId" />
 		<constructor-arg ref="getCommentsById" />
