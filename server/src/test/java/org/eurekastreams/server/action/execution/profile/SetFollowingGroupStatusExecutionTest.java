@@ -35,7 +35,6 @@ import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddCachedGroupFollower;
 import org.eurekastreams.server.persistence.mappers.db.DeleteRequestForGroupMembership;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
@@ -47,7 +46,7 @@ import org.junit.Test;
 
 /**
  * Test class for the {@link SetFollowingGroupStatusExecution} class.
- * 
+ *
  */
 public class SetFollowingGroupStatusExecutionTest
 {
@@ -73,9 +72,10 @@ public class SetFollowingGroupStatusExecutionTest
             .mock(GetDomainGroupsByShortNames.class);
 
     /**
-     * Mock instance of GetPeopleByAccountIds.
+     * Mapper to get the person id from an account id.
      */
-    private final GetPeopleByAccountIds personMapperMock = context.mock(GetPeopleByAccountIds.class);
+    private final DomainMapper<String, Long> getPersonIdFromAccountIdMapper = context.mock(DomainMapper.class,
+            "getPersonIdFromAccountIdMapper");
 
     /**
      * Mock instance of DomainGroupMapper.
@@ -108,22 +108,20 @@ public class SetFollowingGroupStatusExecutionTest
     @Before
     public void setUp()
     {
-        sut = new SetFollowingGroupStatusExecution(groupByShortNameMapperMock, personMapperMock, groupMapperMock,
-                addCachedGroupFollowerMapperMock, groupFollowerIdsMapperMock, deleteRequestForGroupMembershipMapper);
+        sut = new SetFollowingGroupStatusExecution(groupByShortNameMapperMock, getPersonIdFromAccountIdMapper,
+                groupMapperMock, addCachedGroupFollowerMapperMock, groupFollowerIdsMapperMock,
+                deleteRequestForGroupMembershipMapper);
     }
 
     /**
      * Test the successful SetFollowing method when a group is followed.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */
     @Test
     public void testSetFollowing() throws Exception
     {
-        final PersonModelView testFollower = new PersonModelView();
-        testFollower.setEntityId(1L);
-
         final DomainGroupModelView testTarget = new DomainGroupModelView();
         testTarget.setEntityId(2L);
 
@@ -134,8 +132,8 @@ public class SetFollowingGroupStatusExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(personMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testFollower));
+                oneOf(getPersonIdFromAccountIdMapper).execute(with(any(String.class)));
+                will(returnValue(1L));
 
                 oneOf(groupByShortNameMapperMock).fetchUniqueResult(with(any(String.class)));
                 will(returnValue(testTarget));
@@ -163,7 +161,7 @@ public class SetFollowingGroupStatusExecutionTest
 
     /**
      * Test the successful SetFollowing method when a group is followed.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */
@@ -206,16 +204,13 @@ public class SetFollowingGroupStatusExecutionTest
 
     /**
      * Test the setFollowing method when a group is unfollowed.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */
     @Test
     public void testRemoveFollowing() throws Exception
     {
-        final PersonModelView testFollower = new PersonModelView();
-        testFollower.setEntityId(1L);
-
         final DomainGroupModelView testTarget = new DomainGroupModelView();
         testTarget.setEntityId(2L);
 
@@ -224,8 +219,8 @@ public class SetFollowingGroupStatusExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(personMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testFollower));
+                oneOf(getPersonIdFromAccountIdMapper).execute(with(any(String.class)));
+                will(returnValue(1L));
 
                 oneOf(groupByShortNameMapperMock).fetchUniqueResult(with(any(String.class)));
                 will(returnValue(testTarget));
@@ -249,16 +244,13 @@ public class SetFollowingGroupStatusExecutionTest
 
     /**
      * Test a failure case.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */
     @Test(expected = Exception.class)
     public void testSetFollowingError() throws Exception
     {
-        final PersonModelView testFollower = new PersonModelView();
-        testFollower.setEntityId(1L);
-
         final DomainGroupModelView testTarget = new DomainGroupModelView();
         testTarget.setEntityId(2L);
 
@@ -267,7 +259,7 @@ public class SetFollowingGroupStatusExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(personMapperMock).fetchUniqueResult(with(any(String.class)));
+                oneOf(getPersonIdFromAccountIdMapper).execute(with(any(String.class)));
                 will(throwException(new Exception("BAD")));
             }
         });
@@ -284,16 +276,13 @@ public class SetFollowingGroupStatusExecutionTest
 
     /**
      * Test an unexpected following status.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */
     @Test
     public void testOtherFollowing() throws Exception
     {
-        final PersonModelView testFollower = new PersonModelView();
-        testFollower.setEntityId(1L);
-
         final DomainGroupModelView testTarget = new DomainGroupModelView();
         testTarget.setEntityId(2L);
 
@@ -302,8 +291,8 @@ public class SetFollowingGroupStatusExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(personMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testFollower));
+                oneOf(getPersonIdFromAccountIdMapper).execute(with(any(String.class)));
+                will(returnValue(1L));
 
                 oneOf(groupByShortNameMapperMock).fetchUniqueResult(with(any(String.class)));
                 will(returnValue(testTarget));

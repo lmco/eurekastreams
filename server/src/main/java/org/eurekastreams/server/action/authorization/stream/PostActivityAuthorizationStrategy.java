@@ -28,13 +28,12 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Authorization Strategy for Posting an activity.
- * 
+ *
  */
 public class PostActivityAuthorizationStrategy implements AuthorizationStrategy<ServiceActionContext>
 {
@@ -49,9 +48,9 @@ public class PostActivityAuthorizationStrategy implements AuthorizationStrategy<
     private final GetDomainGroupsByShortNames domainGroupsByShortNameMapper;
 
     /**
-     * Local instance of the {@link GetPeopleByAccountIds} mapper.
+     * Mapper to get a PersonModelView from an accountid.
      */
-    private final GetPeopleByAccountIds peopleByAccountIdsMapper;
+    private final DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper;
 
     /**
      * The mapper to get all coordinators of a group.
@@ -65,25 +64,25 @@ public class PostActivityAuthorizationStrategy implements AuthorizationStrategy<
 
     /**
      * Constructor for the PostActivityAuthorizationStrategy.
-     * 
+     *
      * @param inDomainGroupsByShortNameMapper
      *            - instance of the {@link GetDomainGroupsByShortNames} mapper.
      * @param inGroupCoordMapper
      *            - instance of the {@link GetAllPersonIdsWhoHaveGroupCoordinatorAccess} mapper.
      * @param inGroupFollowersDAO
      *            - instance of the {@link GetGroupFollowerIds} mapper.
-     * @param inPeopleByAccountIdsMapper
-     *            - instance of the {@link GetPeopleByAccountIds} mapper.
+     * @param inGetPersonModelViewByAccountIdMapper
+     *            mapper to get a personmodelview by accountid
      */
     public PostActivityAuthorizationStrategy(final GetDomainGroupsByShortNames inDomainGroupsByShortNameMapper,
             final GetAllPersonIdsWhoHaveGroupCoordinatorAccess inGroupCoordMapper,
             final DomainMapper<Long, List<Long>> inGroupFollowersDAO,
-            final GetPeopleByAccountIds inPeopleByAccountIdsMapper)
+            final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper)
     {
         domainGroupsByShortNameMapper = inDomainGroupsByShortNameMapper;
         groupCoordMapper = inGroupCoordMapper;
         groupFollowersDAO = inGroupFollowersDAO;
-        peopleByAccountIdsMapper = inPeopleByAccountIdsMapper;
+        getPersonModelViewByAccountIdMapper = inGetPersonModelViewByAccountIdMapper;
     }
 
     /**
@@ -122,7 +121,7 @@ public class PostActivityAuthorizationStrategy implements AuthorizationStrategy<
 
     /**
      * Helper method to perform Authorization on activity when the destination stream is a Person type.
-     * 
+     *
      * @param inPrincipal
      *            - current {@link Principal} for the Action Context.
      * @param inActivityDTO
@@ -130,8 +129,8 @@ public class PostActivityAuthorizationStrategy implements AuthorizationStrategy<
      */
     private void performPersonAuthorization(final Principal inPrincipal, final ActivityDTO inActivityDTO)
     {
-        PersonModelView currentPerson = peopleByAccountIdsMapper.fetchUniqueResult(inActivityDTO.getDestinationStream()
-                .getUniqueIdentifier());
+        PersonModelView currentPerson = getPersonModelViewByAccountIdMapper.execute(inActivityDTO
+                .getDestinationStream().getUniqueIdentifier());
 
         if (currentPerson == null)
         {
@@ -154,7 +153,7 @@ public class PostActivityAuthorizationStrategy implements AuthorizationStrategy<
 
     /**
      * Helper method to perform Authorization on activity when the destination stream is a Group type.
-     * 
+     *
      * @param inPrincipal
      *            - current {@link Principal} for the Action Context.
      * @param inActivityDTO

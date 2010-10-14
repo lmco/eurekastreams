@@ -38,13 +38,11 @@ import org.eurekastreams.server.persistence.mappers.cache.AddCachedGroupFollower
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.db.DeleteRequestForGroupMembership;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
-import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Class responsible for providing the strategy that updates the appropriate lists when a group is followed.
- * 
+ *
  */
 public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
@@ -54,9 +52,9 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
     private final GetDomainGroupsByShortNames groupMapper;
 
     /**
-     * Local instance of the GetPeopleByAccountIds mapper.
+     * Mapper to get the person id from an account id.
      */
-    private final GetPeopleByAccountIds personMapper;
+    private final DomainMapper<String, Long> getPersonIdFromAccountIdMapper;
 
     /**
      * Local instance of the DomainGroupMapper mapper.
@@ -80,11 +78,11 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
 
     /**
      * Constructor for the SetFollowingGroupStatusExecution.
-     * 
+     *
      * @param inGroupMapper
      *            - instance of the GetDomainGroupsByShortNames mapper.
-     * @param inPersonMapper
-     *            - instance of the GetPeopleByAccountIds mapper.
+     * @param inGetPersonIdFromAccountIdMapper
+     *            - Mapper to get the person id from an account id
      * @param inDomainGroupMapper
      *            - instance of the DomainGroupMapper mapper.
      * @param inAddCachedGroupFollowerMapper
@@ -95,13 +93,13 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
      *            Mapper to remove group access requests.
      */
     public SetFollowingGroupStatusExecution(final GetDomainGroupsByShortNames inGroupMapper,
-            final GetPeopleByAccountIds inPersonMapper, final DomainGroupMapper inDomainGroupMapper,
-            final AddCachedGroupFollower inAddCachedGroupFollowerMapper,
+            final DomainMapper<String, Long> inGetPersonIdFromAccountIdMapper,
+            final DomainGroupMapper inDomainGroupMapper, final AddCachedGroupFollower inAddCachedGroupFollowerMapper,
             final DomainMapper<Long, List<Long>> inFollowerIdsMapper,
             final DeleteRequestForGroupMembership inDeleteRequestForGroupMembershipMapper)
     {
         groupMapper = inGroupMapper;
-        personMapper = inPersonMapper;
+        getPersonIdFromAccountIdMapper = inGetPersonIdFromAccountIdMapper;
         domainGroupMapper = inDomainGroupMapper;
         addCachedGroupFollowerMapper = inAddCachedGroupFollowerMapper;
         followerIdsMapper = inFollowerIdsMapper;
@@ -110,7 +108,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
 
     /**
      * {@inheritDoc}.
-     * 
+     *
      * This method sets the following status based on the passed in request object. There is an extra block of code here
      * that handles an additional request object type that passes in the follower and target ids by string name instead
      * of their long id's. This extra support is needed for the GroupCreator object that gets called from the back end
@@ -133,9 +131,8 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             SetFollowingStatusRequest currentRequest = (SetFollowingStatusRequest) inActionContext.getActionContext()
                     .getParams();
             followerStatus = currentRequest.getFollowerStatus();
-            PersonModelView followerResult = personMapper.fetchUniqueResult(currentRequest.getFollowerUniqueId());
+            followerId = getPersonIdFromAccountIdMapper.execute(currentRequest.getFollowerUniqueId());
             DomainGroupModelView targetResult = groupMapper.fetchUniqueResult(currentRequest.getTargetUniqueId());
-            followerId = followerResult.getEntityId();
             targetId = targetResult.getEntityId();
         }
         else if (inActionContext.getActionContext().getParams() instanceof SetFollowingStatusByGroupCreatorRequest)
