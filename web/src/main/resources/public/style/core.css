@@ -10142,7 +10142,8 @@ body .options>li>.option-title:hover {
 }
 
 .sort-option {
-	*top: 0px;	
+	*position: relative;
+	*top: -5px;	
 }
 
 .connection-edit-panel {

@@ -17,11 +17,13 @@ package org.eurekastreams.web.client.ui.common.stream.renderers.object;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Renders a file (document) object.
- *
+ * 
  */
 public class FileRenderer implements ObjectRenderer
 {
@@ -29,19 +31,46 @@ public class FileRenderer implements ObjectRenderer
     /**
      * {@inheritDoc}
      */
-    public Widget getAttachmentWidget(final ActivityDTO inActivity)
+    public Widget getAttachmentWidget(final ActivityDTO activity)
     {
-        // TODO Auto-generated method stub
-        return null;
+        String title = activity.getBaseObjectProperties().get("targetTitle");
+        String url = activity.getBaseObjectProperties().get("targetUrl");
+
+        String ext = url.substring(url.lastIndexOf("."));
+        String author = activity.getOriginalActor().getDisplayName();
+
+        FlowPanel file = new FlowPanel();
+        file.add(new Label(url));
+
+        file.addStyleName("icon icon-" + ext);
+
+        return file;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Widget getContentWidget(final ActivityDTO inActivity)
+    public Widget getContentWidget(final ActivityDTO activity)
     {
-        // TODO Auto-generated method stub
-        return null;
+        String title = activity.getBaseObjectProperties().get("targetTitle");
+        String url = activity.getBaseObjectProperties().get("targetUrl");
+
+        FlowPanel file = new FlowPanel();
+
+        int extIndex = url.lastIndexOf(".");
+
+        // Make sure there is an extension
+        if (extIndex > 0 && extIndex + 2 < url.length())
+        {
+            String ext = url.substring(extIndex + 1);
+            file.addStyleName("icon icon-" + ext);
+        }
+
+        String author = activity.getOriginalActor().getDisplayName();
+
+        file.add(new Label(url));
+
+        return file;
     }
 
 }
