@@ -842,7 +842,7 @@
     
     <bean id="getChildOrgIdsRecursiveByOrgIdCacheMapper" class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
         <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleListValueCacheMapper">
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
                 <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_RECURSIVE_CHILDREN" />
                 <constructor-arg ref="toStringCacheKeySuffixTransformer" />
                 <property name="cache" ref="memcachedCache" />
@@ -1700,11 +1700,6 @@
 	
 	<bean id="getRootOrganizationIdAndShortNameMapper"
 		class="org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName" />
-
-	<bean id="getRecursiveChildOrgIdsMapper"
-		class="org.eurekastreams.server.persistence.mappers.GetRecursiveChildOrgIds">
-		<property name="cache" ref="memcachedCache" />
-	</bean>
 
 	<bean id="getPrivateGroupIdsCoordinatedByPersonMapper"
 		class="org.eurekastreams.server.persistence.mappers.GetPrivateGroupIdsCoordinatedByPerson" />

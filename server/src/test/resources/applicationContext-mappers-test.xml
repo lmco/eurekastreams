@@ -103,11 +103,6 @@
 		
 	<bean id="getRootOrganizationIdAndShortNameMapper"
 		class="org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName" />
-
-	<bean id="getRecursiveChildOrgIdsMapper"
-		class="org.eurekastreams.server.persistence.mappers.GetRecursiveChildOrgIds">
-		<property name="cache" ref="testCache" />
-	</bean>
 	
 	<bean id="getPersonIdsWithStarredActivity"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPersonIdsWithStarredActivity">

@@ -18,7 +18,7 @@
 		class="org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCache">
 		<property name="cache" ref="testCache" />
 		<property name="getOrganizationsByShortNames" ref="bulkOrganizationsByShortNameMapper" />
-		<property name="getRecursiveChildOrgIdsMapper" ref="getRecursiveChildOrgIdsMapper" />
+		<property name="getRecursiveChildOrgIdsMapper" ref="getChildOrgIdsRecursiveByOrgIdDbMapper" />
 		<property name="getRecursiveParentOrgIdsMapper" ref="getRecursiveParentOrgIdsMapper" />
 		<property name="getOrganizationsByShortNamesMapper" ref="bulkOrganizationsByShortNameMapper" />
 	</bean>

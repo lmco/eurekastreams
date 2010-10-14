@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.GetRecursiveChildOrgIds;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
@@ -38,7 +37,7 @@ public class OrganizationHierarchyCache extends CachedDomainMapper
     /**
      * Mapper to get recursive child org ids.
      */
-    private GetRecursiveChildOrgIds getRecursiveChildOrgIdsMapper;
+    private DomainMapper<Long, Set<Long>> getRecursiveChildOrgIdsMapper;
 
     /**
      * mapper to get all parent org ids for an org id.
@@ -52,7 +51,7 @@ public class OrganizationHierarchyCache extends CachedDomainMapper
 
     /**
      * Setter for GetOrganizationsByShortNames.
-     *
+     * 
      * @param inGetOrganizationsByShortNames
      *            GetOrganizationsByShortNames
      */
@@ -63,7 +62,7 @@ public class OrganizationHierarchyCache extends CachedDomainMapper
 
     /**
      * Get the ids of all of the parent organizations above the organization with the input id.
-     *
+     * 
      * @param organizationId
      *            the organization to check parents for
      * @return the ids of all of the parent organizations above the organization with the input id
@@ -75,7 +74,7 @@ public class OrganizationHierarchyCache extends CachedDomainMapper
 
     /**
      * Get the ids of the org with the input id and all of the parent organizations above it.
-     *
+     * 
      * @param organizationId
      *            the organization to get the parent tree for
      * @return a list of the parent organization ids in order, with the top-most parent at the zero-index, the org's own
@@ -90,7 +89,7 @@ public class OrganizationHierarchyCache extends CachedDomainMapper
 
     /**
      * Recursively get the child organizations of the organization with the input organization id.
-     *
+     * 
      * @param organizationId
      *            the org to fetch children for
      * @return a set of organization ids of and all recursive children, not including the input organization id
@@ -102,7 +101,7 @@ public class OrganizationHierarchyCache extends CachedDomainMapper
 
     /**
      * Get the input org and all children recursively.
-     *
+     * 
      * @param organizationId
      *            the organization to fetch the children and self for
      * @return a set of organization ids including the input organizationid and all children, recursively
@@ -116,7 +115,7 @@ public class OrganizationHierarchyCache extends CachedDomainMapper
 
     /**
      * Get the organization id from the input short name.
-     *
+     * 
      * @param inOrgShortName
      *            the short name of the group to look up
      * @return the id for the organization with the input shortname
@@ -129,7 +128,7 @@ public class OrganizationHierarchyCache extends CachedDomainMapper
 
     /**
      * Get the organization display name from the input short name.
-     *
+     * 
      * @param inOrgShortName
      *            the short name of the group to look up
      * @return the displayname for the organization with the input shortname
@@ -144,7 +143,7 @@ public class OrganizationHierarchyCache extends CachedDomainMapper
      * @param inGetRecursiveChildOrgIdsMapper
      *            the getRecursiveChildOrgIdsMapper to set
      */
-    public void setGetRecursiveChildOrgIdsMapper(final GetRecursiveChildOrgIds inGetRecursiveChildOrgIdsMapper)
+    public void setGetRecursiveChildOrgIdsMapper(final DomainMapper<Long, Set<Long>> inGetRecursiveChildOrgIdsMapper)
     {
         this.getRecursiveChildOrgIdsMapper = inGetRecursiveChildOrgIdsMapper;
     }
