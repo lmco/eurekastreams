@@ -22,21 +22,23 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.service.actions.strategies.MapParameterValidatorDecorator;
 
 /**
- * This class provides the object validation for a Bookmark Activity.
+ * This class provides the object validation using a MapParameterValidator.
  *
  */
-public class BookmarkObjectValidator implements ActivityValidator
+public class ObjectMapParameterValidator implements ActivityValidator
 {
     /**
-     * Local instance of the MapParameterValidatorDecorator for Bookmark Objects.
+     * Adapted MapParameterValidatorDecorator used for validating.
      */
-    private MapParameterValidatorDecorator mapValidator;
-    
+    private final MapParameterValidatorDecorator mapValidator;
+
     /**
-     * Constructor for Bookmark object validator.
-     * @param inMapValidator - Map Validator decorator to use for validation.
+     * Constructor.
+     *
+     * @param inMapValidator
+     *            Map Validator to use for validation.
      */
-    public BookmarkObjectValidator(final MapParameterValidatorDecorator inMapValidator)
+    public ObjectMapParameterValidator(final MapParameterValidatorDecorator inMapValidator)
     {
         mapValidator = inMapValidator;
     }
@@ -46,8 +48,8 @@ public class BookmarkObjectValidator implements ActivityValidator
      */
     public void validate(final ActivityDTO inActivity)
     {
-        HashMap<String, Serializable> mapValues = 
-            new HashMap<String, Serializable>(inActivity.getBaseObjectProperties());
+        HashMap<String, Serializable> mapValues =
+                new HashMap<String, Serializable>(inActivity.getBaseObjectProperties());
         mapValidator.validate(mapValues, new HashMap<String, String>());
     }
 

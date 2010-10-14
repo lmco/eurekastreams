@@ -28,7 +28,6 @@ import org.eurekastreams.server.domain.stream.ActivityVerb;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityValidator;
-import org.eurekastreams.server.service.actions.strategies.activity.NoteObjectValidator;
 import org.eurekastreams.server.service.actions.strategies.activity.PostVerbValidator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -64,9 +63,9 @@ public class PostActivityValidationStrategyTest
     private final PostVerbValidator postVerbValMock = context.mock(PostVerbValidator.class);
 
     /**
-     * Local instance of NoteObjectValidator.
+     * Local instance of validator.
      */
-    private final NoteObjectValidator noteObjValMock = context.mock(NoteObjectValidator.class);
+    private final ActivityValidator noteObjValMock = context.mock(ActivityValidator.class);
 
     /**
      * Test comment.

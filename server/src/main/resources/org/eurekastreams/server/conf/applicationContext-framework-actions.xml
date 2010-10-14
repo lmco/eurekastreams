@@ -4051,7 +4051,7 @@
         ObjectValidator HashMap
     -->
     <bean id="noteObjectValidator"
-        class="org.eurekastreams.server.service.actions.strategies.activity.NoteObjectValidator">
+        class="org.eurekastreams.server.service.actions.strategies.activity.ObjectMapParameterValidator">
         <constructor-arg>
             <bean
                 class="org.eurekastreams.server.service.actions.strategies.MapParameterValidator">
@@ -4072,7 +4072,7 @@
     </bean>
 
     <bean id="bookmarkObjectValidator"
-        class="org.eurekastreams.server.service.actions.strategies.activity.BookmarkObjectValidator">
+        class="org.eurekastreams.server.service.actions.strategies.activity.ObjectMapParameterValidator">
         <constructor-arg>
             <bean
                 class="org.eurekastreams.server.service.actions.strategies.MapParameterValidator">
@@ -4101,13 +4101,42 @@
         </constructor-arg>
     </bean>
 
+    <bean id="fileObjectValidator"
+        class="org.eurekastreams.server.service.actions.strategies.activity.ObjectMapParameterValidator">
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.service.actions.strategies.MapParameterValidator">
+                <constructor-arg value="targetUrl" />
+                <constructor-arg value="java.lang.String" />
+                <constructor-arg value="TargetUrl is required for File Activities." />
+                <property name="mapParameterValidatorDecorator">
+						<bean class="org.eurekastreams.server.service.actions.strategies.MapParameterValidator">
+							<constructor-arg value="targetTitle" />
+							<constructor-arg value="java.lang.String" />
+							<constructor-arg value="TargetTitle is required for File Activities." />
+							<property name="mapParameterValidatorDecorator">
+								<bean class="org.eurekastreams.server.service.actions.strategies.MapParameterValidator">
+									<constructor-arg value="author" />
+									<constructor-arg value="java.lang.String" />
+									<constructor-arg value="Author is required for File Activities." />
+									<property name="mapParameterValidatorDecorator">
+										<bean class="org.eurekastreams.server.service.actions.strategies.MapParameterValidator">
+											<constructor-arg value="source" />
+											<constructor-arg value="java.lang.String" />
+											<constructor-arg value="Source is required for File Activities." />
+										</bean>
+									</property>
+								</bean>
+							</property>
+						</bean>
+                </property>
+            </bean>
+        </constructor-arg>
+    </bean>
+	
     <util:map id="objectValidators" map-class="java.util.HashMap">
-        <entry key="NOTE">
-            <ref bean="noteObjectValidator" />
-        </entry>
-        <entry key="BOOKMARK">
-            <ref bean="bookmarkObjectValidator" />
-        </entry>
+		<entry key="NOTE" value-ref="noteObjectValidator" />
+		<entry key="BOOKMARK" value-ref="bookmarkObjectValidator" />
+		<entry key="FILE" value-ref="fileObjectValidator" />
     </util:map>
 
     <bean id="personActorStrategy"

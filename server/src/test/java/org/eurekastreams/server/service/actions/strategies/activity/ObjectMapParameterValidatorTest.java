@@ -15,9 +15,6 @@
  */
 package org.eurekastreams.server.service.actions.strategies.activity;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
-
 import java.util.HashMap;
 
 import org.eurekastreams.commons.exceptions.ValidationException;
@@ -30,21 +27,24 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Class to test the NoteObjectValidator.
- * 
+ * Tests ObjectMapParameterValidator.
  */
-public class NoteObjectValidatorTest
+public class ObjectMapParameterValidatorTest
 {
-
     /**
-     * Local instance of NoteObjectValidator for testing.
+     * SUT.
      */
-    private NoteObjectValidator sut;
+    private ObjectMapParameterValidator sut;
 
     /**
      * Local instance of map validator for testing.
      */
-    private MapParameterValidatorDecorator mapRequiredValidator;
+    private MapParameterValidatorDecorator mapTargetUrlRequiredValidator;
+
+    /**
+     * Local instance of map validator for testing.
+     */
+    private MapParameterValidatorDecorator mapTargetTitleRequiredValidator;
 
     /**
      * Local instance of map validator for testing length.
@@ -59,7 +59,12 @@ public class NoteObjectValidatorTest
     /**
      * Constant message to receive when a required field is missing.
      */
-    private static final String REQUIRED_FIELD_ERROR = "You must supply content";
+    private static final String TARGETURL_REQUIRED_FIELD_ERROR = "You must supply the target url";
+
+    /**
+     * Constant message to receive when a required field is missing.
+     */
+    private static final String TARGETTITLE_REQUIRED_FIELD_ERROR = "You must supply the target title";
 
     /**
      * Constant message to receive when a field is longer than the max characters.
@@ -77,69 +82,62 @@ public class NoteObjectValidatorTest
     private static final int OVER_MAX_LENGTH = 251;
 
     /**
-     * Setup method.
+     * Setup system under test.
      */
     @Before
     public void setUp()
     {
-        mapRequiredValidator = new MapParameterValidator("content", java.lang.String.class, REQUIRED_FIELD_ERROR);
+        mapTargetTitleRequiredValidator = new MapParameterValidator("targetTitle", java.lang.String.class,
+                TARGETTITLE_REQUIRED_FIELD_ERROR);
+        mapTargetUrlRequiredValidator = new MapParameterValidator("targetUrl", java.lang.String.class,
+                TARGETURL_REQUIRED_FIELD_ERROR);
         mapLengthValidator = new MapParameterLengthValidator("content", MAX_LENGTH, FIELD_LENGTH_ERROR);
-        mapRequiredValidator.setMapParameterValidatorDecorator(mapLengthValidator);
+        mapTargetUrlRequiredValidator.setMapParameterValidatorDecorator(mapLengthValidator);
+        mapTargetTitleRequiredValidator.setMapParameterValidatorDecorator(mapTargetUrlRequiredValidator);
 
-        sut = new NoteObjectValidator(mapRequiredValidator);
+        sut = new ObjectMapParameterValidator(mapTargetTitleRequiredValidator);
     }
 
     /**
-     * Test the successful validation path.
+     * tests the successful path for validation.
      */
     @Test
     public void testValidate()
     {
         HashMap<String, String> testValueMap = new HashMap<String, String>();
         testValueMap.put("content", "good content");
+        testValueMap.put("targetTitle", "title");
+        testValueMap.put("targetUrl", "testurl");
 
         testActivity = new ActivityDTO();
-        testActivity.setBaseObjectType(BaseObjectType.NOTE);
+        testActivity.setBaseObjectType(BaseObjectType.BOOKMARK);
         testActivity.setBaseObjectProperties(testValueMap);
 
         sut.validate(testActivity);
     }
 
     /**
-     * Test validation when required field is missing.
+     * tests the successful path for validation without content.
      */
     @Test
-    public void testFailedRequireValidate()
+    public void testValidateWithoutContent()
     {
         HashMap<String, String> testValueMap = new HashMap<String, String>();
-        testValueMap.put("somethingElse", "good content");
+        testValueMap.put("targetTitle", "title");
+        testValueMap.put("targetUrl", "testurl");
 
         testActivity = new ActivityDTO();
-        testActivity.setBaseObjectType(BaseObjectType.NOTE);
+        testActivity.setBaseObjectType(BaseObjectType.BOOKMARK);
         testActivity.setBaseObjectProperties(testValueMap);
 
-        final HashMap<String, String> errorMessages = new HashMap<String, String>();
-        errorMessages.put("content", REQUIRED_FIELD_ERROR);
-
-        final ValidationException vex = new ValidationException();
-        vex.setErrors(errorMessages);
-
-        try
-        {
-            sut.validate(testActivity);
-        }
-        catch (ValidationException veex)
-        {
-            assertTrue(veex.getErrors().containsKey("content"));
-            assertEquals(REQUIRED_FIELD_ERROR, veex.getErrors().get("content"));
-        }
+        sut.validate(testActivity);
     }
 
     /**
-     * Test validation when required field is missing.
+     * tests content too large validation.
      */
-    @Test
-    public void testFailedLengthValidate()
+    @Test(expected = ValidationException.class)
+    public void testContentTooLargeValidate()
     {
         // Create a string longer than the max length of 250.
         int count = OVER_MAX_LENGTH;
@@ -152,26 +150,47 @@ public class NoteObjectValidatorTest
 
         HashMap<String, String> testValueMap = new HashMap<String, String>();
         testValueMap.put("content", longString);
+        testValueMap.put("targetTitle", "title");
+        testValueMap.put("targetUrl", "testurl");
 
         testActivity = new ActivityDTO();
-        testActivity.setBaseObjectType(BaseObjectType.NOTE);
+        testActivity.setBaseObjectType(BaseObjectType.BOOKMARK);
         testActivity.setBaseObjectProperties(testValueMap);
 
-        final HashMap<String, String> errorMessages = new HashMap<String, String>();
-        errorMessages.put("content", FIELD_LENGTH_ERROR);
-
-        final ValidationException vex = new ValidationException();
-        vex.setErrors(errorMessages);
-
-        try
-        {
-            sut.validate(testActivity);
-        }
-        catch (ValidationException veex)
-        {
-            assertTrue(veex.getErrors().containsKey("content"));
-            assertEquals(FIELD_LENGTH_ERROR, veex.getErrors().get("content"));
-        }
+        sut.validate(testActivity);
     }
 
+    /**
+     * tests the successful path for validation.
+     */
+    @Test(expected = ValidationException.class)
+    public void testMissingTargetTitleValidate()
+    {
+        HashMap<String, String> testValueMap = new HashMap<String, String>();
+        testValueMap.put("content", "good content");
+        testValueMap.put("targetUrl", "testurl");
+
+        testActivity = new ActivityDTO();
+        testActivity.setBaseObjectType(BaseObjectType.BOOKMARK);
+        testActivity.setBaseObjectProperties(testValueMap);
+
+        sut.validate(testActivity);
+    }
+
+    /**
+     * tests the successful path for validation.
+     */
+    @Test(expected = ValidationException.class)
+    public void testMissingTargetUrlValidate()
+    {
+        HashMap<String, String> testValueMap = new HashMap<String, String>();
+        testValueMap.put("content", "good content");
+        testValueMap.put("targetTitle", "title");
+
+        testActivity = new ActivityDTO();
+        testActivity.setBaseObjectType(BaseObjectType.BOOKMARK);
+        testActivity.setBaseObjectProperties(testValueMap);
+
+        sut.validate(testActivity);
+    }
 }
