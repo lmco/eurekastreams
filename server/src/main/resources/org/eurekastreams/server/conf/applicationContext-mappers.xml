@@ -1448,7 +1448,7 @@
 				<entry key="authoredBy">
 					<bean 
                        class="org.eurekastreams.server.service.actions.strategies.activity.datasources.AuthoredByPersistenceRequestTransformer">
-                       <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
+                       <constructor-arg ref="getPersonIdByAccountIdMapper" />   
                        <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
                     </bean>
 				</entry>

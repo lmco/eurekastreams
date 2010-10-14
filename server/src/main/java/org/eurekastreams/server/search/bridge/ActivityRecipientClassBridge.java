@@ -17,8 +17,8 @@ package org.eurekastreams.server.search.bridge;
 
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.StreamScope;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.hibernate.search.bridge.StringBridge;
 
 /**
@@ -33,16 +33,16 @@ public class ActivityRecipientClassBridge implements StringBridge
     private static GetDomainGroupsByShortNames getDomainGroupsByShortNames;
 
     /**
-     * Mapper to lookup person ids by account ids.
+     * Mapper to lookup people id by account id.
      */
-    private static GetPeopleByAccountIds getPeopleByAccountIds;
+    private static DomainMapper<String, Long> getPersonIdByAccountIdMapper;
 
     /**
      * Convert the input Message or Activity object into an ID representing the recipient, either a person or domain
      * group. Both are represented as their ID, prefixed with "P" for person, "G" for group. This bridge temporarily
      * handles both Activity and Message entities during the transition phase from Message to Activity. Message support
      * will be removed when the entity is.
-     * 
+     *
      * @param msgObject
      *            the Message or Activity
      * @return the input Message object into an ID representing the recipient, either a person or domain group - the id
@@ -51,7 +51,7 @@ public class ActivityRecipientClassBridge implements StringBridge
     @Override
     public String objectToString(final Object msgObject)
     {
-        if (getPeopleByAccountIds == null)
+        if (getPersonIdByAccountIdMapper == null)
         {
             throw new RuntimeException("Person Cache was not set in the MessageRecipientIdClassBridge.");
         }
@@ -68,7 +68,7 @@ public class ActivityRecipientClassBridge implements StringBridge
         case GROUP:
             return "g" + getDomainGroupsByShortNames.fetchId(scope.getUniqueKey());
         case PERSON:
-            return "p" + getPeopleByAccountIds.fetchId(scope.getUniqueKey());
+            return "p" + getPersonIdByAccountIdMapper.execute(scope.getUniqueKey());
         default:
             throw new RuntimeException("Unknown/unhandled recipient type: " + scope.getScopeType());
         }
@@ -84,11 +84,12 @@ public class ActivityRecipientClassBridge implements StringBridge
     }
 
     /**
-     * @param inGetPeopleByAccountIds the getPeopleByAccountIds to set
+     * @param inGetPersonIdByAccountIdMapper
+     *            the mapper to get person id by account id
      */
-    public static void setGetPeopleByAccountIds(final GetPeopleByAccountIds inGetPeopleByAccountIds)
+    public static void setGetPersonIdByAccountIdMapper(final DomainMapper<String, Long> inGetPersonIdByAccountIdMapper)
     {
-        ActivityRecipientClassBridge.getPeopleByAccountIds = inGetPeopleByAccountIds;
+        ActivityRecipientClassBridge.getPersonIdByAccountIdMapper = inGetPersonIdByAccountIdMapper;
     }
 
 }

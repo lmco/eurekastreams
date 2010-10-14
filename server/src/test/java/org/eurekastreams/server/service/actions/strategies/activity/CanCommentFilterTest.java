@@ -22,9 +22,9 @@ import java.util.List;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
@@ -56,7 +56,8 @@ public class CanCommentFilterTest
     /**
      * PersonMapperMock.
      */
-    private GetPeopleByAccountIds pMapperMock = context.mock(GetPeopleByAccountIds.class);
+    private DomainMapper<List<String>, List<PersonModelView>> getPersonModelViewsByAccountIdsMapper = context
+            .mock(DomainMapper.class);
 
     /**
      * GroupMapper Mock.
@@ -119,7 +120,7 @@ public class CanCommentFilterTest
         activities.add(activityMock);
         currentUserAccount.setAccountId("personAccount");
 
-        sut = new CanCommentFilter(pMapperMock, gMapperMock, groupCoordinators);
+        sut = new CanCommentFilter(getPersonModelViewsByAccountIdsMapper, gMapperMock, groupCoordinators);
     }
 
     /**
@@ -184,7 +185,7 @@ public class CanCommentFilterTest
                 allowing(streamMock).getUniqueIdentifier();
                 will(returnValue(destinationPersonAccountId));
 
-                oneOf(pMapperMock).execute(destinationIds);
+                oneOf(getPersonModelViewsByAccountIdsMapper).execute(destinationIds);
                 will(returnValue(personModelViews));
 
                 oneOf(destinationPersonMock).isCommentable();
@@ -226,7 +227,7 @@ public class CanCommentFilterTest
                 allowing(streamMock).getUniqueIdentifier();
                 will(returnValue(destinationPersonAccountId));
 
-                oneOf(pMapperMock).execute(destinationIds);
+                oneOf(getPersonModelViewsByAccountIdsMapper).execute(destinationIds);
                 will(returnValue(personModelViews));
 
                 oneOf(destinationPersonMock).isCommentable();
@@ -268,7 +269,7 @@ public class CanCommentFilterTest
                 allowing(streamMock).getUniqueIdentifier();
                 will(returnValue(currentUserAccount.getAccountId()));
 
-                oneOf(pMapperMock).execute(with(any(List.class)));
+                oneOf(getPersonModelViewsByAccountIdsMapper).execute(with(any(List.class)));
                 will(returnValue(personModelViews));
 
                 oneOf(destinationPersonMock).isCommentable();

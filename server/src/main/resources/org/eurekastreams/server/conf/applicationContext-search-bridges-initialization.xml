@@ -46,10 +46,10 @@
 		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
 		<property name="targetClass"
 			value="org.eurekastreams.server.search.bridge.ActivityRecipientClassBridge" />
-		<property name="targetMethod" value="setGetPeopleByAccountIds" />
+		<property name="targetMethod" value="setGetPersonIdByAccountIdMapper" />
 		<property name="arguments">
 			<list>
-				<ref bean="bulkPeopleByAccountIdMapper" />
+				<ref bean="getPersonIdByAccountIdMapper" />
 			</list>
 		</property>
 	</bean>

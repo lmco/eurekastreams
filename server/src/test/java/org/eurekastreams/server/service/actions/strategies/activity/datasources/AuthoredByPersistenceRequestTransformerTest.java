@@ -21,8 +21,8 @@ import junit.framework.Assert;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -48,7 +48,7 @@ public class AuthoredByPersistenceRequestTransformerTest
     /**
      * Person mapper mock.
      */
-    private GetPeopleByAccountIds personMapper = context.mock(GetPeopleByAccountIds.class);
+    private DomainMapper<String, Long> getPersonIdByAccountIdMapper = context.mock(DomainMapper.class);
 
     /**
      * Group mapper mock.
@@ -66,7 +66,7 @@ public class AuthoredByPersistenceRequestTransformerTest
     @Before
     public void setUp()
     {
-        sut = new AuthoredByPersistenceRequestTransformer(personMapper, groupMapper);
+        sut = new AuthoredByPersistenceRequestTransformer(getPersonIdByAccountIdMapper, groupMapper);
     }
 
     /**
@@ -104,7 +104,7 @@ public class AuthoredByPersistenceRequestTransformerTest
         context.checking(new Expectations()
         {
             {
-                oneOf(personMapper).fetchId(personName);
+                oneOf(getPersonIdByAccountIdMapper).execute(personName);
                 will(returnValue(personId));
 
                 oneOf(groupMapper).fetchId(groupName);

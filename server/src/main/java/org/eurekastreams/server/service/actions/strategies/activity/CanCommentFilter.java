@@ -20,55 +20,57 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * A filter to set the can comment bit to an activityDTO.
- * 
+ *
  */
 public class CanCommentFilter implements ActivityFilter
 {
 
     /**
-     * Person model view mapper.
+     * Mapper to get PersonModelViews by account ids.
      */
-    GetPeopleByAccountIds personMapper;
+    private DomainMapper<List<String>, List<PersonModelView>> getPersonModelViewsByAccountIdsMapper;
 
     /**
      * DomainGroup model view mapper.
      */
-    GetDomainGroupsByShortNames groupMapper;
+    private GetDomainGroupsByShortNames groupMapper;
 
     /**
      * Mapper to get all Coordinators of a Group.
      */
-    GetAllPersonIdsWhoHaveGroupCoordinatorAccess groupCoordinators;
+    private GetAllPersonIdsWhoHaveGroupCoordinatorAccess groupCoordinators;
 
     /**
      * Constructor.
-     * 
-     * @param inPersonMapper
-     *            A person Mapper to get if a person has restricted access.
+     *
+     * @param inGetPersonModelViewsByAccountIdsMapper
+     *            Mapper to get PersonModelViews by account ids
      * @param inGroupMapper
      *            A group Mapper to get if a group has restricted access.
      * @param inGroupCoordinators
      *            The groupCoordinatormapper used to get coordinators.
      */
-    CanCommentFilter(final GetPeopleByAccountIds inPersonMapper, final GetDomainGroupsByShortNames inGroupMapper,
+    public CanCommentFilter(
+            final DomainMapper<List<String>, List<PersonModelView>> inGetPersonModelViewsByAccountIdsMapper,
+            final GetDomainGroupsByShortNames inGroupMapper,
             final GetAllPersonIdsWhoHaveGroupCoordinatorAccess inGroupCoordinators)
     {
-        personMapper = inPersonMapper;
+        getPersonModelViewsByAccountIdsMapper = inGetPersonModelViewsByAccountIdsMapper;
         groupMapper = inGroupMapper;
         groupCoordinators = inGroupCoordinators;
     }
 
     /**
      * apply the filter.
-     * 
+     *
      * @param activities
      *            The list of activities to filter.
      * @param inCurrentUserAccountId
@@ -130,7 +132,7 @@ public class CanCommentFilter implements ActivityFilter
 
     /**
      * Determine if current user is allowed to comment on activites with person destinations.
-     * 
+     *
      * @param inCurrentUserAccountId
      *            Current user's account Id.
      * @param inPersonCommentable
@@ -146,7 +148,8 @@ public class CanCommentFilter implements ActivityFilter
         }
 
         // grab all people associated with activity destination streams in one shot.
-        List<PersonModelView> destinations = personMapper.execute(new ArrayList(inPersonCommentable.keySet()));
+        List<PersonModelView> destinations = getPersonModelViewsByAccountIdsMapper.execute(new ArrayList(
+                inPersonCommentable.keySet()));
 
         // loop through them and set commentable appropriately
         for (PersonModelView destination : destinations)
@@ -159,7 +162,7 @@ public class CanCommentFilter implements ActivityFilter
 
     /**
      * Determine if current user is allowed to comment on activites with group destinations.
-     * 
+     *
      * @param inCurrentUserAccountId
      *            Current user's account Id.
      * @param inGroupCommentable

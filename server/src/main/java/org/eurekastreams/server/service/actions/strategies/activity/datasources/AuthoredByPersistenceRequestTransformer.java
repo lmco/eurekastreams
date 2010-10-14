@@ -21,8 +21,8 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 
 /**
  * Transforms a JSON request into a space separated list of author ids, prepended with 'p' for Person, 'g' for Group.
@@ -32,7 +32,7 @@ public class AuthoredByPersistenceRequestTransformer implements PersistenceDataS
     /**
      * Person mapper for getting entity ID from short name.
      */
-    private GetPeopleByAccountIds personMapper;
+    private DomainMapper<String, Long> getPersonIdByAccountIdMapper;
 
     /**
      * Group mapper for getting entity ID from short name.
@@ -41,23 +41,23 @@ public class AuthoredByPersistenceRequestTransformer implements PersistenceDataS
 
     /**
      * Constructor.
-     * 
-     * @param inPersonMapper
-     *            the person mapper.
+     *
+     * @param inGetPersonIdByAccountIdMapper
+     *            the mapper to get person id by account id
      * @param inGroupMapper
      *            the group mapper.
      */
-    public AuthoredByPersistenceRequestTransformer(final GetPeopleByAccountIds inPersonMapper,
+    public AuthoredByPersistenceRequestTransformer(final DomainMapper<String, Long> inGetPersonIdByAccountIdMapper,
             final GetDomainGroupsByShortNames inGroupMapper)
     {
-        personMapper = inPersonMapper;
+        getPersonIdByAccountIdMapper = inGetPersonIdByAccountIdMapper;
         groupMapper = inGroupMapper;
     }
 
     /**
      * Transforms a JSON request into a space separated list of author ids, prepended with 'p' for Person, 'g' for
      * Group.
-     * 
+     *
      * @param request
      *            the request.
      * @param userEntityId
@@ -85,7 +85,7 @@ public class AuthoredByPersistenceRequestTransformer implements PersistenceDataS
             {
             case PERSON:
                 authorsRequest.append("p");
-                authorsRequest.append(personMapper.fetchId(author.getString("name")));
+                authorsRequest.append(getPersonIdByAccountIdMapper.execute(author.getString("name")));
                 break;
             case GROUP:
                 authorsRequest.append("g");

@@ -3968,9 +3968,7 @@
 
     <bean id="canCommentFilter"
         class="org.eurekastreams.server.service.actions.strategies.activity.CanCommentFilter">
-        <constructor-arg>
-            <ref bean="bulkPeopleByAccountIdMapper" />
-        </constructor-arg>
+        <constructor-arg ref="getPeopleByAccountIdsMapper" />
         <constructor-arg>
             <ref bean="bulkDomainGroupsByShortNameMapper" />
         </constructor-arg>

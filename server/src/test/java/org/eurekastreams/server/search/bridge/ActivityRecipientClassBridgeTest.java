@@ -20,8 +20,8 @@ import static org.junit.Assert.assertEquals;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -57,9 +57,9 @@ public class ActivityRecipientClassBridgeTest
     private GetDomainGroupsByShortNames getDomainGroupsByShortNamesMock;
 
     /**
-     * Mapper to lookup person ids by account ids.
+     * Mapper to lookup person id by account id.
      */
-    private static GetPeopleByAccountIds getPeopleByAccountIdsMock;
+    private static DomainMapper<String, Long> getPersonIdByAccountIdMapper;
 
     /**
      * ID of the test person.
@@ -83,7 +83,7 @@ public class ActivityRecipientClassBridgeTest
     public void teardown()
     {
         ActivityRecipientClassBridge.setGetDomainGroupsByShortNames(null);
-        ActivityRecipientClassBridge.setGetPeopleByAccountIds(null);
+        ActivityRecipientClassBridge.setGetPersonIdByAccountIdMapper(null);
         context = null;
     }
 
@@ -101,15 +101,15 @@ public class ActivityRecipientClassBridgeTest
         };
 
         getDomainGroupsByShortNamesMock = context.mock(GetDomainGroupsByShortNames.class);
-        getPeopleByAccountIdsMock = context.mock(GetPeopleByAccountIds.class);
+        getPersonIdByAccountIdMapper = context.mock(DomainMapper.class);
 
-        ActivityRecipientClassBridge.setGetPeopleByAccountIds(getPeopleByAccountIdsMock);
+        ActivityRecipientClassBridge.setGetPersonIdByAccountIdMapper(getPersonIdByAccountIdMapper);
         ActivityRecipientClassBridge.setGetDomainGroupsByShortNames(getDomainGroupsByShortNamesMock);
 
         context.checking(new Expectations()
         {
             {
-                allowing(getPeopleByAccountIdsMock).fetchId(testPersonAccountId);
+                allowing(getPersonIdByAccountIdMapper).execute(testPersonAccountId);
                 will(returnValue(testPersonId));
             }
         });
@@ -153,7 +153,7 @@ public class ActivityRecipientClassBridgeTest
     @Test(expected = RuntimeException.class)
     public void testObjectToStringWithoutPeopleByAccountIdMapper()
     {
-        ActivityRecipientClassBridge.setGetPeopleByAccountIds(null);
+        ActivityRecipientClassBridge.setGetPersonIdByAccountIdMapper(null);
         sut.objectToString(new Activity());
     }
 
