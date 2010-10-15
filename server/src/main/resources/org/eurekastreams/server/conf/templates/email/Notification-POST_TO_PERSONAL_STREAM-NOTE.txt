@@ -1,9 +1,4 @@
-$(settings.sitelabel)
-
-
 $(actor.name) posted a $(activity.type) to your stream.
-
-"$(activity.content)"
 
 To see the post follow this link:
 $(eureka.web.baseurl)#$(dest.page)/$(dest.uniqueid)?activityId=$(activity.id)

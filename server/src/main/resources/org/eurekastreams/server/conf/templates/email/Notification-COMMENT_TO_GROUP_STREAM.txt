@@ -1,9 +1,4 @@
-$(settings.sitelabel)
-
-
 $(actor.name) commented on a $(activity.type) in the $(dest.name) stream.
-
-"$(comment.content)"
 
 To see the post and comments follow this link:
 $(eureka.web.baseurl)#$(dest.page)/$(dest.uniqueid)?activityId=$(activity.id)
