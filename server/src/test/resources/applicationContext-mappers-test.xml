@@ -394,7 +394,7 @@
 	
 	<bean id="postActivityUpdateStreamsByActorMapper"
 	   class="org.eurekastreams.server.persistence.mappers.cache.PostActivityUpdateStreamsByActorMapper">
-	   <constructor-arg ref="bulkPeopleByAccountIdMapper" />
+	   <constructor-arg ref="getPersonByAccountIdMapper" />
 	   <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 	   <property name="cache" ref="testCache" />
 	</bean>

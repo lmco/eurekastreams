@@ -19,9 +19,9 @@ import java.util.Collections;
 
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
@@ -31,9 +31,9 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 public class PostActivityUpdateStreamsByActorMapper extends CachedDomainMapper
 {
     /**
-     * Local instance of the {@link GetPeopleByAccountIds} mapper.
+     * Mapper to get a PersonModelView by account id.
      */
-    private final GetPeopleByAccountIds bulkPeopleByAccountIdMapper;
+    private final DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper;
 
     /**
      * Local instance of the {@link GetDomainGroupsByShortNames} mapper.
@@ -43,15 +43,16 @@ public class PostActivityUpdateStreamsByActorMapper extends CachedDomainMapper
     /**
      * Constructor for the {@link PostActivityUpdateStreamsByActorMapper}.
      * 
-     * @param inBulkPeopleByAccountIdMapper
-     *            - instance of the {@link GetPeopleByAccountIds} mapper.
+     * @param inGetPersonModelViewByAccountIdMapper
+     *            - Mapper to get a PersonModelView by account id.
      * @param inBulkDomainGroupsByShortNameMapper
      *            - instance of the {@link GetDomainGroupsByShortNames} mapper.
      */
-    public PostActivityUpdateStreamsByActorMapper(final GetPeopleByAccountIds inBulkPeopleByAccountIdMapper,
+    public PostActivityUpdateStreamsByActorMapper(
+            final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper,
             final GetDomainGroupsByShortNames inBulkDomainGroupsByShortNameMapper)
     {
-        bulkPeopleByAccountIdMapper = inBulkPeopleByAccountIdMapper;
+        getPersonModelViewByAccountIdMapper = inGetPersonModelViewByAccountIdMapper;
         bulkDomainGroupsByShortNameMapper = inBulkDomainGroupsByShortNameMapper;
     }
 
@@ -77,8 +78,8 @@ public class PostActivityUpdateStreamsByActorMapper extends CachedDomainMapper
             getCache().addToTopOfList(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + group.getStreamId(), activityId);
             break;
         case PERSON:
-            PersonModelView person = bulkPeopleByAccountIdMapper.execute(
-                    Collections.singletonList(activity.getDestinationStream().getUniqueIdentifier())).get(0);
+            PersonModelView person = getPersonModelViewByAccountIdMapper.execute(activity.getDestinationStream()
+                    .getUniqueIdentifier());
 
             getCache().addToTopOfList(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + person.getStreamId(), activityId);
             break;
