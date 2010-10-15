@@ -26,7 +26,6 @@ import junit.framework.Assert;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetCommentorIdsByActivityId;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrderedCommentIdsByActivityId;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -57,8 +56,8 @@ public class WeightedInterestingnessStrategyTest
     /**
      * Get ordered comment IDs DAO mock.
      */
-    private static GetOrderedCommentIdsByActivityId commentIdsByActivityIdDAOMock = CONTEXT
-            .mock(GetOrderedCommentIdsByActivityId.class);
+    private static DomainMapper<Long, List<Long>> commentIdsByActivityIdDAOMock = CONTEXT.mock(DomainMapper.class,
+            "commentIdsByActivityIdDAOMock");
 
     /**
      * Get unique commentors IDs DAO mock.

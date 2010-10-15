@@ -25,7 +25,6 @@ import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.Comment;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
-import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.requests.InsertActivityCommentRequest;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.hibernate.validator.InvalidStateException;
@@ -125,9 +124,6 @@ public class InsertActivityCommentTest extends CachedMapperTest
         assertEquals(5L, activityDTO.getFirstComment().getId());
         assertEquals(newCommentId, activityDTO.getLastComment().getId());
 
-        // assert that commentIds by activityId list is updated correctly.
-        assertEquals(4, (memcachedCache.getList(CacheKeys.COMMENT_IDS_BY_ACTIVITY_ID + activityId)).size());
-
         // Insert another comment to make sure first/last comment works.
         insertRequest.setContent("another comment");
         result = sut.execute(insertRequest);
@@ -136,9 +132,6 @@ public class InsertActivityCommentTest extends CachedMapperTest
         activityDTO = activityMapper.execute(activityIds).get(0);
         assertEquals(5L, activityDTO.getFirstComment().getId());
         assertEquals(result.getId(), activityDTO.getLastComment().getId());
-
-        // assert that commentIds by activityId list is updated correctly.
-        assertEquals(5, (memcachedCache.getList(CacheKeys.COMMENT_IDS_BY_ACTIVITY_ID + activityId)).size());
     }
 
     /**

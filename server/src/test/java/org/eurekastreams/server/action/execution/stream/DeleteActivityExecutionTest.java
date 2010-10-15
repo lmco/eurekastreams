@@ -26,9 +26,9 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.DeleteActivityRequest;
 import org.eurekastreams.server.persistence.mappers.stream.DeleteActivity;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrderedCommentIdsByActivityId;
 import org.eurekastreams.server.persistence.mappers.stream.GetPersonIdsWithStarredActivity;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -60,8 +60,7 @@ public class DeleteActivityExecutionTest
     /**
      * DAO for finding comment ids.
      */
-    private GetOrderedCommentIdsByActivityId commentIdsByActivityIdDAO = context
-            .mock(GetOrderedCommentIdsByActivityId.class);
+    private DomainMapper<Long, List<Long>> commentIdsByActivityIdDAO = context.mock(DomainMapper.class);
 
     /**
      * DAO for getting person Ids for users that have deleted activity starred.

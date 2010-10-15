@@ -27,13 +27,14 @@ import org.eurekastreams.server.action.request.stream.DeleteActivityCacheUpdateR
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
+import org.eurekastreams.server.persistence.mappers.db.GetOrderedCommentIdsByActivityIdDbMapper;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Test class for DeleteActivityCacheUpdate class.
- *
+ * 
  */
 public class DeleteActivityCacheUpdateTest extends CachedMapperTest
 {
@@ -59,7 +60,7 @@ public class DeleteActivityCacheUpdateTest extends CachedMapperTest
      * Comment ids by activity id DAO.
      */
     @Autowired
-    private GetOrderedCommentIdsByActivityId commentIdsByActivityIdDAO;
+    private GetOrderedCommentIdsByActivityIdDbMapper commentIdsByActivityIdDAO;
 
     /**
      * System under test.
@@ -106,8 +107,7 @@ public class DeleteActivityCacheUpdateTest extends CachedMapperTest
     {
         loadAndVerifyInitialActivity();
 
-        List<ActivityDTO> activityList =
-            activityByIdDAO.execute(Arrays.asList(activityId));
+        List<ActivityDTO> activityList = activityByIdDAO.execute(Arrays.asList(activityId));
 
         assertEquals(1, activityList.size());
 
@@ -122,17 +122,14 @@ public class DeleteActivityCacheUpdateTest extends CachedMapperTest
         List<Long> personIdsWithStarredActivity = new ArrayList<Long>(1);
         personIdsWithStarredActivity.add(mrburnsId);
 
-        //update cache
-        assertNotNull(sut.execute(
-                new DeleteActivityCacheUpdateRequest(
-                        activity, commentIds, personIdsWithStarredActivity)));
+        // update cache
+        assertNotNull(sut.execute(new DeleteActivityCacheUpdateRequest(activity, commentIds,
+                personIdsWithStarredActivity)));
 
-        List<Long> starredActivityIds =
-            cache.getList(CacheKeys.STARRED_BY_PERSON_ID + mrburnsId);
+        List<Long> starredActivityIds = cache.getList(CacheKeys.STARRED_BY_PERSON_ID + mrburnsId);
         assertEquals(0, starredActivityIds.size());
 
-        List<Long> commentIdsList =
-            cache.getList(CacheKeys.COMMENT_IDS_BY_ACTIVITY_ID + activityId);
+        List<Long> commentIdsList = cache.getList(CacheKeys.COMMENT_IDS_BY_ACTIVITY_ID + activityId);
         assertNull(commentIdsList);
 
         assertNull(cache.get(CacheKeys.ACTIVITY_BY_ID + activityId));
@@ -142,35 +139,36 @@ public class DeleteActivityCacheUpdateTest extends CachedMapperTest
         assertNull(cache.get(CacheKeys.COMMENT_BY_ID + 3));
     }
 
-
-
     /**
      * Hit the mapper to load activity into cache and verify state.
      */
     @SuppressWarnings({ "unchecked" })
     private void loadAndVerifyInitialActivity()
     {
-        //verify delete activity comments from DB.
-        assertEquals(1, getEntityManager().createQuery("FROM Comment c WHERE c.id = :commentId")
-            .setParameter("commentId", commentId).getResultList().size());
+        // verify delete activity comments from DB.
+        assertEquals(1, getEntityManager().createQuery("FROM Comment c WHERE c.id = :commentId").setParameter(
+                "commentId", commentId).getResultList().size());
 
-        //verify delete activity from DB.
-        assertEquals(1, getEntityManager().createQuery("FROM Activity WHERE id = :activityId")
-            .setParameter("activityId", activityId).getResultList().size());
+        // verify delete activity from DB.
+        assertEquals(1, getEntityManager().createQuery("FROM Activity WHERE id = :activityId").setParameter(
+                "activityId", activityId).getResultList().size());
 
         starredActivityIdDAO.execute(mrburnsId);
-        List<Long> starredActivityIds =
-            cache.getList(CacheKeys.STARRED_BY_PERSON_ID + mrburnsId);
+        List<Long> starredActivityIds = cache.getList(CacheKeys.STARRED_BY_PERSON_ID + mrburnsId);
         assertEquals(1, starredActivityIds.size());
 
         commentIdsByActivityIdDAO.execute(activityId);
 
-        ActivityDTO activity = activityByIdDAO.execute(new ArrayList() { { add(activityId); } }).get(0);
+        ActivityDTO activity = activityByIdDAO.execute(new ArrayList()
+        {
+            {
+                add(activityId);
+            }
+        }).get(0);
 
         cache.set(CacheKeys.ACTIVITY_BY_ID + activityId, activity);
         cache.set(CacheKeys.COMMENT_BY_ID + 1, new CommentDTO());
         cache.set(CacheKeys.COMMENT_BY_ID + 3, new CommentDTO());
     }
-
 
 }

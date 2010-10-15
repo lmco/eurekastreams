@@ -109,7 +109,7 @@
 		<property name="targetMethod" value="setCommentIdsByActivityIdDAO" />
 		<property name="arguments">
 			<list>
-				<ref bean="getOrderedCommentIdsByActivityId" />
+				<ref bean="getOrderedCommentIdsByActivityIdMapper" />
 			</list>
 		</property>
 	</bean>
@@ -124,7 +124,7 @@
 		<property name="targetMethod" value="setCommentDAOs" />
 		<property name="arguments">
 			<list>
-				<ref bean="getOrderedCommentIdsByActivityId" />
+				<ref bean="getOrderedCommentIdsByActivityIdMapper" />
 				<ref bean="getCommentsById" />
 			</list>
 		</property>
@@ -134,7 +134,7 @@
 		Inject the ActivityInterestingClassBridge with the interestingness strategy
 	-->
 	<bean id="interstingnessStrategy" class="org.eurekastreams.server.search.bridge.strategies.WeightedInterestingnessStrategy">
-		<constructor-arg ref="getOrderedCommentIdsByActivityId" />
+		<constructor-arg ref="getOrderedCommentIdsByActivityIdMapper" />
 		<constructor-arg ref="getCommentorIdsByActivityId" />
 		<constructor-arg ref="getPeopleWhoLikedActivity" />
 		<constructor-arg value="2" />

@@ -25,9 +25,9 @@ import org.eurekastreams.server.action.request.DeleteFromSearchIndexRequest;
 import org.eurekastreams.server.action.request.stream.DeleteActivityCacheUpdateRequest;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.DeleteActivityRequest;
 import org.eurekastreams.server.persistence.mappers.stream.DeleteActivity;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrderedCommentIdsByActivityId;
 import org.eurekastreams.server.persistence.mappers.stream.GetPersonIdsWithStarredActivity;
 
 /**
@@ -44,7 +44,7 @@ public class DeleteActivityExecution implements TaskHandlerExecutionStrategy<Pri
     /**
      * DAO for finding comment ids.
      */
-    private GetOrderedCommentIdsByActivityId commentIdsByActivityIdDAO;
+    private DomainMapper<Long, List<Long>> commentIdsByActivityIdDAO;
 
     /**
      * DAO for getting person Ids for users that have deleted activity starred.
@@ -62,7 +62,7 @@ public class DeleteActivityExecution implements TaskHandlerExecutionStrategy<Pri
      *            persons with starred Activity DAO.
      */
     public DeleteActivityExecution(final DeleteActivity inDeleteActivityDAO,
-            final GetOrderedCommentIdsByActivityId inCommentIdsByActivityIdDAO,
+            final DomainMapper<Long, List<Long>> inCommentIdsByActivityIdDAO,
             final GetPersonIdsWithStarredActivity inGetPersonIdsWithStarredActivityDAO)
     {
         deleteActivityDAO = inDeleteActivityDAO;

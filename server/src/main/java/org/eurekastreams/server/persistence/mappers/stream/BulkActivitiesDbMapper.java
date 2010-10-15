@@ -60,7 +60,7 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
     /**
      * DAO for comment id list.
      */
-    private GetOrderedCommentIdsByActivityId commentIdListDAO;
+    private DomainMapper<Long, List<Long>> commentIdListDAO;
 
     /**
      * DAO for comments by id.
@@ -81,7 +81,7 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
      */
     public BulkActivitiesDbMapper(final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper,
             final DomainMapper<List<String>, List<PersonModelView>> inGetPersonModelViewsByAccountIdsMapper,
-            final GetDomainGroupsByShortNames inGroupMapper, final GetOrderedCommentIdsByActivityId inCommentIdListDAO,
+            final GetDomainGroupsByShortNames inGroupMapper, final DomainMapper<Long, List<Long>> inCommentIdListDAO,
             final GetCommentsById inCommentsByIdDAO)
     {
         getPersonModelViewByAccountIdMapper = inGetPersonModelViewByAccountIdMapper;
@@ -94,7 +94,7 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
     /**
      * Looks in cache for the necessary activity DTOs and returns them if found. Otherwise, makes a database call, puts
      * them in cache, and returns them.
-     *
+     * 
      * @param activityIds
      *            the list of ids that should be found.
      * @return list of ActivityDTO objects.
@@ -217,7 +217,7 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
 
     /**
      * Load the first/last comments of an activity if present, also sets the comment count.
-     *
+     * 
      * @param activity
      *            ActivityDTO to load comment info for.
      */

@@ -24,8 +24,8 @@ import java.util.List;
 
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetCommentsById;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrderedCommentIdsByActivityId;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -72,8 +72,7 @@ public class ActivityContentClassBridgeTest
     /**
      * Get comment IDs DAO.
      */
-    private static GetOrderedCommentIdsByActivityId commentIdsByActivityIdDAO = CONTEXT
-            .mock(GetOrderedCommentIdsByActivityId.class);
+    private static DomainMapper<Long, List<Long>> commentIdsByActivityIdDAO = CONTEXT.mock(DomainMapper.class);
 
     /**
      * Get comments DAO.

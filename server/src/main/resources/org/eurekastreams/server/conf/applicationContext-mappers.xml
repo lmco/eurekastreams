@@ -1479,7 +1479,7 @@
 				<constructor-arg ref="getPersonByAccountIdMapper" /> 
 				<constructor-arg ref="getPeopleByAccountIdsMapper" />
 				<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-				<constructor-arg ref="getOrderedCommentIdsByActivityId" />
+				<constructor-arg ref="getOrderedCommentIdsByActivityIdMapper" />
 				<constructor-arg ref="getCommentsById" />
 			</bean>
 		</constructor-arg>
@@ -1605,11 +1605,6 @@
 	<bean id="bulkDomainGroupsByShortNameMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames">
 		<property name="bulkDomainGroupsMapper" ref="getGroupsByIdsMapper" />
-		<property name="cache" ref="memcachedCache" />
-	</bean>
-
-	<bean id="getOrderedCommentIdsByActivityId"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetOrderedCommentIdsByActivityId">
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 

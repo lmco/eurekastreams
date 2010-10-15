@@ -18,9 +18,9 @@ package org.eurekastreams.server.search.bridge;
 import java.util.List;
 
 import org.eurekastreams.server.domain.stream.Activity;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.ActivityContentExtractor;
 import org.eurekastreams.server.persistence.mappers.stream.GetCommentsById;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrderedCommentIdsByActivityId;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.hibernate.search.bridge.StringBridge;
 
@@ -37,7 +37,7 @@ public class ActivityContentClassBridge implements StringBridge
     /**
      * DAO for finding comment ids.
      */
-    private static GetOrderedCommentIdsByActivityId commentIdsByActivityIdDAO;
+    private static DomainMapper<Long, List<Long>> commentIdsByActivityIdDAO;
 
     /**
      * DAO for finding comments.
@@ -52,7 +52,7 @@ public class ActivityContentClassBridge implements StringBridge
      * @param inCommentsByIdDAO
      *            the DAO.
      */
-    public static void setCommentDAOs(final GetOrderedCommentIdsByActivityId inCommentIdsByActivityIdDAO,
+    public static void setCommentDAOs(final DomainMapper<Long, List<Long>> inCommentIdsByActivityIdDAO,
             final GetCommentsById inCommentsByIdDAO)
     {
         ActivityContentClassBridge.commentIdsByActivityIdDAO = inCommentIdsByActivityIdDAO;

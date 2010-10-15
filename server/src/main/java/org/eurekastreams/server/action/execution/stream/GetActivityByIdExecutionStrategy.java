@@ -24,7 +24,6 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetCommentsById;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrderedCommentIdsByActivityId;
 import org.eurekastreams.server.persistence.strategies.CommentDeletePropertyStrategy;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -43,7 +42,7 @@ public class GetActivityByIdExecutionStrategy implements ExecutionStrategy<Princ
     /**
      * DAO for finding comment ids.
      */
-    private GetOrderedCommentIdsByActivityId commentIdsByActivityIdDAO;
+    private DomainMapper<Long, List<Long>> commentIdsByActivityIdDAO;
 
     /**
      * DAO for finding comments by id.
@@ -82,8 +81,8 @@ public class GetActivityByIdExecutionStrategy implements ExecutionStrategy<Princ
      *            Filters to apply to activity List.
      */
     public GetActivityByIdExecutionStrategy(final DomainMapper<List<Long>, List<ActivityDTO>> inBulkActivitiesMapper,
-            final GetOrderedCommentIdsByActivityId inCommentIdsByActivityIdDAO,
-            final GetCommentsById inCommentsByIdDAO, final CommentDeletePropertyStrategy inCommentDeletableSetter,
+            final DomainMapper<Long, List<Long>> inCommentIdsByActivityIdDAO, final GetCommentsById inCommentsByIdDAO,
+            final CommentDeletePropertyStrategy inCommentDeletableSetter,
             final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper,
             final List<ActivityFilter> inFilters)
     {

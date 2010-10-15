@@ -20,7 +20,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import org.eurekastreams.server.persistence.mappers.MapperTest;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrderedCommentIdsByActivityId;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,7 +38,7 @@ public class GetOrderedCommentIdsByActivityIdDbMapperTest extends MapperTest
      * System under test.
      */
     @Autowired
-    private GetOrderedCommentIdsByActivityId sut;
+    private GetOrderedCommentIdsByActivityIdDbMapper sut;
 
     /**
      * test.

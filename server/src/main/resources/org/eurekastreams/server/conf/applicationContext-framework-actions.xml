@@ -604,7 +604,7 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.stream.DeleteActivityExecution">
                 <constructor-arg ref="deleteActivity" />
-                <constructor-arg ref="getOrderedCommentIdsByActivityId" />
+                <constructor-arg ref="getOrderedCommentIdsByActivityIdMapper" />
                 <constructor-arg ref="getPersonIdsWithStarredActivity" />
             </bean>
         </constructor-arg>
@@ -2627,7 +2627,7 @@
             <bean
                 class="org.eurekastreams.server.action.execution.stream.GetActivityByIdExecutionStrategy">
                 <constructor-arg ref="bulkActivitiesMapper" />
-                <constructor-arg ref="getOrderedCommentIdsByActivityId" />
+                <constructor-arg ref="getOrderedCommentIdsByActivityIdMapper" />
                 <constructor-arg ref="getCommentsById" />
                 <constructor-arg ref="commentDeletePropertyStrategy" />
                 <constructor-arg ref="getPersonByAccountIdMapper" />           

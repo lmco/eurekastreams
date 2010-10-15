@@ -22,7 +22,6 @@ import java.util.List;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetCommentorIdsByActivityId;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrderedCommentIdsByActivityId;
 
 /**
  * Computes how interesting an activity is, expressed as a Long. Takes different parameters, such as number of comments,
@@ -59,7 +58,7 @@ public class WeightedInterestingnessStrategy implements ComputeInterestingnessOf
     /**
      * DAO for finding comment ids.
      */
-    private GetOrderedCommentIdsByActivityId commentIdsByActivityIdDAO;
+    private DomainMapper<Long, List<Long>> commentIdsByActivityIdDAO;
 
     /**
      * DAO for finding unique commentors.
@@ -89,7 +88,7 @@ public class WeightedInterestingnessStrategy implements ComputeInterestingnessOf
      * @param inTimeWeight
      *            weight of time.
      */
-    public WeightedInterestingnessStrategy(final GetOrderedCommentIdsByActivityId inCommentIdsByActivityIdDAO,
+    public WeightedInterestingnessStrategy(final DomainMapper<Long, List<Long>> inCommentIdsByActivityIdDAO,
             final GetCommentorIdsByActivityId inCommentorIdsByActivityIdDao,
             final DomainMapper<Collection<Long>, Collection<Collection<Long>>> inGetPeopleWhoLikedMapper,
             final int inCommentWeight, final int inUniqueUserCommentWeight, final int inLikeWeight,

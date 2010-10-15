@@ -29,7 +29,6 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetCommentsById;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrderedCommentIdsByActivityId;
 import org.eurekastreams.server.persistence.strategies.CommentDeletePropertyStrategy;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -80,8 +79,8 @@ public class GetActivityByIdExecutionStrategyTest
     /**
      * DAO for finding comment ids.
      */
-    private GetOrderedCommentIdsByActivityId commentIdsByActivityIdDAO = context
-            .mock(GetOrderedCommentIdsByActivityId.class);
+    private DomainMapper<Long, List<Long>> commentIdsByActivityIdDAO = context.mock(DomainMapper.class,
+            "commentIdsByActivityIdDAO");
 
     /**
      * DAO for finding comments by id.

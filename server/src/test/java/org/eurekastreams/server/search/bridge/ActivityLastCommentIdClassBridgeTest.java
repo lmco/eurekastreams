@@ -21,7 +21,7 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.eurekastreams.server.domain.stream.Activity;
-import org.eurekastreams.server.persistence.mappers.stream.GetOrderedCommentIdsByActivityId;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -52,8 +52,7 @@ public class ActivityLastCommentIdClassBridgeTest
     /**
      * Get ordered comment IDs DAO mock.
      */
-    private static GetOrderedCommentIdsByActivityId commentIdsByActivityIdDAOMock = CONTEXT
-            .mock(GetOrderedCommentIdsByActivityId.class);
+    private static DomainMapper<Long, List<Long>> commentIdsByActivityIdDAOMock = CONTEXT.mock(DomainMapper.class);
 
     /**
      * Activity mock.

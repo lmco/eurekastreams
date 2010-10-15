@@ -172,7 +172,7 @@
 		<constructor-arg ref="getPersonByAccountIdMapper" /> 
 		<constructor-arg ref="getPeopleByAccountIdsMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-		<constructor-arg ref="getOrderedCommentIdsByActivityId" />
+		<constructor-arg ref="getOrderedCommentIdsByActivityIdDbMapper" />
 		<constructor-arg ref="getCommentsById" />
 	</bean>
 	
@@ -329,11 +329,6 @@
 
 	<bean id="getStarredActivityIds"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetStarredActivityIds">
-		<property name="cache" ref="testCache" />
-	</bean>
-
-	<bean id="getOrderedCommentIdsByActivityId"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetOrderedCommentIdsByActivityId">
 		<property name="cache" ref="testCache" />
 	</bean>
 
