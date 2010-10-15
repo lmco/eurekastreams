@@ -1835,7 +1835,7 @@
                             <entry key="likedBy">
                                 <bean 
                                     class="org.eurekastreams.server.service.actions.strategies.activity.datasources.MultiUserPersistenceRequestTransformer">
-                                    <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
+                                    <constructor-arg ref="getPeopleIdsByAccountIdsMapper" />   
                                     <constructor-arg value="likedBy" />   
                                 </bean>
                             </entry>                            

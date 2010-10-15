@@ -15,13 +15,14 @@
  */
 package org.eurekastreams.server.service.actions.strategies.activity.datasources;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -45,9 +46,10 @@ public class MultiUserPersistenceRequestTransformerTest
     };
 
     /**
-     * Person mapper mock.
+     * Mapper to get a list of people ids by a list of account ids.
      */
-    private GetPeopleByAccountIds personMapper = context.mock(GetPeopleByAccountIds.class);
+    private DomainMapper<List<String>, List<Long>> getPeopleIdsByAccountIdsMapper = context.mock(DomainMapper.class,
+            "getPeopleIdsByAccountIdsMapper");
 
     /**
      * Key to use.
@@ -65,7 +67,7 @@ public class MultiUserPersistenceRequestTransformerTest
     @Before
     public void setUp()
     {
-        sut = new MultiUserPersistenceRequestTransformer(personMapper, key);
+        sut = new MultiUserPersistenceRequestTransformer(getPeopleIdsByAccountIdsMapper, key);
     }
 
     /**
@@ -95,20 +97,25 @@ public class MultiUserPersistenceRequestTransformerTest
 
         final Long personId1 = 4L;
         final Long personId2 = 5L;
-        
+
+        final ArrayList<String> expectedAccountIds = new ArrayList<String>();
+        expectedAccountIds.add(personName1);
+        expectedAccountIds.add(personName2);
+
+        final List<Long> ids = new ArrayList<Long>();
+        ids.add(personId1);
+        ids.add(personId2);
+
         context.checking(new Expectations()
         {
             {
-                oneOf(personMapper).fetchId(personName1);
-                will(returnValue(personId1));
-
-                oneOf(personMapper).fetchId(personName2);
-                will(returnValue(personId2));
+                oneOf(getPeopleIdsByAccountIdsMapper).execute(with(expectedAccountIds));
+                will(returnValue(ids));
             }
         });
 
         List<Long> results = (List<Long>) sut.transform(request, 0L);
-        
+
         Assert.assertEquals(2, results.size());
         Assert.assertEquals(personId1, results.get(0));
         Assert.assertEquals(personId2, results.get(1));
