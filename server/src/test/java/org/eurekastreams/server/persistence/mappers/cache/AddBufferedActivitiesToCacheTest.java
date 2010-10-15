@@ -54,10 +54,10 @@ public class AddBufferedActivitiesToCacheTest
     private MemcachedCache cache = context.mock(MemcachedCache.class);
 
     /**
-     * Get composite stream ids by activity mock.
+     * Mapper to get a list of all ids of people following destination stream of an activity.
      */
-    private GetCompositeStreamIdsByAssociatedActivity getCompositeStreamsByActivity = context
-            .mock(GetCompositeStreamIdsByAssociatedActivity.class);
+    private DomainMapper<ActivityDTO, List<Long>> getIdsOfPeopleFollowingActivityDestinationStreamMapper = context
+            .mock(DomainMapper.class, "getIdsOfPeopleFollowingActivityDestinationStreamMapper");
 
     /**
      * Test the execution.
@@ -66,7 +66,7 @@ public class AddBufferedActivitiesToCacheTest
     public void testExecute()
     {
         AddBufferedActivitiesToCache sut = new AddBufferedActivitiesToCache(bulkActivitiesMapper, cache,
-                getCompositeStreamsByActivity);
+                getIdsOfPeopleFollowingActivityDestinationStreamMapper);
 
         final List<Long> activityIds = null;
 
@@ -102,10 +102,10 @@ public class AddBufferedActivitiesToCacheTest
                 oneOf(bulkActivitiesMapper).execute(activityIds);
                 will(returnValue(activities));
 
-                oneOf(getCompositeStreamsByActivity).getFollowers(activity1);
+                oneOf(getIdsOfPeopleFollowingActivityDestinationStreamMapper).execute(activity1);
                 will(returnValue(followerIdsForAct1));
 
-                oneOf(getCompositeStreamsByActivity).getFollowers(activity2);
+                oneOf(getIdsOfPeopleFollowingActivityDestinationStreamMapper).execute(activity2);
                 will(returnValue(followerIdsForAct2));
 
                 exactly(5).of(cache).addToTopOfList(with(any(String.class)), with(any(ArrayList.class)));
@@ -123,7 +123,7 @@ public class AddBufferedActivitiesToCacheTest
     public void testExecuteWithNoActivities()
     {
         AddBufferedActivitiesToCache sut = new AddBufferedActivitiesToCache(bulkActivitiesMapper, cache,
-                getCompositeStreamsByActivity);
+                getIdsOfPeopleFollowingActivityDestinationStreamMapper);
 
         final List<Long> activityIds = null;
 

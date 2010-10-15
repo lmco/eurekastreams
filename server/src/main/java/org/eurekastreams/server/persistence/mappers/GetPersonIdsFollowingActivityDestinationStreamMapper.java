@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.mappers.cache;
+package org.eurekastreams.server.persistence.mappers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,15 +21,11 @@ import java.util.List;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 
 /**
- * Gets all of the composite streams an activity should be added to.
- * 
+ * Mapper to get a list of person ids for people following the destination stream of an activity.
  */
-public class GetCompositeStreamIdsByAssociatedActivity extends CachedDomainMapper
+public class GetPersonIdsFollowingActivityDestinationStreamMapper implements DomainMapper<ActivityDTO, List<Long>>
 {
     /**
      * Mapper to get followers of a person.
@@ -37,23 +33,24 @@ public class GetCompositeStreamIdsByAssociatedActivity extends CachedDomainMappe
     private DomainMapper<Long, List<Long>> personFollowersMapper;
 
     /**
-     * Mapper to get people by account ids.
+     * Mapper to get person id from accountid.
      */
-    private GetPeopleByAccountIds bulkPeopleByAccountIdMapper;
+    private DomainMapper<String, Long> getPersonIdFromAccountIdMapper;
 
     /**
      * Default constructor.
      * 
      * @param inPersonFollowersMapper
      *            the person follower mapper.
-     * @param inBulkPeopleByAccountIdMapper
-     *            the get people by account id mapper.
+     * @param inGetPersonIdFromAccountIdMapper
+     *            mapper to get person id frmo account id
      */
-    public GetCompositeStreamIdsByAssociatedActivity(final DomainMapper<Long, List<Long>> inPersonFollowersMapper,
-            final GetPeopleByAccountIds inBulkPeopleByAccountIdMapper)
+    public GetPersonIdsFollowingActivityDestinationStreamMapper(
+            final DomainMapper<Long, List<Long>> inPersonFollowersMapper,
+            final DomainMapper<String, Long> inGetPersonIdFromAccountIdMapper)
     {
         personFollowersMapper = inPersonFollowersMapper;
-        bulkPeopleByAccountIdMapper = inBulkPeopleByAccountIdMapper;
+        getPersonIdFromAccountIdMapper = inGetPersonIdFromAccountIdMapper;
     }
 
     /**
@@ -64,16 +61,14 @@ public class GetCompositeStreamIdsByAssociatedActivity extends CachedDomainMappe
      *            the activity.
      * @return A list of IDs of following composite streams.
      */
-    public List<Long> getFollowers(final ActivityDTO activity)
+    public List<Long> execute(final ActivityDTO activity)
     {
         // Gets the followers and add to their followed stream
         StreamEntityDTO destinationStream = activity.getDestinationStream();
         List<Long> followers = null;
-        List<String> param = new ArrayList<String>();
-        param.add(destinationStream.getUniqueIdentifier());
         if (destinationStream.getType() == EntityType.PERSON)
         {
-            long personId = bulkPeopleByAccountIdMapper.execute(param).get(0).getEntityId();
+            long personId = getPersonIdFromAccountIdMapper.execute(destinationStream.getUniqueIdentifier());
             followers = personFollowersMapper.execute(personId);
         }
         else if (destinationStream.getType() == EntityType.GROUP)

@@ -105,7 +105,7 @@
 		class="org.eurekastreams.server.persistence.mappers.cache.AddBufferedActivitiesToCache">
 		<constructor-arg ref="bulkActivitiesMapper" />
 		<constructor-arg ref="memcachedCache" />
-		<constructor-arg ref="getCompositeStreamIdsByAssociatedActivity" />
+		<constructor-arg ref="getPersonIdsFollowingActivityDestinationStreamMapper" />
 	</bean>
 
 	<bean id="jpaFeedReaderMapper" class="org.eurekastreams.server.persistence.FeedReaderMapper"></bean>
@@ -1717,10 +1717,10 @@
 		<constructor-arg ref="bulkPeopleMapper" />
 	</bean>
 
-	<bean id="getCompositeStreamIdsByAssociatedActivity"
-		class="org.eurekastreams.server.persistence.mappers.cache.GetCompositeStreamIdsByAssociatedActivity">
+	<bean id="getPersonIdsFollowingActivityDestinationStreamMapper"
+		class="org.eurekastreams.server.persistence.mappers.GetPersonIdsFollowingActivityDestinationStreamMapper">
 		<constructor-arg ref="getFollowerPersonIdsForPersonByIdMapper" />
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="getPersonIdByAccountIdMapper" />
 	</bean>
 
 	<bean id="postCachedActivity"

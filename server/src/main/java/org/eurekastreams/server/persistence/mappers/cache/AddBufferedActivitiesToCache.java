@@ -37,10 +37,11 @@ public class AddBufferedActivitiesToCache extends CachedDomainMapper
      * Cache.
      */
     private Cache cache;
+
     /**
-     * Gets the associated stream views given an activity.
+     * Mapper to get ids of people following the destination stream of an activity.
      */
-    private GetCompositeStreamIdsByAssociatedActivity getCompositeStreamsByActivity;
+    private DomainMapper<ActivityDTO, List<Long>> getIdsOfPeopleFollowingActivityDestinationStreamMapper;
 
     /**
      * Default constructor.
@@ -49,15 +50,17 @@ public class AddBufferedActivitiesToCache extends CachedDomainMapper
      *            The bulk activities mapper.
      * @param inCache
      *            Cache.
-     * @param inGetCompositeStreamsByActivity
-     *            Gets the associated stream views given an activity.
+     * @param inGetIdsOfPeopleFollowingActivityDestinationStreamMapper
+     *            Mapper to get ids of people following the destination stream of an activity.
      */
     public AddBufferedActivitiesToCache(final DomainMapper<List<Long>, List<ActivityDTO>> inBulkActivitiesMapper,
-            final Cache inCache, final GetCompositeStreamIdsByAssociatedActivity inGetCompositeStreamsByActivity)
+            final Cache inCache,
+            final DomainMapper<ActivityDTO, List<Long>> inGetIdsOfPeopleFollowingActivityDestinationStreamMapper)
     {
         bulkActivitiesMapper = inBulkActivitiesMapper;
         cache = inCache;
-        getCompositeStreamsByActivity = inGetCompositeStreamsByActivity;
+        getIdsOfPeopleFollowingActivityDestinationStreamMapper = // 
+        inGetIdsOfPeopleFollowingActivityDestinationStreamMapper;
     }
 
     /**
@@ -79,7 +82,7 @@ public class AddBufferedActivitiesToCache extends CachedDomainMapper
             // every activity to be added to the everyone list.
             allActivityIds.add(activity.getId());
 
-            List<Long> followers = getCompositeStreamsByActivity.getFollowers(activity);
+            List<Long> followers = getIdsOfPeopleFollowingActivityDestinationStreamMapper.execute(activity);
 
             for (Long followerId : followers)
             {

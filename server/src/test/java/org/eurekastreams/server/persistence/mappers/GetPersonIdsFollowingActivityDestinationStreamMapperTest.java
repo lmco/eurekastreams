@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.mappers.cache;
+package org.eurekastreams.server.persistence.mappers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +23,6 @@ import junit.framework.Assert;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.MapperTest;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
@@ -36,15 +33,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test suite for the {@link GetCompositeStreamIdsByAssociatedActivity} class.
- * 
+ * Test fixture for GetPersonIdsFollowingActivityDestinationStreamMapper.
  */
-public class GetCompositeStreamIdsByAssociatedActivityTest extends MapperTest
+public class GetPersonIdsFollowingActivityDestinationStreamMapperTest
 {
     /**
      * System under test.
      */
-    private GetCompositeStreamIdsByAssociatedActivity sut;
+    private GetPersonIdsFollowingActivityDestinationStreamMapper sut;
 
     /**
      * Context for building mock objects.
@@ -57,20 +53,16 @@ public class GetCompositeStreamIdsByAssociatedActivityTest extends MapperTest
     };
 
     /**
-     * Mocked instance of the cache object.
-     */
-    private final Cache cacheMock = context.mock(Cache.class);
-
-    /**
      * Mapper to get followers of a person.
      */
     private DomainMapper<Long, List<Long>> personFollowersMapperMock = context.mock(DomainMapper.class,
             "personFollowersMapperMock");
 
     /**
-     * Mapper to get people by account ids.
+     * Mapper to get person id from accountid.
      */
-    private GetPeopleByAccountIds bulkPeopleByAccountIdMapperMock = context.mock(GetPeopleByAccountIds.class);
+    private DomainMapper<String, Long> getPersonIdFromAccountIdMapper = context.mock(DomainMapper.class,
+            "getPersonIdFromAccountIdMapper");
 
     /**
      * Test person id for fordp.
@@ -83,9 +75,8 @@ public class GetCompositeStreamIdsByAssociatedActivityTest extends MapperTest
     @Before
     public void setup()
     {
-        sut = new GetCompositeStreamIdsByAssociatedActivity(personFollowersMapperMock, bulkPeopleByAccountIdMapperMock);
-        sut.setCache(cacheMock);
-        sut.setEntityManager(getEntityManager());
+        sut = new GetPersonIdsFollowingActivityDestinationStreamMapper(personFollowersMapperMock,
+                getPersonIdFromAccountIdMapper);
     }
 
     /**
@@ -107,8 +98,7 @@ public class GetCompositeStreamIdsByAssociatedActivityTest extends MapperTest
         testPersonModelView.setParentOrganizationShortName("orgShortName");
         testPersonModelView.setEntityId(TEST_PERSON_ID);
 
-        final List<PersonModelView> testPersonModelViewList = new ArrayList<PersonModelView>();
-        testPersonModelViewList.add(testPersonModelView);
+        final Long fordpId = 42L;
 
         final List<Long> followerIds = new ArrayList<Long>();
         followerIds.add(TEST_PERSON_ID);
@@ -116,15 +106,15 @@ public class GetCompositeStreamIdsByAssociatedActivityTest extends MapperTest
         context.checking(new Expectations()
         {
             {
-                oneOf(bulkPeopleByAccountIdMapperMock).execute(with(any(List.class)));
-                will(returnValue(testPersonModelViewList));
+                oneOf(getPersonIdFromAccountIdMapper).execute("fordp");
+                will(returnValue(fordpId));
 
                 oneOf(personFollowersMapperMock).execute(with(any(Long.class)));
                 will(returnValue(followerIds));
             }
         });
 
-        List<Long> results = sut.getFollowers(testActivity);
+        List<Long> results = sut.execute(testActivity);
         Assert.assertEquals(1, results.size());
         Assert.assertEquals(TEST_PERSON_ID, results.get(0));
         context.assertIsSatisfied();
@@ -152,7 +142,7 @@ public class GetCompositeStreamIdsByAssociatedActivityTest extends MapperTest
         final List<DomainGroupModelView> testGroupModelViewList = new ArrayList<DomainGroupModelView>();
         testGroupModelViewList.add(testGroupModelView);
 
-        List<Long> results = sut.getFollowers(testActivity);
+        List<Long> results = sut.execute(testActivity);
         Assert.assertEquals(0, results.size());
         context.assertIsSatisfied();
     }
@@ -172,6 +162,6 @@ public class GetCompositeStreamIdsByAssociatedActivityTest extends MapperTest
         testDestinationStream.setType(EntityType.NOTSET);
         testActivity.setDestinationStream(testDestinationStream);
 
-        sut.getFollowers(testActivity);
+        sut.execute(testActivity);
     }
 }

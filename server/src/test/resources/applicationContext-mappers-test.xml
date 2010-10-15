@@ -365,13 +365,6 @@
 		<constructor-arg ref="getPeopleWhoLikedActivityDbMapper" />
 		<property name="cache" ref="testCache" />
 	</bean>
-
-    <bean id="getCompositeStreamIdsByAssociatedActivity"
-        class="org.eurekastreams.server.persistence.mappers.cache.GetCompositeStreamIdsByAssociatedActivity">
-        <constructor-arg ref="getFollowerPersonIdsForPersonByIdDbMapper" />
-        <constructor-arg ref="bulkPeopleByAccountIdMapper" />
-        <property name="cache" ref="testCache" />
-    </bean>	
 	
 	<bean id="postCachedActivity"
 		class="org.eurekastreams.server.persistence.mappers.stream.PostCachedActivity">
