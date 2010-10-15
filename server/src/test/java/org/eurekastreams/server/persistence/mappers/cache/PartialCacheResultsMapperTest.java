@@ -89,6 +89,22 @@ public class PartialCacheResultsMapperTest
     }
 
     /**
+     * Test with null request.
+     */
+    @Test
+    public void testNullRequest()
+    {
+        // execute sut
+        PartialMapperResponse<List<String>, List<Object>> response = sut.execute(null);
+
+        // make sure there's no follow-up request
+        assertFalse(response.hasUnhandledRequest());
+
+        // check assertions
+        context.assertIsSatisfied();
+    }
+    
+    /**
      * Test finding all values in cache.
      */
     @Test

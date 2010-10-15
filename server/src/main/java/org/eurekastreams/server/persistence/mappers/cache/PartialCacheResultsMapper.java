@@ -81,6 +81,13 @@ public class PartialCacheResultsMapper<KeySuffixType, CachedValueType> extends C
     public PartialMapperResponse<List<KeySuffixType>, List<CachedValueType>> execute(
             final List<KeySuffixType> inKeySuffixes)
     {
+        // Don't do any work for null
+        if (null == inKeySuffixes)
+        {
+            return new PartialMapperResponse<List<KeySuffixType>, List<CachedValueType>>(
+                    new ArrayList<CachedValueType>());
+        }
+
         // build a list of all cache keys and a map to help find which are missing
         List<String> keys = new ArrayList<String>();
         Map<KeySuffixType, String> suffixToCacheKeyMap = new HashMap<KeySuffixType, String>();
