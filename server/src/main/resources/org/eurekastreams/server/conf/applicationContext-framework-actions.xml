@@ -1801,7 +1801,7 @@
                             <entry key="followedBy">
                                 <bean 
                                     class="org.eurekastreams.server.service.actions.strategies.activity.datasources.FollowedByPersistenceRequestTransformer">
-                                    <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
+                                    <constructor-arg ref="getPersonIdByAccountIdMapper" />   
                                 </bean>
                             </entry>
                             <entry key="recipient">

@@ -18,8 +18,7 @@ package org.eurekastreams.server.service.actions.strategies.activity.datasources
 import static junit.framework.Assert.assertEquals;
 import net.sf.json.JSONObject;
 
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
-import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -27,7 +26,7 @@ import org.junit.Test;
 
 /**
  * Testing the followed by key gen.
- *
+ * 
  */
 public class FollowedByPersistenceRequestTransformerTest
 {
@@ -42,14 +41,15 @@ public class FollowedByPersistenceRequestTransformerTest
     };
 
     /**
-     * Person mapper.
+     * Mapper to get a Person id by account id.
      */
-    private GetPeopleByAccountIds personMapper = context.mock(GetPeopleByAccountIds.class);
+    private DomainMapper<String, Long> getPersonIdByAccountIdMapper = context.mock(DomainMapper.class);
 
     /**
      * System under test.
      */
-    private FollowedByPersistenceRequestTransformer sut = new FollowedByPersistenceRequestTransformer(personMapper);
+    private FollowedByPersistenceRequestTransformer sut = new FollowedByPersistenceRequestTransformer(
+            getPersonIdByAccountIdMapper);
 
     /**
      * Passing in an empty request triggers a return on everyone list.
@@ -61,14 +61,10 @@ public class FollowedByPersistenceRequestTransformerTest
         JSONObject request = new JSONObject();
         request.put("followedBy", "shawkings");
 
-        final PersonModelView person = context.mock(PersonModelView.class);
         context.checking(new Expectations()
         {
             {
-                oneOf(personMapper).fetchUniqueResult("shawkings");
-                will(returnValue(person));
-
-                oneOf(person).getId();
+                oneOf(getPersonIdByAccountIdMapper).execute("shawkings");
                 will(returnValue(id));
             }
         });

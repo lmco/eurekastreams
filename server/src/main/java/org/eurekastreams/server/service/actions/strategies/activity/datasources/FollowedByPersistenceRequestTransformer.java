@@ -19,7 +19,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * Turn followedBy;jsmith to his DB id.
@@ -33,19 +33,19 @@ public class FollowedByPersistenceRequestTransformer implements PersistenceDataS
     private Log log = LogFactory.make();
 
     /**
-     * Person mapper.
+     * Mapper to get a Person id by account id.
      */
-    private GetPeopleByAccountIds personMapper;
+    private DomainMapper<String, Long> getPersonIdByAccountIdMapper;
 
     /**
      * Default constructor.
      * 
-     * @param inPersonMapper
-     *            person mapper.
+     * @param inGetPersonIdByAccountIdMapper
+     *            mapper to get a PersonModelView by account id
      */
-    public FollowedByPersistenceRequestTransformer(final GetPeopleByAccountIds inPersonMapper)
+    public FollowedByPersistenceRequestTransformer(final DomainMapper<String, Long> inGetPersonIdByAccountIdMapper)
     {
-        personMapper = inPersonMapper;
+        getPersonIdByAccountIdMapper = inGetPersonIdByAccountIdMapper;
     }
 
     /**
@@ -61,14 +61,11 @@ public class FollowedByPersistenceRequestTransformer implements PersistenceDataS
     public Long transform(final JSONObject request, final Long userEntityId)
     {
         String accountId = request.getString("followedBy");
-
         if (log.isTraceEnabled())
         {
             log.trace("Looking for cache key for activities followed by " + accountId);
         }
-
-        return personMapper.fetchUniqueResult(accountId).getId();
-
+        return getPersonIdByAccountIdMapper.execute(accountId);
     }
 
 }
