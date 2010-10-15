@@ -1549,7 +1549,8 @@
 
 	<bean id="commentDeletePropertyStrategy"
 		class="org.eurekastreams.server.persistence.strategies.CommentDeletePropertyStrategy">
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="getPersonByAccountIdMapper" />
+		<constructor-arg ref="getPersonIdByAccountIdMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 		<constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
 		<constructor-arg ref="getRecursiveOrgCoordinators" />

@@ -144,7 +144,8 @@
 		<constructor-arg value="org.eurekastreams.server.domain.Person" />
 	</bean>
 		
-	<!-- Mapper to get person id by account id - wraps getPeopleIdsByAccountIds - throws exception when not found -->
+	<!-- Mapper to get person id by account id - wraps getPeopleIdsByAccountIds - throws exception when not found
+-->
 	<bean id="getPersonIdByAccountIdMapper" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
 		<constructor-arg ref="getPeopleIdsByAccountIdsMapper" />
 		<constructor-arg value="true" />
@@ -174,7 +175,8 @@
 		</constructor-arg>
 	</bean>
 
-	<!-- Mapper to get person model view by account id - wraps getPeopleByAccountIdsMapper - throws exception when not found -->
+	<!-- Mapper to get person model view by account id - wraps getPeopleByAccountIdsMapper - throws exception when not found
+-->
 	<bean id="getPersonByAccountIdMapper" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
 		<constructor-arg ref="getPeopleByAccountIdsMapper" />
 		<constructor-arg value="true" />
@@ -280,7 +282,8 @@
 
 	<bean id="commentDeletePropertyStrategy"
 		class="org.eurekastreams.server.persistence.strategies.CommentDeletePropertyStrategy">
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="getPersonByAccountIdMapper" />
+		<constructor-arg ref="getPersonIdByAccountIdMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 		<constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
 		<constructor-arg ref="getRecursiveOrgCoordinators" />
