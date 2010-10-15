@@ -18,12 +18,12 @@ package org.eurekastreams.server.service.actions.strategies.activity.datasources
 import junit.framework.Assert;
 import net.sf.json.JSONObject;
 
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -34,7 +34,7 @@ public class ParentOrgPersistenceRequestTransformerTest
     /**
      * Mocking context.
      */
-    private static final JUnit4Mockery CONTEXT = new JUnit4Mockery()
+    private final JUnit4Mockery context = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -44,20 +44,21 @@ public class ParentOrgPersistenceRequestTransformerTest
     /**
      * System under test.
      */
-    private static ParentOrgPersistenceRequestTransformer sut;
+    private ParentOrgPersistenceRequestTransformer sut;
 
     /**
-     * Bulk people mapper.
+     * Person mapper for getting a person model view from account id.
      */
-    private static GetPeopleByAccountIds bulkPeopleMapper = CONTEXT.mock(GetPeopleByAccountIds.class);
+    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = context.mock(
+            DomainMapper.class, "getPersonModelViewByAccountIdMapper");
 
     /**
      * Setup test fixtures.
      */
-    @BeforeClass
-    public static void setup()
+    @Before
+    public void setup()
     {
-        sut = new ParentOrgPersistenceRequestTransformer(bulkPeopleMapper);
+        sut = new ParentOrgPersistenceRequestTransformer(getPersonModelViewByAccountIdMapper);
     }
 
     /**
@@ -72,12 +73,12 @@ public class ParentOrgPersistenceRequestTransformerTest
         final JSONObject request = new JSONObject();
         request.accumulate("parentOrg", personName);
 
-        final PersonModelView person = CONTEXT.mock(PersonModelView.class);
+        final PersonModelView person = context.mock(PersonModelView.class);
 
-        CONTEXT.checking(new Expectations()
+        context.checking(new Expectations()
         {
             {
-                oneOf(bulkPeopleMapper).fetchUniqueResult(personName);
+                oneOf(getPersonModelViewByAccountIdMapper).execute(personName);
                 will(returnValue(person));
 
                 oneOf(person).getParentOrganizationShortName();
@@ -89,6 +90,6 @@ public class ParentOrgPersistenceRequestTransformerTest
 
         Assert.assertEquals(orgShortName, result);
 
-        CONTEXT.assertIsSatisfied();
+        context.assertIsSatisfied();
     }
 }

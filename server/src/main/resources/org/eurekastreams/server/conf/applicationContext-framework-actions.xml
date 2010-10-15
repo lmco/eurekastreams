@@ -1842,7 +1842,7 @@
                             <entry key="parentOrg">
                                 <bean 
                                     class="org.eurekastreams.server.service.actions.strategies.activity.datasources.ParentOrgPersistenceRequestTransformer">
-                                    <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
+                                    <constructor-arg ref="getPersonByAccountIdMapper" />   
                                 </bean>
                             </entry>                            
                         </map>                  
