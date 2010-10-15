@@ -35,31 +35,38 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 /**
- * DAO object that returns sorted list of fully populated CommentDTO objects associated with the
- * id list passed in. Returned list is sorted by Comment id.
- *
+ * DAO object that returns sorted list of fully populated CommentDTO objects associated with the id list passed in.
+ * Returned list is sorted by Comment id.
+ * 
+ * @deprecated GetCommentsByIdsDbMapper should be used. That is the db portion of the new decorated mapper design (this
+ *             mapper didn't get completed). Note new version doesn't order results based on id, but respects the order
+ *             of the requested ids. If you want them sorted, pass sorted ids.
+ * 
  */
+@Deprecated
 public class GetCommentsById extends CachedDomainMapper implements DomainMapper<List<Long>, List<CommentDTO>>
 {
     /**
      * ModelViewResultsTransformer for CommentDTOs.
      */
-    private ModelViewResultTransformer<CommentDTO> resultTransformer =
-        new ModelViewResultTransformer<CommentDTO>(new CommentDTOFactory());
-    
+    private ModelViewResultTransformer<CommentDTO> resultTransformer = new ModelViewResultTransformer<CommentDTO>(
+            new CommentDTOFactory());
+
     /**
      * Comparator for sorting Comments.
      */
     private CommentDTOComparator comparator = new CommentDTOComparator();
-    
+
     /**
      * The CommentDTOPopulator instance.
      */
-    private CommentDTOPopulator commentDTOPopulator;    
-    
+    private CommentDTOPopulator commentDTOPopulator;
+
     /**
      * Constructor.
-     * @param inCommentDTOPopulator The CommentDTOPopulator instance.
+     * 
+     * @param inCommentDTOPopulator
+     *            The CommentDTOPopulator instance.
      */
     public GetCommentsById(final CommentDTOPopulator inCommentDTOPopulator)
     {
@@ -67,11 +74,13 @@ public class GetCommentsById extends CachedDomainMapper implements DomainMapper<
     }
 
     /**
-     * Returns sorted list of fully populated CommentDTO objects associated with the
-     * id list passed in. Returned list is sorted DESC. by Comment id.
-     * @param inCommentIds the list of comment ids.
-     * @return Sorted list of fully populated CommentDTO objects associated with the
-     * id list passed in. Returned list is sorted ascending by Comment id.
+     * Returns sorted list of fully populated CommentDTO objects associated with the id list passed in. Returned list is
+     * sorted DESC. by Comment id.
+     * 
+     * @param inCommentIds
+     *            the list of comment ids.
+     * @return Sorted list of fully populated CommentDTO objects associated with the id list passed in. Returned list is
+     *         sorted ascending by Comment id.
      */
     @Override
     public List<CommentDTO> execute(final List<Long> inCommentIds)
@@ -80,24 +89,23 @@ public class GetCommentsById extends CachedDomainMapper implements DomainMapper<
         if (inCommentIds == null || inCommentIds.size() == 0)
         {
             return new ArrayList<CommentDTO>(0);
-        }        
-        
+        }
+
         // Finds comments in the cache.
-        Map<String, CommentDTO> cachedComments = getCachedComments(inCommentIds);        
-        
-        //Get list of commentDTOs from DB.
-        List<CommentDTO> commentDTOs = 
-            getCommentDTOsFromDataSource(getUncachedIds(inCommentIds, cachedComments));
-        
-        //Fully populate and cache the new DTOs
-        commentDTOPopulator.execute(commentDTOs, getCache());    
-                
-        //Add previously cached DTOs to list for full set
+        Map<String, CommentDTO> cachedComments = getCachedComments(inCommentIds);
+
+        // Get list of commentDTOs from DB.
+        List<CommentDTO> commentDTOs = getCommentDTOsFromDataSource(getUncachedIds(inCommentIds, cachedComments));
+
+        // Fully populate and cache the new DTOs
+        commentDTOPopulator.execute(commentDTOs, getCache());
+
+        // Add previously cached DTOs to list for full set
         commentDTOs.addAll(cachedComments.values());
-        
-        //Sort based on comment id (DESC).
+
+        // Sort based on comment id (DESC).
         Collections.sort(commentDTOs, comparator);
-                
+
         Date currentDate = new Date();
         for (CommentDTO currentComment : commentDTOs)
         {
@@ -108,17 +116,19 @@ public class GetCommentsById extends CachedDomainMapper implements DomainMapper<
 
     /**
      * Queries DB to get CommentDTOs associated with ids passed in.
-     * @param unCachedIds Ids for DTOs to be returned.
+     * 
+     * @param unCachedIds
+     *            Ids for DTOs to be returned.
      * @return List of CommentDTOs associated with ids passed in.
      */
     @SuppressWarnings("unchecked")
     private List<CommentDTO> getCommentDTOsFromDataSource(final List<Long> unCachedIds)
     {
         List<CommentDTO> results = null;
-        
+
         // One or more of the activities were missing in the cache so go to the database
         if (unCachedIds.size() != 0)
-        {            
+        {
             Criteria criteria = getHibernateSession().createCriteria(Comment.class);
             ProjectionList fields = Projections.projectionList();
             fields.add(getColumn("id"));
@@ -127,27 +137,30 @@ public class GetCommentsById extends CachedDomainMapper implements DomainMapper<
             fields.add(Projections.property("author.id").as("authorId"));
             fields.add(Projections.property("target.id").as("activityId"));
             criteria.setProjection(fields);
-            
+
             criteria.setResultTransformer(resultTransformer);
 
-            criteria.add(Restrictions.in("this.id", unCachedIds));               
-            
+            criteria.add(Restrictions.in("this.id", unCachedIds));
+
             results = criteria.list();
         }
         return (results == null) ? new ArrayList<CommentDTO>(0) : results;
     }
 
     /**
-     * Given the full list of CommentIds requested, and a map of CommentDTOs that were present in
-     * cache, returns the list of Comment ids that need to be loaded from DB.
-     * @param inCommentIds Complete list of Comment ids requested.
-     * @param cachedComments Map of CommentDTOs from complete list that were present in cache.
+     * Given the full list of CommentIds requested, and a map of CommentDTOs that were present in cache, returns the
+     * list of Comment ids that need to be loaded from DB.
+     * 
+     * @param inCommentIds
+     *            Complete list of Comment ids requested.
+     * @param cachedComments
+     *            Map of CommentDTOs from complete list that were present in cache.
      * @return List of Comment ids that need ot be loaded from DB.
      */
     private List<Long> getUncachedIds(final List<Long> inCommentIds, final Map<String, CommentDTO> cachedComments)
     {
         List<Long> results = new ArrayList<Long>();
-        
+
         // if not all are found, determine which ones where not and
         if (cachedComments.size() != inCommentIds.size())
         {
@@ -159,40 +172,43 @@ public class GetCommentsById extends CachedDomainMapper implements DomainMapper<
                     results.add(commentId);
                 }
             }
-        }        
+        }
         return results;
     }
 
     /**
-     * Returns map of CommentDTOs, keyed by cacheKey, from list of Comment ids that were
-     * present in the cache.
-     * @param inCommentIds Full list of Comment ids requested.
-     * @return Map of CommentDTOs, keyed by cacheKey, from list of Comment ids that were
-     * present in the cache.
+     * Returns map of CommentDTOs, keyed by cacheKey, from list of Comment ids that were present in the cache.
+     * 
+     * @param inCommentIds
+     *            Full list of Comment ids requested.
+     * @return Map of CommentDTOs, keyed by cacheKey, from list of Comment ids that were present in the cache.
      */
     @SuppressWarnings("unchecked")
     private Map<String, CommentDTO> getCachedComments(final List<Long> inCommentIds)
     {
         List<String> keys = new ArrayList<String>(inCommentIds.size());
-        for (long key : inCommentIds)            
+        for (long key : inCommentIds)
         {
             keys.add(CacheKeys.COMMENT_BY_ID + key);
         }
         return (Map<String, CommentDTO>) (Map<String, ? >) getCache().multiGet(keys);
     }
-    
+
     /**
-     * CommentDTO comaparator for sorting the list. NOTE: This comparator is used to 
-     * sort the comment list by comment id in ascending manner (most recent first).
-     *
+     * CommentDTO comaparator for sorting the list. NOTE: This comparator is used to sort the comment list by comment id
+     * in ascending manner (most recent first).
+     * 
      */
     public class CommentDTOComparator implements Comparator<CommentDTO>
     {
         /**
-         * Compares two CommentDTO objects based on id value. This is set up
-         * to create a ascending list of commmentDTOs based on id.
-         * @param inComment1 first commentDTO.
-         * @param inComment2 second commentDTO.
+         * Compares two CommentDTO objects based on id value. This is set up to create a ascending list of commmentDTOs
+         * based on id.
+         * 
+         * @param inComment1
+         *            first commentDTO.
+         * @param inComment2
+         *            second commentDTO.
          * @return 1/-1/0 based on if comment1 id is &gt;/&lt;/== comment2 id.
          */
         @Override
@@ -200,7 +216,7 @@ public class GetCommentsById extends CachedDomainMapper implements DomainMapper<
         {
             long id1 = inComment1.getId();
             long id2 = inComment2.getId();
-            
+
             if (id1 > id2)
             {
                 return 1;
@@ -213,7 +229,7 @@ public class GetCommentsById extends CachedDomainMapper implements DomainMapper<
             {
                 return 0;
             }
-        }        
+        }
     }
 
 }

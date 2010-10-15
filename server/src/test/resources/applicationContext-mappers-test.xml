@@ -520,6 +520,10 @@
         <constructor-arg ref="domainGroupQueryStrategy" />
     </bean>
     
+    <bean id="getCommentsByIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetCommentsByIdsDbMapper">
+        <constructor-arg ref="commentDTOPopulator" />
+    </bean>    
+    
     <bean id="getOrderedCommentIdsByActivityIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetOrderedCommentIdsByActivityIdDbMapper" />
         
     <bean id="getOrganizationsByIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetOrganizationsByIdsDbMapper" />
