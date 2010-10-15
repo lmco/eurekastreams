@@ -691,13 +691,6 @@
 		<property name="expirationInMilliseconds" value="7200000" />
 	</bean>
 
-	<bean id="getFollowedEntitiesByPrefix"
-		class="org.eurekastreams.server.persistence.mappers.GetFollowedEntitiesByPrefix">
-		<property name="getPeopleByAccountIdsMapper" ref="bulkPeopleByAccountIdMapper" />
-		<property name="getFollowedPersonIdsMapper" ref="getFollowedPersonIdsForPersonByIdMapper" />
-		<property name="getFollowedGroupIdsMapper" ref="getFollowedGroupIdsForPersonByIdMapper" />
-	</bean>
-
 	<bean id="insertStarredActivity"
 		class="org.eurekastreams.server.persistence.mappers.InsertStarredActivity">
 		<constructor-arg ref="getStarredActivityIds" />
