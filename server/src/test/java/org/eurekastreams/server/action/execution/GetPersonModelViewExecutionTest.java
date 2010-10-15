@@ -22,9 +22,9 @@ import java.util.HashSet;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators;
 import org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.AuthenticationType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
@@ -43,7 +43,7 @@ import org.springframework.security.context.SecurityContextHolder;
 
 /**
  * Test for GetPersonModelViewExecution class.
- *
+ * 
  */
 public class GetPersonModelViewExecutionTest
 {
@@ -88,9 +88,10 @@ public class GetPersonModelViewExecutionTest
     private Principal actionContextPrincipal = context.mock(Principal.class);
 
     /**
-     * {@link GetPeopleByAccountIds} mock.
+     * Person Mapper used to retrieve PersonModelView from accountId.
      */
-    private GetPeopleByAccountIds personDAO = context.mock(GetPeopleByAccountIds.class);
+    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = context.mock(
+            DomainMapper.class, "getPersonModelViewByAccountIdMapper");
 
     /**
      * {@link GetRootOrganizationIdAndShortName} mock.
@@ -122,7 +123,7 @@ public class GetPersonModelViewExecutionTest
      * System under test.
      */
     private GetPersonModelViewExecution sut = new GetPersonModelViewExecution(orgCoordinatorDAO, orgCoordinatorDAOUp,
-            rootOrgDAO, personDAO, toSAcceptanceStrategy);
+            rootOrgDAO, getPersonModelViewByAccountIdMapper, toSAcceptanceStrategy);
 
     /**
      * Pre-test setup.
@@ -145,7 +146,7 @@ public class GetPersonModelViewExecutionTest
 
     /**
      * Perform Action as an org coordinator test.
-     *
+     * 
      * @throws Exception
      *             the exception.
      */
@@ -177,7 +178,7 @@ public class GetPersonModelViewExecutionTest
                 oneOf(userDetails).getAuthenticationType();
                 will(returnValue(AuthenticationType.NOTSET));
 
-                oneOf(personDAO).fetchUniqueResult(accountId);
+                oneOf(getPersonModelViewByAccountIdMapper).execute(accountId);
                 will(returnValue(retPerson));
 
                 oneOf(toSAcceptanceStrategy).isValidTermsOfServiceAcceptanceDate(with(personLastAcceptedTOSDate));
@@ -206,7 +207,7 @@ public class GetPersonModelViewExecutionTest
 
     /**
      * Perform Action not as an org coordinator test.
-     *
+     * 
      * @throws Exception
      *             the exception.
      */
@@ -237,7 +238,7 @@ public class GetPersonModelViewExecutionTest
                 oneOf(userDetails).getAuthenticationType();
                 will(returnValue(AuthenticationType.FORM));
 
-                oneOf(personDAO).fetchUniqueResult(accountId);
+                oneOf(getPersonModelViewByAccountIdMapper).execute(accountId);
                 will(returnValue(retPerson));
 
                 oneOf(toSAcceptanceStrategy).isValidTermsOfServiceAcceptanceDate(with(personLastAcceptedTOSDate));

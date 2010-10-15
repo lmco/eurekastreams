@@ -1567,7 +1567,7 @@
                 <constructor-arg ref="getRecursiveOrgCoordinatorsDownTree" />
                 <constructor-arg ref="getRecursiveOrgCoordinators" />
                 <constructor-arg ref="getRootOrganizationIdAndShortNameMapper" />
-                <constructor-arg ref="bulkPeopleByAccountIdMapper" />
+                <constructor-arg ref="getPersonByAccountIdMapper" />
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.service.security.userdetails.TermsOfServiceAcceptanceStrategyImpl">
                         <constructor-arg ref="findSystemSettings"/>
@@ -1584,7 +1584,7 @@
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.GetBulkEntitiesExecution">
-                <constructor-arg ref="bulkPeopleByAccountIdMapper" />
+                <constructor-arg ref="getPeopleByAccountIdsMapper" />
                 <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
             </bean>
         </constructor-arg>
@@ -2630,7 +2630,7 @@
                 <constructor-arg ref="getOrderedCommentIdsByActivityId" />
                 <constructor-arg ref="getCommentsById" />
                 <constructor-arg ref="commentDeletePropertyStrategy" />
-                <constructor-arg ref="bulkPeopleByAccountIdMapper" />           
+                <constructor-arg ref="getPersonByAccountIdMapper" />           
                 <constructor-arg>
                     <list>
                         <ref bean="canCommentFilter" />

@@ -21,8 +21,10 @@ import java.util.List;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -31,7 +33,7 @@ import org.junit.Test;
 
 /**
  * Test for the bulk entities action.
- *
+ * 
  */
 public class GetBulkEntitiesExecutionTest
 {
@@ -51,9 +53,10 @@ public class GetBulkEntitiesExecutionTest
     private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
 
     /**
-     * Person mapper.
+     * Mapper to get a list of PersonModelViews from a list of AccountIds.
      */
-    private GetPeopleByAccountIds personMapper = context.mock(GetPeopleByAccountIds.class);
+    private DomainMapper<List<String>, List<PersonModelView>> getPersonModelViewsByAccountIdsMapper = context.mock(
+            DomainMapper.class, "getPersonModelViewsByAccountIdsMapper");
     /**
      * Group mapper.
      */
@@ -61,7 +64,8 @@ public class GetBulkEntitiesExecutionTest
     /**
      * System under test.
      */
-    private GetBulkEntitiesExecution sut = new GetBulkEntitiesExecution(personMapper, groupMapper);
+    private GetBulkEntitiesExecution sut = new GetBulkEntitiesExecution(getPersonModelViewsByAccountIdsMapper,
+            groupMapper);
 
     /**
      * Test.
@@ -86,8 +90,11 @@ public class GetBulkEntitiesExecutionTest
                 allowing(actionContext).getParams();
                 will(returnValue(entities));
 
-                oneOf(personMapper).execute(with(any(List.class)));
+                oneOf(getPersonModelViewsByAccountIdsMapper).execute(with(any(List.class)));
+                will(returnValue(new ArrayList<PersonModelView>()));
+
                 oneOf(groupMapper).execute(with(any(List.class)));
+                will(returnValue(new ArrayList<DomainGroupModelView>()));
             }
         });
 

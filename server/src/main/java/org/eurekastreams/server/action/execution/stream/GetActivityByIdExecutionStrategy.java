@@ -17,7 +17,6 @@ package org.eurekastreams.server.action.execution.stream;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
@@ -26,7 +25,6 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetCommentsById;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrderedCommentIdsByActivityId;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.persistence.strategies.CommentDeletePropertyStrategy;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -63,9 +61,9 @@ public class GetActivityByIdExecutionStrategy implements ExecutionStrategy<Princ
     private List<ActivityFilter> filters;
 
     /**
-     * People mapper.
+     * Mapper to lookup a PersonModelView from an account id.
      */
-    private GetPeopleByAccountIds peopleMapper;
+    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper;
 
     /**
      * Constructor.
@@ -78,21 +76,22 @@ public class GetActivityByIdExecutionStrategy implements ExecutionStrategy<Princ
      *            DAO for finding comments by id.
      * @param inCommentDeletableSetter
      *            Strategy for setting deletable property on comments.
-     * @param inPeopleMapper
-     *            people mapper.
+     * @param inGetPersonModelViewByAccountIdMapper
+     *            Mapper to lookup a PersonModelView from an account id.
      * @param inFilters
      *            Filters to apply to activity List.
      */
     public GetActivityByIdExecutionStrategy(final DomainMapper<List<Long>, List<ActivityDTO>> inBulkActivitiesMapper,
             final GetOrderedCommentIdsByActivityId inCommentIdsByActivityIdDAO,
             final GetCommentsById inCommentsByIdDAO, final CommentDeletePropertyStrategy inCommentDeletableSetter,
-            final GetPeopleByAccountIds inPeopleMapper, final List<ActivityFilter> inFilters)
+            final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper,
+            final List<ActivityFilter> inFilters)
     {
         bulkActivitiesMapper = inBulkActivitiesMapper;
         commentIdsByActivityIdDAO = inCommentIdsByActivityIdDAO;
         commentsByIdDAO = inCommentsByIdDAO;
         commentDeletableSetter = inCommentDeletableSetter;
-        peopleMapper = inPeopleMapper;
+        getPersonModelViewByAccountIdMapper = inGetPersonModelViewByAccountIdMapper;
         filters = inFilters;
     }
 
@@ -115,7 +114,7 @@ public class GetActivityByIdExecutionStrategy implements ExecutionStrategy<Princ
 
         List<ActivityDTO> results = new ArrayList<ActivityDTO>(bulkActivitiesMapper.execute(activityKeys));
 
-        PersonModelView person = peopleMapper.execute(Arrays.asList(accountId)).get(0);
+        PersonModelView person = getPersonModelViewByAccountIdMapper.execute(accountId);
 
         // execute filter strategies.
         for (ActivityFilter filter : filters)

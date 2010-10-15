@@ -20,7 +20,6 @@ import static org.junit.Assert.assertSame;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +30,6 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetCommentsById;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrderedCommentIdsByActivityId;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.persistence.strategies.CommentDeletePropertyStrategy;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -71,13 +69,14 @@ public class GetActivityByIdExecutionStrategyTest
     /**
      * Bulk mapper mock.
      */
-    private DomainMapper<List<Long>, List<ActivityDTO>>  activityDAO = context.mock(DomainMapper.class);
+    private DomainMapper<List<Long>, List<ActivityDTO>> activityDAO = context.mock(DomainMapper.class);
 
     /**
-     * Person mapper.
+     * Mapper to lookup a PersonModelView from an account id.
      */
-    private GetPeopleByAccountIds peopleMapper = context.mock(GetPeopleByAccountIds.class);
-    
+    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = context.mock(
+            DomainMapper.class, "getPersonModelViewByAccountIdMapper");
+
     /**
      * DAO for finding comment ids.
      */
@@ -113,7 +112,7 @@ public class GetActivityByIdExecutionStrategyTest
         List<ActivityFilter> filters = new LinkedList<ActivityFilter>();
         filters.add(filterMock);
         sut = new GetActivityByIdExecutionStrategy(activityDAO, commentIdsByActivityIdDAO, commentsByIdDAO,
-                commentDeletableSetter, peopleMapper, filters);
+                commentDeletableSetter, getPersonModelViewByAccountIdMapper, filters);
     }
 
     /**
@@ -139,9 +138,9 @@ public class GetActivityByIdExecutionStrategyTest
         final List<CommentDTO> comments = new ArrayList(2);
         comments.add(context.mock(CommentDTO.class, "comment1"));
         comments.add(context.mock(CommentDTO.class, "comment2"));
-        
+
         final PersonModelView person = new PersonModelView();
-        
+
         context.checking(new Expectations()
         {
             {
@@ -160,9 +159,9 @@ public class GetActivityByIdExecutionStrategyTest
                 oneOf(commentDeletableSetter).execute(accountId, activityDTO, comments);
 
                 allowing(filterMock).filter(with(activities), with(any(PersonModelView.class)));
-                
-                oneOf(peopleMapper).execute(Arrays.asList(accountId));
-                will(returnValue(Arrays.asList(person)));
+
+                oneOf(getPersonModelViewByAccountIdMapper).execute(accountId);
+                will(returnValue(person));
 
                 oneOf(activityDTO).setComments(comments);
             }
@@ -197,7 +196,7 @@ public class GetActivityByIdExecutionStrategyTest
         comments.add(context.mock(CommentDTO.class, "comment2"));
 
         final PersonModelView person = new PersonModelView();
-        
+
         context.checking(new Expectations()
         {
             {
@@ -205,9 +204,9 @@ public class GetActivityByIdExecutionStrategyTest
                 will(returnValue(activities));
 
                 allowing(filterMock).filter(with(activities), with(any(PersonModelView.class)));
-                
-                oneOf(peopleMapper).execute(Arrays.asList(accountId));
-                will(returnValue(Arrays.asList(person)));
+
+                oneOf(getPersonModelViewByAccountIdMapper).execute(accountId);
+                will(returnValue(person));
 
             }
         });

@@ -24,19 +24,20 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Get a bunch of person model views.
- *
+ * 
  */
 public class GetBulkEntitiesExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
-     * The people mapper.
+     * Mapper to get a list of PersonModelViews from a list of AccountIds.
      */
-    private GetPeopleByAccountIds personMapper;
+    private DomainMapper<List<String>, List<PersonModelView>> getPersonModelViewsByAccountIdsMapper;
 
     /**
      * Group mapper.
@@ -45,23 +46,28 @@ public class GetBulkEntitiesExecution implements ExecutionStrategy<PrincipalActi
 
     /**
      * Default Constructor.
-     * @param inPersonMapper person mapper.
-     * @param inGroupMapper the group mapper.
+     * 
+     * @param inGetPersonModelViewsByAccountIdsMapper
+     *            mapper to get a list of PersonModelViews from a list of account ids.
+     * @param inGroupMapper
+     *            the group mapper.
      */
-    public GetBulkEntitiesExecution(final GetPeopleByAccountIds inPersonMapper,
+    public GetBulkEntitiesExecution(
+            final DomainMapper<List<String>, List<PersonModelView>> inGetPersonModelViewsByAccountIdsMapper,
             final GetDomainGroupsByShortNames inGroupMapper)
     {
-        personMapper = inPersonMapper;
+        getPersonModelViewsByAccountIdsMapper = inGetPersonModelViewsByAccountIdsMapper;
         groupMapper = inGroupMapper;
     }
 
     /**
      * Get a list entities.
-     *
+     * 
      * @param inActionContext
      *            action context.
      * @return the peoples.
-     * @throws ExecutionException exception.
+     * @throws ExecutionException
+     *             exception.
      */
     @Override
     public ArrayList<Serializable> execute(final PrincipalActionContext inActionContext) throws ExecutionException
@@ -82,7 +88,7 @@ public class GetBulkEntitiesExecution implements ExecutionStrategy<PrincipalActi
             }
         }
 
-        entities.addAll(personMapper.execute(personIds));
+        entities.addAll(getPersonModelViewsByAccountIdsMapper.execute(personIds));
         entities.addAll(groupMapper.execute(groupIds));
 
         return entities;

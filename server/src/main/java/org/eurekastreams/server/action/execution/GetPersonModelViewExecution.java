@@ -17,9 +17,9 @@ package org.eurekastreams.server.action.execution;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators;
 import org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.server.service.security.userdetails.ExtendedUserDetails;
@@ -28,7 +28,7 @@ import org.springframework.security.context.SecurityContextHolder;
 
 /**
  * Strategy to get current user's {@link PersonModelView}.
- *
+ * 
  */
 public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalActionContext>
 {
@@ -48,9 +48,9 @@ public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalA
     private GetRecursiveOrgCoordinators recursiveOrgMapperUpTree;
 
     /**
-     * Person Mapper used to retrieve person from the cache.
+     * Person Mapper used to retrieve PersonModelView from accountId.
      */
-    private GetPeopleByAccountIds peopleMapper = null;
+    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper;
 
     /**
      * Terms of service acceptance strategy.
@@ -59,34 +59,35 @@ public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalA
 
     /**
      * Constructor that sets up the mapper.
-     *
+     * 
      * @param inRecursiveOrgMapperDownTree
      *            recursive org mapper.
      * @param inRecursiveOrgMapperUpTree
      *            recursive org mapper.
      * @param inRootOrgMapper
      *            root org mapper.
-     * @param inPeopleMapper
-     *            - instance of PersonMapper
+     * @param inGetPersonModelViewByAccountIdMapper
+     *            - mapper to get a PersonModelView by account id
      * @param inTosAcceptanceStrategy
      *            the strategy to check if the user's terms of service acceptance is current
      */
     public GetPersonModelViewExecution(final GetRecursiveOrgCoordinators inRecursiveOrgMapperDownTree,
             final GetRecursiveOrgCoordinators inRecursiveOrgMapperUpTree,
-            final GetRootOrganizationIdAndShortName inRootOrgMapper, final GetPeopleByAccountIds inPeopleMapper,
+            final GetRootOrganizationIdAndShortName inRootOrgMapper,
+            final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper,
             final TermsOfServiceAcceptanceStrategy inTosAcceptanceStrategy)
     {
         rootOrgMapper = inRootOrgMapper;
         recursiveOrgMapperDownTree = inRecursiveOrgMapperDownTree;
         recursiveOrgMapperUpTree = inRecursiveOrgMapperUpTree;
-        peopleMapper = inPeopleMapper;
+        getPersonModelViewByAccountIdMapper = inGetPersonModelViewByAccountIdMapper;
         toSAcceptanceStrategy = inTosAcceptanceStrategy;
     }
 
     /**
      * Get current user's {@link PersonModelView}. This includes setting the ToSAcceptance and authentication type
      * properties.
-     *
+     * 
      * @param inActionContext
      *            action context.
      * @return {@link PersonModelView}.
@@ -94,7 +95,8 @@ public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalA
     @Override
     public PersonModelView execute(final PrincipalActionContext inActionContext)
     {
-        PersonModelView person = peopleMapper.fetchUniqueResult(inActionContext.getPrincipal().getAccountId());
+        PersonModelView person = getPersonModelViewByAccountIdMapper.execute(inActionContext.getPrincipal()
+                .getAccountId());
 
         // TODO: fill out other roles here as necessary
         if (recursiveOrgMapperDownTree.isOrgCoordinatorRecursively(person.getEntityId(), rootOrgMapper
