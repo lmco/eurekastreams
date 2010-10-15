@@ -1544,8 +1544,7 @@
 		<constructor-arg ref="getGroupsByIdsMapper" />
 		<constructor-arg ref="bulkOrganizationsByShortNameMapper" />
 		<constructor-arg ref="getRecursiveOrgCoordinators" />
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
-		<constructor-arg ref="memcachedCache" />
+		<constructor-arg ref="getPersonIdByAccountIdMapper" />
 	</bean>
 
 	<bean id="commentDeletePropertyStrategy"

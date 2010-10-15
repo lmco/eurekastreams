@@ -274,8 +274,7 @@
 		<constructor-arg ref="getGroupsByIdsDbMapper"/>
 		<constructor-arg ref="bulkOrganizationsByShortNameMapper"/>
 		<constructor-arg ref="getRecursiveOrgCoordinators"/>
-		<constructor-arg ref="bulkPeopleByAccountIdMapper"/>
-		<constructor-arg ref="testCache" />
+		<constructor-arg ref="getPersonIdByAccountIdMapper"/>
 	</bean>
 
 
