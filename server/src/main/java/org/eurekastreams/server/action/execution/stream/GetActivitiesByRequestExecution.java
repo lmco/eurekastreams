@@ -16,7 +16,6 @@
 package org.eurekastreams.server.action.execution.stream;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 
 import net.sf.json.JSONObject;
@@ -29,7 +28,6 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
 
@@ -81,9 +79,9 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
     private DomainMapper<List<Long>, List<ActivityDTO>> bulkActivitiesMapper;
 
     /**
-     * People mapper.
+     * Mapper to get a person model view by account id.
      */
-    private GetPeopleByAccountIds peopleMapper;
+    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper;
 
     /**
      * Default constructor.
@@ -92,18 +90,19 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
      *            the bulk activity mapper to get activity from.
      * @param inFilters
      *            the filters.
-     * @param inPeopleMapper
-     *            people mapper.
+     * @param inGetPersonModelViewByAccountIdMapper
+     *            Mapper to get a person model view by account id.
      * @param inGetActivityIdsByJsonRequest
      *            get activity IDs by JSON request.
      */
     public GetActivitiesByRequestExecution(final DomainMapper<List<Long>, List<ActivityDTO>> inBulkActivitiesMapper,
-            final List<ActivityFilter> inFilters, final GetPeopleByAccountIds inPeopleMapper,
+            final List<ActivityFilter> inFilters,
+            final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper,
             final GetActivityIdsByJsonRequest inGetActivityIdsByJsonRequest)
     {
         bulkActivitiesMapper = inBulkActivitiesMapper;
         filters = inFilters;
-        peopleMapper = inPeopleMapper;
+        getPersonModelViewByAccountIdMapper = inGetPersonModelViewByAccountIdMapper;
         getActivityIdsByJsonRequest = inGetActivityIdsByJsonRequest;
     }
 
@@ -162,7 +161,7 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
 
         final List<ActivityDTO> dtoResults = bulkActivitiesMapper.execute(results);
 
-        PersonModelView person = peopleMapper.execute(Arrays.asList(userAccountId)).get(0);
+        PersonModelView person = getPersonModelViewByAccountIdMapper.execute(userAccountId);
 
         // execute filter strategies.
         for (ActivityFilter filter : filters)

@@ -18,7 +18,6 @@ package org.eurekastreams.server.action.execution.stream;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,7 +27,6 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
 import org.jmock.Expectations;
@@ -71,9 +69,10 @@ public class GetActivitiesByRequestExecutionTest
     private Principal principal = context.mock(Principal.class);
 
     /**
-     * Person mapper.
+     * nt Mapper to get a person model view by account id.
      */
-    private GetPeopleByAccountIds peopleMapper = context.mock(GetPeopleByAccountIds.class);
+    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = context.mock(
+            DomainMapper.class, "getPersonModelViewsByAccountIdMapper");
 
     /**
      * bulk mapper mock.
@@ -109,7 +108,8 @@ public class GetActivitiesByRequestExecutionTest
         List<ActivityFilter> filters = new LinkedList<ActivityFilter>();
         filters.add(filterMock);
 
-        sut = new GetActivitiesByRequestExecution(bulkMapper, filters, peopleMapper, getActivityIdsByJsonRequest);
+        sut = new GetActivitiesByRequestExecution(bulkMapper, filters, getPersonModelViewByAccountIdMapper,
+                getActivityIdsByJsonRequest);
     }
 
     /**
@@ -160,8 +160,8 @@ public class GetActivitiesByRequestExecutionTest
 
                 allowing(filterMock).filter(with(activities), with(any(PersonModelView.class)));
 
-                oneOf(peopleMapper).execute(Arrays.asList(personAccountId));
-                will(returnValue(Arrays.asList(personModel)));
+                oneOf(getPersonModelViewByAccountIdMapper).execute(personAccountId);
+                will(returnValue(personModel));
             }
         });
 
@@ -218,8 +218,8 @@ public class GetActivitiesByRequestExecutionTest
 
                 allowing(filterMock).filter(with(activities), with(any(PersonModelView.class)));
 
-                oneOf(peopleMapper).execute(Arrays.asList(personAccountId));
-                will(returnValue(Arrays.asList(personModel)));
+                oneOf(getPersonModelViewByAccountIdMapper).execute(personAccountId);
+                will(returnValue(personModel));
             }
         });
 
@@ -275,8 +275,8 @@ public class GetActivitiesByRequestExecutionTest
 
                 allowing(filterMock).filter(with(activities), with(any(PersonModelView.class)));
 
-                oneOf(peopleMapper).execute(Arrays.asList(personAccountId));
-                will(returnValue(Arrays.asList(personModel)));
+                oneOf(getPersonModelViewByAccountIdMapper).execute(personAccountId);
+                will(returnValue(personModel));
             }
         });
 

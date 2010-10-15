@@ -1876,7 +1876,7 @@
                     <ref bean="serverTimeFilter" />
                 </list>
             </constructor-arg>
-            <constructor-arg ref="bulkPeopleByAccountIdMapper" />
+            <constructor-arg ref="getPersonByAccountIdMapper" />
             <constructor-arg ref="getActivityIdsByJsonRequest" />
     </bean>
 
