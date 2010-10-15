@@ -116,7 +116,7 @@
 		<constructor-arg ref="groupPersonSearchRequestBuilder" />
 		<constructor-arg
 			ref="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper" />
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="getPersonIdByAccountIdMapper" />
 		<constructor-arg value="false" />
 	</bean>
 
@@ -126,7 +126,7 @@
 		<constructor-arg ref="groupPersonSearchRequestBuilder" />
 		<constructor-arg
 			ref="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper" />
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="getPersonIdByAccountIdMapper" />
 		<constructor-arg value="true" />
 	</bean>
 

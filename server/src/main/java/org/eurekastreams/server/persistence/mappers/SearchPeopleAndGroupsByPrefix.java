@@ -26,7 +26,6 @@ import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.cache.GetPrivateCoordinatedAndFollowedGroupIdsForUser;
 import org.eurekastreams.server.persistence.mappers.requests.GetEntitiesByPrefixRequest;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DisplayEntityModelView;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -35,8 +34,7 @@ import org.hibernate.search.jpa.FullTextQuery;
 /**
  * Search for stream-postable people and groups by prefix, using Hibernate Search.
  */
-public class SearchPeopleAndGroupsByPrefix extends
-        ReadMapper<GetEntitiesByPrefixRequest, List<DisplayEntityModelView>>
+public class SearchPeopleAndGroupsByPrefix extends ReadMapper<GetEntitiesByPrefixRequest, List<DisplayEntityModelView>>
 {
     /**
      * Logger.
@@ -61,8 +59,8 @@ public class SearchPeopleAndGroupsByPrefix extends
     /**
      * Mapper used to translate user accountId to DB id.
      */
-    private final GetPeopleByAccountIds personByAccountIdMapper;    
-    
+    private final DomainMapper<String, Long> getPersonIdByAccountIdMapper;
+
     /**
      * Flag to enable group searching only.
      */
@@ -77,7 +75,7 @@ public class SearchPeopleAndGroupsByPrefix extends
      *            the search request builder
      * @param inGetGroupIdsMapper
      *            Mapper to get groups user has access to.
-     * @param inPersonByAccountIdMapper
+     * @param inGetPersonIdByAccountIdMapper
      *            Mapper used to translate user accountId to DB id.
      * @param inSearchGroupsOnly
      *            Flag to search for groups only.
@@ -85,12 +83,12 @@ public class SearchPeopleAndGroupsByPrefix extends
     public SearchPeopleAndGroupsByPrefix(final Integer inMaxResults,
             final ProjectionSearchRequestBuilder inSearchRequestBuilder,
             final GetPrivateCoordinatedAndFollowedGroupIdsForUser inGetGroupIdsMapper,
-            final GetPeopleByAccountIds inPersonByAccountIdMapper, final boolean inSearchGroupsOnly)
+            final DomainMapper<String, Long> inGetPersonIdByAccountIdMapper, final boolean inSearchGroupsOnly)
     {
         maxResults = inMaxResults;
         searchRequestBuilder = inSearchRequestBuilder;
         getGroupIdsMapper = inGetGroupIdsMapper;
-        personByAccountIdMapper = inPersonByAccountIdMapper;
+        getPersonIdByAccountIdMapper = inGetPersonIdByAccountIdMapper;
         searchGroupsOnly = inSearchGroupsOnly;
     }
 
@@ -110,9 +108,8 @@ public class SearchPeopleAndGroupsByPrefix extends
         // - group: name
         // - both: isStreamPostable, isPublic
         // Due to text stemming, we need to search with and without the wildcard
-        String searchText = String.format(
-                "+(name:(%1$s* %1$s) lastName:(%1$s* %1$s) preferredName:(%1$s* %1$s)^0.5) +isStreamPostable:true %2$s",
-                inRequest.getPrefix(), getGroupVisibilityClause(inRequest));        
+        String searchText = String.format("+(name:(%1$s* %1$s) lastName:(%1$s* %1$s) preferredName:(%1$s* %1$s)^0.5) "
+                + "+isStreamPostable:true %2$s", inRequest.getPrefix(), getGroupVisibilityClause(inRequest));
 
         if (log.isTraceEnabled())
         {
@@ -182,7 +179,7 @@ public class SearchPeopleAndGroupsByPrefix extends
     private String getGroupVisibilityClause(final GetEntitiesByPrefixRequest inRequest)
     {
         // get user id from userKey passed from client.
-        Long userId = personByAccountIdMapper.fetchId(inRequest.getUserKey());
+        Long userId = getPersonIdByAccountIdMapper.execute(inRequest.getUserKey());
 
         StringBuffer result = new StringBuffer("+(isPublic:true ");
 
@@ -197,12 +194,12 @@ public class SearchPeopleAndGroupsByPrefix extends
             {
                 result.append(id + " ");
             }
-            //TODO: this "-isPublic:true" is because text stemmer turns "false" into "fals"
-            //and the query fails. Investigate Lucene API to see how to do this via object
-            //model rather than query string generation to get around this.
+            // TODO: this "-isPublic:true" is because text stemmer turns "false" into "fals"
+            // and the query fails. Investigate Lucene API to see how to do this via object
+            // model rather than query string generation to get around this.
             result.append(") -isPublic:true)");
         }
-        result.append(")");        
+        result.append(")");
 
         return result.toString();
 

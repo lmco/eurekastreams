@@ -25,7 +25,6 @@ import org.eurekastreams.commons.search.ProjectionSearchRequestBuilder;
 import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.persistence.mappers.cache.GetPrivateCoordinatedAndFollowedGroupIdsForUser;
 import org.eurekastreams.server.persistence.mappers.requests.GetEntitiesByPrefixRequest;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.hibernate.search.jpa.FullTextQuery;
@@ -38,7 +37,7 @@ import org.junit.Test;
 
 /**
  * Test for SearchPeopleAndGroupsByPrefix class.
- *
+ * 
  */
 public class SearchPeopleAndGroupsByPrefixTest
 {
@@ -64,9 +63,10 @@ public class SearchPeopleAndGroupsByPrefixTest
             .mock(GetPrivateCoordinatedAndFollowedGroupIdsForUser.class);
 
     /**
-     * Mock Mapper used to translate user accountId to DB id.
+     * Mapper used to translate user accountId to DB id.
      */
-    private GetPeopleByAccountIds personByAccountIdMapper = context.mock(GetPeopleByAccountIds.class);
+    private final DomainMapper<String, Long> getPersonIdByAccountIdMapper = context.mock(DomainMapper.class,
+            "getPersonIdByAccountIdMapper");
 
     /**
      * Mock GetEntitiesByPrefixRequest.
@@ -119,8 +119,8 @@ public class SearchPeopleAndGroupsByPrefixTest
     @Before
     public void setup()
     {
-        sut = new SearchPeopleAndGroupsByPrefix(9, searchRequestBuilder, getGroupIdsMapper, personByAccountIdMapper,
-                false);
+        sut = new SearchPeopleAndGroupsByPrefix(9, searchRequestBuilder, getGroupIdsMapper,
+                getPersonIdByAccountIdMapper, false);
         searchResults = new ArrayList<ModelView>();
         searchResults.add(personView);
         searchResults.add(groupView);
@@ -132,9 +132,9 @@ public class SearchPeopleAndGroupsByPrefixTest
     @Test
     public void testExecuteWithEmptyGroupList()
     {
-        final String emptyGroupSearchString = "+(name:(foo* foo) lastName:(foo* foo) " 
-        		+ "preferredName:(foo* foo)^0.5) +isStreamPostable:true +(isPublic:true )";
-        
+        final String emptyGroupSearchString = "+(name:(foo* foo) lastName:(foo* foo) "
+                + "preferredName:(foo* foo)^0.5) +isStreamPostable:true +(isPublic:true )";
+
         context.checking(new Expectations()
         {
             {
@@ -144,7 +144,7 @@ public class SearchPeopleAndGroupsByPrefixTest
                 oneOf(request).getUserKey();
                 will(returnValue(userKey));
 
-                oneOf(personByAccountIdMapper).fetchId(userKey);
+                oneOf(getPersonIdByAccountIdMapper).execute(userKey);
                 will(returnValue(userId));
 
                 oneOf(getGroupIdsMapper).execute(userId);
@@ -182,10 +182,10 @@ public class SearchPeopleAndGroupsByPrefixTest
         groupIds.add(5L);
         groupIds.add(6L);
 
-        final String searchString = "+(name:(foo* foo) lastName:(foo* foo) " 
-        		+ "preferredName:(foo* foo)^0.5) +isStreamPostable:true " 
-        		+ "+(isPublic:true ( +id:(5 6 ) -isPublic:true))";
-        
+        final String searchString = "+(name:(foo* foo) lastName:(foo* foo) "
+                + "preferredName:(foo* foo)^0.5) +isStreamPostable:true "
+                + "+(isPublic:true ( +id:(5 6 ) -isPublic:true))";
+
         context.checking(new Expectations()
         {
             {
@@ -195,7 +195,7 @@ public class SearchPeopleAndGroupsByPrefixTest
                 oneOf(request).getUserKey();
                 will(returnValue(userKey));
 
-                oneOf(personByAccountIdMapper).fetchId(userKey);
+                oneOf(getPersonIdByAccountIdMapper).execute(userKey);
                 will(returnValue(userId));
 
                 oneOf(getGroupIdsMapper).execute(userId);
