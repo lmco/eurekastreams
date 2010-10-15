@@ -16,6 +16,7 @@
 package org.eurekastreams.web.client.ui.common.form.elements.avatar;
 
 import org.eurekastreams.commons.client.ActionProcessor;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.web.client.events.ClearUploadedImageEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ClearUploadedImageEvent.ImageType;
@@ -43,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * The form element for the avatar upload. Its not a REAL form element because it doesnt save back with the form itself,
  * its Miss Independent.
- *
+ * 
  */
 public class AvatarUploadFormElement extends FlowPanel implements Bindable
 {
@@ -94,12 +95,13 @@ public class AvatarUploadFormElement extends FlowPanel implements Bindable
     /**
      * Default description if none is provided.
      */
-    private static String description =
+    private static String description = 
+        // line break.
         "Select a JPG, PNG or GIF image from your computer. The maximum file size is 4MB.";
 
     /**
      * Create an avatar upload form element.
-     *
+     * 
      * @param label
      *            the label of the element.
      * @param servletPath
@@ -117,7 +119,7 @@ public class AvatarUploadFormElement extends FlowPanel implements Bindable
 
     /**
      * Create an avatar upload form element.
-     *
+     * 
      * @param label
      *            the label of the element.
      * @param desc
@@ -221,7 +223,7 @@ public class AvatarUploadFormElement extends FlowPanel implements Bindable
         uploadForm.setWidget(panel);
         this.add(uploadForm);
 
-        AvatarUploadFormElementModel model = new AvatarUploadFormElementModel();
+        AvatarUploadFormElementModel model = new AvatarUploadFormElementModel(strategy);
         AvatarUploadFormElementController controller = new AvatarUploadFormElementController(model,
                 new WidgetJSNIFacadeImpl());
         view = new AvatarUploadFormElementView(controller, this, strategy);
@@ -233,11 +235,12 @@ public class AvatarUploadFormElement extends FlowPanel implements Bindable
         view.init();
         if (strategy.getImageType().equals(ImageType.BANNER))
         {
-            view.onAvatarIdChanged(strategy.getImageId(), strategy.getId().equals(strategy.getImageEntityId()), true);
+            view.onAvatarIdChanged(strategy.getImageId(), strategy.getId().equals(strategy.getImageEntityId()), true,
+                    strategy.getEntityType() == EntityType.PERSON);
         }
         else
         {
-            view.onAvatarIdChanged(strategy.getImageId());
+            view.onAvatarIdChanged(strategy.getImageId(), strategy.getEntityType() == EntityType.PERSON);
         }
 
         deleteButton.addClickHandler(new ClickHandler()
@@ -263,11 +266,12 @@ public class AvatarUploadFormElement extends FlowPanel implements Bindable
                             if (event.getImageType().equals(ImageType.BANNER))
                             {
                                 view.onAvatarIdChanged(event.getEntity().getBannerId(), strategy.getId().equals(
-                                        event.getEntity().getBannerEntityId()), true);
+                                        event.getEntity().getBannerEntityId()), true,
+                                        strategy.getEntityType() == EntityType.PERSON);
                             }
                             else
                             {
-                                view.onAvatarIdChanged(null);
+                                view.onAvatarIdChanged(null, strategy.getEntityType() == EntityType.PERSON);
                             }
                         }
                     }
@@ -277,7 +281,7 @@ public class AvatarUploadFormElement extends FlowPanel implements Bindable
 
     /**
      * Creates the inside dialog content for the view.
-     *
+     * 
      * @param inStrategy
      *            the entity.
      * @param avatarId
@@ -303,7 +307,7 @@ public class AvatarUploadFormElement extends FlowPanel implements Bindable
 
     /**
      * Creates an image for the view.
-     *
+     * 
      * @param inStrategy
      *            the entity object.
      * @param avatarId
@@ -318,7 +322,7 @@ public class AvatarUploadFormElement extends FlowPanel implements Bindable
 
     /**
      * Creates the dialog for the view.
-     *
+     * 
      * @param imageCropDialog
      *            the dialog
      * @return the dialog.
@@ -330,13 +334,13 @@ public class AvatarUploadFormElement extends FlowPanel implements Bindable
 
     /**
      * Set the avatar id.
-     *
+     * 
      * @param inAvatarId
      *            the avatar id.
      */
     public void setAvatarId(final String inAvatarId)
     {
-        view.onAvatarIdChanged(inAvatarId);
+        view.onAvatarIdChanged(inAvatarId, strategy.getEntityType() == EntityType.PERSON);
     }
 
 }

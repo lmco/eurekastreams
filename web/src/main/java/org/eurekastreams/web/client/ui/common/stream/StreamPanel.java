@@ -462,6 +462,7 @@ public class StreamPanel extends FlowPanel
         activityId = newActivityId;
         search = newSearch;
         sort = newSort;
+        groupId = newGroupId;
 
         return hasChanged;
     }

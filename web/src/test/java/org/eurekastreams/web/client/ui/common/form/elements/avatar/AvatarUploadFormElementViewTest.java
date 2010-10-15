@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.web.client.ui.common.form.elements.avatar;
 
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
@@ -204,6 +205,9 @@ public class AvatarUploadFormElementViewTest
                 oneOf(strategy).setX(1);
                 oneOf(strategy).setY(2);
                 oneOf(strategy).setCropSize(3);
+                
+                oneOf(strategy).getEntityType();
+                will(returnValue(EntityType.PERSON));
 
                 oneOf(widget).createImage(strategy, "something");
                 oneOf(avatarContainer).clear();
@@ -212,6 +216,42 @@ public class AvatarUploadFormElementViewTest
                 oneOf(deleteButton).setVisible(true);
 
                 oneOf(person).setAvatarId("something");
+            }
+        });
+
+
+        sut.onFormResultChanged("something,1,2,3");
+        context.assertIsSatisfied();
+    }
+    
+
+    /**
+     * Test.
+     */
+    @Test
+    public void onFormResultChangedWithSuccessGroup()
+    {
+        Session.getInstance().setCurrentPerson(person);
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(errorBox).setVisible(false);
+                oneOf(strategy).setX(1);
+                oneOf(strategy).setY(2);
+                oneOf(strategy).setCropSize(3);
+                
+                oneOf(strategy).getEntityType();
+                will(returnValue(EntityType.GROUP));
+
+                oneOf(widget).createImage(strategy, "something");
+                oneOf(avatarContainer).clear();
+                oneOf(avatarContainer).add(with(any(Image.class)));
+                oneOf(editButton).setVisible(true);
+                oneOf(deleteButton).setVisible(true);
+
+                // Avatar should not be changed for person.
+                never(person).setAvatarId("something");
             }
         });
 

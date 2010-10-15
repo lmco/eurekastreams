@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.web.client.ui.common.form.elements.avatar;
 
+import org.eurekastreams.web.client.ui.common.form.elements.avatar.strategies.ImageUploadStrategy;
 import org.jmock.Expectations;
 import org.jmock.Sequence;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -51,12 +52,17 @@ public class AvatarUploadFormElementModelTest
      * The view mock.
      */
     final AvatarUploadFormElementView viewMock = context.mock(AvatarUploadFormElementView.class);
+    
+    /**
+     * Image upload strategy mock.
+     */
+    final ImageUploadStrategy strategy = context.mock(ImageUploadStrategy.class);
 
 
     /**
      * sut.
      */
-    private AvatarUploadFormElementModel sut = new AvatarUploadFormElementModel();
+    private AvatarUploadFormElementModel sut = new AvatarUploadFormElementModel(strategy);
 
     /**
      * Setup test fixture.

@@ -267,6 +267,9 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
                                                 new ShowNotificationEvent(new Notification(
                                                         "An error has occured and the organization '"
                                                                 + entity.getName() + "' was not deleted")));
+                                        
+                                        processingSpinny.setVisible(false);
+                                        deleteButton.setVisible(true);
                                     }
                                 });
                     }

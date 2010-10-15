@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The view for the avatar upload form element.
- *
+ * 
  */
 public class AvatarUploadFormElementView implements Bindable
 {
@@ -84,7 +84,7 @@ public class AvatarUploadFormElementView implements Bindable
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inController
      *            the controller.
      * @param inWidget
@@ -92,10 +92,8 @@ public class AvatarUploadFormElementView implements Bindable
      * @param inStrategy
      *            the entity.
      */
-    public AvatarUploadFormElementView(
-            final AvatarUploadFormElementController inController,
-            final AvatarUploadFormElement inWidget,
-            final ImageUploadStrategy inStrategy)
+    public AvatarUploadFormElementView(final AvatarUploadFormElementController inController,
+            final AvatarUploadFormElement inWidget, final ImageUploadStrategy inStrategy)
     {
         strategy = inStrategy;
         widget = inWidget;
@@ -116,26 +114,37 @@ public class AvatarUploadFormElementView implements Bindable
     }
 
     /**
-     * Gets fired off when the avatar ID is changed. param inAvatarId the avatar
-     * ID.
-     *
+     * Gets fired off when the avatar ID is changed. param inAvatarId the avatar ID.
+     * 
      * @param inAvatarId
      *            the avatar id.
+     * @param setPersonAvatar
+     *            if the person's avatar should be changed.
      */
-    public void onAvatarIdChanged(final String inAvatarId)
+    public void onAvatarIdChanged(final String inAvatarId, final boolean setPersonAvatar)
     {
-        onAvatarIdChanged(inAvatarId, (inAvatarId != null), (inAvatarId != null));
+        onAvatarIdChanged(inAvatarId, (inAvatarId != null), (inAvatarId != null), setPersonAvatar);
     }
 
     /**
      * Gets fired off when the avatar id is changed.
-     * @param inAvatarId - the avatar id.
-     * @param inDisplayDelete - flag telling to display or hide the delete button.
-     * @param inDisplayEdit - flag telling to display or hide the edit button
+     * 
+     * @param inAvatarId
+     *            - the avatar id.
+     * @param inDisplayDelete
+     *            - flag telling to display or hide the delete button.
+     * @param inDisplayEdit
+     *            - flag telling to display or hide the edit button
+     * @param setPersonAvatar
+     *            if the person's avatar should be changed.
      */
-    public void onAvatarIdChanged(final String inAvatarId, final boolean inDisplayDelete, final boolean inDisplayEdit)
+    public void onAvatarIdChanged(final String inAvatarId, final boolean inDisplayDelete, final boolean inDisplayEdit,
+            final boolean setPersonAvatar)
     {
-        Session.getInstance().getCurrentPerson().setAvatarId(inAvatarId);
+        if (setPersonAvatar)
+        {
+            Session.getInstance().getCurrentPerson().setAvatarId(inAvatarId);
+        }
 
         avatarId = inAvatarId;
         Widget avatar = widget.createImage(strategy, avatarId);
@@ -152,25 +161,29 @@ public class AvatarUploadFormElementView implements Bindable
             deleteButton.setVisible(inDisplayDelete);
         }
     }
+
     /**
      * Gets fired off when the resize panel being shown is changed.
-     *
+     * 
      * @param value
      *            the value.
      */
     public void onResizePanelShownChanged(final boolean value)
     {
-        //Since the size of the image is required before we can correctly show the
-        //resize dialog, this method determines the avatar url and sets image url.
-        //The load event of that image being loaded will kick off the resize modal.
+        // Since the size of the image is required before we can correctly show the
+        // resize dialog, this method determines the avatar url and sets image url.
+        // The load event of that image being loaded will kick off the resize modal.
         AvatarUrlGenerator urlGenerator = new AvatarUrlGenerator(EntityType.PERSON);
         hiddenImage.setUrl(urlGenerator.getOriginalAvatarUrl(strategy.getId(), avatarId));
     }
 
     /**
      * Shows image resize modal.
-     * @param inImageWidth Width of original image to resize.
-     * @param inImageHeight Height of original image to resize.
+     * 
+     * @param inImageWidth
+     *            Width of original image to resize.
+     * @param inImageHeight
+     *            Height of original image to resize.
      */
     public void showResizeModal(final String inImageWidth, final String inImageHeight)
     {
@@ -186,13 +199,12 @@ public class AvatarUploadFormElementView implements Bindable
     public void onSave()
     {
         strategy = imageCropDialog.getStrategy();
-        onAvatarIdChanged(strategy.getImageId());
+        onAvatarIdChanged(strategy.getImageId(), strategy.getEntityType() == EntityType.PERSON);
     }
 
     /**
-     * Gets fired when the forms result has changed. If its "fail", the upload
-     * has failed.
-     *
+     * Gets fired when the forms result has changed. If its "fail", the upload has failed.
+     * 
      * @param result
      *            the result.
      */
@@ -208,7 +220,7 @@ public class AvatarUploadFormElementView implements Bindable
                 strategy.setY(Integer.parseInt(results[2]));
                 strategy.setCropSize(Integer.parseInt(results[3]));
             }
-            onAvatarIdChanged(results[0]);
+            onAvatarIdChanged(results[0], strategy.getEntityType() == EntityType.PERSON);
         }
     }
 }

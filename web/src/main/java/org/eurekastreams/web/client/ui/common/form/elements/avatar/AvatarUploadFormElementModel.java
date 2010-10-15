@@ -15,6 +15,9 @@
  */
 package org.eurekastreams.web.client.ui.common.form.elements.avatar;
 
+import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.web.client.ui.common.form.elements.avatar.strategies.ImageUploadStrategy;
+
 /**
  * The model for the avatar upload form panel.
  * 
@@ -39,13 +42,20 @@ public class AvatarUploadFormElementModel
      */
     private String formResult;
 
-
+    /**
+     * The image upload strategy.
+     */
+    private ImageUploadStrategy strategy;
 
     /**
      * Default constructor.
+     * 
+     * @param inStrategy
+     *            the upload strategy.
      */
-    public AvatarUploadFormElementModel()
+    public AvatarUploadFormElementModel(final ImageUploadStrategy inStrategy)
     {
+        strategy = inStrategy;
     }
 
     /**
@@ -58,8 +68,6 @@ public class AvatarUploadFormElementModel
     {
         view = inView;
     }
-
-
 
     /**
      * Sets the state of the resize panel.
@@ -82,7 +90,7 @@ public class AvatarUploadFormElementModel
     public void setAvatarId(final String inAvatarId)
     {
         avatarId = inAvatarId;
-        view.onAvatarIdChanged(avatarId);
+        view.onAvatarIdChanged(avatarId, strategy.getEntityType() == EntityType.PERSON);
     }
 
     /**
