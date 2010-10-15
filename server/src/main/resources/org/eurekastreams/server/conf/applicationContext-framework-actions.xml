@@ -3167,7 +3167,7 @@
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.validation.profile.SetFollowingPersonStatusValidation">
                         <constructor-arg>
-                            <ref bean="bulkPeopleByAccountIdMapper" />
+                            <ref bean="getPersonIdByAccountIdMapper" />
                         </constructor-arg>
                     </bean>
                 </constructor-arg>

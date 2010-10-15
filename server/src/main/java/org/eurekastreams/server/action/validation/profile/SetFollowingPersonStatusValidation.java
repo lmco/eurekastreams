@@ -20,36 +20,33 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
-import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * This class handles validation for request to follow a person through the Follow action.
- *
  */
 public class SetFollowingPersonStatusValidation implements ValidationStrategy<PrincipalActionContext>
 {
     /**
-     * Local instance of the GetPeopleByAccountIds mapper.
+     * Mapper to get a person's id from account id.
      */
-    private final GetPeopleByAccountIds mapper;
+    private final DomainMapper<String, Long> getPersonIdByAccountIdMapper;
 
     /**
      * Constructor for the FollowingPersonValidator that sets up the mapper instances.
-     *
-     * @param inMapper
-     *            - instance of the GetPeopleByAccountIds mapper.
+     * 
+     * @param inGetPersonIdByAccountIdMapper
+     *            - Mapper to get a person's id from account id
      */
-    public SetFollowingPersonStatusValidation(final GetPeopleByAccountIds inMapper)
+    public SetFollowingPersonStatusValidation(final DomainMapper<String, Long> inGetPersonIdByAccountIdMapper)
     {
-        mapper = inMapper;
+        getPersonIdByAccountIdMapper = inGetPersonIdByAccountIdMapper;
     }
 
     /**
-     * Enforces validation for the SetFollowingStatusAction when following a user.
-     * - Action will only allow following of a person.
-     * - Both follower and target must be valid unique ids.
-     *
+     * Enforces validation for the SetFollowingStatusAction when following a user. - Action will only allow following of
+     * a person. - Both follower and target must be valid unique ids.
+     * 
      * {@inheritDoc}
      */
     @Override
@@ -64,11 +61,10 @@ public class SetFollowingPersonStatusValidation implements ValidationStrategy<Pr
             vex.addError("EntityType", "This action only supports following a person.");
         }
 
-        PersonModelView followerResult = mapper.fetchUniqueResult(inRequest.getFollowerUniqueId());
+        Long followerId = getPersonIdByAccountIdMapper.execute(inRequest.getFollowerUniqueId());
+        Long followingId = getPersonIdByAccountIdMapper.execute(inRequest.getTargetUniqueId());
 
-        PersonModelView targetResult = mapper.fetchUniqueResult(inRequest.getTargetUniqueId());
-
-        if (followerResult == null || targetResult == null)
+        if (followerId == null || followingId == null)
         {
             vex.addError("FollowerAndTarget", "Follower and Target unique ids for valid users must be supplied.");
         }

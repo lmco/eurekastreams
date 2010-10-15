@@ -17,14 +17,15 @@ package org.eurekastreams.server.action.validation.profile;
 
 import static junit.framework.Assert.assertTrue;
 
+import java.util.Map;
+
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
-import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -34,7 +35,7 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link SetFollowingPersonStatusValidation} class.
- *
+ * 
  */
 public class SetFollowingPersonStatusValidationTest
 {
@@ -54,9 +55,10 @@ public class SetFollowingPersonStatusValidationTest
     };
 
     /**
-     * Mock instance of GetPeopleByAccountIds.
+     * Mapper to get a person's id from account id.
      */
-    private final GetPeopleByAccountIds peopleMapperMock = context.mock(GetPeopleByAccountIds.class);
+    private final DomainMapper<String, Long> getPersonIdByAccountIdMapper = context.mock(DomainMapper.class,
+            "getPersonIdByAccountIdMapper");
 
     /**
      * Mocked instance of the Principal class.
@@ -69,7 +71,7 @@ public class SetFollowingPersonStatusValidationTest
     @Before
     public void setup()
     {
-        sut = new SetFollowingPersonStatusValidation(peopleMapperMock);
+        sut = new SetFollowingPersonStatusValidation(getPersonIdByAccountIdMapper);
     }
 
     /**
@@ -81,19 +83,14 @@ public class SetFollowingPersonStatusValidationTest
         SetFollowingStatusRequest request = new SetFollowingStatusRequest("ntaccount", "followingntaccount",
                 EntityType.PERSON, false, Follower.FollowerStatus.FOLLOWING);
 
-        final PersonModelView testFollower = new PersonModelView();
-        testFollower.setEntityId(1L);
-        final PersonModelView testFollowing = new PersonModelView();
-        testFollowing.setEntityId(2L);
-
         context.checking(new Expectations()
         {
             {
-                oneOf(peopleMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testFollower));
+                oneOf(getPersonIdByAccountIdMapper).execute("ntaccount");
+                will(returnValue(1L));
 
-                oneOf(peopleMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testFollowing));
+                oneOf(getPersonIdByAccountIdMapper).execute("followingntaccount");
+                will(returnValue(2L));
             }
         });
 
@@ -112,22 +109,18 @@ public class SetFollowingPersonStatusValidationTest
         SetFollowingStatusRequest request = new SetFollowingStatusRequest("ntaccount", "followingntaccount",
                 EntityType.NOTSET, false, Follower.FollowerStatus.FOLLOWING);
 
-        final PersonModelView testFollower = new PersonModelView();
-        testFollower.setEntityId(1L);
-        final PersonModelView testFollowing = new PersonModelView();
-        testFollowing.setEntityId(2L);
-
         context.checking(new Expectations()
         {
             {
-                oneOf(peopleMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testFollower));
+                oneOf(getPersonIdByAccountIdMapper).execute("ntaccount");
+                will(returnValue(1L));
 
-                oneOf(peopleMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testFollowing));
+                oneOf(getPersonIdByAccountIdMapper).execute("followingntaccount");
+                will(returnValue(2L));
             }
         });
 
+        Map<String, String> errors = null;
         try
         {
             ServiceActionContext currentContext = new ServiceActionContext(request, principalMock);
@@ -135,8 +128,9 @@ public class SetFollowingPersonStatusValidationTest
         }
         catch (ValidationException vex)
         {
-            assertTrue(vex.getErrors().containsKey("EntityType"));
+            errors = vex.getErrors();
         }
+        assertTrue(errors.containsKey("EntityType"));
 
         context.assertIsSatisfied();
     }
@@ -150,20 +144,18 @@ public class SetFollowingPersonStatusValidationTest
         SetFollowingStatusRequest request = new SetFollowingStatusRequest("ntaccount", "followingntaccount",
                 EntityType.PERSON, false, Follower.FollowerStatus.FOLLOWING);
 
-        final PersonModelView testFollower = new PersonModelView();
-        testFollower.setEntityId(1L);
-
         context.checking(new Expectations()
         {
             {
-                oneOf(peopleMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testFollower));
-
-                oneOf(peopleMapperMock).fetchUniqueResult(with(any(String.class)));
+                oneOf(getPersonIdByAccountIdMapper).execute("ntaccount");
                 will(returnValue(null));
+
+                oneOf(getPersonIdByAccountIdMapper).execute("followingntaccount");
+                will(returnValue(2L));
             }
         });
 
+        Map<String, String> errors = null;
         try
         {
             ServiceActionContext currentContext = new ServiceActionContext(request, principalMock);
@@ -171,9 +163,9 @@ public class SetFollowingPersonStatusValidationTest
         }
         catch (ValidationException vex)
         {
-            assertTrue(vex.getErrors().containsKey("FollowerAndTarget"));
+            errors = vex.getErrors();
         }
-
+        assertTrue(errors.containsKey("FollowerAndTarget"));
         context.assertIsSatisfied();
     }
 
@@ -186,20 +178,18 @@ public class SetFollowingPersonStatusValidationTest
         SetFollowingStatusRequest request = new SetFollowingStatusRequest("ntaccount", "", EntityType.PERSON, false,
                 Follower.FollowerStatus.FOLLOWING);
 
-        final PersonModelView testFollower = new PersonModelView();
-        testFollower.setEntityId(1L);
-
         context.checking(new Expectations()
         {
             {
-                oneOf(peopleMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testFollower));
+                oneOf(getPersonIdByAccountIdMapper).execute("ntaccount");
+                will(returnValue(1L));
 
-                oneOf(peopleMapperMock).fetchUniqueResult(with(any(String.class)));
+                oneOf(getPersonIdByAccountIdMapper).execute("");
                 will(returnValue(null));
             }
         });
 
+        Map<String, String> errors = null;
         try
         {
             ServiceActionContext currentContext = new ServiceActionContext(request, principalMock);
@@ -207,46 +197,9 @@ public class SetFollowingPersonStatusValidationTest
         }
         catch (ValidationException vex)
         {
-            assertTrue(vex.getErrors().containsKey("FollowerAndTarget"));
+            errors = vex.getErrors();
         }
-
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Test the validate method when the wrong Follower/Target is missing.
-     */
-    @Test
-    public void testFailedValidationFollowingStatusInvalid()
-    {
-        SetFollowingStatusRequest request = new SetFollowingStatusRequest("ntaccount", "anotherntaccount",
-                EntityType.PERSON, false, Follower.FollowerStatus.NOTSPECIFIED);
-
-        final PersonModelView testFollower = new PersonModelView();
-        testFollower.setEntityId(1L);
-        final PersonModelView testFollowing = new PersonModelView();
-        testFollowing.setEntityId(2L);
-
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(peopleMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testFollower));
-
-                oneOf(peopleMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testFollowing));
-            }
-        });
-
-        try
-        {
-            ServiceActionContext currentContext = new ServiceActionContext(request, principalMock);
-            sut.validate(currentContext);
-        }
-        catch (ValidationException vex)
-        {
-            assertTrue(vex.getErrors().containsKey("FollowingStatus"));
-        }
+        assertTrue(errors.containsKey("FollowerAndTarget"));
 
         context.assertIsSatisfied();
     }
