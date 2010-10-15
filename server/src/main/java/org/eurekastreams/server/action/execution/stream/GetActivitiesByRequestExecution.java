@@ -118,7 +118,7 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
      */
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        log.debug("Attempted to parse: " + inActionContext.getParams());
+        log.debug("Attempted to parse:  " + inActionContext.getParams());
 
         final JSONObject request = JSONObject.fromObject(inActionContext.getParams());
 
