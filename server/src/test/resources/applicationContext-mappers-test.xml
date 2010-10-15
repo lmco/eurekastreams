@@ -380,18 +380,6 @@
 		<property name="cache" ref="testCache" />
 	</bean>
 	
-	<bean id="postCachedActivity"
-		class="org.eurekastreams.server.persistence.mappers.stream.PostCachedActivity">
-		<constructor-arg ref="getFollowerPersonIdsForPersonByIdDbMapper" />
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
-		<constructor-arg ref="getRecursiveParentOrgIdsMapper" />
-		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-		<constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.db.GetOrgShortNamesByIdsMapper" />
-		</constructor-arg>
-		<property name="cache" ref="testCache" />
-	</bean>
-	
 	<bean id="postActivityUpdateStreamsByActorMapper"
 	   class="org.eurekastreams.server.persistence.mappers.cache.PostActivityUpdateStreamsByActorMapper">
 	   <constructor-arg ref="getPersonByAccountIdMapper" />

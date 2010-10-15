@@ -1727,7 +1727,7 @@
 	<bean id="postCachedActivity"
 		class="org.eurekastreams.server.persistence.mappers.stream.PostCachedActivity">
 		<constructor-arg ref="getFollowerPersonIdsForPersonByIdMapper" />
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="getPersonByAccountIdMapper" />
 		<constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 		<constructor-arg ref="getOrgShortNamesByIdsMapper" />
