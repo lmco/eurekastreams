@@ -21,13 +21,13 @@ import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalPopulator;
 import org.eurekastreams.commons.exceptions.PrincipalPopulationException;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Populates a principal object based off OpenSocialId.
- *
+ * 
  */
 public class OpenSocialPrincipalPopulator implements PrincipalPopulator
 {
@@ -42,28 +42,28 @@ public class OpenSocialPrincipalPopulator implements PrincipalPopulator
     private GetPeopleByOpenSocialIds personMapper;
 
     /**
-     * Local instance of the Person mapper for retrieving person objects by account id.
+     * Mapper to get a PersonModelView by accountId.
      */
-    private GetPeopleByAccountIds personAccountIdMapper;
+    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper;
 
     /**
      * Constructor.
-     *
+     * 
      * @param inPersonMapper
      *            The person mapper.
-     * @param inPersonAccountIdMapper
-     *            The person mapper used to retrieve Person objects by ntid.
+     * @param inGetPersonModelViewByAccountIdMapper
+     *            Mapper to get a PersonModelView by account id
      */
     public OpenSocialPrincipalPopulator(final GetPeopleByOpenSocialIds inPersonMapper,
-            final GetPeopleByAccountIds inPersonAccountIdMapper)
+            final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper)
     {
         personMapper = inPersonMapper;
-        personAccountIdMapper = inPersonAccountIdMapper;
+        getPersonModelViewByAccountIdMapper = inGetPersonModelViewByAccountIdMapper;
     }
 
     /**
      * Retrieve the principal object associated with the OpenSocial id passed in.
-     *
+     * 
      * @param inOpenSocialId
      *            - string opensocial id to retrieve a principal object for.
      * @return {@link Principal} object based on the OpenSocial id passed in.
@@ -90,7 +90,7 @@ public class OpenSocialPrincipalPopulator implements PrincipalPopulator
             logger.error("Unable to find principal for OpenSocialId: " + inOpenSocialId + " attempting ntid");
             try
             {
-                user = personAccountIdMapper.fetchUniqueResult(inOpenSocialId);
+                user = getPersonModelViewByAccountIdMapper.execute(inOpenSocialId);
             }
             catch (Exception e)
             {

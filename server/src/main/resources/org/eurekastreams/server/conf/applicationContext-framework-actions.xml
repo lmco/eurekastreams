@@ -65,7 +65,7 @@
         
     <bean id="openSocialPrincipalPopulator" class="org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator">
         <constructor-arg ref="bulkPeopleByOpenSocialIdMapper" />
-        <constructor-arg ref="bulkPeopleByAccountIdMapper" /> 
+        <constructor-arg ref="getPersonByAccountIdMapper" /> 
     </bean>
     
     <bean id="openSocialPrincipalPopulatorTransWrapper" class="org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper">
@@ -3145,7 +3145,7 @@
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.validation.profile.SetFollowingGroupStatusValidation">
                         <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-                        <constructor-arg ref="bulkPeopleByAccountIdMapper" />
+                        <constructor-arg ref="getPersonIdByAccountIdMapper" />
                     </bean>
                 </constructor-arg>
             </bean>

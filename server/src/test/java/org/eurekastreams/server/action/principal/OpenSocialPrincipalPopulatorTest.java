@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.exceptions.PrincipalPopulationException;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
@@ -31,7 +31,7 @@ import org.junit.Test;
 
 /**
  * Test for OpenSocialPrincipalPopulator class.
- *
+ * 
  */
 public class OpenSocialPrincipalPopulatorTest
 {
@@ -56,9 +56,10 @@ public class OpenSocialPrincipalPopulatorTest
     private GetPeopleByOpenSocialIds personMapper = context.mock(GetPeopleByOpenSocialIds.class);
 
     /**
-     * Person mapper by account ids.
+     * Mapper to get a PersonModelView by accountId.
      */
-    private GetPeopleByAccountIds personAccountIdsMapper = context.mock(GetPeopleByAccountIds.class);
+    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = context.mock(
+            DomainMapper.class, "getPersonModelViewByAccountIdMapper");
 
     /**
      * Person model view.
@@ -86,7 +87,7 @@ public class OpenSocialPrincipalPopulatorTest
     @Before
     public void setup()
     {
-        sut = new OpenSocialPrincipalPopulator(personMapper, personAccountIdsMapper);
+        sut = new OpenSocialPrincipalPopulator(personMapper, getPersonModelViewByAccountIdMapper);
     }
 
     /**
@@ -132,7 +133,7 @@ public class OpenSocialPrincipalPopulatorTest
                 allowing(personMapper).fetchUniqueResult(openSocialId);
                 will(returnValue(null));
 
-                oneOf(personAccountIdsMapper).fetchUniqueResult(openSocialId);
+                oneOf(getPersonModelViewByAccountIdMapper).execute(openSocialId);
                 will(returnValue(person));
 
                 allowing(person).getAccountId();
@@ -166,7 +167,7 @@ public class OpenSocialPrincipalPopulatorTest
                 allowing(personMapper).fetchUniqueResult(openSocialId);
                 will(returnValue(null));
 
-                oneOf(personAccountIdsMapper).fetchUniqueResult(openSocialId);
+                oneOf(getPersonModelViewByAccountIdMapper).execute(openSocialId);
                 will(returnValue(null));
             }
         });

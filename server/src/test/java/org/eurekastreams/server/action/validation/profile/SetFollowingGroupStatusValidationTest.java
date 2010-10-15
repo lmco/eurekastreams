@@ -21,10 +21,9 @@ import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
-import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -34,7 +33,7 @@ import org.junit.Test;
 
 /**
  * This class is responsible for testing the {@link SetFollowingGroupStatusValidation} class.
- *
+ * 
  */
 public class SetFollowingGroupStatusValidationTest
 {
@@ -59,9 +58,10 @@ public class SetFollowingGroupStatusValidationTest
     private final GetDomainGroupsByShortNames domainGroupMapperMock = context.mock(GetDomainGroupsByShortNames.class);
 
     /**
-     * Mock instance of GetPeopleByAccountIds.
+     * Mapper to get Person's id by account id.
      */
-    private final GetPeopleByAccountIds peopleMapperMock = context.mock(GetPeopleByAccountIds.class);
+    private final DomainMapper<String, Long> getPersonIdByAccountIdMapper = context.mock(DomainMapper.class,
+            "getPersonIdByAccountIdMapper");
 
     /**
      * Mocked instance of the Principal object.
@@ -74,7 +74,7 @@ public class SetFollowingGroupStatusValidationTest
     @Before
     public void setup()
     {
-        sut = new SetFollowingGroupStatusValidation(domainGroupMapperMock, peopleMapperMock);
+        sut = new SetFollowingGroupStatusValidation(domainGroupMapperMock, getPersonIdByAccountIdMapper);
     }
 
     /**
@@ -86,17 +86,14 @@ public class SetFollowingGroupStatusValidationTest
         SetFollowingStatusRequest request = new SetFollowingStatusRequest("ntaccount", "groupshortname",
                 EntityType.GROUP, false, Follower.FollowerStatus.FOLLOWING);
 
-        final PersonModelView testFollower = new PersonModelView();
-        testFollower.setEntityId(1L);
-
         final DomainGroupModelView testTarget = new DomainGroupModelView();
         testTarget.setEntityId(2L);
 
         context.checking(new Expectations()
         {
             {
-                oneOf(peopleMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testFollower));
+                oneOf(getPersonIdByAccountIdMapper).execute("ntaccount");
+                will(returnValue(1L));
 
                 oneOf(domainGroupMapperMock).fetchUniqueResult(with(any(String.class)));
                 will(returnValue(testTarget));
@@ -118,14 +115,11 @@ public class SetFollowingGroupStatusValidationTest
         SetFollowingStatusRequest request = new SetFollowingStatusRequest("ntaccount", "groupshortname",
                 EntityType.NOTSET, false, Follower.FollowerStatus.FOLLOWING);
 
-        final PersonModelView testFollower = new PersonModelView();
-        testFollower.setEntityId(1L);
-
         context.checking(new Expectations()
         {
             {
-                oneOf(peopleMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testFollower));
+                oneOf(getPersonIdByAccountIdMapper).execute("ntaccount");
+                will(returnValue(1L));
 
                 oneOf(domainGroupMapperMock).fetchUniqueResult(with(any(String.class)));
                 will(returnValue(null));
@@ -147,14 +141,11 @@ public class SetFollowingGroupStatusValidationTest
         SetFollowingStatusRequest request = new SetFollowingStatusRequest("ntaccount", "groupshortname",
                 EntityType.GROUP, false, Follower.FollowerStatus.FOLLOWING);
 
-        final PersonModelView testFollower = new PersonModelView();
-        testFollower.setEntityId(1L);
-
         context.checking(new Expectations()
         {
             {
-                oneOf(peopleMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testFollower));
+                oneOf(getPersonIdByAccountIdMapper).execute("ntaccount");
+                will(returnValue(1L));
 
                 oneOf(domainGroupMapperMock).fetchUniqueResult(with(any(String.class)));
                 will(returnValue(null));

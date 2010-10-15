@@ -20,14 +20,13 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
-import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * This class is responsible for validating requests to follow a group.
- *
+ * 
  */
 public class SetFollowingGroupStatusValidation implements ValidationStrategy<PrincipalActionContext>
 {
@@ -38,30 +37,30 @@ public class SetFollowingGroupStatusValidation implements ValidationStrategy<Pri
     private final GetDomainGroupsByShortNames domainGroupMapper;
 
     /**
-     * Local instance of the GetPeopleByAccountIds mapper.
+     * Mapper to get Person's id by account id.
      */
-    private final GetPeopleByAccountIds personMapper;
+    private final DomainMapper<String, Long> getPersonIdByAccountIdMapper;
 
     /**
      * Constructor for the validator.
-     *
+     * 
      * @param inDomainGroupMapper
      *            - instance of the GetDomainGroupsByShortNames mapper.
-     * @param inPersonMapper
-     *            - instance of the GetPeopleByAccountIds mapper.
+     * @param inGetPersonIdByAccountIdMapper
+     *            - mapper to get a person's id by account id
      */
     public SetFollowingGroupStatusValidation(final GetDomainGroupsByShortNames inDomainGroupMapper,
-            final GetPeopleByAccountIds inPersonMapper)
+            final DomainMapper<String, Long> inGetPersonIdByAccountIdMapper)
     {
         domainGroupMapper = inDomainGroupMapper;
-        personMapper = inPersonMapper;
+        getPersonIdByAccountIdMapper = inGetPersonIdByAccountIdMapper;
     }
 
     /**
      * This is the method responsible for enforcing validation on the inputs of the request to add a follower to a
      * group. - Only followers to a group can be added through this action. - Both follower and target unique ids must
      * point to valid entities.
-     *
+     * 
      * {@inheritDoc}
      */
     @Override
@@ -75,7 +74,7 @@ public class SetFollowingGroupStatusValidation implements ValidationStrategy<Pri
             vex.addError("EntityType", "This action only supports following a group.");
         }
 
-        PersonModelView followerResult = personMapper.fetchUniqueResult(inRequest.getFollowerUniqueId());
+        Long followerResult = getPersonIdByAccountIdMapper.execute(inRequest.getFollowerUniqueId());
 
         DomainGroupModelView targetResult = domainGroupMapper.fetchUniqueResult(inRequest.getTargetUniqueId());
 
