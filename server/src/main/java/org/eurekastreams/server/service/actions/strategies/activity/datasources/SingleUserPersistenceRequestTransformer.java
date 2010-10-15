@@ -22,7 +22,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * Transforms JSON request to a request for a single person by ID.
@@ -35,9 +35,9 @@ public class SingleUserPersistenceRequestTransformer implements PersistenceDataS
     private Log log = LogFactory.make();
 
     /**
-     * Person mapper.
+     * Mapper to get an id for a person by account id.
      */
-    private GetPeopleByAccountIds personMapper;
+    private DomainMapper<String, Long> getPersonIdByAccountIdMapper;
 
     /**
      * The request key.
@@ -57,8 +57,8 @@ public class SingleUserPersistenceRequestTransformer implements PersistenceDataS
     /**
      * Default constructor.
      * 
-     * @param inPersonMapper
-     *            person mapper.
+     * @param inGetPersonIdByAccountIdMapper
+     *            Mapper to get an id for a person by account id.
      * @param inReqKey
      *            the relevant request key.
      * @param inReturnAsArray
@@ -66,10 +66,10 @@ public class SingleUserPersistenceRequestTransformer implements PersistenceDataS
      * @param inRequireCurrentUser
      *            if this is only valid for the current user.
      */
-    public SingleUserPersistenceRequestTransformer(final GetPeopleByAccountIds inPersonMapper, final String inReqKey,
-            final Boolean inReturnAsArray, final Boolean inRequireCurrentUser)
+    public SingleUserPersistenceRequestTransformer(final DomainMapper<String, Long> inGetPersonIdByAccountIdMapper,
+            final String inReqKey, final Boolean inReturnAsArray, final Boolean inRequireCurrentUser)
     {
-        personMapper = inPersonMapper;
+        getPersonIdByAccountIdMapper = inGetPersonIdByAccountIdMapper;
         reqKey = inReqKey;
         returnAsArray = inReturnAsArray;
         requireCurrentUser = inRequireCurrentUser;
@@ -88,7 +88,7 @@ public class SingleUserPersistenceRequestTransformer implements PersistenceDataS
     {
         String accountId = request.getString(reqKey);
 
-        Long requestAccountId = personMapper.fetchId(accountId);
+        Long requestAccountId = getPersonIdByAccountIdMapper.execute(accountId);
 
         // If it doesn't require the current user, or the request is for the current user.
         if (!requireCurrentUser || userEntityId.equals(requestAccountId))
@@ -112,7 +112,7 @@ public class SingleUserPersistenceRequestTransformer implements PersistenceDataS
             {
                 log.debug("User was: " + userEntityId + " Request from: " + requestAccountId);
             }
-            
+
             return 0L;
         }
     }

@@ -1807,7 +1807,7 @@
                             <entry key="recipient">
                                 <bean 
                                     class="org.eurekastreams.server.service.actions.strategies.activity.datasources.RecipientPersistenceRequestTransformer">
-                                    <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
+                                    <constructor-arg ref="getPeopleByAccountIdsMapper" />   
                                     <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
                                 </bean>
                             </entry>
@@ -1818,7 +1818,7 @@
                             <entry key="savedBy">
                                 <bean 
                                     class="org.eurekastreams.server.service.actions.strategies.activity.datasources.SingleUserPersistenceRequestTransformer">
-                                    <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
+                                    <constructor-arg ref="getPersonIdByAccountIdMapper" />   
                                     <constructor-arg value="savedBy" />   
                                     <constructor-arg value="false" />   
                                     <constructor-arg value="true" />   
