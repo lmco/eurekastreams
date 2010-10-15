@@ -138,6 +138,19 @@
 	<bean id="testCache"
 		class="org.eurekastreams.server.persistence.mappers.cache.testhelpers.SimpleMemoryCache" />
 
+	<!-- Mapper to get people ids by account ids -->
+	<bean id="getPeopleIdsByAccountIdsMapper" class="org.eurekastreams.server.persistence.mappers.db.GetIdsFromPointersDbMapper">
+		<constructor-arg value="accountId" />
+		<constructor-arg value="org.eurekastreams.server.domain.Person" />
+	</bean>
+		
+	<!-- Mapper to get person id by account id - wraps getPeopleIdsByAccountIds - throws exception when not found -->
+	<bean id="getPersonIdByAccountIdMapper" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
+		<constructor-arg ref="getPeopleIdsByAccountIdsMapper" />
+		<constructor-arg value="true" />
+	</bean>
+
+
 	<!-- Mapper to get people by account ids -->
 	<bean id="getPeopleByAccountIdsMapper" class="org.eurekastreams.server.persistence.mappers.GetItemsByPointerIdsMapper">
 		<!-- Mapper to get people ids from account ids -->
@@ -360,7 +373,8 @@
 		class="org.eurekastreams.server.persistence.mappers.stream.DeleteActivityCacheUpdate">
 		<constructor-arg ref="getFollowerPersonIdsForPersonByIdDbMapper" />
 		<constructor-arg ref="getFollowerPersonIdsForGroupByIdDbMapper" />
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="getPersonByAccountIdMapper" />
+		<constructor-arg ref="getPersonIdByAccountIdMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 		<constructor-arg ref="getPeopleWhoLikedActivityDbMapper" />
 		<property name="cache" ref="testCache" />

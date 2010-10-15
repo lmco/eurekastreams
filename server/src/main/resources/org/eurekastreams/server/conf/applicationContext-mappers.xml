@@ -1630,7 +1630,8 @@
 		class="org.eurekastreams.server.persistence.mappers.stream.DeleteActivityCacheUpdate">
 		<constructor-arg ref="getFollowerPersonIdsForPersonByIdMapper" />
 		<constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="getPersonByAccountIdMapper" />
+		<constructor-arg ref="getPersonIdByAccountIdMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 		<constructor-arg ref="getPeopleWhoLikedActivity" />
 		<property name="cache" ref="memcachedCache" />
