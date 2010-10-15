@@ -3179,7 +3179,7 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.profile.SetFollowingPersonStatusExecution">
                 <constructor-arg ref="jpaPersonMapper" />
-                <constructor-arg ref="bulkPeopleByAccountIdMapper" />
+                <constructor-arg ref="getPersonIdByAccountIdMapper" />
                 <constructor-arg ref="addCachedPersonFollower" />
                 <constructor-arg ref="getFollowerPersonIdsForPersonByIdMapper" />
             </bean>

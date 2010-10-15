@@ -29,8 +29,6 @@ import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddCachedPersonFollower;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
-import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -40,7 +38,7 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link SetFollowingPersonStatusExecution} class.
- * 
+ *
  */
 public class SetFollowingPersonStatusExecutionTest
 {
@@ -67,12 +65,14 @@ public class SetFollowingPersonStatusExecutionTest
     /**
      * Mock instance of GetPeopleByAccountIds.
      */
-    private final GetPeopleByAccountIds peopleByAccountIdsMapperMock = context.mock(GetPeopleByAccountIds.class);
+    private final DomainMapper<String, Long> getPersonIdByAccountIdMapper = context.mock(DomainMapper.class,
+            "getPersonIdByAccountIdMapper");
 
     /**
      * Mock instance of AddCachedPersonFollower.
      */
-    private final AddCachedPersonFollower addCachedMapperMock = context.mock(AddCachedPersonFollower.class);
+    private final AddCachedPersonFollower addCachedMapperMock = context.mock(AddCachedPersonFollower.class,
+            "addCachedMapperMock");
 
     /**
      * Mock instance of GetFollowerIds.
@@ -91,35 +91,34 @@ public class SetFollowingPersonStatusExecutionTest
     @Before
     public void setUp()
     {
-        sut = new SetFollowingPersonStatusExecution(personMapperMock, peopleByAccountIdsMapperMock,
+        sut = new SetFollowingPersonStatusExecution(personMapperMock, getPersonIdByAccountIdMapper,
                 addCachedMapperMock, followerIdsMapperMock);
     }
 
     /**
      * Test to ensure that following a person works.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */
     @Test
     public void testSetFollowing() throws Exception
     {
-        final PersonModelView testFollower = new PersonModelView();
-        testFollower.setEntityId(1L);
-
-        final PersonModelView testTarget = new PersonModelView();
-        testTarget.setEntityId(2L);
+        final String followerAccountId = "ntAccount";
+        final String followedAccountId = "followingntaccount";
+        final Long followerId = 1L;
+        final Long followedId = 2L;
 
         final List<Long> targetFollowerIds = new ArrayList<Long>(5);
 
         context.checking(new Expectations()
         {
             {
-                oneOf(peopleByAccountIdsMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testFollower));
+                oneOf(getPersonIdByAccountIdMapper).execute(followerAccountId);
+                will(returnValue(followerId));
 
-                oneOf(peopleByAccountIdsMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testTarget));
+                oneOf(getPersonIdByAccountIdMapper).execute(followedAccountId);
+                will(returnValue(followedId));
 
                 oneOf(personMapperMock).addFollower(1L, 2L);
 
@@ -130,7 +129,7 @@ public class SetFollowingPersonStatusExecutionTest
             }
         });
 
-        SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntAccount", "followingntaccount",
+        SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest(followerAccountId, followedAccountId,
                 EntityType.PERSON, false, Follower.FollowerStatus.FOLLOWING);
         ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
         TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext //
@@ -142,29 +141,28 @@ public class SetFollowingPersonStatusExecutionTest
 
     /**
      * Test to ensure that the RemoveFollowing works.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */
     @Test
     public void testRemoveFollowing() throws Exception
     {
-        final PersonModelView testFollower = new PersonModelView();
-        testFollower.setEntityId(1L);
-
-        final PersonModelView testTarget = new PersonModelView();
-        testTarget.setEntityId(2L);
+        final String followerAccountId = "ntAccount";
+        final String followedAccountId = "followingntaccount";
+        final Long followerId = 1L;
+        final Long followedId = 2L;
 
         final List<Long> targetFollowerIds = new ArrayList<Long>(5);
 
         context.checking(new Expectations()
         {
             {
-                oneOf(peopleByAccountIdsMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testFollower));
+                oneOf(getPersonIdByAccountIdMapper).execute(followerAccountId);
+                will(returnValue(followerId));
 
-                oneOf(peopleByAccountIdsMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testTarget));
+                oneOf(getPersonIdByAccountIdMapper).execute(followedAccountId);
+                will(returnValue(followedId));
 
                 oneOf(personMapperMock).removeFollower(1L, 2L);
 
@@ -173,7 +171,7 @@ public class SetFollowingPersonStatusExecutionTest
             }
         });
 
-        SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntAccount", "followingntaccount",
+        SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest(followerAccountId, followedAccountId,
                 EntityType.PERSON, false, Follower.FollowerStatus.NOTFOLLOWING);
         ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
         TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext //
@@ -185,28 +183,25 @@ public class SetFollowingPersonStatusExecutionTest
 
     /**
      * Test an exception.
-     * 
+     *
      * @throws Exception
      *             expected.
      */
     @Test(expected = Exception.class)
     public void testSetFollowingError() throws Exception
     {
-        final PersonModelView testFollower = new PersonModelView();
-        testFollower.setEntityId(1L);
-
-        final PersonModelView testTarget = new PersonModelView();
-        testTarget.setEntityId(2L);
+        final String followerAccountId = "ntAccount";
+        final String followedAccountId = "followingntaccount";
 
         context.checking(new Expectations()
         {
             {
-                oneOf(peopleByAccountIdsMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(throwException(new Exception("BAD")));
+                oneOf(getPersonIdByAccountIdMapper).execute(followerAccountId);
+                will(throwException(new RuntimeException("NO.")));
             }
         });
 
-        SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntAccount", "followingntaccount",
+        SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest(followerAccountId, followedAccountId,
                 EntityType.PERSON, false, Follower.FollowerStatus.FOLLOWING);
         ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
         TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext //
@@ -218,36 +213,35 @@ public class SetFollowingPersonStatusExecutionTest
 
     /**
      * Test an unexpected following status.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */
     @Test
     public void testOtherFollowing() throws Exception
     {
-        final PersonModelView testFollower = new PersonModelView();
-        testFollower.setEntityId(1L);
-
-        final PersonModelView testTarget = new PersonModelView();
-        testTarget.setEntityId(2L);
+        final String followerAccountId = "ntAccount";
+        final String followedAccountId = "followingntaccount";
+        final Long followerId = 1L;
+        final Long followedId = 2L;
 
         final List<Long> targetFollowerIds = new ArrayList<Long>(5);
 
         context.checking(new Expectations()
         {
             {
-                oneOf(peopleByAccountIdsMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testFollower));
+                oneOf(getPersonIdByAccountIdMapper).execute(followerAccountId);
+                will(returnValue(followerId));
 
-                oneOf(peopleByAccountIdsMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testTarget));
+                oneOf(getPersonIdByAccountIdMapper).execute(followedAccountId);
+                will(returnValue(followedId));
 
                 oneOf(followerIdsMapperMock).execute(2L);
                 will(returnValue(targetFollowerIds));
             }
         });
 
-        SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntAccount", "followingntaccount",
+        SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest(followerAccountId, followedAccountId,
                 EntityType.PERSON, false, Follower.FollowerStatus.NOTSPECIFIED);
         ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
         TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext //
