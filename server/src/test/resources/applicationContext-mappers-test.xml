@@ -255,7 +255,7 @@
 		<constructor-arg ref="organizationHierarchyCache" />
 		<constructor-arg ref="getOrgCoordinators" />
 		<constructor-arg value="true" />
-		<constructor-arg ref="bulkPeopleByAccountIdMapper"/>
+		<constructor-arg ref="getPersonIdByAccountIdMapper"/>
 		<constructor-arg ref="testCache" />
 	</bean>
 	
@@ -264,7 +264,7 @@
 		<constructor-arg ref="organizationHierarchyCache" />
 		<constructor-arg ref="getOrgCoordinators" />
 		<constructor-arg value="false" />
-		<constructor-arg ref="bulkPeopleByAccountIdMapper"/>
+		<constructor-arg ref="getPersonIdByAccountIdMapper"/>
 		<constructor-arg ref="testCache" />
 	</bean>
 	
