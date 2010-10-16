@@ -1247,7 +1247,7 @@
         </constructor-arg>
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.profile.GetFollowingExecution">
-                <constructor-arg ref="getPersonIdByAccountIdMapper" />
+                <constructor-arg ref="bulkDomainGroupsByShortNameMapper" /> <!-- wbc -->
                 <constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
                 <constructor-arg ref="bulkPeopleMapper" />
             </bean>

@@ -25,7 +25,8 @@ import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 /**
  * Gets a list of objects for a given list of pointer ids.
  */
-public class GetDomainGroupsByShortNames extends GetItemsByPointerIds<DomainGroupModelView>
+public class GetDomainGroupsByShortNames extends GetItemsByPointerIds<DomainGroupModelView> implements
+        DomainMapper<String, Long>
 {
     /**
      * Bulk mapper.
@@ -90,5 +91,18 @@ public class GetDomainGroupsByShortNames extends GetItemsByPointerIds<DomainGrou
     public String getPointerProperty()
     {
         return "shortName";
+    }
+
+    /**
+     * (THIS IS TEMPORARY - PART OF THE MAPPER MIGRATION). Find the group ID from its shortname.
+     * 
+     * @param inShortName
+     *            the shortname of the group
+     * @return the id of the group
+     */
+    @Override
+    public Long execute(final String inShortName)
+    {
+        return fetchId(inShortName);
     }
 }
