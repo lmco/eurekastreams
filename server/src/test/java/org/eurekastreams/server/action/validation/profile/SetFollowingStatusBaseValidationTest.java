@@ -23,7 +23,6 @@ import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -51,11 +50,6 @@ public class SetFollowingStatusBaseValidationTest
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
-
-    /**
-     * Mock instance of GetPeopleByAccountIds.
-     */
-    private final GetPeopleByAccountIds peopleMapperMock = context.mock(GetPeopleByAccountIds.class);
 
     /**
      * Mock instance of the Principal object.

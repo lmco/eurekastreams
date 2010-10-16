@@ -312,12 +312,6 @@
 		<property name="cache" ref="testCache" />
 	</bean>
 
-	<bean id="bulkPeopleByAccountIdMapper"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds">
-		<property name="bulkPeopleMapper" ref="bulkPeopleMapper" />
-		<property name="cache" ref="testCache" />
-	</bean>
-
 	<bean id="bulkPeopleByOpenSocialIdMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds">
 		<property name="bulkPeopleMapper" ref="bulkPeopleMapper" />

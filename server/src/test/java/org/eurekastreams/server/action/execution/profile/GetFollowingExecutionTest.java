@@ -29,7 +29,6 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Followable;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -66,14 +65,15 @@ public class GetFollowingExecutionTest
     };
 
     /** Fixture: Mapper to find the follower's id given their account id. */
-    private GetPeopleByAccountIds personAccountIdToIdLookupMapper = context.mock(GetPeopleByAccountIds.class);
+    private DomainMapper<String, Long> personAccountIdToIdLookupMapper = context.mock(DomainMapper.class,
+            "personAccountIdToIdLookupMapper");
 
     /** Fixture: Mapper returning the ids of the entities being followed. */
     private DomainMapper<Long, List<Long>> idsMapper = context.mock(DomainMapper.class, "idsMapper");
 
     /** Fixture: Mapper returning entities (people, groups) given their ids. */
-    private DomainMapper<List<Long>, List<Followable>> bulkModelViewMapper =
-            context.mock(DomainMapper.class, "bulkModelViewMapper");
+    private DomainMapper<List<Long>, List<Followable>> bulkModelViewMapper = context.mock(DomainMapper.class,
+            "bulkModelViewMapper");
 
     /** Fixture: action context. */
     private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
@@ -89,14 +89,14 @@ public class GetFollowingExecutionTest
     {
         sut = new GetFollowingExecution(personAccountIdToIdLookupMapper, idsMapper, bulkModelViewMapper);
 
-        final GetFollowersFollowingRequest rqst =
-                new GetFollowersFollowingRequest(EntityType.PERSON, ACCOUNT_ID, START_INDEX, END_INDEX);
+        final GetFollowersFollowingRequest rqst = new GetFollowersFollowingRequest(EntityType.PERSON, ACCOUNT_ID,
+                START_INDEX, END_INDEX);
         context.checking(new Expectations()
         {
             {
                 allowing(actionContext).getParams();
                 will(returnValue(rqst));
-                allowing(personAccountIdToIdLookupMapper).fetchId(ACCOUNT_ID);
+                allowing(personAccountIdToIdLookupMapper).execute(ACCOUNT_ID);
                 will(returnValue(USER_ID));
             }
         });

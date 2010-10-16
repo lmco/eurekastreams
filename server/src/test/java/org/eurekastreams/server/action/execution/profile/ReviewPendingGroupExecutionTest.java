@@ -44,7 +44,6 @@ import org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverser
 import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddPrivateGroupIdToCachedCoordinatorAccessList;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.security.userdetails.ExtendedUserDetails;
 import org.jmock.Expectations;
@@ -120,11 +119,6 @@ public class ReviewPendingGroupExecutionTest
      * PersonModelView returned for the user.
      */
     private PersonModelView userModelView;
-
-    /**
-     * Mocked GetPeopleByAccountIds.
-     */
-    private GetPeopleByAccountIds getPeopleByAccountIdsMapper = context.mock(GetPeopleByAccountIds.class);
 
     /**
      * Mocked principal.
@@ -364,9 +358,6 @@ public class ReviewPendingGroupExecutionTest
             {
                 allowing(mockedPrincipal).getAccountId();
                 will(returnValue(username));
-
-                allowing(getPeopleByAccountIdsMapper).fetchUniqueResult(username);
-                will(returnValue(userModelView));
 
                 allowing(groupMapper).findByShortName(GROUP_SHORTNAME);
                 will(returnValue(group));
