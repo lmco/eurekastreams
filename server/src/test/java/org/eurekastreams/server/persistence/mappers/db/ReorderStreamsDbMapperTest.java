@@ -13,25 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.mappers.stream;
+package org.eurekastreams.server.persistence.mappers.db;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Query;
 
 import org.eurekastreams.server.domain.PersonStream;
-import org.eurekastreams.server.domain.stream.Stream;
-import org.eurekastreams.server.persistence.mappers.cache.Cache;
+import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Tests ReorderStreams class.
+ * Tests ReorderStreamsDbMapper class.
  */
-public class ReorderStreamsTest extends CachedMapperTest
+public class ReorderStreamsDbMapperTest extends MapperTest
 {
     /**
      * Test user id.
@@ -43,17 +41,7 @@ public class ReorderStreamsTest extends CachedMapperTest
      */
     private static int newHiddenLineIndex = 1;
 
-    /**
-     * System under test.
-     */
-    @Autowired
-    private ReorderStreams sut;
-
-    /**
-     * Cache.
-     */
-    @Autowired
-    Cache memcachedCache;
+    // TODO: create a test where we have items [1, 2, 3, 4, 5] and move #2 to index 0
 
     /**
      * Test execute method.
@@ -62,27 +50,29 @@ public class ReorderStreamsTest extends CachedMapperTest
     @Test
     public void testExecute()
     {
+        ReorderStreamsDbMapper sut = new ReorderStreamsDbMapper();
+        sut.setEntityManager(getEntityManager());
+
         // Check the initial order
-        String query = "from PersonStream where personId=:personId order by streamindex";
+        String query = "from PersonStream where personId=:personId order by streamIndex";
         Query q = getEntityManager().createQuery(query).setParameter("personId", FORDP_ID);
-        
+
         List<PersonStream> result = q.getResultList();
-        assertEquals(1L, result.get(0).getStreamId());
-        assertEquals(2L, result.get(1).getStreamId());
-        final Stream stream1 = new Stream();
-        stream1.setId(1L);
+        assertEquals(2L, result.get(0).getStreamId());
+        assertEquals(1L, result.get(1).getStreamId());
 
-        final Stream stream2 = new Stream();
-        stream2.setId(2L);
+        List<PersonStream> newOrder = new ArrayList<PersonStream>();
+        newOrder.add(result.get(1));
+        newOrder.add(result.get(0));
 
-        List<Stream> streams = Arrays.asList(stream2, stream1);
+        sut.execute(FORDP_ID, newOrder, newHiddenLineIndex);
 
-        sut.execute(FORDP_ID, streams, newHiddenLineIndex);
+        getEntityManager().flush();
 
         // Check the resulting order
         q = getEntityManager().createQuery(query).setParameter("personId", FORDP_ID);
         result = q.getResultList();
-        assertEquals(2L, result.get(0).getStreamId());
-        assertEquals(1L, result.get(1).getStreamId());
+        assertEquals(1L, result.get(0).getStreamId());
+        assertEquals(2L, result.get(1).getStreamId());
     }
 }

@@ -2681,8 +2681,9 @@
         <constructor-arg>
             <bean
                 class="org.eurekastreams.server.action.execution.stream.SetStreamOrderExecution">
-                <constructor-arg ref="findByIdMapper" />
-                <constructor-arg ref="reorderStreams" />
+                <constructor-arg ref="getOrderedPersonStreamsByPersonIdDbMapper" />
+                <constructor-arg ref="reorderStreamsDbMapper" />
+                <constructor-arg ref="removeCachedPersonModelViewCacheMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />

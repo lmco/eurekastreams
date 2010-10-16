@@ -24,11 +24,10 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.stream.SetStreamOrderRequest;
-import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.domain.stream.Stream;
-import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
-import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
-import org.eurekastreams.server.persistence.mappers.stream.ReorderStreams;
+import org.eurekastreams.server.domain.PersonStream;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.cache.RemoveCachedPersonModelViewCacheMapper;
+import org.eurekastreams.server.persistence.mappers.db.ReorderStreamsDbMapper;
 
 /**
  * Reorders the streams displayed on the activity page..
@@ -42,27 +41,38 @@ public class SetStreamOrderExecution implements ExecutionStrategy<PrincipalActio
     private final Log log = LogFactory.make();
 
     /**
-     * Mapper used to retrieve and save the page that holds the tabs.
+     * Mapper used to retrieve the ordered list of PersonStreams for a person by id.
      */
-    private final FindByIdMapper<Person> personMapper;
+    private final DomainMapper<Long, List<PersonStream>> getOrderedPersonStreamListForPersonByIdMapper;
 
     /**
      * The reorder mapper.
      */
-    private ReorderStreams reorderMapper;
+    private ReorderStreamsDbMapper reorderMapper;
+
+    /**
+     * mapper to remove a personmodelview from cache by person id.
+     */
+    private RemoveCachedPersonModelViewCacheMapper removeCachedPersonModelViewByIdCacheMapper;
 
     /**
      * Constructor.
      * 
-     * @param inPersonMapper
+     * @param inGetOrderedPersonStreamListForPersonByIdMapper
      *            injecting the mapper
      * @param inReorderMapper
      *            the reorder mapper.
+     * @param inRemoveCachedPersonModelViewByIdCacheMapper
+     *            mapper to remove cached personmodelview
      */
-    public SetStreamOrderExecution(final FindByIdMapper<Person> inPersonMapper, final ReorderStreams inReorderMapper)
+    public SetStreamOrderExecution(
+            final DomainMapper<Long, List<PersonStream>> inGetOrderedPersonStreamListForPersonByIdMapper,
+            final ReorderStreamsDbMapper inReorderMapper,
+            final RemoveCachedPersonModelViewCacheMapper inRemoveCachedPersonModelViewByIdCacheMapper)
     {
-        personMapper = inPersonMapper;
+        getOrderedPersonStreamListForPersonByIdMapper = inGetOrderedPersonStreamListForPersonByIdMapper;
         reorderMapper = inReorderMapper;
+        removeCachedPersonModelViewByIdCacheMapper = inRemoveCachedPersonModelViewByIdCacheMapper;
     }
 
     /**
@@ -73,17 +83,15 @@ public class SetStreamOrderExecution implements ExecutionStrategy<PrincipalActio
     {
         log.debug("entering");
         SetStreamOrderRequest request = (SetStreamOrderRequest) inActionContext.getParams();
-
-        Person person = personMapper.execute(new FindByIdRequest("Person", inActionContext.getPrincipal().getId()));
-
-        List<Stream> streams = person.getStreams();
+        Long personId = inActionContext.getPrincipal().getId();
+        List<PersonStream> streams = getOrderedPersonStreamListForPersonByIdMapper.execute(personId);
 
         // Find the tab to be moved
         int oldIndex = -1;
 
         for (int i = 0; i < streams.size(); i++)
         {
-            if (streams.get(i).getId() == request.getStreamId())
+            if (streams.get(i).getStreamId() == request.getStreamId())
             {
                 log.debug("Found item at index: " + i);
                 oldIndex = i;
@@ -91,15 +99,18 @@ public class SetStreamOrderExecution implements ExecutionStrategy<PrincipalActio
             }
         }
 
-        Stream movingStream = streams.get(oldIndex);
+        PersonStream movingStream = streams.get(oldIndex);
 
         // move the tab
         streams.remove(oldIndex);
         streams.add(request.getNewIndex(), movingStream);
 
-        reorderMapper.execute(person.getId(), streams, request.getHiddenLineIndex());
+        // now have a list the way we want it - let the reordermapper commit it
+        reorderMapper.execute(personId, streams, request.getHiddenLineIndex());
+
+        // remove the person from cache
+        removeCachedPersonModelViewByIdCacheMapper.execute(personId);
 
         return Boolean.TRUE;
     }
-
 }

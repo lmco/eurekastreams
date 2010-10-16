@@ -29,6 +29,12 @@
 	
 	<bean id="collectionCombiner" class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />	
 	
+	<bean id="getOrderedPersonStreamsByPersonIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetOrderedPersonStreamsByPersonIdDbMapper" />
+	
+	<bean id="removeCachedPersonModelViewCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.RemoveCachedPersonModelViewCacheMapper">
+		<property name="cache" ref="memcachedCache" />
+	</bean>
+	
 	<!--
 		Mapper to get the hash tags from the database - insert if not already
 		in the database
@@ -1634,9 +1640,8 @@
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 
-	<bean id="reorderStreams"
-		class="org.eurekastreams.server.persistence.mappers.stream.ReorderStreams">
-		<property name="cache" ref="memcachedCache" />
+	<bean id="reorderStreamsDbMapper"
+		class="org.eurekastreams.server.persistence.mappers.db.ReorderStreamsDbMapper">
 	</bean>
 
 	<bean id="getStarredActivityIds"
