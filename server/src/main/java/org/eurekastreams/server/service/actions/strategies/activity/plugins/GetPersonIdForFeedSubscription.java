@@ -18,37 +18,40 @@ package org.eurekastreams.server.service.actions.strategies.activity.plugins;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * Get the person id for feeds.
- *
+ * 
  */
 public class GetPersonIdForFeedSubscription implements GetEntityIdForFeedSubscription
 {
-	/**
-	 * Person mapper.
-	 */
-	private GetPeopleByAccountIds personMapper;
-	
-	/**
-	 * Default constructor.
-	 * @param inPersonMapper the person mapper.
-	 */
-	public GetPersonIdForFeedSubscription(final GetPeopleByAccountIds inPersonMapper)
-	{
-		personMapper = inPersonMapper;
-	}
-	
-	/**
-	 * Gets the entity id.
-	 * @param params hash map of params.
-	 * @return the entity id.
-	 */
-	@Override
-	public long getEntityId(final HashMap<String, Serializable> params) 
-	{
-		return personMapper.fetchUniqueResult((String) params.get("EUREKA:USER")).getEntityId();
-	}
+    /**
+     * Mapper to get a person's id by account id.
+     */
+    private DomainMapper<String, Long> getPersonIdByAccountIdMapper;
 
+    /**
+     * Default constructor.
+     * 
+     * @param inGetPersonIdByAccountIdMapper
+     *            mapper to get a person's id by account id
+     */
+    public GetPersonIdForFeedSubscription(final DomainMapper<String, Long> inGetPersonIdByAccountIdMapper)
+    {
+        getPersonIdByAccountIdMapper = inGetPersonIdByAccountIdMapper;
+    }
+
+    /**
+     * Gets the entity id.
+     * 
+     * @param params
+     *            hash map of params.
+     * @return the entity id.
+     */
+    @Override
+    public long getEntityId(final HashMap<String, Serializable> params)
+    {
+        return getPersonIdByAccountIdMapper.execute((String) params.get("EUREKA:USER"));
+    }
 }

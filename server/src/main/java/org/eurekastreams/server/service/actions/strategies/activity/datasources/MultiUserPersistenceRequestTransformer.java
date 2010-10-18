@@ -17,14 +17,13 @@ package org.eurekastreams.server.service.actions.strategies.activity.datasources
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.apache.commons.logging.Log;
-import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * Transforms JSON request to a request for multiple people buy their IDs.
@@ -32,14 +31,9 @@ import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds
 public class MultiUserPersistenceRequestTransformer implements PersistenceDataSourceRequestTransformer
 {
     /**
-     * Logger.
+     * Mapper to get a list of people ids by a list of account ids.
      */
-    private Log log = LogFactory.make();
-
-    /**
-     * Person mapper.
-     */
-    private GetPeopleByAccountIds personMapper;
+    private DomainMapper<List<String>, List<Long>> getPeopleIdsByAccountIdsMapper;
 
     /**
      * The request key.
@@ -49,14 +43,15 @@ public class MultiUserPersistenceRequestTransformer implements PersistenceDataSo
     /**
      * Default constructor.
      * 
-     * @param inPersonMapper
-     *            person mapper.
+     * @param inGetPeopleIdsByAccountIdsMapper
+     *            mapper to get a person id by account id
      * @param inReqKey
      *            the relevant request key.
      */
-    public MultiUserPersistenceRequestTransformer(final GetPeopleByAccountIds inPersonMapper, final String inReqKey)
+    public MultiUserPersistenceRequestTransformer(
+            final DomainMapper<List<String>, List<Long>> inGetPeopleIdsByAccountIdsMapper, final String inReqKey)
     {
-        personMapper = inPersonMapper;
+        getPeopleIdsByAccountIdsMapper = inGetPeopleIdsByAccountIdsMapper;
         reqKey = inReqKey;
     }
 
@@ -73,8 +68,7 @@ public class MultiUserPersistenceRequestTransformer implements PersistenceDataSo
     {
         JSONArray entities = request.getJSONArray(reqKey);
 
-        ArrayList<Long> peopleIds = new ArrayList<Long>();
-
+        List<String> accountIds = new ArrayList<String>();
         for (int i = 0; i < entities.size(); i++)
         {
             JSONObject req = entities.getJSONObject(i);
@@ -83,13 +77,13 @@ public class MultiUserPersistenceRequestTransformer implements PersistenceDataSo
             switch (type)
             {
             case PERSON:
-                peopleIds.add(personMapper.fetchId(req.getString("name")));
+                accountIds.add(req.getString("name"));
                 break;
             default:
                 throw new IllegalArgumentException("Unhandled type.");
             }
         }
 
-        return (ArrayList<Long>) peopleIds;
+        return new ArrayList<Long>(getPeopleIdsByAccountIdsMapper.execute(accountIds));
     }
 }

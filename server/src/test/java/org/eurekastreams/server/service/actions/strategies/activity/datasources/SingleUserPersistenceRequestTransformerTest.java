@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import junit.framework.Assert;
 import net.sf.json.JSONObject;
 
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -43,9 +43,10 @@ public class SingleUserPersistenceRequestTransformerTest
     };
 
     /**
-     * Person mapper mock.
+     * Mapper to get an id for a person by account id.
      */
-    private GetPeopleByAccountIds personMapper = context.mock(GetPeopleByAccountIds.class);
+    private DomainMapper<String, Long> getPersonIdByAccountIdMapper = context.mock(DomainMapper.class,
+            "getPersonIdByAccountIdMapper");
 
     /**
      * The key.
@@ -59,8 +60,8 @@ public class SingleUserPersistenceRequestTransformerTest
     public void transformTestMatchingIdArray()
     {
         // Sut just for this test.
-        final SingleUserPersistenceRequestTransformer sut = new SingleUserPersistenceRequestTransformer(personMapper,
-                relevantKey, true, false);
+        final SingleUserPersistenceRequestTransformer sut = new SingleUserPersistenceRequestTransformer(
+                getPersonIdByAccountIdMapper, relevantKey, true, false);
 
         final Long entityId = 10L;
         final String entityAcctName = "acctName";
@@ -71,7 +72,7 @@ public class SingleUserPersistenceRequestTransformerTest
         context.checking(new Expectations()
         {
             {
-                oneOf(personMapper).fetchId(entityAcctName);
+                oneOf(getPersonIdByAccountIdMapper).execute(entityAcctName);
                 will(returnValue(entityId));
             }
         });
@@ -89,8 +90,8 @@ public class SingleUserPersistenceRequestTransformerTest
     @Test
     public void transformTestMatchingId()
     {
-        SingleUserPersistenceRequestTransformer sut = new SingleUserPersistenceRequestTransformer(personMapper,
-                relevantKey, false, true);
+        SingleUserPersistenceRequestTransformer sut = new SingleUserPersistenceRequestTransformer(
+                getPersonIdByAccountIdMapper, relevantKey, false, true);
 
         final Long entityId = 10L;
         final String entityAcctName = "acctName";
@@ -101,7 +102,7 @@ public class SingleUserPersistenceRequestTransformerTest
         context.checking(new Expectations()
         {
             {
-                oneOf(personMapper).fetchId(entityAcctName);
+                oneOf(getPersonIdByAccountIdMapper).execute(entityAcctName);
                 will(returnValue(entityId));
             }
         });
@@ -116,8 +117,8 @@ public class SingleUserPersistenceRequestTransformerTest
     @Test
     public void transformTestNotMatchingId()
     {
-        SingleUserPersistenceRequestTransformer sut = new SingleUserPersistenceRequestTransformer(personMapper,
-                relevantKey, false, true);
+        SingleUserPersistenceRequestTransformer sut = new SingleUserPersistenceRequestTransformer(
+                getPersonIdByAccountIdMapper, relevantKey, false, true);
 
         final Long entityId = 10L;
         final String entityAcctName = "acctName";
@@ -128,7 +129,7 @@ public class SingleUserPersistenceRequestTransformerTest
         context.checking(new Expectations()
         {
             {
-                oneOf(personMapper).fetchId(entityAcctName);
+                oneOf(getPersonIdByAccountIdMapper).execute(entityAcctName);
                 will(returnValue(entityId - 1L));
             }
         });
@@ -136,14 +137,14 @@ public class SingleUserPersistenceRequestTransformerTest
         Assert.assertEquals(new Long(0L), sut.transform(jsonReq, entityId));
         context.assertIsSatisfied();
     }
-    
+
     /**
      * Tests the transformation.
      */
     public void transformTestNotMatchingIdNotRequired()
     {
-        SingleUserPersistenceRequestTransformer sut = new SingleUserPersistenceRequestTransformer(personMapper,
-                relevantKey, false, false);
+        SingleUserPersistenceRequestTransformer sut = new SingleUserPersistenceRequestTransformer(
+                getPersonIdByAccountIdMapper, relevantKey, false, false);
 
         final Long entityId = 10L;
         final String entityAcctName = "acctName";
@@ -154,7 +155,7 @@ public class SingleUserPersistenceRequestTransformerTest
         context.checking(new Expectations()
         {
             {
-                oneOf(personMapper).fetchId(entityAcctName);
+                oneOf(getPersonIdByAccountIdMapper).execute(entityAcctName);
                 will(returnValue(entityId - 1L));
             }
         });

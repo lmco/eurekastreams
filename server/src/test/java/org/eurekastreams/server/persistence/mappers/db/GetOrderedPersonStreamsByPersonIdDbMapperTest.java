@@ -19,39 +19,34 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.eurekastreams.server.domain.PersonStream;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Test for GetOrderedCommentIdsByActivityIdDbMapper.
+ * Test fixture for GetOrderedPersonStreamsByPersonIdDbMapper.
  */
-public class GetOrderedCommentIdsByActivityIdDbMapperTest extends MapperTest
+public class GetOrderedPersonStreamsByPersonIdDbMapperTest extends MapperTest
 {
     /**
-     * Activity id to get comments for (from dataset.xml).
-     */
-    private final long activityId = 6789L;
-
-    /**
-     * System under test.
-     */
-    @Autowired
-    private GetOrderedCommentIdsByActivityIdDbMapper sut;
-
-    /**
-     * test.
+     * Test execute().
      */
     @Test
     public void testExecute()
     {
-        List<Long> results = sut.execute(activityId);
+        final Long fordId = 42L;
+        final long firstStreamId = 2L;
+        final long secondStreamId = 1L;
 
-        // assert correct # of results and that it's sorted asc.
-        assertEquals(3, results.size());
-        assertEquals(1, results.get(0).longValue());
-        assertEquals(2, results.get(1).longValue());
-        assertEquals(3, results.get(2).longValue());
+        GetOrderedPersonStreamsByPersonIdDbMapper sut = new GetOrderedPersonStreamsByPersonIdDbMapper();
+        sut.setEntityManager(getEntityManager());
+        List<PersonStream> personStreams = sut.execute(fordId);
+        assertEquals(2, personStreams.size());
+
+        assertEquals(firstStreamId, personStreams.get(0).getStreamId());
+        assertEquals(0L, personStreams.get(0).getStreamIndex());
+
+        assertEquals(secondStreamId, personStreams.get(1).getStreamId());
+        assertEquals(1L, personStreams.get(1).getStreamIndex());
     }
-
 }

@@ -22,7 +22,6 @@ import junit.framework.Assert;
 import net.sf.json.JSONObject;
 
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -47,9 +46,10 @@ public class FollowedGroupsPersistenceRequestTransformerTest
     };
 
     /**
-     * Person mapper.
+     * Mapper to get a person id by account id.
      */
-    private GetPeopleByAccountIds personMapper = context.mock(GetPeopleByAccountIds.class);
+    private DomainMapper<String, Long> getPersonIdByAccountId = context.mock(DomainMapper.class,
+            "getPersonIdByAccountId");
 
     /**
      * Followed groups mapper.
@@ -73,7 +73,7 @@ public class FollowedGroupsPersistenceRequestTransformerTest
     @Before
     public void setup()
     {
-        sut = new FollowedGroupsPersistenceRequestTransformer(personMapper, followeGroupsMapper, groupMapper);
+        sut = new FollowedGroupsPersistenceRequestTransformer(getPersonIdByAccountId, followeGroupsMapper, groupMapper);
     }
 
     /**
@@ -107,7 +107,7 @@ public class FollowedGroupsPersistenceRequestTransformerTest
         context.checking(new Expectations()
         {
             {
-                oneOf(personMapper).fetchId(entityAcctName);
+                oneOf(getPersonIdByAccountId).execute(entityAcctName);
                 will(returnValue(entityId));
 
                 oneOf(followeGroupsMapper).execute(entityId);
@@ -139,7 +139,7 @@ public class FollowedGroupsPersistenceRequestTransformerTest
         context.checking(new Expectations()
         {
             {
-                oneOf(personMapper).fetchId(entityAcctName);
+                oneOf(getPersonIdByAccountId).execute(entityAcctName);
                 will(returnValue(entityId - 1L));
             }
         });

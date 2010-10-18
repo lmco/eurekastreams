@@ -15,17 +15,16 @@
  */
 package org.eurekastreams.server.action.execution.stream;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.server.action.request.stream.SetStreamOrderRequest;
-import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.domain.stream.Stream;
-import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
-import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
-import org.eurekastreams.server.persistence.mappers.stream.ReorderStreams;
+import org.eurekastreams.server.domain.PersonStream;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.cache.RemoveCachedPersonModelViewCacheMapper;
+import org.eurekastreams.server.persistence.mappers.db.ReorderStreamsDbMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -57,7 +56,8 @@ public class SetStreamOrderExecutionTest
     /**
      * Person mapper.
      */
-    private FindByIdMapper<Person> personMapper = context.mock(FindByIdMapper.class);
+    private DomainMapper<Long, List<PersonStream>> getOrderedPersonStreamListForPersonByIdMapper = context.mock(
+            DomainMapper.class, "getOrderedPersonStreamListForPersonByIdMapper");
 
     /**
      * Mocked instance of the Principal object.
@@ -67,7 +67,13 @@ public class SetStreamOrderExecutionTest
     /**
      * Reorder Mapper.
      */
-    private ReorderStreams reorderMapper = context.mock(ReorderStreams.class);
+    private ReorderStreamsDbMapper reorderMapper = context.mock(ReorderStreamsDbMapper.class);
+
+    /**
+     * mapper to remove a personmodelview from cache by person id.
+     */
+    private RemoveCachedPersonModelViewCacheMapper removeCachedPersonModelViewByIdCacheMapper = context
+            .mock(RemoveCachedPersonModelViewCacheMapper.class);
 
     /**
      * Prepare the sut.
@@ -75,7 +81,8 @@ public class SetStreamOrderExecutionTest
     @Before
     public void setup()
     {
-        sut = new SetStreamOrderExecution(personMapper, reorderMapper);
+        sut = new SetStreamOrderExecution(getOrderedPersonStreamListForPersonByIdMapper, reorderMapper,
+                removeCachedPersonModelViewByIdCacheMapper);
     }
 
     /**
@@ -84,36 +91,38 @@ public class SetStreamOrderExecutionTest
     @Test
     public void performAction()
     {
-        SetStreamOrderRequest request = new SetStreamOrderRequest(0L, 1, 1);
-
-        final Person person = context.mock(Person.class);
+        SetStreamOrderRequest request = new SetStreamOrderRequest(3L, 1, 1);
 
         final Long personId = 12L;
-        
-        final Stream stream1 = context.mock(Stream.class, "s1");
-        final Stream stream2 = context.mock(Stream.class, "s2");
-        final List<Stream> streamList = new LinkedList<Stream>();
-        streamList.add(stream1);
-        streamList.add(stream2);
+        final List<PersonStream> streams = new ArrayList<PersonStream>();
+
+        final PersonStream ps1 = context.mock(PersonStream.class, "ps1");
+        final PersonStream ps2 = context.mock(PersonStream.class, "ps2");
+        streams.add(ps1);
+        streams.add(ps2);
+
+        final List<PersonStream> expectedOrder = new ArrayList<PersonStream>();
+        expectedOrder.add(ps2);
+        expectedOrder.add(ps1);
 
         context.checking(new Expectations()
         {
             {
-                oneOf(principalMock).getId();
-
-                oneOf(personMapper).execute(with(any(FindByIdRequest.class)));
-                will(returnValue(person));
-                
-                oneOf(person).getId();
+                allowing(principalMock).getId();
                 will(returnValue(personId));
-                
-                oneOf(person).getStreams();
-                will(returnValue(streamList));
 
-                allowing(stream1).getId();
-                will(returnValue(0L));
-                
-                oneOf(reorderMapper).execute(personId, streamList, 1);
+                oneOf(getOrderedPersonStreamListForPersonByIdMapper).execute(personId);
+                will(returnValue(streams));
+
+                allowing(ps1).getStreamId();
+                will(returnValue(3L));
+
+                allowing(ps2).getStreamId();
+                will(returnValue(4L));
+
+                oneOf(reorderMapper).execute(personId, expectedOrder, 1);
+
+                oneOf(removeCachedPersonModelViewByIdCacheMapper).execute(personId);
             }
         });
         ServiceActionContext currentContext = new ServiceActionContext(request, principalMock);

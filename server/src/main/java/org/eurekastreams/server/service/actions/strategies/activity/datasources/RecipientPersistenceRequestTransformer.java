@@ -22,8 +22,8 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
@@ -32,11 +32,10 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
  */
 public class RecipientPersistenceRequestTransformer implements PersistenceDataSourceRequestTransformer
 {
-
     /**
-     * Person mapper for getting entity ID from short name.
+     * Mapper for getting PersonModelViews from a list of account ids.
      */
-    private GetPeopleByAccountIds personMapper;
+    private DomainMapper<List<String>, List<PersonModelView>> getPersonModelViewsByAccountIdsMapper;
 
     /**
      * Group mapper for getting entity ID from short name.
@@ -46,15 +45,16 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
     /**
      * Constructor.
      * 
-     * @param inPersonMapper
-     *            the person mapper.
+     * @param inGetPersonModelViewsByAccountIdsMapper
+     *            Mapper for getting PersonModelViews from a list of account ids.
      * @param inGroupMapper
      *            the group mapper.
      */
-    public RecipientPersistenceRequestTransformer(final GetPeopleByAccountIds inPersonMapper,
+    public RecipientPersistenceRequestTransformer(
+            final DomainMapper<List<String>, List<PersonModelView>> inGetPersonModelViewsByAccountIdsMapper,
             final GetDomainGroupsByShortNames inGroupMapper)
     {
-        personMapper = inPersonMapper;
+        getPersonModelViewsByAccountIdsMapper = inGetPersonModelViewsByAccountIdsMapper;
         groupMapper = inGroupMapper;
     }
 
@@ -92,11 +92,11 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
             }
         }
 
-        final List<PersonModelView> people = personMapper.execute(personIds);
+        final List<PersonModelView> people = getPersonModelViewsByAccountIdsMapper.execute(personIds);
         final List<DomainGroupModelView> groups = groupMapper.execute(groupIds);
 
         final ArrayList<Long> streamScopeIds = new ArrayList<Long>();
-        
+
         for (PersonModelView person : people)
         {
             streamScopeIds.add(person.getStreamId());

@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.server.persistence.mappers.stream;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,9 +44,9 @@ public class PostCachedActivity extends CachedDomainMapper
     private final DomainMapper<Long, List<Long>> personFollowersMapper;
 
     /**
-     * Mapper to get people by account ids.
+     * Mapper to get personmodelview from an accountid.
      */
-    private final GetPeopleByAccountIds bulkPeopleByAccountIdMapper;
+    private final DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper;
 
     /**
      * mapper to get all parent org ids for an org id.
@@ -69,8 +68,8 @@ public class PostCachedActivity extends CachedDomainMapper
      * 
      * @param inPersonFollowersMapper
      *            person follower mapper.
-     * @param inBulkPeopleByAccountIdMapper
-     *            people by account id mapper.
+     * @param inGetPersonModelViewByAccountIdMapper
+     *            Mapper to get personmodelview from an accountid.
      * @param inParentOrgIdsMapper
      *            ids for parent orgs mapper.
      * @param inBulkDomainGroupsByShortNameMapper
@@ -79,13 +78,13 @@ public class PostCachedActivity extends CachedDomainMapper
      *            mapper to get org shortnames from ids
      */
     public PostCachedActivity(final DomainMapper<Long, List<Long>> inPersonFollowersMapper,
-            final GetPeopleByAccountIds inBulkPeopleByAccountIdMapper,
+            final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper,
             final DomainMapper<Long, List<Long>> inParentOrgIdsMapper,
             final GetDomainGroupsByShortNames inBulkDomainGroupsByShortNameMapper,
             final GetOrgShortNamesByIdsMapper inOrgShortNamesFromIdsMapper)
     {
         personFollowersMapper = inPersonFollowersMapper;
-        bulkPeopleByAccountIdMapper = inBulkPeopleByAccountIdMapper;
+        getPersonModelViewByAccountIdMapper = inGetPersonModelViewByAccountIdMapper;
         parentOrgIdsMapper = inParentOrgIdsMapper;
         bulkDomainGroupsByShortNameMapper = inBulkDomainGroupsByShortNameMapper;
         orgShortNamesFromIdsMapper = inOrgShortNamesFromIdsMapper;
@@ -106,9 +105,8 @@ public class PostCachedActivity extends CachedDomainMapper
 
         if (type == EntityType.PERSON)
         {
-            List<String> param = new ArrayList<String>();
-            param.add(destinationStream.getUniqueIdentifier());
-            PersonModelView person = bulkPeopleByAccountIdMapper.execute(param).get(0);
+            PersonModelView person = getPersonModelViewByAccountIdMapper.execute(destinationStream
+                    .getUniqueIdentifier());
 
             long personId = person.getEntityId();
 

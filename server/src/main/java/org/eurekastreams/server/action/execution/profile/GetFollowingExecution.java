@@ -25,11 +25,10 @@ import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequ
 import org.eurekastreams.server.domain.Followable;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetItemsByPointerIds;
 
 /**
  * Action to get the followers of a person.
- *
+ * 
  */
 public class GetFollowingExecution implements ExecutionStrategy<PrincipalActionContext>
 {
@@ -37,7 +36,7 @@ public class GetFollowingExecution implements ExecutionStrategy<PrincipalActionC
     private Log log = LogFactory.make();
 
     /** Mapper to find the follower's id given their account id. */
-    private GetItemsByPointerIds uniqueIdToIdLookupMapper;
+    private DomainMapper<String, Long> getPersonIdByAccountIdMapper;
 
     /** Mapper returning the ids of the entities being followed. */
     private DomainMapper<Long, List<Long>> idsMapper;
@@ -47,26 +46,26 @@ public class GetFollowingExecution implements ExecutionStrategy<PrincipalActionC
 
     /**
      * Constructor.
-     *
-     * @param inPersonAccountIdToIdLookupMapper
+     * 
+     * @param inGetPersonIdByAccountIdMapper
      *            Mapper to find the follower's id given their account id.
      * @param inIdsMapper
      *            Mapper returning the ids of the entities being followed.
      * @param inBulkModelViewMapper
      *            Mapper returning entities (people, groups) given their ids.
      */
-    public GetFollowingExecution(final GetItemsByPointerIds inPersonAccountIdToIdLookupMapper,
+    public GetFollowingExecution(final DomainMapper<String, Long> inGetPersonIdByAccountIdMapper,
             final DomainMapper<Long, List<Long>> inIdsMapper,
             final DomainMapper<List<Long>, List<Followable>> inBulkModelViewMapper)
     {
-        uniqueIdToIdLookupMapper = inPersonAccountIdToIdLookupMapper;
+        getPersonIdByAccountIdMapper = inGetPersonIdByAccountIdMapper;
         idsMapper = inIdsMapper;
         bulkModelViewMapper = inBulkModelViewMapper;
     }
 
     /**
      * Returns Set of people following a user excluding themselves.
-     *
+     * 
      * @param inActionContext
      *            The action context.
      * @return true if the group exists and the user is authorized, false otherwise
@@ -80,7 +79,7 @@ public class GetFollowingExecution implements ExecutionStrategy<PrincipalActionC
         // get the unique entity Id
         final String entityUniqueId = inRequest.getEntityId();
 
-        Long entityId = uniqueIdToIdLookupMapper.fetchId(entityUniqueId);
+        Long entityId = getPersonIdByAccountIdMapper.execute(entityUniqueId);
 
         List<Long> allIds = idsMapper.execute(entityId);
 

@@ -20,10 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.eurekastreams.server.persistence.mappers.cache.Cache;
-import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 
@@ -31,9 +28,8 @@ import org.eurekastreams.server.search.modelview.OrganizationModelView;
  * Mapper to get a Set of IDs of all of the organizations recursively above the input org id, loading from cache if
  * possible, from DB if not, then populating the cache.
  */
-public class GetAllPersonIdsWhoHaveGroupCoordinatorAccess extends CachedDomainMapper
+public class GetAllPersonIdsWhoHaveGroupCoordinatorAccess
 {
-
     /**
      * Constructor.
      * 
@@ -45,22 +41,19 @@ public class GetAllPersonIdsWhoHaveGroupCoordinatorAccess extends CachedDomainMa
      *            org mapper
      * @param inOrgCoordinators
      *            org coordinator mapper
-     * @param inPeopleMapper
-     *            the person mapper to lookup people by account ID.
-     * @param inCache
-     *            the cache
+     * @param inGetPersonIdFromAccountIdMapper
+     *            mapper to get a person's id from account id
      */
     public GetAllPersonIdsWhoHaveGroupCoordinatorAccess(final DomainMapper<Long, List<Long>> inGroupCoordMapper,
             final DomainMapper<List<Long>, List<DomainGroupModelView>> inGroupMapper,
             final GetOrganizationsByShortNames inOrgMapper, final GetRecursiveOrgCoordinators inOrgCoordinators,
-            final GetPeopleByAccountIds inPeopleMapper, final Cache inCache)
+            final DomainMapper<String, Long> inGetPersonIdFromAccountIdMapper)
     {
         groupCoordMapper = inGroupCoordMapper;
         groupMapper = inGroupMapper;
         orgMapper = inOrgMapper;
         orgCoordinators = inOrgCoordinators;
-        peopleMapper = inPeopleMapper;
-        setCache(inCache);
+        getPersonIdFromAccountIdMapper = inGetPersonIdFromAccountIdMapper;
     }
 
     /**
@@ -69,9 +62,9 @@ public class GetAllPersonIdsWhoHaveGroupCoordinatorAccess extends CachedDomainMa
     private DomainMapper<Long, List<Long>> groupCoordMapper;
 
     /**
-     * group coordinator mapper.
+     * Mapper to get a person's id from account id.
      */
-    private GetPeopleByAccountIds peopleMapper;
+    private DomainMapper<String, Long> getPersonIdFromAccountIdMapper;
 
     /**
      * group mapper.
@@ -161,9 +154,7 @@ public class GetAllPersonIdsWhoHaveGroupCoordinatorAccess extends CachedDomainMa
      */
     public boolean hasGroupCoordinatorAccessRecursively(final String inUserPersonAccountId, final Long inGroupId)
     {
-        List<String> person = new LinkedList<String>();
-        person.add(inUserPersonAccountId);
-        Long personId = peopleMapper.execute(person).get(0).getEntityId();
+        Long personId = getPersonIdFromAccountIdMapper.execute(inUserPersonAccountId);
         return hasGroupCoordinatorAccessRecursively(personId, inGroupId);
     }
 

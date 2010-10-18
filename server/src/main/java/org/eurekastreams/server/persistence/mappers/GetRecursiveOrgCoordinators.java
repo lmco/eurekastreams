@@ -16,14 +16,11 @@
 package org.eurekastreams.server.persistence.mappers;
 
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCache;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 
 /**
  * Mapper to get a Set of Coordinator IDs of all of the organization coordinators recursively up to root.
@@ -40,11 +37,11 @@ public class GetRecursiveOrgCoordinators extends CachedDomainMapper
      * Mapper to get Coordinators for a list of Coordinators.
      */
     private GetOrgCoordinators getOrgCoordinators;
-    
+
     /**
-     * group coordinator mapper.
+     * Mapper to get a person's id by their account id.
      */
-    private GetPeopleByAccountIds peopleMapper;
+    private DomainMapper<String, Long> getPersonIdByAccountIdMapper;
 
     /**
      * Whether or not to go up the org tree or down. Default to go up.
@@ -60,23 +57,20 @@ public class GetRecursiveOrgCoordinators extends CachedDomainMapper
      *            get org coordinators.
      * @param inGoUpTree
      *            go up tree or down tree.
-     * @param inPeopleMapper
-     *            the person mapper to lookup people by account ID.
+     * @param inGetPersonIdByAccountIdMapper
+     *            Mapper to get a person's id by their account id
      * @param inCache
      *            the cache
      */
     public GetRecursiveOrgCoordinators(final OrganizationHierarchyCache inOrganizationHierarchyCache,
-    		final GetOrgCoordinators inGetOrgCoordinators,
-    		final Boolean inGoUpTree, 
-                final GetPeopleByAccountIds inPeopleMapper,
-    		final Cache inCache
-    )
+            final GetOrgCoordinators inGetOrgCoordinators, final Boolean inGoUpTree,
+            final DomainMapper<String, Long> inGetPersonIdByAccountIdMapper, final Cache inCache)
     {
-    	organizationHierarchyCache = inOrganizationHierarchyCache;
-    	getOrgCoordinators = inGetOrgCoordinators;
-    	goUpTree = inGoUpTree;
-        peopleMapper = inPeopleMapper;
-    	setCache(inCache);
+        organizationHierarchyCache = inOrganizationHierarchyCache;
+        getOrgCoordinators = inGetOrgCoordinators;
+        goUpTree = inGoUpTree;
+        getPersonIdByAccountIdMapper = inGetPersonIdByAccountIdMapper;
+        setCache(inCache);
     }
 
     /**
@@ -160,9 +154,7 @@ public class GetRecursiveOrgCoordinators extends CachedDomainMapper
      */
     public boolean isOrgCoordinatorRecursively(final String inUserAccountId, final Long inOrgId)
     {
-        List<String> person = new LinkedList<String>();
-        person.add(inUserAccountId);
-        Long personId = peopleMapper.execute(person).get(0).getEntityId();
+        Long personId = getPersonIdByAccountIdMapper.execute(inUserAccountId);
         return isOrgCoordinatorRecursively(personId, inOrgId);
     }
 }

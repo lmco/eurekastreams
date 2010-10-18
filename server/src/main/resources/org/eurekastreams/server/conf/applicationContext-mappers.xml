@@ -29,6 +29,12 @@
 	
 	<bean id="collectionCombiner" class="org.eurekastreams.server.persistence.mappers.chained.CollectionCombiner" />	
 	
+	<bean id="getOrderedPersonStreamsByPersonIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetOrderedPersonStreamsByPersonIdDbMapper" />
+	
+	<bean id="removeCachedPersonModelViewCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.RemoveCachedPersonModelViewCacheMapper">
+		<property name="cache" ref="memcachedCache" />
+	</bean>
+	
 	<!--
 		Mapper to get the hash tags from the database - insert if not already
 		in the database
@@ -116,7 +122,7 @@
 		<constructor-arg ref="groupPersonSearchRequestBuilder" />
 		<constructor-arg
 			ref="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper" />
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="getPersonIdByAccountIdMapper" />
 		<constructor-arg value="false" />
 	</bean>
 
@@ -126,7 +132,7 @@
 		<constructor-arg ref="groupPersonSearchRequestBuilder" />
 		<constructor-arg
 			ref="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper" />
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="getPersonIdByAccountIdMapper" />
 		<constructor-arg value="true" />
 	</bean>
 
@@ -689,13 +695,6 @@
 		class="org.eurekastreams.server.persistence.mappers.FindLinkInformationByUrl">
 		<property name="queryOptimizer" ref="queryOptimizer" />
 		<property name="expirationInMilliseconds" value="7200000" />
-	</bean>
-
-	<bean id="getFollowedEntitiesByPrefix"
-		class="org.eurekastreams.server.persistence.mappers.GetFollowedEntitiesByPrefix">
-		<property name="getPeopleByAccountIdsMapper" ref="bulkPeopleByAccountIdMapper" />
-		<property name="getFollowedPersonIdsMapper" ref="getFollowedPersonIdsForPersonByIdMapper" />
-		<property name="getFollowedGroupIdsMapper" ref="getFollowedGroupIdsForPersonByIdMapper" />
 	</bean>
 
 	<bean id="insertStarredActivity"
@@ -1532,7 +1531,7 @@
 		<constructor-arg ref="organizationHierarchyCache" />
 		<constructor-arg ref="getOrgCoordinators" />
 		<constructor-arg type="java.lang.Boolean" value="true" />
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="getPersonIdByAccountIdMapper" />
 		<constructor-arg ref="memcachedCache" />
 	</bean>
 
@@ -1541,7 +1540,7 @@
 		<constructor-arg ref="organizationHierarchyCache" />
 		<constructor-arg ref="getOrgCoordinators" />
 		<constructor-arg value="false" />
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="getPersonIdByAccountIdMapper" />
 		<constructor-arg ref="memcachedCache" />
 	</bean>
 
@@ -1551,13 +1550,13 @@
 		<constructor-arg ref="getGroupsByIdsMapper" />
 		<constructor-arg ref="bulkOrganizationsByShortNameMapper" />
 		<constructor-arg ref="getRecursiveOrgCoordinators" />
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
-		<constructor-arg ref="memcachedCache" />
+		<constructor-arg ref="getPersonIdByAccountIdMapper" />
 	</bean>
 
 	<bean id="commentDeletePropertyStrategy"
 		class="org.eurekastreams.server.persistence.strategies.CommentDeletePropertyStrategy">
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="getPersonByAccountIdMapper" />
+		<constructor-arg ref="getPersonIdByAccountIdMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 		<constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
 		<constructor-arg ref="getRecursiveOrgCoordinators" />
@@ -1581,12 +1580,6 @@
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds">
 		<constructor-arg ref="personQueryStrategy" />
 		<constructor-arg ref="getRelatedOrganizationIdsByPersonId" />
-		<property name="cache" ref="memcachedCache" />
-	</bean>
-
-	<bean id="bulkPeopleByAccountIdMapper"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds">
-		<property name="bulkPeopleMapper" ref="bulkPeopleMapper" />
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 
@@ -1647,9 +1640,8 @@
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 
-	<bean id="reorderStreams"
-		class="org.eurekastreams.server.persistence.mappers.stream.ReorderStreams">
-		<property name="cache" ref="memcachedCache" />
+	<bean id="reorderStreamsDbMapper"
+		class="org.eurekastreams.server.persistence.mappers.db.ReorderStreamsDbMapper">
 	</bean>
 
 	<bean id="getStarredActivityIds"
@@ -1727,7 +1719,7 @@
 	<bean id="postCachedActivity"
 		class="org.eurekastreams.server.persistence.mappers.stream.PostCachedActivity">
 		<constructor-arg ref="getFollowerPersonIdsForPersonByIdMapper" />
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="getPersonByAccountIdMapper" />
 		<constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 		<constructor-arg ref="getOrgShortNamesByIdsMapper" />

@@ -19,7 +19,8 @@ import java.io.Serializable;
 
 import net.sf.json.JSONObject;
 
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Parent org request transformer.
@@ -27,23 +28,25 @@ import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds
 public class ParentOrgPersistenceRequestTransformer implements PersistenceDataSourceRequestTransformer
 {
     /**
-     * Person mapper for getting entity ID from short name.
+     * Person mapper for getting a person model view from account id.
      */
-    private GetPeopleByAccountIds personMapper;
+    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper;
 
     /**
      * Constructor.
-     * @param inPersonMapper person mapper.
+     * 
+     * @param inGetPersonModelViewByAccountIdMapper
+     *            Person mapper for getting a person model view from account id
      */
-    public ParentOrgPersistenceRequestTransformer(final GetPeopleByAccountIds inPersonMapper)
+    public ParentOrgPersistenceRequestTransformer(
+            final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper)
     {
-        personMapper = inPersonMapper;
+        getPersonModelViewByAccountIdMapper = inGetPersonModelViewByAccountIdMapper;
     }
 
-
     /**
-     * Transofrm the request.
-     *
+     * Transform the request to get the parent org short name for a person by account id.
+     * 
      * @param request
      *            JSON request.
      * @param userEntityId
@@ -52,6 +55,7 @@ public class ParentOrgPersistenceRequestTransformer implements PersistenceDataSo
      */
     public Serializable transform(final JSONObject request, final Long userEntityId)
     {
-        return personMapper.fetchUniqueResult(request.getString("parentOrg")).getParentOrganizationShortName();
+        return getPersonModelViewByAccountIdMapper.execute(request.getString("parentOrg"))
+                .getParentOrganizationShortName();
     }
 }

@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
@@ -34,7 +34,7 @@ import org.junit.Test;
 
 /**
  * Test for CommentDeletePropertyStrategy.
- *
+ * 
  */
 @SuppressWarnings("serial")
 public class CommentDeletePropertyStrategyTest
@@ -50,9 +50,16 @@ public class CommentDeletePropertyStrategyTest
     };
 
     /**
-     * Mapper to get person info.
+     * Mapper to get a PersonModelView by account id.
      */
-    private GetPeopleByAccountIds personByAccountIdDAO = context.mock(GetPeopleByAccountIds.class);
+    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = context.mock(
+            DomainMapper.class, "getPersonModelViewByAccountIdMapper");
+
+    /**
+     * Mapper to get a person's id by their account id.
+     */
+    private DomainMapper<String, Long> getPersonIdByAccountIdMapper = context.mock(DomainMapper.class,
+            "getPersonIdByAccountIdMapper");
 
     /**
      * DAO for looking up group by short name.
@@ -117,8 +124,8 @@ public class CommentDeletePropertyStrategyTest
     /**
      * Mapper to check if the user has coordinator access to a group.
      */
-    private GetAllPersonIdsWhoHaveGroupCoordinatorAccess groupAccessMapper =
-            context.mock(GetAllPersonIdsWhoHaveGroupCoordinatorAccess.class);
+    private GetAllPersonIdsWhoHaveGroupCoordinatorAccess groupAccessMapper = context
+            .mock(GetAllPersonIdsWhoHaveGroupCoordinatorAccess.class);
 
     /**
      * System under test.
@@ -131,11 +138,9 @@ public class CommentDeletePropertyStrategyTest
     @Before
     public void setup()
     {
-        sut =
-                new CommentDeletePropertyStrategy(personByAccountIdDAO, groupByShortNameDAO, groupAccessMapper,
-                        orgCoordinatorDAO);
+        sut = new CommentDeletePropertyStrategy(getPersonModelViewByAccountIdMapper, getPersonIdByAccountIdMapper,
+                groupByShortNameDAO, groupAccessMapper, orgCoordinatorDAO);
     }
-    
 
     /**
      * Test execute with user who can delete parent activity.
@@ -174,7 +179,7 @@ public class CommentDeletePropertyStrategyTest
 
                 oneOf(activityDestinationStream).getUniqueIdentifier();
                 will(returnValue(userAcctId));
-                
+
                 oneOf(parentActivity).isDeletable();
                 will(returnValue(false));
 
@@ -201,7 +206,7 @@ public class CommentDeletePropertyStrategyTest
                 allowing(activityDestinationStream).getType();
                 will(returnValue(EntityType.GROUP));
 
-                oneOf(personByAccountIdDAO).fetchId(userAcctId);
+                oneOf(getPersonIdByAccountIdMapper).execute(userAcctId);
                 will(returnValue(userPersonId));
 
                 oneOf(activityDestinationStream).getUniqueIdentifier();
@@ -209,7 +214,7 @@ public class CommentDeletePropertyStrategyTest
 
                 oneOf(groupByShortNameDAO).fetchId(groupShortName);
                 will(returnValue(groupId));
-                
+
                 oneOf(parentActivity).isDeletable();
                 will(returnValue(false));
 
@@ -243,7 +248,7 @@ public class CommentDeletePropertyStrategyTest
                 will(returnValue("notSmithers"));
 
                 // begin check to see if user is org coord of personal stream parent org or up.
-                oneOf(personByAccountIdDAO).fetchUniqueResult("notSmithers");
+                oneOf(getPersonModelViewByAccountIdMapper).execute("notSmithers");
                 will(returnValue(activityDestinationPersonModelView));
 
                 oneOf(activityDestinationPersonModelView).getParentOrganizationId();
@@ -253,15 +258,14 @@ public class CommentDeletePropertyStrategyTest
                 will(returnValue(false));
 
                 // user is not the comment author
-                allowing(personByAccountIdDAO).fetchId(userAcctId);
+                allowing(getPersonIdByAccountIdMapper).execute(userAcctId);
                 will(returnValue(userPersonId));
 
                 oneOf(comment).getAuthorId();
                 will(returnValue(userPersonId));
-                
+
                 oneOf(parentActivity).isDeletable();
                 will(returnValue(false));
-
 
                 oneOf(comment).setDeletable(true);
             }
@@ -290,7 +294,7 @@ public class CommentDeletePropertyStrategyTest
                 will(returnValue("notSmithers"));
 
                 // begin check to see if user is org coord of personal stream parent org or up.
-                oneOf(personByAccountIdDAO).fetchUniqueResult("notSmithers");
+                oneOf(getPersonModelViewByAccountIdMapper).execute("notSmithers");
                 will(returnValue(activityDestinationPersonModelView));
 
                 oneOf(activityDestinationPersonModelView).getParentOrganizationId();
@@ -299,9 +303,9 @@ public class CommentDeletePropertyStrategyTest
                 oneOf(orgCoordinatorDAO).isOrgCoordinatorRecursively(userPersonId, 5L);
                 will(returnValue(true));
 
-                allowing(personByAccountIdDAO).fetchId(userAcctId);
+                allowing(getPersonIdByAccountIdMapper).execute(userAcctId);
                 will(returnValue(userPersonId));
-                
+
                 oneOf(parentActivity).isDeletable();
                 will(returnValue(false));
 
@@ -332,7 +336,7 @@ public class CommentDeletePropertyStrategyTest
                 will(returnValue("notSmithers"));
 
                 // begin check to see if user is org coord of personal stream parent org or up.
-                oneOf(personByAccountIdDAO).fetchUniqueResult("notSmithers");
+                oneOf(getPersonModelViewByAccountIdMapper).execute("notSmithers");
                 will(returnValue(activityDestinationPersonModelView));
 
                 oneOf(activityDestinationPersonModelView).getParentOrganizationId();
@@ -342,12 +346,12 @@ public class CommentDeletePropertyStrategyTest
                 will(returnValue(false));
 
                 // user is not the comment author
-                allowing(personByAccountIdDAO).fetchId(userAcctId);
+                allowing(getPersonIdByAccountIdMapper).execute(userAcctId);
                 will(returnValue(userPersonId));
 
                 oneOf(comment).getAuthorId();
                 will(returnValue(1L));
-                
+
                 oneOf(parentActivity).isDeletable();
                 will(returnValue(false));
 

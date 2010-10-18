@@ -57,9 +57,10 @@ public class PostCachedActivityTest
             "personFollowersMapper");
 
     /**
-     * Mapper to get people by account ids.
+     * Mapper to get personmodelview from an accountid.
      */
-    private final GetPeopleByAccountIds bulkPeopleByAccountIdMapper = context.mock(GetPeopleByAccountIds.class);
+    private final DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = context.mock(
+            DomainMapper.class, "getPersonModelViewByAccountIdMapper");
 
     /**
      * mapper to get all parent org ids for an org id.
@@ -94,8 +95,6 @@ public class PostCachedActivityTest
         final long recipientParentOrgId = 877777L;
         final String personAccountId = "accountid";
         final PersonModelView person = context.mock(PersonModelView.class);
-        final List<PersonModelView> people = new ArrayList<PersonModelView>();
-        people.add(person);
 
         final List<Long> followerIds = new ArrayList<Long>();
         final long follower1Id = 23821L;
@@ -116,15 +115,15 @@ public class PostCachedActivityTest
         orgShortNames.add(orgShortName2);
         orgShortNames.add(orgShortName3);
 
-        PostCachedActivity sut = new PostCachedActivity(personFollowersMapper, bulkPeopleByAccountIdMapper,
+        PostCachedActivity sut = new PostCachedActivity(personFollowersMapper, getPersonModelViewByAccountIdMapper,
                 parentOrgIdsMapper, bulkDomainGroupsByShortNameMapper, orgShortNamesFromIdsMapper);
         sut.setCache(cache);
 
         context.checking(new Expectations()
         {
             {
-                oneOf(bulkPeopleByAccountIdMapper).execute(with(any(List.class)));
-                will(returnValue(people));
+                oneOf(getPersonModelViewByAccountIdMapper).execute("someAccountId");
+                will(returnValue(person));
 
                 allowing(person).getEntityId();
                 will(returnValue(personId));
@@ -164,6 +163,7 @@ public class PostCachedActivityTest
         StreamEntityDTO entity = new StreamEntityDTO();
         entity.setUniqueIdentifier(personAccountId);
         entity.setType(EntityType.PERSON);
+        entity.setUniqueIdentifier("someAccountId");
         act.setDestinationStream(entity);
 
         sut.execute(act);
@@ -200,15 +200,15 @@ public class PostCachedActivityTest
         orgShortNames.add(orgShortName2);
         orgShortNames.add(orgShortName3);
 
-        PostCachedActivity sut = new PostCachedActivity(personFollowersMapper, bulkPeopleByAccountIdMapper,
+        PostCachedActivity sut = new PostCachedActivity(personFollowersMapper, getPersonModelViewByAccountIdMapper,
                 parentOrgIdsMapper, bulkDomainGroupsByShortNameMapper, orgShortNamesFromIdsMapper);
         sut.setCache(cache);
 
         context.checking(new Expectations()
         {
             {
-                oneOf(bulkPeopleByAccountIdMapper).execute(with(any(List.class)));
-                will(returnValue(people));
+                oneOf(getPersonModelViewByAccountIdMapper).execute(personAccountId);
+                will(returnValue(person));
 
                 allowing(person).getEntityId();
                 will(returnValue(personId));
@@ -258,7 +258,7 @@ public class PostCachedActivityTest
     public void testExecuteGroupActivity()
     {
         final long activityId = 884872L;
-        PostCachedActivity sut = new PostCachedActivity(personFollowersMapper, bulkPeopleByAccountIdMapper,
+        PostCachedActivity sut = new PostCachedActivity(personFollowersMapper, getPersonModelViewByAccountIdMapper,
                 parentOrgIdsMapper, bulkDomainGroupsByShortNameMapper, orgShortNamesFromIdsMapper);
         sut.setCache(cache);
         final long recipientParentOrgId = 877777L;
@@ -321,7 +321,7 @@ public class PostCachedActivityTest
     @Test
     public void testExecuteInvalidDestinationType()
     {
-        PostCachedActivity sut = new PostCachedActivity(personFollowersMapper, bulkPeopleByAccountIdMapper,
+        PostCachedActivity sut = new PostCachedActivity(personFollowersMapper, getPersonModelViewByAccountIdMapper,
                 parentOrgIdsMapper, bulkDomainGroupsByShortNameMapper, orgShortNamesFromIdsMapper);
         sut.setCache(cache);
 

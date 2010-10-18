@@ -38,7 +38,7 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link SetFollowingPersonStatusExecution} class.
- *
+ * 
  */
 public class SetFollowingPersonStatusExecutionTest
 {
@@ -63,7 +63,7 @@ public class SetFollowingPersonStatusExecutionTest
     private final PersonMapper personMapperMock = context.mock(PersonMapper.class);
 
     /**
-     * Mock instance of GetPeopleByAccountIds.
+     * Mapper to get id from account id.
      */
     private final DomainMapper<String, Long> getPersonIdByAccountIdMapper = context.mock(DomainMapper.class,
             "getPersonIdByAccountIdMapper");
@@ -97,7 +97,7 @@ public class SetFollowingPersonStatusExecutionTest
 
     /**
      * Test to ensure that following a person works.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
@@ -141,7 +141,7 @@ public class SetFollowingPersonStatusExecutionTest
 
     /**
      * Test to ensure that the RemoveFollowing works.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
@@ -183,7 +183,7 @@ public class SetFollowingPersonStatusExecutionTest
 
     /**
      * Test an exception.
-     *
+     * 
      * @throws Exception
      *             expected.
      */
@@ -213,7 +213,7 @@ public class SetFollowingPersonStatusExecutionTest
 
     /**
      * Test an unexpected following status.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */

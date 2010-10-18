@@ -1186,7 +1186,7 @@
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.profile.GetFollowingExecution">
-                <constructor-arg ref="bulkPeopleByAccountIdMapper" />
+                <constructor-arg ref="getPersonIdByAccountIdMapper" />
                 <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
                 <constructor-arg ref="getGroupsByIdsMapper" />
             </bean>
@@ -1199,7 +1199,7 @@
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.profile.GetFollowingExecution">
-                <constructor-arg ref="bulkPeopleByAccountIdMapper" />
+                <constructor-arg ref="getPersonIdByAccountIdMapper" />
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.persistence.mappers.ExcludeSelfMapperDecorator">
                         <constructor-arg ref="getFollowedPersonIdsForPersonByIdMapper" />
@@ -1223,7 +1223,7 @@
         </constructor-arg>
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.profile.GetFollowingExecution">
-                <constructor-arg ref="bulkPeopleByAccountIdMapper" />
+                <constructor-arg ref="getPersonIdByAccountIdMapper" />
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.persistence.mappers.ExcludeSelfMapperDecorator">
                         <constructor-arg ref="getFollowerPersonIdsForPersonByIdMapper" />
@@ -1247,7 +1247,7 @@
         </constructor-arg>
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.profile.GetFollowingExecution">
-                <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+                <constructor-arg ref="bulkDomainGroupsByShortNameMapper" /> <!-- wbc -->
                 <constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
                 <constructor-arg ref="bulkPeopleMapper" />
             </bean>
@@ -1439,7 +1439,7 @@
     </bean>
 
     <bean id="getPersonIdForFeedSub" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.GetPersonIdForFeedSubscription">
-        <constructor-arg ref="bulkPeopleByAccountIdMapper" /> 
+        <constructor-arg ref="getPersonIdByAccountIdMapper" /> 
     </bean>   
     
     <bean id="deletePluginForUser" class="org.eurekastreams.commons.actions.service.ServiceAction">
@@ -1801,13 +1801,13 @@
                             <entry key="followedBy">
                                 <bean 
                                     class="org.eurekastreams.server.service.actions.strategies.activity.datasources.FollowedByPersistenceRequestTransformer">
-                                    <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
+                                    <constructor-arg ref="getPersonIdByAccountIdMapper" />   
                                 </bean>
                             </entry>
                             <entry key="recipient">
                                 <bean 
                                     class="org.eurekastreams.server.service.actions.strategies.activity.datasources.RecipientPersistenceRequestTransformer">
-                                    <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
+                                    <constructor-arg ref="getPeopleByAccountIdsMapper" />   
                                     <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
                                 </bean>
                             </entry>
@@ -1818,7 +1818,7 @@
                             <entry key="savedBy">
                                 <bean 
                                     class="org.eurekastreams.server.service.actions.strategies.activity.datasources.SingleUserPersistenceRequestTransformer">
-                                    <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
+                                    <constructor-arg ref="getPersonIdByAccountIdMapper" />   
                                     <constructor-arg value="savedBy" />   
                                     <constructor-arg value="false" />   
                                     <constructor-arg value="true" />   
@@ -1827,7 +1827,7 @@
                             <entry key="joinedGroups">
                                 <bean 
                                     class="org.eurekastreams.server.service.actions.strategies.activity.datasources.FollowedGroupsPersistenceRequestTransformer">
-                                    <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
+                                    <constructor-arg ref="getPersonIdByAccountIdMapper" />   
                                     <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
                                     <constructor-arg ref="getGroupsByIdsMapper" />   
                                 </bean>
@@ -1835,14 +1835,14 @@
                             <entry key="likedBy">
                                 <bean 
                                     class="org.eurekastreams.server.service.actions.strategies.activity.datasources.MultiUserPersistenceRequestTransformer">
-                                    <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
+                                    <constructor-arg ref="getPeopleIdsByAccountIdsMapper" />   
                                     <constructor-arg value="likedBy" />   
                                 </bean>
                             </entry>                            
                             <entry key="parentOrg">
                                 <bean 
                                     class="org.eurekastreams.server.service.actions.strategies.activity.datasources.ParentOrgPersistenceRequestTransformer">
-                                    <constructor-arg ref="bulkPeopleByAccountIdMapper" />   
+                                    <constructor-arg ref="getPersonByAccountIdMapper" />   
                                 </bean>
                             </entry>                            
                         </map>                  
@@ -2681,8 +2681,9 @@
         <constructor-arg>
             <bean
                 class="org.eurekastreams.server.action.execution.stream.SetStreamOrderExecution">
-                <constructor-arg ref="findByIdMapper" />
-                <constructor-arg ref="reorderStreams" />
+                <constructor-arg ref="getOrderedPersonStreamsByPersonIdDbMapper" />
+                <constructor-arg ref="reorderStreamsDbMapper" />
+                <constructor-arg ref="removeCachedPersonModelViewCacheMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />

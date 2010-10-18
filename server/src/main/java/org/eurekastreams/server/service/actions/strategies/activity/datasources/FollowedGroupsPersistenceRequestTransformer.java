@@ -24,7 +24,6 @@ import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
 /**
@@ -38,9 +37,9 @@ public class FollowedGroupsPersistenceRequestTransformer implements PersistenceD
     Log log = LogFactory.make();
 
     /**
-     * Person mapper.
+     * Mapper to get a person id by account id.
      */
-    private GetPeopleByAccountIds personMapper;
+    private DomainMapper<String, Long> getPersonIdByAccountId;
 
     /**
      * Followed groups mapper.
@@ -55,18 +54,18 @@ public class FollowedGroupsPersistenceRequestTransformer implements PersistenceD
     /**
      * Constructor.
      * 
-     * @param inPersonMapper
-     *            the person mapper.
+     * @param inGetPersonIdByAccountId
+     *            Mapper to get a person id by account id.
      * @param inFolloweGroupsMapper
      *            the followed groups mapper.
      * @param inGroupMapper
      *            the group mapper.
      */
-    public FollowedGroupsPersistenceRequestTransformer(final GetPeopleByAccountIds inPersonMapper,
+    public FollowedGroupsPersistenceRequestTransformer(final DomainMapper<String, Long> inGetPersonIdByAccountId,
             final DomainMapper<Long, List<Long>> inFolloweGroupsMapper,
             final DomainMapper<List<Long>, List<DomainGroupModelView>> inGroupMapper)
     {
-        personMapper = inPersonMapper;
+        getPersonIdByAccountId = inGetPersonIdByAccountId;
         followedGroupsMapper = inFolloweGroupsMapper;
         groupMapper = inGroupMapper;
     }
@@ -86,7 +85,7 @@ public class FollowedGroupsPersistenceRequestTransformer implements PersistenceD
         String accountId = request.getString("joinedGroups");
 
         // Request user.
-        Long requestAccountId = personMapper.fetchId(accountId);
+        Long requestAccountId = getPersonIdByAccountId.execute(accountId);
 
         ArrayList<Long> results = new ArrayList<Long>();
 

@@ -144,7 +144,8 @@
 		<constructor-arg value="org.eurekastreams.server.domain.Person" />
 	</bean>
 		
-	<!-- Mapper to get person id by account id - wraps getPeopleIdsByAccountIds - throws exception when not found -->
+	<!-- Mapper to get person id by account id - wraps getPeopleIdsByAccountIds - throws exception when not found
+-->
 	<bean id="getPersonIdByAccountIdMapper" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
 		<constructor-arg ref="getPeopleIdsByAccountIdsMapper" />
 		<constructor-arg value="true" />
@@ -174,7 +175,8 @@
 		</constructor-arg>
 	</bean>
 
-	<!-- Mapper to get person model view by account id - wraps getPeopleByAccountIdsMapper - throws exception when not found -->
+	<!-- Mapper to get person model view by account id - wraps getPeopleByAccountIdsMapper - throws exception when not found
+-->
 	<bean id="getPersonByAccountIdMapper" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
 		<constructor-arg ref="getPeopleByAccountIdsMapper" />
 		<constructor-arg value="true" />
@@ -255,7 +257,7 @@
 		<constructor-arg ref="organizationHierarchyCache" />
 		<constructor-arg ref="getOrgCoordinators" />
 		<constructor-arg value="true" />
-		<constructor-arg ref="bulkPeopleByAccountIdMapper"/>
+		<constructor-arg ref="getPersonIdByAccountIdMapper"/>
 		<constructor-arg ref="testCache" />
 	</bean>
 	
@@ -264,7 +266,7 @@
 		<constructor-arg ref="organizationHierarchyCache" />
 		<constructor-arg ref="getOrgCoordinators" />
 		<constructor-arg value="false" />
-		<constructor-arg ref="bulkPeopleByAccountIdMapper"/>
+		<constructor-arg ref="getPersonIdByAccountIdMapper"/>
 		<constructor-arg ref="testCache" />
 	</bean>
 	
@@ -274,14 +276,14 @@
 		<constructor-arg ref="getGroupsByIdsDbMapper"/>
 		<constructor-arg ref="bulkOrganizationsByShortNameMapper"/>
 		<constructor-arg ref="getRecursiveOrgCoordinators"/>
-		<constructor-arg ref="bulkPeopleByAccountIdMapper"/>
-		<constructor-arg ref="testCache" />
+		<constructor-arg ref="getPersonIdByAccountIdMapper"/>
 	</bean>
 
 
 	<bean id="commentDeletePropertyStrategy"
 		class="org.eurekastreams.server.persistence.strategies.CommentDeletePropertyStrategy">
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
+		<constructor-arg ref="getPersonByAccountIdMapper" />
+		<constructor-arg ref="getPersonIdByAccountIdMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 		<constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
 		<constructor-arg ref="getRecursiveOrgCoordinators" />
@@ -298,21 +300,10 @@
 		<property name="cache" ref="testCache" />
 	</bean>	
 
-	<bean id="reorderStreams"
-		class="org.eurekastreams.server.persistence.mappers.stream.ReorderStreams">
-		<property name="cache" ref="testCache" />
-	</bean>	
-
 	<bean id="bulkPeopleMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds">
 		<constructor-arg ref="personQueryStrategy" />
 		<constructor-arg ref="getRelatedOrganizationIdsByPersonId" />
-		<property name="cache" ref="testCache" />
-	</bean>
-
-	<bean id="bulkPeopleByAccountIdMapper"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds">
-		<property name="bulkPeopleMapper" ref="bulkPeopleMapper" />
 		<property name="cache" ref="testCache" />
 	</bean>
 
@@ -377,18 +368,6 @@
 		<constructor-arg ref="getPersonIdByAccountIdMapper" />
 		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
 		<constructor-arg ref="getPeopleWhoLikedActivityDbMapper" />
-		<property name="cache" ref="testCache" />
-	</bean>
-	
-	<bean id="postCachedActivity"
-		class="org.eurekastreams.server.persistence.mappers.stream.PostCachedActivity">
-		<constructor-arg ref="getFollowerPersonIdsForPersonByIdDbMapper" />
-		<constructor-arg ref="bulkPeopleByAccountIdMapper" />
-		<constructor-arg ref="getRecursiveParentOrgIdsMapper" />
-		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-		<constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.db.GetOrgShortNamesByIdsMapper" />
-		</constructor-arg>
 		<property name="cache" ref="testCache" />
 	</bean>
 	
