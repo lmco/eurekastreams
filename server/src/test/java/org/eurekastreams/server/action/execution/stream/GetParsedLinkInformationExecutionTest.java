@@ -211,17 +211,18 @@ public class GetParsedLinkInformationExecutionTest
                 will(returnValue(fixedUrl));
 
                 oneOf(principalMock).getAccountId();
+                will(returnValue(TEST_ACCOUNT));
                 
                 oneOf(titleParser).parseInformation(with(equal(theHtml)), with(any(LinkInformation.class)),
-                        with(any(String.class)));
+                        with(equal(TEST_ACCOUNT)));
                 
                 
                 oneOf(descParser).parseInformation(with(equal(theHtml)), with(any(LinkInformation.class)),
-                        with(any(String.class)));
+                        with(equal(TEST_ACCOUNT)));
                 
                 
                 oneOf(imgParser).parseInformation(with(equal(theHtml)), with(any(LinkInformation.class)),
-                        with(any(String.class)));
+                        with(equal(TEST_ACCOUNT)));
 
                 
                 oneOf(mapperMock).execute(with(any(UniqueStringRequest.class)));
