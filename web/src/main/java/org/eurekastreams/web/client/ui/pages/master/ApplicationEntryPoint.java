@@ -21,6 +21,8 @@ import org.eurekastreams.commons.client.ActionRPCService;
 import org.eurekastreams.commons.client.ActionRPCServiceAsync;
 import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.commons.exceptions.SessionException;
+import org.eurekastreams.server.domain.AvatarUrlGenerator;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.TermsOfServiceDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -43,12 +45,14 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.TimerFactory;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.login.LoginDialogContent;
+import org.eurekastreams.web.client.ui.common.dialog.lookup.EmployeeLookupContent;
 import org.eurekastreams.web.client.ui.common.dialog.tos.TermsOfServiceDialogContent;
 import org.eurekastreams.web.client.ui.pages.accessdenied.AccessDeniedContent;
 import org.eurekastreams.web.client.ui.pages.setup.SystemSetupPanel;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -93,6 +97,11 @@ public class ApplicationEntryPoint implements EntryPoint
      * The login dialog.
      */
     private Dialog loginDialog;
+
+    /**
+     * Employee lookup modal.
+     */
+    private static EmployeeLookupContent dialogContent;
 
     /**
      * Shows the login.
@@ -296,6 +305,56 @@ public class ApplicationEntryPoint implements EntryPoint
     }
 
     /**
+     * Get the save command object.
+     *
+     * @return the save command
+     */
+    private static Command getEmployeeSelectedCommand()
+    {
+        return new Command()
+        {
+
+            public void execute()
+            {
+                Person result = dialogContent.getPerson();
+                AvatarUrlGenerator urlGen = new AvatarUrlGenerator(EntityType.PERSON);
+                String imageUrl = urlGen.getSmallAvatarUrl(result.getId(), result.getAvatarId());
+
+                callEmployeeSelectedHandler(result.getAccountId(), result.getDisplayName(), imageUrl);
+            }
+        };
+    }
+
+    /**
+     * Launch the employee lookup modal.
+     */
+    public static void launchEmployeeLookup()
+    {
+        dialogContent = new EmployeeLookupContent(getEmployeeSelectedCommand(), Session.getInstance()
+                .getActionProcessor());
+        Dialog newDialog = new Dialog(dialogContent);
+        newDialog.setBgVisible(true);
+        newDialog.center();
+        newDialog.getContent().show();
+    }
+
+    /**
+     * Call the handler when the employee lookup is done.
+     *
+     * @param ntid
+     *            the ntid.
+     * @param displayName
+     *            the display name.
+     * @param avatarUrl
+     *            the avatarurl.
+     */
+    private static native void callEmployeeSelectedHandler(final String ntid, final String displayName,
+            final String avatarUrl)
+    /*-{
+           $wnd.empLookupCallback(ntid, displayName, avatarUrl);
+    }-*/;
+
+    /**
      * This method exposes the GWT History.newItem method to javascript. This is so gadgets can have access to the
      * browsers history token without triggering a refresh in IE. Amazingly, this function wouldn't even need to exist
      * if it weren't for IE. Yay for inter-browser support!
@@ -308,6 +367,11 @@ public class ApplicationEntryPoint implements EntryPoint
 
         $wnd.gwt_newHistoryItem = function(token) {
                 @com.google.gwt.user.client.History::newItem(Ljava/lang/String;)(token);
+        }
+
+        $wnd.gwt_launchEmpLookup = function(handler) {
+                $wnd.empLookupCallback = handler;
+                @org.eurekastreams.web.client.ui.pages.master.ApplicationEntryPoint::launchEmployeeLookup()();
         }
 
         $wnd.gwt_changeGadgetState = function(id, view, params) {

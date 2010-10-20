@@ -14284,3 +14284,46 @@ body .url-validator .required-form-label {
 .authenticated  .removable-person:hover .connection-item-name {
 	border-bottom: 1px solid #CCC;
 }
+
+
+.delegation-container
+{
+	padding:10px;
+}
+
+.delegation-title
+{
+	border-bottom:1px solid #999;
+	font-weight:bold;
+	padding-bottom:5px;
+}
+
+.delegation-item
+{
+	border-bottom:1px solid #999;
+    padding-bottom:5px;
+    padding-top:5px;
+}
+
+.add-a-delegate
+{
+	padding-top:5px;
+}
+
+.delegation-item .avatar
+{
+	display:inline-block;
+	*display:inline;
+	zoom:1;
+}
+.delegation-item .avatar-image
+{
+	height:35px;
+	width:35px;
+}
+.delegation-item .connection-item-info
+{
+	width:auto;
+	padding-top:5px;
+	padding-left:10px;
+}
