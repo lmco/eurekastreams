@@ -5,3 +5,4 @@ features/eurekastreams-checklist/feature.xml
 features/eurekastreams-core/feature.xml
 features/eurekastreams-streamplugin/feature.xml
 features/eurekastreams-container/feature.xml
+features/eurekastreams-delegation/feature.xml

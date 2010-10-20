@@ -1,0 +1,9 @@
+<feature>
+    <name>eurekastreams-delegation</name>
+    <gadget>
+        <script src="delegation.js"/>
+    </gadget>
+    <container>
+        <script src="delegationcontainer.js"/>
+    </container>
+</feature>
