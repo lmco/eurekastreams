@@ -33,7 +33,7 @@ eurekastreams.delegation.container = function()
                         var html = "<div class='delegation-container'><div class='delegation-title'>Current Delegates</div>";
                         for (var i = 0; i < delegates[moduleId].length; i++)
                         {
-                                html += this.getDelegateWidget(moduleId, delegates[moduleId][i].ntid, delegates[moduleId][i].displayName, delegates[moduleId][i].avatarUrl);
+                                html += this.getDelegateWidget(moduleId, delegates[moduleId][i][0], delegates[moduleId][i][1], delegates[moduleId][i][2]);
                         }
                         html += "<div id='delegate-new-area-"+moduleId+"'></div><div class='add-a-delegate'>+ <a href='javascript:gwt_launchEmpLookup(function(ntid, displayName, avatarUrl) { eurekastreams.delegation.container.addADelegate("+moduleId+", ntid, displayName, avatarUrl); });'>Add Delegate</a></div></div>";
                         container.prepend(html);
@@ -47,8 +47,9 @@ eurekastreams.delegation.container = function()
         {
                 appKeys[moduleId] = appKey;
 
-                // Go to Eureka Apps to get list of current delegates
-                delegates[moduleId] = [{ ntid : "ronanoa1", displayName : "Anthony Romano", avatarUrl : "https://eureka.isgs.lmco.com/eurekastreams/photos?img=nd1d4a5ae2de3af79a93aeb2cd33ce53" }, { ntid : "keohanec", displayName : "Chris Keohane", avatarUrl : "https://eureka.isgs.lmco.com/eurekastreams/photos?img=s79e29fa9db25cf2a7808e1a77f4b1c2"}];
+                // Call back to server.
+                var dataFromServer = ["romanoa1", "sterleck"];
+                gwt_bulkGetPeople(dataFromServer, function(data) { delegates[moduleId] = data; });
         }
     };
 }();
