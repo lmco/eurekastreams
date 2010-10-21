@@ -60,14 +60,14 @@ public class GadgetMetaDataFetcher extends FlowPanel
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inGadgetDefs
      *            the gadget defs to look up.
      */
     @SuppressWarnings("unchecked")
     public GadgetMetaDataFetcher(final List inGadgetDefs)
     {
-        gadgetDefs = (List<GeneralGadgetDefinition>)  inGadgetDefs;
+        gadgetDefs = inGadgetDefs;
     }
 
     /**
@@ -118,7 +118,7 @@ public class GadgetMetaDataFetcher extends FlowPanel
                 gMetaData.setThumbnail(getGadgetThumbnail(metadata, i));
                 gMetaData.setScreenshot(getGadgetScreenshot(metadata, i));
                 gMetaData.setString(getGadgetString(metadata, i));
-                
+
 
                 List<UserPrefDTO> userPrefs = new ArrayList<UserPrefDTO>();
                 String[] keys = getUserPrefsKeys(metadata, i);
@@ -130,6 +130,14 @@ public class GadgetMetaDataFetcher extends FlowPanel
                     userPrefs.add(userPref);
                 }
                 gMetaData.setUserPrefs(userPrefs);
+
+                List<String> features = new ArrayList<String>();
+                String[] featuresFromGadget = getFeatures(metadata, i);
+                for (int f = 0; f < featuresFromGadget.length; f++)
+                {
+                    features.add(featuresFromGadget[f]);
+                }
+                gMetaData.setFeatures(features);
 
                 gadgetMetaDataList.remove(j);
                 gadgetMetaDataList.add(j, gMetaData);
@@ -185,6 +193,19 @@ public class GadgetMetaDataFetcher extends FlowPanel
                       }
 
                       return arr;
+                   }-*/;
+
+    /**
+     * Gets the features.
+     *
+     * @param metadata
+     *            the metadata object.
+     * @param index
+     *            the index.
+     * @return the features.
+     */
+    private static native String[] getFeatures(final JavaScriptObject metadata, final int index) /*-{
+                      return metadata.gadgets[index].features;
                    }-*/;
 
     /**
@@ -322,10 +343,10 @@ public class GadgetMetaDataFetcher extends FlowPanel
     private static native String getGadgetThumbnail(final JavaScriptObject metadata, final int index) /*-{
                                                     return metadata.gadgets[index].thumbnail;
                                                  }-*/;
-    
+
     /**
      * Gets the gadget screenshot.
-     * 
+     *
      * @param metadata
      *            the metadata.
      * @param index
@@ -336,22 +357,22 @@ public class GadgetMetaDataFetcher extends FlowPanel
             final JavaScriptObject metadata, final int index) /*-{
                                   return metadata.gadgets[index].screenshot;
                                }-*/;
-    
+
     /**
      * Gets the gadget string.
-     * 
+     *
      * @param metadata
      *            the metadata.
-     * 
+     *
      * @param index
-     *            the index.     * 
+     *            the index.     *
      * @return the string.
      */
     private static native String getGadgetString(
             final JavaScriptObject metadata, final int index) /*-{
                                   return metadata.gadgets[index].string;
                                }-*/;
-    
+
 
     /**
      * Fetches the metadata from shindig.

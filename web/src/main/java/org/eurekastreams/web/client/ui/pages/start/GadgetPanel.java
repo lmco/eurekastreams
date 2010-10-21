@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * GadgetZonePanel. The UI Representation of a Gadget. This is used to wrap the shindig gadget around. JSNI methods are
  * used to add functionality to the GWT elements that are provided by Shindig. This class only wraps methods that
  * manipulate gadget specific functionality. It should not wrap gadgetContainer Methods.
- * 
+ *
  */
 public class GadgetPanel extends FlowPanel
 {
@@ -164,8 +164,13 @@ public class GadgetPanel extends FlowPanel
     private DropZonePanel parentDropZone = null;
 
     /**
+     * Is this gadget delegating?
+     */
+    private boolean delegationOn = false;
+
+    /**
      * Creates the Gadget render zone and gives the zone a incremented id.
-     * 
+     *
      * @param gadget
      *            The Gadget from the Model you are rendering.
      */
@@ -224,14 +229,17 @@ public class GadgetPanel extends FlowPanel
         {
             public void onClick(final ClickEvent event)
             {
+                if (delegationOn)
+                {
+                    callEditButtonClickedForDelegation(gadgetIdModifier);
+                }
                 gadgetRenderer.openPreferences(gadgetIdModifier.toString());
                 if (gadgetState == State.MINIMIZED)
                 {
                     if (initallyMinimized)
                     {
-                        gadgetRenderer.registerSingleGadgetInContainer(gadget.getGadgetDefinition()
-                                .getUrl(), gadgetIdModifier, gadget.getGadgetDefinition().getId(), gadget
-                                .getGadgetUserPref());
+                        gadgetRenderer.registerSingleGadgetInContainer(gadget.getGadgetDefinition().getUrl(),
+                                gadgetIdModifier, gadget.getGadgetDefinition().getId(), gadget.getGadgetUserPref());
 
                         gadgetRenderer.renderGadget(gadgetIdModifier.toString());
 
@@ -270,9 +278,8 @@ public class GadgetPanel extends FlowPanel
                 {
                     if (initallyMinimized)
                     {
-                        gadgetRenderer.registerSingleGadgetInContainer(gadget.getGadgetDefinition()
-                                .getUrl(), gadgetIdModifier, gadget.getGadgetDefinition().getId(), gadget
-                                .getGadgetUserPref());
+                        gadgetRenderer.registerSingleGadgetInContainer(gadget.getGadgetDefinition().getUrl(),
+                                gadgetIdModifier, gadget.getGadgetDefinition().getId(), gadget.getGadgetUserPref());
 
                         gadgetRenderer.renderGadget(gadgetIdModifier.toString());
 
@@ -297,8 +304,8 @@ public class GadgetPanel extends FlowPanel
 
         if (!initallyMinimized)
         {
-            gadgetRenderer.registerSingleGadgetInContainer(gadget.getGadgetDefinition().getUrl(),
-                    gadgetIdModifier, gadget.getGadgetDefinition().getId(), gadget.getGadgetUserPref());
+            gadgetRenderer.registerSingleGadgetInContainer(gadget.getGadgetDefinition().getUrl(), gadgetIdModifier,
+                    gadget.getGadgetDefinition().getId(), gadget.getGadgetUserPref());
         }
     }
 
@@ -356,6 +363,8 @@ public class GadgetPanel extends FlowPanel
                                 boolean foundSetting = false;
                                 String titleText = metadata.getTitle();
 
+                                delegationOn = metadata.getFeatures().contains("eurekastreams-delegation");
+
                                 if (metadata.getUserPrefs() != null)
                                 {
                                     // had to go to with a normal for loop rather than a for-in due to some
@@ -364,7 +373,7 @@ public class GadgetPanel extends FlowPanel
                                     {
                                         if (metadata.getUserPrefs().get(i).getClass() == UserPrefDTO.class)
                                         {
-                                            UserPrefDTO userPref = (UserPrefDTO) metadata.getUserPrefs().get(i);
+                                            UserPrefDTO userPref = metadata.getUserPrefs().get(i);
                                             if (!userPref.getDataType().equals(UserPrefDTO.DataType.HIDDEN))
                                             {
                                                 foundSetting = true;
@@ -374,7 +383,7 @@ public class GadgetPanel extends FlowPanel
                                         }
                                     }
                                 }
-                                editButton.setVisible(foundSetting);
+                                editButton.setVisible(foundSetting || delegationOn);
                                 if (gadgetData.getGadgetUserPref() != null
                                         && !gadgetData.getGadgetUserPref().equals(""))
                                 {
@@ -438,7 +447,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Gets the entity type of the JSON object.
-     * 
+     *
      * @param jsObj
      *            the JSON object.
      * @return the entity type.
@@ -449,8 +458,17 @@ public class GadgetPanel extends FlowPanel
     }-*/;
 
     /**
+     * Tell the delegation feature the edit button was clicked.
+     * @param gadgetId the gadget id.
+     */
+    private native void callEditButtonClickedForDelegation(final Long gadgetId)
+    /*-{
+        $wnd.eurekastreams.delegation.container.editButtonClicked(gadgetId);
+    }-*/;
+
+    /**
      * Set the gadget state w/o params.
-     * 
+     *
      * @param state
      *            the gadget state.
      */
@@ -461,7 +479,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Gets the state.
-     * 
+     *
      * @return the state.
      */
     public State getGadgetState()
@@ -471,7 +489,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Setter.
-     * 
+     *
      * @param state
      *            new state of the gadget
      * @param viewParams
@@ -534,7 +552,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Make the gadget draggable.
-     * 
+     *
      * @param inGadgetDragController
      *            the gadget drag controller.
      */
@@ -554,7 +572,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Get the gadget data.
-     * 
+     *
      * @return the gadget data.
      */
     public Gadget getGadgetData()
