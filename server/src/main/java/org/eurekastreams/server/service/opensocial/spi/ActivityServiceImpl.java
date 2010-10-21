@@ -58,7 +58,7 @@ import com.google.inject.name.Named;
 
 /**
  * This class provides the implementation of the ActivityService interface for Shindig.
- * 
+ *
  */
 public class ActivityServiceImpl implements ActivityService
 {
@@ -66,17 +66,17 @@ public class ActivityServiceImpl implements ActivityService
     /**
      * Logger.
      */
-    private Log log = LogFactory.getLog(ActivityServiceImpl.class);
+    private final Log log = LogFactory.getLog(ActivityServiceImpl.class);
 
     /**
      * Action that gets a specified set of activities for a specified user.
      */
-    private ServiceAction getUserActivitiesAction;
+    private final ServiceAction getUserActivitiesAction;
 
     /**
      * Action that deletes a specified set of activities for a specified user.
      */
-    private TaskHandlerAction deleteUserActivities;
+    private final TaskHandlerAction deleteUserActivities;
 
     /**
      * Instance of the {@link ActionController} for this class.
@@ -95,7 +95,7 @@ public class ActivityServiceImpl implements ActivityService
 
     /**
      * Basic constructor for the PersonService implementation.
-     * 
+     *
      * @param inGetUserActivitiesAction
      *            the action to get a specified set of activities for a specified user.
      * @param inDeleteActivitiesAction
@@ -125,7 +125,7 @@ public class ActivityServiceImpl implements ActivityService
 
     /**
      * Create Activity Implementation for Shindig.
-     * 
+     *
      * @param userId
      *            - id of the user to create the activity for.
      * @param groupId
@@ -138,7 +138,7 @@ public class ActivityServiceImpl implements ActivityService
      *            - the activity to be added.
      * @param token
      *            - the security token for the request.
-     * 
+     *
      * @return void
      */
     public Future<Void> createActivity(final UserId userId, final GroupId groupId, final String appId,
@@ -165,6 +165,8 @@ public class ActivityServiceImpl implements ActivityService
             currentActivity.setActor(actorEntity);
             currentActivity
                     .setBaseObjectProperties(new HashMap<String, String>(convertActivityFromOSToEureka(activity)));
+            currentActivity.setAppId(Long.valueOf(appId));
+            currentActivity.setAppType(EntityType.APPLICATION);
 
             // Sets default activity type
             if (!currentActivity.getBaseObjectProperties().containsKey("baseObjectType"))
@@ -196,7 +198,7 @@ public class ActivityServiceImpl implements ActivityService
 
     /**
      * Delete activities implementation for Shindig.
-     * 
+     *
      * @param userId
      *            - id of the user to delete the activities for.
      * @param groupId
@@ -207,7 +209,7 @@ public class ActivityServiceImpl implements ActivityService
      *            - set of ids to be deleted.
      * @param token
      *            - the security token for the request.
-     * 
+     *
      * @return void
      */
     public Future<Void> deleteActivities(final UserId userId, final GroupId groupId, final String appId,
@@ -244,7 +246,7 @@ public class ActivityServiceImpl implements ActivityService
 
     /**
      * Shindig implementation for retrieving activities from a set of users.
-     * 
+     *
      * @param userIds
      *            - set of userIds to retrieve activities for.
      * @param groupId
@@ -257,7 +259,7 @@ public class ActivityServiceImpl implements ActivityService
      *            - collection of options for retrieving activities.
      * @param token
      *            - the security token for the request.
-     * 
+     *
      * @return collection of activities.
      */
     @SuppressWarnings("unchecked")
@@ -306,7 +308,7 @@ public class ActivityServiceImpl implements ActivityService
 
     /**
      * Shindig implementation for retrieving activities from a single user.
-     * 
+     *
      * @param userId
      *            - id of the user to retrieve the activities for.
      * @param groupId
@@ -321,7 +323,7 @@ public class ActivityServiceImpl implements ActivityService
      *            - set of ids of the activities to retrieve.
      * @param token
      *            - the security token for the request.
-     * 
+     *
      * @return collection of activities.
      */
     @SuppressWarnings("unchecked")
@@ -370,7 +372,7 @@ public class ActivityServiceImpl implements ActivityService
 
     /**
      * Shindig implementation for retrieving a single activity.
-     * 
+     *
      * @param userId
      *            - id of the user to retrieve the activity for.
      * @param groupId
@@ -383,7 +385,7 @@ public class ActivityServiceImpl implements ActivityService
      *            - id of the activity to retrieve.
      * @param token
      *            - the security token for the request.
-     * 
+     *
      * @return single Activity
      */
     public Future<Activity> getActivity(final UserId userId, final GroupId groupId, final String appId,
@@ -412,7 +414,7 @@ public class ActivityServiceImpl implements ActivityService
 
     /**
      * Helper method that converts a passed in eurekastreams ActivityDTO object into a Shindig Activity object.
-     * 
+     *
      * @param inEurekaActivityDTO
      *            - eurekastreams ActivityDTO to be converted.
      * @return converted OpenSocial Activity object.
@@ -445,7 +447,7 @@ public class ActivityServiceImpl implements ActivityService
 
     /**
      * Helper method that converts a passed in eurekastreams Activity object into a Shindig Activity object.
-     * 
+     *
      * @param inOSActivity
      *            - eurekastreams Activity to be converted.
      * @return converted Activity object.

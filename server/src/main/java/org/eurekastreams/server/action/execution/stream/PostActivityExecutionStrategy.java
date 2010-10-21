@@ -44,7 +44,7 @@ import org.eurekastreams.server.service.actions.strategies.RecipientRetriever;
 
 /**
  * This class contains the business logic for posting an Activity to the system.
- * 
+ *
  */
 public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
@@ -52,7 +52,7 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
     /**
      * Local logger instance.
      */
-    private Log logger = LogFactory.make();
+    private final Log logger = LogFactory.make();
 
     /**
      * Instance of {@link InsertMapper} for {@link Activity} objects.
@@ -82,7 +82,7 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
 
     /**
      * Constructor for the PostActivityExecutionStrategy.
-     * 
+     *
      * @param inInsertMapper
      *            - instance of the {@link InsertMapper} for the {@link Activity} object.
      * @param inInsertCommentDAO
@@ -109,13 +109,13 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
 
     /**
      * {@inheritDoc}.
-     * 
+     *
      * Perform the business logic for posting an {@link Activity} to the system.
-     * 
+     *
      * Create the {@link Activity} object from the provided {@link ActivityDTO}, assign appropriate values, update the
      * cached streams related to the actor (surgical strike) and submit assemble async requests to be submitted to the
      * queue.
-     * 
+     *
      * @return Populated instance of the {@link ActivityDTO} after being persisted.
      */
     @Override
@@ -193,7 +193,7 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
 
     /**
      * Method to convert ActivityDTO to an Activity object.
-     * 
+     *
      * @param inActivityDTO
      *            - ActivityDTO instance to be converted.
      * @return - Activity object populated with the values from the ActivityDTO passed in.
@@ -227,6 +227,11 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
         currentActivity.setRecipientStreamScope(recipientRetriever.getStreamScope(inActivityDTO));
         currentActivity.setVerb(inActivityDTO.getVerb());
         currentActivity.setIsDestinationStreamPublic(recipientRetriever.isDestinationStreamPublic(inActivityDTO));
+
+        currentActivity.setAppId(inActivityDTO.getAppId());
+        currentActivity.setAppName(inActivityDTO.getAppName());
+        currentActivity.setAppSource(inActivityDTO.getAppSource());
+        currentActivity.setAppType(inActivityDTO.getAppType());
 
         return currentActivity;
     }

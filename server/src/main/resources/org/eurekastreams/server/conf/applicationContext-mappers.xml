@@ -1431,15 +1431,9 @@
 		</constructor-arg>
 		<constructor-arg>
 			<map>
-				<entry key="keywords">
-					<value>content</value>
-				</entry>
-				<entry key="authoredBy">
-					<value>author</value>
-				</entry>
-				<entry key="fromApp">
-					<value>appId</value>
-				</entry>
+				<entry key="keywords" value="content" />
+				<entry key="authoredBy" value="author" />
+				<entry key="fromApp" value="appId" />
 			</map>
 		</constructor-arg>
 		<constructor-arg>
@@ -1450,6 +1444,9 @@
                        <constructor-arg ref="getPersonIdByAccountIdMapper" />   
                        <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
                     </bean>
+				</entry>
+				<entry key="fromApp">
+					<bean class="org.eurekastreams.server.service.actions.strategies.activity.datasources.AppSourcePersistenceRequestTransformer" />
 				</entry>
 			</map>
 		</constructor-arg>		

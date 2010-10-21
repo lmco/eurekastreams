@@ -17,6 +17,7 @@ package org.eurekastreams.server.search.bridge;
 
 import junit.framework.Assert;
 
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.junit.Test;
 
@@ -28,29 +29,71 @@ public class ActivitySourceClassBridgeTest
     /**
      * System under test.
      */
-    private ActivitySourceClassBridge sut = new ActivitySourceClassBridge();
+    private final ActivitySourceClassBridge sut = new ActivitySourceClassBridge();
 
     /**
-     * Tests with a null App Id.
+     * Tests with type not set.
      */
     @Test
-    public void nullAppIdTest()
+    public void testTypeNotSet()
     {
         Activity activity = new Activity();
-        activity.setAppId(null);
+        activity.setAppId(9L);
+        activity.setAppType(EntityType.NOTSET);
 
         Assert.assertEquals("0", sut.objectToString(activity));
     }
 
     /**
-     * Tests with an App Id.
+     * Tests with type not an app.
      */
     @Test
-    public void appIdTest()
+    public void testTypeNotApp()
     {
         Activity activity = new Activity();
-        activity.setAppId(1L);
+        activity.setAppId(9L);
+        activity.setAppType(EntityType.PERSON);
 
-        Assert.assertEquals(Long.toString(activity.getAppId()), sut.objectToString(activity));
+        Assert.assertEquals("0", sut.objectToString(activity));
+    }
+
+    /**
+     * Tests with null id.
+     */
+    @Test
+    public void testIdNull()
+    {
+        Activity activity = new Activity();
+        activity.setAppId(null);
+        activity.setAppType(EntityType.APPLICATION);
+
+        Assert.assertEquals("0", sut.objectToString(activity));
+    }
+
+    /**
+     * Tests for an app.
+     */
+    @Test
+    public void testForApp()
+    {
+        Activity activity = new Activity();
+        activity.setAppId(5L);
+        activity.setAppType(EntityType.APPLICATION);
+
+        Assert.assertEquals(ActivitySourceClassBridge.APPLICATION_PREFIX + Long.toString(5L), sut
+                .objectToString(activity));
+    }
+
+    /**
+     * Tests for a plugin.
+     */
+    @Test
+    public void testForPlugin()
+    {
+        Activity activity = new Activity();
+        activity.setAppId(7L);
+        activity.setAppType(EntityType.PLUGIN);
+
+        Assert.assertEquals(ActivitySourceClassBridge.PLUGIN_PREFIX + Long.toString(7L), sut.objectToString(activity));
     }
 }
