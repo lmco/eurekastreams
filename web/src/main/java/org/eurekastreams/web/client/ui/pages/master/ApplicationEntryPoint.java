@@ -15,6 +15,11 @@
  */
 package org.eurekastreams.web.client.ui.pages.master;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.commons.client.ActionProcessorImpl;
 import org.eurekastreams.commons.client.ActionRPCService;
@@ -25,6 +30,7 @@ import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.TermsOfServiceDTO;
+import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.ChecklistRefreshEvent;
 import org.eurekastreams.web.client.events.EventBus;
@@ -33,10 +39,13 @@ import org.eurekastreams.web.client.events.GadgetStateChangeEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.TermsOfServiceAcceptedEvent;
 import org.eurekastreams.web.client.events.UpdateGadgetPrefsEvent;
+import org.eurekastreams.web.client.events.data.GotBulkEntityResponseEvent;
 import org.eurekastreams.web.client.events.data.GotSystemSettingsResponseEvent;
 import org.eurekastreams.web.client.history.HistoryHandler;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
+import org.eurekastreams.web.client.model.AllPopularHashTagsModel;
+import org.eurekastreams.web.client.model.BulkEntityModel;
 import org.eurekastreams.web.client.model.NotificationCountModel;
 import org.eurekastreams.web.client.model.SystemSettingsModel;
 import org.eurekastreams.web.client.model.TutorialVideoModel;
@@ -52,6 +61,9 @@ import org.eurekastreams.web.client.ui.pages.setup.SystemSetupPanel;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
@@ -355,6 +367,68 @@ public class ApplicationEntryPoint implements EntryPoint
     }-*/;
 
     /**
+     * Get the people from the server, convert them to JSON, and feed them back to the handler.
+     *
+     * @param ntids
+     *            the ntids.
+     */
+    public static void bulkGetPeople(final String[] ntids)
+    {
+        Session.getInstance().getEventBus().addObserver(GotBulkEntityResponseEvent.class,
+                new Observer<GotBulkEntityResponseEvent>()
+                {
+                    public void update(final GotBulkEntityResponseEvent arg1)
+                    {
+                        List<String> ntidList = Arrays.asList(ntids);
+                        JsArray<JavaScriptObject> personJSONArray = (JsArray<JavaScriptObject>) JavaScriptObject
+                                .createArray();
+                        int count = 0;
+
+                        for (Serializable person : arg1.getResponse())
+                        {
+                            PersonModelView personMV = (PersonModelView) person;
+                            if (ntidList.contains(personMV.getAccountId()))
+                            {
+                                AvatarUrlGenerator urlGen = new AvatarUrlGenerator(EntityType.PERSON);
+                                String imageUrl = urlGen.getSmallAvatarUrl(personMV.getId(), personMV.getAvatarId());
+
+                                JsArrayString personJSON = (JsArrayString) JavaScriptObject.createObject();
+                                personJSON.set(0, personMV.getAccountId());
+                                personJSON.set(1, personMV.getDisplayName());
+                                personJSON.set(2, imageUrl);
+
+                                personJSONArray.set(count, personJSON);
+                                count++;
+                            }
+                        }
+
+                        callGotBulkPeopleCallback(personJSONArray);
+                    }
+                });
+
+        ArrayList<StreamEntityDTO> entities = new ArrayList<StreamEntityDTO>();
+
+        for (int i = 0; i < ntids.length; i++)
+        {
+            StreamEntityDTO dto = new StreamEntityDTO();
+            dto.setUniqueIdentifier(ntids[i]);
+            dto.setType(EntityType.PERSON);
+            entities.add(dto);
+        }
+
+        BulkEntityModel.getInstance().fetch(entities, false);
+    }
+
+    /**
+     * Call the handler with the JSON data.
+     * @param data the data.
+     */
+    private static native void callGotBulkPeopleCallback(final JsArray data)
+    /*-{
+           $wnd.bulkGetPeopleCallback(data);
+    }-*/;
+
+    /**
      * This method exposes the GWT History.newItem method to javascript. This is so gadgets can have access to the
      * browsers history token without triggering a refresh in IE. Amazingly, this function wouldn't even need to exist
      * if it weren't for IE. Yay for inter-browser support!
@@ -367,6 +441,11 @@ public class ApplicationEntryPoint implements EntryPoint
 
         $wnd.gwt_newHistoryItem = function(token) {
                 @com.google.gwt.user.client.History::newItem(Ljava/lang/String;)(token);
+        }
+
+        $wnd.gwt_bulkGetPeople = function(ntids, handler) {
+                $wnd.bulkGetPeopleCallback = handler;
+                @org.eurekastreams.web.client.ui.pages.master.ApplicationEntryPoint::bulkGetPeople([Ljava/lang/String;)(ntids);
         }
 
         $wnd.gwt_launchEmpLookup = function(handler) {
