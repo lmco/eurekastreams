@@ -10995,7 +10995,7 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 }
 
 .gadgets-gadget-content .gadget-container {
-	padding: 10px;
+	padding: 0;
 }
 
 /******************************************************************************
@@ -14582,4 +14582,10 @@ body .url-validator .required-form-label {
 {
 	height:35px;
 	width:35px;
+}
+.delegation-item .connection-item-info
+{
+	width:auto;
+	padding-top:5px;
+	padding-left:10px;
 }

@@ -39,7 +39,7 @@ eurekastreams.delegation = function()
     		
     		currDel.append(clearDelLink);
     		jQuery("body").prepend(currDel);
-    		gadgets.window.adjustHeight();
+    		Eureka.resize();
     	},
     	setDelegate : function(ntid)
     	{
@@ -69,7 +69,7 @@ eurekastreams.delegation = function()
 
                 html += "</select>";
                 container.append(html);
-                gadgets.window.adjustHeight();
+                Eureka.resize();
         },
         setup : function(appKey, ex)
         {
