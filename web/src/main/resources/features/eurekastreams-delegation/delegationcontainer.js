@@ -5,7 +5,9 @@ eurekastreams.delegation.container = function()
 {
     var appKeys = [];
     var delegates = [];
-
+    var putAction = [];
+    var delAction = [];
+    
     return {
     	getDelegateWidget : function(moduleId, ntid, displayName, avatarUrl)
     	{
@@ -16,13 +18,13 @@ eurekastreams.delegation.container = function()
     		if (jQuery("#gadget-zone-render-zone-"+ moduleId +" .delegate-item." + ntid).length == 0)
     		{
     			jQuery("#delegate-new-area-"+moduleId).append(this.getDelegateWidget(moduleId, ntid, displayName, avatarUrl));
-    			// Call back to server.
+                putAction[moduleId] = ntid;
     		}
     	},
     	removeDelegate : function(moduleId, ntid)
     	{
     		jQuery("#gadget-zone-render-zone-"+ moduleId +" .delegation-item." + ntid).remove();
-    		// Call back to server.
+    		delAction[moduleId] = ntid;
     	},
         editButtonClicked : function(moduleId)
         {
@@ -43,16 +45,46 @@ eurekastreams.delegation.container = function()
                         setTimeout(function() { eurekastreams.delegation.container.editButtonClicked(moduleId); }, 20);
                 }
         },
-        setupDelegation : function(moduleId, appKey)
+        setupDelegation : function(moduleId, appKey, dataFromServer)
         {
                 appKeys[moduleId] = appKey;
-
-                // Call back to server.
-                var dataFromServer = ["romanoa1", "sterleck"];
-                gwt_bulkGetPeople(dataFromServer, function(data) { delegates[moduleId] = data; });
+                if (dataFromServer != null)
+                {
+                	gwt_bulkGetPeople(dataFromServer, function(data) { delegates[moduleId] = data; });
+                }
+                else
+                {
+                	delegates[moduleId] = [];
+                }
+        },
+        spinOnUserAction : function(moduleId)
+        {
+        	if (putAction[moduleId] == null && delAction[moduleId] == null)
+        	{
+        		return null;
+        	}
+        	else if (putAction[moduleId] != null)
+        	{
+        		var data = putAction[moduleId];
+        		putAction[moduleId] = null;
+        		return "PUT:" + data;
+        	}
+        	else if (delAction[moduleId] != null)
+        	{
+        		var data = delAction[moduleId];
+        		delAction[moduleId] = null;
+        		return "DELETE:" + data;
+        	}
+        },
+        refreshGadget : function(moduleId)
+        {
+        	shindig.container.getGadget(moduleId).refresh();
         }
     };
 }();
 
 
+
+gadgets.rpc.register('refreshGadget', eurekastreams.delegation.container.refreshGadget);
+gadgets.rpc.register('spinOnUserAction', eurekastreams.delegation.container.spinOnUserAction);
 gadgets.rpc.register('setupDelegation', eurekastreams.delegation.container.setupDelegation);
