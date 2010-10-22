@@ -22,7 +22,7 @@ eurekastreams.delegation = function()
     	displayCurrentDelegator : function(ntid)
     	{
     		var currDel = jQuery("<div class='currently-delegating'>Delegating For: " + ntid + "</div>")
-    		currDel.css("background","url('/style/images/delegating-for-bg.png')");
+    		currDel.css("background","url('${build.app.baseurl}/style/images/delegating-for-bg.png')");
     		currDel.css("color","white");
     		currDel.css("font-weight","bold");
     		currDel.css("padding","6px");
@@ -30,7 +30,7 @@ eurekastreams.delegation = function()
     		currDel.css("font-size","13px");
     		
     		var clearDelLink = jQuery("<a href='javascript:eurekastreams.delegation.clearDelegate()'>X</a>");
-    		clearDelLink.css("background","url('/style/images/delegating-for-x.png')");
+    		clearDelLink.css("background","url('${build.app.baseurl}/style/images/delegating-for-x.png')");
     		clearDelLink.css("float", "right");
     		clearDelLink.css("height", "21px");
     		clearDelLink.css("width", "20px");
