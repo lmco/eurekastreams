@@ -150,6 +150,9 @@
         <build.infosite.text>eurekastreams.org</build.infosite.text>
         <build.profile.emailregex>.*@.*</build.profile.emailregex>
         <build.profile.emailregexerror>Please enter a properly formatted email address.</build.profile.emailregexerror>
+        <build.taskqueueprocessor.additional-jsw-jar></build.taskqueueprocessor.additional-jsw-jar>
+        <build.user-account-tld>example.com</build.user-account-tld>
+        <build.app.baseurl>http://application.com</build.app.baseurl>
     </properties>
     <build>
         <plugins>

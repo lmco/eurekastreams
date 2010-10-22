@@ -11,7 +11,7 @@ eurekastreams.delegation = function()
         	var params = gadgets.util.getUrlParameters();
         	var mid = params["mid"];
         	
-       		var url = "http://dev.smp.isgs.lmco.com:30233/resources/delegation/delegator";
+       		var url = "${build.app.baseurl}/resources/delegation/delegator";
        		var params={};
        		params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.DELETE;
        		params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
@@ -46,7 +46,7 @@ eurekastreams.delegation = function()
             var params = gadgets.util.getUrlParameters();
             var mid = params["mid"];
             
-           	var url = "http://dev.smp.isgs.lmco.com:30233/resources/delegation/delegator/" + ntid;
+           	var url = "${build.app.baseurl}/resources/delegation/delegator/" + ntid;
         	var params={};
         	params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.PUT;
             params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
@@ -76,7 +76,7 @@ eurekastreams.delegation = function()
                 var params = gadgets.util.getUrlParameters();
                 var mid = params["mid"];
                 
-            	var url = "http://dev.smp.isgs.lmco.com:30233/resources/delegation/delegates";
+            	var url = "${build.app.baseurl}/resources/delegation/delegates";
             	var params={};
             	params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
                 params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
@@ -86,7 +86,7 @@ eurekastreams.delegation = function()
              
                 this.spin();
 
-            	var url = "http://dev.smp.isgs.lmco.com:30233/resources/delegation/delegators";
+            	var url = "${build.app.baseurl}/resources/delegation/delegators";
             	var params={};
             	params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
                 params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
@@ -95,7 +95,7 @@ eurekastreams.delegation = function()
                 gadgets.io.makeRequest(url, function(results) { eurekastreams.delegation.insertDropDown(results.data.delegators, container); }, params);
              
                 
-            	var url = "http://dev.smp.isgs.lmco.com:30233/resources/delegation/delegator/current";
+            	var url = "${build.app.baseurl}/resources/delegation/delegator/current";
             	var params={};
             	params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
                 params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
@@ -115,7 +115,7 @@ eurekastreams.delegation = function()
         {
 
         	var requestArr = request.split(":");
-        	var url = "http://dev.smp.isgs.lmco.com:30233/resources/delegation/delegate/" + requestArr[1];
+        	var url = "${build.app.baseurl}/resources/delegation/delegate/" + requestArr[1];
         	var params={};
         	if (requestArr[0] == "PUT")
         	{
