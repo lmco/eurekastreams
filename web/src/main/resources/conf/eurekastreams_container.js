@@ -27,6 +27,20 @@
 		    "proxyUrl" : "${build.gadget.container.protocol}%host%/gadgets/proxy?refresh=%refresh%&url=%url%%rewriteMime%",
 		    "jsonProxyUrl" : "${build.gadget.container.protocol}%host%/gadgets/makeRequest"
 	  	},
+	    "views" : {
+	  	    "profile" : {
+	  	      "isOnlyVisible" : false,
+	  	      "aliases": ["DASHBOARD", "default"]
+	  	    },
+	  	    "help" : {
+              "isOnlyVisible" : false,
+              "aliases" : ["HELP"]
+	        },
+	  	    "canvas" : {
+	  	      "isOnlyVisible" : true,
+	  	      "aliases" : ["FULL_PAGE"]
+	  	    }
+	  	 },
 		"rpc" : {
 			"parentRelayUrl" : "${build.web.baseurl}/container/rpc_relay.html"
 		},
