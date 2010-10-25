@@ -5,7 +5,7 @@
 	// never conflict with a lockedDomainSuffix.
 	"gadgets.jsUriTemplate" : "${build.gadget.container.protocol}%host%/gadgets/js/%js%",
 
-	"gadgets.uri.js.host": "${build.web.host}",
+	"gadgets.uri.js.host": "${build.web.baseurl}",
 	
 	// Default concat Uri config; used for testing.
 	"gadgets.uri.concat.host" : "${build.web.host}",
