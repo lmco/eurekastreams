@@ -33,7 +33,7 @@ eurekastreams.delegation = function()
                      function(person) 
                      {
                   		var currDel = jQuery("<div class='currently-delegating'>Delegating For: " + person.getDisplayName() + "</div>")
-                		currDel.css("background","url('${build.app.baseurl}/style/images/delegating-for-bg.png')");
+                		currDel.css("background","url('${build.app.baseurl}/style/images/gadget-table-header-30.png')");
                 		currDel.css("color","white");
                 		currDel.css("font-weight","bold");
                 		currDel.css("padding","6px");
@@ -47,6 +47,7 @@ eurekastreams.delegation = function()
                 		clearDelLink.css("width", "20px");
                 		clearDelLink.css("text-indent", "-1000em");
                 		clearDelLink.css("overflow", "hidden");
+                		clearDelLink.css("margin-top", "-2px");
                 		
                 		currDel.append(clearDelLink);
                 		jQuery("body").prepend(currDel);
@@ -159,7 +160,7 @@ eurekastreams.delegation = function()
             params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
             params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.NONE;
             params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 0;
-            gadgets.io.makeRequest(url, function(results) { this.refreshDelegates(); }, params);
+            gadgets.io.makeRequest(url, function(results) { eurekastreams.delegation.refreshDelegates(); }, params);
 
         },
         spin : function()
