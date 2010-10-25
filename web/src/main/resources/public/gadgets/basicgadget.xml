@@ -195,9 +195,6 @@
                req.add(req.newFetchPersonRequest(opensocial.IdSpec.PersonId.VIEWER), 'databindviewer');
                req.add(req.newFetchPersonRequest(opensocial.IdSpec.PersonId.OWNER), 'databindowner');
                
-               var friendspec = opensocial.newIdSpec({userId : 'VIEWER', groupId : 'FRIENDS'});
-               req.add(req.newFetchPeopleRequest(friendspec), 'viewerfriends');
-               
                var selfspec = opensocial.newIdSpec({userId : 'VIEWER', groupId : 'SELF'});
                req.add(req.newFetchPeopleRequest(selfspec), 'viewerself');
                
@@ -227,8 +224,6 @@
                var batchRequest = osapi.newBatch().
                     add("Viewer", osapi.people.getViewer()).
                     add("Owner", osapi.people.getOwner()).
-                    add("viewerfriends", osapi.people.getViewerFriends()).
-                    add("ownerfriends", osapi.people.getOwnerFriends()).
                     add("owneractivities", osapi.activities.get({userId : '@owner', groupId : '@self'})).
                     add("viewerdata", osapi.appdata.get({userId : '@viewer', groupId : '@self', appId: '@app'})).
                     add("ownerdata", osapi.appdata.get({userId : '@owner', groupId : '@self', appId: '@app'}));

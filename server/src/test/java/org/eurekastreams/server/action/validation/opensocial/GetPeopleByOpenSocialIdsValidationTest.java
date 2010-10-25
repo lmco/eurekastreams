@@ -115,13 +115,13 @@ public class GetPeopleByOpenSocialIdsValidationTest
      *             unexpected.
      */
     @Test
-    public void testValidationWithTypeFriends() throws Exception
+    public void testValidationWithTypeAll() throws Exception
     {
         final LinkedList<String> openSocialIds = new LinkedList<String>();
         openSocialIds.add(SUBJECT_OPENSOCIAL_ID);
         openSocialIds.add(AUTHOR_OPENSOCIAL_ID);
 
-        GetPeopleByOpenSocialIdsRequest currentRequest = new GetPeopleByOpenSocialIdsRequest(openSocialIds, "friends");
+        GetPeopleByOpenSocialIdsRequest currentRequest = new GetPeopleByOpenSocialIdsRequest(openSocialIds, "all");
 
         ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principal);
 

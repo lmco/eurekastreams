@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.action.execution.opensocial;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,53 +23,77 @@ import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.action.request.opensocial.GetPeopleByOpenSocialIdsRequest;
-import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.persistence.PersonMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds;
+import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.service.opensocial.spi.SPIUtils;
 
 /**
  * This class provides the execution strategy for retrieving a list of Person objects by OpenSocial id.
  *
  */
 public class GetPeopleByOpenSocialIdsExecution implements ExecutionStrategy<PrincipalActionContext>
-{
+{    
     /**
-     * Local instance of the PersonMapper for retrieving People.
+     * Local instance of the mapper for retrieving a list of PersonModelView objects based on a list
+     * of account ids.
      */
-    private final PersonMapper mapper;
-
+    private final DomainMapper<List<String>, List<PersonModelView>> getPersonModelViewsByAccountIdsMapper;
+    
+    /**
+     * Local instance of the mapper for retrieving a list of PersonModelView objects based on a list
+     * of opensocial Ids.
+     */
+    private final GetPeopleByOpenSocialIds getPersonModelViewsByOpenSocialIdsMapper;
+    
     /**
      * Constructor.
-     * @param inMapper - instance of {@link PersonMapper} for this execution.
+     * @param inGetPersonModelViewsByOpenSocialIdsMapper - mapper for retrieving users by opensocial ids from cache.
+     * @param inGetPersonModelViewsByAccountIdsMapper - mapper for retrieving users by account ids from cache.
      */
-    public GetPeopleByOpenSocialIdsExecution(final PersonMapper inMapper)
+    public GetPeopleByOpenSocialIdsExecution(final GetPeopleByOpenSocialIds inGetPersonModelViewsByOpenSocialIdsMapper, 
+            final DomainMapper<List<String>, List<PersonModelView>> inGetPersonModelViewsByAccountIdsMapper)
     {
-        mapper = inMapper;
+        getPersonModelViewsByAccountIdsMapper = inGetPersonModelViewsByAccountIdsMapper;
+        getPersonModelViewsByOpenSocialIdsMapper = inGetPersonModelViewsByOpenSocialIdsMapper;
     }
 
     /**
      * {@inheritDoc}
      *
-     * Retrieve the list of {@link Person} objects based on OpenSocial id.
+     * Retrieve the list of {@link PersonModelView} objects based on OpenSocial id.
      */
     @Override
-    public LinkedList<Person> execute(final PrincipalActionContext inActionContext) throws ExecutionException
+    public LinkedList<PersonModelView> execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        LinkedList<Person> listOfPeople = new LinkedList<Person>();
         GetPeopleByOpenSocialIdsRequest currentRequest = (GetPeopleByOpenSocialIdsRequest) inActionContext.getParams();
-        List<String> openSocialIds = currentRequest.getOpenSocialIds();
-        String typeofPeopleToReturn = currentRequest.getTypeOfRelationshipForPeopleReturned();
-        List<Person> people = null;
+        List<String> requestedOpenSocialIds = currentRequest.getOpenSocialIds();
+        List<String> openSocialIds = new ArrayList<String>();
+        List<String> accountIds = new ArrayList<String>();
+        List<PersonModelView> people = new ArrayList<PersonModelView>();
 
-        if (typeofPeopleToReturn.equals("self"))
+        for(String currentUserId : requestedOpenSocialIds)
         {
-            people = mapper.findPeopleByOpenSocialIds(openSocialIds);
+            if(SPIUtils.isOpenSocialId(currentUserId))
+            {
+                openSocialIds.add(currentUserId);
+            }
+            else
+            {
+                accountIds.add(currentUserId);
+            }
         }
-        else if (typeofPeopleToReturn.equals("friends"))
+        if(openSocialIds.size() > 0)
         {
-            people = mapper.findPeopleFollowedUsingFollowerOpenSocialIds(openSocialIds);
+            people.addAll(getPersonModelViewsByOpenSocialIdsMapper.execute(requestedOpenSocialIds));
+        }
+        
+        if(accountIds.size() > 0)
+        {
+            people.addAll(getPersonModelViewsByAccountIdsMapper.execute(accountIds));
         }
 
-        return new LinkedList<Person>(people);
+        return new LinkedList<PersonModelView>(people);
     }
 
 }

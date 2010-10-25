@@ -22,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.shindig.auth.SecurityToken;
-import org.apache.shindig.common.testing.FakeGadgetToken;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RestfulCollection;
 import org.apache.shindig.social.opensocial.model.Person;
@@ -36,6 +35,7 @@ import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.exceptions.GeneralException;
 import org.eurekastreams.commons.server.service.ServiceActionController;
 import org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -58,13 +58,8 @@ public class PersonServiceTest
     /**
      * List of people expected to be returned from the search for users by opensocial id.
      */
-    private final List<org.eurekastreams.server.domain.Person> people = // \n
-    new LinkedList<org.eurekastreams.server.domain.Person>();
-
-    /**
-     * This is a fake security token taken from Shindig for testing.
-     */
-    private static final SecurityToken FAKETOKEN = new FakeGadgetToken();
+    private final List<PersonModelView> people = // \n
+    new LinkedList<PersonModelView>();
 
     /**
      * Constant string describing the opensocial id for a test user.
@@ -105,7 +100,8 @@ public class PersonServiceTest
      * A test UserId object with no id specified. Yes, this seems odd, but "null" is what is passed in when the id is
      * not supplied from the container side.
      */
-    private final UserId testNullId = new UserId(Type.userId, "null");
+    private final UserId testNullId = new UserId(Type.userId, null);
+    
     /**
      * A test GroupId object to be used during the tests.
      */
@@ -122,10 +118,10 @@ public class PersonServiceTest
     };
 
     /**
-     * The mock action to be used.
+     * This is a fake security token taken from Shindig for testing.
      */
-    private final ServiceAction getPersonAction = context.mock(ServiceAction.class, "getPersonAction");
-
+    private final SecurityToken mockToken = context.mock(SecurityToken.class);
+            
     /**
      * Mocked instance of the getPeopleAction.
      */
@@ -150,8 +146,8 @@ public class PersonServiceTest
     /**
      * The Person object needs to be fully qualified because Shindig has a Person object as well.
      */
-    private final org.eurekastreams.server.domain.Person eurekastreamsPerson = context
-            .mock(org.eurekastreams.server.domain.Person.class);
+    private final PersonModelView eurekastreamsPerson = context
+            .mock(PersonModelView.class);
 
     /**
      * Prepare the test.
@@ -159,7 +155,7 @@ public class PersonServiceTest
     @Before
     public void setUp()
     {
-        sut = new PersonServiceImpl(getPersonAction, getPeopleAction, principalPopulator, serviceActionController,
+        sut = new PersonServiceImpl(getPeopleAction, principalPopulator, serviceActionController,
                 BASE_URL, TLD);
     }
 
@@ -172,51 +168,27 @@ public class PersonServiceTest
     @Test
     public void testGetPerson() throws Exception
     {
-        final Long testPersonId = new Long(123);
-        final String testPersonAvatarId = "24234";
-        final String testPersonAccountId = "joeyd";
+        final LinkedList<PersonModelView> testPeople = new LinkedList<PersonModelView>();
+        people.add(eurekastreamsPerson);
+        
 
         // Set up expectations
         context.checking(new Expectations()
         {
             {
+                allowing(mockToken).getViewerId();
+                will(returnValue(USERID_ONE));
+                
                 allowing(principalPopulator).getPrincipal(USERID_ONE);
                 will(returnValue(principal));
 
-                allowing(principal).getAccountId();
-                will(returnValue(testPersonAccountId));
-
                 allowing(serviceActionController).execute(with(any(ServiceActionContext.class)),
                         with(any(ServiceAction.class)));
-                will(returnValue(eurekastreamsPerson));
-
-                oneOf(eurekastreamsPerson).getLastName();
-                will(returnValue("validuser"));
-
-                oneOf(eurekastreamsPerson).getOpenSocialId();
-                will(returnValue("opensocialid-23432432-4324"));
-
-                oneOf(eurekastreamsPerson).getFirstName();
-                will(returnValue("iama"));
-
-                oneOf(eurekastreamsPerson).getPreferredName();
-                will(returnValue("iama"));
-
-                oneOf(eurekastreamsPerson).getBiography();
-                will(returnValue("my bio"));
-
-                oneOf(eurekastreamsPerson).getId();
-                will(returnValue(testPersonId.longValue()));
-
-                oneOf(eurekastreamsPerson).getAvatarId();
-                will(returnValue(testPersonAvatarId));
-
-                allowing(eurekastreamsPerson).getAccountId();
-                will(returnValue(testPersonAccountId));
+                will(returnValue(testPeople));
             }
         });
 
-        Person testPerson = sut.getPerson(testId, Person.Field.DEFAULT_FIELDS, FAKETOKEN).get();
+        Person testPerson = sut.getPerson(testId, Person.Field.DEFAULT_FIELDS, mockToken).get();
 
         assertNotNull("Person is not found", testPerson);
 
@@ -235,6 +207,9 @@ public class PersonServiceTest
         context.checking(new Expectations()
         {
             {
+                allowing(mockToken).getViewerId();
+                will(returnValue(USERID_ONE));
+                
                 allowing(principalPopulator).getPrincipal(USERID_ONE);
                 will(returnValue(principal));
 
@@ -247,7 +222,7 @@ public class PersonServiceTest
             }
         });
 
-        sut.getPerson(testId, Person.Field.DEFAULT_FIELDS, FAKETOKEN).get();
+        sut.getPerson(testId, Person.Field.DEFAULT_FIELDS, mockToken).get();
 
         context.assertIsSatisfied();
     }
@@ -265,6 +240,9 @@ public class PersonServiceTest
         {
             {
 
+                allowing(mockToken).getViewerId();
+                will(returnValue(USERID_ONE));
+                
                 allowing(principalPopulator).getPrincipal(USERID_ONE);
                 will(returnValue(principal));
 
@@ -277,7 +255,7 @@ public class PersonServiceTest
             }
         });
 
-        sut.getPerson(testId, Person.Field.DEFAULT_FIELDS, FAKETOKEN).get();
+        sut.getPerson(testId, Person.Field.DEFAULT_FIELDS, mockToken).get();
 
         context.assertIsSatisfied();
     }
@@ -291,7 +269,7 @@ public class PersonServiceTest
     @Test(expected = ProtocolException.class)
     public void testGetPersonNullId() throws Exception
     {
-        sut.getPerson(testNullId, Person.Field.DEFAULT_FIELDS, FAKETOKEN).get();
+        sut.getPerson(testNullId, Person.Field.DEFAULT_FIELDS, mockToken).get();
     }
 
     /**
@@ -316,7 +294,10 @@ public class PersonServiceTest
         {
             {
 
-                allowing(principalPopulator).getPrincipal(with(any(String.class)));
+                allowing(mockToken).getViewerId();
+                will(returnValue(USERID_ONE));
+                
+                allowing(principalPopulator).getPrincipal(USERID_ONE);
                 will(returnValue(principal));
 
                 allowing(principal).getAccountId();
@@ -328,7 +309,7 @@ public class PersonServiceTest
         });
 
         RestfulCollection<Person> testPeople = sut.getPeople(userIdSet, testGroupId, collOptions,
-                Person.Field.DEFAULT_FIELDS, FAKETOKEN).get();
+                Person.Field.DEFAULT_FIELDS, mockToken).get();
 
         assertNotNull("Collection of people is null", testPeople);
 
@@ -354,7 +335,10 @@ public class PersonServiceTest
         {
             {
 
-                allowing(principalPopulator).getPrincipal(with(any(String.class)));
+                allowing(mockToken).getViewerId();
+                will(returnValue(USERID_ONE));
+                
+                allowing(principalPopulator).getPrincipal(USERID_ONE);
                 will(returnValue(principal));
 
                 allowing(principal).getAccountId();
@@ -365,19 +349,19 @@ public class PersonServiceTest
             }
         });
 
-        sut.getPeople(userIdSet, testGroupId, collOptions, Person.Field.DEFAULT_FIELDS, FAKETOKEN).get();
+        sut.getPeople(userIdSet, testGroupId, collOptions, Person.Field.DEFAULT_FIELDS, mockToken).get();
 
         context.assertIsSatisfied();
     }
-
+    
     /**
      * Build the basic collection of people that will be returned in the GetPeople tests.
      */
     private void buildPeople()
     {
-        org.eurekastreams.server.domain.Person authorPerson = new org.eurekastreams.server.domain.Person();
+        PersonModelView authorPerson = new PersonModelView();
         authorPerson.setOpenSocialId(USERID_ONE);
-        org.eurekastreams.server.domain.Person subjectPerson = new org.eurekastreams.server.domain.Person();
+        PersonModelView subjectPerson = new PersonModelView();
         subjectPerson.setOpenSocialId(USERID_ONE);
 
         people.add(authorPerson);

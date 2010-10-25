@@ -39,6 +39,7 @@ import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.PersonService;
 import org.apache.shindig.social.opensocial.spi.UserId;
+import org.apache.shindig.social.opensocial.spi.GroupId.Type;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
@@ -48,6 +49,7 @@ import org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper;
 import org.eurekastreams.server.action.request.opensocial.GetPeopleByOpenSocialIdsRequest;
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -63,11 +65,6 @@ public class PersonServiceImpl implements PersonService
      * Logger.
      */
     private final Log log = LogFactory.getLog(PersonServiceImpl.class);
-
-    /**
-     * Get person action.
-     */
-    private final ServiceAction getPersonAction;
 
     /**
      * Service Action Controller.
@@ -95,10 +92,6 @@ public class PersonServiceImpl implements PersonService
     /**
      * Basic constructor for the PersonService implementation.
      *
-     * @param inGetPersonAction
-     *            - this is the GetPersonAction that is injected into this class with Spring. By injecting with spring
-     *            we can maintain the transaction nature of the Actions even in Shindig where Guice is used to wire up
-     *            this implementation.
      * @param inGetPeopleAction
      *            - this is the GetPeopleAction that is injected into this class with Spring. This action is used to
      *            retrieve multiple person objects in a single request.
@@ -113,14 +106,12 @@ public class PersonServiceImpl implements PersonService
      *            Top-level domain used for users' accounts.
      */
     @Inject
-    public PersonServiceImpl(@Named("getPersonNoContext") final ServiceAction inGetPersonAction,
-            @Named("getPeopleByOpenSocialIds") final ServiceAction inGetPeopleAction,
+    public PersonServiceImpl(@Named("getPeopleByOpenSocialIds") final ServiceAction inGetPeopleAction,
             final PrincipalPopulatorTransWrapper inOpenSocialPrincipalPopulator,
             final ActionController inServiceActionController,
             @Named("eureka.container.baseurl") final String inContainerBaseUrl,
             @Named("eureka.user-account-tld") final String inAccountTopLevelDomain)
     {
-        getPersonAction = inGetPersonAction;
         getPeopleAction = inGetPeopleAction;
         containerBaseUrl = inContainerBaseUrl;
         principalPopulator = inOpenSocialPrincipalPopulator;
@@ -167,11 +158,11 @@ public class PersonServiceImpl implements PersonService
 
             GetPeopleByOpenSocialIdsRequest currentRequest =
                     new GetPeopleByOpenSocialIdsRequest(userIdList, groupId.getType().toString().toLowerCase());
+            
             ServiceActionContext currentContext =
-                    new ServiceActionContext(currentRequest, principalPopulator.getPrincipal(token.getViewerId()));
+                    new ServiceActionContext(currentRequest, getPrincipal(token));
 
-            LinkedList<org.eurekastreams.server.domain.Person> people = // \n
-                    (LinkedList<org.eurekastreams.server.domain.Person>) serviceActionController.execute(
+            LinkedList<PersonModelView> people = (LinkedList<PersonModelView>) serviceActionController.execute(
                             currentContext, getPeopleAction);
 
             if (log.isDebugEnabled())
@@ -179,7 +170,7 @@ public class PersonServiceImpl implements PersonService
                 log.debug("Retrieved " + people.size() + " people from action");
             }
 
-            for (org.eurekastreams.server.domain.Person currentPerson : people)
+            for (PersonModelView currentPerson : people)
             {
                 osPeople.add(convertToOSPerson(currentPerson));
             }
@@ -210,11 +201,15 @@ public class PersonServiceImpl implements PersonService
     {
         log.trace("Entering getPerson");
         Person osPerson = new PersonImpl();
-
-        org.eurekastreams.server.domain.Person currentPerson;
-
-        // Id is null, cannot proceed.
-        if (id.getUserId(token).equals("null"))
+        
+        String openSocialId = null;
+        
+        // Retrieve the user id.
+        if (id.getUserId(token) != null)
+        {
+            openSocialId = id.getUserId(token);
+        }
+        else //userId is null and so is the type cannot proceed.
         {
             log.debug("Id of the person requested was null");
             throw new ProtocolException(HttpServletResponse.SC_BAD_REQUEST, "No id supplied");
@@ -222,22 +217,27 @@ public class PersonServiceImpl implements PersonService
 
         try
         {
-            String openSocialId = id.getUserId(token);
             log.debug("User id requested is: " + openSocialId);
-
-            // Get Principal object for current user.
-            Principal currentUserPrincipal = principalPopulator.getPrincipal(openSocialId);
-
+        
+            LinkedList<String> userIdList = new LinkedList<String>();
+            userIdList.add(openSocialId);
+            
+            // Build up request to retrieve a single person.
+            GetPeopleByOpenSocialIdsRequest currentRequest =
+                new GetPeopleByOpenSocialIdsRequest(userIdList, Type.all.toString());
+            
             // Create the actionContext
             PrincipalActionContext ac =
-                    new ServiceActionContext(currentUserPrincipal.getAccountId(), currentUserPrincipal);
-
+                    new ServiceActionContext(currentRequest, getPrincipal(token));
+            
             // execute action.
-            currentPerson =
-                    (org.eurekastreams.server.domain.Person) serviceActionController.execute(
-                            (ServiceActionContext) ac, getPersonAction);
+            LinkedList<PersonModelView> people = (LinkedList<PersonModelView>) serviceActionController.execute(
+                            (ServiceActionContext) ac, getPeopleAction);
 
-            osPerson = convertToOSPerson(currentPerson);
+            if(people.size() > 0)
+            {
+                osPerson = convertToOSPerson(people.getFirst());
+            }
         }
         catch (NumberFormatException e)
         {
@@ -256,20 +256,40 @@ public class PersonServiceImpl implements PersonService
     }
 
     /**
+     * Get Principal object for current user.
+     * Currently this method allows an unauthenticated request to retrieve opensocial information about a user.
+     * The authentication is handled within shindig, not here.  There may be a need for an authorization 
+     * strategy to not allow this access even if you have anonymous auth configured in shindig.
+     * TODO: Put in authorization strategy for the underlying action.
+     * 
+     * @param inSecurityToken - current security token for the request.
+     * @return Principal object based on the security token or null if an anonymous request.
+     */
+    private Principal getPrincipal(final SecurityToken inSecurityToken)
+    {
+        Principal currentUserPrincipal = null;
+        if(inSecurityToken.getViewerId() != null)
+        {
+            currentUserPrincipal = principalPopulator.getPrincipal(inSecurityToken.getViewerId());
+        }
+        return currentUserPrincipal;
+    }
+    
+    /**
      * Helper method that converts a passed in eurekastreams Person object into a Shindig Person object.
      *
      * @param inPerson
      *            - eurekastreams person to be converted.
      * @return converted person object.
      */
-    private Person convertToOSPerson(final org.eurekastreams.server.domain.Person inPerson)
+    private Person convertToOSPerson(final PersonModelView inPerson)
     {
         Person osPerson = new PersonImpl();
         // Populate the OpenSocial person properties.
-        osPerson.setName(new NameImpl(inPerson.getFirstName() + " " + inPerson.getLastName()));
-        osPerson.setDisplayName(inPerson.getPreferredName());
+        osPerson.setName(new NameImpl(inPerson.getDisplayName()));
+        osPerson.setDisplayName(inPerson.getDisplayName());
         osPerson.setId(inPerson.getOpenSocialId());
-        osPerson.setAboutMe(inPerson.getBiography());
+        osPerson.setAboutMe(inPerson.getDescription());
         osPerson.setProfileUrl(containerBaseUrl + "/#people/" + inPerson.getAccountId());
 
         AvatarUrlGenerator generator = new AvatarUrlGenerator(EntityType.PERSON);

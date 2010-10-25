@@ -22,8 +22,9 @@ import java.util.UUID;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.server.action.request.opensocial.GetPeopleByOpenSocialIdsRequest;
-import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.persistence.PersonMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -33,7 +34,7 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link GetPeopleByOpenSocialIdsExecution} class.
- *
+ * 
  */
 public class GetPeopleByOpenSocialIdsExecutionTest
 {
@@ -45,7 +46,7 @@ public class GetPeopleByOpenSocialIdsExecutionTest
     /**
      * Collection of people to be used a test of results for the perform action method.
      */
-    private static List<Person> people = new LinkedList<Person>();
+    private static List<PersonModelView> people = new LinkedList<PersonModelView>();
 
     /**
      * Context for building mock objects.
@@ -65,7 +66,14 @@ public class GetPeopleByOpenSocialIdsExecutionTest
     /**
      * Mocked person mapper object for test.
      */
-    private PersonMapper mapper = context.mock(PersonMapper.class);
+    private GetPeopleByOpenSocialIds getPersonModelViewsByOpenSocialIdsMapper = context
+            .mock(GetPeopleByOpenSocialIds.class);
+
+    /**
+     * Mocked mapper object for retrieving a list of PersonModelView objects by account ids.
+     */
+    private DomainMapper<List<String>, List<PersonModelView>> getPersonModelViewsByAccountIdsMapper = context
+            .mock(DomainMapper.class);
 
     /**
      * An Open Social id to use for testing. Arbitrary.
@@ -83,12 +91,13 @@ public class GetPeopleByOpenSocialIdsExecutionTest
     @Before
     public void setup()
     {
-        sut = new GetPeopleByOpenSocialIdsExecution(mapper);
+        sut = new GetPeopleByOpenSocialIdsExecution(getPersonModelViewsByOpenSocialIdsMapper,
+                getPersonModelViewsByAccountIdsMapper);
     }
 
     /**
      * This test covers the PerformAction method when type = self.
-     *
+     * 
      * @throws Exception
      *             unexpected.
      */
@@ -102,42 +111,12 @@ public class GetPeopleByOpenSocialIdsExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(mapper).findPeopleByOpenSocialIds(openSocialIds);
+                oneOf(getPersonModelViewsByOpenSocialIdsMapper).execute(openSocialIds);
                 will(returnValue(people));
             }
         });
 
         GetPeopleByOpenSocialIdsRequest currentRequest = new GetPeopleByOpenSocialIdsRequest(openSocialIds, "self");
-
-        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principal);
-
-        sut.execute(currentContext);
-
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * This test covers the PerformAction method when type = firends.
-     *
-     * @throws Exception
-     *             unexpected.
-     */
-    @Test
-    public void testPerformActionWithTypeFriends() throws Exception
-    {
-        final LinkedList<String> openSocialIds = new LinkedList<String>();
-        openSocialIds.add(SUBJECT_OPENSOCIAL_ID);
-        openSocialIds.add(AUTHOR_OPENSOCIAL_ID);
-
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(mapper).findPeopleFollowedUsingFollowerOpenSocialIds(openSocialIds);
-                will(returnValue(people));
-            }
-        });
-
-        GetPeopleByOpenSocialIdsRequest currentRequest = new GetPeopleByOpenSocialIdsRequest(openSocialIds, "friends");
 
         ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principal);
 

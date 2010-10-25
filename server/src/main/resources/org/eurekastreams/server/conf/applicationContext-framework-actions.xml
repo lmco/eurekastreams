@@ -2478,7 +2478,7 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>
-
+    
     <bean id="getPeopleByOpenSocialIds" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg>
             <bean
@@ -2488,9 +2488,8 @@
         <constructor-arg>
             <bean
                 class="org.eurekastreams.server.action.execution.opensocial.GetPeopleByOpenSocialIdsExecution">
-                <constructor-arg>
-                    <ref bean="jpaPersonMapper" />
-                </constructor-arg>
+                <constructor-arg ref="bulkPeopleByOpenSocialIdMapper" />
+                <constructor-arg ref="getPeopleByAccountIdsMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />

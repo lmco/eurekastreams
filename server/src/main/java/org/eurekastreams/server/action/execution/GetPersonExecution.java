@@ -129,7 +129,8 @@ public class GetPersonExecution implements ExecutionStrategy<PrincipalActionCont
         else
         {
             result = mapper.findByAccountId(identifierParam);
-            if (result.getBackground() != null)
+
+            if (result != null && result.getBackground() != null)
             {
                 result.getBackground().getBackgroundItems(BackgroundItemType.SKILL).size();
             }
