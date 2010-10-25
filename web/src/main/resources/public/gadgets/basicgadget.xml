@@ -102,6 +102,29 @@
             tasks[0].description = "TaskA - Description";
             eurekastreams.checklist.registerTasks(tasks);
             
+            function retrieveMultipleUsers()
+            {
+               var req = opensocial.newDataRequest();
+
+               var friendspec = opensocial.newIdSpec({userId : ['@me','@ownerid'], groupId : 'ALL'});
+               req.add(req.newFetchPeopleRequest(friendspec), 'viewerfriends');
+               req.send(function(result){
+                    if (!result.hadError())
+                    {
+                        var friendsData = result.get('viewerfriends').getData();
+                        friendsData.each(
+                        //Retrieving accounts is a specific field for EurekaStreams Container.
+                        function(person) {
+                            alert(person.getDisplayName() + ' accounts: ' + person.getField('accounts')[0].username);
+                        });
+                    }
+                    else
+                    {
+                        alert('error occurred retrieving data: ' + result.getErrorMessage());
+                    }
+                });
+            }
+            
             function getCurrentGadgetsAppId()
             {
                 alert('calling the getAppId method');
