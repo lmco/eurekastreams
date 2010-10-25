@@ -70,6 +70,11 @@ public class GadgetMetaDataDTO implements Serializable
     private List<UserPrefDTO> userPrefs;
 
     /**
+     * List of the views the gagdet supports.
+     */
+    private List<String> viewNames;
+
+    /**
      * List of features the gadget has installed.
      */
     private List<String> features;
@@ -295,5 +300,23 @@ public class GadgetMetaDataDTO implements Serializable
     public void setFeatures(final List<String> inFeatures)
     {
         features = inFeatures;
+    }
+
+    /**
+     * Get the viewNames.
+     * @return the viewNames.
+     */
+    public List<String> getViewNames()
+    {
+        return viewNames;
+    }
+
+    /**
+     * Set the features.
+     * @param inViewNames the views.
+     */
+    public void setViewNames(final List<String> inViewNames)
+    {
+        viewNames = inViewNames;
     }
 }

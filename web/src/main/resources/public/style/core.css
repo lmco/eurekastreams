@@ -13570,7 +13570,7 @@ div.tab-container table.dragdrop-dropTarget-engage {
 		transparent;
 }
 
-.gadget-zone:hover .gadget-button.gadget-refresh,.gadget-zone:hover .gadget-button.gadget-edit,.gadget-zone:hover .gadget-button.gadget-close
+.gadget-zone:hover .gadget-button.gadget-refresh,.gadget-zone:hover .gadget-button.gadget-edit,.gadget-zone:hover .gadget-button.gadget-close,.gadget-zone:hover .gadget-button.gadget-help
 	{
 	display: inline-block; 
 	*display: inline;

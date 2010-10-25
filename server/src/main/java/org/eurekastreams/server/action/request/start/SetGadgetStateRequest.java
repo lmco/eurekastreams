@@ -40,7 +40,11 @@ public class SetGadgetStateRequest implements Serializable
         /**
          * Maximized.
          */
-        MAXIMIZED
+        MAXIMIZED,
+        /**
+         * In help mode.
+         */
+        HELP
     }
     /**
      * Serialization id for this request object.
