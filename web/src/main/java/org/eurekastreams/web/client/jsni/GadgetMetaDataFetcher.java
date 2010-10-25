@@ -138,6 +138,13 @@ public class GadgetMetaDataFetcher extends FlowPanel
                     features.add(featuresFromGadget[f]);
                 }
                 gMetaData.setFeatures(features);
+                List<String> views = new ArrayList<String>();
+                String[] viewsFromGadget = getViewNames(metadata, i);
+                for (int f = 0; f < viewsFromGadget.length; f++)
+                {
+                    views.add(viewsFromGadget[f]);
+                }
+                gMetaData.setViewNames(views);
 
                 gadgetMetaDataList.remove(j);
                 gadgetMetaDataList.add(j, gMetaData);
@@ -188,6 +195,25 @@ public class GadgetMetaDataFetcher extends FlowPanel
     private static native String[] getUserPrefsKeys(final JavaScriptObject metadata, final int index) /*-{
                       var arr = [];
                       for (var p in metadata.gadgets[index].userPrefs)
+                      {
+                          arr.push(p);
+                      }
+
+                      return arr;
+                   }-*/;
+
+    /**
+     * Gets the gadget view names.
+     *
+     * @param metadata
+     *            the metadata object.
+     * @param index
+     *            the index.
+     * @return the gadget view names.
+     */
+    private static native String[] getViewNames(final JavaScriptObject metadata, final int index) /*-{
+                      var arr = [];
+                      for (var p in metadata.gadgets[index].views)
                       {
                           arr.push(p);
                       }

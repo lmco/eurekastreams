@@ -103,6 +103,11 @@ public class GadgetPanel extends FlowPanel
     Anchor maximizeButton = new Anchor("Maximize");
 
     /**
+     * Help button.
+     */
+    Anchor helpButton = new Anchor("Help");
+
+    /**
      * gadgetData sent via the constructor argument.
      */
     Gadget gadgetData;
@@ -191,13 +196,14 @@ public class GadgetPanel extends FlowPanel
         refreshButton.addStyleName("gadget-refresh");
         minimizeButton.addStyleName("gadget-minimize");
         editButton.addStyleName("gadget-edit");
+        helpButton.addStyleName("gadget-help");
 
         closeButton.addStyleName("gadget-button");
         maximizeButton.addStyleName("gadget-button");
         refreshButton.addStyleName("gadget-button");
         minimizeButton.addStyleName("gadget-button");
         editButton.addStyleName("gadget-button");
-
+        helpButton.addStyleName("gadget-button");
         // Creates the title Bar
         titleBar.setStylePrimaryName("gadget-zone-chrome-title-bar");
         titleBar.getElement().setId("gadgets-gadget-title-bar-" + gadgetIdModifier.toString());
@@ -207,6 +213,7 @@ public class GadgetPanel extends FlowPanel
         titleBar.add(maximizeButton);
         titleBar.add(closeButton);
         titleBar.add(editButton);
+        titleBar.add(helpButton);
         titleBar.add(refreshButton);
 
         titleBarContainer.add(titleBar);
@@ -254,6 +261,13 @@ public class GadgetPanel extends FlowPanel
             public void onClick(final ClickEvent event)
             {
                 gadgetRenderer.refreshGadget(gadgetIdModifier.toString());
+            }
+        });
+        helpButton.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent event)
+            {
+                setGadgetState(State.HELP);
             }
         });
         maximizeButton.addClickHandler(new ClickHandler()
@@ -362,6 +376,8 @@ public class GadgetPanel extends FlowPanel
                             {
                                 boolean foundSetting = false;
                                 String titleText = metadata.getTitle();
+
+                                helpButton.setVisible(metadata.getViewNames().contains("help"));
 
                                 delegationOn = metadata.getFeatures().contains("eurekastreams-delegation");
 
@@ -502,6 +518,10 @@ public class GadgetPanel extends FlowPanel
 
         switch (state)
         {
+        case HELP:
+            gadgetRenderer.changeContainerView("help");
+            gadgetRenderer.refreshGadgetIFrameUrl(gadgetIdModifier.toString(), viewParams);
+            break;
         case NORMAL:
             RootPanel.get().removeStyleName("maximized-gadget");
 
@@ -513,7 +533,7 @@ public class GadgetPanel extends FlowPanel
             gadgetRenderer.restoreGadgetZone();
             minimizeButton.removeStyleName("minimized");
             renderZone.setStyleName("");
-            if (previousGadgetState == State.MAXIMIZED)
+            if (previousGadgetState == State.MAXIMIZED || previousGadgetState == State.HELP)
             {
                 gadgetRenderer.gadgetIFrameUrlRefreshing(gadgetIdModifier.toString());
 
