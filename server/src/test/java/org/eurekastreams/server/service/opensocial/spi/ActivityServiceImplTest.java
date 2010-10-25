@@ -56,25 +56,25 @@ import org.junit.Test;
 
 /**
  * This class performs the test for the implementation of the Shindig ActivityService interface.
- * 
+ *
  */
-public class ActivityServiceTest
+public class ActivityServiceImplTest
 {
     /**
      * List of activity expected to be returned from the search for users by opensocial id.
      */
-    private List<org.eurekastreams.server.domain.stream.Activity> expectedActivities = // \n
-    new LinkedList<org.eurekastreams.server.domain.stream.Activity>();
+    private final List<org.eurekastreams.server.domain.stream.Activity> expectedActivities = // \n
+            new LinkedList<org.eurekastreams.server.domain.stream.Activity>();
 
     /**
      * List os ActivityDTO's expected to be returned from the search for users by opensocial id.
      */
-    private List<ActivityDTO> expectedActivityDTOs = new LinkedList<ActivityDTO>();
+    private final List<ActivityDTO> expectedActivityDTOs = new LinkedList<ActivityDTO>();
 
     /**
      * List of activity expected to be returned from the search for users by opensocial id.
      */
-    private Set<String> activityIds = new HashSet<String>();
+    private final Set<String> activityIds = new HashSet<String>();
 
     /**
      * Object that is being tested.
@@ -89,12 +89,12 @@ public class ActivityServiceTest
     /**
      * A test GroupId object to be used during the tests.
      */
-    private GroupId testGroupId = new GroupId(GroupId.Type.self, "654321");
+    private final GroupId testGroupId = new GroupId(GroupId.Type.self, "654321");
 
     /**
      * String to use for test application ids.
      */
-    private static final String TEST_APP_ID = "testapp";
+    private static final String TEST_APP_ID = "192";
 
     /**
      * String to use for test activity ids.
@@ -124,17 +124,17 @@ public class ActivityServiceTest
     /**
      * A test UserId object to be used during the tests.
      */
-    private UserId testId = new UserId(Type.userId, ACTIVITYID_ONE);
+    private final UserId testId = new UserId(Type.userId, ACTIVITYID_ONE);
 
     /**
      * A test UserId object to be used during the tests.
      */
-    private UserId testId2 = new UserId(Type.userId, ACTIVITYID_TWO);
+    private final UserId testId2 = new UserId(Type.userId, ACTIVITYID_TWO);
 
     /**
      * Activity implementation for tests.
      */
-    private Activity testActivity = new ActivityImpl(TEST_ACTIVITY_ID, testId.getUserId());
+    private final Activity testActivity = new ActivityImpl(TEST_ACTIVITY_ID, testId.getUserId());
 
     /**
      * Context for building mock objects.
@@ -149,13 +149,13 @@ public class ActivityServiceTest
     /**
      * The mock action to be used for retrieving activities.
      */
-    private ServiceAction getUserActivitiesAction = context.mock(ServiceAction.class, "getUserActivitiesAction");
+    private final ServiceAction getUserActivitiesAction = context.mock(ServiceAction.class, "getUserActivitiesAction");
 
     /**
      * The mock action to be used for delete activities.
      */
-    private TaskHandlerAction deleteUserActivitiesAction = context.mock(TaskHandlerAction.class,
-            "deleteUserActivitiesAction");
+    private final TaskHandlerAction deleteUserActivitiesAction =
+            context.mock(TaskHandlerAction.class, "deleteUserActivitiesAction");
 
     /**
      * The mock instance of the {@link ServiceActionController} to execute actions.
@@ -166,13 +166,14 @@ public class ActivityServiceTest
      * The mock instance of the {@link OpenSocialPrincipalPopulator} for retrieving a principal object using the
      * OpenSocial id.
      */
-    private final OpenSocialPrincipalPopulator openSocialPrincipalPopulatorMock = context
-            .mock(OpenSocialPrincipalPopulator.class);
+    private final OpenSocialPrincipalPopulator openSocialPrincipalPopulatorMock =
+            context.mock(OpenSocialPrincipalPopulator.class);
 
     /**
      * The mock instance of the {@link TaskHandlerAction}TaskHandlerServiceActiontivity Action.
      */
-    private final TaskHandlerServiceAction postActivityServiceActionMock = context.mock(TaskHandlerServiceAction.class);
+    private final TaskHandlerServiceAction postActivityServiceActionMock =
+            context.mock(TaskHandlerServiceAction.class);
 
     /**
      * TaskHandlerServiceActionprincipal object for an action.
@@ -185,8 +186,9 @@ public class ActivityServiceTest
     @Before
     public void setUp()
     {
-        sut = new ActivityServiceImpl(getUserActivitiesAction, deleteUserActivitiesAction, serviceActionControllerMock,
-                openSocialPrincipalPopulatorMock, postActivityServiceActionMock);
+        sut =
+                new ActivityServiceImpl(getUserActivitiesAction, deleteUserActivitiesAction,
+                        serviceActionControllerMock, openSocialPrincipalPopulatorMock, postActivityServiceActionMock);
 
         activityIds.add("1");
         activityIds.add("2");
@@ -195,7 +197,7 @@ public class ActivityServiceTest
 
     /**
      * Test for deleting activities.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions
      */
@@ -222,7 +224,7 @@ public class ActivityServiceTest
 
     /**
      * Test for creating an activity.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions
      */
@@ -251,7 +253,7 @@ public class ActivityServiceTest
 
     /**
      * Test for creating an activity.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions
      */
@@ -282,7 +284,7 @@ public class ActivityServiceTest
 
     /**
      * Test the getActivity method in the ActivityService implementation.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions
      */
@@ -315,7 +317,7 @@ public class ActivityServiceTest
 
     /**
      * Test forcing an Exception.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions.
      */
@@ -344,7 +346,7 @@ public class ActivityServiceTest
 
     /**
      * currentUser Test forcing a NumberFormatException.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions.
      */
@@ -386,7 +388,7 @@ public class ActivityServiceTest
      * Test stub for unimplemented method. This is necessary for code coverage and because all methods for Shindig need
      * to be implemented to not cause runtime errors even though we don't currently have implementations for all methods
      * yet.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions
      */
@@ -414,8 +416,9 @@ public class ActivityServiceTest
             }
         });
 
-        RestfulCollection<Activity> activities = sut.getActivities(userIdSet, testGroupId, TEST_APP_ID,
-                ACTIVITY_ALL_FIELDS, collOptions, FAKETOKEN).get();
+        RestfulCollection<Activity> activities =
+                sut.getActivities(userIdSet, testGroupId, TEST_APP_ID, ACTIVITY_ALL_FIELDS, collOptions, FAKETOKEN)
+                        .get();
 
         assertNotNull("Collection of activities is null", activities);
 
@@ -425,7 +428,7 @@ public class ActivityServiceTest
     /**
      * This test exercises the GetActivities method of the OpenSocial implementation in Shindig. This test throws an
      * exception to test error handling.
-     * 
+     *
      * @throws Exception
      *             - on unhandled errors.
      */

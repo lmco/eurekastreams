@@ -205,6 +205,7 @@
                     <list>
                         <value>minId</value>
                         <value>maxId</value>
+                        <value>count</value>
                     </list>
                 </constructor-arg>
                 <constructor-arg>
@@ -212,11 +213,11 @@
                         <value>recipient</value>
                         <value>likedBy</value>
                         <value>authoredBy</value>
+                        <value>fromApp</value>
                     </list>
                 </constructor-arg>
                 <constructor-arg>
                     <list>
-                        <value>fromApp</value>
                         <value>joinedGroups</value>
                         <value>keywords</value>
                         <value>followedBy</value>

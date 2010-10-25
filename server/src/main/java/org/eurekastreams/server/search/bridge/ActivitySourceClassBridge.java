@@ -23,9 +23,15 @@ import org.hibernate.search.bridge.StringBridge;
  */
 public class ActivitySourceClassBridge implements StringBridge
 {
+    /** Prefix for applications. */
+    public static final char APPLICATION_PREFIX = 'a';
+
+    /** Prefix for plugins. */
+    public static final char PLUGIN_PREFIX = 'p';
+
     /**
      * Convert the input Message or Activity object into the name of the source app.
-     * 
+     *
      * @param msgObject
      *            the Message or Activity
      * @return the input Message object with name of the source app.
@@ -35,13 +41,19 @@ public class ActivitySourceClassBridge implements StringBridge
     {
         Activity activity = (Activity) msgObject;
 
-        if (null != activity.getAppId())
+        char prefix;
+        switch (activity.getAppType())
         {
-            return Long.toString(activity.getAppId());
-        }
-        else
-        {
+        case APPLICATION:
+            prefix = APPLICATION_PREFIX;
+            break;
+        case PLUGIN:
+            prefix = PLUGIN_PREFIX;
+            break;
+        default:
             return "0";
         }
+
+        return (null != activity.getAppId()) ? prefix + Long.toString(activity.getAppId()) : "0";
     }
 }

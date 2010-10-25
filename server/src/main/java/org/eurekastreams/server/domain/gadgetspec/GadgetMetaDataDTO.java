@@ -58,7 +58,7 @@ public class GadgetMetaDataDTO implements Serializable
     /**
      * The summary string..
      */
-    private String gadgetString;    
+    private String gadgetString;
     /**
      * The gadget def.
      */
@@ -68,6 +68,11 @@ public class GadgetMetaDataDTO implements Serializable
      * List of User Preferences for the current gadget.
      */
     private List<UserPrefDTO> userPrefs;
+
+    /**
+     * List of features the gadget has installed.
+     */
+    private List<String> features;
 
     /**
      * Creates a gadget meta data from a gadget def.
@@ -217,7 +222,7 @@ public class GadgetMetaDataDTO implements Serializable
     }
     /**
      * Sets the screenshot.
-     * 
+     *
      * @param inScreenshot
      * 			  the screenshot.
      */
@@ -228,17 +233,17 @@ public class GadgetMetaDataDTO implements Serializable
 
     /**
      * Gets the screenshot.
-     * 
+     *
      * @return the screenshot.
      */
     public String getScreenshot()
     {
         return screenshot;
     }
-    
+
     /**
      * Sets the string.
-     * 
+     *
      * @param inString
      *            the string.
      */
@@ -246,10 +251,10 @@ public class GadgetMetaDataDTO implements Serializable
     {
         this.gadgetString = inString;
     }
-    
+
     /**
      * Gets the string.
-     * 
+     *
      * @return the string.
      */
     public String getString()
@@ -272,5 +277,23 @@ public class GadgetMetaDataDTO implements Serializable
     public void setUserPrefs(final List<UserPrefDTO> inUserPrefs)
     {
         userPrefs = inUserPrefs;
+    }
+
+    /**
+     * Get the features.
+     * @return the features.
+     */
+    public List<String> getFeatures()
+    {
+        return features;
+    }
+
+    /**
+     * Set the features.
+     * @param inFeatures the features.
+     */
+    public void setFeatures(final List<String> inFeatures)
+    {
+        features = inFeatures;
     }
 }
