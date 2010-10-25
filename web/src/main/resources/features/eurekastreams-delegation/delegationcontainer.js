@@ -3,7 +3,6 @@ if (typeof eurekastreams.delegation == "undefined" || !eurekastreams.delegation)
 
 eurekastreams.delegation.container = function()
 {
-    var appKeys = [];
     var delegates = [];
     var putAction = [];
     var delAction = [];
@@ -45,9 +44,8 @@ eurekastreams.delegation.container = function()
                         setTimeout(function() { eurekastreams.delegation.container.editButtonClicked(moduleId); }, 20);
                 }
         },
-        setupDelegation : function(moduleId, appKey, dataFromServer)
+        setupDelegation : function(moduleId, dataFromServer)
         {
-                appKeys[moduleId] = appKey;
                 if (dataFromServer != null)
                 {
                 	gwt_bulkGetPeople(dataFromServer, function(data) { delegates[moduleId] = data; });
