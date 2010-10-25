@@ -76,6 +76,7 @@
         <input type="button" value="Change Title" onClick="gadgets.window.setTitle('This title is better');"/><br>
         <input type="button" value="Post Activity" onClick="postActivity();"/><br>
         <input type="button" value="List Container Methods" onClick="listMethods();"/><br>
+        <input type="button" value="Retrieve Multiple Users" onClick="retrieveMultipleUsers();"/><br>
         <div id="canvasbutton"><input type="button" value="Switch to Canvas" onClick="gadgets.views.requestNavigateTo('canvas', 'movetocanvas'); return false;"/><br></div>
         <div id="homebutton"><input type="button" value="Switch to Home" onClick="gadgets.views.requestNavigateTo('home', 'movetohome'); return false;"/><br></div>
         AppData Key:   name1<br>
