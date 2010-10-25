@@ -21,25 +21,40 @@ eurekastreams.delegation = function()
     	},
     	displayCurrentDelegator : function(ntid)
     	{
-    		var currDel = jQuery("<div class='currently-delegating'>Delegating For: " + ntid + "</div>")
-    		currDel.css("background","url('${build.app.baseurl}/style/images/delegating-for-bg.png')");
-    		currDel.css("color","white");
-    		currDel.css("font-weight","bold");
-    		currDel.css("padding","6px");
-    		currDel.css("height","18px");
-    		currDel.css("font-size","13px");
-    		
-    		var clearDelLink = jQuery("<a href='javascript:eurekastreams.delegation.clearDelegate()'>X</a>");
-    		clearDelLink.css("background","url('${build.app.baseurl}/style/images/delegating-for-x.png')");
-    		clearDelLink.css("float", "right");
-    		clearDelLink.css("height", "21px");
-    		clearDelLink.css("width", "20px");
-    		clearDelLink.css("text-indent", "-1000em");
-    		clearDelLink.css("overflow", "hidden");
-    		
-    		currDel.append(clearDelLink);
-    		jQuery("body").prepend(currDel);
-    		Eureka.resize();
+            var req = opensocial.newDataRequest();
+
+            var friendspec = opensocial.newIdSpec({userId : [ntid], groupId : 'ALL'});
+            req.add(req.newFetchPeopleRequest(friendspec), 'viewerfriends');
+            req.send(function(result){
+                 if (!result.hadError())
+                 {
+                     var friendsData = result.get('viewerfriends').getData();
+                     friendsData.each(
+                     function(person) 
+                     {
+                  		var currDel = jQuery("<div class='currently-delegating'>Delegating For: " + person.getDisplayName() + "</div>")
+                		currDel.css("background","url('${build.app.baseurl}/style/images/delegating-for-bg.png')");
+                		currDel.css("color","white");
+                		currDel.css("font-weight","bold");
+                		currDel.css("padding","6px");
+                		currDel.css("height","18px");
+                		currDel.css("font-size","13px");
+                		
+                		var clearDelLink = jQuery("<a href='javascript:eurekastreams.delegation.clearDelegate()'>X</a>");
+                		clearDelLink.css("background","url('${build.app.baseurl}/style/images/delegating-for-x.png')");
+                		clearDelLink.css("float", "right");
+                		clearDelLink.css("height", "21px");
+                		clearDelLink.css("width", "20px");
+                		clearDelLink.css("text-indent", "-1000em");
+                		clearDelLink.css("overflow", "hidden");
+                		
+                		currDel.append(clearDelLink);
+                		jQuery("body").prepend(currDel);
+                		Eureka.resize();
+                     });
+                    
+                 }
+             });
     	},
     	setDelegate : function(ntid)
     	{
@@ -56,34 +71,36 @@ eurekastreams.delegation = function()
     	},
         insertDropDown : function(data, container)
         {
-                container.css('padding','10px');
-                var html = "<strong style='display:block;font-size:12px;padding-bottom:4px;'>Choose a View:</strong><select onchange='eurekastreams.delegation.setDelegate(this.options[this.selectedIndex].value)'>";
-                html += "<option value='none'>Select a delegated view...</option>";
+    		 var req = opensocial.newDataRequest();
 
-                if (data.length > 0) section.show();
-                
-                for (var i = 0; i<data.length; i++)
-                {
-                        html += "<option value='" + data[i] + "'>" + data[i] + "</option>";
-                }
+             var friendspec = opensocial.newIdSpec({userId : data, groupId : 'ALL'});
+             req.add(req.newFetchPeopleRequest(friendspec), 'viewerfriends');
+             req.send(function(result){
+                  if (!result.hadError())
+                  {
+                      container.css('padding','10px');
+                      var html = "<strong style='display:block;font-size:12px;padding-bottom:4px;'>Choose a View:</strong><select onchange='eurekastreams.delegation.setDelegate(this.options[this.selectedIndex].value)'>";
+                      html += "<option value='none'>Select a delegated view...</option>";
 
-                html += "</select>";
-                container.append(html);
-                Eureka.resize();
+                      if (data.length > 0) section.show();
+                      
+                      var friendsData = result.get('viewerfriends').getData();
+                      friendsData.each(
+                      function(person) 
+                      {
+                    	  html += "<option value='" + person.getField('accounts')[0].username + "'>" + person.getDisplayName() + "</option>";
+                      });
+
+                      html += "</select>";
+                      container.append(html);
+                      Eureka.resize();
+                  }
+              });
+            
         },
-        setup : function(appKey, ex)
+        setup : function(ex)
         {
-                var params = gadgets.util.getUrlParameters();
-                var mid = params["mid"];
-                
-            	var url = "${build.app.baseurl}/resources/delegation/delegates";
-            	var params={};
-            	params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
-                params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
-                params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.NONE;
-                params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 1;
-                gadgets.io.makeRequest(url, function(results) { gadgets.rpc.call(null, "setupDelegation", null, mid, appKey, results.data.delegates); }, params);
-             
+        		this.refreshDelegates();
                 this.spin();
 
             	var url = "${build.app.baseurl}/resources/delegation/delegators";
@@ -111,6 +128,19 @@ eurekastreams.delegation = function()
                 section.hide();
                 
         },
+        refreshDelegates : function()
+        {
+            var params = gadgets.util.getUrlParameters();
+            var mid = params["mid"];
+            
+        	var url = "${build.app.baseurl}/resources/delegation/delegates";
+        	var params={};
+        	params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
+            params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
+            params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.NONE;
+            params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 1;
+            gadgets.io.makeRequest(url, function(results) { gadgets.rpc.call(null, "setupDelegation", null, mid, results.data.delegates); }, params);
+        },
         makeRequest : function(request)
         {
 
@@ -129,7 +159,7 @@ eurekastreams.delegation = function()
             params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
             params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.NONE;
             params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 0;
-            gadgets.io.makeRequest(url, function(results) {  }, params);
+            gadgets.io.makeRequest(url, function(results) { this.refreshDelegates(); }, params);
 
         },
         spin : function()
