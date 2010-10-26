@@ -813,30 +813,6 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
-
-    <bean id="getPersonNoContext" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.GetPersonExecution">
-                <constructor-arg ref="jpaPersonMapper" />
-                <constructor-arg ref="populatePeopleWithSkeletonRelatedOrgsCacheMapper" />
-                <constructor-arg>
-                    <null />
-                </constructor-arg>
-                <constructor-arg ref="populateOrgChildWithSkeletonParentOrgsCacheMapper" />
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.action.execution.GetBannerIdByParentOrganizationStrategy">
-                        <constructor-arg ref="getOrganizationsByIdsMapper" />
-                        <constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />
-                        <constructor-arg ref="findByIdMapper" />
-                        <constructor-arg value="Person" />
-                    </bean>
-                </constructor-arg>
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>
     
     <bean id="domainGroupCacheUpdaterAsyncAction"
         class="org.eurekastreams.commons.actions.async.AsyncAction">

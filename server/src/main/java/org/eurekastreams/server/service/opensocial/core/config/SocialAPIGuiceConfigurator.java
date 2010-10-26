@@ -113,11 +113,10 @@ public class SocialAPIGuiceConfigurator implements SpringGuiceConfigurator
 
         inBinder.requestStaticInjection(SocialRealm.class);
 
-        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getPersonNoContext")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "getPersonNoContext"));
-
         inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getPeopleByOpenSocialIds")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "getPeopleByOpenSocialIds"));
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getFollowing")).toProvider(
+                SpringIntegration.fromSpring(ServiceAction.class, "getFollowing"));
         inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getAppData")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "getAppData"));
         inBinder.bind(ServiceAction.class).annotatedWith(Names.named("updateAppData")).toProvider(

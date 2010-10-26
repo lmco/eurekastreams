@@ -47,8 +47,10 @@ import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper;
 import org.eurekastreams.server.action.request.opensocial.GetPeopleByOpenSocialIdsRequest;
+import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 import com.google.inject.Inject;
@@ -82,6 +84,11 @@ public class PersonServiceImpl implements PersonService
     private final ServiceAction getPeopleAction;
 
     /**
+     * Instance of the GetFollowingAction that is used to process Friends requests.
+     */
+    private final ServiceAction getFollowingAction;
+    
+    /**
      * Container base url to create profile url from.
      */
     private final String containerBaseUrl;
@@ -95,6 +102,9 @@ public class PersonServiceImpl implements PersonService
      * @param inGetPeopleAction
      *            - this is the GetPeopleAction that is injected into this class with Spring. This action is used to
      *            retrieve multiple person objects in a single request.
+     * @param inGetFollowingAction
+     *            - this is the GetFollowingAction that is injected into this class with Spring. This action is used to
+     *            retrieve the friends of the requestor.
      * @param inOpenSocialPrincipalPopulator
      *            {@link PrincipalPopulatorTransWrapper}.
      * @param inServiceActionController
@@ -107,12 +117,14 @@ public class PersonServiceImpl implements PersonService
      */
     @Inject
     public PersonServiceImpl(@Named("getPeopleByOpenSocialIds") final ServiceAction inGetPeopleAction,
+            @Named("getFollowing") final ServiceAction inGetFollowingAction,
             final PrincipalPopulatorTransWrapper inOpenSocialPrincipalPopulator,
             final ActionController inServiceActionController,
             @Named("eureka.container.baseurl") final String inContainerBaseUrl,
             @Named("eureka.user-account-tld") final String inAccountTopLevelDomain)
     {
         getPeopleAction = inGetPeopleAction;
+        getFollowingAction = inGetFollowingAction;
         containerBaseUrl = inContainerBaseUrl;
         principalPopulator = inOpenSocialPrincipalPopulator;
         serviceActionController = inServiceActionController;
@@ -143,28 +155,52 @@ public class PersonServiceImpl implements PersonService
     {
         log.trace("Entering getPeople");
         List<Person> osPeople = new ArrayList<Person>();
+        LinkedList<PersonModelView> people = null;
         try
         {
-            LinkedList<String> userIdList = new LinkedList<String>();
-            for (UserId currentUserId : userIds)
+            if(groupId.getType().equals(Type.friends))
             {
-                if (!currentUserId.getUserId(token).equals("null"))
+                Principal currentPrincipal = getPrincipal(token);
+                if(currentPrincipal == null)
                 {
-                    userIdList.add(currentUserId.getUserId(token));
+                    throw new IllegalArgumentException("Invalid requestor");
                 }
+                
+                GetFollowersFollowingRequest currentRequest = 
+                    new GetFollowersFollowingRequest(EntityType.PERSON, currentPrincipal.getAccountId(), 
+                            0, Integer.MAX_VALUE);
+                
+                ServiceActionContext currentContext = 
+                    new ServiceActionContext(currentRequest, currentPrincipal);
+                
+                PagedSet<PersonModelView> peopleResults = (PagedSet<PersonModelView>) serviceActionController.execute(
+                        currentContext, getFollowingAction);
+                
+                people = new LinkedList<PersonModelView>(peopleResults.getPagedSet());
             }
-
-            log.debug("Sending getPeople userIdList to action: " + userIdList.toString());
-
-            GetPeopleByOpenSocialIdsRequest currentRequest =
-                    new GetPeopleByOpenSocialIdsRequest(userIdList, groupId.getType().toString().toLowerCase());
+            else
+            {
+                LinkedList<String> userIdList = new LinkedList<String>();
+                for (UserId currentUserId : userIds)
+                {
+                    if (!currentUserId.getUserId(token).equals("null"))
+                    {
+                        userIdList.add(currentUserId.getUserId(token));
+                    }
+                }
+    
+                log.debug("Sending getPeople userIdList to action: " + userIdList.toString());
+    
+                GetPeopleByOpenSocialIdsRequest currentRequest =
+                        new GetPeopleByOpenSocialIdsRequest(userIdList, groupId.getType().toString().toLowerCase());
+                
+                ServiceActionContext currentContext =
+                        new ServiceActionContext(currentRequest, getPrincipal(token));
+    
+                people = (LinkedList<PersonModelView>) serviceActionController.execute(
+                                currentContext, getPeopleAction);
+            }
             
-            ServiceActionContext currentContext =
-                    new ServiceActionContext(currentRequest, getPrincipal(token));
-
-            LinkedList<PersonModelView> people = (LinkedList<PersonModelView>) serviceActionController.execute(
-                            currentContext, getPeopleAction);
-
             if (log.isDebugEnabled())
             {
                 log.debug("Retrieved " + people.size() + " people from action");
