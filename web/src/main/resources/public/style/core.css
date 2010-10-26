@@ -14447,7 +14447,8 @@ body .url-validator .required-form-label {
 	width: 140px;
 }
 
-.message-timestamp-actions-area .gwt-HTML {
+.message-timestamp-actions-area .via-metadata
+{
 	color: #666;
 	display: inline-block; 
 	*display: inline;

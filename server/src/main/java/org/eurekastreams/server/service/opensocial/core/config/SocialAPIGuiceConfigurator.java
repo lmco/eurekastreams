@@ -46,6 +46,7 @@ import org.eurekastreams.commons.server.service.ServiceActionController;
 import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
 import org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper;
 import org.eurekastreams.server.persistence.GadgetDefinitionMapper;
+import org.eurekastreams.server.service.opensocial.gadgets.spec.GadgetMetaDataFetcher;
 import org.eurekastreams.server.service.opensocial.oauth.OAuthDataStoreImpl;
 import org.eurekastreams.server.service.opensocial.oauth.SocialRealm;
 import org.eurekastreams.server.service.opensocial.spi.ActivityServiceImpl;
@@ -142,6 +143,8 @@ public class SocialAPIGuiceConfigurator implements SpringGuiceConfigurator
                         "openSocialPrincipalPopulatorTransWrapper"));
         inBinder.bind(GadgetDefinitionMapper.class).annotatedWith(Names.named("jpaGadgetDefinitionMapper"))
                 .toProvider(SpringIntegration.fromSpring(GadgetDefinitionMapper.class, "jpaGadgetDefinitionMapper"));
+        inBinder.bind(GadgetMetaDataFetcher.class).toProvider(
+                SpringIntegration.fromSpring(GadgetMetaDataFetcher.class, "gadgetMetaDataHttpFetcher"));
     }
 
     /**

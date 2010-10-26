@@ -16,9 +16,9 @@
 package org.eurekastreams.web.client.ui.common.stream.renderers.verb;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
@@ -41,7 +41,7 @@ public class PostRenderer implements VerbRenderer
     /**
      * The object dictionary.
      */
-    private HashMap<BaseObjectType, ObjectRenderer> objectRendererDictionary;
+    private Map<BaseObjectType, ObjectRenderer> objectRendererDictionary;
     /**
      * The activity.
      */
@@ -67,7 +67,7 @@ public class PostRenderer implements VerbRenderer
      * @param inShowRecipient
      *            the recipient.
      */
-    public void setup(final HashMap<BaseObjectType, ObjectRenderer> inObjectRendererDictionary,
+    public void setup(final Map<BaseObjectType, ObjectRenderer> inObjectRendererDictionary,
             final ActivityDTO inActivity, final StreamMessageItemRenderer.State inState, final boolean inShowRecipient)
     {
         objectRendererDictionary = inObjectRendererDictionary;
@@ -120,7 +120,7 @@ public class PostRenderer implements VerbRenderer
     {
         return state.equals(State.DEFAULT);
     }
-    
+
     /**
      * Get the avatar.
      *

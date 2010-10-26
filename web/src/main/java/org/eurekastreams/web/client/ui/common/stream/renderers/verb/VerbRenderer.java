@@ -15,8 +15,8 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.renderers.verb;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
@@ -45,14 +45,14 @@ public interface VerbRenderer
      * @return the value.
      */
     boolean getAllowStar();
-    
+
     /**
      * Should the ver allow liking.
-     * 
+     *
      * @return the value.
      */
     boolean getAllowLike();
-    
+
     /**
      * Should the verb allow sharing.
      *
@@ -101,7 +101,7 @@ public interface VerbRenderer
      *            the recipient.
      */
     void setup(
-            final HashMap<BaseObjectType, ObjectRenderer> objectRendererDictionary,
+            final Map<BaseObjectType, ObjectRenderer> objectRendererDictionary,
             final ActivityDTO activity,
             final StreamMessageItemRenderer.State state,
             final boolean showRecipient);

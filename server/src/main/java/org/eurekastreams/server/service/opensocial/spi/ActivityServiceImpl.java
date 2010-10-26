@@ -16,6 +16,7 @@
 package org.eurekastreams.server.service.opensocial.spi;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -49,12 +50,15 @@ import org.eurekastreams.server.action.request.opensocial.GetUserActivitiesReque
 import org.eurekastreams.server.action.request.stream.PostActivityRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.GadgetDefinition;
+import org.eurekastreams.server.domain.GeneralGadgetDefinition;
+import org.eurekastreams.server.domain.gadgetspec.GadgetMetaDataDTO;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.ActivityVerb;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.DomainEntityMapper;
 import org.eurekastreams.server.persistence.GadgetDefinitionMapper;
+import org.eurekastreams.server.service.opensocial.gadgets.spec.GadgetMetaDataFetcher;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -95,8 +99,11 @@ public class ActivityServiceImpl implements ActivityService
      */
     private final TaskHandlerServiceAction postActivityAction;
 
-    /** For getting gadget name. */
+    /** For getting gadget definition (in order to get name). */
     private final DomainEntityMapper<GadgetDefinition> gadgetDefinitionMapper;
+
+    /** For getting gadget name. */
+    private final GadgetMetaDataFetcher gadgetMetaDataFetcher;
 
     /**
      * Basic constructor for the PersonService implementation.
@@ -114,6 +121,8 @@ public class ActivityServiceImpl implements ActivityService
      *            the action to create an activity.
      * @param inGadgetDefinitionMapper
      *            Mapper to fetch gadget definitions (for looking up title).
+     * @param inGadgetMetaDataFetcher
+     *            Used to fetch gadget metadata (for looking up title).
      */
     @Inject
     public ActivityServiceImpl(@Named("getUserActivities") final ServiceAction inGetUserActivitiesAction,
@@ -121,7 +130,8 @@ public class ActivityServiceImpl implements ActivityService
             final ActionController inServiceActionController,
             final OpenSocialPrincipalPopulator inOpenSocialPrincipalPopulator,
             @Named("postPersonActivityServiceActionTaskHandler") final TaskHandlerServiceAction inPostActivityAction,
-            @Named("jpaGadgetDefinitionMapper") final GadgetDefinitionMapper inGadgetDefinitionMapper)
+            @Named("jpaGadgetDefinitionMapper") final GadgetDefinitionMapper inGadgetDefinitionMapper,
+            final GadgetMetaDataFetcher inGadgetMetaDataFetcher)
     {
         getUserActivitiesAction = inGetUserActivitiesAction;
         deleteUserActivities = inDeleteActivitiesAction;
@@ -129,6 +139,7 @@ public class ActivityServiceImpl implements ActivityService
         openSocialPrincipalPopulator = inOpenSocialPrincipalPopulator;
         postActivityAction = inPostActivityAction;
         gadgetDefinitionMapper = inGadgetDefinitionMapper;
+        gadgetMetaDataFetcher = inGadgetMetaDataFetcher;
     }
 
     /**
@@ -176,7 +187,7 @@ public class ActivityServiceImpl implements ActivityService
             Long appIdNumeric = Long.valueOf(appId);
             currentActivity.setAppId(appIdNumeric);
             currentActivity.setAppType(EntityType.APPLICATION);
-            currentActivity.setAppName(gadgetDefinitionMapper.findById(appIdNumeric).getGadgetTitle());
+            currentActivity.setAppName(lookupGadgetTitle(appIdNumeric));
 
             // Sets default activity type
             if (!currentActivity.getBaseObjectProperties().containsKey("baseObjectType"))
@@ -188,9 +199,9 @@ public class ActivityServiceImpl implements ActivityService
                 String objectType = currentActivity.getBaseObjectProperties().get("baseObjectType");
                 currentActivity.setBaseObjectType(BaseObjectType.valueOf(objectType));
 
-                if (currentActivity.getBaseObjectType().equals(BaseObjectType.FILE))
+                if (currentActivity.getBaseObjectProperties().containsKey("source"))
                 {
-                    currentActivity.setAppSource(currentActivity.getBaseObjectProperties().get("targetUrl"));
+                    currentActivity.setAppSource(currentActivity.getBaseObjectProperties().get("source"));
                 }
             }
 
@@ -209,6 +220,28 @@ public class ActivityServiceImpl implements ActivityService
         }
 
         return ImmediateFuture.newInstance(null);
+    }
+
+    /**
+     * Retrieves the gadget's title given it's ID.
+     *
+     * @param appId
+     *            Gadget ID.
+     * @return Title.
+     * @throws Exception
+     *             On error.
+     */
+    private String lookupGadgetTitle(final Long appId) throws Exception
+    {
+        // TODO: This is the brute-force approach. It gets the gadget definition from the database, then uses the gadget
+        // metadata fetcher which does a whole bunch of stuff that we don't need (e.g. user prefs, etc.) -- all just so
+        // we can get the title. Note that we should not use the title from the gadget definition even though it is
+        // there - it is deprecated.
+        GadgetDefinition gadgetDef = gadgetDefinitionMapper.findById(appId);
+        List<GadgetMetaDataDTO> gadgetsMetadata =
+                gadgetMetaDataFetcher.getGadgetsMetaData(Collections.singletonMap(gadgetDef.getUrl(),
+                        (GeneralGadgetDefinition) gadgetDef));
+        return gadgetsMetadata.get(0).getTitle();
     }
 
     /**

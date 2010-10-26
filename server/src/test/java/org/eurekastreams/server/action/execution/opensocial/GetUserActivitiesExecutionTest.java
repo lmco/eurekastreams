@@ -86,8 +86,9 @@ public class GetUserActivitiesExecutionTest
     {
         final PagedSet<ActivityDTO> activities = context.mock(PagedSet.class);
         final ExecutionStrategyFake executionStrategy = new ExecutionStrategyFake(activities);
-        GetUserActivitiesExecution sut = new GetUserActivitiesExecution(bulkActivitiesMapper, getPeopleByOpenSocialIds,
-                executionStrategy, maxActivitiesToReturnByOpenSocialId, securityTrimmer);
+        GetUserActivitiesExecution sut =
+                new GetUserActivitiesExecution(bulkActivitiesMapper, getPeopleByOpenSocialIds, executionStrategy,
+                        maxActivitiesToReturnByOpenSocialId, securityTrimmer);
 
         final Principal principal = context.mock(Principal.class);
         final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
@@ -130,8 +131,9 @@ public class GetUserActivitiesExecutionTest
     {
         final PagedSet<ActivityDTO> activities = context.mock(PagedSet.class);
         final ExecutionStrategyFake executionStrategy = new ExecutionStrategyFake(activities);
-        GetUserActivitiesExecution sut = new GetUserActivitiesExecution(bulkActivitiesMapper, getPeopleByOpenSocialIds,
-                executionStrategy, maxActivitiesToReturnByOpenSocialId, securityTrimmer);
+        GetUserActivitiesExecution sut =
+                new GetUserActivitiesExecution(bulkActivitiesMapper, getPeopleByOpenSocialIds, executionStrategy,
+                        maxActivitiesToReturnByOpenSocialId, securityTrimmer);
 
         final Principal principal = context.mock(Principal.class);
         final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
@@ -180,8 +182,9 @@ public class GetUserActivitiesExecutionTest
         activityList.add(a2);
 
         final ExecutionStrategyFake executionStrategy = new ExecutionStrategyFake(activities);
-        GetUserActivitiesExecution sut = new GetUserActivitiesExecution(bulkActivitiesMapper, getPeopleByOpenSocialIds,
-                executionStrategy, maxActivitiesToReturnByOpenSocialId, securityTrimmer);
+        GetUserActivitiesExecution sut =
+                new GetUserActivitiesExecution(bulkActivitiesMapper, getPeopleByOpenSocialIds, executionStrategy,
+                        maxActivitiesToReturnByOpenSocialId, securityTrimmer);
 
         final Principal principal = context.mock(Principal.class);
         final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
@@ -202,9 +205,10 @@ public class GetUserActivitiesExecutionTest
         p1.setAccountId("ACCT1");
         p2.setAccountId("ACCT2");
 
-        String expectedJson = "{\"count\":" + maxActivitiesToReturnByOpenSocialId
-                + ",\"query\":{\"recipient\":[{\"name\":\"ACCT1\",\"type\":\"PERSON\"},"
-                + "{\"name\":\"ACCT2\",\"type\":\"PERSON\"}]}}";
+        String expectedJson =
+                "{\"count\":" + maxActivitiesToReturnByOpenSocialId
+                        + ",\"query\":{\"recipient\":[{\"name\":\"ACCT1\",\"type\":\"PERSON\"},"
+                        + "{\"name\":\"ACCT2\",\"type\":\"PERSON\"}]}}";
 
         context.checking(new Expectations()
         {
@@ -260,8 +264,9 @@ public class GetUserActivitiesExecutionTest
         activityList.add(a2);
 
         final ExecutionStrategyFake executionStrategy = new ExecutionStrategyFake(null);
-        GetUserActivitiesExecution sut = new GetUserActivitiesExecution(bulkActivitiesMapper, getPeopleByOpenSocialIds,
-                executionStrategy, maxActivitiesToReturnByOpenSocialId, securityTrimmer);
+        GetUserActivitiesExecution sut =
+                new GetUserActivitiesExecution(bulkActivitiesMapper, getPeopleByOpenSocialIds, executionStrategy,
+                        maxActivitiesToReturnByOpenSocialId, securityTrimmer);
 
         final Principal principal = context.mock(Principal.class);
         final Long principalId = 1L;
@@ -292,10 +297,10 @@ public class GetUserActivitiesExecutionTest
                 // open social ids
                 allowing(request).getOpenSocialIds();
                 will(returnValue(openSocialIds));
-                
+
                 oneOf(principal).getId();
                 will(returnValue(principalId));
-                
+
                 oneOf(securityTrimmer).trim(activityIds, principalId);
                 will(returnValue(activityIds));
 
@@ -334,8 +339,9 @@ public class GetUserActivitiesExecutionTest
         activityList.add(a2);
 
         final ExecutionStrategyFake executionStrategy = new ExecutionStrategyFake(activities);
-        GetUserActivitiesExecution sut = new GetUserActivitiesExecution(bulkActivitiesMapper, getPeopleByOpenSocialIds,
-                executionStrategy, maxActivitiesToReturnByOpenSocialId, securityTrimmer);
+        GetUserActivitiesExecution sut =
+                new GetUserActivitiesExecution(bulkActivitiesMapper, getPeopleByOpenSocialIds, executionStrategy,
+                        maxActivitiesToReturnByOpenSocialId, securityTrimmer);
 
         final Principal principal = context.mock(Principal.class);
         final Long principalId = 1L;
@@ -359,9 +365,10 @@ public class GetUserActivitiesExecutionTest
         p1.setAccountId("ACCT1");
         p2.setAccountId("ACCT2");
 
-        String expectedJson = "{\"count\":" + maxActivitiesToReturnByOpenSocialId
-                + ",\"query\":{\"recipient\":[{\"name\":\"ACCT1\",\"type\":\"PERSON\"},"
-                + "{\"name\":\"ACCT2\",\"type\":\"PERSON\"}]}}";
+        String expectedJson =
+                "{\"count\":" + maxActivitiesToReturnByOpenSocialId
+                        + ",\"query\":{\"recipient\":[{\"name\":\"ACCT1\",\"type\":\"PERSON\"},"
+                        + "{\"name\":\"ACCT2\",\"type\":\"PERSON\"}]}}";
 
         context.checking(new Expectations()
         {
@@ -381,11 +388,11 @@ public class GetUserActivitiesExecutionTest
                 will(returnValue(openSocialIds));
 
                 oneOf(getPeopleByOpenSocialIds).execute(with(any(ArrayList.class)));
-                will(returnValue(people));                
-                
+                will(returnValue(people));
+
                 oneOf(principal).getId();
                 will(returnValue(principalId));
-                
+
                 oneOf(securityTrimmer).trim(new ArrayList<Long>(), principalId);
                 will(returnValue(new ArrayList<Long>()));
 
@@ -429,8 +436,9 @@ public class GetUserActivitiesExecutionTest
         activityList.add(a2);
 
         final ExecutionStrategyFake executionStrategy = new ExecutionStrategyFake(activities);
-        GetUserActivitiesExecution sut = new GetUserActivitiesExecution(bulkActivitiesMapper, getPeopleByOpenSocialIds,
-                executionStrategy, maxActivitiesToReturnByOpenSocialId, securityTrimmer);
+        GetUserActivitiesExecution sut =
+                new GetUserActivitiesExecution(bulkActivitiesMapper, getPeopleByOpenSocialIds, executionStrategy,
+                        maxActivitiesToReturnByOpenSocialId, securityTrimmer);
 
         final Principal principal = context.mock(Principal.class);
         final Long principalId = 1L;
@@ -454,9 +462,10 @@ public class GetUserActivitiesExecutionTest
         p1.setAccountId("ACCT1");
         p2.setAccountId("ACCT2");
 
-        String expectedJson = "{\"count\":" + maxActivitiesToReturnByOpenSocialId
-                + ",\"query\":{\"recipient\":[{\"name\":\"ACCT1\",\"type\":\"PERSON\"},"
-                + "{\"name\":\"ACCT2\",\"type\":\"PERSON\"}]}}";
+        String expectedJson =
+                "{\"count\":" + maxActivitiesToReturnByOpenSocialId
+                        + ",\"query\":{\"recipient\":[{\"name\":\"ACCT1\",\"type\":\"PERSON\"},"
+                        + "{\"name\":\"ACCT2\",\"type\":\"PERSON\"}]}}";
 
         context.checking(new Expectations()
         {
@@ -480,13 +489,13 @@ public class GetUserActivitiesExecutionTest
 
                 oneOf(bulkActivitiesMapper).execute(with(any(List.class)));
                 will(returnValue(responseById));
-                
+
                 oneOf(principal).getId();
                 will(returnValue(principalId));
-                
+
                 oneOf(securityTrimmer).trim(activityIds, principalId);
                 will(returnValue(activityIds));
-                
+
                 oneOf(activities).getPagedSet();
                 will(returnValue(activityList));
             }
@@ -512,7 +521,7 @@ public class GetUserActivitiesExecutionTest
         /**
          * Result to return.
          */
-        private Serializable result;
+        private final Serializable result;
 
         /**
          * The action context passed into execute().
@@ -521,7 +530,7 @@ public class GetUserActivitiesExecutionTest
 
         /**
          * Constructor.
-         * 
+         *
          * @param inResult
          *            the result to return.
          */
@@ -532,11 +541,11 @@ public class GetUserActivitiesExecutionTest
 
         /**
          * Execute - return the result.
-         * 
+         *
          * @param inActionContext
          *            the request
          * @return result that was passedinto constructor
-         * @throws exception
+         * @throws ExecutionException
          *             ... never
          */
         @Override
@@ -548,7 +557,7 @@ public class GetUserActivitiesExecutionTest
 
         /**
          * Get the context passed into execute().
-         * 
+         *
          * @return the context passed into execute
          */
         public PrincipalActionContext getContextPassedIn()

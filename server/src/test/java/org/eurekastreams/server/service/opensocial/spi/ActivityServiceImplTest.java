@@ -17,12 +17,14 @@ package org.eurekastreams.server.service.opensocial.spi;
 
 import static junit.framework.Assert.assertNotNull;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.shindig.auth.SecurityToken;
@@ -45,10 +47,12 @@ import org.eurekastreams.commons.exceptions.GeneralException;
 import org.eurekastreams.commons.server.service.ServiceActionController;
 import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
 import org.eurekastreams.server.domain.GadgetDefinition;
+import org.eurekastreams.server.domain.gadgetspec.GadgetMetaDataDTO;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.GadgetDefinitionMapper;
+import org.eurekastreams.server.service.opensocial.gadgets.spec.GadgetMetaDataFetcher;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -177,8 +181,11 @@ public class ActivityServiceImplTest
     private final TaskHandlerServiceAction postActivityServiceActionMock =
             context.mock(TaskHandlerServiceAction.class);
 
-    /** Fixture: gadgetDefMapper. */
+    /** Fixture: gadget definition mapper. */
     private final GadgetDefinitionMapper gadgetDefMapper = context.mock(GadgetDefinitionMapper.class);
+
+    /** Fixture: gadget metadata fetcher. */
+    private final GadgetMetaDataFetcher gadgetMetaDataFetcher = context.mock(GadgetMetaDataFetcher.class);
 
     /**
      * TaskHandlerServiceActionprincipal object for an action.
@@ -194,7 +201,7 @@ public class ActivityServiceImplTest
         sut =
                 new ActivityServiceImpl(getUserActivitiesAction, deleteUserActivitiesAction,
                         serviceActionControllerMock, openSocialPrincipalPopulatorMock, postActivityServiceActionMock,
-                        gadgetDefMapper);
+                        gadgetDefMapper, gadgetMetaDataFetcher);
 
         testActivity = new ActivityImpl(TEST_ACTIVITY_ID, testId.getUserId());
 
@@ -256,6 +263,8 @@ public class ActivityServiceImplTest
 
                 oneOf(gadgetDefMapper).findById(Long.parseLong(TEST_APP_ID));
                 will(returnValue(gadgetDef));
+                oneOf(gadgetMetaDataFetcher).getGadgetsMetaData(with(any(Map.class)));
+                will(returnValue(Collections.singletonList(new GadgetMetaDataDTO(gadgetDef))));
             }
         });
 
@@ -292,6 +301,8 @@ public class ActivityServiceImplTest
 
                 oneOf(gadgetDefMapper).findById(Long.parseLong(TEST_APP_ID));
                 will(returnValue(gadgetDef));
+                oneOf(gadgetMetaDataFetcher).getGadgetsMetaData(with(any(Map.class)));
+                will(returnValue(Collections.singletonList(new GadgetMetaDataDTO(gadgetDef))));
             }
         });
 
@@ -323,6 +334,8 @@ public class ActivityServiceImplTest
 
                 oneOf(gadgetDefMapper).findById(Long.parseLong(TEST_APP_ID));
                 will(returnValue(gadgetDef));
+                oneOf(gadgetMetaDataFetcher).getGadgetsMetaData(with(any(Map.class)));
+                will(returnValue(Collections.singletonList(new GadgetMetaDataDTO(gadgetDef))));
 
                 oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
                         with(any(TaskHandlerAction.class)));
