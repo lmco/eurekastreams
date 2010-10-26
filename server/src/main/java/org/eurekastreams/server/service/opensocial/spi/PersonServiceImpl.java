@@ -16,6 +16,7 @@
 package org.eurekastreams.server.service.opensocial.spi;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -29,13 +30,18 @@ import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RestfulCollection;
+import org.apache.shindig.social.core.model.AccountImpl;
+import org.apache.shindig.social.core.model.ListFieldImpl;
 import org.apache.shindig.social.core.model.NameImpl;
 import org.apache.shindig.social.core.model.PersonImpl;
+import org.apache.shindig.social.opensocial.model.Account;
+import org.apache.shindig.social.opensocial.model.ListField;
 import org.apache.shindig.social.opensocial.model.Person;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.PersonService;
 import org.apache.shindig.social.opensocial.spi.UserId;
+import org.apache.shindig.social.opensocial.spi.GroupId.Type;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
@@ -43,8 +49,11 @@ import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.server.service.ServiceActionController;
 import org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper;
 import org.eurekastreams.server.action.request.opensocial.GetPeopleByOpenSocialIdsRequest;
+import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.PagedSet;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -82,10 +91,18 @@ public class PersonServiceImpl implements PersonService
     private ServiceAction getPeopleAction;
 
     /**
+     * Instance of the GetFollowingAction that is used to process Friends requests.
+     */
+    private final ServiceAction getFollowingAction;
+    
+    /**
      * Container base url to create profile url from.
      */
     private String containerBaseUrl;
 
+    /** Top-level domain used for users' accounts. */
+    private final String accountTopLevelDomain;
+    
     /**
      * Basic constructor for the PersonService implementation.
      * 
@@ -96,6 +113,9 @@ public class PersonServiceImpl implements PersonService
      * @param inGetPeopleAction
      *            - this is the GetPeopleAction that is injected into this class with Spring. This action is used to
      *            retrieve multiple person objects in a single request.
+     * @param inGetFollowingAction
+     *            - this is the GetFollowingAction that is injected into this class with Spring. This action is used to
+     *            retrieve the friends of the requestor.
      * @param inOpenSocialPrincipalPopulator
      *            {@link PrincipalPopulatorTransWrapper}.
      * @param inServiceActionController
@@ -103,19 +123,23 @@ public class PersonServiceImpl implements PersonService
      * @param inContainerBaseUrl
      *            - string that contains the base url for the container to be used when generating links for an
      *            opensocial person.
+     * @param inAccountTopLevelDomain
+     *          Top-level domain used for users' accounts.
      */
     @Inject
-    public PersonServiceImpl(@Named("getPersonNoContext") final ServiceAction inGetPersonAction,
-            @Named("getPeopleByOpenSocialIds") final ServiceAction inGetPeopleAction,
+    public PersonServiceImpl(@Named("getPeopleByOpenSocialIds") final ServiceAction inGetPeopleAction,
+            @Named("getFollowing") final ServiceAction inGetFollowingAction,
             final PrincipalPopulatorTransWrapper inOpenSocialPrincipalPopulator,
             final ServiceActionController inServiceActionController,
-            @Named("eureka.container.baseurl") final String inContainerBaseUrl)
+            @Named("eureka.container.baseurl") final String inContainerBaseUrl,
+            @Named("eureka.user-account-tld") final String inAccountTopLevelDomain)
     {
-        getPersonAction = inGetPersonAction;
         getPeopleAction = inGetPeopleAction;
+        getFollowingAction = inGetFollowingAction;
         containerBaseUrl = inContainerBaseUrl;
         principalPopulator = inOpenSocialPrincipalPopulator;
         serviceActionController = inServiceActionController;
+        accountTopLevelDomain = inAccountTopLevelDomain;
     }
 
     /**
@@ -142,31 +166,58 @@ public class PersonServiceImpl implements PersonService
     {
         log.trace("Entering getPeople");
         List<Person> osPeople = new ArrayList<Person>();
+        LinkedList<PersonModelView> people = null;
         try
         {
-            LinkedList<String> userIdList = new LinkedList<String>();
-            for (UserId currentUserId : userIds)
+            if(groupId.getType().equals(Type.friends))
             {
-                if (!currentUserId.getUserId(token).equals("null"))
+                Principal currentPrincipal = getPrincipal(token);
+                if(currentPrincipal == null)
                 {
-                    userIdList.add(currentUserId.getUserId(token));
+                    throw new IllegalArgumentException("Invalid requestor");
                 }
+                
+                GetFollowersFollowingRequest currentRequest = 
+                    new GetFollowersFollowingRequest(EntityType.PERSON, currentPrincipal.getAccountId(), 
+                            0, Integer.MAX_VALUE);
+                
+                ServiceActionContext currentContext = 
+                    new ServiceActionContext(currentRequest, currentPrincipal);
+                
+                PagedSet<PersonModelView> peopleResults = (PagedSet<PersonModelView>) serviceActionController.execute(
+                        currentContext, getFollowingAction);
+                
+                people = new LinkedList<PersonModelView>(peopleResults.getPagedSet());
+            }
+            else
+            {
+                LinkedList<String> userIdList = new LinkedList<String>();
+                for (UserId currentUserId : userIds)
+                {
+                    if (!currentUserId.getUserId(token).equals("null"))
+                    {
+                        userIdList.add(currentUserId.getUserId(token));
+                    }
+                }
+    
+                log.debug("Sending getPeople userIdList to action: " + userIdList.toString());
+    
+                GetPeopleByOpenSocialIdsRequest currentRequest =
+                        new GetPeopleByOpenSocialIdsRequest(userIdList, groupId.getType().toString().toLowerCase());
+                
+                ServiceActionContext currentContext =
+                        new ServiceActionContext(currentRequest, getPrincipal(token));
+    
+                people = (LinkedList<PersonModelView>) serviceActionController.execute(
+                                currentContext, getPeopleAction);
+            }
+            
+            if (log.isDebugEnabled())
+            {
+                log.debug("Retrieved " + people.size() + " people from action");
             }
 
-            log.debug("Sending getPeople userIdList to action: " + userIdList.toString());
-
-            GetPeopleByOpenSocialIdsRequest currentRequest = new GetPeopleByOpenSocialIdsRequest(userIdList, groupId
-                    .getType().toString().toLowerCase());
-            ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalPopulator
-                    .getPrincipal(token.getViewerId()));
-
-            LinkedList<org.eurekastreams.server.domain.Person> people = 
-                (LinkedList<org.eurekastreams.server.domain.Person>) serviceActionController
-                    .execute(currentContext, getPeopleAction);
-
-            log.debug("Retrieved " + people.size() + " people from action");
-
-            for (org.eurekastreams.server.domain.Person currentPerson : people)
+            for (PersonModelView currentPerson : people)
             {
                 osPeople.add(convertToOSPerson(currentPerson));
             }
@@ -181,86 +232,124 @@ public class PersonServiceImpl implements PersonService
     }
 
     /**
-     * This is the implementation of the getPerson method specified by Shindig. This is how Shindig's OpenSocial api
-     * will interact with our database.
-     * 
-     * @param id
-     *            - userid making the request.
-     * @param fields
-     *            - set of fields to be retrieved with this request.
-     * @param token
-     *            - token that goes with this request.
-     * 
-     * @return instance of Person object
-     */
-    public Future<Person> getPerson(final UserId id, final Set<String> fields, final SecurityToken token)
-    {
-        log.trace("Entering getPerson");
-        Person osPerson = new PersonImpl();
-
-        org.eurekastreams.server.domain.Person currentPerson;
-
-        // Id is null, cannot proceed.
-        if (id.getUserId(token).equals("null"))
+    * This is the implementation of the getPerson method specified by Shindig. This is how Shindig's OpenSocial api
+    * will interact with our database.
+    *
+    * @param id
+    * - userid making the request.
+    * @param fields
+    * - set of fields to be retrieved with this request.
+    * @param token
+    * - token that goes with this request.
+    *
+    * @return instance of Person object
+    */
+        public Future<Person> getPerson(final UserId id, final Set<String> fields, final SecurityToken token)
         {
-            log.debug("Id of the person requested was null");
-            throw new ProtocolException(HttpServletResponse.SC_BAD_REQUEST, "No id supplied");
+            log.trace("Entering getPerson");
+            Person osPerson = new PersonImpl();
+
+            String openSocialId = null;
+
+            // Retrieve the user id.
+            if (id.getUserId(token) != null)
+            {
+                openSocialId = id.getUserId(token);
+            }
+            else
+            // userId is null and so is the type cannot proceed.
+            {
+                log.debug("Id of the person requested was null");
+                throw new ProtocolException(HttpServletResponse.SC_BAD_REQUEST, "No id supplied");
+            }
+
+            try
+            {
+                log.debug("User id requested is: " + openSocialId);
+
+                LinkedList<String> userIdList = new LinkedList<String>();
+                userIdList.add(openSocialId);
+
+                // Build up request to retrieve a single person.
+                GetPeopleByOpenSocialIdsRequest currentRequest = new GetPeopleByOpenSocialIdsRequest(userIdList, Type.all
+                        .toString());
+
+                // Create the actionContext
+                PrincipalActionContext ac = new ServiceActionContext(currentRequest, getPrincipal(token));
+
+                // execute action.
+                LinkedList<PersonModelView> people = (LinkedList<PersonModelView>) serviceActionController.execute(
+                        (ServiceActionContext) ac, getPeopleAction);
+
+                if (people.size() > 0)
+                {
+                    osPerson = convertToOSPerson(people.getFirst());
+                }
+            }
+            catch (NumberFormatException e)
+            {
+                log.error("number format exception " + e.getMessage());
+
+                throw new ProtocolException(HttpServletResponse.SC_BAD_REQUEST, "Id supplied is bad.");
+            }
+            catch (Exception e)
+            {
+                log.error("Error occurred retrieving person " + e.getMessage());
+
+                throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            }
+
+            return ImmediateFuture.newInstance(osPerson);
         }
-
-        try
-        {
-            String openSocialId = id.getUserId(token);
-            log.debug("User id requested is: " + openSocialId);
-
-            // Get Principal object for current user.
-            Principal currentUserPrincipal = principalPopulator.getPrincipal(openSocialId);
-
-            // Create the actionContext
-            PrincipalActionContext ac = new ServiceActionContext(currentUserPrincipal.getAccountId(),
-                    currentUserPrincipal);
-
-            // execute action.
-            currentPerson = (org.eurekastreams.server.domain.Person) serviceActionController.execute(
-                    (ServiceActionContext) ac, getPersonAction);
-
-            osPerson = convertToOSPerson(currentPerson);
-        }
-        catch (NumberFormatException e)
-        {
-            log.error("number format exception " + e.getMessage());
-
-            throw new ProtocolException(HttpServletResponse.SC_BAD_REQUEST, "Id supplied is bad.");
-        }
-        catch (Exception e)
-        {
-            log.error("Error occurred retrieving person " + e.getMessage());
-
-            throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-        }
-
-        return ImmediateFuture.newInstance(osPerson);
-    }
-
+    
     /**
-     * Helper method that converts a passed in eurekastreams Person object into a Shindig Person object.
-     * 
-     * @param inPerson
-     *            - eurekastreams person to be converted.
-     * @return converted person object.
-     */
-    private Person convertToOSPerson(final org.eurekastreams.server.domain.Person inPerson)
-    {
-        Person osPerson = new PersonImpl();
-        // Populate the OpenSocial person properties.
-        osPerson.setName(new NameImpl(inPerson.getFirstName() + " " + inPerson.getLastName()));
-        osPerson.setDisplayName(inPerson.getPreferredName());
-        osPerson.setId(inPerson.getOpenSocialId());
-        osPerson.setAboutMe(inPerson.getBiography());
-        osPerson.setProfileUrl(containerBaseUrl + "/#people/" + inPerson.getAccountId());
-        AvatarUrlGenerator generator = new AvatarUrlGenerator(EntityType.PERSON);
+    * Get Principal object for current user. Currently this method allows an unauthenticated request to retrieve
+    * opensocial information about a user. The authentication is handled within shindig, not here. There may be a need
+    * for an authorization strategy to not allow this access even if you have anonymous auth configured in shindig.
+    * TODO: Put in authorization strategy for the underlying action.
+    *
+    * @param inSecurityToken
+    * - current security token for the request.
+    * @return Principal object based on the security token or null if an anonymous request.
+    */
+        private Principal getPrincipal(final SecurityToken inSecurityToken)
+        {
+            Principal currentUserPrincipal = null;
+            if (inSecurityToken.getViewerId() != null)
+            {
+                currentUserPrincipal = principalPopulator.getPrincipal(inSecurityToken.getViewerId());
+            }
+            return currentUserPrincipal;
+        }
+    
+    /**
+    * Helper method that converts a passed in eurekastreams Person object into a Shindig Person object.
+    *
+    * @param inPerson
+    * - eurekastreams person to be converted.
+    * @return converted person object.
+    */
+        private Person convertToOSPerson(final PersonModelView inPerson)
+        {
+            Person osPerson = new PersonImpl();
+            // Populate the OpenSocial person properties.
+            osPerson.setName(new NameImpl(inPerson.getDisplayName()));
+            osPerson.setDisplayName(inPerson.getDisplayName());
+            osPerson.setId(inPerson.getOpenSocialId());
+            osPerson.setAboutMe(inPerson.getDescription());
+            osPerson.setProfileUrl(containerBaseUrl + "/#people/" + inPerson.getAccountId());
 
-        osPerson.setThumbnailUrl(containerBaseUrl
-                + generator.getSmallAvatarUrl(inPerson.getId(), inPerson.getAvatarId()));
-        return osPerson;
-    }
+            List<ListField> emailList = new ArrayList<ListField>();
+            emailList.add(new ListFieldImpl("primary", inPerson.getEmail()));
+            osPerson.setEmails(emailList);
+
+            AvatarUrlGenerator generator = new AvatarUrlGenerator(EntityType.PERSON);
+            osPerson.setThumbnailUrl(containerBaseUrl
+                    + generator.getSmallAvatarUrl(inPerson.getId(), inPerson.getAvatarId()));
+
+            osPerson.setAccounts(Collections.singletonList((Account) new AccountImpl(accountTopLevelDomain, null, inPerson
+                    .getAccountId())));
+
+            return osPerson;
+        }
 }

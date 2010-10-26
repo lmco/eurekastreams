@@ -126,12 +126,12 @@ public class SocialAPIGuiceModule extends AbstractModule
 
         requestStaticInjection(SocialRealm.class);
 
-        bind(ServiceAction.class).annotatedWith(Names.named("getPersonNoContext")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "getPersonNoContext"));
-
         bind(ServiceAction.class).annotatedWith(Names.named("getPeopleByOpenSocialIds")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "getPeopleByOpenSocialIds"));
+        bind(ServiceAction.class).annotatedWith(Names.named("getFollowing")).toProvider(
+                SpringIntegration.fromSpring(ServiceAction.class, "getFollowing"));
         bind(ServiceAction.class).annotatedWith(Names.named("getAppData")).toProvider(
+
                 SpringIntegration.fromSpring(ServiceAction.class, "getAppData"));
         bind(ServiceAction.class).annotatedWith(Names.named("updateAppData")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "updateAppData"));
