@@ -13544,6 +13544,11 @@ div.tab-container table.dragdrop-dropTarget-engage {
 	zoom: 1;
 }
 
+.gadget-button.gadget-help {
+    background: url(images/gadgetControls.png) no-repeat scroll 0 -260px
+        transparent;
+}
+
 .gadget-button.gadget-refresh {
 	background: url(images/gadgetControls.png) no-repeat scroll 0 -20px
 		transparent;
