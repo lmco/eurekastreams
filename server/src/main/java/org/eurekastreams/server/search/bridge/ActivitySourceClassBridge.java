@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.search.bridge;
 
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.hibernate.search.bridge.StringBridge;
 
@@ -40,20 +41,26 @@ public class ActivitySourceClassBridge implements StringBridge
     public String objectToString(final Object msgObject)
     {
         Activity activity = (Activity) msgObject;
+        EntityType appType = activity.getAppType();
+        Long appId = activity.getAppId();
 
-        char prefix;
-        switch (activity.getAppType())
+        if (appType != null && appId != null)
         {
-        case APPLICATION:
-            prefix = APPLICATION_PREFIX;
-            break;
-        case PLUGIN:
-            prefix = PLUGIN_PREFIX;
-            break;
-        default:
-            return "0";
+            char prefix;
+            switch (appType)
+            {
+            case APPLICATION:
+                prefix = APPLICATION_PREFIX;
+                break;
+            case PLUGIN:
+                prefix = PLUGIN_PREFIX;
+                break;
+            default:
+                return "0";
+            }
+            return prefix + Long.toString(activity.getAppId());
         }
 
-        return (null != activity.getAppId()) ? prefix + Long.toString(activity.getAppId()) : "0";
+        return "0";
     }
 }

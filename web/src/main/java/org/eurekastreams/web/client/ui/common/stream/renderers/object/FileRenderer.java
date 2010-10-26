@@ -17,17 +17,17 @@ package org.eurekastreams.web.client.ui.common.stream.renderers.object;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Renders a file (document) object.
- * 
+ *
  */
 public class FileRenderer implements ObjectRenderer
 {
-
     /**
      * {@inheritDoc}
      */
@@ -35,16 +35,34 @@ public class FileRenderer implements ObjectRenderer
     {
         String title = activity.getBaseObjectProperties().get("targetTitle");
         String url = activity.getBaseObjectProperties().get("targetUrl");
+        String source = activity.getBaseObjectProperties().get("source");
+        String fileExt = getFileExt(url);
 
-        String ext = url.substring(url.lastIndexOf("."));
-        String author = activity.getOriginalActor().getDisplayName();
+        FlowPanel mainPanel = new FlowPanel();
+        mainPanel.addStyleName("icon message-link has-thumbnail");
+        if (fileExt != null)
+        {
+            mainPanel.addStyleName("icon-" + fileExt);
+        }
 
-        FlowPanel file = new FlowPanel();
-        file.add(new Label(url));
+        FlowPanel line;
+        InlineLabel text;
+        Widget link;
 
-        file.addStyleName("icon icon-" + ext);
+        link = new Anchor(title, url);
+        link.addStyleName("title");
+        mainPanel.add(link);
 
-        return file;
+        // source line
+        line = new FlowPanel();
+        line.addStyleName("url");
+        text = new InlineLabel("source: ");
+        line.add(text);
+        link = new Anchor(source, source);
+        line.add(link);
+        mainPanel.add(line);
+
+        return mainPanel;
     }
 
     /**
@@ -52,25 +70,22 @@ public class FileRenderer implements ObjectRenderer
      */
     public Widget getContentWidget(final ActivityDTO activity)
     {
-        String title = activity.getBaseObjectProperties().get("targetTitle");
-        String url = activity.getBaseObjectProperties().get("targetUrl");
-
-        FlowPanel file = new FlowPanel();
-
-        int extIndex = url.lastIndexOf(".");
-
-        // Make sure there is an extension
-        if (extIndex > 0 && extIndex + 2 < url.length())
-        {
-            String ext = url.substring(extIndex + 1);
-            file.addStyleName("icon icon-" + ext);
-        }
-
-        String author = activity.getOriginalActor().getDisplayName();
-
-        file.add(new Label(url));
-
-        return file;
+        // no content other than the attachment
+        return null;
     }
+
+    /**
+     * Gets the file extension from a URL. (Native since GWT 1.7 doesn't support java.util.regex.)
+     *
+     * @param url
+     *            the url.
+     * @return File extension.
+     */
+    private static native String getFileExt(final String url)
+    /*-{
+        var re = new RegExp('\\.(\\w+)$');
+        var result = url.match(re);
+        return result == null ? null : result[1].toString();
+    }-*/;
 
 }

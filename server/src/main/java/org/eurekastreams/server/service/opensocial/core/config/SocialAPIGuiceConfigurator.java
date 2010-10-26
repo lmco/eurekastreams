@@ -45,6 +45,7 @@ import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.commons.server.service.ServiceActionController;
 import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
 import org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper;
+import org.eurekastreams.server.persistence.GadgetDefinitionMapper;
 import org.eurekastreams.server.service.opensocial.oauth.OAuthDataStoreImpl;
 import org.eurekastreams.server.service.opensocial.oauth.SocialRealm;
 import org.eurekastreams.server.service.opensocial.spi.ActivityServiceImpl;
@@ -62,7 +63,7 @@ import com.google.inject.spring.SpringIntegration;
 
 /**
  * Wire up Eureka Streams implementation of Shindig OpenSocial endpoints in Guice.
- * 
+ *
  */
 public class SocialAPIGuiceConfigurator implements SpringGuiceConfigurator
 {
@@ -90,14 +91,15 @@ public class SocialAPIGuiceConfigurator implements SpringGuiceConfigurator
         inBinder.bind(BeanConverter.class).annotatedWith(Names.named("shindig.bean.converter.atom")).to(
                 BeanXStreamAtomConverter.class);
 
-        inBinder.bind(new TypeLiteral<List<AuthenticationHandler>>() { }).toProvider(
-                AuthenticationHandlerProvider.class);
-
-        Multibinder<Object> handlerBinder = 
-            Multibinder.newSetBinder(inBinder, Object.class, Names.named("org.apache.shindig.handlers"));
-        for (Class handler : getHandlers()) 
+        inBinder.bind(new TypeLiteral<List<AuthenticationHandler>>()
         {
-          handlerBinder.addBinding().toInstance(handler);
+        }).toProvider(AuthenticationHandlerProvider.class);
+
+        Multibinder<Object> handlerBinder =
+                Multibinder.newSetBinder(inBinder, Object.class, Names.named("org.apache.shindig.handlers"));
+        for (Class handler : getHandlers())
+        {
+            handlerBinder.addBinding().toInstance(handler);
         }
         inBinder.bind(Long.class).annotatedWith(Names.named("org.apache.shindig.serviceExpirationDurationMinutes"))
                 .toInstance(SERVICE_EXPIRATION_IN_MINS);
@@ -139,16 +141,18 @@ public class SocialAPIGuiceConfigurator implements SpringGuiceConfigurator
         inBinder.bind(PrincipalPopulatorTransWrapper.class).toProvider(
                 SpringIntegration.fromSpring(PrincipalPopulatorTransWrapper.class,
                         "openSocialPrincipalPopulatorTransWrapper"));
+        inBinder.bind(GadgetDefinitionMapper.class).annotatedWith(Names.named("jpaGadgetDefinitionMapper"))
+                .toProvider(SpringIntegration.fromSpring(GadgetDefinitionMapper.class, "jpaGadgetDefinitionMapper"));
     }
 
     /**
-     * Hook to provide a Set of request handlers.  Subclasses may override
-     * to add or replace additional handlers.
+     * Hook to provide a Set of request handlers. Subclasses may override to add or replace additional handlers.
+     *
      * @return Set of Handlers.
      */
-    protected Set<Class<?>> getHandlers() 
+    protected Set<Class<?>> getHandlers()
     {
-      return ImmutableSet.<Class<?>>of(ActivityHandler.class, AppDataHandler.class,
-          PersonHandler.class, MessageHandler.class);
+        return ImmutableSet.<Class<?>> of(ActivityHandler.class, AppDataHandler.class, PersonHandler.class,
+                MessageHandler.class);
     }
 }

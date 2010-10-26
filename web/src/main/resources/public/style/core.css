@@ -8746,6 +8746,38 @@ body .post-to-stream .post-button.inactive {
 	color: #999999;
 }
 
+.icon
+{
+	background: transparent url('images/icon-unknown-large.png') no-repeat scroll left center;
+	padding-left: 55px;
+	min-height: 50px;
+}
+.icon-ppt, .icon-pptx
+{
+	background-image: url('images/icon-ppt-large.png');
+}
+.icon-xls, .icon-xlsx
+{
+	background-image: url('images/icon-xls-large.png');
+}
+.icon-doc, .icon-docx, .icon-txt, .icon-pdf
+{
+	background-image: url('images/icon-doc-large.png');
+}
+.icon-mpp
+{
+	background-image: url('images/icon-mpp-large.png');
+}
+.icon-accdb
+{
+	background-image: url('images/icon-accd-large.png');
+}
+.icon-jpg, .icon-jpeg, .icon-png, .icon-gif, .icon-bmp
+{
+	background-image: url('images/icon-image-large.png');
+}
+
+
 .more-button {
 	margin: 0 auto;
 	margin-top: 10px;
@@ -14420,7 +14452,7 @@ body .url-validator .required-form-label {
 	display: inline-block; 
 	*display: inline;
 	zoom: 1;
-	margin-left: 5px;
+	margin-right: 5px;
 }
 
 .private-icon {

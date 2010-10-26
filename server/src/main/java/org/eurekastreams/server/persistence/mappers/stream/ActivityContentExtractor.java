@@ -29,7 +29,7 @@ public class ActivityContentExtractor
     /**
      * The logger.
      */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /**
      * Extract the unformatted content from the activity for analysis.
@@ -68,7 +68,12 @@ public class ActivityContentExtractor
                     sb.append(" ");
                     sb.append(inBaseObject.get("description"));
                 }
-
+                break;
+            case FILE:
+                if (inBaseObject.containsKey("targetTitle"))
+                {
+                    sb.append(inBaseObject.get("targetTitle"));
+                }
                 break;
             default:
                 log.error("I don't know how to pull the content from activities of type: " + inBaseObject.toString());

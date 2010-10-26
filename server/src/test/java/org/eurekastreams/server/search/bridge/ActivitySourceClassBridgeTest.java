@@ -71,6 +71,18 @@ public class ActivitySourceClassBridgeTest
     }
 
     /**
+     * Tests with null type.
+     */
+    @Test
+    public void testTypeNull()
+    {
+        Activity activity = new Activity();
+        activity.setAppId(5L);
+
+        Assert.assertEquals("0", sut.objectToString(activity));
+    }
+
+    /**
      * Tests for an app.
      */
     @Test
