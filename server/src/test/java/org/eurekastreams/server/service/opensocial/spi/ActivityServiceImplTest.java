@@ -44,9 +44,11 @@ import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
 import org.eurekastreams.commons.exceptions.GeneralException;
 import org.eurekastreams.commons.server.service.ServiceActionController;
 import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
+import org.eurekastreams.server.domain.GadgetDefinition;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.persistence.GadgetDefinitionMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -134,7 +136,7 @@ public class ActivityServiceImplTest
     /**
      * Activity implementation for tests.
      */
-    private final Activity testActivity = new ActivityImpl(TEST_ACTIVITY_ID, testId.getUserId());
+    private  Activity testActivity;
 
     /**
      * Context for building mock objects.
@@ -175,6 +177,9 @@ public class ActivityServiceImplTest
     private final TaskHandlerServiceAction postActivityServiceActionMock =
             context.mock(TaskHandlerServiceAction.class);
 
+    /** Fixture: gadgetDefMapper. */
+    private final GadgetDefinitionMapper gadgetDefMapper = context.mock(GadgetDefinitionMapper.class);
+
     /**
      * TaskHandlerServiceActionprincipal object for an action.
      */
@@ -188,7 +193,10 @@ public class ActivityServiceImplTest
     {
         sut =
                 new ActivityServiceImpl(getUserActivitiesAction, deleteUserActivitiesAction,
-                        serviceActionControllerMock, openSocialPrincipalPopulatorMock, postActivityServiceActionMock);
+                        serviceActionControllerMock, openSocialPrincipalPopulatorMock, postActivityServiceActionMock,
+                        gadgetDefMapper);
+
+        testActivity = new ActivityImpl(TEST_ACTIVITY_ID, testId.getUserId());
 
         activityIds.add("1");
         activityIds.add("2");
@@ -231,6 +239,8 @@ public class ActivityServiceImplTest
     @Test
     public void testCreateActivity() throws Exception
     {
+        final GadgetDefinition gadgetDef = new GadgetDefinition();
+
         context.checking(new Expectations()
         {
             {
@@ -243,6 +253,45 @@ public class ActivityServiceImplTest
 
                 oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
                         with(any(TaskHandlerAction.class)));
+
+                oneOf(gadgetDefMapper).findById(Long.parseLong(TEST_APP_ID));
+                will(returnValue(gadgetDef));
+            }
+        });
+
+        sut.createActivity(testId, testGroupId, TEST_APP_ID, ACTIVITY_ALL_FIELDS, testActivity, FAKETOKEN);
+
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test for creating an activity.
+     *
+     * @throws Exception
+     *             - covers all exceptions
+     */
+    @Test
+    public void testCreateActivityFile() throws Exception
+    {
+        testActivity.setTemplateParams(new HashMap<String, String>());
+        testActivity.getTemplateParams().put("baseObjectType", "FILE");
+        final GadgetDefinition gadgetDef = new GadgetDefinition();
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(openSocialPrincipalPopulatorMock).getPrincipal(with(any(String.class)));
+                will(returnValue(principalMock));
+
+                oneOf(principalMock).getOpenSocialId();
+
+                oneOf(principalMock).getAccountId();
+
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(TaskHandlerAction.class)));
+
+                oneOf(gadgetDefMapper).findById(Long.parseLong(TEST_APP_ID));
+                will(returnValue(gadgetDef));
             }
         });
 
@@ -260,6 +309,8 @@ public class ActivityServiceImplTest
     @Test(expected = ProtocolException.class)
     public void testCreateActivityFailure() throws Exception
     {
+        final GadgetDefinition gadgetDef = new GadgetDefinition();
+
         context.checking(new Expectations()
         {
             {
@@ -269,6 +320,9 @@ public class ActivityServiceImplTest
                 oneOf(principalMock).getOpenSocialId();
 
                 oneOf(principalMock).getAccountId();
+
+                oneOf(gadgetDefMapper).findById(Long.parseLong(TEST_APP_ID));
+                will(returnValue(gadgetDef));
 
                 oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
                         with(any(TaskHandlerAction.class)));
