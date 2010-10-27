@@ -46,6 +46,7 @@ import org.eurekastreams.commons.server.service.ServiceActionController;
 import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
 import org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper;
 import org.eurekastreams.server.persistence.GadgetDefinitionMapper;
+import org.eurekastreams.server.service.opensocial.gadgets.spec.GadgetMetaDataFetcher;
 import org.eurekastreams.server.service.opensocial.oauth.OAuthDataStoreImpl;
 import org.eurekastreams.server.service.opensocial.oauth.SocialRealm;
 import org.eurekastreams.server.service.opensocial.spi.ActivityServiceImpl;
@@ -113,11 +114,10 @@ public class SocialAPIGuiceConfigurator implements SpringGuiceConfigurator
 
         inBinder.requestStaticInjection(SocialRealm.class);
 
-        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getPersonNoContext")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "getPersonNoContext"));
-
         inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getPeopleByOpenSocialIds")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "getPeopleByOpenSocialIds"));
+        inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getFollowing")).toProvider(
+                SpringIntegration.fromSpring(ServiceAction.class, "getFollowing"));
         inBinder.bind(ServiceAction.class).annotatedWith(Names.named("getAppData")).toProvider(
                 SpringIntegration.fromSpring(ServiceAction.class, "getAppData"));
         inBinder.bind(ServiceAction.class).annotatedWith(Names.named("updateAppData")).toProvider(
@@ -143,6 +143,8 @@ public class SocialAPIGuiceConfigurator implements SpringGuiceConfigurator
                         "openSocialPrincipalPopulatorTransWrapper"));
         inBinder.bind(GadgetDefinitionMapper.class).annotatedWith(Names.named("jpaGadgetDefinitionMapper"))
                 .toProvider(SpringIntegration.fromSpring(GadgetDefinitionMapper.class, "jpaGadgetDefinitionMapper"));
+        inBinder.bind(GadgetMetaDataFetcher.class).toProvider(
+                SpringIntegration.fromSpring(GadgetMetaDataFetcher.class, "gadgetMetaDataHttpFetcher"));
     }
 
     /**

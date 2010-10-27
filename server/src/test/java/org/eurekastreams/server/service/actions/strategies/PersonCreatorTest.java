@@ -111,8 +111,10 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         List<String> streamNames = new ArrayList<String>(CollectionUtils.asList("Everyone", "My saved items",
                 "EUREKA:PARENT_ORG_TAG", "Following"));
 
+        List<String> startPageTabTypes = new ArrayList<String>(CollectionUtils.asList(TabType.WELCOME));
+
         sut = new PersonCreator(personMapperMock, tabMapperMock, organizationMapperMock, readonlyStreamsMapper,
-                streamNames);
+                streamNames, startPageTabTypes);
     }
 
     /**
@@ -188,8 +190,10 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         List<String> streamNames = new ArrayList<String>(CollectionUtils.asList("My saved items", "Everyone",
                 "EUREKA:PARENT_ORG_TAG"));
 
+        List<String> startPageTabTypes = new ArrayList<String>(CollectionUtils.asList(TabType.WELCOME));
+
         PersonCreator localSut = new PersonCreator(personMapperMock, tabMapperMock, organizationMapperMock,
-                readonlyStreamsMapper, streamNames);
+                readonlyStreamsMapper, streamNames, startPageTabTypes);
 
         Person p = localSut.get(null, inFields);
         context.assertIsSatisfied();
@@ -214,7 +218,7 @@ public class PersonCreatorTest extends DomainEntityMapperTest
 
     /**
      * Test the persist method.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -246,7 +250,7 @@ public class PersonCreatorTest extends DomainEntityMapperTest
 
     /**
      * Test the persist method.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -258,7 +262,10 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         List<String> streamNames = new ArrayList<String>(CollectionUtils.asList("My saved items", "Everyone",
                 "EUREKA:PARENT_ORG_TAG"));
 
-        sut = new PersonCreator(personMapper, tabMapper, organizationMapper, readonlyStreamsMapper, streamNames);
+        List<String> startPageTabTypes = new ArrayList<String>(CollectionUtils.asList(TabType.WELCOME));
+
+        sut = new PersonCreator(personMapper, tabMapper, organizationMapper, readonlyStreamsMapper, streamNames,
+                startPageTabTypes);
         final Organization org = organizationMapper.getRootOrganization();
 
         final HashMap<String, Serializable> inFields = new HashMap<String, Serializable>();

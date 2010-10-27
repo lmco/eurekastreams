@@ -35,6 +35,7 @@ import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.exceptions.GeneralException;
 import org.eurekastreams.commons.server.service.ServiceActionController;
 import org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper;
+import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -108,6 +109,11 @@ public class PersonServiceTest
     private final GroupId testGroupId = new GroupId(GroupId.Type.self, GROUPID);
 
     /**
+     * A test GroupId object to be used during the tests.
+     */
+    private final GroupId testFriendsGroupId = new GroupId(GroupId.Type.friends, GROUPID);
+    
+    /**
      * Context for building mock objects.
      */
     private final Mockery context = new JUnit4Mockery()
@@ -127,6 +133,11 @@ public class PersonServiceTest
      */
     private final ServiceAction getPeopleAction = context.mock(ServiceAction.class, "getPeopleAction");
 
+    /**
+     * Mocked instance of the getPeopleAction.
+     */
+    private final ServiceAction getFollowingAction = context.mock(ServiceAction.class, "getFollowingAction");
+    
     /**
      * Service Action Controller.
      */
@@ -155,7 +166,7 @@ public class PersonServiceTest
     @Before
     public void setUp()
     {
-        sut = new PersonServiceImpl(getPeopleAction, principalPopulator, serviceActionController,
+        sut = new PersonServiceImpl(getPeopleAction, getFollowingAction, principalPopulator, serviceActionController,
                 BASE_URL, TLD);
     }
 
@@ -273,10 +284,7 @@ public class PersonServiceTest
     }
 
     /**
-     * Test stub for unimplemented method. This is necessary for code coverage and because all methods for Shindig need
-     * to be implemented to not cause runtime errors even though we don't currently have implementations
-     * for all methods
-     * yet.
+     * This test covers retrieving multiple people specified by a set of user ids.
      *
      * @throws Exception
      *             - covers all exceptions
@@ -316,6 +324,45 @@ public class PersonServiceTest
         context.assertIsSatisfied();
     }
 
+    /**
+     * This test covers retrieving multiple people specified by a set of user ids.
+     *
+     * @throws Exception
+     *             - covers all exceptions
+     */
+    @Test
+    public void testGetFriends() throws Exception
+    {
+        LinkedHashSet<UserId> userIdSet = new LinkedHashSet<UserId>();
+        CollectionOptions collOptions = new CollectionOptions();
+        final PagedSet<PersonModelView> peopleResults = new PagedSet<PersonModelView>(0, 1, people.size(), people); 
+        buildPeople();
+        context.checking(new Expectations()
+        {
+            {
+                allowing(mockToken).getViewerId();
+                will(returnValue(USERID_ONE));
+                
+                allowing(principalPopulator).getPrincipal(USERID_ONE);
+                will(returnValue(principal));
+
+                allowing(principal).getAccountId();
+
+                allowing(serviceActionController).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
+                will(returnValue(peopleResults));
+            }
+        });
+
+        RestfulCollection<Person> testPeople = sut.getPeople(userIdSet, testFriendsGroupId, collOptions,
+                Person.Field.DEFAULT_FIELDS, mockToken).get();
+
+        assertNotNull("Collection of people is null", testPeople);
+
+        context.assertIsSatisfied();
+    }
+
+    
     /**
      * This test exercises the GetPeople method of the OpenSocial implementation in Shindig. This test throws an
      * exception to test error handling.

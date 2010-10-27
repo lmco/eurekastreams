@@ -83,8 +83,7 @@ public class TabTemplate extends DomainEntity implements Serializable
      * this is a temporary field, tabs don't inherently have a tab type .
      */
     @Basic
-    @Enumerated(EnumType.STRING)
-    private TabType type;
+    private String type;
 
 
     /**
@@ -220,7 +219,7 @@ public class TabTemplate extends DomainEntity implements Serializable
     /**
      * @return the type
      */
-    public TabType getType()
+    public String getType()
     {
         return type;
     }
@@ -229,7 +228,7 @@ public class TabTemplate extends DomainEntity implements Serializable
      * @param inType the type to set
      */
     @SuppressWarnings("unused")
-    private void setType(final TabType inType)
+    private void setType(final String inType)
     {
         type = inType;
     }

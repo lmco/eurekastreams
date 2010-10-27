@@ -7,19 +7,8 @@
       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
 	<import resource="applicationContext-actions-notifications.xml" />
-	
-    <!-- List of the Streams to assign a new person by name, ordered -->
-	<bean id="newPersonDefaultStreamOrder" class="org.springframework.beans.factory.config.ListFactoryBean">
-		<property name="sourceList">
-			<list>
-        		<value>Following</value>
-        		<value>EUREKA:PARENT_ORG_TAG</value>
-        		<value>Everyone</value>
-        		<value>My saved items</value>
-        	</list>
-		</property>
-	</bean>
-	
+    <import resource="applicationContext-actions-createperson.xml" />
+		
     <!--
         This spring file contains the configuration for the actions and their
         associated strategies.  This includes ServiceActions, TaskHandlerServiceActions,
@@ -812,30 +801,6 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
-    </bean>
-
-    <bean id="getPersonNoContext" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.GetPersonExecution">
-                <constructor-arg ref="jpaPersonMapper" />
-                <constructor-arg ref="populatePeopleWithSkeletonRelatedOrgsCacheMapper" />
-                <constructor-arg>
-                    <null />
-                </constructor-arg>
-                <constructor-arg ref="populateOrgChildWithSkeletonParentOrgsCacheMapper" />
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.action.execution.GetBannerIdByParentOrganizationStrategy">
-                        <constructor-arg ref="getOrganizationsByIdsMapper" />
-                        <constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />
-                        <constructor-arg ref="findByIdMapper" />
-                        <constructor-arg value="Person" />
-                    </bean>
-                </constructor-arg>
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
     </bean>
     
     <bean id="domainGroupCacheUpdaterAsyncAction"
@@ -3381,11 +3346,13 @@
         <constructor-arg value="true" />
     </bean>             
     
+    <!--  Start Page tab types are defined in shared resources so that they can be easily overridden -->
     <bean id="createPersonActionFactory" class="org.eurekastreams.server.action.execution.CreatePersonActionFactory">
         <constructor-arg ref="jpaTabMapper" />
         <constructor-arg ref="jpaOrganizationMapper" />
         <constructor-arg ref="getReadOnlyStreamsDbMapper" />
         <constructor-arg ref="newPersonDefaultStreamOrder" />
+        <constructor-arg ref="newPersonStartPageTabs" />
     </bean>
     
     
@@ -3738,6 +3705,7 @@
         <constructor-arg ref="jpaOrganizationMapper" />
         <constructor-arg ref="getReadOnlyStreamsDbMapper" />
         <constructor-arg ref="newPersonDefaultStreamOrder" />
+        <constructor-arg ref="newPersonStartPageTabs" />
     </bean>
 
     <bean id="personUpdater" class="org.eurekastreams.server.service.actions.strategies.PersonUpdater">

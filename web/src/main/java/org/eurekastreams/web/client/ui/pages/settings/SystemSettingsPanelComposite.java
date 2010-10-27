@@ -80,14 +80,14 @@ public class SystemSettingsPanelComposite extends FlowPanel
     private static final int MAX_EMAIL = 50;
 
     /**
+     * Maximum email length.
+     */
+    private static final int MAX_SITELABEL = 2000;
+    
+    /**
      * Maximum content warning length.
      */
     private static final int MAX_CONTENT_WARNING = 200;
-
-    /**
-     * Maximum site label length.
-     */
-    private static final int MAX_SITE_LABEL = 200;
 
     /**
      * the processor.
@@ -294,7 +294,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
 
         form.setOnCancelHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.START)));
         form.turnOffChangeCheck();
-        hideableSiteLabel = new HideableTextAreaFormElement(MAX_SITE_LABEL, "Site Labeling", "siteLabel",
+        hideableSiteLabel = new HideableTextAreaFormElement(MAX_SITELABEL, "Site Labeling", "siteLabel",
                 systemSettingValues.getSiteLabel(), "I would like to add a label to the system.",
                 "The site label will be displayed above the global navigation bar and below the "
                         + "footer on all pages in the system. If left blank, no label area will "

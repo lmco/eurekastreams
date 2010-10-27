@@ -52,6 +52,11 @@ public class CreatePersonActionFactory
     private List<String> readOnlyStreamsNameList;
 
     /**
+     * List of Strings describing the start pages to be added to a new user.
+     */
+    private final List<String> startPageTabs;
+    
+    /**
      * Constructor.
      *
      * @param inTabMapper
@@ -62,15 +67,19 @@ public class CreatePersonActionFactory
      *            mapper to get back all readonly streams
      * @param inReadOnlyStreamsNameList
      *            list of stream names to add to the new user, in order
+     * @param inStartPageTabs
+     *            list of tabs to be added to the start page.
      */
     public CreatePersonActionFactory(final TabMapper inTabMapper, final OrganizationMapper inOrganizationMapper,
             final DomainMapper<Long, List<Stream>> inReadonlyStreamsMapper, //
-            final List<String> inReadOnlyStreamsNameList)
+            final List<String> inReadOnlyStreamsNameList,
+            final List<String> inStartPageTabs)
     {
         tabMapper = inTabMapper;
         organizationMapper = inOrganizationMapper;
         readonlyStreamsMapper = inReadonlyStreamsMapper;
         readOnlyStreamsNameList = inReadOnlyStreamsNameList;
+        startPageTabs = inStartPageTabs;
     }
 
     /**
@@ -86,6 +95,6 @@ public class CreatePersonActionFactory
             final UpdaterStrategy inUpdater)
     {
         return new PersistResourceExecution<Person>(inPersonMapper, this, inUpdater, new PersonCreator(inPersonMapper,
-                tabMapper, organizationMapper, readonlyStreamsMapper, readOnlyStreamsNameList));
+                tabMapper, organizationMapper, readonlyStreamsMapper, readOnlyStreamsNameList, startPageTabs));
     }
 }

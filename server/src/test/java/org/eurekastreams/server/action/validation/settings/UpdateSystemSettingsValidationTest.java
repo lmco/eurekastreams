@@ -292,7 +292,30 @@ public class UpdateSystemSettingsValidationTest
             + " a arcu justo, consectetur tempor nulla. Curabitur elementum euismod neque, vel adipiscing"
             + " ligula dignissim vel metus. ";
         
-        formData.put("siteLabel", over255Chars);
+        String over2000Chars = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis tempor"
+            + " feugiat diam vel elementum. Donec magna velit, molestie et vehicula at, vehicula congue"
+            + " risus. Curabitur pulvinar convallis metus, sed laoreet augue dapibus non. Nullam pretium"
+            + " congue ante id adipiscing. Proin quis consectetur lacus. Sed ac nisl nec tellus pretium"
+            + " accumsan. Sed orci massa, volutpat nec tincidunt in, condimentum non ligula. Ut varius"
+            + " egestas ullamcorper. Mauris commodo, lorem sed volutpat semper, sem nunc dapibus diam, vitae"
+            + " auctor felis massa ac neque. Etiam tempor arcu eu mi aliquet ac scelerisque eros sollicitudin."
+            + " Praesent sed est volutpat tellus porttitor suscipit. Suspendisse et quam nec magna porttitor"
+            + " vulputate vitae id magna. Suspendisse vestibulum ipsum eget leo molestie imperdiet.  Aenean"
+            + " vel justo nisl. Donec felis justo, molestie eu dignissim faucibus, aliquam eu augue. Nullam"
+            + " a arcu justo, consectetur tempor nulla. Curabitur elementum euismod neque, vel adipiscing"
+            + " feugiat diam vel elementum. Donec magna velit, molestie et vehicula at, vehicula congue"
+            + " risus. Curabitur pulvinar convallis metus, sed laoreet augue dapibus non. Nullam pretium"
+            + " congue ante id adipiscing. Proin quis consectetur lacus. Sed ac nisl nec tellus pretium"
+            + " accumsan. Sed orci massa, volutpat nec tincidunt in, condimentum non ligula. Ut varius"
+            + " egestas ullamcorper. Mauris commodo, lorem sed volutpat semper, sem nunc dapibus diam, vitae"
+            + " auctor felis massa ac neque. Etiam tempor arcu eu mi aliquet ac scelerisque eros sollicitudin."
+            + " Praesent sed est volutpat tellus porttitor suscipit. Suspendisse et quam nec magna porttitor"
+            + " vulputate vitae id magna. Suspendisse vestibulum ipsum eget leo molestie imperdiet.  Aenean"
+            + " vel justo nisl. Donec felis justo, molestie eu dignissim faucibus, aliquam eu augue. Nullam"
+            + " a arcu justo, consectetur tempor nulla. Curabitur elementum euismod neque, vel adipisci"
+            + " ligula dignissim vel metus. ";
+        
+        formData.put("siteLabel", over2000Chars);
         formData.put("contentWarningText", over255Chars);
         formData.put("termsOfService", over1000Chars);
         formData.put("supportPhoneNumber", over50Chars);

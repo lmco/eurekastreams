@@ -45,6 +45,12 @@ public class SystemSettings extends DomainEntity implements Serializable
     public static final int MAX_INPUT = 200;
 
     /**
+     * Max site label characters.
+     */
+    @Transient
+    public static final int MAX_SITELABEL_INPUT = 2000;
+    
+    /**
      * Minimum number of days for the Terms of Service Prompt Interval.
      */
     @Transient
@@ -78,7 +84,6 @@ public class SystemSettings extends DomainEntity implements Serializable
      * Storage for the siteLabel.
      */
     @Basic(optional = true)
-    @Length(max = MAX_INPUT)
     private String siteLabel;
 
     /**

@@ -6591,6 +6591,10 @@ div.banner-container {
 	padding: 5px 0;
 }
 
+.footer-bar .hidden-in-footer {
+    visibility: hidden;
+}
+
 .footer-bar ul li div a,.footer-bar ul li div a:link,.footer-bar ul li div a:visited,.footer-bar ul li div a:hover,.footer-bar ul li div a:active
 	{
 	color: #666666;
@@ -14447,7 +14451,8 @@ body .url-validator .required-form-label {
 	width: 140px;
 }
 
-.message-timestamp-actions-area .gwt-HTML {
+.message-timestamp-actions-area .via-metadata
+{
 	color: #666;
 	display: inline-block; 
 	*display: inline;

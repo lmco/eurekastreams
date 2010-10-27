@@ -50,11 +50,12 @@ public class BookmarkRenderer implements ObjectRenderer
             html += "<img class='thumbnail' src='" + activity.getBaseObjectProperties().get("thumbnail") + "'></div>";
         }
 
-        html += "<div><a class=\"title\" href=\"" + activity.getBaseObjectProperties().get("targetUrl")
-                + "\" target=\"_blank\">" + activity.getBaseObjectProperties().get("targetTitle") + "</a>"
-                + "</div><div class='url'>source: <a href=\"" + baseUrl + "\" target=\"_blank\">" + baseUrl
-                + "</a></div>" + "<div class='gwt-Label meta-description'>"
-                + activity.getBaseObjectProperties().get("description") + "</div></div>";
+        html +=
+                "<div><a class=\"title\" href=\"" + activity.getBaseObjectProperties().get("targetUrl")
+                        + "\" target=\"_blank\">" + activity.getBaseObjectProperties().get("targetTitle") + "</a>"
+                        + "</div><div class='url'>source: <a href=\"" + baseUrl + "\" target=\"_blank\">" + baseUrl
+                        + "</a></div>" + "<div class='gwt-Label meta-description'>"
+                        + activity.getBaseObjectProperties().get("description") + "</div></div>";
 
         return new HTML(html);
     }
@@ -82,6 +83,10 @@ public class BookmarkRenderer implements ObjectRenderer
     public Widget getContentWidget(final ActivityDTO activity)
     {
         String activityContent = activity.getBaseObjectProperties().get("content");
+        if (activityContent == null || activityContent.trim().isEmpty())
+        {
+            return null;
+        }
 
         // first transform links to hyperlinks
         String html = new HyperlinkTransformer(new WidgetJSNIFacadeImpl()).transform(activityContent);

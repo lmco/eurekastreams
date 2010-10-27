@@ -28,7 +28,6 @@ import org.eurekastreams.commons.hibernate.QueryOptimizer;
 import org.eurekastreams.server.domain.Gadget;
 import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.domain.TabTemplate;
-import org.eurekastreams.server.domain.TabType;
 import org.eurekastreams.server.persistence.exceptions.GadgetDeletionException;
 import org.eurekastreams.server.persistence.exceptions.GadgetUndeletionException;
 
@@ -84,7 +83,7 @@ public class TabMapper
      *            The TabType.
      * @return the TabTemplate.
      */
-    public TabTemplate getTabTemplate(final TabType type)
+    public TabTemplate getTabTemplate(final String type)
     {
         Query q = entityManager.createQuery("FROM TabTemplate t where t.type=:tabTemplateType").setParameter(
                 "tabTemplateType", type);

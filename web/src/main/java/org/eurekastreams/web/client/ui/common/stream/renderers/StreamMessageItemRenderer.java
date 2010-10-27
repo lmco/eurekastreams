@@ -17,6 +17,7 @@ package org.eurekastreams.web.client.ui.common.stream.renderers;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.eurekastreams.commons.formatting.DateFormatter;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
@@ -54,8 +55,8 @@ import org.eurekastreams.web.client.utility.SamePageActivityLinkBuilder;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.InlineHyperlink;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -87,7 +88,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
     /**
      * Effects facade.
      */
-    private EffectsFacade effects = new EffectsFacade();
+    private final EffectsFacade effects = new EffectsFacade();
 
     /**
      * Show the recipient.
@@ -107,17 +108,17 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
     /**
      * State.
      */
-    private State state;
+    private final State state;
 
     /**
      * Verb dictionary.
      */
-    private HashMap<ActivityVerb, VerbRenderer> verbDictionary = new HashMap<ActivityVerb, VerbRenderer>();
+    private final Map<ActivityVerb, VerbRenderer> verbDictionary = new HashMap<ActivityVerb, VerbRenderer>();
 
     /**
      * Object dictionary.
      */
-    private HashMap<BaseObjectType, ObjectRenderer> objectDictionary = new HashMap<BaseObjectType, ObjectRenderer>();
+    private final Map<BaseObjectType, ObjectRenderer> objectDictionary = new HashMap<BaseObjectType, ObjectRenderer>();
 
     /**
      * Flag to show new comment box in initial view.
@@ -264,8 +265,9 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         CommentsListPanel commentsPanel = null;
         if (!state.equals(State.READONLY))
         {
-            commentsPanel = new CommentsListPanel(msg.getFirstComment(), msg.getLastComment(), msg.getCommentCount(),
-                    msg.getEntityId(), msg.isCommentable(), msg.getDestinationStream().getType(), msg
+            commentsPanel =
+                    new CommentsListPanel(msg.getFirstComment(), msg.getLastComment(), msg.getCommentCount(), msg
+                            .getEntityId(), msg.isCommentable(), msg.getDestinationStream().getType(), msg
                             .getDestinationStream().getUniqueIdentifier(), activityLinkBuilder);
         }
 
@@ -314,8 +316,9 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         Panel timestampActions = new FlowPanel();
         timestampActions.addStyleName("message-timestamp-actions-area");
 
-        String permalinkUrl = activityLinkBuilder.buildActivityPermalink(msg.getId(), msg.getDestinationStream()
-                .getType(), msg.getDestinationStream().getUniqueIdentifier());
+        String permalinkUrl =
+                activityLinkBuilder.buildActivityPermalink(msg.getId(), msg.getDestinationStream().getType(), msg
+                        .getDestinationStream().getUniqueIdentifier());
 
         DateFormatter dateFormatter = new DateFormatter(new Date());
         Hyperlink dateLink = new InlineHyperlink(dateFormatter.timeAgo(msg.getPostedTime()), permalinkUrl);
@@ -324,13 +327,30 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
         if (msg.getAppName() != null)
         {
-            timestampActions.add(new HTML("via <a href='" + msg.getAppSource() + "'>" + msg.getAppName() + "</a>"));
+            String appSource = msg.getAppSource();
+            if (appSource != null)
+            {
+                FlowPanel viaPanel = new FlowPanel();
+                viaPanel.addStyleName("via-metadata");
+                viaPanel.add(new InlineLabel("via "));
+                viaPanel.add(new Anchor(msg.getAppName(), appSource));
+                timestampActions.add(viaPanel);
+            }
+            else
+            {
+                InlineLabel viaLine = new InlineLabel("via " + msg.getAppName());
+                viaLine.addStyleName("via-metadata");
+                timestampActions.add(viaLine);
+            }
+            // TODO: If appSource is not supplied, the link should go to the respective galleries for apps and plugins.
+            // However, the app galery requires knowing the start page tab id, and the worthwhile plugin gallery is only
+            // available to coordinators.
         }
 
         if (verbRenderer.getAllowLike())
         {
-            LikeCountWidget likeCount = new LikeCountWidget(msg.getEntityId(), msg.getLikeCount(), msg.getLikers(), msg
-                    .isLiked());
+            LikeCountWidget likeCount =
+                    new LikeCountWidget(msg.getEntityId(), msg.getLikeCount(), msg.getLikers(), msg.isLiked());
             timestampActions.add(likeCount);
         }
         timestampActions.add(buildActions(msg, mainPanel, commentsPanel, verbRenderer));
