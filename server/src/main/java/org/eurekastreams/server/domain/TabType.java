@@ -18,75 +18,28 @@
  */
 package org.eurekastreams.server.domain;
 
-import java.util.HashMap;
 
 /**
- * What states something can be in.
- * 
- * in an enum, name() and valueOf() are bidirectional
- * 
- *  For our purposes, constructor/toEnum and toString are bidirectional. 
+ * What states something can be in. 
  */
-public enum TabType 
+public final class TabType 
 { 
     /**  */
-    ORG_ABOUT("About Organization"), 
+    public static final String ORG_ABOUT = "ORG_ABOUT"; 
     /**  */
-    PERSON_ABOUT("About Person"),
+    public static final String PERSON_ABOUT = "PERSON_ABOUT";
     /** */
-    GROUP_ABOUT("About Group"),
+    public static final String GROUP_ABOUT = "GROUP_ABOUT";
     /**  */
-    WELCOME("Welcome"), 
+    public static final String WELCOME = "WELCOME"; 
     /**  */
-    APP("Application");
-
-    /** 
-     * human-readable name (ie, "Business Development" as opposed to enum.BD).
-     */
-    private final String displayableName;
+    public static final String APP = "APP";
     
     /**
-     * for string-enum conversion.
+     * Default constructor override.
      */
-    private static HashMap<String, TabType> map = new HashMap<String, TabType>();
-    
-    static 
+    private TabType()
     {
-        TabType[] types = TabType.values();
-        for (TabType type : types)
-        {
-            map.put(type.toString(), type);
-        }
-        
+        //Hiding default constructor for a utility class.
     }
-    
-    /**
-     * constructor for this enum.
-     * 
-     * @param name a displayable name.
-     */
-    private TabType(final String name)
-    {
-        displayableName = name;
-    }
-    
-    /**
-     * 
-     * @param displayableName to convert.
-     * @return the enum corresponding to that string.
-     */
-    public static TabType toEnum(final String displayableName) 
-    {
-        return map.get(displayableName);
-    }
-    
-    /**
-     * @return the displayable name that was passed into the constructor.
-     */
-    @Override
-    public String toString() 
-    { 
-        return displayableName; 
-    }
-
 }

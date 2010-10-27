@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+      http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+    <!-- List of the Streams to assign a new person by name, ordered -->
+    <bean id="newPersonDefaultStreamOrder" class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list>
+                <value>Following</value>
+                <value>EUREKA:PARENT_ORG_TAG</value>
+                <value>Everyone</value>
+                <value>My saved items</value>
+            </list>
+        </property>
+    </bean>
+    
+    <!-- List of the tabs to be added for a new user's start page, ordered -->
+    <bean id="newPersonStartPageTabs" class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list>
+                <value>WELCOME</value>
+            </list>
+        </property>
+    </bean>
+    
+</beans>
+ 

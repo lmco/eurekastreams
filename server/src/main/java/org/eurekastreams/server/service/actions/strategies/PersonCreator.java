@@ -68,6 +68,11 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
      * List of the names of readonly streams to add to a person, in order.
      */
     private List<String> readOnlyStreamsNameList;
+    
+    /**
+     * List of StartPage Tabs to create when adding a new user.
+     */
+    private final List<String> startPageTabs;
 
     /**
      * Constructor.
@@ -82,17 +87,20 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
      *            mapper to get the readonly streams
      * @param inReadOnlyStreamsNameList
      *            List of the names of readonly streams to add to a person, in order
+     * @param inStartPageTabs - list of tabs to be created on the start page.
      */
     public PersonCreator(final PersonMapper inPersonMapper, final TabMapper inTabMapper,
             final OrganizationMapper inOrganizationMapper,
             final DomainMapper<Long, List<Stream>> inReadonlyStreamsMapper, //
-            final List<String> inReadOnlyStreamsNameList)
+            final List<String> inReadOnlyStreamsNameList,
+            final List<String> inStartPageTabs)
     {
         personMapper = inPersonMapper;
         tabMapper = inTabMapper;
         organizationMapper = inOrganizationMapper;
         readonlyStreamsMapper = inReadonlyStreamsMapper;
         readOnlyStreamsNameList = inReadOnlyStreamsNameList;
+        startPageTabs = inStartPageTabs;
     }
 
     /**
@@ -113,8 +121,8 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
 
         // create all tabs needed for an person profile
 
-        // This tab will share a TabTemplate.
-        Tab personAboutTab = new Tab(tabMapper.getTabTemplate(TabType.PERSON_ABOUT));
+        // add the templates to the tab group
+        profileTabGroup.addTab(new Tab(tabMapper.getTabTemplate(TabType.PERSON_ABOUT)));
 
         // These tabs create their own templates based on other templates.
         // It was decided that we will not have the Application
@@ -123,12 +131,10 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
         // the population script.
         // Tab personAppTab = new Tab(new
         // TabTemplate(tabMapper.getTabTemplate(TabType.APP)));
-        Tab personWelcomeTab = new Tab(new TabTemplate(tabMapper.getTabTemplate(TabType.WELCOME)));
-
-        // add the templates to the tab group
-        profileTabGroup.addTab(personAboutTab);
-        // profileTabGroup.addTab(personAppTab);
-        startTabGroup.addTab(personWelcomeTab);
+        for(String tabType : startPageTabs)
+        {
+            startTabGroup.addTab(new Tab(new TabTemplate(tabMapper.getTabTemplate(tabType))));
+        }
 
         // create the person
         Person person = new Person((String) inFields.get("accountId"), (String) inFields.get("firstName"),
@@ -170,7 +176,7 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
         // doesn't do them again.
         inFields.remove("organization");
         inFields.remove("email");
-
+        
         return person;
     }
 
