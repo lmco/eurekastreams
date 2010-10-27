@@ -16,7 +16,7 @@ eurekastreams.delegation = function()
        		params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.DELETE;
        		params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
        		params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
-       		params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "shindig";
+       		params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "eurekaapps";
        		params[gadgets.io.RequestParameters.OAUTH_USE_TOKEN] = "never";
        		params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 1;
        		gadgets.io.makeRequest(url, function(results) { gadgets.rpc.call(null, "refreshGadget", null, mid); }, params);
@@ -69,7 +69,7 @@ eurekastreams.delegation = function()
         	params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.PUT;
             params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
        		params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
-       		params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "shindig";
+       		params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "eurekaapps";
        		params[gadgets.io.RequestParameters.OAUTH_USE_TOKEN] = "never";
             params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 1;
             gadgets.io.makeRequest(url, function(results) { gadgets.rpc.call(null, "refreshGadget", null, mid); }, params);
@@ -113,7 +113,7 @@ eurekastreams.delegation = function()
             	params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
                 params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
            		params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
-           		params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "shindig";
+           		params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "eurekaapps";
            		params[gadgets.io.RequestParameters.OAUTH_USE_TOKEN] = "never";
                 params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 1;
                 gadgets.io.makeRequest(url, function(results) { eurekastreams.delegation.insertDropDown(results.data.delegators, container); }, params);
@@ -124,7 +124,7 @@ eurekastreams.delegation = function()
             	params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
                 params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
            		params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
-           		params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "shindig";
+           		params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "eurekaapps";
            		params[gadgets.io.RequestParameters.OAUTH_USE_TOKEN] = "never";
                 params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 1;
                 gadgets.io.makeRequest(url, function(results) { if (results.data.currentDelegator != null && results.data.currentDelegator != "null" && results.data.currentDelegator != "" ) 
@@ -147,7 +147,7 @@ eurekastreams.delegation = function()
         	params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
             params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
        		params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
-       		params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "shindig";
+       		params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "eurekaapps";
        		params[gadgets.io.RequestParameters.OAUTH_USE_TOKEN] = "never";
             params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 1;
             gadgets.io.makeRequest(url, function(results) { gadgets.rpc.call(null, "setupDelegation", null, mid, results.data.delegates); }, params);
@@ -169,7 +169,7 @@ eurekastreams.delegation = function()
             
             params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
        		params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
-       		params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "shindig";
+       		params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "eurekaapps";
        		params[gadgets.io.RequestParameters.OAUTH_USE_TOKEN] = "never";
             params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 0;
             gadgets.io.makeRequest(url, function(results) { eurekastreams.delegation.refreshDelegates(); }, params);
