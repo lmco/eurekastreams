@@ -6591,6 +6591,10 @@ div.banner-container {
 	padding: 5px 0;
 }
 
+.footer-bar .hidden-in-footer {
+    visibility: hidden;
+}
+
 .footer-bar ul li div a,.footer-bar ul li div a:link,.footer-bar ul li div a:visited,.footer-bar ul li div a:hover,.footer-bar ul li div a:active
 	{
 	color: #666666;

@@ -31,34 +31,34 @@ import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShor
 
 /**
  * Validate UpdateSystemSettingsExecution input.
- *
+ * 
  */
 public class UpdateSystemSettingsValidation implements ValidationStrategy<ActionContext>
 {
     // TODO: When reactoring, consider using MapParameterValidator so keys and messages are
     // pushed out into config file rather than hard coded.
-    
+
     /**
      * Last part of a message for too many characters.
      */
-    public static final String INPUT_TOO_LONG_MESSAGE = 
-        " supports up to " + SystemSettings.MAX_INPUT + " characters";
-    
+    public static final String INPUT_TOO_LONG_MESSAGE = " supports up to " + SystemSettings.MAX_INPUT + " characters";
+
     /**
      * Site Label Required Error Message.
      */
     public static final String SITE_LABEL_REQUIRED_ERROR_MESSAGE = "Site Label is required";
-    
+
     /**
      * Site Label Length Error Message.
      */
-    public static final String SITE_LABEL_LENGTH_ERROR_MESSAGE = "Site label" + INPUT_TOO_LONG_MESSAGE;
-    
+    public static final String SITE_LABEL_LENGTH_ERROR_MESSAGE = "Site label supports up to "
+            + SystemSettings.MAX_SITELABEL_INPUT + " characters";
+
     /**
      * Plugin Configuration Warning Required Error Message.
      */
     public static final String PLUGIN_WARNING_REQUIRED_ERROR_MESSAGE = "Plugin Configuration Warning is required";
-    
+
     /**
      * Terms of Service Required Error Message.
      */
@@ -67,60 +67,57 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
     /**
      * Terms of Service Prompt Interval Invalid Input Error Message.
      */
-    public static final String TOS_PROMPT_INTERVAL_INVALID_ERROR_MESSAGE = 
-        "Prompt Interval for Terms of Service supports up to 5 numeric characters";
-    
+    public static final String TOS_PROMPT_INTERVAL_INVALID_ERROR_MESSAGE = "Prompt Interval for Terms of Service supports up to 5 numeric characters";
+
     /**
      * Terms of Service Prompt Interval Minimal Value Error Message.
      */
     public static final String MIN_TOS_PROMPT_INTERVAL_ERROR_MESSAGE = "Prompt Interval for Terms of "
             + "Service must be greater than " + (SystemSettings.MIN_TOS_PROMPT_INTERVAL - 1);
-    
+
     /**
      * Content Warning Required Error Message.
      */
     public static final String CONTENT_WARNING_REQUIRED_ERROR_MESSAGE = "Content Warning is required";
-    
+
     /**
      * Content Warning Length Error Message.
      */
-    public static final String CONTENT_WARNING_LENGTH_ERROR_MESSAGE =  "Content Warning" + INPUT_TOO_LONG_MESSAGE;    
+    public static final String CONTENT_WARNING_LENGTH_ERROR_MESSAGE = "Content Warning" + INPUT_TOO_LONG_MESSAGE;
 
     /**
      * Content Expiration Required Error Message.
      */
-    public static final String CONTENT_EXPIRATION_REQUIRED_ERROR_MESSAGE = 
-        "Activity Expiration is required";
-    
+    public static final String CONTENT_EXPIRATION_REQUIRED_ERROR_MESSAGE = "Activity Expiration is required";
+
     /**
      * Content Expiration Value Error Message.
      */
     public static final String CONTENT_EXPIRATION_ERROR_MESSAGE = "Activity Expiration must be a number between "
-        + (SystemSettings.MIN_CONTENT_EXPIRATION + 1) + " and " + SystemSettings.MAX_CONTENT_EXPIRATION;
-    
+            + (SystemSettings.MIN_CONTENT_EXPIRATION + 1) + " and " + SystemSettings.MAX_CONTENT_EXPIRATION;
+
     /**
      * Support Group Short Name Invalid Error Message.
      */
     public static final String SUPPORT_GROUP_NAME_INVALID_ERROR_MESSAGE = "Invalid support group";
-      
+
     /**
      * Support Phone Number Length Error Message.
      */
     public static final String MAX_SUPPORT_PHONE_NUMBER_LENGTH_ERROR_MESSAGE = "Support Phone Number must be between "
             + "1 and " + SystemSettings.MAX_SUPPORT_PHONE_NUMBER_LENGTH + " characters";
-    
+
     /**
      * Support Email Address Length Error Message.
      */
     public static final String MAX_SUPPORT_EMAIL_ADDRESS_LENGTH_ERROR_MESSAGE = "Support Email Address supports up to "
-        + SystemSettings.MAX_SUPPORT_EMAIL_ADDRESS_LENGTH + " characters";   
-    
+            + SystemSettings.MAX_SUPPORT_EMAIL_ADDRESS_LENGTH + " characters";
+
     /**
      * Support Email Address Invalid Format Error Message.
      */
-    public static final String SUPPORT_EMAIL_ADDRESS_INVALID_ERROR_MESSAGE = 
-        "Support Email Address is invalid";
-    
+    public static final String SUPPORT_EMAIL_ADDRESS_INVALID_ERROR_MESSAGE = "Support Email Address is invalid";
+
     /**
      * mapper to get group by short name.
      */
@@ -128,7 +125,7 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
 
     /**
      * Constructor.
-     *
+     * 
      * @param inGetGroupsByShortNamesMapper
      *            the mapper to get domain group by short name
      */
@@ -139,7 +136,7 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
 
     /**
      * Validate UpdateSystemSettingsExecution input.
-     *
+     * 
      * @param inActionContext
      *            {@link ActionContext}.
      * @throws ValidationException
@@ -153,7 +150,7 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
          * This is hacky. We are using a unexpected but legal value as our case for if a field is required but not
          * filled in. For String based fields we are using a return of null to signify they are required and are blank
          * For Integer based ones we are returning false.
-         *
+         * 
          * This is mainly hacky since we know on the front end they are in valid inputs but we send a cryptic message to
          * the backend (see above) that it in turn alerts the user that it is invalid input. But with out a very decent
          * sized refactoring this is the best way.
@@ -168,7 +165,7 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
         }
 
         ValidationException ve = new ValidationException();
-        
+
         if (fields.containsKey("ldapGroups") && ((List<MembershipCriteria>) fields.get("ldapGroups")).size() == 0)
         {
             ve.addError("ldapGroups", "At least one entry is required in the access list");
@@ -178,7 +175,7 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
         {
             ve.addError("contentWarningText", CONTENT_WARNING_REQUIRED_ERROR_MESSAGE);
         }
-        else if (fields.containsKey("contentWarningText") 
+        else if (fields.containsKey("contentWarningText")
                 && ((String) fields.get("contentWarningText")).length() > SystemSettings.MAX_INPUT)
         {
             ve.addError("contentWarningText", CONTENT_WARNING_LENGTH_ERROR_MESSAGE);
@@ -188,8 +185,8 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
         {
             ve.addError("siteLabel", SITE_LABEL_REQUIRED_ERROR_MESSAGE);
         }
-        else if (fields.containsKey("siteLabel") 
-                && ((String) fields.get("siteLabel")).length() > SystemSettings.MAX_INPUT)
+        else if (fields.containsKey("siteLabel")
+                && ((String) fields.get("siteLabel")).length() > SystemSettings.MAX_SITELABEL_INPUT)
         {
             ve.addError("siteLabel", SITE_LABEL_LENGTH_ERROR_MESSAGE);
         }
@@ -212,19 +209,20 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
         {
             ve.addError("contentExpiration", CONTENT_EXPIRATION_ERROR_MESSAGE);
         }
-        else if (fields.containsKey("contentExpiration") && fields.get("contentExpiration") != null
+        else if (fields.containsKey("contentExpiration")
+                && fields.get("contentExpiration") != null
                 && fields.get("contentExpiration") instanceof Integer
-                && ((Integer) fields.get("contentExpiration") < SystemSettings.MIN_CONTENT_EXPIRATION
-                || (Integer) fields.get("contentExpiration") > SystemSettings.MAX_CONTENT_EXPIRATION))
+                && ((Integer) fields.get("contentExpiration") < SystemSettings.MIN_CONTENT_EXPIRATION || (Integer) fields
+                        .get("contentExpiration") > SystemSettings.MAX_CONTENT_EXPIRATION))
         {
             ve.addError("contentExpiration", CONTENT_EXPIRATION_ERROR_MESSAGE);
         }
-        
+
         if (fields.containsKey("tosPromptInterval") && !(fields.get("tosPromptInterval") instanceof Integer))
         {
             ve.addError("tosPromptInterval", TOS_PROMPT_INTERVAL_INVALID_ERROR_MESSAGE);
         }
-        else if (fields.containsKey("tosPromptInterval") 
+        else if (fields.containsKey("tosPromptInterval")
                 && (Integer) fields.get("tosPromptInterval") < SystemSettings.MIN_TOS_PROMPT_INTERVAL)
         {
             ve.addError("tosPromptInterval", MIN_TOS_PROMPT_INTERVAL_ERROR_MESSAGE);
@@ -241,34 +239,33 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
                 ve.addError("supportStreamGroupShortName", SUPPORT_GROUP_NAME_INVALID_ERROR_MESSAGE);
             }
         }
-        
-        if (fields.containsKey("supportPhoneNumber") && fields.get("supportPhoneNumber") != null
-                && ((String) fields.get("supportPhoneNumber")).length()
-                > SystemSettings.MAX_SUPPORT_PHONE_NUMBER_LENGTH)
+
+        if (fields.containsKey("supportPhoneNumber")
+                && fields.get("supportPhoneNumber") != null
+                && ((String) fields.get("supportPhoneNumber")).length() > SystemSettings.MAX_SUPPORT_PHONE_NUMBER_LENGTH)
         {
             ve.addError("supportPhoneNumber", MAX_SUPPORT_PHONE_NUMBER_LENGTH_ERROR_MESSAGE);
         }
-        
-        if (fields.containsKey("supportEmailAddress") && fields.get("supportEmailAddress") != null
-                && ((String) fields.get("supportEmailAddress")).length()
-                > SystemSettings.MAX_SUPPORT_EMAIL_ADDRESS_LENGTH)
+
+        if (fields.containsKey("supportEmailAddress")
+                && fields.get("supportEmailAddress") != null
+                && ((String) fields.get("supportEmailAddress")).length() > SystemSettings.MAX_SUPPORT_EMAIL_ADDRESS_LENGTH)
         {
             ve.addError("supportEmailAddress", MAX_SUPPORT_EMAIL_ADDRESS_LENGTH_ERROR_MESSAGE);
         }
-        else if (fields.containsKey("supportEmailAddress") && fields.get("supportEmailAddress") != null 
+        else if (fields.containsKey("supportEmailAddress") && fields.get("supportEmailAddress") != null
                 && ((String) fields.get("supportEmailAddress")).length() > 0
                 && !isValidEmailAddress(((String) fields.get("supportEmailAddress"))))
         {
             ve.addError("supportEmailAddress", SUPPORT_EMAIL_ADDRESS_INVALID_ERROR_MESSAGE);
         }
-        
 
         if (!ve.getErrors().isEmpty())
         {
             throw ve;
         }
     }
-    
+
     /**
      * @param inEmailToTest
      *            email to test.
