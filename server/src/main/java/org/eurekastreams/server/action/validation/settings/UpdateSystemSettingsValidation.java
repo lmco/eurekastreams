@@ -67,7 +67,8 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
     /**
      * Terms of Service Prompt Interval Invalid Input Error Message.
      */
-    public static final String TOS_PROMPT_INTERVAL_INVALID_ERROR_MESSAGE = "Prompt Interval for Terms of Service supports up to 5 numeric characters";
+    public static final String TOS_PROMPT_INTERVAL_INVALID_ERROR_MESSAGE = 
+        "Prompt Interval for Terms of Service supports up to 5 numeric characters";
 
     /**
      * Terms of Service Prompt Interval Minimal Value Error Message.
@@ -151,7 +152,8 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
          * filled in. For String based fields we are using a return of null to signify they are required and are blank
          * For Integer based ones we are returning false.
          * 
-         * This is mainly hacky since we know on the front end they are in valid inputs but we send a cryptic message to
+         * This is mainly hacky since we know on the front end they are in 
+         * valid inputs but we send a cryptic message to
          * the backend (see above) that it in turn alerts the user that it is invalid input. But with out a very decent
          * sized refactoring this is the best way.
          */
@@ -212,8 +214,8 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
         else if (fields.containsKey("contentExpiration")
                 && fields.get("contentExpiration") != null
                 && fields.get("contentExpiration") instanceof Integer
-                && ((Integer) fields.get("contentExpiration") < SystemSettings.MIN_CONTENT_EXPIRATION || (Integer) fields
-                        .get("contentExpiration") > SystemSettings.MAX_CONTENT_EXPIRATION))
+                && ((Integer) fields.get("contentExpiration") < SystemSettings.MIN_CONTENT_EXPIRATION 
+                        || (Integer) fields.get("contentExpiration") > SystemSettings.MAX_CONTENT_EXPIRATION))
         {
             ve.addError("contentExpiration", CONTENT_EXPIRATION_ERROR_MESSAGE);
         }
@@ -242,14 +244,16 @@ public class UpdateSystemSettingsValidation implements ValidationStrategy<Action
 
         if (fields.containsKey("supportPhoneNumber")
                 && fields.get("supportPhoneNumber") != null
-                && ((String) fields.get("supportPhoneNumber")).length() > SystemSettings.MAX_SUPPORT_PHONE_NUMBER_LENGTH)
+                && ((String) fields.get("supportPhoneNumber")).length() 
+                    > SystemSettings.MAX_SUPPORT_PHONE_NUMBER_LENGTH)
         {
             ve.addError("supportPhoneNumber", MAX_SUPPORT_PHONE_NUMBER_LENGTH_ERROR_MESSAGE);
         }
 
         if (fields.containsKey("supportEmailAddress")
                 && fields.get("supportEmailAddress") != null
-                && ((String) fields.get("supportEmailAddress")).length() > SystemSettings.MAX_SUPPORT_EMAIL_ADDRESS_LENGTH)
+                && ((String) fields.get("supportEmailAddress")).length() 
+                    > SystemSettings.MAX_SUPPORT_EMAIL_ADDRESS_LENGTH)
         {
             ve.addError("supportEmailAddress", MAX_SUPPORT_EMAIL_ADDRESS_LENGTH_ERROR_MESSAGE);
         }
