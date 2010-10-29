@@ -17,6 +17,7 @@ package org.eurekastreams.server.service.actions.strategies;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -170,6 +171,13 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
         else
         {
             person.setParentOrganization(organizationMapper.getRootOrganization());
+        }
+        
+        if (inFields.containsKey("additionalProperties"))
+        {
+            HashMap<String, String> additionalProperties = 
+                (HashMap<String, String>) inFields.get("additionalProperties");
+            person.setAdditionalProperties(additionalProperties);
         }
 
         // remove public settable properties already handled from map so updater

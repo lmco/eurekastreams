@@ -246,7 +246,11 @@
         <constructor-arg value="${eureka.web.baseurl}" />
     </bean>
     
-    
+    <bean name="personPropertiesResource" class="org.eurekastreams.server.service.restlets.PersonPropertiesResource" scope="prototype">
+        <constructor-arg ref="getPersonModelViewsByIds" />
+        <constructor-arg ref="serviceActionController" />
+        <constructor-arg ref="getAllPersonIds" />
+    </bean>
 	
 	<!-- The router maps URLs to resources. -->
 	<bean name="restletRouter" class="org.restlet.ext.spring.SpringRouter">
@@ -450,6 +454,11 @@
                 <entry key="/atom/stream/{mode}/{streamId}">
                     <bean class="org.restlet.ext.spring.SpringFinder">
                         <lookup-method name="createResource" bean="streamXMLResource" />
+                    </bean>
+                </entry>
+                <entry key="/util/personProperties">
+                    <bean class="org.restlet.ext.spring.SpringFinder">
+                        <lookup-method name="createResource" bean="personPropertiesResource" />
                     </bean>
                 </entry>
 			</map>

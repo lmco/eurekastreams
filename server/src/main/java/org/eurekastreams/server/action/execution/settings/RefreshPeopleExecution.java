@@ -62,6 +62,11 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
     private String lockPersonActionKey = null;
 
     /**
+     * Action key for refresh action to be called for users.
+     */
+    private String refreshPersonActionKey = null;
+
+    /**
      * {@link GetNonLockedPersonIds}.
      */
     private GetPersonIdsByLockedStatus personIdsByLockedStatusDAO;
@@ -77,14 +82,15 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
     private DomainMapper<MapperRequest, SystemSettings> settingsMapper;
 
     /**
-     * Constructor. Set inRefreshPersonActionKey to empty string or null and only personSource will be called, No
-     * UserActionRequests will be created and queued.
+     * Constructor.
      *
      * @param inSource
      *            {@link PersonSource}.
      * @param inCreatePersonActionKey
      *            Action key for create action.
-     * @param inLockUserAccountActionKey
+     * @param inLockPersonAccountActionKey
+     *            action key for refresh action.
+     * @param inRefreshPersonActionKey
      *            action key for lock/unlock action.
      * @param inGetPersonIdsByLockedStatus
      *            {@link GetPersonIdsByLockedStatus}.
@@ -94,13 +100,15 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
      *            {@link FindSystemSettings}.
      */
     public RefreshPeopleExecution(final PersonSource inSource, final String inCreatePersonActionKey,
-            final String inLockUserAccountActionKey, final GetPersonIdsByLockedStatus inGetPersonIdsByLockedStatus,
+            final String inLockPersonAccountActionKey, final String inRefreshPersonActionKey, 
+            final GetPersonIdsByLockedStatus inGetPersonIdsByLockedStatus,
             final GetRootOrganizationIdAndShortName inRootOrgIdDAO,
             final DomainMapper<MapperRequest, SystemSettings> inSettingsMapper)
     {
         source = inSource;
         createPersonActionKey = inCreatePersonActionKey;
-        lockPersonActionKey = inLockUserAccountActionKey;
+        lockPersonActionKey = inLockPersonAccountActionKey;
+        refreshPersonActionKey = inRefreshPersonActionKey;
         personIdsByLockedStatusDAO = inGetPersonIdsByLockedStatus;
         rootOrgIdDAO = inRootOrgIdDAO;
         settingsMapper = inSettingsMapper;
@@ -168,7 +176,10 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
             }
             else if (unLockedUserAccountIds.contains(acctId))
             {
-                // If we refresh user info, it can go here and the unlocking condition above goes away.
+                // Queue action to refresh user info from AD
+                inActionContext.getUserActionRequests().add(
+                        new UserActionRequest(refreshPersonActionKey, null, p));
+                
                 // remove from unlocked list, when done looping remaining ids will be locked.
                 unLockedUserAccountIds.remove(acctId);
             }

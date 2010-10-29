@@ -1891,6 +1891,9 @@
 	<bean id="updateNotificationsOnNameChangeMapper"
 		class="org.eurekastreams.server.persistence.mappers.db.UpdateNotificationsOnNameChangeMapper" />
 
+    <bean id="updatePersonMapper"
+        class="org.eurekastreams.server.persistence.mappers.db.UpdatePersonMapper" />
+        
 	<bean id="indexEntity"
 		class="org.eurekastreams.server.persistence.mappers.IndexEntity" />
 

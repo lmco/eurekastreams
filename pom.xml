@@ -87,10 +87,6 @@
 	    <url>http://maven-plugins.sourceforge.net/repository</url>
 	  </repository>
 	  <repository>
-	    <id>plexus snapshots</id>
-	    <url>http://oss.repository.sonatype.org/content/repositories</url>
-	  </repository>
-	  <repository>
 	    <id>restlet</id>
 	    <url>http://maven.restlet.org/</url>
 	  </repository>

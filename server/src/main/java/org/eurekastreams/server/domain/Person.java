@@ -659,6 +659,12 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      */
     @Formula("parentOrganizationId")
     private Long parentOrgId;
+    
+    /**
+     * Optional map of additional properties.
+     */
+    @Basic(optional = true)
+    private HashMap<String, String> additionalProperties;
 
     /**
      * TODO: This is a patch until we stop sending entities over the line
@@ -682,6 +688,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         dateAdded = personModelView.getDateAdded();
         this.parentOrganization = new Organization(personModelView.getParentOrganizationName(), personModelView
                 .getParentOrganizationShortName());
+        this.additionalProperties = personModelView.getAdditionalProperties();
     }
 
     /**
@@ -1379,6 +1386,10 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         addNonNullProperty("jobDescription", getJobDescription(), personData);
         addNonNullProperty("title", getTitle(), personData);
         addNonNullProperty("location", getLocation(), personData);
+        if (getAdditionalProperties() != null)
+        {
+            personData.put("additionalProperties", getAdditionalProperties());
+        }
         if (includeOrganization)
         {
             addNonNullProperty("organization", getParentOrganization(), personData);
@@ -1848,6 +1859,28 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         streams = inStreams;
     }
+    
+    /**
+     * The additionalProperties setter.
+     * 
+     * @param inAdditionalProperties
+     *            the properties hashmap to set
+     */
+    public void setAdditionalProperties(final HashMap<String, String> inAdditionalProperties)
+    {
+        additionalProperties = inAdditionalProperties;
+    }
+
+    /**
+     * The additionalProperties getter.
+     * 
+     * @return additionalProperties hashmap.
+     */
+    public HashMap<String, String> getAdditionalProperties()
+    {
+        return additionalProperties;
+    }
+
     /**
      * TODO: This is a patch until we stop sending entities over the line
      *
@@ -1871,6 +1904,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         p.setParentOrganizationId(parentOrganization.getId());
         p.setParentOrganizationName(parentOrganization.getName());
         p.setParentOrganizationShortName(parentOrganization.getShortName());
+        p.setAdditionalProperties(getAdditionalProperties());
 
         return p;
     }

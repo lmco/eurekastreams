@@ -15,6 +15,9 @@
  */
 package org.eurekastreams.server.persistence.mappers.ldap.callback;
 
+import java.util.HashMap;
+import java.util.List;
+
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 
@@ -33,7 +36,7 @@ public class LdapToPersonMapper implements AttributesMapper
      * Logger.
      */
     private Log log = LogFactory.getLog(LdapToPersonMapper.class);
-
+    
     /**
      * User account attribute name.
      */
@@ -73,6 +76,11 @@ public class LdapToPersonMapper implements AttributesMapper
      * User email attribute name.
      */
     private String emailAttrib;
+
+    /**
+     * Additional properties to load.
+     */
+    private List<String> additionalProperties;
 
     /**
      * Support email address - used when no email address was found for a user.
@@ -118,11 +126,32 @@ public class LdapToPersonMapper implements AttributesMapper
             person.setTitle(title);
             person.setParentOrganization(orgObject);
             person.setEmail(email);
-
+            
+            if (additionalProperties != null)
+            {
+                HashMap<String, String> propertiesMap = new HashMap<String, String>();
+                for (String property : additionalProperties)
+                {
+                    //Some additional configurated properties may not be available for all users.  Do not 
+                    //halt on those properties, just move on.
+                    try
+                    {
+                        propertiesMap.put(property, attrs.get(property).get().toString());
+                    }
+                    catch(Exception ex)
+                    {
+                        if(log.isInfoEnabled())
+                        {
+                            log.info("Additional Property: " + property + " not found for user " + accountId);
+                        }
+                    }
+                }
+                person.setAdditionalProperties(propertiesMap);
+            }
         }
         catch (Exception e)
         {
-            log.debug("Error instantiating person object.");
+            log.error("Error instantiating person object.", e);
         }
 
         return person;
@@ -207,5 +236,14 @@ public class LdapToPersonMapper implements AttributesMapper
     public void setSupportEmail(final String inSupportEmail)
     {
         this.supportEmail = inSupportEmail;
+    }
+
+    /**
+     * @param inAdditionalProperties
+     *            the additionalProperties to set.
+     */
+    public void setAdditionalProperties(final List<String> inAdditionalProperties)
+    {
+        this.additionalProperties = inAdditionalProperties;
     }
 }

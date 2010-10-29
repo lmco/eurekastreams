@@ -144,7 +144,8 @@
                 </constructor-arg>
                 <constructor-arg value="createPersonAction"/>
                 <!-- NOTE: Set value below to "setPersonLockedStatusAction" or "" to enable/disable locking/unlocking  -->  
-                <constructor-arg value="setPersonLockedStatusAction"/>          
+                <constructor-arg value="setPersonLockedStatusAction"/>
+                <constructor-arg value="refreshPersonAction"/>
                 <constructor-arg ref="getPersonIdsByLockedStatus"/>
                 <constructor-arg ref="getRootOrganizationIdAndShortNameMapper"/>  
                 <constructor-arg ref="findSystemSettings" />              
@@ -167,7 +168,8 @@
                 </constructor-arg>
                 <constructor-arg value="createPersonAction"/>
                 <!-- NOTE: Set value below to "setPersonLockedStatusAction" or "" to enable/disable locking/unlocking  -->  
-                <constructor-arg value=""/>          
+                <constructor-arg value=""/>
+                <constructor-arg value="refreshPersonAction"/>
                 <constructor-arg ref="getPersonIdsByLockedStatus"/>
                 <constructor-arg ref="getRootOrganizationIdAndShortNameMapper"/>  
                 <constructor-arg ref="findSystemSettings" />              
@@ -268,6 +270,19 @@
         </constructor-arg>
         <constructor-arg value="false" />        
     </bean>
+    
+    <bean id="refreshPersonAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+        <constructor-arg ref="noValidationStrategy" />        
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.settings.RefreshPersonExecution">
+                <!-- <constructor-arg ref="jpaPersonMapper" />-->
+                <constructor-arg ref="updatePersonMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="false" />        
+    </bean>
+    
     
     <bean id="deleteGroupExecution" class="org.eurekastreams.server.action.execution.profile.DeleteGroupFromDBExecution">
         <constructor-arg ref="deleteGroupActivity" />
@@ -4124,6 +4139,32 @@
     <bean id="searchResultAdditionalPropertyPopulator"
         class="org.eurekastreams.server.service.actions.strategies.directory.SearchResultAdditionalPropertyPopulator">
         <constructor-arg ref="fieldMatchDeterminer" />
+    </bean>
+ 
+     <bean id="getAllPersonIds" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="getPersonIds" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="false" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>     
+    
+    <bean id="getPersonModelViewsByIds" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="getPersonsByIdsMapper" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="false" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
     </bean>
     
 </beans>

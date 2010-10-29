@@ -33,14 +33,14 @@ public class PersonQueryStrategy
 {
     /**
      * Build the base Criteria object.
-     *
+     * 
      * @param hibernateSession
-     * 		the hibernate session used to create the criteria.
+     *            the hibernate session used to create the criteria.
      * @return the base criteria object.
      */
-	public Criteria getCriteria(final Session hibernateSession)
-	{
-		Criteria criteria = hibernateSession.createCriteria(Person.class);
+    public Criteria getCriteria(final Session hibernateSession)
+    {
+        Criteria criteria = hibernateSession.createCriteria(Person.class);
         ProjectionList fields = Projections.projectionList();
         criteria.setFetchMode("parentOrganization", FetchMode.JOIN);
         fields.add(getColumn("id"));
@@ -59,6 +59,7 @@ public class PersonQueryStrategy
         fields.add(getColumn("email"));
         fields.add(getColumn("commentable"));
         fields.add(getColumn("streamPostable"));
+        fields.add(getColumn("additionalProperties"));
         fields.add(getColumn("groupStreamHiddenLineIndex"));
         fields.add(getColumn("lastAcceptedTermsOfService"));
         fields.add(Projections.property("streamViewHiddenLineIndex").as("compositeStreamHiddenLineIndex"));
@@ -75,11 +76,11 @@ public class PersonQueryStrategy
         criteria.setResultTransformer(resultTransformer);
 
         return criteria;
-	}
+    }
 
     /**
      * Build the PropertyProjection with alias.
-     *
+     * 
      * @param propertyName
      *            the property name
      * @return the PropertyProjection with alias

@@ -17,6 +17,7 @@ package org.eurekastreams.server.search.modelview;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -228,6 +229,11 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      * The date the current user last accepted the terms of service.
      */
     private Date lastAcceptedTermsOfService = UNINITIALIZED_DATE_VALUE;
+    
+    /**
+     * Map of additional properties.
+     */
+    private HashMap<String, String> additionalProperties;
 
     /**
      * Get the name of this entity.
@@ -368,6 +374,10 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
         if (properties.containsKey("lastAcceptedTermsOfService"))
         {
             setLastAcceptedTermsOfService((Date) properties.get("lastAcceptedTermsOfService"));
+        }
+        if (properties.containsKey("additionalProperties"))
+        {
+            setAdditionalProperties((HashMap<String, String>) properties.get("additionalProperties"));
         }
     }
 
@@ -872,5 +882,26 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     public void setLastAcceptedTermsOfService(final Date inLastAcceptedTermsOfService)
     {
         lastAcceptedTermsOfService = inLastAcceptedTermsOfService;
+    }
+    
+    /**
+     * The additionalProperties setter.
+     * 
+     * @param inAdditionalProperties
+     *            the properties hashmap to set
+     */
+    public void setAdditionalProperties(final HashMap<String, String> inAdditionalProperties)
+    {
+        additionalProperties = inAdditionalProperties;
+    }
+
+    /**
+     * The additionalProperties getter.
+     * 
+     * @return additionalProperties hashmap.
+     */
+    public HashMap<String, String> getAdditionalProperties()
+    {
+        return additionalProperties;
     }
 }
