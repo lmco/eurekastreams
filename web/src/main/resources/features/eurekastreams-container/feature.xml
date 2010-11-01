@@ -4,6 +4,7 @@
   <dependency>eurekastreams-core</dependency>
   <dependency>eurekastreams-streamplugin</dependency>
   <dependency>eurekastreams-delegation</dependency>
+  <dependency>eurekastreams-additionalproperties</dependency>
   <container>
     <script src="eurekastreams-container.js"/>
     <script src="eurekastreams-util.js"/>
