@@ -431,6 +431,16 @@ public class ApplicationEntryPoint implements EntryPoint
     }-*/;
 
     /**
+     * Returns an additional property value given a key.
+     * @param key the key.
+     * @return the value.
+     */
+    public static String getAddtionalProperty(final String key)
+    {
+        return Session.getInstance().getCurrentPerson().getAdditionalProperties().get(key);
+    }
+
+    /**
      * This method exposes the GWT History.newItem method to javascript. This is so gadgets can have access to the
      * browsers history token without triggering a refresh in IE. Amazingly, this function wouldn't even need to exist
      * if it weren't for IE. Yay for inter-browser support!
@@ -443,6 +453,10 @@ public class ApplicationEntryPoint implements EntryPoint
 
         $wnd.gwt_newHistoryItem = function(token) {
                 @com.google.gwt.user.client.History::newItem(Ljava/lang/String;)(token);
+        }
+
+        $wnd.gwt_getAdditionalProperty = function(key) {
+                return @org.eurekastreams.web.client.ui.pages.master.ApplicationEntryPoint::getAddtionalProperty(Ljava/lang/String;)(key);
         }
 
         $wnd.gwt_bulkGetPeople = function(ntids, handler) {

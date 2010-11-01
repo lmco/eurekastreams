@@ -1,0 +1,9 @@
+<feature>
+    <name>eurekastreams-additionalproperties</name>
+    <gadget>
+        <script src="additionalproperties.js"/>
+    </gadget>
+    <container>
+        <script src="additionalpropertiescontainer.js"/>
+    </container>
+</feature>
