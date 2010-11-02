@@ -60,7 +60,7 @@ public class RefreshPersonExecution implements TaskHandlerExecutionStrategy<Acti
         Person ldapPerson = (Person) inActionContext.getActionContext().getParams();
         UpdatePersonResponse response = personMapper.execute(ldapPerson);
 
-        // Queue async action to remove the person from cache if necessary
+        // Queue async action to update cache if necessary
         if (response.wasUserUpdated())
         {
             inActionContext.getUserActionRequests().add(

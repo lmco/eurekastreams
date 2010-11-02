@@ -319,7 +319,6 @@ public class RefreshPeopleExecutionTest
         assertTrue(listOfRequests.containsKey("refresh"));
         
         SetPersonLockedStatusRequest splsr = (SetPersonLockedStatusRequest) listOfRequests.get("lock").getParams();
-
         
         assertEquals(false, splsr.getLockedStatus());
 
@@ -456,13 +455,17 @@ public class RefreshPeopleExecutionTest
         sut.execute(actionContext);
 
         assertEquals(3, list.size());
-
-        UserActionRequest uar = list.get(2);
-        SetPersonLockedStatusRequest splsr = (SetPersonLockedStatusRequest) uar.getParams();
-
-        assertEquals("lock", uar.getActionKey());
-        assertEquals(true, splsr.getLockedStatus());
-
+        boolean found = false; 
+        for (UserActionRequest uar : list) 
+        { 
+            if (uar.getActionKey() == "lock") 
+            { 
+                SetPersonLockedStatusRequest splsr = (SetPersonLockedStatusRequest) uar.getParams(); 
+                assertEquals(true, splsr.getLockedStatus()); 
+                found = true; 
+            } 
+        } 
+        assertTrue(found); 
         context.assertIsSatisfied();
     }
 

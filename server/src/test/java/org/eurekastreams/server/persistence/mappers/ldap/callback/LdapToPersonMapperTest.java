@@ -15,6 +15,9 @@
  */
 package org.eurekastreams.server.persistence.mappers.ldap.callback;
 
+import java.util.Collections;
+import java.util.List;
+
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
@@ -81,6 +84,10 @@ public class LdapToPersonMapperTest
         final Attribute orgMock = context.mock(Attribute.class, "lmcTopTierDesc");
         final Attribute titleMock = context.mock(Attribute.class, "title");
         final Attribute emailMock = context.mock(Attribute.class, "email");
+        final Attribute propMock = context.mock(Attribute.class, "someKey");
+        
+        List<String> props = Collections.singletonList("someKey"); 
+        sut.setAdditionalProperties(props); 
 
         context.checking(new Expectations()
         {
@@ -111,6 +118,9 @@ public class LdapToPersonMapperTest
 
                 exactly(2).of(attributeMock).get("mail");
                 will(returnValue(emailMock));
+                
+                exactly(1).of(attributeMock).get("someKey"); 
+                will(returnValue(propMock)); 
 
                 oneOf(givenNameMock).get().toString();
                 will(returnValue("First"));
@@ -132,6 +142,9 @@ public class LdapToPersonMapperTest
 
                 oneOf(emailMock).get().toString();
                 will(returnValue("something@someorg.com"));
+                
+                oneOf(propMock).get().toString(); 
+                will(returnValue("someValue")); 
             }
         });
 
@@ -158,8 +171,9 @@ public class LdapToPersonMapperTest
         final Attribute middleNameMock = null;
         final Attribute orgMock = null;
         final Attribute titleMock = null;
-        final Attribute emailMock = context.mock(Attribute.class, "email");
 
+        sut.setSupportEmail("support@example.com");
+        
         context.checking(new Expectations()
         {
             {
@@ -190,22 +204,18 @@ public class LdapToPersonMapperTest
                 oneOf(givenNameMock).get().toString();
                 will(returnValue("First"));
 
-                exactly(2).of(attributeMock).get("mail");
-                will(returnValue(emailMock));
+                exactly(1).of(attributeMock).get("mail");
+                will(returnValue(null));
 
                 oneOf(attributeMock).get("sn");
                 will(returnValue(snMock));
 
                 oneOf(snMock).get().toString();
                 will(returnValue("Last"));
-
-                oneOf(emailMock).get().toString();
-                will(returnValue("something@someorg.com"));
             }
         });
 
         sut.mapFromAttributes(attributeMock);
-
         context.assertIsSatisfied();
     }
 

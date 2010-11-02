@@ -275,7 +275,6 @@
         <constructor-arg ref="noValidationStrategy" />        
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.settings.RefreshPersonExecution">
-                <!-- <constructor-arg ref="jpaPersonMapper" />-->
                 <constructor-arg ref="updatePersonMapper" />
             </bean>
         </constructor-arg>
