@@ -16,6 +16,7 @@
 package org.eurekastreams.server.service.actions.strategies;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,8 +33,8 @@ import org.eurekastreams.server.domain.TabGroup;
 import org.eurekastreams.server.domain.TabTemplate;
 import org.eurekastreams.server.domain.TabType;
 import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.domain.stream.StreamView;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
+import org.eurekastreams.server.domain.stream.StreamView;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.TabMapper;
@@ -171,7 +172,14 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
         // doesn't do them again.
         inFields.remove("organization");
         inFields.remove("email");
-
+        
+        if (inFields.containsKey("additionalProperties"))
+        {
+        	HashMap<String, String> additionalProperties =
+        		(HashMap<String, String>) inFields.get("additionalProperties");
+        	person.setAdditionalProperties(additionalProperties);
+       	}
+        
         return person;
     }
 

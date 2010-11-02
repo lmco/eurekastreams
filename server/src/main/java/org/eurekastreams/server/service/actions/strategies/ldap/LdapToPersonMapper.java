@@ -16,6 +16,7 @@
 package org.eurekastreams.server.service.actions.strategies.ldap;
 
 import java.util.HashMap;
+import java.util.List;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
@@ -83,6 +84,11 @@ public class LdapToPersonMapper implements AttributesMapper, PeopleAppender
     private String supportEmail;
     
     /**
+     * Additional properties to load.
+     */
+    private List<String> additionalProperties;
+    
+    /**
      * List of people.
      */
     private HashMap<String, Person> people = null;
@@ -111,7 +117,10 @@ public class LdapToPersonMapper implements AttributesMapper, PeopleAppender
 
         try
         {
-            log.debug("Found person: " + attrs.get(fullNameAttrib).get().toString());
+            if (log.isDebugEnabled())
+            {
+            	log.debug("Found person: " + attrs.get(fullNameAttrib).get().toString());
+            }
 
             String accountId = attrs.get(accountAttrib).get().toString();
             String firstName = attrs.get(firstNameAttrib).get().toString();
@@ -137,10 +146,31 @@ public class LdapToPersonMapper implements AttributesMapper, PeopleAppender
             person.setParentOrganization(orgObject);
             person.setEmail(email);
             
+            if (additionalProperties != null) 
+            {
+                HashMap<String, String> propertiesMap = new HashMap<String, String>(); 
+                for (String property : additionalProperties) 
+                { 
+                    //Some additional configurated properties may not be available for all users.  Do not  
+                    //halt on those properties, just move on. 
+                    try 
+                    { 
+                        propertiesMap.put(property, attrs.get(property).get().toString()); 
+                    } 
+                    catch(Exception ex) 
+                    { 
+                        if(log.isInfoEnabled()) 
+                        { 
+                            log.info("Additional Property: " + property + " not found for user " + accountId); 
+                        } 
+                    } 
+                } 
+                person.setAdditionalProperties(propertiesMap); 
+            } 
         }
         catch (Exception e)
         {
-            log.debug("Error instantiating person object.");
+            log.debug("Error instantiating person object.", e);
         }
 
         if (null != person)
@@ -240,5 +270,13 @@ public class LdapToPersonMapper implements AttributesMapper, PeopleAppender
     public void setDefaultLdapTemplate(final LdapTemplate inLdapTemplate)
     {
         //not needed here, do nothing.        
-    }    
+    }
+
+	/**
+	 * @param inAdditionalProperties the additionalProperties to set
+	 */
+	public void setAdditionalProperties(final List<String> inAdditionalProperties)
+	{
+		additionalProperties = inAdditionalProperties;
+	}
 }

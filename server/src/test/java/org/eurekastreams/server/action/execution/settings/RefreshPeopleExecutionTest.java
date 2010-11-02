@@ -16,6 +16,7 @@
 package org.eurekastreams.server.action.execution.settings;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -109,7 +110,7 @@ public class RefreshPeopleExecutionTest
     /**
      * System under test.
      */
-    private RefreshPeopleExecution sut = new RefreshPeopleExecution(source, "create", "lock",
+    private RefreshPeopleExecution sut = new RefreshPeopleExecution(source, "create", "lock", "refresh",
             personIdsByLockedStatusDAO, rootOrgIdDAO, settingsMapper);
 
     /**
@@ -185,8 +186,8 @@ public class RefreshPeopleExecutionTest
     @Test
     public void testCreateWithCreateDisabled()
     {
-        RefreshPeopleExecution tempSut = new RefreshPeopleExecution(source, "", "lock", personIdsByLockedStatusDAO,
-                rootOrgIdDAO, settingsMapper);
+        RefreshPeopleExecution tempSut = new RefreshPeopleExecution(source, "", "lock", "refresh",
+        		personIdsByLockedStatusDAO, rootOrgIdDAO, settingsMapper);
 
         final Set<Person> people = new HashSet<Person>();
         final List<UserActionRequest> list = new ArrayList<UserActionRequest>();
@@ -307,14 +308,21 @@ public class RefreshPeopleExecutionTest
 
         sut.execute(actionContext);
 
-        assertEquals(1, list.size());
+        assertEquals(3, list.size());
 
-        UserActionRequest uar = list.get(0);
-        SetPersonLockedStatusRequest splsr = (SetPersonLockedStatusRequest) uar.getParams();
+        boolean found = false;
+        for (UserActionRequest uar : list)
+        {
+        	if (uar.getActionKey() == "lock")
+        	{
+        		SetPersonLockedStatusRequest splsr = (SetPersonLockedStatusRequest) uar.getParams();
 
-        assertEquals("lock", uar.getActionKey());
-        assertEquals(false, splsr.getLockedStatus());
-
+        		assertEquals(false, splsr.getLockedStatus());
+        		found = true;
+        	}
+        }
+    	
+        assertTrue(found);
         context.assertIsSatisfied();
     }
 
@@ -324,8 +332,8 @@ public class RefreshPeopleExecutionTest
     @Test
     public void testUnlockWithUnlockDisabled()
     {
-        RefreshPeopleExecution tempSut = new RefreshPeopleExecution(source, "create", "", personIdsByLockedStatusDAO,
-                rootOrgIdDAO, settingsMapper);
+        RefreshPeopleExecution tempSut = new RefreshPeopleExecution(source, "create", "", "refresh",
+        		personIdsByLockedStatusDAO, rootOrgIdDAO, settingsMapper);
 
         final Set<Person> people = new HashSet<Person>();
         final ArrayList<String> unlocked = new ArrayList(Arrays.asList("p1", "p2"));
@@ -382,7 +390,7 @@ public class RefreshPeopleExecutionTest
 
         tempSut.execute(actionContext);
 
-        assertEquals(0, list.size());
+        assertEquals(2L, list.size());
 
         context.assertIsSatisfied();
     }
@@ -447,14 +455,21 @@ public class RefreshPeopleExecutionTest
 
         sut.execute(actionContext);
 
-        assertEquals(1, list.size());
+        assertEquals(3, list.size());
 
-        UserActionRequest uar = list.get(0);
-        SetPersonLockedStatusRequest splsr = (SetPersonLockedStatusRequest) uar.getParams();
+        boolean found = false;
+        for (UserActionRequest uar : list)
+        {
+        	if (uar.getActionKey() == "lock")
+        	{
+        		SetPersonLockedStatusRequest splsr = (SetPersonLockedStatusRequest) uar.getParams();
 
-        assertEquals("lock", uar.getActionKey());
-        assertEquals(true, splsr.getLockedStatus());
+        		assertEquals(true, splsr.getLockedStatus());
+        		found = true;
+        	}
+        }
 
+        assertTrue(found);
         context.assertIsSatisfied();
     }
 
@@ -464,8 +479,8 @@ public class RefreshPeopleExecutionTest
     @Test
     public void testLockWithLockDisabled()
     {
-        RefreshPeopleExecution tempSut = new RefreshPeopleExecution(source, "create", "", personIdsByLockedStatusDAO,
-                rootOrgIdDAO, settingsMapper);
+        RefreshPeopleExecution tempSut = new RefreshPeopleExecution(source, "create", "", "refresh",
+        		personIdsByLockedStatusDAO, rootOrgIdDAO, settingsMapper);
 
         final Set<Person> people = new HashSet<Person>();
         final ArrayList<String> unlocked = new ArrayList(Arrays.asList("p1", "p2", "p3"));
@@ -521,7 +536,7 @@ public class RefreshPeopleExecutionTest
 
         tempSut.execute(actionContext);
 
-        assertEquals(0, list.size());
+        assertEquals(2, list.size());
 
         context.assertIsSatisfied();
     }

@@ -17,7 +17,9 @@ package org.eurekastreams.server.service.actions.strategies.ldap;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -86,9 +88,13 @@ public class LdapToPersonMapperTest
         final Attribute orgMock = context.mock(Attribute.class, "lmcTopTierDesc");
         final Attribute titleMock = context.mock(Attribute.class, "title");
         final Attribute emailMock = context.mock(Attribute.class, "email");
+        final Attribute propMock = context.mock(Attribute.class, "someKey");
 
         HashMap<String, Person> people = new HashMap<String, Person>(); 
         sut.setPeople(people);
+        
+        List<String> props = Collections.singletonList("someKey");
+        sut.setAdditionalProperties(props);
         
         context.checking(new Expectations()
         {
@@ -119,6 +125,9 @@ public class LdapToPersonMapperTest
 
                 exactly(2).of(attributeMock).get("mail");
                 will(returnValue(emailMock));
+                
+                exactly(1).of(attributeMock).get("someKey");
+                will(returnValue(propMock));
 
                 oneOf(givenNameMock).get().toString();
                 will(returnValue("First"));
@@ -140,6 +149,9 @@ public class LdapToPersonMapperTest
 
                 oneOf(emailMock).get().toString();
                 will(returnValue("something@someorg.com"));
+                
+                oneOf(propMock).get().toString();
+                will(returnValue("someValue"));
             }
         });
 
@@ -170,10 +182,10 @@ public class LdapToPersonMapperTest
         final Attribute middleNameMock = null;
         final Attribute orgMock = null;
         final Attribute titleMock = null;
-        final Attribute emailMock = context.mock(Attribute.class, "email");       
 
         HashMap<String, Person> people = new HashMap<String, Person>(); 
         sut.setPeople(people);
+        sut.setSupportEmail("support@example.com");
 
         context.checking(new Expectations()
         {
@@ -201,21 +213,19 @@ public class LdapToPersonMapperTest
 
                 oneOf(attributeMock).get("title");
                 will(returnValue(titleMock));
-
+                
+                exactly(1).of(attributeMock).get("mail");
+                will(returnValue(null));
+                
                 oneOf(givenNameMock).get().toString();
                 will(returnValue("First"));
                 
-                exactly(2).of(attributeMock).get("mail");
-                will(returnValue(emailMock));                
-
                 oneOf(attributeMock).get("sn");
                 will(returnValue(snMock));
 
                 oneOf(snMock).get().toString();
                 will(returnValue("Last"));
                 
-                oneOf(emailMock).get().toString();
-                will(returnValue("something@someorg.com"));
             }
         });
 
@@ -226,6 +236,7 @@ public class LdapToPersonMapperTest
         assertEquals("First", people.get("lastf").getFirstName());
         assertEquals("Last", people.get("lastf").getLastName());
         assertEquals("lastf", people.get("lastf").getAccountId());
+        assertEquals("support@example.com", people.get("lastf").getEmail());
     }
 
     /**

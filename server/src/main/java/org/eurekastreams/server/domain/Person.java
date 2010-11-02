@@ -643,6 +643,12 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     private boolean accountLocked = false;
 
     /**
+     * Additional properties for the user.
+     */
+    @Basic(optional = true)
+    private HashMap<String, String> additionalProperties;
+    
+    /**
      * Public constructor for ORM and ResourcePersistenceStrategy.
      */
     public Person()
@@ -709,6 +715,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         dateAdded = personModelView.getDateAdded();
         this.parentOrganization = new Organization(personModelView.getParentOrganizationName(), personModelView
                 .getParentOrganizationShortName());
+        this.additionalProperties = personModelView.getAdditionalProperties();
     }
 
     /**
@@ -1410,6 +1417,10 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         {
             addNonNullProperty("organization", getParentOrganization(), personData);
         }
+        if (getAdditionalProperties() != null)
+        {
+        	personData.put("additionalProperties", getAdditionalProperties());
+        }
         return personData;
     }
 
@@ -1976,7 +1987,24 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         p.setParentOrganizationId(parentOrganization.getId());
         p.setParentOrganizationName(parentOrganization.getName());
         p.setParentOrganizationShortName(parentOrganization.getShortName());
+        p.setAdditionalProperties(getAdditionalProperties());
 
         return p;
     }
+
+	/**
+	 * @param inAdditionalProperties the additionalProperties to set
+	 */
+	public void setAdditionalProperties(final HashMap<String, String> inAdditionalProperties)
+	{
+		additionalProperties = inAdditionalProperties;
+	}
+
+	/**
+	 * @return the additionalProperties
+	 */
+	public HashMap<String, String> getAdditionalProperties()
+	{
+		return additionalProperties;
+	}
 }

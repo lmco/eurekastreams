@@ -235,7 +235,11 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         inFields.put("middleName", "s");
         inFields.put("lastName", "Flanders");
         inFields.put("preferredName", "Neddiddly");
-        inFields.put("organization", org);        
+        inFields.put("organization", org);
+        
+        HashMap<String, String> props = new HashMap<String, String>();
+        props.put("somekey", "somevalue");
+        inFields.put("additionalProperties", props);
 
         final Person testPerson = sut.get(null, inFields);
         

@@ -178,7 +178,8 @@
                 </constructor-arg>
                 <constructor-arg value="createPersonAction"/>
                 <!-- NOTE: Set value below to "setPersonLockedStatusAction" or "" to enable/disable locking/unlocking  -->  
-                <constructor-arg value="setPersonLockedStatusAction"/>          
+                <constructor-arg value="setPersonLockedStatusAction"/>
+                <constructor-arg value="refreshPersonAction"/>          
                 <constructor-arg ref="getPersonIdsByLockedStatus"/>
                 <constructor-arg ref="getRootOrganizationIdAndShortNameMapper"/>  
                 <constructor-arg ref="findSystemSettings" />              
@@ -201,7 +202,8 @@
                 </constructor-arg>
                 <constructor-arg value="createPersonAction"/>
                 <!-- NOTE: Set value below to "setPersonLockedStatusAction" or "" to enable/disable locking/unlocking  -->  
-                <constructor-arg value=""/>          
+                <constructor-arg value=""/>
+                <constructor-arg value="refreshPersonAction"/>
                 <constructor-arg ref="getPersonIdsByLockedStatus"/>
                 <constructor-arg ref="getRootOrganizationIdAndShortNameMapper"/>  
                 <constructor-arg ref="findSystemSettings" />              
@@ -226,6 +228,17 @@
         <constructor-arg value="false" />        
     </bean>
     
+    <bean id="refreshPersonAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction"> 
+        <constructor-arg ref="noValidationStrategy" />         
+        <constructor-arg> 
+            <bean class="org.eurekastreams.server.action.execution.settings.RefreshPersonExecution"> 
+                <constructor-arg ref="updatePersonMapper" /> 
+            </bean> 
+        </constructor-arg> 
+        <constructor-arg ref="taskHandler" /> 
+        <constructor-arg value="false" />         
+    </bean> 
+
     <bean id="setPersonLockedStatusAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />        
         <constructor-arg>
