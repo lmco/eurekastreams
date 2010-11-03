@@ -21,6 +21,8 @@ import java.util.Set;
 import org.apache.shindig.auth.AnonymousAuthenticationHandler;
 import org.apache.shindig.auth.AuthenticationHandler;
 import org.apache.shindig.common.servlet.ParameterFetcher;
+import org.apache.shindig.gadgets.http.BasicHttpFetcher;
+import org.apache.shindig.gadgets.http.HttpFetcher;
 import org.apache.shindig.protocol.DataServiceServletFetcher;
 import org.apache.shindig.protocol.conversion.BeanConverter;
 import org.apache.shindig.protocol.conversion.BeanJsonConverter;
@@ -72,6 +74,11 @@ public class SocialAPIGuiceConfigurator implements SpringGuiceConfigurator
      * Configuration value for the Service Expiration.
      */
     private static final Long SERVICE_EXPIRATION_IN_MINS = 60L;
+    
+    /**
+     * Connection timeout for shindig's basic http fetcher.
+     */
+    private static final int CONNECTION_TIMEOUT = 200000;
 
     /**
      * {@inheritDoc}
@@ -145,6 +152,9 @@ public class SocialAPIGuiceConfigurator implements SpringGuiceConfigurator
                 .toProvider(SpringIntegration.fromSpring(GadgetDefinitionMapper.class, "jpaGadgetDefinitionMapper"));
         inBinder.bind(GadgetMetaDataFetcher.class).toProvider(
                 SpringIntegration.fromSpring(GadgetMetaDataFetcher.class, "gadgetMetaDataHttpFetcher"));
+        
+        inBinder.bind(HttpFetcher.class).toInstance(new BasicHttpFetcher(0, 
+                CONNECTION_TIMEOUT, CONNECTION_TIMEOUT, null));
     }
 
     /**
