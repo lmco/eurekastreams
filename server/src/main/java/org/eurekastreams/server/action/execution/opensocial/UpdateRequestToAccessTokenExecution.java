@@ -22,10 +22,7 @@ import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
-import org.eurekastreams.server.domain.OAuthDomainEntry;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.InsertMapper;
-import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
+import org.eurekastreams.server.persistence.OAuthEntryMapper;
 
 /**
  * This class converts a Request Token to an Access token.
@@ -34,14 +31,9 @@ import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 public class UpdateRequestToAccessTokenExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
-     * Instance of domain mapper that can delete an entry.
+     * Instance of OAuth entry mapper injected by spring.
      */
-    private final DomainMapper<String, Boolean> deleteMapper;
-
-    /**
-     * Instance of an insert mapper to add a new entry.
-     */
-    private final InsertMapper<OAuthDomainEntry> insertMapper;
+    private final OAuthEntryMapper entryMapper;
 
     /**
      * Instance of {@link OAuthEntryConversionStrategy} for this class.
@@ -51,18 +43,15 @@ public class UpdateRequestToAccessTokenExecution implements ExecutionStrategy<Pr
     /**
      * Constructor.
      * 
-     * @param inDomainMapper
-     *            - instance of an {@link DomainMapper}.
-     * @param inInsertMapper
-     *            - instance of an {@link InsertMapper}.
+     * @param inEntryMapper
+     *            - instance of an {@link OAuthEntryMapper}.
      * @param inConversionStrat
      *            - instance of an {@link OAuthEntryConversionStrategy}.
      */
-    public UpdateRequestToAccessTokenExecution(final DomainMapper<String, Boolean> inDomainMapper,
-            final InsertMapper<OAuthDomainEntry> inInsertMapper, final OAuthEntryConversionStrategy inConversionStrat)
+    public UpdateRequestToAccessTokenExecution(final OAuthEntryMapper inEntryMapper,
+            final OAuthEntryConversionStrategy inConversionStrat)
     {
-        deleteMapper = inDomainMapper;
-        insertMapper = inInsertMapper;
+        entryMapper = inEntryMapper;
         conversionStrat = inConversionStrat;
     }
 
@@ -81,8 +70,8 @@ public class UpdateRequestToAccessTokenExecution implements ExecutionStrategy<Pr
         accessEntry.type = OAuthEntry.Type.ACCESS;
         accessEntry.issueTime = new Date();
 
-        deleteMapper.execute(requestEntry.token);
-        insertMapper.execute(new PersistenceRequest<OAuthDomainEntry>(conversionStrat.convertToEntryDTO(accessEntry)));
+        entryMapper.delete(requestEntry.token);
+        entryMapper.insert(conversionStrat.convertToEntryDTO(accessEntry));
 
         return accessEntry;
     }

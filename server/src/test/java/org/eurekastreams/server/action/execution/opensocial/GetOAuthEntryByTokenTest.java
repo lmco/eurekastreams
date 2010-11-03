@@ -20,7 +20,7 @@ import static org.junit.Assert.assertNotNull;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.domain.OAuthDomainEntry;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.OAuthEntryMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -32,7 +32,6 @@ import org.junit.Test;
  * Test suite for {@link GetOAuthEntryByTokenExecution}.
  * 
  */
-@SuppressWarnings("unchecked")
 public class GetOAuthEntryByTokenTest
 {
     /**
@@ -53,7 +52,7 @@ public class GetOAuthEntryByTokenTest
     /**
      * Instance of OAuth entry mapper injected by spring.
      */
-    private final DomainMapper<String, OAuthDomainEntry> entryMapper = context.mock(DomainMapper.class);
+    private final OAuthEntryMapper entryMapper = context.mock(OAuthEntryMapper.class);
 
     /**
      * Instance of {@link OAuthEntryConversionStrategy} for this class.
@@ -64,7 +63,7 @@ public class GetOAuthEntryByTokenTest
      * Mocked instance of the action context.
      */
     private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
-
+    
     /**
      * Prepare the sut.
      */
@@ -73,7 +72,7 @@ public class GetOAuthEntryByTokenTest
     {
         sut = new GetOAuthEntryByTokenExecution(entryMapper, conversionStrat);
     }
-
+    
     /**
      * Test successful retrieving OAuthToken.
      */
@@ -86,17 +85,16 @@ public class GetOAuthEntryByTokenTest
                 oneOf(actionContext).getParams();
                 will(returnValue("token"));
 
-                oneOf(entryMapper).execute("token");
-                will(returnValue(new OAuthDomainEntry()));
-
+                oneOf(entryMapper).findEntry("token");
+                
                 oneOf(conversionStrat).convertToEntry(with(any(OAuthDomainEntry.class)));
             }
         });
-
+        
         OAuthEntry results = (OAuthEntry) sut.execute(actionContext);
-
+        
         assertNotNull(results);
-
+        
         context.assertIsSatisfied();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,8 +43,11 @@ import org.apache.shindig.gadgets.http.HttpFetcher;
 import org.apache.shindig.gadgets.oauth.OAuthFetcherConfig;
 import org.apache.shindig.gadgets.oauth.OAuthRequest;
 import org.apache.shindig.gadgets.oauth.OAuthStore;
-import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.server.service.opensocial.gadgets.oauth.OAuthStoreImpl;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.eurekastreams.server.persistence.OAuthConsumerMapper;
+import org.eurekastreams.server.persistence.OAuthEntryMapper;
+import org.eurekastreams.server.persistence.OAuthTokenMapper;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
@@ -71,34 +74,15 @@ public class OAuthModule extends AbstractModule
         bind(OAuthStore.class).to(OAuthStoreImpl.class);
         bind(OAuthRequest.class).toProvider(OAuthRequestProvider.class);
 
-        // OAuthDataStoreImpl wirings
-        bind(ServiceAction.class).annotatedWith(Names.named("createOAuthRequestToken")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "createOAuthRequestToken"));
-        bind(ServiceAction.class).annotatedWith(Names.named("authorizeOAuthToken")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "oauthAuthorize"));
-        bind(ServiceAction.class).annotatedWith(Names.named("updateRequestToAccessToken")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "updateRequestToAccessToken"));
-        bind(ServiceAction.class).annotatedWith(Names.named("getOAuthEntryByToken")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "getOAuthEntryByToken"));
-        bind(ServiceAction.class).annotatedWith(Names.named("disableOAuthToken")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "disableOAuthToken"));
-        bind(ServiceAction.class).annotatedWith(Names.named("removeOAuthToken")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "removeOAuthToken"));
-        bind(ServiceAction.class).annotatedWith(Names.named("getOAuthConsumerByConsumerKey")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "getOAuthConsumerByConsumerKey"));
-        bind(ServiceAction.class).annotatedWith(Names.named("getSecurityTokenForConsumerRequest")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "getSecurityTokenForConsumerRequest"));
-
-        // OAuthStoreImpl wirings
-        bind(ServiceAction.class).annotatedWith(Names.named("getConsumerInfo")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "getConsumerInfo"));
-        bind(ServiceAction.class).annotatedWith(Names.named("setConsumerTokenInfo")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "setConsumerTokenInfo"));
-        bind(ServiceAction.class).annotatedWith(Names.named("getConsumerTokenInfo")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "getConsumerTokenInfo"));
-        bind(ServiceAction.class).annotatedWith(Names.named("removeConsumerToken")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "removeConsumerToken"));
-}
+        bind(OAuthConsumerMapper.class).toProvider(
+                SpringIntegration.fromSpring(OAuthConsumerMapper.class, "jpaOAuthConsumerMapper"));
+        bind(OAuthTokenMapper.class).toProvider(
+                SpringIntegration.fromSpring(OAuthTokenMapper.class, "jpaOAuthTokenMapper"));
+        bind(OAuthEntryMapper.class).toProvider(
+                SpringIntegration.fromSpring(OAuthEntryMapper.class, "jpaOAuthEntryMapper"));
+        bind(PlatformTransactionManager.class).toProvider(
+                SpringIntegration.fromSpring(PlatformTransactionManager.class, "transactionManager"));
+    }
 
     /**
      * Inner class for setting up OAuthCryperProvider.
@@ -160,9 +144,9 @@ public class OAuthModule extends AbstractModule
          * Constructor.
          * 
          * @param inFetcher
-         *            the fetcher.
+         *              the fetcher.
          * @param inConfig
-         *            the config.
+         *              the config.
          */
         @Inject
         public OAuthRequestProvider(final HttpFetcher inFetcher, final OAuthFetcherConfig inConfig)

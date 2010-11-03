@@ -23,7 +23,7 @@ import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry.Type;
 import org.eurekastreams.server.domain.OAuthConsumer;
 import org.eurekastreams.server.domain.OAuthDomainEntry;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.OAuthConsumerMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -35,7 +35,6 @@ import org.junit.Test;
  * Test suite for {@link OAuthEntryConversionStrategy}.
  *
  */
-@SuppressWarnings("unchecked")
 public class OAuthEntryConversionStrategyTest
 {
     /**
@@ -54,9 +53,9 @@ public class OAuthEntryConversionStrategyTest
     };
     
     /**
-     * Instance of the {@link DomainMapper}.
+     * Instance of the {@link OAuthConsumerMapper}.
      */
-    private DomainMapper<String, OAuthConsumer> mapper = context.mock(DomainMapper.class);
+    private OAuthConsumerMapper mapper = context.mock(OAuthConsumerMapper.class);
     
     /**
      * Prepare the system under test.
@@ -136,11 +135,10 @@ public class OAuthEntryConversionStrategyTest
         context.checking(new Expectations()
         {
             {
-                oneOf(mapper).execute("testkey");
-                will(returnValue(new OAuthConsumer(null, null, null, null, null)));
+                oneOf(mapper).findConsumerByConsumerKey("testkey");
             }
         });
-
+        
         OAuthDomainEntry dto = sut.convertToEntryDTO(entry);
         assertEquals(entry.appId, dto.getAppId());
         assertEquals(entry.authorized, dto.isAuthorized());

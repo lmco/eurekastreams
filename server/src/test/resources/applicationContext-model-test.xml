@@ -137,6 +137,15 @@
 	<bean id="jpaRecommendationMapper" class="org.eurekastreams.server.persistence.RecommendationMapper">
 		<constructor-arg ref="queryOptimizer" />
 	</bean>
+	<bean id="jpaOAuthConsumerMapper" class="org.eurekastreams.server.persistence.OAuthConsumerMapper">
+		<constructor-arg ref="queryOptimizer" />
+	</bean>
+	<bean id="jpaOAuthTokenMapper" class="org.eurekastreams.server.persistence.OAuthTokenMapper">
+		<constructor-arg ref="queryOptimizer" />
+	</bean>
+	<bean id="jpaOAuthEntryMapper" class="org.eurekastreams.server.persistence.OAuthEntryMapper">
+		<constructor-arg ref="queryOptimizer" />
+	</bean>
 	
     <bean id="getOrganizationProxyById" class="org.eurekastreams.server.persistence.mappers.db.GetOrganizationProxyById" />
     

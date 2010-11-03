@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,8 @@ package org.eurekastreams.server.action.execution.opensocial;
 
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry.Type;
-import org.eurekastreams.server.domain.OAuthConsumer;
 import org.eurekastreams.server.domain.OAuthDomainEntry;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.OAuthConsumerMapper;
 
 /**
  * This class provides the strategy for converting {@link OAuthEntry} objects to {@link OAuthDomainEntry} objects
@@ -29,15 +28,15 @@ import org.eurekastreams.server.persistence.mappers.DomainMapper;
 public class OAuthEntryConversionStrategy
 {
     /**
-     * Instance of the {@link DomainMapper}.
+     * Instance of the {@link OAuthConsumerMapper}.
      */
-    private final DomainMapper<String, OAuthConsumer> mapper;
+    private final OAuthConsumerMapper mapper;
     
     /**
      * Constructor.
-     * @param inMapper - instance of the {@link DomainMapper} to retrieve consumer information.
+     * @param inMapper - instance of the {@link OAuthConsumerMapper} to retrieve consumer information.
      */
-    public OAuthEntryConversionStrategy(final DomainMapper<String, OAuthConsumer> inMapper)
+    public OAuthEntryConversionStrategy(final OAuthConsumerMapper inMapper)
     {
         mapper = inMapper;
     }
@@ -57,7 +56,7 @@ public class OAuthEntryConversionStrategy
         dto.setCallbackTokenAttempts(entry.callbackTokenAttempts);
         dto.setCallbackUrl(entry.callbackUrl);
         dto.setCallbackUrlSigned(entry.callbackUrlSigned);
-        dto.setConsumer(mapper.execute(entry.consumerKey));
+        dto.setConsumer(mapper.findConsumerByConsumerKey(entry.consumerKey));
         dto.setContainer(entry.container);
         dto.setDomain(entry.domain);
         dto.setIssueTime(entry.issueTime);

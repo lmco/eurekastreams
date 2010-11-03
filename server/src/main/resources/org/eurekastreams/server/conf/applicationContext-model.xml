@@ -104,14 +104,15 @@
 		<constructor-arg ref="queryOptimizer" />
 		<constructor-arg ref="jpaPersonMapper" />
 	</bean>
-	<bean id="getOAuthEntry" class="org.eurekastreams.server.persistence.mappers.opensocial.GetOAuthEntry" />
-	<bean id="deleteOAuthEntry" class="org.eurekastreams.server.persistence.mappers.opensocial.DeleteOAuthEntry" />
-	<bean id="getOAuthTokenMapper" class="org.eurekastreams.server.persistence.mappers.opensocial.GetOAuthToken" />
-	<bean id="deleteOAuthTokenMapper" class="org.eurekastreams.server.persistence.mappers.opensocial.DeleteOAuthToken" />
-	<bean id="getOAuthConsumerByConsumerKeyMapper"
-	    class="org.eurekastreams.server.persistence.mappers.opensocial.GetOAuthConsumerByConsumerKey" />
-	<bean id="getOAuthConsumerByServiceNameMapper"
-	    class="org.eurekastreams.server.persistence.mappers.opensocial.GetOAuthConsumerByServiceName" />
+	<bean id="jpaOAuthConsumerMapper" class="org.eurekastreams.server.persistence.OAuthConsumerMapper">
+		<constructor-arg ref="queryOptimizer" />
+	</bean>
+	<bean id="jpaOAuthTokenMapper" class="org.eurekastreams.server.persistence.OAuthTokenMapper">
+		<constructor-arg ref="queryOptimizer" />
+	</bean>
+	<bean id="jpaOAuthEntryMapper" class="org.eurekastreams.server.persistence.OAuthEntryMapper">
+		<constructor-arg ref="queryOptimizer" />
+	</bean>
 
 	<bean
 		class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />

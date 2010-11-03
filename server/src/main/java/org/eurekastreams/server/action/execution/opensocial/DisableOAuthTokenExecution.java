@@ -22,11 +22,11 @@ import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.domain.OAuthDomainEntry;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.OAuthEntryMapper;
 
 /**
  * Disable this OAuth token.
- * 
+ *
  */
 public class DisableOAuthTokenExecution implements ExecutionStrategy<PrincipalActionContext>
 {
@@ -35,37 +35,36 @@ public class DisableOAuthTokenExecution implements ExecutionStrategy<PrincipalAc
      * Maximum attempts to attempt to authorize a request token.
      */
     private static final int CALLBACK_TOKEN_ATTEMPTS = 5;
-
+    
     /**
      * Instance of OAuth entry mapper injected by spring.
      */
-    private final DomainMapper<String, OAuthDomainEntry> entryMapper;
-
+    private final OAuthEntryMapper entryMapper;
+    
     /**
      * Constructor.
-     * 
-     * @param inEntryMapper
-     *            - instance of the {@link DomainMapper} class.
+     * @param inEntryMapper - instance of the {@link OAuthEntryMapper} class.
      */
-    public DisableOAuthTokenExecution(final DomainMapper<String, OAuthDomainEntry> inEntryMapper)
+    public DisableOAuthTokenExecution(final OAuthEntryMapper inEntryMapper)
     {
         entryMapper = inEntryMapper;
     }
-
+    
     /**
-     * {@inheritDoc}. Disable the OAuth token based on the supplied parameters.
+     * {@inheritDoc}.
+     * Disable the OAuth token based on the supplied parameters.
      */
     @Override
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
         String entryToken = (String) inActionContext.getParams();
-        OAuthDomainEntry dto = entryMapper.execute(entryToken);
+        OAuthDomainEntry dto = entryMapper.findEntry(entryToken);
         dto.setCallbackTokenAttempts(dto.getCallbackTokenAttempts() + 1);
         if (!dto.isCallbackUrlSigned() || dto.getCallbackTokenAttempts() >= CALLBACK_TOKEN_ATTEMPTS)
         {
             dto.setType(OAuthEntry.Type.DISABLED.toString());
         }
-
+        
         return null;
     }
 

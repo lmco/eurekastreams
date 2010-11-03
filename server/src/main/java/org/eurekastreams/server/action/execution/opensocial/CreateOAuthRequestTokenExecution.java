@@ -24,8 +24,7 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.action.request.opensocial.CreateOAuthRequestTokenRequest;
 import org.eurekastreams.server.domain.OAuthDomainEntry;
-import org.eurekastreams.server.persistence.mappers.InsertMapper;
-import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
+import org.eurekastreams.server.persistence.OAuthEntryMapper;
 
 /**
  * This action exection creates a request token in the database for a new OAuth request.
@@ -34,9 +33,9 @@ import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 public class CreateOAuthRequestTokenExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
-     * Instance of OAuth insert mapper injected by spring.
+     * Instance of OAuth entry mapper injected by spring.
      */
-    private final InsertMapper<OAuthDomainEntry> insertMapper;
+    private final OAuthEntryMapper entryMapper;
 
     /**
      * Strategy for converting {@link OAuthEntry} objects to {@link OAuthDomainEntry} objects.
@@ -60,18 +59,16 @@ public class CreateOAuthRequestTokenExecution implements ExecutionStrategy<Princ
      *            - String name of the OAuth domain for this execution.
      * @param inOAuthContainer
      *            - String name of the OAuth container for this execution.
-     * @param inInsertMapper
-     *            - {@link InsertMapper} for this execution.
-     * @param inOAuthConversionStrat
-     *            - strategy for converting oauthentries to oauthdomainentries.
+     * @param inOAuthEntryMapper
+     *            - {@link OAuthEntryMapper} for this execution.
+     * @param inOAuthConversionStrat - strategy for converting oauthentries to oauthdomainentries.
      */
     public CreateOAuthRequestTokenExecution(final String inOAuthDomain, final String inOAuthContainer,
-            final InsertMapper<OAuthDomainEntry> inInsertMapper,
-            final OAuthEntryConversionStrategy inOAuthConversionStrat)
+            final OAuthEntryMapper inOAuthEntryMapper, final OAuthEntryConversionStrategy inOAuthConversionStrat)
     {
         oauthDomain = inOAuthDomain;
         oauthContainer = inOAuthContainer;
-        insertMapper = inInsertMapper;
+        entryMapper = inOAuthEntryMapper;
         oauthConversionStrat = inOAuthConversionStrat;
     }
 
@@ -104,7 +101,7 @@ public class CreateOAuthRequestTokenExecution implements ExecutionStrategy<Princ
         }
 
         OAuthDomainEntry dto = oauthConversionStrat.convertToEntryDTO(entry);
-        insertMapper.execute(new PersistenceRequest<OAuthDomainEntry>(dto));
+        entryMapper.insert(dto);
         return entry;
     }
 

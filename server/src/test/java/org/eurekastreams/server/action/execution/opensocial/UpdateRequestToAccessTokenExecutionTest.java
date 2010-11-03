@@ -18,9 +18,7 @@ package org.eurekastreams.server.action.execution.opensocial;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.domain.OAuthDomainEntry;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.InsertMapper;
-import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
+import org.eurekastreams.server.persistence.OAuthEntryMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -30,16 +28,15 @@ import org.junit.Test;
 
 /**
  * Test suite for {@link UpdateRequestToAccessTokenExecution}.
- * 
+ *
  */
-@SuppressWarnings("unchecked")
 public class UpdateRequestToAccessTokenExecutionTest
 {
     /**
      * System under test.
      */
     private UpdateRequestToAccessTokenExecution sut;
-
+    
     /**
      * Context for building mock objects.
      */
@@ -49,36 +46,31 @@ public class UpdateRequestToAccessTokenExecutionTest
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
-
+    
     /**
-     * Instance of OAuth entry mapper injected by spring to delete an entry.
+     * Instance of OAuth entry mapper injected by spring.
      */
-    private final DomainMapper<String, Boolean> deleteMapper = context.mock(DomainMapper.class);
-
-    /**
-     * Instance of OAuth entry mapper injected by spring to insert an entry.
-     */
-    private final InsertMapper<OAuthDomainEntry> insertMapper = context.mock(InsertMapper.class);
-
+    private final OAuthEntryMapper entryMapper = context.mock(OAuthEntryMapper.class);
+    
     /**
      * Instance of {@link OAuthEntryConversionStrategy} for this class.
      */
     private final OAuthEntryConversionStrategy conversionStrat = context.mock(OAuthEntryConversionStrategy.class);
-
+    
     /**
      * Mocked instance of the action context.
      */
     private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
-
+    
     /**
      * Prepare the sut.
      */
     @Before
     public void setup()
     {
-        sut = new UpdateRequestToAccessTokenExecution(deleteMapper, insertMapper, conversionStrat);
+        sut = new UpdateRequestToAccessTokenExecution(entryMapper, conversionStrat);
     }
-
+    
     /**
      * Test successful conversion of access token.
      */
@@ -91,15 +83,15 @@ public class UpdateRequestToAccessTokenExecutionTest
             {
                 oneOf(actionContext).getParams();
                 will(returnValue(requestEntry));
-
-                oneOf(deleteMapper).execute(with(any(String.class)));
-
+                
+                oneOf(entryMapper).delete(with(any(String.class)));
+                
                 oneOf(conversionStrat).convertToEntryDTO(with(any(OAuthEntry.class)));
-
-                oneOf(insertMapper).execute(with(any(PersistenceRequest.class)));
+                
+                oneOf(entryMapper).insert(with(any(OAuthDomainEntry.class)));
             }
         });
-
+        
         sut.execute(actionContext);
         context.assertIsSatisfied();
     }
