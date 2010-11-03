@@ -233,6 +233,7 @@
         <constructor-arg> 
             <bean class="org.eurekastreams.server.action.execution.settings.RefreshPersonExecution"> 
                 <constructor-arg ref="updatePersonMapper" /> 
+                <constructor-arg ref="removePersonFromCacheMapper" />
             </bean> 
         </constructor-arg> 
         <constructor-arg ref="taskHandler" /> 
