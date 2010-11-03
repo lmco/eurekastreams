@@ -54,6 +54,11 @@
         <constructor-arg ref="bulkPeopleByAccountIdMapper" /> 
     </bean>
     
+    <bean id="openSocialPrincipalPopulatorTransWrapper" class="org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper">
+        <constructor-arg ref="openSocialPrincipalPopulator" />
+        <constructor-arg ref="transactionManager" />
+    </bean>
+    
     <bean id="serviceActionController" class="org.eurekastreams.commons.server.service.ServiceActionController">
         <constructor-arg ref="transactionManager"/>
     </bean>
@@ -94,19 +99,7 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
-    </bean> 
-    
-	<bean id="oauthAuthorize" class="org.eurekastreams.commons.actions.service.ServiceAction">
-		<constructor-arg ref="noValidationStrategy" />
-		<constructor-arg ref="noAuthorizationStrategy" />
-		<constructor-arg>
-			<bean
-				class="org.eurekastreams.server.action.execution.opensocial.OAuthAuthorizeExecution">
-				<constructor-arg ref="oauthDataStore" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg value="true" />
-	</bean>	    
+    </bean>   
 	
     <bean id="authorizeUpdateGroup" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <!-- Validation -->

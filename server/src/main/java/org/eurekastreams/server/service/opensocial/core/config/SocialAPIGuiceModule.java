@@ -142,34 +142,6 @@ public class SocialAPIGuiceModule extends AbstractModule
         bind(PrincipalPopulatorTransWrapper.class).toProvider(
                 SpringIntegration.fromSpring(PrincipalPopulatorTransWrapper.class,
                         "openSocialPrincipalPopulatorTransWrapper"));
-
-        // OAuthDataStoreImpl wirings
-        bind(ServiceAction.class).annotatedWith(Names.named("createOAuthRequestToken")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "createOAuthRequestToken"));
-        bind(ServiceAction.class).annotatedWith(Names.named("authorizeOAuthToken")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "oauthAuthorize"));
-        bind(ServiceAction.class).annotatedWith(Names.named("updateRequestToAccessToken")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "updateRequestToAccessToken"));
-        bind(ServiceAction.class).annotatedWith(Names.named("getOAuthEntryByToken")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "getOAuthEntryByToken"));
-        bind(ServiceAction.class).annotatedWith(Names.named("disableOAuthToken")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "disableOAuthToken"));
-        bind(ServiceAction.class).annotatedWith(Names.named("removeOAuthToken")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "removeOAuthToken"));
-        bind(ServiceAction.class).annotatedWith(Names.named("getOAuthConsumerByConsumerKey")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "getOAuthConsumerByConsumerKey"));
-        bind(ServiceAction.class).annotatedWith(Names.named("getSecurityTokenForConsumerRequest")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "getSecurityTokenForConsumerRequest"));
-
-        // OAuthStoreImpl wirings
-        bind(ServiceAction.class).annotatedWith(Names.named("getConsumerInfo")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "getConsumerInfo"));
-        bind(ServiceAction.class).annotatedWith(Names.named("setConsumerTokenInfo")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "setConsumerTokenInfo"));
-        bind(ServiceAction.class).annotatedWith(Names.named("getConsumerTokenInfo")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "getConsumerTokenInfo"));
-        bind(ServiceAction.class).annotatedWith(Names.named("removeConsumerToken")).toProvider(
-                SpringIntegration.fromSpring(ServiceAction.class, "removeConsumerToken"));
     }
 
     /**

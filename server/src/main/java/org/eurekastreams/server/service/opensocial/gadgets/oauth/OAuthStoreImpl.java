@@ -25,7 +25,7 @@ import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.commons.server.service.ActionController;
+import org.eurekastreams.commons.server.service.ServiceActionController;
 import org.eurekastreams.server.action.request.opensocial.GetConsumerInfoRequest;
 import org.eurekastreams.server.action.request.opensocial.GetConsumerTokenInfoRequest;
 import org.eurekastreams.server.action.request.opensocial.RemoveConsumerTokenRequest;
@@ -51,7 +51,7 @@ public class OAuthStoreImpl implements OAuthStore
      * Instance of the {@link ActionController} for this class.
      */
     @Inject
-    private ActionController actionController;
+    private ServiceActionController actionController;
 
     /**
      * Instance of the getConsumerInfo Service Action.
@@ -103,7 +103,7 @@ public class OAuthStoreImpl implements OAuthStore
      * @param inServiceActionController
      *            instance of the {@link ActionController}.
      */
-    public void setServiceActionController(final ActionController inServiceActionController)
+    public void setServiceActionController(final ServiceActionController inServiceActionController)
     {
         actionController = inServiceActionController;
     }
