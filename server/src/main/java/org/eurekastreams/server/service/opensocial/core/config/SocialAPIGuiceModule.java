@@ -21,6 +21,8 @@ import java.util.Set;
 import org.apache.shindig.auth.AnonymousAuthenticationHandler;
 import org.apache.shindig.auth.AuthenticationHandler;
 import org.apache.shindig.common.servlet.ParameterFetcher;
+import org.apache.shindig.gadgets.http.BasicHttpFetcher;
+import org.apache.shindig.gadgets.http.HttpFetcher;
 import org.apache.shindig.gadgets.http.RequestPipeline;
 import org.apache.shindig.protocol.DataServiceServletFetcher;
 import org.apache.shindig.protocol.conversion.BeanConverter;
@@ -73,6 +75,11 @@ public class SocialAPIGuiceModule extends AbstractModule
      * Configuration value for the Service Expiration.
      */
     private static final Long SERVICE_EXPIRATION_IN_MINS = 60L;
+    
+    /**
+     * Connection timeout for shindig's basic http fetcher.
+     */
+    private static final int CONNECTION_TIMEOUT = 200000;
     
     /**
      * Override method to configure the guice injection.
@@ -150,8 +157,10 @@ public class SocialAPIGuiceModule extends AbstractModule
         
         // Custom request pipeline that adds headers to oauth requests providing additional info to end points.
         bind(RequestPipeline.class).to(GadgetRequestPipeline.class);        
+        
+        //Configure the basic http fetcher to have a longer request timeout than the default of 5 seconds.
+        bind(HttpFetcher.class).toInstance(new BasicHttpFetcher(0, CONNECTION_TIMEOUT, CONNECTION_TIMEOUT, null));
     }
-
     /**
      * Hook to provide a Set of request handlers.  Subclasses may override
      * to add or replace additional handlers.
