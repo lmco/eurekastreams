@@ -21,6 +21,7 @@ import java.util.Set;
 import org.apache.shindig.auth.AnonymousAuthenticationHandler;
 import org.apache.shindig.auth.AuthenticationHandler;
 import org.apache.shindig.common.servlet.ParameterFetcher;
+import org.apache.shindig.gadgets.http.RequestPipeline;
 import org.apache.shindig.protocol.DataServiceServletFetcher;
 import org.apache.shindig.protocol.conversion.BeanConverter;
 import org.apache.shindig.protocol.conversion.BeanJsonConverter;
@@ -44,6 +45,7 @@ import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
 import org.eurekastreams.commons.server.service.ServiceActionController;
 import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
 import org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper;
+import org.eurekastreams.server.service.opensocial.gadgets.http.GadgetRequestPipeline;
 import org.eurekastreams.server.service.opensocial.oauth.OAuthDataStoreImpl;
 import org.eurekastreams.server.service.opensocial.oauth.SocialRealm;
 import org.eurekastreams.server.service.opensocial.spi.ActivityServiceImpl;
@@ -145,6 +147,9 @@ public class SocialAPIGuiceModule extends AbstractModule
         bind(PrincipalPopulatorTransWrapper.class).toProvider(
                 SpringIntegration.fromSpring(PrincipalPopulatorTransWrapper.class,
                         "openSocialPrincipalPopulatorTransWrapper"));
+        
+        // Custom request pipeline that adds headers to oauth requests providing additional info to end points.
+        bind(RequestPipeline.class).to(GadgetRequestPipeline.class);        
     }
 
     /**

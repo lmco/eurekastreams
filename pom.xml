@@ -470,6 +470,7 @@
 								  <exclude>org/eurekastreams/server/service/opensocial/config/ContainerPropertiesModule.java</exclude>
 								  <exclude>org/eurekastreams/server/service/opensocial/config/OAuthModule.java</exclude>
 		                          <exclude>org/eurekastreams/server/service/opensocial/gadgets/spec/*Fetcher.java</exclude>
+                                  <exclude>org/eurekastreams/server/service/opensocial/gadgets/http/GadgetRequestPipeline.java</exclude>
 								  <exclude>org/eurekastreams/server/service/restlets/WritableResource.java</exclude>
 								  <exclude>org/eurekastreams/server/service/restlets/FeedReaderWritableResource.java</exclude>
 		                          <exclude>org/eurekastreams/server/service/restlets/GadgetUserPrefsResource.java</exclude>
