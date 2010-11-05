@@ -378,6 +378,7 @@ public class GadgetPanel extends FlowPanel
                                 String titleText = metadata.getTitle();
 
                                 helpButton.setVisible(metadata.getViewNames().contains("help"));
+				maximizeButton.setVisible(metadata.getViewNames().contains("canvas"));
 
                                 delegationOn = metadata.getFeatures().contains("eurekastreams-delegation");
 
