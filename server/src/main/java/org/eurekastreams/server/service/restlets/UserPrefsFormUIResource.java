@@ -44,7 +44,7 @@ import org.restlet.resource.StringRepresentation;
 import org.restlet.resource.Variant;
 
 /**
- * This class provides the Restlet implementation for creating 
+ * This class provides the Restlet implementation for creating
  * user preferences form ui for an OpenSocial gadget.
  *
  */
@@ -54,74 +54,75 @@ public class UserPrefsFormUIResource extends SmpResource
      * Local logger instance.
      */
     private static Log logger = LogFactory.getLog(UserPrefsFormUIResource.class);
-    
+
     /**
      * Key for retrieving the Gadget Id from the rest url.
      */
     private static final String MODULE_ID_KEY = "moduleid";
-    
+
     /**
      * Key for retrieving the Gadget Definition Url from the rest url.
      */
     private static final String GADGET_DEF_URL_KEY = "url";
-    
+
     /**
      * Key for retrieving the saved user preferences.
      */
     private static final String SAVED_USER_PREFS = "saveduserprefs";
-    
+
     /**
      * Error message when user preferences cannot be retrieved.
      */
-    private static final String USER_PREFS_ERROR_MESSAGE = 
+    private static final String USER_PREFS_ERROR_MESSAGE =
         "Error occurred retrieving preferences for this gadget.";
-    
+
     /**
      * Default format for encoding/decoding url's retrieved in parameters.
      */
     private static final String DEFAULT_URL_ENCODING = "UTF-8";
-    
+
     /**
      * Local storage for the module Id of the calling gadget.
      */
     private Long moduleId;
-    
+
     /**
      * List of user preferences retrieved from the url passed in.
      */
     private Map<String, String> savedUserPrefs;
-    
+
     /**
      * Local instance of the gadget mapper.
      */
     private GadgetMapper gadgetMapper;
-    
+
     /**
      * Local instance of the gadget metadata fetcher.
      */
     private GadgetMetaDataFetcher gadgetMetaFetcher;
-    
+
     /**
      * URI for the gadget definition to retrieve user preferences for.
      */
     private String gadgetDefUrl;
-    
+
     /**
      * Initialize the parameters for the request.
-     * attributes handled: 
+     * attributes handled:
      * moduleId - refers to the gadget instance id (not to be confused with the
      *  application id.
      * url - gadget definition url target to generate preferences script for.
      * saveduserprefs - querystring formatted (and url encoded) collection of
      *  key value pairs representing the currently saved user settings.  This
-     *  data is important for generating prepopulated inputs. 
+     *  data is important for generating prepopulated inputs.
      * @param request - current request information.
      */
+    @Override
     protected void initParams(final Request request)
     {
-        //Retrieve the module id and gadget def url for the 
+        //Retrieve the module id and gadget def url for the
         //metadata request.
-        if (request.getAttributes().containsKey(MODULE_ID_KEY) 
+        if (request.getAttributes().containsKey(MODULE_ID_KEY)
                 && request.getAttributes().containsKey(GADGET_DEF_URL_KEY))
         {
             try
@@ -130,7 +131,7 @@ public class UserPrefsFormUIResource extends SmpResource
                         (String) request.getAttributes().get(GADGET_DEF_URL_KEY));
                 gadgetDefUrl = URLDecoder.decode(
                         tempGadgetDefURI.toString(), DEFAULT_URL_ENCODING);
-                String tempAppId = (String) request.getAttributes().get(MODULE_ID_KEY); 
+                String tempAppId = (String) request.getAttributes().get(MODULE_ID_KEY);
                 logger.debug("Retreived moduleId from querystring: " + tempAppId);
                 moduleId = Long.parseLong(tempAppId.trim());
             }
@@ -141,10 +142,10 @@ public class UserPrefsFormUIResource extends SmpResource
                 moduleId = 0L;
             }
         }
-        
+
         //Saved User Preferences are optional and thus pulled off the request seperately.
         savedUserPrefs = new HashMap<String, String>();
-        
+
         if (request.getAttributes().containsKey(SAVED_USER_PREFS))
         {
             String urlUserPreferences = (String) request.getAttributes().get(SAVED_USER_PREFS);
@@ -174,7 +175,7 @@ public class UserPrefsFormUIResource extends SmpResource
 
     /**
      * This method injects the gadget mapper.
-     * 
+     *
      * @param inGadgetMapper
      *            mapper.
      */
@@ -183,7 +184,7 @@ public class UserPrefsFormUIResource extends SmpResource
     {
         gadgetMapper = inGadgetMapper;
     }
-    
+
     /**
      * This method injects the gadget metadata fetcher.
      * @param inGadgetMetaFetcher - instance of GadgetMetaFetcher to set locally.
@@ -193,12 +194,12 @@ public class UserPrefsFormUIResource extends SmpResource
     {
         gadgetMetaFetcher = inGadgetMetaFetcher;
     }
-    
+
     /**
      * Provide the settings output for the gadget definitions supplied.
      * @param variant - context.
      * @return Representation of the response.
-     * 
+     *
      * @throws ResourceException when an error is encountered with the representation
      * code.
      */
@@ -219,8 +220,8 @@ public class UserPrefsFormUIResource extends SmpResource
                 List<GadgetMetaDataDTO> gadgetMetaData = gadgetMetaFetcher.getGadgetsMetaData(gadgetDefs);
                 for (GadgetMetaDataDTO currentGMeta : gadgetMetaData)
                 {
-                    logger.debug("Retrieved Metadata for Gadget" + targetGadgetDef.getId() 
-                            + " Author: " + currentGMeta.getAuthor() 
+                    logger.debug("Retrieved Metadata for Gadget" + targetGadgetDef.getId()
+                            + " Author: " + currentGMeta.getAuthor()
                             + " UserPrefsSize: " + currentGMeta.getUserPrefs().size());
                     sb.append(buildUserPreferencesUI(currentGMeta));
                 }
@@ -229,7 +230,7 @@ public class UserPrefsFormUIResource extends SmpResource
             {
                 logger.error("Error occurred retrieving User Preferences script", ex);
                 sb.append("var htmlString_" + moduleId + "='';");
-                sb.append("htmlString_" + moduleId + " += '<div class=\"gadget-preferences\">" 
+                sb.append("htmlString_" + moduleId + " += '<div class=\"gadget-preferences\">"
                         + USER_PREFS_ERROR_MESSAGE + "</div>';");
                 sb.append("gadget_callback_" + moduleId + "(htmlString_" + moduleId + ");");
             }
@@ -243,10 +244,10 @@ public class UserPrefsFormUIResource extends SmpResource
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, "Invalid application id passed to endpoint");
         }
     }
-    
+
     /**
      * This method constructs the user preferences for the gadget MetaData supplied.
-     * @param gadgetMetaData - GadgetMetaDataDTO object that contains the info for 
+     * @param gadgetMetaData - GadgetMetaDataDTO object that contains the info for
      *          retrieving the User Preferences ui.
      * @return - string representation of the user preferences ui.
      */
@@ -261,20 +262,20 @@ public class UserPrefsFormUIResource extends SmpResource
         for (UserPrefDTO currentUserPref : gadgetMetaData.getUserPrefs())
         {
             //If the value has already been saved, use the saved value.
-            if (savedUserPrefs.size() > 0 
+            if (savedUserPrefs.size() > 0
                     && savedUserPrefs.containsKey("up_" + currentUserPref.getName()))
             {
                 currentUserPref.setDefaultValue(savedUserPrefs.get("up_" + currentUserPref.getName()));
             }
-            
+
             sbHtml.append("<div class=\"input-area\">");
             if (currentUserPref.getDataType().name() != DataType.HIDDEN.name())
-            {                
+            {
                 sbHtml.append("<div class=\"label-area\"><label class=\"label\">");
                 sbHtml.append(currentUserPref.getDisplayName() + "</label></div>");
                 sbHtml.append("<div class=\"input-box\">");
             }
-                
+
             if (currentUserPref.getDataType().name() == DataType.HIDDEN.name())
             {
                 sbHtml.append("<input type=\"hidden\" id=\"" + userPrefPrefix + "_" + userPrefIndex + "\" ");
@@ -301,17 +302,17 @@ public class UserPrefsFormUIResource extends SmpResource
             {
                 //TODO: handle list here with a bunch of checkboxes.
                 logger.info("Handle user preferences type List");
-                
+
             }
             else if (currentUserPref.getDataType().name() == DataType.BOOL.name())
             {
-                sbHtml.append("<input type=\"checkbox\" class=\"checkbox\" id=\"" 
+                sbHtml.append("<input type=\"checkbox\" class=\"checkbox\" id=\""
                         + userPrefPrefix + "_" + userPrefIndex + "\" ");
-                sbHtml.append("name=\"" 
+                sbHtml.append("name=\""
                         + userPrefPrefix + "_up_" + currentUserPref.getName() + "\" ");
                 try
                 {
-                    if (Boolean.parseBoolean(currentUserPref.getDefaultValue()) 
+                    if (Boolean.parseBoolean(currentUserPref.getDefaultValue())
                             || Integer.parseInt(currentUserPref.getDefaultValue()) > 0)
                     {
                         sbHtml.append("checked ");
@@ -319,7 +320,7 @@ public class UserPrefsFormUIResource extends SmpResource
                 }
                 catch (NumberFormatException nex)
                 {
-                    logger.info("Data passed in for boolean user preference" 
+                    logger.info("Data passed in for boolean user preference"
                             + "was not correct string or number format, assuming false.");
                 }
                 sbHtml.append("value=\"true\" onClick=\"document.getElementById(\\'"
@@ -329,15 +330,15 @@ public class UserPrefsFormUIResource extends SmpResource
             }
             else
             {
-                sbHtml.append("<input type=\"text\" class=\"text-box\" id=\"" 
+                sbHtml.append("<input type=\"text\" class=\"text-box\" id=\""
                         + userPrefPrefix + "_" + userPrefIndex + "\" ");
-                sbHtml.append("name=\"" 
+                sbHtml.append("name=\""
                         + userPrefPrefix + "_up_" + currentUserPref.getName() + "\" ");
-                sbHtml.append("value=\"" 
+                sbHtml.append("value=\""
                         + StringEscapeUtils.escapeHtml(currentUserPref.getDefaultValue().replace("'", "\\'")) + "\"/>");
                 sbHtml.append("</div>");
             }
-            
+
             if (currentUserPref.getRequired())
             {
                 sbHtml.append("<div>Required</div>");
@@ -347,9 +348,10 @@ public class UserPrefsFormUIResource extends SmpResource
             {
                 sbHtml.append("</div>");
             }
-            sbHtml.append("</div>");
+
             userPrefIndex++;
         }
+        sbHtml.append("</div>");
         sbHtml.append("<input type=\"hidden\" id=\"" + userPrefPrefix + "_numfields\" ");
         sbHtml.append("value=\"" + gadgetMetaData.getUserPrefs().size() + "\"/>");
         sbHtml.append("</div>");
