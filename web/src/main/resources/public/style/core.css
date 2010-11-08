@@ -8728,7 +8728,7 @@ body .previous-arrow:hover {
 .gadgets-gadget-user-prefs-dialog .label-area {
 	display: inline-block;
 	text-align: right;
-	float: left;
+    width:100px;
 	clear: left;
 }
 
