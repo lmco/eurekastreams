@@ -233,7 +233,13 @@
 		<property name="entityMapper" ref="jpaFeedReaderMapper" />
 		<property name="modifiable" value="true" />
 	</bean>	
-	
+    
+    <bean name="personPropertiesResource" class="org.eurekastreams.server.service.restlets.PersonPropertiesResource" scope="prototype">
+        <constructor-arg ref="getPersonModelViewsByIds" />
+        <constructor-arg ref="serviceActionController" />
+        <constructor-arg ref="getAllPersonIds" />
+    </bean>
+
 	<!-- The router maps URLs to resources. -->
 	<bean name="restletRouter" class="org.restlet.ext.spring.SpringRouter">
 		<constructor-arg ref="resourceApplication" />
@@ -427,6 +433,11 @@
                 	<bean class="org.restlet.ext.spring.SpringFinder">
                 		<lookup-method name="createResource" bean="compositeStreamSearchEntryResource" />
                 	</bean>
+                </entry>
+                <entry key="/util/personProperties">
+                    <bean class="org.restlet.ext.spring.SpringFinder">
+                        <lookup-method name="createResource" bean="personPropertiesResource" />
+                    </bean>
                 </entry>
 			</map>
 		</property>

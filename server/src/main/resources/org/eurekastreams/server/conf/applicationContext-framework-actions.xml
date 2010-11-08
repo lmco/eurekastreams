@@ -241,16 +241,16 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />        
+    </bean>    
+    
+    <bean id="deleteGroupExecution" class="org.eurekastreams.server.action.execution.profile.DeleteGroupFromDBExecution">
+        <constructor-arg ref="deleteGroupActivity" />
+        <constructor-arg ref="removeGroupFollowers" />
+        <constructor-arg ref="deleteGroup" />
+        <constructor-arg ref="deleteGroupSubscriptions" />                
+        <constructor-arg value="10000" />                  
     </bean>
     
-	<bean id="deleteGroupExecution" class="org.eurekastreams.server.action.execution.profile.DeleteGroupFromDBExecution">
-		<constructor-arg ref="deleteGroupActivity" />
-		<constructor-arg ref="removeGroupFollowers" />
-		<constructor-arg ref="deleteGroup" />
-		<constructor-arg ref="deleteGroupSubscriptions" />                
-		<constructor-arg value="10000" />                  
-	</bean>
-	
     <bean id="deleteGroupAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.validation.profile.DeleteGroupValidation">
@@ -4514,5 +4514,31 @@
         class="org.eurekastreams.server.service.actions.strategies.directory.SearchResultAdditionalPropertyPopulator">
         <constructor-arg ref="fieldMatchDeterminer" />
     </bean>
- 	
+
+     <bean id="getAllPersonIds" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="getPersonIds" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="false" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>     
+    
+    <bean id="getPersonModelViewsByIds" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="bulkPeopleMapper" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="false" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
+    
 </beans>
