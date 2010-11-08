@@ -107,7 +107,8 @@ public class PersonCreatorTest extends DomainEntityMapperTest
     public final void load()
     {
         List<String> startPageTabTypes = new ArrayList<String>(Arrays.asList(TabType.WELCOME));
-        sut = new PersonCreator(personMapperMock, tabMapperMock, organizationMapperMock, getStreamViewByType, startPageTabTypes);
+        sut = new PersonCreator(personMapperMock, tabMapperMock, organizationMapperMock, 
+                getStreamViewByType, startPageTabTypes);
     }
 
     /**

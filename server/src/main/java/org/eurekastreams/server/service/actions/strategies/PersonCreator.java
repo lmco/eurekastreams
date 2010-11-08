@@ -83,6 +83,7 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
      *            org mapper
      * @param inStreamViewMapper
      *            stream view mapper.
+     * @param inStartPageTabs - list of start page tabs to include when creating person.
      */
     public PersonCreator(final PersonMapper inPersonMapper, final TabMapper inTabMapper,
             final OrganizationMapper inOrganizationMapper, final GetStreamViewByType inStreamViewMapper,
