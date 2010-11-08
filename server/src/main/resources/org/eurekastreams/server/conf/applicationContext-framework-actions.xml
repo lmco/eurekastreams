@@ -6,6 +6,8 @@
       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
+    <import resource="applicationContext-actions-createperson.xml" />
+
     <!--
         This spring file contains the configuration for the actions and their
         associated strategies.  This includes ServiceActions, TaskHandlerServiceActions,
@@ -3515,12 +3517,14 @@
         <constructor-arg value="true" />
     </bean>
     
+    <!--  Start Page tab types are defined in shared resources so that they can be easily overridden -->
     <bean id="createPersonActionFactory" class="org.eurekastreams.server.action.execution.CreatePersonActionFactory">
         <constructor-arg ref="jpaTabMapper" />
         <constructor-arg ref="jpaOrganizationMapper" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.GetStreamViewByType" />
         </constructor-arg>
+        <constructor-arg ref="newPersonStartPageTabs" />
     </bean>
     
     
@@ -4115,6 +4119,7 @@
             <bean
                 class="org.eurekastreams.server.persistence.mappers.GetStreamViewByType" />
         </constructor-arg>
+        <constructor-arg ref="newPersonStartPageTabs" />
     </bean>
 
     <bean id="personUpdater" class="org.eurekastreams.server.service.actions.strategies.PersonUpdater">

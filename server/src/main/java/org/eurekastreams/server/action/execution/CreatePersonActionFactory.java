@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.server.action.execution;
 
+import java.util.List;
+
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
@@ -44,6 +46,11 @@ public class CreatePersonActionFactory
     private GetStreamViewByType typeMapper;
 
     /**
+     * List of Strings describing the start pages to be added to a new user.
+     */
+    private final List<String> startPageTabs;
+    
+    /**
      * Constructor.
      *
      * @param inTabMapper
@@ -51,13 +58,16 @@ public class CreatePersonActionFactory
      * @param inOrganizationMapper
      *            OrganizationMapper.
      * @param inTypeMapper type mapper.
+     * @param inStartPageTabs - list of tabs to create on the start page.
      */
     public CreatePersonActionFactory(final TabMapper inTabMapper, final OrganizationMapper inOrganizationMapper,
-            final GetStreamViewByType inTypeMapper)
+            final GetStreamViewByType inTypeMapper,
+            final List<String> inStartPageTabs)
     {
         tabMapper = inTabMapper;
         organizationMapper = inOrganizationMapper;
         typeMapper = inTypeMapper;
+        startPageTabs = inStartPageTabs;
     }
 
     /**
@@ -73,6 +83,6 @@ public class CreatePersonActionFactory
             final UpdaterStrategy inUpdater)
     {
         return new PersistResourceExecution<Person>(inPersonMapper, this, inUpdater, new PersonCreator(inPersonMapper,
-                tabMapper, organizationMapper, typeMapper));
+                tabMapper, organizationMapper, typeMapper, startPageTabs));
     }
 }

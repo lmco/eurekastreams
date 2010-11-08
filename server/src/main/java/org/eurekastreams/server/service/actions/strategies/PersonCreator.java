@@ -33,8 +33,8 @@ import org.eurekastreams.server.domain.TabGroup;
 import org.eurekastreams.server.domain.TabTemplate;
 import org.eurekastreams.server.domain.TabType;
 import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.domain.stream.StreamView;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.OrganizationMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.TabMapper;
@@ -66,6 +66,11 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
      * Mapper to get the Stream Views.
      */
     private GetStreamViewByType streamViewMapper;
+    
+    /**
+     * List of StartPage Tabs to create when adding a new user.
+     */
+    private final List<String> startPageTabs;
 
     /**
      * Constructor.
@@ -80,12 +85,14 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
      *            stream view mapper.
      */
     public PersonCreator(final PersonMapper inPersonMapper, final TabMapper inTabMapper,
-            final OrganizationMapper inOrganizationMapper, final GetStreamViewByType inStreamViewMapper)
+            final OrganizationMapper inOrganizationMapper, final GetStreamViewByType inStreamViewMapper,
+            final List<String> inStartPageTabs)
     {
         personMapper = inPersonMapper;
         tabMapper = inTabMapper;
         organizationMapper = inOrganizationMapper;
         streamViewMapper = inStreamViewMapper;
+        startPageTabs = inStartPageTabs;
     }
 
     /**
@@ -106,8 +113,8 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
 
         // create all tabs needed for an person profile
 
-        // This tab will share a TabTemplate.
-        Tab personAboutTab = new Tab(tabMapper.getTabTemplate(TabType.PERSON_ABOUT));
+        // add the templates to the tab group
+        profileTabGroup.addTab(new Tab(tabMapper.getTabTemplate(TabType.PERSON_ABOUT)));
 
         // These tabs create their own templates based on other templates.
         // It was decided that we will not have the Application
@@ -116,12 +123,10 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
         // the population script.
         // Tab personAppTab = new Tab(new
         // TabTemplate(tabMapper.getTabTemplate(TabType.APP)));
-        Tab personWelcomeTab = new Tab(new TabTemplate(tabMapper.getTabTemplate(TabType.WELCOME)));
-
-        // add the templates to the tab group
-        profileTabGroup.addTab(personAboutTab);
-        // profileTabGroup.addTab(personAppTab);
-        startTabGroup.addTab(personWelcomeTab);
+        for(String tabType : startPageTabs)
+        {
+            startTabGroup.addTab(new Tab(new TabTemplate(tabMapper.getTabTemplate(tabType))));
+        }
 
         // create the person
         Person person = new Person((String) inFields.get("accountId"), (String) inFields.get("firstName"),
@@ -172,14 +177,13 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
         // doesn't do them again.
         inFields.remove("organization");
         inFields.remove("email");
-        
+
         if (inFields.containsKey("additionalProperties"))
         {
         	HashMap<String, String> additionalProperties =
         		(HashMap<String, String>) inFields.get("additionalProperties");
         	person.setAdditionalProperties(additionalProperties);
        	}
-        
         return person;
     }
 

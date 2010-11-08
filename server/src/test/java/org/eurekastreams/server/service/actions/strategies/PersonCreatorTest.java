@@ -20,7 +20,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
@@ -103,7 +106,8 @@ public class PersonCreatorTest extends DomainEntityMapperTest
     @Before
     public final void load()
     {
-        sut = new PersonCreator(personMapperMock, tabMapperMock, organizationMapperMock, getStreamViewByType);
+        List<String> startPageTabTypes = new ArrayList<String>(Arrays.asList(TabType.WELCOME));
+        sut = new PersonCreator(personMapperMock, tabMapperMock, organizationMapperMock, getStreamViewByType, startPageTabTypes);
     }
 
     /**
@@ -190,7 +194,7 @@ public class PersonCreatorTest extends DomainEntityMapperTest
 
     /**
      * Test the persist method.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -217,14 +221,17 @@ public class PersonCreatorTest extends DomainEntityMapperTest
     
     /**
      * Test the persist method.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
     @Test
     public final void testPersistFromDB() throws Exception
     {
-        sut = new PersonCreator(personMapper, tabMapper, organizationMapper, getStreamViewByType);
+        List<String> startPageTabTypes = new ArrayList<String>(Arrays.asList(TabType.WELCOME));
+    
+        sut = new PersonCreator(personMapper, tabMapper, organizationMapper, getStreamViewByType, startPageTabTypes);
+
         final Organization org = organizationMapper.getRootOrganization();
         
         final HashMap<String, Serializable> inFields = new HashMap<String, Serializable>();
