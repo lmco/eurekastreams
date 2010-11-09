@@ -44,7 +44,6 @@ import org.eurekastreams.web.client.events.data.GotSystemSettingsResponseEvent;
 import org.eurekastreams.web.client.history.HistoryHandler;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
-import org.eurekastreams.web.client.model.AllPopularHashTagsModel;
 import org.eurekastreams.web.client.model.BulkEntityModel;
 import org.eurekastreams.web.client.model.NotificationCountModel;
 import org.eurekastreams.web.client.model.SystemSettingsModel;
