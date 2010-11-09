@@ -29,6 +29,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PostLoad;
 import javax.persistence.PrePersist;
 import javax.persistence.Transient;
@@ -57,7 +58,7 @@ public class AppData extends DomainEntity implements Serializable
      * all of the application data because it could contain 1000's of entries.
      * This is takeaway from the Shindig db implementation example.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gadgetDefinitionId")
     private GadgetDefinition gadgetDefinition;
 
