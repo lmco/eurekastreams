@@ -17,35 +17,32 @@ package org.eurekastreams.server.service.actions.strategies.activity.plugins;
 
 import java.util.HashMap;
 
-import com.sun.syndication.feed.synd.SyndEntryImpl;
+import com.sun.syndication.feed.synd.SyndEntry;
 
 /**
  * Youtube mapper.
- *
  */
-public class YoutubeMapper extends StandardFeedVideoMapper implements ObjectMapper
+public class YoutubeMapper extends StandardFeedVideoMapper implements FeedObjectActivityBuilder
 {
 
     /**
      * Gets the base object.
-     * 
+     *
      * @param entry
      *            the entry.
      * @return the object.
      */
     @Override
-    public HashMap<String, String> getBaseObject(final SyndEntryImpl entry)
+    protected HashMap<String, String> getBaseObject(final SyndEntry entry)
     {
         HashMap<String, String> object = super.getBaseObject(entry);
 
-        object.put("description", stripHTML(
-        		entry.getDescription().getValue().split("<span>")[1].split("</span>")[0]));
-        object.put("thumbnail", stripHTML(
-        		entry.getDescription().getValue().split("<img alt=\"\" src=\"")[1].split("\"")[0]));
+        object.put("description", InputCleaner.stripHtml(entry.getDescription().getValue().split("<span>")[1]
+                .split("</span>")[0], MAXLENGTH));
+        object.put("thumbnail", InputCleaner.stripHtml(
+                entry.getDescription().getValue().split("<img alt=\"\" src=\"")[1].split("\"")[0], MAXLENGTH));
         object.put("videoStream", "http://www.youtube.com/v/" + entry.getLink().split("v=")[1].split("&")[0]);
-        object.put("videoPageUrl", stripHTML(
-        		entry.getLink()));
+        object.put("videoPageUrl", InputCleaner.stripHtml(entry.getLink(), MAXLENGTH));
         return object;
     }
-    
 }

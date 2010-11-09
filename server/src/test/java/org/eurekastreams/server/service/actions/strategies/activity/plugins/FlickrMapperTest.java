@@ -24,7 +24,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
+import org.eurekastreams.server.domain.stream.plugins.Feed;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -41,7 +43,7 @@ import com.sun.syndication.feed.synd.SyndLinkImpl;
 
 /**
  * Flickr mapper test.
- * 
+ *
  */
 public class FlickrMapperTest
 {
@@ -63,7 +65,7 @@ public class FlickrMapperTest
     /**
      * System under test.
      */
-    private FlickrMapper sut = new FlickrMapper();
+    private final FlickrMapper sut = new FlickrMapper();
 
     /**
      * Title.
@@ -73,12 +75,15 @@ public class FlickrMapperTest
     /**
      * Content.
      */
-    private SyndContentImpl content = context.mock(SyndContentImpl.class);
+    private final SyndContentImpl content = context.mock(SyndContentImpl.class);
 
     /**
      * Content list.
      */
     private List<SyndContentImpl> myContents = new LinkedList<SyndContentImpl>();
+
+    /** Fixture: feed. */
+    private final Feed feed = context.mock(Feed.class);
 
     /**
      * Test with image urls and thumbnail.
@@ -120,10 +125,10 @@ public class FlickrMapperTest
 
                 oneOf(entry).getLinks();
                 will(returnValue(myLinks));
-                
+
                 oneOf(entry).getDescription();
                 will(returnValue(description));
-                
+
                 allowing(link1).getRel();
                 will(returnValue("enclosure"));
                 oneOf(link1).getHref();
@@ -157,8 +162,12 @@ public class FlickrMapperTest
             }
         });
 
-        HashMap<String, String> result = sut.getBaseObject(entry);
+        Activity activity = new Activity();
+        sut.build(feed, entry, activity);
 
+        assertEquals(BaseObjectType.PHOTO, activity.getBaseObjectType());
+
+        HashMap<String, String> result = activity.getBaseObject();
         assertEquals(title, result.get("title"));
         assertEquals(link1Href, result.get("largerImage"));
         assertEquals(link2Href, result.get("imagePageURL"));
@@ -199,10 +208,10 @@ public class FlickrMapperTest
 
                 oneOf(entry).getLinks();
                 will(returnValue(myLinks));
-                
+
                 oneOf(entry).getDescription();
                 will(returnValue(description));
-                
+
                 allowing(link1).getRel();
                 will(returnValue("notenclosure"));
 
@@ -226,21 +235,16 @@ public class FlickrMapperTest
             }
         });
 
-        HashMap<String, String> result = sut.getBaseObject(entry);
+        Activity activity = new Activity();
+        sut.build(feed, entry, activity);
 
+        assertEquals(BaseObjectType.PHOTO, activity.getBaseObjectType());
+
+        HashMap<String, String> result = activity.getBaseObject();
         assertEquals(title, result.get("title"));
         assertFalse(result.containsKey("largerImage"));
         assertFalse(result.containsKey("imagePageURL"));
         assertEquals(FLICKR_URL, result.get("thumbnail"));
         assertEquals("", result.get("description"));
-    }
-
-    /**
-     * Flickr mapper should be of type PHOTO.
-     */
-    @Test
-    public void getBaseObjectType()
-    {
-        assertEquals(BaseObjectType.PHOTO, sut.getBaseObjectType());
     }
 }

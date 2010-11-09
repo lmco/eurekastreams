@@ -42,8 +42,8 @@ import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.cache.MemcachedCache;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
-import org.eurekastreams.server.service.actions.strategies.activity.plugins.ObjectMapper;
-import org.eurekastreams.server.service.actions.strategies.activity.plugins.SpecificUrlObjectMapper;
+import org.eurekastreams.server.service.actions.strategies.activity.plugins.FeedObjectActivityBuilder;
+import org.eurekastreams.server.service.actions.strategies.activity.plugins.ObjectBuilderForSpecificUrl;
 import org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.ActivityStreamsModule;
 import org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.ActivityStreamsModuleImpl;
 import org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.FeedFactory;
@@ -106,22 +106,23 @@ public class RefreshFeedExecutionTest
     /**
      * Standard feed mappers.
      */
-    private HashMap<BaseObjectType, ObjectMapper> standardFeedMappers = new HashMap<BaseObjectType, ObjectMapper>();
+    private final HashMap<BaseObjectType, FeedObjectActivityBuilder> standardFeedMappers =
+            new HashMap<BaseObjectType, FeedObjectActivityBuilder>();
 
     /**
      * Mappers for specific websites.
      */
-    private List<SpecificUrlObjectMapper> specificUrlMappers = new LinkedList<SpecificUrlObjectMapper>();
+    private final List<ObjectBuilderForSpecificUrl> specificUrlMappers = new LinkedList<ObjectBuilderForSpecificUrl>();
 
     /**
      * Bulk insert activity into the DB.
      */
-    private InsertMapper<Activity> activityDBInserter = context.mock(InsertMapper.class);
+    private final InsertMapper<Activity> activityDBInserter = context.mock(InsertMapper.class);
 
     /**
      * The cache.
      */
-    private MemcachedCache cache = context.mock(MemcachedCache.class);
+    private final MemcachedCache cache = context.mock(MemcachedCache.class);
 
     /**
      * System under test.
@@ -131,76 +132,77 @@ public class RefreshFeedExecutionTest
     /**
      * Context for tests.
      */
-    private ActionContext ac = context.mock(ActionContext.class);
+    private final ActionContext ac = context.mock(ActionContext.class);
 
     /**
      * Feed factory mock.
      */
-    private FeedFactory feedFetcherFactory = context.mock(FeedFactory.class);
+    private final FeedFactory feedFetcherFactory = context.mock(FeedFactory.class);
     /**
      * Flickr mapper mock.
      */
-    private SpecificUrlObjectMapper flickrMapper = context.mock(SpecificUrlObjectMapper.class, "flickr");
+    private final ObjectBuilderForSpecificUrl flickrMapper = context.mock(ObjectBuilderForSpecificUrl.class, "flickr");
     /**
      * Youtube mapper mock.
      */
-    private SpecificUrlObjectMapper youTubeMapper = context.mock(SpecificUrlObjectMapper.class, "youtube");
+    private final ObjectBuilderForSpecificUrl youTubeMapper =
+            context.mock(ObjectBuilderForSpecificUrl.class, "youtube");
     /**
      * Notemapper mock.
      */
-    private ObjectMapper noteMapper = context.mock(ObjectMapper.class, "note");
+    private final FeedObjectActivityBuilder noteMapper = context.mock(FeedObjectActivityBuilder.class, "note");
     /**
      * Bookmark mapper mock.
      */
-    private ObjectMapper bookmarkMapper = context.mock(ObjectMapper.class, "bookmark");
+    private final FeedObjectActivityBuilder bookmarkMapper = context.mock(FeedObjectActivityBuilder.class, "bookmark");
 
     /**
      * Find by id person mapper.
      */
-    private FindByIdMapper<Person> personMapper = context.mock(FindByIdMapper.class);
+    private final FindByIdMapper<Person> personMapper = context.mock(FindByIdMapper.class);
 
     /**
      * Find by id group mapper.
      */
-    private FindByIdMapper<DomainGroup> groupMapper = context.mock(FindByIdMapper.class, "gm");
+    private final FindByIdMapper<DomainGroup> groupMapper = context.mock(FindByIdMapper.class, "gm");
 
     /**
      * Find by id feed mapper.
      */
-    private FindByIdMapper<Feed> feedMapper = context.mock(FindByIdMapper.class, "fm");
+    private final FindByIdMapper<Feed> feedMapper = context.mock(FindByIdMapper.class, "fm");
 
     /**
      * Person owner.
      */
-    private Person personOwner = context.mock(Person.class);
+    private final Person personOwner = context.mock(Person.class);
     /**
      * Group owner.
      */
-    private DomainGroup groupOwner = context.mock(DomainGroup.class);
+    private final DomainGroup groupOwner = context.mock(DomainGroup.class);
 
     /**
      * Group owner.
      */
-    private UpdateMapper<Feed> updateMapper = context.mock(UpdateMapper.class);
+    private final UpdateMapper<Feed> updateMapper = context.mock(UpdateMapper.class);
 
     /**
      * Gadget metadata fetcher.
      */
-    private GadgetMetaDataFetcher fetcher = context.mock(GadgetMetaDataFetcher.class);
+    private final GadgetMetaDataFetcher fetcher = context.mock(GadgetMetaDataFetcher.class);
 
 
 
     /** Fixture: feed. */
-    private Feed feed = context.mock(Feed.class);
+    private final Feed feed = context.mock(Feed.class);
 
     /** Fixture: stream plugin. */
-    private PluginDefinition plugin = context.mock(PluginDefinition.class);
+    private final PluginDefinition plugin = context.mock(PluginDefinition.class);
 
     /** Fixture: atom feed. */
-    private SyndFeed atomFeed1 = context.mock(SyndFeed.class, "atomFeed1");
+    private final SyndFeed atomFeed1 = context.mock(SyndFeed.class, "atomFeed1");
 
     /** Fixture: atom feed. */
-    private SyndFeed atomFeed2 = context.mock(SyndFeed.class, "atomFeed2");
+    private final SyndFeed atomFeed2 = context.mock(SyndFeed.class, "atomFeed2");
 
 
     /**
@@ -272,10 +274,8 @@ public class RefreshFeedExecutionTest
                 allowing(plugin).getObjectType();
                 will(returnValue(BaseObjectType.BOOKMARK));
 
-
-                oneOf(youTubeMapper).getRegex();
-                will(returnValue("nevermatchme"));
-
+                oneOf(youTubeMapper).match(with(any(String.class)));
+                will(returnValue(false));
 
                 allowing(updateMapper).execute(with(any(PersistenceRequest.class)));
 
@@ -390,8 +390,8 @@ public class RefreshFeedExecutionTest
         context.checking(new Expectations()
         {
             {
-                allowing(flickrMapper).getRegex();
-                will(returnValue("dontmatchthis"));
+                allowing(flickrMapper).match(FEED_URL);
+                will(returnValue(false));
 
                 allowing(atomFeed1).getModule(SyModule.URI);
                 will(returnValue(syMod));
@@ -501,7 +501,7 @@ public class RefreshFeedExecutionTest
     @Test
     public void withSpecificMapper() throws Exception
     {
-        final ObjectMapper flickrObjectMapper = context.mock(ObjectMapper.class);
+        final FeedObjectActivityBuilder flickrObjectMapper = context.mock(FeedObjectActivityBuilder.class);
         final SyndEntryImpl entry1 = context.mock(SyndEntryImpl.class, "e1");
         final List<SyndEntryImpl> entryList = Collections.singletonList(entry1);
 
@@ -510,10 +510,10 @@ public class RefreshFeedExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(flickrMapper).getRegex();
-                will(returnValue("(www.)?flickr.com"));
+                oneOf(flickrMapper).match(FEED_URL);
+                will(returnValue(true));
 
-                oneOf(flickrMapper).getObjectMapper();
+                oneOf(flickrMapper).getBuilder();
                 will(returnValue(flickrObjectMapper));
 
                 allowing(entry1).getPublishedDate();
@@ -525,8 +525,7 @@ public class RefreshFeedExecutionTest
                 allowing(entry1).getUri();
                 will(returnValue("uri"));
 
-                oneOf(flickrObjectMapper).getBaseObjectType();
-                oneOf(flickrObjectMapper).getBaseObject(entry1);
+                oneOf(flickrObjectMapper).build(with(equal(feed)), with(equal(entry1)), with(any(Activity.class)));
 
                 allowing(personOwner).getAccountId();
                 allowing(personOwner).getId();
@@ -590,8 +589,8 @@ public class RefreshFeedExecutionTest
                 will(returnValue(false));
 
 
-                oneOf(flickrMapper).getRegex();
-                will(returnValue("dontmatchmeeither"));
+                oneOf(flickrMapper).match(FEED_URL);
+                will(returnValue(false));
 
                 // ENTRY 1
                 allowing(entry1).getPublishedDate();
@@ -637,8 +636,7 @@ public class RefreshFeedExecutionTest
                 oneOf(activityModule).getAtomEntry();
                 will(returnValue(entry3));
 
-                oneOf(noteMapper).getBaseObjectType();
-                oneOf(noteMapper).getBaseObject(entry3);
+                oneOf(noteMapper).build(with(equal(feed)), with(equal(entry3)), with(any(Activity.class)));
 
                 // ENTRY 4
                 allowing(entry4).getPublishedDate();
@@ -657,10 +655,9 @@ public class RefreshFeedExecutionTest
                 allowing(atomFeed1).getEntries();
                 will(returnValue(entryList));
 
-                allowing(bookmarkMapper).getBaseObjectType();
-                oneOf(bookmarkMapper).getBaseObject(entry4);
-                oneOf(bookmarkMapper).getBaseObject(entry1);
 
+                oneOf(bookmarkMapper).build(with(equal(feed)), with(equal(entry4)), with(any(Activity.class)));
+                oneOf(bookmarkMapper).build(with(equal(feed)), with(equal(entry1)), with(any(Activity.class)));
             }
         });
 

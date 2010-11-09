@@ -22,7 +22,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 
+import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
+import org.eurekastreams.server.domain.stream.plugins.Feed;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -54,7 +56,7 @@ public class StandardFeedBookmarkMapperTest
     /**
      * System under test.
      */
-    private StandardFeedBookmarkMapper sut = new StandardFeedBookmarkMapper();
+    private final StandardFeedBookmarkMapper sut = new StandardFeedBookmarkMapper();
 
     /**
      * Title.
@@ -76,6 +78,9 @@ public class StandardFeedBookmarkMapperTest
      * Description content mock.
      */
     private final SyndContent description = context.mock(SyndContent.class);
+
+    /** Fixture: feed. */
+    private final Feed feed = context.mock(Feed.class);
 
     /**
      * Test with thumbnail.
@@ -120,8 +125,12 @@ public class StandardFeedBookmarkMapperTest
             }
         });
 
-        HashMap<String, String> result = sut.getBaseObject(entry);
+        Activity activity = new Activity();
+        sut.build(feed, entry, activity);
 
+        assertEquals(BaseObjectType.BOOKMARK, activity.getBaseObjectType());
+
+        HashMap<String, String> result = activity.getBaseObject();
         assertEquals(title, result.get("targetTitle"));
         assertEquals(title, result.get("title"));
         assertEquals(link, result.get("targetUrl"));
@@ -165,22 +174,17 @@ public class StandardFeedBookmarkMapperTest
             }
         });
 
-        HashMap<String, String> result = sut.getBaseObject(entry);
+        Activity activity = new Activity();
+        sut.build(feed, entry, activity);
+
+        assertEquals(BaseObjectType.BOOKMARK, activity.getBaseObjectType());
+
+        HashMap<String, String> result = activity.getBaseObject();
 
         assertEquals(title, result.get("targetTitle"));
         assertEquals(title, result.get("title"));
         assertEquals(link, result.get("targetUrl"));
         assertEquals("", result.get("description"));
         assertFalse(result.containsKey("thumbnail"));
-    }
-
-    /**
-     * Flickr mapper should be of type PHOTO.
-     */
-    @Test
-    public void getBaseObjectType()
-    {
-
-        assertEquals(BaseObjectType.BOOKMARK, sut.getBaseObjectType());
     }
 }

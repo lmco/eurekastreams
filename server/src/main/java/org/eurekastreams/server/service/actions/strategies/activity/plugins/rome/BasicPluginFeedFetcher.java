@@ -33,7 +33,7 @@ public class BasicPluginFeedFetcher implements PluginFeedFetcherStrategy
     private Map<String, String> httpHeaders;
 
     /** Fetcher for feeds. */
-    private BasicFeedFetcher fetcher;
+    private FeedFetcher fetcher;
 
     /**
      * Constructor for default use.
@@ -41,7 +41,7 @@ public class BasicPluginFeedFetcher implements PluginFeedFetcherStrategy
      * @param inFetcher
      *            Fetcher for feeds.
      */
-    public BasicPluginFeedFetcher(final BasicFeedFetcher inFetcher)
+    public BasicPluginFeedFetcher(final FeedFetcher inFetcher)
     {
         this(inFetcher, null, Collections.EMPTY_MAP);
     }
@@ -56,7 +56,7 @@ public class BasicPluginFeedFetcher implements PluginFeedFetcherStrategy
      * @param inHttpHeaders
      *            HTTP headers to add to the request.
      */
-    public BasicPluginFeedFetcher(final BasicFeedFetcher inFetcher, final String inSiteUrlRegEx,
+    public BasicPluginFeedFetcher(final FeedFetcher inFetcher, final String inSiteUrlRegEx,
             final Map<String, String> inHttpHeaders)
     {
         fetcher = inFetcher;

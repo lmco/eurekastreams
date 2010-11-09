@@ -32,7 +32,7 @@ import com.sun.syndication.io.SyndFeedInput;
 /**
  * Fetches a feed (for use by the stream plugin framework).
  */
-public class BasicFeedFetcher
+public class BasicFeedFetcher implements FeedFetcher
 {
     /** Fetches the contents of a URL as an XML document. */
     private HttpDocumentFetcher documentFetcher;
@@ -49,27 +49,7 @@ public class BasicFeedFetcher
     }
 
     /**
-     * Fetches a feed.
-     *
-     * @param inFeedUrl
-     *            the Url for the feed to feed in.
-     * @param inHttpHeaders
-     *            HTTP headers to add to the request.
-     * @param inProxyHost
-     *            host name to use (if desires) for proxying http requests.
-     * @param inProxyPort
-     *            port for http proxy server.
-     * @param inTimeout
-     *            the timeout period to wait for the feed to return (in ms).
-     * @return a Syndicated Feed.
-     * @throws FeedException
-     *             if Exception.
-     * @throws ParserConfigurationException
-     *             if Exception.
-     * @throws SAXException
-     *             if Exception.
-     * @throws IOException
-     *             if Exception.
+     * {@inheritDoc}
      */
     public SyndFeed fetchFeed(final String inFeedUrl, final Map<String, String> inHttpHeaders,
             final String inProxyHost, final String inProxyPort, final int inTimeout) throws IOException,

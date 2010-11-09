@@ -55,37 +55,37 @@ public class UrlValidatorFormElement extends BasicTextBoxFormElement
     /**
      * This.
      */
-    private UrlValidatorFormElement thisBuffered;
+    private final UrlValidatorFormElement thisBuffered;
     /**
      * The general url command.
      */
-    private GenerateUrlCommand generateUrlCommand;
+    private final GenerateUrlCommand generateUrlCommand;
     /**
      * The processing spinner.
      */
-    private Label processingSpinny = new Label("");
+    private final Label processingSpinny = new Label("");
 
     /**
      * Error label.
      */
-    private Label errorLabel = new Label("Error importing feed");
+    private final Label errorLabel = new Label("Error importing feed");
     /**
      * Error box.
      */
-    private FlowPanel errorBox;
+    private final FlowPanel errorBox;
     /**
      * Import button.
      */
-    private Hyperlink importBtn;
+    private final Hyperlink importBtn;
 
     /**
      * Url panel.
      */
-    private FlowPanel urlPanel = new FlowPanel();
+    private final FlowPanel urlPanel = new FlowPanel();
     /**
      * Url label.
      */
-    private Label urlLabel = new Label();
+    private final Label urlLabel = new Label();
 
     /**
      * Am I in a failed on uninited state?
@@ -95,7 +95,7 @@ public class UrlValidatorFormElement extends BasicTextBoxFormElement
     /**
      * Value form element.
      */
-    private ValueOnlyFormElement originalValueFormElement;
+    private final ValueOnlyFormElement originalValueFormElement;
 
     /**
      * Gets the value. If the feed has failed or not been verified, return null.
@@ -196,6 +196,8 @@ public class UrlValidatorFormElement extends BasicTextBoxFormElement
         errorBox.add(errorLabel);
         errorBox.setVisible(false);
         this.insert(errorBox, 0);
+
+        errorLabel.getElement().setId("url-validator-form-element-error-label");
 
         importBtn.addClickHandler(new ClickHandler()
         {

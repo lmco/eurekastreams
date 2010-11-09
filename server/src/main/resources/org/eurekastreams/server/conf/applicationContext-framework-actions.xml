@@ -1367,12 +1367,20 @@
         class="org.eurekastreams.server.service.actions.strategies.activity.plugins.StandardFeedNoteMapper" />
     
     <!-- specific URL mappers -->   
-    <bean id="flickrMapper"
-        class="org.eurekastreams.server.service.actions.strategies.activity.plugins.FlickrMapper" />
-
-    <bean id="youtubeMapper"
-        class="org.eurekastreams.server.service.actions.strategies.activity.plugins.YoutubeMapper" />
-
+	<util:list id="urlSpecificFeedObjectMappers">
+		<bean class="org.eurekastreams.server.service.actions.strategies.activity.plugins.ObjectBuilderForSpecificUrl">
+			<constructor-arg value="(www.)?youtube.com" />
+			<constructor-arg>
+				<bean class="org.eurekastreams.server.service.actions.strategies.activity.plugins.YoutubeMapper" />
+			</constructor-arg>
+		</bean>
+		<bean class="org.eurekastreams.server.service.actions.strategies.activity.plugins.ObjectBuilderForSpecificUrl">
+			<constructor-arg value="(www.)?flickr.com" />
+			<constructor-arg>
+				<bean class="org.eurekastreams.server.service.actions.strategies.activity.plugins.FlickrMapper" />
+			</constructor-arg>
+		</bean>
+	</util:list>
     
     <bean id="refreshFeedAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -1384,20 +1392,7 @@
                         <entry key="BOOKMARK" value-ref="standardFeedBookmarkMapper" />
                     </map>
                 </constructor-arg>
-                <constructor-arg>
-                    <list>
-                        <bean
-                            class="org.eurekastreams.server.service.actions.strategies.activity.plugins.SpecificUrlObjectMapper">
-                            <property name="regex" value="(www.)?youtube.com" />
-                            <property name="objectMapper" ref="youtubeMapper" />
-                        </bean>
-                        <bean
-                            class="org.eurekastreams.server.service.actions.strategies.activity.plugins.SpecificUrlObjectMapper">
-                            <property name="regex" value="(www.)?flickr.com" />
-                            <property name="objectMapper" ref="flickrMapper" />
-                        </bean>
-                    </list>
-                </constructor-arg>
+                <constructor-arg ref="urlSpecificFeedObjectMappers" />
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
                 </constructor-arg>
@@ -4097,16 +4092,9 @@
 							<constructor-arg value="TargetTitle is required for File Activities." />
 							<property name="mapParameterValidatorDecorator">
 								<bean class="org.eurekastreams.server.service.actions.strategies.MapParameterValidator">
-									<constructor-arg value="author" />
+									<constructor-arg value="source" />
 									<constructor-arg value="java.lang.String" />
-									<constructor-arg value="Author is required for File Activities." />
-									<property name="mapParameterValidatorDecorator">
-										<bean class="org.eurekastreams.server.service.actions.strategies.MapParameterValidator">
-											<constructor-arg value="source" />
-											<constructor-arg value="java.lang.String" />
-											<constructor-arg value="Source is required for File Activities." />
-										</bean>
-									</property>
+									<constructor-arg value="Source is required for File Activities." />
 								</bean>
 							</property>
 						</bean>

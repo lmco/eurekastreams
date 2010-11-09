@@ -28,7 +28,6 @@ import java.util.concurrent.Future;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.protocol.ProtocolException;
@@ -44,6 +43,7 @@ import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
 import org.eurekastreams.server.action.request.opensocial.GetUserActivitiesRequest;
@@ -72,7 +72,7 @@ public class ActivityServiceImpl implements ActivityService
     /**
      * Logger.
      */
-    private final Log log = LogFactory.getLog(ActivityServiceImpl.class);
+    private final Log log = LogFactory.make();
 
     /**
      * Action that gets a specified set of activities for a specified user.

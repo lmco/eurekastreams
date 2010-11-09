@@ -21,7 +21,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
+import org.eurekastreams.server.domain.stream.plugins.Feed;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -49,12 +51,15 @@ public class StandardFeedNoteMapperTest
     /**
      * System under test.
      */
-    private StandardFeedNoteMapper sut = new StandardFeedNoteMapper();
+    private final StandardFeedNoteMapper sut = new StandardFeedNoteMapper();
 
     /**
      * Content.
      */
     private final String contentVal = "myContent";
+
+    /** Fixture: feed. */
+    private final Feed feed = context.mock(Feed.class);
 
     /**
      * Test with content.
@@ -79,8 +84,12 @@ public class StandardFeedNoteMapperTest
             }
         });
 
-        HashMap<String, String> result = sut.getBaseObject(entry);
+        Activity activity = new Activity();
+        sut.build(feed, entry, activity);
 
+        assertEquals(BaseObjectType.NOTE, activity.getBaseObjectType());
+
+        HashMap<String, String> result = activity.getBaseObject();
         assertEquals(contentVal, result.get("content"));
     }
 
@@ -105,19 +114,12 @@ public class StandardFeedNoteMapperTest
             }
         });
 
-        HashMap<String, String> result = sut.getBaseObject(entry);
+        Activity activity = new Activity();
+        sut.build(feed, entry, activity);
 
+        assertEquals(BaseObjectType.NOTE, activity.getBaseObjectType());
+
+        HashMap<String, String> result = activity.getBaseObject();
         assertEquals(contentVal, result.get("content"));
     }
-
-    /**
-     * Note mapper should be of type NOTE.
-     */
-    @Test
-    public void getBaseObjectType()
-    {
-
-        assertEquals(BaseObjectType.NOTE, sut.getBaseObjectType());
-    }
-
 }

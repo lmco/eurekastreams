@@ -17,22 +17,24 @@ package org.eurekastreams.server.service.actions.strategies.activity.plugins;
 
 import java.util.HashMap;
 
+import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
+import org.eurekastreams.server.domain.stream.plugins.Feed;
 
 import com.sun.syndication.feed.module.mediarss.MediaModule;
 import com.sun.syndication.feed.module.mediarss.MediaModuleImpl;
-import com.sun.syndication.feed.synd.SyndEntryImpl;
+import com.sun.syndication.feed.synd.SyndEntry;
 
 /**
  * Mapper for bookmarks.
  *
  */
-public class StandardFeedBookmarkMapper implements ObjectMapper
+public class StandardFeedBookmarkMapper implements FeedObjectActivityBuilder
 {
-	/**
-	 * Max length.
-	 */
-	private static final int MAXLENGTH = 250;
+    /**
+     * Max length.
+     */
+    private static final int MAXLENGTH = 250;
 
     /**
      * Gets the base object.
@@ -41,59 +43,41 @@ public class StandardFeedBookmarkMapper implements ObjectMapper
      *            the entry.
      * @return the object.
      */
-    @Override
-    public HashMap<String, String> getBaseObject(final SyndEntryImpl entry)
+    protected HashMap<String, String> getBaseObject(final SyndEntry entry)
     {
-        MediaModule media = (MediaModuleImpl) entry.getModule(MediaModule.URI);
-
         HashMap<String, String> object = new HashMap<String, String>();
         // TODO: Strip markup
-        object.put("title", stripHTML(entry.getTitle()));
+        object.put("title", InputCleaner.stripHtml(entry.getTitle(), MAXLENGTH));
         if (entry.getDescription() != null)
         {
-        	object.put("description", stripHTML(entry.getDescription().getValue()));
+            object.put("description", InputCleaner.stripHtml(entry.getDescription().getValue(), MAXLENGTH));
         }
         else
         {
-        	object.put("description", "");
+            object.put("description", "");
         }
 
-        object.put("targetUrl", stripHTML(entry.getLink()));
-        object.put("targetTitle", stripHTML(entry.getTitle()));
+        object.put("targetUrl", InputCleaner.stripHtml(entry.getLink(), MAXLENGTH));
+        object.put("targetTitle", InputCleaner.stripHtml(entry.getTitle(), MAXLENGTH));
+
+        MediaModule media = (MediaModuleImpl) entry.getModule(MediaModule.URI);
         if (media != null && media.getMetadata().getThumbnail().length > 0)
         {
-            object.put("thumbnail", stripHTML(
-            		media.getMetadata().getThumbnail()[0].getUrl().toString()));
+            object.put("thumbnail", InputCleaner.stripHtml(media.getMetadata().getThumbnail()[0].getUrl().toString(),
+                    MAXLENGTH));
         }
 
         return object;
     }
 
     /**
-     * Strip HTML.
-     * @param input the input string.
-     * @return the output string.
-     */
-    String stripHTML(final String input)
-    {
-    	String out = input.replaceAll("\\<.*?\\>", "");
-    	if (out.length() > MAXLENGTH)
-    	{
-    		return out.substring(0, MAXLENGTH);
-    	}
-
-    	return out;
-    }
-
-    /**
-     * get BOOKMARK.
-     *
-     * @return BOOKMARK.
+     * {@inheritDoc}
      */
     @Override
-    public BaseObjectType getBaseObjectType()
+    public void build(final Feed inFeed, final SyndEntry inEntry, final Activity inActivity)
     {
-        return BaseObjectType.BOOKMARK;
+        inActivity.setBaseObjectType(BaseObjectType.BOOKMARK);
+        inActivity.setBaseObject(getBaseObject(inEntry));
     }
 
 }

@@ -17,28 +17,27 @@ package org.eurekastreams.server.service.actions.strategies.activity.plugins;
 
 import java.util.HashMap;
 
+import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
+import org.eurekastreams.server.domain.stream.plugins.Feed;
 
 import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndContentImpl;
-import com.sun.syndication.feed.synd.SyndEntryImpl;
+import com.sun.syndication.feed.synd.SyndEntry;
 
 /**
  * Mapper for note entries.
- *
  */
-public class StandardFeedNoteMapper implements ObjectMapper
+public class StandardFeedNoteMapper implements FeedObjectActivityBuilder
 {
-
     /**
      * Gets the base object.
-     * 
+     *
      * @param entry
      *            the entry.
      * @return the object.
      */
-    @Override
-    public HashMap<String, String> getBaseObject(final SyndEntryImpl entry)
+    protected HashMap<String, String> getBaseObject(final SyndEntry entry)
     {
         HashMap<String, String> object = new HashMap<String, String>();
         // TODO: Strip markup
@@ -56,13 +55,12 @@ public class StandardFeedNoteMapper implements ObjectMapper
     }
 
     /**
-     * Return NOTE.
-     * @return NOTE.
+     * {@inheritDoc}
      */
     @Override
-    public BaseObjectType getBaseObjectType()
+    public void build(final Feed inFeed, final SyndEntry inEntry, final Activity inActivity)
     {
-        return BaseObjectType.NOTE;
+        inActivity.setBaseObjectType(BaseObjectType.NOTE);
+        inActivity.setBaseObject(getBaseObject(inEntry));
     }
-
 }

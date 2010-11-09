@@ -15,11 +15,17 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.renderers.object;
 
+import java.util.HashMap;
+
+import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.web.client.history.CreateUrlRequest;
+import org.eurekastreams.web.client.ui.Session;
 
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -33,9 +39,10 @@ public class FileRenderer implements ObjectRenderer
      */
     public Widget getAttachmentWidget(final ActivityDTO activity)
     {
-        String title = activity.getBaseObjectProperties().get("targetTitle");
-        String url = activity.getBaseObjectProperties().get("targetUrl");
-        String source = activity.getBaseObjectProperties().get("source");
+        HashMap<String, String> props = activity.getBaseObjectProperties();
+        String title = props.get("targetTitle");
+        String url = props.get("targetUrl");
+        String source = props.get("source");
         String fileExt = getFileExt(url);
 
         FlowPanel mainPanel = new FlowPanel();
@@ -46,7 +53,7 @@ public class FileRenderer implements ObjectRenderer
         }
 
         FlowPanel line;
-        InlineLabel text;
+        Label text;
         Widget link;
 
         link = new Anchor(title, url);
@@ -61,6 +68,31 @@ public class FileRenderer implements ObjectRenderer
         link = new Anchor(source, source);
         line.add(link);
         mainPanel.add(line);
+
+        // "modified by" line
+        String authorName = props.get("modifiedByDisplayName");
+        if (authorName != null)
+        {
+            String authorAccountId = props.get("modifiedByAccountId");
+            if (authorAccountId != null)
+            {
+                line = new FlowPanel();
+                line.addStyleName("url");
+                text = new InlineLabel("Modified by: ");
+                line.add(text);
+                String authorUrl =
+                        Session.getInstance().generateUrl(new CreateUrlRequest(Page.PEOPLE, authorAccountId));
+                link = new Anchor(authorName, authorUrl);
+                line.add(link);
+                mainPanel.add(line);
+            }
+            else
+            {
+                text = new Label("Modified by:  " + authorName);
+                text.addStyleName("url");
+                mainPanel.add(text);
+            }
+        }
 
         return mainPanel;
     }

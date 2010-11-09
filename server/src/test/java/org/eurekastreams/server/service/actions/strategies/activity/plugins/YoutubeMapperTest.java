@@ -21,7 +21,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
+import org.eurekastreams.server.domain.stream.plugins.Feed;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -51,7 +53,7 @@ public class YoutubeMapperTest
     /**
      * System under test.
      */
-    private YoutubeMapper sut = new YoutubeMapper();
+    private final YoutubeMapper sut = new YoutubeMapper();
 
     /**
      * Title.
@@ -66,6 +68,9 @@ public class YoutubeMapperTest
      * Link 2 href.
      */
     private final String link2Href = "http://www.youtube.com?v=7&x=3";
+
+    /** Fixture: feed. */
+    private final Feed feed = context.mock(Feed.class);
 
     /**
      * Test with enclosure.
@@ -113,16 +118,20 @@ public class YoutubeMapperTest
             }
         });
 
-        HashMap<String, String> result = sut.getBaseObject(entry);
+        Activity activity = new Activity();
+        sut.build(feed, entry, activity);
 
+        assertEquals(BaseObjectType.VIDEO, activity.getBaseObjectType());
+
+        HashMap<String, String> result = activity.getBaseObject();
         assertEquals(title, result.get("title"));
         assertEquals(link1Href, result.get("videoStream"));
         assertEquals(link2Href, result.get("videoPageUrl"));
         assertEquals("desc", result.get("description"));
         assertEquals("source", result.get("thumbnail"));
-        
+
     }
-    
+
     /**
      * Test with no enclosure.
      */
@@ -160,36 +169,16 @@ public class YoutubeMapperTest
             }
         });
 
-        HashMap<String, String> result = sut.getBaseObject(entry);
+        Activity activity = new Activity();
+        sut.build(feed, entry, activity);
 
+        assertEquals(BaseObjectType.VIDEO, activity.getBaseObjectType());
+
+        HashMap<String, String> result = activity.getBaseObject();
         assertEquals(title, result.get("title"));
         assertEquals(link1Href, result.get("videoStream"));
         assertEquals(link2Href, result.get("videoPageUrl"));
         assertEquals("desc", result.get("description"));
         assertEquals("source", result.get("thumbnail"));
-    }
-
-    /**
-     * Flickr mapper should be of type PHOTO.
-     */
-    @Test
-    public void getBaseObjectType()
-    {
-
-        assertEquals(BaseObjectType.VIDEO, sut.getBaseObjectType());
-    }
-
-    /**
-     * Test for specific url mapper wrapper.
-     */
-    @Test
-    public void testSpecificUrlObjectMapperWrapper()
-    {
-        SpecificUrlObjectMapper wrapper = new SpecificUrlObjectMapper();
-        wrapper.setObjectMapper(sut);
-        wrapper.setRegex("reg");
-
-        assertEquals(sut, wrapper.getObjectMapper());
-        assertEquals("reg", wrapper.getRegex());
     }
 }

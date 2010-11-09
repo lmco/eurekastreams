@@ -15,31 +15,26 @@
  */
 package org.eurekastreams.server.service.actions.strategies.activity.plugins;
 
-import java.util.HashMap;
+import org.eurekastreams.server.domain.stream.Activity;
+import org.eurekastreams.server.domain.stream.plugins.Feed;
 
-import com.sun.syndication.feed.synd.SyndContentImpl;
 import com.sun.syndication.feed.synd.SyndEntry;
 
 /**
- * Maps the Flickr ATOM feeds to activity hashmaps.
+ * Interface for strategies which participate in building up an activity from a feed entry.
  */
-public class FlickrMapper extends StandardFeedPhotoMapper
+public interface FeedObjectActivityBuilder
 {
     /**
-     * Use the standard photo mapper but fix the thumbnail to be flickr specific. Also, blank out the summary.
+     * Performs all/part of building the given activity from a feed entry.
      *
+     * @param feed
+     *            Definition of the feed from which the entry was taken.
      * @param entry
-     *            the ATOM entry.
-     * @return the hashmap of values.
+     *            Feed entry.
+     * @param activity
+     *            Activity being populated.
      */
-    @Override
-    public HashMap<String, String> getBaseObject(final SyndEntry entry)
-    {
-        HashMap<String, String> object = super.getBaseObject(entry);
-
-        String content = ((SyndContentImpl) entry.getContents().get(0)).getValue();
-        object.put("thumbnail", content.split("<img src=\"")[1].split("\"")[0]);
-        object.put("description", "");
-        return object;
-    }
+    void build(Feed feed, SyndEntry entry, Activity activity);
 }
+

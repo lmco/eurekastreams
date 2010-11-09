@@ -53,7 +53,7 @@ public class ActivityContentExtractorTest
      * Test objectToString() when base object type is Note and there is content.
      */
     @Test
-    public void testobjectToStringFromActivityNote()
+    public void testObjectToStringFromActivityNote()
     {
         HashMap<String, String> baseObject = new HashMap<String, String>();
         baseObject.put("content", content);
@@ -65,7 +65,7 @@ public class ActivityContentExtractorTest
      * Test objectToString() when base object type is Note and there is content.
      */
     @Test
-    public void testobjectToStringFromActivityNoteWithNoContent()
+    public void testObjectToStringFromActivityNoteWithNoContent()
     {
         Activity activity = new Activity();
         assertNull(sut.extractContent(BaseObjectType.NOTE, null));
@@ -75,7 +75,7 @@ public class ActivityContentExtractorTest
      * Test objectToString() when base type object is Bookmark and there is content, description, and title.
      */
     @Test
-    public void testobjectToStringFromActivityBookmarkWithContentAndDescriptionAndTitle()
+    public void testObjectToStringFromActivityBookmarkWithContentAndDescriptionAndTitle()
     {
         HashMap<String, String> baseObject = new HashMap<String, String>();
         baseObject.put("content", content);
@@ -90,7 +90,7 @@ public class ActivityContentExtractorTest
      * Test objectToString() when base type object is Bookmark and there is content and description, but no title.
      */
     @Test
-    public void testobjectToStringFromActivityBookmarkWithContentAndDescription()
+    public void testObjectToStringFromActivityBookmarkWithContentAndDescription()
     {
         HashMap<String, String> baseObject = new HashMap<String, String>();
         baseObject.put("content", content);
@@ -103,7 +103,7 @@ public class ActivityContentExtractorTest
      * Test objectToString() when base type object is Bookmark and there is content and description, but no title.
      */
     @Test
-    public void testobjectToStringFromActivityBookmarkWithContentAndTitle()
+    public void testObjectToStringFromActivityBookmarkWithContentAndTitle()
     {
         HashMap<String, String> baseObject = new HashMap<String, String>();
         baseObject.put("content", content);
@@ -116,7 +116,7 @@ public class ActivityContentExtractorTest
      * Test objectToString() when base type object is Bookmark and there is content and description, but no title.
      */
     @Test
-    public void testobjectToStringFromActivityBookmarkWithDescriptionAndTitle()
+    public void testObjectToStringFromActivityBookmarkWithDescriptionAndTitle()
     {
         HashMap<String, String> baseObject = new HashMap<String, String>();
         baseObject.put("content", content);
@@ -129,7 +129,7 @@ public class ActivityContentExtractorTest
      * Test objectToString() when base type object is Bookmark and there is content only.
      */
     @Test
-    public void testobjectToStringFromActivityBookmarkWithContent()
+    public void testObjectToStringFromActivityBookmarkWithContent()
     {
         HashMap<String, String> baseObject = new HashMap<String, String>();
         baseObject.put("content", content);
@@ -141,7 +141,7 @@ public class ActivityContentExtractorTest
      * Test objectToString() when base type object is Bookmark and there is description only.
      */
     @Test
-    public void testobjectToStringFromActivityBookmarkWithDescription()
+    public void testObjectToStringFromActivityBookmarkWithDescription()
     {
         HashMap<String, String> baseObject = new HashMap<String, String>();
         baseObject.put("description", description);
@@ -153,7 +153,7 @@ public class ActivityContentExtractorTest
      * Test objectToString() when base type object is Bookmark and there is title only.
      */
     @Test
-    public void testobjectToStringFromActivityBookmarkWithTitle()
+    public void testObjectToStringFromActivityBookmarkWithTitle()
     {
         HashMap<String, String> baseObject = new HashMap<String, String>();
         baseObject.put("targetTitle", targetTitle);
@@ -165,7 +165,7 @@ public class ActivityContentExtractorTest
      * Test objectToString() when base type object is Bookmark and there's no base object.
      */
     @Test
-    public void testobjectToStringFromActivityBookmarkWithNoBaseObject()
+    public void testObjectToStringFromActivityBookmarkWithNoBaseObject()
     {
         assertNull(sut.extractContent(BaseObjectType.BOOKMARK, null));
     }
@@ -174,7 +174,7 @@ public class ActivityContentExtractorTest
      * Test objectToString() when base type object is File and there is a title.
      */
     @Test
-    public void testobjectToStringFromActivityFileWithTitle()
+    public void testObjectToStringFromActivityFileWithTitle()
     {
         HashMap<String, String> baseObject = new HashMap<String, String>();
         baseObject.put("targetTitle", targetTitle);
@@ -186,7 +186,7 @@ public class ActivityContentExtractorTest
      * Test objectToString() when base type object is File and there is no title.
      */
     @Test
-    public void testobjectToStringFromActivityFileWithoutTitle()
+    public void testObjectToStringFromActivityFileWithoutTitle()
     {
         assertNull(sut.extractContent(BaseObjectType.FILE, new HashMap<String, String>()));
     }
@@ -195,7 +195,7 @@ public class ActivityContentExtractorTest
      * Test objectToString() when base type object is File and there's no base object.
      */
     @Test
-    public void testobjectToStringFromActivityFileWithNoBaseObject()
+    public void testObjectToStringFromActivityFileWithNoBaseObject()
     {
         assertNull(sut.extractContent(BaseObjectType.FILE, null));
     }

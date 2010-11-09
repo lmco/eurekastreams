@@ -42,7 +42,11 @@ public class BookmarkRenderer implements ObjectRenderer
     {
         String html = "<div class='message-link has-thumbnail'><div>";
         String targetUrl = activity.getBaseObjectProperties().get("targetUrl");
-        String baseUrl = getBaseUrl(targetUrl);
+        String sourceUrl = activity.getBaseObjectProperties().get("source");
+        if (sourceUrl == null)
+        {
+            sourceUrl = getBaseUrl(targetUrl);
+        }
 
         if (activity.getBaseObjectProperties().get("thumbnail") != null
                 && activity.getBaseObjectProperties().get("thumbnail").length() > 0)
@@ -53,7 +57,7 @@ public class BookmarkRenderer implements ObjectRenderer
         html +=
                 "<div><a class=\"title\" href=\"" + activity.getBaseObjectProperties().get("targetUrl")
                         + "\" target=\"_blank\">" + activity.getBaseObjectProperties().get("targetTitle") + "</a>"
-                        + "</div><div class='url'>source: <a href=\"" + baseUrl + "\" target=\"_blank\">" + baseUrl
+                        + "</div><div class='url'>source: <a href=\"" + sourceUrl + "\" target=\"_blank\">" + sourceUrl
                         + "</a></div>" + "<div class='gwt-Label meta-description'>"
                         + activity.getBaseObjectProperties().get("description") + "</div></div>";
 

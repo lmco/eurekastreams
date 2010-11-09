@@ -17,28 +17,28 @@ package org.eurekastreams.server.service.actions.strategies.activity.plugins;
 
 import java.util.HashMap;
 
+import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
+import org.eurekastreams.server.domain.stream.plugins.Feed;
 
 import com.sun.syndication.feed.module.mediarss.MediaModule;
 import com.sun.syndication.feed.module.mediarss.MediaModuleImpl;
-import com.sun.syndication.feed.synd.SyndEntryImpl;
+import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndLinkImpl;
 
 /**
  * Map entries to photos.
- *
  */
-public class StandardFeedPhotoMapper implements ObjectMapper
+public class StandardFeedPhotoMapper implements FeedObjectActivityBuilder
 {
     /**
      * Gets the base object.
-     * 
+     *
      * @param entry
      *            the entry.
      * @return the object.
      */
-    @Override
-    public HashMap<String, String> getBaseObject(final SyndEntryImpl entry)
+    protected HashMap<String, String> getBaseObject(final SyndEntry entry)
     {
         HashMap<String, String> object = new HashMap<String, String>();
         object.put("title", entry.getTitle());
@@ -57,8 +57,7 @@ public class StandardFeedPhotoMapper implements ObjectMapper
         }
 
         MediaModule media = (MediaModuleImpl) entry.getModule(MediaModule.URI);
-        if (media != null 
-                && media.getMetadata().getThumbnail().length > 0)
+        if (media != null && media.getMetadata().getThumbnail().length > 0)
         {
             object.put("thumbnail", media.getMetadata().getThumbnail()[0].getUrl().toString());
         }
@@ -67,18 +66,17 @@ public class StandardFeedPhotoMapper implements ObjectMapper
         {
             object.put("description", entry.getDescription().getValue());
         }
-        
+
         return object;
     }
 
     /**
-     * Return PHOTO.
-     * @return PHOTO.
+     * {@inheritDoc}
      */
     @Override
-    public BaseObjectType getBaseObjectType()
+    public void build(final Feed inFeed, final SyndEntry inEntry, final Activity inActivity)
     {
-        return BaseObjectType.PHOTO;
+        inActivity.setBaseObjectType(BaseObjectType.PHOTO);
+        inActivity.setBaseObject(getBaseObject(inEntry));
     }
-
 }

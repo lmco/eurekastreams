@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
@@ -50,8 +49,8 @@ import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
-import org.eurekastreams.server.service.actions.strategies.activity.plugins.ObjectMapper;
-import org.eurekastreams.server.service.actions.strategies.activity.plugins.SpecificUrlObjectMapper;
+import org.eurekastreams.server.service.actions.strategies.activity.plugins.FeedObjectActivityBuilder;
+import org.eurekastreams.server.service.actions.strategies.activity.plugins.ObjectBuilderForSpecificUrl;
 import org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.ActivityStreamsModule;
 import org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.FeedFactory;
 import org.eurekastreams.server.service.opensocial.gadgets.spec.GadgetMetaDataFetcher;
@@ -96,46 +95,46 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
     /**
      * Logger.
      */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /**
      * Standard feed mappers.
      */
-    private HashMap<BaseObjectType, ObjectMapper> standardFeedMappers;
+    private final HashMap<BaseObjectType, FeedObjectActivityBuilder> standardFeedMappers;
 
     /**
      * Mappers for specific websites.
      */
-    private List<SpecificUrlObjectMapper> specificUrlMappers;
+    private final List<ObjectBuilderForSpecificUrl> specificUrlMappers;
 
     /**
      * Bulk insert activity into the DB.
      */
-    private InsertMapper<Activity> activityDBInserter;
+    private final InsertMapper<Activity> activityDBInserter;
 
     /**
      * The cache.
      */
-    private Cache cache;
+    private final Cache cache;
 
     /**
      * Feed fetcher factory, really only needed for testing.
      */
-    private FeedFactory feedFetcherFactory;
+    private final FeedFactory feedFetcherFactory;
 
     /**
      * Person finder.
      */
-    private FindByIdMapper<Person> personFinder;
+    private final FindByIdMapper<Person> personFinder;
     /**
      * Group finder.
      */
-    private FindByIdMapper<DomainGroup> groupFinder;
+    private final FindByIdMapper<DomainGroup> groupFinder;
 
     /**
      * Feed finder.
      */
-    private FindByIdMapper<Feed> feedFinder;
+    private final FindByIdMapper<Feed> feedFinder;
 
     /**
      * Meta data fetcher.
@@ -171,8 +170,8 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
      * @param inUpdateFeedMapper
      *            updateMapper.
      */
-    public RefreshFeedExecution(final HashMap<BaseObjectType, ObjectMapper> inStandardFeedMappers,
-            final List<SpecificUrlObjectMapper> inSpecificUrlMappers,
+    public RefreshFeedExecution(final HashMap<BaseObjectType, FeedObjectActivityBuilder> inStandardFeedMappers,
+            final List<ObjectBuilderForSpecificUrl> inSpecificUrlMappers,
             final InsertMapper<Activity> inActivityDBInserter, final Cache inCache,
             final FeedFactory inFeedFetcherFactory, final FindByIdMapper<Person> inPersonFinder,
             final FindByIdMapper<DomainGroup> inGroupFinder, final FindByIdMapper<Feed> inFeedFinder,
@@ -217,16 +216,12 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
             }
             Map<String, SyndFeed> syndFeeds = feedFetcherFactory.getSyndicatedFeed(feed.getUrl(), requestorAccounts);
 
-            ObjectMapper selectedObjectMapper = null;
-            boolean foundSpecificMapper = false;
-            for (SpecificUrlObjectMapper strategy : specificUrlMappers)
+            FeedObjectActivityBuilder selectedObjectMapper = null;
+            for (ObjectBuilderForSpecificUrl entry : specificUrlMappers)
             {
-                String pattern = strategy.getRegex();
-                String value = feed.getUrl();
-                if (Pattern.compile(pattern).matcher(value).find())
+                if (entry.match(feed.getUrl()))
                 {
-                    selectedObjectMapper = strategy.getObjectMapper();
-                    foundSpecificMapper = true;
+                    selectedObjectMapper = entry.getBuilder();
                     break;
                 }
             }
@@ -268,8 +263,7 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
                             lastPostDate = entry.getPublishedDate();
                         }
 
-                        Activity activity =
-                            getActivityFromATOMEntry(feed, entry, selectedObjectMapper, foundSpecificMapper);
+                        Activity activity = getActivityFromATOMEntry(feed, entry, selectedObjectMapper);
                         // We were able to parse at least one good entry to completion, so the feed isn't broken.
                         brokenFeed = false;
 
@@ -282,8 +276,9 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 
                                 if (feedSubscriber.getEntityType().equals(EntityType.PERSON))
                                 {
-                                    Person person = personFinder.execute(new FindByIdRequest("Person", feedSubscriber
-                                            .getEntityId()));
+                                    Person person =
+                                            personFinder.execute(new FindByIdRequest("Person", feedSubscriber
+                                                    .getEntityId()));
                                     activityForIndividual.setActorId(person.getAccountId());
                                     activityForIndividual.setRecipientParentOrg(person.getParentOrganization());
                                     activityForIndividual.setRecipientStreamScope(person.getStreamScope());
@@ -291,8 +286,9 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
                                 }
                                 else if (feedSubscriber.getEntityType().equals(EntityType.GROUP))
                                 {
-                                    DomainGroup group = groupFinder.execute(new FindByIdRequest("DomainGroup",
-                                            feedSubscriber.getEntityId()));
+                                    DomainGroup group =
+                                            groupFinder.execute(new FindByIdRequest("DomainGroup", feedSubscriber
+                                                    .getEntityId()));
 
                                     activityForIndividual.setActorId(group.getShortName());
                                     activityForIndividual.setRecipientParentOrg(group.getParentOrganization());
@@ -342,7 +338,7 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
         }
         catch (Exception ex)
         {
-            log.error("Error retrieving feed: " + feed.getUrl());
+            log.error("Error retrieving feed: " + feed.getUrl(), ex);
         }
         finally
         {
@@ -359,24 +355,27 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 
     /**
      * Get the Activity object from an ATOM entry.
-     * @param feed the feed.
-     * @param inEntry the entry.
-     * @param inSelectedObjectMapper the mapper.
-     * @param foundSpecificMapper is this a specific mapper or no?
+     *
+     * @param feed
+     *            the feed.
+     * @param inEntry
+     *            the entry.
+     * @param inSelectedObjectMapper
+     *            the mapper.
      * @return the activity.
      */
-    private Activity getActivityFromATOMEntry(
-            final Feed feed, final SyndEntryImpl inEntry, final ObjectMapper inSelectedObjectMapper,
-            final boolean foundSpecificMapper)
+    private Activity getActivityFromATOMEntry(final Feed feed, final SyndEntryImpl inEntry,
+            final FeedObjectActivityBuilder inSelectedObjectMapper)
     {
         SyndEntryImpl entry = inEntry;
-        ObjectMapper selectedObjectMapper = inSelectedObjectMapper;
+        FeedObjectActivityBuilder selectedObjectMapper = inSelectedObjectMapper;
+
         Activity activity = new Activity();
         activity.setAppType(EntityType.PLUGIN);
         activity.setAppId(feed.getPlugin().getId());
         activity.setAppSource(feed.getUrl());
         final Map<String, GeneralGadgetDefinition> gadgetDefs = //
-        new HashMap<String, GeneralGadgetDefinition>();
+                new HashMap<String, GeneralGadgetDefinition>();
         gadgetDefs.put(feed.getPlugin().getUrl(), feed.getPlugin());
         try
         {
@@ -395,7 +394,7 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
         activity.setPostedTime(entry.getPublishedDate());
         activity.setUpdated(entry.getUpdatedDate());
         activity.setVerb(ActivityVerb.POST);
-        if (!foundSpecificMapper)
+        if (selectedObjectMapper == null)
         {
             BaseObjectType type = feed.getPlugin().getObjectType();
 
@@ -412,8 +411,7 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
             }
             selectedObjectMapper = standardFeedMappers.get(type);
         }
-        activity.setBaseObjectType(selectedObjectMapper.getBaseObjectType());
-        activity.setBaseObject(selectedObjectMapper.getBaseObject(entry));
+        selectedObjectMapper.build(feed, entry, activity);
 
         return activity;
     }
