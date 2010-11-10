@@ -22,10 +22,10 @@ import net.sf.gilead.core.PersistentBeanManager;
 import net.sf.gilead.gwt.PersistentRemoteService;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.commons.client.ActionRPCService;
 import org.eurekastreams.commons.client.ActionRequest;
 import org.eurekastreams.commons.exceptions.SessionException;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContextHolder;
@@ -45,7 +45,7 @@ public class ActionRPCServiceImpl extends PersistentRemoteService implements Act
     /**
      * Logger.
      */
-    private Log log = LogFactory.getLog(ActionRPCServiceImpl.class);
+    private Log log = LogFactory.make();
 
     /**
      * The context from which this service can load action beans.
@@ -156,8 +156,9 @@ public class ActionRPCServiceImpl extends PersistentRemoteService implements Act
     @SuppressWarnings("unchecked")
     private ActionRequest execute(final ActionRequest request, final UserDetails user)
     {
-        // check that the session id exists and is the session id stamped in the request.()
-        if (request.getSessionId() != null
+        // check that the session id is the session id stamped in the request, ignoring on first action call
+        // from ApplicationEntryPoint.
+        if (!request.getActionKey().equals("getPersonModelView")
                 && !this.getThreadLocalRequest().getSession().getId().equals(request.getSessionId()))
         {
             request.setResponse(new SessionException("Session Expired"));

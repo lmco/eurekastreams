@@ -500,6 +500,7 @@
                                   <exclude>**/DefaultAuthorization.java</exclude>
                                   <exclude>**/DefaultPrincipal.java</exclude>
                                   <exclude>**/DefaultPrincipalPopulator.java</exclude>
+                                  <exclude>**/ActionRPCServiceImpl.java</exclude>
 
                             </excludes>
                              <contextFilters>private,iflog</contextFilters>
