@@ -30,6 +30,14 @@
  <UserPref name="testBoolean" datatype="bool" default_value="true"/>
  <Content type="html">
    <![CDATA[  
+        <style type="text/css">
+        body
+        {
+            background-color:white;
+            width:auto;
+            padding:10px;
+        }
+        </style>
         <!-- Currently unused, but an example of how to work with a simple inline template with Data Pipelining -->
         <script type="text/os-data" xmlns:os="http://ns.opensocial.org/2008/markup">
             <os:ViewerRequest key="databindviewer"/>

@@ -117,6 +117,7 @@
 		{
 			background-color:white;
 			width:auto;
+            padding:10px;
 		}
 		a:link.timestamp, a:visited.timestamp, a:active.timestamp
 		{
