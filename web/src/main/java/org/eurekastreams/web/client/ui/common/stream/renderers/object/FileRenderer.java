@@ -24,6 +24,7 @@ import org.eurekastreams.web.client.ui.Session;
 
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.InlineHyperlink;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -82,7 +83,7 @@ public class FileRenderer implements ObjectRenderer
                 line.add(text);
                 String authorUrl =
                         Session.getInstance().generateUrl(new CreateUrlRequest(Page.PEOPLE, authorAccountId));
-                link = new Anchor(authorName, authorUrl);
+                link = new InlineHyperlink(authorName, authorUrl);
                 line.add(link);
                 mainPanel.add(line);
             }
