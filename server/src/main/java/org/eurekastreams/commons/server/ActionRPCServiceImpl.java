@@ -156,8 +156,9 @@ public class ActionRPCServiceImpl extends PersistentRemoteService implements Act
     @SuppressWarnings("unchecked")
     private ActionRequest execute(final ActionRequest request, final UserDetails user)
     {
-        // check that the session id exists and is the session id stamped in the request.()
-        if (request.getSessionId() != null
+        // check that the session id is the session id stamped in the request, ignoring on first action call
+        // from ApplicationEntryPoint.
+        if (!request.getActionKey().equals("getPersonModelView")
                 && !this.getThreadLocalRequest().getSession().getId().equals(request.getSessionId()))
         {
             request.setResponse(new SessionException("Session Expired"));

@@ -526,6 +526,7 @@
                                   <exclude>**/DefaultPrincipal.java</exclude>
                                   <exclude>**/DefaultPrincipalPopulator.java</exclude>
                                   <exclude>**/HttpDocumentFetcherImpl.java</exclude>
+                                  <exclude>**/ActionRPCServiceImpl.java</exclude>
                             </excludes>
                              <contextFilters>private,iflog</contextFilters>
                              <statementContexts>

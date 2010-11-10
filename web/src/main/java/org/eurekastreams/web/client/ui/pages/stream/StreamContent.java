@@ -24,6 +24,7 @@ import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.UserLoggedInEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserCustomStreamsResponseEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserGroupStreamsResponseEvent;
+import org.eurekastreams.web.client.model.AllPopularHashTagsModel;
 import org.eurekastreams.web.client.model.CustomStreamModel;
 import org.eurekastreams.web.client.model.GroupStreamListModel;
 import org.eurekastreams.web.client.ui.Session;
@@ -190,6 +191,7 @@ public class StreamContent extends Composite
                 Session.getInstance().getActionProcessor().setQueueRequests(true);
                 CustomStreamModel.getInstance().fetch(null, true);
                 GroupStreamListModel.getInstance().fetch(null, false);
+                AllPopularHashTagsModel.getInstance().fetch(null, true);
                 Session.getInstance().getActionProcessor().setQueueRequests(false);
                 Session.getInstance().getActionProcessor().fireQueuedRequests();
             }

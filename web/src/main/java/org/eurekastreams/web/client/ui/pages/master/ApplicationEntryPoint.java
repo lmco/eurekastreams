@@ -120,7 +120,6 @@ public class ApplicationEntryPoint implements EntryPoint
      */
     private void showLogin()
     {
-
         loginDialog = new Dialog(new LoginDialogContent());
         loginDialog.setBgVisible(true);
         loginDialog.center();
@@ -178,16 +177,7 @@ public class ApplicationEntryPoint implements EntryPoint
      */
     private void loadPerson()
     {
-
-        this.processor.setQueueRequests(true);
-
-        SystemSettingsModel.getInstance().fetch(null, false);
-        TutorialVideoModel.getInstance().fetch(null, true);
-        AllPopularHashTagsModel.getInstance().fetch(null, true);
-
-        // fetch initial notification count here so request gets bundled with the other startup requests
-        NotificationCountModel.getInstance().fetch(null, false);
-
+        //this must be the first action called so that the session is handled correctly 
         processor.makeRequest(new ActionRequestImpl<PersonModelView>("getPersonModelView", null),
                 new AsyncCallback<PersonModelView>()
                 {
@@ -232,11 +222,14 @@ public class ApplicationEntryPoint implements EntryPoint
                         processor.setQueueRequests(true);
 
                         session.setHistoryHandler(new HistoryHandler());
-                        master.render();
-
                         Session.getInstance().getEventBus().bufferObservers();
                         History.fireCurrentHistoryState();
 
+                        processor.fireQueuedRequests();
+                        processor.setQueueRequests(false);
+
+                        processor.setQueueRequests(true);
+                        master.render();
                         processor.fireQueuedRequests();
                         processor.setQueueRequests(false);
 
@@ -245,9 +238,6 @@ public class ApplicationEntryPoint implements EntryPoint
                         RootPanel.get().add(master);
                     }
                 });
-
-        processor.fireQueuedRequests();
-        processor.setQueueRequests(false);
     }
 
     /**

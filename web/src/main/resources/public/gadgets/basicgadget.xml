@@ -13,8 +13,6 @@
    </Require>
    <Require feature="xmlutil"></Require>
    <Require feature="views"></Require>
-   <Require feature="samplefeature"></Require>
-   <Require feature="eurekastreams-checklist"></Require>
    <Optional feature="content-rewrite">
         <Param name="include-tags"></Param>
    </Optional>
@@ -76,11 +74,7 @@
         <input type="button" value="Load Template with OpenSocial Call" onClick="getOpensocialData('uos:HelloWorld'); return false;"/><br>
         <input type="button" value="Update App Data" onClick="updateAppData(); return false;"/><br>
         <input type="button" value="Delete App Data" onClick="deleteAppData(); return false;"/><br>
-        <input type="button" value="Use Sample Feature" onClick="eurekastreams.samplefeature.initsamplefeature(); return false;"/><br>
-        <input type="button" value="Use Sample Feature Container Test" onClick="eurekastreams.samplefeature.testSampleFeatureContainer(); return false;"/><br>
         <input type="button" value="Get App Id" onClick="getCurrentGadgetsAppId()"/><br>
-        <input type="button" value="Complete Task" onClick="eurekastreams.checklist.completeTask('TaskA', true);"/><br>
-        <input type="button" value="Uncomplete Task" onClick="eurekastreams.checklist.completeTask('TaskA', false);"/><br>
         <input type="button" value="Change Title" onClick="gadgets.window.setTitle('This title is better');"/><br>
         <input type="button" value="Post Activity" onClick="postActivity();"/><br>
         <input type="button" value="List Container Methods" onClick="listMethods();"/><br>
@@ -104,13 +98,6 @@
             }
             gadgets.log('View Params: ' + gadgets.json.stringify(gadgets.views.getParams()));
                     
-            //Init checklist task
-            var tasks = new Array();
-            tasks[0] = {};
-            tasks[0].name = "TaskA";
-            tasks[0].description = "TaskA - Description";
-            eurekastreams.checklist.registerTasks(tasks);
-            
             function retrieveMultipleUsers()
             {
                var req = opensocial.newDataRequest();

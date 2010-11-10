@@ -44,6 +44,7 @@ import org.eurekastreams.web.client.events.data.GotRequestForGroupMembershipResp
 import org.eurekastreams.web.client.events.data.InsertedGroupMemberResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedRequestForGroupMembershipResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
+import org.eurekastreams.web.client.model.AllPopularHashTagsModel;
 import org.eurekastreams.web.client.model.GroupCoordinatorsModel;
 import org.eurekastreams.web.client.model.GroupMembersModel;
 import org.eurekastreams.web.client.model.GroupMembershipRequestModel;
@@ -200,7 +201,10 @@ public class GroupProfilePanel extends FlowPanel
                     }
                 });
 
+        inProcessor.setQueueRequests(true);
         GroupModel.getInstance().fetch(accountId, false);
+        AllPopularHashTagsModel.getInstance().fetch(null, true);
+        inProcessor.fireQueuedRequests();
     }
 
     /**

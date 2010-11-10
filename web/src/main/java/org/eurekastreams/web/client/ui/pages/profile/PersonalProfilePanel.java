@@ -38,6 +38,7 @@ import org.eurekastreams.web.client.events.data.GotPersonalEmploymentResponseEve
 import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedPersonFollowerResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
+import org.eurekastreams.web.client.model.AllPopularHashTagsModel;
 import org.eurekastreams.web.client.model.PersonFollowersModel;
 import org.eurekastreams.web.client.model.PersonFollowingModel;
 import org.eurekastreams.web.client.model.PersonJoinedGroupsModel;
@@ -188,7 +189,11 @@ public class PersonalProfilePanel extends FlowPanel
                     }
                 });
 
+        inProcessor.setQueueRequests(true);
         PersonalInformationModel.getInstance().fetch(accountId, false);
+        AllPopularHashTagsModel.getInstance().fetch(null, true);
+        inProcessor.fireQueuedRequests();
+
     }
 
     /**
