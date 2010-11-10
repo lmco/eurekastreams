@@ -32,11 +32,17 @@
       <![CDATA[
 
     <style>
-    #main {
-        margin: 0px;
-        padding: 0px;
-        font-size: small;
-    }
+        #main {
+            margin: 0px;
+            padding: 0px;
+            font-size: small;
+        }
+        body
+        {
+            background-color:white;
+            width:auto;
+            padding:10px;
+        }
     </style>
 
     <div id="main" style="display: none">
