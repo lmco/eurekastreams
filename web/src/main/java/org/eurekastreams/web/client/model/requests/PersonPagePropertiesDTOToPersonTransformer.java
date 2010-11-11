@@ -44,7 +44,14 @@ public class PersonPagePropertiesDTOToPersonTransformer
     public Person transform(final PersonPagePropertiesDTO dto)
     {
         Person person = new Person();
-        person.setTheme(new Theme("", "", "", dto.getThemeCssFile(), "", "", "", ""));
+        if (dto.getThemeCssFile() == null)
+        {
+            person.setTheme(null);
+        }
+        else
+        {
+            person.setTheme(new Theme("", "", "", dto.getThemeCssFile(), "", "", "", ""));
+        }
 
         TabGroup startTabGroup = new TabGroup();
 
