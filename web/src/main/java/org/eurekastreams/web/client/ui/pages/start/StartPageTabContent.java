@@ -140,7 +140,6 @@ public class StartPageTabContent extends FlowPanel
                     public void update(final StartPageTabReadyEvent event)
                     {
                         gadgetDragController.registerDropController(new TabSelectingDropController(event.getTab()));
-                        refreshGadgetMetadata();
                     }
                 });
     }
