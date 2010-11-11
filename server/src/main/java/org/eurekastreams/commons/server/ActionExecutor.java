@@ -165,7 +165,10 @@ public class ActionExecutor
 
             // cloning here ensures that gilead makes all the objects
             // serializable.
+            long startClone = System.currentTimeMillis();
             actionRequest.setResponse((Serializable) persistentBeanManager.clone(result));
+            log.debug(actionRequest.getActionKey() + " gilead serialization time: "
+                    + (System.currentTimeMillis() - startClone) + " (ms)");
         }
         catch (Exception ex)
         {
