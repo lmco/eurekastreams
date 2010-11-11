@@ -11038,6 +11038,7 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 
 .gadgets-gadget-content .gadget-container {
 	padding: 0;
+    overflow: hidden;
 }
 
 /******************************************************************************
