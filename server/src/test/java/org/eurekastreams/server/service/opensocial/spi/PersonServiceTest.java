@@ -22,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.shindig.auth.SecurityToken;
-import org.apache.shindig.common.testing.FakeGadgetToken;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RestfulCollection;
 import org.apache.shindig.social.opensocial.model.Person;
@@ -36,6 +35,8 @@ import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.exceptions.GeneralException;
 import org.eurekastreams.commons.server.service.ServiceActionController;
 import org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper;
+import org.eurekastreams.server.domain.PagedSet;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -45,7 +46,7 @@ import org.junit.Test;
 
 /**
  * This class performs the test for the implementation of the Shindig PersonService interface.
- * 
+ *
  */
 public class PersonServiceTest
 {
@@ -58,13 +59,8 @@ public class PersonServiceTest
     /**
      * List of people expected to be returned from the search for users by opensocial id.
      */
-    private List<org.eurekastreams.server.domain.Person> people = // \n
-    new LinkedList<org.eurekastreams.server.domain.Person>();
-
-    /**
-     * This is a fake security token taken from Shindig for testing.
-     */
-    private static final SecurityToken FAKETOKEN = new FakeGadgetToken();
+    private final List<PersonModelView> people = // \n
+    new LinkedList<PersonModelView>();
 
     /**
      * Constant string describing the opensocial id for a test user.
@@ -87,25 +83,36 @@ public class PersonServiceTest
     private static final String BASE_URL = "http://localhost:8080";
 
     /**
-     * A test UserId object to be used during the tests.
+     * TLD for user account.
      */
-    private UserId testId = new UserId(Type.userId, USERID_ONE);
+    private static final String TLD = "example.com";
 
     /**
      * A test UserId object to be used during the tests.
      */
-    private UserId testId2 = new UserId(Type.userId, USERID_TWO);
+    private final UserId testId = new UserId(Type.userId, USERID_ONE);
+
+    /**
+     * A test UserId object to be used during the tests.
+     */
+    private final UserId testId2 = new UserId(Type.userId, USERID_TWO);
 
     /**
      * A test UserId object with no id specified. Yes, this seems odd, but "null" is what is passed in when the id is
      * not supplied from the container side.
      */
-    private UserId testNullId = new UserId(Type.userId, "null");
+    private final UserId testNullId = new UserId(Type.userId, null);
+    
     /**
      * A test GroupId object to be used during the tests.
      */
-    private GroupId testGroupId = new GroupId(GroupId.Type.self, GROUPID);
+    private final GroupId testGroupId = new GroupId(GroupId.Type.self, GROUPID);
 
+    /**
+     * A test GroupId object to be used during the tests.
+     */
+    private final GroupId testFriendsGroupId = new GroupId(GroupId.Type.friends, GROUPID);
+    
     /**
      * Context for building mock objects.
      */
@@ -117,15 +124,20 @@ public class PersonServiceTest
     };
 
     /**
-     * The mock action to be used.
+     * This is a fake security token taken from Shindig for testing.
      */
-    private ServiceAction getPersonAction = context.mock(ServiceAction.class, "getPersonAction");
+    private final SecurityToken mockToken = context.mock(SecurityToken.class);
+            
+    /**
+     * Mocked instance of the getPeopleAction.
+     */
+    private final ServiceAction getPeopleAction = context.mock(ServiceAction.class, "getPeopleAction");
 
     /**
      * Mocked instance of the getPeopleAction.
      */
-    private ServiceAction getPeopleAction = context.mock(ServiceAction.class, "getPeopleAction");
-
+    private final ServiceAction getFollowingAction = context.mock(ServiceAction.class, "getFollowingAction");
+    
     /**
      * Service Action Controller.
      */
@@ -145,8 +157,8 @@ public class PersonServiceTest
     /**
      * The Person object needs to be fully qualified because Shindig has a Person object as well.
      */
-    private org.eurekastreams.server.domain.Person eurekastreamsPerson = context
-            .mock(org.eurekastreams.server.domain.Person.class);
+    private final PersonModelView eurekastreamsPerson = context
+            .mock(PersonModelView.class);
 
     /**
      * Prepare the test.
@@ -154,68 +166,40 @@ public class PersonServiceTest
     @Before
     public void setUp()
     {
-        sut = new PersonServiceImpl(getPersonAction, getPeopleAction, principalPopulator, serviceActionController,
-                BASE_URL);
+        sut = new PersonServiceImpl(getPeopleAction, getFollowingAction, principalPopulator, serviceActionController,
+                BASE_URL, TLD);
     }
 
     /**
      * Test the getPerson method in the PersonService implementation.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions
      */
     @Test
     public void testGetPerson() throws Exception
     {
-        final Long testPersonId = new Long(123);
-        final String testPersonAvatarId = "24234";
-        final String testPersonAccountId = "joeyd";
-        final String testPersonEmail = "something@something.com";
+        final LinkedList<PersonModelView> testPeople = new LinkedList<PersonModelView>();
+        people.add(eurekastreamsPerson);
+        
 
         // Set up expectations
         context.checking(new Expectations()
         {
             {
+                allowing(mockToken).getViewerId();
+                will(returnValue(USERID_ONE));
+                
                 allowing(principalPopulator).getPrincipal(USERID_ONE);
                 will(returnValue(principal));
 
-                allowing(principal).getAccountId();
-                will(returnValue(testPersonAccountId));
-
                 allowing(serviceActionController).execute(with(any(ServiceActionContext.class)),
                         with(any(ServiceAction.class)));
-                will(returnValue(eurekastreamsPerson));
-
-                oneOf(eurekastreamsPerson).getLastName();
-                will(returnValue("validuser"));
-
-                oneOf(eurekastreamsPerson).getOpenSocialId();
-                will(returnValue("opensocialid-23432432-4324"));
-
-                oneOf(eurekastreamsPerson).getFirstName();
-                will(returnValue("iama"));
-
-                oneOf(eurekastreamsPerson).getPreferredName();
-                will(returnValue("iama"));
-
-                oneOf(eurekastreamsPerson).getBiography();
-                will(returnValue("my bio"));
-
-                oneOf(eurekastreamsPerson).getId();
-                will(returnValue(testPersonId.longValue()));
-
-                oneOf(eurekastreamsPerson).getAvatarId();
-                will(returnValue(testPersonAvatarId));
-
-                oneOf(eurekastreamsPerson).getEmail();
-                will(returnValue(testPersonEmail));
-                
-                oneOf(eurekastreamsPerson).getAccountId();
-                will(returnValue(testPersonAccountId));
+                will(returnValue(testPeople));
             }
         });
 
-        Person testPerson = sut.getPerson(testId, Person.Field.DEFAULT_FIELDS, FAKETOKEN).get();
+        Person testPerson = sut.getPerson(testId, Person.Field.DEFAULT_FIELDS, mockToken).get();
 
         assertNotNull("Person is not found", testPerson);
 
@@ -224,7 +208,7 @@ public class PersonServiceTest
 
     /**
      * Test forcing an Exception.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions.
      */
@@ -234,6 +218,9 @@ public class PersonServiceTest
         context.checking(new Expectations()
         {
             {
+                allowing(mockToken).getViewerId();
+                will(returnValue(USERID_ONE));
+                
                 allowing(principalPopulator).getPrincipal(USERID_ONE);
                 will(returnValue(principal));
 
@@ -246,14 +233,14 @@ public class PersonServiceTest
             }
         });
 
-        sut.getPerson(testId, Person.Field.DEFAULT_FIELDS, FAKETOKEN).get();
+        sut.getPerson(testId, Person.Field.DEFAULT_FIELDS, mockToken).get();
 
         context.assertIsSatisfied();
     }
 
     /**
      * currentUser Test forcing a NumberFormatException.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions.
      */
@@ -264,6 +251,9 @@ public class PersonServiceTest
         {
             {
 
+                allowing(mockToken).getViewerId();
+                will(returnValue(USERID_ONE));
+                
                 allowing(principalPopulator).getPrincipal(USERID_ONE);
                 will(returnValue(principal));
 
@@ -276,29 +266,26 @@ public class PersonServiceTest
             }
         });
 
-        sut.getPerson(testId, Person.Field.DEFAULT_FIELDS, FAKETOKEN).get();
+        sut.getPerson(testId, Person.Field.DEFAULT_FIELDS, mockToken).get();
 
         context.assertIsSatisfied();
     }
 
     /**
      * Test forcing a NumberFormatException.
-     * 
+     *
      * @throws Exception
      *             - covers all exceptions.
      */
     @Test(expected = ProtocolException.class)
     public void testGetPersonNullId() throws Exception
     {
-        sut.getPerson(testNullId, Person.Field.DEFAULT_FIELDS, FAKETOKEN).get();
+        sut.getPerson(testNullId, Person.Field.DEFAULT_FIELDS, mockToken).get();
     }
 
     /**
-     * Test stub for unimplemented method. This is necessary for code coverage and because all methods for Shindig need
-     * to be implemented to not cause runtime errors even though we don't currently have implementations 
-     * for all methods
-     * yet.
-     * 
+     * This test covers retrieving multiple people specified by a set of user ids.
+     *
      * @throws Exception
      *             - covers all exceptions
      */
@@ -315,7 +302,10 @@ public class PersonServiceTest
         {
             {
 
-                allowing(principalPopulator).getPrincipal(with(any(String.class)));
+                allowing(mockToken).getViewerId();
+                will(returnValue(USERID_ONE));
+                
+                allowing(principalPopulator).getPrincipal(USERID_ONE);
                 will(returnValue(principal));
 
                 allowing(principal).getAccountId();
@@ -327,7 +317,7 @@ public class PersonServiceTest
         });
 
         RestfulCollection<Person> testPeople = sut.getPeople(userIdSet, testGroupId, collOptions,
-                Person.Field.DEFAULT_FIELDS, FAKETOKEN).get();
+                Person.Field.DEFAULT_FIELDS, mockToken).get();
 
         assertNotNull("Collection of people is null", testPeople);
 
@@ -335,9 +325,48 @@ public class PersonServiceTest
     }
 
     /**
+     * This test covers retrieving multiple people specified by a set of user ids.
+     *
+     * @throws Exception
+     *             - covers all exceptions
+     */
+    @Test
+    public void testGetFriends() throws Exception
+    {
+        LinkedHashSet<UserId> userIdSet = new LinkedHashSet<UserId>();
+        CollectionOptions collOptions = new CollectionOptions();
+        final PagedSet<PersonModelView> peopleResults = new PagedSet<PersonModelView>(0, 1, people.size(), people); 
+        buildPeople();
+        context.checking(new Expectations()
+        {
+            {
+                allowing(mockToken).getViewerId();
+                will(returnValue(USERID_ONE));
+                
+                allowing(principalPopulator).getPrincipal(USERID_ONE);
+                will(returnValue(principal));
+
+                allowing(principal).getAccountId();
+
+                allowing(serviceActionController).execute(with(any(ServiceActionContext.class)),
+                        with(any(ServiceAction.class)));
+                will(returnValue(peopleResults));
+            }
+        });
+
+        RestfulCollection<Person> testPeople = sut.getPeople(userIdSet, testFriendsGroupId, collOptions,
+                Person.Field.DEFAULT_FIELDS, mockToken).get();
+
+        assertNotNull("Collection of people is null", testPeople);
+
+        context.assertIsSatisfied();
+    }
+
+    
+    /**
      * This test exercises the GetPeople method of the OpenSocial implementation in Shindig. This test throws an
      * exception to test error handling.
-     * 
+     *
      * @throws Exception
      *             - on unhandled errors.
      */
@@ -353,7 +382,10 @@ public class PersonServiceTest
         {
             {
 
-                allowing(principalPopulator).getPrincipal(with(any(String.class)));
+                allowing(mockToken).getViewerId();
+                will(returnValue(USERID_ONE));
+                
+                allowing(principalPopulator).getPrincipal(USERID_ONE);
                 will(returnValue(principal));
 
                 allowing(principal).getAccountId();
@@ -364,19 +396,19 @@ public class PersonServiceTest
             }
         });
 
-        sut.getPeople(userIdSet, testGroupId, collOptions, Person.Field.DEFAULT_FIELDS, FAKETOKEN).get();
+        sut.getPeople(userIdSet, testGroupId, collOptions, Person.Field.DEFAULT_FIELDS, mockToken).get();
 
         context.assertIsSatisfied();
     }
-
+    
     /**
      * Build the basic collection of people that will be returned in the GetPeople tests.
      */
     private void buildPeople()
     {
-        org.eurekastreams.server.domain.Person authorPerson = new org.eurekastreams.server.domain.Person();
+        PersonModelView authorPerson = new PersonModelView();
         authorPerson.setOpenSocialId(USERID_ONE);
-        org.eurekastreams.server.domain.Person subjectPerson = new org.eurekastreams.server.domain.Person();
+        PersonModelView subjectPerson = new PersonModelView();
         subjectPerson.setOpenSocialId(USERID_ONE);
 
         people.add(authorPerson);
