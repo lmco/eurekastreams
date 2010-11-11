@@ -15,6 +15,9 @@
  */
 package org.eurekastreams.server.action.execution.start;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
@@ -23,6 +26,8 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.persistence.TabGroupMapper;
 import org.eurekastreams.server.persistence.TabMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 
 /**
  * Deletes a Tab, with the ID provided by parameter.
@@ -45,17 +50,26 @@ public class DeleteTabExecution implements ExecutionStrategy<PrincipalActionCont
     private final TabGroupMapper tabGroupMapper;
 
     /**
+     * Domain mapper to delete keys.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteKeysMapper;
+
+    /**
      * Constructor.
-     *
+     * 
      * @param inTabGroupMapper
      *            used to delete the tab
      * @param inTabMapper
      *            used to find the tab to be deleted
+     * @param inDeleteKeysMapper
+     *            mapper to delete cache keys.
      */
-    public DeleteTabExecution(final TabGroupMapper inTabGroupMapper, final TabMapper inTabMapper)
+    public DeleteTabExecution(final TabGroupMapper inTabGroupMapper, final TabMapper inTabMapper,
+            final DomainMapper<Set<String>, Boolean> inDeleteKeysMapper)
     {
         tabGroupMapper = inTabGroupMapper;
         tabMapper = inTabMapper;
+        deleteKeysMapper = inDeleteKeysMapper;
     }
 
     @Override
@@ -71,6 +85,9 @@ public class DeleteTabExecution implements ExecutionStrategy<PrincipalActionCont
             Tab tab = tabMapper.findById(tabId);
 
             tabGroupMapper.deleteTab(tab);
+
+            deleteKeysMapper.execute(Collections.singleton(CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID
+                    + inActionContext.getPrincipal().getId()));
 
             success = true;
         }

@@ -15,19 +15,24 @@
  */
 package org.eurekastreams.server.action.execution.start;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
-import org.eurekastreams.commons.actions.context.ActionContext;
+import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.persistence.TabGroupMapper;
 import org.eurekastreams.server.persistence.exceptions.TabUndeletionException;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 
 /**
  * Undeletes a Tab, with the ID provided by parameter.
  */
-public class UndeleteTabExecution implements ExecutionStrategy<ActionContext>
+public class UndeleteTabExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
      * Logger.
@@ -40,30 +45,41 @@ public class UndeleteTabExecution implements ExecutionStrategy<ActionContext>
     private TabGroupMapper tabGroupMapper = null;
 
     /**
+     * Domain mapper to delete keys.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteKeysMapper;
+
+    /**
      * Constructor.
      * 
      * @param inTabGroupMapper
      *            the TabGroupMapper to undelete from
+     * @param inDeleteKeysMapper
+     *            mapper to delete cache keys.
      */
-    public UndeleteTabExecution(final TabGroupMapper inTabGroupMapper)
+    public UndeleteTabExecution(final TabGroupMapper inTabGroupMapper,
+            final DomainMapper<Set<String>, Boolean> inDeleteKeysMapper)
     {
         tabGroupMapper = inTabGroupMapper;
+        deleteKeysMapper = inDeleteKeysMapper;
     }
 
     /**
      * Deletes a Tab given the ID.
      * 
      * @param inActionContext
-     *            {@link ActionContext}.
+     *            {@link PrincipalActionContext}.
      * @return Tab object that was undeleted.
      */
     @Override
-    public Tab execute(final ActionContext inActionContext)
+    public Tab execute(final PrincipalActionContext inActionContext)
     {
         try
         {
             Long tabId = (Long) inActionContext.getParams();
             logger.debug("Undelete tabId = " + tabId);
+            deleteKeysMapper.execute(Collections.singleton(CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID
+                    + inActionContext.getPrincipal().getId()));
             return tabGroupMapper.undeleteTab(tabId);
         }
         catch (TabUndeletionException tue)

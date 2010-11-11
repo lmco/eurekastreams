@@ -15,10 +15,14 @@
  */
 package org.eurekastreams.server.action.execution.start;
 
+import java.util.Set;
+
+import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.action.request.start.RenameTabRequest;
 import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.persistence.TabMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -52,6 +56,11 @@ public class RenameTabExecutionTest
     private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
 
     /**
+     * Principal mock object.
+     */
+    private final Principal principal = context.mock(Principal.class);
+
+    /**
      * {@link RenameTabRequest}.
      */
     private RenameTabRequest request = context.mock(RenameTabRequest.class);
@@ -72,9 +81,14 @@ public class RenameTabExecutionTest
     private Long tabId = 1L;
 
     /**
+     * {@link DomainMapper}.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteCacheKeysMapper = context.mock(DomainMapper.class);
+
+    /**
      * System under test.
      */
-    private RenameTabExecution sut = new RenameTabExecution(tabMapper);
+    private RenameTabExecution sut = new RenameTabExecution(tabMapper, deleteCacheKeysMapper);
 
     /**
      * Test.
@@ -88,6 +102,12 @@ public class RenameTabExecutionTest
                 allowing(actionContext).getParams();
                 will(returnValue(request));
 
+                allowing(actionContext).getPrincipal();
+                will(returnValue(principal));
+
+                allowing(principal).getId();
+                will(returnValue(1L));
+
                 allowing(request).getTabId();
                 will(returnValue(tabId));
 
@@ -99,8 +119,9 @@ public class RenameTabExecutionTest
 
                 allowing(tab).setTabName(tabName);
 
-                allowing(tabMapper).flush();
+                allowing(deleteCacheKeysMapper).execute(with(any(Set.class)));
 
+                allowing(tabMapper).flush();
             }
         });
 

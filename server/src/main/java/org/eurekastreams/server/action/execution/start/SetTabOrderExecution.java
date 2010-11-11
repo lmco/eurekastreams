@@ -16,7 +16,9 @@
 package org.eurekastreams.server.action.execution.start;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
@@ -25,6 +27,8 @@ import org.eurekastreams.server.action.request.start.SetTabOrderRequest;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.persistence.PersonMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 
 /**
  * Move one tab to a different spot in the list of tabs belonging to a page.
@@ -38,14 +42,23 @@ public class SetTabOrderExecution implements ExecutionStrategy<PrincipalActionCo
     private PersonMapper personMapper = null;
 
     /**
+     * Domain mapper to delete keys.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteKeysMapper;
+
+    /**
      * Constructor.
-     *
+     * 
      * @param inPersonMapper
      *            injecting the mapper
+     * @param inDeleteKeysMapper
+     *            mapper to delete cache keys.
      */
-    public SetTabOrderExecution(final PersonMapper inPersonMapper)
+    public SetTabOrderExecution(final PersonMapper inPersonMapper,
+            final DomainMapper<Set<String>, Boolean> inDeleteKeysMapper)
     {
         personMapper = inPersonMapper;
+        deleteKeysMapper = inDeleteKeysMapper;
     }
 
     @Override
@@ -66,6 +79,9 @@ public class SetTabOrderExecution implements ExecutionStrategy<PrincipalActionCo
         tabs.remove(oldIndex);
         tabs.add(currentRequest.getNewIndex(), movingTab);
 
+        deleteKeysMapper.execute(Collections.singleton(CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID
+                + inActionContext.getPrincipal().getId()));
+
         personMapper.flush();
 
         return Boolean.TRUE;
@@ -73,7 +89,7 @@ public class SetTabOrderExecution implements ExecutionStrategy<PrincipalActionCo
 
     /**
      * Find the current location of the tab.
-     *
+     * 
      * @param tabs
      *            the collection to search through
      * @param tabId

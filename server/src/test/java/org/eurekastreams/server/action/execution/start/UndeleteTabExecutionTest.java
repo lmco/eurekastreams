@@ -17,11 +17,15 @@ package org.eurekastreams.server.action.execution.start;
 
 import static junit.framework.Assert.assertEquals;
 
-import org.eurekastreams.commons.actions.context.ActionContext;
+import java.util.Set;
+
+import org.eurekastreams.commons.actions.context.Principal;
+import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.persistence.TabGroupMapper;
 import org.eurekastreams.server.persistence.exceptions.TabUndeletionException;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -56,9 +60,14 @@ public class UndeleteTabExecutionTest
     private Tab undeletedTab = context.mock(Tab.class);
 
     /**
-     * {@link ActionContext}.
+     * {@link PrincipalActionContext}.
      */
-    private ActionContext actionContext = context.mock(ActionContext.class);
+    private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
+
+    /**
+     * Principal mock object.
+     */
+    private final Principal principal = context.mock(Principal.class);
 
     /**
      * Tab id.
@@ -71,13 +80,18 @@ public class UndeleteTabExecutionTest
     private UndeleteTabExecution sut = null;
 
     /**
+     * {@link DomainMapper}.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteCacheKeysMapper = context.mock(DomainMapper.class);
+
+    /**
      * Pre-test setup.
      * 
      */
     @Before
     public final void setup()
     {
-        sut = new UndeleteTabExecution(tabGroupMapper);
+        sut = new UndeleteTabExecution(tabGroupMapper, deleteCacheKeysMapper);
     }
 
     /**
@@ -94,6 +108,14 @@ public class UndeleteTabExecutionTest
             {
                 allowing(actionContext).getParams();
                 will(returnValue(tabId));
+
+                allowing(actionContext).getPrincipal();
+                will(returnValue(principal));
+
+                allowing(principal).getId();
+                will(returnValue(1L));
+
+                allowing(deleteCacheKeysMapper).execute(with(any(Set.class)));
 
                 allowing(tabGroupMapper).undeleteTab(tabId.longValue());
                 will(returnValue(undeletedTab));
@@ -121,6 +143,14 @@ public class UndeleteTabExecutionTest
             {
                 allowing(actionContext).getParams();
                 will(returnValue(tabId));
+
+                allowing(actionContext).getPrincipal();
+                will(returnValue(principal));
+
+                allowing(principal).getId();
+                will(returnValue(1L));
+
+                allowing(deleteCacheKeysMapper).execute(with(any(Set.class)));
 
                 oneOf(tabGroupMapper).undeleteTab(with(tabId.longValue()));
                 will(throwException(new TabUndeletionException("string", tabId)));
