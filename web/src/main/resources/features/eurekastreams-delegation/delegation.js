@@ -108,6 +108,7 @@ eurekastreams.delegation = function()
         		this.refreshDelegates();
                 this.spin();
 
+                var container = jQuery("<div class='delegation-dropdown'></div>");
             	var url = "${build.app.baseurl}/resources/delegation/delegators";
             	var params={};
             	params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
@@ -131,8 +132,6 @@ eurekastreams.delegation = function()
                 	{ eurekastreams.delegation.displayCurrentDelegator(results.data.currentDelegator); }}, params);
              
 
-                var dataFromServer = ["sterleck", "bhmayo"];
-                var container = jQuery("<div class='delegation-dropdown'></div>");
                 section = ex.addSection("Delegation", container, false);
                 section.hide();
                 
