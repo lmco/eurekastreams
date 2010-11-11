@@ -17,6 +17,8 @@ package org.eurekastreams.server.action.execution.start;
 
 import static junit.framework.Assert.assertEquals;
 
+import java.util.Set;
+
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
@@ -25,6 +27,7 @@ import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.persistence.TabGroupMapper;
 import org.eurekastreams.server.persistence.TabMapper;
 import org.eurekastreams.server.persistence.exceptions.TabDeletionException;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -34,7 +37,7 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link DeleteTabExecution} class.
- *
+ * 
  */
 public class DeleteTabExecutionTest
 {
@@ -61,8 +64,7 @@ public class DeleteTabExecutionTest
     /**
      * The mock TabGroupMapper to be used by the action.
      */
-    private final TabGroupMapper tabGroupMapper = context
-            .mock(TabGroupMapper.class);
+    private final TabGroupMapper tabGroupMapper = context.mock(TabGroupMapper.class);
 
     /**
      * The Tab that will get deleted during the test.
@@ -75,18 +77,23 @@ public class DeleteTabExecutionTest
     private final Principal principalMock = context.mock(Principal.class);
 
     /**
+     * {@link DomainMapper}.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteCacheKeysMapper = context.mock(DomainMapper.class);
+
+    /**
      * Prepare the system under test.
      */
     @Before
     public void setup()
     {
         delTab = new Tab("delete Tab", Layout.THREECOLUMN);
-        sut = new DeleteTabExecution(tabGroupMapper, tabMapper);
+        sut = new DeleteTabExecution(tabGroupMapper, tabMapper, deleteCacheKeysMapper);
     }
 
     /**
      * Call the execute method and make sure it produces what it should.
-     *
+     * 
      * @throws Exception
      *             should not occur
      */
@@ -100,6 +107,11 @@ public class DeleteTabExecutionTest
                 will(returnValue(delTab));
 
                 oneOf(tabGroupMapper).deleteTab(delTab);
+
+                allowing(deleteCacheKeysMapper).execute(with(any(Set.class)));
+
+                allowing(principalMock).getId();
+                will(returnValue(1L));
             }
         });
 
@@ -113,7 +125,9 @@ public class DeleteTabExecutionTest
 
     /**
      * Call the execute method and make sure it produces what it should under failure circumstances.
-     * @throws Exception - on error.
+     * 
+     * @throws Exception
+     *             - on error.
      */
     @Test(expected = ExecutionException.class)
     public final void testPerformActionWithException() throws Exception

@@ -31,7 +31,7 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link UndeleteGadgetExecution} class.
- *
+ * 
  */
 public class UndeleteGadgetExecutionTest
 {
@@ -86,7 +86,7 @@ public class UndeleteGadgetExecutionTest
 
     /**
      * Have the Action undelete a gadget with nothing going wrong.
-     *
+     * 
      * @throws Exception
      *             should not be thrown
      */
@@ -109,7 +109,7 @@ public class UndeleteGadgetExecutionTest
 
     /**
      * Have the Action undelete a gadget with exception being thrown.
-     *
+     * 
      * @throws Exception
      *             should not be thrown
      */
