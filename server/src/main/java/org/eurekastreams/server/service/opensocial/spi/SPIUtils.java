@@ -18,6 +18,7 @@ package org.eurekastreams.server.service.opensocial.spi;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -68,4 +69,17 @@ public final class SPIUtils
       }
       return paramList;
     }
+    
+    /**
+    * Determine if a string id is an OpenSocial Id or not.
+    * @param inId - string id to check if it is an OpenSocial id.
+    * @return true if the passed in id is an OpenSocial Id.
+    */
+        public static boolean isOpenSocialId(final String inId)
+        {
+            /** Regex pattern for a UUID */
+            Pattern uuidPattern =
+                    Pattern.compile("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
+            return uuidPattern.matcher(inId).matches();
+        }
 }

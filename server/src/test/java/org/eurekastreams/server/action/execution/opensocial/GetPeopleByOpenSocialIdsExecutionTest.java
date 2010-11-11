@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,8 +22,9 @@ import java.util.UUID;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.server.action.request.opensocial.GetPeopleByOpenSocialIdsRequest;
-import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.persistence.PersonMapper;
+import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByAccountIds;
+import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -32,24 +33,24 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test suite for the {@link GetPeopleByOpenSocialIdsExecution} class.
- *
- */
+* Test suite for the {@link GetPeopleByOpenSocialIdsExecution} class.
+*
+*/
 public class GetPeopleByOpenSocialIdsExecutionTest
 {
     /**
-     * System under test.
-     */
+    * System under test.
+    */
     private GetPeopleByOpenSocialIdsExecution sut;
 
     /**
-     * Collection of people to be used a test of results for the perform action method.
-     */
-    private static List<Person> people = new LinkedList<Person>();
+    * Collection of people to be used a test of results for the perform action method.
+    */
+    private static List<PersonModelView> people = new LinkedList<PersonModelView>();
 
     /**
-     * Context for building mock objects.
-     */
+    * Context for building mock objects.
+    */
     private final Mockery context = new JUnit4Mockery()
     {
         {
@@ -58,40 +59,48 @@ public class GetPeopleByOpenSocialIdsExecutionTest
     };
 
     /**
-     * Mocked principal object for test.
-     */
+    * Mocked principal object for test.
+    */
     private Principal principal = context.mock(Principal.class);
 
     /**
-     * Mocked person mapper object for test.
-     */
-    private PersonMapper mapper = context.mock(PersonMapper.class);
+    * Mocked person mapper object for test.
+    */
+    private GetPeopleByOpenSocialIds getPersonModelViewsByOpenSocialIdsMapper = context
+            .mock(GetPeopleByOpenSocialIds.class);
 
     /**
-     * An Open Social id to use for testing. Arbitrary.
-     */
+    * Mocked mapper object for retrieving a list of PersonModelView objects by account ids.
+    */
+    private GetPeopleByAccountIds getPersonModelViewsByAccountIdsMapper = context
+            .mock(GetPeopleByAccountIds.class);
+
+    /**
+    * An Open Social id to use for testing. Arbitrary.
+    */
     private static final String SUBJECT_OPENSOCIAL_ID = UUID.randomUUID().toString();
 
     /**
-     * Another Open Social id. Arbitrary.
-     */
+    * Another Open Social id. Arbitrary.
+    */
     private static final String AUTHOR_OPENSOCIAL_ID = UUID.randomUUID().toString();
 
     /**
-     * Prepare the sut.
-     */
+    * Prepare the sut.
+    */
     @Before
     public void setup()
     {
-        sut = new GetPeopleByOpenSocialIdsExecution(mapper);
+        sut = new GetPeopleByOpenSocialIdsExecution(getPersonModelViewsByOpenSocialIdsMapper,
+                getPersonModelViewsByAccountIdsMapper);
     }
 
     /**
-     * This test covers the PerformAction method when type = self.
-     *
-     * @throws Exception
-     *             unexpected.
-     */
+    * This test covers the PerformAction method when type = self.
+    *
+    * @throws Exception
+    * unexpected.
+    */
     @Test
     public void testPerformActionWithTypeSelf() throws Exception
     {
@@ -102,42 +111,12 @@ public class GetPeopleByOpenSocialIdsExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(mapper).findPeopleByOpenSocialIds(openSocialIds);
+                oneOf(getPersonModelViewsByOpenSocialIdsMapper).execute(openSocialIds);
                 will(returnValue(people));
             }
         });
 
         GetPeopleByOpenSocialIdsRequest currentRequest = new GetPeopleByOpenSocialIdsRequest(openSocialIds, "self");
-
-        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principal);
-
-        sut.execute(currentContext);
-
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * This test covers the PerformAction method when type = firends.
-     *
-     * @throws Exception
-     *             unexpected.
-     */
-    @Test
-    public void testPerformActionWithTypeFriends() throws Exception
-    {
-        final LinkedList<String> openSocialIds = new LinkedList<String>();
-        openSocialIds.add(SUBJECT_OPENSOCIAL_ID);
-        openSocialIds.add(AUTHOR_OPENSOCIAL_ID);
-
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(mapper).findPeopleFollowedUsingFollowerOpenSocialIds(openSocialIds);
-                will(returnValue(people));
-            }
-        });
-
-        GetPeopleByOpenSocialIdsRequest currentRequest = new GetPeopleByOpenSocialIdsRequest(openSocialIds, "friends");
 
         ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principal);
 

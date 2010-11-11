@@ -129,7 +129,7 @@ public class GetPeopleByOpenSocialIdsValidationTest
 
         context.assertIsSatisfied();
     }
-
+    
     /**
      * This test covers the PerformAction method with illegal type.
      *

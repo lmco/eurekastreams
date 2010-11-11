@@ -38,6 +38,7 @@ public class GetPeopleByOpenSocialIdsValidation implements ValidationStrategy<Pr
         GetPeopleByOpenSocialIdsRequest currentRequest = (GetPeopleByOpenSocialIdsRequest) inActionContext.getParams();
 
         if (!currentRequest.getTypeOfRelationshipForPeopleReturned().equals("self")
+                && !currentRequest.getTypeOfRelationshipForPeopleReturned().equals("all")
                 && !currentRequest.getTypeOfRelationshipForPeopleReturned().equals("friends"))
         {
             throw new ValidationException("Unsupported relationship type provided.");
