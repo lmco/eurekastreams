@@ -6591,10 +6591,6 @@ div.banner-container {
 	padding: 5px 0;
 }
 
-.footer-bar .hidden-in-footer {
-    visibility: hidden;
-}
-
 .footer-bar ul li div a,.footer-bar ul li div a:link,.footer-bar ul li div a:visited,.footer-bar ul li div a:hover,.footer-bar ul li div a:active
 	{
 	color: #666666;
@@ -6652,10 +6648,6 @@ div.banner-container {
 	background: url(images/modalCloseBtn.png) no-repeat;
 	overflow: hidden;
 	text-indent: -1000em;
-}
-
-.modal-close:hover {
-	background: url(images/modalCloseBtnHover.png) no-repeat;
 }
 
 .modal-close a {
@@ -8750,38 +8742,6 @@ body .post-to-stream .post-button.inactive {
 	color: #999999;
 }
 
-.icon
-{
-	background: transparent url('images/icon-unknown-large.png') no-repeat scroll left center;
-	padding-left: 55px;
-	min-height: 50px;
-}
-.icon-ppt, .icon-pptx
-{
-	background-image: url('images/icon-ppt-large.png');
-}
-.icon-xls, .icon-xlsx
-{
-	background-image: url('images/icon-xls-large.png');
-}
-.icon-doc, .icon-docx, .icon-txt, .icon-pdf
-{
-	background-image: url('images/icon-doc-large.png');
-}
-.icon-mpp
-{
-	background-image: url('images/icon-mpp-large.png');
-}
-.icon-accdb
-{
-	background-image: url('images/icon-accd-large.png');
-}
-.icon-jpg, .icon-jpeg, .icon-png, .icon-gif, .icon-bmp
-{
-	background-image: url('images/icon-image-large.png');
-}
-
-
 .more-button {
 	margin: 0 auto;
 	margin-top: 10px;
@@ -8936,7 +8896,7 @@ body .previous-arrow:hover {
 .gadgets-gadget-user-prefs-dialog .label-area {
 	display: inline-block;
 	text-align: right;
-    width:100px;
+	float: left;
 	clear: left;
 }
 
@@ -8953,6 +8913,11 @@ body .previous-arrow:hover {
 	padding-right: 10px;
 	font-family: verdana;
 	font-size: 12px;
+}
+
+gwt-MenuBarPopup {
+	zoom: 1;
+	position: absolute;
 }
 
 .gwt-MenuBarPopup .gwt-MenuBar-vertical {
@@ -9096,7 +9061,7 @@ body .previous-arrow:hover {
 .posting-disabled-box>div {
 	background: url(images/information-circle-icon.png) no-repeat 0 0;
 	margin: 0px auto;
-	width: 300px;
+	width: 275px;
 	padding: 0px 20px;
 	height: 16px;
 }
@@ -9807,8 +9772,6 @@ body .shortname-form-element input {
 
 .gwt-MenuBarPopup {
 	z-index: 100000;
-	margin-left: -2px;
-	*margin-top: -1px;
 }
 
 .edit-button a {
@@ -10175,11 +10138,6 @@ body .options>li>.option-title:hover {
 
 .options .connection-filter-button.active, .options .sort-option.active {
 	background-color: #FFE488;
-}
-
-.sort-option {
-	*position: relative;
-	*top: -5px;	
 }
 
 .connection-edit-panel {
@@ -10896,12 +10854,6 @@ div.gadget-zone.maximized {
 	background: #BBB !important;
 	height: 24px;
 	padding-top: 7px;
-    font-size: 13px;
-}
-
-.gadget-zone.maximized .gadget-zone-chrome-title-bar-title-button
-{
-    color: black ! important;
 }
 
 .gadget-zone {
@@ -10954,6 +10906,12 @@ div.gadget-zone-chrome-title-bar div.gwt-MenuBar:hover {
 	margin-left: 10px;
 	position: relative; 
 	*top: -5px;
+    font-size: 13px;
+}
+
+.gadget-zone.maximized .gadget-zone-chrome-title-bar-title-button
+{
+    color: black;
 }
 
 .gadget-zone-chrome-title-bar-close-button a {
@@ -11037,7 +10995,7 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 }
 
 .gadgets-gadget-content .gadget-container {
-	padding: 0;
+	padding: 10px;
 }
 
 /******************************************************************************
@@ -11524,9 +11482,10 @@ div.profile-settings-tab-container div.tab-container {
 	background-color: #FFFFFF;
 	border: #bbbbbb solid 1px;
 	padding: 20px;
+	width: 600px;
 	font-family: Verdana;
 	font-size: 12px;
-	margin: 0 10px;
+	margin-left: 20px;
 	display: inline-block;
 }
 
@@ -13586,11 +13545,6 @@ div.tab-container table.dragdrop-dropTarget-engage {
 	zoom: 1;
 }
 
-.gadget-button.gadget-help {
-    background: url(images/gadgetControls.png) no-repeat scroll 0 -260px
-        transparent;
-}
-
 .gadget-button.gadget-refresh {
 	background: url(images/gadgetControls.png) no-repeat scroll 0 -20px
 		transparent;
@@ -13617,7 +13571,7 @@ div.tab-container table.dragdrop-dropTarget-engage {
 		transparent;
 }
 
-.gadget-zone:hover .gadget-button.gadget-refresh,.gadget-zone:hover .gadget-button.gadget-edit,.gadget-zone:hover .gadget-button.gadget-close,.gadget-zone:hover .gadget-button.gadget-help
+.gadget-zone:hover .gadget-button.gadget-refresh,.gadget-zone:hover .gadget-button.gadget-edit,.gadget-zone:hover .gadget-button.gadget-close
 	{
 	display: inline-block; 
 	*display: inline;
@@ -14457,13 +14411,12 @@ body .url-validator .required-form-label {
 	width: 140px;
 }
 
-.message-timestamp-actions-area .via-metadata
-{
+.message-timestamp-actions-area .gwt-HTML {
 	color: #666;
 	display: inline-block; 
 	*display: inline;
 	zoom: 1;
-	margin-right: 5px;
+	margin-left: 5px;
 }
 
 .private-icon {
@@ -14596,44 +14549,4 @@ body .url-validator .required-form-label {
 }
 
 
-.delegation-container
-{
-	padding:10px;
-}
 
-.delegation-title
-{
-	border-bottom:1px solid #999;
-	font-weight:bold;
-	padding-bottom:5px;
-}
-
-.delegation-item
-{
-	border-bottom:1px solid #999;
-    padding-bottom:5px;
-    padding-top:5px;
-}
-
-.add-a-delegate
-{
-	padding-top:5px;
-}
-
-.delegation-item .avatar
-{
-	display:inline-block;
-	*display:inline;
-	zoom:1;
-}
-.delegation-item .avatar-image
-{
-	height:35px;
-	width:35px;
-}
-.delegation-item .connection-item-info
-{
-	width:auto;
-	padding-top:5px;
-	padding-left:10px;
-}
