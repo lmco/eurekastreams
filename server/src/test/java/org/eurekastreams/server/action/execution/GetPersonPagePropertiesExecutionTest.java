@@ -19,10 +19,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
-import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
-import org.eurekastreams.server.persistence.mappers.cache.Transformer;
-import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
+import org.eurekastreams.server.persistence.mappers.cache.GetPersonPagePropertiesById;
 import org.eurekastreams.server.search.modelview.PersonPagePropertiesDTO;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -52,9 +49,9 @@ public class GetPersonPagePropertiesExecutionTest
     private static final long PERSON_ID = 123L;
 
     /**
-     * mocked tab for testing results.
+     * {@link GetPersonPagePropertiesById}.
      */
-    private Person person = context.mock(Person.class);
+    private GetPersonPagePropertiesById mapper = context.mock(GetPersonPagePropertiesById.class);
 
     /**
      * {@link PersonPagePropertiesDTO}.
@@ -72,20 +69,9 @@ public class GetPersonPagePropertiesExecutionTest
     private Principal actionContextPrincipal = context.mock(Principal.class);
 
     /**
-     * Transformer to convert person to PersonPageProperties.
-     */
-    private Transformer<Person, PersonPagePropertiesDTO> transformer = context.mock(Transformer.class);
-
-    /**
-     * {@link FindByIdMapper}.
-     */
-    private FindByIdMapper<Person> personByIdMapper = context.mock(FindByIdMapper.class);
-
-    /**
      * System under test.
      */
-    private GetPersonPagePropertiesExecution sut = new GetPersonPagePropertiesExecution(personByIdMapper, transformer,
-            null);
+    private GetPersonPagePropertiesExecution sut = new GetPersonPagePropertiesExecution(mapper);
 
     /**
      * Test.
@@ -102,10 +88,7 @@ public class GetPersonPagePropertiesExecutionTest
                 allowing(actionContextPrincipal).getId();
                 will(returnValue(PERSON_ID));
 
-                oneOf(personByIdMapper).execute(with(any(FindByIdRequest.class)));
-                will(returnValue(person));
-
-                oneOf(transformer).transform(person);
+                oneOf(mapper).execute(PERSON_ID);
                 will(returnValue(ppp));
             }
         });

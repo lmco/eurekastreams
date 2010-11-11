@@ -17,7 +17,7 @@ package org.eurekastreams.server.persistence.mappers.cache;
 
 /**
  * Collection of Cache keys.
- *
+ * 
  */
 public final class CacheKeys
 {
@@ -218,4 +218,9 @@ public final class CacheKeys
      * Key for system settings.
      */
     public static final String SYSTEM_SETTINGS = "SystemSettings";
+
+    /**
+     * Key for PersonPageProperties by id.
+     */
+    public static final String PERSON_PAGE_PROPERTIES_BY_ID = "PagePropsById:";
 }
