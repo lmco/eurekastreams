@@ -10896,6 +10896,12 @@ div.gadget-zone.maximized {
 	background: #BBB !important;
 	height: 24px;
 	padding-top: 7px;
+    font-size: 13px;
+}
+
+.gadget-zone.maximized .gadget-zone-chrome-title-bar-title-button
+{
+    color: black ! important;
 }
 
 .gadget-zone {
