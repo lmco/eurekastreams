@@ -218,7 +218,7 @@ public class Tab extends DomainEntity implements Serializable
      *            The list of gadgets.
      */
     @SuppressWarnings("unused")
-    private void setGadgets(final List<Gadget> inGadgets)
+    public void setGadgets(final List<Gadget> inGadgets)
     {
         template.setGadgets(inGadgets);
     }

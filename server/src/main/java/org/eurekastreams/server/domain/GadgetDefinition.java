@@ -441,4 +441,14 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
     }
 
 
+    /**
+     * Sets the id.
+     * @param inId the id.
+     */
+    @Override
+    public void setId(final long inId)
+    {
+        super.setId(inId);
+    }
+
 }

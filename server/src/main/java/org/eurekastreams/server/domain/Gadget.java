@@ -339,4 +339,15 @@ public class Gadget extends DomainEntity implements Serializable
     {
         maximized = inMaximized;
     }
+
+    /**
+     * Sets the id.
+     * @param inId the id.
+     */
+    @Override
+    public void setId(final long inId)
+    {
+        super.setId(inId);
+    }
+
 }
