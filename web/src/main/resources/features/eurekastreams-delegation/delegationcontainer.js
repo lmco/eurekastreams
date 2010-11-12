@@ -28,8 +28,8 @@ eurekastreams.delegation.container = function()
         editButtonClicked : function(moduleId)
         {
                 var container = jQuery("#gadget-zone-render-zone-"+ moduleId +" .gadgets-gadget-user-prefs-dialog");
-
-                if (container.is(':visible') && container.text() != "")
+		var prefDialog = jQuery("#gadget-zone-render-zone-"+ moduleId +" .gadgets-gadget-user-prefs-dialog .delegation-container");
+                if (container.is(':visible') && container.text() != "" && prefDialog.length == 0)
                 {
 			if(jQuery("#m_"+moduleId+"_numfields").val()=="0")
                         {
@@ -52,13 +52,10 @@ eurekastreams.delegation.container = function()
         },
         setupDelegation : function(moduleId, dataFromServer)
         {
-                if (dataFromServer != null)
+		delegates[moduleId] = [];
+                if (dataFromServer != null && dataFromServer.length > 0)
                 {
                 	gwt_bulkGetPeople(dataFromServer, function(data) { delegates[moduleId] = data; });
-                }
-                else
-                {
-                	delegates[moduleId] = [];
                 }
         },
         spinOnUserAction : function(moduleId)

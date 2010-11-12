@@ -175,7 +175,7 @@ public class ApplicationEntryPoint implements EntryPoint
      */
     private void loadPerson()
     {
-        //this must be the first action called so that the session is handled correctly 
+        // this must be the first action called so that the session is handled correctly
         processor.makeRequest(new ActionRequestImpl<PersonModelView>("getPersonModelView", null),
                 new AsyncCallback<PersonModelView>()
                 {
@@ -240,7 +240,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Shows the ToS modal.
-     * 
+     *
      */
     private void displayToS()
     {
@@ -278,7 +278,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires off a gadget change state event.
-     * 
+     *
      * @param id
      *            the gadget id
      * @param view
@@ -294,7 +294,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires of the UpdateGadgetPrefsEvent when called from the gadget container.
-     * 
+     *
      * @param inId
      *            - id of the gadget being updated.
      * @param inPrefs
@@ -361,8 +361,10 @@ public class ApplicationEntryPoint implements EntryPoint
      *
      * @param ntids
      *            the ntids.
+     * @param callbackIndex
+     *            the callback index.
      */
-    public static void bulkGetPeople(final String[] ntids)
+    public static void bulkGetPeople(final String[] ntids, final int callbackIndex)
     {
         Session.getInstance().getEventBus().addObserver(GotBulkEntityResponseEvent.class,
                 new Observer<GotBulkEntityResponseEvent>()
@@ -374,25 +376,37 @@ public class ApplicationEntryPoint implements EntryPoint
                                 .createArray();
                         int count = 0;
 
-                        for (Serializable person : arg1.getResponse())
+                        if (ntidList.size() == arg1.getResponse().size())
                         {
-                            PersonModelView personMV = (PersonModelView) person;
-                            if (ntidList.contains(personMV.getAccountId()))
+                            boolean notCorrectResponse = false;
+                            for (Serializable person : arg1.getResponse())
                             {
-                                AvatarUrlGenerator urlGen = new AvatarUrlGenerator(EntityType.PERSON);
-                                String imageUrl = urlGen.getSmallAvatarUrl(personMV.getId(), personMV.getAvatarId());
+                                PersonModelView personMV = (PersonModelView) person;
+                                if (ntidList.contains(personMV.getAccountId()))
+                                {
+                                    AvatarUrlGenerator urlGen = new AvatarUrlGenerator(EntityType.PERSON);
+                                    String imageUrl = urlGen
+                                            .getSmallAvatarUrl(personMV.getId(), personMV.getAvatarId());
 
-                                JsArrayString personJSON = (JsArrayString) JavaScriptObject.createObject();
-                                personJSON.set(0, personMV.getAccountId());
-                                personJSON.set(1, personMV.getDisplayName());
-                                personJSON.set(2, imageUrl);
+                                    JsArrayString personJSON = (JsArrayString) JavaScriptObject.createObject();
+                                    personJSON.set(0, personMV.getAccountId());
+                                    personJSON.set(1, personMV.getDisplayName());
+                                    personJSON.set(2, imageUrl);
 
-                                personJSONArray.set(count, personJSON);
-                                count++;
+                                    personJSONArray.set(count, personJSON);
+                                    count++;
+                                }
+                                else
+                                {
+                                    notCorrectResponse = true;
+                                    break;
+                                }
+                            }
+                            if (!notCorrectResponse)
+                            {
+                                callGotBulkPeopleCallback(personJSONArray, callbackIndex);
                             }
                         }
-
-                        callGotBulkPeopleCallback(personJSONArray);
                     }
                 });
 
@@ -406,21 +420,35 @@ public class ApplicationEntryPoint implements EntryPoint
             entities.add(dto);
         }
 
-        BulkEntityModel.getInstance().fetch(entities, false);
+        if (ntids.length == 0)
+        {
+            JsArray<JavaScriptObject> personJSONArray = (JsArray<JavaScriptObject>) JavaScriptObject.createArray();
+            callGotBulkPeopleCallback(personJSONArray, callbackIndex);
+        }
+        else
+        {
+            BulkEntityModel.getInstance().fetch(entities, false);
+        }
     }
 
     /**
      * Call the handler with the JSON data.
-     * @param data the data.
+     *
+     * @param data
+     *            the data.
+     * @param callbackIndex
+     *            the callback index.
      */
-    private static native void callGotBulkPeopleCallback(final JsArray data)
+    private static native void callGotBulkPeopleCallback(final JsArray data, final int callbackIndex)
     /*-{
-           $wnd.bulkGetPeopleCallback(data);
+           $wnd.bulkGetPeopleCallback[callbackIndex](data);
     }-*/;
 
     /**
      * Returns an additional property value given a key.
-     * @param key the key.
+     *
+     * @param key
+     *            the key.
      * @return the value.
      */
     public static String getAddtionalProperty(final String key)
@@ -448,8 +476,12 @@ public class ApplicationEntryPoint implements EntryPoint
         }
 
         $wnd.gwt_bulkGetPeople = function(ntids, handler) {
-                $wnd.bulkGetPeopleCallback = handler;
-                @org.eurekastreams.web.client.ui.pages.master.ApplicationEntryPoint::bulkGetPeople([Ljava/lang/String;)(ntids);
+                if ($wnd.bulkGetPeopleCallback == null)
+                {
+                    $wnd.bulkGetPeopleCallback = [];
+                }
+                $wnd.bulkGetPeopleCallback.push(handler);
+                @org.eurekastreams.web.client.ui.pages.master.ApplicationEntryPoint::bulkGetPeople([Ljava/lang/String;I)(ntids, $wnd.bulkGetPeopleCallback.length-1);
         }
 
         $wnd.gwt_launchEmpLookup = function(handler) {
