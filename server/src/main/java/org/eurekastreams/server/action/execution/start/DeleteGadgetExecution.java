@@ -16,7 +16,9 @@
 package org.eurekastreams.server.action.execution.start;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
@@ -25,6 +27,8 @@ import org.eurekastreams.server.domain.Gadget;
 import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.persistence.TabMapper;
 import org.eurekastreams.server.persistence.exceptions.GadgetDeletionException;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 
 /**
  * Delete a gadget from a tab and rearrange the remaining gadgets.
@@ -43,17 +47,28 @@ public class DeleteGadgetExecution implements ExecutionStrategy<PrincipalActionC
     private final TabMapper tabMapper;
 
     /**
-     * Default Constructor.
-     * @param inTabMapper - instance of the {@link TabMapper} for this action exection.
+     * Domain mapper to delete keys.
      */
-    public DeleteGadgetExecution(final TabMapper inTabMapper)
+    private DomainMapper<Set<String>, Boolean> deleteKeysMapper;
+
+    /**
+     * Default Constructor.
+     * 
+     * @param inTabMapper
+     *            - instance of the {@link TabMapper} for this action exection.
+     * @param inDeleteKeysMapper
+     *            mapper to delete cache keys.
+     */
+    public DeleteGadgetExecution(final TabMapper inTabMapper,
+            final DomainMapper<Set<String>, Boolean> inDeleteKeysMapper)
     {
         tabMapper = inTabMapper;
+        deleteKeysMapper = inDeleteKeysMapper;
     }
 
     /**
      * {@inheritDoc}.
-     *
+     * 
      * Delete a gadget from a tab and rearrange remaining gadgets.
      */
     @Override
@@ -69,9 +84,8 @@ public class DeleteGadgetExecution implements ExecutionStrategy<PrincipalActionC
 
         if (targetIndex == INVALID_INDEX)
         {
-            throw new ExecutionException(
-                    "Gadget could not be deleted because gadget Id " + gadgetId
-                    + " was not found");
+            throw new ExecutionException("Gadget could not be deleted because gadget Id " //
+                    + gadgetId + " was not found");
         }
 
         try
@@ -85,13 +99,15 @@ public class DeleteGadgetExecution implements ExecutionStrategy<PrincipalActionC
 
         tabMapper.flush();
 
+        deleteKeysMapper.execute(Collections.singleton(CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID
+                + inActionContext.getPrincipal().getId()));
+
         return tab;
     }
 
-
     /**
      * Return the member of the gadgets collection that has the specified id.
-     *
+     * 
      * @param gadgets
      *            collection of gadgets to search
      * @param gadgetId
