@@ -4,8 +4,13 @@ if (typeof eurekastreams.delegation == "undefined" || !eurekastreams.delegation)
 
 eurekastreams.delegation = function()
 {
+	var currentDelegator = null;
 	var section;
     return{
+	getCurrentDelegator : function()
+	{
+		return this.currentDelegator;
+	},
     	clearDelegate : function()
     	{
         	var params = gadgets.util.getUrlParameters();
@@ -23,6 +28,7 @@ eurekastreams.delegation = function()
     	},
     	displayCurrentDelegator : function(ntid)
     	{
+	    this.currentDelegator = ntid;
             var req = opensocial.newDataRequest();
 
             var friendspec = opensocial.newIdSpec({userId : [ntid], groupId : 'ALL'});
