@@ -17,6 +17,7 @@ package org.eurekastreams.server.action.execution.start;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
@@ -24,6 +25,7 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.domain.Gadget;
 import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.persistence.TabMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.States;
@@ -34,7 +36,7 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link DeleteGadgetExecution} class.
- *
+ * 
  */
 public class DeleteGadgetExecutionTest
 {
@@ -99,8 +101,12 @@ public class DeleteGadgetExecutionTest
     private TabMapper tabMapper = context.mock(TabMapper.class);
 
     /**
-     * Having a state lets me make the gadgets return different values at
-     * different times.
+     * {@link DomainMapper}.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteCacheKeysMapper = context.mock(DomainMapper.class);
+
+    /**
+     * Having a state lets me make the gadgets return different values at different times.
      */
     private final States index = context.states("index");
 
@@ -110,12 +116,12 @@ public class DeleteGadgetExecutionTest
     @Before
     public void setup()
     {
-        sut = new DeleteGadgetExecution(tabMapper);
+        sut = new DeleteGadgetExecution(tabMapper, deleteCacheKeysMapper);
     }
 
     /**
      * Test the normal case.
-     *
+     * 
      * @throws Exception
      *             not expected to occur
      */
@@ -138,6 +144,11 @@ public class DeleteGadgetExecutionTest
                 // delete the target
                 oneOf(tabMapper).deleteGadget(gadgets.get(2));
 
+                oneOf(principalMock).getId();
+                will(returnValue(1L));
+
+                allowing(deleteCacheKeysMapper).execute(with(any(Set.class)));
+
                 // write back to the database
                 oneOf(tabMapper).flush();
             }
@@ -151,7 +162,7 @@ public class DeleteGadgetExecutionTest
 
     /**
      * Delete the only gadget in a zone to make sure it's handled right.
-     *
+     * 
      * @throws Exception
      *             not expected to occur
      */
@@ -174,6 +185,11 @@ public class DeleteGadgetExecutionTest
                 // delete the target
                 oneOf(tabMapper).deleteGadget(gadgets.get(0));
 
+                oneOf(principalMock).getId();
+                will(returnValue(1L));
+
+                allowing(deleteCacheKeysMapper).execute(with(any(Set.class)));
+
                 // there are no other gadgets in the zone, so no other ones to
                 // rearrange
 
@@ -190,7 +206,7 @@ public class DeleteGadgetExecutionTest
 
     /**
      * Delete the last gadget in the collection to make sure we don't overrun.
-     *
+     * 
      * @throws Exception
      *             not expected to occur
      */
@@ -213,6 +229,11 @@ public class DeleteGadgetExecutionTest
                 // delete the target
                 oneOf(tabMapper).deleteGadget(gadgets.get(5));
 
+                oneOf(principalMock).getId();
+                will(returnValue(1L));
+
+                allowing(deleteCacheKeysMapper).execute(with(any(Set.class)));
+
                 // there are no other gadgets in the zone, so no other ones to
                 // rearrange
 
@@ -229,7 +250,9 @@ public class DeleteGadgetExecutionTest
 
     /**
      * Test that an invalid gadget id is handled.
-     * @throws Exception should be thrown
+     * 
+     * @throws Exception
+     *             should be thrown
      */
     @Test(expected = ExecutionException.class)
     public void performActionWithInvalidGadgetId() throws Exception
@@ -258,9 +281,8 @@ public class DeleteGadgetExecutionTest
     }
 
     /**
-     * Builds a collection of mocked Gadgets. Each gadget knows its ID, zone
-     * number, and zone index.
-     *
+     * Builds a collection of mocked Gadgets. Each gadget knows its ID, zone number, and zone index.
+     * 
      * @param targetGadgetId
      *            the gadget that is being targeted in the current test.
      * @return List of mocked gadgets.
@@ -280,12 +302,10 @@ public class DeleteGadgetExecutionTest
                 gadgets.add(setupGadget(GADGET6_ID, targetGadgetId, 2, 0));
             }
 
-            private Gadget setupGadget(final long gadgetId,
-                    final long targetGadgetId, final int zoneNumber,
+            private Gadget setupGadget(final long gadgetId, final long targetGadgetId, final int zoneNumber,
                     final int zoneIndex)
             {
-                Gadget gadget = context.mock(Gadget.class, "gadget"
-                        + Long.toString(gadgetId));
+                Gadget gadget = context.mock(Gadget.class, "gadget" + Long.toString(gadgetId));
                 allowing(gadget).getId();
                 will(returnValue(gadgetId));
 

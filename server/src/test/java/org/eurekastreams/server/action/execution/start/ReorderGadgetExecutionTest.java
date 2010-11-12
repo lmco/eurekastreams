@@ -23,9 +23,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.NoResultException;
 
+import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.action.request.start.ReorderGadgetRequest;
@@ -36,6 +38,7 @@ import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.domain.TabTemplate;
 import org.eurekastreams.server.persistence.TabMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.States;
@@ -47,20 +50,25 @@ import org.junit.Test;
 
 /**
  * Test for ReorderGadgetExecution class.
- *
+ * 
  */
 public class ReorderGadgetExecutionTest
 {
+    /**
+     * Context for building mock objects.
+     */
+    private final Mockery context = new JUnit4Mockery()
+    {
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
+
     /**
      * Collection of jmock states, one for each gadget's zone number and one for each gadget's zone index. The naming is
      * the gadgetId plus '.zoneIndex'.
      */
     private HashMap<String, States> gadgetStates;
-
-    /**
-     * Context for building mock objects.
-     */
-    private Mockery context;
 
     /**
      * Subject under test.
@@ -113,6 +121,11 @@ public class ReorderGadgetExecutionTest
     private static ArrayList<Long> tab2GadgetIds = new ArrayList<Long>();
 
     /**
+     * {@link DomainMapper}.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteCacheKeysMapper = context.mock(DomainMapper.class);
+
+    /**
      * Setup the array of GadgetIds.
      */
     @BeforeClass
@@ -155,13 +168,6 @@ public class ReorderGadgetExecutionTest
     @Before
     public void setup()
     {
-        context = new JUnit4Mockery()
-        {
-            {
-                setImposteriser(ClassImposteriser.INSTANCE);
-            }
-        };
-
         gadgetStates = new HashMap<String, States>();
 
         tabMapper = context.mock(TabMapper.class);
@@ -170,7 +176,7 @@ public class ReorderGadgetExecutionTest
         tab1Template = context.mock(TabTemplate.class, "tab1Template");
         tab2Template = context.mock(TabTemplate.class, "tab2Template");
 
-        sut = new ReorderGadgetExecution(tabMapper);
+        sut = new ReorderGadgetExecution(tabMapper, deleteCacheKeysMapper);
 
         tab1Gadgets = new ArrayList<Gadget>();
         tab1Gadgets.add(getGadget(tab1GadgetIds.get(0), 0, 0)); // [0]
@@ -265,7 +271,7 @@ public class ReorderGadgetExecutionTest
 
     /**
      * Move a gadget within a tab to an earlier index.
-     *
+     * 
      * @throws Exception
      *             don't expect this to be thrown.
      */
@@ -278,13 +284,22 @@ public class ReorderGadgetExecutionTest
 
         assertMapperMoveCall(gadgetId, tab1.getTemplate().getId(), 1, 1, tab1.getTemplate().getId(), 1, 0);
 
-        final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
         final ReorderGadgetRequest request = new ReorderGadgetRequest(tab1.getId(), gadgetId, 0, 1);
         final Map<String, Object> state = new HashMap<String, Object>();
+        final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
+        final Principal principalMock = context.mock(Principal.class);
 
         context.checking(new Expectations()
         {
             {
+                allowing(actionContext).getPrincipal();
+                will(returnValue(principalMock));
+
+                allowing(principalMock).getId();
+                will(returnValue(1L));
+
+                allowing(deleteCacheKeysMapper).execute(with(any(Set.class)));
+
                 allowing(actionContext).getParams();
                 will(returnValue(request));
 
@@ -307,9 +322,9 @@ public class ReorderGadgetExecutionTest
 
     /**
      * Move a gadget within a tab to a later index.
-     *
+     * 
      * Move from [1,1] to [4,0]
-     *
+     * 
      * @throws Exception
      *             don't expect this to be thrown.
      */
@@ -322,12 +337,21 @@ public class ReorderGadgetExecutionTest
         assertMapperMoveCall(gadgetId, tab1.getTemplate().getId(), 1, 1, tab1.getTemplate().getId(), 2, 3);
 
         final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
+        final Principal principalMock = context.mock(Principal.class);
         final ReorderGadgetRequest request = new ReorderGadgetRequest(tab1.getId(), gadgetId, 3, 2);
         final Map<String, Object> state = new HashMap<String, Object>();
 
         context.checking(new Expectations()
         {
             {
+                allowing(actionContext).getPrincipal();
+                will(returnValue(principalMock));
+
+                allowing(principalMock).getId();
+                will(returnValue(1L));
+
+                allowing(deleteCacheKeysMapper).execute(with(any(Set.class)));
+
                 allowing(actionContext).getParams();
                 will(returnValue(request));
 
@@ -351,7 +375,7 @@ public class ReorderGadgetExecutionTest
 
     /**
      * Move from tab 1 to tab2.
-     *
+     * 
      * @throws Exception
      *             shouldn't happen.
      */
@@ -367,6 +391,7 @@ public class ReorderGadgetExecutionTest
         assertMapperMoveCall(gadgetId, tab1.getTemplate().getId(), 1, 1, tab2.getTemplate().getId(), 0, 2);
 
         final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
+        final Principal principalMock = context.mock(Principal.class);
         final ReorderGadgetRequest request = new ReorderGadgetRequest(tab2.getId(), gadgetId, destinationZoneNumber,
                 destinationZoneIndex);
         final Map<String, Object> state = new HashMap<String, Object>();
@@ -374,6 +399,14 @@ public class ReorderGadgetExecutionTest
         context.checking(new Expectations()
         {
             {
+                allowing(actionContext).getPrincipal();
+                will(returnValue(principalMock));
+
+                allowing(principalMock).getId();
+                will(returnValue(1L));
+
+                allowing(deleteCacheKeysMapper).execute(with(any(Set.class)));
+
                 allowing(actionContext).getParams();
                 will(returnValue(request));
 
@@ -397,9 +430,9 @@ public class ReorderGadgetExecutionTest
 
     /**
      * Move out of a zone, leaving it empty.
-     *
+     * 
      * Move from tab 2's (1,0) to tab 1's (0,0).
-     *
+     * 
      * @throws Exception
      *             shouldn't happen.
      */
@@ -412,12 +445,21 @@ public class ReorderGadgetExecutionTest
         assertMapperMoveCall(gadgetId, tab2.getTemplate().getId(), 0, 1, tab1.getTemplate().getId(), 0, 0);
 
         final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
+        final Principal principalMock = context.mock(Principal.class);
         final ReorderGadgetRequest request = new ReorderGadgetRequest(tab1.getId(), gadgetId, 0, 0);
         final Map<String, Object> state = new HashMap<String, Object>();
 
         context.checking(new Expectations()
         {
             {
+                allowing(actionContext).getPrincipal();
+                will(returnValue(principalMock));
+
+                allowing(principalMock).getId();
+                will(returnValue(1L));
+
+                allowing(deleteCacheKeysMapper).execute(with(any(Set.class)));
+
                 allowing(actionContext).getParams();
                 will(returnValue(request));
 
@@ -447,11 +489,11 @@ public class ReorderGadgetExecutionTest
 
     /**
      * Swap two consecutive gadgets in the same zone.
-     *
+     * 
      * Note that I deliberately picked two gadgets at the end of a zone. If we test one before the end, we'll have to
      * setup assertions/allowings for temporary shifts upward due to the two-step nature of the SUT. To avoid this
      * headache, I'm swapping two gadgets at the end of a zone.
-     *
+     * 
      * @throws Exception
      *             shouldn't happen.
      */
@@ -464,12 +506,21 @@ public class ReorderGadgetExecutionTest
         assertMapperMoveCall(gadgetId, tab1.getTemplate().getId(), 2, 1, tab1.getTemplate().getId(), 1, 1);
 
         final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
+        final Principal principalMock = context.mock(Principal.class);
         final ReorderGadgetRequest request = new ReorderGadgetRequest(tab1.getId(), gadgetId, 1, 1);
         final Map<String, Object> state = new HashMap<String, Object>();
 
         context.checking(new Expectations()
         {
             {
+                allowing(actionContext).getPrincipal();
+                will(returnValue(principalMock));
+
+                allowing(principalMock).getId();
+                will(returnValue(1L));
+
+                allowing(deleteCacheKeysMapper).execute(with(any(Set.class)));
+
                 allowing(actionContext).getParams();
                 will(returnValue(request));
 
@@ -493,11 +544,11 @@ public class ReorderGadgetExecutionTest
 
     /**
      * Swap two consecutive gadgets in the same zone.
-     *
+     * 
      * Note that I deliberately picked two gadgets at the end of a zone. If we test one before the end, we'll have to
      * setup assertions/allowings for temporary shifts upward due to the two-step nature of the SUT. To avoid this
      * headache, I'm swapping two gadgets at the end of a zone.
-     *
+     * 
      * @throws Exception
      *             shouldn't happen.
      */
@@ -509,6 +560,7 @@ public class ReorderGadgetExecutionTest
         assertMapperMoveCall(gadgetId, tab1.getTemplate().getId(), 2, 1, tab1.getTemplate().getId(), 1, 1);
 
         final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
+        final Principal principalMock = context.mock(Principal.class);
         final ReorderGadgetRequest request = new ReorderGadgetRequest(tab1.getId(), gadgetId, 1, 1);
         final Map<String, Object> state = new HashMap<String, Object>();
         state.put("sourceTemplate", tab1.getTemplate());
@@ -517,6 +569,14 @@ public class ReorderGadgetExecutionTest
         context.checking(new Expectations()
         {
             {
+                allowing(actionContext).getPrincipal();
+                will(returnValue(principalMock));
+
+                allowing(principalMock).getId();
+                will(returnValue(1L));
+
+                allowing(deleteCacheKeysMapper).execute(with(any(Set.class)));
+
                 allowing(actionContext).getParams();
                 will(returnValue(request));
 
@@ -540,7 +600,9 @@ public class ReorderGadgetExecutionTest
 
     /**
      * Test the failure case where the source template is not found and the mapper throws an exception.
-     * @throws Exception on error.
+     * 
+     * @throws Exception
+     *             on error.
      */
     @Test(expected = ExecutionException.class)
     public void testExecutionFailure() throws Exception
@@ -578,7 +640,7 @@ public class ReorderGadgetExecutionTest
     /**
      * Test Helper Method: Setup the expectations of the mapper and have it return the expected mock Tabs for source and
      * destination tabs.
-     *
+     * 
      * @param sourceTab
      *            the tab that the gadget is moving from.
      * @param destinationTab
@@ -602,14 +664,14 @@ public class ReorderGadgetExecutionTest
 
     /**
      * Test Helper Method: Build a mocked Gadget.
-     *
+     * 
      * @param id
      *            the ID of the Gadget.
      * @param zoneNumber
      *            the zoneNumber of the gadget.
      * @param zoneIndex
      *            the zoneIndex of the gadget.
-     *
+     * 
      * @return the mocked Gadget.
      */
     private Gadget getGadget(final long id, final int zoneNumber, final int zoneIndex)
@@ -647,7 +709,7 @@ public class ReorderGadgetExecutionTest
 
     /**
      * This method sets up the expectations for the call to the Tab mapper to move the gadget.
-     *
+     * 
      * @param gadgetId
      *            - id of the gadget to move.
      * @param sourceTabTemplateId

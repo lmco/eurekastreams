@@ -15,6 +15,9 @@
  */
 package org.eurekastreams.server.action.execution.start;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
@@ -23,6 +26,8 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.start.SetGadgetStateRequest;
 import org.eurekastreams.server.domain.Gadget;
 import org.eurekastreams.server.persistence.GadgetMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 
 /**
  * Deletes a Tab, with the ID provided by parameter.
@@ -40,14 +45,23 @@ public class SetGadgetStateExecution implements ExecutionStrategy<PrincipalActio
     private final GadgetMapper gadgetMapper;
 
     /**
+     * Domain mapper to delete keys.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteKeysMapper;
+
+    /**
      * Constructor.
-     *
+     * 
      * @param inGadgetMapper
      *            mapper used to retrieve the Gadget.
+     * @param inDeleteKeysMapper
+     *            mapper to delete cache keys.
      */
-    public SetGadgetStateExecution(final GadgetMapper inGadgetMapper)
+    public SetGadgetStateExecution(final GadgetMapper inGadgetMapper,
+            final DomainMapper<Set<String>, Boolean> inDeleteKeysMapper)
     {
         gadgetMapper = inGadgetMapper;
+        deleteKeysMapper = inDeleteKeysMapper;
     }
 
     /**
@@ -76,6 +90,9 @@ public class SetGadgetStateExecution implements ExecutionStrategy<PrincipalActio
         gadget.setMaximized(currentRequest.isMaximized());
 
         gadgetMapper.flush();
+
+        deleteKeysMapper.execute(Collections.singleton(CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID
+                + inActionContext.getPrincipal().getId()));
 
         return gadget;
     }

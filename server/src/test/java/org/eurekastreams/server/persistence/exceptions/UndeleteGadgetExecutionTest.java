@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.server.persistence.exceptions;
 
+import java.util.Set;
+
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
@@ -22,6 +24,7 @@ import org.eurekastreams.server.action.execution.start.UndeleteGadgetExecution;
 import org.eurekastreams.server.domain.Gadget;
 import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.persistence.TabMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -76,12 +79,17 @@ public class UndeleteGadgetExecutionTest
     private static final long GADGET_ID = 74;
 
     /**
+     * {@link DomainMapper}.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteCacheKeysMapper = context.mock(DomainMapper.class);
+
+    /**
      * Set up the SUT.
      */
     @Before
     public void setup()
     {
-        sut = new UndeleteGadgetExecution(tabMapper);
+        sut = new UndeleteGadgetExecution(tabMapper, deleteCacheKeysMapper);
     }
 
     /**
@@ -98,8 +106,13 @@ public class UndeleteGadgetExecutionTest
         context.checking(new Expectations()
         {
             {
+                allowing(principalMock).getId();
+                will(returnValue(1L));
+
                 oneOf(tabMapper).undeleteGadget(GADGET_ID);
                 will(returnValue(undeletedGadget));
+
+                allowing(deleteCacheKeysMapper).execute(with(any(Set.class)));
             }
         });
         ServiceActionContext currentContext = new ServiceActionContext(new Long(GADGET_ID), principalMock);
@@ -119,6 +132,11 @@ public class UndeleteGadgetExecutionTest
         context.checking(new Expectations()
         {
             {
+                allowing(principalMock).getId();
+                will(returnValue(1L));
+
+                allowing(deleteCacheKeysMapper).execute(with(any(Set.class)));
+
                 oneOf(tabMapper).undeleteGadget(GADGET_ID);
                 will(throwException(new GadgetUndeletionException("Error undeleting", GADGET_ID)));
             }
