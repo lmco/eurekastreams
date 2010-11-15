@@ -16,12 +16,16 @@
 package org.eurekastreams.server.action.execution.start;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Set;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.persistence.TabMapper;
 import org.eurekastreams.server.persistence.exceptions.GadgetUndeletionException;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 
 /**
  * Restores a previously deleted gadget to a tab.
@@ -35,14 +39,22 @@ public class UndeleteGadgetExecution implements ExecutionStrategy<PrincipalActio
     private final TabMapper tabMapper;
 
     /**
+     * Domain mapper to delete keys.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteKeysMapper;
+
+    /**
      * Constructor.
-     *
+     * 
      * @param mapper
      *            to get the Tab that owns the gadget.
+     * @param inDeleteKeysMapper
+     *            mapper to delete cache keys.
      */
-    public UndeleteGadgetExecution(final TabMapper mapper)
+    public UndeleteGadgetExecution(final TabMapper mapper, final DomainMapper<Set<String>, Boolean> inDeleteKeysMapper)
     {
         tabMapper = mapper;
+        deleteKeysMapper = inDeleteKeysMapper;
     }
 
     /**
@@ -55,6 +67,9 @@ public class UndeleteGadgetExecution implements ExecutionStrategy<PrincipalActio
 
         try
         {
+            deleteKeysMapper.execute(Collections.singleton(CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID
+                    + inActionContext.getPrincipal().getId()));
+
             return tabMapper.undeleteGadget(gadgetId);
         }
         catch (GadgetUndeletionException gue)

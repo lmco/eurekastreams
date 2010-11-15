@@ -4,8 +4,13 @@ if (typeof eurekastreams.delegation == "undefined" || !eurekastreams.delegation)
 
 eurekastreams.delegation = function()
 {
+	var currentDelegator = null;
 	var section;
     return{
+	getCurrentDelegator : function()
+	{
+		return this.currentDelegator;
+	},
     	clearDelegate : function()
     	{
         	var params = gadgets.util.getUrlParameters();
@@ -23,6 +28,7 @@ eurekastreams.delegation = function()
     	},
     	displayCurrentDelegator : function(ntid)
     	{
+	    this.currentDelegator = ntid;
             var req = opensocial.newDataRequest();
 
             var friendspec = opensocial.newIdSpec({userId : [ntid], groupId : 'ALL'});
@@ -41,6 +47,8 @@ eurekastreams.delegation = function()
                 		currDel.css("padding","6px");
                 		currDel.css("height","18px");
                 		currDel.css("font-size","13px");
+                		currDel.css("*top","-15px");
+                		currDel.css("*position","relative");
                 		
                 		var clearDelLink = jQuery("<a href='javascript:eurekastreams.delegation.clearDelegate()'>X</a>");
                 		clearDelLink.css("background","url('${build.app.baseurl}/style/images/delegating-for-x.png')");

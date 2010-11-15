@@ -16,6 +16,8 @@
 package org.eurekastreams.server.action.execution.start;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,6 +31,8 @@ import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.domain.TabGroupType;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.TabMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 
 /**
  * Creates and returns a new Tab, with the name provided by parameter.
@@ -45,24 +49,33 @@ public class AddTabExecution implements ExecutionStrategy<PrincipalActionContext
      * The DataMapper that lets us build a new tab.
      */
     private PersonMapper personMapper = null;
-    
+
     /**
      * The TabMapper that lets us query for the newly created tab.
      */
     private TabMapper tabMapper = null;
 
     /**
+     * Domain mapper to delete keys.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteKeysMapper;
+
+    /**
      * Constructor.
      * 
      * @param inPersonMapper
-     *          for looking up the Person who will get the new tab
+     *            for looking up the Person who will get the new tab
      * @param inTabMapper
      *            the TabMapper to insert against
+     * @param inDeleteKeysMapper
+     *            mapper to delete cache keys.
      */
-    public AddTabExecution(final PersonMapper inPersonMapper, final TabMapper inTabMapper)
+    public AddTabExecution(final PersonMapper inPersonMapper, final TabMapper inTabMapper,
+            final DomainMapper<Set<String>, Boolean> inDeleteKeysMapper)
     {
         personMapper = inPersonMapper;
         tabMapper = inTabMapper;
+        deleteKeysMapper = inDeleteKeysMapper;
     }
 
     /**
@@ -74,8 +87,7 @@ public class AddTabExecution implements ExecutionStrategy<PrincipalActionContext
      * @throws ExecutionException
      *             can result from bad arguments, the user not being logged in, or not finding the user in the database
      */
-    public final Serializable execute(final PrincipalActionContext inActionContext)
-	throws ExecutionException 
+    public final Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
         String tabName = (String) inActionContext.getParams();
 
@@ -90,10 +102,12 @@ public class AddTabExecution implements ExecutionStrategy<PrincipalActionContext
         // Tab's new tabIndex
         personMapper.flush();
         personMapper.clear();
-        
+
+        deleteKeysMapper.execute(Collections.singleton(CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID + person.getId()));
+
         if (log.isDebugEnabled())
         {
-        	log.debug("Saved tab for " + person.getDisplayName());
+            log.debug("Saved tab for " + person.getDisplayName());
         }
 
         return tabMapper.findById(tab.getId());

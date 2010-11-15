@@ -10820,6 +10820,8 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 }
 
 .gadgets-gadget-content .gadget-container {
+	clear:both;
+	overflow:hidden;
 	padding: 0;
 }
 

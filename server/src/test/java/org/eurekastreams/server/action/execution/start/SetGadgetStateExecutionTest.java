@@ -17,6 +17,8 @@ package org.eurekastreams.server.action.execution.start;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Set;
+
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
@@ -24,6 +26,7 @@ import org.eurekastreams.server.action.request.start.SetGadgetStateRequest;
 import org.eurekastreams.server.action.request.start.SetGadgetStateRequest.State;
 import org.eurekastreams.server.domain.Gadget;
 import org.eurekastreams.server.persistence.GadgetMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -33,7 +36,7 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link SetGadgetStateExecution} class.
- *
+ * 
  */
 public class SetGadgetStateExecutionTest
 {
@@ -68,17 +71,22 @@ public class SetGadgetStateExecutionTest
     private Principal principalMock = context.mock(Principal.class);
 
     /**
+     * {@link DomainMapper}.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteCacheKeysMapper = context.mock(DomainMapper.class);
+
+    /**
      * Prepare the sut.
      */
     @Before
     public void setup()
     {
-        sut = new SetGadgetStateExecution(gadgetMapper);
+        sut = new SetGadgetStateExecution(gadgetMapper, deleteCacheKeysMapper);
     }
 
     /**
      * Call the action and make sure it does the minimize and returns the right tab.
-     *
+     * 
      * @throws Exception
      *             should not be thrown
      */
@@ -90,6 +98,11 @@ public class SetGadgetStateExecutionTest
         context.checking(new Expectations()
         {
             {
+                allowing(principalMock).getId();
+                will(returnValue(1L));
+
+                allowing(deleteCacheKeysMapper).execute(with(any(Set.class)));
+
                 oneOf(gadgetMapper).findById(GADGET_ID1);
                 will(returnValue(expected));
 
@@ -100,8 +113,7 @@ public class SetGadgetStateExecutionTest
             }
         });
 
-        SetGadgetStateRequest currentRequest = new SetGadgetStateRequest(GADGET_ID1,
-                State.MINIMIZED);
+        SetGadgetStateRequest currentRequest = new SetGadgetStateRequest(GADGET_ID1, State.MINIMIZED);
         ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
         Gadget actual = sut.execute(currentContext);
 
@@ -110,7 +122,7 @@ public class SetGadgetStateExecutionTest
 
     /**
      * If the GadgetId doesn't belong to the tab, we won't minimize it. In that case, throw an exception.
-     *
+     * 
      * @throws Exception
      *             expecting a GadgetMinimizationException
      */
@@ -128,8 +140,7 @@ public class SetGadgetStateExecutionTest
             }
         });
 
-        SetGadgetStateRequest currentRequest = new SetGadgetStateRequest(noSuchGadgetId,
-                State.MINIMIZED);
+        SetGadgetStateRequest currentRequest = new SetGadgetStateRequest(noSuchGadgetId, State.MINIMIZED);
         ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
         sut.execute(currentContext);
     }

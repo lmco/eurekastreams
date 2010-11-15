@@ -20,6 +20,7 @@ import static junit.framework.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
@@ -29,6 +30,7 @@ import org.eurekastreams.server.domain.TabGroup;
 import org.eurekastreams.server.domain.TabGroupType;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.TabMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -88,6 +90,11 @@ public class AddTabExecutionTest
     private TabGroup page = context.mock(TabGroup.class);
 
     /**
+     * {@link DomainMapper}.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteCacheKeysMapper = context.mock(DomainMapper.class);
+
+    /**
      * Subject under test.
      */
     private AddTabExecution sut = null;
@@ -103,7 +110,7 @@ public class AddTabExecutionTest
     @Before
     public final void setup()
     {
-        sut = new AddTabExecution(personMapper, tabMapper);
+        sut = new AddTabExecution(personMapper, tabMapper, deleteCacheKeysMapper);
     }
 
     /**
@@ -133,6 +140,9 @@ public class AddTabExecutionTest
 
                 oneOf(person).addTab(with(any(Tab.class)), with(TabGroupType.START));
 
+                allowing(person).getId();
+                will(returnValue(1L));
+
                 one(personMapper).clear();
 
                 oneOf(personMapper).flush();
@@ -142,6 +152,8 @@ public class AddTabExecutionTest
 
                 one(tabMapper).findById(with(any(long.class)));
                 will(returnValue(tab));
+
+                allowing(deleteCacheKeysMapper).execute(with(any(Set.class)));
             }
         });
 
