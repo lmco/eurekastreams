@@ -270,15 +270,6 @@
         <constructor-arg value="true" />
     </bean> 
     
-    <bean id="getPersonPagePropertiesById" class="org.eurekastreams.server.persistence.mappers.cache.GetPersonPagePropertiesById">
-        <constructor-arg ref="findByIdMapper" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.cache.PersonToPersonPagePropertiesTransformer"/>
-        </constructor-arg>
-        <constructor-arg ref="cssBuilderDecorator" />
-        <property name="cache" ref="memcachedCache" />
-    </bean>
-    
     <bean id="getPersonPageProperties" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy"/>
@@ -289,6 +280,43 @@
         </constructor-arg>        
         <constructor-arg value="true" />
     </bean>    
+    
+    <bean id="getPersonPagePropertiesById" class="org.eurekastreams.server.persistence.mappers.cache.GetPersonPagePropertiesById">
+        <constructor-arg ref="findByIdMapper" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.PersonToPersonPagePropertiesTransformer"/>
+        </constructor-arg>
+        <constructor-arg ref="cssBuilderDecorator" />
+        <property name="cache" ref="memcachedCache" />
+    </bean>       
+    
+    <bean id="queuePersonCacheWarmingTasks" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.QueueKeyBasedTasksExecution">
+                <constructor-arg>
+                    <list>
+                        <value>cachePersonPageProperties</value>
+                    </list>
+                </constructor-arg>
+                <constructor-arg ref="getPersonIds" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="true" />
+    </bean>  
+    
+    <bean id="cachePersonPageProperties" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="getPersonPagePropertiesById" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="false" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean> 
     
     <bean id="setPersonTheme" class="org.eurekastreams.commons.actions.service.ServiceAction">
 		<!-- fields: "themeId" (uuid or url)  -->

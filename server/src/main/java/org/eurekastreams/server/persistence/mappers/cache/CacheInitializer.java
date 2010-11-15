@@ -35,7 +35,7 @@ public class CacheInitializer
 
     /**
      * Wires entity cache updaters to their domain entities.
-     *
+     * 
      * @param inDomainGroupCacheLoader
      *            the domain group cache loader
      * @param inOrgHierarchyCacheLoader
@@ -60,7 +60,7 @@ public class CacheInitializer
 
     /**
      * Submits async job to warm cache.
-     *
+     * 
      * @param inActionSubmitter
      *            the async action submitter
      */
@@ -80,6 +80,9 @@ public class CacheInitializer
             // happens once and not on each node.
             // ******************
             inActionSubmitter.handleTask(new UserActionRequest("initializeCache", null, null));
+
+            // this is for cache warming PersonPageProperties objects
+            inActionSubmitter.handleTask(new UserActionRequest("queuePersonCacheWarmingTasks", null, null));
         }
         catch (Exception ex)
         {

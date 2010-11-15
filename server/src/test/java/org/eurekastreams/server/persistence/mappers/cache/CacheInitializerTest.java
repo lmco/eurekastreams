@@ -72,7 +72,7 @@ public class CacheInitializerTest
 
     /**
      * Tests cache initialization.
-     *
+     * 
      * @throws Exception
      *             on error.
      */
@@ -84,7 +84,7 @@ public class CacheInitializerTest
         context.checking(new Expectations()
         {
             {
-                one(submitter).handleTask(with(any(UserActionRequest.class)));
+                exactly(2).of(submitter).handleTask(with(any(UserActionRequest.class)));
             }
         });
 
