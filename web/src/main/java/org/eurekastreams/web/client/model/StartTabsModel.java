@@ -18,14 +18,13 @@ package org.eurekastreams.web.client.model;
 import org.eurekastreams.server.action.request.start.RenameTabRequest;
 import org.eurekastreams.server.action.request.start.SetTabLayoutRequest;
 import org.eurekastreams.server.action.request.start.SetTabOrderRequest;
+import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.Tab;
-import org.eurekastreams.server.search.modelview.PersonPagePropertiesDTO;
 import org.eurekastreams.web.client.events.data.DeletedStartPageTabResponseEvent;
 import org.eurekastreams.web.client.events.data.GotStartPageTabsResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedStartTabResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedStartPageLayoutResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedStartPageTabNameResponseEvent;
-import org.eurekastreams.web.client.model.requests.PersonPagePropertiesDTOToPersonTransformer;
 import org.eurekastreams.web.client.ui.Session;
 
 /**
@@ -56,14 +55,12 @@ public class StartTabsModel extends BaseModel implements Fetchable<String>, Inse
      */
     public void fetch(final String request, final boolean useClientCacheIfAvailable)
     {
-        super.callReadAction("getPersonPageProperties", request, new OnSuccessCommand<PersonPagePropertiesDTO>()
+        super.callReadAction("getPerson", request, new OnSuccessCommand<Person>()
         {
-            public void onSuccess(final PersonPagePropertiesDTO response)
+            public void onSuccess(final Person response)
             {
-                PersonPagePropertiesDTOToPersonTransformer transformer =
-                    new PersonPagePropertiesDTOToPersonTransformer();
                 Session.getInstance().getEventBus().notifyObservers(
-                        new GotStartPageTabsResponseEvent(transformer.transform(response)));
+                        new GotStartPageTabsResponseEvent(response));
             }
         }, useClientCacheIfAvailable);
     }
