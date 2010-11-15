@@ -679,6 +679,11 @@
 		<constructor-arg ref="bulkActivitiesMapper"/>
 	</bean>
 	
+	<bean id="getPersonIds" class="org.eurekastreams.server.persistence.mappers.db.GetSerializableField" >
+        <constructor-arg value="Person"/>
+        <constructor-arg value="id"/>        
+    </bean>
+	
 	<bean id="updateNotificationsOnNameChangeMapper" class="org.eurekastreams.server.persistence.mappers.db.UpdateNotificationsOnNameChangeMapper" />
 	
 	<bean id="deleteStreamViewAndRelatedSearches" class="org.eurekastreams.server.persistence.mappers.stream.DeleteStreamViewAndRelatedSearches" />

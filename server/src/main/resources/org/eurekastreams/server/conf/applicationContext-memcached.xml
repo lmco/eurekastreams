@@ -6,8 +6,27 @@
       http://www.springframework.org/schema/tx
       http://www.springframework.org/schema/tx/spring-tx.xsd">
 
+      <bean id="MemcachedConnectionFactoryBuilder" class="net.spy.memcached.ConnectionFactoryBuilder" />
+
+      <bean id="MemcachedConnectionFactoryBuilderTimeoutSet" 
+            class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+            <property name="targetObject"><ref local="MemcachedConnectionFactoryBuilder" /></property>
+            <property name="targetMethod" value="setOpTimeout" />
+            <property name="arguments">
+                 <list>
+                      <value>${eureka.cache.memcache.operationtimeout}</value>
+                 </list>
+            </property>
+      </bean>
+
+        <bean id="MemcachedConnectionFactory" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+            <property name="targetObject"><ref local="MemcachedConnectionFactoryBuilderTimeoutSet" /></property>
+            <property name="targetMethod" value="build" />
+        </bean>
+
     <!-- Memcached setup -->
     <bean id="memcachedClient" class="net.spy.memcached.MemcachedClient">
+        <constructor-arg ref="MemcachedConnectionFactory" />
         <constructor-arg>
             <bean class="net.spy.memcached.AddrUtil" factory-method="getAddresses">
                 <constructor-arg type="java.lang.String" value="${eureka.cache.memcacche.connstr}" />
@@ -15,6 +34,7 @@
         </constructor-arg>
     </bean>
     <bean id="memcachedClient-domainGroupCacheLoader" class="net.spy.memcached.MemcachedClient">
+        <constructor-arg ref="MemcachedConnectionFactory" />
         <constructor-arg>
             <bean class="net.spy.memcached.AddrUtil" factory-method="getAddresses">
                 <constructor-arg type="java.lang.String" value="${eureka.cache.memcacche.connstr}" />
@@ -22,6 +42,7 @@
         </constructor-arg>
     </bean>
     <bean id="memcachedClient-organizationCacheLoader" class="net.spy.memcached.MemcachedClient">
+        <constructor-arg ref="MemcachedConnectionFactory" />
         <constructor-arg>
             <bean class="net.spy.memcached.AddrUtil" factory-method="getAddresses">
                 <constructor-arg type="java.lang.String" value="${eureka.cache.memcacche.connstr}" />
@@ -29,6 +50,7 @@
         </constructor-arg>
     </bean>        
     <bean id="memcachedClient-personCacheLoader" class="net.spy.memcached.MemcachedClient">
+        <constructor-arg ref="MemcachedConnectionFactory" />
         <constructor-arg>
             <bean class="net.spy.memcached.AddrUtil" factory-method="getAddresses">
                 <constructor-arg type="java.lang.String" value="${eureka.cache.memcacche.connstr}" />
@@ -36,6 +58,7 @@
         </constructor-arg>
     </bean>    
     <bean id="memcachedClient-streamCacheLoader" class="net.spy.memcached.MemcachedClient">
+        <constructor-arg ref="MemcachedConnectionFactory" />
         <constructor-arg>
             <bean class="net.spy.memcached.AddrUtil" factory-method="getAddresses">
                 <constructor-arg type="java.lang.String" value="${eureka.cache.memcacche.connstr}" />
