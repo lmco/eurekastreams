@@ -47,6 +47,8 @@ eurekastreams.delegation = function()
                 		currDel.css("padding","6px");
                 		currDel.css("height","18px");
                 		currDel.css("font-size","13px");
+                		currDel.css("*top","-15px");
+                		currDel.css("*position","relative");
                 		
                 		var clearDelLink = jQuery("<a href='javascript:eurekastreams.delegation.clearDelegate()'>X</a>");
                 		clearDelLink.css("background","url('${build.app.baseurl}/style/images/delegating-for-x.png')");
