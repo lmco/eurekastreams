@@ -15,7 +15,9 @@
  */
 package org.eurekastreams.server.persistence.mappers.cache;
 
+import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
@@ -31,6 +33,11 @@ import org.eurekastreams.server.service.actions.strategies.PersonDecorator;
 public class GetPersonPagePropertiesById extends CachedDomainMapper implements
         DomainMapper<Long, PersonPagePropertiesDTO>
 {
+    /**
+     * Logger.
+     */
+    private Log log = LogFactory.make();
+
     /**
      * Transformer to convert person to PersonPageProperties.
      */
@@ -94,6 +101,7 @@ public class GetPersonPagePropertiesById extends CachedDomainMapper implements
      */
     private PersonPagePropertiesDTO setInCache(final PersonPagePropertiesDTO inPersonPageProperties, final Long inId)
     {
+        log.debug("Setting " + CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID + inId + " in cache.");
         getCache().set(CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID + inId, inPersonPageProperties);
         return inPersonPageProperties;
     }
@@ -108,6 +116,7 @@ public class GetPersonPagePropertiesById extends CachedDomainMapper implements
     // TODO: This could be optimized further.
     private PersonPagePropertiesDTO getPersonPagePropertiesFromDb(final Long inId)
     {
+        log.debug("Unable to locate " + CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID + inId + " in cache, going to DB");
         Person p = personByIdMapper.execute(new FindByIdRequest("Person", inId));
 
         // TODO: This doesn't seem like a great place to hit filesystem, but added to prevent regression.
