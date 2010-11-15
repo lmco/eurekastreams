@@ -27,7 +27,6 @@ import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.strategies.PersonQueryStrategy;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
 /**
@@ -124,21 +123,7 @@ public class GetPeopleByIds extends CachedDomainMapper implements DomainMapper<L
             Map<String, PersonModelView> itemMap = new HashMap<String, PersonModelView>();
             Criteria criteria = personQueryStrategy.getCriteria(getHibernateSession());
 
-            // Creates the necessary "OR" clauses to get all uncached items
-            Criterion restriction = null;
-            for (int i = 0; i < uncachedItemKeys.size(); i++)
-            {
-                long key = uncachedItemKeys.get(i);
-                if (restriction == null)
-                {
-                    restriction = Restrictions.eq("this.id", key);
-                }
-                else
-                {
-                    restriction = Restrictions.or(Restrictions.eq("this.id", key), restriction);
-                }
-            }
-            criteria.add(restriction);
+            criteria.add(Restrictions.in("this.id", uncachedItemKeys));
 
             // get all of the related organization ids for all of the people
             Map<Long, List<Long>> relatedOrgs = getRelatedOrganizationIdsByPersonIdMapper.execute(uncachedItemKeys);
