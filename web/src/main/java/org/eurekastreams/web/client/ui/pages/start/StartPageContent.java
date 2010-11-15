@@ -167,10 +167,16 @@ public class StartPageContent extends FlowPanel
 
                         // Fetch all the gadget def metadata in 1 request.
                         List<GadgetDefinition> gadgetDefList = new ArrayList<GadgetDefinition>();
+                        List<Long> gadgetDefIds = new ArrayList<Long>();
                         for (GadgetDefinition gDef : gadgetDefs)
                         {
-                            gadgetDefList.add(gDef);
+                            if (!gadgetDefIds.contains(gDef.getId()))
+                            {
+                                gadgetDefList.add(gDef);
+                                gadgetDefIds.add(gDef.getId());
+                            }
                         }
+
                         GadgetMetaDataFetcher fetcher = new GadgetMetaDataFetcher(gadgetDefList);
                         fetcher.fetchMetaData();
 
