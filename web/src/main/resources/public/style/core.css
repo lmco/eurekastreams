@@ -13626,7 +13626,7 @@ div.tab-container table.dragdrop-dropTarget-engage {
 	zoom: 1;
 }
 
-.gadget-zone.maximized .gadget-button.gadget-minimize,.gadget-zone.maximized .gadget-button.gadget-refresh,.gadget-zone.maximized .gadget-button.gadget-edit,.gadget-zone.maximized .gadget-button.gadget-close
+.gadget-zone.maximized .gadget-button.gadget-help, .gadget-zone.maximized .gadget-button.gadget-minimize,.gadget-zone.maximized .gadget-button.gadget-refresh,.gadget-zone.maximized .gadget-button.gadget-edit,.gadget-zone.maximized .gadget-button.gadget-close
 	{
 	display: none;
 }
