@@ -65,11 +65,5 @@ public class RemovePersonFromCacheMapper extends CachedDomainMapper
             log.info("StreamScope for person with id: " + inPerson.getId() + ", stream scope id: "
                     + personScope.getId() + " deleted from cache.");
         }
-
-        if (log.isInfoEnabled())
-        {
-            log.info("Clearing out PersonPagePropertiesDTO from cache for" + inPerson.getAccountId());
-        }
-        getCache().delete(CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID + inPerson.getId());
     }
 }

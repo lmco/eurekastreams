@@ -70,7 +70,6 @@ public class RemovePersonFromCacheMapperTest
                 oneOf(cache).delete(CacheKeys.COMPOSITE_STREAM_IDS_BY_PERSON_ID + personId);
                 oneOf(cache).delete(CacheKeys.COMPOSITE_STREAM_SEARCH_IDS_BY_PERSON_ID + personId);
                 oneOf(cache).delete(CacheKeys.STREAM_BY_ID + scopeId);
-                oneOf(cache).delete(CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID + personId);
             }
         });
 
@@ -78,6 +77,7 @@ public class RemovePersonFromCacheMapperTest
         sut.setCache(cache);
 
         sut.execute(person);
-    }
 
+        context.assertIsSatisfied();
+    }
 }
