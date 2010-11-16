@@ -135,8 +135,9 @@
 	<bean id="getOrgCoordinatorIdsFromDB" 
 		class="org.eurekastreams.server.persistence.mappers.db.GetOrgCoordinatorIds"/>
 		
-    <bean id="getTutorialVideosFromDB" 
-        class="org.eurekastreams.server.persistence.mappers.db.GetTutorialVideos"/>
+    <bean id="getTutorialVideosFromDB" class="org.eurekastreams.server.persistence.mappers.db.GetTutorialVideos">
+        <property name="cache" ref="testCache" />
+    </bean>
         
     <bean id="getPrivateGroupIdsUnderOrganizationsFromDB" 
     	class="org.eurekastreams.server.persistence.mappers.db.GetPrivateGroupIdsUnderOrganizations"/>

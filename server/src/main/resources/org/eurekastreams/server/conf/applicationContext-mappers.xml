@@ -146,9 +146,8 @@
 		</constructor-arg>
 	</bean>
 	
-	<bean id="getTutorialVideos"
-        class="org.eurekastreams.server.persistence.mappers.db.GetTutorialVideos">
-        <property name="queryOptimizer" ref="queryOptimizer" />
+	<bean id="getTutorialVideos" class="org.eurekastreams.server.persistence.mappers.db.GetTutorialVideos">
+        <property name="cache" ref="memcachedCache" />
     </bean>
 
 	<bean id="getFollowedStreamViewByUser"

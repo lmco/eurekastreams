@@ -223,4 +223,9 @@ public final class CacheKeys
      * Key for PersonPageProperties by id.
      */
     public static final String PERSON_PAGE_PROPERTIES_BY_ID = "PagePropsById:";
+
+    /**
+     * Key for tutorial vids set.
+     */
+    public static final String TUTORIAL_VIDS = "TutorialVids:";
 }

@@ -21,14 +21,14 @@ import java.util.HashSet;
 
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.TutorialVideoDTO;
-import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.persistence.mappers.stream.CachedMapperTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Test fixture for GetTutorialVideos.
  */
-public class GetTutorialVideosTest extends MapperTest
+public class GetTutorialVideosTest extends CachedMapperTest
 {
     /**
      * System under test.
