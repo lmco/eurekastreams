@@ -178,6 +178,7 @@ eurekastreams.Gadget.prototype.handleCancelUserPrefs = function() {
    * with the random number attached.  This is a combination of experimentation with the browser.
    */
 eurekastreams.Gadget.prototype.refresh = function() {
+    /*
     this.userPrefsDialogContentLoaded = false; 
     document.getElementById('gadgetContent_' + this.getIframeId()).style.display = 'none';
     document.getElementById('gadgetContentLoading_' + this.getIframeId()).style.display = 'inline-block';
@@ -188,6 +189,8 @@ eurekastreams.Gadget.prototype.refresh = function() {
     var iframeUrl = this.getIframeUrl().replace(/'/g, "\\'");
     var statement = "document.getElementById('" + this.getIframeId() + "').src = '" + iframeUrl + "&r=" + Math.floor(Math.random()*11) + "';";
     setTimeout(statement, 1000);
+    */
+    eurekastreams.util.refreshGadgetIFrameUrl(this, null);
   };
 
 /**
