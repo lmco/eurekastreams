@@ -12,7 +12,7 @@
         <property name="url" value="${eureka.db.connstr}/${eureka.db.dbname}" />
         <property name="username" value="${eureka.db.username}" />
         <property name="password" value="${eureka.db.password}" />
-        <property name="maxActive" value="${eureka.db.maxactive}") />
+        <property name="maxActive" value="${eureka.db.maxactive}" />
     </bean>
 
 	<bean id="queryOptimizer" class="org.eurekastreams.commons.hibernate.QueryOptimizer" />
