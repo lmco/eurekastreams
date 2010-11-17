@@ -516,7 +516,9 @@ public class GadgetPanel extends FlowPanel
     {
         State previousGadgetState = gadgetState;
         gadgetState = state;
-
+        //Hide user preferences if it is shown for any reason while changing state.
+        gadgetRenderer.hidePreferences(gadgetIdModifier.toString());
+        
         switch (state)
         {
         case HELP:
