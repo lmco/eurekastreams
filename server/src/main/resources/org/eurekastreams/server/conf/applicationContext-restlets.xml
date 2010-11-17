@@ -235,9 +235,8 @@
 	</bean>	
     
     <bean name="personPropertiesResource" class="org.eurekastreams.server.service.restlets.PersonPropertiesResource" scope="prototype">
-        <constructor-arg ref="getPersonModelViewsByIds" />
         <constructor-arg ref="serviceActionController" />
-        <constructor-arg ref="getAllPersonIds" />
+        <constructor-arg ref="getAllPersonAdditionalProperties" />
     </bean>
 
 	<!-- The router maps URLs to resources. -->

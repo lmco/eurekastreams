@@ -16,24 +16,29 @@
 package org.eurekastreams.server.persistence.mappers.db;
 
 import java.util.List;
+import java.util.Map;
 
 import org.eurekastreams.server.persistence.mappers.ReadMapper;
 
 /**
- * Mapper to retrieve all of the person ids from the db.
- *
+ * This mapper just retrieves all People with accountId and additionalProperties populated from the db.
+ * 
  */
-public class GetAllPersonIds extends ReadMapper<Object, List<Long>>
+public class GetAllPersonAdditionalProperties extends ReadMapper<Object, List<Map<String, Object>>>
 {
+
     /**
-     * Return all of the ids for the people in the db.
-     * {@inheritDoc}.
+     * Return all of the Person objects in the db with only accountId, and additionalProperties populated. 
+     * {@inheritDoc}
+     * .
      */
     @SuppressWarnings("unchecked")
     @Override
-    public List<Long> execute(final Object inRequest)
+    public List<Map<String, Object>> execute(final Object inRequest)
     {
-        return getEntityManager().createQuery("select id from Person")
-                .getResultList();
+        return (List<Map<String, Object>>) getEntityManager().createQuery(
+                "select new map(p.accountId as accountId, "
+                        + "p.additionalProperties as additionalProperties) from Person p").getResultList();
     }
+
 }

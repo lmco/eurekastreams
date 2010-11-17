@@ -1132,5 +1132,7 @@
 	
 	<bean id="updatePersonMapper" class="org.eurekastreams.server.persistence.mappers.db.UpdatePersonMapper" />
     
+    <bean id="getPersonAdditionalProperties" class="org.eurekastreams.server.persistence.mappers.db.GetAllPersonAdditionalProperties" />
+    
     <bean id="getPersonIds" class="org.eurekastreams.server.persistence.mappers.db.GetAllPersonIds" />
 </beans>
