@@ -141,7 +141,8 @@ eurekastreams.delegation = function()
              
 
                 section = ex.addSection("Delegation", container, false);
-                section.hide();
+                section.addClass("delegation");
+		section.hide();
                 
         },
         refreshDelegates : function()

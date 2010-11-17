@@ -520,8 +520,11 @@ public class GadgetPanel extends FlowPanel
         switch (state)
         {
         case HELP:
-            gadgetRenderer.changeContainerView("help");
-            gadgetRenderer.refreshGadgetIFrameUrl(gadgetIdModifier.toString(), viewParams);
+            if (previousGadgetState != State.HELP)
+            {
+                gadgetRenderer.changeContainerView("help");
+                gadgetRenderer.refreshGadgetIFrameUrl(gadgetIdModifier.toString(), viewParams);
+            }
             break;
         case NORMAL:
             RootPanel.get().removeStyleName("maximized-gadget");

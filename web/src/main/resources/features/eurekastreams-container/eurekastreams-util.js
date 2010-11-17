@@ -52,6 +52,8 @@ eurekastreams.util.sendRequestToServer = function(
   };
 
   eurekastreams.util.refreshGadgetIFrameUrl = function(gadget, opt_viewParams) {
+      //Old and Busted
+      /*
       document.getElementById('gadgetContent_' + gadget.getIframeId()).style.display = 'none';
       document.getElementById('gadgetContentLoading_' + gadget.getIframeId()).style.display = 'inline-block';
       gadget.viewParams = opt_viewParams;
@@ -59,4 +61,21 @@ eurekastreams.util.sendRequestToServer = function(
       gadgets.rpc.setRelayUrl(iframeId, gadget.serverBase_ + gadget.rpcRelay);
       gadgets.rpc.setAuthToken(iframeId, gadget.rpcToken, false);
       document.getElementById(iframeId).src = gadget.getIframeUrl();
+      */
+      
+      //New Hotness
+      if(opt_viewParams != null)
+      {
+          gadget.viewParams = opt_viewParams;
+      }
+      gadget.userPrefsDialogContentLoaded = false; 
+      document.getElementById('gadgetContent_' + gadget.getIframeId()).style.display = 'none';
+      document.getElementById('gadgetContentLoading_' + gadget.getIframeId()).style.display = 'inline-block';
+      document.getElementById(gadget.getIframeId()).src = 'about:blank';
+      gadgets.rpc.setRelayUrl(gadget.getIframeId(), gadget.getServerBase() + gadget.rpcRelay);
+      gadgets.rpc.setAuthToken(gadget.getIframeId(), gadget.rpcToken, false);
+
+      var iframeUrl = gadget.getIframeUrl().replace(/'/g, "\\'");
+      var statement = "document.getElementById('" + gadget.getIframeId() + "').src = '" + iframeUrl + "&r=" + Math.floor(Math.random()*11) + "';";
+      setTimeout(statement, 1000);
   };

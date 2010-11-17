@@ -55,7 +55,7 @@ eurekastreams.delegation.container = function()
 		delegates[moduleId] = [];
                 if (dataFromServer != null && dataFromServer.length > 0)
                 {
-                	gwt_bulkGetPeople(dataFromServer, function(data) { delegates[moduleId] = data; });
+                        gwt_bulkGetPeople(dataFromServer, function(data) { delegates[moduleId] = data; });
                 }
         },
         spinOnUserAction : function(moduleId)
