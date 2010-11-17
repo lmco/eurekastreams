@@ -504,8 +504,9 @@ public class ApplicationEntryPoint implements EntryPoint
                 eb.@org.eurekastreams.web.client.events.EventBus::notifyObservers(Ljava/lang/Object;)(notificationEvent);
         }
 
-        $wnd.jQuery($doc).ready(function() {
-                $wnd.jQuery().mousemove(function(e) {
+
+        $wnd.jQuery('body').ready(function() {
+                $wnd.jQuery('body').mousemove(function(e) {
                    $wnd.mouseXpos = e.pageX;
                    $wnd.mouseYpos = e.pageY;
                 });
