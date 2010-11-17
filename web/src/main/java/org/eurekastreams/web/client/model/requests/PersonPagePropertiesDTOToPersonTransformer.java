@@ -70,6 +70,8 @@ public class PersonPagePropertiesDTOToPersonTransformer
                         gadgetDTO.getGadgetUserPref());
                 gadget.setId(gadgetDTO.getId());
                 gadgets.add(gadget);
+                gadget.setMinimized(gadgetDTO.isMinimized());
+                gadget.setMaximized(gadgetDTO.isMaximized());
             }
 
             tab.setGadgets(gadgets);
