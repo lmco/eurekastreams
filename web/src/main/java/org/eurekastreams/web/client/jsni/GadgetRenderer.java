@@ -152,6 +152,15 @@ public class GadgetRenderer
     }-*/;
 
     /**
+     * Calls the default hide Preference method provided by shindig.
+     * @param moduleID - id of the gadget instance to hide the preferences on.
+     */
+    public native void hidePreferences(final String moduleID)
+    /*-{
+        $wnd.shindig.container.getGadget(moduleID).hideUserPrefsDialog();
+     }-*/;    
+    
+    /**
      * JSNI method to call the containers refresh on a gadget.
      *
      * @param moduleID
