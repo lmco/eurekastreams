@@ -2068,4 +2068,7 @@
 		
 	<bean id="getReadOnlyStreamsDbMapper"
 		class="org.eurekastreams.server.persistence.mappers.db.GetReadOnlyStreamsDbMapper" />
+    
+    <bean id="getPersonAdditionalProperties" class="org.eurekastreams.server.persistence.mappers.db.GetAllPersonAdditionalProperties" />
+    
 </beans>

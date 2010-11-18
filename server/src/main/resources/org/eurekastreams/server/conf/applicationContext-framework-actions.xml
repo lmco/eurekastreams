@@ -4127,32 +4127,17 @@
         class="org.eurekastreams.server.service.actions.strategies.directory.SearchResultAdditionalPropertyPopulator">
         <constructor-arg ref="fieldMatchDeterminer" />
     </bean>
- 
-     <bean id="getAllPersonIds" class="org.eurekastreams.commons.actions.service.ServiceAction">
+     <bean id="getAllPersonAdditionalProperties" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
-                <constructor-arg ref="getPersonIds" />
+                <constructor-arg ref="getPersonAdditionalProperties" />
                 <!-- put id in list before calling mapper. -->    
                 <constructor-arg value="false" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
-    </bean>     
-    
-    <bean id="getPersonModelViewsByIds" class="org.eurekastreams.commons.actions.service.ServiceAction">
-        <constructor-arg ref="noValidationStrategy" />
-        <constructor-arg ref="noAuthorizationStrategy" />
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
-                <constructor-arg ref="getPersonsByIdsMapper" />
-                <!-- put id in list before calling mapper. -->    
-                <constructor-arg value="false" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg value="true" />
-    </bean>
-    
+    </bean>         
 </beans>
  
