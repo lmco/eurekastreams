@@ -67,7 +67,7 @@ public class PersonPropertiesResource extends SmpResource
      * @param inGetAllPersonAdditionalPropertiesAction
      *            - instance of the action used to retreive all of the db ids for the users in the db.
      */
-    public PersonPropertiesResource(final ServiceActionController inServiceActionController,
+    public PersonPropertiesResource(final ActionController inServiceActionController,
             final ServiceAction inGetAllPersonAdditionalPropertiesAction)
     {
         serviceActionController = inServiceActionController;
