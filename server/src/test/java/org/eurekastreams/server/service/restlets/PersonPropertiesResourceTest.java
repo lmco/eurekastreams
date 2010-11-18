@@ -22,13 +22,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.sf.json.JSONObject;
 
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.server.service.ServiceActionController;
-import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -59,12 +59,7 @@ public class PersonPropertiesResourceTest
     /**
      * Action.
      */
-    private ServiceAction getPersonIdsAction = context.mock(ServiceAction.class, "getPersonIdsAction");
-
-    /**
-     * Action.
-     */
-    private ServiceAction getPersonModelViewsAction = context.mock(ServiceAction.class, "getPersonModelViewsAction");
+    private ServiceAction getPersonAdditionalPropertiesAction = context.mock(ServiceAction.class);
 
     /**
      * Service Action Controller.
@@ -72,14 +67,9 @@ public class PersonPropertiesResourceTest
     private ServiceActionController serviceActionController = context.mock(ServiceActionController.class);
 
     /**
-     * Lost of long ids for the users in the db.
+     * List of the person objects from the db.
      */
-    private List<Long> userIds;
-
-    /**
-     * List of the person model views matching the ids passed in.
-     */
-    private List<PersonModelView> personModelViews;
+    private List<Map<String, Object>> personObjects;
 
     /**
      * System under test.
@@ -92,30 +82,26 @@ public class PersonPropertiesResourceTest
     @Before
     public void setup()
     {
-        sut = new PersonPropertiesResource(getPersonModelViewsAction, serviceActionController, getPersonIdsAction);
+        sut = new PersonPropertiesResource(serviceActionController, getPersonAdditionalPropertiesAction);
 
-        userIds = new ArrayList<Long>();
-        userIds.add(1L);
-        userIds.add(2L);
-
-        personModelViews = new ArrayList<PersonModelView>();
-        PersonModelView user1 = new PersonModelView();
-        user1.setAccountId("testaccountid1");
+        personObjects = new ArrayList<Map<String, Object>>();
+        Map<String, Object> user1 = new HashMap<String, Object>();
         HashMap<String, String> addlPropertiesUser1 = new HashMap<String, String>();
         addlPropertiesUser1.put("property1", "value1");
         addlPropertiesUser1.put("property2", "value2");
         addlPropertiesUser1.put("property3", "value3");
-        user1.setAdditionalProperties(addlPropertiesUser1);
-        personModelViews.add(user1);
+        user1.put("accountId", "testaccountid1");
+        user1.put("additionalProperties", addlPropertiesUser1);
+        personObjects.add(user1);
 
-        PersonModelView user2 = new PersonModelView();
-        user1.setAccountId("testaccountid2");
+        Map<String, Object> user2 = new HashMap<String, Object>();
         HashMap<String, String> addlPropertiesUser2 = new HashMap<String, String>();
         addlPropertiesUser2.put("property1", "value1");
         addlPropertiesUser2.put("property2", "value2");
         addlPropertiesUser2.put("property3", "value3");
-        user1.setAdditionalProperties(addlPropertiesUser2);
-        personModelViews.add(user2);
+        user2.put("accountId", "testaccountid2");
+        user2.put("additionalProperties", addlPropertiesUser2);
+        personObjects.add(user2);
     }
 
     /**
@@ -132,12 +118,8 @@ public class PersonPropertiesResourceTest
         {
             {
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)),
-                        with(equal(getPersonIdsAction)));
-                will(returnValue(userIds));
-
-                oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)),
-                        with(equal(getPersonModelViewsAction)));
-                will(returnValue(personModelViews));
+                        with(equal(getPersonAdditionalPropertiesAction)));
+                will(returnValue(personObjects));
             }
         });
 
@@ -148,7 +130,7 @@ public class PersonPropertiesResourceTest
 
         assertTrue(responseJs.containsKey("personProperties"));
         assertEquals(2, responseJs.getJSONArray("personProperties").size());
-        assertEquals("testaccountid2", responseJs.getJSONArray("personProperties").getJSONObject(0).getString(
+        assertEquals("testaccountid1", responseJs.getJSONArray("personProperties").getJSONObject(0).getString(
                 "accountId"));
         assertEquals("value1", responseJs.getJSONArray("personProperties").getJSONObject(0).getString("property1"));
         assertEquals(4, responseJs.getJSONArray("personProperties").getJSONObject(0).keySet().size());
@@ -166,12 +148,9 @@ public class PersonPropertiesResourceTest
         context.checking(new Expectations()
         {
             {
-                oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)),
-                        with(equal(getPersonIdsAction)));
-                will(returnValue(userIds));
 
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)),
-                        with(equal(getPersonModelViewsAction)));
+                        with(equal(getPersonAdditionalPropertiesAction)));
                 will(throwException(new Exception()));
             }
         });

@@ -17,6 +17,11 @@ eurekastreams.core = function() {
             return gadgets.util.getUrlParameters()['mid'];
         },
         
+        refreshCurrentGadget : function()
+        {
+        	gadgets.rpc.call(null, "refreshCurrentGadget");
+        },
+        
         //This method tests a json dataset to see if it is empty.
         emptyHash: function(hash)
         {

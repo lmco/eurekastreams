@@ -18,6 +18,7 @@ package org.eurekastreams.server.service.restlets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import net.sf.json.JSONArray;
@@ -28,7 +29,6 @@ import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.service.ActionController;
-import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Status;
@@ -50,37 +50,28 @@ public class PersonPropertiesResource extends SmpResource
     private final Log logger = LogFactory.make();
 
     /**
-     * Action used to retrieve all of the PersonModelViews for the ids passed in.
-     */
-    private final ServiceAction getPersonModelViewsByIdsAction;
-
-    /**
      * Service action controller for execution the actions for this restlet.
      */
     private final ActionController serviceActionController;
 
     /**
-     * Action for retrieving all of the db ids for the users in the database.
+     * Action for retrieving all of the Person objects in the db only populating accountid and additionalproperties.
      */
-    private final ServiceAction getAllPersonIdsAction;
+    private final ServiceAction getAllPersonAdditionalPropertiesAction;
 
     /**
      * Constructor.
      * 
-     * @param inGetPersonModelViewsByIdsAction
-     *            - instance of the action used to retrieve all of the PersonModelView objects based on the db ids
-     *            passed in.
      * @param inServiceActionController
      *            - instance of the ServiceActionController for executing actions.
-     * @param inGetAllPersonIdsAction
+     * @param inGetAllPersonAdditionalPropertiesAction
      *            - instance of the action used to retreive all of the db ids for the users in the db.
      */
-    public PersonPropertiesResource(final ServiceAction inGetPersonModelViewsByIdsAction,
-            final ActionController inServiceActionController, final ServiceAction inGetAllPersonIdsAction)
+    public PersonPropertiesResource(final ActionController inServiceActionController,
+            final ServiceAction inGetAllPersonAdditionalPropertiesAction)
     {
-        getPersonModelViewsByIdsAction = inGetPersonModelViewsByIdsAction;
         serviceActionController = inServiceActionController;
-        getAllPersonIdsAction = inGetAllPersonIdsAction;
+        getAllPersonAdditionalPropertiesAction = inGetAllPersonAdditionalPropertiesAction;
     }
 
     /**
@@ -103,14 +94,12 @@ public class PersonPropertiesResource extends SmpResource
 
         JSONObject responseJson = new JSONObject();
 
-        List<PersonModelView> people;
+        List<Map<String, Object>> people;
 
         try
         {
-            ArrayList<String> accountIds = (ArrayList<String>) serviceActionController.execute(
-                    new ServiceActionContext(null, null), getAllPersonIdsAction);
-            people = (List<PersonModelView>) serviceActionController.execute(
-                    new ServiceActionContext(accountIds, null), getPersonModelViewsByIdsAction);
+            people = (ArrayList<Map<String, Object>>) serviceActionController.execute(new ServiceActionContext(null,
+                    null), getAllPersonAdditionalPropertiesAction);
         }
         catch (Exception ex)
         {
@@ -120,13 +109,14 @@ public class PersonPropertiesResource extends SmpResource
 
         JSONArray personProperties = new JSONArray();
         JSONObject personJs;
-        for (PersonModelView currentPerson : people)
+        for (Map<String, Object> currentPersonProperties : people)
         {
             personJs = new JSONObject();
-            personJs.put("accountId", currentPerson.getAccountId());
-            if (currentPerson.getAdditionalProperties() != null)
+            personJs.put("accountId", (String) currentPersonProperties.get("accountId"));
+            if (currentPersonProperties.get("additionalProperties") != null)
             {
-                for (Entry<String, String> currentAddlProperty : currentPerson.getAdditionalProperties().entrySet())
+                for (Entry<String, String> currentAddlProperty : ((Map<String, String>) currentPersonProperties
+                        .get("additionalProperties")).entrySet())
                 {
                     personJs.put(currentAddlProperty.getKey(), currentAddlProperty.getValue());
                 }
