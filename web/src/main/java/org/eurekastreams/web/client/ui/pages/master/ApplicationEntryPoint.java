@@ -226,7 +226,7 @@ public class ApplicationEntryPoint implements EntryPoint
                         processor.setQueueRequests(false);
 
                         processor.setQueueRequests(true);
-                        master.render();
+                        master.renderHeaderAndFooter();
                         processor.fireQueuedRequests();
                         processor.setQueueRequests(false);
 
