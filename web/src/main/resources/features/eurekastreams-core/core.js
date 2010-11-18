@@ -23,7 +23,6 @@ eurekastreams.core = function() {
         },
         
         //This method tests a json dataset to see if it is empty.
-        //This method tests a json dataset to see if it is empty.
         emptyHash: function(hash)
         {
             for(var i in hash)
