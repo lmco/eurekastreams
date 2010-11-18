@@ -80,11 +80,32 @@ public class HeaderComposite extends Composite
 
     /**
      * Primary constructor for the Header composite.
-     *
+     */
+    public HeaderComposite()
+    {
+        Session.getInstance().getEventBus().addObserver(SwitchedHistoryViewEvent.class,
+                new Observer<SwitchedHistoryViewEvent>()
+                {
+                    public void update(final SwitchedHistoryViewEvent eventArg)
+                    {
+                        if (eventArg != null)
+                        {
+                            if (eventArg.getPage() != null)
+                            {
+                                setActive(eventArg.getPage());
+                            }
+                        }
+                    }
+                }, true);
+    }
+     
+    /**
+     * Render the header.
+     * 
      * @param viewer
      *            - user to display.
      */
-    public HeaderComposite(final Person viewer)
+    public void render(final Person viewer)
     {
         HorizontalULPanel userNav;
         FlowPanel panel = new FlowPanel();
@@ -209,21 +230,7 @@ public class HeaderComposite extends Composite
         panel.add(siteLabeling);
 
         initWidget(panel);
-
-        Session.getInstance().getEventBus().addObserver(SwitchedHistoryViewEvent.class,
-                new Observer<SwitchedHistoryViewEvent>()
-                {
-                    public void update(final SwitchedHistoryViewEvent eventArg)
-                    {
-                        if (eventArg != null)
-                        {
-                            if (eventArg.getPage() != null)
-                            {
-                                setActive(eventArg.getPage());
-                            }
-                        }
-                    }
-                }, true);
+        setActive(Session.getInstance().getUrlPage());
     }
 
     /**

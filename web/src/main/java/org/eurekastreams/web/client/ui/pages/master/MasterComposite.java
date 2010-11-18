@@ -100,7 +100,7 @@ public class MasterComposite extends Composite implements Bindable
     /**
      * The header panel.
      */
-    private HeaderComposite header;
+    private HeaderComposite header = new HeaderComposite();
 
     /**
      * Banner.
@@ -295,10 +295,10 @@ public class MasterComposite extends Composite implements Bindable
     }-*/;
 
     /**
-     * Render the header only.
+     * Render header and footer.
      *
      */
-    public void render()
+    public void renderHeaderAndFooter()
     {
         Person person = Session.getInstance().getCurrentPerson();
 
@@ -316,7 +316,7 @@ public class MasterComposite extends Composite implements Bindable
     HeaderComposite getHeaderComposite(final Person viewer)
     {
         panel.add(footerPanel);
-        header = new HeaderComposite(viewer);
+        header.render(viewer);
         actionProcessor.setQueueRequests(false);
 
         Session.getInstance().getEventBus().addObserver(GotSystemSettingsResponseEvent.class,
