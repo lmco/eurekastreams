@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Theme>
+  <Title>IS&amp;GS Theme</Title>
+  <Description>IS&amp;GS Startpage Theme</Description>
+  <AuthorName>Roberto Ortiz</AuthorName>
+  <AuthorEmail>roberto.m.ortiz@lmco.com</AuthorEmail>
+        <HeaderBackground>
+                <HeaderForegroundColor>#0b4268</HeaderForegroundColor>
+                <HeaderBackgroundColor>#0b4268</HeaderBackgroundColor>
+                <HeaderBackgroundImage>/style/images/ISGS_Banner.png</HeaderBackgroundImage>
+        </HeaderBackground>
+        <ActiveTabBorderColor>#676767</ActiveTabBorderColor>
+        <ActiveTabForegroundColor>#333333</ActiveTabForegroundColor>
+        <InactiveTabBackgroundColor>#093654</InactiveTabBackgroundColor>
+        <InactiveTabBorderColor>#1a95c4</InactiveTabBorderColor>
+        <InactiveTabForegroundColor>#ffffff</InactiveTabForegroundColor>
+        <GadgetTitleBackgroundColor>#303030</GadgetTitleBackgroundColor>
+        <GadgetTitleForegroundColor>#ffffff</GadgetTitleForegroundColor>
+        <GadgetBorderColor>#9a9a9a</GadgetBorderColor>
+        <PageBackground>
+                <PageBackgroundColor>#f0f0f0</PageBackgroundColor>
+                <PageBackgroundImage/>
+        </PageBackground>
+</Theme>
