@@ -205,8 +205,8 @@
 		</script>
 
 		<script type="text/os-data" xmlns:os="http://ns.opensocial.org/2008/markup" >
-            		<os:OwnerRequest key="databindowner" />
-			<os:HttpRequest refreshInterval="0"  key="activityDataSet" href="${build.web.baseurl}/resources/stream/${databindowner.id}/${UserPrefs.streamQuery}" />
+			<os:OwnerRequest key="databindowner" />
+			<os:HttpRequest refreshInterval="0"  key="activityDataSet" href="${build.web.baseurl}/resources/stream/${databindowner.id}/${UserPrefs.streamQuery}" authz="OAUTH" oauth_use_token="never" oauth_service_name="eurekastreams" sign_owner="false" sign_viewer="false"  />
 		</script>		
 
 		
