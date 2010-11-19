@@ -150,25 +150,25 @@
                 
         		var activityJSON = opensocial.data.DataContext.getDataSet("activityDataSet");
 
-                if (activityJSON.code == "404")
+                if (activityJSON.status != "200")
                 {
                     var streamType = prefs_.getString("streamType");
-                    var niceType = "Stream";
+                    var niceType = "stream";
                     
                     if (streamType == "streamsearch")
                     {
-                    	niceType = "Saved Search";
+                    	niceType = "saved search";
                     }
                     if (streamType == "compositestream")
                     {
-                    	niceType = "List";
+                    	niceType = "list";
                     }
                     else if (streamType == "groupstream")
                     {
-                    	niceType = "Group";
+                    	niceType = "group";
                     }
                     
-                    var message = "The '" + cleanTitle + "' " + niceType + " has been removed from the Activity page.  This gadget will no longer display content. Please remove from your start page.";
+                    var message = "There was an error retrieving this " + niceType + ".  Please ensure the " + niceType + " still exists then refresh the app to try again.";
                     var jsonMsg = {'message' : message};
                 	opensocial.template.getTemplate('uos:errorTemplate').renderInto(document.getElementById('activity-view'), jsonMsg);
                 }
@@ -269,7 +269,7 @@
 		</script>
 
         <script type="text/os-template" xmlns:os="http://ns.opensocial.org/2008/markup" xmlns:os="http://eurekastreams.org" tag="uos:errorTemplate">
-            <div class="error">Content no longer valid</div>
+            <div class="error">Error retrieving content</div>
             <div class="error-details">${message}</div>
         </script>
         
