@@ -218,7 +218,8 @@
 			  <div class="description">
 			  	<div class="message-container DEFAULT">
 				  	<strong if="${actorUniqueIdentifier == destinationUniqueIdentifier}">
-						 <a href="javascript:eurekastreams.core.navigate('people/${actorUniqueIdentifier}')">${actorDisplayName}</a>
+						 <a if="${destinationType == 'PERSON'}" href="javascript:eurekastreams.core.navigate('people/${actorUniqueIdentifier}')">${actorDisplayName}</a>
+						 <a if="${destinationType == 'GROUP'}" href="javascript:eurekastreams.core.navigate('groups/${actorUniqueIdentifier}')">${actorDisplayName}</a>
 					</strong>
 				  	<strong if="${actorUniqueIdentifier != destinationUniqueIdentifier}">
 						 <a href="javascript:eurekastreams.core.navigate('people/${actorUniqueIdentifier}')">${actorDisplayName}</a>
