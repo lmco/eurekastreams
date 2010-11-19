@@ -21,12 +21,12 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.opensocial.GetAppDataRequest;
-import org.eurekastreams.server.domain.AppData;
-import org.eurekastreams.server.persistence.AppDataMapper;
+import org.eurekastreams.server.domain.dto.AppDataDTO;
+import org.eurekastreams.server.persistence.AppDataDTOCacheMapper;
 
 /**
  * Retrieve the Application Data for the supplied credentials.
- *
+ * 
  */
 public class GetAppDataExecution implements ExecutionStrategy<PrincipalActionContext>
 {
@@ -38,26 +38,26 @@ public class GetAppDataExecution implements ExecutionStrategy<PrincipalActionCon
     /**
      * Instance of the mapper to use for this action.
      */
-    private AppDataMapper mapper;
+    private AppDataDTOCacheMapper mapper;
 
     /**
      * Constructor for the GetAppDataExecution strategy.
-     *
+     * 
      * @param inMapper
-     *            - instance of the {@link AppDataMapper} for this execution strategy.
+     *            - instance of the {@link AppDataDTOCacheMapper} for this execution strategy.
      */
-    public GetAppDataExecution(final AppDataMapper inMapper)
+    public GetAppDataExecution(final AppDataDTOCacheMapper inMapper)
     {
         mapper = inMapper;
     }
 
     /**
      * {@inheritDoc}.
-     *
+     * 
      * Retrieve the application data for the supplied application id and opensocial id.
      */
     @Override
-    public AppData execute(final PrincipalActionContext inActionContext) throws ExecutionException
+    public AppDataDTO execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
         try
         {

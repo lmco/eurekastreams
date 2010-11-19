@@ -26,6 +26,8 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.opensocial.UpdateAppDataRequest;
 import org.eurekastreams.server.domain.AppData;
 import org.eurekastreams.server.persistence.AppDataMapper;
+import org.eurekastreams.server.persistence.mappers.cache.Cache;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 
 /**
  * Update application data.
@@ -44,14 +46,22 @@ public class UpdateAppDataExecution implements ExecutionStrategy<PrincipalAction
     private AppDataMapper mapper;
 
     /**
+     * Cache.
+     */
+    private Cache cache;
+
+    /**
      * Basic constructor for setting up the mapper.
      * 
      * @param inMapper
      *            - instance of the App Data mapper.
+     * @param inCache
+     *            the cache
      */
-    public UpdateAppDataExecution(final AppDataMapper inMapper)
+    public UpdateAppDataExecution(final AppDataMapper inMapper, final Cache inCache)
     {
         mapper = inMapper;
+        cache = inCache;
     }
 
     /**
@@ -59,10 +69,10 @@ public class UpdateAppDataExecution implements ExecutionStrategy<PrincipalAction
      * 
      * @param inActionContext
      *            {@link PrincipalActionContext}.
-     * @return updated app data.
+     * @return null
      */
     @Override
-    public AppData execute(final PrincipalActionContext inActionContext)
+    public Integer execute(final PrincipalActionContext inActionContext)
     {
         UpdateAppDataRequest parameters = (UpdateAppDataRequest) inActionContext.getParams();
         long applicationId = parameters.getApplicationId();
@@ -83,10 +93,14 @@ public class UpdateAppDataExecution implements ExecutionStrategy<PrincipalAction
                 currentAppData.setValues(appDataVals);
                 mapper.flush();
             }
-            outputAppData = mapper.findOrCreateByPersonAndGadgetDefinitionIds(applicationId, personId);
+
+            // delete cache
+            log.info("Deleting the AppDataDTO cache for gadDef " + applicationId + ", open social id: " + personId);
+            cache.delete(CacheKeys.APPDATA_BY_GADGET_DEFINITION_ID_AND_UNDERSCORE_AND_PERSON_OPEN_SOCIAL_ID
+                    + applicationId + "_" + personId);
         }
 
-        return outputAppData;
+        return null;
     }
 
 }

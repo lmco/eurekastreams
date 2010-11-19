@@ -228,4 +228,9 @@ public final class CacheKeys
      * Key for tutorial vids set.
      */
     public static final String TUTORIAL_VIDS = "TutorialVids:";
+
+    /**
+     * Key for getting AppData with the suffix: [gadget definition id]_[person id].
+     */
+    public static final String APPDATA_BY_GADGET_DEFINITION_ID_AND_UNDERSCORE_AND_PERSON_OPEN_SOCIAL_ID = "AppData:";
 }

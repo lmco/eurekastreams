@@ -21,8 +21,8 @@ import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.action.request.opensocial.GetAppDataRequest;
-import org.eurekastreams.server.domain.AppData;
-import org.eurekastreams.server.persistence.AppDataMapper;
+import org.eurekastreams.server.domain.dto.AppDataDTO;
+import org.eurekastreams.server.persistence.AppDataDTOCacheMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -32,7 +32,6 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link GetAppDataExecution} class.
- *
  */
 public class GetAppDataExecutionTest
 {
@@ -59,12 +58,12 @@ public class GetAppDataExecutionTest
     /**
      * Mocked mapper for testing.
      */
-    private AppDataMapper jpaAppDataMapper = context.mock(AppDataMapper.class);
+    private AppDataDTOCacheMapper appDataCacheMapper = context.mock(AppDataDTOCacheMapper.class);
 
     /**
      * Test instance of the AppData object to use in tests below.
      */
-    private AppData testAppData = context.mock(AppData.class);
+    private AppDataDTO testAppData = context.mock(AppDataDTO.class);
 
     /**
      * Prepare the sut.
@@ -72,7 +71,7 @@ public class GetAppDataExecutionTest
     @Before
     public void setup()
     {
-        sut = new GetAppDataExecution(jpaAppDataMapper);
+        sut = new GetAppDataExecution(appDataCacheMapper);
     }
 
     /**
@@ -87,7 +86,7 @@ public class GetAppDataExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(jpaAppDataMapper).findOrCreateByPersonAndGadgetDefinitionIds(testApplicationId.longValue(),
+                oneOf(appDataCacheMapper).findOrCreateByPersonAndGadgetDefinitionIds(testApplicationId.longValue(),
                         testOpenSocialId);
                 will(returnValue(testAppData));
             }
@@ -99,7 +98,7 @@ public class GetAppDataExecutionTest
         ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
 
         // Make the call
-        AppData actual = sut.execute(currentContext);
+        AppDataDTO actual = sut.execute(currentContext);
 
         assertEquals(testAppData, actual);
 
@@ -118,7 +117,7 @@ public class GetAppDataExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(jpaAppDataMapper).findOrCreateByPersonAndGadgetDefinitionIds(testApplicationId.longValue(),
+                oneOf(appDataCacheMapper).findOrCreateByPersonAndGadgetDefinitionIds(testApplicationId.longValue(),
                         testOpenSocialId);
                 will(throwException(new Exception()));
             }

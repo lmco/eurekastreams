@@ -34,7 +34,7 @@ import org.eurekastreams.commons.exceptions.GeneralException;
 import org.eurekastreams.commons.server.service.ServiceActionController;
 import org.eurekastreams.server.action.execution.opensocial.DeleteAppDataExecution;
 import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
-import org.eurekastreams.server.domain.AppData;
+import org.eurekastreams.server.domain.dto.AppDataDTO;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -87,7 +87,7 @@ public class AppDataServiceTest
      * Instance of the {@link Principal} interface for tests.
      */
     private Principal principalMock = context.mock(Principal.class);
-    
+
     /**
      * Instance of ServiceActionContext for tests.
      */
@@ -102,7 +102,7 @@ public class AppDataServiceTest
      * Mocked instance of the action for updating application data from the database.
      */
     private ServiceAction updateDataAction = context.mock(ServiceAction.class, "updateDataAction");
-    
+
     /**
      * Mocked instance of the action for deleting application data from the database.
      */
@@ -116,7 +116,7 @@ public class AppDataServiceTest
     /**
      * Mocked instance of AppData to set expectations for the tests.
      */
-    private AppData appData = context.mock(AppData.class);
+    private AppDataDTO appData = context.mock(AppDataDTO.class);
 
     /**
      * String to use for test application ids.
@@ -158,8 +158,8 @@ public class AppDataServiceTest
                 will(returnValue(appData));
 
                 // If the requested appdata is not found, these two calls will not be made.
-                allowing(appData).getPerson().getId();
-                allowing(appData).getValues();
+                allowing(appData).getOpenSocialId();
+                allowing(appData).getKeyValuePairs();
             }
         });
 
@@ -192,8 +192,8 @@ public class AppDataServiceTest
                 will(returnValue(appData));
 
                 // If the requested appdata is not found, these two calls will not be made.
-                allowing(appData).getPerson().getId();
-                allowing(appData).getValues();
+                // allowing(appData).getPerson().getId();
+                // allowing(appData).getValues();
             }
         });
 
@@ -234,12 +234,12 @@ public class AppDataServiceTest
 
         context.assertIsSatisfied();
     }
-    
+
     /**
      * Test the method to Delete Person Data.
      * 
      * @throws Exception
-     *          not expected.
+     *             not expected.
      */
     @Test
     public void testDeletePersonData() throws Exception
@@ -258,7 +258,7 @@ public class AppDataServiceTest
         sut.deletePersonData(testId, testGroupId, TEST_APP_ID, Person.Field.DEFAULT_FIELDS, FAKETOKEN);
 
         context.assertIsSatisfied();
-    }    
+    }
 
     /**
      * Test the method to Delete Person Data and throw an Exception.
@@ -274,7 +274,7 @@ public class AppDataServiceTest
             {
                 oneOf(principalPopulatorMock).getPrincipal(with(any(String.class)));
                 will(returnValue(principalMock));
-                
+
                 oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
                         with(any(ServiceAction.class)));
                 will(throwException(new ExecutionException()));

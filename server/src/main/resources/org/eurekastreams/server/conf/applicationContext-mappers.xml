@@ -21,7 +21,13 @@
 			</list>
 		</property>
 	</bean>
-      
+    
+    <!-- Cache mapper wrapper around AppDataMapper -->
+    <bean id="appDataDTOCacheMapper" class="org.eurekastreams.server.persistence.AppDataDTOCacheMapper">
+        <constructor-arg ref="jpaAppDataMapper" />
+        <property name="cache" ref="memcachedCache" />
+    </bean>
+    
     <bean id="getAllPluginsMapper"
         class="org.eurekastreams.server.persistence.mappers.db.GetAllPluginsMapper" />
 
