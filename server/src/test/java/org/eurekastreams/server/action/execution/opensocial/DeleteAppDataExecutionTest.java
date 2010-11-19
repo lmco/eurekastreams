@@ -28,6 +28,7 @@ import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.action.request.opensocial.DeleteAppDataRequest;
 import org.eurekastreams.server.domain.AppData;
+import org.eurekastreams.server.persistence.AppDataDTOCacheMapper;
 import org.eurekastreams.server.persistence.AppDataMapper;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
@@ -68,6 +69,11 @@ public class DeleteAppDataExecutionTest
      * Mocked mapper for testing.
      */
     private AppDataMapper jpaAppDataMapper = context.mock(AppDataMapper.class);
+
+    /**
+     * Mapper to get/update the cache.
+     */
+    private AppDataDTOCacheMapper cacheMapper = context.mock(AppDataDTOCacheMapper.class);
 
     /**
      * Mocked instance of AppData.
@@ -127,7 +133,7 @@ public class DeleteAppDataExecutionTest
     @Before
     public final void setUp()
     {
-        sut = new DeleteAppDataExecution(jpaAppDataMapper, cache);
+        sut = new DeleteAppDataExecution(jpaAppDataMapper, cacheMapper, cache);
 
         testAppDataValues = new HashMap<String, String>();
         testAppDataValues.put("key1", "value1");
@@ -182,6 +188,9 @@ public class DeleteAppDataExecutionTest
                 oneOf(jpaAppDataMapper).flush();
 
                 oneOf(cache).delete(cacheKey);
+
+                oneOf(cacheMapper).findOrCreateByPersonAndGadgetDefinitionIds(testApplicationId.longValue(),
+                        testOpenSocialId);
             }
         });
 
@@ -231,6 +240,9 @@ public class DeleteAppDataExecutionTest
                 oneOf(jpaAppDataMapper).flush();
 
                 oneOf(cache).delete(cacheKey);
+
+                oneOf(cacheMapper).findOrCreateByPersonAndGadgetDefinitionIds(testApplicationId.longValue(),
+                        testOpenSocialId);
             }
         });
 

@@ -25,6 +25,7 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.opensocial.UpdateAppDataRequest;
 import org.eurekastreams.server.domain.AppData;
+import org.eurekastreams.server.persistence.AppDataDTOCacheMapper;
 import org.eurekastreams.server.persistence.AppDataMapper;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
@@ -46,6 +47,11 @@ public class UpdateAppDataExecution implements ExecutionStrategy<PrincipalAction
     private AppDataMapper mapper;
 
     /**
+     * Mapper to get/update the cache.
+     */
+    private AppDataDTOCacheMapper cacheMapper;
+
+    /**
      * Cache.
      */
     private Cache cache;
@@ -55,12 +61,16 @@ public class UpdateAppDataExecution implements ExecutionStrategy<PrincipalAction
      * 
      * @param inMapper
      *            - instance of the App Data mapper.
+     * @param inCacheMapper
+     *            cache mapper - used for updating cache
      * @param inCache
      *            the cache
      */
-    public UpdateAppDataExecution(final AppDataMapper inMapper, final Cache inCache)
+    public UpdateAppDataExecution(final AppDataMapper inMapper, final AppDataDTOCacheMapper inCacheMapper,
+            final Cache inCache)
     {
         mapper = inMapper;
+        cacheMapper = inCacheMapper;
         cache = inCache;
     }
 
@@ -98,6 +108,9 @@ public class UpdateAppDataExecution implements ExecutionStrategy<PrincipalAction
             log.info("Deleting the AppDataDTO cache for gadDef " + applicationId + ", open social id: " + personId);
             cache.delete(CacheKeys.APPDATA_BY_GADGET_DEFINITION_ID_AND_UNDERSCORE_AND_PERSON_OPEN_SOCIAL_ID
                     + applicationId + "_" + personId);
+
+            // reget the data to put it back in cache
+            cacheMapper.findOrCreateByPersonAndGadgetDefinitionIds(applicationId, personId);
         }
 
         return null;

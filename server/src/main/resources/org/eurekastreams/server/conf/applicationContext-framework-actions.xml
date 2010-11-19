@@ -683,6 +683,7 @@
 			<bean
 				class="org.eurekastreams.server.action.execution.opensocial.DeleteAppDataExecution">
 				<constructor-arg ref="jpaAppDataMapper" />
+                <constructor-arg ref="appDataDTOCacheMapper" />
 				<constructor-arg ref="memcachedCache" />
 			</bean>
 		</constructor-arg>
@@ -863,6 +864,7 @@
 			<bean
 				class="org.eurekastreams.server.action.execution.opensocial.UpdateAppDataExecution">
 				<constructor-arg ref="jpaAppDataMapper" />
+				<constructor-arg ref="appDataDTOCacheMapper" />
                 <constructor-arg ref="memcachedCache" />
 			</bean>
 		</constructor-arg>

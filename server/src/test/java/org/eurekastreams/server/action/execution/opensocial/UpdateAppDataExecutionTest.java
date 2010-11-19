@@ -23,6 +23,7 @@ import java.util.Map;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.action.request.opensocial.UpdateAppDataRequest;
 import org.eurekastreams.server.domain.AppData;
+import org.eurekastreams.server.persistence.AppDataDTOCacheMapper;
 import org.eurekastreams.server.persistence.AppDataMapper;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
@@ -63,6 +64,11 @@ public class UpdateAppDataExecutionTest
      * Mocked mapper for testing.
      */
     private AppDataMapper jpaAppDataMapper = context.mock(AppDataMapper.class);
+
+    /**
+     * Mapper to get/update the cache.
+     */
+    private AppDataDTOCacheMapper cacheMapper = context.mock(AppDataDTOCacheMapper.class);
 
     /**
      * Test Application Id.
@@ -109,7 +115,7 @@ public class UpdateAppDataExecutionTest
     @Before
     public void setUp()
     {
-        sut = new UpdateAppDataExecution(jpaAppDataMapper, cache);
+        sut = new UpdateAppDataExecution(jpaAppDataMapper, cacheMapper, cache);
     }
 
     /**
@@ -151,6 +157,8 @@ public class UpdateAppDataExecutionTest
                 oneOf(cache).delete(
                         CacheKeys.APPDATA_BY_GADGET_DEFINITION_ID_AND_UNDERSCORE_AND_PERSON_OPEN_SOCIAL_ID
                                 + testApplicationId + "_" + testPersonId);
+
+                oneOf(cacheMapper).findOrCreateByPersonAndGadgetDefinitionIds(testApplicationId, testPersonId);
             }
         });
 

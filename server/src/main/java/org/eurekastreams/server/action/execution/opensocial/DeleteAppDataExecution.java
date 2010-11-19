@@ -27,6 +27,7 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.opensocial.DeleteAppDataRequest;
 import org.eurekastreams.server.domain.AppData;
+import org.eurekastreams.server.persistence.AppDataDTOCacheMapper;
 import org.eurekastreams.server.persistence.AppDataMapper;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
@@ -48,6 +49,11 @@ public class DeleteAppDataExecution implements ExecutionStrategy<PrincipalAction
     private AppDataMapper mapper;
 
     /**
+     * Mapper to get/update the cache.
+     */
+    private AppDataDTOCacheMapper cacheMapper;
+
+    /**
      * Cache.
      */
     private Cache cache;
@@ -57,12 +63,16 @@ public class DeleteAppDataExecution implements ExecutionStrategy<PrincipalAction
      * 
      * @param inMapper
      *            - instance of the {@link AppDataMapper} for this execution strategy.
+     * @param inCacheMapper
+     *            mapper to get/update the cache
      * @param inCache
      *            the cache
      */
-    public DeleteAppDataExecution(final AppDataMapper inMapper, final Cache inCache)
+    public DeleteAppDataExecution(final AppDataMapper inMapper, final AppDataDTOCacheMapper inCacheMapper,
+            final Cache inCache)
     {
         mapper = inMapper;
+        cacheMapper = inCacheMapper;
         cache = inCache;
     }
 
@@ -121,6 +131,9 @@ public class DeleteAppDataExecution implements ExecutionStrategy<PrincipalAction
                         + openSocialId);
                 cache.delete(CacheKeys.APPDATA_BY_GADGET_DEFINITION_ID_AND_UNDERSCORE_AND_PERSON_OPEN_SOCIAL_ID
                         + applicationId + "_" + openSocialId);
+
+                // update the cache
+                cacheMapper.findOrCreateByPersonAndGadgetDefinitionIds(applicationId, openSocialId);
             }
         }
         catch (Exception ex)
