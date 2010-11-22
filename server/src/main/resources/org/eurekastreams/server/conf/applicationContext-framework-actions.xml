@@ -1476,9 +1476,8 @@
 				<constructor-arg>
 					<bean
 						class="org.eurekastreams.server.action.execution.PersonLookupUtilityStrategy">
-						<constructor-arg ref="multiSourcePersonLookupStrategy" />
-						<constructor-arg
-							ref="populateOrgChildWithSkeletonParentOrgsCacheMapper" />
+						<constructor-arg ref="personLookupStrategy" />
+						<constructor-arg ref="populateOrgChildWithSkeletonParentOrgsCacheMapper" />
 					</bean>
 				</constructor-arg>
 			</bean>
