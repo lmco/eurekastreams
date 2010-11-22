@@ -79,7 +79,7 @@ public class EmployeeLookupView implements Bindable
      * Results description.
      */
     Label resultsDesc;
-
+    
     /**
      * The person container.
      */
@@ -235,12 +235,7 @@ public class EmployeeLookupView implements Bindable
 
         for (Person person : resultsItems)
         {
-            results.addItem(person.getLastName()
-                    + ", "
-                    + person.getFirstName()
-                    + " "
-                    + ((person.getMiddleName() == null || person.getMiddleName().isEmpty()) ? "" : person
-                            .getMiddleName()), person.getAccountId());
+            results.addItem(person.getLastName() + ", " + person.getPreferredName(), person.getAccountId());
         }
 
         String message = "";
@@ -255,7 +250,7 @@ public class EmployeeLookupView implements Bindable
         }
 
         resultsDesc.setText(message);
-        
+
         if (resultsItems.size() == 1)
         {
             results.setItemSelected(0, true);
