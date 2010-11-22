@@ -72,7 +72,7 @@ public class GadgetDefinitionMapperTest extends DomainEntityMapperTest
      * Test to ensure that the dbunit dataset is correctly constructed.
      */
     @Test
-    public void testDBUnityDataSet()
+    public void testDBUnitDataSet()
     {
         String gadgetUrl1 = "http://www.example.com/gadget1.xml";
         String gadgetUrl2 = "http://www.example.com/gadget2.xml";
