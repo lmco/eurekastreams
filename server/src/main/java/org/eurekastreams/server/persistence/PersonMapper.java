@@ -49,7 +49,7 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
 
     /**
      * Constructor.
-     *
+     * 
      * @param inQueryOptimizer
      *            the QueryOptimizer to use for specialized functions.
      * @param inRemovePersonFromCacheMapper
@@ -69,7 +69,7 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
 
     /**
      * Set the DescendantOrgStrategy.
-     *
+     * 
      * @param inDescendantOrgStrategy
      *            the descendantOrgStrategy to set
      */
@@ -80,7 +80,7 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
 
     /**
      * Get the descendant organization strategy.
-     *
+     * 
      * @return the descendantOrgStrategy the descendant org strategy
      */
     protected DescendantOrganizationStrategy getDescendantOrgStrategy()
@@ -95,7 +95,7 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
     /**
      * Retrieve the name of the DomainEntity. This is to allow for the super class to identify the table within
      * hibernate.
-     *
+     * 
      * @return The name of the domain entity.
      */
     @Override
@@ -106,7 +106,7 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
 
     /**
      * Find a person by accountId.
-     *
+     * 
      * @param accountId
      *            the accountId of the user to search for - lower-cased for uniqueness
      * @return the Person with the user account
@@ -123,7 +123,7 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
 
     /**
      * Find a person by opensocial ID.
-     *
+     * 
      * @param openSocialId
      *            the openSocialId of the user to search for - lower-cased for uniqueness
      * @return the Person with the open social id.
@@ -141,7 +141,7 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
 
     /**
      * Creates a follower/following relationship between two Person objects.
-     *
+     * 
      * @param followerId
      *            The id of the follower Person
      * @param followingId
@@ -188,7 +188,7 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
 
     /**
      * Finds people that have been orphaned from their parent organization.
-     *
+     * 
      * @return List&lt;Person&gt; A list of person objects that have a parent organization that is not in their related
      *         organization list
      */
@@ -204,7 +204,7 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
 
     /**
      * Purges the related organizations for all people.
-     *
+     * 
      */
     public void purgeRelatedOrganizations()
     {
@@ -213,7 +213,7 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
 
     /**
      * Removes a follower/following relationship between two Person objects.
-     *
+     * 
      * @param followerId
      *            The id of the follower Person
      * @param followingId
@@ -253,7 +253,7 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
 
     /**
      * Returns a set of People following the specified Person, minus themselves.
-     *
+     * 
      * @param accountId
      *            The Person for whom to get followers.
      * @param start
@@ -269,7 +269,7 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
 
     /**
      * Returns a set of People who are being followed by the specified person.
-     *
+     * 
      * @param accountId
      *            The Person for whom to get following.
      * @param start
@@ -285,7 +285,7 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
 
     /**
      *Gets connections for a Person excluding that person in the results.
-     *
+     * 
      * @param <V>
      *            allows this method to return PagedSets of different types (Person, Followable).
      * @param accountId
@@ -294,10 +294,10 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
      *            paging start.
      * @param end
      *            paging end.
-     *
+     * 
      * @param which
      *            should be attribute in the model: "follower" or "following"
-     *
+     * 
      * @return paged set of connections.
      */
     private <V> PagedSet<V> getConnectionsMinusSelf(final String accountId, final int start, final int end,
@@ -318,7 +318,7 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
 
     /**
      * Returns true if follower/following relationship exists false otherwise.
-     *
+     * 
      * @param followerAccountId
      *            The follower person's account Id.
      * @param followingAccountId
@@ -341,10 +341,10 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
 
     /**
      * Finds people with the last name starting with the prefix.
-     *
+     * 
      * @param prefix
      *            the first letters in the last name to search by
-     *
+     * 
      * @return a list of persons with that last name prefix
      */
     @SuppressWarnings("unchecked")
@@ -361,15 +361,16 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
         }
 
         Query q = getEntityManager().createQuery(
-                "From Person where lower(lastName) LIKE :lprefix and lower(firstName) LIKE :fprefix").setParameter(
-                "lprefix", lastName.toLowerCase() + "%").setParameter("fprefix", firstName.toLowerCase() + "%");
+                "From Person where lower(lastName) LIKE :lprefix and lower(firstName) LIKE :fprefix "
+                        + "ORDER BY lastName, firstName, middleName").setParameter("lprefix",
+                lastName.toLowerCase() + "%").setParameter("fprefix", firstName.toLowerCase() + "%");
 
         return q.getResultList();
     }
 
     /**
      * Finds people based on a list of OpenSocial Ids. This method supports opensocial calls for retrieving people.
-     *
+     * 
      * @param openSocialIds
      *            The list of opensocial ids to return Person objects for.
      * @return a list of persons that match the list of ids supplied.
@@ -409,7 +410,7 @@ public class PersonMapper extends DomainEntityMapper<Person> implements FollowMa
     /**
      * Finds people being followed based on a list of follower OpenSocial Ids. This method supports opensocial calls for
      * retrieving people. This does not exclude their own account.
-     *
+     * 
      * @param openSocialIds
      *            The list of opensocial ids to return followed Person objects for.
      * @return a list of follower persons that match the list of ids supplied.
