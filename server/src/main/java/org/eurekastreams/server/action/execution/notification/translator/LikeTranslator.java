@@ -23,7 +23,7 @@ import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
 
 /**
- * Translates the event of someone beginning to follow a stream to appropriate notifications.
+ * Translates the event of someone liking an activity to appropriate notifications.
  */
 public class LikeTranslator implements NotificationTranslator
 {
@@ -34,6 +34,11 @@ public class LikeTranslator implements NotificationTranslator
     public Collection<NotificationDTO> translate(final long inActorId, final long inDestinationId,
             final long inActivityId)
     {
+        if (inActorId == inDestinationId)
+        {
+            return Collections.EMPTY_LIST;
+        }
+
         return Collections.singletonList(new NotificationDTO(Collections.singletonList(inDestinationId),
                 NotificationType.LIKE_ACTIVITY, inActorId, inDestinationId, EntityType.PERSON, inActivityId));
     }
