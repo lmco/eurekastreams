@@ -18,14 +18,14 @@ package org.eurekastreams.web.client.ui.common.dialog;
 import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.commons.client.ui.WidgetController;
 import org.eurekastreams.commons.client.ui.WidgetFactory;
+import org.eurekastreams.web.client.events.PreDialogHideEvent;
+import org.eurekastreams.web.client.ui.Session;
 
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Unity Dialog Controller.
- *
- *
+ * Dialog Controller.
  */
 final class DialogController implements WidgetController
 {
@@ -134,10 +134,10 @@ final class DialogController implements WidgetController
          */
         public void execute()
         {
+            Session.getInstance().getEventBus().notifyObservers(new PreDialogHideEvent(dialog));
             dialog.hide();
             dialog.setBgVisible(false);
         }
-
     }
 
     /**

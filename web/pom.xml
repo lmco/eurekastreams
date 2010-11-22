@@ -767,6 +767,7 @@
                                 <exclude>org/eurekastreams/web/client/**/*JSNIFacadeImpl.java</exclude>
                                 <exclude>org/eurekastreams/web/client/**/*GalleryRenderer.java</exclude>
                                 <exclude>org/eurekastreams/web/client/**/StreamSearchLinkBuilder.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/HideModalDialog</exclude>
                                 <exclude>org/eurekastreams/web/client/AnonymousClassInterceptor.java</exclude>
                                 <exclude>org/eurekastreams/web/rebind/HashedBindableGenerator.java</exclude>
                                 <exclude>org/eurekastreams/web/**/*GuiceModule.java</exclude>

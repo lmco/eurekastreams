@@ -632,7 +632,7 @@ public class TabMapperTest extends DomainEntityMapperTest
     }
 
     /**
-     * This test is trying to undelete the gadget that is designated as delete in the DBUnity Test Database.
+     * This test is trying to undelete the gadget that is designated as delete in the DBUnit Test Database.
      * 
      * @throws GadgetUndeletionException
      *             thrown during gadget undeletion.

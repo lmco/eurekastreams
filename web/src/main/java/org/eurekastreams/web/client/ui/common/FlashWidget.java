@@ -28,7 +28,12 @@ public class FlashWidget extends FlowPanel
     /**
      * The html for the embedded object.
      */
-    HTML videoEmbedHtml = new HTML();
+    private HTML videoEmbedHtml = new HTML();
+
+    /**
+     * The name for the video object.
+     */
+    private String videoName;
 
     /**
      * @param videoURL
@@ -83,11 +88,24 @@ public class FlashWidget extends FlowPanel
         HTML key = new HTML();
         key.setText(inKey);
 
-        videoEmbedHtml.setHTML("<object " + widthHTML + " " + heightHTML + " >" + "<param name='" + key.getText()
-                + "' value='" + videoURL + "'></param>" + "<param name='allowFullScreen' value='true'></param>"
-                + "<embed src='" + videoURL + "' allowFullScreen='true'" + widthHTML + " " + heightHTML + " >"
-                + "</embed>" + "</object>");
+        videoName = "movie" + inKey;
+
+        videoEmbedHtml.setHTML("<object id='" + videoName + "' " + widthHTML + " " + heightHTML + " >"
+                + "<param name='" + key.getText() + "' value='" + videoURL + "'></param>"
+                + "<param name='allowFullScreen' value='true'></param>" + "<embed name='" + videoName + "' src='"
+                + videoURL + "' allowFullScreen='true'" + widthHTML + " " + heightHTML + " >" + "</embed>"
+                + "</object>");
 
         this.add(videoEmbedHtml);
+    }
+
+    /**
+     * Gets the video name.
+     * 
+     * @return the name of the video.
+     */
+    public String getVideoName()
+    {
+        return videoName;
     }
 }

@@ -17,7 +17,10 @@ package org.eurekastreams.web.client.ui.common.dialog.optoutvideo;
 
 import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.server.domain.TutorialVideoDTO;
+import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.PreDialogHideEvent;
 import org.eurekastreams.web.client.model.OptOutVideosModel;
+import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.FlashWidget;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicCheckBoxFormElement;
@@ -78,6 +81,11 @@ public class OptOutableVideoDialogContent implements DialogContent
     private TutorialVideoDTO tutorialVideo;
 
     /**
+     * The flash content itself.
+     */
+    private FlashWidget flashVideo;
+
+    /**
      * @param inTutorialVideo
      *            the tutorialvideo you wisht o display.
      */
@@ -107,12 +115,20 @@ public class OptOutableVideoDialogContent implements DialogContent
 
         if (inTutorialVideo.getVideoUrl() != null)
         {
-            FlashWidget flashVideo = new FlashWidget();
+            flashVideo = new FlashWidget();
             flashVideo.setFlashWidget(tutorialVideo.getVideoUrl(), ((Long) tutorialVideo.getEntityId()).toString(),
                     tutorialVideo.getVideoWidth(), tutorialVideo.getVideoHeight());
             flashVideo.addStyleName("content_video");
             body.add(flashVideo);
         }
+
+        Session.getInstance().getEventBus().addObserver(PreDialogHideEvent.class, new Observer<PreDialogHideEvent>()
+        {
+            public void update(final PreDialogHideEvent event)
+            {
+                nativeStop(flashVideo.getVideoName());
+            }
+        });
 
     }
 
@@ -193,4 +209,17 @@ public class OptOutableVideoDialogContent implements DialogContent
         // Nothing special to do here.
     }
 
+    /**
+     * Stops the video.
+     * 
+     * @param movieName
+     *            the name of the movie to stop.
+     */
+    private static native void nativeStop(final String movieName) /*-{
+                                                                   var movie = $doc[movieName];
+                                                                   if (movie != null)
+                                                                   {
+                                                                   movie.StopPlay();
+                                                                   }
+                                                                   }-*/;
 }
