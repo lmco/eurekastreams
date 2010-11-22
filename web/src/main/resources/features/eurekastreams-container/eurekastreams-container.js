@@ -279,6 +279,7 @@ eurekastreams.GadgetService = function() {
     gadgets.rpc.register('getGroupName', eurekastreams.GadgetService.getGroupName);
     gadgets.rpc.register('triggerShowNotificationEvent', eurekastreams.GadgetService.triggerShowNotificationEvent);
     gadgets.rpc.register('eurekaNavigate', eurekastreams.GadgetService.eurekaNavigate);
+    gadgets.rpc.register('refreshCurrentGadget', eurekastreams.GadgetService.refreshCurrentGadget);
 };
 
 eurekastreams.GadgetService.inherits(shindig.IfrGadgetService);
@@ -298,6 +299,18 @@ eurekastreams.GadgetService.getAppId = function()   {
 eurekastreams.GadgetService.getModuleId = function() {
     return Number(this.f);
 };
+
+
+/**
+ * RPC call to refresh the current gadget.
+ */
+eurekastreams.GadgetService.refreshCurrentGadget = function() {
+  var id = shindig.container.gadgetService.getGadgetIdFromModuleId(this.f);
+  var gadget = shindig.container.getGadget(id);
+  eurekastreams.util.gadgetIFrameUrlRefreshing(gadget);
+  eurekastreams.util.refreshGadgetIFrameUrl(gadget, null);
+};
+
 
 /**
  * RPC call to retrieve the current ORGNAME.

@@ -517,9 +517,16 @@ public class GadgetPanel extends FlowPanel
         State previousGadgetState = gadgetState;
         gadgetState = state;
 
+        if (state != State.MINIMIZED)
+        {
+            //Hide user preferences if it is shown for any reason while changing state.
+            gadgetRenderer.hidePreferences(gadgetIdModifier.toString());
+        }
+        
         switch (state)
         {
         case HELP:
+            gadgetDragController.makeDraggable(this, titleBarContainer);
             if (previousGadgetState != State.HELP)
             {
                 gadgetRenderer.changeContainerView("help");
@@ -527,6 +534,7 @@ public class GadgetPanel extends FlowPanel
             }
             break;
         case NORMAL:
+            gadgetDragController.makeDraggable(this, titleBarContainer);
             RootPanel.get().removeStyleName("maximized-gadget");
 
             if (null != parentDropZone)
@@ -546,6 +554,7 @@ public class GadgetPanel extends FlowPanel
             }
             break;
         case MAXIMIZED:
+            makeGadgetUndraggable();
             RootPanel.get().addStyleName("maximized-gadget");
 
             if (null != parentDropZone)
@@ -564,6 +573,7 @@ public class GadgetPanel extends FlowPanel
             gadgetRenderer.maximizeGadgetZone(this.getElement());
             break;
         case MINIMIZED:
+            gadgetDragController.makeDraggable(this, titleBarContainer);
             minimizeButton.addStyleName("minimized");
             renderZone.setStyleName(MINIMIZED_CSS_CLASS);
             break;
