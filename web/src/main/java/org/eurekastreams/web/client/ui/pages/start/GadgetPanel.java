@@ -596,7 +596,6 @@ public class GadgetPanel extends FlowPanel
                     new UpdateHistoryEvent(new CreateUrlRequest("canvas", "true", false)));
             break;
         case MINIMIZED:
-            makeGadgetUndraggable();
             minimizeButton.addStyleName("minimized");
             renderZone.setStyleName(MINIMIZED_CSS_CLASS);
             break;
