@@ -381,7 +381,7 @@ public class GadgetPanel extends FlowPanel
                                 String titleText = metadata.getTitle();
 
                                 helpButton.setVisible(metadata.getViewNames().contains("help"));
-				maximizeButton.setVisible(metadata.getViewNames().contains("canvas"));
+                                maximizeButton.setVisible(metadata.getViewNames().contains("canvas"));
 
                                 delegationOn = metadata.getFeatures().contains("eurekastreams-delegation");
 
@@ -494,7 +494,9 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Tell the delegation feature the edit button was clicked.
-     * @param gadgetId the gadget id.
+     *
+     * @param gadgetId
+     *            the gadget id.
      */
     private native void callEditButtonClickedForDelegation(final Long gadgetId)
     /*-{
@@ -537,7 +539,7 @@ public class GadgetPanel extends FlowPanel
 
         if (state != State.MINIMIZED)
         {
-            //Hide user preferences if it is shown for any reason while changing state.
+            // Hide user preferences if it is shown for any reason while changing state.
             gadgetRenderer.hidePreferences(gadgetIdModifier.toString());
         }
 
@@ -595,7 +597,6 @@ public class GadgetPanel extends FlowPanel
                     new UpdateHistoryEvent(new CreateUrlRequest("canvas", "true", false)));
             break;
         case MINIMIZED:
-            gadgetDragController.makeDraggable(this, titleBarContainer);
             minimizeButton.addStyleName("minimized");
             renderZone.setStyleName(MINIMIZED_CSS_CLASS);
             break;
@@ -623,7 +624,10 @@ public class GadgetPanel extends FlowPanel
      */
     public void makeGadgetUndraggable()
     {
-        gadgetDragController.makeNotDraggable(this);
+        if (gadgetDragController != null)
+        {
+            gadgetDragController.makeNotDraggable(this);
+        }
     }
 
     /**
