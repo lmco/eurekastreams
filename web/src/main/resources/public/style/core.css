@@ -6293,6 +6293,7 @@ img {
 body .main-contents .header-container {
 	position: relative;
 	padding-bottom: 0px;
+    z-index: 901;
 }
 
 .site-labeling {
