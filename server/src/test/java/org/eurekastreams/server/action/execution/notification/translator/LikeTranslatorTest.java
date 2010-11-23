@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.server.action.execution.notification.translator;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -22,30 +24,52 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+
 
 /**
  * Like translator test.
- *
  */
 public class LikeTranslatorTest
 {
+    /** SUT. */
+    LikeTranslator sut;
+
+    /**
+     * Setup before each test.
+     */
+    @Before
+    public void setUp()
+    {
+        sut = new LikeTranslator();
+    }
+
     /**
      * Translate.
      */
     @Test
     public void translate()
     {
-        LikeTranslator sut = new LikeTranslator();
         Collection<NotificationDTO> notifs = sut.translate(1L, 2L, 3L);
 
         Assert.assertNotNull(notifs);
         Assert.assertEquals(1, notifs.size());
         NotificationDTO notif = notifs.iterator().next();
-        NotificationDTO expected = new NotificationDTO(Arrays.asList(2L),
-                NotificationType.LIKE_ACTIVITY, 1L, 2L, EntityType.PERSON, 3L);
+        NotificationDTO expected = new NotificationDTO(Arrays.asList(2L), NotificationType.LIKE_ACTIVITY, 1L, 2L,
+                EntityType.PERSON, 3L);
         Assert.assertEquals(expected.getActivityId(), notif.getActivityId());
         Assert.assertEquals(expected.getType(), notif.getType());
         Assert.assertEquals(expected.getDestinationId(), notif.getDestinationId());
+    }
+
+    /**
+     * Translate; actor is recipient of action.
+     */
+    @Test
+    public void translateActorIsTarget()
+    {
+        Collection<NotificationDTO> notifs = sut.translate(1L, 1L, 3L);
+        assertTrue(notifs.isEmpty());
     }
 }

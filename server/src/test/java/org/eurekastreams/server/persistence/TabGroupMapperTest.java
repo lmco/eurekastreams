@@ -281,7 +281,7 @@ public class TabGroupMapperTest extends DomainEntityMapperTest
     }
 
     /**
-     * This test is trying to undelete the Tab that is designated as delete in the DBUnity Test Database.
+     * This test is trying to undelete the Tab that is designated as delete in the DBUnit Test Database.
      * 
      * @throws TabUndeletionException
      *             thrown during tab undeletion.
