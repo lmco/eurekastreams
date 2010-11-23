@@ -29,6 +29,7 @@ import org.eurekastreams.server.domain.ResourceSortCriteria;
 import org.eurekastreams.server.domain.ResourceSortCriterion;
 import org.eurekastreams.server.domain.ResourceSortCriterion.SortDirection;
 import org.eurekastreams.server.domain.ResourceSortCriterion.SortField;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SetBannerEvent;
@@ -72,6 +73,7 @@ import org.eurekastreams.web.client.ui.pages.profile.widgets.BreadcrumbPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.ConnectionsPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.OrgAboutPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.PeopleListPanel;
+import org.eurekastreams.web.client.ui.pages.profile.widgets.PopularHashtagsPanel;
 import org.eurekastreams.web.client.utility.BaseActivityLinkBuilder;
 import org.eurekastreams.web.client.utility.InContextActivityLinkBuilder;
 
@@ -220,6 +222,7 @@ public class OrganizationProfilePanel extends FlowPanel
         leftBarPanel.clear();
 
         leftBarPanel.addChildWidget(new OrgAboutPanel(org));
+        leftBarPanel.addChildWidget(new PopularHashtagsPanel(ScopeType.ORGANIZATION, org.getShortName()));
 
         connectionsPanel = new ConnectionsPanel();
         orgDescendantGroupCount = org.getDescendantGroupCount();
