@@ -94,7 +94,7 @@ public class CustomStreamDialogContent implements DialogContent
      * Keywords.
      */
     private String keywords = "";
-    
+
     /**
      * The list form element.
      */
@@ -113,6 +113,12 @@ public class CustomStreamDialogContent implements DialogContent
         body.addStyleName("list-edit-modal");
         view = inStream;
         name = inStream.getName();
+                
+        if (null == name)
+        {
+            mode = Method.INSERT;
+        }
+        
         setUpForm();
 
     }
