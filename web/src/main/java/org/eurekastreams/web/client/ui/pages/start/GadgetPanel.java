@@ -26,8 +26,11 @@ import org.eurekastreams.web.client.events.HideNotificationEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.UpdateGadgetPrefsEvent;
+import org.eurekastreams.web.client.events.UpdateHistoryEvent;
+import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.data.DeletedGadgetResponseEvent;
 import org.eurekastreams.web.client.events.data.UnDeletedGadgetResponseEvent;
+import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.jsni.GadgetRenderer;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.GadgetModel;
@@ -378,7 +381,7 @@ public class GadgetPanel extends FlowPanel
                                 String titleText = metadata.getTitle();
 
                                 helpButton.setVisible(metadata.getViewNames().contains("help"));
-				maximizeButton.setVisible(metadata.getViewNames().contains("canvas"));
+                                maximizeButton.setVisible(metadata.getViewNames().contains("canvas"));
 
                                 delegationOn = metadata.getFeatures().contains("eurekastreams-delegation");
 
@@ -451,6 +454,20 @@ public class GadgetPanel extends FlowPanel
                         }
                     }
                 });
+
+        Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
+                new Observer<UpdatedHistoryParametersEvent>()
+                {
+                    public void update(final UpdatedHistoryParametersEvent arg1)
+                    {
+                        // If we were in canvas mode, and our history token isn't set,
+                        // implying we just hit the back button.
+                        if (arg1.getParameters().get("canvas") == null && gadgetState.equals(State.MAXIMIZED))
+                        {
+                            setGadgetState(State.NORMAL);
+                        }
+                    }
+                });
     }
 
     /**
@@ -476,7 +493,9 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Tell the delegation feature the edit button was clicked.
-     * @param gadgetId the gadget id.
+     *
+     * @param gadgetId
+     *            the gadget id.
      */
     private native void callEditButtonClickedForDelegation(final Long gadgetId)
     /*-{
@@ -519,10 +538,10 @@ public class GadgetPanel extends FlowPanel
 
         if (state != State.MINIMIZED)
         {
-            //Hide user preferences if it is shown for any reason while changing state.
+            // Hide user preferences if it is shown for any reason while changing state.
             gadgetRenderer.hidePreferences(gadgetIdModifier.toString());
         }
-        
+
         switch (state)
         {
         case HELP:
@@ -552,6 +571,8 @@ public class GadgetPanel extends FlowPanel
                 gadgetRenderer.changeContainerView("home");
                 gadgetRenderer.refreshGadgetIFrameUrl(gadgetIdModifier.toString(), viewParams);
             }
+            Session.getInstance().getEventBus().notifyObservers(
+                    new UpdateHistoryEvent(new CreateUrlRequest("canvas", null, false)));
             break;
         case MAXIMIZED:
             makeGadgetUndraggable();
@@ -571,9 +592,10 @@ public class GadgetPanel extends FlowPanel
             minimizeButton.removeStyleName("minimized");
 
             gadgetRenderer.maximizeGadgetZone(this.getElement());
+            Session.getInstance().getEventBus().notifyObservers(
+                    new UpdateHistoryEvent(new CreateUrlRequest("canvas", "true", false)));
             break;
         case MINIMIZED:
-            gadgetDragController.makeDraggable(this, titleBarContainer);
             minimizeButton.addStyleName("minimized");
             renderZone.setStyleName(MINIMIZED_CSS_CLASS);
             break;
@@ -601,7 +623,10 @@ public class GadgetPanel extends FlowPanel
      */
     public void makeGadgetUndraggable()
     {
-        gadgetDragController.makeNotDraggable(this);
+        if (gadgetDragController != null)
+        {
+            gadgetDragController.makeNotDraggable(this);
+        }
     }
 
     /**
