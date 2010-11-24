@@ -12805,6 +12805,47 @@ body .dragdrop-proxy {
 	left: -10000px;
 }
 
+.access-denied .please-note,
+    .access-denied .please-note-desc,
+    .access-denied .please-note-text,
+    .access-denied .launch-page-button
+{
+    width: 270px;
+    float: right;
+    clear: both;
+}
+
+.access-denied .please-note
+{
+    margin-top: 20px;
+    font-weight: bold;
+    color: #0066CC;
+}
+
+.access-denied .please-note-desc
+{
+    font-weight: bold;
+    line-height: 1.5em;
+    margin: 5px 0;
+    color: black;
+}
+
+.access-denied .please-note-text
+{
+    color: black;
+    line-height: 1.4em;
+}
+
+.access-denied .launch-page-button
+{
+    background: url(images/LaunchPageBtn.png) no-repeat;
+    display: block;
+    height: 25px;
+    margin-top: 10px;
+    text-indent: 1000em;
+    overflow: hidden;
+}
+
 /******************************************************************************
  * Notifications
  *****************************************************************************/

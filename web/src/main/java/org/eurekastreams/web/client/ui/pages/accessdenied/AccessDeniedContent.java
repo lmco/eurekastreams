@@ -23,6 +23,7 @@ import org.eurekastreams.web.client.ui.HistoryState;
 import org.eurekastreams.web.client.ui.Session;
 
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -63,10 +64,33 @@ public class AccessDeniedContent extends Composite implements Bindable
 
         FlowPanel accessDeniedPanel = new FlowPanel();
         accessDeniedPanel.addStyleName("notice");
-        accessDeniedPanel.add(new HTML("You do not currently have access to Eureka Streams, " + ""
-                + "to request access please contact "
+        accessDeniedPanel.add(new HTML("You do not have access to Eureka Streams. "
+                + "Eureka Streams is currently available to U.S. based U.S. "
+                + "person Lockheed Martin IS&GS employees and other Lockheed Martin employees "
+                + "directly supporting IS&GS.  To request access please contact our "
                 + "<a href='mailto:support@eurekastreams.org?subject=Request%20Access'>our product support team</a>"));
         panel.add(accessDeniedPanel);
+        
+        Label pleaseNote = new Label("Please Note:");
+        pleaseNote.addStyleName("please-note");
+        
+        Label pleaseNoteDesc = new Label("International, Subcontractor, Customer, and Other Lockheed Martin Employees");
+        pleaseNoteDesc.addStyleName("please-note-desc");
+        
+        Label pleaseNoteText = new Label("On December 1st 2010 the IS&GS Passport service was retired. An alternate "
+                + "homepage has been setup with links to the IS&GS Communications and "
+                + "A-Z Listings websites. Through these two websites, users will be able "
+                + "to access all the key information and resources that were available through Passport.");
+        pleaseNoteText.addStyleName("please-note-text");
+        
+        Anchor launchPage = new Anchor("Lauch", "http://communications.isgs.lmco.com/transition", "_NEW");
+        launchPage.addStyleName("launch-page-button");
+
+        panel.add(accessDeniedPanel);
+        panel.add(pleaseNote);
+        panel.add(pleaseNoteDesc);
+        panel.add(pleaseNoteText);
+        panel.add(launchPage);
         initWidget(panel);
 
         Session.getInstance().getEventBus().addObserver(FormLoginCompleteEvent.class,
