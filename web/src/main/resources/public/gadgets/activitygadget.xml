@@ -195,7 +195,17 @@
 		function activityNav(activityId)
 		{
 		    var prefs_ = new gadgets.Prefs();
-            eurekastreams.core.navigate(prefs_.getString("streamLocation") + "&showComment=true&activityId=" + activityId);
+            var streamLocation = prefs_.getString("streamLocation");
+            var suffix = "showComment=true&activityId=" + activityId;
+            
+            if (streamLocation.indexOf('?') == -1)
+            {
+                eurekastreams.core.navigate(streamLocation  + "?" + suffix);
+            }
+            else
+            {
+                eurekastreams.core.navigate(streamLocation  + "&" + suffix);
+            }
 		}
 		
 		function getFooter(prefs_)

@@ -6971,7 +6971,6 @@ div.close-button a:hover {
 
 .lookup-description {
 	text-align: left;
-	font-weight: bold;
 	border-bottom: 1px solid #999999;
 	padding-bottom: 10px;
 }
@@ -13426,7 +13425,7 @@ div.tab-container table.dragdrop-dropTarget-engage {
 	{
 	padding-left: 20px;
 	padding-right: 20px;
-	padding-bottom: 20px;
+	padding-bottom: 10px;
 }
 
 .share-message-dialog-body {
@@ -13550,6 +13549,16 @@ div.tab-container table.dragdrop-dropTarget-engage {
 .stream-search-dialog-body  .view-panel>.view-text {
 	font-size: 12px;
 	padding-left: 5px;
+}
+
+body .stream-view-dialog .delete-button
+{
+    top: -35px;
+}
+
+.stream-view-dialog .form-container .form-cancel-button
+{
+    padding-bottom: 10px;
 }
 
 .stream-view-dialog .form-container .form-submit-spinny { 
