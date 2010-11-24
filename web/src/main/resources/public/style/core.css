@@ -13109,7 +13109,7 @@ body .user-bar li div.notif-count:hover {
 
 .notif-entry {
 	border-top: 1px solid #CCC;
-	background-color: #DDD;
+	background-color: #e6e6e6;
 }
 
 .notif-entry:first-child {
@@ -13121,10 +13121,12 @@ body .user-bar li div.notif-count:hover {
 	width: 24px;
 	height: 25px;
 	margin-left: 4px;
-	margin-top: 10px;
 	background-color: transparent;
 	background-repeat: no-repeat;
 	background-attachment: scroll;
+	padding-left: 0;
+	min-height: 0;
+	margin-top: 10px;
 }
 
 .notif-entry .notif-text-side {
@@ -13160,6 +13162,11 @@ body .user-bar li div.notif-count:hover {
 .notif-entry-new-group .icon {
 	background-image: url(images/notificationsIconsSprite.png);
 	background-position: 0px -100px;
+}
+
+.notif-entry-like .icon {
+	background-image: url(images/notificationsIconsSprite.png);
+	background-position: 0px -120px;
 }
 
 .notif-no-notifications {
