@@ -489,7 +489,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         }
 
         // Save/Unsave
-        if (verbRenderer.getAllowStar())
+        if (verbRenderer.getAllowStar() && msg.isStarred() != null)
         {
             insertActionSeparator(actionsPanel);
             Widget star = new StarLinkWidget(msg.isStarred(), msg.getEntityId());

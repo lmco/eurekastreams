@@ -19,7 +19,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
@@ -33,7 +33,7 @@ public class BaseDomainMapper
     /**
      * The logger.
      */
-    private final Log log = LogFactory.getLog(BaseDomainMapper.class);
+    private final Log log = LogFactory.make();
 
     /**
      * EntityManager to use for all ORM operations.

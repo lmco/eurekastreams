@@ -36,6 +36,12 @@ import com.google.gwt.user.client.ui.Label;
  */
 public class Pager extends FlowPanel
 {
+    /** Name of URL parameter for start index. */
+    public static final String URL_PARAM_START_INDEX = "startIndex";
+
+    /** Name of URL parameter for end index. */
+    public static final String URL_PARAM_END_INDEX = "endIndex";
+
     /**
      * The pager id allows us to have multiple of these pagers on the screen that can all update each other but not
      * other pagers that remain unaffected.
@@ -48,7 +54,7 @@ public class Pager extends FlowPanel
     /**
      * Default total.
      */
-    private static final Integer DEFAULT_TOTAL = 11;
+    private static final Integer DEFAULT_TOTAL = DEFAULT_PAGE_SIZE + 1;
     /**
      * Start index.
      */
@@ -69,16 +75,16 @@ public class Pager extends FlowPanel
     /**
      * Total label.
      */
-    private Label totalLabel = new Label("");
+    private final Label totalLabel = new Label("");
 
     /**
      * The back page button.
      */
-    private Anchor prev = new Anchor("previous");
+    private final Anchor prev = new Anchor("previous");
     /**
      * The forward page button.
      */
-    private Anchor next = new Anchor("next");
+    private final Anchor next = new Anchor("next");
 
     /**
      * Default constructor.
@@ -94,7 +100,7 @@ public class Pager extends FlowPanel
         this.addStyleName("pager-container");
         final Pager thisBuffered = this;
 
-        if (showPageButtons && total > pageSize)
+        if (showPageButtons)
         {
             this.add(next);
             next.addStyleName("pager-forward");
@@ -107,10 +113,10 @@ public class Pager extends FlowPanel
                         startIndex += pageSize;
                         endIndex += pageSize;
                         Session.getInstance().getEventBus().notifyObservers(new PagerUpdatedEvent(thisBuffered));
-                        
+
                         HashMap<String, String> params = new HashMap<String, String>();
-                        params.put("startIndex", startIndex.toString());
-                        params.put("endIndex", endIndex.toString());
+                        params.put(URL_PARAM_START_INDEX, startIndex.toString());
+                        params.put(URL_PARAM_END_INDEX, endIndex.toString());
 
                         Session.getInstance().getEventBus().notifyObservers(
                                 new UpdateHistoryEvent(new CreateUrlRequest(params, false)));
@@ -129,10 +135,10 @@ public class Pager extends FlowPanel
                         startIndex -= pageSize;
                         endIndex -= pageSize;
                         Session.getInstance().getEventBus().notifyObservers(new PagerUpdatedEvent(thisBuffered));
-                        
+
                         HashMap<String, String> params = new HashMap<String, String>();
-                        params.put("startIndex", startIndex.toString());
-                        params.put("endIndex", endIndex.toString());
+                        params.put(URL_PARAM_START_INDEX, startIndex.toString());
+                        params.put(URL_PARAM_END_INDEX, endIndex.toString());
 
                         Session.getInstance().getEventBus().notifyObservers(
                                 new UpdateHistoryEvent(new CreateUrlRequest(params, false)));
@@ -253,10 +259,10 @@ public class Pager extends FlowPanel
     {
         return startIndex;
     }
-    
+
     /**
      * Set the startIndex.
-     * 
+     *
      * @param inStartIndex
      *            the startIndex.
      */
@@ -277,7 +283,7 @@ public class Pager extends FlowPanel
 
     /**
      * Set the endIndex.
-     * 
+     *
      * @param inEndIndex
      *          the endIndex.
      */
@@ -294,5 +300,13 @@ public class Pager extends FlowPanel
     public String getPagerId()
     {
         return pagerId;
+    }
+
+    /**
+     * @return the page size.
+     */
+    public Integer getPageSize()
+    {
+        return pageSize;
     }
 }
