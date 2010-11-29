@@ -150,25 +150,25 @@
                 
         		var activityJSON = opensocial.data.DataContext.getDataSet("activityDataSet");
 
-                if (activityJSON.code == "404")
+                if (activityJSON.status != "200")
                 {
                     var streamType = prefs_.getString("streamType");
-                    var niceType = "Stream";
+                    var niceType = "stream";
                     
                     if (streamType == "streamsearch")
                     {
-                    	niceType = "Saved Search";
+                    	niceType = "saved search";
                     }
                     if (streamType == "compositestream")
                     {
-                    	niceType = "List";
+                    	niceType = "list";
                     }
                     else if (streamType == "groupstream")
                     {
-                    	niceType = "Group";
+                    	niceType = "group";
                     }
                     
-                    var message = "The '" + cleanTitle + "' " + niceType + " has been removed from the Activity page.  This gadget will no longer display content. Please remove from your start page.";
+                    var message = "There was an error retrieving this " + niceType + ".  Please ensure the " + niceType + " still exists then refresh the app to try again.";
                     var jsonMsg = {'message' : message};
                 	opensocial.template.getTemplate('uos:errorTemplate').renderInto(document.getElementById('activity-view'), jsonMsg);
                 }
@@ -195,7 +195,17 @@
 		function activityNav(activityId)
 		{
 		    var prefs_ = new gadgets.Prefs();
-            eurekastreams.core.navigate(prefs_.getString("streamLocation") + "&showComment=true&activityId=" + activityId);
+            var streamLocation = prefs_.getString("streamLocation");
+            var suffix = "showComment=true&activityId=" + activityId;
+            
+            if (streamLocation.indexOf('?') == -1)
+            {
+                eurekastreams.core.navigate(streamLocation  + "?" + suffix);
+            }
+            else
+            {
+                eurekastreams.core.navigate(streamLocation  + "&" + suffix);
+            }
 		}
 		
 		function getFooter(prefs_)
@@ -205,8 +215,8 @@
 		</script>
 
 		<script type="text/os-data" xmlns:os="http://ns.opensocial.org/2008/markup" >
-            		<os:OwnerRequest key="databindowner" />
-			<os:HttpRequest refreshInterval="0"  key="activityDataSet" href="${build.web.baseurl}/resources/stream/${databindowner.id}/${UserPrefs.streamQuery}" />
+			<os:OwnerRequest key="databindowner" />
+			<os:HttpRequest refreshInterval="0"  key="activityDataSet" href="${build.web.baseurl}/resources/stream/${databindowner.id}/${UserPrefs.streamQuery}" authz="OAUTH" oauth_use_token="never" oauth_service_name="eurekastreams" sign_owner="false" sign_viewer="false"  />
 		</script>		
 
 		
@@ -218,7 +228,8 @@
 			  <div class="description">
 			  	<div class="message-container DEFAULT">
 				  	<strong if="${actorUniqueIdentifier == destinationUniqueIdentifier}">
-						 <a href="javascript:eurekastreams.core.navigate('people/${actorUniqueIdentifier}')">${actorDisplayName}</a>
+						 <a if="${destinationType == 'PERSON'}" href="javascript:eurekastreams.core.navigate('people/${actorUniqueIdentifier}')">${actorDisplayName}</a>
+						 <a if="${destinationType == 'GROUP'}" href="javascript:eurekastreams.core.navigate('groups/${actorUniqueIdentifier}')">${actorDisplayName}</a>
 					</strong>
 				  	<strong if="${actorUniqueIdentifier != destinationUniqueIdentifier}">
 						 <a href="javascript:eurekastreams.core.navigate('people/${actorUniqueIdentifier}')">${actorDisplayName}</a>
@@ -269,7 +280,7 @@
 		</script>
 
         <script type="text/os-template" xmlns:os="http://ns.opensocial.org/2008/markup" xmlns:os="http://eurekastreams.org" tag="uos:errorTemplate">
-            <div class="error">Content no longer valid</div>
+            <div class="error">Error retrieving content</div>
             <div class="error-details">${message}</div>
         </script>
         

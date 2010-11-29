@@ -73,7 +73,13 @@ public class NotificationCountWidget extends Composite
                         }
                     }
                 });
+    }
 
+    /**
+     * Init the data.
+     */
+    public void init()
+    {
         Session.getInstance().getTimer().addTimerJob("getNotificationCountTimerJob", 1,
                 NotificationCountModel.getInstance(), null, true);
 

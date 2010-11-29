@@ -32,7 +32,7 @@ public class DocumentationHelpPanel extends FlowPanel
      * @return the eureka streams url
      */
     private static native String getEurekaStreamsUrl() /*-{
-                    return $wnd.eurekastreams.container.getExternalUrl();
+                    return $wnd.eurekastreams.util.getExternalUrl();
                 }-*/;
 
     /**

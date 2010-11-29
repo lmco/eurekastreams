@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:oauth="http://spring-security-oauth.codehaus.org/3.0"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.4.xsd
+		http://spring-security-oauth.codehaus.org/3.0 http://spring-security-oauth.codehaus.org/schema/spring-security-oauth-3.0.xsd">
+	
+	
+	<oauth:provider consumer-details-service-ref="consumerDetails" token-services-ref="tokenServices" require10a="false" support-ref="coreOAuthProviderSupport"/>
+	
+	<bean id="coreOAuthProviderSupport" class="org.springframework.security.oauth.provider.CoreOAuthProviderSupport">
+		<property name="baseUrl" value="${eureka.web.baseurl}"/>
+	</bean>
+    
+	<bean id="consumerDetails" class="org.eurekastreams.server.service.security.oauth.ConsumerDetailsServiceImpl">
+		<constructor-arg ref="serviceActionController" />
+		<constructor-arg ref="getOAuthConsumerByConsumerKey" />
+		<constructor-arg value="ROLE_OAUTH_CLIENT" />
+	</bean>
+	
+	<oauth:token-services id="tokenServices"/>
+</beans>

@@ -19,7 +19,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
@@ -33,7 +33,7 @@ public class BaseDomainMapper
     /**
      * The logger.
      */
-    private Log log = LogFactory.getLog(BaseDomainMapper.class);
+    private final Log log = LogFactory.make();
 
     /**
      * EntityManager to use for all ORM operations.
@@ -42,15 +42,19 @@ public class BaseDomainMapper
 
     /**
      * Set the entity manager to use for all ORM operations.
-     * 
+     *
      * @param inEntityManager
      *            the EntityManager to use for all ORM operations.
      */
     @PersistenceContext
     public void setEntityManager(final EntityManager inEntityManager)
     {
-        this.entityManager = inEntityManager;
-        log.debug("set the entity manager to " + getEntityManager().toString() + " for object: " + this.toString());
+        entityManager = inEntityManager;
+        if (log.isDebugEnabled())
+        {
+            log.debug("set the entity manager to " + (entityManager == null ? "NULL" : entityManager.toString())
+                    + " for object: " + this.toString());
+        }
     }
 
     /**
@@ -58,21 +62,24 @@ public class BaseDomainMapper
      */
     protected EntityManager getEntityManager()
     {
-        if (this.entityManager != null)
+        if (entityManager != null)
         {
-            log.debug("getting the entity manager named " + entityManager.toString() 
-                    + " from object: " + this.toString());
+            if (log.isDebugEnabled())
+            {
+                log.debug("getting the entity manager named " + entityManager.toString() + " from object: "
+                        + this.toString());
+            }
         }
         else
         {
-            log.debug("the entity manager for object: " + this.toString() + " is null");            
+            log.warn("the entity manager for object: " + this.toString() + " is null");
         }
         return entityManager;
     }
 
     /**
      * Get the Hibernate session from the EntityManager.
-     * 
+     *
      * @return the Hibernate session from the EntityManager.
      */
     protected Session getHibernateSession()
@@ -99,7 +106,7 @@ public class BaseDomainMapper
 
     /**
      * Build the PropertyProjection with alias.
-     * 
+     *
      * @param propertyName
      *            the property name
      * @return the PropertyProjection with alias

@@ -24,15 +24,18 @@ public class SwitchToFilterOnPagedFilterPanelEvent
     /**
      * The list id.
      */
-    private String listId;
+    private final String listId;
     /**
      * Name of the filter.
      */
-    private String name = "";
+    private final String name;
     /**
      * Sort key.
      */
     private String sortKey = "";
+
+    /** If this event was initiated from a URL change. This tells the event handling to not further change the URL. */
+    private boolean fromUrlChange;
 
     /**
      * Constructor that only has name.
@@ -60,7 +63,29 @@ public class SwitchToFilterOnPagedFilterPanelEvent
     }
 
     /**
+     * Constructor that has name and sort key.
+     *
+     * @param inListId
+     *            list id.
+     * @param inName
+     *            name.
+     * @param inSortKey
+     *            sortKey.
+     * @param inFromUrlChange
+     *            If this event was initiated from a URL change.
+     */
+    public SwitchToFilterOnPagedFilterPanelEvent(final String inListId, final String inName, final String inSortKey,
+            final boolean inFromUrlChange)
+    {
+        listId = inListId;
+        name = inName;
+        sortKey = inSortKey;
+        fromUrlChange = inFromUrlChange;
+    }
+
+    /**
      * Get sort key.
+     *
      * @return sort key.
      */
     public String getSortKey()
@@ -84,5 +109,13 @@ public class SwitchToFilterOnPagedFilterPanelEvent
     public String getListId()
     {
         return listId;
+    }
+
+    /**
+     * @return If this event was initiated from a URL change.
+     */
+    public boolean isFromUrlChange()
+    {
+        return fromUrlChange;
     }
 }

@@ -256,6 +256,12 @@
             <artifactId>gwt-dnd</artifactId>
             <version>2.6.5.2</version>
         </dependency>
+        <!-- Uncomment to enable GWT logging -->
+		<!--<dependency>
+		    <groupId>com.google.code.gwt-log</groupId>
+		    <artifactId>gwt-log</artifactId>
+		    <version>2.6.2</version>
+		</dependency>-->
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
@@ -405,23 +411,21 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.1</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.6</version>
                 <executions>
                     <execution>
                         <id>create lib folder</id>
                         <phase>prepare-package</phase>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>run</goal>
                         </goals>
                         <configuration>
-                            <executable>mkdir</executable>
-                            <arguments>
-									<argument>-p</argument>
-									<argument>${project.build.directory}/unpack/lib-bin</argument>
-									<argument>${project.build.directory}/unpack/lib-java</argument>
-                            </arguments>
+                        	<target>
+                        		<mkdir dir="${project.build.directory}/unpack/lib-bin" />
+                        		<mkdir dir="${project.build.directory}/unpack/lib-java" />
+                        	</target>
                         </configuration>
                     </execution>
                 </executions>
@@ -794,6 +798,7 @@
                                 <exclude>org/eurekastreams/web/client/**/*JSNIFacadeImpl.java</exclude>
                                 <exclude>org/eurekastreams/web/client/**/*GalleryRenderer.java</exclude>
                                 <exclude>org/eurekastreams/web/client/**/StreamSearchLinkBuilder.java</exclude>
+                                <exclude>org/eurekastreams/web/client/**/HideModalDialog</exclude>
                                 <exclude>org/eurekastreams/web/client/AnonymousClassInterceptor.java</exclude>
                                 <exclude>org/eurekastreams/web/rebind/HashedBindableGenerator.java</exclude>
                                 <exclude>org/eurekastreams/web/**/*GuiceModule.java</exclude>

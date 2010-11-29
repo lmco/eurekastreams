@@ -6287,18 +6287,24 @@ img {
 	-ms-interpolation-mode: bicubic;
 }
 
+.inline-panel
+{
+	display: inline;
+}
+
 /******************************************************************************
  * Header
  *****************************************************************************/
 body .main-contents .header-container {
 	position: relative;
 	padding-bottom: 0px;
+    z-index: 901;
 }
 
 .site-labeling {
 	width: 100%;
 	text-align: center;
-	color: #999999;
+	color: #CCC;
 	background-color: transparent;
 	min-height: 16px;
 	clear: both;
@@ -6970,7 +6976,6 @@ div.close-button a:hover {
 
 .lookup-description {
 	text-align: left;
-	font-weight: bold;
 	border-bottom: 1px solid #999999;
 	padding-bottom: 10px;
 }
@@ -8538,7 +8543,8 @@ body .post-to-stream .post-button.inactive {
 	font-size: 14px;
 }
 
-.message-metadata-source>* :first-child {
+.message-metadata-source > *:first-child 
+{
 	margin-right: 5px;
 }
 
@@ -13109,7 +13115,7 @@ body .user-bar li div.notif-count:hover {
 
 .notif-entry {
 	border-top: 1px solid #CCC;
-	background-color: #DDD;
+	background-color: #e6e6e6;
 }
 
 .notif-entry:first-child {
@@ -13121,10 +13127,12 @@ body .user-bar li div.notif-count:hover {
 	width: 24px;
 	height: 25px;
 	margin-left: 4px;
-	margin-top: 10px;
 	background-color: transparent;
 	background-repeat: no-repeat;
 	background-attachment: scroll;
+	padding-left: 0;
+	min-height: 0;
+	margin-top: 10px;
 }
 
 .notif-entry .notif-text-side {
@@ -13160,6 +13168,11 @@ body .user-bar li div.notif-count:hover {
 .notif-entry-new-group .icon {
 	background-image: url(images/notificationsIconsSprite.png);
 	background-position: 0px -100px;
+}
+
+.notif-entry-like .icon {
+	background-image: url(images/notificationsIconsSprite.png);
+	background-position: 0px -120px;
 }
 
 .notif-no-notifications {
@@ -13425,7 +13438,7 @@ div.tab-container table.dragdrop-dropTarget-engage {
 	{
 	padding-left: 20px;
 	padding-right: 20px;
-	padding-bottom: 20px;
+	padding-bottom: 10px;
 }
 
 .share-message-dialog-body {
@@ -13549,6 +13562,16 @@ div.tab-container table.dragdrop-dropTarget-engage {
 .stream-search-dialog-body  .view-panel>.view-text {
 	font-size: 12px;
 	padding-left: 5px;
+}
+
+body .stream-view-dialog .delete-button
+{
+    top: -35px;
+}
+
+.stream-view-dialog .form-container .form-cancel-button
+{
+    padding-bottom: 10px;
 }
 
 .stream-view-dialog .form-container .form-submit-spinny { 

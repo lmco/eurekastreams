@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
- * Implementation of UnityDialog.
+ * Implementation of Dialog.
  */
 public class Dialog extends PopupPanel
 {

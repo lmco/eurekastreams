@@ -30,7 +30,7 @@ public class LikeActivityMessageRenderer extends NotificationMessageRenderer
     @Override
     public String getStyleName()
     {
-        return "notif-entry-comment";
+        return "notif-entry-like";
     }
 
     /**

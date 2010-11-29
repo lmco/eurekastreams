@@ -17,7 +17,10 @@ package org.eurekastreams.web.client.ui.common.dialog.optoutvideo;
 
 import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.server.domain.TutorialVideoDTO;
+import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.PreDialogHideEvent;
 import org.eurekastreams.web.client.model.OptOutVideosModel;
+import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.FlashWidget;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicCheckBoxFormElement;
@@ -28,8 +31,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * COntent for the optoutvideo dialog.
- * 
+ * Content for the optoutvideo dialog.
  */
 public class OptOutableVideoDialogContent implements DialogContent
 {
@@ -39,7 +41,7 @@ public class OptOutableVideoDialogContent implements DialogContent
     public static final Integer MARGIN_OFFSET = 60;
 
     /**
-     * used to bring the video up higher on the screen.
+     * Used to bring the video up higher on the screen.
      */
     public static final Integer DIALOG_HEIGHT_OFFSET = 109;
 
@@ -63,27 +65,31 @@ public class OptOutableVideoDialogContent implements DialogContent
     private WidgetCommand closeCommand = null;
 
     /**
-     * content body.
+     * Content body.
      */
     private FlowPanel body = new FlowPanel();
 
     /**
-     * don't show again checkbox.
+     * "Don't show again" checkbox.
      */
     private BasicCheckBoxFormElement dontShowAgain;
 
     /**
-     * the video details this is displaying.
+     * Video details being displayed.
      */
     private TutorialVideoDTO tutorialVideo;
 
     /**
+     * The flash content itself.
+     */
+    FlashWidget flashVideo;
+
+    /**
      * @param inTutorialVideo
-     *            the tutorialvideo you wisht o display.
+     *            the tutorialvideo to be displayed.
      */
     public OptOutableVideoDialogContent(final TutorialVideoDTO inTutorialVideo)
     {
-
         tutorialVideo = inTutorialVideo;
         title = inTutorialVideo.getDialogTitle();
 
@@ -107,13 +113,20 @@ public class OptOutableVideoDialogContent implements DialogContent
 
         if (inTutorialVideo.getVideoUrl() != null)
         {
-            FlashWidget flashVideo = new FlashWidget();
+            flashVideo = new FlashWidget();
             flashVideo.setFlashWidget(tutorialVideo.getVideoUrl(), ((Long) tutorialVideo.getEntityId()).toString(),
                     tutorialVideo.getVideoWidth(), tutorialVideo.getVideoHeight());
             flashVideo.addStyleName("content_video");
             body.add(flashVideo);
         }
 
+        Session.getInstance().getEventBus().addObserver(PreDialogHideEvent.class, new Observer<PreDialogHideEvent>()
+        {
+            public void update(final PreDialogHideEvent event)
+            {
+                nativeStop(flashVideo.getVideoName());
+            }
+        });
     }
 
     /**
@@ -121,10 +134,8 @@ public class OptOutableVideoDialogContent implements DialogContent
      */
     public ClickListener closeDialog()
     {
-
         return new ClickListener()
         {
-
             public void onClick(final Widget inSender)
             {
                 if ((Boolean) dontShowAgain.getValue())
@@ -132,7 +143,6 @@ public class OptOutableVideoDialogContent implements DialogContent
                     OptOutVideosModel.getInstance().insert(tutorialVideo.getEntityId());
                 }
             }
-
         };
     }
 
@@ -193,4 +203,17 @@ public class OptOutableVideoDialogContent implements DialogContent
         // Nothing special to do here.
     }
 
+    /**
+     * Stops the video.
+     * 
+     * @param movieName
+     *            the name of the movie to stop.
+     */
+    private static native void nativeStop(final String movieName) /*-{
+                                                                  var movie = $doc[movieName];
+                                                                  if (movie != null)
+                                                                  {
+                                                                  movie.StopPlay();
+                                                                  }
+                                                                  }-*/;
 }

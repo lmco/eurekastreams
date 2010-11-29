@@ -4,31 +4,31 @@ if (typeof eurekastreams.delegation == "undefined" || !eurekastreams.delegation)
 
 eurekastreams.delegation = function()
 {
-	var currentDelegator;
-	var section;
+    var currentDelegator;
+    var section;
     return{
         getCurrentDelegator : function()
         {
                 return this.currentDelegator;
         },
-    	clearDelegate : function()
-    	{
-        	var params = gadgets.util.getUrlParameters();
-        	var mid = params["mid"];
-        	
-       		var url = "${build.app.baseurl}/resources/delegation/delegator";
-       		var params={};
-       		params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.DELETE;
-       		params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
-       		params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
-       		params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "eurekaapps";
-       		params[gadgets.io.RequestParameters.OAUTH_USE_TOKEN] = "never";
-       		params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 1;
-       		gadgets.io.makeRequest(url, function(results) { gadgets.rpc.call(null, "refreshGadget", null, mid); }, params);
-    	},
-    	displayCurrentDelegator : function(ntid)
-    	{
-	    this.currentDelegator = ntid;
+        clearDelegate : function()
+        {
+            var params = gadgets.util.getUrlParameters();
+            var mid = params["mid"];
+            
+            var url = "${build.app.baseurl}/resources/delegation/delegator";
+            var params={};
+            params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.DELETE;
+            params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
+            params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
+            params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "eurekaapps";
+            params[gadgets.io.RequestParameters.OAUTH_USE_TOKEN] = "never";
+            params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 1;
+            gadgets.io.makeRequest(url, function(results) { gadgets.rpc.call(null, "refreshGadget", null, mid); }, params);
+        },
+        displayCurrentDelegator : function(ntid)
+        {
+            this.currentDelegator = ntid;
             var req = opensocial.newDataRequest();
 
             var friendspec = opensocial.newIdSpec({userId : [ntid], groupId : 'ALL'});
@@ -40,51 +40,52 @@ eurekastreams.delegation = function()
                      friendsData.each(
                      function(person) 
                      {
-                  		var currDel = jQuery("<div class='currently-delegating'>Delegating For: " + person.getDisplayName() + "</div>")
-                		currDel.css("background","url('${build.app.baseurl}/style/images/gadget-table-header-30.png')");
-                		currDel.css("color","white");
-                		currDel.css("font-weight","bold");
-                		currDel.css("padding","6px");
-                		currDel.css("height","18px");
-                		currDel.css("font-size","13px");
-                		currDel.css("*top","-15px");
-                		currDel.css("*position","relative");
-                		
-                		var clearDelLink = jQuery("<a href='javascript:eurekastreams.delegation.clearDelegate()'>X</a>");
-                		clearDelLink.css("background","url('${build.app.baseurl}/style/images/delegating-for-x.png')");
-                		clearDelLink.css("float", "right");
-                		clearDelLink.css("height", "21px");
-                		clearDelLink.css("width", "20px");
-                		clearDelLink.css("text-indent", "-1000em");
-                		clearDelLink.css("overflow", "hidden");
-                		clearDelLink.css("margin-top", "-2px");
-                		
-                		currDel.append(clearDelLink);
-                		jQuery("body").prepend(currDel);
-                		Eureka.resize();
+                        var currDel = jQuery("<div class='currently-delegating'>Delegating For: " + person.getDisplayName() + "</div>")
+                        currDel.css("background","url('${build.app.baseurl}/style/images/gadget-table-header-30.png')");
+                        currDel.css("color","white");
+                        currDel.css("font-weight","bold");
+                        currDel.css("padding","6px");
+                        currDel.css("height","18px");
+                        currDel.css("font-size","13px");
+                        currDel.css("*top","-15px");
+                        currDel.css("*position","relative");
+                        
+                        var clearDelLink = jQuery("<a href='javascript:eurekastreams.delegation.clearDelegate()'>X</a>");
+                        clearDelLink.css("background","url('${build.app.baseurl}/style/images/delegating-for-x.png')");
+                        clearDelLink.css("float", "right");
+                        clearDelLink.css("height", "21px");
+                        clearDelLink.css("width", "20px");
+                        clearDelLink.css("text-indent", "-1000em");
+                        clearDelLink.css("overflow", "hidden");
+                        clearDelLink.css("margin-top", "-2px");
+                        
+                        currDel.append(clearDelLink);
+                        jQuery("body").prepend(currDel);
+                        Eureka.resize();
                      });
                     
                  }
              });
-    	},
-    	setDelegate : function(ntid)
-    	{
+        },
+        setDelegate : function(ntid)
+        {
+            this.currentDelegator = ntid;
             var params = gadgets.util.getUrlParameters();
             var mid = params["mid"];
             
-           	var url = "${build.app.baseurl}/resources/delegation/delegator/" + ntid;
-        	var params={};
-        	params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.PUT;
+            var url = "${build.app.baseurl}/resources/delegation/delegator/" + ntid;
+            var params={};
+            params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.PUT;
             params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
-       		params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
-       		params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "eurekaapps";
-       		params[gadgets.io.RequestParameters.OAUTH_USE_TOKEN] = "never";
+            params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
+            params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "eurekaapps";
+            params[gadgets.io.RequestParameters.OAUTH_USE_TOKEN] = "never";
             params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 1;
             gadgets.io.makeRequest(url, function(results) { gadgets.rpc.call(null, "refreshGadget", null, mid); }, params);
-    	},
+        },
         insertDropDown : function(data, container)
         {
-    		 var req = opensocial.newDataRequest();
+             var req = opensocial.newDataRequest();
 
              var friendspec = opensocial.newIdSpec({userId : data, groupId : 'ALL'});
              req.add(req.newFetchPeopleRequest(friendspec), 'viewerfriends');
@@ -101,7 +102,7 @@ eurekastreams.delegation = function()
                       friendsData.each(
                       function(person) 
                       {
-                    	  html += "<option value='" + person.getField('accounts')[0].username + "'>" + person.getDisplayName() + "</option>";
+                          html += "<option value='" + person.getField('accounts')[0].username + "'>" + person.getDisplayName() + "</option>";
                       });
 
                       html += "</select>";
@@ -113,72 +114,70 @@ eurekastreams.delegation = function()
         },
         setup : function(ex)
         {
-        		this.refreshDelegates();
-                this.spin();
+            this.refreshDelegates();
+            this.spin();
 
-                var container = jQuery("<div class='delegation-dropdown'></div>");
-            	var url = "${build.app.baseurl}/resources/delegation/delegators";
-            	var params={};
-            	params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
-                params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
-           		params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
-           		params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "eurekaapps";
-           		params[gadgets.io.RequestParameters.OAUTH_USE_TOKEN] = "never";
-                params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 1;
-                gadgets.io.makeRequest(url, function(results) { eurekastreams.delegation.insertDropDown(results.data.delegators, container); }, params);
+            var container = jQuery("<div class='delegation-dropdown'></div>");
+            var url = "${build.app.baseurl}/resources/delegation/delegators";
+            var params={};
+            params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
+            params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
+            params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
+            params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "eurekaapps";
+            params[gadgets.io.RequestParameters.OAUTH_USE_TOKEN] = "never";
+            params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 1;
+            gadgets.io.makeRequest(url, function(results) { eurekastreams.delegation.insertDropDown(results.data.delegators, container); }, params);
              
-                
-            	var url = "${build.app.baseurl}/resources/delegation/delegator/current";
-            	var params={};
-            	params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
-                params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
-           		params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
-           		params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "eurekaapps";
-           		params[gadgets.io.RequestParameters.OAUTH_USE_TOKEN] = "never";
-                params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 1;
-                gadgets.io.makeRequest(url, function(results) { if (results.data.currentDelegator != null && results.data.currentDelegator != "null" && results.data.currentDelegator != "" ) 
-                	{ eurekastreams.delegation.displayCurrentDelegator(results.data.currentDelegator); }}, params);
+            var url = "${build.app.baseurl}/resources/delegation/delegator/current";
+            var params={};
+            params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
+            params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
+            params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
+            params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "eurekaapps";
+            params[gadgets.io.RequestParameters.OAUTH_USE_TOKEN] = "never";
+            params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 1;
+            gadgets.io.makeRequest(url, function(results) { if (results.data.currentDelegator != null && results.data.currentDelegator != "null" && results.data.currentDelegator != "" ) 
+                { eurekastreams.delegation.displayCurrentDelegator(results.data.currentDelegator); }}, params);
              
 
-                section = ex.addSection("Delegation", container, false);
-                section.addClass("delegation");
-		section.hide();
-                
+            section = ex.addSection("Delegation", container, false);
+            section.addClass("delegation");
+            section.hide();
         },
         refreshDelegates : function()
         {
             var params = gadgets.util.getUrlParameters();
             var mid = params["mid"];
             
-        	var url = "${build.app.baseurl}/resources/delegation/delegates";
-        	var params={};
-        	params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
+            var url = "${build.app.baseurl}/resources/delegation/delegates";
+            var params={};
+            params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
             params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
-       		params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
-       		params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "eurekaapps";
-       		params[gadgets.io.RequestParameters.OAUTH_USE_TOKEN] = "never";
+            params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
+            params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "eurekaapps";
+            params[gadgets.io.RequestParameters.OAUTH_USE_TOKEN] = "never";
             params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 1;
             gadgets.io.makeRequest(url, function(results) { gadgets.rpc.call(null, "setupDelegation", null, mid, results.data.delegates); }, params);
         },
         makeRequest : function(request)
         {
 
-        	var requestArr = request.split(":");
-        	var url = "${build.app.baseurl}/resources/delegation/delegate/" + requestArr[1];
-        	var params={};
-        	if (requestArr[0] == "PUT")
-        	{
-        		params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.PUT;
-        	}
-        	else if (requestArr[0] == "DELETE")
-        	{
-        		params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.DELETE;
-        	}
+            var requestArr = request.split(":");
+            var url = "${build.app.baseurl}/resources/delegation/delegate/" + requestArr[1];
+            var params={};
+            if (requestArr[0] == "PUT")
+            {
+                params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.PUT;
+            }
+            else if (requestArr[0] == "DELETE")
+            {
+                params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.DELETE;
+            }
             
             params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
-       		params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
-       		params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "eurekaapps";
-       		params[gadgets.io.RequestParameters.OAUTH_USE_TOKEN] = "never";
+            params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
+            params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "eurekaapps";
+            params[gadgets.io.RequestParameters.OAUTH_USE_TOKEN] = "never";
             params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = 0;
             gadgets.io.makeRequest(url, function(results) { eurekastreams.delegation.refreshDelegates(); }, params);
 

@@ -38,6 +38,7 @@
 	
 	
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-gilead.xml" />
+    <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-security-common.xml" />
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-security-${build.spring.security}.xml" />
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-restlets.xml" />
 	

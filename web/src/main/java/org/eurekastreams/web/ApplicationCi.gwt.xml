@@ -21,4 +21,9 @@
 	<generate-with class="org.eurekastreams.web.rebind.HashedBindableGenerator">
 		<when-type-assignable class="org.eurekastreams.web.client.ui.Bindable" />
 	</generate-with>
+	
+	<!-- Uncomment to enable GWT logging -->
+	<!--<inherits name="com.allen_sauer.gwt.log.gwt-log-TRACE" />
+	<set-property name="log_DivLogger" value="DISABLED" />-->
+	
 </module>
