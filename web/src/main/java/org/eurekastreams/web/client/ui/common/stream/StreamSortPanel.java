@@ -79,6 +79,7 @@ public class StreamSortPanel extends Composite
 
         final Anchor atomLink = new Anchor();
         atomLink.addStyleName("stream-atom-link");
+        atomLink.setTarget("_NEW");
         widget.add(atomLink);
 
         EventBus.getInstance().addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()

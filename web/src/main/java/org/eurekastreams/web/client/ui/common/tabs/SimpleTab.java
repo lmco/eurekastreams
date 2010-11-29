@@ -15,6 +15,9 @@
  */
 package org.eurekastreams.web.client.ui.common.tabs;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
@@ -37,17 +40,17 @@ public class SimpleTab extends FlowPanel
     /**
      * The inner div. This is necessary because focuspanel can only have 1 child. Silly GWT.
      */
-    private FlowPanel panel = new FlowPanel();
+    private final FlowPanel panel = new FlowPanel();
 
     /**
      * focusPanel is the outside div for the tab. It is a focus panel for clickablility.
      */
-    private FocusPanel focusPanel = new FocusPanel();
+    private final FocusPanel focusPanel = new FocusPanel();
 
     /**
      * The label is the text of the tab.
      */
-    private Label label;
+    private final Label label;
 
     /**
      * The contents are what are displayed when the tab is clicked.
@@ -60,11 +63,17 @@ public class SimpleTab extends FlowPanel
     private boolean draggable = true;
 
     /** The tab's identifier. */
-    private String identifier;
+    private final String identifier;
+
+    /**
+     * Parameters to remove from the URL when the tab is selected. (This is a very primitive form of context handling.
+     * The idea is that parameters set by controls on one tab aren't left in the URL to affect controls on another tab.
+     */
+    private String[] paramsToClear = {};
 
     /**
      * Constructor with no contents. (Sometimes tabs do other things when clicked.)
-     * 
+     *
      * @param inIdentifier
      *            the identifier of the tab (also used as the title).
      */
@@ -75,7 +84,7 @@ public class SimpleTab extends FlowPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param inIdentifier
      *            the identifier of the tab (also used as the title).
      * @param inContents
@@ -88,7 +97,7 @@ public class SimpleTab extends FlowPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param inIdentifier
      *            the identifier of the tab.
      * @param inTitle
@@ -111,8 +120,19 @@ public class SimpleTab extends FlowPanel
     }
 
     /**
+     * @param inParams
+     *            List of URL parameters to clear when tab is selected.
+     */
+    public void setParamsToClear(final String... inParams)
+    {
+        paramsToClear = inParams;
+    }
+
+    /**
      * Set whether the tab is draggable.
-     * @param inDraggable draggable.
+     *
+     * @param inDraggable
+     *            draggable.
      */
     public void setDraggable(final boolean inDraggable)
     {
@@ -133,8 +153,15 @@ public class SimpleTab extends FlowPanel
             {
                 if (getIdentifier() != null)
                 {
-                    Session.getInstance().getEventBus().notifyObservers(
-                            new UpdateHistoryEvent(new CreateUrlRequest(key, getIdentifier(), false)));
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put(key, getIdentifier());
+                    int length = paramsToClear.length;
+                    for (int i = 0; i < length; i++)
+                    {
+                        params.put(paramsToClear[i], null);
+                    }
+                    Session.getInstance().getEventBus()
+                            .notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(params, false)));
                 }
             }
         });

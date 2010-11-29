@@ -29,6 +29,7 @@ import org.eurekastreams.server.domain.ResourceSortCriteria;
 import org.eurekastreams.server.domain.ResourceSortCriterion;
 import org.eurekastreams.server.domain.ResourceSortCriterion.SortDirection;
 import org.eurekastreams.server.domain.ResourceSortCriterion.SortField;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SetBannerEvent;
@@ -56,6 +57,7 @@ import org.eurekastreams.web.client.model.OrganizationSubOrgsModel;
 import org.eurekastreams.web.client.model.PendingGroupsModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LeftBarPanel;
+import org.eurekastreams.web.client.ui.common.Pager;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.common.pagedlist.GroupRenderer;
 import org.eurekastreams.web.client.ui.common.pagedlist.OrganizationRenderer;
@@ -72,6 +74,7 @@ import org.eurekastreams.web.client.ui.pages.profile.widgets.BreadcrumbPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.ConnectionsPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.OrgAboutPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.PeopleListPanel;
+import org.eurekastreams.web.client.ui.pages.profile.widgets.PopularHashtagsPanel;
 import org.eurekastreams.web.client.utility.BaseActivityLinkBuilder;
 import org.eurekastreams.web.client.utility.InContextActivityLinkBuilder;
 
@@ -98,29 +101,29 @@ public class OrganizationProfilePanel extends FlowPanel
     /**
      * Panel that shows the bread crumb navigation.
      */
-    private BreadcrumbPanel breadCrumbPanel;
+    private final BreadcrumbPanel breadCrumbPanel;
 
     /**
      * Link to go to the profile settings page.
      */
-    private Hyperlink profileSettingsLink;
+    private final Hyperlink profileSettingsLink;
     /**
      * Link to add a new sub org.
      */
-    private Hyperlink addSubOrgLink;
+    private final Hyperlink addSubOrgLink;
     /**
      * Panel that holds the tabbed portion of the profile display.
      */
-    private FlowPanel portalPageContainer = new FlowPanel();
+    private final FlowPanel portalPageContainer = new FlowPanel();
 
     /**
      * Left bar container.
      */
-    private FlowPanel leftBarContainer = new FlowPanel();
+    private final FlowPanel leftBarContainer = new FlowPanel();
     /**
      * panel that holds the profile summary.
      */
-    private LeftBarPanel leftBarPanel = new LeftBarPanel();
+    private final LeftBarPanel leftBarPanel = new LeftBarPanel();
 
     /**
      * The org.
@@ -135,7 +138,7 @@ public class OrganizationProfilePanel extends FlowPanel
     /**
      * Action Processor.
      */
-    private ActionProcessor processor = Session.getInstance().getActionProcessor();
+    private final ActionProcessor processor = Session.getInstance().getActionProcessor();
 
     /** Number of flagged activities (for use on the admin tab label). */
     private int flaggedActivityCount = 0;
@@ -151,7 +154,7 @@ public class OrganizationProfilePanel extends FlowPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param accountId
      *            the account id.
      */
@@ -200,7 +203,7 @@ public class OrganizationProfilePanel extends FlowPanel
 
     /**
      * We have the Person, so set up the Profile summary.
-     * 
+     *
      * @param inOrg
      *            the person whose profile is being displayed
      */
@@ -220,6 +223,7 @@ public class OrganizationProfilePanel extends FlowPanel
         leftBarPanel.clear();
 
         leftBarPanel.addChildWidget(new OrgAboutPanel(org));
+        leftBarPanel.addChildWidget(new PopularHashtagsPanel(ScopeType.ORGANIZATION, org.getShortName()));
 
         connectionsPanel = new ConnectionsPanel();
         orgDescendantGroupCount = org.getDescendantGroupCount();
@@ -242,38 +246,43 @@ public class OrganizationProfilePanel extends FlowPanel
         portalPage.addTab(new SimpleTab("Stream", streamContent));
         portalPage.addTab(buildConnectionsTab());
 
-        Session.getInstance().getEventBus().addObserver(AuthorizeUpdateOrganizationResponseEvent.class,
-                new Observer<AuthorizeUpdateGroupResponseEvent>()
-                {
-                    public void update(final AuthorizeUpdateGroupResponseEvent event)
-                    {
-                        profileSettingsLink.setTargetHistoryToken(Session.getInstance().generateUrl(
-                                new CreateUrlRequest(Page.ORG_SETTINGS, inOrg.getShortName())));
-                        addSubOrgLink.setTargetHistoryToken(Session.getInstance().generateUrl(
-                                new CreateUrlRequest(Page.NEW_ORG)));
+        Session.getInstance()
+                .getEventBus()
+                .addObserver(AuthorizeUpdateOrganizationResponseEvent.class,
+                        new Observer<AuthorizeUpdateGroupResponseEvent>()
+                        {
+                            public void update(final AuthorizeUpdateGroupResponseEvent event)
+                            {
+                                profileSettingsLink.setTargetHistoryToken(Session.getInstance().generateUrl(
+                                        new CreateUrlRequest(Page.ORG_SETTINGS, inOrg.getShortName())));
+                                addSubOrgLink.setTargetHistoryToken(Session.getInstance().generateUrl(
+                                        new CreateUrlRequest(Page.NEW_ORG)));
 
-                        profileSettingsLink.removeStyleName("hidden");
-                        addSubOrgLink.removeStyleName("hidden");
-                        RootPanel.get().addStyleName("authenticated");
+                                profileSettingsLink.removeStyleName("hidden");
+                                addSubOrgLink.removeStyleName("hidden");
+                                RootPanel.get().addStyleName("authenticated");
 
-                        final SimpleTab adminTab = buildAdminTab();
-                        portalPage.addTab(adminTab);
+                                final SimpleTab adminTab = buildAdminTab();
+                                portalPage.addTab(adminTab);
 
-                        // if heading for admin tab on initial entry to the org profile page, then do it
-                        switchToAdminTabFilterIfRequested();
+                                // if heading for admin tab on initial entry to the org profile page, then do it
+                                switchToAdminTabFilterIfRequested();
 
-                        // listen for history change event so that notifications can later send user to admin tab
-                        Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
-                                new Observer<UpdatedHistoryParametersEvent>()
-                                {
-                                    public void update(final UpdatedHistoryParametersEvent inArg1)
-                                    {
-                                        switchToAdminTabFilterIfRequested();
+                                // listen for history change event so that notifications can later send user to admin
+                                // tab
+                                Session.getInstance()
+                                        .getEventBus()
+                                        .addObserver(UpdatedHistoryParametersEvent.class,
+                                                new Observer<UpdatedHistoryParametersEvent>()
+                                                {
+                                                    public void update(final UpdatedHistoryParametersEvent inArg1)
+                                                    {
+                                                        switchToAdminTabFilterIfRequested();
 
-                                    }
-                                });
-                    }
-                });
+                                                    }
+                                                });
+                            }
+                        });
 
         OrganizationModel.getInstance().authorize(org.getShortName(), false);
 
@@ -297,18 +306,18 @@ public class OrganizationProfilePanel extends FlowPanel
                 // don't want to be on a different filter with this still in the URL.
                 HashMap<String, String> params = new HashMap<String, String>();
                 params.put("adminFilter", null);
-                Session.getInstance().getEventBus().notifyObservers(
-                        new UpdateHistoryEvent(new CreateUrlRequest(params, false)));
+                Session.getInstance().getEventBus()
+                        .notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(params, false)));
 
-                Session.getInstance().getEventBus().notifyObservers(
-                        new SwitchToFilterOnPagedFilterPanelEvent("admin", adminFilter, ""));
+                Session.getInstance().getEventBus()
+                        .notifyObservers(new SwitchToFilterOnPagedFilterPanelEvent("admin", adminFilter, "", true));
             }
         }
     }
 
     /**
      * Builds the connections tab.
-     * 
+     *
      * @return The tab.
      */
     private SimpleTab buildConnectionsTab()
@@ -320,35 +329,41 @@ public class OrganizationProfilePanel extends FlowPanel
         List<ResourceSortCriterion> critsForFollowers = new ArrayList<ResourceSortCriterion>();
         critsForFollowers.add(new ResourceSortCriterion(SortField.FOLLOWERS_COUNT, SortDirection.DESCENDING));
 
-        final PagedListPanel connectionTabContent = new PagedListPanel("connections");
+        final PagedListPanel connectionTabContent = new PagedListPanel("connections", "tab", "Connections");
 
-        Session.getInstance().getEventBus().addObserver(GotOrganizationEmployeesResponseEvent.class,
-                new Observer<GotOrganizationEmployeesResponseEvent>()
-                {
-                    public void update(final GotOrganizationEmployeesResponseEvent event)
-                    {
-                        connectionTabContent.render(event.getResponse(), "No people are in this organization.");
-                    }
-                });
+        Session.getInstance()
+                .getEventBus()
+                .addObserver(GotOrganizationEmployeesResponseEvent.class,
+                        new Observer<GotOrganizationEmployeesResponseEvent>()
+                        {
+                            public void update(final GotOrganizationEmployeesResponseEvent event)
+                            {
+                                connectionTabContent.render(event.getResponse(), "No people are in this organization.");
+                            }
+                        });
 
-        Session.getInstance().getEventBus().addObserver(GotOrganizationGroupsResponseEvent.class,
-                new Observer<GotOrganizationGroupsResponseEvent>()
-                {
-                    public void update(final GotOrganizationGroupsResponseEvent event)
-                    {
-                        connectionTabContent.render(event.getResponse(), "No groups are in this organization.");
-                    }
-                });
+        Session.getInstance()
+                .getEventBus()
+                .addObserver(GotOrganizationGroupsResponseEvent.class,
+                        new Observer<GotOrganizationGroupsResponseEvent>()
+                        {
+                            public void update(final GotOrganizationGroupsResponseEvent event)
+                            {
+                                connectionTabContent.render(event.getResponse(), "No groups are in this organization.");
+                            }
+                        });
 
-        Session.getInstance().getEventBus().addObserver(GotOrganizationSubOrgsResponseEvent.class,
-                new Observer<GotOrganizationSubOrgsResponseEvent>()
-                {
-                    public void update(final GotOrganizationSubOrgsResponseEvent event)
-                    {
-                        connectionTabContent.render(event.getResponse(),
-                                "No sub organizations are in this organization.");
-                    }
-                });
+        Session.getInstance()
+                .getEventBus()
+                .addObserver(GotOrganizationSubOrgsResponseEvent.class,
+                        new Observer<GotOrganizationSubOrgsResponseEvent>()
+                        {
+                            public void update(final GotOrganizationSubOrgsResponseEvent event)
+                            {
+                                connectionTabContent.render(event.getResponse(),
+                                        "No sub organizations are in this organization.");
+                            }
+                        });
 
         connectionTabContent.addSet("Employees", OrganizationEmployeesModel.getInstance(), new PersonRenderer(false),
                 new GetDirectorySearchResultsRequest(org.getShortName(), 0, 0, new ResourceSortCriteria(
@@ -370,12 +385,16 @@ public class OrganizationProfilePanel extends FlowPanel
                 new GetDirectorySearchResultsRequest(org.getShortName(), 0, 0, new ResourceSortCriteria(
                         critsForDataAdded)));
 
-        return new SimpleTab("Connections", connectionTabContent);
+        SimpleTab connTab = new SimpleTab("Connections", connectionTabContent);
+        connTab.setParamsToClear(PagedListPanel.URL_PARAM_LIST_ID, PagedListPanel.URL_PARAM_FILTER,
+                PagedListPanel.URL_PARAM_SORT, Pager.URL_PARAM_START_INDEX, Pager.URL_PARAM_END_INDEX);
+
+        return connTab;
     }
 
     /**
      * Builds the admin tab.
-     * 
+     *
      * @return The tab.
      */
     private SimpleTab buildAdminTab()
@@ -385,24 +404,28 @@ public class OrganizationProfilePanel extends FlowPanel
         final String pendingGroupsFilterName = "Group Requests";
 
         // set up the tab itself
-        final PagedListPanel adminTabContent = new PagedListPanel("admin", new SingleColumnPagedListRenderer());
+        final PagedListPanel adminTabContent = new PagedListPanel("admin", new SingleColumnPagedListRenderer(), "tab",
+                "Admin");
         final SimpleTab adminTab = new SimpleTab("Admin", adminTabContent);
+        adminTab.setParamsToClear(PagedListPanel.URL_PARAM_LIST_ID, PagedListPanel.URL_PARAM_FILTER,
+                PagedListPanel.URL_PARAM_SORT, Pager.URL_PARAM_START_INDEX, Pager.URL_PARAM_END_INDEX);
 
         // wire up the data retrieval events
-        eventBus.addObserver(GotFlaggedActivitiesResponseEvent.class, new Observer<GotFlaggedActivitiesResponseEvent>()
-        {
-            public void update(final GotFlaggedActivitiesResponseEvent event)
-            {
-                if (flaggedActivitiesFilterName.equals(adminTabContent.getCurrentFilter()))
+        eventBus.addObserver(GotFlaggedActivitiesResponseEvent.class,
+                new Observer<GotFlaggedActivitiesResponseEvent>()
                 {
-                    adminTabContent.render(event.getResponse(), "No flagged activities.");
-                }
-                flaggedActivityCount = event.getResponse().getTotal();
-                adminTabContent.setFilterTitle(flaggedActivitiesFilterName, "Flagged Activities ("
-                        + flaggedActivityCount + ")");
-                adminTab.setTitle("Admin (" + (flaggedActivityCount + pendingGroupCount) + ")");
-            }
-        });
+                    public void update(final GotFlaggedActivitiesResponseEvent event)
+                    {
+                        if (flaggedActivitiesFilterName.equals(adminTabContent.getCurrentFilter()))
+                        {
+                            adminTabContent.render(event.getResponse(), "No flagged activities.");
+                        }
+                        flaggedActivityCount = event.getResponse().getTotal();
+                        adminTabContent.setFilterTitle(flaggedActivitiesFilterName, "Flagged Activities ("
+                                + flaggedActivityCount + ")");
+                        adminTab.setTitle("Admin (" + (flaggedActivityCount + pendingGroupCount) + ")");
+                    }
+                });
 
         eventBus.addObserver(GotPendingGroupsResponseEvent.class, new Observer<GotPendingGroupsResponseEvent>()
         {
@@ -418,7 +441,11 @@ public class OrganizationProfilePanel extends FlowPanel
             }
         });
 
-        // request the non-active "filters" to get the counts
+        // request the data to get the counts
+        // We need the counts for both of the lists, but at most one list will perform an initial data load, we need to
+        // force the load. (Only the list which is visible will load; if the tab is inactive then there are zero
+        // visible lists.)
+        FlaggedActivityModel.getInstance().fetch(new GetFlaggedActivitiesByOrgRequest(org.getId(), 0, 1), false);
         PendingGroupsModel.getInstance().fetch(new GetPendingGroupsRequest(org.getShortName(), 0, 1), false);
 
         // wire up events to refresh the list when something is removed

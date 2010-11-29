@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eurekastreams.server.action.request.PageableRequest;
 import org.eurekastreams.server.domain.PagedSet;
@@ -42,146 +43,114 @@ import com.google.gwt.user.client.ui.Label;
  * This is a fairly complex control. Basically, it supports a series of "filters" (which can be though of as data sets.
  * These's data sets can be sorted and/or paged. Add sets by feeding it Fetchable models and a renderer for the
  * individual items, and this control should take care of all the logic.
- * 
+ *
  */
 public class PagedListPanel extends FlowPanel
 {
-    /**
-     * List id (so we can have >1 on a page).
-     */
+    /** URL parameter for the list ID. */
+    public static final String URL_PARAM_LIST_ID = "listId";
+
+    /** URL parameter for the filter name. */
+    public static final String URL_PARAM_FILTER = "listFilter";
+
+    /** URL parameter for the sort. */
+    public static final String URL_PARAM_SORT = "listSort";
+
+    /** List id (so we can have >1 on a page). */
     private String listId = "list";
-    /**
-     * The renderers keyed by filter.
-     */
-    @SuppressWarnings("unchecked")
-    private HashMap<String, ItemRenderer> renderers = new HashMap<String, ItemRenderer>();
-    /**
-     * Requests keyed by filter.
-     */
-    private HashMap<String, HashMap<String, PageableRequest>> requests = // \n
-    new HashMap<String, HashMap<String, PageableRequest>>();
 
-    /**
-     * Links keyed by filter.
-     */
-    private HashMap<String, Anchor> filterLinks = new HashMap<String, Anchor>();
-    /**
-     * Fetchers keyed by filter.
-     */
-    @SuppressWarnings("unchecked")
-    private HashMap<String, Fetchable> fetchers = new HashMap<String, Fetchable>();
-    /**
-     * Sorters keyed by filter.
-     */
-    private HashMap<String, FlowPanel> sortPanels = new HashMap<String, FlowPanel>();
-    /**
-     * Sort Links keyed by filter and sort.
-     */
-    private HashMap<String, HashMap<String, Anchor>> sortLinks = new HashMap<String, HashMap<String, Anchor>>();
-
-    /**
-     * Collection of filters that have been loaded and the available sorts for each filter.
-     */
-    private HashMap<String, List<String>> loadedFilters = new HashMap<String, List<String>>();
-
-    /**
-     * Filter to go to.
-     */
-    private String jumpToFilter;
-
-    /**
-     * Sort to go to.
-     */
-    private String jumpToSort;
-
-    /**
-     * Pager item start index to go to.
-     */
-    private Integer jumpToStart;
-
-    /**
-     * Pager item end index to go to.
-     */
-    private Integer jumpToEnd;
-
-    /**
-     * Flag indicating processing of initial panel view.
-     */
-    private boolean processingInitial = false;
-
-    /**
-     * Flag indicating processing of a browser back button click.
-     */
-    private boolean processingBack = false;
-
-    /**
-     * Flag indicating processing of initial panel view initiated from a browser back button click.
-     */
-    private boolean processingDefaultOnBack = false;
-
-    /**
-     * Contains the items.
-     */
-    private FlowPanel renderContainer = new FlowPanel();
-    /**
-     * Contains the filter switchers.
-     */
-    private FlowPanel filterContainer = new FlowPanel();
-    /**
-     * Contains the sort switchers.
-     */
-    private FlowPanel sortContainer = new FlowPanel();
-
-    /**
-     * Waiting spinner.
-     */
-    FlowPanel waitSpinner = new FlowPanel();
-
-    /**
-     * Whether or not this has been initiated with a filter. The first filter will initiate it.
-     */
-    private boolean initialized = false;
-
-    /**
-     * Start index.
-     */
-    private Integer startIndex = null;
-    /**
-     * End index.
-     */
-    private Integer endIndex = null;
-
-    /**
-     * The current filter.
-     */
+    /** The current filter. */
     private String currentFilter = "";
-    /**
-     * The current sort.
-     */
+
+    /** The current sort. */
     private String currentSortKey = "";
 
-    /**
-     * The bottom pager. Pass in true to show the buttons.
-     */
-    private Pager bottomPager;
+    /** Current pager start index. */
+    private Integer currentStartIndex = null;
 
-    /**
-     * Used to lay out the page; default is two columns.
-     */
+    /** Current pager end index. */
+    private Integer currentEndIndex = null;
+
+    /** An initial state is being stored awaiting the tabs to be added. */
+    private boolean storingInitialState = false;
+
+    /** The initial filter. */
+    private String initialFilter;
+
+    /** The initial sort. */
+    private String initialSortKey;
+
+    /** initial pager start index. */
+    private String initialStartIndex;
+
+    /** The renderers keyed by filter. */
+    @SuppressWarnings("unchecked")
+    private final Map<String, ItemRenderer> renderers = new HashMap<String, ItemRenderer>();
+
+    /** Requests keyed by filter. */
+    private final Map<String, HashMap<String, PageableRequest>> requests = // \n
+    new HashMap<String, HashMap<String, PageableRequest>>();
+
+    /** Links keyed by filter. */
+    private final Map<String, Anchor> filterLinks = new HashMap<String, Anchor>();
+
+    /** Fetchers keyed by filter. */
+    @SuppressWarnings("unchecked")
+    private final Map<String, Fetchable> fetchers = new HashMap<String, Fetchable>();
+
+    /** Sorters keyed by filter. */
+    private final Map<String, FlowPanel> sortPanels = new HashMap<String, FlowPanel>();
+
+    /** Sort Links keyed by filter and sort. */
+    private final Map<String, HashMap<String, Anchor>> sortLinks = new HashMap<String, HashMap<String, Anchor>>();
+
+    /** Collection of filters that have been loaded and the available sorts for each filter. */
+    private final Map<String, List<String>> loadedFilters = new HashMap<String, List<String>>();
+
+    /** Used to lay out the page; default is two columns. */
     private PagedListRenderer pageRenderer = new TwoColumnPagedListRenderer();
 
-    /**
-     * Navigation panel.
-     */
-    private FlowPanel navPanel;
+    /** The bottom pager. Pass in true to show the buttons. */
+    private final Pager bottomPager;
+
+    /** Navigation panel. */
+    private final FlowPanel navPanel;
+
+    /** Contains the items. */
+    private final FlowPanel renderContainer = new FlowPanel();
+
+    /** Contains the filter switchers. */
+    private final FlowPanel filterContainer = new FlowPanel();
+
+    /** Contains the sort switchers. */
+    private final FlowPanel sortContainer = new FlowPanel();
+
+    /** Waiting spinner. */
+    FlowPanel waitSpinner = new FlowPanel();
+
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inListId
      *            the list id.
      */
     public PagedListPanel(final String inListId)
+    {
+        this(inListId, null, null);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param inListId
+     *            the list id.
+     * @param inContextParam
+     *            Parameter to look for in the URL to determine if URL change events apply to this list.
+     * @param inContextParamValue
+     *            Value of parameter to look for in the URL to determine if URL change events apply to this list.
+     */
+    public PagedListPanel(final String inListId, final String inContextParam, final String inContextParamValue)
     {
         listId = inListId;
         bottomPager = new Pager("filteredPager" + listId, true);
@@ -210,109 +179,72 @@ public class PagedListPanel extends FlowPanel
             public void update(final PagerUpdatedEvent event)
             {
                 if (event.getPager().getPagerId().equals("filteredPager" + listId)
-                        && event.getPager().getStartIndex() != startIndex)
+                        && event.getPager().getStartIndex() != currentStartIndex)
                 {
-                    startIndex = event.getPager().getStartIndex();
-                    endIndex = event.getPager().getEndIndex();
+                    currentStartIndex = event.getPager().getStartIndex();
+                    currentEndIndex = event.getPager().getEndIndex();
                     reload();
                 }
             }
         });
 
-        Session.getInstance().getEventBus().addObserver(SwitchToFilterOnPagedFilterPanelEvent.class,
-                new Observer<SwitchToFilterOnPagedFilterPanelEvent>()
-                {
-                    public void update(final SwitchToFilterOnPagedFilterPanelEvent event)
-                    {
-                        if (event.getListId().equals(listId))
+        Session.getInstance()
+                .getEventBus()
+                .addObserver(SwitchToFilterOnPagedFilterPanelEvent.class,
+                        new Observer<SwitchToFilterOnPagedFilterPanelEvent>()
                         {
-                            currentFilter = event.getFilterName();
-                            currentSortKey = event.getSortKey();
-                            startIndex = null;
-
-                            // TODO - put pager history handling into Pager class
-
-                            // reset the pager settings if the view or sort has changed
-                            if (hasSortOrFilterChanged())
+                            public void update(final SwitchToFilterOnPagedFilterPanelEvent event)
                             {
-                                jumpToStart = null;
-                                jumpToEnd = null;
-                            }
-
-                            if (jumpToStart == null)
-                            {
-                                bottomPager.reset();
-                            }
-                            else
-                            {
-                                bottomPager.setStartIndex(jumpToStart);
-                                bottomPager.setEndIndex(jumpToEnd);
-                                Session.getInstance().getEventBus().notifyObservers(new PagerUpdatedEvent(bottomPager));
-                            }
-
-                            if (!processingDefaultOnBack && (!processingInitial || processingBack)
-                                    && hasSortOrFilterChanged())
-                            {
-                                HashMap<String, String> params = new HashMap<String, String>();
-                                params.put("name", currentFilter);
-                                params.put("sort", currentSortKey);
-                                params.put("listId", listId);
-
-                                if (jumpToStart == null)
+                                // ignore events for other lists
+                                if (!listId.equals(event.getListId()))
                                 {
-                                    params.put("startIndex", "0");
-                                }
-                                if (jumpToEnd == null)
-                                {
-                                    params.put("endIndex", "9");
+                                    return;
                                 }
 
-                                Session.getInstance().getEventBus().notifyObservers(
-                                        new UpdateHistoryEvent(new CreateUrlRequest(params, false)));
+                                updateStateIfChanged(event.getFilterName(), event.getSortKey(), null, null,
+                                        !event.isFromUrlChange());
                             }
-                            processingInitial = false;
-                            processingDefaultOnBack = false;
-                        }
-                    }
-                });
+                        });
 
-        Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
-                new Observer<UpdatedHistoryParametersEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(UpdatedHistoryParametersEvent.class, new Observer<UpdatedHistoryParametersEvent>()
                 {
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
-                        processingDefaultOnBack = false;
-                        String thisListId = event.getParameters().get("listId");
-
-                        // handle returning back to the default view (no history tokens)
-                        if (processingBack && !thisListId.equals(listId))
+                        // determine if the history update pertains to this list
+                        // If there's a list id, and it not ours, bail out. If there's no list id, then check for the
+                        // "context parameter" (basically snoop on the URL to see if the tab we're on is showing); if
+                        // present and it's not ours, bail out. Otherwise, we can't be sure if the update pertains to us
+                        // or not, so we have to try to process it.
+                        HashMap<String, String> parms = event.getParameters();
+                        String eventListId = parms.get(URL_PARAM_LIST_ID);
+                        if (eventListId == null)
                         {
-                            String defaultFilter = (String) loadedFilters.keySet().toArray()[0];
-                            String defaultSort = loadedFilters.get(defaultFilter).get(0);
-                            processingDefaultOnBack = true;
-                            Session.getInstance().getEventBus().notifyObservers(
-                                    new SwitchToFilterOnPagedFilterPanelEvent(listId, defaultFilter, defaultSort));
+                            if (inContextParam != null && inContextParamValue != null
+                                    && !inContextParamValue.equals(parms.get(inContextParam)))
+                            {
+                                return;
+                            }
                         }
-                        else if (thisListId.equals(listId))
+                        else if (!listId.equals(eventListId))
                         {
-                            jumpToFilter = event.getParameters().get("name");
-                            jumpToSort = event.getParameters().get("sort");
-                            if (jumpToSort == null)
-                            {
-                                jumpToSort = "";
-                            }
+                            return;
+                        }
 
-                            jumpToStart = event.getParameters().get("startIndex") == null ? null : new Integer(event
-                                    .getParameters().get("startIndex"));
-                            jumpToEnd = event.getParameters().get("endIndex") == null ? null : new Integer(event
-                                    .getParameters().get("endIndex"));
-
-                            if (initialized)
-                            {
-                                Session.getInstance().getEventBus().notifyObservers(
-                                        new SwitchToFilterOnPagedFilterPanelEvent(listId, jumpToFilter, jumpToSort));
-                                processingBack = true;
-                            }
+                        // store state if tabs not added yet
+                        if (loadedFilters.isEmpty())
+                        {
+                            storingInitialState = true;
+                            initialFilter = parms.get(URL_PARAM_FILTER);
+                            initialSortKey = parms.get(URL_PARAM_SORT);
+                            initialStartIndex = parms.get(Pager.URL_PARAM_START_INDEX);
+                        }
+                        // only handle event if initialized
+                        else
+                        {
+                            updateStateIfChanged(parms.get(URL_PARAM_FILTER), parms.get(URL_PARAM_SORT),
+                                    parms.get(Pager.URL_PARAM_START_INDEX), parms.get(Pager.URL_PARAM_END_INDEX),
+                                    false);
                         }
                     }
                 }, true);
@@ -325,21 +257,8 @@ public class PagedListPanel extends FlowPanel
     }
 
     /**
-     * Helper method to isolate complex logic determining if filter or sort has been updated.
-     * 
-     * @return true if either sort or filter history tokens have been changed.
-     */
-    private boolean hasSortOrFilterChanged()
-    {
-        String nameFromUrl = Session.getInstance().getParameterValue("name");
-        String sortFromUrl = Session.getInstance().getParameterValue("sort");
-        return (nameFromUrl != "undefined" && !nameFromUrl.equals(currentFilter))
-                || (currentSortKey != "" && !sortFromUrl.equals(currentSortKey));
-    }
-
-    /**
      * Constructor.
-     * 
+     *
      * @param inListId
      *            the list id.
      * @param inPageRenderer
@@ -347,13 +266,148 @@ public class PagedListPanel extends FlowPanel
      */
     public PagedListPanel(final String inListId, final PagedListRenderer inPageRenderer)
     {
-        this(inListId);
+        this(inListId, null, null);
         pageRenderer = inPageRenderer;
     }
 
     /**
+     * Constructor.
+     *
+     * @param inListId
+     *            the list id.
+     * @param inPageRenderer
+     *            page layout renderer.
+     * @param inContextParam
+     *            Parameter to look for in the URL to determine if URL change events apply to this list.
+     * @param inContextParamValue
+     *            Value of parameter to look for in the URL to determine if URL change events apply to this list.
+     */
+    public PagedListPanel(final String inListId, final PagedListRenderer inPageRenderer, final String inContextParam,
+            final String inContextParamValue)
+    {
+        this(inListId, inContextParam, inContextParamValue);
+        pageRenderer = inPageRenderer;
+    }
+
+    /**
+     * Updates the state of the widget (loading data, etc.) if the current state does not match the desired state.
+     *
+     * @param inFilter
+     *            Requested filter name.
+     * @param inSort
+     *            Requested sort key.
+     * @param inStartIndex
+     *            Requested start index.
+     * @param inEndIndex
+     *            Requested end index.
+     * @param mayUpdateUrl
+     *            If the URL is allowed to be updated (e.g. don't update URL in response to a URL change, etc.).
+     * @return Whether the state was updated.
+     */
+    private boolean updateStateIfChanged(final String inFilter, final String inSort, final String inStartIndex,
+            final String inEndIndex, final boolean mayUpdateUrl)
+    {
+        String filter = inFilter;
+        String sort = inSort;
+        Integer start = normalizeIndex(inStartIndex);
+
+        // For missing parameters, replace with the default values
+        if (filter == null)
+        {
+            filter = (String) loadedFilters.keySet().toArray()[0];
+            // treat sort as a child of filter, so if filter is missing, ignore any sort specified
+            sort = null;
+        }
+        // reject unknown filters (maybe extraneous URL parameters or we caught an event that wasn't for us)
+        else if (!loadedFilters.containsKey(filter))
+        {
+            return false;
+        }
+        if (sort == null)
+        {
+            sort = loadedFilters.get(filter).get(0);
+        }
+        // reject unknown sorts (maybe extraneous URL parameters or we caught an event that wasn't for us)
+        else if (!loadedFilters.get(filter).contains(sort))
+        {
+            return false;
+        }
+        if (start == null)
+        {
+            start = 0;
+        }
+
+        // determine if state is different
+        if (!currentFilter.equals(filter))
+        {
+            currentFilter = filter;
+            currentSortKey = sort;
+            currentStartIndex = start;
+        }
+        else if (!currentSortKey.equals(sort))
+        {
+            currentSortKey = sort;
+            currentStartIndex = start;
+        }
+        else if (currentStartIndex != start)
+        {
+            currentStartIndex = start;
+        }
+        else
+        {
+            return false;
+        }
+
+        currentStartIndex = start;
+        currentEndIndex = start + bottomPager.getPageSize() - 1;
+        bottomPager.setStartIndex(currentStartIndex);
+        bottomPager.setEndIndex(currentEndIndex);
+        Session.getInstance().getEventBus().notifyObservers(new PagerUpdatedEvent(bottomPager));
+        reload();
+
+        // update the URL when allowed (if from user action on a link, but not if from a history/URL change (otherwise
+        // we'd be re-updating the URL which really messes up the back button).
+        if (mayUpdateUrl)
+        {
+            HashMap<String, String> params = new HashMap<String, String>();
+            params.put(URL_PARAM_LIST_ID, listId);
+            params.put(URL_PARAM_FILTER, currentFilter);
+            params.put(URL_PARAM_SORT, currentSortKey);
+            params.put(Pager.URL_PARAM_START_INDEX, currentStartIndex.toString());
+            params.put(Pager.URL_PARAM_END_INDEX, currentEndIndex.toString());
+            Session.getInstance().getEventBus()
+                    .notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(params, false)));
+        }
+
+        return true;
+    }
+
+    /**
+     * Normalizes a start/end index value.
+     *
+     * @param value
+     *            String form.
+     * @return Numeric form (null if not present/valid).
+     */
+    private Integer normalizeIndex(final String value)
+    {
+        if (value == null || value.isEmpty())
+        {
+            return null;
+        }
+        try
+        {
+            return Integer.valueOf(value);
+        }
+        catch (NumberFormatException ex)
+        {
+            return null;
+        }
+    }
+
+    /**
      * Reload the panel to a default filter.
-     * 
+     *
      * @param filter
      *            The default filter to use after reset.
      */
@@ -410,15 +464,15 @@ public class PagedListPanel extends FlowPanel
     {
         waitSpinner.setVisible(true);
         PageableRequest request = requests.get(currentFilter).get(currentSortKey);
-        request.setStartIndex(startIndex);
-        request.setEndIndex(endIndex);
+        request.setStartIndex(currentStartIndex);
+        request.setEndIndex(currentEndIndex);
         renderContainer.addStyleName("hidden");
         fetchers.get(currentFilter).fetch(request, false);
     }
 
     /**
      * Add a filter w/o a sort.
-     * 
+     *
      * @param name
      *            name of the filter.
      * @param fetchable
@@ -437,7 +491,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Add a filter w/o a sort.
-     * 
+     *
      * @param name
      *            name of the filter.
      * @param fetchable
@@ -467,8 +521,7 @@ public class PagedListPanel extends FlowPanel
             {
                 public void onClick(final ClickEvent event)
                 {
-                    Session.getInstance().getEventBus().notifyObservers(
-                            new SwitchToFilterOnPagedFilterPanelEvent(listId, name, sortKey));
+                    updateStateIfChanged(name, sortKey, null, null, true);
                 }
             });
 
@@ -494,8 +547,7 @@ public class PagedListPanel extends FlowPanel
             {
                 public void onClick(final ClickEvent event)
                 {
-                    Session.getInstance().getEventBus().notifyObservers(
-                            new SwitchToFilterOnPagedFilterPanelEvent(listId, name, sortKey));
+                    updateStateIfChanged(name, sortKey, null, null, true);
                 }
             });
             sortPanels.get(name).add(sortLink);
@@ -513,28 +565,22 @@ public class PagedListPanel extends FlowPanel
             loadedFilters.put(name, sorts);
         }
 
-        // default case with no history detection
-        if (!initialized && jumpToFilter == null)
+        // attempt to apply the initial state
+        // This tab may be the one that satisfies the stored initial state. So we try to apply the state; if it doesn't
+        // fit, then nothing happens and the initial state will still be stored for the next tab added. If it worked,
+        // then we clear the initial state.
+        if (storingInitialState)
         {
-            initialized = true;
-            processingInitial = true;
-            Session.getInstance().getEventBus().notifyObservers(
-                    new SwitchToFilterOnPagedFilterPanelEvent(listId, name, sortKey));
-        }
-        // case where back button was just pressed (history listener has already set jumpToFilter/jumpToSort)
-        else if (!initialized && loadedFilters.containsKey(jumpToFilter)
-                && loadedFilters.get(jumpToFilter).contains(jumpToSort))
-        {
-            initialized = true;
-            processingBack = true;
-            Session.getInstance().getEventBus().notifyObservers(
-                    new SwitchToFilterOnPagedFilterPanelEvent(listId, jumpToFilter, jumpToSort));
+            if (updateStateIfChanged(initialFilter, initialSortKey, initialStartIndex, null, false))
+            {
+                storingInitialState = false;
+            }
         }
     }
 
     /**
      * Updates the request for a given set that has no sort key.
-     * 
+     *
      * @param name
      *            The name of the set to update.
      * @param request
@@ -547,7 +593,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Updates the request for a given set.
-     * 
+     *
      * @param name
      *            The name of the set to update.
      * @param request
@@ -566,7 +612,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Render the panel.
-     * 
+     *
      * @param <T>
      *            the type of item.
      * @param items
@@ -606,7 +652,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Sets the text displayed on the filter link.
-     * 
+     *
      * @param name
      *            The name of the filter.
      * @param title
