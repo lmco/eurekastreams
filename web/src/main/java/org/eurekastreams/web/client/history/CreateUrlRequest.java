@@ -101,6 +101,7 @@ public class CreateUrlRequest
     {
         parameters = inParameters;
         page = inPage;
+        views = new ArrayList<String>();
         replacePrevious = true;
     }
 
@@ -118,6 +119,7 @@ public class CreateUrlRequest
     {
         parameters = inParameters;
         page = inPage;
+        views = new ArrayList<String>();
         replacePrevious = inReplacePrevious;
     }
 
@@ -130,6 +132,7 @@ public class CreateUrlRequest
     public CreateUrlRequest(final Page inPage)
     {
         page = inPage;
+        views = new ArrayList<String>();
         replacePrevious = true;
     }
 
@@ -211,7 +214,7 @@ public class CreateUrlRequest
 
     /**
      * Constructor for taking in a page with a view and a single parameter.
-     * 
+     *
      * @param inPage
      *            the page (gallery).
      * @param inView
@@ -294,6 +297,6 @@ public class CreateUrlRequest
     public void setParameters(final HashMap<String, String> inParameters)
     {
         parameters = inParameters;
-        
+
     }
 }

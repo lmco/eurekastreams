@@ -74,6 +74,11 @@ public class HeaderComposite extends Composite
     FlowPanel siteLabeling = new FlowPanel();
 
     /**
+     * Notification Count widget.
+     */
+    private NotificationCountWidget notif = new NotificationCountWidget();
+
+    /**
      * The link map.
      */
     private HashMap<Page, Hyperlink> linkMap = new HashMap<Page, Hyperlink>();
@@ -98,10 +103,10 @@ public class HeaderComposite extends Composite
                     }
                 }, true);
     }
-     
+
     /**
      * Render the header.
-     * 
+     *
      * @param viewer
      *            - user to display.
      */
@@ -110,7 +115,7 @@ public class HeaderComposite extends Composite
         HorizontalULPanel userNav;
         FlowPanel panel = new FlowPanel();
         FlowPanel navPanel = new FlowPanel();
-        
+
         Anchor externalLink = new Anchor("Eureka Streams", "http://www.eurekastreams.org", "_blank");
         externalLink.addStyleName("nav-bar-button");
 
@@ -192,8 +197,8 @@ public class HeaderComposite extends Composite
             mainNav.add(activityLinkPanel);
             mainNav.add(directoryLinkPanel);
             mainNav.add(galleryLinkPanel);
-
-            userNav.add(new NotificationCountWidget(), "notif-count-list-item");
+            notif.init();
+            userNav.add(notif, "notif-count-list-item");
 
             FlowPanel myProfileLinkPanel = new FlowPanel();
             myProfileLinkPanel.add(myProfileLink);

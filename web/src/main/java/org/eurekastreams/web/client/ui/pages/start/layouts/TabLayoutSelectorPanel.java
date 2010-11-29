@@ -31,6 +31,7 @@ import org.eurekastreams.web.client.ui.pages.start.preferences.PortalPreferenceF
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
@@ -104,13 +105,27 @@ public class TabLayoutSelectorPanel extends FlowPanel implements PortalPreferenc
                 {
                     public void update(final UpdatedStartPageLayoutResponseEvent event)
                     {
-                        if (event.getResponse().getId() == inTabId)
+                        if (event.getResponse().getId() == inTabId && getUserAgent().contains("msie 7"))
+                        {
+                            Location.reload();
+                        }
+                        else if (event.getResponse().getId() == inTabId)
                         {
                             setActiveLayout(event.getResponse().getTabLayout());
                         }
                     }
                 });
     }
+
+    /**
+     * Get the user agent (for detecting IE7).
+     *
+     * @return the user agent.
+     */
+    public static native String getUserAgent()
+    /*-{
+        return navigator.userAgent.toLowerCase();
+    }-*/;
 
     /**
      * Called when the carousel loads.
