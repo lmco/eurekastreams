@@ -16,6 +16,7 @@
         <intercept-url pattern="/themes/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/rpc" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/rpc/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/eurekastreams/photos/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/**" access="ROLE_USER"/>
         <anonymous/>
     </http>
