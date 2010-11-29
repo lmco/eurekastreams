@@ -28,6 +28,9 @@
         <intercept-url pattern="/themes/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/social/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/org/eurekastreams/gadgets/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/rpc" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/rpc/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/eurekastreams/photos/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/**" access="ROLE_USER"/>       
         <anonymous />
         <!-- key MUST match key in persistentLoginService -->        
