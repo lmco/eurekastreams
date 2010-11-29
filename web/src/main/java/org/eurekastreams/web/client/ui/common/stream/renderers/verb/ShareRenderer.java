@@ -157,8 +157,8 @@ public class ShareRenderer implements VerbRenderer
     public List<MetadataLinkRenderer> getMetaDataItemRenderers()
     {
         List<MetadataLinkRenderer> renderers = new LinkedList<MetadataLinkRenderer>();
-        renderers.add(new MetadataLinkRenderer("Posted by", activity.getOriginalActor().getUniqueIdentifier(), activity
-                .getOriginalActor().getDisplayName()));
+        renderers.add(new MetadataLinkRenderer("Posted by", activity.getOriginalActor().getUniqueIdentifier(),
+                activity.getOriginalActor().getDisplayName()));
         return renderers;
     }
 
@@ -168,12 +168,15 @@ public class ShareRenderer implements VerbRenderer
     public List<MetadataLinkRenderer> getSourceMetaDataItemRenderers()
     {
         List<MetadataLinkRenderer> renderers = new LinkedList<MetadataLinkRenderer>();
-        renderers.add(new MetadataLinkRenderer("", activity.getActor().getUniqueIdentifier(), activity
-                .getActor().getDisplayName()));
+        renderers.add(new MetadataLinkRenderer("", activity.getActor().getUniqueIdentifier(), activity.getActor()
+                .getDisplayName()));
 
-        StreamEntityDTO stream = activity.getDestinationStream();
-        renderers.add(new MetadataLinkRenderer("to", stream.getType(), stream.getUniqueIdentifier(), stream
-                .getDisplayName(), showRecipient));
+        if (showRecipient)
+        {
+            StreamEntityDTO stream = activity.getDestinationStream();
+            renderers.add(new MetadataLinkRenderer("to", stream.getType(), stream.getUniqueIdentifier(), stream
+                    .getDisplayName()));
+        }
 
         return renderers;
     }

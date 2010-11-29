@@ -6287,6 +6287,11 @@ img {
 	-ms-interpolation-mode: bicubic;
 }
 
+.inline-panel
+{
+	display: inline;
+}
+
 /******************************************************************************
  * Header
  *****************************************************************************/
@@ -8538,7 +8543,8 @@ body .post-to-stream .post-button.inactive {
 	font-size: 14px;
 }
 
-.message-metadata-source>* :first-child {
+.message-metadata-source > *:first-child 
+{
 	margin-right: 5px;
 }
 

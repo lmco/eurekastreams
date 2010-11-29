@@ -18,11 +18,12 @@ package org.eurekastreams.web.client.ui.common.stream.renderers;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
-import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.Session;
 
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.InlineHTML;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.InlineHyperlink;
+import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -32,29 +33,21 @@ import com.google.gwt.user.client.ui.Widget;
 public class MetadataLinkRenderer
 {
     /**
-     * JSNI Facade.
-     */
-    private WidgetJSNIFacadeImpl jSNIFacade = new WidgetJSNIFacadeImpl();
-    /**
-     * Whether or not to display the link.
-     */
-    private boolean display = true;
-    /**
      * The label.
      */
-    private String label;
+    private final String label;
     /**
      * The type the entity is.
      */
-    private EntityType type;
+    private final EntityType type;
     /**
      * The id of the entity.
      */
-    private String id;
+    private final String id;
     /**
      * the name of the entity.
      */
-    private String name;
+    private final String name;
 
     /**
      * Default constructor.
@@ -67,39 +60,18 @@ public class MetadataLinkRenderer
      *            the id.
      * @param inName
      *            the name.
-     * @param inDisplay
-     *            whether to display it.
      */
-    public MetadataLinkRenderer(final String inLabel, final EntityType inType, final String inId, final String inName,
-            final boolean inDisplay)
+    public MetadataLinkRenderer(final String inLabel, final EntityType inType, final String inId, final String inName)
     {
         label = inLabel;
         type = inType;
         id = inId;
         name = inName;
-        display = inDisplay;
     }
 
     /**
-     * Constructor to use when display is always true.
-     *
-     * @param inLabel
-     *            the label.
-     * @param inType
-     *            the type.
-     * @param inId
-     *            the id.
-     * @param inName
-     *            the name.
-     */
-    public MetadataLinkRenderer(final String inLabel, final EntityType inType, final String inId, final String inName)
-    {
-        this(inLabel, inType, inId, inName, true);
-    }
-
-    /**
-     * Constructor to use when display is always true and type is always person.
-     *
+     * Constructor to for people.
+     * 
      * @param inLabel
      *            the label.
      * @param inId
@@ -109,7 +81,7 @@ public class MetadataLinkRenderer
      */
     public MetadataLinkRenderer(final String inLabel, final String inId, final String inName)
     {
-        this(inLabel, EntityType.PERSON, inId, inName, true);
+        this(inLabel, EntityType.PERSON, inId, inName);
     }
 
     /**
@@ -119,20 +91,32 @@ public class MetadataLinkRenderer
      */
     public Widget render()
     {
-        if (id != null && display)
+        if (id != null)
         {
+            String url;
+
             if (type.equals(EntityType.PLUGIN) || type.equals(EntityType.APPLICATION))
             {
                 // TODO: Is this correct for the new URL scheme?
-                HTML link = new InlineHTML(label + " <a href='" + id + "'>" + name + "</a>");
-                return link;
+                url = id;
             }
             else
             {
                 Page page = type.equals(EntityType.GROUP) ? Page.GROUPS : Page.PEOPLE;
-                String url = Session.getInstance().generateUrl(new CreateUrlRequest(page, id));
-                HTML link = new InlineHTML(label + " <a href='#" + url + "'>" + jSNIFacade.escapeHtml(name) + "</a>");
-                return link;
+                url = Session.getInstance().generateUrl(new CreateUrlRequest(page, id));
+            }
+
+            if (label != null && !label.isEmpty())
+            {
+                Panel main = new FlowPanel();
+                main.addStyleName("inline-panel");
+                main.add(new InlineLabel(label + " "));
+                main.add(new InlineHyperlink(name, url));
+                return main;
+            }
+            else
+            {
+                return new InlineHyperlink(name, url);
             }
         }
         else

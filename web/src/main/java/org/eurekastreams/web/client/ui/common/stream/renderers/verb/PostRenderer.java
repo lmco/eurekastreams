@@ -173,13 +173,15 @@ public class PostRenderer implements VerbRenderer
         List<MetadataLinkRenderer> renderers = new LinkedList<MetadataLinkRenderer>();
 
         StreamEntityDTO actor = activity.getActor();
-        renderers
-                .add(new MetadataLinkRenderer("", actor.getType(), actor.getUniqueIdentifier(), actor
+        renderers.add(new MetadataLinkRenderer("", actor.getType(), actor.getUniqueIdentifier(), actor
                 .getDisplayName()));
 
-        StreamEntityDTO stream = activity.getDestinationStream();
-        renderers.add(new MetadataLinkRenderer("to", stream.getType(), stream.getUniqueIdentifier(), stream
-                .getDisplayName(), showRecipient));
+        if (showRecipient)
+        {
+            StreamEntityDTO stream = activity.getDestinationStream();
+            renderers.add(new MetadataLinkRenderer("to", stream.getType(), stream.getUniqueIdentifier(), stream
+                    .getDisplayName()));
+        }
 
         return renderers;
     }
