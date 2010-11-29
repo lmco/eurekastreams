@@ -164,11 +164,12 @@ public class OrganizationProfilePanel extends FlowPanel
 
         profileSettingsLink = new Hyperlink("Configure", "");
         addSubOrgLink = new Hyperlink("", "");
-        Hyperlink addGroupLink = new Hyperlink("", Session.getInstance().generateUrl(
+        final Hyperlink addGroupLink = new Hyperlink("", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.NEW_GROUP)));
 
         ActionProcessor inProcessor = Session.getInstance().getActionProcessor();
 
+        addGroupLink.setVisible(false);
         portalPageContainer.addStyleName("profile-page-container");
         profileSettingsLink.addStyleName("configure-tab");
         profileSettingsLink.addStyleName("hidden");
@@ -194,6 +195,7 @@ public class OrganizationProfilePanel extends FlowPanel
                 {
                     public void update(final GotOrganizationInformationResponseEvent event)
                     {
+                        addGroupLink.setVisible(true);
                         setEntity(event.getResponse());
                     }
                 });
