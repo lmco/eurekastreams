@@ -99,8 +99,7 @@ public class PersonalProfilePanel extends FlowPanel
     /**
      * Link to go to the profile settings page.
      */
-    private Hyperlink profileSettingsLink = new Hyperlink("Configure", Session.getInstance().generateUrl(
-            new CreateUrlRequest(Page.PERSONAL_SETTINGS)));
+    private Hyperlink profileSettingsLink;
 
     /**
      * Panel that holds the tabbed portion of the profile display.
@@ -158,6 +157,9 @@ public class PersonalProfilePanel extends FlowPanel
      */
     public PersonalProfilePanel(final String accountId)
     {
+        profileSettingsLink = new Hyperlink("Configure", Session.getInstance().generateUrl(
+                new CreateUrlRequest(Page.PERSONAL_SETTINGS, accountId)));
+
         RootPanel.get().addStyleName("profile");
 
         ActionProcessor inProcessor = Session.getInstance().getActionProcessor();
