@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eurekastreams.server.action.request.start.ReorderGadgetRequest;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.TabGroupType;
 import org.eurekastreams.web.client.events.Observer;
@@ -26,6 +27,7 @@ import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.data.GotStartPageTabsResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
+import org.eurekastreams.web.client.model.GadgetModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.start.GadgetPanel;
 
@@ -237,7 +239,19 @@ public class DropZonePanel extends VerticalPanel
     public void insertGadget(final GadgetPanel gadget, final int index)
     {
         gadget.setDropZone(this);
-        this.insert(gadget, index);
+
+        if (index <= this.getWidgetCount())
+        {
+            this.insert(gadget, index);
+        }
+        else
+        {
+            GadgetModel.getInstance().reorder(
+                    new ReorderGadgetRequest(Long.parseLong(tabId), gadget.getGadgetData().getId(), zoneNumber,
+                            getWidgetCount()));
+            this.add(gadget);
+        }
+
         gadgetZones.add(gadget);
     }
 
