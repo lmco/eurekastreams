@@ -17,7 +17,7 @@ package org.eurekastreams.server.persistence.mappers.db;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.HashSet;
+import java.util.Set;
 
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.TutorialVideoDTO;
@@ -26,15 +26,15 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Test fixture for GetTutorialVideos.
+ * Test for GetTutorialVideosDbMapper.
  */
-public class GetTutorialVideosTest extends MapperTest
+public class GetTutorialVideosDbMapperTest extends MapperTest
 {
     /**
      * System under test.
      */
     @Autowired
-    private GetTutorialVideos sut;
+    private GetTutorialVideosDbMapper sut;
 
     /**
      * Test execute successful test.
@@ -42,7 +42,7 @@ public class GetTutorialVideosTest extends MapperTest
     @Test
     public void testExecuteSuccess()
     {
-        HashSet<TutorialVideoDTO> tutorialVideos = sut.execute(null);
+        Set<TutorialVideoDTO> tutorialVideos = sut.execute(null);
         assertEquals(3, tutorialVideos.size());
 
         for (TutorialVideoDTO tut : tutorialVideos)

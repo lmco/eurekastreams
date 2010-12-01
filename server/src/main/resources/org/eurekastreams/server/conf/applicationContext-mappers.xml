@@ -247,6 +247,9 @@
 
 	<bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ACTIVITIES_BY_FOLLOWING"
 		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
+		
+    <bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.TUTORIAL_VIDS"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
 
 	<!--
 		Mapper that goes to cache for the popular hashtags for a stream.  If it exists, it checks how long ago it was generated. 
@@ -660,11 +663,37 @@
 		-->
 		<property name="queryOptimizer" ref="queryOptimizer" />
 	</bean>
-
-	<bean id="getTutorialVideos"
-		class="org.eurekastreams.server.persistence.mappers.db.GetTutorialVideos">
-		<property name="queryOptimizer" ref="queryOptimizer" />
-	</bean>
+	
+	<bean id="getTutorialVideos" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache Mapper -->
+        <constructor-arg>
+		    <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+		        <constructor-arg>
+		            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
+		                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.TUTORIAL_VIDS" />
+		                <constructor-arg ref="ignoredCacheKeySuffixTransformer" />
+		                <property name="cache" ref="memcachedCache" />
+		            </bean>
+		        </constructor-arg>
+		    </bean>
+	    </constructor-arg>
+        <!-- Database mapper to fall back on if not found in cache -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.GetTutorialVideosDbMapper" />
+        </constructor-arg>
+        <!-- Data combiner -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
+        </constructor-arg>
+        <!-- Cache refresher -->
+        <constructor-arg>
+	        <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
+		        <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.TUTORIAL_VIDS" />
+		        <constructor-arg ref="ignoredCacheKeySuffixTransformer" />
+		        <property name="cache" ref="memcachedCache" />
+		    </bean> 
+	    </constructor-arg>       
+    </bean>    
 
 	<bean id="saveOrganizationCoordinatorIdsToCache"
 		class="org.eurekastreams.server.persistence.mappers.cache.SaveOrganizationCoordinatorIdsToCache">

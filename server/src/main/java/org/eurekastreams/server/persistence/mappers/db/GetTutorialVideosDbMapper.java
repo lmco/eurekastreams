@@ -22,28 +22,29 @@ import java.util.Set;
 import org.eurekastreams.commons.hibernate.ModelViewResultTransformer;
 import org.eurekastreams.server.domain.TutorialVideo;
 import org.eurekastreams.server.domain.TutorialVideoDTO;
-import org.eurekastreams.server.persistence.mappers.ReadMapper;
+import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.service.actions.strategies.TutorialVideoDTOFactory;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 
 /**
- * Get a list of tutorial videos ids straight from the database.
+ * Gets set of tutorial videos dtos from the database.
  * 
  */
-public class GetTutorialVideos extends ReadMapper<Long, Set<TutorialVideoDTO>>
+public class GetTutorialVideosDbMapper extends BaseArgDomainMapper<Long, Set<TutorialVideoDTO>>
 {
+
     /**
-     * Gets Tutorial Videos.
+     * Gets set of tutorial videos dtos from the database.
      * 
-     * @param inTutorialVideoId
+     * @param inRequest
      *            value is not used.
-     * @return a Set of TutorialVideoDTO.
+     * @return The set of {@link TutorialVideoDTO}s from db.
      */
     @SuppressWarnings("unchecked")
     @Override
-    public HashSet<TutorialVideoDTO> execute(final Long inTutorialVideoId)
+    public Set<TutorialVideoDTO> execute(final Long inRequest)
     {
         Criteria criteria = getHibernateSession().createCriteria(TutorialVideo.class);
         ProjectionList fields = Projections.projectionList();
@@ -56,9 +57,10 @@ public class GetTutorialVideos extends ReadMapper<Long, Set<TutorialVideoDTO>>
         fields.add(getColumn("videoWidth"));
         fields.add(getColumn("videoHeight"));
         criteria.setProjection(fields);
-        ModelViewResultTransformer<TutorialVideoDTO> resultTransformer = 
-            new ModelViewResultTransformer<TutorialVideoDTO>(
-                new TutorialVideoDTOFactory());
+
+        ModelViewResultTransformer<TutorialVideoDTO> resultTransformer = //
+        new ModelViewResultTransformer<TutorialVideoDTO>(new TutorialVideoDTOFactory());
+
         criteria.setResultTransformer(resultTransformer);
         List<TutorialVideoDTO> tutorialVideoSet = criteria.list();
 

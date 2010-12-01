@@ -17,7 +17,7 @@ package org.eurekastreams.server.persistence.mappers.cache;
 
 /**
  * Collection of Cache keys.
- *
+ * 
  */
 public final class CacheKeys
 {
@@ -198,5 +198,15 @@ public final class CacheKeys
      * Cache key prefix for all activity ids for an organization (recursive) by short name.
      */
     public static final String ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE = "OrgActIds:";
+
+    /**
+     * Key for PersonPageProperties by id.
+     */
+    public static final String PERSON_PAGE_PROPERTIES_BY_ID = "PagePropsById:";
+
+    /**
+     * Key for tutorial vids set.
+     */
+    public static final String TUTORIAL_VIDS = "TutorialVids:";
 
 }

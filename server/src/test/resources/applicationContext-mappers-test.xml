@@ -234,8 +234,8 @@
 	<bean id="getOrganizationCoordinatorIdsByOrganizationIdDbMapper" 
 		class="org.eurekastreams.server.persistence.mappers.db.GetOrganizationCoordinatorIdsByOrganizationIdDbMapper"/>
 		
-    <bean id="getTutorialVideosFromDB" 
-        class="org.eurekastreams.server.persistence.mappers.db.GetTutorialVideos"/>
+    <bean id="getTutorialVideosDbMapper" 
+        class="org.eurekastreams.server.persistence.mappers.db.GetTutorialVideosDbMapper"/>
         
     <bean id="getPrivateGroupIdsUnderOrganizationsFromDB" 
     	class="org.eurekastreams.server.persistence.mappers.db.GetPrivateGroupIdsUnderOrganizations"/>

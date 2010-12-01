@@ -16,10 +16,12 @@
 package org.eurekastreams.server.action.execution;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
-import org.eurekastreams.server.persistence.mappers.db.GetTutorialVideos;
+import org.eurekastreams.server.domain.TutorialVideoDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * Execution for getting the tutorialVideos.
@@ -31,13 +33,13 @@ public class GetTutorialVideoExecution implements ExecutionStrategy<PrincipalAct
     /**
      * Mapper to look up a tutorial video.
      */
-    private final GetTutorialVideos tutorialVideoMapper;
+    private final DomainMapper<Long, Set<TutorialVideoDTO>> tutorialVideoMapper;
 
     /**
      * @param inTutorialVideoMapper
      *            the tutorialVideoMapper.
      */
-    public GetTutorialVideoExecution(final GetTutorialVideos inTutorialVideoMapper)
+    public GetTutorialVideoExecution(final DomainMapper<Long, Set<TutorialVideoDTO>> inTutorialVideoMapper)
     {
         tutorialVideoMapper = inTutorialVideoMapper;
     }
@@ -49,7 +51,7 @@ public class GetTutorialVideoExecution implements ExecutionStrategy<PrincipalAct
      */
     @Override
     public Serializable execute(final PrincipalActionContext inActionContext)
-    {        
-        return tutorialVideoMapper.execute(null);
+    {
+        return (Serializable) tutorialVideoMapper.execute(null);
     }
 }
