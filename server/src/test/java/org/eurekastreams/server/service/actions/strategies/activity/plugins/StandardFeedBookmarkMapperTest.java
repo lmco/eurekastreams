@@ -17,6 +17,7 @@ package org.eurekastreams.server.service.actions.strategies.activity.plugins;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -28,6 +29,7 @@ import org.eurekastreams.server.domain.stream.plugins.Feed;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.sun.syndication.feed.module.mediarss.MediaModule;
@@ -62,10 +64,17 @@ public class StandardFeedBookmarkMapperTest
      * Title.
      */
     private final String title = "myTitle";
+
+    /**
+     * Link base.
+     */
+    private final String linkBase = "http://www.eurekastreams.org";
+
     /**
      * Link.
      */
-    private final String link = "myLink";
+    private final String link = linkBase + "/abc/def";
+
     /**
      * Description.
      */
@@ -83,8 +92,25 @@ public class StandardFeedBookmarkMapperTest
     private final Feed feed = context.mock(Feed.class);
 
     /**
+     * Setup before each test.
+     */
+    @Before
+    public void setUp()
+    {
+        context.checking(new Expectations()
+        {
+            {
+                allowing(feed).getUrl();
+                will(returnValue(link));
+            }
+        });
+    }
+
+    /**
      * Test with thumbnail.
-     * @throws URISyntaxException exception.
+     *
+     * @throws URISyntaxException
+     *             exception.
      */
     @Test
     public void getBaseObjectWithThumbnail() throws URISyntaxException
@@ -102,7 +128,7 @@ public class StandardFeedBookmarkMapperTest
                 allowing(entry).getTitle();
                 will(returnValue(title));
 
-                oneOf(entry).getLink();
+                allowing(entry).getLink();
                 will(returnValue(link));
 
                 allowing(entry).getDescription();
@@ -138,7 +164,6 @@ public class StandardFeedBookmarkMapperTest
         assertEquals("http://www.sample.com", result.get("thumbnail"));
     }
 
-
     /**
      * Test without thumbnail.
      */
@@ -156,12 +181,11 @@ public class StandardFeedBookmarkMapperTest
                 allowing(entry).getTitle();
                 will(returnValue(title));
 
-                oneOf(entry).getLink();
+                allowing(entry).getLink();
                 will(returnValue(link));
 
                 oneOf(entry).getDescription();
                 will(returnValue(null));
-
 
                 oneOf(entry).getModule(MediaModule.URI);
                 will(returnValue(media));
@@ -187,4 +211,149 @@ public class StandardFeedBookmarkMapperTest
         assertEquals("", result.get("description"));
         assertFalse(result.containsKey("thumbnail"));
     }
+
+    /**
+     * Test without thumbnail.
+     */
+    @Test
+    public void getBaseObjectRelativeUrl1()
+    {
+        final MediaModuleImpl media = context.mock(MediaModuleImpl.class);
+        final Metadata metadata = context.mock(Metadata.class);
+
+        final Thumbnail[] thumbArr = {};
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(entry).getTitle();
+                will(returnValue(title));
+
+                allowing(entry).getLink();
+                will(returnValue("/xyz"));
+
+                oneOf(entry).getDescription();
+                will(returnValue(null));
+
+                oneOf(entry).getModule(MediaModule.URI);
+                will(returnValue(media));
+
+                allowing(media).getMetadata();
+                will(returnValue(metadata));
+
+                allowing(metadata).getThumbnail();
+                will(returnValue(thumbArr));
+            }
+        });
+
+        Activity activity = new Activity();
+        sut.build(feed, entry, activity);
+
+        assertEquals(BaseObjectType.BOOKMARK, activity.getBaseObjectType());
+
+        HashMap<String, String> result = activity.getBaseObject();
+
+        assertEquals(title, result.get("targetTitle"));
+        assertEquals(title, result.get("title"));
+        assertEquals(linkBase + "/xyz", result.get("targetUrl"));
+        assertEquals("", result.get("description"));
+        assertFalse(result.containsKey("thumbnail"));
+    }
+
+    /**
+     * Test without thumbnail.
+     */
+    @Test
+    public void getBaseObjectRelativeUrl2()
+    {
+        final MediaModuleImpl media = context.mock(MediaModuleImpl.class);
+        final Metadata metadata = context.mock(Metadata.class);
+
+        final Thumbnail[] thumbArr = {};
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(entry).getTitle();
+                will(returnValue(title));
+
+                allowing(entry).getLink();
+                will(returnValue("xyz"));
+
+                oneOf(entry).getDescription();
+                will(returnValue(null));
+
+                oneOf(entry).getModule(MediaModule.URI);
+                will(returnValue(media));
+
+                allowing(media).getMetadata();
+                will(returnValue(metadata));
+
+                allowing(metadata).getThumbnail();
+                will(returnValue(thumbArr));
+            }
+        });
+
+        Activity activity = new Activity();
+        sut.build(feed, entry, activity);
+
+        assertEquals(BaseObjectType.BOOKMARK, activity.getBaseObjectType());
+
+        HashMap<String, String> result = activity.getBaseObject();
+
+        assertEquals(title, result.get("targetTitle"));
+        assertEquals(title, result.get("title"));
+        assertEquals(linkBase + "/abc/xyz", result.get("targetUrl"));
+        assertEquals("", result.get("description"));
+        assertFalse(result.containsKey("thumbnail"));
+    }
+
+    /**
+     * Test without thumbnail.
+     */
+    @Test
+    public void getBaseObjectBadUrl()
+    {
+        final MediaModuleImpl media = context.mock(MediaModuleImpl.class);
+        final Metadata metadata = context.mock(Metadata.class);
+
+        final Thumbnail[] thumbArr = {};
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(entry).getTitle();
+                will(returnValue(title));
+
+                allowing(entry).getLink();
+                will(returnValue("%^"));
+
+                oneOf(entry).getDescription();
+                will(returnValue(null));
+
+                oneOf(entry).getModule(MediaModule.URI);
+                will(returnValue(media));
+
+                allowing(media).getMetadata();
+                will(returnValue(metadata));
+
+                allowing(metadata).getThumbnail();
+                will(returnValue(thumbArr));
+            }
+        });
+
+        Activity activity = new Activity();
+        sut.build(feed, entry, activity);
+
+        assertEquals(BaseObjectType.BOOKMARK, activity.getBaseObjectType());
+
+        HashMap<String, String> result = activity.getBaseObject();
+
+        assertEquals(title, result.get("targetTitle"));
+        assertEquals(title, result.get("title"));
+        assertNull(result.get("targetUrl"));
+        assertEquals("", result.get("description"));
+        assertFalse(result.containsKey("thumbnail"));
+    }
+
 }
