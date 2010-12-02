@@ -1,0 +1,13 @@
+### Feedback
+
+![](images/PS_UX_feedback_fig01.png)
+
+![](images/PS_UX_feedback_fig02.png)
+
+1. Height of the box is 32 px, left margin 20px, margin to the right of the text ( before the separator) 20px. 10px on either side of the close icon. Text is 12px, #333333
+2. Closes the feedback window
+3. Undoes the action
+
+### Processing
+
+### Validation

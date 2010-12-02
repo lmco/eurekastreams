@@ -1,0 +1,41 @@
+## Overview
+
+The OpenSocial Framework within Eureka Streams covers two particular aspects, access to the OpenSocial API as well as the OpenSocial Gadget Container. The implementation of the OpenSocial specification is covered with the open source [Apache Shindig](http://shindig.apache.org) project in Java. Eureka Streams integrates with Shindig in 2 different places: JavaScript container file, and Java interface implementations. These two integration points enable Eureka Streams to be an OpenSocial 0.9 Container.
+
+## OpenSocial API
+
+The [OpenSocial v0.9 specification](http://www.opensocial.org/Technical-Resources/opensocial-spec-v09/OpenSocial-Specification.html) provides details on what information needs to be provided from an OpenSocial container supporting the OpenSocial API. Shindig provides the Java interfaces for connecting your container implementation into the spec implementation. With these interfaces implemented in Eureka Streams, the REST endpoints provided by Shindig provide access to Eureka Streams Profile information through the OpenSocial Standard.
+
+![](images/OSF_Shindig_OpenSocial_Interface_Integration.jpg)
+
+### OpenSocial Adapter
+
+The OpenSocial adapter is the Eureka Streams implementation of the Shindig interfaces for OpenSocial: ActivityService, AppDataService, and PersonService. This adapter layer transforms the OpenSocial API requests received from Shindig into Action Framework requests that can then access the appropriate part of Eureka Streams.
+
+### Decoupling the implementation
+
+Shindig uses [Google Guice](http://code.google.com/p/google-guice/) for dependency injection, and this mechanism allows Eureka Streams to create Shindig's OpenSocial interface implementations within Java and wire it into Shindig while remaining decoupled from the project directly. This offers an advantage for Eureka Streams to take on new versions of Shindig with minimal points of integration.
+
+## OpenSocial Gadget Container
+
+Another aspect of the OpenSocial Specification that Eureka Streams supports is the [OpenSocial Gadget v0.9 specification](http://www.opensocial.org/Technical-Resources/opensocial-spec-v09/Gadgets-API-Specification.html). The OpenSocial Gadget Specification describes how a container can support XML based Web Applications in the form of Gadgets, a popular OpenSocial container is iGoogle. iGoogle currently supports OpenSocial v0.8.
+
+![](images/OSF_OpenSocial_Gadget_Container_Component_Diagram.jpg)
+
+### OpenSocial Gadget Container - Client
+
+The portion of the OpenSocial Gadget Container that is responsible for rendering gadgets and providing the sandbox that gadgets can execute within is located within javascript on the client. The client container also provides the mechanism to allow a gadget to communicate with the container. This communication includes both OpenSocial API calls as well as calls to other external resources that the OpenSocial Gadget Container - Server proxies on behalf of the gadget.
+
+### OpenSocial Gadget Container - Server
+
+The OpenSocial Gadget Container server side provides the linkage into the Shindig interface implementations for the OpenSocial API as well as proxying of requests from gadgets to external resources. Caching occurs on this side of the OpenSocial Gadget container for performance gains.
+
+### Gadget Renderer
+
+The Gadget Renderer's responsibility is to take the gadget definition xml, parse it, gather data necessary for its execution and transform it into HTML to be displayed within the OpenSocial Gadget Container - Client.
+
+### RPC Channel and RPC REST Endpoint
+
+The RPC mechanism within the OpenSocial Gadget Container is an important piece of the security paradigm for OpenSocial gadgets rendered as iFrames. The RPC channel is established by the OpenSocial Gadget Container and gadgets are linked to that channel when they are rendered. The RPC channel provides a scoped communications mechanism for the gadget back to the container. All of this occurs on the Client. An RPC request from a gadget could be merely a client side activity where all communication happens on the client, i.e. maximizing a gadget.
+
+There is also a mechanism to allow gadgets to make RPC calls that then call back to the server, as in the case of an OpenSocial API call. In this scenario the client based OpenSocial Gadget Container assembles the request information on behalf of the gadget, submits the request, and provides the appropriate callback to the gadget when the call is complete.

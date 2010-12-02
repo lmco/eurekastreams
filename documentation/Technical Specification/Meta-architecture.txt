@@ -1,0 +1,39 @@
+## Overview
+
+The meta-architecture defines architecture principals and trade analysis that is pervasive in the overall architecture.
+
+## Architecture principals
+
+### Leverage open standards
+
+Where possible, components supporting open standards are chosen over closed standards options.  Examples of this include the use of the Java Messaging Service (JMS), the use of the Java Persistence API (JPA), and the use of JavaScript.  The benefit is the flexibility and interoperability that exists when building a system.  Using open standards allows components to be swapped out for like components support the same standard if necessary due to technology advancements or corporate requirements/restrictions.
+
+### Incorporate free and open source software
+
+Where possible, use free components and frameworks when available source code is selected.  The benefit is the cost with an added benefit of being able to review the source code to better understand how a component or framework is built.  Additional benefits include the flexibility obtained from using frameworks.
+
+Using existing open source software allows us to look to the open source community for support and update.  As we look forward to releasing the system into the open source community, more favor falls upon the open source project given the usage of other open source projects.
+
+When considering a component or framework, review the open source license to ensure the appropriateness for the corporate environment and overall business goals of the system.
+
+The benefit is to establish a highly componentized system allowing components to expose specific interfaces for low coupling and flexible system configuration.
+
+### Support a rich interactive experience
+
+The presentation layer of the system provides the user with a rich interactive experience.  The measurement of this experience is performed against interaction design established.
+
+### Promote automated testability
+
+A goal is to provide a high quality system, as free from defects as is reasonable for the features being provided.  Being able to automate system testing provides many benefits leading the system to higher quality.
+
+Automating the tests minimizes the testing resources needed compared to manual tests.  Having a robust set of tests provides safety during efforts of re-factoring to reduce or eliminate the number of regressions that occur as a result.  The automated tests are an integral part of the continuous integration processes, which in turn helps provide higher overall system quality.
+
+### Ensure a scalable [share nothing architecture](http://en.wikipedia.org/wiki/Shared_nothing_architecture)
+
+For system components, ensure the system can scale horizontally keeping free of any single point of contention.  The primary benefit is allowing the system to scale by adding additional nodes in particular component areas of the deployed system.  While each node is not self-sufficient, any particular area that could become a single point of contention can be [scaled horizontally](http://en.wikipedia.org/wiki/Scalability#Scale_horizontally_.28scale_out.29) to avoid bottlenecks.
+
+### Foster a configurable and repeatable packaging and deployment process
+
+In pursuit of high system quality, it is vital to be able to conduct consistent and repeatable system packaging and deployments.  To facilitate the deployment to different environments, configuration is required.  Using a build framework and build tools provide the consistent and repeatable packaging and deployments required while allowing configuration options to be used.
+
+The packaging and deployment process must span all environments including development, integration, performance testing, use acceptance testing, and production.
