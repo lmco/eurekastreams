@@ -261,14 +261,16 @@
         <constructor-arg value="false" />        
     </bean>
     
-    <bean id="setPersonLockedStatusAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
+    <bean id="setPersonLockedStatusAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
         <constructor-arg ref="noValidationStrategy" />        
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.settings.SetPersonLockedStatusExecution">
                 <constructor-arg ref="setPersonLockedStatus" />
+                <constructor-arg ref="getPersonIdByAccountIdMapper" />
             </bean>
         </constructor-arg>
-        <constructor-arg value="false" />        
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="false" />
     </bean>
     
     <bean id="refreshPersonAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
@@ -3662,31 +3664,6 @@
         class="org.eurekastreams.server.service.actions.strategies.galleryitem.GadgetDefinitionPopulator">
         <constructor-arg ref="gadgetMetaDataHttpFetcher" />
     </bean>    
-
-    <bean id="organizationPopulator"
-        class="org.eurekastreams.server.service.actions.strategies.OrganizationPopulator">
-        <constructor-arg ref="jpaOrganizationMapper" />
-        <constructor-arg ref="jpaPersonMapper" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.PersonLookupUtilityStrategy">
-                <constructor-arg ref="ldapPersonLookupViaLdapGroupMembership" />
-                <constructor-arg ref="populateOrgChildWithSkeletonParentOrgsCacheMapper" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.PersonLookupUtilityStrategy">
-                <constructor-arg ref="ldapPersonLookupViaAttributeQuery" />
-                <constructor-arg ref="populateOrgChildWithSkeletonParentOrgsCacheMapper" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg ref="createPersonActionFactory" />
-        <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.domain.strategies.OrganizationHierarchyTraverserBuilder" />
-        </constructor-arg>
-    </bean>
 
     <bean id="updaterStrategy"
         class="org.eurekastreams.server.service.actions.strategies.ReflectiveUpdater">

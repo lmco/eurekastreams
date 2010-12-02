@@ -229,11 +229,16 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      * The date the current user last accepted the terms of service.
      */
     private Date lastAcceptedTermsOfService = UNINITIALIZED_DATE_VALUE;
-    
+
     /**
      * Map of additional properties.
      */
     private HashMap<String, String> additionalProperties;
+
+    /**
+     * If user's account is locked.
+     */
+    private boolean accountLocked = false;
 
     /**
      * Get the name of this entity.
@@ -379,6 +384,10 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
         {
             setAdditionalProperties((HashMap<String, String>) properties.get("additionalProperties"));
         }
+        if (properties.containsKey("accountLocked"))
+        {
+            setAccountLocked((Boolean) properties.get("accountLocked"));
+        }
     }
 
     /**
@@ -399,7 +408,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      */
     public void setDateAdded(final Date inDateAdded)
     {
-        this.dateAdded = inDateAdded;
+        dateAdded = inDateAdded;
     }
 
     /**
@@ -420,7 +429,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      */
     public void setAccountId(final String inAccountId)
     {
-        this.accountId = inAccountId;
+        accountId = inAccountId;
     }
 
     /**
@@ -462,7 +471,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      */
     public void setTitle(final String inTitle)
     {
-        this.title = inTitle;
+        title = inTitle;
     }
 
     /**
@@ -491,6 +500,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      *
      * @return the parentOrganizationShortName
      */
+    @Override
     public String getParentOrganizationShortName()
     {
         return parentOrganizationShortName;
@@ -504,7 +514,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      */
     public void setParentOrganizationShortName(final String inParentOrganizationShortName)
     {
-        this.parentOrganizationShortName = inParentOrganizationShortName;
+        parentOrganizationShortName = inParentOrganizationShortName;
     }
 
     /**
@@ -512,6 +522,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      *
      * @return the parentOrganizationName
      */
+    @Override
     public String getParentOrganizationName()
     {
         return parentOrganizationName;
@@ -525,7 +536,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      */
     public void setParentOrganizationName(final String inParentOrganizationName)
     {
-        this.parentOrganizationName = inParentOrganizationName;
+        parentOrganizationName = inParentOrganizationName;
     }
 
     /**
@@ -546,7 +557,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      */
     public void setDescription(final String inDescription)
     {
-        this.description = inDescription;
+        description = inDescription;
     }
 
     /**
@@ -554,6 +565,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      *
      * @return the followersCount
      */
+    @Override
     public int getFollowersCount()
     {
         return followersCount;
@@ -567,7 +579,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      */
     public void setFollowersCount(final int inFollowersCount)
     {
-        this.followersCount = inFollowersCount;
+        followersCount = inFollowersCount;
     }
 
     /**
@@ -588,7 +600,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      */
     public void setDisplayName(final String inDisplayName)
     {
-        this.displayName = inDisplayName;
+        displayName = inDisplayName;
     }
 
     /**
@@ -609,7 +621,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      */
     public void setAvatarId(final String inAvatarId)
     {
-        this.avatarId = inAvatarId;
+        avatarId = inAvatarId;
     }
 
     /**
@@ -643,7 +655,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      */
     public void setUpdatesCount(final int inUpdatesCount)
     {
-        this.updatesCount = inUpdatesCount;
+        updatesCount = inUpdatesCount;
     }
 
     /**
@@ -660,7 +672,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      */
     public void setStreamId(final long inStreamId)
     {
-        this.streamId = inStreamId;
+        streamId = inStreamId;
     }
 
     /**
@@ -755,6 +767,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     /**
      * @return Person's email.
      */
+    @Override
     public String getEmail()
     {
         return email;
@@ -781,6 +794,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     /**
      * @return The commentable flag.
      */
+    @Override
     public boolean isCommentable()
     {
         return commentable;
@@ -789,6 +803,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     /**
      * @return The streamPostable flag.
      */
+    @Override
     public boolean isStreamPostable()
     {
         return streamPostable;
@@ -821,7 +836,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      */
     public void setRelatedOrganizationIds(final List<Long> inRelatedOrganizationIds)
     {
-        this.relatedOrganizationIds = inRelatedOrganizationIds;
+        relatedOrganizationIds = inRelatedOrganizationIds;
     }
 
     /**
@@ -883,10 +898,10 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     {
         lastAcceptedTermsOfService = inLastAcceptedTermsOfService;
     }
-    
+
     /**
      * The additionalProperties setter.
-     * 
+     *
      * @param inAdditionalProperties
      *            the properties hashmap to set
      */
@@ -897,11 +912,28 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * The additionalProperties getter.
-     * 
+     *
      * @return additionalProperties hashmap.
      */
     public HashMap<String, String> getAdditionalProperties()
     {
         return additionalProperties;
+    }
+
+    /**
+     * @return if the account is locked.
+     */
+    public boolean isAccountLocked()
+    {
+        return accountLocked;
+    }
+
+    /**
+     * @param inAccountLocked
+     *            if the account is locked.
+     */
+    public void setAccountLocked(final boolean inAccountLocked)
+    {
+        accountLocked = inAccountLocked;
     }
 }

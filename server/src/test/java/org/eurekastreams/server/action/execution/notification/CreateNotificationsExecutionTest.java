@@ -36,10 +36,12 @@ import org.eurekastreams.server.action.request.notification.CreateNotificationsR
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationDTO;
+import org.eurekastreams.server.domain.NotificationFilterPreference.Category;
 import org.eurekastreams.server.domain.NotificationFilterPreferenceDTO;
 import org.eurekastreams.server.domain.NotificationType;
-import org.eurekastreams.server.domain.NotificationFilterPreference.Category;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetNotificationFilterPreferencesByPeopleIds;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -71,31 +73,38 @@ public class CreateNotificationsExecutionTest
     /**
      * Mock comment translator.
      */
-    private CommentTranslator commentTranslator = context.mock(CommentTranslator.class);
+    private final CommentTranslator commentTranslator = context.mock(CommentTranslator.class);
 
     /**
      * Mock follower translator.
      */
-    private FollowerTranslator followerTranslator = context.mock(FollowerTranslator.class);
+    private final FollowerTranslator followerTranslator = context.mock(FollowerTranslator.class);
 
     /** Fixture: populator. */
-    private NotificationPopulator populator = context.mock(NotificationPopulator.class);
+    private final NotificationPopulator populator = context.mock(NotificationPopulator.class);
 
     /**
      * Mock application alert notifier.
      */
-    private ApplicationAlertNotifier applicationNotifier = context.mock(ApplicationAlertNotifier.class);
+    private final ApplicationAlertNotifier applicationNotifier = context.mock(ApplicationAlertNotifier.class);
 
     /**
      * Mock email notifier.
      */
-    private Notifier emailNotifier = context.mock(Notifier.class);
+    private final Notifier emailNotifier = context.mock(Notifier.class);
 
     /**
      * The mock preferences mapper.
      */
-    private GetNotificationFilterPreferencesByPeopleIds preferencesMapper = context
+    private final GetNotificationFilterPreferencesByPeopleIds preferencesMapper = context
             .mock(GetNotificationFilterPreferencesByPeopleIds.class);
+
+    /** Mapper to get people for determining locked users. */
+    private final DomainMapper<List<Long>, List<PersonModelView>> personMapper = context.mock(DomainMapper.class,
+            "personMapper");
+
+    /** Fixture: person. */
+    private final PersonModelView person = context.mock(PersonModelView.class);
 
     /**
      * Setup the test.
@@ -114,9 +123,8 @@ public class CreateNotificationsExecutionTest
         Map<NotificationType, Category> notificationTypeToCategory = new HashMap<NotificationType, Category>();
         notificationTypeToCategory.put(NotificationType.FOLLOW_PERSON, Category.FOLLOW_PERSON);
 
-        sut =
-                new CreateNotificationsExecution(translators, populator, notifiers, preferencesMapper,
-                        notificationTypeToCategory);
+        sut = new CreateNotificationsExecution(translators, populator, notifiers, preferencesMapper, personMapper,
+                notificationTypeToCategory);
     }
 
     /**
@@ -131,8 +139,7 @@ public class CreateNotificationsExecutionTest
     {
         final List<Long> recipients = new ArrayList<Long>();
         recipients.add(4L);
-        final NotificationDTO notification =
-                new NotificationDTO(recipients, NotificationType.FOLLOW_PERSON, 1L, 2L,
+        final NotificationDTO notification = new NotificationDTO(recipients, NotificationType.FOLLOW_PERSON, 1L, 2L,
                 EntityType.PERSON, 3L);
         final Collection<NotificationDTO> notifications = Collections.singletonList(notification);
 
@@ -141,6 +148,12 @@ public class CreateNotificationsExecutionTest
             {
                 oneOf(followerTranslator).translate(1, 2, 3);
                 will(returnValue(notifications));
+
+                oneOf(personMapper).execute(with(equal(recipients)));
+                will(returnValue(Collections.singletonList(person)));
+
+                allowing(person).isAccountLocked();
+                will(returnValue(false));
 
                 oneOf(populator).populate(with(same(notification)));
 
@@ -173,8 +186,7 @@ public class CreateNotificationsExecutionTest
     {
         final List<Long> recipients = new ArrayList<Long>();
         recipients.add(4L);
-        final NotificationDTO notification =
-                new NotificationDTO(recipients, NotificationType.FOLLOW_PERSON, 1L, 2L,
+        final NotificationDTO notification = new NotificationDTO(recipients, NotificationType.FOLLOW_PERSON, 1L, 2L,
                 EntityType.PERSON, 3L);
         final Collection<NotificationDTO> notifications = Collections.singletonList(notification);
 
@@ -189,6 +201,12 @@ public class CreateNotificationsExecutionTest
                 oneOf(followerTranslator).translate(1, 2, 3);
                 will(returnValue(notifications));
 
+                oneOf(personMapper).execute(with(equal(recipients)));
+                will(returnValue(Collections.singletonList(person)));
+
+                allowing(person).isAccountLocked();
+                will(returnValue(false));
+
                 oneOf(populator).populate(with(same(notification)));
 
                 oneOf(preferencesMapper).execute(with(any(List.class)));
@@ -196,6 +214,54 @@ public class CreateNotificationsExecutionTest
 
                 oneOf(applicationNotifier).notify(with(any(NotificationDTO.class)));
                 will(returnValue(null));
+            }
+        });
+
+        CreateNotificationsRequest request = new CreateNotificationsRequest(RequestType.FOLLOWER, 1, 2, 3);
+        AsyncActionContext currentContext = new AsyncActionContext(request);
+        TaskHandlerActionContext<ActionContext> currentTaskHandlerContext = new TaskHandlerActionContext<ActionContext>(
+                currentContext, new ArrayList<UserActionRequest>());
+        sut.execute(currentTaskHandlerContext);
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Tests performAction where the recipient is a locked user.
+     *
+     * @throws Exception
+     *             Shouldn't.
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testExecuteWithLockedRecipient() throws Exception
+    {
+        final List<Long> recipients = new ArrayList<Long>();
+        recipients.add(4L);
+        final NotificationDTO notification = new NotificationDTO(recipients, NotificationType.FOLLOW_PERSON, 1L, 2L,
+                EntityType.PERSON, 3L);
+        final Collection<NotificationDTO> notifications = Collections.singletonList(notification);
+
+        final NotificationFilterPreferenceDTO pref1 = new NotificationFilterPreferenceDTO(4L, "EMAIL",
+                Category.FOLLOW_PERSON);
+        final List<NotificationFilterPreferenceDTO> prefs = new ArrayList<NotificationFilterPreferenceDTO>();
+        prefs.add(pref1);
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(followerTranslator).translate(1, 2, 3);
+                will(returnValue(notifications));
+
+                oneOf(personMapper).execute(with(equal(recipients)));
+                will(returnValue(Collections.singletonList(person)));
+
+                allowing(person).isAccountLocked();
+                will(returnValue(true));
+                allowing(person).getId();
+                will(returnValue(4L));
+
+                oneOf(preferencesMapper).execute(with(any(List.class)));
+                will(returnValue(prefs));
             }
         });
 
@@ -218,8 +284,7 @@ public class CreateNotificationsExecutionTest
     public void testExecuteNotifierError() throws Exception
     {
         final List<Long> recipients = Arrays.asList(4L);
-        final NotificationDTO notification =
-                new NotificationDTO(recipients, NotificationType.FOLLOW_PERSON, 1L, 2L,
+        final NotificationDTO notification = new NotificationDTO(recipients, NotificationType.FOLLOW_PERSON, 1L, 2L,
                 EntityType.PERSON, 3L);
         final Collection<NotificationDTO> notifications = Collections.singletonList(notification);
 
@@ -228,6 +293,12 @@ public class CreateNotificationsExecutionTest
             {
                 oneOf(followerTranslator).translate(1, 2, 3);
                 will(returnValue(notifications));
+
+                oneOf(personMapper).execute(with(equal(recipients)));
+                will(returnValue(Collections.singletonList(person)));
+
+                allowing(person).isAccountLocked();
+                will(returnValue(false));
 
                 oneOf(populator).populate(with(same(notification)));
 
@@ -257,8 +328,8 @@ public class CreateNotificationsExecutionTest
     {
         CreateNotificationsRequest request = new CreateNotificationsRequest(RequestType.FLAG_ACTIVITY, 1, 2, 3);
         AsyncActionContext currentContext = new AsyncActionContext(request);
-        TaskHandlerActionContext<ActionContext> currentTaskHandlerContext =
-                new TaskHandlerActionContext<ActionContext>(currentContext, new ArrayList<UserActionRequest>());
+        TaskHandlerActionContext<ActionContext> currentTaskHandlerContext = new TaskHandlerActionContext<ActionContext>(
+                currentContext, new ArrayList<UserActionRequest>());
         assertEquals(Boolean.FALSE, sut.execute(currentTaskHandlerContext));
 
         context.assertIsSatisfied();

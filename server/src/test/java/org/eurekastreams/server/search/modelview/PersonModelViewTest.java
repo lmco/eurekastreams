@@ -17,7 +17,9 @@ package org.eurekastreams.server.search.modelview;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -108,22 +110,22 @@ public class PersonModelViewTest
     /**
      * ToS acceptance flag.
      */
-    private boolean tosAcceptance = true;
+    private final boolean tosAcceptance = true;
 
     /**
      * Flag to determine if person's activities can be commented on.
      */
-    private boolean commentable = false;
+    private final boolean commentable = false;
 
     /**
      * Flag to determine if person's stream can be posted on.
      */
-    private boolean streamPostable = false;
+    private final boolean streamPostable = false;
 
     /**
      * Authentication type.
      */
-    private AuthenticationType authenticationType = AuthenticationType.FORM;
+    private final AuthenticationType authenticationType = AuthenticationType.FORM;
 
     /**
      * IDs of related organizations.
@@ -198,6 +200,7 @@ public class PersonModelViewTest
         sut.setStreamPostable(streamPostable);
         sut.setRelatedOrganizationIds(relatedOrganizationIds);
         sut.setLastAcceptedTermsOfService(lastAcceptedTermsOfService);
+        sut.setAccountLocked(true);
 
         // check new state
         assertAll(sut);
@@ -245,6 +248,7 @@ public class PersonModelViewTest
         p.put("streamPostable", streamPostable);
         p.put("relatedOrganizationIds", relatedOrganizationIds);
         p.put("lastAcceptedTermsOfService", lastAcceptedTermsOfService);
+        p.put("accountLocked", Boolean.TRUE);
 
         PersonModelView sut = new PersonModelView();
 
@@ -292,6 +296,7 @@ public class PersonModelViewTest
         assertEquals(true, sut.isCommentable());
         assertEquals(true, sut.isStreamPostable());
         assertNull(sut.getRelatedOrganizationIds());
+        assertFalse(sut.isAccountLocked());
     }
 
     /**
@@ -323,5 +328,6 @@ public class PersonModelViewTest
 
         assertEquals(sut.getEntityId(), sut.getId());
         assertEquals(sut.getAccountId(), sut.getUniqueId());
+        assertTrue(sut.isAccountLocked());
     }
 }
