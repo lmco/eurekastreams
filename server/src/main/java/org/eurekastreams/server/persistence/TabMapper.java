@@ -17,6 +17,7 @@ package org.eurekastreams.server.persistence;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -38,7 +39,7 @@ public class TabMapper
 {
     /**
      * Constructor.
-     *
+     * 
      * @param inQueryOptimizer
      *            the QueryOptimizer to use for specialized functions.
      */
@@ -63,8 +64,7 @@ public class TabMapper
     private final int defaultUndeleteGadgetWindowInMinutes = 20;
 
     /**
-     * The number of minutes to allow a gadget to be undeleted in, defaults to
-     * 20 minutes.
+     * The number of minutes to allow a gadget to be undeleted in, defaults to 20 minutes.
      */
     private int undeleteGadgetWindowInMinutes = defaultUndeleteGadgetWindowInMinutes;
 
@@ -74,11 +74,9 @@ public class TabMapper
     private Log logger = LogFactory.getLog(TabMapper.class);
 
     /**
-     * Temp Method to get templates based on type.
-     * Note: this method only returns a single result, but queries all
-     * tab templates.  There is no way for the query to distinguish which tab template comes
-     * back.
-     *
+     * Temp Method to get templates based on type. Note: this method only returns a single result, but queries all tab
+     * templates. There is no way for the query to distinguish which tab template comes back.
+     * 
      * @param type
      *            The TabType.
      * @return the TabTemplate.
@@ -92,7 +90,7 @@ public class TabMapper
 
     /**
      * Set the number of minutes to allow a gadget to be undeleted in.
-     *
+     * 
      * @param undeleteWindowInMinutes
      *            the number of minutes to allow a tab to be undeleted in.
      */
@@ -103,7 +101,7 @@ public class TabMapper
 
     /**
      * Set the entity manager to use for all ORM operations.
-     *
+     * 
      * @param inEntityManager
      *            the entity manager to use for all ORM operations.
      */
@@ -115,10 +113,10 @@ public class TabMapper
 
     /**
      * Find the Tab by id and eagerly load the gadget collection.
-     *
+     * 
      * @param tabId
      *            ID of the Tab to look up.
-     *
+     * 
      * @return the entity with the input
      */
     public Tab findById(final Long tabId)
@@ -136,7 +134,7 @@ public class TabMapper
 
     /**
      * Find the parent Tab of the input Gadget id.
-     *
+     * 
      * @param gadgetId
      *            the Gadget id to find the parent Tab for.
      * @return the parent Tab
@@ -148,26 +146,28 @@ public class TabMapper
 
     /**
      * This method retrieves a tab with only a gadget id to start with.
-     * @param gadgetId - id of the gadget used to retrieve the container tab.
+     * 
+     * @param gadgetId
+     *            - id of the gadget used to retrieve the container tab.
      * @return - container tab of the gadget id passed in.
      */
     public Tab findTabByGadgetId(final Long gadgetId)
     {
         Query q = entityManager.createQuery(
-                "SELECT t FROM Tab t, Gadget g "
-                + "WHERE g.id = :gadgetId "
-                + "AND g.template.id = t.template.id").setParameter("gadgetId", gadgetId);
+                "SELECT t FROM Tab t, Gadget g " + "WHERE g.id = :gadgetId " + "AND g.template.id = t.template.id")
+                .setParameter("gadgetId", gadgetId);
 
         Tab tab = (Tab) q.getSingleResult();
 
-        //Touch the gadgets so that they will be eagerly loaded.
+        // Touch the gadgets so that they will be eagerly loaded.
         tab.getGadgets().size();
 
         return tab;
     }
+
     /**
      * Find the Tab by id.
-     *
+     * 
      * @param tabId
      *            ID of the Tab to look up
      * @return the entity with the input
@@ -178,8 +178,7 @@ public class TabMapper
     }
 
     /**
-     * Update all entities that have changed since they were loaded within the
-     * same context.
+     * Update all entities that have changed since they were loaded within the same context.
      */
     public void flush()
     {
@@ -188,12 +187,11 @@ public class TabMapper
 
     /**
      * Mark the input gadget as deleted so that it may be undeleted later on.
-     *
+     * 
      * @param gadgetToDelete
      *            The gadget to delete.
      * @throws GadgetDeletionException
-     *             thrown when the caller tries to delete a gadget from a tab
-     *             that doesn't own the input gadget.
+     *             thrown when the caller tries to delete a gadget from a tab that doesn't own the input gadget.
      */
     public void deleteGadget(final Gadget gadgetToDelete) throws GadgetDeletionException
     {
@@ -239,7 +237,7 @@ public class TabMapper
 
     /**
      * Implementation of the undelete method from the TabMapper interface.
-     *
+     * 
      * @param gadgetId
      *            id of the gadget to be undeleted.
      * @return gadget object represented by the gadget id.
@@ -274,8 +272,7 @@ public class TabMapper
         try
         {
             /*
-             * bump up the zone index of each gadget in the same zone as the
-             * gadget to be undeleted
+             * bump up the zone index of each gadget in the same zone as the gadget to be undeleted
              */
             for (Gadget currentGadget : template.getGadgets())
             {
@@ -307,13 +304,13 @@ public class TabMapper
 
     /**
      * Get the tab by gadget id.
-     *
+     * 
      * @param gadgetId
      *            The id of the gadget to find the tab for.
-     *
+     * 
      * @param isDeleted
      *            whether to look for deleted or undeleted gadget.
-     *
+     * 
      * @return the TabGroup that owns the input tabId.
      */
     private TabTemplate getTabTemplateByGadgetId(final long gadgetId, final boolean isDeleted)
@@ -324,11 +321,10 @@ public class TabMapper
     }
 
     /**
-     * Mark the input gadget as deleted so that it's no longer returned in
-     * queries but can be undeleted later on. The gadget would have just been
-     * removed from the gadget, so we need to set the tabId back to the gadget
-     * so that it's ignored by the collection.
-     *
+     * Mark the input gadget as deleted so that it's no longer returned in queries but can be undeleted later on. The
+     * gadget would have just been removed from the gadget, so we need to set the tabId back to the gadget so that it's
+     * ignored by the collection.
+     * 
      * @param template
      *            The TabTemplate that contains the gadget.
      * @param gadget
@@ -346,13 +342,11 @@ public class TabMapper
     }
 
     /**
-     * Clean up deleted gadgets here using the expired date set earlier.
-     * Currently this is hard-coded to be at least 20 (configurable) minutes
-     * since the gadget was originally deleted, but could be much longer because
-     * it is dependent on the next gadget that is deleted. If one gadget is
-     * deleted on Jan 1st and the next gadget is deleted on March 1st, the 1st
-     * gadget will remain flagged as deleted in the database until March 1st so
-     * we definitely need a full timestamp for this object.
+     * Clean up deleted gadgets here using the expired date set earlier. Currently this is hard-coded to be at least 20
+     * (configurable) minutes since the gadget was originally deleted, but could be much longer because it is dependent
+     * on the next gadget that is deleted. If one gadget is deleted on Jan 1st and the next gadget is deleted on March
+     * 1st, the 1st gadget will remain flagged as deleted in the database until March 1st so we definitely need a full
+     * timestamp for this object.
      */
     private void cleanUpDeletedGadgets()
     {
@@ -365,61 +359,94 @@ public class TabMapper
     }
 
     /**
-     * This method is responsible for moving a gadget from one location to
-     * another on the any gadget page.
-     * @param gadgetId - id of the gadget that is being moved.
-     * @param sourceTabTemplateId - id of the tab template where the gadget is moving
-     *  from.
-     * @param sourceZoneIndex - index of the position in the zone that the gadget
-     *  is moving from.
-     * @param sourceZoneNumber - number of the zone that the gadget is moving from.
-     * @param targetTabTemplateId - id of the tab template where the gadget is moving to.
-     * @param targetZoneIndex - index of the position in the zone that the gadget
-     *  is moving to.
-     * @param targetZoneNumber - number of the zone that the gadget is moving to.
+     * This method is responsible for moving a gadget from one location to another on the any gadget page.
+     * 
+     * @param gadgetId
+     *            - id of the gadget that is being moved.
+     * @param sourceTabTemplateId
+     *            - id of the tab template where the gadget is moving from.
+     * @param sourceZoneIndex
+     *            - index of the position in the zone that the gadget is moving from.
+     * @param sourceZoneNumber
+     *            - number of the zone that the gadget is moving from.
+     * @param targetTabTemplateId
+     *            - id of the tab template where the gadget is moving to.
+     * @param targetZoneIndex
+     *            - index of the position in the zone that the gadget is moving to.
+     * @param targetZoneNumber
+     *            - number of the zone that the gadget is moving to.
      */
-    public void moveGadget(final Long gadgetId,
-            final Long sourceTabTemplateId,
-            final Integer sourceZoneIndex,
-            final Integer sourceZoneNumber,
-            final Long targetTabTemplateId,
-            final Integer targetZoneIndex,
+    @SuppressWarnings("unchecked")
+    public void moveGadget(final Long gadgetId, final Long sourceTabTemplateId, final Integer sourceZoneIndex,
+            final Integer sourceZoneNumber, final Long targetTabTemplateId, Integer targetZoneIndex,
             final Integer targetZoneNumber)
     {
-        logger.debug("Moving gadget: " + gadgetId + " from tab templateid: " + sourceTabTemplateId
-                + " zoneNumber: " + sourceZoneNumber + " zoneIndex: " + sourceZoneIndex + " To "
-                + " tab templateid: " + targetTabTemplateId + " zoneNumber: " + targetZoneNumber
-                + " zoneIndex: " + targetZoneIndex);
+        logger.debug("Moving gadget: " + gadgetId + " from tab templateid: " + sourceTabTemplateId + " zoneNumber: "
+                + sourceZoneNumber + " zoneIndex: " + sourceZoneIndex + " To " + " tab templateid: "
+                + targetTabTemplateId + " zoneNumber: " + targetZoneNumber + " zoneIndex: " + targetZoneIndex);
 
-        //Create space for gadget in target tab template
-        entityManager.createQuery("UPDATE versioned Gadget g SET g.zoneIndex = g.zoneIndex + 1 "
-                + "WHERE g.template.id =:targetTabTemplateId "
-                + "AND g.zoneIndex >=:targetZoneIndex "
-                + "AND g.zoneNumber =:targetZoneNumber "
-                + "AND g.deleted = false")
-                    .setParameter("targetTabTemplateId", targetTabTemplateId)
-                    .setParameter("targetZoneIndex", targetZoneIndex)
-                    .setParameter("targetZoneNumber", targetZoneNumber).executeUpdate();
+        // Source
+        List<Gadget> sourceGadgets = (List<Gadget>) entityManager.createQuery(
+                "FROM Gadget g " + "WHERE g.template.id =:sourceTabTemplateId "
+                        + "AND g.zoneNumber =:sourceZoneNumber AND g.deleted = false ORDER BY g.zoneIndex")
+                .setParameter("sourceTabTemplateId", sourceTabTemplateId).setParameter("sourceZoneNumber",
+                        sourceZoneNumber).getResultList();
 
-        //move gadget to target tab template
-        entityManager.createQuery("UPDATE versioned Gadget g SET g.zoneIndex =:targetZoneIndex, "
-                + "g.zoneNumber =:targetZoneNumber, "
-                + "g.template.id =:targetTabTemplateId "
-                + "WHERE g.id =:gadgetId")
-                .setParameter("targetZoneIndex", targetZoneIndex)
-                .setParameter("targetZoneNumber", targetZoneNumber)
-                .setParameter("targetTabTemplateId", targetTabTemplateId)
-                .setParameter("gadgetId", gadgetId).executeUpdate();
+        Gadget movingGadget = null;
 
-        //clean up indexes from source tab template
-        entityManager.createQuery("UPDATE versioned Gadget g SET g.zoneIndex = g.zoneIndex - 1 "
-                + "WHERE g.template.id =:sourceTabTemplateId "
-                + "AND g.zoneIndex >:sourceZoneIndex "
-                + "AND g.zoneNumber =:sourceZoneNumber "
-                + "AND g.deleted = false")
-                    .setParameter("sourceTabTemplateId", sourceTabTemplateId)
-                    .setParameter("sourceZoneIndex", sourceZoneIndex)
-                    .setParameter("sourceZoneNumber", sourceZoneNumber).executeUpdate();
+        for (int i = 0; i < sourceGadgets.size(); i++)
+        {
+            if (sourceGadgets.get(i).getId() == gadgetId)
+            {
+                movingGadget = sourceGadgets.get(i);
+                sourceGadgets.remove(i);
+            }
+        }
+
+        // Target
+        List<Gadget> targetGadgets = (List<Gadget>) entityManager.createQuery(
+                "FROM Gadget g " + "WHERE g.template.id =:targetTabTemplateId "
+                        + "AND g.zoneNumber =:targetZoneNumber AND g.deleted = false ORDER BY g.zoneIndex")
+                .setParameter("targetTabTemplateId", targetTabTemplateId).setParameter("targetZoneNumber",
+                        targetZoneNumber).getResultList();
+
+        // Remove from target as well
+        for (int i = 0; i < targetGadgets.size(); i++)
+        {
+            if (targetGadgets.get(i).getId() == gadgetId)
+            {
+                targetGadgets.remove(i);
+            }
+        }
+        
+        if (targetZoneIndex < targetGadgets.size())
+        {
+            targetGadgets.add(targetZoneIndex, movingGadget);
+        }
+        else
+        {
+            targetGadgets.add(movingGadget);
+        }
+
+        // Renumber Source gadgets
+        for (int i = 0; i < sourceGadgets.size(); i++)
+        {
+            Gadget g = sourceGadgets.get(i);
+            entityManager.createQuery(
+                    "UPDATE versioned Gadget g SET g.zoneIndex = :newZoneIndex WHERE g.id = :gadgetId").setParameter(
+                    "newZoneIndex", i).setParameter("gadgetId", g.getId()).executeUpdate();
+        }
+
+        // Renumber target gadgets
+        for (int i = 0; i < targetGadgets.size(); i++)
+        {
+            Gadget g = targetGadgets.get(i);
+            entityManager.createQuery(
+                    "UPDATE versioned Gadget g SET g.zoneIndex = :newZoneIndex, "
+                            + "g.template.id =:targetTabTemplateId, g.zoneNumber =:targetZoneNumber "
+                            + "WHERE g.id = :gadgetId").setParameter("newZoneIndex", i).setParameter("gadgetId",
+                    g.getId()).setParameter("targetTabTemplateId", targetTabTemplateId).setParameter(
+                    "targetZoneNumber", targetZoneNumber).executeUpdate();
+        }
     }
-
 }
