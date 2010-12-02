@@ -378,7 +378,7 @@ public class TabMapper
      */
     @SuppressWarnings("unchecked")
     public void moveGadget(final Long gadgetId, final Long sourceTabTemplateId, final Integer sourceZoneIndex,
-            final Integer sourceZoneNumber, final Long targetTabTemplateId, Integer targetZoneIndex,
+            final Integer sourceZoneNumber, final Long targetTabTemplateId, final Integer targetZoneIndex,
             final Integer targetZoneNumber)
     {
         logger.debug("Moving gadget: " + gadgetId + " from tab templateid: " + sourceTabTemplateId + " zoneNumber: "
@@ -418,7 +418,7 @@ public class TabMapper
                 targetGadgets.remove(i);
             }
         }
-        
+
         if (targetZoneIndex < targetGadgets.size())
         {
             targetGadgets.add(targetZoneIndex, movingGadget);
