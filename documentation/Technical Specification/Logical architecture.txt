@@ -1,0 +1,57 @@
+## Overview
+
+The logical architecture provides a more detailed view of the components that make up the system including the technical interfaces and connections between them.
+
+## Component Interaction Diagram
+
+![Component Interaction diagram](images/Component-Interaction-Diagram.png)
+
+### Cache Component
+
+The cache component implementation is [Memcached](http://memcached.org/memcached) version 1.4.4.  Memcached is an in-memory key/value data store.  This component provides temporal de-normalized storage for data.  The component exposes an interface via a network socket on TCP port 11211 (for the first memcached instance) and data is transferred in binary.  The protocol used to access this component is native binary and is defined here by this [reference document](http://code.google.com/p/memcached/wiki/MemcacheBinaryProtocol).
+
+The cache component does not authentication nor authorize any client accessing it, it allows direct access to its data.  For this reason, each cache server is configured with a local TCP filter providing socket-level security allowing only Web servers and the task executor server to access the cache data.
+
+### Search Component
+
+The search component implementation is [Apache Lucene](http://lucene.apache.org/java/docs) version 3.1.1 facilitated through the Hibernate object relational mapping framework.  Lucene is a full-featured text search engine.  This component provides the embedded search facility performing the indexing of data and the return of results.  The purpose of this capability is to provide search results targeting different aspects of the system.  For example, clients can search the directory for people, groups, and organizations by name.
+
+The component is an embedded engine within the Eureka Streams Application server.  The Model framework uses annotations to direct Lucene's indexing.  While configurable, the primary configuration has data index requests being sent to the Lucene master search engine via messages via the task queue server.  The task executor consumes these messages and adds the data to the master index.  The master Lucene index periodically send incremental index updates to the master copy area for the Lucene slaves to consume.
+
+The Web server is a Lucene slave and configured to listen for incremental index updates in the master copy area.  When found, the master copy incremental index data is consumed and added to the Lucene slave index.
+
+### Database Component
+
+The database component implementation is [PostgreSQL](http://www.postgresql.org) version 8.4.2.  PostgreSQL is a relational database management system (RDBMS) providing persistent storage of data in related tables.
+
+Connection to the database is achieved through a [JDBC compliant driver](http://jdbc.postgresql.org/) configured through the Spring  framework.  The database component requires a username and password authentication to access the server with username authorization to access the database.  Each database server is configured with a local TCP filter providing socket-level security allowing only Web servers and the task executor server to access the database server socket.
+
+### Web Server Component
+
+The Web server component implementation is [Apache HTTPd](http://httpd.apache.org) version 2.2.3.  HTTPd is a Web server supporting the [HTTP](http://en.wikipedia.org/wiki/Http) protocol.  The module used for Kerberos authentication is [mod-authkerb](http://modauthkerb.sourceforge.net/), and the module performing LDAP authorization is [authnz_ldap](http://httpd.apache.org/docs/2.1/mod/mod_authnz_ldap.html).  This component is configured to proxy requests that are to be handled by the Application Server component via a plug-able module named the [Apache Tomcat Connector](http://tomcat.apache.org/connectors-doc)
+
+Each Web server is configured with a local TCP filter providing socket-level security allowing only incoming connections to port 80 (HTTP) from the firewall component and from the task executor server.
+
+### Application Server Component
+
+The application server component implementation is [Apache Tomcat](http://tomcat.apache.org) version 6.0.24.  Tomcat is a Java Servlet container in compliance with the Java Servlet 2.5 specification.  The interface to this component is exposed via TCP port 8009 using the [AJP 1.3 protocol](http://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html).
+
+This component supports the security component, the scheduler, and multiple other components and subsystems.  The application server should be thought of as an executing container that starts up and accepts configuration for multiple components and subsystems.
+
+### Scheduler
+
+The schedule component implementation is [Quartz](http://www.quartz-scheduler.org/) embedded within the application server component.  There are particular tasks in the system that must be run either once at system start-up or periodically.
+
+The embedded scheduler is part of the Spring framework.  Schedules for task execution are defined via Unix [Cron syntax](http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html).
+
+### Task Queue Component
+
+The task queue component implementation is [Apache ActiveMQ] (http://activemq.apache.org) version 5.3.0.  ActiveMQ is a message topic and queue server in compliance with the [Java JMS 1.1 specification](http://java.sun.com/products/jms/docs.html).  The purpose of this capability is to provide message queues to offload operations and tasks from the Web server and application server components.  The task queue component accepts and stores tasks that are consumed by the task executor component and handled.
+
+Three components use the task queue server, which are the task framework, the task executor, and search.  The task framework places messages on the queue that are encapsulated actions consumed and handled by the task executor.  The search component has a configuration state where the indexing of data is handled by a master search indexer and driven by index messages placed onto a particular queue.  The task framework has the ability to create asynchronous actions, which are actions that are encapsulated and placed onto the task queue for consumption and handling by the task executor.
+
+### Task Executor Component
+
+The task executor component is implemented by a message driven bean (MDB) compliant with the [Java JMS 1.1 specification](http://java.sun.com/products/jms/docs.html) and designed to consume JMS messages.  The purpose of this capability is to consume messages placed on the task queue and handle them by executing the action encapsulated in the message.
+
+A configuration option exists for a message driven bean to listen for data index requests and be handled resulting in updating the master search index.  This is a part of the search component and occurs when configured for master and slave index nodes.
