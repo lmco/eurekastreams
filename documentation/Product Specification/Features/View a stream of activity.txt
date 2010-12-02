@@ -1,0 +1,220 @@
+##Overview
+Knowledge workers can view an activity stream for employees being followed or groups that were joined.  Activities for everyone or the primary organization of the employee can also be viewed.  Custom lists and searches can be used to quickly and easily access activities from the knowledge workers employee or group streams.
+##Conditions of satisfaction
+1. The knowledge worker must be able to view a stream of activity in reverse chronological order showing the first 10 items.
+2. The knowledge worker must be able to view inline more activities showing the next 10 items.
+3. The system must not display an action to view more activities if none remain.
+4. The knowledge worker must be able to view each activity's message, author's name and avatar, timestamp, and plugin source.
+5. The knowledge worker must be able to view each posted url's hyperlinked title, source, optional description, and optional image.
+6. The knowledge worker must be able to click on a hashtag within an activity and view matching activity from the stream he is currently viewing.
+7. The knowledge worker must be able to click on and navigate to a url embedded in an activity or comment.
+8. The knowledge worker must be able to view the original author of a shared activity.
+9. The knowledge worker must be able to view inline the first and last comments posted to an activity.
+10. The knowledge worker must be able to click and view inline all comments for an activity if the comment count is 20 or less.
+12. The knowledge worker must be able to click and view all comments for an activity on a separate page if the comment count is greater than 20.
+12. The knowledge worker must be able to navigate to a permalink for an activity.
+13. The knowledge worker must be able to view a stream of activity from a predefined list representing the colleagues he is following.
+14. The knowledge worker must be able to view a stream of activity from a predefined list representing everyone in the system.
+15. The knowledge worker must be able to view a stream of activity from a predefined list representing his primary organization.
+16. The knowledge worker must be able to view a stream of activity from a predefined list representing his saved items.
+17. The knowledge worker must be able to view a stream of activity from each group he is a member of.
+18. The knowledge worker must be able to view a stream of activity from a saved search.
+19. The knowledge worker must be able to view a stream of activity from a custom list.
+20. The knowledge worker must not be able to view activity posted to a private group he is not a member of.
+21. The organization coordinator must be able to view activity posted to a private group associated to his organization or sub-organization.
+22. The system must check for new activity posted to the current stream every 60 seconds and display a count of new activity.
+23. The knowledge worker must be able to update a stream with new activities without refreshing the page.
+##User experience
+###Activity Stream
+
+![](images/PS_F14_viewstreamofactivity_ViewStream_fig01.png)
+
+1. Stream title
+2. Create app button (words create app appear to the right of the button on hover)
+3. Search box
+4. Paging button
+
+###Refresh Stream
+
+![](images/PS_F14_viewstreamofactivity_ViewStream_fig02.png)
+
+1. Refresh bar slides down and is visible only when new activities are available. The refresh bar slides up after refresh if there are no new activities.
+2. Count of new activity since last refresh
+3. Refresh button displays the new activities, current activities slide down and the new activities appear.
+
+![](images/PS_F14_viewstreamofactivity_ViewStream_fig03.png)
+
+1. Refresh bar also appears when viewing search results.
+
+###Activity Components
+
+![](images/PS_F14_viewstreamofactivity_ActivityType_fig01.png)
+
+1. Avatar
+2. Author of post
+3. Content
+4. Time-date stamp
+
+###Activity Content Types
+#### Note
+
+![](images/PS_F14_viewstreamofactivity_ActivityType_fig03.png)
+
+1. Above is an example of a note, notes are the messages users post to an activity stream.
+
+####Bookmark
+
+![](images/PS_F14_viewstreamofactivity_ActivityType_fig04.png)
+
+Please note, in the image above, a note appears above the bookmark.
+
+1. Bookmark link
+2. Bookmark source
+3. Bookmark description
+4. Bookmark thumbnail image
+
+####Video
+
+![](images/PS_F14_viewstreamofactivity_ActivityType_fig05.png)
+
+1. Link to the video source, opens in a new window
+2. Video thumbnail, link opens a new window displaying the video at default size of 425 X 344
+3. Video description (first 150 characters, with spaces)
+4. Video length and link to YouTube user page.
+5. Video opened in a new window
+
+###Activity Hover Controls
+
+![](images/PS_F14_viewstreamofactivity_ActivityHoverControls.png)
+
+1. Hovering over an activity displays the actions a user can take on an activity.
+2. Hovering over a comment displays the actions a user can take on that comment.
+
+###Activity Hashtag Links
+
+![](images/PS_F14_viewstreamofactivity_hashtags_fig01.png)
+
+1. When knowledge workers enter hash tags into messages they appear in the activity as links.
+
+![](images/PS_F14_viewstreamofactivity_hashtags_fig02.png)
+
+1. Clicking on any hash tag returns the list of activities that match that keyword. Note that the create app button is not displayed when a search is active.
+
+###Shared Activity
+
+![](images/PS_F14_viewstreamofactivity_ShareActivity.png)
+
+1. The author of the activity that was shared appears above the time date stamp.
+
+###Activity Comments
+
+![](images/PS_F14_viewstreamofactivity_ActivityComments.png)
+
+1. When there are three or more comments on an activity the first and last are displayed.
+2. When there are more than three comments for an activity the total number of comments are displayed hyper-linked to the activity permalink.
+
+
+![](images/PS_F14_viewstreamofactivity_ActivityComments_fig02.png)
+
+1.  Knowledge worker is returned to the profile associated with the activity and the activity and comments are displayed in a modified version of the knowledge workers stream as shown above.
+
+###Activity Permalink
+
+![](images/PS_F14_viewstreamofactivity_ActivityPermalink.png)
+
+The user accesses an activity's permalink by clicking on the time-date stamp, clicking on the link to view all of an activity's comments, or clicking from clicking on a link from the Notifications modal.
+
+1. Returns the user back to the individual or group stream that contains the activity. If they came from the activity page they are returned to the group, list or saved search they were viewing.
+2. An Activity's post and all comments are listed.
+
+### Activity Page
+
+![](images/PS_F14_viewstreamofactivity_ActivityPage.png)
+
+1. Predefined lists: following, user's primary organization, everyone, saved items.
+2. Clicking on any predefined or custom list, group or saved search displays that stream of activity.
+3. Custom list
+4. Groups a user has joined
+5. Saved searches
+
+##Test plans
+###Knowledge Worker
+1. **Action: View a stream of activity**
+    * Verify the activity is in reverse chronological order
+    * Verify the first 10 items are displayed
+2. **Action: View More stream activities**
+    * Verify that when there are more than 10 activities, the next 10 items can be viewed in line
+    * Verify that if there are not more than 10 activities, there is no action to View More
+3. **Action: View an activity**
+    * Verify the ability to view each activity's message, author's name and avatar, timestamp, and plug-in source
+    * Verify that the Employee Name and Group Names are posted on an activity as appropriate and are hyperlinked to the employee or group profile as appropriate based on the following patterns.
+        *  <employee Name> to <group Name> (employee posting a message to a group)
+        *  <employee Name> (employee posting a message to their own stream)
+        *  <employee Name> to <employee Name> (employee posting a message to another employee's stream)
+    * Verify the following patterns are displayed for time stamps:
+        *  1 minute ago (60 - 119 sec)
+        *  5 minutes ago ( 120 sec up to 59 minutes)
+        *  1 hour ago
+        *  2 hours ago (use hours ago until the start of a new day then use yesterday)
+        *  Yesterday at 3:00pm (use for all activity posted the prior day)
+        *  &lt;day name&gt; at 2:00PM (use when the post is within a 7 day period)
+        *  Jun 24 at 4:00pm (use after 1 week and within the current year)
+        *  Aug 20, 2008 at 5:00pm (use after the current year)
+4. **Action: View an activity with a URL**
+    * Verify the ability to view each posted url's hyperlinked title, source, optional description, and optional image
+    * Verify the ability to click on and navigate to a url embedded in an activity or comment
+5. **Action: Click on a hashtag within an activity**
+    * View matching activity from the stream the knowledge worker is currently viewing
+6. **Action: View the original author of shared activity**
+    * Verify the name of the original author is displayed when an activity is shared
+7. **Action: View Comments**
+    * Verify the ability to view the first and last comments posted to an activity inline
+    * Verify the ability to click and view inline all comments for an activity if the comment count is 20 or less
+    * Verify the ability to click and view all comments for an activity on a separate page if the comment count is greater than 20
+8. **Action: Navigate to a permalink for an activity**
+    * Verify that message opens in its own page
+    * Verify that message timestamp is displayed
+9. **Action: View the activity stream of colleagues being followed**
+    * Verify the following list is predefined in the activity page
+    * Verify only the activity of the colleagues or groups being followed are displayed in the stream
+10. **Action: View the activity stream of everyone**
+    * Verify the everyone stream is predefined in the activity page
+    * Verify all activity is displayed within the everyone stream except private groups where knowledge worker is not a member
+11. **Action: View the activity stream of colleagues and groups in a knowledge workers primary organization**
+    * Verify the primary organization list is named after the knowledge workers primary organization
+    * Verify the primary organization list is predefined in the activity page
+    * Verify that activity posted by employees or groups within that primary organization are the only activities displayed in this stream
+12. **Action: View the activity stream of saved items**
+    * Verify the Saved items list is predefined in the activity page
+    * Verify that only activities which have been saved by the knowledge worker are displayed on this list
+13. **Action: View the stream of activity from a group the knowledge worker has joined**
+    * Verify there is a separate stream for each group the knowledge worker has joined
+    * Verify that when the knowledge worker leaves the group there is no longer a list displayed to access the groups stream
+    * Verify the group stream only contains activity and comments for the group the knowledge worker has joined
+14. **Action: View a stream of activity from a saved search**
+    * Verify the saved search is accessible in the activity page
+    * Verify a saved search displays only the activities meeting the criteria of the saved search
+15. **Action: View a stream of activity from a custom list**
+    * Verify the custom lists are accessible in the activity page
+    * Verify the custom lists display only the activities of the groups or colleagues specified in the custom list
+16. **Action: View a stream of activity posted to a private group**
+    * Verify activity posted to a private group is not viewable when the knowledge worker is not a member of the private group
+    * Verify the knowledge worker is able to view activity posted to a private group when the knowledge worker is a member of the group
+17. **Action: Confirm the system is checking for new activity posted to the current stream every 60 seconds and displaying a count of activity**
+    * Verify that every 60 seconds the count of new activity added to any given stream is updated
+18. **Action: Update the stream with new activities without refreshing the page**
+    * Verify the ability to refresh the stream and have the newly added activity appear
+    * Verify the newly posted activity count is returned to zero
+###Group Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+###Organization Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+2 **Action: View activity within a private group**
+    * Verify an Organization Coordinator is able to view the activity associated with a private group within his organization or sub-organization
+###Root Organization Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+2**Action: Execute same tests as Organization Coordinator**
+    * Verify tests executed successfully

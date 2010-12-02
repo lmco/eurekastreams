@@ -1,0 +1,23 @@
+## Overview
+
+The Task Framework contains the mechanisms that allow an Action to submit a request for another Action to be executed in a separate thread. This allows Eureka to offload heavy load processes to a separate server where the load can be distributed and removed from the web servers that are responding to user requests.
+
+![](images/TF_1_Task-Framework-Class-Diagram.jpg)
+
+## Inline Handling of Task Request
+
+This scenario describes a TaskHandlerAction that is configured to use the InlineTaskHandler instance. This means that when the TaskHandlerActionController tells the TaskHandler to handle the passed in requests, the InlineTaskHandler executes the action based on the passed in request immediately.
+
+![](images/TF_1_Inline-Execution-of-a-Task-Request-Component-Diagram.jpg)
+
+## Queue Handling of Task Request
+
+This scenario describes a TaskHandlerAction that is configured to use the QueueTaskHandler instance. This means that when the TaskHandlerActionController tells the TaskHandler to handle the passed in requests, the QueueTaskHandler places a JMS message onto the queue to be processed later by the Task Queue Processor.
+
+![](images/TF_1_Queue-Submission-of-a-Task-Request-Component-Diagram.jpg)
+
+## Task Queue Processor Execution
+
+The Task Queue Processor is a separate daemon that runs on the job server. The Task Queue Processor retrieves messages (TaskRequests) from the queue and executes the AsyncActions that they represent.
+
+![](images/TF_1_Task-Queue-Processor-Execution-Component-Diagram.jpg)

@@ -1,0 +1,164 @@
+## Overview
+
+The design of the front end is simple, modular and loosely coupled. There are two layers that exist in the front end, connected by the __Event Bus__. The top layer that communicates directly with the servers are the __Client Models__ that communicate through the __Action Processor__. The bottom layers are the collection of views that draw the screen. Each view requests data directly from a Client Model, and is notified via the Event Bus when the data has been returned. With that data the view then renders the screen through the use of GWT widgets. All views extend an already existing GWT widget. There is a master view that is the top level view for all others. It contains a content view, as well as views for the header and footer. The content view is changed when the URL is updated via __History Management__, also through the __Event Bus__. This design follows the MVP pattern, with the Event Bus representing a common and generic Controller.
+
+![](images/UI_UI-Framework-Class-Diagram.jpg)
+
+![](images/UI_UI-Framework-Sequence-Diagram.jpg)
+
+## Event Bus
+
+The event bus is the primary means of communication on the front end. It follows the publisher/subscriber pattern. It allows for the views and models on the client side to communicate, as well as communication between views, without tightly coupling them.
+
+### Design
+
+Responsibilities:
+
+* Manages the event's subscribed to by observers, and the notifications going out to those observers by clients.
+* Allows for the ability to buffer off observers and reset to that buffered off point. Useful for initially loading the event bus with observers and resetting it to that point on page changes.
+
+The event bus has two main methods on it, one for a subscriber to listen to an event, and one for a publisher to notify observers an event has been fired. These two methods tie together what would be tightly coupled controls into a loosely coupled structure. It allows for event driven design where a control can listen to an event without caring who issued it.
+
+### Observer Interface
+
+Responsibilities:
+
+* Contains the update method that gets fired when an observer is notified.
+
+The observer interface is generic with generic <t>, which represents the event class type. The observer interface has one method, public void update (T event).
+
+### Events
+
+Responsibilities:
+
+* Contain necessary data for the event (optional)
+
+Events are standard Java classes that do not need to implement any interface or have any member variables. They are keyed in the event bus by their class name. Member variables are added to event classes as needed, if data is necessary to transmit through the event.
+
+## Action Processor
+
+The Action Processor is the client side component responsible for communicating directly with the Action Framework on the server.
+
+### ActionProcessor
+
+Responsibilities:
+
+* Make requests to the GWT RPC servlet
+* Allow clients to buffer requests to save on HTTP requests
+* Store async callbacks per request and fire their onFailure or onSuccess depending on the response from the server.
+
+The ActionProcess has a method to make a server request that takes in an ActionRequest object and a callback. If buffering is on, it queues the request up until buffering is turned off, or it is told to fire the buffered requests. On callback from the server, if the response is of type Throwable (and thus, an Error) the callbacks onFailure is called. Otherwise, its onSuccess is called. An array of requests/responses is sent between the client and server to accommodate buffered requests.
+
+### ActionRequest
+
+Responsibilities:
+
+* Store action key to execute on server
+* Store request DTO
+* Store user's session ID to prevent cross site forgery requests.
+
+The ActionRequest object is a collection of the action key, request DTO, and session ID, which gets sent to the server to define what to execute and what to execute it with.
+
+### AsyncCallback
+
+Responsibilities:
+
+* Has onSuccess method called during success of server execution.
+* Has onFailure method called when server returns a Throwable.
+
+AsyncCallbacks are generally made as anonymous inner classes implementing the two methods required: onSuccess and onFailure. By design, only the BaseModel communicates with the Action Processor, and thus, should be the only one creating an AsyncCallback. All views respond to data through the Event Bus.
+
+## History Management
+
+History management in Eureka is done 100% client side. All valid URLs redirect the user to a single index.html page. Once loaded, all subsequent pages are loaded asynchronously, with history being stored in the URLs hash. (e.g. http://domain.com#hash). The hash is broken into 3 components: the page, the view(s), and the parameter(s).
+
+### Example Url
+
+**eureka.com/#people/romano?tab=About**
+
+* page: people
+* view: romano
+* parameters: tab | About
+
+There can be more than one view, for example:
+
+**eureka.com/#people/romano/edit**
+
+* page: people
+* view[0]: romano
+* view[1]: edit
+
+### HistoryHandler
+
+Responsibilities:
+
+* Fire off event(s) when history token changes
+* Listen for history changing events and change the token
+* Provide a url generation method for static links
+
+There is only one place in the system that listens for changes to the history token (hash) and that is the HistoryHandler class. This class is responsible for breaking apart the hash into the correct components and calling the events associated with them. It is also responsible for consuming an event that says to update the history, generating the token, and updating the hash. Lastly, this token generation method is statically accessible so that hyperlink controls that demand a static run-time known URL, may be generated.
+
+### UpdateHistoryEvent
+
+Responsibilities:
+
+* Contains the new page, view(s), and parameter(s) to put in the history token.
+
+Is fired off by any client wishing to change the history token. For example, if when the user clicks on a tab, it is desired that a refresh brings them back to this tab, they may add the parameter to the history token by issuing an UpdateHistoryEvent on the event bus.
+
+### SwitchedHistoryViewEvent
+
+Responsibilities:
+
+* Contains the new page and view(s) that have just been changed in the history token
+
+This event is only ever fired off by the history handler and only when either the page or view(s) have changed. If only parameters have changed, this is not fired.
+
+### UpdatedHistoryParametersEvent
+
+Responsibilities:
+
+* Contains the new parameters in the history token.
+
+This event is only ever fired off by the history handler and only when the parameters have been updated. It does not contain the page and/or view(s).
+
+### PageFactory
+
+Responsibilities:
+
+* Creates a GWT widget representing the page content given a current page
+
+This factory takes in a page and feeds out a GWT widget reflecting the contents of that page.
+
+### MasterComposite
+
+Responsibilities:
+
+* Draws header and footer
+* Switches inner content based on current page and PageFactory.
+
+The master composite listens for SwitchedHistoryViewEvent's and uses the PageFactory to get the page contents for the current page and view(s). It then sets the inner contents of the page to the returned widget.
+
+## Client Models
+
+Data is stored and modified through the use of client models. A client model is responsible for all CRUD on an object and typically exists in a one to one relationship with objects in the system. Client models are also capable of caching their results to avoid subsequent http requests.
+
+### BaseModel
+
+Responsibilities:
+
+* Is the only class on the client who should be talking to the server
+* Is responsible therefore for *all* client-server interaction
+* Caches responses client side
+
+All client models extend BaseModel. BaseModel has 4 helper methods for fetching, updating, inserting, and deleting. It also has a helper method for calling any other miscellaneous action. BaseModel's fetch implementation takes in a boolean to determine whether or not to pull from cache if available. This cache is stored client side in Javascript and is eliminated on page refresh. Because all pages on the system are loaded asynchronously, the client cache can be very valuable.
+
+### Fetchable, Updateable, Insertable, Deleteable, Reorderable
+
+Responsibilities:
+
+* Add behavior to the client models
+* Define the action to call for the behavior
+* Define the callback method that fires the event on success of the transmission.
+
+These interfaces add behavior to the client models. They have two generics representing the request and response object types for each operation. Each interface has three methods, one which defines the action key to call. The other which exposes the method to users of the client model (i.e. .fetch(...), .update(...) etc). and lastly, a callback method which is called on success of the operation. In this callback method the client model should fire an event on the event bus representing that it received/updated the data at hand.
