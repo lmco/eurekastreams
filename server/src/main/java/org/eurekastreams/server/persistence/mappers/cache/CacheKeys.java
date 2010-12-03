@@ -190,7 +190,7 @@ public final class CacheKeys
     public static final String EVERYONE_ACTIVITY_IDS = "ActAll";
 
     /**
-     * Entity activity stream.
+     * List of activity ids for an entity's activity stream.
      */
     public static final String ENTITY_STREAM_BY_SCOPE_ID = "EntStr:";
 

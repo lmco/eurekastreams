@@ -516,7 +516,7 @@
 	
 		<!-- Refresher -->
 		<constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.cache.SetKeyedCollectionCacheMapper">
+			<bean class="org.eurekastreams.server.persistence.mappers.cache.SetKeyedSingleItemCollectionCacheMapper">
 				<constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_BY_ACCOUNT_ID" />
 				<property name="cache" ref="memcachedCache" />
 			</bean>
