@@ -16,45 +16,74 @@
 package org.eurekastreams.server.action.execution.settings;
 
 import java.io.Serializable;
+import java.util.Collections;
 
-import org.eurekastreams.commons.actions.ExecutionStrategy;
-import org.eurekastreams.commons.actions.context.async.AsyncActionContext;
+import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
+import org.eurekastreams.commons.actions.context.ActionContext;
+import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.SetPersonLockedStatusRequest;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.db.SetPersonLockedStatus;
 
 /**
  * Action for setting a person's account locked status.
- * 
+ *
  */
-public class SetPersonLockedStatusExecution implements ExecutionStrategy<AsyncActionContext>
+public class SetPersonLockedStatusExecution implements TaskHandlerExecutionStrategy<ActionContext>
 {
     /**
      * {@link SetPersonLockedStatus}.
      */
-    private SetPersonLockedStatus setLockedStatusDAO;
+    private final SetPersonLockedStatus setLockedStatusDAO;
+
+    /** Mapper to translate person id. */
+    private final DomainMapper<String, Long> personIdMapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inSetLockedStatusDAO
      *            {@link SetPersonLockedStatus}.
+     * @param inPersonIdMapper
+     *            For mapping accountid to id.
      */
-    public SetPersonLockedStatusExecution(final SetPersonLockedStatus inSetLockedStatusDAO)
+    public SetPersonLockedStatusExecution(final SetPersonLockedStatus inSetLockedStatusDAO,
+            final DomainMapper<String, Long> inPersonIdMapper)
     {
         setLockedStatusDAO = inSetLockedStatusDAO;
+        personIdMapper = inPersonIdMapper;
     }
 
     /**
      * Set a person's locked status.
-     * 
+     *
      * @param inActionContext
      *            The action context.
      * @return null.
      */
     @Override
-    public Serializable execute(final AsyncActionContext inActionContext)
+    public Serializable execute(final TaskHandlerActionContext<ActionContext> inActionContext)
     {
-        setLockedStatusDAO.execute((SetPersonLockedStatusRequest) inActionContext.getParams());
+        SetPersonLockedStatusRequest request = (SetPersonLockedStatusRequest) inActionContext.getActionContext()
+                .getParams();
+        setLockedStatusDAO.execute(request);
+
+        Long personId = personIdMapper.execute(request.getPersonAccountId());
+
+        // when locking, just kill cache; when unlocking, reload
+        if (request.getLockedStatus())
+        {
+            inActionContext.getUserActionRequests().add(
+                    new UserActionRequest("deleteCacheKeysAction", null, (Serializable) Collections
+                            .singleton(CacheKeys.PERSON_BY_ID + personId)));
+        }
+        else
+        {
+            inActionContext.getUserActionRequests().add(new UserActionRequest("cachePerson", null, personId));
+        }
+
         return null;
     }
 

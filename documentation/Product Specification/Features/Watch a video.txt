@@ -1,0 +1,45 @@
+##Overview
+Video overviews provide a brief description of the features being accessed by the knowledge worker.
+##Conditions of satisfaction
+1. The system must display a video clip demonstrating the start page when a knowledge worker accesses it.
+2. The system must display a video clip demonstrating the activity page when a knowledge worker accesses it.
+3. The system must display a video clip demonstrating the profile page when a knowledge worker accesses it.
+4. The system must display a video clip demonstrating the my profile page when a knowledge worker accesses it.
+5. The knowledge worker must be able to alert the system to not display a video clip on subsequent page accesses.
+##User experience
+
+![](images/PS_F03_watchVideo.png)
+
+1. Name of section of the application being demonstrated.
+1. Overview of section being demonstrated.
+1. Option to suppress the display of the video overview for that section.
+1. Embedded video (480 X 270, 16:9), starts when the user clicks the play button. Upon completion also provides the option to replay.
+
+##Test plans
+###Knowledge Worker
+1.  **Action: Confirm video is displayed when accessing the start page**
+    * Verify the system displays a video clip demonstrating the start page when a knowledge worker accesses the start page
+2.  **Action: Confirm video is displayed when accessing the activity page**
+    * Verify the system displays a video clip demonstrating the activity page when a knowledge worker accesses the activity page
+3.  **Action: Confirm a video is displayed when accessing the profile page**
+    * Verify the system displays a video clip demonstrating the directory page when a knowledge worker accesses the profile
+4.  **Action: Confirm a video is displayed when access My Profile page**
+    * Verify the system displays a video clip demonstrating the my profile page when a knowledge worker accesses it
+5.  **Action:  Alert system to not display a video clip**
+    * Verify the ability to choose to not see the video when accessing the start page
+    * Verify the start page video is no longer displayed when accessing the start page
+    * Verify the ability to choose to not see the video when accessing the activity page
+    * Verify the activity page video is no longer displayed when accessing the activity page
+    * Verify the ability to choose to not see the video when accessing profiles
+    * Verify the profiles video is no longer displayed when access the profiles page
+    * Verify the ability to choose to not see the video when accessing my profile
+    * Verify the my profile video is no longer displayed when access My Profile page
+###Group Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+###Organization Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+###Root Organization Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully

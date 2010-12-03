@@ -1,0 +1,238 @@
+This page will replace the 0.9 specification for [Manage and receive notifications](../0.9/Manage%20and%20receive%20notifications.html) when Eureka Stream 1.0 is released.  This product specification is a work in process. In the 1.0 release, the ability to receive notifications for activities posted to groups you are following will be added.   Also, the post or comment text will be inlcluded in the emails that are sent.
+##Overview
+Knowledge workers can choose to receive notifications on the posting of new activity and comments and the addition of new followers.
+##Conditions of satisfaction
+1. The system must generate a notification for a knowledge worker when an activity is posted by a colleague to their stream.
+2. The system must generate a notification for a knowledge worker when a colleague likes an activity posted by the knowledge worker.
+3. The system must generate a notification for a knowledge worker when a comment is posted to any activity within their stream.
+4. The system must generate a notification for a knowledge worker when a comment is posted to an activity posted by the knowledge worker.
+5. The system must generate a notification for a knowledge worker when a comment is posted to an activity that the knowledge worker has commented on.
+6. The system must generate a notification for a knowledge worker when a comment is posted to an activity that the knowledge worker has saved.
+7. The system must generate a notification for a knowledge worker when a colleague follows him.
+8. The system must generate a notification for a knowledge worker when an activity is posted by a colleague to a group the knowledge worker has joined.
+9. The system must generate a notification for a knowledge worker when a group official posts an announcement to a group the knowledge worker has joined.
+10. The system must generate a notification for a knowledge worker when access to a private group is approved or denied.
+11. The system must generate a notification for a group coordinator when an activity is posted by a colleague to his group stream.
+12. The system must generate a notification for a group coordinator when a colleague follows his group.
+13. The system must generate a notification for a group coordinator when a pending membership request is submitted to a private group.
+14. The system must generate a notification for a group coordinator when a pending group request is approved or denied.
+15. The system must generate a notification for an organization coordinator when activity is flagged as inappropriate.
+16. The system must generate a notification for an organization coordinator when there is a pending group creation request.
+17. The knowledge worker must have the option to receive notifications via email.
+18. The knowledge worker must have the option to receive notifications in the app.
+
+##User experience
+### Managing Notifications
+![](images/R1_PS_F18_ManageNotifications.png)
+
+1. Clicking the check box enables and disables email notifications.
+2. Click the check box enables and disables in-application notifications.
+3. Logged in user's email address.
+4. Saves the edits made to the form and displays a feedback message at the top of the page: "Settings saved" with a close link at the top of the page.
+5. Discards the changes made to the form and returns the knowledge worker to the start page.
+
+### View Notifications
+![](images/PS_F18_ViewNotifications_fig01.png)
+
+1. Icon opens notifications modal window
+1. Hover state
+1. "25" is the number of new notifications
+
+![](images/R1_PS_F18_ViewNotifications_fig02.png)
+
+1. Displayed for a knowledge worker when a message or link is posted to your stream.  The name links to the colleagues profile and the message links to the message posted in your profile. New notifications are highlighted in yellow.
+2. Displayed for a knowledge worker when a message or link that you posted to your stream or a group stream is liked.
+3. Displayed for a knowledge worker when a colleague comments on a message or link that you posted to your stream or to another knowledge worker's stream. Activity could be a link or message. The name links to the colleagues profile and the message links to the link posted in your profile.
+4. Displayed for a knowledge worker when a colleague comments on a message or link in the knowledge workers stream.  
+5. Displayed for a knowledge worker when a colleague comments on an activity that the knowledge worker has commented on in the knowledge workers stream or a group stream.  
+6. Displayed for a knowledge worker when a colleague starts following your stream.  Colleague name links to the colleagues profile.
+7. Displayed for group coordinators or knowledge workers who joined the group when a knowledge worker posts a message to a group stream.  Knowledge worker name links to the knowledge workers profile, message links to the message in the group stream, and group name links to the group profile.
+8. Displayed for knowledge worker when a group official posts an announcement to the group stream.
+9. Displayed for a knowledge worker when his request join a private group is approved or denied.
+10. Displayed for group coordinators when a knowledge worker joins a group. Knowledge worker name links to the knowledge workers profile and group name links to the group profile.
+11. Displayed for group coordinators when a knowledge worker requests access to a private group.  Knowledge worker name links to the knowledge workers profile, requested links to the groups Admin tab, and group name links to the group profile.
+12. Displayed for group coordinators when a pending group request is approved or denied.
+13. Displayed for organization coordinators when a message is flagged in a group or knowledge worker profile within the organization.  Knowledge worker name links to the knowledge workers profile, flagged links to the parent organizations Admin tab and organization name links to the organization profile.
+14. Displayed for organization coordinators when a new group is created and pending approval.  Group name is a link to the group profile, pending approval is a link to the organization's Admin tab, and organization name links to the organization profile.
+15. Link closes window and opens the Personal tab on the settings page.
+16. Closes the window.
+
+Notes:
+
+1. Notifications are retained for 14 days.
+2. A single notification is generated based on any given event.  The type of message sent is picked based on the following order: 1) Authorship, 2) Who's stream is updated; 3) scenario for commenting.  For example, in the scenario where a knowledge worker posts a message to his stream and comments on his message, the knowledge worker would recieve message #2 instead of message #4 since the original message was generated by the knowledge worker.
+3. Emails are non-recursive.  For example, an org coordinator will not receive an email when a message is posted to a group in the organization.
+
+### Email Notifications
+
+![](images/R1_PS_F18_ViewNotifications_Emails_fig01.png)
+
+![](images/R1_PS_F18_ViewNotifications_Emails_fig02a.png)
+
+![](images/R1_PS_F18_ViewNotifications_Emails_fig02b.png)
+
+![](images/R1_PS_F18_ViewNotifications_Emails_fig03a.png)
+
+![](images/R1_PS_F18_ViewNotifications_Emails_fig03b.png)
+
+![](images/R1_PS_F18_ViewNotifications_Emails_fig04.png)
+
+![](images/R1_PS_F18_ViewNotifications_Emails_fig05a.png)
+
+![](images/R1_PS_F18_ViewNotifications_Emails_fig05b.png)
+
+![](images/R1_PS_F18_ViewNotifications_Emails_fig06.png)
+
+![](images/R1_PS_F18_ViewNotifications_Emails_fig07.png)
+
+![](images/R1_PS_F18_ViewNotifications_Emails_fig08.png)
+
+![](images/R1_PS_F18_ViewNotifications_Emails_fig09a.png)
+
+![](images/R1_PS_F18_ViewNotifications_Emails_fig09b.png)
+
+![](images/R1_PS_F18_ViewNotifications_Emails_fig10.png)
+
+![](images/R1_PS_F18_ViewNotifications_Emails_fig11.png)
+
+![](images/R1_PS_F18_ViewNotifications_Emails_fig12a.png)
+
+![](images/R1_PS_F18_ViewNotifications_Emails_fig12b.png)
+
+![](images/R1_PS_F18_ViewNotifications_Emails_fig13.png)
+
+![](images/R1_PS_F18_ViewNotifications_Emails_fig14.png)
+
+1. Email is sent to a knowledge worker when a message is posted to your stream. The word 'message' is replaced with 'link' when a link is posted and the link name is displayed after the message in blue.  Refer to #6 for an example.
+2. Email is sent to a knowledge worker when a colleague likes an activity that you posted in your stream, another person's stream, or a group stream.
+3. Email is sent to a knowledge worker when a colleague comments on an activity that you posted in your stream, in another person's stream, or in a group stream. Also, sent for posts that the knowledge worker has saved.
+4. Email is sent to a knowledge worker when a colleague comments on a message or link in your stream.
+5. Email is sent to a knowledge worker when a colleague comments on an activity that the knowledge worker has commented on in his stream, another person's stream, or in a group stream.
+6. Email is sent to a knowledge worker when a colleague starts following your stream.
+7. Email is sent to a group coordinator or knowledge worker who joined the group when a colleague posts a message to a group stream.  The word 'message' is replaced with 'link' when a link is posted and the link name is displayed after the message in blue.  Refer to #6 for an example.
+8. Email is sent to a knowledge worker when a group official posts an announcement to the group stream.
+9. Email is sent to a knowledge worker to confirm approval or denial to join a private group.
+10. Email is sent to group coordinators when a knowledge worker joins a group.
+11. Email is sent to group coordinators when a knowledge worker requests access to a private group.
+12. Emails is sent to the person originating the pending group request when group request is approved or denied.
+13. Email is sent to organization coordinators when a message is flagged in a group or knowledge worker's profile within the organization.
+14. Email is sent to organization coordinators when a new group is created and pending approval.
+
+Notes:
+
+1. A single email is generated based on any given event.  The type of message sent is picked based on the following order: 1) Authorship, 2) Who's stream is updated; 3) scenario for commenting.  For example, in the scenario where a knowledge worker posts a message to his stream and comments on his message, the knowledge worker would recieve message #2 instead of message #4 since the original message was generated by the knowledge worker.
+2. Emails are non-recursive.  For example, an org coordinator will not receive an email when a message is posted to a group in the organization.
+
+![](images/R1_PS_F18_ViewNotifications_Emails_Footertemplate.png)
+
+1. Footer is the same for all emails.
+
+
+## Activity Not Found Message
+
+![](images/PS_F18_notifications_activitynotfound.png)
+
+1. This message is displayed when the activity hyperlinked in a notficiation or email no longer exists.
+
+
+##Test plans
+###Knowledge Worker
+1. **Action: Confirm the option to receive notifications via email and in-app notification**
+    * Verify all email and in-app notifications are enabled by default.
+2. **Action: Confirm an email and in-app notification are generated for a knowledge worker when a message or link is posted by a colleague to his stream**
+    * Verify in-app notification count increases by one
+    * Verify an in-app notification exists in the format defined in the UX designs
+    * Verify an email exists in the format defined in the UX designs
+3. **Action: Confirm an email and in-app notification are generated for a knowledge worker when a colleague likes an activity posted by the knowledge worker**
+    * Verify in-app notification count increases by one
+    * Verify an in-app notification exists in the format defined in the UX designs
+    * Verify an email exists in the format defined in the UX designs
+4. **Action: Confirm an email and in-app notification are generated for a knowledge worker when a comment is posted to any activity within his stream**
+    * Verify in-app notification count increases by one
+    * Verify an in-app notification exists in the format defined in the UX designs
+    * Verify an email exists in the format defined in the UX designs
+5. **Action: Confirm an email and in-app notification are generated for a knowledge worker when a comment is posted to an activity posted by the knowledge worker**
+    * Verify in-app notification count increases by one
+    * Verify an in-app notification exists in the format defined in the UX designs
+    * Verify an email exists in the format defined in the UX designs
+6. **Action: Confirm an email and in-app notification are generated for a knowledge worker when a comment is posted to an activity that the knowledge worker has commented on**
+    * Verify in-app notification count increases by one
+    * Verify an in-app notification exists in the format defined in the UX designs
+    * Verify an email exists in the format defined in the UX designs
+7. **Action: Confirm an email and in-app notification are generated for a knowledge worker when a comment is posted to an activity that the knowledge worker has saved**
+    * Verify in-app notification count increases by one
+    * Verify an in-app notification exists in the format defined in the UX designs
+    * Verify an email exists in the format defined in the UX designs
+8. **Action: Confirm an email and in-app notification are generated for a knowledge worker when a colleague follows him**
+    * Verify in-app notification count increases by one
+    * Verify an in-app notification exists in the format defined in the UX designs
+    * Verify an email exists in the format defined in the UX designs
+9. **Action: Confirm an email and in-app notification are generated for a knowledge worker when an activity is posted by a colleague to a group the knowledge worker has joined**
+    * Verify in-app notification count increases by one
+    * Verify an in-app notification exists in the format defined in the UX designs
+    * Verify an email exists in the format defined in the UX designs
+10. **Action: Confirm an email and in-app notification are generated for a knowledge worker when access to a private group is approved or denied**
+    * Verify in-app notification count increases by one
+    * Verify an in-app notification exists in the format defined in the UX designs
+    * Verify an email exists in the format defined in the UX designs
+11. **Action: Confirm the option to opt out of receiving notifications via email and in-app**
+    * Verify that an email and in-app notification are not generated for a knowledge worker when an activity is posted by a colleague to their stream. 
+    * Verify that an email and in-app notification are not generated for a knowledge worker when a colleague likes an activity posted by the knowledge worker. 
+    * Verify that an email and in-app notification are not generated for a knowledge worker when a comment is posted to any activity within their stream. 
+    * Verify that an email and in-app notification are not generated for a knowledge worker when a comment is posted to an activity posted by the knowledge worker. 
+    * Verify that an email and in-app notification are not generated for a knowledge worker when a comment is posted to an activity that the knowledge worker has commented on. 
+    * Verify that an email and in-app notification are not generated for a knowledge worker when a comment is posted to an activity that the knowledge worker has saved.
+    * Verify that an email and in-app notification are not generated for a knowledge worker when a colleague follows him. 
+    * Verify that an email and in-app notification are not generated for a knowledge worker when an activity is posted by a colleague to a group the knowledge worker has joined. 
+    * Verify that an email andin-app notification are not generated for a knowledge worker when access to a private group is approved or denied.
+###Group Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+2. **Action: Confirm the option to receive notifications via email and in-app notification**
+    * Verify all email and in-app notifications are enabled by default.
+3. **Action: Confirm an email and in-app notification are generated for a group coordinator when an activity is posted by a colleague to his group stream**
+    * Verify in-app notification count increases by one
+    * Verify an in-app notification exists in the format defined in the UX designs
+    * Verify an email exists in the format defined in the UX designs
+4. **Action: Confirm an email and in-app notification are generated for a group coordinator when a colleague follows his group**
+    * Verify in-app notification count increases by one
+    * Verify an in-app notification exists in the format defined in the UX designs
+    * Verify an email exists in the format defined in the UX designs
+5. **Action: Confirm an email and in-app notification are generated for a group coordinator when a pending membership request is submitted to a private group**
+    * Verify in-app notification count increases by one
+    * Verify an in-app notification exists in the format defined in the UX designs
+    * Verify an email exists in the format defined in the UX designs
+6. **Action: Confirm an email and in-app notification are generated for a group coordinator when a pending group request is approved or denied**
+    * Verify in-app notification count increases by one
+    * Verify an in-app notification exists in the format defined in the UX designs
+    * Verify an email exists in the format defined in the UX designs
+7. **Action: Confirm the option to opt out of receiving email and in-app notifications**
+    * Verify that an email and in-app notification are not generated for a group coordinator when an activity is posted by a colleague to his group stream. 
+    * Verify that an email and in-app notification are not generated for a group coordinator when a colleague follows his group. 
+    * Verify that an email and in-app notification are not generated for a group coordinator when a pending membership request is submitted to a private group. 
+    * Verify that an email and in-app notification are not generated for a group coordinator when a pending group request is approved or denied. 
+###Organization Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+2. **Action: Execute same tests as Group Coordinator**
+    * Verify tests executed successfully
+3. **Action: Confirm the option to receive notifications via email and in-app notification**
+    * Verify all email and in-app notifications are enabled by default.
+4. **Action: Confirm an email and in-app notification are generated for an organization coordinator when activity is flagged as inappropriate**
+    * Verify in-app notification count increases by one
+    * Verify an in-app notification exists in the format defined in the UX designs
+    * Verify an email exists in the format defined in the UX designs
+5. **Action: Confirm an email and in-app notification are generated for an organization coordinator when there is a pending group creation request**
+    * Verify in-app notification count increases by one
+    * Verify an in-app notification exists in the format defined in the UX designs
+    * Verify an email exists in the format defined in the UX designs
+6. **Action: Confirm the option to opt out of receiving emails and in-app notifications**
+    * Verify that an email and in-app notification are not generated for an organization coordinator when activity is flagged as inappropriate. 
+    * Verify that an email and in-app notification are not generated for an organization coordinator when there is a pending group creation request. 
+###Root Organization Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+2. **Action: Execute same tests as Group Coordinator**
+    * Verify tests executed successfully
+3. **Action: Execute same tests as Organization Coordinator**
+    * Verify tests executed successfully

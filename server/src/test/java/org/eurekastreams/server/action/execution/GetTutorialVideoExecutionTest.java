@@ -15,44 +15,58 @@
  */
 package org.eurekastreams.server.action.execution;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import org.eurekastreams.server.domain.TutorialVideoDTO;
-import org.eurekastreams.server.persistence.mappers.MapperTest;
-import org.eurekastreams.server.persistence.mappers.db.GetTutorialVideos;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Test for this Class.
- *
+ * Test for this GetTutorialVideoExecution.
+ * 
  */
-public class GetTutorialVideoExecutionTest extends MapperTest
+public class GetTutorialVideoExecutionTest
 {
+    /**
+     * Context for building mock objects.
+     */
+    private final Mockery context = new JUnit4Mockery()
+    {
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
 
     /**
-     * Mapper for test.
+     * Mapper mock to look up a tutorial video.
      */
-    @Autowired
-    GetTutorialVideos getTutorialVideosFromDB;
-    
-    /**
-     * subject under test.
-     */
-    GetTutorialVideoExecution sut;
+    private DomainMapper<Long, Set<TutorialVideoDTO>> tutorialVideoMapper = context.mock(DomainMapper.class);
 
     /**
      * test that it executes correctly.
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testExecution()
     {
-        sut = new GetTutorialVideoExecution(getTutorialVideosFromDB);
-        HashSet<TutorialVideoDTO> tvs = (HashSet<TutorialVideoDTO>) sut.execute(null);
-        assertEquals(3L, tvs.size());
+        GetTutorialVideoExecution sut = new GetTutorialVideoExecution(tutorialVideoMapper);
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(tutorialVideoMapper).execute(null);
+                will(returnValue(new HashSet<TutorialVideoDTO>()));
+            }
+        });
+
+        assertNotNull(sut.execute(null));
+        context.assertIsSatisfied();
     }
 
 }

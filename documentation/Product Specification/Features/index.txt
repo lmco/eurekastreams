@@ -1,0 +1,79 @@
+## [Login to the system][]
+
+Logging into the system is based on the credentials of the user and authentication schemes being used. A knowledge worker with access to the system authenticates. A knowledge worker who does not have access to the system needs to request access.
+
+## [Customize the start page][]
+
+The start page serves as a private homepage for the knowledge worker allowing them to organize and find the information that they need on a day to day basis. The user has access to a gallery where they can choose from a collection of apps that they place on their start page. A knowledge worker can also organize the apps on their start page by grouping them under tabs. Unlike traditional enterprise web portals, knowledge workers not only have complete control over the content but they may also apply a theme to change the look and feel.
+
+## [Watch a video][]
+
+Video overviews provide a brief description of the features being accessed by the knowledge worker.
+
+## [Browse a gallery of apps and themes][]
+
+The gallery showcases a catalog of apps, tabs, and themes that a knowledge worker can use to customize pages. Organizations are responsible for vetting what items are available within the gallery for their employees.
+
+## [Configure a bookmark app][]
+
+Knowledge workers can browse an a-z listing of intranet bookmarks and can add and remove personal bookmarks.
+
+## [Configure a feed app][]
+
+The feed reader app feature allows knowledge workers to quickly and easily subscribe to feeds. The normal app view displays 5 articles from the feed with title, image, and an abbreviated description of each article. The canvas view contains the full listing of articles from the feed with images and complete descriptions. Also provided on the canvas view is a look at popular subscriptions from people the knowledge worker is following as well as everyone on the system.
+
+## [Manage gallery items][]
+
+Gallery can be updated with default apps and themes. Organization Coordinators are responsible for vetting the item available within the gallery for their employees.
+
+## [View and manage an employee profile][]
+
+An employee's profile information allows other colleagues to discover and follow their activity. The employee can capture profile information including work history, education, colleague recommendations, interest, skills and hobbies. You are also able to upload an avatar for your stream. This information may assist knowledge workers in the discovery of expertise within the enterprise.
+
+## [View and manage a group profile][]
+
+A group is a team of knowledge workers focused on an interest or objective. A group is represented by a profile page which may be declared public or private by the administrator. Members may engage in conversation within the group's channel by commenting on published activity.
+
+## [View and manage an organization profile][]
+
+An organization is an operating unit within an enterprise. It is comprised of employees and groups responsible for delivering on its mission. An organization is represented by a profile page where it may communicate news and important information. The organization's channel aggregates the activity of its employees and groups supporting organization-wide discovery of content. An organization is responsible for establishing the default configuration for employee or group profiles. If the organization's social media policy permits, an administrator may customize a profile by choosing a theme and additional apps.
+
+## [Search profiles][]
+
+Knowledge workers are able to perform a keyword search to find employees, groups and organizations based on the information contained in their profiles. Knowledge workers can search the entire directory by entering keywords into the search box on the global navigation bar or search a specific organization by entering keywords into the search box on the directory pages.
+
+## [Post to a stream][]
+
+Knowledge workers can post messages and links to their activity steam, another employee's activty stream or to a group's activity stream.
+
+## [Follow a colleague or join a group][]
+
+Knowledge Workers are able to follow specific employee, groups or activities they have saved. They are also able to follow everyone's activity and the activity within their organization.
+
+## [Share, save, flag, or comment on an activity][]
+
+Knowledge workers can share activity between employee and group streams, save favorite activity, flag activity as inappropriate or add comments to activities.
+
+## [View a stream of activity][]
+
+Knowledge workers can view an activity stream for employees being followed or groups that were joined. Activities for everyone or the primary organization of the employee can also be viewed. Custom lists and searches can be used to quickly and easily access activities from the knowledge workers employee or group streams.
+
+## [Search a stream][]
+
+Knowledge workers can view an activity stream including browsing and searching for employees, groups, and organizations activities.
+
+## [Manage lists, groups, and saved searches][]
+
+Knowledge workers can create apps based on default or custom lists or searches that are created. Custom lists and saved searches allow the knowledge worker to quickly and easily review activity.
+
+## [Configure a stream][]
+
+Knowledge workers can configure a stream to allow or restrict posting and commenting on the knowledge workers stream. Stream plug-ins can also be configured to provide the employee or group with the most up to date data from sources such as delicious, google reader, or youtube.
+
+## [Manage and receive notifications][]
+
+Knowledge workers can choose to receive notifications on the posting of new activity and comments and the addition of new followers.
+
+## [Manage system settings][]
+
+Root Organization Coordinators can manage system settings. This includes adding new users, setting the content expiration length, and configuring a system label for the header/footers, a terms of service message, and stream plugin warning message.

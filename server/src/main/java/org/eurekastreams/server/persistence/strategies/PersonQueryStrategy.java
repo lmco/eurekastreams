@@ -33,7 +33,7 @@ public class PersonQueryStrategy
 {
     /**
      * Build the base Criteria object.
-     * 
+     *
      * @param hibernateSession
      *            the hibernate session used to create the criteria.
      * @return the base criteria object.
@@ -62,6 +62,7 @@ public class PersonQueryStrategy
         fields.add(getColumn("additionalProperties"));
         fields.add(getColumn("groupStreamHiddenLineIndex"));
         fields.add(getColumn("lastAcceptedTermsOfService"));
+        fields.add(getColumn("accountLocked"));
         fields.add(Projections.property("streamViewHiddenLineIndex").as("compositeStreamHiddenLineIndex"));
         fields.add(Projections.property("po.id").as("parentOrganizationId"));
         fields.add(Projections.property("po.name").as("parentOrganizationName"));
@@ -80,7 +81,7 @@ public class PersonQueryStrategy
 
     /**
      * Build the PropertyProjection with alias.
-     * 
+     *
      * @param propertyName
      *            the property name
      * @return the PropertyProjection with alias

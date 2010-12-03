@@ -1,0 +1,1 @@
+Provides an overview of the product goals, concepts, and user experience guidelines. Additionally it defines the product's high-level features including conditions of satisfaction, interaction design, and test plans.

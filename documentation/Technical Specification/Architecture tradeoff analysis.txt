@@ -1,0 +1,44 @@
+## Architecture Tradeoff Analysis
+
+### Browser / User Interface
+
+When architecting the solution for the user interface, many principals were taken into consideration.  First, to leverage open standards, the focus was placed on creating a Web interface made up of HTML, CSS, JavaScript, and images as opposed to close standard products like Adobe Air, Adobe Flash, and Java Applets.  In order to achieve a rich interactive experience, the technique of AJAX (asynchronous JavaScript and XML) is needed.  Given the interpreted nature of JavaScript, testing code is difficult.
+
+The development framework selected is the <a href="http://code.google.com/webtoolkit/">Google Web Toolkit (GWT)</a>.  This framework allows the developer to code in the formal Java language providing a robust testing framework.  The code created in Java is then compiled down into HTML and JavaScript for deployment.
+
+### Web Server
+
+The Web server selected is Apache HTTPd due to it being the de facto standard.  HTTPd is used on 54.55% of all Web servers [](http://news.netcraft.com/).  Apache HTTPd is a free and open source product that is easily packaged and deployed.
+
+### Application Server and Task Queue Server
+
+The application server implementation is [Apache Tomcat](http://tomcat.apache.org/) with the task queue server implementation as [Apache ActiveMQ](http://activemq.apache.org/).  These two implementations are separate projects that get configured and deployed independently.
+
+Apache Tomcat is a Java Servlet and JSP container implemented the J2EE specification specific each technology.  Apache Active MQ is an implementation of the [Java Messaging Service (JMS) specification](http://java.sun.com/products/jms/docs.html) providing both topic and queues.
+
+Alternatives to this approach include full Java Enterprise Edition (J2EE) implementations like [JBoss](http://www.jboss.org/) and [Oracle WebLogic](http://www.oracle.com/appserver/weblogic/weblogic-suite.html).  The full J2EE deployments would complicate configuration and potentially require leaving active components that are not used so to simplify deployment allowing for a more focused view on tuning and performance.
+
+Both Tomcat and Active MQ are free and open source projects that implement the open standards associated with the technology.
+
+### Task Executor
+
+The task executor implements a JMS client message drive bean (MDB), which is also an open standard within the Java domain.
+
+This product is free and open source.  The task queue server is in place to enable longer running or low priority operations and tasks to be executed
+
+### Cache
+[memcached]: http://memcached.org/ "memcached"
+[wikipedia memcached]: http://en.wikipedia.org/wiki/Memcached
+
+The solution for the cache node is [memcached][].  The system is designed with a cache in support of the rich interactive experience for the user.  With the cache node, data can be available outside of the persistent relational database in a form readily delivered to the client enabling a quick response time from client request to server response.
+
+[Memcached][memcached] is a free and open source product based on a simple and open protocol of "gets" and "sets".  Many large sites and industry IT leaders leverage this technology including: [Google, Facebook, Twitter, Wikipedia, Amazon.com][wikipedia memcached], to name a few.
+
+### Database component
+The data component uses the Java Persistence API (JPA) with [Hibernate](http://www.hibernate.org/) as the implementing framework.  While the guiding principal to use open standards directs us to only use JPA, there are some instances where Hibernate-specific queries were used in cases where optimizations were needed.  This is where the principal to support a rich interactive experience overrides the open standards principal.
+
+The database server selected is [PostgreSQL](http://www.postgresql.org/).  This relational database management system is fully interoperable with the data component.  While PostgreSQL is not as popular of a database platform, there are several major companies that use this RDMS in some way.  One notable company is [Skype](http://en.wikipedia.org/wiki/Skype) with 521 million users as of the third quarter of 2009.
+Another reason the PostgreSQL database is selected is the licensing for the open source project.  The closets competitor in the database space to PostgreSQL is MySQL.  In evaluating the two database products, the license for PostgreSQL is the best fit for Eureka Streams given the initiative to open source part of the Eureka Streams project.  [PostgresSQL versus MySQL, Licensing](http://www.wikivs.com/wiki/MySQL_vs_PostgreSQL#Licensing)
+
+### Search component
+The implementation for the search component is [Apache Lucene](http://lucene.apache.org/java/docs/).  This embedded text search engine is known for its rich feature-set and excellent speed.  Many large companies use Apache Lucene for their search implementations including: Disney, AOL, IBM, Wikipedia, and CNet Reviews.

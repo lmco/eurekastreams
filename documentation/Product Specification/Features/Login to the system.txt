@@ -1,0 +1,51 @@
+## Overview
+Logging into the system is based on the credentials of the user and authentication schemes being used.   A knowledge worker with access to the system authenticates.  A knowledge worker who does not have access to the system needs to request access.
+## Conditions of satisfaction
+1. The knowledge worker must be able to request access if he is not authorized to login to the system.
+2. The knowledge worker must be able to login via a form authenticating credentials against a kerberos or ldap backend.
+3. The knowledge worker must be able to login via the http negotiate protocol authenticating credentials against a kerberos backend.
+## User experience
+
+![](images/PS_F01_login_loginForm.png)
+
+1. Valid user name must be entered.
+2. Valid password must be entered. Password is masked when typed.
+3. Remembers the user name and password after initial login and automatically logs the user in when launching Eureka Streams.
+4. Logs user into Eureka Streams or displays a message on invalid login: "The username or password you entered is incorrect"
+5. Return user to the EurekaStreams.org website.
+
+
+![](images/PS_F01_login_noAccess.png)
+
+1. Message displays if user does not have access to the Eureka Streams. EurekaStreams.org should be a link to the website.
+
+![](images/PS_F01_login_TermsofService.png)
+
+1. Terms of Service message from the System Settings.
+2. Agree button is disabled until the user enables the 'I have read and understand the terms of service.' checkbox.
+3. If Cancel button is clicked, redirect user to eurekastreams.org.
+
+
+
+## Test plans
+### Knowledge Worker
+1. **Action: Request access if he is not authorized to login to the system**
+    *  Verify that if the knowledge worker does not have access, the eureka login screen is displayed with an access message and a link to request access and the knowledge worker is unable to access the system
+    *  Verify that if integrated authentication is implemented, the user name and password fields are not displayed
+    *  Verify that if integrated authentication is not implemented, the user name and password fields are displayed
+2. **Action: Login via a form authenticating credentials against a kerberos or ldap backend**
+    *  Verify the knowledge worker needs to enter his user name and password
+    *  Verify the knowledge worker can select the keep me logged in option
+    *  Verify the terms of service display when a new knowledge worker logs in
+    *  Verify the knowledge worker is not prompted for login information if the keep me logged in option was enabled on login
+3. **Action: Login via the http negotiate protocol authenticating credentials against a kerberos backend**
+    *  Verify the knowledge worker is automatically logged if he has access
+### Group Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    *  Verify tests executed successfully
+### Organization Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    *  Verify tests executed successfully
+### Root Organization Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    *  Verify tests executed successfully

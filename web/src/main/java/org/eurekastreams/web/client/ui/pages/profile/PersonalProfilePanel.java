@@ -103,8 +103,7 @@ public class PersonalProfilePanel extends FlowPanel
     /**
      * Link to go to the profile settings page.
      */
-    private Hyperlink profileSettingsLink = new Hyperlink("Configure", Session.getInstance().generateUrl(
-            new CreateUrlRequest(Page.PERSONAL_SETTINGS)));
+    private Hyperlink profileSettingsLink;
 
     /**
      * Panel that holds the tabbed portion of the profile display.
@@ -151,12 +150,14 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param accountId
      *            the account id.
      */
     public PersonalProfilePanel(final String accountId)
     {
+        profileSettingsLink = new Hyperlink("Configure", Session.getInstance().generateUrl(
+                new CreateUrlRequest(Page.PERSONAL_SETTINGS, accountId)));
         RootPanel.get().addStyleName("profile");
 
         ActionProcessor inProcessor = Session.getInstance().getActionProcessor();
@@ -198,7 +199,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * We have the Person, so set up the Profile summary.
-     * 
+     *
      * @param inPerson
      *            the person whose profile is being displayed
      */
@@ -284,7 +285,7 @@ public class PersonalProfilePanel extends FlowPanel
         final StreamPanel streamContent = new StreamPanel(false);
         streamContent.setStreamScope(person.getStreamScope(),
                 (person.isStreamPostable() || (currentUser.getAccountId() == person.getAccountId())));
-        
+
         if (person.isAccountLocked())
         {
             streamContent.setLockedMessagePanel(generateLockedUserMessage());
@@ -312,7 +313,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * Generates a panel to use as the message when a user is locked out of the system.
-     * 
+     *
      * @return the Panel content containing the locked message.
      */
     private Panel generateLockedUserMessage()
@@ -342,7 +343,7 @@ public class PersonalProfilePanel extends FlowPanel
         errorReport.add(msgPanel);
         return errorReport;
     }
-    
+
     /**
      * Set up the checklist.
      */
@@ -418,7 +419,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * Creates and sets up the connections tab content.
-     * 
+     *
      * @param inPerson
      *            Person whose profile is being displayed.
      * @return Tab content.

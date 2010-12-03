@@ -15,66 +15,127 @@
  */
 package org.eurekastreams.server.action.execution.settings;
 
+import static junit.framework.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.actions.context.async.AsyncActionContext;
+import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.SetPersonLockedStatusRequest;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.db.SetPersonLockedStatus;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Test for SetPersonLockedStatusExecution.
- * 
+ *
  */
 public class SetPersonLockedStatusExecutionTest
 {
     /** Used for mocking objects. */
-    private JUnit4Mockery context = new JUnit4Mockery()
+    private final JUnit4Mockery context = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
 
-    /**
-     * {@link SetPersonLockedStatus}.
-     */
-    private SetPersonLockedStatus setLockedStatusDAO = context.mock(SetPersonLockedStatus.class);;
+    /** Test data. */
+    private static final String ACCOUNT_ID = "jdoe";
+
+    /** Test data. */
+    private static final Long PERSON_ID = 7L;
+
+    /** {@link SetPersonLockedStatus}. */
+    private final SetPersonLockedStatus setLockedStatusDAO = context.mock(SetPersonLockedStatus.class);;
+
+    /** For mapping accountid to id. */
+    private final DomainMapper<String, Long> personIdMapper = context.mock(DomainMapper.class, "personIdMapper");
+
+    /** {@link AsyncActionContext}. */
+    private final AsyncActionContext actionContext = context.mock(AsyncActionContext.class);
+
+    /** {@link TaskHandlerActionContext}. */
+    private TaskHandlerActionContext outerActionContext;
+
+    /** System under test. */
+    private SetPersonLockedStatusExecution sut;
 
     /**
-     * {@link AsyncActionContext}.
+     * Setup before each test.
      */
-    private AsyncActionContext actionContext = context.mock(AsyncActionContext.class);
-
-    /**
-     * {@link SetPersonLockedStatusRequest}.
-     */
-    private SetPersonLockedStatusRequest request = context.mock(SetPersonLockedStatusRequest.class);
-
-    /**
-     * System under test.
-     */
-    private SetPersonLockedStatusExecution sut = new SetPersonLockedStatusExecution(setLockedStatusDAO);
+    @Before
+    public void setUp()
+    {
+        outerActionContext = new TaskHandlerActionContext(actionContext, new ArrayList<UserActionRequest>());
+        sut = new SetPersonLockedStatusExecution(setLockedStatusDAO, personIdMapper);
+    }
 
     /**
      * Test.
      */
     @Test
-    public void test()
+    public void testExecuteWhenLocking()
     {
+        final SetPersonLockedStatusRequest request = new SetPersonLockedStatusRequest(ACCOUNT_ID, true);
         context.checking(new Expectations()
         {
             {
                 allowing(actionContext).getParams();
                 will(returnValue(request));
 
-                allowing(setLockedStatusDAO).execute(request);
+                oneOf(setLockedStatusDAO).execute(request);
+
+                allowing(personIdMapper).execute(ACCOUNT_ID);
+                will(returnValue(PERSON_ID));
             }
         });
 
-        sut.execute(actionContext);
+        sut.execute(outerActionContext);
 
         context.assertIsSatisfied();
+        assertEquals(1, outerActionContext.getUserActionRequests().size());
+        UserActionRequest outRequest = (UserActionRequest) outerActionContext.getUserActionRequests().get(0);
+        assertEquals("deleteCacheKeysAction", outRequest.getActionKey());
+        Collection<String> keys = (Collection<String>) outRequest.getParams();
+        assertEquals(1, keys.size());
+        assertEquals(CacheKeys.PERSON_BY_ID + PERSON_ID, keys.iterator().next());
     }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testExecuteWhenUnlocking()
+    {
+        final SetPersonLockedStatusRequest request = new SetPersonLockedStatusRequest(ACCOUNT_ID, false);
+        context.checking(new Expectations()
+        {
+            {
+                allowing(actionContext).getParams();
+                will(returnValue(request));
+
+                oneOf(setLockedStatusDAO).execute(request);
+
+                allowing(personIdMapper).execute(ACCOUNT_ID);
+                will(returnValue(PERSON_ID));
+            }
+        });
+
+        sut.execute(outerActionContext);
+
+        context.assertIsSatisfied();
+        assertEquals(1, outerActionContext.getUserActionRequests().size());
+        UserActionRequest outRequest = (UserActionRequest) outerActionContext.getUserActionRequests().get(0);
+        assertEquals("cachePerson", outRequest.getActionKey());
+        assertEquals(PERSON_ID, outRequest.getParams());
+    }
+
 }

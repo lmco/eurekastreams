@@ -1,0 +1,165 @@
+## Overview
+The start page serves as a private homepage for the knowledge worker allowing them to organize and find the information that they need on a day to day basis. The user has access to a gallery where they can choose from a collection of apps that they place on their start page. A knowledge worker can also organize the apps on their start page by grouping them under tabs. Unlike traditional enterprise web portals, knowledge workers not only have complete control over the content but they may also apply a theme to change the look and feel.
+## Conditions of satisfaction
+1. The knowledge worker must be able to apply a theme to the start page.
+2. The system must apply the three-column layout as the default when a new tab is created.
+3. The knowledge worker must be able to create up to six tabs on the start page.
+4. The knowledge worker must be able to rename a tab.
+5. The knowledge worker must be able to remove a tab unless it is the last one on the start page.
+6. The knowledge worker must be able to undo the removal of a tab.
+7. The knowledge worker must be able to re-arrange the order of the tabs on the start page.
+8. The knowledge worker must be able to apply a layout to a tab.
+9. The knowledge worker must be able to add an app to a tab.
+10. The knowledge worker must be able to remove an app from a tab.
+11. The knowledge worker must be able to undo the removal of an app from a tab.
+12. The system must highlight empty zones on a tab and provide an explicit action to add an app.
+13. The knowledge worker must be able to drag and drop an app within a tab.
+14. The knowledge worker must be able to drag and drop an app onto another tab.
+15. The knowledge worker must be able edit the settings of an app.
+16. The system must not display an option to edit settings if none exist for an app.
+17. The knowledge worker must be able to minimize and restore an app.
+18. The knowledge worker must be able to maximize and restore an app.
+19. The system must remember the minimize and maximize states for an app.
+20. The knowledge worker must be able to refresh the content of an app.
+## User experience
+
+#### App Interaction
+![](images/PS_F02_startPage_appControls.png)
+
+1. Opens app in canvas view (maximize)
+2. Minimizes the app
+3. Refreshes app
+4. Deletes app from the tab. Upon clicking the icon a pop up window is displayed asking the knowledge worker if they are sure they want to delete the app. After the app is deleted, feedback is displayed at the top of the page with an undo and close option: "App has been removed". Refer to the [Action Feedback UI design pattern][Action feedback] for additional details.
+5. Restores the app
+
+![](images/PS_F02_startPage_appCanvasView.png)
+
+1. App title
+1. Restores the app.
+
+#### Moving Tabs
+![](images/PS_F02_startPage_appDragOnTab.png)
+
+1. Dragging the title bar of an app displays a proxy image containing the name of the app. When the knowledge worker drags the app over an empty column a dashed box appears. When the proxy is released over the column the app appears in that column.
+
+#### Moving an App onto Another Tab
+![](images/PS_F02_startPage_appDragBetweenTabs.png)
+
+1. Dragging the title bar of an app displays a proxy image containing the name of the app. Dragging the proxy over an inactive tab highlights the tab. Releasing the proxy over the tab activates the tab and places the app in the upper left hand corner of the tab.
+
+#### Editing Tabs
+![](images/PS_F02_startPage_ManageTabs_fig02.png)
+
+1. Clicking the tab menu icon displays a drop down menu.
+2. Link to change the tab's layout
+3. Link to rename the tab, when this is selected the name of the tab appears in an editable input box. Clicking the "+" tab adds a new tab with the editable input box. Tabs only display the first 16 characters.
+4. Link to remove the tab. When this is selected a popup window is displayed asking the knowledge worker if they are sure they want to remove the tab. If Yes is selected, feedback is displayed at the top of the page with an undo and close option: "[tab name] has been removed".  Refer to the [Action Feedback UI design pattern][Action feedback] for additional details.
+5. The knowledge worker can reorder the tabs by dragging and dropping the tab into place.
+
+#### Changing a Tab's Layout
+![](images/PS_F02_startPage_ChangeLayout.png)
+
+1. Selecting "Change Layout" from the tab menu displays the change layout window.
+2. Carousel paging
+3. Hover state, clicking on the layout applies the layout to the tab and changes the currently selected layout image on the right.
+
+#### Adding an App
+![](images/PS_F02_startPage_ConfigureTab.png)
+
+1. The configure button should take the background color of the inactive tab and the text color of the inactive tab. There should also be a 1px line around the configure button that takes the color of the inactive tab text. Clicking the configure button displays the Configure page.  Apps are added to the first column in the start page by default.
+2. Clicking the Add an App link displays the Configure page.  Apps are added to the column on the start page where the Add an App link was selected.
+
+![](images/PS_F02_startPage_AddApp.png)
+
+1. Adds the app to the first tab of the knowledge worker's start page.  Feedback displays at top of page with a close option: 'App has been added'. Refer to the [Action Feedback UI design pattern][Action feedback] for additional details.
+2. The add button becomes inactive after the app has been added.
+
+
+#### Applying a Theme
+
+![](images/PS_F02_startPage_ApplyTheme.png)
+
+1. Applies the selected theme and takes the knowledge worker to their start page. Feedback displays at top of page with a close option: 'Theme has been applied'. Refer to the [Action Feedback UI design pattern][Action feedback] for additional details.
+
+##  Test plans
+###Knowledge Worker
+1. **Action: Apply a theme to the start page**
+    * Verify the user can choose a theme from the gallery
+    * Verify the theme is applied to the start page
+2. **Action: Create a new tab**
+    * Verify a three column layout is applied as the default when a new tab is created
+3. **Action: Create up to six tabs on the start page**
+    * Verify that clicking on the "+" tab adds a new tab
+    * Verify the focus is on the new tab
+    * Verify the default name of the new tab is "new tab"
+    * Verify that new tabs are added to the left of the "+" tab
+    * Verify that up to six tabs can be added
+4. **Action: Rename a tab**
+    * Verify that choosing "rename tab' option in the drop down menu immediately highlights the selected tab title
+    * Verify the name of the tab can be changed
+5. **Action: Remove a tab unless it is the last one on the start page**
+    * Verify that a tab can be removed by selecting remove
+    * Verify that the "+" tab cannot be removed
+6. **Action: Undo the removal of a tab**
+    * Verify that when a tab is removed, there is an undo option
+    * Verify that the undo option correctly reflects the name of the tab
+    * Verify that pressing undo, the tab is restored with the apps in the same locations as they were before the tab was removed
+7. **Action: Re-arrange the order of the tabs on the start page**
+    * Verify the tabs can be repositioned via drag and drop
+    * Verify there is a visual indication as to which tab is being moved
+    * Verify there is a visual indication as to where the tab will be placed
+    * Verify no tabs can be placed to the right of the "+" tab
+8. **Action: Apply a layout to a tab**
+    * Verify layout options are accessible via a carousel
+    * Verify layout options are displayed 5 at a time on the carousel
+    * Verify there is a visual indication as to the layout currently applied to the selected tab
+    * Verify apps are not lost when a new layout is applied
+    * Verify that when moving from a layout with X columns to a layout with x-1 columns there is a confirmation to the user to rearrange apps
+    * Verify the layout is only applied to the selected tab
+9. **Action: Add an app to a tab**
+    * Verify an app can be added to a tab from the gallery
+    * Verify as apps are added via the gallery, the add button reflects an added status
+    * Verify the same app can be added multiple times
+10. **Action: Remove an app from a tab**
+    * Verify an app can be removed from a tab by selecting the remove option
+    * Verify there is confirmation that the app has been removed
+11. **Action: Undo the removal of an app from a tab**
+    * Verify there is an option in the app removal confirmation to undo the action
+    * Verify that the app is returned to the tab in the same location when undoing the removal
+12. **Action: View highlighted empty zones on a tab**
+    * Verify that empty zones on a tab are highlighted
+    * Verify there is an explicit action to add an app
+13. **Action: Drag and drop an app within a tab**
+    * Verify an app can be dropped past the bottom of the screen
+    * Verify there is a visual indication as to which app is being moved
+    * Verify there is a visual indication as to the placement of the app when it is dropped
+    * Verify apps can be moved within a column
+    * Verify apps can be moved between columns
+14. **Action: Drag and drop an app onto another tab**
+    * Verify there is a visual indication as to which app is being moved
+    * Verify there is a visual indication as to the placement of the app when it is dropped
+15. **Action: Edit the settings of an app with Settings**
+    * Verify the system displays an option to edit settings and that settings can be modified
+16. **Action: Attempt to edit the settings of an app without Settings**
+    * Verify the system does not display an option to edit settings if none exist for an app
+17. **Action: Minimize and restore an app **
+    * Verify an app can be successfully minimized
+    * Verify an app can be successfully restored
+18. **Action: Maximize and restore an app **
+    * Verify an app can be successfully maximized
+    * Verify an app can be successfully restored
+19. **Action: Change Start Page to minimize one app and to have one app maximized**
+    * Verify that the minimized app is still minimized when returning to the Start Page
+    * Verify that the minimized app is still maximized when returning to the Start Page
+20. **Action: Refresh the content of an app **
+    * Verify the contents of the app can be refreshed
+    * Verify only the app is refreshed async without reloading the entire page
+###Group Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+###Organization Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
+###Root Organization Coordinator
+1. **Action: Execute same tests as Knowledge Worker**
+    * Verify tests executed successfully
