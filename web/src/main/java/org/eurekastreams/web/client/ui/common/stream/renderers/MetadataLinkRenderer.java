@@ -21,8 +21,8 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.Session;
 
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.InlineHTML;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -123,16 +123,13 @@ public class MetadataLinkRenderer
         {
             if (type.equals(EntityType.PLUGIN) || type.equals(EntityType.APPLICATION))
             {
-                // TODO: Is this correct for the new URL scheme?
-                HTML link = new InlineHTML(label + " <a href='" + id + "'>" + name + "</a>");
-                return link;
+                return new Hyperlink(name, id);
             }
             else
             {
                 Page page = type.equals(EntityType.GROUP) ? Page.GROUPS : Page.PEOPLE;
                 String url = Session.getInstance().generateUrl(new CreateUrlRequest(page, id));
-                HTML link = new InlineHTML(label + " <a href='#" + url + "'>" + jSNIFacade.escapeHtml(name) + "</a>");
-                return link;
+                return new Hyperlink(jSNIFacade.escapeHtml(name), url);
             }
         }
         else
