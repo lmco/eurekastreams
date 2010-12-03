@@ -15,12 +15,15 @@
  */
 package org.eurekastreams.server.action.execution.start;
 
+import java.util.Set;
+
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.server.action.request.start.SetTabLayoutRequest;
 import org.eurekastreams.server.domain.Layout;
 import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.persistence.TabMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.UpdateGadgetsWithNewTabLayoutMapper;
 import org.eurekastreams.server.persistence.mappers.requests.UpdateGadgetsWithNewTabLayoutRequest;
 import org.jmock.Expectations;
@@ -32,7 +35,7 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link SetTabLayoutExecution} class.
- *
+ * 
  */
 public class SetTabLayoutExecutionTest
 {
@@ -77,18 +80,22 @@ public class SetTabLayoutExecutionTest
     private static final Long TAB_ID = Long.valueOf(37);
 
     /**
+     * {@link DomainMapper}.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteCacheKeysMapper = context.mock(DomainMapper.class);
+
+    /**
      * Create the sut and gadget list.
      */
     @Before
     public final void setup()
     {
-        sut = new SetTabLayoutExecution(tabMapper, updateMapper);
+        sut = new SetTabLayoutExecution(tabMapper, updateMapper, deleteCacheKeysMapper);
     }
 
     /**
-     * Make sure that ChangeLayout correctly passes its gadgets to the grow
-     * strategy.
-     *
+     * Make sure that ChangeLayout correctly passes its gadgets to the grow strategy.
+     * 
      * @throws Exception
      *             performAction can throw an exception
      */
@@ -109,6 +116,11 @@ public class SetTabLayoutExecutionTest
 
                 oneOf(tab).setTabLayout(newLayout);
 
+                allowing(principalMock).getId();
+                will(returnValue(1L));
+
+                allowing(deleteCacheKeysMapper).execute(with(any(Set.class)));
+
                 oneOf(tabMapper).flush();
 
                 oneOf(tabMapper).findById(with(TAB_ID));
@@ -125,9 +137,8 @@ public class SetTabLayoutExecutionTest
     }
 
     /**
-     * Make sure that ChangeLayout correctly passes its gadgets to the shrink
-     * strategy.
-     *
+     * Make sure that ChangeLayout correctly passes its gadgets to the shrink strategy.
+     * 
      * @throws Exception
      *             not expected
      */
@@ -150,6 +161,11 @@ public class SetTabLayoutExecutionTest
 
                 oneOf(tabMapper).flush();
 
+                allowing(principalMock).getId();
+                will(returnValue(1L));
+
+                allowing(deleteCacheKeysMapper).execute(with(any(Set.class)));
+
                 oneOf(updateMapper).execute(with(any(UpdateGadgetsWithNewTabLayoutRequest.class)));
 
                 oneOf(tab).getTemplate();
@@ -169,7 +185,7 @@ public class SetTabLayoutExecutionTest
 
     /**
      * Make sure that no changes are made if the zone count stays the same.
-     *
+     * 
      * @throws Exception
      *             not expected
      */
@@ -189,6 +205,11 @@ public class SetTabLayoutExecutionTest
                 will(returnValue(Layout.THREECOLUMN));
 
                 oneOf(tab).setTabLayout(newLayout);
+
+                allowing(principalMock).getId();
+                will(returnValue(1L));
+
+                allowing(deleteCacheKeysMapper).execute(with(any(Set.class)));
 
                 oneOf(tabMapper).flush();
 

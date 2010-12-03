@@ -631,6 +631,7 @@
             <bean
                 class="org.eurekastreams.server.action.execution.start.RenameTabExecution">
                 <constructor-arg ref="jpaTabMapper" />
+                <constructor-arg ref="deleteCacheKeys"/>
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
@@ -643,6 +644,7 @@
             <bean
                 class="org.eurekastreams.server.action.execution.start.UndeleteTabExecution">
                 <constructor-arg ref="jpaPortalPageMapper" />
+                <constructor-arg ref="deleteCacheKeys"/>
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
@@ -659,6 +661,7 @@
             <bean
                 class="org.eurekastreams.server.action.execution.start.ReorderGadgetExecution">
                 <constructor-arg ref="jpaTabMapper" />
+                <constructor-arg ref="deleteCacheKeys"/>
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
@@ -1035,6 +1038,7 @@
                 <constructor-arg ref="jpaTabMapper" />
                 <constructor-arg ref="jpaPersonMapper" />
                 <constructor-arg ref="jpaGadgetDefinitionMapper" />
+                <constructor-arg ref="deleteCacheKeys"/>
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -1060,6 +1064,7 @@
                 class="org.eurekastreams.server.action.execution.start.AddTabExecution">
                 <constructor-arg ref="jpaPersonMapper" />
                 <constructor-arg ref="jpaTabMapper" />
+                <constructor-arg ref="deleteCacheKeys"/>
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -2739,6 +2744,7 @@
             <bean class="org.eurekastreams.server.action.execution.start.SetTabLayoutExecution">
                 <constructor-arg ref="jpaTabMapper" />
                 <constructor-arg ref="updateGadgetsWithNewTabLayoutMapper" />
+                <constructor-arg ref="deleteCacheKeys"/>
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
@@ -2754,7 +2760,7 @@
                 </constructor-arg>
                 <constructor-arg>
                     <ref bean="tabPermission" />
-                </constructor-arg>
+                </constructor-arg>                
             </bean>
         </constructor-arg>
         <constructor-arg>
@@ -2763,6 +2769,7 @@
                 <constructor-arg>
                     <ref bean="jpaTabMapper" />
                 </constructor-arg>
+                <constructor-arg ref="deleteCacheKeys"/>
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
@@ -2799,6 +2806,7 @@
                 <constructor-arg>
                     <ref bean="jpaTabMapper" />
                 </constructor-arg>
+                <constructor-arg ref="deleteCacheKeys"/>
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
@@ -2808,11 +2816,9 @@
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.start.SetTabOrderExecution">
-                <constructor-arg>
-                    <ref bean="jpaPersonMapper" />
-                </constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.start.SetTabOrderExecution">
+                <constructor-arg ref="jpaPersonMapper"/>                    
+                <constructor-arg ref="deleteCacheKeys"/>
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
@@ -2827,12 +2833,11 @@
                 <constructor-arg>
                     <ref bean="jpaGadgetMapper" />
                 </constructor-arg>
+                <constructor-arg ref="deleteCacheKeys"/>
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
-    
-
 
     <bean id="deleteStreamForCurrentUser" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -2889,6 +2894,7 @@
                 <constructor-arg>
                     <ref bean="jpaTabMapper" />
                 </constructor-arg>
+                <constructor-arg ref="deleteCacheKeys"/>
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />

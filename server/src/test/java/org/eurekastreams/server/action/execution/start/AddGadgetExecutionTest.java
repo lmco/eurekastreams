@@ -20,6 +20,7 @@ import static junit.framework.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.NoResultException;
 
@@ -34,6 +35,7 @@ import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.persistence.GadgetDefinitionMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.TabMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -102,6 +104,11 @@ public class AddGadgetExecutionTest
     private static final String GADGET_DEF_URL = "http://someurl.com/gadgetDefinition.xml";
 
     /**
+     * {@link DomainMapper}.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteCacheKeysMapper = context.mock(DomainMapper.class);
+
+    /**
      * Mock.
      */
     private Principal principal = context.mock(Principal.class);
@@ -112,7 +119,7 @@ public class AddGadgetExecutionTest
     @Before
     public final void setup()
     {
-        sut = new AddGadgetExecution(tabMapper, personMapper, gadgetDefinitionMapper);
+        sut = new AddGadgetExecution(tabMapper, personMapper, gadgetDefinitionMapper, deleteCacheKeysMapper);
     }
 
     /**
@@ -213,6 +220,8 @@ public class AddGadgetExecutionTest
 
                 // will need a flush() when all done
                 exactly(1).of(tabMapper).flush();
+
+                allowing(deleteCacheKeysMapper).execute(with(any(Set.class)));
             }
 
         });

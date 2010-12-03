@@ -359,6 +359,7 @@
 		    	<constructor-arg ref="jpaPersonMapper" />
 				<constructor-arg ref="jpaThemeMapper" />
 				<constructor-arg ref="cssBuilderDecorator" />
+				<constructor-arg ref="deleteCacheKeys"/>
 		    </bean>
 		</constructor-arg>
 		<constructor-arg value="false" />

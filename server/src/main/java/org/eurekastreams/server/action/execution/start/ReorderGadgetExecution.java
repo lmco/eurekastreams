@@ -15,7 +15,9 @@
  */
 package org.eurekastreams.server.action.execution.start;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
@@ -27,10 +29,12 @@ import org.eurekastreams.server.domain.Gadget;
 import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.domain.TabTemplate;
 import org.eurekastreams.server.persistence.TabMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 
 /**
  * Move a gadget.
- *
+ * 
  */
 public class ReorderGadgetExecution implements ExecutionStrategy<PrincipalActionContext>
 {
@@ -45,19 +49,27 @@ public class ReorderGadgetExecution implements ExecutionStrategy<PrincipalAction
     private TabMapper tabMapper = null;
 
     /**
+     * Domain mapper to delete keys.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteKeysMapper;
+
+    /**
      * Constructor.
-     *
+     * 
      * @param mapper
      *            injected mapper
+     * @param inDeleteKeysMapper
+     *            mapper to delete cache keys.
      */
-    public ReorderGadgetExecution(final TabMapper mapper)
+    public ReorderGadgetExecution(final TabMapper mapper, final DomainMapper<Set<String>, Boolean> inDeleteKeysMapper)
     {
         tabMapper = mapper;
+        deleteKeysMapper = inDeleteKeysMapper;
     }
 
     /**
      * Move a gadget.
-     *
+     * 
      * @param inActionContext
      *            {@link PrincipalActionContext}.
      * @return {@link Tab}.
@@ -112,6 +124,9 @@ public class ReorderGadgetExecution implements ExecutionStrategy<PrincipalAction
             tabMapper.moveGadget(gadget.getId(), sourceTemplate.getId(), oldZoneIndex, oldZoneNumber,
                     destinationTemplate.getId(), targetZoneIndex, targetZoneNumber);
 
+            deleteKeysMapper.execute(Collections.singleton(CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID
+                    + inActionContext.getPrincipal().getId()));
+
             return tabMapper.findById(targetTabId);
         }
         catch (Exception ex)
@@ -122,7 +137,7 @@ public class ReorderGadgetExecution implements ExecutionStrategy<PrincipalAction
 
     /**
      * Utility method to pick the gadget that will be moving from the whole set of gadgets.
-     *
+     * 
      * @param gadgets
      *            the collection of gadgets
      * @param gadgetId

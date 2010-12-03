@@ -18,19 +18,20 @@ package org.eurekastreams.web.client.model;
 import org.eurekastreams.server.action.request.start.RenameTabRequest;
 import org.eurekastreams.server.action.request.start.SetTabLayoutRequest;
 import org.eurekastreams.server.action.request.start.SetTabOrderRequest;
-import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.Tab;
+import org.eurekastreams.server.search.modelview.PersonPagePropertiesDTO;
 import org.eurekastreams.web.client.events.data.DeletedStartPageTabResponseEvent;
 import org.eurekastreams.web.client.events.data.GotStartPageTabsResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedStartTabResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedStartPageLayoutResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedStartPageTabNameResponseEvent;
+import org.eurekastreams.web.client.model.requests.PersonPagePropertiesDTOToPersonTransformer;
 import org.eurekastreams.web.client.ui.Session;
 
 /**
  * Represents the tabs on someones start page. Allows you to get them, change their layout, rename them, reorder them,
  * add them and delete them,
- *
+ * 
  */
 public class StartTabsModel extends BaseModel implements Fetchable<String>, Insertable<String>, Deletable<Tab>,
         Reorderable<SetTabOrderRequest>
@@ -42,7 +43,7 @@ public class StartTabsModel extends BaseModel implements Fetchable<String>, Inse
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
     public static StartTabsModel getInstance()
@@ -55,12 +56,14 @@ public class StartTabsModel extends BaseModel implements Fetchable<String>, Inse
      */
     public void fetch(final String request, final boolean useClientCacheIfAvailable)
     {
-        super.callReadAction("getPerson", request, new OnSuccessCommand<Person>()
+        super.callReadAction("getPersonPageProperties", request, new OnSuccessCommand<PersonPagePropertiesDTO>()
         {
-            public void onSuccess(final Person response)
+            public void onSuccess(final PersonPagePropertiesDTO response)
             {
+                PersonPagePropertiesDTOToPersonTransformer transformer = //
+                new PersonPagePropertiesDTOToPersonTransformer();
                 Session.getInstance().getEventBus().notifyObservers(
-                        new GotStartPageTabsResponseEvent(response));
+                        new GotStartPageTabsResponseEvent(transformer.transform(response)));
             }
         }, useClientCacheIfAvailable);
     }
@@ -95,7 +98,7 @@ public class StartTabsModel extends BaseModel implements Fetchable<String>, Inse
 
     /**
      * Rename a tab.
-     *
+     * 
      * @param request
      *            the request.
      */
@@ -113,7 +116,7 @@ public class StartTabsModel extends BaseModel implements Fetchable<String>, Inse
 
     /**
      * Undo the delete of a tab.
-     *
+     * 
      * @param request
      *            the id of the tab to undelete.
      */
@@ -130,7 +133,7 @@ public class StartTabsModel extends BaseModel implements Fetchable<String>, Inse
 
     /**
      * Set the layout of the tab.
-     *
+     * 
      * @param request
      *            the request.
      */

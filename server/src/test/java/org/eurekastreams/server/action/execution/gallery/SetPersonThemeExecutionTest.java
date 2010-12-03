@@ -17,6 +17,8 @@ package org.eurekastreams.server.action.execution.gallery;
 
 import static junit.framework.Assert.assertEquals;
 
+import java.util.Set;
+
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
@@ -24,6 +26,7 @@ import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.Theme;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.ThemeMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.service.actions.strategies.CSSBuilderDecorator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -78,6 +81,11 @@ public class SetPersonThemeExecutionTest
     private CSSBuilderDecorator decorator = context.mock(CSSBuilderDecorator.class);
 
     /**
+     * {@link DomainMapper}.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteCacheKeysMapper = context.mock(DomainMapper.class);
+
+    /**
      * Subject under test.
      */
     private SetPersonThemeExecution sut = null;
@@ -88,12 +96,12 @@ public class SetPersonThemeExecutionTest
     @Before
     public final void setup()
     {
-        sut = new SetPersonThemeExecution(personMapper, themeMapper, decorator);
+        sut = new SetPersonThemeExecution(personMapper, themeMapper, decorator, deleteCacheKeysMapper);
     }
 
     /**
      * Call the execute method and make sure it produces what it should.
-     *
+     * 
      * @throws Exception
      *             shouldn't happen
      */
@@ -125,6 +133,8 @@ public class SetPersonThemeExecutionTest
                 never(themeMapper).findByUUID(with(any(String.class)));
 
                 oneOf(decorator).decorate(person);
+
+                oneOf(deleteCacheKeysMapper).execute(with(any(Set.class)));
             }
         });
 
@@ -138,7 +148,7 @@ public class SetPersonThemeExecutionTest
 
     /**
      * Call the execute method when the theme was passed through the state from the validator.
-     *
+     * 
      * @throws Exception
      *             shouldn't happen
      */
@@ -167,6 +177,8 @@ public class SetPersonThemeExecutionTest
                 never(themeMapper).findByUUID(with(any(String.class)));
 
                 oneOf(decorator).decorate(person);
+
+                oneOf(deleteCacheKeysMapper).execute(with(any(Set.class)));
             }
         });
 
@@ -182,7 +194,7 @@ public class SetPersonThemeExecutionTest
 
     /**
      * Call the execute method and make sure it produces what it should.
-     *
+     * 
      * @throws Exception
      *             can throw an exception on bad UUID.
      */
@@ -214,6 +226,8 @@ public class SetPersonThemeExecutionTest
                 never(themeMapper).findByUrl((with(any(String.class))));
 
                 oneOf(decorator).decorate(person);
+
+                oneOf(deleteCacheKeysMapper).execute(with(any(Set.class)));
             }
         });
 
@@ -227,7 +241,7 @@ public class SetPersonThemeExecutionTest
 
     /**
      * Call the execute method and make sure it produces what it should.
-     *
+     * 
      * @throws Exception
      *             can throw an exception on bad UUID.
      */
@@ -266,7 +280,7 @@ public class SetPersonThemeExecutionTest
 
     /**
      * Build a server action context for testing.
-     *
+     * 
      * @param themeId
      *            the theme id to set as the parameter
      * @return a server action context for testing
@@ -292,6 +306,7 @@ public class SetPersonThemeExecutionTest
             @Override
             public String getOpenSocialId()
             {
+                // TODO Auto-generated method stub
                 return null;
             }
 

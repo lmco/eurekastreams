@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
@@ -27,6 +28,7 @@ import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.domain.TabGroupType;
 import org.eurekastreams.server.persistence.PersonMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -36,7 +38,7 @@ import org.junit.Test;
 
 /**
  * Test suite for {@link SetTabOrderExecution} class.
- *
+ * 
  */
 public class SetTabOrderExecutionTest
 {
@@ -111,18 +113,23 @@ public class SetTabOrderExecutionTest
     private static final Integer NEW_INDEX = 5;
 
     /**
+     * {@link DomainMapper}.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteCacheKeysMapper = context.mock(DomainMapper.class);
+
+    /**
      * Prepare the system under test.
      */
     @Before
     public void setup()
     {
-        sut = new SetTabOrderExecution(personMapper);
+        sut = new SetTabOrderExecution(personMapper, deleteCacheKeysMapper);
         tabs = buildTabs();
     }
 
     /**
      * Test case that covers moving the first tab and moving later in the list.
-     *
+     * 
      * @throws Exception
      *             should not be thrown
      */
@@ -145,7 +152,7 @@ public class SetTabOrderExecutionTest
 
     /**
      * Test case that covers moving the last tab and moving earlier in the list.
-     *
+     * 
      * @throws Exception
      *             should not be thrown
      */
@@ -168,7 +175,7 @@ public class SetTabOrderExecutionTest
 
     /**
      * Test case that covers moving a tab in the middle and putting a tab at the end.
-     *
+     * 
      * @throws Exception
      *             should not be thrown
      */
@@ -191,7 +198,7 @@ public class SetTabOrderExecutionTest
 
     /**
      * Test case that covers moving a tab to the first spot and moving earlier from the middle.
-     *
+     * 
      * @throws Exception
      *             should not be thrown
      */
@@ -214,7 +221,7 @@ public class SetTabOrderExecutionTest
 
     /**
      * Attempting to reorder a non-existent tab should trigger an exception.
-     *
+     * 
      * @throws Exception
      *             expected
      */
@@ -246,6 +253,11 @@ public class SetTabOrderExecutionTest
                 atLeast(1).of(principalMock).getAccountId();
                 will(returnValue(username));
 
+                allowing(principalMock).getId();
+                will(returnValue(1L));
+
+                allowing(deleteCacheKeysMapper).execute(with(any(Set.class)));
+
                 oneOf(personMapper).findByAccountId(username);
                 will(returnValue(person));
 
@@ -259,7 +271,7 @@ public class SetTabOrderExecutionTest
 
     /**
      * Make sure that all tabs ended up in the right places.
-     *
+     * 
      * @param id0
      *            id that should be in the 1st location
      * @param id1
@@ -282,7 +294,7 @@ public class SetTabOrderExecutionTest
 
     /**
      * A collection of mocked tabs that will be used by the performAction tests.
-     *
+     * 
      * @return collection of mocked tabs
      */
     private List<Tab> buildTabs()

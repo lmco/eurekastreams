@@ -16,6 +16,8 @@
 package org.eurekastreams.server.action.execution.start;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Set;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
@@ -24,6 +26,8 @@ import org.eurekastreams.server.action.request.start.SetTabLayoutRequest;
 import org.eurekastreams.server.domain.Layout;
 import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.persistence.TabMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.db.UpdateGadgetsWithNewTabLayoutMapper;
 import org.eurekastreams.server.persistence.mappers.requests.UpdateGadgetsWithNewTabLayoutRequest;
 
@@ -44,25 +48,34 @@ public class SetTabLayoutExecution implements ExecutionStrategy<PrincipalActionC
     private final UpdateGadgetsWithNewTabLayoutMapper updateMapper;
 
     /**
+     * Domain mapper to delete keys.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteKeysMapper;
+
+    /**
      * Constructor.
-     *
+     * 
      * @param mapper
      *            injecting the TabMapper
      * @param inUpdateMapper
      *            mapper that performs the updates on gadgets as a result of the layout change.
+     * @param inDeleteKeysMapper
+     *            mapper to delete cache keys.
      */
-    public SetTabLayoutExecution(final TabMapper mapper, final UpdateGadgetsWithNewTabLayoutMapper inUpdateMapper)
+    public SetTabLayoutExecution(final TabMapper mapper, final UpdateGadgetsWithNewTabLayoutMapper inUpdateMapper,
+            final DomainMapper<Set<String>, Boolean> inDeleteKeysMapper)
     {
         tabMapper = mapper;
         updateMapper = inUpdateMapper;
+        deleteKeysMapper = inDeleteKeysMapper;
     }
 
     /**
      * {@inheritDoc}.
-     *
-     * Perform the layout change. If the new layout contains less columns than the old layout, move any gadgets
-     * that are in the truncated columns to the last column in the new layout.
-     *
+     * 
+     * Perform the layout change. If the new layout contains less columns than the old layout, move any gadgets that are
+     * in the truncated columns to the last column in the new layout.
+     * 
      */
     @Override
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
@@ -84,6 +97,9 @@ public class SetTabLayoutExecution implements ExecutionStrategy<PrincipalActionC
 
         // Need to retrieve the updated tab and touch the gadgets to return to the caller.
         Tab updatedTab = tabMapper.findById(currentRequest.getTabId());
+
+        deleteKeysMapper.execute(Collections.singleton(CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID
+                + inActionContext.getPrincipal().getId()));
 
         return updatedTab;
     }

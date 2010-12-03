@@ -16,7 +16,9 @@
 package org.eurekastreams.server.action.execution.start;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.NoResultException;
 
@@ -34,6 +36,8 @@ import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.persistence.GadgetDefinitionMapper;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.TabMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 
 /**
  * Creates and returns a new Gadget, with the name provided by parameter.
@@ -62,6 +66,11 @@ public class AddGadgetExecution implements ExecutionStrategy<PrincipalActionCont
     private GadgetDefinitionMapper gadgetDefinitionMapper = null;
 
     /**
+     * Domain mapper to delete keys.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteKeysMapper;
+
+    /**
      * Constructor.
      * 
      * @param inTabMapper
@@ -70,14 +79,17 @@ public class AddGadgetExecution implements ExecutionStrategy<PrincipalActionCont
      *            used to load the person.
      * @param inGadgetDefinitionMapper
      *            used to find the gadget that will be added.
+     * @param inDeleteKeysMapper
+     *            mapper to delete cache keys.
      */
-    public AddGadgetExecution(final TabMapper inTabMapper, 
-            final PersonMapper inPersonMapper,
-            final GadgetDefinitionMapper inGadgetDefinitionMapper)
+    public AddGadgetExecution(final TabMapper inTabMapper, final PersonMapper inPersonMapper,
+            final GadgetDefinitionMapper inGadgetDefinitionMapper,
+            final DomainMapper<Set<String>, Boolean> inDeleteKeysMapper)
     {
-        this.tabMapper = inTabMapper;
-        this.personMapper = inPersonMapper;
-        this.gadgetDefinitionMapper = inGadgetDefinitionMapper;
+        tabMapper = inTabMapper;
+        personMapper = inPersonMapper;
+        gadgetDefinitionMapper = inGadgetDefinitionMapper;
+        deleteKeysMapper = inDeleteKeysMapper;
     }
 
     /**
@@ -106,12 +118,11 @@ public class AddGadgetExecution implements ExecutionStrategy<PrincipalActionCont
      * @return the new gadget
      * @throws ExecutionException
      *             can result from bad arguments, the user not being logged in, or not finding the user in the database
-     */    
-	@Override
-	public Serializable execute(final PrincipalActionContext inActionContext)
-			throws ExecutionException 
-	{
-		AddGadgetRequest request = (AddGadgetRequest) inActionContext.getParams();
+     */
+    @Override
+    public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
+    {
+        AddGadgetRequest request = (AddGadgetRequest) inActionContext.getParams();
         Long tabId = request.getTabId();
         String gadgetDefUrl = request.getGadgetDefinitionUrl();
 
@@ -146,7 +157,7 @@ public class AddGadgetExecution implements ExecutionStrategy<PrincipalActionCont
 
             // get the owner
             Person owner = personMapper.findByAccountId(inActionContext.getPrincipal().getAccountId());
-            
+
             // create the new gadget at the top of the last zone
             Gadget gadget = new Gadget(gadgetDef, 0, 0, owner, "");
 
@@ -156,14 +167,16 @@ public class AddGadgetExecution implements ExecutionStrategy<PrincipalActionCont
             // commit our operations
             tabMapper.flush();
 
+            deleteKeysMapper.execute(Collections.singleton(CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID + owner.getId()));
+
             // return it
             return gadget;
         }
         catch (NoResultException ex)
         {
-        	Person owner = personMapper.findByAccountId(inActionContext.getPrincipal().getAccountId());
+            Person owner = personMapper.findByAccountId(inActionContext.getPrincipal().getAccountId());
             log.error("Could not add Gadget because tab not found: " + owner.getUniqueId());
             throw new ExecutionException("Could not add Gadget because tab not found: " + owner.getUniqueId());
         }
-	}
+    }
 }
