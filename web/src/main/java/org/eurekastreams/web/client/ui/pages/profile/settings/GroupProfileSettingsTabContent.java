@@ -219,7 +219,7 @@ public class GroupProfileSettingsTabContent extends FlowPanel
         form.addFormDivider();
 
         String coordinstructions = "The group coordinators will be responsible for managing the organization profile, "
-                + "and moderating the group's actiity stream";
+                + "and moderating the group's activity stream";
         Set<Person> coordinatorList = group.getCoordinators();
         form.addFormElement(new PersonLookupFormElement("Group Coordinators", "Add Coordinator", coordinstructions,
                 DomainGroupModelView.COORDINATORS_KEY, coordinatorList, true, Session.getInstance()
