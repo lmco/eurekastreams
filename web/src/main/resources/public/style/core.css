@@ -6343,16 +6343,21 @@ body .main-contents .header-container {
 	background-position: 0 35px;
 }
 
-.nav-bar-button {
+.external-header-button, .nav-bar-button {
 	height: 35px;
-	text-indent: -1000em;
 	overflow: hidden; 
-	*text-indent: 0; 
-	*padding-top: 35px;
+}
+
+.nav-bar-button {
+	width: 50px;
 }
 
 .header-bar .nav-bar .nav-bar-button a {
 	font-size: 12px;
+	display: block;
+	height: 35px;
+	overflow: hidden;
+	padding-top: 35px;
 }
 
 .external-header-button {
@@ -6363,6 +6368,9 @@ body .main-contents .header-container {
 
 .external-header-button a {
 	display: block;
+	height: 35px;
+	overflow: hidden;
+	padding-top: 35px;
 }
 
 .start-header-button>div {
@@ -6398,6 +6406,11 @@ body .main-contents .header-container {
 .nav-bar ul.horizontal li div {
 	display: inline-block;
 	margin-top: 0px;
+}
+
+.nav-bar ul.horizontal li div.gwt-HTML
+{
+	padding-top: 10px;
 }
 
 .nav-bar ul.main-nav li { 
