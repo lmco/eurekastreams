@@ -315,8 +315,6 @@ public class AddLinkComposite extends FlowPanel implements Bindable
             public void onBlur(final BlurEvent event)
             {
                 link.setTitle(title.getValue());
-                Session.getInstance().getEventBus().notifyObservers(
-                        new MessageAttachmentChangedEvent(new Bookmark(link)));
             }
         });
 
