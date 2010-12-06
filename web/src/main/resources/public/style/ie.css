@@ -29,14 +29,6 @@ div.tab-container
 	margin-top: 12px;
 }
 
-/**
- * Solves weird scroll bar in directory search.
- */
-html
-{
-	overflow-x: hidden;
-}
-
 .tab input
 {
     position: relative;
