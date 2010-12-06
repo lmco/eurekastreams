@@ -25,7 +25,8 @@
         <intercept-url pattern="/" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/resources/autocomplete/entities/**" access="ROLE_USER"/>
         <intercept-url pattern="/resources/atom/**" access="ROLE_USER"/>
-        <intercept-url pattern="/resources/**" access="ROLE_OAUTH_CLIENT, ROLE_USER"/> 
+        <intercept-url pattern="/resources/util/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
+        <intercept-url pattern="/resources/**" access="ROLE_OAUTH_CLIENT, ROLE_USER"/>  
         <intercept-url pattern="/themes/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/social/**" access="ROLE_ANONYMOUS, ROLE_USER"/>   
         <intercept-url pattern="/gadgets/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
