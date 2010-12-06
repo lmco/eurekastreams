@@ -29,7 +29,7 @@ public class HyperlinkTransformer
 
     /**
      * Constructor.
-     *
+     * 
      * @param inJsni
      *            the JSNI to escape the html content.
      */
@@ -40,7 +40,7 @@ public class HyperlinkTransformer
 
     /**
      * Renders the content with urls converted to hyperlinks.
-     *
+     * 
      * @param inContent
      *            the content to hyperlink
      * @return the content with urls converted to hyperlinks.
@@ -135,7 +135,8 @@ public class HyperlinkTransformer
                         linkableUrl = "http://" + linkableUrl;
                     }
 
-                    String linkHtml = "<a target=\"_blank\" href=\"" + linkableUrl + "\">" + url + "</a>";
+                    String linkHtml = "<a target=\"_blank\" href=\"" + linkableUrl.replaceAll(" ", "") + "\">"
+                            + url.trim() + "</a>";
 
                     searchIndex = startIndex + linkHtml.length();
 
@@ -150,7 +151,7 @@ public class HyperlinkTransformer
 
     /**
      * Return the count of open parens to the left of the input position.
-     *
+     * 
      * @param text
      *            the text to check
      * @param position
@@ -183,7 +184,7 @@ public class HyperlinkTransformer
 
     /**
      * Test whether the character at the input position is inside a hyperlink tag.
-     *
+     * 
      * @param content
      *            the content to check
      * @param pos

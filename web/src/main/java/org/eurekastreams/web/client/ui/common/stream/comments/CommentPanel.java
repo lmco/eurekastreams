@@ -83,7 +83,13 @@ public class CommentPanel extends Composite
         body.add(author);
 
         // first transform links to hyperlinks
-        String commentBody = new HyperlinkTransformer(jSNIFacade).transform(comment.getBody());
+        String commentBody = comment.getBody();
+        commentBody = commentBody.replaceAll("\t", " ");
+        commentBody = commentBody.replaceAll("\r", " ");
+        commentBody = commentBody.replaceAll("\n", " ");
+        
+        // transform links
+        commentBody =new HyperlinkTransformer(jSNIFacade).transform(commentBody);
 
         // then transform hashtags to hyperlinks
         commentBody = new HashtagLinkTransformer(new StreamSearchLinkBuilder()).transform(commentBody);

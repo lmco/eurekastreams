@@ -43,7 +43,7 @@ public class HashtagLinkTransformer
 
     /**
      * Constructor.
-     *
+     * 
      * @param inStreamSearchLinkBuilder
      *            the helper to build hyperlinks to stream search
      */
@@ -55,7 +55,7 @@ public class HashtagLinkTransformer
     /**
      * Transform all valid hashtags that aren't already inside a hyperlink tag to hyperlink tags with links to search
      * the stream with the current stream view id.
-     *
+     * 
      * @param content
      *            the content to transform
      * @return a transformation of the input content with all valid hashtags that aren't already inside a hyperlink tag
@@ -69,7 +69,7 @@ public class HashtagLinkTransformer
     /**
      * Transform all valid hashtags that aren't already inside a hyperlink tag to hyperlink tags with links to search
      * the stream with the input view id.
-     *
+     * 
      * @param content
      *            the content to transform
      * @param streamViewId
@@ -121,8 +121,9 @@ public class HashtagLinkTransformer
                 if (hashtag.length() > 1)
                 {
                     // valid hashtag
-                    sb.append("<a href=\"" + streamSearchLinkBuilder.buildHashtagSearchLink(hashtag, streamViewId)
-                            + "\">" + hashtag + "</a>");
+                    sb.append("<a href=\""
+                            + streamSearchLinkBuilder.buildHashtagSearchLink(hashtag, streamViewId).trim() + "\">"
+                            + hashtag.trim() + "</a>");
                 }
                 else
                 {
@@ -143,7 +144,7 @@ public class HashtagLinkTransformer
 
     /**
      * Check if the character at a specific position in content is inside a url.
-     *
+     * 
      * @param content
      *            the content to check
      * @param pos
@@ -171,7 +172,7 @@ public class HashtagLinkTransformer
 
     /**
      * Test whether the character at the input position is inside a hyperlink tag.
-     *
+     * 
      * @param content
      *            the content to check
      * @param pos
@@ -197,7 +198,7 @@ public class HashtagLinkTransformer
 
     /**
      * Check if the input character is a valid character right before a hashtag.
-     *
+     * 
      * @param inChar
      *            the char test
      * @return whether the input char is a valid character right before a hashtag
@@ -209,7 +210,7 @@ public class HashtagLinkTransformer
 
     /**
      * Check if the input character is a valid hashtag character.
-     *
+     * 
      * @param inChar
      *            the char to check
      * @return whether the input char is valid in a hashtag

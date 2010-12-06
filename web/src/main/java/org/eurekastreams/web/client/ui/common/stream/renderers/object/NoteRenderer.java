@@ -54,6 +54,9 @@ public class NoteRenderer implements ObjectRenderer
     {
         String activityContent = activity.getBaseObjectProperties().get("content").replace("%EUREKA:ACTORNAME%",
                 activity.getActor().getDisplayName());
+        activityContent = activityContent.replaceAll("\t", " ");
+        activityContent = activityContent.replaceAll("\r", " ");
+        activityContent = activityContent.replaceAll("\n", " ");
 
         // first transform links to hyperlinks
         String html = new HyperlinkTransformer(new WidgetJSNIFacadeImpl()).transform(activityContent);

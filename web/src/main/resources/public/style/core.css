@@ -8506,6 +8506,7 @@ body .post-to-stream .post-button.inactive {
 .stream-message-item .message-body {
 	line-height: 1.5;
 	font-size: 13px;
+	zoom: 1;
 }
 
 .message-metadata-additional {
@@ -12697,10 +12698,18 @@ body .dragdrop-proxy {
 	font-size: 13px;
 	line-height: 1.5; 
 	*float: left;
+	zoom: 1;
 }
 
 .message-comment>.body>.message-comment-text {
 	padding-left: 5px;
+	display: block;
+	zoom: 1;
+}
+
+.message-comment-text a {
+	display: inline;
+	zoom: 1;
 }
 
 .message-comment .warning,.share-message-dialog .warning {
