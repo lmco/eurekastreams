@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+      http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+      
+   <bean id="initializeCache" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.InitializeCacheExecution">
+                <constructor-arg ref="memcachedCache" />
+                <constructor-arg>
+                    <list>
+                        <value>queuePersonCacheWarmingTasks</value>
+                        <value>queueGroupCacheWarmingTasks</value>
+                        <value>queueOrganizationCacheWarmingTasks</value>                  
+                    </list>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="true" />
+    </bean>
+    
+    <bean id="queuePersonCacheWarmingTasks" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.QueueKeyBasedTasksExecution">
+                <constructor-arg>
+                    <list>
+                        <value>cachePerson</value>
+                        <value>cachePersonPageProperties</value>
+                        <value>cacheFollowedPersonIdsForPersonList</value>
+                        <value>cacheFollowerPersonIdsForPersonList</value>
+                        <value>cacheFollowedGroupIdsForPersonList</value>
+                    </list>
+                </constructor-arg>
+                <constructor-arg ref="getPersonIds" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="true" />
+    </bean>   
+    
+    <bean id="queueGroupCacheWarmingTasks" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.QueueKeyBasedTasksExecution">
+                <constructor-arg>
+                    <list>
+                        <value>cacheGroup</value>
+                        <value>cacheFollowerPersonIdsForGroupList</value>
+                        <value>cacheGroupCoordinatorIdsForGroupList</value>
+                    </list>
+                </constructor-arg>
+                <constructor-arg ref="getGroupIds" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="true" />
+    </bean>
+    
+    <bean id="queueOrganizationCacheWarmingTasks" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.QueueKeyBasedTasksExecution">
+                <constructor-arg>
+                    <list>
+                        <value>cacheOrganization</value>
+                        <value>cacheRecursiveChildrenForOrganizationList</value>
+                        <value>cacheRecursiveParentsForOrganizationList</value>
+                    </list>
+                </constructor-arg>
+                <constructor-arg ref="getOrganizationIds" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="true" />
+    </bean>  
+    
+    <bean id="cacheOrganization" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="getOrganizationsByIdsMapper_FORCE_REFRESH" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="True" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>      
+    
+    <bean id="cacheGroup" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="getGroupsByIdsMapper_FORCE_REFRESH" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="True" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
+    
+    <bean id="cachePerson" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="getPersonsByIdsMapper_FORCE_REFRESH" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="True" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
+    
+    <bean id="cachePersonPageProperties" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="getPersonPagePropertiesById_FORCE_REFRESH" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="False" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>    
+    
+    <bean id="cacheFollowedPersonIdsForPersonList" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="getFollowedPersonIdsForPersonByIdMapper_FORCE_REFRESH" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="False" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
+    
+    <bean id="cacheFollowerPersonIdsForPersonList" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="getFollowerPersonIdsForPersonByIdMapper_FORCE_REFRESH" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="False" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>   
+    
+    <bean id="cacheFollowedGroupIdsForPersonList" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper_FORCE_REFRESH" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="False" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean> 
+    
+    <bean id="cacheFollowerPersonIdsForGroupList" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper_FORCE_REFRESH" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="False" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
+    
+    <bean id="cacheGroupCoordinatorIdsForGroupList" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper_FORCE_REFRESH" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="False" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>   
+    
+    <bean id="cacheRecursiveChildrenForOrganizationList" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="getChildOrgIdsRecursiveByOrgIdMapper_FORCE_REFRESH" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="False" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
+    
+    <bean id="cacheRecursiveParentsForOrganizationList" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper_FORCE_REFRESH" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="False" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>    
+    
+    <bean id="getPersonPagePropertiesById_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache Mapper -->
+        <constructor-arg ref="nullResultPartialMapper"/>
+        <!-- Database mapper to fall back on if not found in cache -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.GetPersonPagePropertiesByIdDbMapper">
+                <constructor-arg ref="findByIdMapper" />
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.cache.PersonToPersonPagePropertiesTransformer"/>
+                </constructor-arg>
+                <constructor-arg ref="cssBuilderDecorator" />
+            </bean>
+        </constructor-arg>
+        <!-- Data combiner -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
+        </constructor-arg>
+        <!-- Cache refresher -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
+                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID" />
+                <constructor-arg ref="toStringCacheKeySuffixTransformer" />
+                <property name="cache" ref="memcachedCache" />
+            </bean> 
+        </constructor-arg>       
+    </bean>      
+      
+</beans>
+      
