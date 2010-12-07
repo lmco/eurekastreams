@@ -30,7 +30,11 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class NoteRenderer implements ObjectRenderer
 {
-
+    /**
+     * JSNI Facade.
+     */
+    private WidgetJSNIFacadeImpl jSNIFacade = new WidgetJSNIFacadeImpl();
+    
     /**
      * Renders the attachment.
      * 
@@ -55,6 +59,12 @@ public class NoteRenderer implements ObjectRenderer
         String activityContent = activity.getBaseObjectProperties().get("content").replace("%EUREKA:ACTORNAME%",
                 activity.getActor().getDisplayName());
 
+        // Strip out any existing HTML.
+        activityContent = jSNIFacade.escapeHtml(activityContent);
+        activityContent = activityContent.replaceAll(" ", "&nbsp;");
+        activityContent = activityContent.replaceAll("(\r\n|\n|\r)", "<br />");
+
+        
         // first transform links to hyperlinks
         String html = new HyperlinkTransformer(new WidgetJSNIFacadeImpl()).transform(activityContent);
 
