@@ -26,14 +26,14 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Renders a note.
- *
+ * 
  */
 public class NoteRenderer implements ObjectRenderer
 {
 
     /**
      * Renders the attachment.
-     *
+     * 
      * @param activity
      *            the activity.
      * @return the attachment.
@@ -45,7 +45,7 @@ public class NoteRenderer implements ObjectRenderer
 
     /**
      * Renders the content widget.
-     *
+     * 
      * @param activity
      *            the activity.
      * @return the widget.
@@ -54,9 +54,6 @@ public class NoteRenderer implements ObjectRenderer
     {
         String activityContent = activity.getBaseObjectProperties().get("content").replace("%EUREKA:ACTORNAME%",
                 activity.getActor().getDisplayName());
-        activityContent = activityContent.replaceAll("\t", " ");
-        activityContent = activityContent.replaceAll("\r", " ");
-        activityContent = activityContent.replaceAll("\n", " ");
 
         // first transform links to hyperlinks
         String html = new HyperlinkTransformer(new WidgetJSNIFacadeImpl()).transform(activityContent);

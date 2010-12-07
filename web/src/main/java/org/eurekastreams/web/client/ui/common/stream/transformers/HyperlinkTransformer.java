@@ -49,6 +49,8 @@ public class HyperlinkTransformer
     {
         // Strip out any existing HTML.
         String bodyText = jsni.escapeHtml(inContent);
+        bodyText = bodyText.replaceAll(" ", "&nbsp;");
+        bodyText = bodyText.replaceAll("(\r\n|\n|\r)", "<br />");
 
         if (bodyText != null && !bodyText.equals(""))
         {
@@ -81,7 +83,7 @@ public class HyperlinkTransformer
                 if (startIndex >= 0)
                 {
                     int endIndex = -1;
-                    int[] endUrlIndex = new int[9 + 1];
+                    int[] endUrlIndex = new int[9 + 4];
                     endUrlIndex[0] = bodyText.indexOf(" ", startIndex);
                     endUrlIndex[1] = bodyText.indexOf("\n", startIndex);
                     endUrlIndex[2] = bodyText.indexOf(". ", startIndex);
@@ -92,6 +94,9 @@ public class HyperlinkTransformer
                     endUrlIndex[7] = bodyText.indexOf(".\n", startIndex);
                     endUrlIndex[8] = bodyText.indexOf(", ", startIndex);
                     endUrlIndex[9] = bodyText.indexOf(",\n", startIndex);
+                    endUrlIndex[10] = bodyText.indexOf("<", startIndex);
+                    endUrlIndex[11] = bodyText.indexOf(">", startIndex);
+                    endUrlIndex[12] = bodyText.indexOf("&nbsp;", startIndex);
 
                     for (int x = 0; x < endUrlIndex.length; x++)
                     {
@@ -135,8 +140,7 @@ public class HyperlinkTransformer
                         linkableUrl = "http://" + linkableUrl;
                     }
 
-                    String linkHtml = "<a target=\"_blank\" href=\"" + linkableUrl.replaceAll(" ", "") + "\">"
-                            + url.trim() + "</a>";
+                    String linkHtml = "<a target=\"_blank\" href=\"" + linkableUrl + "\">" + url + "</a>";
 
                     searchIndex = startIndex + linkHtml.length();
 

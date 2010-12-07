@@ -84,9 +84,6 @@ public class CommentPanel extends Composite
 
         // first transform links to hyperlinks
         String commentBody = comment.getBody();
-        commentBody = commentBody.replaceAll("\t", " ");
-        commentBody = commentBody.replaceAll("\r", " ");
-        commentBody = commentBody.replaceAll("\n", " ");
         
         // transform links
         commentBody =new HyperlinkTransformer(jSNIFacade).transform(commentBody);
