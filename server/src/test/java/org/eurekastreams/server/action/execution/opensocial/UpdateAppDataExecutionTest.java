@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.server.action.execution.opensocial;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +24,8 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.action.request.opensocial.UpdateAppDataRequest;
 import org.eurekastreams.server.domain.AppData;
 import org.eurekastreams.server.persistence.AppDataMapper;
+import org.eurekastreams.server.persistence.mappers.cache.Cache;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -83,6 +85,11 @@ public class UpdateAppDataExecutionTest
     private final PrincipalActionContext applicationContext = context.mock(PrincipalActionContext.class);
 
     /**
+     * Cache.
+     */
+    private Cache cache = context.mock(Cache.class);
+
+    /**
      * Helper method to build up HashMap values for testing.
      * 
      * @return HashMap String, String populated with test values.
@@ -102,7 +109,7 @@ public class UpdateAppDataExecutionTest
     @Before
     public void setUp()
     {
-        sut = new UpdateAppDataExecution(jpaAppDataMapper);
+        sut = new UpdateAppDataExecution(jpaAppDataMapper, cache);
     }
 
     /**
@@ -141,15 +148,14 @@ public class UpdateAppDataExecutionTest
 
                 oneOf(jpaAppDataMapper).flush();
 
-                oneOf(jpaAppDataMapper).findOrCreateByPersonAndGadgetDefinitionIds(testApplicationId, testPersonId);
-                will(returnValue(testAppData));
+                oneOf(cache).delete(
+                        CacheKeys.APPDATA_BY_GADGET_DEFINITION_ID_AND_UNDERSCORE_AND_PERSON_OPEN_SOCIAL_ID
+                                + testApplicationId + "_" + testPersonId);
             }
         });
 
         // Make the call
-        AppData actual = sut.execute(applicationContext);
-
-        assertEquals(testAppData, actual);
+        assertNull(sut.execute(applicationContext));
 
         context.assertIsSatisfied();
     }

@@ -20,7 +20,7 @@ import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
  * Reusable cache refresher - uses a CacheKeySuffixTransformer to generate the cache key.
- *
+ * 
  * @param <Request>
  *            the request that the data was found with
  * @param <Response>
@@ -37,18 +37,18 @@ public class SingleValueCacheRefreshStrategy<Request, Response> extends CachedDo
     /**
      * Cache key suffix transformer.
      */
-    private final CacheKeySuffixTransformer<Request> cacheKeySuffixTransformer;
+    private final Transformer<Request, String> cacheKeySuffixTransformer;
 
     /**
      * Constructor.
-     *
+     * 
      * @param inCacheKeyPrefix
      *            cache key prefix
      * @param inCacheKeySuffixTransformer
      *            the cache key suffix transformer
      */
     public SingleValueCacheRefreshStrategy(final String inCacheKeyPrefix,
-            final CacheKeySuffixTransformer<Request> inCacheKeySuffixTransformer)
+            final Transformer<Request, String> inCacheKeySuffixTransformer)
     {
         cacheKeyPrefix = inCacheKeyPrefix;
         cacheKeySuffixTransformer = inCacheKeySuffixTransformer;

@@ -15,6 +15,9 @@
  */
 package org.eurekastreams.server.persistence.mappers.cache;
 
+import static org.junit.Assert.assertEquals;
+
+import org.eurekastreams.server.action.request.opensocial.GetAppDataRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -22,9 +25,10 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
 /**
- * Test fixture for SingleValueCacheRefreshStrategy.
+ * Test for GetAppDataRequestToSuffixTransformer.
+ * 
  */
-public class SingleValueCacheRefreshStrategyTest
+public class GetAppDataRequestToSuffixTransformerTest
 {
     /**
      * Context for building mock objects.
@@ -37,41 +41,33 @@ public class SingleValueCacheRefreshStrategyTest
     };
 
     /**
-     * Cache key suffix transformer.
+     * {@link GetAppDataRequest}.
      */
-    private final Transformer<Object, String> cacheKeySuffixTransformer = context.mock(Transformer.class);
+    private GetAppDataRequest request = context.mock(GetAppDataRequest.class);
 
     /**
-     * Cache.
+     * System under test.
      */
-    private final Cache cache = context.mock(Cache.class);
+    private GetAppDataRequestToSuffixTransformer sut = new GetAppDataRequestToSuffixTransformer();
 
     /**
-     * Test refresh().
+     * Test.
      */
     @Test
-    public void testRefresh()
+    public void test()
     {
-        final Object request = new Object();
-        final Object response = new Object();
-        final String prefix = "PREFIX:";
-        final String suffix = "SUFFIX";
-
-        SingleValueCacheRefreshStrategy<Object, Object> sut = new SingleValueCacheRefreshStrategy<Object, Object>(
-                prefix, cacheKeySuffixTransformer);
-        sut.setCache(cache);
-
         context.checking(new Expectations()
         {
             {
-                oneOf(cacheKeySuffixTransformer).transform(request);
-                will(returnValue(suffix));
+                oneOf(request).getApplicationId();
+                will(returnValue(5L));
 
-                oneOf(cache).set(prefix + suffix, response);
+                oneOf(request).getOpenSocialId();
+                will(returnValue("9"));
             }
         });
 
-        sut.refresh(request, response);
+        assertEquals("5_9", sut.transform(request));
         context.assertIsSatisfied();
     }
 }

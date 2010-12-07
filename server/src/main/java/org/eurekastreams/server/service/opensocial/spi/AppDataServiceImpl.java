@@ -39,7 +39,7 @@ import org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator;
 import org.eurekastreams.server.action.request.opensocial.DeleteAppDataRequest;
 import org.eurekastreams.server.action.request.opensocial.GetAppDataRequest;
 import org.eurekastreams.server.action.request.opensocial.UpdateAppDataRequest;
-import org.eurekastreams.server.domain.AppData;
+import org.eurekastreams.server.domain.dto.AppDataDTO;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -50,7 +50,6 @@ import com.google.inject.name.Named;
  */
 public class AppDataServiceImpl implements AppDataService
 {
-
     /**
      * Logger.
      */
@@ -180,7 +179,7 @@ public class AppDataServiceImpl implements AppDataService
         log.debug("Entering getPerson data with " + userIds.size() + " userIds, appId " + appId + ", " + fields.size()
                 + ", token appId " + token.getAppId());
 
-        AppData currentAppData = null;
+        AppDataDTO currentAppData = null;
         GetAppDataRequest currentRequest = new GetAppDataRequest();
         ServiceActionContext currentContext;
         Map<String, Map<String, String>> results = new HashMap<String, Map<String, String>>();
@@ -216,10 +215,10 @@ public class AppDataServiceImpl implements AppDataService
                 currentRequest.setOpenSocialId(currentUserId);
                 currentContext = new ServiceActionContext(currentRequest, openSocialPrincipalPopulator
                         .getPrincipal(currentUserId));
-                currentAppData = (AppData) serviceActionController.execute(currentContext, getAppDataAction);
+                currentAppData = (AppDataDTO) serviceActionController.execute(currentContext, getAppDataAction);
                 if (currentAppData != null)
                 {
-                    results.put(currentAppData.getPerson().getOpenSocialId(), currentAppData.getValues());
+                    results.put(currentAppData.getOpenSocialId(), currentAppData.getKeyValuePairs());
                 }
             }
         }

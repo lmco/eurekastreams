@@ -20,7 +20,7 @@ import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
  * Mapper to get back a single item from cache.
- *
+ * 
  * @param <KeySuffixType>
  *            the type of object to convert to a cache key
  * @param <CachedValueType>
@@ -32,7 +32,7 @@ public class SingleValueCacheMapper<KeySuffixType, CachedValueType> extends Cach
     /**
      * Cache key suffix transformer.
      */
-    private CacheKeySuffixTransformer<KeySuffixType> keySuffixTransformer;
+    private Transformer<KeySuffixType, String> keySuffixTransformer;
 
     /**
      * Cache key prefix.
@@ -41,14 +41,14 @@ public class SingleValueCacheMapper<KeySuffixType, CachedValueType> extends Cach
 
     /**
      * Constructor.
-     *
+     * 
      * @param inCacheKeyPrefix
      *            the cache key prefix
      * @param inKeySuffixTransformer
      *            the key suffix transformer
      */
     public SingleValueCacheMapper(final String inCacheKeyPrefix,
-            final CacheKeySuffixTransformer<KeySuffixType> inKeySuffixTransformer)
+            final Transformer<KeySuffixType, String> inKeySuffixTransformer)
     {
         cacheKeyPrefix = inCacheKeyPrefix;
         keySuffixTransformer = inKeySuffixTransformer;
@@ -56,7 +56,7 @@ public class SingleValueCacheMapper<KeySuffixType, CachedValueType> extends Cach
 
     /**
      * Constructor.
-     *
+     * 
      * @param inKeySuffix
      *            suffixes to look for in cache
      * @return a partial mapper response containing the data found and a new request of the key suffixes not found

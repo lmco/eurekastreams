@@ -46,7 +46,7 @@ public class SingleValueCacheMapperTest
     /**
      * Cache key suffix transformer.
      */
-    private CacheKeySuffixTransformer<String> keySuffixTransformer = context.mock(CacheKeySuffixTransformer.class);
+    private Transformer<String, String> keySuffixTransformer = context.mock(Transformer.class);
 
     /**
      * Cache key prefix.

@@ -253,6 +253,9 @@
         
     <bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID"
         class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />        
+        
+    <bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.APPDATA_BY_GADGET_DEFINITION_ID_AND_UNDERSCORE_AND_PERSON_OPEN_SOCIAL_ID"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />        
 
 	<!--
 		Mapper that goes to cache for the popular hashtags for a stream.  If it exists, it checks how long ago it was generated. 
@@ -697,6 +700,41 @@
 		    </bean> 
 	    </constructor-arg>       
     </bean>
+    
+    <bean id="getAppDataDTO" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache Mapper -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
+                        <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.APPDATA_BY_GADGET_DEFINITION_ID_AND_UNDERSCORE_AND_PERSON_OPEN_SOCIAL_ID" />
+                        <constructor-arg ref="getAppDataRequestToSuffixTransformer" />
+                        <property name="cache" ref="memcachedCache" />
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <!-- Database mapper to fall back on if not found in cache -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.GetAppDataDTODbMapper">
+                <constructor-arg ref="jpaAppDataMapper"/>
+            </bean>
+        </constructor-arg>
+        <!-- Data combiner -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
+        </constructor-arg>
+        <!-- Cache refresher -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
+                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.APPDATA_BY_GADGET_DEFINITION_ID_AND_UNDERSCORE_AND_PERSON_OPEN_SOCIAL_ID" />
+                <constructor-arg ref="getAppDataRequestToSuffixTransformer" />
+                <property name="cache" ref="memcachedCache" />
+            </bean> 
+        </constructor-arg>       
+    </bean> 
+    
+    <bean id="getAppDataRequestToSuffixTransformer" class="org.eurekastreams.server.persistence.mappers.cache.GetAppDataRequestToSuffixTransformer"/>   
     
     <bean id="saveOrganizationCoordinatorIdsToCache"
 		class="org.eurekastreams.server.persistence.mappers.cache.SaveOrganizationCoordinatorIdsToCache">

@@ -28,6 +28,8 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.opensocial.DeleteAppDataRequest;
 import org.eurekastreams.server.domain.AppData;
 import org.eurekastreams.server.persistence.AppDataMapper;
+import org.eurekastreams.server.persistence.mappers.cache.Cache;
+import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 
 /**
  * Retrieve the Application Data for the supplied credentials.
@@ -46,23 +48,35 @@ public class DeleteAppDataExecution implements ExecutionStrategy<PrincipalAction
     private AppDataMapper mapper;
 
     /**
+     * Cache.
+     */
+    private Cache cache;
+
+    /**
      * Constructor for the GetAppDataExecution strategy.
      * 
      * @param inMapper
      *            - instance of the {@link AppDataMapper} for this execution strategy.
+     * @param inCache
+     *            the cache
      */
-    public DeleteAppDataExecution(final AppDataMapper inMapper)
+    public DeleteAppDataExecution(final AppDataMapper inMapper, final Cache inCache)
     {
         mapper = inMapper;
+        cache = inCache;
     }
 
     /**
-     * {@inheritDoc}.
+     * Delete the app data values for the input user/gadget.
      * 
-     * Retrieve the application data for the supplied application id and opensocial id.
+     * @param inActionContext
+     *            the action context
+     * @return null
+     * @throws ExecutionException
+     *             when anything goes wrong
      */
     @Override
-    public AppData execute(final PrincipalActionContext inActionContext) throws ExecutionException
+    public Integer execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
         // get the request
         DeleteAppDataRequest inRequest = (DeleteAppDataRequest) inActionContext.getParams();
@@ -71,7 +85,6 @@ public class DeleteAppDataExecution implements ExecutionStrategy<PrincipalAction
         String openSocialId = inRequest.getOpenSocialId();
 
         Map<String, String> currentAppDataValues;
-        AppData outputAppData = null;
 
         try
         {
@@ -102,8 +115,12 @@ public class DeleteAppDataExecution implements ExecutionStrategy<PrincipalAction
 
                 }
                 mapper.flush();
-                
-                outputAppData = mapper.findOrCreateByPersonAndGadgetDefinitionIds(applicationId, openSocialId);
+
+                // delete cache
+                log.info("Deleting the AppDataDTO cache for gadDef " + applicationId + ", open social id: "
+                        + openSocialId);
+                cache.delete(CacheKeys.APPDATA_BY_GADGET_DEFINITION_ID_AND_UNDERSCORE_AND_PERSON_OPEN_SOCIAL_ID
+                        + applicationId + "_" + openSocialId);
             }
         }
         catch (Exception ex)
@@ -111,7 +128,6 @@ public class DeleteAppDataExecution implements ExecutionStrategy<PrincipalAction
             log.error("Error occurred deleting app data.", ex);
             throw new ExecutionException("Error occurred deleting app data.", ex);
         }
-        return outputAppData;
+        return null;
     }
-
 }
