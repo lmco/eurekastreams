@@ -15,9 +15,13 @@
  */
 package org.eurekastreams.server.persistence;
 
+import java.util.List;
+
 import javax.persistence.Query;
 
+import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.hibernate.QueryOptimizer;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.AppData;
 import org.eurekastreams.server.domain.GadgetDefinition;
 import org.eurekastreams.server.domain.Person;
@@ -28,8 +32,13 @@ import org.eurekastreams.server.domain.Person;
 public class AppDataMapper extends DomainEntityMapper<AppData>
 {
     /**
+     * Logger.
+     */
+    private Log log = LogFactory.make();
+
+    /**
      * Constructor.
-     *
+     * 
      * @param inQueryOptimizer
      *            the QueryOptimizer to use for specialized functions.
      */
@@ -40,7 +49,7 @@ public class AppDataMapper extends DomainEntityMapper<AppData>
 
     /**
      * Return the domain entity name for ORM to identify the table name.
-     *
+     * 
      * @return string of the name of the entity for table queries.
      */
     @Override
@@ -52,20 +61,30 @@ public class AppDataMapper extends DomainEntityMapper<AppData>
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     public AppData findOrCreateByPersonAndGadgetDefinitionIds(final long gadgetDefinitionId, final String personId)
     {
+        String logMsg = "GadgetDefId#" + gadgetDefinitionId + ", open social id: " + personId;
+        log.info("Looking for the AppData in the database for " + logMsg);
+
         AppData outputAppData = null;
         Query query = getEntityManager().createQuery(
                 "from AppData a where a.person.openSocialId = "
                         + ":openSocialId and a.gadgetDefinition.id = :gadgetDefinitionId").setParameter("openSocialId",
                 personId).setParameter("gadgetDefinitionId", gadgetDefinitionId);
-
-        if (query.getResultList().size() > 0)
+        List<AppData> appDataList = query.getResultList();
+        if (appDataList.size() > 0)
         {
-            outputAppData = (AppData) query.getSingleResult();
+            // found it
+            log.info("Found the AppData in the database for " + logMsg);
+
+            outputAppData = appDataList.get(0);
         }
         else
         {
+            // didn't find it - create it
+            log.info("Didn't find the AppData in the database for " + logMsg + " - building it");
+
             Query getPersonQuery = getEntityManager().createQuery("from Person p where p.openSocialId = :openSocialId")
                     .setParameter("openSocialId", personId);
             Query getGadgetDefQuery = getEntityManager().createQuery(
@@ -74,22 +93,28 @@ public class AppDataMapper extends DomainEntityMapper<AppData>
             Person currentPerson = null;
             GadgetDefinition currentGadgetDefinition = null;
 
-            if (getPersonQuery.getResultList().size() > 0 && getGadgetDefQuery.getResultList().size() > 0)
+            List<Person> peopleList = getPersonQuery.getResultList();
+            if (peopleList.size() > 0)
             {
-                currentPerson = (Person) getPersonQuery.getSingleResult();
-                currentGadgetDefinition = (GadgetDefinition) getGadgetDefQuery.getSingleResult();
-                outputAppData = new AppData(currentPerson, currentGadgetDefinition);
-                getEntityManager().persist(outputAppData);
+                List<GadgetDefinition> gadgetDefList = getGadgetDefQuery.getResultList();
+                if (gadgetDefList.size() > 0)
+                {
+                    log.info("Persisting AppData for " + logMsg);
+
+                    currentPerson = peopleList.get(0);
+                    currentGadgetDefinition = gadgetDefList.get(0);
+                    outputAppData = new AppData(currentPerson, currentGadgetDefinition);
+                    getEntityManager().persist(outputAppData);
+                }
             }
 
         }
-        String openSocialId = outputAppData.getPerson().getOpenSocialId();
         return outputAppData;
     }
 
     /**
      * Delete an AppData value based on supplied key and appdata id.
-     *
+     * 
      * @param appDataId
      *            - long id of the owning application to the data to be removed.
      * @param appDataValueKey

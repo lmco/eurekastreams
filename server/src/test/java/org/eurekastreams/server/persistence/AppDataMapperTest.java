@@ -109,9 +109,8 @@ public class AppDataMapperTest extends DomainEntityMapperTest
     @Test
     public void testFindByAppAndPersonId()
     {
-        AppData testAppData =
-                jpaAppDataMapper.findOrCreateByPersonAndGadgetDefinitionIds(testGadgetDefinitionId,
-                        testOpenSocialPersonId);
+        AppData testAppData = jpaAppDataMapper.findOrCreateByPersonAndGadgetDefinitionIds(testGadgetDefinitionId,
+                testOpenSocialPersonId);
         assertEquals("Person is not correct for retrieved AppData", testOpenSocialPersonId, testAppData.getPerson()
                 .getOpenSocialId());
         assertEquals("GadgetDefinition is not correct for retrieved AppData", testGadgetDefinitionUrl, testAppData
@@ -132,7 +131,7 @@ public class AppDataMapperTest extends DomainEntityMapperTest
 
     /**
      * Test to verify that data has been removed from the object and persisted to the db.
-     *
+     * 
      * @throws Exception
      *             when an exception is encountered.
      */
@@ -149,7 +148,7 @@ public class AppDataMapperTest extends DomainEntityMapperTest
 
     /**
      * Try to delete an app data value with a key that doesn't exist.
-     *
+     * 
      * @throws Exception
      *             when an error is encountered.
      */
@@ -167,7 +166,7 @@ public class AppDataMapperTest extends DomainEntityMapperTest
     /**
      * Try to delete an app data value with a key that is attempting to use SQL Injection since keys can be entered by
      * users.
-     *
+     * 
      * @throws Exception
      *             when an error is encountered.
      */
@@ -201,7 +200,7 @@ public class AppDataMapperTest extends DomainEntityMapperTest
 
     /**
      * Helper class to create a fresh instance of an AppData object for testing.
-     *
+     * 
      * @return AppData object for testing.
      */
     private AppData getNewAppDataObject()
@@ -211,8 +210,8 @@ public class AppDataMapperTest extends DomainEntityMapperTest
         testDataValues.put("firstpet", "snake");
         AppData testInputAppData = new AppData();
         testInputAppData.setValues(testDataValues);
-        testInputAppData.setGadgetDefinition(new GadgetDefinition(testGadgetDefinitionUrl, UUID.randomUUID()
-                .toString(), new GalleryItemCategory("somecategory")));
+        testInputAppData.setGadgetDefinition(new GadgetDefinition(testGadgetDefinitionUrl,
+                UUID.randomUUID().toString(), new GalleryItemCategory("somecategory")));
         testInputAppData.setPerson(new Person("acole", "Augustus", "jay", "Cole", "Cole Train"));
 
         return testInputAppData;
