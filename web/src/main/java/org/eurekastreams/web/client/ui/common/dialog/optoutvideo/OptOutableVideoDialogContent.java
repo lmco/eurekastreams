@@ -210,10 +210,14 @@ public class OptOutableVideoDialogContent implements DialogContent
      *            the name of the movie to stop.
      */
     private static native void nativeStop(final String movieName) /*-{
-                                                                  var movie = $doc[movieName];
-                                                                  if (movie != null)
-                                                                  {
-                                                                  movie.StopPlay();
-                                                                  }
-                                                                  }-*/;
+        var movie = $doc[movieName];
+        if (movie != null)
+        {
+            try
+            {
+                movie.StopPlay();
+            }
+            catch (e) {}
+        }
+    }-*/;
 }
