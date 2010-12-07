@@ -561,7 +561,7 @@
                     bookmarksJSON.bookmarks.splice(index, 1);
                     bookmarksDisplayJSON.bookmarks.splice(index, 1);
                     var req = opensocial.newDataRequest();
-                    req.add(req.newUpdatePersonAppDataRequest(opensocial.IdSpec.PersonId.VIEWER, 'bookmarks', gadgets.json.stringify(bookmarksJSON.bookmarks)));
+                    req.add(req.newUpdatePersonAppDataRequest('bookmarks', gadgets.json.stringify(bookmarksJSON.bookmarks)));
                     req.send(function(response)
                     {
                         if(response.hadError())
