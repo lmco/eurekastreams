@@ -26,14 +26,14 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Renders a note.
- *
+ * 
  */
 public class NoteRenderer implements ObjectRenderer
 {
 
     /**
      * Renders the attachment.
-     *
+     * 
      * @param activity
      *            the activity.
      * @return the attachment.
@@ -45,7 +45,7 @@ public class NoteRenderer implements ObjectRenderer
 
     /**
      * Renders the content widget.
-     *
+     * 
      * @param activity
      *            the activity.
      * @return the widget.
