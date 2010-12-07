@@ -47,11 +47,8 @@ public class HyperlinkTransformer
      */
     public String transform(final String inContent)
     {
-        // Strip out any existing HTML.
-        String bodyText = jsni.escapeHtml(inContent);
-        bodyText = bodyText.replaceAll(" ", "&nbsp;");
-        bodyText = bodyText.replaceAll("(\r\n|\n|\r)", "<br />");
-
+        String bodyText = inContent;
+        
         if (bodyText != null && !bodyText.equals(""))
         {
             int searchIndex = 0;
@@ -94,9 +91,9 @@ public class HyperlinkTransformer
                     endUrlIndex[7] = bodyText.indexOf(".\n", startIndex);
                     endUrlIndex[8] = bodyText.indexOf(", ", startIndex);
                     endUrlIndex[9] = bodyText.indexOf(",\n", startIndex);
-                    endUrlIndex[10] = bodyText.indexOf("<", startIndex);
-                    endUrlIndex[11] = bodyText.indexOf(">", startIndex);
-                    endUrlIndex[12] = bodyText.indexOf("&nbsp;", startIndex);
+                    endUrlIndex[9 + 1] = bodyText.indexOf("<", startIndex);
+                    endUrlIndex[9 + 2] = bodyText.indexOf(">", startIndex);
+                    endUrlIndex[9 + 3] = bodyText.indexOf("&nbsp;", startIndex);
 
                     for (int x = 0; x < endUrlIndex.length; x++)
                     {
