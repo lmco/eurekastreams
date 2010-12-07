@@ -87,7 +87,7 @@ public class SetGadgetStateExecution implements ExecutionStrategy<PrincipalActio
         }
 
         gadget.setMinimized(currentRequest.isMinimized());
-        gadget.setMaximized(currentRequest.isMaximized());
+        gadget.setMaximized(false);
 
         gadgetMapper.flush();
 
