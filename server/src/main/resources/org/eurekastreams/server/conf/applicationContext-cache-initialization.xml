@@ -31,7 +31,8 @@
                 <constructor-arg>
                     <list>
                         <value>cachePerson</value>
-                        <value>cachePersonPageProperties</value>
+                        <!-- Temp removal until theme issue is resolved. -->
+                        <!-- <value>cachePersonPageProperties</value> -->
                         <value>cacheFollowedPersonIdsForPersonList</value>
                         <value>cacheFollowerPersonIdsForPersonList</value>
                         <value>cacheFollowedGroupIdsForPersonList</value>
@@ -116,17 +117,18 @@
         <constructor-arg value="true" />
     </bean>
     
+    <!-- Temp removal until theme issue is resolved.
     <bean id="cachePersonPageProperties" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
-                <constructor-arg ref="getPersonPagePropertiesById_FORCE_REFRESH" />
-                <!-- put id in list before calling mapper. -->    
+                <constructor-arg ref="getPersonPagePropertiesById_FORCE_REFRESH" />  
                 <constructor-arg value="False" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
-    </bean>    
+    </bean> 
+     -->   
     
     <bean id="cacheFollowedPersonIdsForPersonList" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -212,10 +214,9 @@
         <constructor-arg value="true" />
     </bean>    
     
+    <!-- Temp removal until theme issue is resolved. 
     <bean id="getPersonPagePropertiesById_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
-        <!-- Cache Mapper -->
         <constructor-arg ref="nullResultPartialMapper"/>
-        <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.db.GetPersonPagePropertiesByIdDbMapper">
                 <constructor-arg ref="findByIdMapper" />
@@ -225,11 +226,9 @@
                 <constructor-arg ref="cssBuilderDecorator" />
             </bean>
         </constructor-arg>
-        <!-- Data combiner -->
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
         </constructor-arg>
-        <!-- Cache refresher -->
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
                 <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID" />
@@ -237,7 +236,8 @@
                 <property name="cache" ref="memcachedCache" />
             </bean> 
         </constructor-arg>       
-    </bean>      
+    </bean>     
+    -->    
       
 </beans>
       
