@@ -10913,15 +10913,10 @@ div.gadget-zone.maximized {
 }
 
 .gadget-zone.maximized .gadget-zone-chrome-title-bar {
-	background: #BBB !important;
+	background-image: none ! important;
 	height: 24px;
 	padding-top: 7px;
     font-size: 13px;
-}
-
-.gadget-zone.maximized .gadget-zone-chrome-title-bar-title-button
-{
-    color: black ! important;
 }
 
 .gadget-zone {
@@ -10930,9 +10925,10 @@ div.gadget-zone.maximized {
 }
 
 .gadget-zone-chrome-title-bar {
-	background: url(images/gradient-overlay-20px.png);
+	background: url(images/gradient-overlay-25px.png);
 	width: 100%;
-	height: 20px;
+	height: 23px;
+	padding-top: 2px;
 }
 
 div.gadget-zone-chrome-title-bar div.gwt-MenuBar {

@@ -78,7 +78,7 @@ public class StreamListFormElement extends FlowPanel implements FormElement
     public StreamListFormElement(final JSONObject json)
     {
         scopes = new StreamScopeFormElement("scopes", new LinkedList<StreamScope>(), "",
-                "Enter the name of an employee or group stream.", false, true, "/resources/autocomplete/entities/",
+                "Enter the name of an employee or group.", false, true, "/resources/autocomplete/entities/",
                 MAX_NAME);
 
         this.addStyleName("stream-lists");
