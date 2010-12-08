@@ -6491,7 +6491,7 @@ ul.horizontal {
 
 ul.horizontal,ul.horizontal li {
 	list-style: none;
-	display: inline;
+	display: inline-block;
 }
 
 ul.horizontal li {
