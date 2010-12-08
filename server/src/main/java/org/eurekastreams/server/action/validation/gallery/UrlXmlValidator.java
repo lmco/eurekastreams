@@ -122,6 +122,7 @@ public class UrlXmlValidator implements ValidationStrategy<ServiceActionContext>
         }
         catch (Exception e)
         {
+            log.error("Validation for gadget definition failed.", e);
             ValidationException ve = new ValidationException();
             ve.addError(URL_KEY, "Valid url is required");
             throw ve;
