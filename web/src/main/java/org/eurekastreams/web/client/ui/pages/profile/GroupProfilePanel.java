@@ -23,7 +23,6 @@ import org.eurekastreams.server.domain.DomainGroupEntity;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.RestrictedDomainGroup;
-import org.eurekastreams.server.domain.Task;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -97,7 +96,7 @@ public class GroupProfilePanel extends FlowPanel
     /**
      * About box containing the logo.
      */
-    private GroupAboutPanel about;
+    private final GroupAboutPanel about;
 
     /**
      * Holds the PortalPage section of the profile display.
@@ -107,25 +106,25 @@ public class GroupProfilePanel extends FlowPanel
     /**
      * Panel that shows the bread crumb navigation.
      */
-    private BreadcrumbPanel breadCrumbPanel;
+    private final BreadcrumbPanel breadCrumbPanel;
 
     /**
      * Link to go to the profile settings page.
      */
-    private Hyperlink profileSettingsLink;
+    private final Hyperlink profileSettingsLink;
     /**
      * Panel that holds the tabbed portion of the profile display.
      */
-    private FlowPanel portalPageContainer = new FlowPanel();
+    private final FlowPanel portalPageContainer = new FlowPanel();
 
     /**
      * Left bar container.
      */
-    private FlowPanel leftBarContainer = new FlowPanel();
+    private final FlowPanel leftBarContainer = new FlowPanel();
     /**
      * panel that holds the profile summary.
      */
-    private LeftBarPanel leftBarPanel = new LeftBarPanel();
+    private final LeftBarPanel leftBarPanel = new LeftBarPanel();
 
     /**
      * The group whose profile we're looking at.
@@ -140,7 +139,7 @@ public class GroupProfilePanel extends FlowPanel
     /**
      * The divider separating the checklistPanel from the rest of the left-bar content.
      */
-    private FlowPanel checklistDivider = new FlowPanel();
+    private final FlowPanel checklistDivider = new FlowPanel();
 
     /**
      * Connections Panel Holds the Small boxes with the connect counts.
@@ -155,14 +154,14 @@ public class GroupProfilePanel extends FlowPanel
     /**
      * Action Processor.
      */
-    private ActionProcessor processor = Session.getInstance().getActionProcessor();
+    private final ActionProcessor processor = Session.getInstance().getActionProcessor();
 
     /** Number of membership requests (for use on the admin tab label). */
     private int membershipRequestsCount = 0;
 
     /**
      * Constructor.
-     * 
+     *
      * @param accountId
      *            the account id.
      */
@@ -209,7 +208,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * We have the Group, so set up the Profile summary.
-     * 
+     *
      * @param inGroup
      *            the group whose profile is being displayed
      */
@@ -349,7 +348,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Builds the connections tab content.
-     * 
+     *
      * @return The tab.
      */
     private Widget buildConnectionsTabContent()
@@ -422,7 +421,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Creates a new error report box and centers it on the page.
-     * 
+     *
      * @return The error report box, ready to have content added to it.
      */
     private Panel addNewCenteredErrorBox()
@@ -475,7 +474,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Tell the user that this group is restricted.
-     * 
+     *
      * @param inGroup
      *            the restricted access group
      */
@@ -519,7 +518,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Tell the user that this group is pending approval.
-     * 
+     *
      * @param inGroup
      *            the group
      */
@@ -541,7 +540,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Builds the admin tab.
-     * 
+     *
      * @return The tab.
      */
     @SuppressWarnings("unchecked")

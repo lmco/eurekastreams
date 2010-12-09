@@ -26,12 +26,12 @@ import java.util.UUID;
 
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.server.domain.Gadget;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.domain.TabGroup;
 import org.eurekastreams.server.domain.TabTemplate;
-import org.eurekastreams.server.domain.TabType;
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
@@ -48,28 +48,28 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
     /**
      * The person mapper.
      */
-    private PersonMapper personMapper;
+    private final PersonMapper personMapper;
 
     /**
      * The tab mapper.
      */
-    private TabMapper tabMapper;
+    private final TabMapper tabMapper;
 
     /**
      * The Organization mapper.
      */
-    private OrganizationMapper organizationMapper;
+    private final OrganizationMapper organizationMapper;
 
     /**
      * Mapper to get the readonly streams.
      */
-    private DomainMapper<Long, List<Stream>> readonlyStreamsMapper;
+    private final DomainMapper<Long, List<Stream>> readonlyStreamsMapper;
 
     /**
      * List of the names of readonly streams to add to a person, in order.
      */
-    private List<String> readOnlyStreamsNameList;
-    
+    private final List<String> readOnlyStreamsNameList;
+
     /**
      * List of StartPage Tabs to create when adding a new user.
      */
@@ -88,13 +88,13 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
      *            mapper to get the readonly streams
      * @param inReadOnlyStreamsNameList
      *            List of the names of readonly streams to add to a person, in order
-     * @param inStartPageTabs - list of tabs to be created on the start page.
+     * @param inStartPageTabs
+     *            - list of tabs to be created on the start page.
      */
     public PersonCreator(final PersonMapper inPersonMapper, final TabMapper inTabMapper,
             final OrganizationMapper inOrganizationMapper,
             final DomainMapper<Long, List<Stream>> inReadonlyStreamsMapper, //
-            final List<String> inReadOnlyStreamsNameList,
-            final List<String> inStartPageTabs)
+            final List<String> inReadOnlyStreamsNameList, final List<String> inStartPageTabs)
     {
         personMapper = inPersonMapper;
         tabMapper = inTabMapper;
@@ -113,38 +113,30 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
      *            the fields.
      * @return a new person.
      */
+    @Override
     public Person get(final TaskHandlerActionContext<PrincipalActionContext> inActionContext,
             final Map<String, Serializable> inFields)
     {
-        // create a tab groups for the person
-        TabGroup profileTabGroup = new TabGroup();
-        TabGroup startTabGroup = new TabGroup();
-
-        // create all tabs needed for an person profile
-
-        // add the templates to the tab group
-        profileTabGroup.addTab(new Tab(tabMapper.getTabTemplate(TabType.PERSON_ABOUT)));
-
-        // These tabs create their own templates based on other templates.
-        // It was decided that we will not have the Application
-        // tab on the person profile yet. The
-        // TabType.APP template is therefore not being made in the database by
-        // the population script.
-        // Tab personAppTab = new Tab(new
-        // TabTemplate(tabMapper.getTabTemplate(TabType.APP)));
-        for(String tabType : startPageTabs)
-        {
-            startTabGroup.addTab(new Tab(new TabTemplate(tabMapper.getTabTemplate(tabType))));
-        }
-
         // create the person
         Person person = new Person((String) inFields.get("accountId"), (String) inFields.get("firstName"),
-                (String) inFields.get("middleName"), (String) inFields.get("lastName"), (String) inFields
-                        .get("preferredName"));
-        person.setProfileTabGroup(profileTabGroup);
-        person.setStartTabGroup(startTabGroup);
+                (String) inFields.get("middleName"), (String) inFields.get("lastName"),
+                (String) inFields.get("preferredName"));
         person.setEmail((String) inFields.get("email"));
         person.setOpenSocialId(UUID.randomUUID().toString());
+
+        // create and add start page tabs
+        TabGroup startTabGroup = new TabGroup();
+        for (String tabType : startPageTabs)
+        {
+            // These tabs create their own templates based on other templates.
+            TabTemplate template = new TabTemplate(tabMapper.getTabTemplate(tabType));
+            for (Gadget gadget : template.getGadgets())
+            {
+                gadget.setOwner(person);
+            }
+            startTabGroup.addTab(new Tab(template));
+        }
+        person.setStartTabGroup(startTabGroup);
 
         // Make the default view for a person
         StreamScope personScope = new StreamScope(ScopeType.PERSON, (String) inFields.get("accountId"));
@@ -172,11 +164,11 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
         {
             person.setParentOrganization(organizationMapper.getRootOrganization());
         }
-        
+
         if (inFields.containsKey("additionalProperties"))
         {
-            HashMap<String, String> additionalProperties = 
-                (HashMap<String, String>) inFields.get("additionalProperties");
+            HashMap<String, String> additionalProperties = (HashMap<String, String>) inFields
+                    .get("additionalProperties");
             person.setAdditionalProperties(additionalProperties);
         }
 
@@ -184,7 +176,7 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
         // doesn't do them again.
         inFields.remove("organization");
         inFields.remove("email");
-        
+
         return person;
     }
 
@@ -200,6 +192,7 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
      * @throws Exception
      *             On error.
      */
+    @Override
     public void persist(final TaskHandlerActionContext<PrincipalActionContext> inActionContext,
             final Map<String, Serializable> inFields, final Person inPerson) throws Exception
     {

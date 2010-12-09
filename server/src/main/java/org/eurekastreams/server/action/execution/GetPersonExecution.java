@@ -39,7 +39,7 @@ public class GetPersonExecution implements ExecutionStrategy<PrincipalActionCont
     /**
      * Instance of the logger.
      */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /**
      * PersonMapper used to retrieve person from the db.
@@ -54,17 +54,17 @@ public class GetPersonExecution implements ExecutionStrategy<PrincipalActionCont
     /**
      * Mapper to add skeleton parent organizations onto Person objects.
      */
-    private PopulateOrgChildWithSkeletonParentOrgsCacheMapper skeletonParentOrgPopulator;
+    private final PopulateOrgChildWithSkeletonParentOrgsCacheMapper skeletonParentOrgPopulator;
 
     /**
      * Mapper to populate a person's related orgs with skeleton organizations from cache.
      */
-    private PopulatePeopleWithSkeletonRelatedOrgsCacheMapper skeletonRelatedOrgsMapper;
+    private final PopulatePeopleWithSkeletonRelatedOrgsCacheMapper skeletonRelatedOrgsMapper;
 
     /**
      * Strategy to retrieve the banner id if it is not directly configured.
      */
-    private GetBannerIdByParentOrganizationStrategy getBannerIdStrategy;
+    private final GetBannerIdByParentOrganizationStrategy getBannerIdStrategy;
 
     /**
      * Constructor that sets up the mapper.
@@ -87,9 +87,9 @@ public class GetPersonExecution implements ExecutionStrategy<PrincipalActionCont
             final GetBannerIdByParentOrganizationStrategy inGetBannerIdStrategy)
     {
 
-        this.mapper = inMapper;
+        mapper = inMapper;
         skeletonRelatedOrgsMapper = inSkeletonRelatedOrgsMapper;
-        this.decorator = inDecorator;
+        decorator = inDecorator;
         skeletonParentOrgPopulator = inSkeletonParentOrgPopulator;
         getBannerIdStrategy = inGetBannerIdStrategy;
     }
@@ -121,7 +121,7 @@ public class GetPersonExecution implements ExecutionStrategy<PrincipalActionCont
                 {
                     for (Gadget gadget : tab.getGadgets())
                     {
-                        gadget.getGadgetDefinition().getTasks().size();
+                        gadget.getGadgetDefinition();
                     }
                 }
             }

@@ -40,11 +40,6 @@ public interface CompositeEntity
     Set<Person> getCoordinators();
 
     /**
-     * @return the completed tasks.
-     */
-    List<Task> getCompletedTasks();
-
-    /**
      * Setter for overview.
      * 
      * @param overview

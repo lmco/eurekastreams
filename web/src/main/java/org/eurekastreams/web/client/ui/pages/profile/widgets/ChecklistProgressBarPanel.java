@@ -18,9 +18,9 @@ package org.eurekastreams.web.client.ui.pages.profile.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eurekastreams.server.domain.Task;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
+import org.eurekastreams.web.client.ui.pages.profile.Task;
 
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Draws out the checklist progress bar along with the link to launch the checklist.
- * 
+ *
  */
 public class ChecklistProgressBarPanel extends FlowPanel
 {
@@ -50,22 +50,22 @@ public class ChecklistProgressBarPanel extends FlowPanel
     /**
      * All of the tasks.
      */
-    private List<Task> tasks = new ArrayList<Task>();
+    private final List<Task> tasks = new ArrayList<Task>();
 
     /**
      * The completed tasks.
      */
-    private List<Task> completedTasks = new ArrayList<Task>();
+    private final List<Task> completedTasks = new ArrayList<Task>();
 
     /**
      * The title of the modal.
      */
-    private String title;
+    private final String title;
 
     /**
      * The description of the modal.
      */
-    private String desc;
+    private final String desc;
 
     /**
      * The percentage complete.
@@ -75,7 +75,7 @@ public class ChecklistProgressBarPanel extends FlowPanel
     /**
      * The HTML element displaying the percentage complete.
      */
-    private HTML percentComplete;
+    private final HTML percentComplete;
 
     /**
      * The progress bar panel.
@@ -84,7 +84,7 @@ public class ChecklistProgressBarPanel extends FlowPanel
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inTitle
      *            the title to put in the modal this thing launches.
      * @param inDesc
@@ -131,7 +131,7 @@ public class ChecklistProgressBarPanel extends FlowPanel
 
     /**
      * Add a task to the checklist. This will cause the checklist to recompute its percentage.
-     * 
+     *
      * @param inTask
      *            the task.
      * @param completed
@@ -141,7 +141,7 @@ public class ChecklistProgressBarPanel extends FlowPanel
     {
         // Prevent "flickering"
         this.setVisible(false);
-        
+
         if (completed)
         {
             completedTasks.add(inTask);
@@ -154,7 +154,7 @@ public class ChecklistProgressBarPanel extends FlowPanel
 
     /**
      * Set a task in the checklist to complete. This will cause the checklist to recompute its percentage.
-     * 
+     *
      * @param inTask
      *            The task to mark complete.
      */

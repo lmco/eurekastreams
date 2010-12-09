@@ -559,4 +559,9 @@
 
 	<bean id="getOrgShortNamesByIdsMapper"
 		class="org.eurekastreams.server.persistence.mappers.db.GetOrgShortNamesByIdsMapper" />
+
+       <bean class="org.eurekastreams.server.persistence.mappers.db.GetTabTemplatesWithOwnersForGadgetDefinition" />
+
+       <bean class="org.eurekastreams.server.persistence.mappers.db.GetVisibleGadgetsInZone" />
+
 </beans>

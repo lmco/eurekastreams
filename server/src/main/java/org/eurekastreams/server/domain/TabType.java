@@ -25,15 +25,7 @@ package org.eurekastreams.server.domain;
 public final class TabType 
 { 
     /**  */
-    public static final String ORG_ABOUT = "ORG_ABOUT"; 
-    /**  */
-    public static final String PERSON_ABOUT = "PERSON_ABOUT";
-    /** */
-    public static final String GROUP_ABOUT = "GROUP_ABOUT";
-    /**  */
     public static final String WELCOME = "WELCOME"; 
-    /**  */
-    public static final String APP = "APP";
     
     /**
      * Default constructor override.

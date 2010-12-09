@@ -34,7 +34,6 @@ import javax.persistence.Transient;
 
 import org.eurekastreams.commons.model.DomainEntity;
 import org.eurekastreams.commons.search.analysis.TextStemmerAnalyzer;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Where;
 import org.hibernate.search.annotations.Analyzer;
@@ -67,14 +66,6 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
     @JoinColumn(name = "gadgetDefinitionId")
     private List<AppData> appData;
-
-    /**
-     * The gadget tasks.
-     */
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gadgetDefinitionId")
-    @Cascade({ org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
-    private List<Task> tasks;
 
     /**
      * UUID associated with the theme as a string.
@@ -200,9 +191,9 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
      */
     public GadgetDefinition(final String inUrl, final String inUuid, final GalleryItemCategory inCategory)
     {
-        this.url = inUrl;
+        url = inUrl;
         setUUID(inUuid);
-        this.category = inCategory;
+        category = inCategory;
     }
 
     /**
@@ -215,7 +206,7 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
      */
     public GadgetDefinition(final String inUrl, final String inUuid)
     {
-        this.url = inUrl;
+        url = inUrl;
         setUUID(inUuid);
     }
 
@@ -224,6 +215,7 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
      *
      * @return Returns the url of the gadget definition.
      */
+    @Override
     public String getUrl()
     {
         return url;
@@ -234,6 +226,7 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
      *
      * @return the UUID of the theme.
      */
+    @Override
     public String getUUID()
     {
         return uuid;
@@ -245,9 +238,10 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
      * @param inUUID
      *            UUID to use.
      */
+    @Override
     public void setUUID(final String inUUID)
     {
-        this.uuid = inUUID;
+        uuid = inUUID;
     }
 
     /**
@@ -255,6 +249,7 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
      *
      * @return the Category of the theme.
      */
+    @Override
     public GalleryItemCategory getCategory()
     {
         return category;
@@ -266,9 +261,10 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
      * @param inCategory
      *            Category to use.
      */
+    @Override
     public void setCategory(final GalleryItemCategory inCategory)
     {
-        this.category = inCategory;
+        category = inCategory;
     }
 
     /**
@@ -277,31 +273,10 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
      * @param inUrl
      *            The URL of the gadget def.
      */
+    @Override
     public void setUrl(final String inUrl)
     {
-        this.url = inUrl;
-    }
-
-    /**
-     * Returns the tasks for a gadget.
-     *
-     * @return the tasks.
-     */
-    public List<Task> getTasks()
-    {
-        return tasks;
-    }
-
-    /**
-     * Private setting for serialization purposes.
-     *
-     * @param inTasks
-     *            the tasks.
-     */
-    @SuppressWarnings("unused")
-    private void setTasks(final List<Task> inTasks)
-    {
-        tasks = inTasks;
+        url = inUrl;
     }
 
     /**
@@ -333,6 +308,7 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
     /**
      * @return the NumberOfUsers
      */
+    @Override
     public int getNumberOfUsers()
     {
         return numberOfUsers;
@@ -342,6 +318,7 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
      * @param inOwner
      *            the banner to set
      */
+    @Override
     public void setOwner(final Person inOwner)
     {
         owner = inOwner;
@@ -350,6 +327,7 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
     /**
      * @return the owner
      */
+    @Override
     public Person getOwner()
     {
         return owner;
@@ -358,6 +336,7 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
     /**
      * @return the showInGallery
      */
+    @Override
     public Boolean getShowInGallery()
     {
         return showInGallery;
@@ -367,9 +346,10 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
      * @param inShowInGallery
      *            the showInGallery to set
      */
+    @Override
     public void setShowInGallery(final Boolean inShowInGallery)
     {
-        this.showInGallery = inShowInGallery;
+        showInGallery = inShowInGallery;
     }
 
     /**
@@ -378,7 +358,7 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
      */
     public void setGadgetTitle(final String inGadgetTitle)
     {
-        this.gadgetTitle = inGadgetTitle;
+        gadgetTitle = inGadgetTitle;
     }
 
     /**
@@ -395,7 +375,7 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
      */
     public void setGadgetDescription(final String inGadgetDescription)
     {
-        this.gadgetDescription = inGadgetDescription;
+        gadgetDescription = inGadgetDescription;
     }
 
     /**
@@ -412,7 +392,7 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
      */
     public void setGadgetAuthor(final String inGadgetAuthor)
     {
-        this.gadgetAuthor = inGadgetAuthor;
+        gadgetAuthor = inGadgetAuthor;
     }
 
     /**
@@ -427,6 +407,7 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
      * @param inCreated
      *            the Created Date to set
      */
+    @Override
     public void setCreated(final Date inCreated)
     {
         created = inCreated;
@@ -435,6 +416,7 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
     /**
      * @return the Created Date
      */
+    @Override
     public Date getCreated()
     {
         return created;
@@ -450,5 +432,4 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
     {
         super.setId(inId);
     }
-
 }
