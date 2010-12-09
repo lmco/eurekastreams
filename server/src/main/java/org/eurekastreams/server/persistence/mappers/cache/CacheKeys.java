@@ -222,5 +222,5 @@ public final class CacheKeys
     /**
      * Key for theme css hash by theme uuid.
      */
-    public static final String THEME_CSS_HASH_BY_UUID = "ThemeCssHashByUuid:";
+    public static final String THEME_HASH_BY_UUID = "ThemeHashByUuid:";
 }
