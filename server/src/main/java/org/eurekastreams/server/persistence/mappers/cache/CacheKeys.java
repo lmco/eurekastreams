@@ -213,4 +213,14 @@ public final class CacheKeys
      * Key for getting AppData with the suffix: [gadget definition id]_[person id].
      */
     public static final String APPDATA_BY_GADGET_DEFINITION_ID_AND_UNDERSCORE_AND_PERSON_OPEN_SOCIAL_ID = "AppData:";
+
+    /**
+     * Key for theme css by theme uuid.
+     */
+    public static final String THEME_CSS_BY_UUID = "ThemeCssByUuid:";
+
+    /**
+     * Key for theme css hash by theme uuid.
+     */
+    public static final String THEME_CSS_HASH_BY_UUID = "ThemeCssHashByUuid:";
 }

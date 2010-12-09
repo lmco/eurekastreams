@@ -517,6 +517,8 @@
         <constructor-arg ref="commentDTOPopulator" />
     </bean>    
     
+    <bean id="getThemeXmlUrlByUuidDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetThemeXmlUrlByUuidDbMapper"/>
+    
     <bean id="getOrderedCommentIdsByActivityIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetOrderedCommentIdsByActivityIdDbMapper" />
         
     <bean id="getOrganizationsByIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetOrganizationsByIdsDbMapper" />

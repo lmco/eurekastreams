@@ -255,7 +255,10 @@
         class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />        
         
     <bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.APPDATA_BY_GADGET_DEFINITION_ID_AND_UNDERSCORE_AND_PERSON_OPEN_SOCIAL_ID"
-        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />        
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />   
+        
+    <bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.THEME_CSS_BY_UUID"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />             
 
 	<!--
 		Mapper that goes to cache for the popular hashtags for a stream.  If it exists, it checks how long ago it was generated. 
@@ -733,6 +736,43 @@
             </bean> 
         </constructor-arg>       
     </bean> 
+    
+    <bean id="getThemeCssByUuid" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache Mapper -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
+                        <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.THEME_CSS_BY_UUID" />
+                        <constructor-arg ref="toStringCacheKeySuffixTransformer" />
+                        <property name="cache" ref="memcachedCache" />
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <!-- Database mapper to fall back on if not found in cache -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.ThemeCssDbMapper">
+                <constructor-arg value="/org/eurekastreams/server/conf/css.xslt"/>
+                <constructor-arg ref="getThemeXmlUrlByUuidDbMapper"/>
+                <constructor-arg>
+		            <bean class="org.eurekastreams.server.service.actions.strategies.URLFetcher" />
+		        </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <!-- Data combiner -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
+        </constructor-arg>
+        <!-- Cache refresher -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
+                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.THEME_CSS_BY_UUID" />
+                <constructor-arg ref="toStringCacheKeySuffixTransformer" />
+                <property name="cache" ref="memcachedCache" />
+            </bean> 
+        </constructor-arg>       
+    </bean>
     
     <bean id="getAppDataRequestToSuffixTransformer" class="org.eurekastreams.server.persistence.mappers.cache.GetAppDataRequestToSuffixTransformer"/>   
     
@@ -2072,6 +2112,8 @@
     <bean id="getGroupsByIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetGroupsByIdsDbMapper">
         <constructor-arg ref="domainGroupQueryStrategy" />
     </bean>
+    
+    <bean id="getThemeXmlUrlByUuidDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetThemeXmlUrlByUuidDbMapper"/>
     
     <bean id="getOrderedCommentIdsByActivityIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetOrderedCommentIdsByActivityIdDbMapper" />
     
