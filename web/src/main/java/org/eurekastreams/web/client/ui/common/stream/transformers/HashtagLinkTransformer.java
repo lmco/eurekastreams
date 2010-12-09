@@ -68,7 +68,7 @@ public class HashtagLinkTransformer
     {
         HashTagExtractor hashTagExtractor = new HashTagExtractor();
 
-        if (content.indexOf('#') == -1)
+        if (null == content || content.indexOf('#') == -1)
         {
             // no hashtags
             return content;
