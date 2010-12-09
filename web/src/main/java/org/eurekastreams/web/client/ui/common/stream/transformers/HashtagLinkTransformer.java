@@ -79,7 +79,7 @@ public class HashtagLinkTransformer
      */
     public String transform(final String content, final Long streamViewId)
     {
-        if (content.indexOf('#') == -1)
+        if (null == content || content.indexOf('#') == -1)
         {
             // no hashtags
             return content;
