@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.eurekastreams.server.domain.stream.StreamScope;
@@ -57,7 +56,7 @@ public class DomainGroupTest
     /**
      * StreamScope mock.
      */
-    private StreamScope streamScopeMock = context.mock(StreamScope.class);
+    private final StreamScope streamScopeMock = context.mock(StreamScope.class);
 
     /**
      * Set up the SUT.
@@ -181,28 +180,6 @@ public class DomainGroupTest
 
         sut.setCapabilities(testList);
         assertEquals("get not returning same list as set assigned", testList, sut.getCapabilities());
-    }
-
-    /**
-     * Test complete tasks methods.
-     */
-    @Test
-    public void testCompletedTasks()
-    {
-        List<Task> tasks = new ArrayList<Task>();
-        Task task1 = context.mock(Task.class, "task1");
-        Task task2 = context.mock(Task.class, "task2");
-
-        tasks.add(task1);
-        tasks.add(task2);
-
-        sut.setCompletedTasks(tasks);
-
-        List<Task> actual = sut.getCompletedTasks();
-
-        assertEquals(tasks.size(), actual.size());
-        assertEquals(task1, actual.get(0));
-        assertEquals(task2, actual.get(1));
     }
 
     /**

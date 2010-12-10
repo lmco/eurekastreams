@@ -122,7 +122,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
     @Transient
     @Field(name = "isPublic", index = Index.UN_TOKENIZED, store = Store.NO)
     @SuppressWarnings("unused")
-    private boolean publicGroup = true;
+    private final boolean publicGroup = true;
     // TODO why is this called publicgroup?
 
     /**
@@ -139,19 +139,6 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
             // bridge tokenizes then joins
             bridge = @FieldBridge(impl = StandardAnalyzerSortFieldBridge.class)) })
     private String name;
-
-    /**
-     * The gadget tasks.
-     */
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
-    @JoinTable(name = "Organization_Task",
-    // join columns
-    joinColumns = { @JoinColumn(table = "Organization", name = "organizationId") },
-    // inverse join columns
-    inverseJoinColumns = { @JoinColumn(table = "Task", name = "taskId") },
-    // unique constraints
-    uniqueConstraints = { @UniqueConstraint(columnNames = { "organizationId", "taskId" }) })
-    private List<Task> completedTasks;
 
     /**
      * The skills that are contained in this background.
@@ -276,7 +263,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
     joinColumns = { @JoinColumn(table = "Organization", name = "organizationId") },
     // unique constraints
     uniqueConstraints = { @UniqueConstraint(columnNames = { "personId", "organizationId" }) })
-    private List<Person> relatedPersons = new ArrayList<Person>();
+    private final List<Person> relatedPersons = new ArrayList<Person>();
 
     /**
      * The de-normalized child (non-recursive) organization count.
@@ -475,6 +462,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
      *
      * @return list of coordinators.
      */
+    @Override
     public Set<Person> getCoordinators()
     {
         return coordinators;
@@ -620,6 +608,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
     /**
      * @return the parentOrganization
      */
+    @Override
     public Organization getParentOrganization()
     {
         return parentOrganization;
@@ -632,6 +621,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
      * @param inParentOrganization
      *            the parentOrganization to set
      */
+    @Override
     public void setParentOrganization(final Organization inParentOrganization)
     {
         parentOrganization = inParentOrganization;
@@ -670,6 +660,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
      *
      * @return the overview
      */
+    @Override
     public String getOverview()
     {
         return overview;
@@ -681,36 +672,16 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
      * @param inOverview
      *            the overview to set
      */
+    @Override
     public void setOverview(final String inOverview)
     {
-        this.overview = inOverview;
-    }
-
-    /**
-     * Returns the completed tasks for a person.
-     *
-     * @return the tasks.
-     */
-    public List<Task> getCompletedTasks()
-    {
-        return completedTasks;
-    }
-
-    /**
-     * Needed for serialization.
-     *
-     * @param inTasks
-     *            the tasks.
-     */
-    @SuppressWarnings("unused")
-    private void setCompletedTasks(final List<Task> inTasks)
-    {
-        completedTasks = inTasks;
+        overview = inOverview;
     }
 
     /**
      * @return the capabilities
      */
+    @Override
     public List<BackgroundItem> getCapabilities()
     {
         return (capabilities == null) ? new ArrayList<BackgroundItem>(0) : capabilities;
@@ -720,9 +691,10 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
      * @param inCapabilities
      *            the capabilities to set
      */
+    @Override
     public void setCapabilities(final List<BackgroundItem> inCapabilities)
     {
-        this.capabilities = inCapabilities;
+        capabilities = inCapabilities;
     }
 
     /**
@@ -812,6 +784,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
     /**
      * @return the banner Id
      */
+    @Override
     public String getBannerId()
     {
         return bannerId;
@@ -821,6 +794,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
      * @param inBannerId
      *            the banner to set
      */
+    @Override
     public void setBannerId(final String inBannerId)
     {
         bannerId = inBannerId;
@@ -834,7 +808,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
      */
     public void setUpdatesCount(final int inUpdatesCount)
     {
-        this.updatesCount = inUpdatesCount;
+        updatesCount = inUpdatesCount;
     }
 
     /**
@@ -852,6 +826,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
      *
      * @return avatar x coord.
      */
+    @Override
     public Integer getAvatarCropX()
     {
         return avatarCropX;
@@ -863,6 +838,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
      * @param value
      *            x coord.
      */
+    @Override
     public void setAvatarCropX(final Integer value)
     {
         avatarCropX = value;
@@ -873,6 +849,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
      *
      * @return avatar y coord.
      */
+    @Override
     public Integer getAvatarCropY()
     {
         return avatarCropY;
@@ -884,6 +861,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
      * @param value
      *            y coord.
      */
+    @Override
     public void setAvatarCropY(final Integer value)
     {
         avatarCropY = value;
@@ -894,6 +872,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
      *
      * @return avatar crop size.
      */
+    @Override
     public Integer getAvatarCropSize()
     {
         return avatarCropSize;
@@ -905,6 +884,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
      * @param value
      *            crop size.
      */
+    @Override
     public void setAvatarCropSize(final Integer value)
     {
         avatarCropSize = value;
@@ -913,6 +893,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
     /**
      * @return the avatar Id
      */
+    @Override
     public String getAvatarId()
     {
         return avatarId;
@@ -922,6 +903,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
      * @param inAvatarId
      *            the avatar to set
      */
+    @Override
     public void setAvatarId(final String inAvatarId)
     {
         avatarId = inAvatarId;
@@ -933,7 +915,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
      */
     public void setAllUsersCanCreateGroups(final Boolean inAllUsersCanCreateGroups)
     {
-        this.allUsersCanCreateGroups = inAllUsersCanCreateGroups;
+        allUsersCanCreateGroups = inAllUsersCanCreateGroups;
     }
 
     /**
@@ -1006,7 +988,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
      */
     public void setStreamScope(final StreamScope inStreamScope)
     {
-        this.streamScope = inStreamScope;
+        streamScope = inStreamScope;
     }
 
     /**
@@ -1014,6 +996,7 @@ public class Organization extends DomainEntity implements OrganizationChild, Ava
      *
      * @return the parent org id without loading the parent organization
      */
+    @Override
     public Long getParentOrgId()
     {
         return parentOrgId;

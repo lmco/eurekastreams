@@ -16,7 +16,6 @@
 package org.eurekastreams.server.domain;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -77,13 +76,6 @@ public interface DomainGroupEntity extends Serializable, Bannerable
      * @return list of coordinators.
      */
     Set<Person> getCoordinators();
-
-    /**
-     * Returns the completed tasks for a person.
-     *
-     * @return the tasks.
-     */
-    List<Task> getCompletedTasks();
 
     /**
      * Get avatar x coord.

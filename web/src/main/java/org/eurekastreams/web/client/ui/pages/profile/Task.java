@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2010 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,86 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.domain;
-
-import java.io.Serializable;
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-
-import org.eurekastreams.commons.model.DomainEntity;
+package org.eurekastreams.web.client.ui.pages.profile;
 
 /**
- * Represents a task that a gadget def has for a user to complete.
- *
+ * A step in completing a profile a user needs to complete.
  */
-@SuppressWarnings("serial")
-@Entity
-public class Task extends DomainEntity implements Serializable
+public class Task
 {
-    /**
-     * This is a list of the people who have completed this task. This is *ONLY*
-     * used to clean up the table on delete.
-     */
-    @SuppressWarnings("unused")
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "Person_Task", joinColumns = { @JoinColumn(table = "Task", name = "taskId") },
-            inverseJoinColumns = { @JoinColumn(table = "Person", name = "personId") })
-    private List<Person> taskOwners;
-
-    /**
-     * This is a list of the orgs who have completed this task. This is *ONLY*
-     * used to clean up the table on delete.
-     */
-    @SuppressWarnings("unused")
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "Organization_Task", joinColumns = { @JoinColumn(table = "Task", name = "taskId") },
-            inverseJoinColumns = { @JoinColumn(table = "Organization", name = "organizationId") })
-    private List<Organization> taskOrgs;
-
-    /**
-     * The gadget definition of the task.
-     */
-    @ManyToOne
-    @JoinColumn(name = "gadgetDefinitionId")
-    private GadgetDefinition gadgetDefinition;
-
     /**
      * The name of the task.
      */
-    @Column(nullable = false)
     private String name;
 
     /**
      * The description of the task.
      */
-    @Column(nullable = false)
     private String description;
 
     /**
      * The name of the tab.
      */
-    @Transient
     private String tab = "";
 
     /**
      * Default constructor.
-     */
-    protected Task()
-    {
-
-    }
-
-    /**
-     * Default constructor.
-     *
+     * 
      * @param inName
      *            the task name.
      * @param inDescription
@@ -106,7 +51,7 @@ public class Task extends DomainEntity implements Serializable
 
     /**
      * Constructor allowing you to define a tab.
-     *
+     * 
      * @param inName
      *            The task name.
      * @param inDescription
@@ -122,30 +67,8 @@ public class Task extends DomainEntity implements Serializable
     }
 
     /**
-     * Gets the gadget definition id.
-     *
-     * @return the gadget definition id.
-     */
-    public GadgetDefinition getGadgetDefinition()
-    {
-        return gadgetDefinition;
-    }
-
-    /**
-     * Private setter for serialization.
-     *
-     * @param inGadgetDefinition
-     *            the gadget def.
-     */
-    @SuppressWarnings("unused")
-    private void setGadgetDefinition(final GadgetDefinition inGadgetDefinition)
-    {
-        gadgetDefinition = inGadgetDefinition;
-    }
-
-    /**
      * Gets the task name.
-     *
+     * 
      * @return the task name.
      */
     public String getName()
@@ -155,7 +78,7 @@ public class Task extends DomainEntity implements Serializable
 
     /**
      * Sets the task name.
-     *
+     * 
      * @param inName
      *            the task name,
      */
@@ -166,7 +89,7 @@ public class Task extends DomainEntity implements Serializable
 
     /**
      * The task description.
-     *
+     * 
      * @return the task description.
      */
     public String getDescription()
@@ -176,7 +99,7 @@ public class Task extends DomainEntity implements Serializable
 
     /**
      * Sets the task description.
-     *
+     * 
      * @param inDescription
      *            the task description.
      */
@@ -187,7 +110,7 @@ public class Task extends DomainEntity implements Serializable
 
     /**
      * Gets the tab.
-     *
+     * 
      * @return the tab name.
      */
     public String getTab()
@@ -197,7 +120,7 @@ public class Task extends DomainEntity implements Serializable
 
     /**
      * Sets the tab.
-     *
+     * 
      * @param inTab
      *            the tab name.
      */
@@ -208,7 +131,7 @@ public class Task extends DomainEntity implements Serializable
 
     /**
      * Needed for checkstyle.
-     *
+     * 
      * @return the hashcode.
      */
     @Override
@@ -219,7 +142,7 @@ public class Task extends DomainEntity implements Serializable
 
     /**
      * Overrides equal so that we can compare tasks based on their name.
-     *
+     * 
      * @param obj
      *            the input task.
      * @return result the boolean.

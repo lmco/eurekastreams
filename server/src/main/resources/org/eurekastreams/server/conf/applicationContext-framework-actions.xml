@@ -927,15 +927,16 @@
         <constructor-arg value="false" />
     </bean>
 
-    <bean id="deleteGadgetDefinitionAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
+    <bean id="deleteGadgetDefinitionAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="galleryAuthorizer" />
         <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.gallery.DeleteGalleryItemExecution">
+            <bean class="org.eurekastreams.server.action.execution.gallery.HideThenDeleteGadgetExecution">
                 <constructor-arg ref="jpaGadgetDefinitionMapper" />
+                <constructor-arg value="deleteGadgetDefinitionAsyncAction" />
             </bean>
         </constructor-arg>
+        <constructor-arg ref="taskHandler" />
         <constructor-arg value="false" />
     </bean>
     
@@ -964,6 +965,47 @@
         <constructor-arg>
             <ref bean="getRootOrganizationIdAndShortNameMapper" />
         </constructor-arg>
+    </bean>
+
+    <bean id="deleteGadgetDefinitionAsyncAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+    	<constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.gallery.DeleteGadgetDefinitionExecution">
+				<constructor-arg>
+					<bean class="org.eurekastreams.server.persistence.mappers.db.DeleteGadgetDefinition" />
+				</constructor-arg>
+                <constructor-arg>
+                	<bean class="org.eurekastreams.server.persistence.mappers.db.GetTabTemplatesWithOwnersForGadgetDefinition" />
+                </constructor-arg>
+                <constructor-arg value="compressGadgetZoneAction" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="false" />
+    </bean>
+
+    <bean id="compressGadgetZoneAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+    	<constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.gallery.CompressGadgetZoneExecution">
+                <constructor-arg>
+                	<bean class="org.eurekastreams.server.persistence.mappers.db.GetVisibleGadgetsInZone" />
+                </constructor-arg>
+                <constructor-arg>
+                	<bean class="org.eurekastreams.server.persistence.mappers.cache.PrefixingCacheKeyAdaptor">
+                		<constructor-arg>
+                			<util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID" />
+                		</constructor-arg>
+                		<constructor-arg ref="deleteCacheKeys" />
+                	</bean>
+                </constructor-arg>
+<!-- NOTE: getPersonPagePropertiesById_FORCE_REFRESH is currently not available, so we use the mapper above instead.  
+	It only deletes the cached value but doesn't reload, so it should be swapped out when the below is ready. -->
+<!--                <constructor-arg ref="getPersonPagePropertiesById_FORCE_REFRESH" />-->
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="false" />
     </bean>
 
     <bean id="updateAppData" class="org.eurekastreams.commons.actions.service.ServiceAction">

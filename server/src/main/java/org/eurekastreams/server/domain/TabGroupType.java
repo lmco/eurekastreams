@@ -25,14 +25,9 @@ public enum TabGroupType
      * Good form to always include a not set in enums.
      */
     NOTSET,
-    
+
     /**
      * Tab group for start page.
      */
-    START,
-    
-    /**
-     * Tab group for profile page.
-     */
-    PROFILE
+    START
 }

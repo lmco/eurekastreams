@@ -67,7 +67,7 @@ public class PersonTest
     /**
      * StreamScope mock.
      */
-    private StreamScope streamScopeMock = context.mock(StreamScope.class);
+    private final StreamScope streamScopeMock = context.mock(StreamScope.class);
 
     /**
      * test fixture.
@@ -82,7 +82,7 @@ public class PersonTest
     /**
      * Last accepted terms of service date.
      */
-    private Date lastAcceptedTos = new Date();
+    private final Date lastAcceptedTos = new Date();
 
     /**
      *
@@ -496,8 +496,8 @@ public class PersonTest
         assertTrue("new tab is missing", actual.contains(tab));
 
         tab = new Tab("new tab", Layout.TWOCOLUMN, new Long(1));
-        sut.addTab(tab, TabGroupType.PROFILE);
-        actual = sut.getTabs(TabGroupType.PROFILE);
+        sut.addTab(tab, TabGroupType.START);
+        actual = sut.getTabs(TabGroupType.START);
         assertTrue("new tab is missing", actual.contains(tab));
     }
 

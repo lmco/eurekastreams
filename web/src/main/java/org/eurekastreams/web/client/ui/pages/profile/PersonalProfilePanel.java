@@ -21,7 +21,6 @@ import org.eurekastreams.server.domain.BackgroundItemType;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.domain.Task;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
@@ -84,12 +83,12 @@ public class PersonalProfilePanel extends FlowPanel
     /**
      * About panel.
      */
-    private AboutPanel about;
+    private final AboutPanel about;
 
     /**
      * Gets current user in session.
      */
-    private Person currentUser = Session.getInstance().getCurrentPerson();
+    private final Person currentUser = Session.getInstance().getCurrentPerson();
     /**
      * Holds the PortalPage section of the profile display.
      */
@@ -98,26 +97,26 @@ public class PersonalProfilePanel extends FlowPanel
     /**
      * Panel that shows the bread crumb navigation.
      */
-    private BreadcrumbPanel breadCrumbPanel;
+    private final BreadcrumbPanel breadCrumbPanel;
 
     /**
      * Link to go to the profile settings page.
      */
-    private Hyperlink profileSettingsLink;
+    private final Hyperlink profileSettingsLink;
 
     /**
      * Panel that holds the tabbed portion of the profile display.
      */
-    private FlowPanel portalPageContainer = new FlowPanel();
+    private final FlowPanel portalPageContainer = new FlowPanel();
 
     /**
      * Left bar container.
      */
-    private FlowPanel leftBarContainer = new FlowPanel();
+    private final FlowPanel leftBarContainer = new FlowPanel();
     /**
      * panel that holds the profile summary.
      */
-    private LeftBarPanel leftBarPanel = new LeftBarPanel();
+    private final LeftBarPanel leftBarPanel = new LeftBarPanel();
 
     /**
      * The person whose profile we're looking at.
@@ -132,7 +131,7 @@ public class PersonalProfilePanel extends FlowPanel
     /**
      * The panel that shows the checklist.
      */
-    private ChecklistProgressBarPanel checklistPanel = new ChecklistProgressBarPanel("Employee Profile Checklist",
+    private final ChecklistProgressBarPanel checklistPanel = new ChecklistProgressBarPanel("Employee Profile Checklist",
             "Completing your profile is easy: upload your picture, enter your contact information, "
                     + "and add some work and personal related information. Employees that fill "
                     + "out their profile are more likely to be found by others across your organization.",
@@ -141,7 +140,7 @@ public class PersonalProfilePanel extends FlowPanel
     /**
      * The divider separating the checklistPanel from the rest of the left-bar content.
      */
-    private FlowPanel checklistDivider = new FlowPanel();
+    private final FlowPanel checklistDivider = new FlowPanel();
 
     /**
      * Connections Panel Holds the Small boxes with the connect counts.

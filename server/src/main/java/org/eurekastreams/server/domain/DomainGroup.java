@@ -78,7 +78,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     /**
      * Serial version uid.
      */
-    private static final long serialVersionUID = 9185565459547481906L;
+    private static final long serialVersionUID = 6833923705995476358L;
 
     /** Used for validation. */
     @Transient
@@ -138,18 +138,6 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     // use text stemmer for index and search
     analyzer = @Analyzer(impl = TextStemmerAnalyzer.class), store = Store.NO)
     private String name;
-
-    /**
-     * The gadget tasks.
-     */
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
-    @JoinTable(name = "Group_Task", // join column
-    joinColumns = { @JoinColumn(table = "Group", name = "groupId") },
-    // inverse join columns
-    inverseJoinColumns = { @JoinColumn(table = "Task", name = "taskId") },
-    // unique constraints
-    uniqueConstraints = { @UniqueConstraint(columnNames = { "groupId", "taskId" }) })
-    private List<Task> completedTasks;
 
     /**
      * The short version of group name.
@@ -470,6 +458,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      *
      * @return list of coordinators.
      */
+    @Override
     public Set<Person> getCoordinators()
     {
         return coordinators;
@@ -489,6 +478,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     /**
      * @return the capabilities
      */
+    @Override
     public List<BackgroundItem> getCapabilities()
     {
         return (capabilities == null) ? new ArrayList<BackgroundItem>(0) : capabilities;
@@ -498,14 +488,16 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      * @param inCapabilities
      *            the capabilities to set
      */
+    @Override
     public void setCapabilities(final List<BackgroundItem> inCapabilities)
     {
-        this.capabilities = inCapabilities;
+        capabilities = inCapabilities;
     }
 
     /**
      * @return the group's name
      */
+    @Override
     public String getName()
     {
         return name;
@@ -517,6 +509,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      * @param inName
      *            new name
      */
+    @Override
     public void setName(final String inName)
     {
         name = (null == inName) ? "" : inName;
@@ -527,6 +520,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      *
      * @return the shortName
      */
+    @Override
     public String getShortName()
     {
         return shortName;
@@ -548,6 +542,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      *
      * @return the overview
      */
+    @Override
     public String getOverview()
     {
         return overview;
@@ -559,14 +554,16 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      * @param inOverview
      *            the overview to set
      */
+    @Override
     public void setOverview(final String inOverview)
     {
-        this.overview = inOverview;
+        overview = inOverview;
     }
 
     /**
      * @return the description
      */
+    @Override
     public String getDescription()
     {
         return description;
@@ -584,6 +581,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     /**
      * @return the group's parent organization
      */
+    @Override
     public Organization getParentOrganization()
     {
         return parentOrganization;
@@ -593,6 +591,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      * @param inParentOrganization
      *            the parentOrganization to set
      */
+    @Override
     public void setParentOrganization(final Organization inParentOrganization)
     {
         parentOrganization = inParentOrganization;
@@ -605,6 +604,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      *            to check.
      * @return if they're a coordinator.
      */
+    @Override
     public boolean isCoordinator(final String account)
     {
         for (Person p : coordinators)
@@ -619,29 +619,9 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     }
 
     /**
-     * Returns the completed tasks for a person.
-     *
-     * @return the tasks.
-     */
-    public List<Task> getCompletedTasks()
-    {
-        return completedTasks;
-    }
-
-    /**
-     * Needed for serialization.
-     *
-     * @param inTasks
-     *            the tasks.
-     */
-    public void setCompletedTasks(final List<Task> inTasks)
-    {
-        completedTasks = inTasks;
-    }
-
-    /**
      * @return the publicGroup
      */
+    @Override
     public boolean isPublicGroup()
     {
         return publicGroup;
@@ -653,7 +633,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      */
     public void setPublicGroup(final boolean inPublicGroup)
     {
-        this.publicGroup = inPublicGroup;
+        publicGroup = inPublicGroup;
     }
 
     /**
@@ -678,6 +658,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      *
      * @return avatar x coord.
      */
+    @Override
     public Integer getAvatarCropX()
     {
         return avatarCropX;
@@ -689,6 +670,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      * @param value
      *            x coord.
      */
+    @Override
     public void setAvatarCropX(final Integer value)
     {
         avatarCropX = value;
@@ -699,6 +681,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      *
      * @return avatar y coord.
      */
+    @Override
     public Integer getAvatarCropY()
     {
         return avatarCropY;
@@ -710,6 +693,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      * @param value
      *            y coord.
      */
+    @Override
     public void setAvatarCropY(final Integer value)
     {
         avatarCropY = value;
@@ -720,6 +704,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      *
      * @return avatar crop size.
      */
+    @Override
     public Integer getAvatarCropSize()
     {
         return avatarCropSize;
@@ -731,6 +716,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      * @param value
      *            crop size.
      */
+    @Override
     public void setAvatarCropSize(final Integer value)
     {
         avatarCropSize = value;
@@ -739,6 +725,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     /**
      * @return the avatar Id
      */
+    @Override
     public String getAvatarId()
     {
         return avatarId;
@@ -748,6 +735,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      * @param inAvatarId
      *            the avatar to set
      */
+    @Override
     public void setAvatarId(final String inAvatarId)
     {
         avatarId = inAvatarId;
@@ -756,6 +744,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     /**
      * @return the followersCount
      */
+    @Override
     public int getFollowersCount()
     {
         return followersCount;
@@ -773,6 +762,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
     /**
      * @return the group's banner id
      */
+    @Override
     public String getBannerId()
     {
         return bannerId;
@@ -782,6 +772,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      * @param inBannerId
      *            the banner to set
      */
+    @Override
     public void setBannerId(final String inBannerId)
     {
         bannerId = inBannerId;
@@ -805,7 +796,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      */
     protected void setUpdatesCount(final int inUpdatesCount)
     {
-        this.updatesCount = inUpdatesCount;
+        updatesCount = inUpdatesCount;
     }
 
     /**
@@ -816,7 +807,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      */
     protected void setDateAdded(final Date inDateAdded)
     {
-        this.dateAdded = inDateAdded;
+        dateAdded = inDateAdded;
     }
 
     /**
@@ -962,7 +953,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      */
     public void setStreamScope(final StreamScope inStreamScope)
     {
-        this.streamScope = inStreamScope;
+        streamScope = inStreamScope;
     }
 
     /**
@@ -981,6 +972,7 @@ public class DomainGroup extends DomainEntity implements AvatarEntity, Followabl
      *
      * @return the parent org id without loading the parent organization
      */
+    @Override
     public Long getParentOrgId()
     {
         return parentOrgId;

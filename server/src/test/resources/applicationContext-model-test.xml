@@ -119,9 +119,6 @@
 	<bean id="jpaGalleryItemCategoryMapper" class="org.eurekastreams.server.persistence.GalleryItemCategoryMapper">
 		<constructor-arg ref="queryOptimizer" />
 	</bean>
-	<bean id="jpaTaskMapper" class="org.eurekastreams.server.persistence.TaskMapper">
-		<constructor-arg ref="queryOptimizer" />
-	</bean>
 	<bean id="jpaRecommendationMapper" class="org.eurekastreams.server.persistence.RecommendationMapper">
 		<constructor-arg ref="queryOptimizer" />
 	</bean>
