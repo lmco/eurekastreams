@@ -26,6 +26,10 @@
     
     <!-- A task action executor executing the action request in-method and in-thread.
 -->
+
+    <bean id="applicationContextHolder" class="org.eurekastreams.server.service.actions.strategies.ApplicationContextHolder" />
+
+
     <bean id="taskActionExecutor" class="org.eurekastreams.commons.task.TaskActionExecutor" />
 
     <!-- A threaded task action executor executing the action request in a single new thread.
