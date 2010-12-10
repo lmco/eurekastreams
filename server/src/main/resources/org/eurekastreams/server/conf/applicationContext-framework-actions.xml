@@ -12,17 +12,17 @@
         This spring file contains the configuration for the actions and their
         associated strategies.  This includes ServiceActions, TaskHandlerServiceActions,
         AsyncActions and TaskHandlerAsyncActions.  For information about the Action Framework
-        please refer to the Action Framework Software Architecture documentation. 
-        
+        please refer to the Action Framework Software Architecture documentation.
+
         The actions in this file do not require the ServletContext to perform
         their actions. Servlet Context actions can be found in the
         applicationContext-servletcontextaware-framework-actions.xml file.
-    --> 
-    
+    -->
+
     <!-- ************************* -->
     <!-- TaskHandler configuration -->
     <!-- ************************* -->
-    
+
     <!-- A task action executor executing the action request in-method and in-thread.
 -->
     <bean id="taskActionExecutor" class="org.eurekastreams.commons.task.TaskActionExecutor" />
@@ -40,74 +40,74 @@
     <bean id="inlineTaskHandler" class="org.eurekastreams.commons.task.InlineTaskHandler">
         <constructor-arg ref="threadedTaskActionExecutor" />
     </bean>
-    
+
     <!-- ****************************** -->
     <!-- Action Framework configuration -->
     <!-- ****************************** -->
-    
+
     <bean id="actionExecutorFactory"
         class="org.eurekastreams.commons.server.ActionExecutorFactory"/>
-        
+
     <bean id="principalPopulator"
         class="org.eurekastreams.server.action.principal.SpringSecurityPrincipalPopulator" />
-        
+
     <bean id="openSocialPrincipalPopulator" class="org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator">
         <constructor-arg ref="bulkPeopleByOpenSocialIdMapper" />
-        <constructor-arg ref="bulkPeopleByAccountIdMapper" /> 
+        <constructor-arg ref="bulkPeopleByAccountIdMapper" />
     </bean>
-    
+
     <bean id="openSocialPrincipalPopulatorTransWrapper" class="org.eurekastreams.server.action.principal.PrincipalPopulatorTransWrapper">
         <constructor-arg ref="openSocialPrincipalPopulator" />
         <constructor-arg ref="transactionManager" />
     </bean>
-    
+
     <bean id="serviceActionController" class="org.eurekastreams.commons.server.service.ServiceActionController">
         <constructor-arg ref="transactionManager"/>
     </bean>
 
     <bean id="asyncActionController" class="org.eurekastreams.commons.server.async.AsyncActionController">
         <constructor-arg ref="transactionManager"/>
-    </bean>  
-       
+    </bean>
+
     <!-- ******************** -->
     <!-- Action configuration -->
     <!-- ******************** -->
-    
+
     <bean id="updateNotificationsOnPersonNameChange" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.notification.UpdateNotificationsOnNameChangeExecution">
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.execution.notification.UpdateNotificationsOnPersonNameChangeRequestGenerator">
-				        <constructor-arg ref="findByIdMapper" />        
+				        <constructor-arg ref="findByIdMapper" />
 				    </bean>
                 </constructor-arg>
                 <constructor-arg ref="updateNotificationsOnNameChangeMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
-    </bean>  
-    
+    </bean>
+
     <bean id="updateNotificationsOnGroupNameChange" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.notification.UpdateNotificationsOnNameChangeExecution">
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.execution.notification.UpdateNotificationsOnGroupNameChangeRequestGenerator">
-                        <constructor-arg ref="findByIdMapper" />        
+                        <constructor-arg ref="findByIdMapper" />
                     </bean>
                 </constructor-arg>
                 <constructor-arg ref="updateNotificationsOnNameChangeMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
-    </bean>   
+    </bean>
 	
     <bean id="authorizeUpdateGroup" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <!-- Validation -->
         <constructor-arg ref="noValidationStrategy" />
         <!-- Authorization -->
-        <constructor-arg>            
+        <constructor-arg>
             <bean class="org.eurekastreams.server.action.authorization.CurrentUserGroupCoordinatorRecursivelyAuthorization">
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.request.transformer.EntityIdFromUniqueStringKeyParameter">
@@ -122,12 +122,12 @@
         <constructor-arg ref="noExecutionStrategy" />
         <constructor-arg value="true" />
     </bean>
-    
+
     <bean id="authorizeUpdateOrganization" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <!-- Validation -->
         <constructor-arg ref="noValidationStrategy" />
         <!-- Authorization -->
-        <constructor-arg>            
+        <constructor-arg>
             <bean class="org.eurekastreams.server.action.authorization.CurrentUserOrgCoordinatorRecursivelyAuthorization">
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.request.transformer.EntityIdFromUniqueStringKeyParameter">
@@ -136,20 +136,20 @@
                     </bean>
                 </constructor-arg>
                 <constructor-arg ref="getRecursiveOrgCoordinators"/>
-            </bean> 
+            </bean>
         </constructor-arg>
         <!-- Execution -->
         <constructor-arg ref="noExecutionStrategy" />
         <constructor-arg value="true" />
     </bean>
-    
+
     <bean id="updateMembershipTaskHandler" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <!-- Validation -->
         <constructor-arg ref="noValidationStrategy" />
         <!-- Authorization -->
         <constructor-arg ref="currentUserRootOrgCoordinatorAuthorization" />
         <!-- Execution -->
-        <constructor-arg> 
+        <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.QueueAsynchActionExecution">
                 <constructor-arg value="clientInvokedRefreshMembershipAction" />
             </bean>
@@ -157,11 +157,11 @@
         <constructor-arg ref="taskHandler" />
         <constructor-arg value="true" />
     </bean>
-    
+
     <!-- Similar to refreshMembershipAction, but hooked up to client button and to allows for different "refresh" functionality
     than the quartz job, which invokes refreshMembershipAction-->
     <bean id="clientInvokedRefreshMembershipAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
-        <constructor-arg ref="noValidationStrategy" />        
+        <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.settings.RefreshPeopleExecution">
                 <constructor-arg>
@@ -172,20 +172,20 @@
                     </bean>
                 </constructor-arg>
                 <constructor-arg value="createPersonAction"/>
-                <!-- NOTE: Set value below to "setPersonLockedStatusAction" or "" to enable/disable locking/unlocking  -->  
+                <!-- NOTE: Set value below to "setPersonLockedStatusAction" or "" to enable/disable locking/unlocking  -->
                 <constructor-arg value="setPersonLockedStatusAction"/>
-                <constructor-arg value="refreshPersonAction"/>          
+                <constructor-arg value="refreshPersonAction"/>
                 <constructor-arg ref="getPersonIdsByLockedStatus"/>
-                <constructor-arg ref="getRootOrganizationIdAndShortNameMapper"/>  
-                <constructor-arg ref="findSystemSettings" />              
+                <constructor-arg ref="getRootOrganizationIdAndShortNameMapper"/>
+                <constructor-arg ref="findSystemSettings" />
             </bean>
         </constructor-arg>
         <constructor-arg ref="taskHandler" />
-        <constructor-arg value="true" />        
+        <constructor-arg value="true" />
     </bean>
-    
+
     <bean id="refreshMembershipAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
-        <constructor-arg ref="noValidationStrategy" />        
+        <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.settings.RefreshPeopleExecution">
                 <constructor-arg>
@@ -196,67 +196,67 @@
                     </bean>
                 </constructor-arg>
                 <constructor-arg value="createPersonAction"/>
-                <!-- NOTE: Set value below to "setPersonLockedStatusAction" or "" to enable/disable locking/unlocking  -->  
+                <!-- NOTE: Set value below to "setPersonLockedStatusAction" or "" to enable/disable locking/unlocking  -->
                 <constructor-arg value=""/>
                 <constructor-arg value="refreshPersonAction"/>
                 <constructor-arg ref="getPersonIdsByLockedStatus"/>
-                <constructor-arg ref="getRootOrganizationIdAndShortNameMapper"/>  
-                <constructor-arg ref="findSystemSettings" />              
+                <constructor-arg ref="getRootOrganizationIdAndShortNameMapper"/>
+                <constructor-arg ref="findSystemSettings" />
             </bean>
         </constructor-arg>
         <constructor-arg ref="taskHandler" />
-        <constructor-arg value="true" />        
-    </bean>    
-    
+        <constructor-arg value="true" />
+    </bean>
+
     <bean id="createPersonAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
-        <constructor-arg ref="noValidationStrategy" />        
+        <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.settings.CreatePersonExecution">
                 <constructor-arg ref="createPersonActionFactory" />
                 <constructor-arg ref="jpaPersonMapper" />
                 <!-- email action ref -->
-                <constructor-arg value="sendWelcomeEmail"/> 
-                <constructor-arg ref="findByIdMapper"/>            
+                <constructor-arg value="sendWelcomeEmail"/>
+                <constructor-arg ref="findByIdMapper"/>
             </bean>
         </constructor-arg>
         <constructor-arg ref="taskHandler" />
-        <constructor-arg value="false" />        
+        <constructor-arg value="false" />
     </bean>
-    
-    <bean id="refreshPersonAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction"> 
-        <constructor-arg ref="noValidationStrategy" />         
-        <constructor-arg> 
-            <bean class="org.eurekastreams.server.action.execution.settings.RefreshPersonExecution"> 
-                <constructor-arg ref="updatePersonMapper" /> 
+
+    <bean id="refreshPersonAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.settings.RefreshPersonExecution">
+                <constructor-arg ref="updatePersonMapper" />
                 <constructor-arg ref="removePersonFromCacheMapper" />
-            </bean> 
-        </constructor-arg> 
-        <constructor-arg ref="taskHandler" /> 
-        <constructor-arg value="false" />         
-    </bean> 
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="false" />
+    </bean>
 
     <bean id="setPersonLockedStatusAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
-        <constructor-arg ref="noValidationStrategy" />        
+        <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.settings.SetPersonLockedStatusExecution">
                 <constructor-arg ref="setPersonLockedStatus" />
             </bean>
         </constructor-arg>
-        <constructor-arg value="false" />        
-    </bean>    
-    
+        <constructor-arg value="false" />
+    </bean>
+
     <bean id="deleteGroupExecution" class="org.eurekastreams.server.action.execution.profile.DeleteGroupFromDBExecution">
         <constructor-arg ref="deleteGroupActivity" />
         <constructor-arg ref="removeGroupFollowers" />
         <constructor-arg ref="deleteGroup" />
-        <constructor-arg ref="deleteGroupSubscriptions" />                
-        <constructor-arg value="10000" />                  
+        <constructor-arg ref="deleteGroupSubscriptions" />
+        <constructor-arg value="10000" />
     </bean>
-    
+
     <bean id="deleteGroupAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.validation.profile.DeleteGroupValidation">
-                <constructor-arg ref="findByIdMapper" />                            
+                <constructor-arg ref="findByIdMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg>
@@ -265,13 +265,13 @@
                     <bean class="org.eurekastreams.server.action.request.transformer.ToStringTransformer" />
                 </constructor-arg>
                 <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess"/>
-            </bean>        
-        </constructor-arg>            
+            </bean>
+        </constructor-arg>
         <constructor-arg ref="deleteGroupExecution" />
         <constructor-arg ref="taskHandler" />
-        <constructor-arg value="false" />        
-    </bean> 
-    
+        <constructor-arg value="false" />
+    </bean>
+
     <bean id="deleteCacheKeysAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
@@ -280,8 +280,8 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
-    </bean>    
-    
+    </bean>
+
     <bean id="deleteFromSearchIndexAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
@@ -290,7 +290,7 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
-    </bean>    
+    </bean>
 	
     <bean id="increaseOrgEmployeeCountAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -301,7 +301,7 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
-    
+
    	<bean id="sendWelcomeEmail" class="org.eurekastreams.commons.actions.async.AsyncAction">
 		<constructor-arg ref="noValidationStrategy" />
 		<constructor-arg>
@@ -335,7 +335,7 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
-    
+
     <bean id="deleteEducation" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
@@ -402,7 +402,7 @@
     <bean id="submitRefreshPeopleAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="currentUserRootOrgCoordinatorAuthorization" />
-        <constructor-arg> 
+        <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.QueueAsynchActionExecution">
                 <constructor-arg value="refreshPeopleAction" />
             </bean>
@@ -410,7 +410,7 @@
         <constructor-arg value="true" />
         <constructor-arg ref="taskHandler" />
     </bean>
-        
+
 	<bean id="addMembershipCriteria" class="org.eurekastreams.commons.actions.service.ServiceAction">
 		<constructor-arg ref="noValidationStrategy" />
 		<constructor-arg ref="currentUserRootOrgCoordinatorAuthorization" />
@@ -476,8 +476,8 @@
         </constructor-arg>
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
-    </bean> 
-    
+    </bean>
+
     <bean id="deleteComment" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
@@ -494,8 +494,8 @@
         </constructor-arg>
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
-    </bean>  
-    
+    </bean>
+
     <bean id="deleteActivityAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
@@ -513,8 +513,8 @@
         </constructor-arg>
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
-    </bean>    
-           
+    </bean>
+
 	<bean id="renameTab" class="org.eurekastreams.commons.actions.service.ServiceAction">
 		<constructor-arg>
 		    <bean class="org.eurekastreams.server.action.validation.start.RenameTabValidation"/>
@@ -589,7 +589,7 @@
 		<constructor-arg value="false" />
 		<constructor-arg ref="taskHandler" />
 	</bean>
-    
+
     <bean id="deleteExpiredActivitiesOnDemand" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="currentUserRootOrgCoordinatorAuthorization" />
@@ -605,7 +605,7 @@
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
     </bean>
-    
+
     <bean id="deleteActivitiesByIds" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
@@ -620,12 +620,12 @@
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
     </bean>
-    
+
     <!-- This bean is used by ActivityServiceImpl -->
     <bean id="deleteUserActivities" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.validation.stream.DeleteUserActivityValidation">
-                <constructor-arg ref="bulkActivitiesMapper" />                            
+                <constructor-arg ref="bulkActivitiesMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -641,7 +641,7 @@
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
     </bean>
-    
+
 	<bean id="deleteIdsFromLists" class="org.eurekastreams.commons.actions.async.AsyncAction">
 		<constructor-arg ref="noValidationStrategy" />
 		<constructor-arg>
@@ -732,7 +732,7 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>
-    
+
     <bean id="activityRecipientDomainGroupNameUpdaterAsyncAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
     	<!-- Async action to update the recipient scope name of every activity posted to a domain group
 -->
@@ -755,7 +755,7 @@
                 <constructor-arg>
                 	<bean class="org.eurekastreams.server.persistence.mappers.db.GetActivityIdsPostedToStreamByUniqueKeyAndScopeType" />
                 </constructor-arg>
-                
+
                 <!-- cache updater -->
                 <constructor-arg>
                 	<bean class="org.eurekastreams.server.persistence.mappers.cache.UpdateDestinationStreamNameInCachedActivity">
@@ -768,7 +768,7 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>	
-    
+
     <bean id="activityRecipientPersonNameUpdaterAsyncAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
     	<!-- Async action to update the recipient scope name of every activity posted to a person's stream
 -->
@@ -791,7 +791,7 @@
                 <constructor-arg>
                 	<bean class="org.eurekastreams.server.persistence.mappers.db.GetActivityIdsPostedToStreamByUniqueKeyAndScopeType" />
                 </constructor-arg>
-                
+
                 <!-- cache updater -->
                 <constructor-arg>
                 	<bean class="org.eurekastreams.server.persistence.mappers.cache.UpdateDestinationStreamNameInCachedActivity">
@@ -804,8 +804,8 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>	
-    
-    
+
+
 	<bean id="deleteThemeAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
 		<constructor-arg ref="noValidationStrategy" />
 		<constructor-arg ref="galleryAuthorizer" />
@@ -1223,11 +1223,11 @@
             <list>
                 <ref bean="twitterCookieBypassStrategy"/>
             </list>
-        </constructor-arg>            
+        </constructor-arg>
     </bean>	
 	
     <bean id="getFeedTitle" class="org.eurekastreams.server.action.execution.feed.GetTitleFromFeedExecution">
-        <constructor-arg ref="feedFactory" />                
+        <constructor-arg ref="feedFactory" />
     </bean>	
 
     <bean id="insertBufferedActivitiesAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
@@ -1238,7 +1238,7 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
-    </bean> 
+    </bean>
 
     <bean id="refreshFeedsAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -1250,25 +1250,25 @@
         </constructor-arg>
         <constructor-arg value="true" />
          <constructor-arg ref="taskHandler" />
-    </bean>    
-    
+    </bean>
+
     <!-- TODO  these next 4 keys couldn't be staged in the ac-mappers.xml for some reason?
 -->
     <!-- Standard RSS/ATOM mappers -->
     <bean id="standardFeedBookmarkMapper"
         class="org.eurekastreams.server.service.actions.strategies.activity.plugins.StandardFeedBookmarkMapper" />
-    
+
     <bean id="standardFeedNoteMapper"
         class="org.eurekastreams.server.service.actions.strategies.activity.plugins.StandardFeedNoteMapper" />
-    
-    <!-- specific URL mappers -->   
+
+    <!-- specific URL mappers -->
     <bean id="flickrMapper"
         class="org.eurekastreams.server.service.actions.strategies.activity.plugins.FlickrMapper" />
 
     <bean id="youtubeMapper"
         class="org.eurekastreams.server.service.actions.strategies.activity.plugins.YoutubeMapper" />
 
-    
+
     <bean id="refreshFeedAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
@@ -1315,12 +1315,12 @@
     <bean id="twitterCookieBypassStrategy" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.HttpCookieBypassStrategy">
         <constructor-arg value="(www.)?twitter.com"/>
         <constructor-arg value="lmyellow="/>
-    </bean>        
+    </bean>
 
     <bean id="getPersonIdForFeedSub" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.GetPersonIdForFeedSubscription">
-        <constructor-arg ref="bulkPeopleByAccountIdMapper" /> 
-    </bean>   
-    
+        <constructor-arg ref="bulkPeopleByAccountIdMapper" />
+    </bean>
+
     <bean id="deletePluginForUser" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -1330,7 +1330,7 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
-    </bean>   
+    </bean>
 
     <bean id="persistPluginForUser" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -1346,13 +1346,13 @@
 		        <constructor-arg ref="getFeedTitle" />
 		        <constructor-arg ref="deletePluginForUser" />
 		        <constructor-arg value="PERSON" />
-		        <constructor-arg ref="postPersonActivityExecutionStrategy" />        
+		        <constructor-arg ref="postPersonActivityExecutionStrategy" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
-    </bean>   
-    
+    </bean>
+
     <bean id="deletePluginForGroup" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -1362,19 +1362,19 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
-    </bean>   
-    
+    </bean>
+
     <bean id="getGroupIdForFeedSub" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.GetGroupIdForFeedSubscription">
         <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
-    </bean>   
-    
+    </bean>
+
     <bean id="getFeedTitleAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg ref="getFeedTitle" />
         <constructor-arg value="true" />
-    </bean>   
-    
+    </bean>
+
     <bean id="persistPluginForGroup" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -1389,13 +1389,13 @@
 		        <constructor-arg ref="getFeedTitle" />
 		        <constructor-arg ref="deletePluginForGroup" />
 		        <constructor-arg value="GROUP" />
-		        <constructor-arg ref="postGroupActivityExecutionStrategy" />		        
+		        <constructor-arg ref="postGroupActivityExecutionStrategy" />		
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
-    </bean>   
-    
+    </bean>
+
     <bean id="getPluginsAndSubscriptionsForUser" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -1408,8 +1408,8 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
-    </bean>   
-    
+    </bean>
+
     <bean id="getPluginsAndSubscriptionsForGroup" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -1422,8 +1422,8 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
-    </bean>   
-    
+    </bean>
+
 	<bean id="getOrganizationById" class="org.eurekastreams.commons.actions.service.ServiceAction">
 		<constructor-arg ref="noValidationStrategy" />
 		<constructor-arg ref="noAuthorizationStrategy" />
@@ -1454,7 +1454,7 @@
 		</constructor-arg>
 		<constructor-arg value="true" />
 	</bean>
-    
+
     <bean id="getBulkEntities" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -1574,7 +1574,7 @@
                 -->
                 <constructor-arg type="float" value="2.0" />
     </bean>
-            
+
 	<bean id="getActivitiesByCompositeStream" class="org.eurekastreams.commons.actions.service.ServiceAction">
 		<constructor-arg ref="noValidationStrategy" />
 		<constructor-arg ref="noAuthorizationStrategy" />
@@ -1597,7 +1597,7 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>
-    
+
 	<bean id="getIsRootOrgCoordinator" class="org.eurekastreams.commons.actions.service.ServiceAction">
 		<constructor-arg ref="noValidationStrategy" />
 		<constructor-arg ref="noAuthorizationStrategy" />
@@ -2044,7 +2044,7 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>
-    
+
 	<bean id="getThemeGalleryItemCategories" class="org.eurekastreams.commons.actions.service.ServiceAction">
 		<constructor-arg ref="noValidationStrategy" />
 		<constructor-arg ref="noAuthorizationStrategy" />
@@ -2307,7 +2307,7 @@
                     </list>
                 </constructor-arg>
     </bean>
-    
+
      <bean id="getUnseenActivityCountForSearch" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -2595,7 +2595,7 @@
 	<!--
     *************
     Notifications
-    ************* 
+    *************
      -->
 	<bean id="applicationProperties"
 		class="org.eurekastreams.server.service.utility.ResourcePropertyFileLoaderFactoryBean">
@@ -3032,11 +3032,12 @@
 				</constructor-arg>
 				<constructor-arg ref="notifiersByIdMap" />
 				<constructor-arg ref="getNotificationFilterPreferencesByPeopleIds" />
+				<constructor-arg ref="findByIdMapper" />
 				<constructor-arg ref="notificationTypeToCategoryMap" />
 			</bean>
 		</constructor-arg>
-		<constructor-arg value="false" />
 		<constructor-arg ref="taskHandler" />
+		<constructor-arg value="false" />
 	</bean>
 
 	<bean id="setTabLayout" class="org.eurekastreams.commons.actions.service.ServiceAction">
@@ -3356,7 +3357,7 @@
 		</constructor-arg>
 		<constructor-arg value="true" />
 	</bean>
-    
+
     <bean id="personDisplayNameUpdaterAsyncAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
     	<!-- Update the author display name in cached activities, comments, and embedded comments authored by a user
 -->
@@ -3431,7 +3432,7 @@
 		</constructor-arg>
 		<constructor-arg value="true" />
 	</bean>
-    
+
     <!-- This is called out separately because it is used in both the SetFollowing action as well as the GroupCreator action.
 -->
     <bean id="setFollowingGroupStatusExecution" class="org.eurekastreams.server.action.execution.profile.SetFollowingGroupStatusExecution">
@@ -3467,7 +3468,7 @@
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
     </bean>
-    
+
     <bean id="setFollowingStatusPersonTaskHandler" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.validation.profile.SetFollowingStatusBaseValidation">
@@ -3510,7 +3511,7 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>
-    
+
     <!--  Start Page tab types are defined in shared resources so that they can be easily overridden -->
     <bean id="createPersonActionFactory" class="org.eurekastreams.server.action.execution.CreatePersonActionFactory">
         <constructor-arg ref="jpaTabMapper" />
@@ -3520,17 +3521,17 @@
         </constructor-arg>
         <constructor-arg ref="newPersonStartPageTabs" />
     </bean>
-    
-    
-    
+
+
+
     <!-- WORKS (sync part, at least) -->
 	<bean id="createGroup" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
 		<!-- Validation -->
 		  <constructor-arg>
 		      <bean class="org.eurekastreams.server.action.validation.CreateGroupValidation">
 		          <constructor-arg ref="bulkDomainGroupsByShortNameMapper"/>
-		          <constructor-arg ref="bulkOrganizationsByShortNameMapper"/>  
-		      </bean>   
+		          <constructor-arg ref="bulkOrganizationsByShortNameMapper"/>
+		      </bean>
 		  </constructor-arg>
         <!-- Authorization - done inside execution (for now) -->
 		<constructor-arg ref="noAuthorizationStrategy" />
@@ -3552,7 +3553,7 @@
 		<!-- Validation -->
 		<constructor-arg>
              <bean class="org.eurekastreams.server.action.validation.UpdateGroupValidation">
-                <constructor-arg ref="bulkOrganizationsByShortNameMapper"/>  
+                <constructor-arg ref="bulkOrganizationsByShortNameMapper"/>
              </bean>
         </constructor-arg>
 		<constructor-arg>
@@ -3640,14 +3641,14 @@
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
 	</bean>
-    
+
     <!-- WORKS (sync part, at least) -->
     <bean id="createOrganization" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
 	    <constructor-arg>
         <!-- Validation -->
             <bean class="org.eurekastreams.server.action.validation.CreateOrganizationValidation">
-                <constructor-arg ref="bulkOrganizationsByShortNameMapper"/>  
-            </bean>   
+                <constructor-arg ref="bulkOrganizationsByShortNameMapper"/>
+            </bean>
         </constructor-arg>
 		<constructor-arg>
 			<!-- Authorization -->
@@ -3674,7 +3675,7 @@
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
     </bean>
-    
+
     <!-- WORKS (sync part, at least) -->
     <bean id="updateOrganization" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
     	<!-- Validation -->
@@ -3690,7 +3691,7 @@
 					</bean>
 				</constructor-arg>
 				<constructor-arg ref="getRecursiveOrgCoordinators"/>
-			</bean>          
+			</bean>
 		</constructor-arg>
 		<constructor-arg>
 			<!-- Execution -->
@@ -3880,7 +3881,7 @@
 						<constructor-arg ref="createPersonActionFactory" />
 						<constructor-arg ref="updaterStrategy" />
 						<constructor-arg ref="organizationCreator" />
-					</bean>	           
+					</bean>	
 				</constructor-arg>
 				<constructor-arg ref="jpaOrganizationMapper" />
 				<constructor-arg ref="jpaPersonMapper" />
@@ -4047,18 +4048,18 @@
     <bean id="openSocialRegEx" class="java.lang.String">
         <constructor-arg value="\w{8}-\w{4}-\w{4}-\w{4}-\w{12}" />
     </bean>
-    
+
 	<bean id="pluginDefinitionPopulator"
         class="org.eurekastreams.server.service.actions.strategies.galleryitem.PluginDefinitionPopulator">
         <constructor-arg ref="gadgetMetaDataHttpFetcher" />
         <constructor-arg value="30"/>
         <constructor-arg value="NOTE"/>
-    </bean>    
-    
+    </bean>
+
 	<bean id="gadgetDefinitionPopulator"
 		class="org.eurekastreams.server.service.actions.strategies.galleryitem.GadgetDefinitionPopulator">
 		<constructor-arg ref="gadgetMetaDataHttpFetcher" />
-	</bean>    
+	</bean>
 
     <bean id="organizationPopulator"
         class="org.eurekastreams.server.service.actions.strategies.OrganizationPopulator">
@@ -4193,7 +4194,7 @@
     <!-- ****************************** -->
     <!-- OAuth Action configuration     -->
     <!-- ****************************** -->
-    
+
     <bean name="oauthDataStore"
         class="org.eurekastreams.server.service.opensocial.oauth.OAuthDataStoreImpl">
         <property name="serviceActionController" ref="serviceActionController" />
@@ -4218,12 +4219,12 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
-    </bean> 
+    </bean>
 
     <bean id="oauthEntryConversionStrat" class="org.eurekastreams.server.action.execution.opensocial.OAuthEntryConversionStrategy">
         <constructor-arg ref="getOAuthConsumerByConsumerKeyMapper" />
     </bean>
-    
+
     <bean id="createOAuthRequestToken" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -4239,8 +4240,8 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
-    </bean> 
-    
+    </bean>
+
     <bean id="updateRequestToAccessToken" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -4255,7 +4256,7 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
-    </bean> 
+    </bean>
 
     <bean id="getOAuthEntryByToken" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -4268,8 +4269,8 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
-    </bean> 
-    
+    </bean>
+
     <bean id="disableOAuthToken" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -4280,8 +4281,8 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
-    </bean> 
-    
+    </bean>
+
     <bean id="removeOAuthToken" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -4292,8 +4293,8 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
-    </bean> 
-    
+    </bean>
+
     <bean id="getOAuthConsumerByConsumerKey" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -4308,7 +4309,7 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>
-    
+
         <bean id="getSecurityTokenForConsumerRequest" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -4321,7 +4322,7 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>
-        
+
     <bean id="getConsumerInfo" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -4332,7 +4333,7 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
-    </bean> 
+    </bean>
 
     <bean id="getConsumerTokenInfo" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -4345,7 +4346,7 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
-    </bean> 
+    </bean>
 
     <bean id="setConsumerTokenInfo" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -4360,7 +4361,7 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
-    </bean> 
+    </bean>
 
     <bean id="removeConsumerToken" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -4373,7 +4374,7 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
-    </bean> 
+    </bean>
 
     <bean id="emailerFactory"
         class="org.eurekastreams.server.service.actions.strategies.EmailerFactory">
@@ -4520,10 +4521,10 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
                 <constructor-arg ref="getPersonAdditionalProperties" />
-                <!-- put id in list before calling mapper. -->    
+                <!-- put id in list before calling mapper. -->
                 <constructor-arg value="false" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
-    </bean>         
+    </bean>
 </beans>
