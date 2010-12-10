@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
+import org.eurekastreams.server.domain.GadgetDefinition;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 /**
@@ -28,10 +29,7 @@ public class DeleteGadgetDefinition extends BaseArgDomainMapper<Long, Void>
     @Override
     public Void execute(final Long inRequest)
     {
-        // foreign key on database handles cascading delete, so no need to delete children here
-        getEntityManager().createQuery("DELETE FROM GadgetDefinition WHERE id = :id").setParameter("id", inRequest)
-                .executeUpdate();
-
+        getEntityManager().remove(getHibernateSession().load(GadgetDefinition.class, inRequest));
         return null;
     }
 }

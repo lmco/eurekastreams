@@ -84,7 +84,7 @@ public class GadgetDefinition extends DomainEntity implements Serializable, Gall
     /**
      * The actual instantiations of this gadget def.
      */
-    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "gadgetDefinition")
     @JoinColumn(name = "gadgetDefinitionId")
     @Where(clause = "deleted='false'")
     private List<Gadget> gadgets;
