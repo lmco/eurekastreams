@@ -40,11 +40,17 @@ public class DeleteGadgetDefinitionTest extends MapperTest
     public void testExecute()
     {
         final long id = 1831L;
+        final long gadgetId = 5039L;
 
         // pre-check
         List list = getEntityManager().createQuery("FROM GadgetDefinition WHERE id=:id").setParameter("id", id)
                 .getResultList();
         assertEquals(1, list.size());
+
+        // dataset.xml didn't have any deleted gadgets (at time of writing), so make sure there are some
+        getEntityManager()
+                .createQuery("UPDATE VERSIONED Gadget SET deleted = true, dateDeleted = current_date() WHERE id=:id")
+                .setParameter("id", gadgetId).executeUpdate();
 
         // act
         sut.execute(id);

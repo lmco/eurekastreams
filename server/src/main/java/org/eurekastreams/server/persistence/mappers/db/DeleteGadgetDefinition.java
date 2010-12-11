@@ -29,6 +29,20 @@ public class DeleteGadgetDefinition extends BaseArgDomainMapper<Long, Void>
     @Override
     public Void execute(final Long inRequest)
     {
+        // The relationship defined on GadgetDefinition to Gadget includes only the "undeleted" gadgets (ones whose
+        // "deleted" flag is false), so deleting the GadgetDefinition will only cascade the delete to that subset of
+        // Gadgets. So if there are any Gadgets where deleted is true, they are not deleted, and the foreign key
+        // constraint prevents the GadgetDefinition from being deleted.
+
+        // The "if deleted = false" may be convenient for queries - you can retrieve a gadget definition and don't have
+        // to think about filtering out deleted gadgets, but it results in truly messed up table relationships. The
+        // proper way to resolve this is to remove that clause, but since I don't want to track down and resolve all the
+        // places that currently assume the gadgets are pre-filtered at this point, we just manually delete the Gadgets
+        // (children) before deleting the GadgetDefinition (parent).
+        // TODO: Resolve this properly as described above
+        getEntityManager().createQuery("DELETE Gadget WHERE gadgetDefinition.id=:id").setParameter("id", inRequest)
+                .executeUpdate();
+
         getEntityManager().remove(getHibernateSession().load(GadgetDefinition.class, inRequest));
         return null;
     }
