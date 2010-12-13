@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.eurekastreams.server.search.modelview.PersonPagePropertiesDTO;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -64,6 +65,11 @@ public class GetPersonPagePropertiesExecutionTest
     private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
 
     /**
+     * Transformer for converting PersonPagePropertiesDTO to theme css url.
+     */
+    private Transformer<PersonPagePropertiesDTO, String> themeCssUrlTransfomer = context.mock(Transformer.class);
+
+    /**
      * {@link Principal} mock.
      */
     private Principal actionContextPrincipal = context.mock(Principal.class);
@@ -71,7 +77,7 @@ public class GetPersonPagePropertiesExecutionTest
     /**
      * System under test.
      */
-    private GetPersonPagePropertiesExecution sut = new GetPersonPagePropertiesExecution(mapper);
+    private GetPersonPagePropertiesExecution sut = new GetPersonPagePropertiesExecution(mapper, themeCssUrlTransfomer);
 
     /**
      * Test.
@@ -90,6 +96,11 @@ public class GetPersonPagePropertiesExecutionTest
 
                 oneOf(mapper).execute(PERSON_ID);
                 will(returnValue(ppp));
+
+                oneOf(themeCssUrlTransfomer).transform(ppp);
+                will(returnValue(null));
+
+                oneOf(ppp).setThemeCssFile(null);
             }
         });
 

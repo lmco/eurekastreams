@@ -3946,6 +3946,42 @@
 
     <bean id="personActorStrategy"
         class="org.eurekastreams.server.service.actions.strategies.activity.PersonActorRetrievalStrategy" />
+        
+    <bean id="themeUuidSeparator" class="java.lang.String">
+        <constructor-arg value="_uuid_" />
+    </bean>  
+    
+    <bean id="themeExtension" class="java.lang.String">
+        <constructor-arg value=".css" />
+    </bean> 
+    
+    <bean id="themeUrlPrefix" class="java.lang.String">
+        <constructor-arg value="/eurekastreams/themes/" />
+    </bean> 
+    
+    <bean id="personPagePropertiesDTOToThemeCssUrlTransformer" class="org.eurekastreams.server.persistence.mappers.cache.PersonPagePropertiesDTOToThemeCssUrlTransformer">
+        <constructor-arg ref="themeUrlPrefix"/>
+        <constructor-arg ref="themeExtension"/>
+        <constructor-arg ref="themeUuidSeparator"/>
+        <constructor-arg ref="getThemeVersionByUuid"/>
+    </bean>
+    
+    <bean id="requestUriToThemeUuidTransformer" class="org.eurekastreams.server.service.servlets.RequestUriToThemeUuidTransformer">
+        <constructor-arg ref="themeUuidSeparator"/>
+        <constructor-arg ref="themeExtension"/>
+    </bean>
+    
+    <bean id="getPersonPageProperties" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy"/>
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.GetPersonPagePropertiesExecution">
+                <constructor-arg ref="getPersonPagePropertiesById" /> 
+                <constructor-arg ref="personPagePropertiesDTOToThemeCssUrlTransformer"/>               
+            </bean>
+        </constructor-arg>        
+        <constructor-arg value="true" />
+    </bean>    
 
     <!--
         ****************************************************************************************
