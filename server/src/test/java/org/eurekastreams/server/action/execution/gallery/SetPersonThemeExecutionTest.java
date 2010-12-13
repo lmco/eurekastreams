@@ -27,7 +27,6 @@ import org.eurekastreams.server.domain.Theme;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.ThemeMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.service.actions.strategies.CSSBuilderDecorator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -76,11 +75,6 @@ public class SetPersonThemeExecutionTest
     private Person person = context.mock(Person.class);
 
     /**
-     * The decorator injected into the action.
-     */
-    private CSSBuilderDecorator decorator = context.mock(CSSBuilderDecorator.class);
-
-    /**
      * {@link DomainMapper}.
      */
     private DomainMapper<Set<String>, Boolean> deleteCacheKeysMapper = context.mock(DomainMapper.class);
@@ -96,7 +90,7 @@ public class SetPersonThemeExecutionTest
     @Before
     public final void setup()
     {
-        sut = new SetPersonThemeExecution(personMapper, themeMapper, decorator, deleteCacheKeysMapper);
+        sut = new SetPersonThemeExecution(personMapper, themeMapper, deleteCacheKeysMapper);
     }
 
     /**
@@ -131,8 +125,6 @@ public class SetPersonThemeExecutionTest
                 oneOf(personMapper).flush();
 
                 never(themeMapper).findByUUID(with(any(String.class)));
-
-                oneOf(decorator).decorate(person);
 
                 oneOf(deleteCacheKeysMapper).execute(with(any(Set.class)));
             }
@@ -175,8 +167,6 @@ public class SetPersonThemeExecutionTest
                 oneOf(personMapper).flush();
 
                 never(themeMapper).findByUUID(with(any(String.class)));
-
-                oneOf(decorator).decorate(person);
 
                 oneOf(deleteCacheKeysMapper).execute(with(any(Set.class)));
             }
@@ -225,8 +215,6 @@ public class SetPersonThemeExecutionTest
 
                 never(themeMapper).findByUrl((with(any(String.class))));
 
-                oneOf(decorator).decorate(person);
-
                 oneOf(deleteCacheKeysMapper).execute(with(any(Set.class)));
             }
         });
@@ -265,8 +253,6 @@ public class SetPersonThemeExecutionTest
                 never(themeMapper).findByUrl((with(any(String.class))));
 
                 oneOf(person).setTheme(testTheme);
-
-                oneOf(decorator).decorate(person);
             }
         });
 
