@@ -35,6 +35,11 @@ public class PersonPagePropertiesDTO implements Serializable
     private String themeCssFile;
 
     /**
+     * Theme uuid.
+     */
+    private String themeUuid;
+
+    /**
      * List of TabDTOs.
      */
     private List<TabDTO> tabDTOs;
@@ -71,6 +76,23 @@ public class PersonPagePropertiesDTO implements Serializable
     public void setTabDTOs(final List<TabDTO> inTabDTOs)
     {
         tabDTOs = inTabDTOs;
+    }
+
+    /**
+     * @return the themeUuid
+     */
+    public String getThemeUuid()
+    {
+        return themeUuid;
+    }
+
+    /**
+     * @param inThemeUuid
+     *            the themeUuid to set
+     */
+    public void setThemeUuid(final String inThemeUuid)
+    {
+        themeUuid = inThemeUuid;
     }
 
 }

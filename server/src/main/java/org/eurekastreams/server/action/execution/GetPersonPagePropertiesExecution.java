@@ -20,6 +20,7 @@ import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.eurekastreams.server.search.modelview.PersonPagePropertiesDTO;
 
 /**
@@ -39,15 +40,24 @@ public class GetPersonPagePropertiesExecution implements ExecutionStrategy<Princ
     private DomainMapper<Long, PersonPagePropertiesDTO> personPagePropertiesByIdMapper;
 
     /**
+     * Transformer for converting PersonPagePropertiesDTO to theme css url.
+     */
+    private Transformer<PersonPagePropertiesDTO, String> personPagePropertiesDTOToCssUrlTransformer;
+
+    /**
      * Constructor.
      * 
      * @param inPersonPagePropertiesByIdMapper
      *            PersonPagePropertiesByIdMapper.
+     * @param inThemeCssUrlTransfomer
+     *            Transformer for converting PersonPagePropertiesDTO to theme css url.
      */
     public GetPersonPagePropertiesExecution(
-            final DomainMapper<Long, PersonPagePropertiesDTO> inPersonPagePropertiesByIdMapper)
+            final DomainMapper<Long, PersonPagePropertiesDTO> inPersonPagePropertiesByIdMapper,
+            final Transformer<PersonPagePropertiesDTO, String> inThemeCssUrlTransfomer)
     {
         personPagePropertiesByIdMapper = inPersonPagePropertiesByIdMapper;
+        personPagePropertiesDTOToCssUrlTransformer = inThemeCssUrlTransfomer;
     }
 
     /**
@@ -62,7 +72,13 @@ public class GetPersonPagePropertiesExecution implements ExecutionStrategy<Princ
     {
         long start = System.currentTimeMillis();
         PersonPagePropertiesDTO result = personPagePropertiesByIdMapper.execute(inActionContext.getPrincipal().getId());
-        log.debug("Get personPageProperties from DB/Cache: " + (System.currentTimeMillis() - start) + "(ms)");
+
+        long startCssPathGen = System.currentTimeMillis();
+        result.setThemeCssFile(personPagePropertiesDTOToCssUrlTransformer.transform(result));
+        long end = System.currentTimeMillis();
+
+        log.debug("Set theme css path time: " + (end - startCssPathGen) + "(ms)");
+        log.debug("Get personPageProperties from DB/Cache: " + (end - start) + "(ms)");
 
         return result;
     }
