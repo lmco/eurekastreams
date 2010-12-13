@@ -270,25 +270,6 @@
         <constructor-arg value="true" />
     </bean>     
     
-    <bean id="setPersonTheme" class="org.eurekastreams.commons.actions.service.ServiceAction">
-		<!-- fields: "themeId" (uuid or url)  -->
-		<constructor-arg>
-			<bean class="org.eurekastreams.server.action.validation.gallery.ThemeIdValidation">
-				<constructor-arg ref="jpaThemeMapper" />
-				<constructor-arg ref="cssBuilderDecorator" />
-			</bean>
-		</constructor-arg>
-        <constructor-arg ref="noAuthorizationStrategy"/>
-		<constructor-arg>
-			<bean class="org.eurekastreams.server.action.execution.gallery.SetPersonThemeExecution">
-		    	<constructor-arg ref="jpaPersonMapper" />
-				<constructor-arg ref="jpaThemeMapper" />
-				<constructor-arg ref="deleteCacheKeys"/>
-		    </bean>
-		</constructor-arg>
-		<constructor-arg value="false" />
-	</bean>
-    
     <!-- The decorator that builds CSS from XML -->
 	<bean id="cssBuilderDecorator" scope="prototype"
 		class="org.eurekastreams.server.service.actions.strategies.CSSBuilderDecorator">

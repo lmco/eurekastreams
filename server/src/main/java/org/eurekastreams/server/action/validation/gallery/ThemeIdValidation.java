@@ -20,7 +20,6 @@ import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.domain.Theme;
 import org.eurekastreams.server.persistence.ThemeMapper;
-import org.eurekastreams.server.service.actions.strategies.CSSBuilderDecorator;
 
 /**
  * Validation strategy to make sure a theme exists given its id.
@@ -30,30 +29,24 @@ public class ThemeIdValidation implements ValidationStrategy<ServiceActionContex
     /**
      * Mapper used to look up the theme.
      */
+    // TODO: This could be faster by using cached mappers for themecss or version by uuid or url.
+    // then it would only hit the db when needed.
     private ThemeMapper themeMapper = null;
 
     /**
-     * Decorator for portal page.
-     */
-    private CSSBuilderDecorator decorator = null;
-
-    /**
      * Constructor.
-     *
+     * 
      * @param inThemeMapper
      *            the theme mapper
-     * @param inDecorator
-     *            the CSS builder decorator
      */
-    public ThemeIdValidation(final ThemeMapper inThemeMapper, final CSSBuilderDecorator inDecorator)
+    public ThemeIdValidation(final ThemeMapper inThemeMapper)
     {
         themeMapper = inThemeMapper;
-        decorator = inDecorator;
     }
 
     /**
      * Make sure a theme exists given its id.
-     *
+     * 
      * @param inActionContext
      *            the context
      */
@@ -70,11 +63,6 @@ public class ThemeIdValidation implements ValidationStrategy<ServiceActionContex
         }
         else
         {
-            if (!decorator.validateTheme(themeId))
-            {
-                throw new ValidationException("Valid theme is required");
-            }
-
             // Theme is a URL, find or create.
             theme = themeMapper.findByUrl(themeId);
         }
