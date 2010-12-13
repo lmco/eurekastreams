@@ -361,19 +361,17 @@
     <!-- GALLERY ITEM VALIDATORS -->
     <bean id="themeValidator" class="org.eurekastreams.server.action.validation.gallery.UrlXmlValidator">
 		<constructor-arg value="http://www.w3.org/2001/XMLSchema" />
-		<constructor-arg value="/themes/theme.xsd" />
+		<constructor-arg value="/conf/schema/theme.xsd" />
 		<constructor-arg>
 			<bean class="org.eurekastreams.server.service.actions.strategies.URLFetcher" />
 		</constructor-arg>
-		<constructor-arg ref="contextHolder" />
 	</bean>
 	<bean id="gadgetDefinitionValidator" class="org.eurekastreams.server.action.validation.gallery.UrlXmlValidator">
 		<constructor-arg value="http://www.w3.org/2001/XMLSchema" />
-		<constructor-arg value="/gadgets/openSocialGadget_0-9.xsd" />
+		<constructor-arg value="/conf/schema/openSocialGadget_0-9.xsd" />
 		<constructor-arg>
 			<bean class="org.eurekastreams.server.service.actions.strategies.URLFetcher" />
 		</constructor-arg>
-		<constructor-arg ref="contextHolder" />
 	</bean>
     
 	<!-- GALLERY ITEMPOPULATORS -->

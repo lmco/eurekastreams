@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.action.validation.gallery;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Map;
@@ -29,7 +30,6 @@ import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.commons.actions.ValidationStrategy;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
-import org.eurekastreams.server.service.actions.strategies.ContextHolder;
 import org.eurekastreams.server.service.actions.strategies.ResourceFetcher;
 
 /**
@@ -59,11 +59,6 @@ public class UrlXmlValidator implements ValidationStrategy<ServiceActionContext>
     private String xsdPath;
 
     /**
-     * The ServletContext is used to figure out where files belong.
-     */
-    private ContextHolder contextHolder;
-
-    /**
      * Fetcher for the XML theme definition.
      */
     private ResourceFetcher xmlFetcher = null;
@@ -74,19 +69,15 @@ public class UrlXmlValidator implements ValidationStrategy<ServiceActionContext>
      * @param inSchema
      *            The schema string.
      * @param inXsdPath
-     *            The path to xsd file.
+     *            The classpath to xsd file.
      * @param inResourceFetcher
      *            The ResourceFetcher implementation.
-     * @param inContextHolder
-     *            The contextHolder object.
      */
-    public UrlXmlValidator(final String inSchema, final String inXsdPath, final ResourceFetcher inResourceFetcher,
-            final ContextHolder inContextHolder)
+    public UrlXmlValidator(final String inSchema, final String inXsdPath, final ResourceFetcher inResourceFetcher)
     {
         schemaString = inSchema;
         xsdPath = inXsdPath;
         xmlFetcher = inResourceFetcher;
-        contextHolder = inContextHolder;
     }
 
     /**
@@ -101,15 +92,16 @@ public class UrlXmlValidator implements ValidationStrategy<ServiceActionContext>
     @SuppressWarnings("unchecked")
     public void validate(final ServiceActionContext inActionContext) throws ValidationException
     {
+        InputStream schemaStream = null;
         Map<String, Serializable> fields = (Map<String, Serializable>) inActionContext.getParams();
         String galleryItemUrl = (String) fields.get(URL_KEY);
         try
         {
-            String fullXsdPath = contextHolder.getContext().getRealPath("/") + xsdPath;
-            log.debug("Attempt to validate xml at: " + galleryItemUrl + "with xsd at: " + fullXsdPath);
+            schemaStream = this.getClass().getResourceAsStream(xsdPath); 
+            log.debug("Attempt to validate xml at: " + galleryItemUrl + "with xsd at: " + xsdPath);
 
             SchemaFactory schemaFactory = SchemaFactory.newInstance(schemaString);
-            Schema schema = schemaFactory.newSchema(new StreamSource(fullXsdPath));
+            Schema schema = schemaFactory.newSchema(new StreamSource(schemaStream));
 
             Validator validator = schema.newValidator();
 
@@ -126,6 +118,20 @@ public class UrlXmlValidator implements ValidationStrategy<ServiceActionContext>
             ValidationException ve = new ValidationException();
             ve.addError(URL_KEY, "Valid url is required");
             throw ve;
+        }
+        finally
+        {
+            try
+            {
+                if(schemaStream != null)
+                {
+                    schemaStream.close();
+                }
+            }
+            catch(IOException ex)
+            {
+                log.error("Error closing stream, already closed.", ex);
+            }
         }
     }
 
