@@ -31,7 +31,6 @@ import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.ThemeMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
-import org.eurekastreams.server.service.actions.strategies.CSSBuilderDecorator;
 
 /**
  * Assigns a Theme to a Person based on a UUID or a URL.
@@ -55,11 +54,6 @@ public class SetPersonThemeExecution implements ExecutionStrategy<PrincipalActio
     private ThemeMapper themeMapper = null;
 
     /**
-     * Decorator for portal page.
-     */
-    private CSSBuilderDecorator decorator = null;
-
-    /**
      * Domain mapper to delete keys.
      */
     private DomainMapper<Set<String>, Boolean> deleteKeysMapper;
@@ -71,17 +65,14 @@ public class SetPersonThemeExecution implements ExecutionStrategy<PrincipalActio
      *            injecting the PersonMapper
      * @param inThemeMapper
      *            injecting the ThemeMapper
-     * @param inDecorator
-     *            injecting a Decorator (or chain of)
      * @param inDeleteKeysMapper
      *            mapper to delete cache keys.
      */
     public SetPersonThemeExecution(final PersonMapper inPersonMapper, final ThemeMapper inThemeMapper,
-            final CSSBuilderDecorator inDecorator, final DomainMapper<Set<String>, Boolean> inDeleteKeysMapper)
+            final DomainMapper<Set<String>, Boolean> inDeleteKeysMapper)
     {
         personMapper = inPersonMapper;
         themeMapper = inThemeMapper;
-        decorator = inDecorator;
         deleteKeysMapper = inDeleteKeysMapper;
     }
 
@@ -126,17 +117,9 @@ public class SetPersonThemeExecution implements ExecutionStrategy<PrincipalActio
             Person person = personMapper.findById(userId);
             log.debug("Got StartPage for " + inActionContext.getPrincipal().getAccountId());
 
-            if (person.getTheme() != null && person.getTheme().getUrl().equals(theme.getUrl()))
-            {
-                log.debug("Forcing theme update");
-                decorator.setForceUpdate(true);
-            }
-
             person.setTheme(theme);
             personMapper.flush();
             log.debug("Set theme to " + theme.getName());
-
-            decorator.decorate(person);
 
             deleteKeysMapper.execute(Collections.singleton(CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID + userId));
 
