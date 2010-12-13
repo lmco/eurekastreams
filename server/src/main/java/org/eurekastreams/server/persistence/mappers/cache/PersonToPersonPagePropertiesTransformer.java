@@ -23,6 +23,7 @@ import org.eurekastreams.server.domain.GadgetDefinition;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.domain.TabGroupType;
+import org.eurekastreams.server.domain.Theme;
 import org.eurekastreams.server.search.modelview.GadgetDTO;
 import org.eurekastreams.server.search.modelview.GadgetDefinitionDTO;
 import org.eurekastreams.server.search.modelview.PersonPagePropertiesDTO;
@@ -91,7 +92,9 @@ public class PersonToPersonPagePropertiesTransformer implements Transformer<Pers
 
         PersonPagePropertiesDTO ppp = new PersonPagePropertiesDTO();
         ppp.setTabDTOs(tabDtos);
-        ppp.setThemeCssFile(inPerson.getTheme() == null ? null : inPerson.getTheme().getCssFile());
+        Theme theme = inPerson.getTheme();
+        ppp.setThemeUuid(theme == null ? null : theme.getUUID().toLowerCase());
+        ppp.setThemeCssFile(theme == null ? null : theme.getCssFile());
         return ppp;
     }
 

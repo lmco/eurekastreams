@@ -80,7 +80,7 @@ public class GetPersonPagePropertiesByIdDbMapperTest
     @Before
     public void setup()
     {
-        sut = new GetPersonPagePropertiesByIdDbMapper(personByIdMapper, transformer, null);
+        sut = new GetPersonPagePropertiesByIdDbMapper(personByIdMapper, transformer);
     }
 
     /**

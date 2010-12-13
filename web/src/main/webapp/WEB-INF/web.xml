@@ -256,6 +256,11 @@
   	<servlet-class>org.eurekastreams.server.service.servlets.UploadBannerServlet</servlet-class>
   </servlet>
   
+  <servlet>
+    <servlet-name>themeCssServlet</servlet-name>
+    <servlet-class>org.eurekastreams.server.service.servlets.GetThemeCssServlet</servlet-class>
+  </servlet>  
+  
   <servlet-mapping>
     <servlet-name>getImageServlet</servlet-name>
     <url-pattern>/eurekastreams/photos</url-pattern>
@@ -280,6 +285,11 @@
   	<servlet-name>bannerUploadServlet</servlet-name>
   	<url-pattern>/eurekastreams/bannerupload/*</url-pattern>
   </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>themeCssServlet</servlet-name>
+    <url-pattern>/eurekastreams/themes/*</url-pattern>
+  </servlet-mapping>  
   
 
   
