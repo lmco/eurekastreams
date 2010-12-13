@@ -295,7 +295,7 @@
 		<constructor-arg>
 			<null />
 		</constructor-arg>
-		<constructor-arg type="java.lang.String" value="themes/css.xslt" />
+		<constructor-arg type="java.lang.String" value="/org/eurekastreams/server/conf/schema/css.xslt" />
 		<constructor-arg>
 			<bean class="org.eurekastreams.server.service.actions.strategies.URLFetcher" />
 		</constructor-arg>
@@ -312,14 +312,14 @@
     <!-- GALLERY ITEM VALIDATORS -->
     <bean id="themeValidator" class="org.eurekastreams.server.action.validation.gallery.UrlXmlValidator">
 		<constructor-arg value="http://www.w3.org/2001/XMLSchema" />
-		<constructor-arg value="/conf/schema/theme.xsd" />
+		<constructor-arg value="/org/eurekastreams/server/conf/schema/theme.xsd" />
 		<constructor-arg>
 			<bean class="org.eurekastreams.server.service.actions.strategies.URLFetcher" />
 		</constructor-arg>
 	</bean>
 	<bean id="gadgetDefinitionValidator" class="org.eurekastreams.server.action.validation.gallery.UrlXmlValidator">
 		<constructor-arg value="http://www.w3.org/2001/XMLSchema" />
-		<constructor-arg value="/conf/schema/openSocialGadget_0-9.xsd" />
+		<constructor-arg value="/org/eurekastreams/server/conf/schema/openSocialGadget_0-9.xsd" />
 		<constructor-arg>
 			<bean class="org.eurekastreams.server.service.actions.strategies.URLFetcher" />
 		</constructor-arg>

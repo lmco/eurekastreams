@@ -756,7 +756,7 @@
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.db.ThemeCssDbMapper">
-                <constructor-arg value="/org/eurekastreams/server/conf/css.xslt"/>
+                <constructor-arg value="/org/eurekastreams/server/conf/schema/css.xslt"/>
                 <constructor-arg ref="getThemeXmlUrlByUuidDbMapper"/>
                 <constructor-arg>
 		            <bean class="org.eurekastreams.server.service.actions.strategies.URLFetcher" />
@@ -783,7 +783,7 @@
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.db.ThemeCssDbMapper">
-                <constructor-arg value="/org/eurekastreams/server/conf/css.xslt"/>
+                <constructor-arg value="/org/eurekastreams/server/conf/schema/css.xslt"/>
                 <constructor-arg ref="getThemeXmlUrlByUuidDbMapper"/>
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.service.actions.strategies.URLFetcher" />
