@@ -226,8 +226,6 @@ public class ApplicationEntryPoint implements EntryPoint
 
                     public void onSuccess(final PersonModelView resultMV)
                     {
-                        processor.setQueueRequests(true);
-
                         // If user needs to accept ToS, short circuit here.
                         if (!resultMV.getTosAcceptance())
                         {
@@ -247,12 +245,13 @@ public class ApplicationEntryPoint implements EntryPoint
                         Session.getInstance().getEventBus().bufferObservers();
                         History.fireCurrentHistoryState();
 
+                        processor.setQueueRequests(true);
                         master.renderHeaderAndFooter();
-                        session.getPeriodicEventManager().start();
-                        RootPanel.get().add(master);
-
                         processor.fireQueuedRequests();
                         processor.setQueueRequests(false);
+
+                        session.getPeriodicEventManager().start();
+                        RootPanel.get().add(master);
                     }
                 });
     }
