@@ -16,11 +16,13 @@
 package org.eurekastreams.server.persistence.mappers.db;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.HashMap;
 
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.persistence.mappers.requests.UpdatePersonResponse;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -36,7 +38,7 @@ public class UpdatePersonMapperTest extends MapperTest
     private UpdatePersonMapper sut;
 
     /**
-     * Test.
+     * Test updating with new additional properties.
      */
     @Test
     public void test()
@@ -64,6 +66,84 @@ public class UpdatePersonMapperTest extends MapperTest
         assertTrue(dbPerson.getAdditionalProperties() != null);
         assertTrue(resultPerson.getAdditionalProperties().get("additional").equals("additionalValue"));
 
+    }
+    
+    /**
+     * Test where additional properties are specified but do not need to be updated.
+     */
+    @Test
+    public void testNoUpdatedProperties()
+    {
+        final long personId = 42L;
+        HashMap<String, String> additional = new HashMap<String, String>();
+        additional.put("additional", "additionalValue");
+
+        Person dbPerson = (Person) getEntityManager().createQuery("FROM Person WHERE id = :id").setParameter("id",
+                personId).getSingleResult();
+
+        dbPerson.setAdditionalProperties(additional);
+        getEntityManager().flush();
+        
+        assertTrue(dbPerson.getAdditionalProperties() != null);
+
+        Person p = new Person("fordp", "Ford", "X", "Prefect", "Volgon-Swatter");
+        p.setAdditionalProperties(additional);
+
+        UpdatePersonResponse response = sut.execute(p);
+
+        assertFalse(response.wasUserUpdated());
+    }
+
+    /**
+     * Test where additional properties are no longer specified on ldap person so db person needs to be updated.
+     */
+    @Test
+    public void testRemoveProperties()
+    {
+        final long personId = 42L;
+        HashMap<String, String> additional = new HashMap<String, String>();
+        additional.put("additional", "additionalValue");
+
+        Person dbPerson = (Person) getEntityManager().createQuery("FROM Person WHERE id = :id").setParameter("id",
+                personId).getSingleResult();
+        dbPerson.setAdditionalProperties(additional);
+        getEntityManager().flush();
+
+        assertTrue(dbPerson.getAdditionalProperties() != null);
+
+        Person p = new Person("fordp", "Ford", "X", "Prefect", "Volgon-Swatter");
+
+        UpdatePersonResponse response = sut.execute(p);
+
+        assertTrue(response.wasUserUpdated());
+        assertTrue(dbPerson.getAdditionalProperties() == null);
+    }
+
+    /**
+     * Test updating with new last name.
+     */
+    @Test
+    public void testNewLastName()
+    {
+        final long personId = 42L;
+        final String newLastName = "NewLastName";
+
+        Person dbPerson = (Person) getEntityManager().createQuery("FROM Person WHERE id = :id").setParameter("id",
+                personId).getSingleResult();
+
+        assertTrue(dbPerson.getLastName().equals("Prefect"));
+
+        Person p = new Person("fordp", "Ford", "X", newLastName, "Volgon-Swatter");
+
+        sut.execute(p);
+
+        getEntityManager().flush();
+        getEntityManager().clear();
+
+        Person resultPerson = (Person) getEntityManager().createQuery("FROM Person WHERE id = :id").setParameter("id",
+                personId).getSingleResult();
+
+        assertTrue(resultPerson.getLastName().equals(newLastName));
     }
 }
 
