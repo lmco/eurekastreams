@@ -38,7 +38,7 @@ Knowledge workers can browse an a-z listing of intranet bookmarks and can add an
 1. Clicking the "x" closes the search results and returns the app to the default view.
 2. Hovering over the search results displays a link allowing the knowledge worker to save the item to their bookmarks list.
 
-### Canvas View`
+### Canvas View
 
 ![ ](images/R1_PS_F20_bookmarkGadgetCanvas.png)
 

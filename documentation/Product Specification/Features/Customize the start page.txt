@@ -23,7 +23,7 @@ The start page serves as a private homepage for the knowledge worker allowing th
 20. The knowledge worker must be able to refresh the content of an app.
 ## User experience
 
-#### App Interaction
+### App Interaction
 ![](images/PS_F02_startPage_appControls.png)
 
 1. Opens app in canvas view (maximize)
@@ -37,17 +37,17 @@ The start page serves as a private homepage for the knowledge worker allowing th
 1. App title
 1. Restores the app.
 
-#### Moving Tabs
+### Moving Tabs
 ![](images/PS_F02_startPage_appDragOnTab.png)
 
 1. Dragging the title bar of an app displays a proxy image containing the name of the app. When the knowledge worker drags the app over an empty column a dashed box appears. When the proxy is released over the column the app appears in that column.
 
-#### Moving an App onto Another Tab
+### Moving an App onto Another Tab
 ![](images/PS_F02_startPage_appDragBetweenTabs.png)
 
 1. Dragging the title bar of an app displays a proxy image containing the name of the app. Dragging the proxy over an inactive tab highlights the tab. Releasing the proxy over the tab activates the tab and places the app in the upper left hand corner of the tab.
 
-#### Editing Tabs
+### Editing Tabs
 ![](images/PS_F02_startPage_ManageTabs_fig02.png)
 
 1. Clicking the tab menu icon displays a drop down menu.
@@ -56,14 +56,14 @@ The start page serves as a private homepage for the knowledge worker allowing th
 4. Link to remove the tab. When this is selected a popup window is displayed asking the knowledge worker if they are sure they want to remove the tab. If Yes is selected, feedback is displayed at the top of the page with an undo and close option: "[tab name] has been removed".  Refer to the [Action Feedback UI design pattern][Action feedback] for additional details.
 5. The knowledge worker can reorder the tabs by dragging and dropping the tab into place.
 
-#### Changing a Tab's Layout
+### Changing a Tab's Layout
 ![](images/PS_F02_startPage_ChangeLayout.png)
 
 1. Selecting "Change Layout" from the tab menu displays the change layout window.
 2. Carousel paging
 3. Hover state, clicking on the layout applies the layout to the tab and changes the currently selected layout image on the right.
 
-#### Adding an App
+### Adding an App
 ![](images/PS_F02_startPage_ConfigureTab.png)
 
 1. The configure button should take the background color of the inactive tab and the text color of the inactive tab. There should also be a 1px line around the configure button that takes the color of the inactive tab text. Clicking the configure button displays the Configure page.  Apps are added to the first column in the start page by default.
@@ -75,7 +75,7 @@ The start page serves as a private homepage for the knowledge worker allowing th
 2. The add button becomes inactive after the app has been added.
 
 
-#### Applying a Theme
+### Applying a Theme
 
 ![](images/PS_F02_startPage_ApplyTheme.png)
 
