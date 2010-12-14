@@ -109,6 +109,14 @@
         <entry key="APP_ALERT" value="In-App" />
     </util:map>
 
+	<!-- recipient filters - one list per notifier -->
+	<util:list id="notificationRecipientFiltersAppAlert">
+		<bean class="org.eurekastreams.server.action.execution.notification.LockedUserRecipientFilter" />
+	</util:list>
+	<util:list id="notificationRecipientFiltersEmail">
+		<bean class="org.eurekastreams.server.action.execution.notification.LockedUserRecipientFilter" />
+	</util:list>
+
     <bean id="createNotificationsAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.validation.notification.CreateNotificationsValidation">
@@ -128,8 +136,14 @@
                 </constructor-arg>
                 <constructor-arg ref="notifiersByIdMap" />
                 <constructor-arg ref="getNotificationFilterPreferencesByPeopleIds" />
-                <constructor-arg ref="bulkPeopleMapper" />
+                <constructor-arg ref="getPersonByIdMapper" />
                 <constructor-arg ref="notificationTypeToCategoryMap" />
+                <constructor-arg>
+                	<map>
+                		<entry key="APP_ALERT" value-ref="notificationRecipientFiltersAppAlert" />
+                		<entry key="EMAIL" value-ref="notificationRecipientFiltersEmail" />
+                	</map>
+                </constructor-arg>
             </bean>
         </constructor-arg>
         <constructor-arg ref="taskHandler" />

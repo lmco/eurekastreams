@@ -15,11 +15,15 @@
  */
 package org.eurekastreams.server.service.actions.strategies.galleryitem;
 
-import java.util.UUID;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.Theme;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.service.actions.strategies.DocumentCreator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -48,14 +52,31 @@ public class ThemePopulator implements GalleryItemPopulator<Theme>
     private DocumentCreator documentCreator = null;
 
     /**
+     * DeleteCacheKeys mapper.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteCacheKeysMapper = null;
+
+    /**
+     * Cache keys to delete.
+     */
+    private List<String> keyList;
+
+    /**
      * Constructor.
      * 
      * @param inDocumentCreator
      *            injecting a DocumentCreator
+     * @param inDeleteCacheKeysMapper
+     *            DeleteCacheKeys mapper.
+     * @param deleteCacheKeys
+     *            keys to delete.
      */
-    public ThemePopulator(final DocumentCreator inDocumentCreator)
+    public ThemePopulator(final DocumentCreator inDocumentCreator,
+            final DomainMapper<Set<String>, Boolean> inDeleteCacheKeysMapper, final List<String> deleteCacheKeys)
     {
         documentCreator = inDocumentCreator;
+        deleteCacheKeysMapper = inDeleteCacheKeysMapper;
+        keyList = deleteCacheKeys;
     }
 
     /**
@@ -112,24 +133,16 @@ public class ThemePopulator implements GalleryItemPopulator<Theme>
         String bannerId = (nodeList.item(0)).getNodeValue();
         inTheme.setBannerId(bannerId);
 
-        String cssFile = "/themes/" + getCleanedThemeName(themeName) + UUID.randomUUID() + ".css";
-        inTheme.setCssFile(cssFile);
-    }
-
-    /**
-     * Clean up the input theme name to be usable as a file name.
-     * 
-     * @param inThemeName
-     *            the theme name
-     * @return the cleaned version of the file name - the first 20 characters of non-forward-slash
-     */
-    private String getCleanedThemeName(final String inThemeName)
-    {
-        String cleanedName = inThemeName.replace('/', '-');
-        if (cleanedName.length() > MAX_THEME_CSS_FILE_PREFIX_LENGTH)
+        String themeUuid = inTheme.getUUID();
+        if (!StringUtils.isEmpty(themeUuid))
         {
-            cleanedName = cleanedName.substring(0, MAX_THEME_CSS_FILE_PREFIX_LENGTH);
+            Set<String> keySet = new HashSet<String>();
+            for (String key : keyList)
+            {
+                keySet.add(key + themeUuid);
+            }
+
+            deleteCacheKeysMapper.execute(keySet);
         }
-        return cleanedName;
     }
 }

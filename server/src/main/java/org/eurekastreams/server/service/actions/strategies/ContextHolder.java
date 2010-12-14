@@ -18,7 +18,7 @@ package org.eurekastreams.server.service.actions.strategies;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.springframework.web.context.ServletContextAware;
 
 /**
@@ -31,7 +31,7 @@ public class ContextHolder implements ServletContextAware
     /**
      * Logger.
      */
-    private Log log = LogFactory.getLog(CSSBuilderDecorator.class);
+    private Log log = LogFactory.make();
 
     /**
      * Provides context information for the running servlet.

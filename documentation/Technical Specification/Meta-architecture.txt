@@ -28,7 +28,7 @@ A goal is to provide a high quality system, as free from defects as is reasonabl
 
 Automating the tests minimizes the testing resources needed compared to manual tests.  Having a robust set of tests provides safety during efforts of re-factoring to reduce or eliminate the number of regressions that occur as a result.  The automated tests are an integral part of the continuous integration processes, which in turn helps provide higher overall system quality.
 
-### Ensure a scalable [share nothing architecture](http://en.wikipedia.org/wiki/Shared_nothing_architecture)
+### Ensure a scalable share nothing architecture
 
 For system components, ensure the system can scale horizontally keeping free of any single point of contention.  The primary benefit is allowing the system to scale by adding additional nodes in particular component areas of the deployed system.  While each node is not self-sufficient, any particular area that could become a single point of contention can be [scaled horizontally](http://en.wikipedia.org/wiki/Scalability#Scale_horizontally_.28scale_out.29) to avoid bottlenecks.
 

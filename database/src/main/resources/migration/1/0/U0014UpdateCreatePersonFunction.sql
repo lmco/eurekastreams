@@ -1,6 +1,9 @@
 insert into db_version (major, minor, patch, scriptname, description) values (1, 0, '0014', 'U0014UpdateCreatePersonFunction.sql', 'Updates the CreatePerson function after refactoring for stream views.');
 
-CREATE OR REPLACE FUNCTION CreatePerson (_accountid VARCHAR, _firstname VARCHAR, _middlename VARCHAR,  _lastname VARCHAR, _email VARCHAR, _opensocialid VARCHAR) RETURNS VOID AS
+--Automatic drop and then create to ensure successful creation.
+DROP FUNCTION IF EXISTS CreatePerson (_accountid VARCHAR, _firstname VARCHAR, _middlename VARCHAR,  _lastname VARCHAR, _email VARCHAR, _opensocialid VARCHAR);
+
+CREATE FUNCTION CreatePerson (_accountid VARCHAR, _firstname VARCHAR, _middlename VARCHAR,  _lastname VARCHAR, _email VARCHAR, _opensocialid VARCHAR) RETURNS VOID AS
 $$
 DECLARE
     _startPageTabGroupId BIGINT;

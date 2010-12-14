@@ -45,14 +45,10 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
  */
 public class CreateNotificationsExecution implements TaskHandlerExecutionStrategy<ActionContext>
 {
-    /**
-     * Local logger instance.
-     */
+    /** Local logger instance. */
     private final Log logger = LogFactory.make();
 
-    /**
-     * Map of valid translators.
-     */
+    /** Map of valid translators. */
     private final Map<RequestType, NotificationTranslator> translators;
 
     /**
@@ -61,23 +57,20 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
      */
     private final NotificationPopulator populator;
 
-    /**
-     * List of notifiers that should be executed.
-     */
+    /** List of notifiers that should be executed. */
     private final Map<String, Notifier> notifiers;
 
-    /**
-     * Mapper to filter out unwanted notifications per recipient.
-     */
+    /** Mapper to filter out unwanted notifications per recipient. */
     private final GetNotificationFilterPreferencesByPeopleIds preferencesMapper;
 
-    /** Mapper to get people for determining locked users. */
-    private final DomainMapper<List<Long>, List<PersonModelView>> personMapper;
+    /** Mapper to get people for filtering (determining locked users, etc.). */
+    private final DomainMapper<Long, PersonModelView> personMapper;
 
-    /**
-     * Provides the category for each notification type.
-     */
+    /** Provides the category for each notification type. */
     private final Map<NotificationType, Category> notificationTypeToCategory;
+
+    /** Recipient filter strategies per notifier type. */
+    private final Map<String, Iterable<RecipientFilter>> recipientFilters;
 
     /**
      * Constructor.
@@ -91,15 +84,18 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
      * @param inPreferencesMapper
      *            preferences mapper to set.
      * @param inPersonMapper
-     *            Mapper to get people for determining locked users.
+     *            Mapper to get people for filtering.
      * @param inNotificationTypeCategories
      *            Map providing the category for each notification type.
+     * @param inRecipientFilters
+     *            Recipient filter strategies per notifier type.
      */
     public CreateNotificationsExecution(final Map<RequestType, NotificationTranslator> inTranslators,
             final NotificationPopulator inPopulator, final Map<String, Notifier> inNotifiers,
             final GetNotificationFilterPreferencesByPeopleIds inPreferencesMapper,
-            final DomainMapper<List<Long>, List<PersonModelView>> inPersonMapper,
-            final Map<NotificationType, Category> inNotificationTypeCategories)
+            final DomainMapper<Long, PersonModelView> inPersonMapper,
+            final Map<NotificationType, Category> inNotificationTypeCategories,
+            final Map<String, Iterable<RecipientFilter>> inRecipientFilters)
     {
         translators = inTranslators;
         populator = inPopulator;
@@ -107,6 +103,7 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
         preferencesMapper = inPreferencesMapper;
         personMapper = inPersonMapper;
         notificationTypeToCategory = inNotificationTypeCategories;
+        recipientFilters = inRecipientFilters;
     }
 
     @Override
@@ -136,46 +133,21 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
         {
             allRecipients.addAll(dto.getRecipientIds());
         }
-        // but filter out locked users - they shouldn't get notifications
-        List<PersonModelView> recipientPersons = personMapper.execute(allRecipients);
-        for (PersonModelView person : recipientPersons)
-        {
-            if (person.isAccountLocked())
-            {
-                allRecipients.remove(person.getId());
-            }
-        }
-
         List<NotificationFilterPreferenceDTO> recipientFilterPreferences = preferencesMapper.execute(allRecipients);
 
         for (NotificationDTO notification : notifications)
         {
-            // remove locked users from notification's recipients
-            List<Long> notificationRecipients = new ArrayList<Long>();
-            for (Long id : notification.getRecipientIds())
-            {
-                if (allRecipients.contains(id))
-                {
-                    notificationRecipients.add(id);
-                }
-            }
-            if (notificationRecipients.isEmpty())
-            {
-                continue;
-            }
-
             boolean populated = false;
             for (String notifierKey : notifiers.keySet())
             {
                 if (logger.isInfoEnabled())
                 {
                     logger.info("Filtering " + notification.getType() + " recipients for notifier " + notifierKey
-                            + "from this list: " + notificationRecipients);
+                            + "from this list: " + notification.getRecipientIds());
                 }
 
-                List<Long> filteredRecipients = filterRecipients(notificationRecipients, notification.getType(),
+                List<Long> filteredRecipients = filterRecipients(notification.getRecipientIds(), notification,
                         recipientFilterPreferences, notifierKey);
-
                 if (!filteredRecipients.isEmpty())
                 {
                     notification.setRecipientIds(filteredRecipients);
@@ -221,19 +193,18 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
      *
      * @param notificationRecipients
      *            the list of all recipient ids for the notification, unfiltered.
-     * @param notificationType
-     *            the notification type for this notification.
+     * @param notification
+     *            the notification.
      * @param preferences
      *            the list of all notification preferences for users in the the allRecipient list.
      * @param notifierType
      *            the key string for the notifier itself.
      * @return the filtered list of recipient ids.
      */
-    private List<Long> filterRecipients(final List<Long> notificationRecipients,
-            final NotificationType notificationType, final List<NotificationFilterPreferenceDTO> preferences,
-            final String notifierType)
+    private List<Long> filterRecipients(final List<Long> notificationRecipients, final NotificationDTO notification,
+            final List<NotificationFilterPreferenceDTO> preferences, final String notifierType)
     {
-        Category category = notificationTypeToCategory.get(notificationType);
+        Category category = notificationTypeToCategory.get(notification.getType());
         List<Long> recipients = new ArrayList<Long>(notificationRecipients);
 
         // remove any users who opted out of the notification (for the given transport)
@@ -246,6 +217,32 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
             }
         }
 
-        return recipients;
+        // filter list further by configurable criteria
+        Iterable<RecipientFilter> filters = recipientFilters.get(notifierType);
+        if (filters == null)
+        {
+            return recipients;
+        }
+        else
+        {
+            List<Long> finalRecipients = new ArrayList<Long>();
+            eachRecipient: for (Long recipientId : recipients)
+            {
+                // unfortunately, users (who have not opted out of a given notifier) will be retrieved once PER notifier
+                // (vs. once for the whole action)
+                PersonModelView recipient = personMapper.execute(recipientId);
+
+                for (RecipientFilter filter : filters)
+                {
+                    if (filter.shouldFilter(recipient, notification, notifierType))
+                    {
+                        continue eachRecipient;
+                    }
+                }
+                finalRecipients.add(recipientId);
+            }
+
+            return finalRecipients;
+        }
     }
 }
