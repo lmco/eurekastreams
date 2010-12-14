@@ -1,4 +1,4 @@
-### Feedback
+## Feedback
 
 ![](images/PS_UX_feedback_fig01.png)
 
@@ -8,6 +8,7 @@
 2. Closes the feedback window
 3. Undoes the action
 
-### Processing
+## Processing
 
-### Validation
+## Validation
+
