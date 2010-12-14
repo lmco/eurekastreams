@@ -22,8 +22,7 @@ import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.UpdatePersonResponse;
 
 /**
- * Mapper to update the person in the DB with any additional properties found from ldap.
- * 
+ * Mapper to update the person in the DB with any additional properties found from ldap or updated last name.
  */
 public class UpdatePersonMapper extends BaseArgDomainMapper<Person, UpdatePersonResponse>
 {
@@ -45,6 +44,13 @@ public class UpdatePersonMapper extends BaseArgDomainMapper<Person, UpdatePerson
         HashMap<String, String> updatedProperties = new HashMap<String, String>();
         boolean wasPersonUpdated = false;
 
+        // Checks to see if last name in ldap matches what the db has, updating db if they don't match.
+        if (!dbPerson.getLastName().equals(ldapPerson.getLastName()))
+        {
+            dbPerson.setLastName(ldapPerson.getLastName());
+            wasPersonUpdated = true;
+        }
+        
         // Looks for any additional properties defined for the person retrieved from ldap call.
         if (ldapAdditionalProperties != null)
         {
@@ -62,17 +68,19 @@ public class UpdatePersonMapper extends BaseArgDomainMapper<Person, UpdatePerson
             if (updatedProperties.keySet().size() > 0)
             {
                 dbPerson.setAdditionalProperties(updatedProperties);
-                getEntityManager().createQuery("UPDATE Person SET additionalProperties = :props where id = :id")
-                        .setParameter("id", dbPerson.getId()).setParameter("props", updatedProperties).executeUpdate();
                 wasPersonUpdated = true;
             }
         }
         // Finds if any previously set db properties are no longer necessary due to not being defined on ldap person.
         else if (dbAdditionalProperties != null)
         {
-            getEntityManager().createQuery("UPDATE Person SET additionalProperties = null where id = :id")
-                    .setParameter("id", dbPerson.getId()).executeUpdate();
+            dbPerson.setAdditionalProperties(null);
             wasPersonUpdated = true;
+        }
+        
+        if (wasPersonUpdated)
+        {
+            getEntityManager().flush();
         }
 
         return new UpdatePersonResponse(dbPerson.getId(), wasPersonUpdated);
