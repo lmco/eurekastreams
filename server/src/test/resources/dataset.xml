@@ -70,26 +70,12 @@
 		gadgetCategoryId="4327" created="2009-01-01 12:00:00.000"
 		showInGallery="true" numberOfUsers="2" />
 
-	<Task id="88443" version="1" gadgetDefinitionId="1831" name="task1"
-		description="doesntchange" />
-	<Task id="88444" version="1" gadgetDefinitionId="1831" name="task2"
-		description="orig" />
-	<Task id="88445" version="1" gadgetDefinitionId="1831" name="task3"
-		description="deleteme" />
-
 	<!--
 		TabTemplates that truly are templates (type is set)These should not be
 		associated with tab group.
 	-->
 	<TabTemplate id="5555" version="1" tabName="Welcome" type="WELCOME"
 		tabLayout="TWOCOLUMN" deleted="false" />
-	<TabTemplate id="6666" version="1" tabName="About" type="ORG_ABOUT"
-		tabLayout="TWOCOLUMN" deleted="false" />
-	<TabTemplate id="7777" version="1" tabName="About" type="PERSON_ABOUT"
-		tabLayout="TWOCOLUMN" deleted="false" />
-	<TabTemplate id="8888" version="1" tabName="Applications"
-		type="APP" tabLayout="TWOCOLUMN" deleted="false" />
-
 
 	<TabGroup id="4231" version="5783" />
 	<TabTemplate id="1097" version="1" tabName="Ford Tab 1"
@@ -195,7 +181,7 @@
 		email="vswatter@gmail.com" workPhone="6105551212" title="towel carrier"
 		jobDescription="skljk klsdjlsdlsj lkj" location="99999" followersCount="0"
 		followingCount="0" groupsCount="0" parentOrganizationId="5" themeId="103"
-		startTabGroupId="4231" avatarId="sdfsdsd" profileTabGroupId="4231"
+		startTabGroupId="4231" avatarId="sdfsdsd"
 		openSocialId="2d359911-0977-418a-9490-57e8252b1a42" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="1" streamScopeId="1"
 		commentable="true" streamPostable="true" accountlocked="false"
@@ -205,7 +191,7 @@
 		email="vswatter@gmail.com" workPhone="6105551212" title="towel carrier"
 		jobDescription="skljk klsdjlsdlsj lkj" location="99999" followersCount="0"
 		followingCount="0" groupsCount="0" parentOrganizationId="6" themeId="102"
-		startTabGroupId="4231" avatarId="sdfsd" profileTabGroupId="4231"
+		startTabGroupId="4231" avatarId="sdfsd"
 		openSocialId="2d359911-0977-418a-9490-57e8252b1142" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="2"
 		commentable="true" streamPostable="false" accountlocked="false"
@@ -235,9 +221,6 @@
 		organizationId="6" />
 	<Person_RelatedOrganization personId="142"
 		organizationId="5" />
-
-	<Person_Task taskId="88445" personId="42" />
-
 
 	<Theme id="103" version="1134" cssFile="generated1.css"
 		uuid="f81d4fae-7dec-11d0-a765-00a0c91e6bf7" themeUrl="http://www.eurekastreams.org/theme1.xml"
@@ -398,7 +381,7 @@
 		workPhone="6105551212" title="billionth" location="99999"
 		overview="skljk klsdjlsdlsj lkj2" followersCount="0" followingCount="0"
 		groupsCount="1" parentOrganizationId="7" themeId="102"
-		startTabGroupId="5393" avatarId="abcdefg" profileTabGroupId="5393"
+		startTabGroupId="5393" avatarId="abcdefg"
 		openSocialId="2d359911-0977-418a-9490-57e8252b4507" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="3" 
 		commentable="true" streamPostable="true" accountlocked="false"
@@ -411,7 +394,7 @@
 		workPhone="6105551212" title="lickspittle" location="99999"
 		jobDescription="skljk klsdjlsdlsj lkj5" followersCount="0" followingCount="1"
 		groupsCount="1" parentOrganizationId="7" themeId="102"
-		startTabGroupId="4231" avatarId="heynow" profileTabGroupId="4231"
+		startTabGroupId="4231" avatarId="heynow"
 		openSocialId="2d359911-0977-418a-9490-57e8252b1a98" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="87433" 
 		commentable="true" streamPostable="true" accountlocked="false"
@@ -422,7 +405,7 @@
 		workPhone="6105551212" title="Master of All" location="99999"
 		jobDescription="skljk klsdjlsdlsj lkj" followersCount="1" followingCount="0"
 		groupsCount="1" parentOrganizationId="7" themeId="102"
-		startTabGroupId="4231" profileTabGroupId="4231" avatarId="foofoo"
+		startTabGroupId="4231" avatarId="foofoo"
 		openSocialId="2d359911-0977-418a-9490-57e8252b1a99" dateAdded="2009-01-01 05:54:54"
 		updatesCount="5" streamViewHiddenLineIndex="0" streamScopeId="4" 
 		commentable="true" streamPostable="true" accountlocked="false"

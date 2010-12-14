@@ -649,13 +649,6 @@ public class ActivityDTO extends ModelView implements Serializable
         destinationStream = inDestinationStream;
     }
 
-    /**
-     * @return the starred
-     */
-    public Boolean getStarred()
-    {
-        return starred;
-    }
 
     /**
      * @return the comments

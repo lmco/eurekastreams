@@ -20,16 +20,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import javax.servlet.ServletContext;
-
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
-import org.eurekastreams.server.service.actions.strategies.ContextHolder;
 import org.eurekastreams.server.service.actions.strategies.FileFetcher;
-import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.integration.junit4.JUnit4Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
 /**
@@ -44,26 +37,6 @@ public class UrlXmlValidatorTest
     private UrlXmlValidator sut = null;
 
     /**
-     * Context for building mock objects.
-     */
-    private final Mockery context = new JUnit4Mockery()
-    {
-        {
-            setImposteriser(ClassImposteriser.INSTANCE);
-        }
-    };
-
-    /**
-     * Mocked ServletContext. The SUT needs this to figure out where to write the CSS file.
-     */
-    private ServletContext servletContext = context.mock(ServletContext.class);
-
-    /**
-     * A mocked helper to provide the ServletContext.
-     */
-    private ContextHolder contextHolder = context.mock(ContextHolder.class);
-
-    /**
      * FileFetcher to use.
      */
     private FileFetcher fileFetcher = new FileFetcher();
@@ -74,21 +47,9 @@ public class UrlXmlValidatorTest
     @Test
     public void execute()
     {
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(servletContext).getRealPath(with(any(String.class)));
-                will(returnValue("src/test/resources"));
-
-                oneOf(contextHolder).getContext();
-                will(returnValue(servletContext));
-            }
-        });
-        sut = new UrlXmlValidator("http://www.w3.org/2001/XMLSchema", "/themes/theme.xsd", fileFetcher, contextHolder);
+        sut = new UrlXmlValidator("http://www.w3.org/2001/XMLSchema", "/themes/theme.xsd", fileFetcher);
 
         sut.validate(getActionContext("src/test/resources/themes/vegas.xml"));
-
-        context.assertIsSatisfied();
     }
 
     /**
@@ -97,18 +58,8 @@ public class UrlXmlValidatorTest
     @Test
     public void executeBadTheme()
     {
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(servletContext).getRealPath(with(any(String.class)));
-                will(returnValue("src/test/resources"));
 
-                oneOf(contextHolder).getContext();
-                will(returnValue(servletContext));
-            }
-        });
-
-        sut = new UrlXmlValidator("http://www.w3.org/2001/XMLSchema", "/themes/theme.xsd", fileFetcher, contextHolder);
+        sut = new UrlXmlValidator("http://www.w3.org/2001/XMLSchema", "/themes/theme.xsd", fileFetcher);
 
         boolean exceptionFired = false;
         try
@@ -120,8 +71,6 @@ public class UrlXmlValidatorTest
             exceptionFired = true;
         }
         assertTrue("Didn't get the validation exception that was expected from the bad theme", exceptionFired);
-
-        context.assertIsSatisfied();
     }
 
     /**
@@ -130,18 +79,7 @@ public class UrlXmlValidatorTest
     @Test
     public void executeMissingTheme()
     {
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(servletContext).getRealPath(with(any(String.class)));
-                will(returnValue("src/test/resources"));
-
-                oneOf(contextHolder).getContext();
-                will(returnValue(servletContext));
-            }
-        });
-
-        sut = new UrlXmlValidator("http://www.w3.org/2001/XMLSchema", "/themes/theme.xsd", fileFetcher, contextHolder);
+        sut = new UrlXmlValidator("http://www.w3.org/2001/XMLSchema", "/themes/theme.xsd", fileFetcher);
 
         boolean exceptionFired = false;
         try
@@ -153,7 +91,6 @@ public class UrlXmlValidatorTest
             exceptionFired = true;
         }
         assertTrue("Didn't get the validation exception that was expected from the missing theme", exceptionFired);
-        context.assertIsSatisfied();
     }
 
     /**

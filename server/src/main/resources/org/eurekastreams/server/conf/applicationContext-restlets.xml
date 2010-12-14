@@ -18,51 +18,6 @@
 		<property name="modifiable" value="true" />
 	</bean>
 
-	<bean id="orgCompletedTasksResource" class="org.eurekastreams.server.service.restlets.CompositeEntityCompletedTasksResource"
-		scope="prototype">
-		<property name="entityMapper" ref="jpaOrganizationMapper" />
-		<property name="taskMapper" ref="jpaTaskMapper" />
-		<property name="modifiable" value="true" />
-	</bean>
-
-	<bean id="groupCompletedTasksResource" class="org.eurekastreams.server.service.restlets.CompositeEntityCompletedTasksResource"
-		scope="prototype">
-		<property name="entityMapper" ref="jpaGroupMapper" />
-		<property name="taskMapper" ref="jpaTaskMapper" />
-		<property name="modifiable" value="true" />
-	</bean>
-
-	<bean id="orgCompletedTaskResource" class="org.eurekastreams.server.service.restlets.CompositeEntityCompletedTaskResource"
-		scope="prototype">
-		<property name="entityMapper" ref="jpaOrganizationMapper" />
-		<property name="modifiable" value="true" />
-	</bean>
-
-	<bean id="groupCompletedTaskResource" class="org.eurekastreams.server.service.restlets.CompositeEntityCompletedTaskResource"
-		scope="prototype">
-		<property name="entityMapper" ref="jpaGroupMapper" />
-		<property name="modifiable" value="true" />
-	</bean>
-
-	<bean id="personCompletedTasksResource" class="org.eurekastreams.server.service.restlets.PersonCompletedTasksResource"
-		scope="prototype">
-		<property name="personMapper" ref="jpaPersonMapper" />
-		<property name="taskMapper" ref="jpaTaskMapper" />
-		<property name="modifiable" value="true" />
-	</bean>
-
-	<bean id="personCompletedTaskResource" class="org.eurekastreams.server.service.restlets.PersonCompletedTaskResource"
-		scope="prototype">
-		<property name="personMapper" ref="jpaPersonMapper" />
-		<property name="modifiable" value="true" />
-	</bean>
-
-	<bean id="gadgetChecklistResource" class="org.eurekastreams.server.service.restlets.ChecklistResource"
-		scope="prototype">
-		<property name="gadgetDefinitionMapper" ref="jpaGadgetDefinitionMapper" />
-		<property name="modifiable" value="true" />
-	</bean>
-
 	<bean id="personFullBioResource" class="org.eurekastreams.server.service.restlets.PersonFullBioResource"
 		scope="prototype">
 		<property name="personMapper" ref="jpaPersonMapper" />
@@ -229,6 +184,18 @@
                 </constructor-arg>
     </bean>
 	
+	<bean name="actionResource" class="org.eurekastreams.server.service.restlets.ActionResource" scope="prototype">
+        <constructor-arg ref="serviceActionController" />
+        <constructor-arg ref="openSocialPrincipalPopulator" />
+        <constructor-arg>
+            <bean class="org.codehaus.jackson.map.MappingJsonFactory" />
+        </constructor-arg>
+        <constructor-arg ref="applicationContextHolder" />
+        <constructor-arg ref="getPersonByAccountIdMapper" /> 
+        <constructor-arg value="true" />
+    </bean>
+       
+       
 	<bean name="streamResource" class="org.eurekastreams.server.service.restlets.StreamResource" scope="prototype">
 		<constructor-arg ref="getActivitiesByRequest" />
 		<constructor-arg ref="serviceActionController" />
@@ -266,30 +233,6 @@
 					key="/feedreader/">
 					<bean class="org.restlet.ext.spring.SpringFinder">
 						<lookup-method name="createResource" bean="feedReaderCollectionResource" />
-					</bean>
-				</entry>
-				<entry
-					key="/organizations/{shortName}/gadgets/{gadgetDefId}/completedTasks">
-					<bean class="org.restlet.ext.spring.SpringFinder">
-						<lookup-method name="createResource" bean="orgCompletedTasksResource" />
-					</bean>
-				</entry>
-				<entry
-					key="/groups/{shortName}/gadgets/{gadgetDefId}/completedTasks">
-					<bean class="org.restlet.ext.spring.SpringFinder">
-						<lookup-method name="createResource" bean="groupCompletedTasksResource" />
-					</bean>
-				</entry>
-				<entry
-					key="/organizations/{shortName}/gadgets/{gadgetDefId}/completedTasks/{taskName}">
-					<bean class="org.restlet.ext.spring.SpringFinder">
-						<lookup-method name="createResource" bean="orgCompletedTaskResource" />
-					</bean>
-				</entry>
-				<entry
-					key="/groups/{shortName}/gadgets/{gadgetDefId}/completedTasks/{taskName}">
-					<bean class="org.restlet.ext.spring.SpringFinder">
-						<lookup-method name="createResource" bean="groupCompletedTaskResource" />
 					</bean>
 				</entry>
 				<entry key="/organizations/{shortName}/overview">
@@ -369,22 +312,6 @@
 						<lookup-method name="createResource" bean="recommendationsEntryResource" />
 					</bean>
 				</entry>
-				<entry key="/people/{accountId}/gadgets/{gadgetDefId}/completedTasks">
-					<bean class="org.restlet.ext.spring.SpringFinder">
-						<lookup-method name="createResource" bean="personCompletedTasksResource" />
-					</bean>
-				</entry>
-				<entry
-					key="/people/{accountId}/gadgets/{gadgetDefId}/completedTasks/{taskName}">
-					<bean class="org.restlet.ext.spring.SpringFinder">
-						<lookup-method name="createResource" bean="personCompletedTaskResource" />
-					</bean>
-				</entry>
-				<entry key="/gadgets/{gadgetDefId}/checklist">
-					<bean class="org.restlet.ext.spring.SpringFinder">
-						<lookup-method name="createResource" bean="gadgetChecklistResource" />
-					</bean>
-				</entry>
 				<entry key="/people/{uuid}/jobs">
 					<bean class="org.restlet.ext.spring.SpringFinder">
 						<lookup-method name="createResource" bean="jobCollectionResource" />
@@ -458,6 +385,11 @@
                 <entry key="/util/personProperties">
                     <bean class="org.restlet.ext.spring.SpringFinder">
                         <lookup-method name="createResource" bean="personPropertiesResource" />
+                    </bean>
+                </entry>
+                <entry key="/api/{accountidFromUrl}/action/{action}/{requestType}/{requestJSON}">
+                    <bean class="org.restlet.ext.spring.SpringFinder">
+                        <lookup-method name="createResource" bean="actionResource" />
                     </bean>
                 </entry>
 			</map>

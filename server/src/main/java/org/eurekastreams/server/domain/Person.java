@@ -81,7 +81,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     /**
      * Serial version uid.
      */
-    private static final long serialVersionUID = 8787041962588073597L;
+    private static final long serialVersionUID = -2941774908815671062L;
 
     /**
      * used for validation.
@@ -199,7 +199,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     @Transient
     @Field(name = "isPublic", index = Index.UN_TOKENIZED, store = Store.NO)
     @SuppressWarnings("unused")
-    private boolean publicGroup = true;
+    private final boolean publicGroup = true;
 
     /**
      * Transient field used only for displaying a banner on profile pages. This is needed so that a common strategy can
@@ -319,19 +319,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     //
     analyzer = @Analyzer(impl = TextStemmerAnalyzer.class), store = Store.NO)
     private String title;
-
-    /**
-     * The gadget tasks.
-     */
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
-    @JoinTable(name = "Person_Task",
-    // join columns
-    joinColumns = { @JoinColumn(table = "Person", name = "personId") },
-    // inverse join columns
-    inverseJoinColumns = { @JoinColumn(table = "Task", name = "taskId") },
-    // unique constraints
-    uniqueConstraints = { @UniqueConstraint(columnNames = { "personId", "taskId" }) })
-    private List<Task> completedTasks;
 
     /**
      * Parent organization.
@@ -569,13 +556,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     private TabGroup startTabGroup = new TabGroup();
 
     /**
-     * Profile page TabGroup.
-     */
-    @OneToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
-    @JoinColumn(name = "profileTabGroupId", nullable = false)
-    private TabGroup profileTabGroup = new TabGroup();
-
-    /**
      * The application data for this person.
      */
     @SuppressWarnings("unused")
@@ -631,7 +611,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         if (displayName == null || displayName.isEmpty())
         {
-            displayName = this.preferredName + " " + this.lastName;
+            displayName = preferredName + " " + lastName;
         }
         return displayName;
     }
@@ -659,7 +639,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      */
     @Formula("parentOrganizationId")
     private Long parentOrgId;
-    
+
     /**
      * Optional map of additional properties.
      */
@@ -677,18 +657,18 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     public Person(final PersonModelView personModelView)
     {
         this.setId(personModelView.getEntityId());
-        this.avatarId = personModelView.getAvatarId();
+        avatarId = personModelView.getAvatarId();
         setAccountId(personModelView.getAccountId());
-        this.openSocialId = personModelView.getOpenSocialId();
+        openSocialId = personModelView.getOpenSocialId();
         this.setOptOutVideos(personModelView.getOptOutVideos());
-        this.displayName = personModelView.getDisplayName();
-        this.followersCount = personModelView.getFollowersCount();
-        this.title = personModelView.getTitle();
+        displayName = personModelView.getDisplayName();
+        followersCount = personModelView.getFollowersCount();
+        title = personModelView.getTitle();
         email = personModelView.getEmail();
         dateAdded = personModelView.getDateAdded();
-        this.parentOrganization = new Organization(personModelView.getParentOrganizationName(), personModelView
+        parentOrganization = new Organization(personModelView.getParentOrganizationName(), personModelView
                 .getParentOrganizationShortName());
-        this.additionalProperties = personModelView.getAdditionalProperties();
+        additionalProperties = personModelView.getAdditionalProperties();
     }
 
     /**
@@ -709,12 +689,12 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
             final String inLastName, final String inPreferredName)
     {
         setAccountId(inAccountId);
-        this.firstName = inFirstName;
-        this.middleName = inMiddleName;
-        this.lastName = inLastName;
-        this.preferredName = (inPreferredName == null || inPreferredName.trim().length() == 0) ? inFirstName
+        firstName = inFirstName;
+        middleName = inMiddleName;
+        lastName = inLastName;
+        preferredName = (inPreferredName == null || inPreferredName.trim().length() == 0) ? inFirstName
                 : inPreferredName;
-        this.displayName = this.preferredName + " " + this.lastName;
+        displayName = preferredName + " " + lastName;
     }
 
     /**
@@ -761,15 +741,13 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         {
         case START:
             return startTabGroup != null ? startTabGroup.getTabs() : new ArrayList<Tab>();
-        case PROFILE:
-            return profileTabGroup != null ? profileTabGroup.getTabs() : new ArrayList<Tab>();
         default:
             return new ArrayList<Tab>();
         }
     }
 
     /**
-     * Adds the given tab to the specified tabGroupType.
+     * Adds the given tab to the specified tab group type.
      *
      * @param newTab
      *            The new tab.
@@ -782,9 +760,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         {
         case START:
             startTabGroup.addTab(newTab);
-            break;
-        case PROFILE:
-            profileTabGroup.addTab(newTab);
             break;
         default:
         }
@@ -805,23 +780,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     public void setStartTabGroup(final TabGroup inStartTabGroup)
     {
         startTabGroup = inStartTabGroup;
-    }
-
-    /**
-     * @return the profileTabGroup
-     */
-    public TabGroup getProfileTabGroup()
-    {
-        return profileTabGroup;
-    }
-
-    /**
-     * @param inProfileTabGroup
-     *            the profileTabGroup to set
-     */
-    public void setProfileTabGroup(final TabGroup inProfileTabGroup)
-    {
-        profileTabGroup = inProfileTabGroup;
     }
 
     /**
@@ -913,6 +871,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      *
      * @return person's email address.
      */
+    @Override
     public String getEmail()
     {
         return email;
@@ -1121,6 +1080,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     /**
      * @return the followersCount
      */
+    @Override
     public int getFollowersCount()
     {
         return followersCount;
@@ -1171,6 +1131,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      *
      * @return avatar x coord.
      */
+    @Override
     public Integer getAvatarCropX()
     {
         return avatarCropX;
@@ -1182,6 +1143,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      * @param value
      *            x coord.
      */
+    @Override
     public void setAvatarCropX(final Integer value)
     {
         avatarCropX = value;
@@ -1192,6 +1154,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      *
      * @return avatar y coord.
      */
+    @Override
     public Integer getAvatarCropY()
     {
         return avatarCropY;
@@ -1203,6 +1166,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      * @param value
      *            y coord.
      */
+    @Override
     public void setAvatarCropY(final Integer value)
     {
         avatarCropY = value;
@@ -1213,6 +1177,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      *
      * @return avatar crop size.
      */
+    @Override
     public Integer getAvatarCropSize()
     {
         return avatarCropSize;
@@ -1224,6 +1189,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      * @param value
      *            crop size.
      */
+    @Override
     public void setAvatarCropSize(final Integer value)
     {
         avatarCropSize = value;
@@ -1232,6 +1198,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     /**
      * @return the avatar Id
      */
+    @Override
     public String getAvatarId()
     {
         return avatarId;
@@ -1241,6 +1208,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      * @param inAvatarId
      *            the avatar to set
      */
+    @Override
     public void setAvatarId(final String inAvatarId)
     {
         avatarId = inAvatarId;
@@ -1258,7 +1226,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     @SuppressWarnings("unused")
     private void setFirstName(final String inFirstName)
     {
-        this.firstName = inFirstName;
+        firstName = inFirstName;
     }
 
     /**
@@ -1270,7 +1238,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     @SuppressWarnings("unused")
     private void setMiddleName(final String inMiddleName)
     {
-        this.middleName = inMiddleName;
+        middleName = inMiddleName;
     }
 
     /**
@@ -1285,7 +1253,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     @SuppressWarnings("unused")
     private void setLastName(final String inLastName)
     {
-        this.lastName = inLastName;
+        lastName = inLastName;
     }
 
     /**
@@ -1297,10 +1265,10 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     @SuppressWarnings("unused")
     public void setPreferredName(final String inPreferredName)
     {
-        this.preferredName = inPreferredName;
+        preferredName = inPreferredName;
 
         // reset the display name
-        this.displayName = null;
+        displayName = null;
     }
 
     /**
@@ -1317,6 +1285,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     /**
      * @return the parentOrganization
      */
+    @Override
     public Organization getParentOrganization()
     {
         return parentOrganization;
@@ -1359,6 +1328,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      * @param inOrganization
      *            the parentOrganization to set
      */
+    @Override
     public void setParentOrganization(final Organization inOrganization)
     {
         parentOrganization = inOrganization;
@@ -1418,28 +1388,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     }
 
     /**
-     * Returns the completed tasks for a person.
-     *
-     * @return the tasks.
-     */
-    public List<Task> getCompletedTasks()
-    {
-        return completedTasks;
-    }
-
-    /**
-     * Needed for serialization.
-     *
-     * @param inTasks
-     *            the tasks.
-     */
-    @SuppressWarnings("unused")
-    private void setCompletedTasks(final List<Task> inTasks)
-    {
-        completedTasks = inTasks;
-    }
-
-    /**
      * @return the overview
      */
     public String getOverview()
@@ -1453,7 +1401,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      */
     public void setOverview(final String inOverview)
     {
-        this.overview = inOverview;
+        overview = inOverview;
     }
 
     /**
@@ -1523,7 +1471,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      */
     protected void setDateAdded(final Date inDateAdded)
     {
-        this.dateAdded = inDateAdded;
+        dateAdded = inDateAdded;
     }
 
     /**
@@ -1554,7 +1502,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      */
     protected void setUpdatesCount(final int inUpdatesCount)
     {
-        this.updatesCount = inUpdatesCount;
+        updatesCount = inUpdatesCount;
     }
 
     /**
@@ -1646,7 +1594,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      */
     public void setStreamViewHiddenLineIndex(final Integer inStreamViewHiddenLineIndex)
     {
-        this.streamViewHiddenLineIndex = inStreamViewHiddenLineIndex;
+        streamViewHiddenLineIndex = inStreamViewHiddenLineIndex;
     }
 
     /**
@@ -1663,7 +1611,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      */
     public void setGroupStreamHiddenLineIndex(final Integer inGroupStreamHiddenLineIndex)
     {
-        this.groupStreamHiddenLineIndex = inGroupStreamHiddenLineIndex;
+        groupStreamHiddenLineIndex = inGroupStreamHiddenLineIndex;
     }
 
     // ----------------------------------------------------
@@ -1743,7 +1691,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      */
     public void setStreamScope(final StreamScope inStreamScope)
     {
-        this.streamScope = inStreamScope;
+        streamScope = inStreamScope;
     }
 
     /**
@@ -1778,6 +1726,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      *
      * @return the parent org id without loading the parent organization
      */
+    @Override
     public Long getParentOrgId()
     {
         return parentOrgId;
@@ -1859,10 +1808,10 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     {
         streams = inStreams;
     }
-    
+
     /**
      * The additionalProperties setter.
-     * 
+     *
      * @param inAdditionalProperties
      *            the properties hashmap to set
      */
@@ -1873,7 +1822,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
 
     /**
      * The additionalProperties getter.
-     * 
+     *
      * @return additionalProperties hashmap.
      */
     public HashMap<String, String> getAdditionalProperties()

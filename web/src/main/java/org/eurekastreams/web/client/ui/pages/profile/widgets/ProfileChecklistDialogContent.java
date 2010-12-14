@@ -18,9 +18,9 @@ package org.eurekastreams.web.client.ui.pages.profile.widgets;
 import java.util.List;
 
 import org.eurekastreams.commons.client.ui.WidgetCommand;
-import org.eurekastreams.server.domain.Task;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
+import org.eurekastreams.web.client.ui.pages.profile.Task;
 
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The dialog of the checklist itself.
- * 
+ *
  */
 public class ProfileChecklistDialogContent implements DialogContent
 {
@@ -48,41 +48,41 @@ public class ProfileChecklistDialogContent implements DialogContent
     /**
      * The title.
      */
-    private String title;
+    private final String title;
     /**
      * The description.
      */
-    private String description;
+    private final String description;
     /**
      * The overall percentage done.
      */
-    private int percentage;
+    private final int percentage;
     /**
      * The percentage each item represents.
      */
-    private int percentPerItem;
+    private final int percentPerItem;
     /**
      * The tasks to do.
      */
-    private List<Task> tasksToDo;
+    private final List<Task> tasksToDo;
     /**
      * The completed tasks.
      */
-    private List<Task> completedTasks;
+    private final List<Task> completedTasks;
 
     /**
      * The content widget.
      */
-    private FlowPanel content = new FlowPanel();
+    private final FlowPanel content = new FlowPanel();
 
     /**
      * The target URL.
      */
-    private CreateUrlRequest target;
+    private final CreateUrlRequest target;
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inTitle
      *            the title.
      * @param inDescription
@@ -112,7 +112,7 @@ public class ProfileChecklistDialogContent implements DialogContent
 
     /**
      * Gets the widget body of the dialog.
-     * 
+     *
      * @return the widget.
      */
     public Widget getBody()
@@ -132,18 +132,10 @@ public class ProfileChecklistDialogContent implements DialogContent
             boolean done = false;
             if (completedTasks.indexOf(task) >= 0)
             {
-                if (completedTasks.get(completedTasks.indexOf(task)).getId() == task.getId())
-                {
-                    done = true;
-                }
+                done = true;
             }
 
-            int itemPercentage = percentPerItem;
-
-            if (!done)
-            {
-                itemPercentage = 0;
-            }
+            int itemPercentage = done ? percentPerItem : 0;
 
             TaskPanel taskPanel = new TaskPanel(task, done, itemPercentage, target);
             taskPanel.addTaskClickListener(new ClickListener()
@@ -168,7 +160,7 @@ public class ProfileChecklistDialogContent implements DialogContent
 
     /**
      * Returns the CSS name of this object.
-     * 
+     *
      * @return the css name.
      */
     public String getCssName()
@@ -178,7 +170,7 @@ public class ProfileChecklistDialogContent implements DialogContent
 
     /**
      * Returns the title of the dialog.
-     * 
+     *
      * @return the title.
      */
     public String getTitle()
@@ -188,7 +180,7 @@ public class ProfileChecklistDialogContent implements DialogContent
 
     /**
      * The command to call to close the dialog.
-     * 
+     *
      * @param command
      *            the close command.
      */

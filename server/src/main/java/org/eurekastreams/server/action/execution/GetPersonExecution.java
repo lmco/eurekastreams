@@ -18,7 +18,6 @@ package org.eurekastreams.server.action.execution;
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
-import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.BackgroundItemType;
 import org.eurekastreams.server.domain.Gadget;
@@ -28,18 +27,17 @@ import org.eurekastreams.server.domain.TabGroupType;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper;
 import org.eurekastreams.server.persistence.mappers.cache.PopulatePeopleWithSkeletonRelatedOrgsCacheMapper;
-import org.eurekastreams.server.service.actions.strategies.PersonDecorator;
 
 /**
  * Strategy to retrieve a person from the database by their id.
- *
+ * 
  */
 public class GetPersonExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
      * Instance of the logger.
      */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /**
      * PersonMapper used to retrieve person from the db.
@@ -47,34 +45,27 @@ public class GetPersonExecution implements ExecutionStrategy<PrincipalActionCont
     private PersonMapper mapper = null;
 
     /**
-     * Decorates the person object.
-     */
-    private PersonDecorator decorator = null;
-
-    /**
      * Mapper to add skeleton parent organizations onto Person objects.
      */
-    private PopulateOrgChildWithSkeletonParentOrgsCacheMapper skeletonParentOrgPopulator;
+    private final PopulateOrgChildWithSkeletonParentOrgsCacheMapper skeletonParentOrgPopulator;
 
     /**
      * Mapper to populate a person's related orgs with skeleton organizations from cache.
      */
-    private PopulatePeopleWithSkeletonRelatedOrgsCacheMapper skeletonRelatedOrgsMapper;
+    private final PopulatePeopleWithSkeletonRelatedOrgsCacheMapper skeletonRelatedOrgsMapper;
 
     /**
      * Strategy to retrieve the banner id if it is not directly configured.
      */
-    private GetBannerIdByParentOrganizationStrategy getBannerIdStrategy;
+    private final GetBannerIdByParentOrganizationStrategy getBannerIdStrategy;
 
     /**
      * Constructor that sets up the mapper.
-     *
+     * 
      * @param inMapper
      *            - instance of PersonMapper
      * @param inSkeletonRelatedOrgsMapper
      *            mapper to populate a person with skeleton related parent organizations
-     * @param inDecorator
-     *            the decorator the use on the person.
      * @param inSkeletonParentOrgPopulator
      *            mapper to populate parent org of people with a skeleton org
      * @param inGetBannerIdStrategy
@@ -82,21 +73,19 @@ public class GetPersonExecution implements ExecutionStrategy<PrincipalActionCont
      */
     public GetPersonExecution(final PersonMapper inMapper,
             final PopulatePeopleWithSkeletonRelatedOrgsCacheMapper inSkeletonRelatedOrgsMapper,
-            final PersonDecorator inDecorator,
             final PopulateOrgChildWithSkeletonParentOrgsCacheMapper inSkeletonParentOrgPopulator,
             final GetBannerIdByParentOrganizationStrategy inGetBannerIdStrategy)
     {
 
-        this.mapper = inMapper;
+        mapper = inMapper;
         skeletonRelatedOrgsMapper = inSkeletonRelatedOrgsMapper;
-        this.decorator = inDecorator;
         skeletonParentOrgPopulator = inSkeletonParentOrgPopulator;
         getBannerIdStrategy = inGetBannerIdStrategy;
     }
 
     /**
      * Retrieve a person from the database by their id, or current user if id is null.
-     *
+     * 
      * @param inActionContext
      *            {@link PrincipalActionContext}.
      * @return Person from the database by their id, or current user if id is null.
@@ -121,7 +110,7 @@ public class GetPersonExecution implements ExecutionStrategy<PrincipalActionCont
                 {
                     for (Gadget gadget : tab.getGadgets())
                     {
-                        gadget.getGadgetDefinition().getTasks().size();
+                        gadget.getGadgetDefinition();
                     }
                 }
             }
@@ -133,18 +122,6 @@ public class GetPersonExecution implements ExecutionStrategy<PrincipalActionCont
             if (result != null && result.getBackground() != null)
             {
                 result.getBackground().getBackgroundItems(BackgroundItemType.SKILL).size();
-            }
-        }
-
-        if (null != decorator && null != result)
-        {
-            try
-            {
-                decorator.decorate(result);
-            }
-            catch (Exception e)
-            {
-                throw new ExecutionException(e);
             }
         }
 
@@ -164,9 +141,9 @@ public class GetPersonExecution implements ExecutionStrategy<PrincipalActionCont
             skeletonParentOrgPopulator.populateParentOrgSkeleton(result);
         }
 
-        //Set the transient banner id on the person with the first parent org that
-        //has a banner id configured starting with the direct parent and walking up
-        //the tree.
+        // Set the transient banner id on the person with the first parent org that
+        // has a banner id configured starting with the direct parent and walking up
+        // the tree.
         getBannerIdStrategy.getBannerId(result.getParentOrgId(), result);
 
         return result;

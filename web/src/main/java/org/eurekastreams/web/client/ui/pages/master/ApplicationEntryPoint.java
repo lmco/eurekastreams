@@ -32,7 +32,6 @@ import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.TermsOfServiceDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
-import org.eurekastreams.web.client.events.ChecklistRefreshEvent;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.FormLoginCompleteEvent;
 import org.eurekastreams.web.client.events.GadgetStateChangeEvent;
@@ -85,7 +84,7 @@ public class ApplicationEntryPoint implements EntryPoint
     /**
      * The action processor.
      */
-    private ActionProcessor processor = new ActionProcessorImpl((ActionRPCServiceAsync) GWT
+    private final ActionProcessor processor = new ActionProcessorImpl((ActionRPCServiceAsync) GWT
             .create(ActionRPCService.class));
 
     /**
@@ -96,12 +95,12 @@ public class ApplicationEntryPoint implements EntryPoint
     /**
      * The jsni facade.
      */
-    private WidgetJSNIFacade jSNIFacade = new WidgetJSNIFacadeImpl();
+    private final WidgetJSNIFacade jSNIFacade = new WidgetJSNIFacadeImpl();
 
     /**
      * The session.
      */
-    private Session session = Session.getInstance();
+    private final Session session = Session.getInstance();
 
     /**
      * The login dialog.
@@ -286,14 +285,6 @@ public class ApplicationEntryPoint implements EntryPoint
                 });
 
         SystemSettingsModel.getInstance().fetch(null, true);
-    }
-
-    /**
-     * Fires off a refresh checklist event onto the bus.
-     */
-    public static void refreshChecklist()
-    {
-        EventBus.getInstance().notifyObservers(ChecklistRefreshEvent.getEvent());
     }
 
     /**
@@ -483,10 +474,6 @@ public class ApplicationEntryPoint implements EntryPoint
      */
     private static native void setUpGwtFunctions()
     /*-{
-        $wnd.gwt_refreshChecklist = function() {
-                @org.eurekastreams.web.client.ui.pages.master.ApplicationEntryPoint::refreshChecklist()();
-        }
-
         $wnd.gwt_newHistoryItem = function(token) {
                 @com.google.gwt.user.client.History::newItem(Ljava/lang/String;)(token);
         }

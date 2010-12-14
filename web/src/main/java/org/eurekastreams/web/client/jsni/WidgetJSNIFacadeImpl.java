@@ -15,10 +15,7 @@
  */
 package org.eurekastreams.web.client.jsni;
 
-import java.util.List;
-
 import org.eurekastreams.commons.client.ui.WidgetCommand;
-import org.eurekastreams.server.domain.Task;
 import org.eurekastreams.web.client.ui.common.dialog.DialogFactory;
 
 import com.google.gwt.http.client.URL;
@@ -35,28 +32,6 @@ import com.google.gwt.user.client.Window;
 public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
 {
     /**
-     * Sets the task cache for a gadget so that the gadget doesnt keep making requests.
-     *
-     * @param gadetDefId
-     *            the gadget id.
-     * @param tasks
-     *            the list of tasks.
-     */
-    public void setTaskCache(final Long gadetDefId, final List<Task> tasks)
-    {
-        int index = 0;
-
-        if (null != tasks)
-        {
-            for (Task task : tasks)
-            {
-                nativeSetTaskCache(gadetDefId.intValue(), index, task.getName(), task.getDescription());
-                index++;
-            }
-        }
-    }
-
-    /**
      * Escapes HTML.
      *
      * @param maybeHtml
@@ -69,35 +44,6 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
         DOM.setInnerText(div, maybeHtml);
         return DOM.getInnerHTML(div);
     }
-
-    /**
-     * Native method to set the task cache.
-     *
-     * @param i
-     *            the index of the gadget
-     * @param j
-     *            the index of the task.
-     * @param name
-     *            the name of the task.
-     * @param description
-     *            the desc of the task.
-     */
-    public static native void nativeSetTaskCache(final int i, final int j, final String name, final String description)
-    /*-{
-        if($wnd.gadgetCache==null)
-        {
-            $wnd.gadgetCache = new Array();
-        }
-        if($wnd.gadgetCache[i]==null)
-        {
-            $wnd.gadgetCache[i] = {};
-            $wnd.gadgetCache[i].tasks = new Array();
-        }
-
-        $wnd.gadgetCache[i].tasks[j] = {};
-        $wnd.gadgetCache[i].tasks[j].name = name;
-        $wnd.gadgetCache[i].tasks[j].description = description;
-    }-*/;
 
     /**
      * Helper class to set the theme css element to the head of the document.

@@ -28,7 +28,6 @@ import org.eurekastreams.server.domain.TabGroupType;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper;
 import org.eurekastreams.server.persistence.mappers.cache.PopulatePeopleWithSkeletonRelatedOrgsCacheMapper;
-import org.eurekastreams.server.service.actions.strategies.PersonDecorator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -38,7 +37,7 @@ import org.junit.Test;
 
 /**
  * Test for GetPersonExecution class.
- *
+ * 
  */
 public class GetPersonExecutionTest
 {
@@ -78,11 +77,6 @@ public class GetPersonExecutionTest
     private Person testPerson = context.mock(Person.class);
 
     /**
-     * Mock decorator.
-     */
-    private PersonDecorator decoratorMock = context.mock(PersonDecorator.class);
-
-    /**
      * Mocked mapper to populate a person's parent organization with a skeleton org.
      */
     private PopulateOrgChildWithSkeletonParentOrgsCacheMapper peopleParentOrgSkeletonPopulatorMock = context
@@ -102,8 +96,8 @@ public class GetPersonExecutionTest
     /**
      * Mocked mapper for retrieving the banner id.
      */
-    private GetBannerIdByParentOrganizationStrategy getBannerIdMapperMock =
-        context.mock(GetBannerIdByParentOrganizationStrategy.class);
+    private GetBannerIdByParentOrganizationStrategy getBannerIdMapperMock = context
+            .mock(GetBannerIdByParentOrganizationStrategy.class);
 
     /**
      * Setup the test.
@@ -111,13 +105,13 @@ public class GetPersonExecutionTest
     @Before
     public final void setup()
     {
-        sut = new GetPersonExecution(mapper, skeletonRelatedOrgsMapper, decoratorMock,
-                peopleParentOrgSkeletonPopulatorMock, getBannerIdMapperMock);
+        sut = new GetPersonExecution(mapper, skeletonRelatedOrgsMapper, peopleParentOrgSkeletonPopulatorMock,
+                getBannerIdMapperMock);
     }
 
     /**
      * Retrieve a person using account id.
-     *
+     * 
      * @throws Exception
      *             should not occur
      */
@@ -141,8 +135,6 @@ public class GetPersonExecutionTest
                 allowing(testPerson).getBackground();
                 will(returnValue(bg));
 
-                oneOf(decoratorMock).decorate(testPerson);
-
                 oneOf(peopleParentOrgSkeletonPopulatorMock).populateParentOrgSkeleton(testPerson);
 
                 oneOf(skeletonRelatedOrgsMapper).execute(testPerson);
@@ -161,7 +153,7 @@ public class GetPersonExecutionTest
 
     /**
      * Test.
-     *
+     * 
      * @throws Exception
      *             not expected.
      */
@@ -186,8 +178,6 @@ public class GetPersonExecutionTest
                 will(returnValue(testPerson));
 
                 oneOf(testPerson).getTabs(TabGroupType.START);
-
-                oneOf(decoratorMock).decorate(testPerson);
 
                 oneOf(peopleParentOrgSkeletonPopulatorMock).populateParentOrgSkeleton(testPerson);
 

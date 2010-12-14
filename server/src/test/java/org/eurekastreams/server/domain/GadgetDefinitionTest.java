@@ -57,7 +57,6 @@ public class GadgetDefinitionTest
         sut.setGadgets(gadgets);
         sut.setNumberOfUsers(gadgets.size());
 
-        sut.getTasks();
         sut.getUrl();
         sut.getUUID();
         sut.getCategory();
@@ -87,5 +86,4 @@ public class GadgetDefinitionTest
         assertEquals(desc, sut.getGadgetDescription());
 
     }
-
 }

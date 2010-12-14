@@ -15,10 +15,6 @@
  */
 package org.eurekastreams.web.client.jsni;
 
-import java.util.List;
-
-import org.eurekastreams.server.domain.Task;
-
 import com.google.gwt.user.client.Element;
 
 /**
@@ -81,16 +77,6 @@ public interface WidgetJSNIFacade
      *            the image url.
      */
     void setBanner(String imageUrl);
-
-    /**
-     * Sets the task cache for a gadget so that the gadget doesnt keep making requests.
-     *
-     * @param gadetDefId
-     *            the gadget id.
-     * @param tasks
-     *            the list of tasks.
-     */
-    void setTaskCache(Long gadetDefId, List<Task> tasks);
 
     /**
      * Gets the last token in the URL typed by the user, used for figuring out where we are. (e.g. in view/directory

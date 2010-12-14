@@ -23,7 +23,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -77,7 +76,7 @@ public class Gadget extends DomainEntity implements Serializable
      * This field will maintain a link to the corresponding gadget definition
      * for this gadget instance.
      */
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "gadgetDefinitionId")
     private GadgetDefinition gadgetDefinition;
 
@@ -160,11 +159,11 @@ public class Gadget extends DomainEntity implements Serializable
             final int inZoneNumber, final int inZoneIndex, final Person inOwner,
             final String inGadgetUserPref)
     {
-        this.gadgetDefinition = inGadgetDefinition;
-        this.zoneNumber = inZoneNumber;
-        this.zoneIndex = inZoneIndex;
-        this.owner = inOwner;
-        this.gadgetUserPref = inGadgetUserPref;
+        gadgetDefinition = inGadgetDefinition;
+        zoneNumber = inZoneNumber;
+        zoneIndex = inZoneIndex;
+        owner = inOwner;
+        gadgetUserPref = inGadgetUserPref;
     }
 
     /**
@@ -206,7 +205,7 @@ public class Gadget extends DomainEntity implements Serializable
      */
     public int getZoneNumber()
     {
-        return this.zoneNumber;
+        return zoneNumber;
     }
 
     /**
@@ -217,7 +216,7 @@ public class Gadget extends DomainEntity implements Serializable
      */
     public void setZoneNumber(final int inZoneNumber)
     {
-        this.zoneNumber = inZoneNumber;
+        zoneNumber = inZoneNumber;
     }
 
     /**
@@ -228,7 +227,7 @@ public class Gadget extends DomainEntity implements Serializable
      */
     public int getZoneIndex()
     {
-        return this.zoneIndex;
+        return zoneIndex;
     }
 
     /**
@@ -239,7 +238,7 @@ public class Gadget extends DomainEntity implements Serializable
      */
     public void setZoneIndex(final int inZoneIndex)
     {
-        this.zoneIndex = inZoneIndex;
+        zoneIndex = inZoneIndex;
     }
 
     /**
@@ -249,7 +248,7 @@ public class Gadget extends DomainEntity implements Serializable
      */
     public Person getOwner()
     {
-        return this.owner;
+        return owner;
     }
 
     /**
@@ -260,7 +259,7 @@ public class Gadget extends DomainEntity implements Serializable
      */
     public void setOwner(final Person inOwner)
     {
-        this.owner = inOwner;
+        owner = inOwner;
     }
 
     /**
@@ -270,7 +269,7 @@ public class Gadget extends DomainEntity implements Serializable
      */
     public GadgetDefinition getGadgetDefinition()
     {
-        return this.gadgetDefinition;
+        return gadgetDefinition;
     }
 
     /**
@@ -281,7 +280,7 @@ public class Gadget extends DomainEntity implements Serializable
      */
     public void setGadgetDefinition(final GadgetDefinition inGadgetDefinition)
     {
-        this.gadgetDefinition = inGadgetDefinition;
+        gadgetDefinition = inGadgetDefinition;
     }
 
     /**
@@ -290,7 +289,7 @@ public class Gadget extends DomainEntity implements Serializable
      */
     public String getGadgetUserPref()
     {
-        return this.gadgetUserPref;
+        return gadgetUserPref;
     }
 
     /**
@@ -299,7 +298,7 @@ public class Gadget extends DomainEntity implements Serializable
      */
     public void setGadgetUserPref(final String inGadgetUserPref)
     {
-        this.gadgetUserPref = inGadgetUserPref;
+        gadgetUserPref = inGadgetUserPref;
     }
 
     /**
@@ -307,7 +306,7 @@ public class Gadget extends DomainEntity implements Serializable
      */
     public boolean isMinimized()
     {
-        return this.minimized;
+        return minimized;
     }
 
     /**
@@ -318,7 +317,7 @@ public class Gadget extends DomainEntity implements Serializable
      */
     public void setMinimized(final boolean inMinimized)
     {
-        this.minimized = inMinimized;
+        minimized = inMinimized;
     }
 
     /**

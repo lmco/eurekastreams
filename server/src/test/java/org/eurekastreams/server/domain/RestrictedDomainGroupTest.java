@@ -64,9 +64,7 @@ public class RestrictedDomainGroupTest
         sut.setId(id);
         assertEquals(id, sut.getId());
 
-        assertNull(sut.getCompletedTasks());
         assertNull(sut.getCoordinators());
-        assertNull(sut.getTabs(TabGroupType.PROFILE));
         assertFalse(sut.isCoordinator(""));
         assertFalse(sut.isPublicGroup());
     }

@@ -17,9 +17,9 @@ package org.eurekastreams.web.client.ui.pages.profile.widgets;
 
 import java.util.HashMap;
 
-import org.eurekastreams.server.domain.Task;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.profile.Task;
 
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -28,18 +28,18 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * Renders out one task for the checklist.
- * 
+ *
  */
 public class TaskPanel extends FlowPanel
 {
     /**
      * The title of the task.
      */
-    private Hyperlink defaultTaskTitle;
+    private final Hyperlink defaultTaskTitle;
 
     /**
      * Default constructor.
-     * 
+     *
      * @param task
      *            the task.
      * @param done
@@ -52,7 +52,7 @@ public class TaskPanel extends FlowPanel
     public TaskPanel(final Task task, final boolean done, final int percentage, final CreateUrlRequest inTarget)
     {
         this.addStyleName("checklist-task");
-        
+
         Label percentageLabel = new Label(String.valueOf(percentage) + "%");
         if (done)
         {
@@ -66,7 +66,7 @@ public class TaskPanel extends FlowPanel
 
         FlowPanel taskPanel = new FlowPanel();
         taskPanel.addStyleName("checklist-task-desc");
-        
+
         if (task.getTab() != "")
         {
             HashMap<String, String> linkParams = new HashMap<String, String>();
@@ -85,7 +85,7 @@ public class TaskPanel extends FlowPanel
 
     /**
      * Adds a listener to the task title.
-     * 
+     *
      * @param listener
      *            the listener.
      */

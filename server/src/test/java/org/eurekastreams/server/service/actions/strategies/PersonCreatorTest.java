@@ -69,17 +69,17 @@ public class PersonCreatorTest extends DomainEntityMapperTest
     /**
      * Person Mapper Mock.
      */
-    private PersonMapper personMapperMock = context.mock(PersonMapper.class);
+    private final PersonMapper personMapperMock = context.mock(PersonMapper.class);
 
     /**
      * Person Mapper Mock.
      */
-    private TabMapper tabMapperMock = context.mock(TabMapper.class);
+    private final TabMapper tabMapperMock = context.mock(TabMapper.class);
 
     /**
      * Person Mapper Mock.
      */
-    private OrganizationMapper organizationMapperMock = context.mock(OrganizationMapper.class);
+    private final OrganizationMapper organizationMapperMock = context.mock(OrganizationMapper.class);
 
     /**
      * actual person mapper.
@@ -133,7 +133,6 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         context.checking(new Expectations()
         {
             {
-                oneOf(tabMapperMock).getTabTemplate(TabType.PERSON_ABOUT);
                 oneOf(tabMapperMock).getTabTemplate(TabType.WELCOME);
                 oneOf(organizationMapperMock).getRootOrganization();
             }
@@ -143,7 +142,6 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         context.assertIsSatisfied();
 
         assertNotNull(p);
-        assertNotNull(p.getProfileTabGroup());
         assertNotNull(p.getStartTabGroup());
         assertEquals("nflanders", p.getAccountId());
         assertEquals("Ned", p.getFirstName());
@@ -179,7 +177,6 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         context.checking(new Expectations()
         {
             {
-                oneOf(tabMapperMock).getTabTemplate(TabType.PERSON_ABOUT);
                 oneOf(tabMapperMock).getTabTemplate(TabType.WELCOME);
             }
         });
@@ -199,7 +196,6 @@ public class PersonCreatorTest extends DomainEntityMapperTest
         context.assertIsSatisfied();
 
         assertNotNull(p);
-        assertNotNull(p.getProfileTabGroup());
         assertNotNull(p.getStartTabGroup());
         assertEquals("nflanders", p.getAccountId());
         assertEquals("Ned", p.getFirstName());

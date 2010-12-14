@@ -263,6 +263,7 @@ public class TabMapperTest extends DomainEntityMapperTest
         final Gadget g = fordTab1.getGadgets().get(0);
         afterTransactionAction = new PostTransactionAction()
         {
+            @Override
             public void execute()
             {
                 assertNotNull(g);
@@ -730,27 +731,10 @@ public class TabMapperTest extends DomainEntityMapperTest
     public void testGetTabTemplate()
     {
         final long welcomeId = 5555L;
-        final long orgAboutId = 6666L;
-        final long personAboutId = 7777L;
-        final long applicationsId = 8888L;
 
         TabTemplate welcome = jpaTabMapper.getTabTemplate(TabType.WELCOME);
-        TabTemplate orgAbout = jpaTabMapper.getTabTemplate(TabType.ORG_ABOUT);
-        TabTemplate personAbout = jpaTabMapper.getTabTemplate(TabType.PERSON_ABOUT);
-        TabTemplate applications = jpaTabMapper.getTabTemplate(TabType.APP);
-
         assertEquals(welcomeId, welcome.getId());
         assertEquals(TabType.WELCOME, welcome.getType());
-
-        assertEquals(orgAboutId, orgAbout.getId());
-        assertEquals(TabType.ORG_ABOUT, orgAbout.getType());
-
-        assertEquals(personAboutId, personAbout.getId());
-        assertEquals(TabType.PERSON_ABOUT, personAbout.getType());
-
-        assertEquals(applicationsId, applications.getId());
-        assertEquals(TabType.APP, applications.getType());
-
     }
 
     /**

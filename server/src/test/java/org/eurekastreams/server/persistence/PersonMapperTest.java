@@ -99,7 +99,7 @@ public class PersonMapperTest extends DomainEntityMapperTest
     /**
      * Memcached.
      */
-    private Cache memcached = context.mock(Cache.class);
+    private final Cache memcached = context.mock(Cache.class);
 
     /**
      * Setup method.
@@ -191,7 +191,6 @@ public class PersonMapperTest extends DomainEntityMapperTest
         p.setJobDescription("some description!");
         p.setParentOrganization(org);
         p.setStartTabGroup(tg);
-        p.setProfileTabGroup(tg);
         jpaPersonMapper.insert(p);
         assertTrue("Inserting a Person did not get a positive id.",
                 jpaPersonMapper.findByAccountId("ndtyson").getId() > 0);
@@ -250,7 +249,6 @@ public class PersonMapperTest extends DomainEntityMapperTest
         p.setAvatarId("avatar");
         p.setParentOrganization(org);
         p.setStartTabGroup(tg);
-        p.setProfileTabGroup(tg);
 
         // phone types not set should return null.
         assertNull("Phone types not set should return null", p.getCellPhone());
@@ -273,7 +271,6 @@ public class PersonMapperTest extends DomainEntityMapperTest
         assertTrue("5555555555".equals(sut.getCellPhone()));
         assertTrue("4444444444".equals(sut.getFax()));
         assertTrue("avatar".equals(sut.getAvatarId()));
-        assertEquals(id, sut.getProfileTabGroup().getId());
         assertEquals(id, sut.getStartTabGroup().getId());
     }
 
@@ -699,7 +696,6 @@ public class PersonMapperTest extends DomainEntityMapperTest
         p.setJobDescription("some description!");
         p.setParentOrganization(org);
         p.setStartTabGroup(tg);
-        p.setProfileTabGroup(tg);
 
         // make sure nothing's happened yet
         assertNull(dummyUpdater.getPersistedPerson());

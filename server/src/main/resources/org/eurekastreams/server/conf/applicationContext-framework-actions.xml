@@ -26,6 +26,10 @@
     
     <!-- A task action executor executing the action request in-method and in-thread.
 -->
+
+    <bean id="applicationContextHolder" class="org.eurekastreams.server.service.actions.strategies.ApplicationContextHolder" />
+
+
     <bean id="taskActionExecutor" class="org.eurekastreams.commons.task.TaskActionExecutor" />
 
     <!-- A threaded task action executor executing the action request in a single new thread.
@@ -910,7 +914,24 @@
         <constructor-arg value="true" />
     </bean> 
     
-    
+    <bean id="setPersonTheme" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <!-- fields: "themeId" (uuid or url)  -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.validation.gallery.ThemeIdValidation">
+                <constructor-arg ref="jpaThemeMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="noAuthorizationStrategy"/>
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.gallery.SetPersonThemeExecution">
+                <constructor-arg ref="jpaPersonMapper" />
+                <constructor-arg ref="jpaThemeMapper" />
+                <constructor-arg ref="deleteCacheKeys"/>
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+    </bean>    
+        
     <bean id="deleteThemeAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="galleryAuthorizer" />
@@ -923,15 +944,16 @@
         <constructor-arg value="false" />
     </bean>
 
-    <bean id="deleteGadgetDefinitionAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
+    <bean id="deleteGadgetDefinitionAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="galleryAuthorizer" />
         <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.gallery.DeleteGalleryItemExecution">
+            <bean class="org.eurekastreams.server.action.execution.gallery.HideThenDeleteGadgetExecution">
                 <constructor-arg ref="jpaGadgetDefinitionMapper" />
+                <constructor-arg value="deleteGadgetDefinitionAsyncAction" />
             </bean>
         </constructor-arg>
+        <constructor-arg ref="taskHandler" />
         <constructor-arg value="false" />
     </bean>
     
@@ -960,6 +982,47 @@
         <constructor-arg>
             <ref bean="getRootOrganizationIdAndShortNameMapper" />
         </constructor-arg>
+    </bean>
+
+    <bean id="deleteGadgetDefinitionAsyncAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+    	<constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.gallery.DeleteGadgetDefinitionExecution">
+				<constructor-arg>
+					<bean class="org.eurekastreams.server.persistence.mappers.db.DeleteGadgetDefinition" />
+				</constructor-arg>
+                <constructor-arg>
+                	<bean class="org.eurekastreams.server.persistence.mappers.db.GetTabTemplatesWithOwnersForGadgetDefinition" />
+                </constructor-arg>
+                <constructor-arg value="compressGadgetZoneAction" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="false" />
+    </bean>
+
+    <bean id="compressGadgetZoneAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+    	<constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.gallery.CompressGadgetZoneExecution">
+                <constructor-arg>
+                	<bean class="org.eurekastreams.server.persistence.mappers.db.GetVisibleGadgetsInZone" />
+                </constructor-arg>
+                <constructor-arg>
+                	<bean class="org.eurekastreams.server.persistence.mappers.cache.PrefixingCacheKeyAdaptor">
+                		<constructor-arg>
+                			<util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID" />
+                		</constructor-arg>
+                		<constructor-arg ref="deleteCacheKeys" />
+                	</bean>
+                </constructor-arg>
+<!-- NOTE: getPersonPagePropertiesById_FORCE_REFRESH is currently not available, so we use the mapper above instead.  
+	It only deletes the cached value but doesn't reload, so it should be swapped out when the below is ready. -->
+<!--                <constructor-arg ref="getPersonPagePropertiesById_FORCE_REFRESH" />-->
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="false" />
     </bean>
 
     <bean id="updateAppData" class="org.eurekastreams.commons.actions.service.ServiceAction">
@@ -3913,6 +3976,63 @@
 
     <bean id="personActorStrategy"
         class="org.eurekastreams.server.service.actions.strategies.activity.PersonActorRetrievalStrategy" />
+        
+    <bean id="themeUuidSeparator" class="java.lang.String">
+        <constructor-arg value="_uuid_" />
+    </bean>  
+    
+    <bean id="themeExtension" class="java.lang.String">
+        <constructor-arg value=".css" />
+    </bean> 
+    
+    <bean id="themeUrlPrefix" class="java.lang.String">
+        <constructor-arg value="/eurekastreams/themes/" />
+    </bean> 
+    
+    <bean id="personPagePropertiesDTOToThemeCssUrlTransformer" class="org.eurekastreams.server.persistence.mappers.cache.PersonPagePropertiesDTOToThemeCssUrlTransformer">
+        <constructor-arg ref="themeUrlPrefix"/>
+        <constructor-arg ref="themeExtension"/>
+        <constructor-arg ref="themeUuidSeparator"/>
+        <constructor-arg ref="getThemeVersionByUuid"/>
+    </bean>
+    
+    <bean id="requestUriToThemeUuidTransformer" class="org.eurekastreams.server.service.servlets.RequestUriToThemeUuidTransformer">
+        <constructor-arg ref="themeUuidSeparator"/>
+        <constructor-arg ref="themeExtension"/>
+    </bean>
+    
+    <bean id="getPersonPageProperties" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy"/>
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.GetPersonPagePropertiesExecution">
+                <constructor-arg ref="getPersonPagePropertiesById" /> 
+                <constructor-arg ref="personPagePropertiesDTOToThemeCssUrlTransformer"/>               
+            </bean>
+        </constructor-arg>        
+        <constructor-arg value="true" />
+    </bean>  
+    
+    <bean id="getPerson" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy"/>
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.GetPersonExecution">
+                <constructor-arg ref="jpaPersonMapper" />
+                <constructor-arg ref="populatePeopleWithSkeletonRelatedOrgsCacheMapper" />
+                <constructor-arg ref="populateOrgChildWithSkeletonParentOrgsCacheMapper"/>
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.action.execution.GetBannerIdByParentOrganizationStrategy">
+                        <constructor-arg ref="getOrganizationsByIdsMapper" />
+                        <constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />
+                        <constructor-arg ref="findByIdMapper" />
+                        <constructor-arg value="Person" />
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean> 
 
     <!--
         ****************************************************************************************

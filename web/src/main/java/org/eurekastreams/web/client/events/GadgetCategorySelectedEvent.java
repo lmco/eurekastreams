@@ -16,15 +16,14 @@
 package org.eurekastreams.web.client.events;
 
 /**
- * Event telling observers that the checklist backend data has been updated.
- *
+ * Event telling observers that a gadget category was selected.
  */
 public final class GadgetCategorySelectedEvent
 {
     /**
      * The selected category.
      */
-    private String category;
+    private final String category;
 
     /**
      * Gets the event.

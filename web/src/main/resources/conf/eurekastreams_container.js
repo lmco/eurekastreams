@@ -82,9 +82,6 @@
 		"osapi" : {
 		    // The endpoints to query for available JSONRPC/REST services
 		    "endPoints" : [ "${build.web.grbaseurl}/rpc" ]                   
-		},
-		"eurekastreams-checklist" : {
-			"parentBaseUrl" : "${build.web.baseurl}"
 		}
 	}
 }

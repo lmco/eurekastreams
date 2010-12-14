@@ -23,7 +23,6 @@ import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.server.domain.Theme;
 import org.eurekastreams.server.persistence.ThemeMapper;
-import org.eurekastreams.server.service.actions.strategies.CSSBuilderDecorator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -58,14 +57,9 @@ public class ThemeIdValidationTest
     private ThemeMapper themeMapper = context.mock(ThemeMapper.class);
 
     /**
-     * The decorator injected into the action.
-     */
-    private CSSBuilderDecorator decorator = context.mock(CSSBuilderDecorator.class);
-
-    /**
      * System under test.
      */
-    private ThemeIdValidation sut = new ThemeIdValidation(themeMapper, decorator);
+    private ThemeIdValidation sut = new ThemeIdValidation(themeMapper);
 
     /**
      * Make sure that valid uuid argument get approved.
@@ -98,9 +92,6 @@ public class ThemeIdValidationTest
         context.checking(new Expectations()
         {
             {
-                oneOf(decorator).validateTheme(testTheme.getUrl());
-                will(returnValue(true));
-
                 oneOf(themeMapper).findByUrl(testTheme.getUrl());
                 will(returnValue(testTheme));
             }
@@ -113,7 +104,7 @@ public class ThemeIdValidationTest
 
     /**
      * Make sure that sending bad arguments results in the expected exception.
-     *
+     * 
      */
     @Test(expected = Exception.class)
     public final void testValidateParamsWithBadParams()
@@ -123,7 +114,7 @@ public class ThemeIdValidationTest
 
     /**
      * Build a server action context for testing.
-     *
+     * 
      * @param themeId
      *            the theme id to set as the parameter
      * @return a server action context for testing
