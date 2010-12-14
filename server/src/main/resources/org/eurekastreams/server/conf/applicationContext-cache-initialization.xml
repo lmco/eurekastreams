@@ -31,8 +31,7 @@
                 <constructor-arg>
                     <list>
                         <value>cachePerson</value>
-                        <!-- Temp removal until theme issue is resolved. -->
-                        <!-- <value>cachePersonPageProperties</value> -->
+                        <value>cachePersonPageProperties</value>
                         <value>cacheFollowedPersonIdsForPersonList</value>
                         <value>cacheFollowerPersonIdsForPersonList</value>
                         <value>cacheFollowedGroupIdsForPersonList</value>
@@ -117,7 +116,6 @@
         <constructor-arg value="true" />
     </bean>
     
-    <!-- Temp removal until theme issue is resolved.
     <bean id="cachePersonPageProperties" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
@@ -128,7 +126,6 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean> 
-     -->   
     
     <bean id="cacheFollowedPersonIdsForPersonList" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -212,32 +209,7 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
-    </bean>    
-    
-    <!-- Temp removal until theme issue is resolved. 
-    <bean id="getPersonPagePropertiesById_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
-        <constructor-arg ref="nullResultPartialMapper"/>
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.db.GetPersonPagePropertiesByIdDbMapper">
-                <constructor-arg ref="findByIdMapper" />
-                <constructor-arg>
-                    <bean class="org.eurekastreams.server.persistence.mappers.cache.PersonToPersonPagePropertiesTransformer"/>
-                </constructor-arg>
-                <constructor-arg ref="cssBuilderDecorator" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
-                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID" />
-                <constructor-arg ref="toStringCacheKeySuffixTransformer" />
-                <property name="cache" ref="memcachedCache" />
-            </bean> 
-        </constructor-arg>       
-    </bean>     
-    -->    
+    </bean>            
       
 </beans>
       

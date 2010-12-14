@@ -146,10 +146,6 @@ public class PersonToPersonPagePropertiesTransformerTest
 
                 oneOf(theme).getUUID();
                 will(returnValue("themeUUID"));
-
-                oneOf(theme).getCssFile();
-                will(returnValue("CSSfileURL"));
-
             }
         });
 
@@ -168,7 +164,6 @@ public class PersonToPersonPagePropertiesTransformerTest
         assertEquals(3L, ppp.getTabDTOs().get(0).getGadgets().get(0).getGadgetDefinition().getId());
         assertEquals("URL", ppp.getTabDTOs().get(0).getGadgets().get(0).getGadgetDefinition().getUrl());
         assertEquals("UUID", ppp.getTabDTOs().get(0).getGadgets().get(0).getGadgetDefinition().getUuid());
-        assertEquals("CSSfileURL", ppp.getThemeCssFile());
         assertEquals("themeuuid", ppp.getThemeUuid());
 
         context.assertIsSatisfied();

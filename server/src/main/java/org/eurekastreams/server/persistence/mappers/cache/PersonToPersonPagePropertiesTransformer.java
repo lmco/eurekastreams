@@ -94,7 +94,6 @@ public class PersonToPersonPagePropertiesTransformer implements Transformer<Pers
         ppp.setTabDTOs(tabDtos);
         Theme theme = inPerson.getTheme();
         ppp.setThemeUuid(theme == null ? null : theme.getUUID().toLowerCase());
-        ppp.setThemeCssFile(theme == null ? null : theme.getCssFile());
         return ppp;
     }
 
