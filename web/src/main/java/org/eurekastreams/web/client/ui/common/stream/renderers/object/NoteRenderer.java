@@ -66,7 +66,6 @@ public class NoteRenderer implements ObjectRenderer
         
         // Strip out any existing HTML.
         activityContent = jSNIFacade.escapeHtml(activityContent);
-        activityContent = activityContent.replaceAll(" ", "&nbsp;");
         activityContent = activityContent.replaceAll("(\r\n|\n|\r)", "<br />");
         
         // first transform links to hyperlinks
