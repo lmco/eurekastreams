@@ -2248,7 +2248,12 @@
     <bean id="getOrganizationIds" class="org.eurekastreams.server.persistence.mappers.db.GetSerializableField" >
         <constructor-arg value="Organization"/>
         <constructor-arg value="id"/>        
-    </bean>           
+    </bean>  
+    
+    <bean id="getThemeUuidsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetSerializableField" >
+        <constructor-arg value="Theme"/>
+        <constructor-arg value="uuid"/>        
+    </bean>             
     
     <bean id="getPersonsByIdsDBMapper" class="org.eurekastreams.server.persistence.mappers.db.GetPersonsByIds">
         <constructor-arg ref="personQueryStrategy" />

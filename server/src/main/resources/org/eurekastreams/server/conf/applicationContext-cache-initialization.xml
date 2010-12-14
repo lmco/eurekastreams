@@ -13,9 +13,10 @@
                 <constructor-arg ref="memcachedCache" />
                 <constructor-arg>
                     <list>
-                        <value>queuePersonCacheWarmingTasks</value>
+                        <value>queuePersonCacheWarmingTasks</value> 
+                        <value>queueThemeCacheWarmingTasks</value>                       
                         <value>queueGroupCacheWarmingTasks</value>
-                        <value>queueOrganizationCacheWarmingTasks</value>                  
+                        <value>queueOrganizationCacheWarmingTasks</value>                                                                                           
                     </list>
                 </constructor-arg>
             </bean>
@@ -79,6 +80,22 @@
         <constructor-arg ref="taskHandler" />
         <constructor-arg value="true" />
     </bean>  
+    
+    <bean id="queueThemeCacheWarmingTasks" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.QueueKeyBasedTasksExecution">
+                <constructor-arg>
+                    <list>
+                        <value>cacheThemeCss</value>
+                    </list>
+                </constructor-arg>
+                <constructor-arg ref="getThemeUuidsDbMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="true" />
+    </bean>
     
     <bean id="cacheOrganization" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
@@ -209,7 +226,21 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
-    </bean>            
+    </bean> 
+    
+    <bean id="cacheThemeCss" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+                <!-- This mapper will force refresh of BOTH theme version AND theme css as it is config'd with the 
+                    force refresh version of getThemeCssByUuid mapper.-->
+                <constructor-arg ref="getThemeVersionByUuid_FORCE_REFRESH" />
+                <!-- put id in list before calling mapper. -->    
+                <constructor-arg value="False" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>               
       
 </beans>
       
