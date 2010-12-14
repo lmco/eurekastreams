@@ -52,6 +52,7 @@ import org.eurekastreams.web.client.ui.TimerFactory;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.login.LoginDialogContent;
 import org.eurekastreams.web.client.ui.common.dialog.lookup.EmployeeLookupContent;
+import org.eurekastreams.web.client.ui.common.dialog.message.MessageDialogContent;
 import org.eurekastreams.web.client.ui.common.dialog.tos.TermsOfServiceDialogContent;
 import org.eurekastreams.web.client.ui.pages.accessdenied.AccessDeniedContent;
 import org.eurekastreams.web.client.ui.pages.setup.SystemSetupPanel;
@@ -142,18 +143,17 @@ public class ApplicationEntryPoint implements EntryPoint
         }
         else
         {
-            loadPerson();
             master = new MasterComposite();
 
-            EventBus.getInstance().addObserver(FormLoginCompleteEvent.class, new Observer<FormLoginCompleteEvent>()
-            {
-
-                public void update(final FormLoginCompleteEvent event)
-                {
-                    loginDialog.setBgVisible(false);
-                    loadPerson();
-                }
-            });
+            EventBus.getInstance().addObserver(FormLoginCompleteEvent.class,
+                    new Observer<FormLoginCompleteEvent>()
+                    {
+                        public void update(final FormLoginCompleteEvent event)
+                        {
+                            loginDialog.setBgVisible(false);
+                            loadPerson();
+                        }
+                    });
 
             EventBus.getInstance().addObserver(TermsOfServiceAcceptedEvent.class,
                     new Observer<TermsOfServiceAcceptedEvent>()
@@ -165,7 +165,37 @@ public class ApplicationEntryPoint implements EntryPoint
                             loadPerson();
                         }
                     });
+            
             setUpGwtFunctions();
+
+            processor.makeRequest(new ActionRequestImpl<PersonModelView>("noOperation", null),
+                    new AsyncCallback<Serializable>()
+                    {
+
+                        public void onFailure(final Throwable caught)
+                        {
+                            if (caught.getMessage().contains("NO_CREDENTIALS"))
+                            {
+                                showLogin();
+                            }
+                            else if (caught.getMessage().contains("LOGIN_DISABLED"))
+                            {
+                                RootPanel.get().clear();
+                                RootPanel.get().add(new AccessDeniedContent());
+                            }
+                            else
+                            {
+                                Dialog.showDialog(new MessageDialogContent("Unable to Establish Connection",
+                                        "Please Refresh."));
+                            }
+                        }
+
+                        public void onSuccess(final Serializable arg0)
+                        {
+                            loadPerson();
+                        }
+                    });
+
         }
     }
 
@@ -182,27 +212,23 @@ public class ApplicationEntryPoint implements EntryPoint
                     public void onFailure(final Throwable caught)
                     {
                         RootPanel.get().add(master);
-                        if (caught.getMessage().contains("NO_CREDENTIALS"))
+
+                        if (caught instanceof SessionException)
                         {
-                            showLogin();
-                        }
-                        else if (caught instanceof SessionException)
-                        {
+                            // This happens when you proxy through a VPN client.
                             Window.Location.reload();
-                        }
-                        else if (caught.getMessage().contains("LOGIN_DISABLED"))
-                        {
-                            RootPanel.get().clear();
-                            RootPanel.get().add(new AccessDeniedContent());
                         }
                         else
                         {
-                            jSNIFacade.alert("Unrecoverable Error.  Please Try Again");
+                            Dialog.showDialog(new MessageDialogContent("Unable to Establish Connection",
+                                    "Please Refresh."));
                         }
                     }
 
                     public void onSuccess(final PersonModelView resultMV)
                     {
+                        processor.setQueueRequests(true);
+
                         // If user needs to accept ToS, short circuit here.
                         if (!resultMV.getTosAcceptance())
                         {
@@ -222,24 +248,19 @@ public class ApplicationEntryPoint implements EntryPoint
                         Session.getInstance().getEventBus().bufferObservers();
                         History.fireCurrentHistoryState();
 
-                        processor.fireQueuedRequests();
-                        processor.setQueueRequests(false);
-
-                        processor.setQueueRequests(true);
                         master.renderHeaderAndFooter();
+                        session.getPeriodicEventManager().start();
+                        RootPanel.get().add(master);
+
                         processor.fireQueuedRequests();
                         processor.setQueueRequests(false);
-
-                        session.getPeriodicEventManager().start();
-
-                        RootPanel.get().add(master);
                     }
                 });
     }
 
     /**
      * Shows the ToS modal.
-     *
+     * 
      */
     private void displayToS()
     {
@@ -277,7 +298,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires off a gadget change state event.
-     *
+     * 
      * @param id
      *            the gadget id
      * @param view
@@ -293,7 +314,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires of the UpdateGadgetPrefsEvent when called from the gadget container.
-     *
+     * 
      * @param inId
      *            - id of the gadget being updated.
      * @param inPrefs
@@ -307,7 +328,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the save command object.
-     *
+     * 
      * @return the save command
      */
     private static Command getEmployeeSelectedCommand()
@@ -341,7 +362,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Call the handler when the employee lookup is done.
-     *
+     * 
      * @param ntid
      *            the ntid.
      * @param displayName
@@ -357,7 +378,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the people from the server, convert them to JSON, and feed them back to the handler.
-     *
+     * 
      * @param ntids
      *            the ntids.
      * @param callbackIndex
@@ -432,7 +453,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Call the handler with the JSON data.
-     *
+     * 
      * @param data
      *            the data.
      * @param callbackIndex
@@ -445,7 +466,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Returns an additional property value given a key.
-     *
+     * 
      * @param key
      *            the key.
      * @return the value.

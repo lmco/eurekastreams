@@ -240,17 +240,6 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
                                                              }-*/;
 
     /**
-     * View call to the windows alert command.
-     *
-     * @param message
-     *            message to alert
-     */
-    public void alert(final String message)
-    {
-        Window.alert(message);
-    }
-
-    /**
      * Get the history token.
      *
      * @return the history token.

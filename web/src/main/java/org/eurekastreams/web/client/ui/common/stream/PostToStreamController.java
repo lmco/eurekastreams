@@ -122,6 +122,7 @@ public class PostToStreamController
                         .getRemainingMessageCharacters() >= 0))
                         && view.canPost())
                 {
+                    model.setMessage(view.getMessage());
                     view.hidePostButton();
                     model.postMessage();
                     lastFetched = "";

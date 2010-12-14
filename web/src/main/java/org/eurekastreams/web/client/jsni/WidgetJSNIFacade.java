@@ -194,14 +194,6 @@ public interface WidgetJSNIFacade
     String getCurrentUserAccountId();
 
     /**
-     * View call to the windows alert command.
-     *
-     * @param message
-     *            message to alert
-     */
-    void alert(final String message);
-
-    /**
      * Get the history token.
      *
      * @return the history token.

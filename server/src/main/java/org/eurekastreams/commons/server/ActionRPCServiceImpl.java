@@ -158,7 +158,7 @@ public class ActionRPCServiceImpl extends PersistentRemoteService implements Act
     {
         // check that the session id is the session id stamped in the request, ignoring on first action call
         // from ApplicationEntryPoint.
-        if (!request.getActionKey().equals("getPersonModelView")
+        if (!request.getActionKey().equals("noOperation")
                 && !this.getThreadLocalRequest().getSession().getId().equals(request.getSessionId()))
         {
             request.setResponse(new SessionException("Session Expired"));

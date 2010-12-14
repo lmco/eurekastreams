@@ -406,6 +406,9 @@ public class PostToStreamControllerTest
                 
                 oneOf(viewMock).canPost();
                 will(returnValue(true));
+                
+                oneOf(viewMock).getMessage();
+                oneOf(modelMock).setMessage(with(any(String.class)));
 
                 oneOf(viewMock).hidePostButton();
                 oneOf(modelMock).postMessage();
@@ -489,6 +492,9 @@ public class PostToStreamControllerTest
 
                 oneOf(modelMock).getRemainingMessageCharacters();
                 will(returnValue(0));
+                
+                oneOf(viewMock).getMessage();
+                oneOf(modelMock).setMessage(with(any(String.class)));
                 
                 oneOf(viewMock).hidePostButton();
 

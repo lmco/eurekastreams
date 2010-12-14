@@ -14672,3 +14672,7 @@ body .url-validator .required-form-label {
 	padding-top:5px;
 	padding-left:10px;
 }
+.dialog-message-text
+{
+	padding: 10px;
+}

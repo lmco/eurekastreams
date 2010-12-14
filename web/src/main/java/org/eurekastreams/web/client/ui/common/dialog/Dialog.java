@@ -86,7 +86,7 @@ public class Dialog extends PopupPanel
 
     /**
      * Default constructor.
-     *
+     * 
      * @param content
      *            The content of the dialog.
      */
@@ -109,7 +109,7 @@ public class Dialog extends PopupPanel
 
     /**
      * Set the content.
-     *
+     * 
      * @param inDialogContent
      *            the content.
      */
@@ -143,7 +143,7 @@ public class Dialog extends PopupPanel
 
     /**
      * Add an event to the close button.
-     *
+     * 
      * @param listener
      *            a click listener for the button.
      */
@@ -154,7 +154,7 @@ public class Dialog extends PopupPanel
 
     /**
      * Adds a keyboard listener to the dialog.
-     *
+     * 
      * @param inEscapeCommand
      *            the command to execute on escape.
      */
@@ -165,7 +165,7 @@ public class Dialog extends PopupPanel
 
     /**
      * Fires escape command on escape key press.
-     *
+     * 
      * @param event
      *            the relevant event.
      * @return defers to superclass.
@@ -183,7 +183,7 @@ public class Dialog extends PopupPanel
 
     /**
      * Toggles the background.
-     *
+     * 
      * @param visible
      *            true to show, false to hide.
      */
@@ -204,7 +204,7 @@ public class Dialog extends PopupPanel
 
     /**
      * Returns the content.
-     *
+     * 
      * @return the dialog's content.
      */
     public DialogContent getContent()
@@ -225,5 +225,19 @@ public class Dialog extends PopupPanel
         int offsetLeft = (Window.getClientWidth() - this.getElement().getScrollWidth()) / 2;
         this.setPopupPosition(offsetLeft, offsetTop);
         this.removeStyleName("hidden");
+    }
+
+    /**
+     * Show a dialog.
+     * 
+     * @param dialogContent
+     *            the content.
+     */
+    public static void showDialog(final DialogContent dialogContent)
+    {
+        Dialog newDialog = new Dialog(dialogContent);
+        newDialog.setBgVisible(true);
+        newDialog.center();
+        newDialog.getContent().show();
     }
 }
