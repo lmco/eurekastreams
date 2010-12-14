@@ -16,12 +16,18 @@
 package org.eurekastreams.server.service.actions.strategies.galleryitem;
 
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.eurekastreams.server.domain.Theme;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.service.actions.strategies.DocumentCreator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -55,6 +61,15 @@ public class ThemePopulatorTest
      * The decorator injected into the action.
      */
     private DocumentCreator documentCreator = context.mock(DocumentCreator.class);
+    /**
+     * DeleteCacheKeys mapper.
+     */
+    private DomainMapper<Set<String>, Boolean> deleteCacheKeysMapper = context.mock(DomainMapper.class);
+
+    /**
+     * Cache keys to delete.
+     */
+    private List<String> keyList = new ArrayList<String>(Collections.singletonList("cacheKey"));
 
     /**
      *
@@ -62,12 +77,12 @@ public class ThemePopulatorTest
     @Before
     public final void setup()
     {
-        sut = new ThemePopulator(documentCreator);
+        sut = new ThemePopulator(documentCreator, deleteCacheKeysMapper, keyList);
     }
 
     /**
      * Call the execute method and make sure it produces what it should.
-     *
+     * 
      * @throws Exception
      *             can throw an exception on bad UUID.
      */
@@ -109,7 +124,7 @@ public class ThemePopulatorTest
     /**
      * Call the execute method and make sure it produces what it should, working with a theme with an attempted exploit
      * name.
-     *
+     * 
      * @throws Exception
      *             can throw an exception on bad UUID.
      */
@@ -145,11 +160,7 @@ public class ThemePopulatorTest
         assertEquals("property should be gotten", personName, theme.getAuthorName());
         assertEquals("property should be gotten", personEmail, theme.getAuthorEmail());
         assertEquals("property should be gotten", themeBannerId, theme.getBannerId());
-        assertTrue("path separator wasn't escaped out of theme name when creating the theme path - was: "
-                + theme.getCssFile(), theme.getCssFile().startsWith("/themes/" + themeNameCleaned));
+        assertNull(theme.getCssFile());
 
-        final int sixtySevenPlusOne = 68;
-        assertEquals("Length of the theme css path should be 68 characters: /themes/<truncated to "
-                + "20 chars><36 char uuid>.css", sixtySevenPlusOne, theme.getCssFile().length());
     }
 }

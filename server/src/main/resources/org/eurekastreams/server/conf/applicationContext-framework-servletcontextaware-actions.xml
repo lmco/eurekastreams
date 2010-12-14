@@ -290,6 +290,13 @@
 		<constructor-arg>
 			<ref bean="documentCreator" />
 		</constructor-arg>
+		<constructor-arg ref="deleteCacheKeys"/>
+		<constructor-arg>
+	         <list>
+	             <ref bean="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.THEME_CSS_BY_UUID"/>
+	             <ref bean="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.THEME_HASH_BY_UUID"/>
+	         </list>
+	     </constructor-arg>
 	</bean>
 		
 	<bean id="addTheme" class="org.eurekastreams.commons.actions.service.ServiceAction">
