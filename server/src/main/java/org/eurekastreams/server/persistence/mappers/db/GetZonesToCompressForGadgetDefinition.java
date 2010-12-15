@@ -23,13 +23,16 @@ import org.eurekastreams.server.action.request.gallery.CompressGadgetZoneRequest
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 /**
- * Gets the list of tab templates that contain instances of a given gadget definition with the tabs' owners.
+ * Gets the list of tab template zones that contain instances of a given gadget definition with the tabs' owners.
  */
-public class GetTabTemplatesWithOwnersForGadgetDefinition extends
+public class GetZonesToCompressForGadgetDefinition extends
         BaseArgDomainMapper<Long, Collection<CompressGadgetZoneRequest>>
 {
     /**
-     * {@inheritDoc}
+     * @see GetZonesToCompressForGadgetDefinition
+     * @param inRequest
+     *            ID of gadget definition.
+     * @return List of requests to fan out to the compress gadget zone action.
      */
     @SuppressWarnings("unchecked")
     @Override

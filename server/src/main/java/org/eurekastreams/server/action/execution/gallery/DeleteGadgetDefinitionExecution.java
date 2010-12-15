@@ -57,6 +57,12 @@ public class DeleteGadgetDefinitionExecution implements TaskHandlerExecutionStra
         nextAction = inNextAction;
     }
 
+    /**
+     * @see DeleteGadgetDefinitionExecution
+     * @param inActionContext
+     *            The action parameter must be a Long which is the ID of the gadget definition to delete.
+     * @return Nothing.
+     */
     @Override
     public Serializable execute(final TaskHandlerActionContext<ActionContext> inActionContext)
     {

@@ -992,7 +992,7 @@
 					<bean class="org.eurekastreams.server.persistence.mappers.db.DeleteGadgetDefinition" />
 				</constructor-arg>
                 <constructor-arg>
-                	<bean class="org.eurekastreams.server.persistence.mappers.db.GetTabTemplatesWithOwnersForGadgetDefinition" />
+                	<bean class="org.eurekastreams.server.persistence.mappers.db.GetZonesToCompressForGadgetDefinition" />
                 </constructor-arg>
                 <constructor-arg value="compressGadgetZoneAction" />
             </bean>

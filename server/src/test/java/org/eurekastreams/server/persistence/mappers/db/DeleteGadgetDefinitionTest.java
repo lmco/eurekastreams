@@ -21,8 +21,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+
 
 /**
  * Tests DeleteGadgetDefinition.
@@ -30,8 +31,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class DeleteGadgetDefinitionTest extends MapperTest
 {
     /** System under test. */
-    @Autowired
     private DeleteGadgetDefinition sut;
+
+    /**
+     * Setup before each test.
+     */
+    @Before
+    public void setUpEach()
+    {
+        sut = new DeleteGadgetDefinition();
+        sut.setEntityManager(getEntityManager());
+    }
 
     /**
      * Test execute.
