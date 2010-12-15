@@ -23,7 +23,7 @@ import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.actions.context.async.AsyncActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
-import org.eurekastreams.server.domain.GadgetDefinition;
+import org.eurekastreams.server.domain.GalleryItem;
 import org.eurekastreams.server.persistence.GalleryItemMapper;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -33,7 +33,7 @@ import org.junit.Test;
 /**
  * Tests HideThenDeleteGadgetExecution.
  */
-public class HideThenDeleteGadgetExecutionTest
+public class HideGalleryItemThenQueueTaskExecutionTest
 {
     /** Test data. */
     private static final String ACTION = "nextAction";
@@ -47,10 +47,10 @@ public class HideThenDeleteGadgetExecutionTest
     };
 
     /** Fixture: mapper. */
-    private final GalleryItemMapper<GadgetDefinition> mapper = context.mock(GalleryItemMapper.class);
+    private final GalleryItemMapper<GalleryItem> mapper = context.mock(GalleryItemMapper.class);
 
     /** Fixture: gadget definition. */
-    private final GadgetDefinition gadgetDef = context.mock(GadgetDefinition.class);
+    private final GalleryItem galleryItem = context.mock(GalleryItem.class);
 
     /**
      * Tests execute.
@@ -58,15 +58,15 @@ public class HideThenDeleteGadgetExecutionTest
     @Test
     public void testExecute()
     {
-        HideThenDeleteGadgetExecution sut = new HideThenDeleteGadgetExecution(mapper, ACTION);
+        HideGalleryItemThenQueueTaskExecution sut = new HideGalleryItemThenQueueTaskExecution(mapper, ACTION);
 
         context.checking(new Expectations()
         {
             {
                 allowing(mapper).findById(9L);
-                will(returnValue(gadgetDef));
+                will(returnValue(galleryItem));
 
-                oneOf(gadgetDef).setShowInGallery(false);
+                oneOf(galleryItem).setShowInGallery(false);
             }
         });
 

@@ -30,7 +30,7 @@ import org.eurekastreams.web.client.ui.Session;
 
 /**
  * Theme Model.
- *
+ * 
  */
 public class ThemeModel extends BaseModel implements Insertable<HashMap<String, Serializable>>,
         Updateable<HashMap<String, Serializable>>, Deletable<Long>, Fetchable<GetGalleryItemsRequest>
@@ -42,7 +42,7 @@ public class ThemeModel extends BaseModel implements Insertable<HashMap<String, 
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
     public static ThemeModel getInstance()
@@ -66,7 +66,7 @@ public class ThemeModel extends BaseModel implements Insertable<HashMap<String, 
 
     /**
      * Set the theme for the current user.
-     *
+     * 
      * @param request
      *            the theme.
      */
@@ -85,7 +85,7 @@ public class ThemeModel extends BaseModel implements Insertable<HashMap<String, 
 
     /**
      * Set the theme for the current user.
-     *
+     * 
      * @param themeUrlOrUUID
      *            the theme url or UUID.
      */
@@ -114,6 +114,8 @@ public class ThemeModel extends BaseModel implements Insertable<HashMap<String, 
                 Session.getInstance().getEventBus().notifyObservers(new DeletedThemeResponseEvent(request));
             }
         });
+
+        StartTabsModel.getInstance().clearCache();
     }
 
     /**

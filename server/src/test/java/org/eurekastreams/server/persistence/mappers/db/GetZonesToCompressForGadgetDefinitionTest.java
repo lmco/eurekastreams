@@ -24,17 +24,27 @@ import java.util.Collection;
 import org.eurekastreams.server.action.request.gallery.CompressGadgetZoneRequest;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.hamcrest.Matchers;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+
 
 /**
- * Tests GetTabTemplatesWithOwnersForGadgetDefinition.
+ * Tests GetZonesToCompressForGadgetDefinition.
  */
-public class GetTabTemplatesWithOwnersForGadgetDefinitionTest extends MapperTest
+public class GetZonesToCompressForGadgetDefinitionTest extends MapperTest
 {
     /** System under test. */
-    @Autowired
-    private GetTabTemplatesWithOwnersForGadgetDefinition sut;
+    private GetZonesToCompressForGadgetDefinition sut;
+
+    /**
+     * Setup before each test.
+     */
+    @Before
+    public void setUpEach()
+    {
+        sut = new GetZonesToCompressForGadgetDefinition();
+        sut.setEntityManager(getEntityManager());
+    }
 
     /**
      * Test a multi-row case.

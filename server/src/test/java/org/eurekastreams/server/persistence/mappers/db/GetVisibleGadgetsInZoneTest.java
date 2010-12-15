@@ -22,8 +22,9 @@ import java.util.List;
 import org.eurekastreams.server.action.request.gallery.CompressGadgetZoneRequest;
 import org.eurekastreams.server.domain.Gadget;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+
 
 /**
  * Tests GetVisibleGadgetsInZone.
@@ -31,8 +32,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class GetVisibleGadgetsInZoneTest extends MapperTest
 {
     /** System under test. */
-    @Autowired
     private GetVisibleGadgetsInZone sut;
+
+    /**
+     * Setup before each test.
+     */
+    @Before
+    public void setUpEach()
+    {
+        sut = new GetVisibleGadgetsInZone();
+        sut.setEntityManager(getEntityManager());
+    }
 
     /**
      * Test execute.
