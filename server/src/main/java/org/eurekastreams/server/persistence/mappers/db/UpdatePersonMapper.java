@@ -30,7 +30,7 @@ public class UpdatePersonMapper extends BaseArgDomainMapper<Person, UpdatePerson
      * Update the person in the DB.
      *
      * @param ldapPerson
-     *                    {@link Person}.
+     *            {@link Person}.
      * @return {@link UpdatePersonResponse}.
      */
     @Override
@@ -41,7 +41,6 @@ public class UpdatePersonMapper extends BaseArgDomainMapper<Person, UpdatePerson
 
         HashMap<String, String> ldapAdditionalProperties = ldapPerson.getAdditionalProperties();
         HashMap<String, String> dbAdditionalProperties = dbPerson.getAdditionalProperties();
-        HashMap<String, String> updatedProperties = new HashMap<String, String>();
         boolean wasPersonUpdated = false;
 
         // Checks to see if last name in ldap matches what the db has, updating db if they don't match.
@@ -50,24 +49,46 @@ public class UpdatePersonMapper extends BaseArgDomainMapper<Person, UpdatePerson
             dbPerson.setLastName(ldapPerson.getLastName());
             wasPersonUpdated = true;
         }
-        
+
         // Looks for any additional properties defined for the person retrieved from ldap call.
-        if (ldapAdditionalProperties != null)
+        if (ldapAdditionalProperties != null && !ldapAdditionalProperties.isEmpty())
         {
-            for (String key : ldapAdditionalProperties.keySet())
+            boolean changed = false;
+            if (dbAdditionalProperties == null)
             {
-                String value = ldapAdditionalProperties.get(key);
-                // Finds if properties need to be updated in the db copy of the user. 
-                if (dbAdditionalProperties == null || !value.equalsIgnoreCase(dbAdditionalProperties.get(key)))
+                changed = true;
+            }
+            else
+            {
+                // determine if properties are different
+                // first check for new or changed values
+                for (String key : ldapAdditionalProperties.keySet())
                 {
-                    updatedProperties.put(key, value);
+                    String value = ldapAdditionalProperties.get(key);
+                    if (!value.equalsIgnoreCase(dbAdditionalProperties.get(key)))
+                    {
+                        changed = true;
+                        break;
+                    }
+                }
+                // then check for deleted values
+                if (!changed)
+                {
+                    for (String key : dbAdditionalProperties.keySet())
+                    {
+                        if (!ldapAdditionalProperties.containsKey(key))
+                        {
+                            changed = true;
+                            break;
+                        }
+                    }
                 }
             }
 
             // Updates the db user, if necessary.
-            if (updatedProperties.keySet().size() > 0)
+            if (changed)
             {
-                dbPerson.setAdditionalProperties(updatedProperties);
+                dbPerson.setAdditionalProperties(ldapAdditionalProperties);
                 wasPersonUpdated = true;
             }
         }
@@ -77,7 +98,7 @@ public class UpdatePersonMapper extends BaseArgDomainMapper<Person, UpdatePerson
             dbPerson.setAdditionalProperties(null);
             wasPersonUpdated = true;
         }
-        
+
         if (wasPersonUpdated)
         {
             getEntityManager().flush();
