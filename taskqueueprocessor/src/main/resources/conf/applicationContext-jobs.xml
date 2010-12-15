@@ -25,20 +25,23 @@
         <constructor-arg ref="pluginDefinitionPopulator"/>
     </bean>      
       
-        <!--  Gadget Definition Index Task using the Transactional Task Runner -->
+        <!--  Gadget Definition Index Task using the Transactional Task Runner
+-->
     <bean id="gadgetDefIndexTransactionalTask" class="org.eurekastreams.commons.scheduling.TransactionalTaskRunner">
         <constructor-arg ref="gadgetDefIndexTask" />
         <constructor-arg value="execute" />
     </bean>
     
-   <!--  Plugin Definition Meta Update using the Transactional Task Runner -->
+   <!--  Plugin Definition Meta Update using the Transactional Task Runner
+-->
     <bean id="pluginDefUpdateTransactionalTask" class="org.eurekastreams.commons.scheduling.TransactionalTaskRunner">
         <constructor-arg ref="pluginMetaUpdateTask" />
         <constructor-arg value="execute" />
     </bean>
 	
 	<!-- Job Definitions -->
-	<!-- Pull feeds from internet, commit to database and queue the changes in memcached -->
+	<!-- Pull feeds from internet, commit to database and queue the changes in memcached
+-->
     <bean id="refreshFeedsJob" class="org.eurekastreams.commons.scheduling.ActionSubmitterJob">
         <constructor-arg value="refreshFeedsAction" />
         <constructor-arg ref="taskHandler" />
@@ -152,7 +155,8 @@
     </bean> 
     
     <!-- take any feeds that have been stored in the database and memcached and propogate
-         them to denormalized memcached lists -->
+         them to denormalized memcached lists
+-->
     <bean id="addBufferedActivitiesToCacheJobTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
         <property name="jobDetail" ref="addBufferedActivitiesToCacheJob" />
         <!-- delay initial run by 2.5minutes (150,000 milliseconds) -->
@@ -165,7 +169,7 @@
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
-				<ref bean="cacheInitializationTrigger" />
+				<!--  ref bean="cacheInitializationTrigger" / -->
                 <ref bean="addBufferedActivitiesToCacheJobTrigger" />
                 <ref bean="refreshFeedsJobTrigger" />				
 				<ref bean="applicationAlertCleanupJobTrigger" />
