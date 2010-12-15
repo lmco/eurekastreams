@@ -52,7 +52,13 @@ public class CompressGadgetZoneExecution implements TaskHandlerExecutionStrategy
     }
 
     /**
-     * {@inheritDoc}
+     * @see CompressGadgetZoneExecution
+     * @param inActionContext
+     *            The parameter to the action must be a CompressGadgetZoneRequest containing the tab template id and
+     *            zone number of the zone to compress. The request should also contain the person ID of the tab owner;
+     *            if it does, that user's start page data will be reloaded into cache. (A null owner can be valid; a
+     *            gadget on one of the templates used for creating user pages may have been deleted.)
+     * @return Nothing.
      */
     @Override
     public Serializable execute(final TaskHandlerActionContext<ActionContext> inActionContext)
@@ -61,7 +67,8 @@ public class CompressGadgetZoneExecution implements TaskHandlerExecutionStrategy
 
         // get the gadgets and update the order
         List<Gadget> gadgets = gadgetMapper.execute(request);
-        for (int i = 0; i < gadgets.size(); i++)
+        int count = gadgets.size();
+        for (int i = 0; i < count; i++)
         {
             gadgets.get(i).setZoneIndex(i);
         }
