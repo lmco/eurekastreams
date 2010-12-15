@@ -2264,6 +2264,12 @@
         <constructor-arg ref="domainGroupQueryStrategy" />
     </bean>
     
+    <bean id="deleteThemeByIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.DeleteEntityByIdDbMapper">
+        <constructor-arg value="org.eurekastreams.server.domain.Theme" />
+    </bean>
+        
+    <bean id="getPeopleIdsUsingThemeByThemeId" class="org.eurekastreams.server.persistence.mappers.db.GetPeopleIdsUsingThemeByThemeId"/>
+    
     <bean id="getThemeXmlUrlByUuidDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetThemeXmlUrlByUuidDbMapper"/>
     
     <bean id="getOrderedCommentIdsByActivityIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetOrderedCommentIdsByActivityIdDbMapper" />

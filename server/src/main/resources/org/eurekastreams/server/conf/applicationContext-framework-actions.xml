@@ -931,24 +931,39 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>    
-        
-    <bean id="deleteThemeAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
+    
+    <bean id="deleteThemeAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="galleryAuthorizer" />
         <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.gallery.DeleteGalleryItemExecution">
+            <bean class="org.eurekastreams.server.action.execution.gallery.HideGalleryItemThenQueueTaskExecution">
                 <constructor-arg ref="jpaThemeMapper" />
+                <constructor-arg value="deleteThemeAsyncAction" />
             </bean>
         </constructor-arg>
+        <constructor-arg ref="taskHandler" />
         <constructor-arg value="false" />
     </bean>
+    
+    <bean id="deleteThemeAsyncAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.gallery.DeleteThemeExecution">
+                <constructor-arg ref="findByIdMapper"/>
+                <constructor-arg ref="deleteThemeByIdDbMapper"/>
+                <constructor-arg ref="getPeopleIdsUsingThemeByThemeId"/>                    
+                <constructor-arg value="deleteCacheKeysAction" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="false" />
+    </bean>    
 
     <bean id="deleteGadgetDefinitionAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="galleryAuthorizer" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.gallery.HideThenDeleteGadgetExecution">
+            <bean class="org.eurekastreams.server.action.execution.gallery.HideGalleryItemThenQueueTaskExecution">
                 <constructor-arg ref="jpaGadgetDefinitionMapper" />
                 <constructor-arg value="deleteGadgetDefinitionAsyncAction" />
             </bean>

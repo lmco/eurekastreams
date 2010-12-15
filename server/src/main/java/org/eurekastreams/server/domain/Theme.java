@@ -48,7 +48,7 @@ import org.hibernate.validator.NotEmpty;
 
 /**
  * Represents a theme.
- *
+ * 
  */
 @SuppressWarnings("serial")
 @Entity
@@ -115,7 +115,7 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
     /**
      * The actual instantiations of this gadget def.
      */
-    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE })
     @JoinColumn(name = "themeId")
     private List<Person> users;
 
@@ -125,7 +125,6 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
     @Basic(optional = true)
     @Field(name = "numberOfUsers", index = Index.UN_TOKENIZED, store = Store.YES)
     private int numberOfUsers = 0;
-
 
     /**
      * The creation date.
@@ -159,7 +158,6 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
     @Basic(optional = false)
     private String bannerId;
 
-
     /**
      * the author of this theme.
      */
@@ -178,8 +176,7 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
     private String authorEmail;
 
     /**
-     * Private reference back to the person for mapper queries originating with
-     * the theme.
+     * Private reference back to the person for mapper queries originating with the theme.
      */
     @SuppressWarnings("unused")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -195,7 +192,7 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
 
     /**
      * Public constructor for API.
-     *
+     * 
      * @param inThemeUrl
      *            the url of the theme.
      * @param inThemeName
@@ -213,15 +210,8 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
      * @param inAuthorEmail
      *            the email address of the theme author.
      */
-    public Theme(
-            final String inThemeUrl,
-            final String inThemeName,
-            final String inThemeDesc,
-            final String inCss,
-            final String inUUID,
-            final String inBannerId,
-            final String inAuthorName,
-            final String inAuthorEmail)
+    public Theme(final String inThemeUrl, final String inThemeName, final String inThemeDesc, final String inCss,
+            final String inUUID, final String inBannerId, final String inAuthorName, final String inAuthorEmail)
     {
         setUrl(inThemeUrl);
         setName(inThemeName);
@@ -235,7 +225,7 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
 
     /**
      * The industry description.
-     *
+     * 
      * @param inDescription
      *            the description to set
      */
@@ -246,7 +236,7 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
 
     /**
      * Get the description.
-     *
+     * 
      * @return the description
      */
     public String getDescription()
@@ -256,7 +246,7 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
 
     /**
      * Needed for serialization.
-     *
+     * 
      * @param inUrl
      *            The URL to the theme.
      */
@@ -267,7 +257,7 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
 
     /**
      * Getter for the theme's XML File's URL.
-     *
+     * 
      * @return the url to the theme.
      */
     public String getUrl()
@@ -277,7 +267,7 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
 
     /**
      * Getter for the theme's UUID.
-     *
+     * 
      * @return the UUID of the theme.
      */
     public String getUUID()
@@ -287,7 +277,7 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
 
     /**
      * Needed for serialization.
-     *
+     * 
      * @param inThemeName
      *            The name of the theme.
      */
@@ -298,7 +288,7 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
 
     /**
      * Needed for serialization.
-     *
+     * 
      * @param inUUID
      *            UUID to use.
      */
@@ -309,7 +299,7 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
 
     /**
      * Getter for the the Theme name.
-     *
+     * 
      * @return the name of the theme.
      */
     public String getName()
@@ -319,7 +309,7 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
 
     /**
      * Needed for serialization.
-     *
+     * 
      * @param inCssFile
      *            The CSS file of the theme.
      */
@@ -330,7 +320,7 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
 
     /**
      * Getter for the theme's css file's location.
-     *
+     * 
      * @return the css file's location.
      */
     public String getCssFile()
@@ -340,7 +330,7 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
 
     /**
      * Getter for the theme's Category.
-     *
+     * 
      * @return the Category of the theme.
      */
     public GalleryItemCategory getCategory()
@@ -350,7 +340,7 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
 
     /**
      * Needed for serialization.
-     *
+     * 
      * @param inCategory
      *            Category to use.
      */
@@ -384,7 +374,6 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
     {
         return numberOfUsers;
     }
-
 
     /**
      * @param inCreatedDate
@@ -439,7 +428,7 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
 
     /**
      * Getter for author's name address.
-     *
+     * 
      * @return author's name address.
      */
     public String getAuthorName()
@@ -449,7 +438,7 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
 
     /**
      * Setter for author's name address.
-     *
+     * 
      * @param inAuthorName
      *            author's name address.
      */
@@ -460,7 +449,7 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
 
     /**
      * Getter for author's email address.
-     *
+     * 
      * @return author's email address.
      */
     public String getAuthorEmail()
@@ -470,7 +459,7 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
 
     /**
      * Setter for author's email address.
-     *
+     * 
      * @param inAuthorEmail
      *            author's email address.
      */
@@ -481,6 +470,7 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
 
     /**
      * Show in gallery?
+     * 
      * @return show in gallery.
      */
     @Override
@@ -491,7 +481,9 @@ public class Theme extends DomainEntity implements Serializable, GalleryItem
 
     /**
      * Set show in gallery.
-     * @param inShowInGallery show in gallery.
+     * 
+     * @param inShowInGallery
+     *            show in gallery.
      */
     @Override
     public void setShowInGallery(final Boolean inShowInGallery)

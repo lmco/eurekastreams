@@ -21,29 +21,29 @@ import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
-import org.eurekastreams.server.domain.GadgetDefinition;
+import org.eurekastreams.server.domain.GalleryItem;
 import org.eurekastreams.server.persistence.GalleryItemMapper;
 
 /**
- * Action which hides a gadget then asynchronously deletes it.
+ * Action which hides a gallery item then asynchronously deletes it.
  */
-public class HideThenDeleteGadgetExecution implements TaskHandlerExecutionStrategy<ActionContext>
+public class HideGalleryItemThenQueueTaskExecution implements TaskHandlerExecutionStrategy<ActionContext>
 {
     /** Mapper to update the gadget definition. */
-    private final GalleryItemMapper<GadgetDefinition> galleryItemMapper;
+    private final GalleryItemMapper<GalleryItem> galleryItemMapper;
 
     /** Name of action to initiate. */
     private final String nextAction;
 
     /**
      * Constructor.
-     *
+     * 
      * @param inGalleryItemMapper
      *            Mapper to update the gadget definition.
      * @param inNextAction
      *            Name of action to initiate.
      */
-    public HideThenDeleteGadgetExecution(final GalleryItemMapper<GadgetDefinition> inGalleryItemMapper,
+    public HideGalleryItemThenQueueTaskExecution(final GalleryItemMapper<GalleryItem> inGalleryItemMapper,
             final String inNextAction)
     {
         galleryItemMapper = inGalleryItemMapper;
@@ -56,13 +56,13 @@ public class HideThenDeleteGadgetExecution implements TaskHandlerExecutionStrate
     @Override
     public Serializable execute(final TaskHandlerActionContext<ActionContext> inActionContext)
     {
-        Long gadgetDefinitionId = (Long) inActionContext.getActionContext().getParams();
+        Long galleryItemId = (Long) inActionContext.getActionContext().getParams();
 
         // hide definition until we can delete it (asynchronously)
-        GadgetDefinition gadgetDefinition = galleryItemMapper.findById(gadgetDefinitionId);
-        gadgetDefinition.setShowInGallery(false);
+        GalleryItem galleryItem = galleryItemMapper.findById(galleryItemId);
+        galleryItem.setShowInGallery(false);
 
-        inActionContext.getUserActionRequests().add(new UserActionRequest(nextAction, null, gadgetDefinitionId));
+        inActionContext.getUserActionRequests().add(new UserActionRequest(nextAction, null, galleryItemId));
 
         return null;
     }
