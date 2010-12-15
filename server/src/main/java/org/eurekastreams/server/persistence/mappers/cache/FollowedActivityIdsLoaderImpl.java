@@ -69,7 +69,7 @@ public class FollowedActivityIdsLoaderImpl extends BaseDomainMapper implements F
             + "Person followedPerson "
             + "WHERE f.pk.followerId = :userId " 
                         + "AND followedPerson.id = f.pk.followingId " 
-                        + "AND a.recipientStreamScope = followedPerson.streamScope";
+                        + "AND a.recipientStreamScope = followedPerson.streamScope ORDER BY a.id";
         Query query = getEntityManager().createQuery(queryString).setParameter("userId", inPersonId);
         query.setMaxResults(inMaxResults);
         
