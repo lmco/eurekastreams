@@ -81,6 +81,17 @@ public class ActivitySecurityTrimmer
             }
         }
 
-        return visibleActivities;
+        // Preserve order
+        final List<Long> orderedActivities = new LinkedList<Long>();
+
+        for (int i = 0; i < activityIds.size(); i++)
+        {
+            if (visibleActivities.contains(activityIds.get(i)))
+            {
+                orderedActivities.add(activityIds.get(i));
+            }
+        }
+
+        return orderedActivities;
     }
 }
