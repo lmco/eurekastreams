@@ -190,4 +190,42 @@ public class UpdatePersonMapperTest extends MapperTest
         assertEquals("value5A", resultProps.get("key5"));
         assertEquals("value7", resultProps.get("key7"));
     }
+
+    /**
+     * Test updating with unchanged and deleted additional properties.
+     */
+    @Test
+    public void testUpdatePropertyDeleteSome()
+    {
+        // set up DB person
+        Person dbPerson = (Person) getEntityManager().createQuery("FROM Person WHERE id = :id")
+                .setParameter("id", PERSON_ID).getSingleResult();
+        HashMap<String, String> dbProps = new HashMap<String, String>();
+        dbProps.put("key1", "value1");
+        dbProps.put("key2", "value2");
+        dbPerson.setAdditionalProperties(dbProps);
+        getEntityManager().flush();
+
+        // set up LDAP person
+        Person ldapPerson = new Person("fordp", "Ford", "X", "Prefect", "Volgon-Swatter");
+        HashMap<String, String> ldapProps = new HashMap<String, String>();
+        ldapProps.put("key1", "value1");
+        ldapPerson.setAdditionalProperties(ldapProps);
+
+        // execute
+        UpdatePersonResponse result = sut.execute(ldapPerson);
+
+        // verify
+        assertTrue(result.wasUserUpdated());
+        getEntityManager().flush();
+        getEntityManager().clear();
+        Person resultPerson = (Person) getEntityManager().createQuery("FROM Person WHERE id = :id")
+                .setParameter("id", PERSON_ID).getSingleResult();
+
+        HashMap<String, String> resultProps = resultPerson.getAdditionalProperties();
+        assertNotNull(resultProps);
+        assertEquals(1, resultProps.size());
+        assertEquals("value1", resultProps.get("key1"));
+    }
+
 }
