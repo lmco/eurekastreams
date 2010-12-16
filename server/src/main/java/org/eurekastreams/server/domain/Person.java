@@ -1000,6 +1000,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     /**
      * @return optout video ids.
      */
+    @SuppressWarnings("unused")
     private String getOptOutVideoIds()
     {
         return optOutVideoIds;
@@ -1011,6 +1012,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      * @param inOptOutVideoIds
      *            the String of opt videos to set.
      */
+    @SuppressWarnings("unused")
     private void setOptOutVideoIds(final String inOptOutVideoIds)
     {
         optOutVideoIds = inOptOutVideoIds;
@@ -1301,7 +1303,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     }
 
     /**
-     * Adding private setter to make serialization work.
+     * Set the person's last name.
      *
      * Hibernate validation on this object requires the last name to be not null, and of length greater than 1 and less
      * than MAX_LAST_NAME_LENGTH
@@ -1309,19 +1311,17 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      * @param inLastName
      *            the lastName to set
      */
-    @SuppressWarnings("unused")
-    private void setLastName(final String inLastName)
+    public void setLastName(final String inLastName)
     {
         this.lastName = inLastName;
     }
 
     /**
-     * Adding private setter to make serialization work.
+     * Set the person's preferred name.
      *
      * @param inPreferredName
      *            the preferredName to set
      */
-    @SuppressWarnings("unused")
     public void setPreferredName(final String inPreferredName)
     {
         this.preferredName = inPreferredName;
@@ -1915,7 +1915,6 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
     @Override
     public String getBannerId()
     {
-        // TODO Auto-generated method stub
         return bannerId;
     }
 

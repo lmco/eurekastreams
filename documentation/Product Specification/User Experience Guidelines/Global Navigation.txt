@@ -1,4 +1,4 @@
-### Global Header
+## Global Header
 ![](images/PS_UX_globalNavigation.png)
 
 1. The global nav appears at the top of every page in the application, each element in the global navigation with the exception of the search box has a rollover state.
@@ -13,7 +13,7 @@
 10. Refer to [Profile search box UX designs][Search profiles].
 11. Global navigation drop shadow.
 
-### Global Footer
+## Global Footer
 
 ![](images/PS_UX_globalFooter.png)
 
