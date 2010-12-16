@@ -2,7 +2,8 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
-
+  <!--  If you want to output test logging, uncomment the appender references in the logger configurations and
+  include the -Dbuild.test.log.home flag on the maven command line to provide a path for logging. -->
   <appender name="console" class="org.apache.log4j.ConsoleAppender"> 
     <param name="Target" value="System.out"/> 
     <layout class="org.apache.log4j.PatternLayout"> 
@@ -11,40 +12,40 @@
   </appender>
   
   <appender name="file" class="org.apache.log4j.RollingFileAppender">
-     <param name="File" value="${log.home}/log.txt"/>
+     <param name="File" value="${build.test.log.home}/log.txt"/>
      <param name="Append" value="true"/>
      <param name="MaxFileSize" value="5MB"/>
-     <param name="MaxBackupIndex" value="50"/>
+     <param name="MaxBackupIndex" value="5"/>
     <layout class="org.apache.log4j.PatternLayout">
           <param name="ConversionPattern" value="%-5p %c - %m%n"/>
     </layout>
   </appender>
   
     <appender name="springFile" class="org.apache.log4j.RollingFileAppender">
-     <param name="File" value="${log.home}/spring.log.txt"/>
+     <param name="File" value="${build.test.log.home}/spring.log.txt"/>
      <param name="Append" value="true"/>
      <param name="MaxFileSize" value="5MB"/>
-     <param name="MaxBackupIndex" value="50"/>
+     <param name="MaxBackupIndex" value="5"/>
     <layout class="org.apache.log4j.PatternLayout">
           <param name="ConversionPattern" value="%-5p %c - %m%n"/>
     </layout>
   </appender>
   
     <appender name="hibernateFile" class="org.apache.log4j.RollingFileAppender">
-     <param name="File" value="${log.home}/hibernate.log.txt"/>
+     <param name="File" value="${build.test.log.home}/hibernate.log.txt"/>
      <param name="Append" value="true"/>
      <param name="MaxFileSize" value="5MB"/>
-     <param name="MaxBackupIndex" value="50"/>
+     <param name="MaxBackupIndex" value="5"/>
     <layout class="org.apache.log4j.PatternLayout">
           <param name="ConversionPattern" value="%-5p %c - %m%n"/>
     </layout>
   </appender>
   
     <appender name="testFile" class="org.apache.log4j.RollingFileAppender">
-     <param name="File" value="${log.home}/GetRecursiveParentOrgIds.log.txt"/>
+     <param name="File" value="${build.test.log.home}/GetRecursiveParentOrgIds.log.txt"/>
      <param name="Append" value="true"/>
      <param name="MaxFileSize" value="5MB"/>
-     <param name="MaxBackupIndex" value="50"/>
+     <param name="MaxBackupIndex" value="5"/>
     <layout class="org.apache.log4j.PatternLayout">
           <param name="ConversionPattern" value="%-5p %c - %m%n"/>
     </layout>
@@ -65,12 +66,12 @@
     <!-- Set level to "off" to not see hibernate output in logs-->
   <logger name="org.eurekastreams.server.persistence.mappers.GetRecursiveParentOrgIds">
     <level value="debug"/> 
-    <appender-ref ref="testFile" />      
+    <!--  <appender-ref ref="testFile" /> -->      
   </logger>
   
   <root> 
     <priority value ="all" /> 
-    <appender-ref ref="file" /> 
+    <!--  <appender-ref ref="file" /> --> 
   </root>
   
 </log4j:configuration>
