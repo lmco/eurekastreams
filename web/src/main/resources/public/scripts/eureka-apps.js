@@ -1357,7 +1357,7 @@ Eureka.shareLink = function(title, url)
 
 Eureka.getCurrentUserOrg = function(callback)
 {
-                var url= 'http://romanoa1.dev.smp.isgs.lmco.com:30233/resources/dataservice/datastore/functionaltree/key/eureka:currentuser';
+                var url= '${build.app.baseurl}/resources/dataservice/datastore/functionaltree/key/eureka:currentuser';
 
                 var params={};
                 params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
