@@ -47,6 +47,11 @@ public class DropZonePanel extends VerticalPanel
     private Integer zoneNumber = 0;
 
     /**
+     * Last history event.
+     */
+     private UpdatedHistoryParametersEvent lastHistoryEvent = null;
+
+    /**
      * List of gadget zones.
      */
     private List<GadgetPanel> gadgetZones = new LinkedList<GadgetPanel>();
@@ -149,6 +154,7 @@ public class DropZonePanel extends VerticalPanel
                 {
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
+                        lastHistoryEvent = event;
                         if (event.getParameters().get("tab") != null)
                         {
                             tabId = event.getParameters().get("tab");
@@ -267,6 +273,11 @@ public class DropZonePanel extends VerticalPanel
             {
                 HashMap<String, String> params = new HashMap<String, String>();
                 params.put("dropzone", getZoneNumber().toString());
+
+                if (lastHistoryEvent == null || lastHistoryEvent.getParameters().get("tab") == null)
+                {
+                    params.put("tab", tabId);
+                }
 
                 Session.getInstance().getEventBus().notifyObservers(
                         new UpdateHistoryEvent(new CreateUrlRequest(Page.GALLERY, params, false)));
