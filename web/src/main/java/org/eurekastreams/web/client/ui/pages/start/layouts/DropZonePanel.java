@@ -267,7 +267,6 @@ public class DropZonePanel extends VerticalPanel
             {
                 HashMap<String, String> params = new HashMap<String, String>();
                 params.put("dropzone", getZoneNumber().toString());
-                params.put("tab", tabId);
 
                 Session.getInstance().getEventBus().notifyObservers(
                         new UpdateHistoryEvent(new CreateUrlRequest(Page.GALLERY, params)));
