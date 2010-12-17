@@ -548,9 +548,6 @@ table.eureka-table tr.header-row-top-headers th
     zoom:1;
     margin-left: 5px;
     color:#444;
-    width: 250px;
-    height 18px;
-    overflow: hidden;
 }
 
 .title-bar select

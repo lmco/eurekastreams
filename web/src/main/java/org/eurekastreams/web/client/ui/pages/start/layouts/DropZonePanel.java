@@ -269,7 +269,7 @@ public class DropZonePanel extends VerticalPanel
                 params.put("dropzone", getZoneNumber().toString());
 
                 Session.getInstance().getEventBus().notifyObservers(
-                        new UpdateHistoryEvent(new CreateUrlRequest(Page.GALLERY, params)));
+                        new UpdateHistoryEvent(new CreateUrlRequest(Page.GALLERY, params, false)));
             }
         });
         spacer.add(addAGadget);
