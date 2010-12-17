@@ -14225,6 +14225,7 @@ body .stream-view-dialog .delete-button
 	display: inline-block; 
 	*display: inline;
 	zoom: 1;
+	max-width: 350px;
 }
 
 .stream-plugin-conf-panel .form-container {
