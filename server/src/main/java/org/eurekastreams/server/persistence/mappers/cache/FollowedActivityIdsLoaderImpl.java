@@ -16,7 +16,6 @@
 package org.eurekastreams.server.persistence.mappers.cache;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -38,12 +37,6 @@ public class FollowedActivityIdsLoaderImpl extends BaseDomainMapper implements F
         List<Long> results = new ArrayList<Long>();
         
         results.addAll(getPersonActivityIdsFollowed(inPersonId, inMaxResults));
-        
-        //sort list if needed.
-        if (results.size() > 1)
-        {
-            Collections.sort(results, Collections.reverseOrder());                        
-        }
         
         //trim list if needed.
         if (results.size() > inMaxResults)
@@ -69,7 +62,7 @@ public class FollowedActivityIdsLoaderImpl extends BaseDomainMapper implements F
             + "Person followedPerson "
             + "WHERE f.pk.followerId = :userId " 
                         + "AND followedPerson.id = f.pk.followingId " 
-                        + "AND a.recipientStreamScope = followedPerson.streamScope ORDER BY a.id";
+                        + "AND a.recipientStreamScope = followedPerson.streamScope ORDER BY a.id DESC";
         Query query = getEntityManager().createQuery(queryString).setParameter("userId", inPersonId);
         query.setMaxResults(inMaxResults);
         
