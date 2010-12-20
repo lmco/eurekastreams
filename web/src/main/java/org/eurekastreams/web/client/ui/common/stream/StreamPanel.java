@@ -286,7 +286,6 @@ public class StreamPanel extends FlowPanel
             {
                 if (event.getForceReload() || !event.getJson().equals(jsonQuery))
                 {
-
                     streamName = event.getStreamName();
                     jsonQuery = event.getJson();
                     if (activityId != 0L)
@@ -341,6 +340,7 @@ public class StreamPanel extends FlowPanel
                                     showTitleAsLink = true;
                                 }
                             }
+                            streamSearch.onSearchCanceled();
                         }
 
                         else
