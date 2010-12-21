@@ -10,6 +10,8 @@ DROP TABLE Person_Stream;
 
 create table Stream (
 	id  bigserial not null,
+	streamSearchId integer,
+	streamViewId integer,
 	version int8 not null,
 	name varchar(255) not null,
 	readOnly bool not null,
@@ -62,19 +64,19 @@ BEGIN
 	
 	-- insert shared views
 	INSERT INTO Stream (version, "name", readonly, request) 
-		VALUES(0, 'Following', true, '{query:{followedBy:"%%CURRENT_USER_ACCOUNT_ID%%"}}');
+		VALUES(0, 'Following', true, '{"query":{"followedBy":"%%CURRENT_USER_ACCOUNT_ID%%"}}');
 	followingId = currval('stream_id_seq');
 		
 	INSERT INTO Stream (version, "name", readonly, request) 
-		VALUES(0, 'EUREKA:PARENT_ORG_TAG', true, '{query:{parentOrg:"%%CURRENT_USER_ACCOUNT_ID%%"}}');
+		VALUES(0, 'EUREKA:PARENT_ORG_TAG', true, '{"query":{"parentOrg":"%%CURRENT_USER_ACCOUNT_ID%%"}}');
 	parentOrgId = currval('stream_id_seq');
 		
 	INSERT INTO Stream (version, "name", readonly, request) 
-		VALUES(0, 'Everyone', true, '{query:{}}');
+		VALUES(0, 'Everyone', true, '{"query":{}}');
 	everyoneId = currval('stream_id_seq');
 		
 	INSERT INTO Stream (version, "name", readonly, request) 
-		VALUES(0, 'My saved items', true, '{query:{savedBy:"%%CURRENT_USER_ACCOUNT_ID%%"}}');
+		VALUES(0, 'My saved items', true, '{"query":{"savedBy":"%%CURRENT_USER_ACCOUNT_ID%%"}}');
 	savedItemsId = currval('stream_id_seq');
 	
 	-- Add all 
@@ -110,21 +112,21 @@ BEGIN
 		if cnt = 0 then
 			
 			-- insert a stream record
-			insert into Stream ("name", request, version, readonly) values (rec.StreamViewName, '', 0, false); 
+			insert into Stream ("name", streamViewId, request, version, readonly) values (rec.StreamViewName, rec.streamviewid, '', 0, false); 
 	
 			insert into TempStreamViewMigrate (personId, streamviewid, "name", streamid, request) values(
 				rec.PersonId,
 				rec.StreamViewId,
 				rec.StreamViewName,
 				currval('stream_id_seq'),
-				'{query:{recipient:[{type:"' || rec.scopetype || '",name:"' || rec.uniquekey || '"}]}}'
+				'{"query":{"recipient":[{"type":"' || rec.scopetype || '","name":"' || rec.uniquekey || '"}]}}'
 			);
 			
 		else
 			update 
 				TempStreamViewMigrate 
 			SET 
-				request = replace(request, ']}}', ',{type:"' || rec.scopetype || '",name:"' || rec.uniquekey || '"}]}}')
+				request = replace(request, ']}}', ',{"type":"' || rec.scopetype || '","name":"' || rec.uniquekey || '"}]}}')
 			WHERE
 				PersonId = rec.PersonId
 				AND StreamViewId = rec.StreamViewId;
@@ -195,7 +197,36 @@ BEGIN
 		"name" character varying(255) NOT NULL,
 		streamId bigserial
 	);
-	
+
+    FOR rec IN
+        select 
+			ss.name as StreamSearchName, 
+			ss.id as StreamSearchId,
+            ss.streamview_id as StreamViewId,
+            (select array_to_string(array_agg(k.element), ' OR ') 
+            from streamsearch_keywords k  WHERE k.streamsearch_id = ss.id  GROUP BY ss.id) 
+            AS keywords 
+		from Person p
+			inner join person_streamsearch pss
+				on p.id = pss.person_id
+			inner join streamsearch ss
+				on ss.id = pss.streamsearches_id
+        WHERE ss.streamview_id <= 4
+    LOOP
+        if rec.StreamViewId = 1 then
+    	    insert into Stream ("name", streamSearchId, request, version, readonly) values (rec.StreamSearchName, rec.streamsearchid, '{"query":{"followedBy":"%%CURRENT_USER_ACCOUNT_ID%%","keywords":"' || rec.keywords || '"}}', 0, false); 
+        end if;
+        if rec.StreamViewId = 2 then
+    	    insert into Stream ("name", streamSearchId, request, version, readonly) values (rec.StreamSearchName, rec.streamsearchid, '{"query":{"parentOrg":"%%CURRENT_USER_ACCOUNT_ID%%","keywords":"' || rec.keywords || '"}}', 0, false); 
+        end if;
+        if rec.StreamViewId = 3 then
+    	    insert into Stream ("name", streamSearchId, request, version, readonly) values (rec.StreamSearchName, rec.streamsearchid, '{"query":{"keywords":"' || rec.keywords || '"}}', 0, false); 
+        end if;
+        if rec.StreamViewId = 4 then
+    	    insert into Stream ("name", streamSearchId, request, version, readonly) values (rec.StreamSearchName, rec.streamsearchid, '{"query":{"savedBy":"%%CURRENT_USER_ACCOUNT_ID%%","keywords":"' || rec.keywords || '"}}', 0, false); 
+        end if;
+	END LOOP;
+
 	-- Add all stream searches without keywords
 	FOR rec IN 
 
@@ -227,21 +258,21 @@ BEGIN
 		if cnt = 0 then
 			
 			-- insert a stream record
-			insert into Stream ("name", request, version, readonly) values (rec.StreamSearchName, '', 0, false); 
+			insert into Stream ("name", streamSearchId, request, version, readonly) values (rec.StreamSearchName, rec.streamsearchid, '', 0, false); 
 	
 			insert into TempStreamSearchMigrate (personId, streamsearchid, "name", streamid, request) values(
 				rec.PersonId,
 				rec.StreamSearchId,
 				rec.StreamSearchName,
 				currval('stream_id_seq'),
-				'{query:{recipient:[{type:"' || rec.scopetype || '",name:"' || rec.uniquekey || '"}]}}'
+				'{"query":{"recipient":[{"type":"' || rec.scopetype || '","name":"' || rec.uniquekey || '"}]}}'
 			);
 			
 		else
 			update 
 				TempStreamSearchMigrate 
 			SET 
-				request = replace(request, ']}}', ',{type:"' || rec.scopetype || '",name:"' || rec.uniquekey || '"}]}}')
+				request = replace(request, ']}}', ',{"type":"' || rec.scopetype || '","name":"' || rec.uniquekey || '"}]}}')
 			WHERE
 				PersonId = rec.PersonId
 				AND streamsearchid = rec.StreamSearchId;
@@ -253,7 +284,7 @@ BEGIN
 	UPDATE 
 		TempStreamSearchMigrate 
 	SET 
-		request = replace(request, ']}}', '], keywords:"____KEYWORDS_TEMP_BLOCK____"}}');
+		request = replace(request, ']}}', '], "keywords":"____KEYWORDS_TEMP_BLOCK____"}}');
 	
 	
 	-- add all keywords
@@ -322,3 +353,26 @@ SELECT migrateStreamSearches();
 
 DROP FUNCTION migrateStreamViews();
 DROP FUNCTION migrateStreamSearches();
+
+-- Migrate Persons
+UPDATE gadget set gadgetuserpref = '{"gadgetTitle" : "' || substring(gadgetuserpref from '"gadgetTitle":"([^"]*)"') || E'", "streamQuery":"{\\"query\\":{\\"recipient\\":[{\\"type\":\\"PERSON\\", \\"name\\":\\"' || 
+    substring(gadgetuserpref from '"shortName:"([a-zA-Z0-9]*)"') || E'\\"}]}}" }' where gadgetdefinitionid = 22 and gadgetuserpref ~* '"streamtype":"personstream"';
+
+-- Migrate Groups
+UPDATE gadget set gadgetuserpref = '{"gadgetTitle" : "' || substring(gadgetuserpref from '"gadgetTitle":"([^"]*)"') || E'", "streamQuery":"{\\"query\\":{\\"recipient\\":[{\\"type\":\\"GROUP\\", \\"name\\":\\"' || 
+    substring(gadgetuserpref from '"shortName":"([a-zA-Z0-9]*)"') || E'\\"}]}}" }' where gadgetdefinitionid = 22 and gadgetuserpref ~* '"streamtype":"groupstream"';
+
+-- Migrate Orgs
+UPDATE gadget set gadgetuserpref = '{"gadgetTitle" : "' || substring(gadgetuserpref from '"gadgetTitle":"([^"]*)"') || E'", "streamQuery":"{\\"query\\":{\\"organization\\": \\"' || 
+    substring(gadgetuserpref from '"shortName":"([a-zA-Z0-9]*)"') || E'\\"}" }' where gadgetdefinitionid = 22 and gadgetuserpref ~* '"streamtype":"orgstream"';
+
+-- Migrate Saved Searches
+UPDATE gadget g2 set gadgetuserpref = '{"gadgetTitle" : "' || substring(gadgetuserpref from '"gadgetTitle":"([^"]*)"') || E'", "streamQuery":"saved/' || 
+    (SELECT s.id from stream s, gadget g where int4(substring(g.gadgetuserpref from '"filterId":"([a-zA-Z0-9]*)"')) = s.streamsearchid AND g.id = g2.id) || '"}' 
+    where g2.gadgetdefinitionid = 22 and g2.gadgetuserpref ~* '"streamtype":"streamsearch"';
+
+-- Migrate Composite Streams
+UPDATE gadget g2 set gadgetuserpref = '{"gadgetTitle" : "' || substring(gadgetuserpref from '"gadgetTitle":"([^"]*)"') || E'", "streamQuery":"saved/' || 
+    (SELECT s.id from stream s, gadget g where int4(substring(g.gadgetuserpref from '"filterId":"([a-zA-Z0-9]*)"')) = s.streamviewid AND g.id = g2.id) || '"}' 
+    where g2.gadgetdefinitionid = 22 and g2.gadgetuserpref ~* '"streamtype":"compositestream"';
+

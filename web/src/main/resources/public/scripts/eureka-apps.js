@@ -940,10 +940,12 @@ Eureka.PostBox = function(text, postcb, maxlength)
  		
 		var postComment = jQuery("<div class='post-contents'></div>");
 		var commentInput = jQuery("<textarea rows='4' cols='30' />");
+		var countDown = jQuery("<div class='post-count-down'>" + maxlength + "</div>");
+
 		commentInput.css("width", jQuery("body").width() - 30);
 		postComment.append(commentInput);
 
-		var post = jQuery("<div class='post-button'>Post</div>");
+		var post = jQuery("<div class='post-button post-button-disabled'>Post</div>");
 		post.click(function()
 		{	
 			var comment = commentInput.val();
@@ -965,14 +967,48 @@ Eureka.PostBox = function(text, postcb, maxlength)
 		postComment.append(cancel);
 		postComment.append(post);
 
+        if (maxlength != null)
+        {
+		    postComment.append(countDown);
+        }
+
 		postComment.hide();
 		jQuery("body").append(postComment);
 
 		input.focus(function()
 		{
-            		postComment.show();
+            postComment.show();
 			commentInput.focus();
    		});
+
+            commentInput.keyup(function()
+            {
+                var textLength = commentInput.val().length;
+
+                if (textLength > 0)
+                {
+                    jQuery('.post-button').removeClass('post-button-disabled');
+                }
+                else
+                {
+                    jQuery('.post-button').addClass('post-button-disabled');
+                }
+
+                if (maxlength != null)
+                {
+                    jQuery('.post-count-down').html(maxlength - textLength);
+
+                    if (textLength <= maxlength && textLength > 0)
+                    {
+                        jQuery('.post-button').removeClass('post-button-disabled');
+                    }
+                    else
+                    {
+                        jQuery('.post-button').addClass('post-button-disabled');
+                    }
+                }
+
+            });
 
     this.getContainer = function()
     {
@@ -985,15 +1021,15 @@ Eureka.ScrolledList = function(obj, moreCallback, size)
 	obj.css("position", "relative");
 	obj.css("top", "0px");
     	this.container = jQuery("<div></div>");
-        var objContainer = jQuery("<div></div>");
+        var objContainer = jQuery("<div class='scroll-list'></div>");
 	objContainer.css("height", size + "px");
 	objContainer.css("overflow", "hidden");
 	objContainer.css("position", "relative");
 	objContainer.append(obj);
 
-	var less = jQuery("<div class='scroll-less'>less</div>");
+	var less = jQuery("<div class='scroll-less'><span>less</span></div>");
 
-	var more = jQuery("<div class='scroll-more'>more</div>");
+	var more = jQuery("<div class='scroll-more'><span>more</span></div>");
 	var scrollingDown = false;
 
 	var thisBuffered = this;

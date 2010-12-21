@@ -689,6 +689,13 @@ div.list-view-item:hover .fade-out, div.list-view-item.selected .fade-out
     margin-top:2px;
 }
 
+.post-count-down
+{
+    float: right;
+    margin-right: 10px;
+    margin-top: 2px;
+}
+
 .right-arrow, .down-arrow
 {
 
@@ -706,4 +713,56 @@ div.list-view-item:hover .fade-out, div.list-view-item.selected .fade-out
 .down-arrow
 {
     background-image: url(images/down-arrow.png);
+}
+
+.scroll-list
+{
+    margin-top: -20px;
+    margin-bottom: -20px;
+}
+
+.scroll-more, .scroll-less
+{
+    height: 24px;
+}
+
+.scroll-less
+{
+    margin-top: 5px;
+    position: relative;
+    z-index: 100;
+    background: transparent url(images/gadget-scrollbar-bg.png) repeat-x 0 0;
+}
+
+.scroll-more
+{
+    position: relative;
+    background: transparent url(images/gadget-scrollbar-bg.png) repeat-x 0 -134px;
+}
+
+.scroll-less:hover
+{
+}
+
+.scroll-less span, .scroll-more span
+{
+    text-indent: -9999em;
+    overflow: hidden;
+    height: 24px;
+    display: block;
+    cursor: pointer;
+}
+
+.scroll-less span
+{
+    background: transparent url(images/gadget-scrollbar-arrows.png) no-repeat center -2px;
+}
+
+.scroll-more span
+{
+    background: transparent url(images/gadget-scrollbar-arrows.png) no-repeat center -136px;
+}
+
+.scroll-less:hover span
+{
 }
