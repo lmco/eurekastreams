@@ -12948,8 +12948,8 @@ body .dragdrop-proxy {
 	padding-left: 25px;
 	margin-top: 5px;
 	width: 430px;
-	margin-bottom: -20px;
-	padding-bottom: 1px;
+	margin-bottom: -2px;
+	padding-bottom: 2px;
 }
 
 .modal .message-comment .warning,.share-message-dialog .warning

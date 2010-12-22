@@ -1,1 +1,0 @@
-Provides a description of the system, software, and security architecture supporting the product requirements. 
