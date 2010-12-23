@@ -26,6 +26,8 @@
     <UserPref name="feed_banner_link" datatype="hidden" default_value="http://washingtontechnology.com/" />
     <UserPref name="feed_url" display_name="Feed URL:"
             datatype="hidden" default_value="http://washingtontechnology.com/rss-feeds/all.aspx" />
+    <UserPref name="feed_name_prefix" datatype="hidden" default_value="Washington Technology:" />
+    <UserPref name="feed_name_suffix" datatype="hidden" default_value=": News and Analysis" />
     <Content type="html" view="default, canvas">
     <![CDATA[
         <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" " http://www.w3.org/ TR/html4/strict.dtd">
@@ -128,6 +130,8 @@
             var feedUrl = prefs_.getString("feed_url");
             var bannerUrl = prefs_.getString("feed_banner");
             var bannerLink = prefs_.getString("feed_banner_link");
+            var prefix = prefs_.getString("feed_name_prefix");
+            var suffix = prefs_.getString("feed_name_suffix");
 
             function init()
             {
@@ -184,10 +188,10 @@
                                 Eureka.Container.init("isgscomm", false);
                                 var ex = new Eureka.ExpandableSectionContainer();
                                 var newsFeedListView = 
-                                        new Eureka.FeedListView(feedUrl, false, feed.Title);
+                                        new Eureka.FeedListView(feedUrl, false, feed.Title.replace(prefix, ""));
 
-                                gadgets.window.setTitle(feed.Title);
-                                ex.addSection(feed.Title, newsFeedListView.getContainer(), true);
+                                gadgets.window.setTitle(feed.Title.replace(suffix, ""));
+                                ex.addSection(feed.Title.replace(prefix, ""), newsFeedListView.getContainer(), true);
                                 Eureka.Container.switchView(ex.getContainer());
 
                                 if (imgMatch != null && imgMatch.length > 0)
@@ -262,9 +266,9 @@
 
                         var feedListView = 
                             new Eureka.FeedListView(feedUrl, gadgets.views.getCurrentView().getName() == 'canvas', 
-                                feed.Title, viewParams.selectedIndex, function(feed) {  return feed.Link; });
+                                feed.Title.replace(prefix, ""), viewParams.selectedIndex, function(feed) {  return feed.Link; });
 
-                        ex.addSection(feed.Title, feedListView.getContainer(), true);
+                        ex.addSection(feed.Title.replace(prefix, ""), feedListView.getContainer(), true);
                         Eureka.Container.switchView(ex.getContainer());
                     }
                 }, params
