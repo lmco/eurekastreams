@@ -68,6 +68,11 @@ public class StreamListFormElement extends FlowPanel implements FormElement
      * Maximum name length.
      */
     private static final int MAX_NAME = 50;
+    
+    /**
+     * Max number of items to be able to select.
+     */
+    private static final int MAX_ITEMS = 24;
 
     /**
      * Default constructor.
@@ -79,7 +84,7 @@ public class StreamListFormElement extends FlowPanel implements FormElement
     {
         scopes = new StreamScopeFormElement("scopes", new LinkedList<StreamScope>(), "",
                 "Enter the name of an employee or group.", false, true, "/resources/autocomplete/entities/",
-                MAX_NAME);
+                MAX_NAME, MAX_ITEMS);
 
         this.addStyleName("stream-lists");
         label.addStyleName("form-label");

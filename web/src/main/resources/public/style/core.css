@@ -12626,6 +12626,7 @@ body .stream-page-container>div.form-error-box {
 }
 
 .stream-view-dialog .stream-scope-container {
+	margin-bottom: 5px;
 	margin-left: 0px;
 	width: 420px;
 }
@@ -12693,6 +12694,7 @@ body .stream-page-container>div.form-error-box {
 	overflow-x: hidden;
 	overflow-y: auto;
 	padding-bottom: 5px;
+	position: relative;
 }
 
 .share-message-dialog-body .stream-scope { 
