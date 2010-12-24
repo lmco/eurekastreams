@@ -18,9 +18,11 @@ package org.eurekastreams.web.client.ui.pages.search;
 import java.util.HashMap;
 
 import org.eurekastreams.server.domain.Page;
+import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SwitchedHistoryViewEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
+import org.eurekastreams.web.client.events.data.GotSearchResultsResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LabeledTextBox;
@@ -41,11 +43,11 @@ public class GlobalSearchComposite extends FlowPanel
     /**
      * The search term.
      */
-    private LabeledTextBox searchTerm;
+    private final LabeledTextBox searchTerm;
 
     /**
      * Constructor.
-     * 
+     *
      * @param label
      *            the label for the uninitialized textbox.
      */
@@ -59,51 +61,59 @@ public class GlobalSearchComposite extends FlowPanel
         add(searchTerm);
         add(searchButton);
 
+        final EventBus eventBus = Session.getInstance().getEventBus();
+
         searchButton.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent event)
             {
                 if (searchTerm.getText().length() > 0)
                 {
-                    Session.getInstance().getEventBus().notifyObservers(
-                            new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH, generateParams(searchTerm
-                                    .getText()), false)));
+                    eventBus.notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH,
+                            generateParams(searchTerm.getText()), false)));
                 }
             }
         });
 
         searchTerm.addKeyPressHandler(new KeyPressHandler()
         {
-
             public void onKeyPress(final KeyPressEvent event)
             {
                 if (event.getCharCode() == KeyCodes.KEY_ENTER && searchTerm.getText().length() > 0)
                 {
-                    Session.getInstance().getEventBus().notifyObservers(
-                            new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH, generateParams(searchTerm
-                                    .getText()), false)));
+                    eventBus.notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH,
+                            generateParams(searchTerm.getText()), false)));
                 }
             }
         });
 
-        Session.getInstance().getEventBus().addObserver(SwitchedHistoryViewEvent.class,
-                new Observer<SwitchedHistoryViewEvent>()
+        eventBus.addObserver(SwitchedHistoryViewEvent.class, new Observer<SwitchedHistoryViewEvent>()
+        {
+            public void update(final SwitchedHistoryViewEvent event)
+            {
+                if (event.getPage() != Page.SEARCH)
                 {
-                    public void update(final SwitchedHistoryViewEvent event)
-                    {
+                    searchTerm.reset();
+                }
+            }
+        });
 
-                        if (event.getPage() != Page.SEARCH)
-                        {
-                            searchTerm.setText("");
-                            searchTerm.checkBox();
-                        }
-                    }
-                });
+        // clear search box on successful search
+        eventBus.addObserver(GotSearchResultsResponseEvent.class, new Observer<GotSearchResultsResponseEvent>()
+        {
+            public void update(final GotSearchResultsResponseEvent event)
+            {
+                if (event.getResponse().getTotal() > 0)
+                {
+                    searchTerm.reset();
+                }
+            }
+        });
     }
 
     /**
      * Creates a hashmap for the history parameters to pass to the search page.
-     * 
+     *
      * @param query
      *            the search string.
      * @return the hashmap of all necessary initial search parameters.
