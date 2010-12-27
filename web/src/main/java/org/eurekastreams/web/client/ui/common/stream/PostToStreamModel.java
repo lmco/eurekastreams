@@ -19,6 +19,7 @@ import java.util.HashMap;
 
 import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.commons.client.ActionRequestImpl;
+import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.server.action.request.stream.PostActivityRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
@@ -27,7 +28,9 @@ import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
 import org.eurekastreams.web.client.events.MessageTextAreaChangedEvent;
+import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.errors.ErrorPostingMessageToNullScopeEvent;
+import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.common.stream.attach.Attachment;
 import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulator;
 import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulatorStrategy;
@@ -54,13 +57,13 @@ public class PostToStreamModel
     /**
      * The action processor.
      */
-    private ActionProcessor processor;
+    private final ActionProcessor processor;
 
     /**
      * The stream scope.
      */
     // private StreamScope scope;
-    private PostToPanel postToPanel;
+    private final PostToPanel postToPanel;
 
     /**
      * The recipient type.
@@ -75,30 +78,30 @@ public class PostToStreamModel
     /**
      * Action keys associated with recipient types.
      */
-    private HashMap<EntityType, String> actionKeys = new HashMap<EntityType, String>();
+    private final HashMap<EntityType, String> actionKeys = new HashMap<EntityType, String>();
 
     /**
      * The event bus.
      */
-    private EventBus eventBus;
+    private final EventBus eventBus;
 
     /**
      * Activity Populator.
      */
-    private ActivityDTOPopulator activityPopulator = new ActivityDTOPopulator();
+    private final ActivityDTOPopulator activityPopulator = new ActivityDTOPopulator();
 
     /**
      * Constructor.
      *
      * @param inEventBus
-     va:2: Line doe*            the event bus.
+     *            va:2: Line doe* the event bus.
      * @param inProcessor
      *            the action processor.
      * @param inPostToPanel
      *            the scope.
      */
-    public PostToStreamModel(final EventBus inEventBus,
-            final ActionProcessor inProcessor, final PostToPanel inPostToPanel)
+    public PostToStreamModel(final EventBus inEventBus, final ActionProcessor inProcessor,
+            final PostToPanel inPostToPanel)
     {
         eventBus = inEventBus;
         processor = inProcessor;
@@ -170,25 +173,26 @@ public class PostToStreamModel
                 objectStrat = attachment.getPopulator();
             }
 
-            PostActivityRequest postRequest = new PostActivityRequest(
-                    activityPopulator
-                    .getActivityDTO(message, recipientType, scope
-                            .getUniqueKey(), new PostPopulator(), objectStrat));
+            PostActivityRequest postRequest = new PostActivityRequest(activityPopulator.getActivityDTO(message,
+                    recipientType, scope.getUniqueKey(), new PostPopulator(), objectStrat));
 
-            processor.makeRequest(new ActionRequestImpl<Integer>(actionKeys
-                    .get(recipientType), postRequest),
+            processor.makeRequest(new ActionRequestImpl<Integer>(actionKeys.get(recipientType), postRequest),
                     new AsyncCallback<ActivityDTO>()
                     {
                         /* implement the async call back methods */
                         public void onFailure(final Throwable caught)
                         {
-                            // TODO handle error.
+                            String errorMessage = "Error posting to stream.";
+                            if (caught instanceof AuthorizationException)
+                            {
+                                errorMessage = "Not allowed to post to this stream.";
+                            }
+                            eventBus.notifyObservers(new ShowNotificationEvent(new Notification(errorMessage)));
                         }
 
                         public void onSuccess(final ActivityDTO result)
                         {
-                            MessageStreamAppendEvent msgEvent = new MessageStreamAppendEvent(
-                                    result);
+                            MessageStreamAppendEvent msgEvent = new MessageStreamAppendEvent(result);
                             eventBus.notifyObservers(msgEvent);
                         }
                     });
@@ -196,8 +200,7 @@ public class PostToStreamModel
         else
         {
             ErrorPostingMessageToNullScopeEvent error = new ErrorPostingMessageToNullScopeEvent();
-            error
-                    .setErrorMsg("The stream name you entered could not be found");
+            error.setErrorMsg("The stream name you entered could not be found");
             eventBus.notifyObservers(error);
         }
     }
@@ -222,7 +225,5 @@ public class PostToStreamModel
     {
         return attachment;
     }
-
-
 
 }

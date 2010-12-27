@@ -19,12 +19,14 @@ import junit.framework.Assert;
 
 import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.commons.client.ActionRequest;
+import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.web.client.AnonymousClassInterceptor;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
 import org.eurekastreams.web.client.events.MessageTextAreaChangedEvent;
+import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.errors.ErrorPostingMessageToNullScopeEvent;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -58,7 +60,7 @@ public class PostToStreamModelTest
     /**
      * Stream scope.
      */
-    private StreamScope streamScope = new StreamScope(ScopeType.PERSON, "foodId");
+    private final StreamScope streamScope = new StreamScope(ScopeType.PERSON, "foodId");
 
     /**
      * The maximum message length.
@@ -68,7 +70,7 @@ public class PostToStreamModelTest
     /**
      * Mock action processor.
      */
-    private ActionProcessor processorMock = context.mock(ActionProcessor.class);
+    private final ActionProcessor processorMock = context.mock(ActionProcessor.class);
 
     /**
      * Mock.
@@ -78,7 +80,7 @@ public class PostToStreamModelTest
     /**
      * Mock event bus.
      */
-    private EventBus eventBusMock = context.mock(EventBus.class);
+    private final EventBus eventBusMock = context.mock(EventBus.class);
 
     /**
      * Setup the fixtures.
@@ -193,7 +195,64 @@ public class PostToStreamModelTest
         sut.postMessage();
 
         cbInt.getObject().onSuccess(null);
-        cbInt.getObject().onFailure(null);
+
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Tests posting a message.
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public final void postMessageTestServerError()
+    {
+        final AnonymousClassInterceptor<AsyncCallback> cbInt = new AnonymousClassInterceptor<AsyncCallback>();
+        final StreamScope scope = new StreamScope(ScopeType.PERSON, "username1");
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(postTo).getPostScope();
+                will(returnValue(scope));
+
+                oneOf(processorMock).makeRequest(with(any(ActionRequest.class)), with(any(AsyncCallback.class)));
+                will(cbInt);
+
+                oneOf(eventBusMock).notifyObservers(with(any(ShowNotificationEvent.class)));
+            }
+        });
+
+        sut.postMessage();
+
+        cbInt.getObject().onFailure(new Exception());
+
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Tests posting a message.
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public final void postMessageTestServerDenied()
+    {
+        final AnonymousClassInterceptor<AsyncCallback> cbInt = new AnonymousClassInterceptor<AsyncCallback>();
+        final StreamScope scope = new StreamScope(ScopeType.PERSON, "username1");
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(postTo).getPostScope();
+                will(returnValue(scope));
+
+                oneOf(processorMock).makeRequest(with(any(ActionRequest.class)), with(any(AsyncCallback.class)));
+                will(cbInt);
+
+                oneOf(eventBusMock).notifyObservers(with(any(ShowNotificationEvent.class)));
+            }
+        });
+
+        sut.postMessage();
+
+        cbInt.getObject().onFailure(new AuthorizationException());
 
         context.assertIsSatisfied();
     }
