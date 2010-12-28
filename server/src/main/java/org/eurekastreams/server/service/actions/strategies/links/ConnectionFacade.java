@@ -226,6 +226,12 @@ public class ConnectionFacade
         Reader reader = getConnectionReader(url, inAccountId);
         try
         {
+            // Note: The Reader.read javadocs say that "this method will block until some input is available, an I/O
+            // error occurs, or the end of the stream is reached," so if it returns with less characters than would fit
+            // in the buffer, I can't know whether that's the end of the response (EOF) or just a delay in receiving
+            // packets over the network. As such, I need to read until it returns -1 (EOF) to know I have the entire
+            // response.
+
             // first just read into the buffer
             int charsRead = 0;
             while (charsRead < buffer.length)
