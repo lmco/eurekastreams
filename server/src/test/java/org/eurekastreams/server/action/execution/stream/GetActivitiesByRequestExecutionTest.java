@@ -37,7 +37,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test for GetActivitiesByCompositeStreamExecution class.
+ * Test for GetActivitiesByRequestExecution class.
  * 
  */
 @SuppressWarnings("unchecked")
