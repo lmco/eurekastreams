@@ -25,6 +25,7 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.action.execution.stream.PostActivityExecutionStrategy;
 import org.eurekastreams.server.action.request.profile.RequestForGroupMembershipRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusByGroupCreatorRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
@@ -96,12 +97,22 @@ public class SetFollowingGroupStatusExecutionTest
     /**
      * Mocked principal object.
      */
-    private final Principal princpalMock = context.mock(Principal.class);
+    private final Principal principalMock = context.mock(Principal.class);
 
     /** Mapper to remove group access requests. */
     private DeleteRequestForGroupMembership deleteRequestForGroupMembershipMapper = context
             .mock(DeleteRequestForGroupMembership.class);
 
+    /**
+     * Post an activity.
+     */
+    private PostActivityExecutionStrategy postActivity = context.mock(PostActivityExecutionStrategy.class);
+
+    /**
+     * Test account name.
+     */
+    private final String accountName = "somebody"; 
+    
     /**
      * Method to setup the System Under Test.
      */
@@ -110,7 +121,7 @@ public class SetFollowingGroupStatusExecutionTest
     {
         sut = new SetFollowingGroupStatusExecution(groupByShortNameMapperMock, getPersonIdFromAccountIdMapper,
                 groupMapperMock, addCachedGroupFollowerMapperMock, groupFollowerIdsMapperMock,
-                deleteRequestForGroupMembershipMapper);
+                deleteRequestForGroupMembershipMapper, postActivity);
     }
 
     /**
@@ -146,12 +157,17 @@ public class SetFollowingGroupStatusExecutionTest
                 will(returnValue(targetFollowerIds));
 
                 oneOf(deleteRequestForGroupMembershipMapper).execute(with(equalInternally(delRequest)));
+                
+                oneOf(principalMock).getAccountId();
+                will(returnValue(accountName));
+                
+                oneOf(postActivity).execute(with(any(TaskHandlerActionContext.class)));
             }
         });
 
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntaccount", "groupshortname",
                 EntityType.GROUP, false, Follower.FollowerStatus.FOLLOWING);
-        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, princpalMock);
+        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
         TaskHandlerActionContext currentTaskHandlerActionContext = new TaskHandlerActionContext<PrincipalActionContext>(
                 currentContext, new ArrayList<UserActionRequest>());
         sut.execute(currentTaskHandlerActionContext);
@@ -189,12 +205,17 @@ public class SetFollowingGroupStatusExecutionTest
                 will(returnValue(targetFollowerIds));
 
                 oneOf(deleteRequestForGroupMembershipMapper).execute(with(equalInternally(delRequest)));
+                
+                oneOf(principalMock).getAccountId();
+                will(returnValue(accountName));
+
+                oneOf(postActivity).execute(with(any(TaskHandlerActionContext.class)));
             }
         });
 
         SetFollowingStatusByGroupCreatorRequest currentRequest = new SetFollowingStatusByGroupCreatorRequest(1L, 2L,
-                Follower.FollowerStatus.FOLLOWING);
-        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, princpalMock);
+                Follower.FollowerStatus.FOLLOWING, "Group Name", false);
+        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
         TaskHandlerActionContext currentTaskHandlerActionContext = new TaskHandlerActionContext<PrincipalActionContext>(
                 currentContext, new ArrayList<UserActionRequest>());
         sut.execute(currentTaskHandlerActionContext);
@@ -234,7 +255,7 @@ public class SetFollowingGroupStatusExecutionTest
 
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntaccount", "groupshortname",
                 EntityType.GROUP, false, Follower.FollowerStatus.NOTFOLLOWING);
-        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, princpalMock);
+        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
         TaskHandlerActionContext currentTaskHandlerActionContext = new TaskHandlerActionContext<PrincipalActionContext>(
                 currentContext, new ArrayList<UserActionRequest>());
         sut.execute(currentTaskHandlerActionContext);
@@ -266,7 +287,7 @@ public class SetFollowingGroupStatusExecutionTest
 
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntaccount", "groupshortname",
                 EntityType.GROUP, false, Follower.FollowerStatus.FOLLOWING);
-        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, princpalMock);
+        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
         TaskHandlerActionContext currentTaskHandlerActionContext = new TaskHandlerActionContext<PrincipalActionContext>(
                 currentContext, new ArrayList<UserActionRequest>());
         sut.execute(currentTaskHandlerActionContext);
@@ -304,7 +325,7 @@ public class SetFollowingGroupStatusExecutionTest
 
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntaccount", "groupshortname",
                 EntityType.GROUP, false, Follower.FollowerStatus.NOTSPECIFIED);
-        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, princpalMock);
+        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
         TaskHandlerActionContext currentTaskHandlerActionContext = new TaskHandlerActionContext<PrincipalActionContext>(
                 currentContext, new ArrayList<UserActionRequest>());
         sut.execute(currentTaskHandlerActionContext);
