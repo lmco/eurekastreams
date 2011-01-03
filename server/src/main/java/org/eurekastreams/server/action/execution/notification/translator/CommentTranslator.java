@@ -36,13 +36,16 @@ import org.eurekastreams.server.search.modelview.CommentDTO;
 public class CommentTranslator implements NotificationTranslator
 {
     /** Mapper to get commentors. */
-    private GetCommentorIdsByActivityId commentorsMapper;
+    private final GetCommentorIdsByActivityId commentorsMapper;
 
     /** Mapper to get activity details. */
-    private DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper;
+    private final DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper;
 
     /** Mapper to get the comment. */
-    private DomainMapper<List<Long>, List<CommentDTO>> commentsMapper;
+    private final DomainMapper<List<Long>, List<CommentDTO>> commentsMapper;
+
+    /** Mapper to get people who saved an activity. */
+    private final DomainMapper<Long, List<Long>> saversMapper;
 
     /**
      * Constructor.
@@ -53,14 +56,18 @@ public class CommentTranslator implements NotificationTranslator
      *            activities mapper to set.
      * @param inCommentsMapper
      *            Mapper to get the comment.
+     * @param inSavedMapper
+     *            Mapper to get people who saved an activity.
      */
     public CommentTranslator(final GetCommentorIdsByActivityId inCommentorsMapper,
             final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper,
-            final DomainMapper<List<Long>, List<CommentDTO>> inCommentsMapper)
+            final DomainMapper<List<Long>, List<CommentDTO>> inCommentsMapper,
+            final DomainMapper<Long, List<Long>> inSavedMapper)
     {
         commentorsMapper = inCommentorsMapper;
         activitiesMapper = inActivitiesMapper;
         commentsMapper = inCommentsMapper;
+        saversMapper = inSavedMapper;
     }
 
     /**
@@ -92,19 +99,23 @@ public class CommentTranslator implements NotificationTranslator
         }
         ActivityDTO activity = activities.get(0);
 
-        Map<NotificationType, List<Long>> recipients = new HashMap<NotificationType, List<Long>>();
+        Map<NotificationType, List<Long>> recipientsByType = new HashMap<NotificationType, List<Long>>();
+        List<Long> allRecipients = new ArrayList<Long>();
 
         // Adds post author as recipient
         long postAuthor = activity.getActor().getId();
         if (postAuthor != inActorId)
         {
-            recipients.put(NotificationType.COMMENT_TO_PERSONAL_POST, Collections.singletonList(postAuthor));
+            recipientsByType.put(NotificationType.COMMENT_TO_PERSONAL_POST, Collections.singletonList(postAuthor));
+            allRecipients.add(postAuthor);
         }
 
         // Adds stream owner as a recipient
         if (inDestinationId != postAuthor && inDestinationId != inActorId)
         {
-            recipients.put(NotificationType.COMMENT_TO_PERSONAL_STREAM, Collections.singletonList(inDestinationId));
+            recipientsByType.put(NotificationType.COMMENT_TO_PERSONAL_STREAM,
+                    Collections.singletonList(inDestinationId));
+            allRecipients.add(inDestinationId);
         }
 
         // Adds recipient who previously commented on this post
@@ -114,22 +125,39 @@ public class CommentTranslator implements NotificationTranslator
             if (commentorId != postAuthor && commentorId != inDestinationId && commentorId != inActorId)
             {
                 commentToCommentedRecipients.add(commentorId);
+                allRecipients.add(commentorId);
 
                 // this recipient list will keep replacing the old value in the map when new recipients are found
-                recipients.put(NotificationType.COMMENT_TO_COMMENTED_POST, commentToCommentedRecipients);
+                recipientsByType.put(NotificationType.COMMENT_TO_COMMENTED_POST, commentToCommentedRecipients);
             }
         }
 
-        List<NotificationDTO> notifications = new ArrayList<NotificationDTO>();
-
-        for (NotificationType notificationType : recipients.keySet())
+        // Add people who saved post as recipients
+        List<Long> commentToSaversRecipients = new ArrayList<Long>();
+        for (long saverId : saversMapper.execute(activityId))
         {
-            NotificationDTO notif = new NotificationDTO(recipients.get(notificationType), notificationType, inActorId);
+            if (saverId != inActorId && !allRecipients.contains(saverId))
+            {
+                commentToSaversRecipients.add(saverId);
+                allRecipients.add(saverId);
+
+                // this recipient list will keep replacing the old value in the map when new recipients are found
+                recipientsByType.put(NotificationType.COMMENT_TO_SAVED_POST, commentToSaversRecipients);
+            }
+        }
+
+        // Build notifications
+        List<NotificationDTO> notifications = new ArrayList<NotificationDTO>();
+        for (NotificationType notificationType : recipientsByType.keySet())
+        {
+            NotificationDTO notif = new NotificationDTO(recipientsByType.get(notificationType), notificationType,
+                    inActorId);
             notif.setActivity(activityId, activity.getBaseObjectType());
             StreamEntityDTO dest = activity.getDestinationStream();
             notif.setDestination(dest.getId(), dest.getType(), dest.getUniqueIdentifier(), dest.getDisplayName());
             notif.setCommentId(inCommentId);
-            if (notif.getType().equals(NotificationType.COMMENT_TO_COMMENTED_POST))
+            if (notif.getType().equals(NotificationType.COMMENT_TO_COMMENTED_POST)
+                    || notif.getType().equals(NotificationType.COMMENT_TO_SAVED_POST))
             {
                 StreamEntityDTO author = activity.getActor();
                 notif.setAuxiliary(author.getType(), author.getUniqueIdentifier(), author.getDisplayName());

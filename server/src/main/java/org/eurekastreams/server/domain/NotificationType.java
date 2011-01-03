@@ -35,6 +35,9 @@ public enum NotificationType
     /** Someone commented on a post on which the user also commented. */
     COMMENT_TO_COMMENTED_POST,
 
+    /** Someone commented on a post on which the user saved. */
+    COMMENT_TO_SAVED_POST,
+
     /** Someone started following the user. */
     FOLLOW_PERSON,
 
@@ -66,5 +69,11 @@ public enum NotificationType
     REQUEST_NEW_GROUP_DENIED,
 
     /** Someone requested access to a private group. */
-    REQUEST_GROUP_ACCESS
+    REQUEST_GROUP_ACCESS,
+
+    /** A coordinator approved access to a private group. */
+    REQUEST_GROUP_ACCESS_APPROVED,
+
+    /** A coordinator denied access to a private group. */
+    REQUEST_GROUP_ACCESS_DENIED
 }

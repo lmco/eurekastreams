@@ -20,6 +20,7 @@
 				<constructor-arg ref="getCommentorIdsByActivityId" />
 				<constructor-arg ref="bulkActivitiesMapper" />
 				<constructor-arg ref="getCommentsById" />
+				<constructor-arg ref="getPersonIdsWithStarredActivity" />
             </bean>
         </entry>
         <entry key="STREAM_POST">
@@ -37,6 +38,7 @@
 				<constructor-arg><null /></constructor-arg>
 				<!-- Replace above with <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" /> to notify group coordinators when comments are posted to group streams. -->
 				<constructor-arg ref="getCommentsById" />
+				<constructor-arg ref="getPersonIdsWithStarredActivity" />
             </bean>
         </entry>
         <entry key="GROUP_STREAM_POST">
@@ -61,6 +63,16 @@
         <entry key="REQUEST_GROUP_ACCESS">
             <bean class="org.eurekastreams.server.action.execution.notification.translator.RequestGroupAccessTranslator">
                 <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" />
+            </bean>
+        </entry>
+        <entry key="REQUEST_GROUP_ACCESS_APPROVED">
+            <bean class="org.eurekastreams.server.action.execution.notification.translator.GroupMembershipResponseTranslator">
+                <constructor-arg value="REQUEST_GROUP_ACCESS_APPROVED" />
+            </bean>
+        </entry>
+        <entry key="REQUEST_GROUP_ACCESS_DENIED">
+            <bean class="org.eurekastreams.server.action.execution.notification.translator.GroupMembershipResponseTranslator">
+                <constructor-arg value="REQUEST_GROUP_ACCESS_DENIED" />
             </bean>
         </entry>
     </util:map>
@@ -374,6 +386,26 @@
 									</constructor-arg>
 								</bean>
                         </entry>
+                        <entry key="COMMENT_TO_SAVED_POST">
+								<bean class="org.eurekastreams.server.action.execution.notification.CommentTemplateEmailBuilder">
+									<constructor-arg ref="getCommentsById" />
+									<constructor-arg>
+										<bean parent="baseTemplateEmailBuilder">
+											<constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) commented on a $(activity.type) you saved in the $(dest.name) stream" />
+											<constructor-arg>
+												<bean parent="baseResourceContentLoader">
+													<constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_SAVED_POST.txt" />
+												</bean>
+											</constructor-arg>
+											<constructor-arg>
+												<bean parent="baseResourceContentLoader">
+													<constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-COMMENT_TO_SAVED_POST.html" />
+												</bean>
+											</constructor-arg>
+										</bean>
+									</constructor-arg>
+								</bean>
+                        </entry>
                         <entry key="FOLLOW_GROUP">
                             <bean parent="baseTemplateEmailBuilder">
                                 <constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) joined the $(dest.name) group" />
@@ -447,6 +479,36 @@
                                 <constructor-arg>
                                     <bean parent="baseResourceContentLoader">
                                         <constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS.html" />
+                                    </bean>
+                                </constructor-arg>
+                            </bean>
+                        </entry>
+                        <entry key="REQUEST_GROUP_ACCESS_APPROVED">
+                            <bean parent="baseTemplateEmailBuilder">
+                                <constructor-arg value="$(eureka.notification.email.subjectprefix)Request to join the $(dest.name) private group has been approved" />
+                                <constructor-arg>
+                                    <bean parent="baseResourceContentLoader">
+                                        <constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS_APPROVED.txt" />
+                                    </bean>
+                                </constructor-arg>
+                                <constructor-arg>
+                                    <bean parent="baseResourceContentLoader">
+                                        <constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS_APPROVED.html" />
+                                    </bean>
+                                </constructor-arg>
+                            </bean>
+                        </entry>
+                        <entry key="REQUEST_GROUP_ACCESS_DENIED">
+                            <bean parent="baseTemplateEmailBuilder">
+                                <constructor-arg value="$(eureka.notification.email.subjectprefix)Request to join the $(dest.name) private group has been denied" />
+                                <constructor-arg>
+                                    <bean parent="baseResourceContentLoader">
+                                        <constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS_DENIED.txt" />
+                                    </bean>
+                                </constructor-arg>
+                                <constructor-arg>
+                                    <bean parent="baseResourceContentLoader">
+                                        <constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-REQUEST_GROUP_ACCESS_DENIED.html" />
                                     </bean>
                                 </constructor-arg>
                             </bean>

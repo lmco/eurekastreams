@@ -17,23 +17,26 @@ package org.eurekastreams.server.action.execution.profile;
 
 import java.io.Serializable;
 
-import org.eurekastreams.commons.actions.ExecutionStrategy;
-import org.eurekastreams.commons.actions.context.ActionContext;
-import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
+import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.action.request.profile.RequestForGroupMembershipRequest;
 import org.eurekastreams.server.persistence.mappers.db.DeleteRequestForGroupMembership;
 
 /**
  * Execution to delete a group membership request.
  */
-public class DeleteRequestForGroupMembershipExecution implements ExecutionStrategy<ActionContext>
+public class DeleteRequestForGroupMembershipExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
     /** Mapper to delete request. */
-    private DeleteRequestForGroupMembership mapper;
+    private final DeleteRequestForGroupMembership mapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inMapper
      *            Mapper.
      */
@@ -46,10 +49,20 @@ public class DeleteRequestForGroupMembershipExecution implements ExecutionStrate
      * {@inheritDoc}
      */
     @Override
-    public Serializable execute(final ActionContext inActionContext) throws ExecutionException
+    public Serializable execute(final TaskHandlerActionContext<PrincipalActionContext> inActionContext)
     {
-        return mapper.execute((RequestForGroupMembershipRequest) inActionContext.getParams());
-    }
+        RequestForGroupMembershipRequest request = (RequestForGroupMembershipRequest) inActionContext
+                .getActionContext().getParams();
 
+        mapper.execute(request);
+
+        // send notification
+        inActionContext.getUserActionRequests().add(
+                new UserActionRequest("createNotificationsAction", null, new CreateNotificationsRequest(
+                        RequestType.REQUEST_GROUP_ACCESS_DENIED, inActionContext.getActionContext().getPrincipal()
+                                .getId(), request.getGroupId(), request.getPersonId())));
+
+        return null;
+    }
 
 }

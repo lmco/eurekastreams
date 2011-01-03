@@ -2064,7 +2064,7 @@
         <constructor-arg value="true" />
     </bean>
 
-    <bean id="deleteRequestForGroupMembershipAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
+    <bean id="deleteRequestForGroupMembershipAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
             <!-- Authorization -->
@@ -2081,6 +2081,7 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
+        <constructor-arg ref="taskHandler" />
     </bean>
     
     <bean id="getPendingGroupsAction" class="org.eurekastreams.commons.actions.service.ServiceAction">

@@ -63,7 +63,7 @@ public class GadgetPanel extends FlowPanel
     /**
      * The GadgetRenderer is the JSNI interface to the gadget container.
      */
-    private GadgetRenderer gadgetRenderer = GadgetRenderer.getInstance();
+    private final GadgetRenderer gadgetRenderer = GadgetRenderer.getInstance();
 
     /**
      * The current state of the gadget.
@@ -73,12 +73,12 @@ public class GadgetPanel extends FlowPanel
     /**
      * prefix for all dynamically created Render Zones.
      */
-    private String gadgetRenderZonePrefix = "gadget-zone-render-zone-";
+    private final String gadgetRenderZonePrefix = "gadget-zone-render-zone-";
 
     /**
      * prefix for all dynamically created gadget title label styles.
      */
-    private String gadgetTitleLabelPrefix = "remote_iframe_";
+    private final String gadgetTitleLabelPrefix = "remote_iframe_";
 
     /**
      * minimize button.
@@ -149,12 +149,12 @@ public class GadgetPanel extends FlowPanel
      * The Element ID of the div to render a gadget in. This will simply be a prefix with the gadgetIdModifier added to
      * it.
      */
-    private String gadgetRenderZoneId;
+    private final String gadgetRenderZoneId;
 
     /**
      * needed to enable drag and drop.
      */
-    private FocusPanel titleBarContainer = new FocusPanel();
+    private final FocusPanel titleBarContainer = new FocusPanel();
 
     /**
      * The class applied when a gadget is minimized.
@@ -189,7 +189,7 @@ public class GadgetPanel extends FlowPanel
 
         renderZone.getElement().setId(gadgetRenderZoneId);
 
-        this.gadgetData = gadget;
+        gadgetData = gadget;
         // Style the pieces of the title bar
         title.setStylePrimaryName("gadget-zone-chrome-title-bar-title-button");
         titleLabel.getElement().setId(gadgetTitleLabelPrefix + gadgetIdModifier.toString() + "_title");
@@ -639,4 +639,16 @@ public class GadgetPanel extends FlowPanel
         return gadgetData;
     }
 
+    /**
+     * Refresh the gadget. (Used after drag-and-drop operations. Without this, the RPC gets broken and the callbacks to
+     * RPC-based APIs simply never get called on the gadget side.)
+     */
+    public void rerender()
+    {
+        renderZone.clear();
+        gadgetRenderer.registerSingleGadgetInContainer(gadgetData.getGadgetDefinition().getUrl(), gadgetIdModifier,
+                gadgetData.getGadgetDefinition().getId(), gadgetData.getGadgetUserPref());
+
+        gadgetRenderer.renderGadget(gadgetIdModifier.toString());
+    }
 }
