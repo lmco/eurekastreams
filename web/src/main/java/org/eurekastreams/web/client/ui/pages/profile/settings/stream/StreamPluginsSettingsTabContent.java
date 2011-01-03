@@ -24,6 +24,7 @@ import org.eurekastreams.server.action.request.feed.DeleteFeedSubscriptionReques
 import org.eurekastreams.server.domain.gadgetspec.GadgetMetaDataDTO;
 import org.eurekastreams.server.domain.stream.plugins.FeedSubscriber;
 import org.eurekastreams.server.domain.stream.plugins.PluginDefinition;
+import org.eurekastreams.web.client.events.HideNotificationEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.StreamPluginsUpdateCanceledEvent;
@@ -110,12 +111,12 @@ public class StreamPluginsSettingsTabContent extends Composite
     /**
      * BaseModel.
      */
-    private BaseModel model;
+    private final BaseModel model;
 
     /**
      * JSNI facade.
      */
-    private WidgetJSNIFacade jSNIFacade = new WidgetJSNIFacadeImpl();
+    private final WidgetJSNIFacade jSNIFacade = new WidgetJSNIFacadeImpl();
 
     /**
      * The default constructor.
@@ -152,7 +153,7 @@ public class StreamPluginsSettingsTabContent extends Composite
                         gadgetMetaDataFetcher.fetchMetaData();
                     }
                 });
-        
+
         Session.getInstance().getEventBus().addObserver(StreamPluginsUpdateCanceledEvent.class,
                 new Observer<StreamPluginsUpdateCanceledEvent>()
                 {
@@ -296,6 +297,9 @@ public class StreamPluginsSettingsTabContent extends Composite
                 {
                     public void onClick(final ClickEvent event)
                     {
+                        // clear the notification in case there was one left over from adding a prior plugin
+                        Session.getInstance().getEventBus().notifyObservers(new HideNotificationEvent());
+
                         selectPlugin(metaDataItem);
                     }
                 });

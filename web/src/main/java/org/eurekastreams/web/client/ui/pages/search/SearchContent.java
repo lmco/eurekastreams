@@ -45,26 +45,21 @@ public class SearchContent extends FlowPanel
     /**
      * The label for the query text.
      */
-    private InlineLabel queryText = new InlineLabel("");
-
-    /**
-     * Booster.
-     */
-    private String boost = "";
-    /**
-     * The query.
-     */
-    private String query = null;
+    private final InlineLabel queryText = new InlineLabel("");
 
     /**
      * The renderer.
      */
-    private SearchResultItemRenderer renderer = new SearchResultItemRenderer();
+    private final SearchResultItemRenderer renderer = new SearchResultItemRenderer();
 
-    /**
-     * Am I initializing?
-     */
-    private boolean init = true;
+    /** Has the control been initialized. */
+    private boolean initialized = false;
+
+    /** Current boost value; used to avoid re-fetch when there is no change. */
+    private String currentBoost;
+
+    /** Current query string; used to avoid re-fetch when there is no change. */
+    private String currentQuery;
 
     /**
      * Constructor.
@@ -91,24 +86,9 @@ public class SearchContent extends FlowPanel
         searchResultsPanel.insert(resultsHeaderPanel, 0);
         contentPanel.add(searchResultsPanel);
 
-        if (Session.getInstance().getParameterValue("boost") != null)
-        {
-            boost = Session.getInstance().getParameterValue("boost");
-        }
-
-        query = Session.getInstance().getParameterValue("query");
-        queryText.setText(query);
-
-        GetDirectorySearchResultsRequest request = new GetDirectorySearchResultsRequest(query, "", boost,
-                0, 0);
-        searchResultsPanel.addSet("All", SearchResultsModel.getInstance(), renderer, request);
-        searchResultsPanel.addSet("Employees", SearchResultsPeopleModel.getInstance(), renderer, request);
-        searchResultsPanel.addSet("Groups", SearchResultsGroupModel.getInstance(), renderer, request);
-        searchResultsPanel.addSet("Organizations", SearchResultsOrgModel.getInstance(), renderer, request);
-
         // When the search results come back, render the results.
-        Session.getInstance().getEventBus().addObserver(GotSearchResultsResponseEvent.class,
-                new Observer<GotSearchResultsResponseEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(GotSearchResultsResponseEvent.class, new Observer<GotSearchResultsResponseEvent>()
                 {
                     public void update(final GotSearchResultsResponseEvent arg1)
                     {
@@ -118,32 +98,48 @@ public class SearchContent extends FlowPanel
 
         // When the history changes, update the query and reset the pager, triggering
         // a re-search.
-        Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
-                new Observer<UpdatedHistoryParametersEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(UpdatedHistoryParametersEvent.class, new Observer<UpdatedHistoryParametersEvent>()
                 {
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
-                        if (event.getParameters().get("boost") != null)
+                        String boost = event.getParameters().get("boost");
+                        if (boost == null)
                         {
-                            boost = event.getParameters().get("boost");
+                            boost = "";
                         }
-
-                        query = event.getParameters().get("query");
+                        String query = event.getParameters().get("query");
+                        if (query == null)
+                        {
+                            query = "";
+                        }
                         queryText.setText(query);
 
                         GetDirectorySearchResultsRequest request = new GetDirectorySearchResultsRequest(query, "",
                                 boost, 0, 0);
-                        searchResultsPanel.updateSetRequest("All", request);
-                        searchResultsPanel.updateSetRequest("Employees", request);
-                        searchResultsPanel.updateSetRequest("Groups", request);
-                        searchResultsPanel.updateSetRequest("Organizations", request);
 
-                        if (!init)
+                        if (!initialized)
                         {
+                            searchResultsPanel.addSet("All", SearchResultsModel.getInstance(), renderer, request);
+                            searchResultsPanel.addSet("Employees", SearchResultsPeopleModel.getInstance(), renderer,
+                                    request);
+                            searchResultsPanel.addSet("Groups", SearchResultsGroupModel.getInstance(), renderer,
+                                    request);
+                            searchResultsPanel.addSet("Organizations", SearchResultsOrgModel.getInstance(), renderer,
+                                    request);
+                            initialized = true;
+                        }
+                        else if (!boost.equals(currentBoost) || !query.equals(currentQuery))
+                        {
+                            searchResultsPanel.updateSetRequest("All", request);
+                            searchResultsPanel.updateSetRequest("Employees", request);
+                            searchResultsPanel.updateSetRequest("Groups", request);
+                            searchResultsPanel.updateSetRequest("Organizations", request);
                             searchResultsPanel.reload();
                         }
-                        init = false;
+                        currentBoost = boost;
+                        currentQuery = query;
                     }
                 });
-        }
+    }
 }

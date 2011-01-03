@@ -45,6 +45,16 @@ public class SetFollowingStatusByGroupCreatorRequest implements Serializable
      * Local instance of the {@link FollowerStatus} for this request.
      */
     private FollowerStatus followerStatus;
+    
+    /**
+     * Local instance of the Target name for this request.
+     */
+    private String targetName;
+    
+    /**
+     * Flag indicating if this request is pending.
+     */
+    private boolean isPending;
 
     /**
      * Constructor.
@@ -55,14 +65,19 @@ public class SetFollowingStatusByGroupCreatorRequest implements Serializable
      *            - instance of the target id for this request.
      * @param inFollowerStatus
      *            - instance of the {@link FollowerStatus} for this request.
+     * @param inTargetName
+     *            - instance of the target name for this request.
+     * @param inIsPending
+     *            - instance of the flag for isPenging for this request.
      */
     public SetFollowingStatusByGroupCreatorRequest(final Long inFollowerId, final Long inTargetId,
-            final FollowerStatus inFollowerStatus)
+            final FollowerStatus inFollowerStatus, final String inTargetName, final boolean inIsPending)
     {
         followerId = inFollowerId;
         targetId = inTargetId;
         followerStatus = inFollowerStatus;
-
+        targetName = inTargetName;
+        isPending = inIsPending;
     }
 
     /**
@@ -114,5 +129,39 @@ public class SetFollowingStatusByGroupCreatorRequest implements Serializable
     public void setFollowerStatus(final FollowerStatus inFollowerStatus)
     {
         this.followerStatus = inFollowerStatus;
+    }
+
+    /**
+     * @return the targetName
+     */
+    public String getTargetName()
+    {
+        return targetName;
+    }
+
+    /**
+     * @param inTargetName
+     *            the inTargetName to set
+     */
+    public void setTargetName(final String inTargetName)
+    {
+        this.targetName = inTargetName;
+    }
+
+    /**
+     * @param inIsPending
+     *            the isPending to set
+     */
+    public void setPending(final boolean inIsPending)
+    {
+        isPending = inIsPending;
+    }
+
+    /**
+     * @return the isPending
+     */
+    public boolean isPending()
+    {
+        return isPending;
     }
 }

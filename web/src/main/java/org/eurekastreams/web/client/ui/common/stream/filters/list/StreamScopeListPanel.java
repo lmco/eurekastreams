@@ -54,15 +54,17 @@ public class StreamScopeListPanel extends FlowPanel
                 {
                     public void update(final StreamScopeDeletedEvent arg1)
                     {
+                        int index = 0;
                         for (StreamScope scope : scopes)
                         {
                             if (scope.getUniqueKey().equals(
                                     arg1.getScope().getUniqueKey()))
                             {
-                                scopes.remove(scope);
+                                scopes.remove(index);
                                 render();
                                 break;
                             }
+                            index++;
                         }
                     }
                 });

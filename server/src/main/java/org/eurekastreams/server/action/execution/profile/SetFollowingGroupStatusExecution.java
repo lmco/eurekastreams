@@ -18,11 +18,13 @@ package org.eurekastreams.server.action.execution.profile;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
@@ -31,7 +33,13 @@ import org.eurekastreams.server.action.request.profile.RequestForGroupMembership
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusByGroupCreatorRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
 import org.eurekastreams.server.action.request.stream.DeleteIdsFromListsRequest;
+import org.eurekastreams.server.action.request.stream.PostActivityRequest;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
+import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.domain.stream.ActivityVerb;
+import org.eurekastreams.server.domain.stream.BaseObjectType;
+import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddCachedGroupFollower;
@@ -42,7 +50,7 @@ import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
 /**
  * Class responsible for providing the strategy that updates the appropriate lists when a group is followed.
- *
+ * 
  */
 public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
@@ -77,8 +85,13 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
     private DeleteRequestForGroupMembership deleteRequestForGroupMembershipMapper;
 
     /**
+     * The post activity executor.
+     */
+    private TaskHandlerExecutionStrategy postActivityExecutor;
+
+    /**
      * Constructor for the SetFollowingGroupStatusExecution.
-     *
+     * 
      * @param inGroupMapper
      *            - instance of the GetDomainGroupsByShortNames mapper.
      * @param inGetPersonIdFromAccountIdMapper
@@ -91,12 +104,15 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
      *            - mapper to get the follower ids for a group
      * @param inDeleteRequestForGroupMembershipMapper
      *            Mapper to remove group access requests.
+     * @param inPostActivityExecutor
+     *            post executor.
      */
     public SetFollowingGroupStatusExecution(final GetDomainGroupsByShortNames inGroupMapper,
             final DomainMapper<String, Long> inGetPersonIdFromAccountIdMapper,
             final DomainGroupMapper inDomainGroupMapper, final AddCachedGroupFollower inAddCachedGroupFollowerMapper,
             final DomainMapper<Long, List<Long>> inFollowerIdsMapper,
-            final DeleteRequestForGroupMembership inDeleteRequestForGroupMembershipMapper)
+            final DeleteRequestForGroupMembership inDeleteRequestForGroupMembershipMapper,
+            final TaskHandlerExecutionStrategy inPostActivityExecutor)
     {
         groupMapper = inGroupMapper;
         getPersonIdFromAccountIdMapper = inGetPersonIdFromAccountIdMapper;
@@ -104,11 +120,12 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
         addCachedGroupFollowerMapper = inAddCachedGroupFollowerMapper;
         followerIdsMapper = inFollowerIdsMapper;
         deleteRequestForGroupMembershipMapper = inDeleteRequestForGroupMembershipMapper;
+        postActivityExecutor = inPostActivityExecutor;
     }
 
     /**
      * {@inheritDoc}.
-     *
+     * 
      * This method sets the following status based on the passed in request object. There is an extra block of code here
      * that handles an additional request object type that passes in the follower and target ids by string name instead
      * of their long id's. This extra support is needed for the GroupCreator object that gets called from the back end
@@ -123,6 +140,8 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
         Long targetId;
         FollowerStatus followerStatus;
         List<UserActionRequest> taskRequests = new ArrayList<UserActionRequest>();
+        String targetName;
+        boolean isPending = false;
 
         // this switching here is a hold over until the GroupCreator can be refactored to call this strategy
         // and not fail because of additional mapper calls on the DomainGroupModelView and PersonModelView objects.
@@ -133,6 +152,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             followerStatus = currentRequest.getFollowerStatus();
             followerId = getPersonIdFromAccountIdMapper.execute(currentRequest.getFollowerUniqueId());
             DomainGroupModelView targetResult = groupMapper.fetchUniqueResult(currentRequest.getTargetUniqueId());
+            targetName = targetResult.getName();
             targetId = targetResult.getEntityId();
         }
         else if (inActionContext.getActionContext().getParams() instanceof SetFollowingStatusByGroupCreatorRequest)
@@ -141,7 +161,9 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             (SetFollowingStatusByGroupCreatorRequest) inActionContext.getActionContext().getParams();
             followerId = currentRequest.getFollowerId();
             targetId = currentRequest.getTargetId();
+            targetName = currentRequest.getTargetName();
             followerStatus = currentRequest.getFollowerStatus();
+            isPending = currentRequest.isPending();
         }
         else
         {
@@ -167,6 +189,28 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             CreateNotificationsRequest notificationRequest = new CreateNotificationsRequest(RequestType.GROUP_FOLLOWER,
                     followerId, targetId, 0);
             taskRequests.add(new UserActionRequest("createNotificationsAction", null, notificationRequest));
+
+            // Posts a message to the user's personal stream unless this is a new pending group
+            if (!isPending)
+            {
+                StreamEntityDTO destination = new StreamEntityDTO();
+                destination.setUniqueIdentifier(inActionContext.getActionContext().getPrincipal().getAccountId());
+                destination.setType(EntityType.PERSON);
+
+                ActivityDTO activity = new ActivityDTO();
+                HashMap<String, String> props = new HashMap<String, String>();
+                activity.setBaseObjectProperties(props);
+                String content = "%EUREKA:ACTORNAME% has joined the " + targetName + " group";
+
+                activity.getBaseObjectProperties().put("content", content);
+                activity.setDestinationStream(destination);
+                activity.setBaseObjectType(BaseObjectType.NOTE);
+                activity.setVerb(ActivityVerb.POST);
+
+                postActivityExecutor.execute(new TaskHandlerActionContext<PrincipalActionContext>(
+                        new ServiceActionContext(new PostActivityRequest(activity), inActionContext.getActionContext()
+                                .getPrincipal()), inActionContext.getUserActionRequests()));
+            }
             break;
         case NOTFOLLOWING:
             // Update the db and cache for list of followers and following.

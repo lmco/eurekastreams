@@ -341,7 +341,7 @@ input.text-label
     height:23px;
     background:url(images/gadget-remove-button.png);
     text-indent:-1000em;
-    margin-top:-22px;
+    margin-top:-24px;
     cursor:pointer;
     *margin-right: -10px;
 }

@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.RadioButton;
 
 /**
  * A panel for determining where a post gets posted to.
- * 
+ *
  */
 public class PostToPanel extends FlowPanel
 {
@@ -52,11 +52,11 @@ public class PostToPanel extends FlowPanel
     /**
      * Radio button for "my" scope.
      */
-    private RadioButton mine;
+    private final RadioButton mine;
     /**
      * Radio button for another users scope.
      */
-    private RadioButton other;
+    private final RadioButton other;
     /**
      * The scope panel.
      */
@@ -74,7 +74,7 @@ public class PostToPanel extends FlowPanel
 
     /**
      * Default constructor.
-     * 
+     *
      * @param postScope
      *            the scope of the current user.
      */
@@ -85,7 +85,7 @@ public class PostToPanel extends FlowPanel
 
     /**
      * Default constructor.
-     * 
+     *
      * @param postScope
      *            the scope of the current user.
      * @param alwaysShow
@@ -195,16 +195,28 @@ public class PostToPanel extends FlowPanel
                         {
                             GroupStreamDTO group = arg1.getView();
 
-                            other.setChecked(true);
-                            autoComplete.setVisible(false);
-                            autoComplete.setDefaultText(OTHER_TEXT);
-                            removeScopePanel(thisBuffered);
+                            // If the group has disabled posting, make "my activity stream" the default destination. The
+                            // one case where this would be the incorrect thing to do is if the user is a group or org
+                            // coordinator. But it is better for coordinators to have to explicitly choose the group
+                            // than the alternative: a non-postable group pre-selected for regular users and their posts
+                            // just going nowhere.
+                            if (!group.isPostable())
+                            {
+                                selectMyActivityStream();
+                            }
+                            else
+                            {
+                                other.setChecked(true);
+                                autoComplete.setVisible(false);
+                                autoComplete.setDefaultText(OTHER_TEXT);
+                                removeScopePanel(thisBuffered);
 
-                            typedInScope = new StreamScope(ScopeType.GROUP, group.getShortName());
-                            typedInScope.setDisplayName(group.getName());
+                                typedInScope = new StreamScope(ScopeType.GROUP, group.getShortName());
+                                typedInScope.setDisplayName(group.getName());
 
-                            scopePanel = new StreamScopePanel(typedInScope);
-                            thisBuffered.add(scopePanel);
+                                scopePanel = new StreamScopePanel(typedInScope);
+                                thisBuffered.add(scopePanel);
+                            }
                         }
                     });
         }
@@ -212,7 +224,7 @@ public class PostToPanel extends FlowPanel
 
     /**
      * If necessary, removes an existing StreamScopePanel in the indicated PostToPanel.
-     * 
+     *
      * @param postToPanel
      *            the panel to search for a StreamScopePanel.
      */
@@ -237,7 +249,7 @@ public class PostToPanel extends FlowPanel
 
     /**
      * Gets the entity type of the JSON object.
-     * 
+     *
      * @param jsObj
      *            the JSON object.
      * @return the entity type.
@@ -246,7 +258,7 @@ public class PostToPanel extends FlowPanel
 
     /**
      * Gets the unique id of the JSON object.
-     * 
+     *
      * @param jsObj
      *            the JSON object.
      * @return the unique id.
@@ -255,7 +267,7 @@ public class PostToPanel extends FlowPanel
 
     /**
      * Gets the display name of the JSON object.
-     * 
+     *
      * @param jsObj
      *            the JSON object.
      * @return the display name.
@@ -264,7 +276,7 @@ public class PostToPanel extends FlowPanel
 
     /**
      * Gets the StreamScope id of the JSON object.
-     * 
+     *
      * @param jsObj
      *            the JSON object.
      * @return the StreamScope id.
@@ -273,7 +285,7 @@ public class PostToPanel extends FlowPanel
 
     /**
      * Gets the post scope.
-     * 
+     *
      * @return the scope.
      */
     public StreamScope getPostScope()
@@ -294,7 +306,7 @@ public class PostToPanel extends FlowPanel
 
     /**
      * Sets the post scope.
-     * 
+     *
      * @param inScope
      *            the scope.
      */

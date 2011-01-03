@@ -34,6 +34,9 @@ public class LabeledTextBox extends TextBox
      */
     private String label;
 
+    /** If the textbox currently has the focus (since I didn't find a GWT API to query for it). */
+    private boolean hasFocus = false;
+
     /**
      * Constructor.
      *
@@ -51,6 +54,7 @@ public class LabeledTextBox extends TextBox
 
             public void onFocus(final Widget sender)
             {
+                hasFocus = true;
                 if (labeled)
                 {
                     thisBuffered.setText("");
@@ -60,11 +64,22 @@ public class LabeledTextBox extends TextBox
 
             public void onLostFocus(final Widget sender)
             {
+                hasFocus = false;
                 checkBox();
             }
         });
 
-        checkBox();
+        reset();
+    }
+
+    /**
+     * Checks if the textbox is empty.
+     *
+     * @return true if the box is empty.
+     */
+    public boolean isEmpty()
+    {
+        return (labeled || super.getText().length() == 0);
     }
 
     /**
@@ -84,34 +99,20 @@ public class LabeledTextBox extends TextBox
     }
 
     /**
-     * Checks if the textbox is empty.
-     *
-     * @return true if the box is empty.
+     * Reset.
      */
-    public boolean isEmpty()
+    public void reset()
     {
-        return (labeled || super.getText().length() == 0);
-    }
-
-    /**
-     * Sets the label for an empty text box.
-     *
-     * @param inLabel
-     *            The label.
-     */
-    public void setLabel(final String inLabel)
-    {
-        label = inLabel;
-    }
-
-    /**
-     * returns the empty text box label.
-     *
-     * @return the label
-     */
-    public String getLabel()
-    {
-        return label;
+        if (!hasFocus)
+        {
+            labeled = true;
+            this.addStyleName("empty-labeled-textbox");
+            super.setText(label);
+        }
+        else
+        {
+            super.setText("");
+        }
     }
 
     /**
@@ -147,12 +148,23 @@ public class LabeledTextBox extends TextBox
     }
 
     /**
-     * Reset.
+     * Sets the label for an empty text box.
+     *
+     * @param inLabel
+     *            The label.
      */
-    public void reset()
+    public void setLabel(final String inLabel)
     {
-        labeled = true;
-        this.addStyleName("empty-labeled-textbox");
-        super.setText(label);
+        label = inLabel;
+    }
+
+    /**
+     * returns the empty text box label.
+     *
+     * @return the label
+     */
+    public String getLabel()
+    {
+        return label;
     }
 }

@@ -91,12 +91,12 @@ public class MasterComposite extends Composite
     /**
      * The header panel.
      */
-    private HeaderComposite header = new HeaderComposite();
+    private final HeaderComposite header = new HeaderComposite();
 
     /**
      * Banner.
      */
-    private BannerPanel banner = new BannerPanel();
+    private final BannerPanel banner = new BannerPanel();
 
     /**
      * Notifier.
@@ -106,7 +106,7 @@ public class MasterComposite extends Composite
     /**
      * Page factory.
      */
-    private PageFactory factory = new PageFactory();
+    private final PageFactory factory = new PageFactory();
 
     /**
      * Tracks page we are currently on.
@@ -291,7 +291,6 @@ public class MasterComposite extends Composite
     {
         panel.add(footerPanel);
         header.render(viewer);
-        actionProcessor.setQueueRequests(false);
 
         Session.getInstance().getEventBus().addObserver(GotSystemSettingsResponseEvent.class,
                 new Observer<GotSystemSettingsResponseEvent>()

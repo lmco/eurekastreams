@@ -349,7 +349,7 @@ public class PagedListPanel extends FlowPanel
             currentSortKey = sort;
             currentStartIndex = start;
         }
-        else if (currentStartIndex != start)
+        else if (!currentStartIndex.equals(start))
         {
             currentStartIndex = start;
         }
