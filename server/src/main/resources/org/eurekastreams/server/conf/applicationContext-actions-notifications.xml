@@ -82,16 +82,19 @@
         <entry key="COMMENT_TO_PERSONAL_STREAM" value="COMMENT" />
         <entry key="COMMENT_TO_PERSONAL_POST" value="COMMENT" />
         <entry key="COMMENT_TO_COMMENTED_POST" value="COMMENT" />
+        <entry key="COMMENT_TO_SAVED_POST" value="COMMENT_TO_SAVED_ACTIVITY" />
         <entry key="FOLLOW_PERSON" value="FOLLOW_PERSON" />
         <entry key="POST_TO_GROUP_STREAM" value="POST_TO_GROUP_STREAM" />
+        <entry key="POST_TO_JOINED_GROUP" value="POST_TO_JOINED_GROUP" />
         <entry key="COMMENT_TO_GROUP_STREAM" value="COMMENT_IN_GROUP_STREAM" />
         <entry key="FOLLOW_GROUP" value="FOLLOW_GROUP" />
+        <entry key="LIKE_ACTIVITY" value="LIKE" />
         <entry key="FLAG_PERSONAL_ACTIVITY" value="FLAG_ACTIVITY" />
         <entry key="FLAG_GROUP_ACTIVITY" value="FLAG_ACTIVITY" />
         <entry key="REQUEST_NEW_GROUP" value="REQUEST_NEW_GROUP" />
         <entry key="REQUEST_GROUP_ACCESS" value="REQUEST_GROUP_ACCESS" />
-        <entry key="POST_TO_JOINED_GROUP" value="POST_TO_JOINED_GROUP" />
-        <entry key="LIKE_ACTIVITY" value="LIKE" />
+        <entry key="REQUEST_GROUP_ACCESS_APPROVED" value="REQUEST_GROUP_ACCESS_RESPONSE" />
+        <entry key="REQUEST_GROUP_ACCESS_DENIED" value="REQUEST_GROUP_ACCESS_RESPONSE" />
     </util:map>
     
     <bean id="emailNotifier"

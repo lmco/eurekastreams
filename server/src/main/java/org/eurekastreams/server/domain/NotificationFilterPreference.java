@@ -60,6 +60,9 @@ public class NotificationFilterPreference extends DomainEntity
         /** Someone commented on an activity in a group stream for which the user is a coordinator. */
         COMMENT_IN_GROUP_STREAM,
 
+        /** Someone commented on an activity the user had saved. */
+        COMMENT_TO_SAVED_ACTIVITY,
+
         /** Someone started following a group of which the user is a coordinator. */
         FOLLOW_GROUP,
 
@@ -70,7 +73,10 @@ public class NotificationFilterPreference extends DomainEntity
         REQUEST_NEW_GROUP,
 
         /** Request access to a private group. */
-        REQUEST_GROUP_ACCESS
+        REQUEST_GROUP_ACCESS,
+
+        /** Requested access to a private group approved/denied. */
+        REQUEST_GROUP_ACCESS_RESPONSE
     }
 
     /** Person whose preference it is. */

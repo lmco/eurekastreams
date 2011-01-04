@@ -41,6 +41,6 @@ public class RequestGroupAccessDeniedMessageRenderer extends NotificationMessage
     {
         appendText(parent, "Your request to join the ");
         appendDestinationLink(parent, notification);
-        appendText(parent, " private group has been denied.");
+        appendText(parent, " group has been denied.");
     }
 }

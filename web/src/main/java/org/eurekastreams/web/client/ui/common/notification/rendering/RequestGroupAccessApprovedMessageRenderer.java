@@ -41,6 +41,6 @@ public class RequestGroupAccessApprovedMessageRenderer extends NotificationMessa
     {
         appendText(parent, "Your request to join the ");
         appendDestinationLink(parent, notification);
-        appendText(parent, " private group has been approved.");
+        appendText(parent, " group has been approved.");
     }
 }
