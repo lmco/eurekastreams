@@ -948,12 +948,13 @@ Eureka.PostBox = function(text, postcb, maxlength)
 		var post = jQuery("<div class='post-button post-button-disabled'>Post</div>");
 		post.click(function()
 		{	
-			var comment = commentInput.val();
-
-			postcb(comment);
-
-			commentInput.val("");
-			postComment.hide();
+            if (!post.hasClass('post-button-disabled'))
+            {
+			    var comment = commentInput.val();
+    			postcb(comment);
+	    		commentInput.val("");
+		    	postComment.hide();
+            }
 		});
 
 

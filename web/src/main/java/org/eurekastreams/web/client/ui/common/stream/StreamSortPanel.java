@@ -20,14 +20,17 @@ import java.util.Map;
 
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
-import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -82,16 +85,49 @@ public class StreamSortPanel extends Composite
         atomLink.setTarget("_NEW");
         widget.add(atomLink);
 
-        EventBus.getInstance().addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
+        EventBus.getInstance().addObserver(StreamRequestEvent.class, new Observer<StreamRequestEvent>()
         {
-            public void update(final GotStreamResponseEvent event)
+            public void update(final StreamRequestEvent event)
             {
                 atomLink.setVisible(Session.getInstance().getParameterValue("search") == null
                         || Session.getInstance().getParameterValue("search").length() == 0);
 
-                String stream = Session.getInstance().getParameterValue("streamId");
-                atomLink.setHref("/resources/atom/stream/"
-                        + streamUrlTransformer.getUrl(stream, event.getJsonRequest()));
+                if (event.getStreamId() != null)
+                {
+                    atomLink.setHref("/resources/atom/stream/saved/" + event.getStreamId());
+                }
+                else
+                {
+                    JSONObject query = JSONParser.parse(event.getJson()).isObject().get("query").isObject();
+
+                    if (query.containsKey("organization"))
+                    {
+                        atomLink.setHref("/resources/atom/stream/query/organization/"
+                                + query.get("organization").isString().stringValue());
+                    }
+                    else if (query.containsKey("recipient"))
+                    {
+                        JSONArray recipients = query.get("recipient").isArray();
+                        StringBuilder recipientLink = new StringBuilder();
+                        recipientLink.append("/resources/atom/stream/query/recipient/");
+
+                        for (int i = 0; i < recipients.size(); i++)
+                        {
+                            if (i > 0)
+                            {
+                                recipientLink.append(",");
+                                
+                                JSONObject entityObject = recipients.get(i).isObject(); 
+                                recipientLink.append(entityObject.get("type").isString().stringValue());
+                                recipientLink.append(":");
+                                recipientLink.append(entityObject.get("name").isString().stringValue());
+                            }
+                        }
+                        
+                        atomLink.setHref(recipientLink.toString());
+                    }
+
+                }
             }
         });
 
