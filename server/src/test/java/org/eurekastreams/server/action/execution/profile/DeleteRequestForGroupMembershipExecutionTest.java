@@ -16,16 +16,20 @@
 package org.eurekastreams.server.action.execution.profile;
 
 import static org.eurekastreams.commons.test.IsEqualInternally.equalInternally;
+import static org.junit.Assert.assertEquals;
 
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
+import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.action.request.profile.RequestForGroupMembershipRequest;
 import org.eurekastreams.server.persistence.mappers.db.DeleteRequestForGroupMembership;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
-
 
 /**
  *
@@ -39,8 +43,11 @@ public class DeleteRequestForGroupMembershipExecutionTest
     /** Test data. */
     private static final long PERSON_ID = 222L;
 
+    /** Test data. */
+    private static final long USER_ID = 250L;
+
     /** Used for mocking objects. */
-    private JUnit4Mockery context = new JUnit4Mockery()
+    private final JUnit4Mockery context = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -48,13 +55,10 @@ public class DeleteRequestForGroupMembershipExecutionTest
     };
 
     /** Mapper for deleting group requests. */
-    private DeleteRequestForGroupMembership mapper = context.mock(DeleteRequestForGroupMembership.class);
+    private final DeleteRequestForGroupMembership mapper = context.mock(DeleteRequestForGroupMembership.class);
 
     /** Fixture: request. */
     private RequestForGroupMembershipRequest request;
-
-    /** Fixture: action context. */
-    private PrincipalActionContext actionCtx = context.mock(PrincipalActionContext.class);
 
     /** SUT. */
     private DeleteRequestForGroupMembershipExecution sut;
@@ -67,14 +71,6 @@ public class DeleteRequestForGroupMembershipExecutionTest
     {
         sut = new DeleteRequestForGroupMembershipExecution(mapper);
         request = new RequestForGroupMembershipRequest(GROUP_ID, PERSON_ID);
-
-        context.checking(new Expectations()
-        {
-            {
-                allowing(actionCtx).getParams();
-                will(returnValue(request));
-            }
-        });
     }
 
     /**
@@ -90,8 +86,19 @@ public class DeleteRequestForGroupMembershipExecutionTest
                 will(returnValue(Boolean.TRUE));
             }
         });
+
+        TaskHandlerActionContext<PrincipalActionContext> actionCtx = TestContextCreator
+                .createTaskHandlerContextWithPrincipal(request, null, USER_ID);
         sut.execute(actionCtx);
 
         context.assertIsSatisfied();
+
+        assertEquals(1, actionCtx.getUserActionRequests().size());
+        CreateNotificationsRequest notifRqst = (CreateNotificationsRequest) (actionCtx.getUserActionRequests().get(0)
+                .getParams());
+        assertEquals(RequestType.REQUEST_GROUP_ACCESS_DENIED, notifRqst.getType());
+        assertEquals(USER_ID, notifRqst.getActorId());
+        assertEquals(GROUP_ID, notifRqst.getDestinationId());
+        assertEquals(PERSON_ID, notifRqst.getActivityId());
     }
 }

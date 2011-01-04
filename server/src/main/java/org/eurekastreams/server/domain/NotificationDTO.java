@@ -46,6 +46,10 @@ public class NotificationDTO implements Serializable
      * aux=author of post
      */
     /*
+     * COMMENT_TO_SAVED_POST actor=person who commented activity=post commented on dest=entity owning stream aux=author
+     * of post
+     */
+    /*
      * FOLLOW_PERSON actor=person doing following activity=N/A dest=person being followed aux=N/A
      */
     /*
@@ -78,6 +82,10 @@ public class NotificationDTO implements Serializable
      */
     /*
      * REQUEST_GROUP_ACCESS actor=person requesting access, activity=N/A, dest=group, aux=N/A
+     */
+    /*
+     * REQUEST_GROUP_ACCESS_APPROVED,REQUEST_GROUP_ACCESS_DENIED actor=person approving/denying, activity=N/A,
+     * dest=group, aux=N/A
      */
 
     /** Fingerprint. */

@@ -50,7 +50,7 @@ import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
 /**
  * Class responsible for providing the strategy that updates the appropriate lists when a group is followed.
- * 
+ *
  */
 public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
@@ -82,16 +82,16 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
     /**
      * Mapper to remove group access requests.
      */
-    private DeleteRequestForGroupMembership deleteRequestForGroupMembershipMapper;
+    private final DeleteRequestForGroupMembership deleteRequestForGroupMembershipMapper;
 
     /**
      * The post activity executor.
      */
-    private TaskHandlerExecutionStrategy postActivityExecutor;
+    private final TaskHandlerExecutionStrategy postActivityExecutor;
 
     /**
      * Constructor for the SetFollowingGroupStatusExecution.
-     * 
+     *
      * @param inGroupMapper
      *            - instance of the GetDomainGroupsByShortNames mapper.
      * @param inGetPersonIdFromAccountIdMapper
@@ -125,7 +125,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
 
     /**
      * {@inheritDoc}.
-     * 
+     *
      * This method sets the following status based on the passed in request object. There is an extra block of code here
      * that handles an additional request object type that passes in the follower and target ids by string name instead
      * of their long id's. This extra support is needed for the GroupCreator object that gets called from the back end
@@ -183,7 +183,14 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
                     .singleton(CacheKeys.GROUP_BY_ID + targetId)));
 
             // remove any requests from the user for group membership
-            deleteRequestForGroupMembershipMapper.execute(new RequestForGroupMembershipRequest(targetId, followerId));
+            if (deleteRequestForGroupMembershipMapper.execute(new RequestForGroupMembershipRequest(targetId,
+                    followerId)))
+            {
+                // if any requests were present, then user was just approved for access
+                taskRequests.add(new UserActionRequest("createNotificationsAction", null,
+                        new CreateNotificationsRequest(RequestType.REQUEST_GROUP_ACCESS_APPROVED, inActionContext
+                                .getActionContext().getPrincipal().getId(), targetId, followerId)));
+            }
 
             // Sends new follower notifications.
             CreateNotificationsRequest notificationRequest = new CreateNotificationsRequest(RequestType.GROUP_FOLLOWER,
