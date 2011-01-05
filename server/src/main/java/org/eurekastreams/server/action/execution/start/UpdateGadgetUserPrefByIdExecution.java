@@ -21,6 +21,7 @@ import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.start.GadgetUserPrefActionRequest;
 import org.eurekastreams.server.domain.Gadget;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.UpdateMapper;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
@@ -49,6 +50,9 @@ public class UpdateGadgetUserPrefByIdExecution implements ExecutionStrategy<Acti
      */
     private final FindByIdMapper<Gadget> findGadgetByIdMapper;
 
+    /** Mapper to clear or refresh user's start page data in cache. */
+    private final DomainMapper<Long, Object> pageMapper;
+
     /**
      * Constructor for action.
      *
@@ -56,12 +60,15 @@ public class UpdateGadgetUserPrefByIdExecution implements ExecutionStrategy<Acti
      *            - mapper responsible for gadget user pref updates.
      * @param inFindGadgetByIdMapper
      *            - mapper responsible for retrieving gadget instances.
+     * @param inPageMapper
+     *            Mapper to clear or refresh user's start page data in cache.
      */
     public UpdateGadgetUserPrefByIdExecution(final UpdateMapper<Gadget> inUpdateMapper,
-            final FindByIdMapper<Gadget> inFindGadgetByIdMapper)
+            final FindByIdMapper<Gadget> inFindGadgetByIdMapper, final DomainMapper<Long, Object> inPageMapper)
     {
         updateMapper = inUpdateMapper;
         findGadgetByIdMapper = inFindGadgetByIdMapper;
+        pageMapper = inPageMapper;
     }
 
     /**
@@ -85,6 +92,9 @@ public class UpdateGadgetUserPrefByIdExecution implements ExecutionStrategy<Acti
                 .getGadgetId()));
         currentGadgetInstance.setGadgetUserPref(currentRequest.getGadgetUserPref());
         updateMapper.execute(new PersistenceRequest<Gadget>(currentGadgetInstance));
+
+        // clear or refresh user's page data in the cache (since it has old preferences)
+        pageMapper.execute(currentGadgetInstance.getOwner().getId());
 
         return currentGadgetInstance.getGadgetUserPref();
 

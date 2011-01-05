@@ -822,6 +822,7 @@
                     <bean class="org.eurekastreams.server.persistence.mappers.UpdateMapper" />
                 </constructor-arg>
                 <constructor-arg ref="findByIdMapper" />
+                <constructor-arg ref="getPersonPagePropertiesById_FORCE_REFRESH" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />

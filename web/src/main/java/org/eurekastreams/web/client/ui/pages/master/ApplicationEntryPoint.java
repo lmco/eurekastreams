@@ -44,6 +44,7 @@ import org.eurekastreams.web.client.history.HistoryHandler;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.BulkEntityModel;
+import org.eurekastreams.web.client.model.StartTabsModel;
 import org.eurekastreams.web.client.model.SystemSettingsModel;
 import org.eurekastreams.web.client.ui.PeriodicEventManager;
 import org.eurekastreams.web.client.ui.Session;
@@ -157,7 +158,6 @@ public class ApplicationEntryPoint implements EntryPoint
             EventBus.getInstance().addObserver(TermsOfServiceAcceptedEvent.class,
                     new Observer<TermsOfServiceAcceptedEvent>()
                     {
-
                         public void update(final TermsOfServiceAcceptedEvent event)
                         {
                             displayTOS = false;
@@ -170,7 +170,6 @@ public class ApplicationEntryPoint implements EntryPoint
             processor.makeRequest(new ActionRequestImpl<PersonModelView>("noOperation", null),
                     new AsyncCallback<Serializable>()
                     {
-
                         public void onFailure(final Throwable caught)
                         {
                             if (caught.getMessage().contains("NO_CREDENTIALS"))
@@ -194,7 +193,6 @@ public class ApplicationEntryPoint implements EntryPoint
                             loadPerson();
                         }
                     });
-
         }
     }
 
@@ -240,6 +238,10 @@ public class ApplicationEntryPoint implements EntryPoint
                         jSNIFacade.setViewer(result.getOpenSocialId(), result.getAccountId());
                         jSNIFacade.setOwner(result.getOpenSocialId());
                         processor.setQueueRequests(true);
+
+                        // create the StartTabs model before the event bus is buffered, so it's event wiring stays
+                        // intact for the life of the app
+                        StartTabsModel.getInstance();
 
                         session.setHistoryHandler(new HistoryHandler());
                         Session.getInstance().getEventBus().bufferObservers();

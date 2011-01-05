@@ -18,6 +18,8 @@ package org.eurekastreams.server.action.execution.start;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.server.action.request.start.GadgetUserPrefActionRequest;
 import org.eurekastreams.server.domain.Gadget;
+import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
 import org.eurekastreams.server.persistence.mappers.UpdateMapper;
 import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
@@ -31,7 +33,7 @@ import org.junit.Test;
 
 /**
  * Tests for UpdateGadgetUserPrefByIdExecution class.
- * 
+ *
  */
 @SuppressWarnings("unchecked")
 public class UpdateGadgetUserPrefByIdExecutionTest
@@ -49,22 +51,28 @@ public class UpdateGadgetUserPrefByIdExecutionTest
     /**
      * Test instance of the FindByIdMapper for gadgets.
      */
-    private FindByIdMapper<Gadget> findGadgetByIdMapper = context.mock(FindByIdMapper.class);
+    private final FindByIdMapper<Gadget> findGadgetByIdMapper = context.mock(FindByIdMapper.class);
 
     /**
      * Test instance of the UpdateMapper for gadgets.
      */
-    private UpdateMapper<Gadget> updateMapper = context.mock(UpdateMapper.class);
+    private final UpdateMapper<Gadget> updateMapper = context.mock(UpdateMapper.class);
 
     /**
      * Test instance of the Gadget.
      */
-    private Gadget testGadget = context.mock(Gadget.class);
+    private final Gadget testGadget = context.mock(Gadget.class);
 
     /**
      * {@link ActionContext}.
      */
-    private ActionContext actionContext = context.mock(ActionContext.class);
+    private final ActionContext actionContext = context.mock(ActionContext.class);
+
+    /** Mock person. */
+    private final Person owner = context.mock(Person.class);
+
+    /** Mapper to clear or refresh user's start page data in cache. */
+    private final DomainMapper<Long, Object> pageMapper = context.mock(DomainMapper.class, "pageMapper");
 
     /**
      * Test instance of the UpdateGadgetUserPrefByIdAction for the system under test.
@@ -77,12 +85,12 @@ public class UpdateGadgetUserPrefByIdExecutionTest
     @Before
     public void setup()
     {
-        sut = new UpdateGadgetUserPrefByIdExecution(updateMapper, findGadgetByIdMapper);
+        sut = new UpdateGadgetUserPrefByIdExecution(updateMapper, findGadgetByIdMapper, pageMapper);
     }
 
     /**
      * Testing perform action method.
-     * 
+     *
      * @throws Exception
      *             - on error.
      */
@@ -98,6 +106,12 @@ public class UpdateGadgetUserPrefByIdExecutionTest
                 allowing(actionContext).getParams();
                 will(returnValue(requestParam));
 
+                allowing(testGadget).getOwner();
+                will(returnValue(owner));
+
+                allowing(owner).getId();
+                will(returnValue(9L));
+
                 oneOf(findGadgetByIdMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(testGadget));
 
@@ -107,6 +121,8 @@ public class UpdateGadgetUserPrefByIdExecutionTest
 
                 oneOf(testGadget).getGadgetUserPref();
                 will(returnValue(userPrefsJson));
+
+                oneOf(pageMapper).execute(9L);
             }
         });
 
