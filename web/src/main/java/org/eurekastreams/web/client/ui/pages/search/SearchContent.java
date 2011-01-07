@@ -63,10 +63,22 @@ public class SearchContent extends FlowPanel
 
     /**
      * Constructor.
-     *
      */
     public SearchContent()
     {
+        // When the history changes, update the query and reset the pager, triggering a re-search.
+        // IMPORTANT: Wire up URL change event first, so we see it before the PagedList does. This way we can change the
+        // search term in the search requests before PagedList sees the event. Otherwise PagedList may see the change in
+        // the page range and send out a search request using the old search term.
+        Session.getInstance().getEventBus()
+                .addObserver(UpdatedHistoryParametersEvent.class, new Observer<UpdatedHistoryParametersEvent>()
+                {
+                    public void update(final UpdatedHistoryParametersEvent event)
+                    {
+                        onHistoryParameterChange(event);
+                    }
+                });
+
         RootPanel.get().addStyleName("directory");
 
         searchResultsPanel = new PagedListPanel("searchResults", new SingleColumnPagedListRenderer());
@@ -95,51 +107,60 @@ public class SearchContent extends FlowPanel
                         searchResultsPanel.render(arg1.getResponse(), "No matches found");
                     }
                 });
+    }
 
-        // When the history changes, update the query and reset the pager, triggering
-        // a re-search.
-        Session.getInstance().getEventBus()
-                .addObserver(UpdatedHistoryParametersEvent.class, new Observer<UpdatedHistoryParametersEvent>()
-                {
-                    public void update(final UpdatedHistoryParametersEvent event)
-                    {
-                        String boost = event.getParameters().get("boost");
-                        if (boost == null)
-                        {
-                            boost = "";
-                        }
-                        String query = event.getParameters().get("query");
-                        if (query == null)
-                        {
-                            query = "";
-                        }
-                        queryText.setText(query);
+    /**
+     * When the history changes, update the query and reset the pager, triggering a re-search.
+     *
+     * @param event
+     *            Event containing URL parameters.
+     */
+    private void onHistoryParameterChange(final UpdatedHistoryParametersEvent event)
+    {
+        String boost = event.getParameters().get("boost");
+        if (boost == null)
+        {
+            boost = "";
+        }
+        String query = event.getParameters().get("query");
+        if (query == null)
+        {
+            query = "";
+        }
+        queryText.setText(query);
 
-                        GetDirectorySearchResultsRequest request = new GetDirectorySearchResultsRequest(query, "",
-                                boost, 0, 0);
+        GetDirectorySearchResultsRequest request = new GetDirectorySearchResultsRequest(query, "", boost, 0, 0);
 
-                        if (!initialized)
-                        {
-                            searchResultsPanel.addSet("All", SearchResultsModel.getInstance(), renderer, request);
-                            searchResultsPanel.addSet("Employees", SearchResultsPeopleModel.getInstance(), renderer,
-                                    request);
-                            searchResultsPanel.addSet("Groups", SearchResultsGroupModel.getInstance(), renderer,
-                                    request);
-                            searchResultsPanel.addSet("Organizations", SearchResultsOrgModel.getInstance(), renderer,
-                                    request);
-                            initialized = true;
-                        }
-                        else if (!boost.equals(currentBoost) || !query.equals(currentQuery))
-                        {
-                            searchResultsPanel.updateSetRequest("All", request);
-                            searchResultsPanel.updateSetRequest("Employees", request);
-                            searchResultsPanel.updateSetRequest("Groups", request);
-                            searchResultsPanel.updateSetRequest("Organizations", request);
-                            searchResultsPanel.reload();
-                        }
-                        currentBoost = boost;
-                        currentQuery = query;
-                    }
-                });
+        if (!initialized)
+        {
+            searchResultsPanel.addSet("All", SearchResultsModel.getInstance(), renderer, request);
+            searchResultsPanel.addSet("Employees", SearchResultsPeopleModel.getInstance(), renderer, request);
+            searchResultsPanel.addSet("Groups", SearchResultsGroupModel.getInstance(), renderer, request);
+            searchResultsPanel.addSet("Organizations", SearchResultsOrgModel.getInstance(), renderer, request);
+            initialized = true;
+        }
+        else if (!boost.equals(currentBoost) || !query.equals(currentQuery))
+        {
+            searchResultsPanel.updateSetRequest("All", request);
+            searchResultsPanel.updateSetRequest("Employees", request);
+            searchResultsPanel.updateSetRequest("Groups", request);
+            searchResultsPanel.updateSetRequest("Organizations", request);
+
+            // Invalidate searchResultsPanel so that it will reload when it gets the event.
+            // Ways NOT to implement this:
+            // 1. Call searchResultsPanel.reload(). This leads to the search data being requested from the server twice
+            // if both the search criteria and the page range / filter / sort changed. The reload causes a query but
+            // does not save the filter/sort/paging state, so once searchResultsPanel gets the URL change event, it
+            // detects
+            // a change and performs the query again.
+            // 2. Don't call anything. If none of the page range / filter / sort changed, then when searchResultsPanel
+            // gets the event it won't think it needs to do anything, so no query ever gets made.
+            // Ideally, we'd use a trickle-down approach where searchResultsPanel would never get the event from the
+            // event bus directly, but rather would get it from this class. This class could then say
+            // "here's the event, and update yourself with it unconditionally".
+            searchResultsPanel.invalidateState();
+        }
+        currentBoost = boost;
+        currentQuery = query;
     }
 }
