@@ -355,11 +355,11 @@ DROP FUNCTION migrateStreamViews();
 DROP FUNCTION migrateStreamSearches();
 
 -- Migrate Persons
-UPDATE gadget set gadgetuserpref = '{"gadgetTitle" : "' || substring(gadgetuserpref from '"gadgetTitle":"([^"]*)"') || E'", "streamQuery":"{\\"query\\":{\\"recipient\\":[{\\"type\":\\"PERSON\\", \\"name\\":\\"' || 
+UPDATE gadget set gadgetuserpref = '{"gadgetTitle" : "' || substring(gadgetuserpref from '"gadgetTitle":"([^"]*)"') || E'", "streamQuery":"{\\"query\\":{\\"recipient\\":[{\\"type\\":\\"PERSON\\", \\"name\\":\\"' || 
     substring(gadgetuserpref from '"shortName:"([a-zA-Z0-9]*)"') || E'\\"}]}}" }' where gadgetdefinitionid = 22 and gadgetuserpref ~* '"streamtype":"personstream"';
 
 -- Migrate Groups
-UPDATE gadget set gadgetuserpref = '{"gadgetTitle" : "' || substring(gadgetuserpref from '"gadgetTitle":"([^"]*)"') || E'", "streamQuery":"{\\"query\\":{\\"recipient\\":[{\\"type\":\\"GROUP\\", \\"name\\":\\"' || 
+UPDATE gadget set gadgetuserpref = '{"gadgetTitle" : "' || substring(gadgetuserpref from '"gadgetTitle":"([^"]*)"') || E'", "streamQuery":"{\\"query\\":{\\"recipient\\":[{\\"type\\":\\"GROUP\\", \\"name\\":\\"' || 
     substring(gadgetuserpref from '"shortName":"([a-zA-Z0-9]*)"') || E'\\"}]}}" }' where gadgetdefinitionid = 22 and gadgetuserpref ~* '"streamtype":"groupstream"';
 
 -- Migrate Orgs
