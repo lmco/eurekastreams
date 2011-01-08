@@ -3208,6 +3208,7 @@
 -->
     <bean id="setFollowingGroupStatusExecution" class="org.eurekastreams.server.action.execution.profile.SetFollowingGroupStatusExecution">
         <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+        <constructor-arg ref="getPersonByIdMapper" />
         <constructor-arg ref="getPersonIdByAccountIdMapper" />
         <constructor-arg ref="jpaGroupMapper" />
         <constructor-arg ref="addCachedGroupFollower" />

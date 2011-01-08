@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
+import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
@@ -35,6 +36,7 @@ import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest
 import org.eurekastreams.server.action.request.stream.DeleteIdsFromListsRequest;
 import org.eurekastreams.server.action.request.stream.PostActivityRequest;
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.Follower;
 import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.ActivityVerb;
@@ -47,6 +49,7 @@ import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.db.DeleteRequestForGroupMembership;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Class responsible for providing the strategy that updates the appropriate lists when a group is followed.
@@ -58,6 +61,9 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
      * Local instance of the GetDomainGroupsByShortNames mapper.
      */
     private final GetDomainGroupsByShortNames groupMapper;
+
+    /** Mapper to get person by id (for getting account id). */
+    private final DomainMapper<Long, PersonModelView> getPersonByIdMapper;
 
     /**
      * Mapper to get the person id from an account id.
@@ -94,6 +100,8 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
      *
      * @param inGroupMapper
      *            - instance of the GetDomainGroupsByShortNames mapper.
+     * @param inGetPersonByIdMapper
+     *            Mapper to get person by id (for getting account id).
      * @param inGetPersonIdFromAccountIdMapper
      *            - Mapper to get the person id from an account id
      * @param inDomainGroupMapper
@@ -108,6 +116,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
      *            post executor.
      */
     public SetFollowingGroupStatusExecution(final GetDomainGroupsByShortNames inGroupMapper,
+            final DomainMapper<Long, PersonModelView> inGetPersonByIdMapper,
             final DomainMapper<String, Long> inGetPersonIdFromAccountIdMapper,
             final DomainGroupMapper inDomainGroupMapper, final AddCachedGroupFollower inAddCachedGroupFollowerMapper,
             final DomainMapper<Long, List<Long>> inFollowerIdsMapper,
@@ -115,6 +124,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             final TaskHandlerExecutionStrategy inPostActivityExecutor)
     {
         groupMapper = inGroupMapper;
+        getPersonByIdMapper = inGetPersonByIdMapper;
         getPersonIdFromAccountIdMapper = inGetPersonIdFromAccountIdMapper;
         domainGroupMapper = inDomainGroupMapper;
         addCachedGroupFollowerMapper = inAddCachedGroupFollowerMapper;
@@ -137,6 +147,7 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             throws ExecutionException
     {
         Long followerId;
+        String followerAccountId = null;
         Long targetId;
         FollowerStatus followerStatus;
         List<UserActionRequest> taskRequests = new ArrayList<UserActionRequest>();
@@ -150,7 +161,8 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             SetFollowingStatusRequest currentRequest = (SetFollowingStatusRequest) inActionContext.getActionContext()
                     .getParams();
             followerStatus = currentRequest.getFollowerStatus();
-            followerId = getPersonIdFromAccountIdMapper.execute(currentRequest.getFollowerUniqueId());
+            followerAccountId = currentRequest.getFollowerUniqueId();
+            followerId = getPersonIdFromAccountIdMapper.execute(followerAccountId);
             DomainGroupModelView targetResult = groupMapper.fetchUniqueResult(currentRequest.getTargetUniqueId());
             targetName = targetResult.getName();
             targetId = targetResult.getEntityId();
@@ -164,6 +176,11 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             targetName = currentRequest.getTargetName();
             followerStatus = currentRequest.getFollowerStatus();
             isPending = currentRequest.isPending();
+
+            if (Follower.FollowerStatus.FOLLOWING.equals(followerStatus) && !isPending)
+            {
+                followerAccountId = getPersonByIdMapper.execute(followerId).getAccountId();
+            }
         }
         else
         {
@@ -193,15 +210,15 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             }
 
             // Sends new follower notifications.
-            CreateNotificationsRequest notificationRequest = new CreateNotificationsRequest(RequestType.GROUP_FOLLOWER,
-                    followerId, targetId, 0);
+            CreateNotificationsRequest notificationRequest = new CreateNotificationsRequest(
+                    RequestType.GROUP_FOLLOWER, followerId, targetId, 0);
             taskRequests.add(new UserActionRequest("createNotificationsAction", null, notificationRequest));
 
             // Posts a message to the user's personal stream unless this is a new pending group
             if (!isPending)
             {
                 StreamEntityDTO destination = new StreamEntityDTO();
-                destination.setUniqueIdentifier(inActionContext.getActionContext().getPrincipal().getAccountId());
+                destination.setUniqueIdentifier(followerAccountId);
                 destination.setType(EntityType.PERSON);
 
                 ActivityDTO activity = new ActivityDTO();
@@ -214,9 +231,12 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
                 activity.setBaseObjectType(BaseObjectType.NOTE);
                 activity.setVerb(ActivityVerb.POST);
 
+                // Note: create a principal for the follower: we want to post on the follower's stream as the follower.
+                // The current principal will be different from the follower in some cases, namely when following a
+                // private group (the current principal / actor is the coordinator who approved access).
                 postActivityExecutor.execute(new TaskHandlerActionContext<PrincipalActionContext>(
-                        new ServiceActionContext(new PostActivityRequest(activity), inActionContext.getActionContext()
-                                .getPrincipal()), inActionContext.getUserActionRequests()));
+                        new ServiceActionContext(new PostActivityRequest(activity), createPrincipal(followerId,
+                                followerAccountId)), inActionContext.getUserActionRequests()));
             }
             break;
         case NOTFOLLOWING:
@@ -246,5 +266,38 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
 
         inActionContext.getUserActionRequests().addAll(taskRequests);
         return followerIdsMapper.execute(targetId).size();
+    }
+
+    /**
+     * Creates a principal for the given user's id and account id.
+     *
+     * @param followerId
+     *            Person id.
+     * @param followerAccountId
+     *            Person account id.
+     * @return Principal.
+     */
+    private Principal createPrincipal(final Long followerId, final String followerAccountId)
+    {
+        return new Principal()
+        {
+            @Override
+            public String getOpenSocialId()
+            {
+                return null;
+            }
+
+            @Override
+            public Long getId()
+            {
+                return followerId;
+            }
+
+            @Override
+            public String getAccountId()
+            {
+                return followerAccountId;
+            }
+        };
     }
 }

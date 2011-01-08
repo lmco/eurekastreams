@@ -55,8 +55,27 @@ public final class TestContextCreator
             final Serializable params, final String userAccountId, final long userId)
     {
         final Principal principal = createPrincipal(userAccountId, userId);
+        return createTaskHandlerContextWithPrincipal(params, principal);
+    }
+
+    /**
+     * Creates a TaskHandlerActionContext<PrincipalActionContext> - used for actions invoked directly by user action
+     * which can queue activities.
+     *
+     * @param params
+     *            Action parameters.
+     * @param principal
+     *            Principal for user requesting action.
+     * @return Context.
+     */
+    public static TaskHandlerActionContext<PrincipalActionContext> createTaskHandlerContextWithPrincipal(
+            final Serializable params, final Principal principal)
+    {
         return new TaskHandlerActionContext<PrincipalActionContext>(new PrincipalActionContext()
         {
+            /** Fingerprint. */
+            private static final long serialVersionUID = 8084060031869042700L;
+
             @Override
             public Map<String, Object> getState()
             {
@@ -101,6 +120,9 @@ public final class TestContextCreator
     {
         return new Principal()
         {
+            /** Fingerprint */
+            private static final long serialVersionUID = -6797414788351285562L;
+
             @Override
             public String getAccountId()
             {
