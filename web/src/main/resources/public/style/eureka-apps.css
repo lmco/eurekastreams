@@ -723,7 +723,7 @@ div.list-view-item:hover .fade-out, div.list-view-item.selected .fade-out
 
 .scroll-more, .scroll-less
 {
-    height: 24px;
+    height: 28px;
 }
 
 .scroll-less
@@ -748,19 +748,19 @@ div.list-view-item:hover .fade-out, div.list-view-item.selected .fade-out
 {
     text-indent: -9999em;
     overflow: hidden;
-    height: 24px;
+    height: 28px;
     display: block;
     cursor: pointer;
 }
 
 .scroll-less span
 {
-    background: transparent url(images/gadget-scrollbar-arrows.png) no-repeat center -2px;
+    background: transparent url(images/gadget-scrollbar-arrows.png) no-repeat center 0;
 }
 
 .scroll-more span
 {
-    background: transparent url(images/gadget-scrollbar-arrows.png) no-repeat center -136px;
+    background: transparent url(images/gadget-scrollbar-arrows.png) no-repeat center -134px;
 }
 
 .scroll-less:hover span

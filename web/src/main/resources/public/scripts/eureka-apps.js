@@ -1416,7 +1416,11 @@ Eureka.getCurrentUserOrg = function(callback)
                 var data = results.data.orgCode;
                     var returnData = "";    
 
-                if (data.indexOf("Info Sys & Global") != -1)
+                if (data == null)
+                {
+                    returnData = "";
+                }
+                else if (data.indexOf("Info Sys & Global") != -1)
                 {
                     returnData = "isgs";
                 }
