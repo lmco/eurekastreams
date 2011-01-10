@@ -84,7 +84,7 @@ public interface WidgetJSNIFacade
      *
      * @return the last token.
      */
-//    String getLastUrlToken();
+    // String getLastUrlToken();
 
     /**
      * Gets the second to last token in the url. (e.g. in view/people/username1 return people)
@@ -153,6 +153,15 @@ public interface WidgetJSNIFacade
      *            the value.
      */
     void setWindowValue(String key, String value);
+
+    /**
+     * Gets a global window value.
+     *
+     * @param key
+     *            key of the value.
+     * @return the value.
+     */
+    String getWindowValue(String key);
 
     /**
      * Sets the owner of the page.

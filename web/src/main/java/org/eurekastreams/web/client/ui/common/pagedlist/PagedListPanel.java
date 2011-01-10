@@ -338,7 +338,7 @@ public class PagedListPanel extends FlowPanel
         }
 
         // determine if state is different
-        if (!currentFilter.equals(filter))
+        if (currentFilter == null || !currentFilter.equals(filter))
         {
             currentFilter = filter;
             currentSortKey = sort;
@@ -383,8 +383,16 @@ public class PagedListPanel extends FlowPanel
     }
 
     /**
+     * Invalidates the current state of the control so the next parameter update will force a refresh.
+     */
+    public void invalidateState()
+    {
+        currentFilter = null;
+    }
+
+    /**
      * Normalizes a start/end index value.
-     *
+     * 
      * @param value
      *            String form.
      * @return Numeric form (null if not present/valid).
@@ -422,7 +430,6 @@ public class PagedListPanel extends FlowPanel
      */
     public void reload()
     {
-
         for (Anchor filterLink : filterLinks.values())
         {
             filterLink.removeStyleName("active");
@@ -632,7 +639,6 @@ public class PagedListPanel extends FlowPanel
         }
         else
         {
-
             this.addStyleName("empty-list");
         }
         pageRenderer.render(renderContainer, render, items, noItemsMessage);
@@ -662,5 +668,4 @@ public class PagedListPanel extends FlowPanel
     {
         filterLinks.get(name).setText(title);
     }
-
 }
