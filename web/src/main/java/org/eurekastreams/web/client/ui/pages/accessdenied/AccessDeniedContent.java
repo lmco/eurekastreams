@@ -23,21 +23,23 @@ import org.eurekastreams.web.client.ui.HistoryState;
 import org.eurekastreams.web.client.ui.Session;
 
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 
 /**
  * Access denied page.
- * 
+ *
  */
 public class AccessDeniedContent extends Composite implements Bindable
 {
     /**
      * The history state object.
      */
-    private HistoryState history = new HistoryState(new WidgetJSNIFacadeImpl());
+    private final HistoryState history = new HistoryState(new WidgetJSNIFacadeImpl());
 
     /**
      * default constructor.
@@ -61,11 +63,13 @@ public class AccessDeniedContent extends Composite implements Bindable
         // LoginDialogContent loginDialogContent = new LoginDialogContent();
         // panel.add(loginDialogContent.getBody());
 
+        String supportEmail = new WidgetJSNIFacadeImpl().getWindowValue("supportEmailAddress");
+
         FlowPanel accessDeniedPanel = new FlowPanel();
         accessDeniedPanel.addStyleName("notice");
-        accessDeniedPanel.add(new HTML("You do not currently have access to Eureka Streams, " + ""
-                + "to request access please contact "
-                + "<a href='mailto:support@eurekastreams.org?subject=Request%20Access'>our product support team</a>"));
+        accessDeniedPanel.add(new InlineLabel("You do not currently have access to Eureka Streams, to request access "
+                + "please contact "));
+        accessDeniedPanel.add(new Anchor("our product support team", "mailto:" + supportEmail));
         panel.add(accessDeniedPanel);
         initWidget(panel);
 
