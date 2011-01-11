@@ -16,7 +16,9 @@
 package org.eurekastreams.server.action.execution.profile;
 
 import static org.eurekastreams.commons.test.IsEqualInternally.equalInternally;
+import static org.junit.Assert.assertEquals;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,11 +27,13 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.action.execution.stream.PostActivityExecutionStrategy;
 import org.eurekastreams.server.action.request.profile.RequestForGroupMembershipRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusByGroupCreatorRequest;
 import org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Follower;
+import org.eurekastreams.server.domain.Follower.FollowerStatus;
 import org.eurekastreams.server.persistence.DomainGroupMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.AddCachedGroupFollower;
@@ -37,6 +41,7 @@ import org.eurekastreams.server.persistence.mappers.db.DeleteRequestForGroupMemb
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -50,6 +55,27 @@ import org.junit.Test;
  */
 public class SetFollowingGroupStatusExecutionTest
 {
+    /** Test data. */
+    private static final long FOLLOWER_ID = 1L;
+
+    /** Test data. */
+    private static final String FOLLOWER_ACCOUNT = "jdoe";
+
+    /** Test data. */
+    private static final long ACTOR_ID = 1010L;
+
+    /** Test data. */
+    private static final String ACTOR_ACCOUNT = "smith";
+
+    /** Test data. */
+    private static final String GROUP_UNIQUEID = "thegroup";
+
+    /** Test data. */
+    private static final long GROUP_ID = 1000L;
+
+    /** Test data. */
+    private static final String GROUP_NAME = "The Group";
+
     /**
      * System under test.
      */
@@ -70,6 +96,10 @@ public class SetFollowingGroupStatusExecutionTest
      */
     private final GetDomainGroupsByShortNames groupByShortNameMapperMock = context
             .mock(GetDomainGroupsByShortNames.class);
+
+    /** Mapper to get person by id (for getting account id). */
+    private final DomainMapper<Long, PersonModelView> getPersonByIdMapper = context.mock(DomainMapper.class,
+            "getPersonByIdMapper");
 
     /**
      * Mapper to get the person id from an account id.
@@ -96,11 +126,25 @@ public class SetFollowingGroupStatusExecutionTest
     /**
      * Mocked principal object.
      */
-    private final Principal princpalMock = context.mock(Principal.class);
+    private final Principal principalMock = context.mock(Principal.class);
 
     /** Mapper to remove group access requests. */
-    private DeleteRequestForGroupMembership deleteRequestForGroupMembershipMapper = context
+    private final DeleteRequestForGroupMembership deleteRequestForGroupMembershipMapper = context
             .mock(DeleteRequestForGroupMembership.class);
+
+    /**
+     * Post an activity.
+     */
+    private final PostActivityExecutionStrategy postActivity = context.mock(PostActivityExecutionStrategy.class);
+
+    /** Fixture: group. */
+    private final DomainGroupModelView group = context.mock(DomainGroupModelView.class, "group");
+
+    /** Fixture: follower ids (a mock to insure SUT doesn't alter it). */
+    private final List<Long> followerIds = context.mock(List.class, "followerIds");
+
+    /** Fixture: principal for user requesting the action. */
+    private Principal principal;
 
     /**
      * Method to setup the System Under Test.
@@ -108,9 +152,23 @@ public class SetFollowingGroupStatusExecutionTest
     @Before
     public void setUp()
     {
-        sut = new SetFollowingGroupStatusExecution(groupByShortNameMapperMock, getPersonIdFromAccountIdMapper,
-                groupMapperMock, addCachedGroupFollowerMapperMock, groupFollowerIdsMapperMock,
-                deleteRequestForGroupMembershipMapper);
+        principal = TestContextCreator.createPrincipal(ACTOR_ACCOUNT, ACTOR_ID);
+
+        sut = new SetFollowingGroupStatusExecution(groupByShortNameMapperMock, getPersonByIdMapper,
+                getPersonIdFromAccountIdMapper, groupMapperMock, addCachedGroupFollowerMapperMock,
+                groupFollowerIdsMapperMock, deleteRequestForGroupMembershipMapper, postActivity);
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(group).getName();
+                will(returnValue(GROUP_NAME));
+                allowing(group).getEntityId();
+                will(returnValue(GROUP_ID));
+                allowing(followerIds).size();
+                will(returnValue(5));
+            }
+        });
     }
 
     /**
@@ -122,41 +180,39 @@ public class SetFollowingGroupStatusExecutionTest
     @Test
     public void testSetFollowing() throws Exception
     {
-        final DomainGroupModelView testTarget = new DomainGroupModelView();
-        testTarget.setEntityId(2L);
-
-        final List<Long> targetFollowerIds = new ArrayList<Long>(5);
-
-        final RequestForGroupMembershipRequest delRequest = new RequestForGroupMembershipRequest(2L, 1L);
+        final RequestForGroupMembershipRequest delRequest = new RequestForGroupMembershipRequest(GROUP_ID, 1L);
 
         context.checking(new Expectations()
         {
             {
                 oneOf(getPersonIdFromAccountIdMapper).execute(with(any(String.class)));
-                will(returnValue(1L));
+                will(returnValue(FOLLOWER_ID));
 
                 oneOf(groupByShortNameMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testTarget));
+                will(returnValue(group));
 
-                oneOf(groupMapperMock).addFollower(1L, 2L);
+                oneOf(groupMapperMock).addFollower(FOLLOWER_ID, GROUP_ID);
 
-                oneOf(addCachedGroupFollowerMapperMock).execute(1L, 2L);
-
-                oneOf(groupFollowerIdsMapperMock).execute(2L);
-                will(returnValue(targetFollowerIds));
+                oneOf(addCachedGroupFollowerMapperMock).execute(1L, GROUP_ID);
 
                 oneOf(deleteRequestForGroupMembershipMapper).execute(with(equalInternally(delRequest)));
+
+                oneOf(postActivity).execute(with(any(TaskHandlerActionContext.class)));
+
+                oneOf(groupFollowerIdsMapperMock).execute(GROUP_ID);
+                will(returnValue(followerIds));
             }
         });
 
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntaccount", "groupshortname",
                 EntityType.GROUP, false, Follower.FollowerStatus.FOLLOWING);
-        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, princpalMock);
-        TaskHandlerActionContext currentTaskHandlerActionContext = new TaskHandlerActionContext<PrincipalActionContext>(
-                currentContext, new ArrayList<UserActionRequest>());
-        sut.execute(currentTaskHandlerActionContext);
+        TaskHandlerActionContext<PrincipalActionContext> actionContext = TestContextCreator
+                .createTaskHandlerContextWithPrincipal(currentRequest, principal);
+        Serializable result = sut.execute(actionContext);
 
         context.assertIsSatisfied();
+        assertEquals(5, result);
+        assertEquals(2, actionContext.getUserActionRequests().size());
     }
 
     /**
@@ -169,37 +225,86 @@ public class SetFollowingGroupStatusExecutionTest
     public void testSetFollowingWithDifferentRequestObject() throws Exception
     {
         final PersonModelView testFollower = new PersonModelView();
-        testFollower.setEntityId(1L);
+        testFollower.setEntityId(FOLLOWER_ID);
 
-        final DomainGroupModelView testTarget = new DomainGroupModelView();
-        testTarget.setEntityId(2L);
+        final RequestForGroupMembershipRequest delRequest = new RequestForGroupMembershipRequest(GROUP_ID, 1L);
 
-        final List<Long> targetFollowerIds = new ArrayList<Long>(5);
-
-        final RequestForGroupMembershipRequest delRequest = new RequestForGroupMembershipRequest(2L, 1L);
+        final PersonModelView person = context.mock(PersonModelView.class);
 
         context.checking(new Expectations()
         {
             {
-                oneOf(groupMapperMock).addFollower(1L, 2L);
+                allowing(getPersonByIdMapper).execute(FOLLOWER_ID);
+                will(returnValue(person));
 
-                oneOf(addCachedGroupFollowerMapperMock).execute(1L, 2L);
+                allowing(person).getAccountId();
 
-                oneOf(groupFollowerIdsMapperMock).execute(2L);
-                will(returnValue(targetFollowerIds));
+                oneOf(groupMapperMock).addFollower(FOLLOWER_ID, GROUP_ID);
+
+                oneOf(addCachedGroupFollowerMapperMock).execute(1L, GROUP_ID);
 
                 oneOf(deleteRequestForGroupMembershipMapper).execute(with(equalInternally(delRequest)));
+
+                oneOf(postActivity).execute(with(any(TaskHandlerActionContext.class)));
+
+                oneOf(groupFollowerIdsMapperMock).execute(GROUP_ID);
+                will(returnValue(followerIds));
             }
         });
 
-        SetFollowingStatusByGroupCreatorRequest currentRequest = new SetFollowingStatusByGroupCreatorRequest(1L, 2L,
-                Follower.FollowerStatus.FOLLOWING);
-        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, princpalMock);
-        TaskHandlerActionContext currentTaskHandlerActionContext = new TaskHandlerActionContext<PrincipalActionContext>(
-                currentContext, new ArrayList<UserActionRequest>());
-        sut.execute(currentTaskHandlerActionContext);
+        SetFollowingStatusByGroupCreatorRequest currentRequest = new SetFollowingStatusByGroupCreatorRequest(
+                FOLLOWER_ID, GROUP_ID, Follower.FollowerStatus.FOLLOWING, "Group Name", false);
+        TaskHandlerActionContext<PrincipalActionContext> actionContext = TestContextCreator
+                .createTaskHandlerContextWithPrincipal(currentRequest, principal);
+        Serializable result = sut.execute(actionContext);
 
         context.assertIsSatisfied();
+        assertEquals(5, result);
+        assertEquals(2, actionContext.getUserActionRequests().size());
+    }
+
+    /**
+     * Tests a user approving another to follow a private group.
+     */
+    @Test
+    public void testFollowPrivateGroup()
+    {
+        SetFollowingStatusRequest request = new SetFollowingStatusRequest(FOLLOWER_ACCOUNT, GROUP_UNIQUEID,
+                EntityType.GROUP, false, FollowerStatus.FOLLOWING);
+
+        final RequestForGroupMembershipRequest mapperRequest1 = new RequestForGroupMembershipRequest(GROUP_ID,
+                FOLLOWER_ID);
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(getPersonIdFromAccountIdMapper).execute(FOLLOWER_ACCOUNT);
+                will(returnValue(FOLLOWER_ID));
+
+                allowing(groupByShortNameMapperMock).fetchUniqueResult(GROUP_UNIQUEID);
+                will(returnValue(group));
+
+                oneOf(groupMapperMock).addFollower(FOLLOWER_ID, GROUP_ID);
+
+                oneOf(addCachedGroupFollowerMapperMock).execute(FOLLOWER_ID, GROUP_ID);
+
+                oneOf(deleteRequestForGroupMembershipMapper).execute(with(equalInternally(mapperRequest1)));
+                will(returnValue(true));
+
+                oneOf(postActivity).execute(with(any(TaskHandlerActionContext.class)));
+
+                oneOf(groupFollowerIdsMapperMock).execute(GROUP_ID);
+                will(returnValue(followerIds));
+            }
+        });
+
+        TaskHandlerActionContext<PrincipalActionContext> actionContext = TestContextCreator
+                .createTaskHandlerContextWithPrincipal(request, principal);
+        Serializable result = sut.execute(actionContext);
+
+        context.assertIsSatisfied();
+        assertEquals(5, result);
+        assertEquals(3, actionContext.getUserActionRequests().size());
     }
 
     /**
@@ -211,35 +316,31 @@ public class SetFollowingGroupStatusExecutionTest
     @Test
     public void testRemoveFollowing() throws Exception
     {
-        final DomainGroupModelView testTarget = new DomainGroupModelView();
-        testTarget.setEntityId(2L);
-
-        final List<Long> targetFollowerIds = new ArrayList<Long>(5);
-
         context.checking(new Expectations()
         {
             {
                 oneOf(getPersonIdFromAccountIdMapper).execute(with(any(String.class)));
-                will(returnValue(1L));
+                will(returnValue(FOLLOWER_ID));
 
                 oneOf(groupByShortNameMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testTarget));
+                will(returnValue(group));
 
-                oneOf(groupMapperMock).removeFollower(1L, 2L);
+                oneOf(groupMapperMock).removeFollower(FOLLOWER_ID, GROUP_ID);
 
-                oneOf(groupFollowerIdsMapperMock).execute(2L);
-                will(returnValue(targetFollowerIds));
+                oneOf(groupFollowerIdsMapperMock).execute(GROUP_ID);
+                will(returnValue(followerIds));
             }
         });
 
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntaccount", "groupshortname",
                 EntityType.GROUP, false, Follower.FollowerStatus.NOTFOLLOWING);
-        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, princpalMock);
-        TaskHandlerActionContext currentTaskHandlerActionContext = new TaskHandlerActionContext<PrincipalActionContext>(
-                currentContext, new ArrayList<UserActionRequest>());
-        sut.execute(currentTaskHandlerActionContext);
+        TaskHandlerActionContext<PrincipalActionContext> actionContext = TestContextCreator
+                .createTaskHandlerContextWithPrincipal(currentRequest, principal);
+        Serializable result = sut.execute(actionContext);
 
         context.assertIsSatisfied();
+        assertEquals(5, result);
+        assertEquals(3, actionContext.getUserActionRequests().size());
     }
 
     /**
@@ -251,11 +352,6 @@ public class SetFollowingGroupStatusExecutionTest
     @Test(expected = Exception.class)
     public void testSetFollowingError() throws Exception
     {
-        final DomainGroupModelView testTarget = new DomainGroupModelView();
-        testTarget.setEntityId(2L);
-
-        final List<Long> targetFollowerIds = new ArrayList<Long>(5);
-
         context.checking(new Expectations()
         {
             {
@@ -266,7 +362,7 @@ public class SetFollowingGroupStatusExecutionTest
 
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntaccount", "groupshortname",
                 EntityType.GROUP, false, Follower.FollowerStatus.FOLLOWING);
-        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, princpalMock);
+        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, principalMock);
         TaskHandlerActionContext currentTaskHandlerActionContext = new TaskHandlerActionContext<PrincipalActionContext>(
                 currentContext, new ArrayList<UserActionRequest>());
         sut.execute(currentTaskHandlerActionContext);
@@ -283,32 +379,28 @@ public class SetFollowingGroupStatusExecutionTest
     @Test
     public void testOtherFollowing() throws Exception
     {
-        final DomainGroupModelView testTarget = new DomainGroupModelView();
-        testTarget.setEntityId(2L);
-
-        final List<Long> targetFollowerIds = new ArrayList<Long>(5);
-
         context.checking(new Expectations()
         {
             {
                 oneOf(getPersonIdFromAccountIdMapper).execute(with(any(String.class)));
-                will(returnValue(1L));
+                will(returnValue(FOLLOWER_ID));
 
                 oneOf(groupByShortNameMapperMock).fetchUniqueResult(with(any(String.class)));
-                will(returnValue(testTarget));
+                will(returnValue(group));
 
-                oneOf(groupFollowerIdsMapperMock).execute(2L);
-                will(returnValue(targetFollowerIds));
+                oneOf(groupFollowerIdsMapperMock).execute(GROUP_ID);
+                will(returnValue(followerIds));
             }
         });
 
         SetFollowingStatusRequest currentRequest = new SetFollowingStatusRequest("ntaccount", "groupshortname",
                 EntityType.GROUP, false, Follower.FollowerStatus.NOTSPECIFIED);
-        ServiceActionContext currentContext = new ServiceActionContext(currentRequest, princpalMock);
-        TaskHandlerActionContext currentTaskHandlerActionContext = new TaskHandlerActionContext<PrincipalActionContext>(
-                currentContext, new ArrayList<UserActionRequest>());
-        sut.execute(currentTaskHandlerActionContext);
+        TaskHandlerActionContext<PrincipalActionContext> actionContext = TestContextCreator
+                .createTaskHandlerContextWithPrincipal(currentRequest, principal);
+        Serializable result = sut.execute(actionContext);
 
         context.assertIsSatisfied();
+        assertEquals(5, result);
+        assertEquals(0, actionContext.getUserActionRequests().size());
     }
 }

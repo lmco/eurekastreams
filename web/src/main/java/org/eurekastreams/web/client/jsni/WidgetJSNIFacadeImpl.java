@@ -314,6 +314,14 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
                                                     }-*/;
 
     /**
+     * {@inheritDoc}
+     */
+    public String getWindowValue(final String inKey)
+    {
+        return nativeGetWindowValue(inKey);
+    }
+
+    /**
      * Gets the value from the key.
      *
      * @param key
@@ -521,5 +529,4 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
     {
         return nativeGetWindowValue("ACCOUNTID");
     }
-
 }

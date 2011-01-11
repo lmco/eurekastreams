@@ -26,6 +26,7 @@ import org.eurekastreams.server.domain.RestrictedDomainGroup;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.web.client.events.ChangeActivityModeEvent;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SetBannerEvent;
@@ -132,6 +133,11 @@ public class GroupProfilePanel extends FlowPanel
     private DomainGroup group;
 
     /**
+     * The group entity for this panel. 
+     */
+    private DomainGroupEntity groupEntity;
+
+    /**
      * The panel that shows the checklist.
      */
     private ChecklistProgressBarPanel checklistPanel;
@@ -151,14 +157,9 @@ public class GroupProfilePanel extends FlowPanel
      */
     private int members;
 
-    /**
-     * Action Processor.
-     */
-    private final ActionProcessor processor = Session.getInstance().getActionProcessor();
-
     /** Number of membership requests (for use on the admin tab label). */
     private int membershipRequestsCount = 0;
-
+    
     /**
      * Constructor.
      *
@@ -200,6 +201,18 @@ public class GroupProfilePanel extends FlowPanel
                     }
                 });
 
+        EventBus.getInstance().addObserver(ChangeActivityModeEvent.class,
+                new Observer<ChangeActivityModeEvent>()
+                {
+                    public void update(final ChangeActivityModeEvent event)
+                    {
+                        if (groupEntity != null)
+                        {
+                            breadCrumbPanel.setGroup(groupEntity, event.isSingleMode());
+                        }
+                    }
+                });
+
         inProcessor.setQueueRequests(true);
         GroupModel.getInstance().fetch(accountId, false);
         AllPopularHashTagsModel.getInstance().fetch(null, true);
@@ -212,8 +225,9 @@ public class GroupProfilePanel extends FlowPanel
      * @param inGroup
      *            the group whose profile is being displayed
      */
-    public void setEntity(final DomainGroupEntity inGroup)
+    private void setEntity(final DomainGroupEntity inGroup)
     {
+        groupEntity = inGroup;
         ActionProcessor inProcessor = Session.getInstance().getActionProcessor();
         inProcessor.setQueueRequests(true);
 
@@ -229,7 +243,7 @@ public class GroupProfilePanel extends FlowPanel
         final EventBus eventBus = Session.getInstance().getEventBus();
         eventBus.notifyObservers(new SetBannerEvent(inGroup));
 
-        breadCrumbPanel.setGroup(inGroup);
+        breadCrumbPanel.setGroup(inGroup, false);
 
         if (inGroup instanceof RestrictedDomainGroup)
         {

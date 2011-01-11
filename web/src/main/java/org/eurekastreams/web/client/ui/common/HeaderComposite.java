@@ -73,15 +73,18 @@ public class HeaderComposite extends Composite
      */
     FlowPanel siteLabeling = new FlowPanel();
 
+    /** The search box. */
+    private final GlobalSearchComposite profileSearchBox = new GlobalSearchComposite("search profiles");
+
     /**
      * Notification Count widget.
      */
-    private NotificationCountWidget notif = new NotificationCountWidget();
+    private final NotificationCountWidget notif = new NotificationCountWidget();
 
     /**
      * The link map.
      */
-    private HashMap<Page, Hyperlink> linkMap = new HashMap<Page, Hyperlink>();
+    private final HashMap<Page, Hyperlink> linkMap = new HashMap<Page, Hyperlink>();
 
     /**
      * Primary constructor for the Header composite.
@@ -216,7 +219,11 @@ public class HeaderComposite extends Composite
                 userNav.add(new HTML("<a href='/j_spring_security_logout'>Logout</a>"));
             }
 
-            userNav.add(new GlobalSearchComposite("search profiles"));
+            // Note: The profile search box is created at constructor time because it registers listeners on the event
+            // bus which needs to happen before the call to bufferObservers. The profile search box is created only once
+            // (not replaced on page changes), so its listeners must be buffered, else they would be lost on the first
+            // page change.
+            userNav.add(profileSearchBox);
         }
 
         // Style the Elements

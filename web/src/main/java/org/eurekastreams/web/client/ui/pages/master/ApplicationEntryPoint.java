@@ -44,6 +44,7 @@ import org.eurekastreams.web.client.history.HistoryHandler;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.BulkEntityModel;
+import org.eurekastreams.web.client.model.StartTabsModel;
 import org.eurekastreams.web.client.model.SystemSettingsModel;
 import org.eurekastreams.web.client.ui.PeriodicEventManager;
 import org.eurekastreams.web.client.ui.Session;
@@ -157,20 +158,18 @@ public class ApplicationEntryPoint implements EntryPoint
             EventBus.getInstance().addObserver(TermsOfServiceAcceptedEvent.class,
                     new Observer<TermsOfServiceAcceptedEvent>()
                     {
-
                         public void update(final TermsOfServiceAcceptedEvent event)
                         {
                             displayTOS = false;
                             loadPerson();
                         }
                     });
-            
+
             setUpGwtFunctions();
 
             processor.makeRequest(new ActionRequestImpl<PersonModelView>("noOperation", null),
                     new AsyncCallback<Serializable>()
                     {
-
                         public void onFailure(final Throwable caught)
                         {
                             if (caught.getMessage().contains("NO_CREDENTIALS"))
@@ -194,7 +193,6 @@ public class ApplicationEntryPoint implements EntryPoint
                             loadPerson();
                         }
                     });
-
         }
     }
 
@@ -241,6 +239,10 @@ public class ApplicationEntryPoint implements EntryPoint
                         jSNIFacade.setOwner(result.getOpenSocialId());
                         processor.setQueueRequests(true);
 
+                        // create the StartTabs model before the event bus is buffered, so it's event wiring stays
+                        // intact for the life of the app
+                        StartTabsModel.getInstance();
+
                         session.setHistoryHandler(new HistoryHandler());
                         Session.getInstance().getEventBus().bufferObservers();
                         History.fireCurrentHistoryState();
@@ -258,7 +260,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Shows the ToS modal.
-     * 
+     *
      */
     private void displayToS()
     {
@@ -288,7 +290,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires off a gadget change state event.
-     * 
+     *
      * @param id
      *            the gadget id
      * @param view
@@ -304,7 +306,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires of the UpdateGadgetPrefsEvent when called from the gadget container.
-     * 
+     *
      * @param inId
      *            - id of the gadget being updated.
      * @param inPrefs
@@ -318,7 +320,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the save command object.
-     * 
+     *
      * @return the save command
      */
     private static Command getEmployeeSelectedCommand()
@@ -352,7 +354,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Call the handler when the employee lookup is done.
-     * 
+     *
      * @param ntid
      *            the ntid.
      * @param displayName
@@ -368,7 +370,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the people from the server, convert them to JSON, and feed them back to the handler.
-     * 
+     *
      * @param ntids
      *            the ntids.
      * @param callbackIndex
@@ -443,7 +445,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Call the handler with the JSON data.
-     * 
+     *
      * @param data
      *            the data.
      * @param callbackIndex
@@ -456,7 +458,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Returns an additional property value given a key.
-     * 
+     *
      * @param key
      *            the key.
      * @return the value.

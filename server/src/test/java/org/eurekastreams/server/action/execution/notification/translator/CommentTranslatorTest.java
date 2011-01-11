@@ -15,14 +15,19 @@
  */
 package org.eurekastreams.server.action.execution.notification.translator;
 
+import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eurekastreams.server.domain.NotificationDTO;
+import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -49,15 +54,18 @@ public class CommentTranslatorTest
     };
 
     /** Mock commentors mapper. */
-    private GetCommentorIdsByActivityId commentorsMapper = context.mock(GetCommentorIdsByActivityId.class);
+    private final GetCommentorIdsByActivityId commentorsMapper = context.mock(GetCommentorIdsByActivityId.class);
 
     /** Mock activities mapper. */
-    private DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper =
-            context.mock(DomainMapper.class, "activitiesMapper");
+    private final DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper = context.mock(DomainMapper.class,
+            "activitiesMapper");
 
     /** Mapper to get the comment. */
-    private DomainMapper<List<Long>, List<CommentDTO>> commentsMapper =
-            context.mock(DomainMapper.class, "commentsMapper");
+    private final DomainMapper<List<Long>, List<CommentDTO>> commentsMapper = context.mock(DomainMapper.class,
+            "commentsMapper");
+
+    /** Mapper to get the savers. */
+    private final DomainMapper<Long, List<Long>> saversMapper = context.mock(DomainMapper.class, "saversMapper");
 
     /** System under test. */
     private CommentTranslator sut;
@@ -80,13 +88,16 @@ public class CommentTranslatorTest
     /** Test data. */
     private static final long COMMENTOR = 5555L;
 
+    /** Test data. */
+    private static final long SAVER = 7777L;
+
     /**
      * Setup test.
      */
     @Before
     public void setup()
     {
-        sut = new CommentTranslator(commentorsMapper, activitiesMapper, commentsMapper);
+        sut = new CommentTranslator(commentorsMapper, activitiesMapper, commentsMapper, saversMapper);
     }
 
     /**
@@ -116,13 +127,28 @@ public class CommentTranslatorTest
 
                 oneOf(commentorsMapper).execute(ACTIVITY_ID);
                 will(returnValue(Collections.singletonList(COMMENTOR)));
+
+                oneOf(saversMapper).execute(ACTIVITY_ID);
+                will(returnValue(Arrays.asList(ACTOR_ID, STREAM_OWNER_ID, COMMENTOR, SAVER)));
             }
         });
 
         Collection<NotificationDTO> results = sut.translate(ACTOR_ID, DESTINATION_ID, COMMENT_ID);
 
         context.assertIsSatisfied();
-        assertEquals(3, results.size());
+        assertEquals(4, results.size());
+
+        // put notifs in a map to easily get by expected type
+        Map<NotificationType, NotificationDTO> notifs = new HashMap<NotificationType, NotificationDTO>();
+        for (NotificationDTO notif : results)
+        {
+            notifs.put(notif.getType(), notif);
+        }
+        // check COMMENT_TO_SAVED_POST notif
+        NotificationDTO notif = notifs.get(NotificationType.COMMENT_TO_SAVED_POST);
+        assertNotNull(notif);
+        assertEquals(1, notif.getRecipientIds().size());
+        assertEquals((Long) SAVER, notif.getRecipientIds().get(0));
     }
 
     /**

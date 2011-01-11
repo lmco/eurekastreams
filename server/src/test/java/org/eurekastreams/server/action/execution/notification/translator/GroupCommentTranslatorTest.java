@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.action.execution.notification.translator;
 
+import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -22,9 +23,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eurekastreams.server.domain.NotificationDTO;
+import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -34,6 +38,7 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -50,18 +55,21 @@ public class GroupCommentTranslatorTest
     };
 
     /** Mock commentors mapper. */
-    private GetCommentorIdsByActivityId commentorsMapper = context.mock(GetCommentorIdsByActivityId.class);
+    private final GetCommentorIdsByActivityId commentorsMapper = context.mock(GetCommentorIdsByActivityId.class);
 
     /** Mock activities mapper. */
-    private DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper = context.mock(DomainMapper.class,
+    private final DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper = context.mock(DomainMapper.class,
             "activitiesMapper");
 
     /** Mock activities mapper. */
-    private DomainMapper<Long, List<Long>> coordinatorsMapper = context.mock(DomainMapper.class);
+    private final DomainMapper<Long, List<Long>> coordinatorsMapper = context.mock(DomainMapper.class);
 
     /** Mapper to get the comment. */
-    private DomainMapper<List<Long>, List<CommentDTO>> commentsMapper = context.mock(DomainMapper.class,
+    private final DomainMapper<List<Long>, List<CommentDTO>> commentsMapper = context.mock(DomainMapper.class,
             "commentsMapper");
+
+    /** Mapper to get the savers. */
+    private final DomainMapper<Long, List<Long>> saversMapper = context.mock(DomainMapper.class, "saversMapper");
 
     /** System under test. */
     private GroupCommentTranslator sut;
@@ -87,6 +95,19 @@ public class GroupCommentTranslatorTest
     /** Test data. */
     private static final long COORDINATOR_ID = 6666L;
 
+    /** Test data. */
+    private static final long SAVER = 7777L;
+
+    /**
+     * Setup before each test.
+     */
+    @Before
+    public void setUp()
+    {
+        sut = new GroupCommentTranslator(commentorsMapper, activitiesMapper, coordinatorsMapper, commentsMapper,
+                saversMapper);
+    }
+
     /**
      * Test the translator.
      */
@@ -94,8 +115,6 @@ public class GroupCommentTranslatorTest
     @SuppressWarnings("unchecked")
     public void testTranslateWithCoordinators()
     {
-        sut = new GroupCommentTranslator(commentorsMapper, activitiesMapper, coordinatorsMapper, commentsMapper);
-
         final StreamEntityDTO actor = new StreamEntityDTO();
         actor.setId(STREAM_OWNER_ID);
 
@@ -121,12 +140,27 @@ public class GroupCommentTranslatorTest
 
                 oneOf(commentorsMapper).execute(ACTIVITY_ID);
                 will(returnValue(Collections.singletonList(COMMENTOR)));
+
+                oneOf(saversMapper).execute(ACTIVITY_ID);
+                will(returnValue(Arrays.asList(ACTOR_ID, STREAM_OWNER_ID, COMMENTOR, SAVER)));
             }
         });
 
         Collection<NotificationDTO> results = sut.translate(ACTOR_ID, DESTINATION_ID, COMMENT_ID);
-        assertEquals(3, results.size());
+        assertEquals(4, results.size());
         context.assertIsSatisfied();
+
+        // put notifs in a map to easily get by expected type
+        Map<NotificationType, NotificationDTO> notifs = new HashMap<NotificationType, NotificationDTO>();
+        for (NotificationDTO notif : results)
+        {
+            notifs.put(notif.getType(), notif);
+        }
+        // check COMMENT_TO_SAVED_POST notif
+        NotificationDTO notif = notifs.get(NotificationType.COMMENT_TO_SAVED_POST);
+        assertNotNull(notif);
+        assertEquals(1, notif.getRecipientIds().size());
+        assertEquals((Long) SAVER, notif.getRecipientIds().get(0));
     }
 
     /**
@@ -135,7 +169,7 @@ public class GroupCommentTranslatorTest
     @Test
     public void testTranslateWithoutCoordinators()
     {
-        sut = new GroupCommentTranslator(commentorsMapper, activitiesMapper, null, commentsMapper);
+        sut = new GroupCommentTranslator(commentorsMapper, activitiesMapper, null, commentsMapper, saversMapper);
 
         final StreamEntityDTO actor = new StreamEntityDTO();
         actor.setId(STREAM_OWNER_ID);
@@ -157,12 +191,27 @@ public class GroupCommentTranslatorTest
 
                 oneOf(commentorsMapper).execute(ACTIVITY_ID);
                 will(returnValue(Collections.singletonList(COMMENTOR)));
+
+                oneOf(saversMapper).execute(ACTIVITY_ID);
+                will(returnValue(Arrays.asList(ACTOR_ID, STREAM_OWNER_ID, COMMENTOR, SAVER)));
             }
         });
 
         Collection<NotificationDTO> results = sut.translate(ACTOR_ID, DESTINATION_ID, COMMENT_ID);
-        assertEquals(2, results.size());
+        assertEquals(3, results.size());
         context.assertIsSatisfied();
+
+        // put notifs in a map to easily get by expected type
+        Map<NotificationType, NotificationDTO> notifs = new HashMap<NotificationType, NotificationDTO>();
+        for (NotificationDTO notif : results)
+        {
+            notifs.put(notif.getType(), notif);
+        }
+        // check COMMENT_TO_SAVED_POST notif
+        NotificationDTO notif = notifs.get(NotificationType.COMMENT_TO_SAVED_POST);
+        assertNotNull(notif);
+        assertEquals(1, notif.getRecipientIds().size());
+        assertEquals((Long) SAVER, notif.getRecipientIds().get(0));
     }
 
     /**
@@ -172,8 +221,6 @@ public class GroupCommentTranslatorTest
     @SuppressWarnings("unchecked")
     public void testTranslateCommentNotFound()
     {
-        sut = new GroupCommentTranslator(commentorsMapper, activitiesMapper, coordinatorsMapper, commentsMapper);
-
         context.checking(new Expectations()
         {
             {
@@ -194,8 +241,6 @@ public class GroupCommentTranslatorTest
     @SuppressWarnings("unchecked")
     public void testTranslateActivityNotFound()
     {
-        sut = new GroupCommentTranslator(commentorsMapper, activitiesMapper, coordinatorsMapper, commentsMapper);
-
         final CommentDTO comment = new CommentDTO();
         comment.setActivityId(ACTIVITY_ID);
 
@@ -214,5 +259,4 @@ public class GroupCommentTranslatorTest
         context.assertIsSatisfied();
         assertTrue(results.isEmpty());
     }
-
 }

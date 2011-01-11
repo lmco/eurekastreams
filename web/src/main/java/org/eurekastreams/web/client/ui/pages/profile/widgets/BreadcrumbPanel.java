@@ -66,7 +66,7 @@ public class BreadcrumbPanel extends FlowPanel
     public void setPerson(final Person inPerson)
     {
         buildBreadcrumbs(inPerson.getParentOrganization(), inPerson.getPreferredName() + " " + inPerson.getLastName(),
-                true);
+                true, false);
     }
 
     /**
@@ -74,10 +74,12 @@ public class BreadcrumbPanel extends FlowPanel
      *
      * @param inGroup
      *            the inGroup whose info we are displaying.
+     * @param showItemLink
+     *            flag to show this item in the trail as a link that wipes out all params when clicked.
      */
-    public void setGroup(final DomainGroupEntity inGroup)
+    public void setGroup(final DomainGroupEntity inGroup, final boolean showItemLink)
     {
-        buildBreadcrumbs(inGroup.getParentOrganization(), inGroup.getName(), true);
+        buildBreadcrumbs(inGroup.getParentOrganization(), inGroup.getName(), true, showItemLink);
     }
 
     /**
@@ -89,7 +91,7 @@ public class BreadcrumbPanel extends FlowPanel
      */
     public void setOrganization(final Organization inOrganization)
     {
-        buildBreadcrumbs(inOrganization, inOrganization.getName(), false);
+        buildBreadcrumbs(inOrganization, inOrganization.getName(), false, false);
     }
 
     /**
@@ -101,8 +103,11 @@ public class BreadcrumbPanel extends FlowPanel
      *            the display name of the end node in the breadcrumb trail.
      * @param showParent
      *            flag to show this item's direct parent in the trail; only orgs do not need to show this.
+     * @param showItemLink
+     *            flag to show this item in the trail as a link that wipes out all params when clicked.
      */
-    private void buildBreadcrumbs(final Organization org, final String thisItem, final boolean showParent)
+    private void buildBreadcrumbs(final Organization org, final String thisItem, final boolean showParent,
+            final boolean showItemLink)
     {
         GetBreadcrumbsListRequest request = new GetBreadcrumbsListRequest(org.getId());
 
@@ -110,7 +115,7 @@ public class BreadcrumbPanel extends FlowPanel
         // and breadcrumbs are being displayed on an Org profile page.
         if (!showParent && (org.getParentOrgId() == org.getId()))
         {
-            displayBreadcrumbs(new ArrayList<BreadcrumbDTO>(), thisItem, showParent);
+            displayBreadcrumbs(new ArrayList<BreadcrumbDTO>(), thisItem, showParent, showItemLink);
         }
         else
         {
@@ -129,7 +134,7 @@ public class BreadcrumbPanel extends FlowPanel
                                 breadcrumbs
                                         .add(new BreadcrumbDTO(org.getName(), Page.ORGANIZATIONS, org.getShortName()));
                             }
-                            displayBreadcrumbs(breadcrumbs, thisItem, showParent);
+                            displayBreadcrumbs(breadcrumbs, thisItem, showParent, showItemLink);
                         }
                     });
         }
@@ -144,9 +149,11 @@ public class BreadcrumbPanel extends FlowPanel
      *            the display name of the end node in the breadcrumb trail.
      * @param showParent
      *            flag to show this item's direct parent in the trail; only orgs do not need to show this.
+     * @param showItemLink
+     *            flag to show this item in the trail as a link that wipes out all params when clicked.
      */
     private void displayBreadcrumbs(final ArrayList<BreadcrumbDTO> breadcrumbs, final String thisItem,
-            final boolean showParent)
+            final boolean showParent, final boolean showItemLink)
     {
         Label separator;
 
@@ -167,9 +174,20 @@ public class BreadcrumbPanel extends FlowPanel
             this.add(separator);
         }
 
-        Label label = new Label();
-        label.setText(thisItem);
-        label.addStyleName("breadcrumb-label");
-        this.add(label);
+        if (showItemLink)
+        {
+            Hyperlink crumbLink = new Hyperlink(thisItem, Session.getInstance().generateUrl(
+                    new CreateUrlRequest(new HashMap<String, String>(), true)));
+            crumbLink.addStyleName("breadcrumb-link");
+            crumbLink.addStyleName("breadcrumb-label");
+            this.add(crumbLink);
+        }
+        else
+        {
+            Label label = new Label();
+            label.setText(thisItem);
+            label.addStyleName("breadcrumb-label");
+            this.add(label);
+        }
     }
 }

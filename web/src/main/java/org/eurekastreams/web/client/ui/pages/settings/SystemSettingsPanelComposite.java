@@ -423,7 +423,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
         }
         form.addFormElement(new StreamScopeFormElement("supportStreamGroupShortName", scopes, "Support Stream",
                 "Enter the name of the stream you want to display on the help page", false, false,
-                "/resources/autocomplete/groups/", MAX_GROUP_NAME));
+                "/resources/autocomplete/groups/", MAX_GROUP_NAME, 1));
         form.addFormElement(helpSupportPhoneNumber);
         form.addFormElement(helpSupportEmailAddress);
     }

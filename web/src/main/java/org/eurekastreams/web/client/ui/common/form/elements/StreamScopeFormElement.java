@@ -16,7 +16,9 @@
 package org.eurekastreams.web.client.ui.common.form.elements;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
@@ -64,8 +66,13 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
     /**
      * Flag to allow multiple stream scopes to be selected.
      */
-    boolean allowMultiple;
-
+    private boolean allowMultiple;
+    
+    /**
+     * Maximum number of items allowed to be added if allowMultiple is set to true.
+     */
+    private int maxItems;
+    
     /**
      * The value.
      *
@@ -102,20 +109,29 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
      *            the url used to retrieve search results for the autocomplete box.
      * @param inMaxLength
      *            the maximum characters for the autocomplete textbox.
+     * @param inMaxItems
+     *            the maximum scopes allowed to be added - ignored if inAllowMultiple is false.
      */
     public StreamScopeFormElement(final String inKey, final LinkedList<StreamScope> inScopes, final String inTitle,
             final String inInstructions, final boolean isRequired, final boolean inAllowMultiple,
-            final String inAutoCompleteUrl, final int inMaxLength)
+            final String inAutoCompleteUrl, final int inMaxLength, final int inMaxItems)
     {
         key = inKey;
         allowMultiple = inAllowMultiple;
+        maxItems = inMaxItems;
         this.addStyleName("scope-form-element");
 
         listMembers = new Label(inTitle);
         listMembers.addStyleName("form-label");
 
-        Label instructions = new Label(inInstructions);
+        final Label instructions = new Label(inInstructions);
         instructions.addStyleName("form-instructions");
+        
+        final Set<String> uniqueKeys = new HashSet<String>();
+        for (StreamScope scope : inScopes)
+        {
+            uniqueKeys.add(scope.getUniqueKey());
+        }
 
         scopeListPanel = new StreamScopeListPanel(inScopes);
 
@@ -127,12 +143,6 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
             {
                 if (!getEntityType(obj.toString()).equals("NOTSET"))
                 {
-                    autoComplete.clearText();
-
-                    if (!allowMultiple)
-                    {
-                        autoComplete.setVisible(false);
-                    }
                     EventBus.getInstance().notifyObservers(
                             new StreamScopeAddedEvent(new StreamScope(getDisplayName(obj.toString()), ScopeType
                                     .valueOf(getEntityType(obj.toString())), getUniqueId(obj.toString()), Long
@@ -140,21 +150,39 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
                 }
             }
         });
-
-        EventBus.getInstance().addObserver(StreamScopeDeletedEvent.getEvent(), new Observer<StreamScopeDeletedEvent>()
+        
+        EventBus.getInstance().addObserver(StreamScopeAddedEvent.getEvent(), new Observer<StreamScopeAddedEvent>()
         {
-            public void update(final StreamScopeDeletedEvent arg1)
+            public void update(final StreamScopeAddedEvent obj)
             {
-                if (!allowMultiple)
+                uniqueKeys.add(obj.getScope().getUniqueKey());
+                autoComplete.clearText();
+
+                if (!allowMultiple || uniqueKeys.size() >= maxItems)
                 {
-                    autoComplete.setVisible(true);
+                    autoComplete.setVisible(false);
+                    instructions.setVisible(false);
                 }
             }
         });
 
-        if (!allowMultiple && !inScopes.isEmpty())
+        EventBus.getInstance().addObserver(StreamScopeDeletedEvent.getEvent(), new Observer<StreamScopeDeletedEvent>()
+        {
+            public void update(final StreamScopeDeletedEvent obj)
+            {
+                uniqueKeys.remove(obj.getScope().getUniqueKey());
+                if (!allowMultiple || uniqueKeys.size() < maxItems)
+                {
+                    autoComplete.setVisible(true);
+                    instructions.setVisible(true);
+                }
+            }
+        });
+
+        if ((!allowMultiple && !inScopes.isEmpty()) || uniqueKeys.size() >= maxItems)
         {
             autoComplete.setVisible(false);
+            instructions.setVisible(false);
         }
 
         this.add(listMembers);

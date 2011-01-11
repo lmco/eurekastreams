@@ -34,29 +34,32 @@ import com.google.gwt.user.client.ui.Widget;
 public class NotificationsRenderer
 {
     /** Date formatter. */
-    private DateFormatter dateFormatter = new DateFormatter();
+    private final DateFormatter dateFormatter = new DateFormatter();
 
     /** Renderers for the message text. (Static to not waste time re-creating these.) */
     private static Map<NotificationType, NotificationMessageRenderer> messageRenderers = // \n
-            new HashMap<NotificationType, NotificationMessageRenderer>()
-            {
-                {
-                    put(NotificationType.POST_TO_PERSONAL_STREAM, new PostToPersonalStreamMessageRenderer());
-                    put(NotificationType.COMMENT_TO_PERSONAL_STREAM, new CommentToPersonalStreamMessageRenderer());
-                    put(NotificationType.COMMENT_TO_PERSONAL_POST, new CommentToPersonalPostMessageRenderer());
-                    put(NotificationType.COMMENT_TO_COMMENTED_POST, new CommentToCommentedPostMessageRenderer());
-                    put(NotificationType.FOLLOW_PERSON, new FollowPersonMessageRenderer());
-                    put(NotificationType.POST_TO_GROUP_STREAM, new PostToGroupStreamMessageRenderer());
-                    put(NotificationType.POST_TO_JOINED_GROUP, new PostToGroupStreamMessageRenderer());
-                    put(NotificationType.COMMENT_TO_GROUP_STREAM, new CommentToGroupStreamMessageRenderer());
-                    put(NotificationType.FOLLOW_GROUP, new FollowGroupMessageRenderer());
-                    put(NotificationType.FLAG_PERSONAL_ACTIVITY, new FlagActivityMessageRenderer());
-                    put(NotificationType.FLAG_GROUP_ACTIVITY, new FlagActivityMessageRenderer());
-                    put(NotificationType.REQUEST_NEW_GROUP, new RequestNewGroupMessageRenderer());
-                    put(NotificationType.REQUEST_GROUP_ACCESS, new RequestGroupAccessMessageRenderer());
-                    put(NotificationType.LIKE_ACTIVITY, new LikeActivityMessageRenderer());
-                }
-            };
+    new HashMap<NotificationType, NotificationMessageRenderer>()
+    {
+        {
+            put(NotificationType.POST_TO_PERSONAL_STREAM, new PostToPersonalStreamMessageRenderer());
+            put(NotificationType.COMMENT_TO_PERSONAL_STREAM, new CommentToPersonalStreamMessageRenderer());
+            put(NotificationType.COMMENT_TO_PERSONAL_POST, new CommentToPersonalPostMessageRenderer());
+            put(NotificationType.COMMENT_TO_COMMENTED_POST, new CommentToCommentedPostMessageRenderer());
+            put(NotificationType.FOLLOW_PERSON, new FollowPersonMessageRenderer());
+            put(NotificationType.POST_TO_GROUP_STREAM, new PostToGroupStreamMessageRenderer());
+            put(NotificationType.POST_TO_JOINED_GROUP, new PostToGroupStreamMessageRenderer());
+            put(NotificationType.COMMENT_TO_GROUP_STREAM, new CommentToGroupStreamMessageRenderer());
+            put(NotificationType.COMMENT_TO_SAVED_POST, new CommentToSavedPostMessageRenderer());
+            put(NotificationType.FOLLOW_GROUP, new FollowGroupMessageRenderer());
+            put(NotificationType.FLAG_PERSONAL_ACTIVITY, new FlagActivityMessageRenderer());
+            put(NotificationType.FLAG_GROUP_ACTIVITY, new FlagActivityMessageRenderer());
+            put(NotificationType.REQUEST_NEW_GROUP, new RequestNewGroupMessageRenderer());
+            put(NotificationType.REQUEST_GROUP_ACCESS, new RequestGroupAccessMessageRenderer());
+            put(NotificationType.REQUEST_GROUP_ACCESS_APPROVED, new RequestGroupAccessApprovedMessageRenderer());
+            put(NotificationType.REQUEST_GROUP_ACCESS_DENIED, new RequestGroupAccessDeniedMessageRenderer());
+            put(NotificationType.LIKE_ACTIVITY, new LikeActivityMessageRenderer());
+        }
+    };
 
     /**
      * Creates the widgets for a notification.

@@ -822,6 +822,7 @@
                     <bean class="org.eurekastreams.server.persistence.mappers.UpdateMapper" />
                 </constructor-arg>
                 <constructor-arg ref="findByIdMapper" />
+                <constructor-arg ref="getPersonPagePropertiesById_FORCE_REFRESH" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
@@ -2064,7 +2065,7 @@
         <constructor-arg value="true" />
     </bean>
 
-    <bean id="deleteRequestForGroupMembershipAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
+    <bean id="deleteRequestForGroupMembershipAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
             <!-- Authorization -->
@@ -2081,6 +2082,7 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
+        <constructor-arg ref="taskHandler" />
     </bean>
     
     <bean id="getPendingGroupsAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
@@ -2618,6 +2620,8 @@
                 </bean>
             </list>
         </property>
+        <property name="expectedDownloadFileLimit" value="65536" />
+        <property name="maximumDownloadFileLimit" value="10485760" />
     </bean>
 
     <bean id="getParsedLinkInformation" class="org.eurekastreams.commons.actions.service.ServiceAction">
@@ -3204,11 +3208,13 @@
 -->
     <bean id="setFollowingGroupStatusExecution" class="org.eurekastreams.server.action.execution.profile.SetFollowingGroupStatusExecution">
         <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+        <constructor-arg ref="getPersonByIdMapper" />
         <constructor-arg ref="getPersonIdByAccountIdMapper" />
         <constructor-arg ref="jpaGroupMapper" />
         <constructor-arg ref="addCachedGroupFollower" />
         <constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
         <constructor-arg ref="deleteRequestForGroupMembershipMapper" />
+        <constructor-arg ref="postPersonActivityExecutionStrategy" />
     </bean>
 
     <bean id="setFollowingStatusGroupTaskHandler" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">

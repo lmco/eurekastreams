@@ -89,7 +89,19 @@ public class CreateNotificationsRequest implements Serializable
          * Someone requested access to a private group. Actor=person id who requested access, Destination=id of group,
          * Activity=(not used).
          */
-        REQUEST_GROUP_ACCESS
+        REQUEST_GROUP_ACCESS,
+
+        /**
+         * A coordinator approved access to a private group. Actor=coordinator who granted access; Destination=id of
+         * group; Activity=person id who requested access (need some field to store it in).
+         */
+        REQUEST_GROUP_ACCESS_APPROVED,
+
+        /**
+         * A coordinator denied access to a private group. Actor=coordinator who denied access; Destination=id of group;
+         * Activity=person id who requested access (need some field to store it in).
+         */
+        REQUEST_GROUP_ACCESS_DENIED
     }
 
     /** Type of event that occurred. */

@@ -214,13 +214,14 @@ Eureka.Form = function(titleText, callback)
         var errors = [];
         for (var key in this.validators)
         {
-            var input = jQuery("#"+key);
+        	var id = key.split('.', 1);  // allow for multiple rules per field
+            var input = jQuery("#"+id);
             var val = input.val();
             if (val == input.attr('title'))
             {
                 val = "";
             }
-            if (!val.match(this.validators[key].regex))
+            if (!this.validators[key].validator(val))
             {
                 errors.push(this.validators[key].message);
             }
@@ -228,11 +229,14 @@ Eureka.Form = function(titleText, callback)
         return errors;
     }
 
-    this.addValidator = function(key, regex, message)
+    this.addValidator = function(key, check, message)
     {
         this.validators[key] = {};
-        this.validators[key].regex = regex;
         this.validators[key].message = message;
+		if (typeof check == 'function')
+			this.validators[key].validator = check;
+		else if (typeof check == 'string' || check instanceof RegExp)
+			this.validators[key].validator = function(val) { return val.match(check); };
     }
 
     this.addTextBox = function(key, title, defaultValue)
@@ -582,51 +586,47 @@ Eureka.ListItem = function(itemCount, primaryName, byLine, metaData, obj, onClic
 {
     this.itemCount = itemCount;
     var item = jQuery("<div><div class='item-contents'>" + primaryName + " " + byLine + "</div><span class='fade-out'></span><div class='metadata'>"+metaData+"</div></div>");
-                item.addClass("list-view-item");
-        if (metaData != null && metaData != "")
+    item.addClass("list-view-item");
+    if (metaData != null && metaData != "")
+    {
+        item.addClass('with-metadata');
+    }
+
+    var removeLink = jQuery("<div class='gadget-remove-button'>Remove</div>");
+    
+    if (this.itemCount == 0)
+    {
+        item.addClass("first");
+    }
+    if (obj == null && onClick != null)
+    {
+        item.click( function() { if(!removeLink.is(":visible")) { onClick(itemCount); } });
+    }
+    else if (obj != null)
+    {
+        if (slide)
         {
-            item.addClass('with-metadata');
+            item.append("<span class='slide-arrow'>&gt;</span>");
+            item.click(function() { if(!removeLink.is(":visible")) { Eureka.Container.switchView(obj); } if (onClick != null) { onClick(itemCount); }});
         }
+        else
+        {
+            item.click(function() { if(!removeLink.is(":visible")) {  jQuery(".list-view-item").removeClass("selected"); item.addClass("selected"); Eureka.Container.setContents(obj); } if (onClick != null) { onClick(itemCount); }});
+        }
+    }
 
-        var removeLink = jQuery("<div class='gadget-remove-button'>Remove</div>");
-                if (this.itemCount == 0)
-                {
-                        item.addClass("first");
-                }
-                if (obj == null && onClick != null)
-                {
-                        item.click( function() { if(!removeLink.is(":visible")) { onClick(itemCount); } });
-                }
-                else if (obj != null)
-                {
-
-                        if (slide)
-                        {
-                                item.append("<span class='slide-arrow'>&gt;</span>");
-                                item.click(function() { if(!removeLink.is(":visible")) { Eureka.Container.switchView(obj); } if (onClick != null) { onClick(itemCount); }});
-                        }
-                        else
-                        {
-                                item.click(function() { if(!removeLink.is(":visible")) {  jQuery(".list-view-item").removeClass("selected"); item.addClass("selected"); Eureka.Container.setContents(obj); } if (onClick != null) { onClick(itemCount); }})
-;
-                        }
-                }
-
-            if (removeHandle != null)
-            {
-                removeLink.click(function(event) { removeHandle(itemCount); item.hide(); Eureka.resize(); event.stopPropagation(); });
-                item.append(removeLink);
-            }
+    if (removeHandle != null)
+    {
+        removeLink.click(function(event) { removeHandle(itemCount); item.hide(); Eureka.resize(); event.stopPropagation(); });
+        item.append(removeLink);
+    }
 
     this.container = item;
 
-    
-
-    
-        this.getContainer = function()
-        {
-                return this.container;
-        }
+    this.getContainer = function()
+    {
+        return this.container;
+    }
 }
 
 Eureka.ListView = function()
@@ -948,12 +948,13 @@ Eureka.PostBox = function(text, postcb, maxlength)
 		var post = jQuery("<div class='post-button post-button-disabled'>Post</div>");
 		post.click(function()
 		{	
-			var comment = commentInput.val();
-
-			postcb(comment);
-
-			commentInput.val("");
-			postComment.hide();
+            if (!post.hasClass('post-button-disabled'))
+            {
+			    var comment = commentInput.val();
+    			postcb(comment);
+	    		commentInput.val("");
+		    	postComment.hide();
+            }
 		});
 
 
@@ -1438,7 +1439,11 @@ Eureka.getCurrentUserOrg = function(callback)
                 var data = results.data.orgCode;
                     var returnData = "";    
 
-                if (data.indexOf("Info Sys & Global") != -1)
+                if (data == null)
+                {
+                    returnData = "";
+                }
+                else if (data.indexOf("Info Sys & Global") != -1)
                 {
                     returnData = "isgs";
                 }

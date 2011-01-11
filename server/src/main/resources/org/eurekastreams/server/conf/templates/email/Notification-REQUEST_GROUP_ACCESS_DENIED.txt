@@ -1,0 +1,11 @@
+Your request to join the $(dest.name) group has been denied.
+
+Thank You,
+Eureka Streams
+
+--- 
+
+To find out more information, visit $(eureka.infosite.url)
+
+Emails you receive from Eureka Streams can be managed from your notification settings page:
+$(eureka.web.baseurl)#settings?tab=Notifications

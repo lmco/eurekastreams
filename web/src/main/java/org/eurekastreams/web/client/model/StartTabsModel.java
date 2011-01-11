@@ -20,6 +20,8 @@ import org.eurekastreams.server.action.request.start.SetTabLayoutRequest;
 import org.eurekastreams.server.action.request.start.SetTabOrderRequest;
 import org.eurekastreams.server.domain.Tab;
 import org.eurekastreams.server.search.modelview.PersonPagePropertiesDTO;
+import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.UpdateGadgetPrefsEvent;
 import org.eurekastreams.web.client.events.data.DeletedStartPageTabResponseEvent;
 import org.eurekastreams.web.client.events.data.GotStartPageTabsResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedStartTabResponseEvent;
@@ -31,9 +33,9 @@ import org.eurekastreams.web.client.ui.Session;
 /**
  * Represents the tabs on someones start page. Allows you to get them, change their layout, rename them, reorder them,
  * add them and delete them,
- * 
+ *
  */
-public class StartTabsModel extends BaseModel implements Fetchable<String>, Insertable<String>, Deletable<Tab>,
+public final class StartTabsModel extends BaseModel implements Fetchable<String>, Insertable<String>, Deletable<Tab>,
         Reorderable<SetTabOrderRequest>
 {
     /**
@@ -43,12 +45,35 @@ public class StartTabsModel extends BaseModel implements Fetchable<String>, Inse
 
     /**
      * Gets the singleton.
-     * 
+     *
      * @return the singleton.
      */
     public static StartTabsModel getInstance()
     {
         return model;
+    }
+
+    /**
+     * Constructor.
+     */
+    private StartTabsModel()
+    {
+        /*
+         * When gadget preferences are updated (via UpdateGadgetPrefsEvent), GadgetPanel updates its copy of the gadget
+         * data. However, GadgetPanel holds a separate copy, not just a reference, so the copy stored here in the cache
+         * is out of date. (GadgetPanel holds a Gadget whereas the cache here holds a GadgetDTO.) We flush the cache to
+         * prevent returning old data. If the rest of the code was updated to use the DTOs instead of the entities (see
+         * PersonPagePropertiesDTOToPersonTransformer) then the update done by GadgetPanel would update the cached copy,
+         * and we wouldn't need to flush the cache and incur the associated performance penalty.
+         */
+        Session.getInstance().getEventBus()
+                .addObserver(UpdateGadgetPrefsEvent.class, new Observer<UpdateGadgetPrefsEvent>()
+                {
+                    public void update(final UpdateGadgetPrefsEvent inArg1)
+                    {
+                        clearCache();
+                    }
+                });
     }
 
     /**
@@ -98,7 +123,7 @@ public class StartTabsModel extends BaseModel implements Fetchable<String>, Inse
 
     /**
      * Rename a tab.
-     * 
+     *
      * @param request
      *            the request.
      */
@@ -116,7 +141,7 @@ public class StartTabsModel extends BaseModel implements Fetchable<String>, Inse
 
     /**
      * Undo the delete of a tab.
-     * 
+     *
      * @param request
      *            the id of the tab to undelete.
      */
@@ -133,7 +158,7 @@ public class StartTabsModel extends BaseModel implements Fetchable<String>, Inse
 
     /**
      * Set the layout of the tab.
-     * 
+     *
      * @param request
      *            the request.
      */

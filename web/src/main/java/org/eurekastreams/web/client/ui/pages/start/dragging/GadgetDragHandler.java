@@ -27,6 +27,8 @@ import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandler;
 import com.allen_sauer.gwt.dnd.client.DragStartEvent;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 
 /**
  * The gadget drag handler.
@@ -40,14 +42,16 @@ public class GadgetDragHandler implements DragHandler
 
     /**
      * Default constructor.
-     * @param inTabId the tab id.
+     *
+     * @param inTabId
+     *            the tab id.
      */
     public GadgetDragHandler(final Long inTabId)
     {
         tabId = inTabId;
 
-        Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
-                new Observer<UpdatedHistoryParametersEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(UpdatedHistoryParametersEvent.class, new Observer<UpdatedHistoryParametersEvent>()
                 {
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
@@ -69,16 +73,22 @@ public class GadgetDragHandler implements DragHandler
     public void onDragEnd(final DragEndEvent event)
     {
 
-        GadgetPanel gadgetZone = (GadgetPanel) event.getContext().draggable;
+        final GadgetPanel gadgetZone = (GadgetPanel) event.getContext().draggable;
         final DropZonePanel dropPanel = (DropZonePanel) event.getContext().finalDropController.getDropTarget();
 
         gadgetZone.setDropZone(dropPanel);
 
-        GadgetModel.getInstance().reorder(new ReorderGadgetRequest(tabId, new Long(gadgetZone
-                .getGadgetData().getId()), dropPanel.getZoneNumber(),
-                new Integer(dropPanel.getVisibleGadgetPosition(gadgetZone))));
+        GadgetModel.getInstance().reorder(
+                new ReorderGadgetRequest(tabId, new Long(gadgetZone.getGadgetData().getId()), dropPanel
+                        .getZoneNumber(), new Integer(dropPanel.getVisibleGadgetPosition(gadgetZone))));
 
-
+        DeferredCommand.add(new Command()
+        {
+            public void execute()
+            {
+                gadgetZone.rerender();
+            }
+        });
     }
 
     /**

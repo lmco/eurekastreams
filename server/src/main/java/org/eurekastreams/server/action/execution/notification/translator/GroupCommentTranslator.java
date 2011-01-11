@@ -48,14 +48,17 @@ public class GroupCommentTranslator implements NotificationTranslator
     /**
      * Mapper to get group coordinator ids.
      */
-    private DomainMapper<Long, List<Long>> coordinatorMapper;
+    private final DomainMapper<Long, List<Long>> coordinatorMapper;
 
     /** Mapper to get the comment. */
-    private DomainMapper<List<Long>, List<CommentDTO>> commentsMapper;
+    private final DomainMapper<List<Long>, List<CommentDTO>> commentsMapper;
+
+    /** Mapper to get people who saved an activity. */
+    private final DomainMapper<Long, List<Long>> saversMapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inCommentorsMapper
      *            commentors mapper to set.
      * @param inActivitiesMapper
@@ -64,21 +67,25 @@ public class GroupCommentTranslator implements NotificationTranslator
      *            coordinator mapper to set.
      * @param inCommentsMapper
      *            Mapper to get the comment.
+     * @param inSaversMapper
+     *            Mapper to get people who saved an activity.
      */
     public GroupCommentTranslator(final GetCommentorIdsByActivityId inCommentorsMapper,
             final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper,
             final DomainMapper<Long, List<Long>> inCoordinatorMapper,
-            final DomainMapper<List<Long>, List<CommentDTO>> inCommentsMapper)
+            final DomainMapper<List<Long>, List<CommentDTO>> inCommentsMapper,
+            final DomainMapper<Long, List<Long>> inSaversMapper)
     {
         commentorsMapper = inCommentorsMapper;
         activitiesMapper = inActivitiesMapper;
         coordinatorMapper = inCoordinatorMapper;
         commentsMapper = inCommentsMapper;
+        saversMapper = inSaversMapper;
     }
 
     /**
      * Gets a list of people to notify when a new comment is added.
-     * 
+     *
      * @param inActorId
      *            ID of actor that made the comment.
      * @param inDestinationId
@@ -105,13 +112,15 @@ public class GroupCommentTranslator implements NotificationTranslator
         }
         ActivityDTO activity = activities.get(0);
 
-        Map<NotificationType, List<Long>> recipients = new HashMap<NotificationType, List<Long>>();
+        Map<NotificationType, List<Long>> recipientsByType = new HashMap<NotificationType, List<Long>>();
+        List<Long> allRecipients = new ArrayList<Long>();
 
         // Adds post author as recipient
         long postAuthor = activity.getActor().getId();
         if (postAuthor != inActorId)
         {
-            recipients.put(NotificationType.COMMENT_TO_PERSONAL_POST, Collections.singletonList(postAuthor));
+            recipientsByType.put(NotificationType.COMMENT_TO_PERSONAL_POST, Collections.singletonList(postAuthor));
+            allRecipients.add(postAuthor);
         }
 
         // Adds group coordinators as recipients (if enabled)
@@ -124,10 +133,11 @@ public class GroupCommentTranslator implements NotificationTranslator
             {
                 if (coordinatorId != postAuthor && coordinatorId != inActorId)
                 {
+                    allRecipients.add(coordinatorId);
                     coordinatorsToNotify.add(coordinatorId);
                     // this recipient list will keep replacing the old value in the map when new recipients are
                     // found
-                    recipients.put(NotificationType.COMMENT_TO_GROUP_STREAM, coordinatorsToNotify);
+                    recipientsByType.put(NotificationType.COMMENT_TO_GROUP_STREAM, coordinatorsToNotify);
                 }
             }
         }
@@ -138,23 +148,40 @@ public class GroupCommentTranslator implements NotificationTranslator
         {
             if (commentorId != postAuthor && !coordinatorIds.contains(commentorId) && commentorId != inActorId)
             {
+                allRecipients.add(commentorId);
                 commentToCommentedRecipients.add(commentorId);
 
                 // this recipient list will keep replacing the old value in the map when new recipients are found
-                recipients.put(NotificationType.COMMENT_TO_COMMENTED_POST, commentToCommentedRecipients);
+                recipientsByType.put(NotificationType.COMMENT_TO_COMMENTED_POST, commentToCommentedRecipients);
             }
         }
 
-        List<NotificationDTO> notifications = new ArrayList<NotificationDTO>();
-
-        for (NotificationType notificationType : recipients.keySet())
+        // Add people who saved post as recipients
+        List<Long> commentToSaversRecipients = new ArrayList<Long>();
+        for (long saverId : saversMapper.execute(activityId))
         {
-            NotificationDTO notif = new NotificationDTO(recipients.get(notificationType), notificationType, inActorId);
+            if (saverId != inActorId && !allRecipients.contains(saverId))
+            {
+                commentToSaversRecipients.add(saverId);
+                allRecipients.add(saverId);
+
+                // this recipient list will keep replacing the old value in the map when new recipients are found
+                recipientsByType.put(NotificationType.COMMENT_TO_SAVED_POST, commentToSaversRecipients);
+            }
+        }
+
+        // Build notifications
+        List<NotificationDTO> notifications = new ArrayList<NotificationDTO>();
+        for (NotificationType notificationType : recipientsByType.keySet())
+        {
+            NotificationDTO notif = new NotificationDTO(recipientsByType.get(notificationType), notificationType,
+                    inActorId);
             notif.setActivity(activityId, activity.getBaseObjectType());
             StreamEntityDTO dest = activity.getDestinationStream();
             notif.setDestination(dest.getId(), dest.getType(), dest.getUniqueIdentifier(), dest.getDisplayName());
             notif.setCommentId(inCommentId);
-            if (notif.getType().equals(NotificationType.COMMENT_TO_COMMENTED_POST))
+            if (notif.getType().equals(NotificationType.COMMENT_TO_COMMENTED_POST)
+                    || notif.getType().equals(NotificationType.COMMENT_TO_SAVED_POST))
             {
                 StreamEntityDTO author = activity.getActor();
                 notif.setAuxiliary(author.getType(), author.getUniqueIdentifier(), author.getDisplayName());

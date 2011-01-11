@@ -22,9 +22,9 @@ import java.util.Map;
 
 import org.eurekastreams.server.action.response.settings.RetrieveSettingsResponse;
 import org.eurekastreams.server.domain.NotificationFilterPreference;
+import org.eurekastreams.server.domain.NotificationFilterPreference.Category;
 import org.eurekastreams.server.domain.NotificationFilterPreferenceDTO;
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.domain.NotificationFilterPreference.Category;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.data.GotPersonalSettingsResponseEvent;
@@ -69,6 +69,7 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
 		Category.LIKE);
         PERSONAL_PREF_CATEGORIES.put("Comment is posted to an activity in your stream or an activity "
                 + "you posted to a group stream", Category.COMMENT);
+        PERSONAL_PREF_CATEGORIES.put("Comment is posted to an activity you saved", Category.COMMENT_TO_SAVED_ACTIVITY);
         PERSONAL_PREF_CATEGORIES.put("New follower is added to your stream", Category.FOLLOW_PERSON);
 
         GROUP_PREF_CATEGORIES.put("Activity is posted to a group you joined", Category.POST_TO_JOINED_GROUP);
@@ -77,6 +78,8 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
         GROUP_PREF_CATEGORIES.put("New member joins a group you coordinate", Category.FOLLOW_GROUP);
         GROUP_PREF_CATEGORIES.put("Group Membership is requested in a private group you coordinate",
                 Category.REQUEST_GROUP_ACCESS);
+        GROUP_PREF_CATEGORIES.put("Your request for membership in a private group has been approved or denied",
+                Category.REQUEST_GROUP_ACCESS_RESPONSE);
 
         ORG_PREF_CATEGORIES.put("Activity is Flagged in an organization you coordinate", Category.FLAG_ACTIVITY);
         ORG_PREF_CATEGORIES
@@ -300,13 +303,13 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
     public static class NotificationPreferenceFormElement implements FormElement
     {
         /** Notifier type. */
-        private String notifierType;
+        private final String notifierType;
 
         /** Category. */
-        private NotificationFilterPreference.Category category;
+        private final NotificationFilterPreference.Category category;
 
         /** Checkbox. */
-        private CheckBox checkbox = new CheckBox();
+        private final CheckBox checkbox = new CheckBox();
 
         /**
          * Constructor.

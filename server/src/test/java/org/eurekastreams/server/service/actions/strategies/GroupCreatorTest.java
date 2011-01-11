@@ -258,7 +258,7 @@ public class GroupCreatorTest
         final StreamScope streamScope = context.mock(StreamScope.class);
 
         final long id = 1L;
-        String newName = "NEW org name here";
+        final String newName = "NEW org name here";
 
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
         formData.put("id", Long.toString(id));
@@ -305,6 +305,9 @@ public class GroupCreatorTest
 
                 allowing(groupMock).getId();
                 will(returnValue(id));
+                
+                oneOf(groupMock).getName();
+                will(returnValue(newName));
                 
                 oneOf(groupMock).getStreamScope();
                 will(returnValue(streamScope));
@@ -364,7 +367,7 @@ public class GroupCreatorTest
         final StreamScope streamScope = context.mock(StreamScope.class);
 
         final long id = 1L;
-        String newName = "NEW org name here";
+        final String newName = "NEW org name here";
 
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
         formData.put("id", Long.toString(id));
@@ -404,6 +407,9 @@ public class GroupCreatorTest
 
                 allowing(groupMock).getId();
                 will(returnValue(id));
+                
+                oneOf(groupMock).getName();
+                will(returnValue(newName));
 
                 // TODO: consider making a fake so we can make sure the right
                 // action was called
@@ -457,7 +463,7 @@ public class GroupCreatorTest
         final StreamScope streamScope = context.mock(StreamScope.class);
 
         final long id = 1L;
-        String newName = "NEW org name here";
+        final String newName = "NEW org name here";
 
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
         formData.put("id", Long.toString(id));
@@ -492,6 +498,9 @@ public class GroupCreatorTest
 
                 allowing(groupMock).getId();
                 will(returnValue(id));
+                
+                oneOf(groupMock).getName();
+                will(returnValue(newName));
                 //
                 // // TODO: consider making a fake so we can make sure the right
                 // // action was called

@@ -21,6 +21,7 @@ import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamScope;
+import org.eurekastreams.web.client.events.ChangeActivityModeEvent;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
 import org.eurekastreams.web.client.events.MessageStreamUpdateEvent;
@@ -399,6 +400,7 @@ public class StreamPanel extends FlowPanel
         stream.setVisible(true);
         sortPanel.setVisible(true);
         activityDetailPanel.clear();
+        EventBus.getInstance().notifyObservers(new ChangeActivityModeEvent(false));
     }
 
     /**
@@ -410,6 +412,7 @@ public class StreamPanel extends FlowPanel
         streamSearch.setVisible(false);
         postContent.setVisible(false);
         stream.setVisible(false);
+        EventBus.getInstance().notifyObservers(new ChangeActivityModeEvent(true));
     }
 
     /**

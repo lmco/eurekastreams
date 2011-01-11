@@ -16,10 +16,10 @@
 package org.eurekastreams.server.service.actions.strategies.links;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -58,22 +58,25 @@ public class ConnectionFacade
     /**
      * Logger.
      */
-    private Log log = LogFactory.getLog(ConnectionFacade.class);
+    private final Log log = LogFactory.getLog(ConnectionFacade.class);
 
     /**
      * Trust manager.
      */
-    private TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager()
+    private final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager()
     {
+        @Override
         public java.security.cert.X509Certificate[] getAcceptedIssuers()
         {
             return null;
         }
 
+        @Override
         public void checkClientTrusted(final java.security.cert.X509Certificate[] certs, final String authType)
         {
         }
 
+        @Override
         public void checkServerTrusted(final java.security.cert.X509Certificate[] certs, final String authType)
         {
         }
@@ -82,12 +85,12 @@ public class ConnectionFacade
     /**
      * Cache of URLs. Uses WeakHashMap to prevent memory leak.
      */
-    private Map<String, URL> urlMap = new WeakHashMap<String, URL>();
+    private final Map<String, URL> urlMap = new WeakHashMap<String, URL>();
 
     /**
      * Cache of Image Dimensions. Uses WeakHashMap to prevent memory leak.
      */
-    private Map<String, ImageDimensions> imgMap = new WeakHashMap<String, ImageDimensions>();
+    private final Map<String, ImageDimensions> imgMap = new WeakHashMap<String, ImageDimensions>();
 
     /**
      * Max time for connections.
@@ -112,11 +115,17 @@ public class ConnectionFacade
     /**
      * List of decorators that can add headers to the connection.
      */
-    private List<ConnectionFacadeDecorator> decorators;
+    private final List<ConnectionFacadeDecorator> decorators;
+
+    /** Buffer size to use for downloading files; should be sightly larger than the typical file size. */
+    private int expectedDownloadFileLimit;
+
+    /** Maximum allowable size for downloaded files (to prevent DoS via out of memory). */
+    private int maximumDownloadFileLimit;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inDecorators
      *            - List of ConnectionFacadeDecorator instances.
      */
@@ -139,7 +148,7 @@ public class ConnectionFacade
      */
     public final void setRedirectCodes(final List<Integer> inRedirectCodes)
     {
-        this.redirectCodes = inRedirectCodes;
+        redirectCodes = inRedirectCodes;
     }
 
     /**
@@ -156,7 +165,7 @@ public class ConnectionFacade
      */
     public final void setProxyPort(final String inProxyPort)
     {
-        this.proxyPort = inProxyPort;
+        proxyPort = inProxyPort;
     }
 
     /**
@@ -173,7 +182,7 @@ public class ConnectionFacade
      */
     public final void setProxyHost(final String inProxyHost)
     {
-        this.proxyHost = inProxyHost;
+        proxyHost = inProxyHost;
     }
 
     /**
@@ -196,44 +205,86 @@ public class ConnectionFacade
             throw new InvalidParameterException("Connection timeout must be between " + MIN_TIMEOUT + " and "
                     + MAX_TIMEOUT);
         }
-        this.connectionTimeOut = inConnectionTimeOut;
+        connectionTimeOut = inConnectionTimeOut;
     }
 
     /**
      * Download a file.
-     * 
+     *
      * @param url
      *            the URL as a string.
      * @param inAccountId
      *            accountid of the user making the request.
      * @return the file as a string.
      * @throws IOException
-     *             of URL can't be opened.
+     *             if URL can't be opened.
      */
     public String downloadFile(final String url, final String inAccountId) throws IOException
     {
-        String s = "";
-        DataInputStream data = new DataInputStream(new BufferedInputStream(getConnection(url, inAccountId)
-                .getInputStream()));
+        char[] buffer = new char[expectedDownloadFileLimit];
 
-        /**
-         * I'd like to use a more robust parsing library here.
-         */
-        StringBuffer htmlBuffer = new StringBuffer();
-
-        while ((s = data.readLine()) != null)
+        Reader reader = getConnectionReader(url, inAccountId);
+        try
         {
-            htmlBuffer.append(s);
+            // Note: The Reader.read javadocs say that "this method will block until some input is available, an I/O
+            // error occurs, or the end of the stream is reached," so if it returns with less characters than would fit
+            // in the buffer, I can't know whether that's the end of the response (EOF) or just a delay in receiving
+            // packets over the network. As such, I need to read until it returns -1 (EOF) to know I have the entire
+            // response.
+
+            // first just read into the buffer
+            int charsRead = 0;
+            while (charsRead < buffer.length)
+            {
+                int thisRead = reader.read(buffer, charsRead, buffer.length - charsRead);
+                if (thisRead < 0)
+                {
+                    return new String(buffer, 0, charsRead);
+                }
+                charsRead += thisRead;
+            }
+
+            // filled the buffer, now use a StringBuilder
+            StringBuilder builder = new StringBuilder();
+            do
+            {
+                if (builder.length() + charsRead > maximumDownloadFileLimit)
+                {
+                    throw new IOException("Downloaded file too large.");
+                }
+
+                builder.append(buffer, 0, charsRead);
+                charsRead = reader.read(buffer);
+            }
+            while (charsRead >= 0);
+
+            return builder.toString();
         }
+        finally
+        {
+            reader.close();
+        }
+    }
 
-        String htmlString = htmlBuffer.toString();
-
-        return htmlString;
+    /**
+     * Returns an input reader for downloading a file from an HTTP connection. (A separate method for unit testing.)
+     *
+     * @param url
+     *            URL from which to download a file.
+     * @param inAccountId
+     *            Accountid of the user making the request.
+     * @return Reader for downloading a file via HTTP.
+     * @throws IOException
+     *             If URL can't be opened.
+     */
+    protected Reader getConnectionReader(final String url, final String inAccountId) throws IOException
+    {
+        return new InputStreamReader(getConnection(url, inAccountId).getInputStream());
     }
 
     /**
      * Get the height of an image by URL.
-     * 
+     *
      * @param url
      *            the url.
      * @param inAccountId
@@ -251,7 +302,7 @@ public class ConnectionFacade
 
     /**
      * Get the width of an image by URL.
-     * 
+     *
      * @param url
      *            the url.
      * @param inAccountId
@@ -269,14 +320,14 @@ public class ConnectionFacade
 
     /**
      * Get the connection.
-     * 
+     *
      * @param url
      *            the url.
      * @param inAccountId
      *            account id of the user making the request.
      * @return the connection.
      */
-    private HttpURLConnection getConnection(final String url, final String inAccountId)
+    protected HttpURLConnection getConnection(final String url, final String inAccountId)
     {
         HttpURLConnection connection = null;
 
@@ -325,6 +376,7 @@ public class ConnectionFacade
 
                 ((HttpsURLConnection) connection).setHostnameVerifier(new HostnameVerifier()
                 {
+                    @Override
                     public boolean verify(final String hostname, final SSLSession session)
                     {
                         log.trace("Accepting host name.");
@@ -362,7 +414,7 @@ public class ConnectionFacade
 
     /**
      * Get the dimensions of an image by URL.
-     * 
+     *
      * @param url
      *            the url.
      * @param inAccountId
@@ -401,16 +453,16 @@ public class ConnectionFacade
         /**
          * Width.
          */
-        private int width;
+        private final int width;
 
         /**
          * Height.
          */
-        private int height;
+        private final int height;
 
         /**
          * Constructor.
-         * 
+         *
          * @param inHeight
          *            height.
          * @param inWidth
@@ -441,11 +493,11 @@ public class ConnectionFacade
 
     /**
      * Get the file host.
-     * 
+     *
      * @param url
      *            the url.
      * @return the host.
-     * 
+     *
      * @throws MalformedURLException
      *             on bad URL.
      */
@@ -458,11 +510,11 @@ public class ConnectionFacade
 
     /**
      * Get the protocol of a URL.
-     * 
+     *
      * @param url
      *            the url.
      * @return the protocol.
-     * 
+     *
      * @throws MalformedURLException
      *             on bad URL.
      */
@@ -475,11 +527,11 @@ public class ConnectionFacade
 
     /**
      * Get the path of a URL.
-     * 
+     *
      * @param url
      *            the url.
      * @return the protocol.
-     * 
+     *
      * @throws MalformedURLException
      *             on bad URL.
      */
@@ -492,7 +544,7 @@ public class ConnectionFacade
 
     /**
      * Used to cache URLs.
-     * 
+     *
      * @param url
      *            the url as a String.
      * @return the URL object.
@@ -511,7 +563,7 @@ public class ConnectionFacade
 
     /**
      * Get the final URL after redirect.
-     * 
+     *
      * @param url
      *            the initial url.
      * @param inAccountId
@@ -537,5 +589,39 @@ public class ConnectionFacade
         }
 
         return url;
+    }
+
+    /**
+     * @return the expectedDownloadFileLimit
+     */
+    public int getExpectedDownloadFileLimit()
+    {
+        return expectedDownloadFileLimit;
+    }
+
+    /**
+     * @param inExpectedDownloadFileLimit
+     *            the expectedDownloadFileLimit to set
+     */
+    public void setExpectedDownloadFileLimit(final int inExpectedDownloadFileLimit)
+    {
+        expectedDownloadFileLimit = inExpectedDownloadFileLimit;
+    }
+
+    /**
+     * @return the maximumDownloadFileLimit
+     */
+    public int getMaximumDownloadFileLimit()
+    {
+        return maximumDownloadFileLimit;
+    }
+
+    /**
+     * @param inMaximumDownloadFileLimit
+     *            the maximumDownloadFileLimit to set
+     */
+    public void setMaximumDownloadFileLimit(final int inMaximumDownloadFileLimit)
+    {
+        maximumDownloadFileLimit = inMaximumDownloadFileLimit;
     }
 }

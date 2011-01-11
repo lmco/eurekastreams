@@ -212,7 +212,8 @@ public class GroupUpdater extends GroupPersister
             for (Person coordinator : newCoordinators)
             {
                 SetFollowingStatusByGroupCreatorRequest currentRequest = new SetFollowingStatusByGroupCreatorRequest(
-                        coordinator.getId(), inGroup.getId(), Follower.FollowerStatus.FOLLOWING);
+                        coordinator.getId(), inGroup.getId(), Follower.FollowerStatus.FOLLOWING, inGroup.getName(),
+                        false);
                 ServiceActionContext currentContext = new ServiceActionContext(currentRequest, new DefaultPrincipal(
                         creatorUserName, inActionContext.getActionContext().getPrincipal().getOpenSocialId(),
                         inActionContext.getActionContext().getPrincipal().getId()));
