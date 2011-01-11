@@ -1366,6 +1366,29 @@ Eureka.makeOauthRequest = function(url, cb, refreshInterval)
                     		}, params);
 }
 
+Eureka.makeSignedRequest = function(url, cb, errorcb, refreshInterval)
+{
+                        var params={};
+                        params[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;
+                        params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
+                        params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.SIGNED;
+                        params[gadgets.io.RequestParameters.REFRESH_INTERVAL] = refreshInterval;
+
+      
+                        gadgets.io.makeRequest(url,
+                            function(results)
+                            {
+                                if(!results.error)
+                                {
+                                    cb(results);
+                                }
+                                else
+                                {
+                                    errorcb(results.error);
+                                }
+                            }, params);
+}
+
 Eureka.shareLink = function(title, url)
 {
                var params = {};
