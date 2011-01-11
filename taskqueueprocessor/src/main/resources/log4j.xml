@@ -7,7 +7,7 @@
         <param name="File" value="${log.home}/log.txt" />
         <param name="Append" value="true" />
         <param name="MaxFileSize" value="5MB" />
-        <param name="MaxBackupIndex" value="50" />
+        <param name="MaxBackupIndex" value="5" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{ISO8601} %-5p %c - %m%n" />
         </layout>
@@ -18,7 +18,7 @@
         <param name="Append" value="true" />
         <param name="Threshold" value="error" />
         <param name="MaxFileSize" value="5MB" />
-        <param name="MaxBackupIndex" value="50" />
+        <param name="MaxBackupIndex" value="5" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[%d{ISO8601}] %-5p %c - %m%n" />
         </layout>
@@ -28,7 +28,7 @@
         <param name="File" value="${log.home}/action.log.txt" />
         <param name="Append" value="true" />
         <param name="MaxFileSize" value="5MB" />
-        <param name="MaxBackupIndex" value="50" />
+        <param name="MaxBackupIndex" value="5" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{ISO8601} %-5p %c - %m%n" />
         </layout>
@@ -38,7 +38,7 @@
         <param name="File" value="${log.home}/restlet.log.txt" />
         <param name="Append" value="true" />
         <param name="MaxFileSize" value="5MB" />
-        <param name="MaxBackupIndex" value="50" />
+        <param name="MaxBackupIndex" value="5" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{ISO8601} %-5p %c - %m%n" />
         </layout>
@@ -48,7 +48,7 @@
         <param name="File" value="${log.home}/spring.log.txt" />
         <param name="Append" value="true" />
         <param name="MaxFileSize" value="5MB" />
-        <param name="MaxBackupIndex" value="50" />
+        <param name="MaxBackupIndex" value="5" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{ISO8601} %-5p %c - %m%n" />
         </layout>
@@ -58,7 +58,7 @@
         <param name="File" value="${log.home}/springSecurity.log.txt" />
         <param name="Append" value="true" />
         <param name="MaxFileSize" value="5MB" />
-        <param name="MaxBackupIndex" value="50" />
+        <param name="MaxBackupIndex" value="5" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{ISO8601} %-5p %c - %m%n" />
         </layout>
@@ -68,7 +68,7 @@
         <param name="File" value="${log.home}/ldap.log.txt" />
         <param name="Append" value="true" />
         <param name="MaxFileSize" value="5MB" />
-        <param name="MaxBackupIndex" value="50" />
+        <param name="MaxBackupIndex" value="5" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{ISO8601} %-5p %c - %m%n" />
         </layout>
@@ -78,7 +78,7 @@
         <param name="File" value="${log.home}/sql.log.txt" />
         <param name="Append" value="true" />
         <param name="MaxFileSize" value="5MB" />
-        <param name="MaxBackupIndex" value="50" />
+        <param name="MaxBackupIndex" value="5" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[%d{ISO8601}] %-5p %c - %m%n" />
         </layout>
@@ -88,7 +88,7 @@
         <param name="File" value="${log.home}/job.log.txt" />
         <param name="Append" value="true" />
         <param name="MaxFileSize" value="5MB" />
-        <param name="MaxBackupIndex" value="50" />
+        <param name="MaxBackupIndex" value="5" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[%d{ISO8601}] %-5p %c - %m%n" />
         </layout>
@@ -99,7 +99,7 @@
         <param name="File" value="${log.home}/hibernateCache.log.txt" />
         <param name="Append" value="true" />
         <param name="MaxFileSize" value="5MB" />
-        <param name="MaxBackupIndex" value="50" />
+        <param name="MaxBackupIndex" value="5" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[%d{ISO8601}] %-5p %c - %m%n" />
         </layout>
@@ -110,7 +110,7 @@
         <param name="File" value="${log.home}/search.log.txt" />
         <param name="Append" value="true" />
         <param name="MaxFileSize" value="5MB" />
-        <param name="MaxBackupIndex" value="50" />
+        <param name="MaxBackupIndex" value="5" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[%d{ISO8601}] %-5p %c - %m%n" />
         </layout>
@@ -121,7 +121,7 @@
         <param name="File" value="${log.home}/cache.log.txt" />
         <param name="Append" value="true" />
         <param name="MaxFileSize" value="5MB" />
-        <param name="MaxBackupIndex" value="50" />
+        <param name="MaxBackupIndex" value="5" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%-5p %c - %m%n" />
         </layout>
@@ -131,7 +131,7 @@
         <param name="File" value="${log.home}/luceneDirectoryProviders.log.txt" />
         <param name="Append" value="true" />
         <param name="MaxFileSize" value="5MB" />
-        <param name="MaxBackupIndex" value="50" />
+        <param name="MaxBackupIndex" value="5" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[%d{ISO8601}] %-5p %c - %m%n" />
         </layout>
@@ -142,7 +142,7 @@
         <param name="File" value="${log.home}/searchIndexing.log.txt" />
         <param name="Append" value="true" />
         <param name="MaxFileSize" value="5MB" />
-        <param name="MaxBackupIndex" value="50" />
+        <param name="MaxBackupIndex" value="5" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{ISO8601}&#09;%m%n" />
         </layout>
