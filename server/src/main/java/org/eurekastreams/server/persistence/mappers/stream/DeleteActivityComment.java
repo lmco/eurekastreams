@@ -18,10 +18,13 @@ package org.eurekastreams.server.persistence.mappers.stream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.search.modelview.CommentDTO;
+import org.hibernate.Session;
+import org.hibernate.search.Search;
 
 /**
  * Deletes a comment and updates cache appropriately.
@@ -32,8 +35,8 @@ public class DeleteActivityComment extends BaseArgCachedDomainMapper<Long, Boole
     /**
      * Comment DAO.
      */
-    private GetCommentsById commentByIdDAO;
-    
+    private final GetCommentsById commentByIdDAO;
+
     /**
      * Constructor.
      * @param inCommentByIdDAO Comment DAO.
@@ -53,65 +56,69 @@ public class DeleteActivityComment extends BaseArgCachedDomainMapper<Long, Boole
     public Boolean execute(final Long inCommentId)
     {
         //get comment to delete (need this to get activity that comment is associated with).
-        CommentDTO comment = getCommentById(inCommentId);        
-        
+        CommentDTO comment = getCommentById(inCommentId);
+
         //short circuit here if comment to delete is not present.
         if (comment == null)
         {
             return true;
         }
-        
+
         long activityId = comment.getActivityId();
-        
+
         //delete comment from DB.
         getEntityManager().createQuery("DELETE FROM Comment WHERE id = :commentId")
             .setParameter("commentId", inCommentId).executeUpdate();
-        
+
         Cache cache = getCache();
-        
+
         //delete commentDTO from cache.
         cache.delete(CacheKeys.COMMENT_BY_ID + inCommentId);
-        
-        //if present, update commentId list for activity in cache.        
+
+        //if present, update commentId list for activity in cache.
         String commentsByActivityKey = CacheKeys.COMMENT_IDS_BY_ACTIVITY_ID + activityId;
-        cache.removeFromList(commentsByActivityKey, inCommentId);               
-        
+        cache.removeFromList(commentsByActivityKey, inCommentId);
+
         //if present, update ActivityDTO in cache
         String activityByIdKey = CacheKeys.ACTIVITY_BY_ID + activityId;
-        ActivityDTO activity = (ActivityDTO) cache.get(activityByIdKey);
-        if (activity != null)
-        {      
+        ActivityDTO activityDTO = (ActivityDTO) cache.get(activityByIdKey);
+        if (activityDTO != null)
+        {
             List<Long> commentIds = cache.getList(commentsByActivityKey);
-            updateActivityDTO(activity, inCommentId, commentIds);
-            getCache().set(activityByIdKey, activity);
+            updateActivityDTO(activityDTO, inCommentId, commentIds);
+            getCache().set(activityByIdKey, activityDTO);
         }
-        
+
+        // update activity in search index
+        final Activity activity = (Activity) getHibernateSession().load(Activity.class, activityId);
+        Search.getFullTextSession((Session) getEntityManager().getDelegate()).index(activity);
+
         return true;
     }
-    
+
     /**
      * Updates ActivityDTO first/last comment if needed.
      * @param inActivity ActivityDTO to update.
      * @param inDeletedCommentId Id of comment that was deleted.
      * @param inRemainingCommentIds Ordered list of remaining comments.
      */
-    private void updateActivityDTO(final ActivityDTO inActivity, 
+    private void updateActivityDTO(final ActivityDTO inActivity,
             final Long inDeletedCommentId, final List<Long> inRemainingCommentIds)
     {
         //set the commentCount.
         inActivity.setCommentCount(inRemainingCommentIds.size());
-        
+
         //if deleted last comment, null out first and last comments in activity.
         if (inRemainingCommentIds.size() == 0)
-        {            
-            inActivity.setFirstComment(null); 
-            inActivity.setLastComment(null);              
+        {
+            inActivity.setFirstComment(null);
+            inActivity.setLastComment(null);
         }
         //more comments remain after deletion, adjust first/last as needed.
         else
-        {                       
+        {
             // set new first commentDTO
-            if (inActivity.getFirstComment() == null 
+            if (inActivity.getFirstComment() == null
                 || inActivity.getFirstComment().getId() != inRemainingCommentIds.get(0))
             {
                 inActivity.setFirstComment(getCommentById(inRemainingCommentIds.get(0)));
@@ -123,15 +130,15 @@ public class DeleteActivityComment extends BaseArgCachedDomainMapper<Long, Boole
                 inActivity.setLastComment(null);
             }
             //last should be non null, see if we need to update.
-            else if (inActivity.getLastComment() == null 
+            else if (inActivity.getLastComment() == null
                 || inActivity.getLastComment().getId() != inRemainingCommentIds.get(inRemainingCommentIds.size() - 1))
             {
                 // set the new last comment.
                 inActivity.setLastComment(getCommentById(inRemainingCommentIds.get(inRemainingCommentIds.size() - 1)));
-            }            
-        }        
+            }
+        }
     }
-    
+
     /**
      * Returns CommentDTO for a given id, or null if not present.
      * @param inCommentId The comment id.
@@ -140,9 +147,9 @@ public class DeleteActivityComment extends BaseArgCachedDomainMapper<Long, Boole
     @SuppressWarnings("serial")
     private CommentDTO getCommentById(final Long inCommentId)
     {
-        List<CommentDTO> comments = commentByIdDAO.execute(new ArrayList<Long>() { { add(inCommentId); } });        
+        List<CommentDTO> comments = commentByIdDAO.execute(new ArrayList<Long>() { { add(inCommentId); } });
         return comments.size() == 0 ? null : comments.get(0);
     }
-    
+
 
 }
