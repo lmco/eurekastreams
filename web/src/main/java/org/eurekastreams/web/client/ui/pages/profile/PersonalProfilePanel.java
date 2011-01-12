@@ -38,6 +38,7 @@ import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEv
 import org.eurekastreams.web.client.events.data.InsertedPersonFollowerResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.AllPopularHashTagsModel;
+import org.eurekastreams.web.client.model.OrganizationModel;
 import org.eurekastreams.web.client.model.PersonFollowersModel;
 import org.eurekastreams.web.client.model.PersonFollowingModel;
 import org.eurekastreams.web.client.model.PersonJoinedGroupsModel;
@@ -208,6 +209,12 @@ public class PersonalProfilePanel extends FlowPanel
         inProcessor.setQueueRequests(true);
 
         person = inPerson;
+
+        if (person == null)
+        {
+            showInvalidPersonMessage();
+        }
+
         leftBarPanel.clear();
         portalPageContainer.clear();
 
@@ -342,6 +349,58 @@ public class PersonalProfilePanel extends FlowPanel
         errorReport.add(msgPanel);
         return errorReport;
     }
+
+    /**
+     * Tell the user that the person does not exist.
+     */
+    private void showInvalidPersonMessage()
+    {
+        OrganizationModel.getInstance().fetch("", true);
+
+        clear();
+        Panel errorReport = addNewCenteredErrorBox();
+
+        FlowPanel msgPanel = new FlowPanel();
+
+        Label msgHeader = new Label("Profile not found");
+        msgHeader.addStyleName("warning-message");
+
+        Hyperlink directoryLink = new Hyperlink("profiles", Session.getInstance().generateUrl(
+            new CreateUrlRequest(Page.ORGANIZATIONS, "")));
+        Label msgText1 = new Label("The person you were looking for could not be found. Try browsing the  ");
+        Label msgText2 = new Label(
+            " or searching the profiles by entering the name in the \"search profiles\" box above.");
+
+        FlowPanel msgText = new FlowPanel();
+        msgText.add(msgText1);
+        msgText.add(directoryLink);
+        msgText.add(msgText2);
+        msgText.addStyleName("error-message-text");
+        msgPanel.add(msgHeader);
+        msgPanel.add(msgText);
+        errorReport.add(msgPanel);
+    }
+
+    /**
+     * Creates a new error report box and centers it on the page.
+     *
+     * @return The error report box, ready to have content added to it.
+     */
+    private Panel addNewCenteredErrorBox()
+    {
+        // create panel
+        Panel errorReport = new FlowPanel();
+        errorReport.addStyleName("warning-report");
+
+        // center on page
+        FlowPanel centeringPanel = new FlowPanel();
+        centeringPanel.addStyleName("warning-report-container");
+        centeringPanel.add(errorReport);
+        add(centeringPanel);
+
+        return errorReport;
+    }
+                                                                                                                    
 
     /**
      * Set up the checklist.
