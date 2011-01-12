@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.ExceptionResponseEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.PreSwitchedHistoryViewEvent;
 import org.eurekastreams.web.client.events.PreventHistoryChangeEvent;
@@ -77,12 +79,12 @@ public class FormBuilder extends FlowPanel implements Bindable
     /**
      * The base model.
      */
-    private BaseModel baseModel;
+    private final BaseModel baseModel;
 
     /**
      * The method.
      */
-    private Method method;
+    private final Method method;
     /**
      * The title of the form.
      */
@@ -120,12 +122,12 @@ public class FormBuilder extends FlowPanel implements Bindable
     /**
      * The data of the form.
      */
-    private List<FormElement> data = new LinkedList<FormElement>();
+    private final List<FormElement> data = new LinkedList<FormElement>();
 
     /**
      * The original values of the form, to see if anything has changed.
      */
-    private HashMap<String, Serializable> originalValues = new HashMap<String, Serializable>();
+    private final HashMap<String, Serializable> originalValues = new HashMap<String, Serializable>();
 
     /**
      * Did the user add a "last form element".
@@ -202,7 +204,8 @@ public class FormBuilder extends FlowPanel implements Bindable
             }
         });
 
-        Session.getInstance().getEventBus().addObserver(ValidationExceptionResponseEvent.class,
+        final EventBus eventBus = Session.getInstance().getEventBus();
+        eventBus.addObserver(ValidationExceptionResponseEvent.class,
                 new Observer<ValidationExceptionResponseEvent>()
                 {
                     public void update(final ValidationExceptionResponseEvent event)
@@ -244,13 +247,21 @@ public class FormBuilder extends FlowPanel implements Bindable
                             errorBox.add(new HTML(errorBoxText));
                             Window.scrollTo(0, 0);
                         }
-
-
                     }
-
                 });
 
-        Session.getInstance().getEventBus().addObserver(PreSwitchedHistoryViewEvent.class,
+        eventBus.addObserver(ExceptionResponseEvent.class, new Observer<ExceptionResponseEvent>()
+        {
+            public void update(final ExceptionResponseEvent event)
+            {
+                if (event.getModel() == baseModel)
+                {
+                    resetSubmitButton();
+                }
+            }
+        });
+
+        eventBus.addObserver(PreSwitchedHistoryViewEvent.class,
                 new Observer<PreSwitchedHistoryViewEvent>()
                 {
 
@@ -261,14 +272,14 @@ public class FormBuilder extends FlowPanel implements Bindable
                             if (new WidgetJSNIFacadeImpl().confirm(
                                     "The form has been changed. Do you wish to save changes?"))
                             {
-                                Session.getInstance().getEventBus().notifyObservers(new PreventHistoryChangeEvent());
-                                Session.getInstance().getEventBus().notifyObservers(new SubmitFormIfChangedEvent());
+                                eventBus.notifyObservers(new PreventHistoryChangeEvent());
+                                eventBus.notifyObservers(new SubmitFormIfChangedEvent());
                             }
                         }
                     }
                 });
 
-        Session.getInstance().getEventBus().addObserver(SubmitFormIfChangedEvent.class,
+        eventBus.addObserver(SubmitFormIfChangedEvent.class,
                 new Observer<SubmitFormIfChangedEvent>()
                 {
 
@@ -280,7 +291,6 @@ public class FormBuilder extends FlowPanel implements Bindable
                         }
                     }
                 });
-
     }
 
     /**
