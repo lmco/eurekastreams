@@ -12650,6 +12650,19 @@ body .stream-page-container>div.form-error-box {
 	*z-index: 2000;
 }
 
+
+.scope-form-element .yui-ac-container
+{
+    *z-index: 2000;
+}
+
+.scope-form-element .yui-ac-content
+{
+    *top: -25px;
+	*z-index: 2001;
+    zoom: 1;
+}
+
 .modal-content-panel .form-container>div>.scope-form-element>.yui-ac>.yui-ac-container>.yui-ac-content
 	{ 
 	*z-index: 3000;

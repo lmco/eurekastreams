@@ -81,10 +81,10 @@ Eureka.Container =
         setTimeout(function(){Eureka.Container.init(containerId, splitScreen, appInitCallback);},20);
             }
     },
-    unAuthed : function()
+    unAuthed : function(msg)
     {
         this.unAuthedVal = true;
-        jQuery("body").html("<div style='padding:10px'>This app is not available for your business area.  Please visit the <a target='_blank' href='https://passport.global.lmco.com'>Passport site</a> to view more information on your business area’s passport replacement resources.</div>");
+        jQuery("body").html("<div style='padding:10px'>"+msg+"</div>");
     },
     isSplitScreen : function()
     {
@@ -1337,7 +1337,14 @@ Eureka.authorize = function(allowedOrgs)
         }
         if (!authed)
         {
-            Eureka.Container.unAuthed();
+            if (org == null)
+            {
+                Eureka.Container.unAuthed("We are unable to fetch the data required for this application at the moment. Please try back later.");
+            }
+            else
+            {
+                Eureka.Container.unAuthed("This app is not available for your business area.  Please visit the <a target='_blank' href='https://passport.global.lmco.com'>Passport site</a> to view more information on your business area’s passport replacement resources.");
+            }
         }
     });
 }
