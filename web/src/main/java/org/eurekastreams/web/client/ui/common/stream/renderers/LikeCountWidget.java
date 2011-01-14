@@ -323,7 +323,7 @@ public class LikeCountWidget extends Composite
         for (PersonModelView liker : likers)
         {
             avatarPanel.add(new AvatarLinkPanel(EntityType.PERSON, liker.getUniqueId(), liker.getId(), liker
-                    .getAvatarId(), Size.VerySmall));
+                    .getAvatarId(), Size.VerySmall, liker.getDisplayName()));
         }
 
         if (likeCount > MAXLIKERSSHOWN)

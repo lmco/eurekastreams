@@ -23,6 +23,7 @@ import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.exceptions.GeneralException;
 import org.eurekastreams.commons.exceptions.ValidationException;
+import org.eurekastreams.web.client.events.ExceptionResponseEvent;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.data.ValidationExceptionResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
@@ -39,11 +40,11 @@ public abstract class BaseModel
     /**
      * Cached requests objects, by action key.
      */
-    private HashMap<String, Serializable> cachedRequests = new HashMap<String, Serializable>();
+    private final HashMap<String, Serializable> cachedRequests = new HashMap<String, Serializable>();
     /**
      * Cached response objects, by action key.
      */
-    private HashMap<String, Serializable> cachedData = new HashMap<String, Serializable>();
+    private final HashMap<String, Serializable> cachedData = new HashMap<String, Serializable>();
 
     /**
      * onSuccess command.
@@ -79,8 +80,8 @@ public abstract class BaseModel
     {
         if (cachedData.get(actionKey) != null
                 && useClientCacheIfAvailable
-                && ((request == null && cachedRequests.get(actionKey) == null) || (areRequestsEqual(cachedRequests
-                        .get(actionKey), request))))
+                && ((request == null && cachedRequests.get(actionKey) == null) || (areRequestsEqual(
+                        cachedRequests.get(actionKey), request))))
         {
             successCommand.onSuccess(cachedData.get(actionKey));
         }
@@ -123,6 +124,7 @@ public abstract class BaseModel
     private void callAction(final String actionKey, final Serializable request, final OnSuccessCommand successCommand,
             final boolean useClientCacheIfAvailable)
     {
+        final BaseModel thisBuffered = this;
         ActionRequest<Serializable> serverRqst = new ActionRequestImpl<Serializable>(actionKey, request);
         Session.getInstance().getActionProcessor().makeRequest(serverRqst, new AsyncCallback<Serializable>()
         {
@@ -133,23 +135,19 @@ public abstract class BaseModel
 
                 if (caught instanceof ValidationException)
                 {
-                    Session.getInstance().getEventBus().notifyObservers(
-                            new ValidationExceptionResponseEvent((ValidationException) caught));
-                }
-                else if (caught instanceof ExecutionException)
-                {
-                    Session.getInstance().getEventBus().notifyObservers(
-                            new ShowNotificationEvent(new Notification(
-                                    "Error occurred, please refresh and try again.")));
-                }
-                else if (caught instanceof GeneralException)
-                {
                     Session.getInstance().getEventBus()
+                            .notifyObservers(new ValidationExceptionResponseEvent((ValidationException) caught));
+                }
+                else if (caught instanceof ExecutionException || caught instanceof GeneralException)
+                {
+                    Session.getInstance()
+                            .getEventBus()
                             .notifyObservers(
                                     new ShowNotificationEvent(new Notification(
                                             "Error occurred, please refresh and try again.")));
+                    Session.getInstance().getEventBus()
+                            .notifyObservers(new ExceptionResponseEvent(caught, thisBuffered, request));
                 }
-
             }
 
             public void onSuccess(final Serializable result)

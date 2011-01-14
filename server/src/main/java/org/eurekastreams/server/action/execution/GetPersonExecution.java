@@ -144,7 +144,10 @@ public class GetPersonExecution implements ExecutionStrategy<PrincipalActionCont
         // Set the transient banner id on the person with the first parent org that
         // has a banner id configured starting with the direct parent and walking up
         // the tree.
-        getBannerIdStrategy.getBannerId(result.getParentOrgId(), result);
+        if (result != null)
+        {
+            getBannerIdStrategy.getBannerId(result.getParentOrgId(), result);
+        }
 
         return result;
     }

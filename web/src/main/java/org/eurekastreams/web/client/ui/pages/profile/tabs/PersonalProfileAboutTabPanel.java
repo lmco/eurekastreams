@@ -35,6 +35,8 @@ import org.eurekastreams.web.client.ui.pages.profile.settings.EducationPanel;
 import org.eurekastreams.web.client.ui.pages.profile.settings.EmploymentPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.BackgroundItemLinksPanel;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Panel;
@@ -89,6 +91,21 @@ public class PersonalProfileAboutTabPanel extends ProfileAboutTabPanel
             HTML bio = new HTML(person.getBiography());
             bio.addStyleName("profile-about-biography");
             biographyPanel.add(bio);
+
+            // force URLs to absolute
+            NodeList<Element> links = bio.getElement().getElementsByTagName("a");
+            if (links.getLength() > 0)
+            {
+                for (int i = 0; i < links.getLength(); i++)
+                {
+                    Element link = links.getItem(i);
+                    String href = link.getAttribute("href");
+                    if (!href.isEmpty() && isRelativeUrl(href))
+                    {
+                        link.setAttribute("href", "http://" + href);
+                    }
+                }
+            }
         }
 
         List<BackgroundItem> items = person.getBackground() == null ? null : person.getBackground().getBackgroundItems(
@@ -206,4 +223,17 @@ public class PersonalProfileAboutTabPanel extends ProfileAboutTabPanel
 
         return nohtml;
     }
+
+    /**
+     * Checks if the URL is relative (and thus needs to have http:// added on the front). JSNI due to limited regex
+     * support in GWT 1.7.
+     *
+     * @param href
+     *            URL to check.
+     * @return True if needs prefix; false if not.
+     */
+    private native boolean isRelativeUrl(final String href)
+    /*-{
+        return !href.match(/^\w{3,5}:/) && href.substr(0,7) != 'mailto:';
+    }-*/;
 }

@@ -15,8 +15,14 @@
  */
 package org.eurekastreams.commons.server;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
+import java.io.Serializable;
+
 import net.sf.gilead.core.PersistentBeanManager;
 
 import org.eurekastreams.commons.actions.context.PrincipalPopulator;
@@ -25,6 +31,10 @@ import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
 import org.eurekastreams.commons.client.ActionRequest;
 import org.eurekastreams.commons.client.ActionRequestImpl;
+import org.eurekastreams.commons.exceptions.AuthorizationException;
+import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.exceptions.GeneralException;
+import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.commons.server.service.ServiceActionController;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -64,22 +74,22 @@ public class ActionExecutorTest
     /**
      * Mocked UserDetails that is a valid user details object.
      */
-    private UserDetails validUserDetailsMock = context.mock(UserDetails.class);
+    private final UserDetails validUserDetailsMock = context.mock(UserDetails.class);
 
     /**
      * Used for GWT traffic while serializing persistent objects.
      */
-    private PersistentBeanManager persistentBeanManager = context.mock(PersistentBeanManager.class);
+    private final PersistentBeanManager persistentBeanManager = context.mock(PersistentBeanManager.class);
 
     /**
      * Mocked PrincipalPopulator used to populate a principal object for the ServiceActionContext.
      */
-    private PrincipalPopulator principalPopulator = context.mock(PrincipalPopulator.class);
+    private final PrincipalPopulator principalPopulator = context.mock(PrincipalPopulator.class);
 
     /**
      * Mocked ServiceActionController used to execute ServiceActions.
      */
-    private ServiceActionController serviceActionController = context.mock(ServiceActionController.class);
+    private final ServiceActionController serviceActionController = context.mock(ServiceActionController.class);
 
     /**
      * The params array of Strings.
@@ -87,14 +97,9 @@ public class ActionExecutorTest
     private String[] params = null;
 
     /**
-     * The response String.
-     */
-    private String response = null;
-
-    /**
      * The service target.
      */
-    private String serviceTarget = null;
+    private static final String ACTION_KEY = "actionToExecute";
 
     /**
      * Test username for the suite.
@@ -104,13 +109,7 @@ public class ActionExecutorTest
     /**
      * The request action request object.
      */
-    ActionRequestImpl<String> request = null;
-
-    /**
-     * The action request object complete with response as the expected resulting object.
-     */
-    @SuppressWarnings("unchecked")
-    ActionRequestImpl expected = null;
+    private ActionRequestImpl<String> defaultRequest = null;
 
     /**
      * .
@@ -120,16 +119,9 @@ public class ActionExecutorTest
     public final void setup()
     {
         params = new String[] { "echo me" };
-        response = "echo me";
-
-        serviceTarget = "echo";
 
         // set up request
-        request = new ActionRequestImpl<String>(serviceTarget, params);
-
-        // set up the expected response
-        expected = new ActionRequestImpl<String>(serviceTarget, params);
-        expected.setResponse(response);
+        defaultRequest = new ActionRequestImpl<String>(ACTION_KEY, params);
 
         context.checking(new Expectations()
         {
@@ -163,7 +155,7 @@ public class ActionExecutorTest
             }
         });
 
-        sut = new ActionExecutor(springContextMock, validUserDetailsMock, request);
+        sut = new ActionExecutor(springContextMock, validUserDetailsMock, defaultRequest);
 
         assertNotNull("Log should not be null.", sut.getLog());
         assertSame(springContextMock, sut.getSpringContext());
@@ -180,12 +172,12 @@ public class ActionExecutorTest
     {
         final ServiceAction serviceActionMock = context.mock(ServiceAction.class);
 
-        request = new ActionRequestImpl<String>("testkey", new String("testParam"));
+        ActionRequestImpl<String> request = new ActionRequestImpl<String>("testkey", new String("testParam"));
 
         context.checking(new Expectations()
         {
             {
-                oneOf(springContextMock).getBean(with(any(String.class)));
+                oneOf(springContextMock).getBean("testkey");
                 will(returnValue(serviceActionMock));
 
                 oneOf(principalPopulator).getPrincipal(USERNAME);
@@ -220,12 +212,12 @@ public class ActionExecutorTest
     {
         final TaskHandlerServiceAction serviceActionMock = context.mock(TaskHandlerServiceAction.class);
 
-        request = new ActionRequestImpl<String>("testkey", new String("testParam"));
+        ActionRequestImpl<String> request = new ActionRequestImpl<String>("testkey", new String("testParam"));
 
         context.checking(new Expectations()
         {
             {
-                oneOf(springContextMock).getBean(with(any(String.class)));
+                oneOf(springContextMock).getBean("testkey");
                 will(returnValue(serviceActionMock));
 
                 oneOf(principalPopulator).getPrincipal(USERNAME);
@@ -262,19 +254,150 @@ public class ActionExecutorTest
         context.checking(new Expectations()
         {
             {
-                oneOf(springContextMock).getBean(with(any(String.class)));
+                oneOf(springContextMock).getBean(ACTION_KEY);
                 will(returnValue("String"));
             }
         });
 
-        sut = new ActionExecutor(springContextMock, validUserDetailsMock, request);
+        sut = new ActionExecutor(springContextMock, validUserDetailsMock, defaultRequest);
 
         // Execute the request.
         ActionRequest results = sut.execute();
 
-        Assert.assertTrue(results.getResponse() instanceof IllegalArgumentException);
+        Assert.assertTrue(results.getResponse() instanceof GeneralException);
 
         context.assertIsSatisfied();
     }
 
+    /**
+     * Common parts of tests that insure exceptions do not contain a nested cause.
+     *
+     * @param inputException
+     *            Exception to be thrown.
+     * @return Exception returned by SUT.
+     */
+    private Throwable coreForbidNestingExceptionTest(final Throwable inputException)
+    {
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(springContextMock).getBean(ACTION_KEY);
+                will(throwException(inputException));
+            }
+        });
+
+        sut = new ActionExecutor(springContextMock, validUserDetailsMock, defaultRequest);
+        ActionRequest result = sut.execute();
+
+        context.assertIsSatisfied();
+        Serializable response = result.getResponse();
+        assertTrue(response instanceof Throwable);
+        Throwable outputException = (Throwable) response;
+        assertNull(outputException.getCause());
+        return outputException;
+    }
+
+    /**
+     * Tests how exceptions are returned to client.
+     */
+    @Test
+    public void testExecutionExceptionNested()
+    {
+        Throwable exIn = new ExecutionException(new NullPointerException());
+        Throwable exOut = coreForbidNestingExceptionTest(exIn);
+        assertTrue(exOut instanceof ExecutionException);
+        assertEquals(exIn.getMessage(), exOut.getMessage());
+    }
+
+    /**
+     * Tests how exceptions are returned to client.
+     */
+    @Test
+    public void testExecutionExceptionNonNested()
+    {
+        Throwable exIn = new ExecutionException();
+        Throwable exOut = coreForbidNestingExceptionTest(exIn);
+        assertSame(exIn, exOut);
+    }
+
+    /**
+     * Tests how exceptions are returned to client.
+     */
+    @Test
+    public void testGeneralExceptionNested()
+    {
+        Throwable exIn = new GeneralException(new NullPointerException());
+        Throwable exOut = coreForbidNestingExceptionTest(exIn);
+        assertTrue(exOut instanceof GeneralException);
+        assertEquals(exIn.getMessage(), exOut.getMessage());
+    }
+
+    /**
+     * Tests how exceptions are returned to client.
+     */
+    @Test
+    public void testGeneralExceptionNonNested()
+    {
+        Throwable exIn = new GeneralException();
+        Throwable exOut = coreForbidNestingExceptionTest(exIn);
+        assertSame(exIn, exOut);
+    }
+
+    /**
+     * Tests how exceptions are returned to client.
+     */
+    @Test
+    public void testAuthorizationExceptionNested()
+    {
+        Throwable exIn = new AuthorizationException(new NullPointerException());
+        Throwable exOut = coreForbidNestingExceptionTest(exIn);
+        assertTrue(exOut instanceof AuthorizationException);
+        assertEquals(exIn.getMessage(), exOut.getMessage());
+    }
+
+    /**
+     * Tests how exceptions are returned to client.
+     */
+    @Test
+    public void testAuthorizationExceptionNonNested()
+    {
+        Throwable exIn = new AuthorizationException();
+        Throwable exOut = coreForbidNestingExceptionTest(exIn);
+        assertSame(exIn, exOut);
+    }
+
+    /**
+     * Tests how exceptions are returned to client.
+     */
+    @Test
+    public void testValidationExceptionNonNested()
+    {
+        Throwable exIn = new ValidationException();
+        Throwable exOut = coreForbidNestingExceptionTest(exIn);
+        assertSame(exIn, exOut);
+    }
+
+    /**
+     * Tests how exceptions are returned to client.
+     */
+    @Test
+    public void testOtherExceptionNonNested()
+    {
+        Throwable exIn = new IllegalArgumentException("bad");
+        Throwable exOut = coreForbidNestingExceptionTest(exIn);
+        assertTrue(exOut instanceof GeneralException);
+        assertEquals(exIn.getMessage(), exOut.getMessage());
+    }
+
+    /**
+     * Tests how exceptions are returned to client.
+     */
+    @Test
+    public void testOtherExceptionNested()
+    {
+        Throwable exIn = new IllegalArgumentException(new IllegalStateException("really bad"));
+        Throwable exOut = coreForbidNestingExceptionTest(exIn);
+        assertTrue(exOut instanceof GeneralException);
+        assertEquals(exIn.getMessage(), exOut.getMessage());
+    }
 }

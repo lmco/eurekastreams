@@ -26,12 +26,16 @@ import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
 import org.eurekastreams.commons.client.ActionRequest;
+import org.eurekastreams.commons.exceptions.AuthorizationException;
+import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.exceptions.GeneralException;
+import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.commons.server.service.ActionController;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.userdetails.UserDetails;
 
 /**
- * 
+ *
  * The Action Executor class. This class will look up in Spring for the action key. Once the action is found, it will
  * confirm the action requires User Details and the User Details are present. Next, the params will be validated, the
  * user will be authorized, and the action executed.
@@ -41,7 +45,7 @@ public class ActionExecutor
     /**
      * Logger.
      */
-    private Log log = LogFactory.getLog(ActionExecutor.class);
+    private final Log log = LogFactory.getLog(ActionExecutor.class);
 
     /**
      * The context from which this service can load action beans.
@@ -52,31 +56,31 @@ public class ActionExecutor
      * The action object.
      */
     @SuppressWarnings("unchecked")
-    private ActionRequest actionRequest;
+    private final ActionRequest actionRequest;
 
     /**
      * The user details for this action request.
      */
-    private UserDetails userDetails;
+    private final UserDetails userDetails;
 
     /**
      * Persistent bean manager for serialization.
      */
-    private PersistentBeanManager persistentBeanManager = null;
+    private final PersistentBeanManager persistentBeanManager;
 
     /**
      * Principal Populator.
      */
-    private PrincipalPopulator principalPopulator;
+    private final PrincipalPopulator principalPopulator;
 
     /**
      * Instance of {@link ActionController} used within this executor.
      */
-    private ActionController serviceActionController;
+    private final ActionController serviceActionController;
 
     /**
      * Constructor for the executor class.
-     * 
+     *
      * @param inSpringContext
      *            the Spring application context.
      * @param inUserDetails
@@ -88,9 +92,9 @@ public class ActionExecutor
     public ActionExecutor(final ApplicationContext inSpringContext, final UserDetails inUserDetails,
             final ActionRequest inActionRequest)
     {
-        this.userDetails = inUserDetails;
-        this.actionRequest = inActionRequest;
-        this.springContext = inSpringContext;
+        userDetails = inUserDetails;
+        actionRequest = inActionRequest;
+        springContext = inSpringContext;
 
         persistentBeanManager = (PersistentBeanManager) springContext.getBean("persistentBeanManager");
         principalPopulator = (PrincipalPopulator) springContext.getBean("principalPopulator");
@@ -99,7 +103,7 @@ public class ActionExecutor
 
     /**
      * Execute method for the class.
-     * 
+     *
      * @return The result as a serializable object.
      */
     @SuppressWarnings("unchecked")
@@ -129,8 +133,8 @@ public class ActionExecutor
                 // grab serializable parameter object.
                 Serializable actionParameter = actionRequest.getParam();
 
-                ServiceActionContext actionContext = new ServiceActionContext(actionParameter, principalPopulator
-                        .getPrincipal(userDetails.getUsername()));
+                ServiceActionContext actionContext = new ServiceActionContext(actionParameter,
+                        principalPopulator.getPrincipal(userDetails.getUsername()));
                 actionContext.setActionId(actionRequest.getActionKey());
                 result = serviceActionController.execute(actionContext, action);
             }
@@ -141,8 +145,8 @@ public class ActionExecutor
                 // grab serializable parameter object.
                 Serializable actionParameter = actionRequest.getParam();
 
-                ServiceActionContext actionContext = new ServiceActionContext(actionParameter, principalPopulator
-                        .getPrincipal(userDetails.getUsername()));
+                ServiceActionContext actionContext = new ServiceActionContext(actionParameter,
+                        principalPopulator.getPrincipal(userDetails.getUsername()));
                 actionContext.setActionId(actionRequest.getActionKey());
                 result = serviceActionController.execute(actionContext, action);
             }
@@ -163,12 +167,51 @@ public class ActionExecutor
         }
         catch (Exception ex)
         {
-            // We are effectively throwing the exception to the client.
-            actionRequest.setResponse(ex);
+            // log the exception
+            String paramString = "null parameters";
+            if (actionRequest.getParam() != null)
+            {
+                try
+                {
+                    paramString = actionRequest.getParam().toString();
+                }
+                catch (Exception pex)
+                {
+                    paramString = "<error retrieving parameters: " + pex.getMessage() + ">";
+                }
+            }
             log.error("Caught exception while running " + actionRequest.getActionKey() + " for user: " + userName
-                    + ". Parameters: "
-                    + ((actionRequest.getParam() == null) ? "null parameters" : actionRequest.getParam().toString())
-                    + ". ", ex);
+                    + ". Parameters: " + paramString + ". ", ex);
+
+            // By setting an exception as the response, we are effectively throwing the exception to the client.
+            // But insure only exceptions which are serializable are returned (otherwise no response will be returned to
+            // the client)
+            Throwable response;
+            if (ex instanceof ValidationException)
+            {
+                response = ex;
+            }
+            else if (ex instanceof AuthorizationException)
+            {
+                // Remove any nested exceptions
+                response = (ex.getCause() == null) ? ex : new AuthorizationException(ex.getMessage());
+            }
+            else if (ex instanceof GeneralException)
+            {
+                // Remove any nested exceptions (particularly want to insure no PersistenceExceptions get sent - they
+                // are not serializable plus contain details that should not be exposed to users)
+                response = (ex.getCause() == null) ? ex : new GeneralException(ex.getMessage());
+            }
+            else if (ex instanceof ExecutionException)
+            {
+                // Remove any nested exceptions
+                response = (ex.getCause() == null) ? ex : new ExecutionException(ex.getMessage());
+            }
+            else
+            {
+                response = new GeneralException(ex.getMessage());
+            }
+            actionRequest.setResponse(response);
         }
 
         // discard the params, since the client already has them
@@ -181,7 +224,7 @@ public class ActionExecutor
 
     /**
      * Helper for getting userName.
-     * 
+     *
      * @return user name.
      */
     private String getUserName()
