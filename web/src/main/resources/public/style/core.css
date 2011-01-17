@@ -13855,27 +13855,38 @@ body .stream-view-dialog .delete-button
 	vertical-align: top;
 }
 
-.help .right-panel {
+.help-documentation-wrapper
+{
 	min-height: 200px;
 	border: 1px solid #bbbbbb;
 	margin: 0px;
 	background-color: white;
-	margin: 20px;
 	padding: 20px;
-	width: 450px;
+}
+
+.help-app-version
+{
+	color: #666 !important;
+	margin-top: 20px;
+	text-align: center;
+}
+
+
+.help .right-panel, .help .center-panel
+{  
+	width: 490px;
+	margin: 20px;
+}
+
+.help .right-panel 
+{
 	display: inline-block; 
 	*display: inline; 
 	*zoom: 1;
 }
 
-.help .center-panel {
-	min-height: 200px;
-	border: 1px solid #bbbbbb;
-	margin: 0px;
-	background-color: white;
-	margin: 20px;
-	padding: 20px;
-	width: 450px;
+.help .center-panel 
+{
 	margin-left: auto;
 	margin-right: auto;
 }

@@ -179,6 +179,7 @@
         <build.taskqueueprocessor.additional-jsw-jar></build.taskqueueprocessor.additional-jsw-jar>
         <build.user-account-tld>example.com</build.user-account-tld>
         <build.app.baseurl>http://application.com</build.app.baseurl>
+        <build.app.version>${project.version}</build.app.version>
     </properties>
     <build>
         <plugins>
