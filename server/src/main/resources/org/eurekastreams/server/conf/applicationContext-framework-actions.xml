@@ -3215,6 +3215,7 @@
         <constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
         <constructor-arg ref="deleteRequestForGroupMembershipMapper" />
         <constructor-arg ref="postPersonActivityExecutionStrategy" />
+        <constructor-arg ref="deleteCacheKeys" />
     </bean>
 
     <bean id="setFollowingStatusGroupTaskHandler" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">

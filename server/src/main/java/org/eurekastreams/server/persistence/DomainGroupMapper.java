@@ -38,7 +38,7 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
 {
     /**
      * Constructor.
-     *
+     * 
      * @param inQueryOptimizer
      *            the QueryOptimizer to use for specialized functions.
      */
@@ -54,7 +54,7 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
 
     /**
      * Set the DescendantOrgStrategy.
-     *
+     * 
      * @param inDescendantOrgStrategy
      *            the descendantOrgStrategy to set
      */
@@ -65,7 +65,7 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
 
     /**
      * Get the descendant organization strategy.
-     *
+     * 
      * @return the descendantOrgStrategy the descendant org strategy
      */
     protected DescendantOrganizationStrategy getDescendantOrgStrategy()
@@ -79,7 +79,7 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
 
     /**
      * Look up a group by its short name.
-     *
+     * 
      * @param groupShortName
      *            the short name of a group to look for
      * @return the DomainGroup corresponding to the provided short name
@@ -106,7 +106,7 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
 
     /**
      * Creates a follower/following relationship between two entities.
-     *
+     * 
      * @param followerId
      *            The id of the follower Person
      * @param followingId
@@ -134,8 +134,9 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
 
         // now update the counts for persons.
         getEntityManager().createQuery(
-                "update versioned Person set groupsCount = followingGroup.size where id=:followerId").setParameter(
-                "followerId", followerId).executeUpdate();
+                "update versioned Person set groupsCount = followingGroup.size,"
+                        + " groupStreamHiddenLineIndex = groupStreamHiddenLineIndex + 1 where id=:followerId")
+                .setParameter("followerId", followerId).executeUpdate();
 
         getEntityManager().createQuery(
                 "update versioned DomainGroup set followersCount = followers.size where id=:followingId").setParameter(
@@ -152,7 +153,7 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
 
     /**
      * Returns a set of People following the specified DomainGroup.
-     *
+     * 
      * @param shortName
      *            The shortName of the DomainGroup for whom to get followers.
      * @param start
@@ -178,7 +179,7 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
 
     /**
      * Returns a set of DomainGroups that are being followed by the specified person.
-     *
+     * 
      * @param accountId
      *            The id of the DomainGroup for whom to get following.
      * @param start
@@ -204,7 +205,7 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
 
     /**
      * Returns true if follower/following relationship exists false otherwise.
-     *
+     * 
      * @param followerAccountId
      *            The follower person's account Id.
      * @param shortName
@@ -227,7 +228,7 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
 
     /**
      * Removes a follower/following relationship between a Person and a DomainGroup.
-     *
+     * 
      * @param followerId
      *            The if of the follower Person
      * @param followingId
@@ -275,7 +276,7 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
     /**
      * Get a String representation the Person.id of all of the Person.ids for coordinators and followers of the input
      * group.
-     *
+     * 
      * @param domainGroup
      *            the DomainGroup to find coordinators and followers for
      * @return an array of all of the Person.ids for coordinators and followers of the input group
@@ -299,7 +300,7 @@ public class DomainGroupMapper extends DomainEntityMapper<DomainGroup> implement
 
     /**
      * Delete this group.
-     *
+     * 
      * @param id
      *            the id of the group to delete.
      */

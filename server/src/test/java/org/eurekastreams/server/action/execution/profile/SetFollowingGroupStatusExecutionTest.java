@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
@@ -49,9 +50,11 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.emory.mathcs.backport.java.util.Collections;
+
 /**
  * Test class for the {@link SetFollowingGroupStatusExecution} class.
- *
+ * 
  */
 public class SetFollowingGroupStatusExecutionTest
 {
@@ -133,6 +136,12 @@ public class SetFollowingGroupStatusExecutionTest
             .mock(DeleteRequestForGroupMembership.class);
 
     /**
+     * Delete cache key mapper.
+     */
+    private final DomainMapper<Set<String>, Boolean> deleteCacheKeyMapper = context.mock(DomainMapper.class,
+            "deleteCacheKeyMapper");
+
+    /**
      * Post an activity.
      */
     private final PostActivityExecutionStrategy postActivity = context.mock(PostActivityExecutionStrategy.class);
@@ -156,7 +165,7 @@ public class SetFollowingGroupStatusExecutionTest
 
         sut = new SetFollowingGroupStatusExecution(groupByShortNameMapperMock, getPersonByIdMapper,
                 getPersonIdFromAccountIdMapper, groupMapperMock, addCachedGroupFollowerMapperMock,
-                groupFollowerIdsMapperMock, deleteRequestForGroupMembershipMapper, postActivity);
+                groupFollowerIdsMapperMock, deleteRequestForGroupMembershipMapper, postActivity, deleteCacheKeyMapper);
 
         context.checking(new Expectations()
         {
@@ -173,7 +182,7 @@ public class SetFollowingGroupStatusExecutionTest
 
     /**
      * Test the successful SetFollowing method when a group is followed.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
@@ -197,6 +206,8 @@ public class SetFollowingGroupStatusExecutionTest
 
                 oneOf(deleteRequestForGroupMembershipMapper).execute(with(equalInternally(delRequest)));
 
+                oneOf(deleteCacheKeyMapper).execute(Collections.singleton("Per:1"));
+
                 oneOf(postActivity).execute(with(any(TaskHandlerActionContext.class)));
 
                 oneOf(groupFollowerIdsMapperMock).execute(GROUP_ID);
@@ -217,7 +228,7 @@ public class SetFollowingGroupStatusExecutionTest
 
     /**
      * Test the successful SetFollowing method when a group is followed.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
@@ -244,6 +255,8 @@ public class SetFollowingGroupStatusExecutionTest
                 oneOf(addCachedGroupFollowerMapperMock).execute(1L, GROUP_ID);
 
                 oneOf(deleteRequestForGroupMembershipMapper).execute(with(equalInternally(delRequest)));
+
+                oneOf(deleteCacheKeyMapper).execute(Collections.singleton("Per:1"));
 
                 oneOf(postActivity).execute(with(any(TaskHandlerActionContext.class)));
 
@@ -291,6 +304,8 @@ public class SetFollowingGroupStatusExecutionTest
                 oneOf(deleteRequestForGroupMembershipMapper).execute(with(equalInternally(mapperRequest1)));
                 will(returnValue(true));
 
+                oneOf(deleteCacheKeyMapper).execute(Collections.singleton("Per:1"));
+
                 oneOf(postActivity).execute(with(any(TaskHandlerActionContext.class)));
 
                 oneOf(groupFollowerIdsMapperMock).execute(GROUP_ID);
@@ -309,7 +324,7 @@ public class SetFollowingGroupStatusExecutionTest
 
     /**
      * Test the setFollowing method when a group is unfollowed.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
@@ -345,7 +360,7 @@ public class SetFollowingGroupStatusExecutionTest
 
     /**
      * Test a failure case.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
@@ -372,7 +387,7 @@ public class SetFollowingGroupStatusExecutionTest
 
     /**
      * Test an unexpected following status.
-     *
+     * 
      * @throws Exception
      *             - on error.
      */
