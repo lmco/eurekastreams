@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Dialog content for creating or editing a stream view.
- * 
+ *
  */
 public class CustomStreamDialogContent implements DialogContent
 {
@@ -64,7 +64,7 @@ public class CustomStreamDialogContent implements DialogContent
     /**
      * Main flow panel.
      */
-    private FlowPanel body = new FlowPanel();
+    private final FlowPanel body = new FlowPanel();
     /**
      * Name.
      */
@@ -102,7 +102,7 @@ public class CustomStreamDialogContent implements DialogContent
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inStream
      *            the view id.
      */
@@ -110,22 +110,20 @@ public class CustomStreamDialogContent implements DialogContent
     {
         viewId = inStream.getId();
         mode = Method.UPDATE;
-        body.addStyleName("list-edit-modal");
         view = inStream;
         name = inStream.getName();
-                
+
         if (null == name)
         {
             mode = Method.INSERT;
         }
-        
-        setUpForm();
 
+        setUpForm();
     }
 
     /**
      * Constructor for create, i.e. doesnt take in a view.
-     * 
+     *
      */
     public CustomStreamDialogContent()
     {
@@ -138,6 +136,7 @@ public class CustomStreamDialogContent implements DialogContent
      */
     private void setUpForm()
     {
+        body.addStyleName("list-edit-modal");
         body.clear();
 
         streamLists = new StreamListFormElement(null);
@@ -221,7 +220,7 @@ public class CustomStreamDialogContent implements DialogContent
 
     /**
      * The command to call to close the dialog.
-     * 
+     *
      * @param command
      *            the close command.
      */
@@ -240,7 +239,7 @@ public class CustomStreamDialogContent implements DialogContent
 
     /**
      * Gets the body panel.
-     * 
+     *
      * @return the body.
      */
     public Widget getBody()
@@ -250,7 +249,7 @@ public class CustomStreamDialogContent implements DialogContent
 
     /**
      * Gets the CSS name.
-     * 
+     *
      * @return the class.
      */
     public String getCssName()
@@ -260,7 +259,7 @@ public class CustomStreamDialogContent implements DialogContent
 
     /**
      * Gets the title.
-     * 
+     *
      * @return the title.
      */
     public String getTitle()

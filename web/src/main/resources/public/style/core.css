@@ -13460,10 +13460,27 @@ div.tab-container table.dragdrop-dropTarget-engage {
  * Share Message Dialog
  *****************************************************************************/
 .stream-search-dialog-body,.share-message-dialog-body,.stream-view-dialog-body
-	{
+{
 	padding-left: 20px;
 	padding-right: 20px;
 	padding-bottom: 10px;
+}
+
+.stream-view-dialog
+{
+	width: 550px !important;  /* widen to make room for scrollbar */
+}
+
+.stream-view-dialog > .modal-content-panel
+{
+	max-height: 415px;
+	overflow: auto;
+	*position: relative;  /* so stream buttons scroll with content in IE7 */
+}
+
+.stream-view-dialog-body > .form-container
+{
+	width: 486px;
 }
 
 .share-message-dialog-body {
