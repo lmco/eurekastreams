@@ -162,9 +162,9 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
 
             if (lockedUserAccountIds.contains(acctId))
             {
-                if (log.isDebugEnabled())
+                if (log.isInfoEnabled())
                 {
-                    log.debug("Found user AcctId: " + acctId + " (" + p.getDisplayName() + ") to be unlocked.");
+                    log.info("Found user AcctId: " + acctId + " (" + p.getDisplayName() + ") to be unlocked.");
                 }
                 if (queueLockAccounts)
                 {
@@ -185,9 +185,9 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
             }
             else
             {
-                if (log.isDebugEnabled())
+                if (log.isInfoEnabled())
                 {
-                    log.debug("Found user id: " + acctId + " (" + p.getDisplayName() + ") to be created.");
+                    log.info("Found user id: " + acctId + " (" + p.getDisplayName() + ") to be created.");
                 }
                 if (queueCreatePerson)
                 {
@@ -205,9 +205,9 @@ public class RefreshPeopleExecution implements TaskHandlerExecutionStrategy<Acti
         log.info("Determined there are " + unLockedUserAccountIds.size() + " user accounts to lock.");
         for (String id : unLockedUserAccountIds)
         {
-            if (log.isDebugEnabled())
+            if (log.isInfoEnabled())
             {
-                log.debug("Found user AcctId: " + id + " to be locked.");
+                log.info("Found user AcctId: " + id + " to be locked.");
             }
             if (queueLockAccounts)
             {
