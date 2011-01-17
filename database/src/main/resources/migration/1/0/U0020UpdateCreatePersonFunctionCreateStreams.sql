@@ -1,4 +1,4 @@
-insert into db_version (major, minor, patch, scriptname, description) values (1, 0, '0020', 'U0020UpdateCreatePersonFunctionToCorrectlyCreateStreams.sql', 'Make CreatePerson create the stream properly.');
+insert into db_version (major, minor, patch, scriptname, description) values (1, 0, '0020', 'U0020UpdateCreatePersonFunctionCreateStreams.sql', 'Make CreatePerson create the stream properly.');
 
 --Automatic drop and then create to ensure successful creation.
 DROP FUNCTION IF EXISTS CreatePerson (_accountid VARCHAR, _firstname VARCHAR, _middlename VARCHAR,  _lastname VARCHAR, _email VARCHAR, _opensocialid VARCHAR);
