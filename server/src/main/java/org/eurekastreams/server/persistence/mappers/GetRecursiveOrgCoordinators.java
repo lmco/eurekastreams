@@ -18,6 +18,7 @@ package org.eurekastreams.server.persistence.mappers;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eurekastreams.server.action.authorization.CoordinatorAccessAuthorizer;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCache;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
@@ -25,7 +26,7 @@ import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 /**
  * Mapper to get a Set of Coordinator IDs of all of the organization coordinators recursively up to root.
  */
-public class GetRecursiveOrgCoordinators extends CachedDomainMapper
+public class GetRecursiveOrgCoordinators extends CachedDomainMapper implements CoordinatorAccessAuthorizer<Long, Long>
 {
 
     /**
@@ -156,5 +157,14 @@ public class GetRecursiveOrgCoordinators extends CachedDomainMapper
     {
         Long personId = getPersonIdByAccountIdMapper.execute(inUserAccountId);
         return isOrgCoordinatorRecursively(personId, inOrgId);
+    }
+
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public Boolean hasCoordinatorAccessRecursively(final Long inPersonId, final Long inEntityId)
+    {
+        return isOrgCoordinatorRecursively(inPersonId, inEntityId);
     }
 }

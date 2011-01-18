@@ -154,7 +154,7 @@ public class OrganizationProfilePanel extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param accountId
      *            the account id.
      */
@@ -205,7 +205,7 @@ public class OrganizationProfilePanel extends FlowPanel
 
     /**
      * We have the Person, so set up the Profile summary.
-     *
+     * 
      * @param inOrg
      *            the person whose profile is being displayed
      */
@@ -248,43 +248,43 @@ public class OrganizationProfilePanel extends FlowPanel
         portalPage.addTab(new SimpleTab("Stream", streamContent));
         portalPage.addTab(buildConnectionsTab());
 
-        Session.getInstance()
-                .getEventBus()
-                .addObserver(AuthorizeUpdateOrganizationResponseEvent.class,
-                        new Observer<AuthorizeUpdateGroupResponseEvent>()
+        Session.getInstance().getEventBus().addObserver(AuthorizeUpdateOrganizationResponseEvent.class,
+                new Observer<AuthorizeUpdateGroupResponseEvent>()
+                {
+                    public void update(final AuthorizeUpdateGroupResponseEvent event)
+                    {
+                        if (event.getResponse())
                         {
-                            public void update(final AuthorizeUpdateGroupResponseEvent event)
-                            {
-                                profileSettingsLink.setTargetHistoryToken(Session.getInstance().generateUrl(
-                                        new CreateUrlRequest(Page.ORG_SETTINGS, inOrg.getShortName())));
-                                addSubOrgLink.setTargetHistoryToken(Session.getInstance().generateUrl(
-                                        new CreateUrlRequest(Page.NEW_ORG)));
 
-                                profileSettingsLink.removeStyleName("hidden");
-                                addSubOrgLink.removeStyleName("hidden");
-                                RootPanel.get().addStyleName("authenticated");
+                            profileSettingsLink.setTargetHistoryToken(Session.getInstance().generateUrl(
+                                    new CreateUrlRequest(Page.ORG_SETTINGS, inOrg.getShortName())));
+                            addSubOrgLink.setTargetHistoryToken(Session.getInstance().generateUrl(
+                                    new CreateUrlRequest(Page.NEW_ORG)));
 
-                                final SimpleTab adminTab = buildAdminTab();
-                                portalPage.addTab(adminTab);
+                            profileSettingsLink.removeStyleName("hidden");
+                            addSubOrgLink.removeStyleName("hidden");
+                            RootPanel.get().addStyleName("authenticated");
 
-                                // if heading for admin tab on initial entry to the org profile page, then do it
-                                switchToAdminTabFilterIfRequested();
+                            final SimpleTab adminTab = buildAdminTab();
+                            portalPage.addTab(adminTab);
 
-                                // listen for history change event so that notifications can later send user to admin
-                                // tab
-                                Session.getInstance()
-                                        .getEventBus()
-                                        .addObserver(UpdatedHistoryParametersEvent.class,
-                                                new Observer<UpdatedHistoryParametersEvent>()
-                                                {
-                                                    public void update(final UpdatedHistoryParametersEvent inArg1)
-                                                    {
-                                                        switchToAdminTabFilterIfRequested();
+                            // if heading for admin tab on initial entry to the org profile page, then do it
+                            switchToAdminTabFilterIfRequested();
 
-                                                    }
-                                                });
-                            }
-                        });
+                            // listen for history change event so that notifications can later send user to admin
+                            // tab
+                            Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
+                                    new Observer<UpdatedHistoryParametersEvent>()
+                                    {
+                                        public void update(final UpdatedHistoryParametersEvent inArg1)
+                                        {
+                                            switchToAdminTabFilterIfRequested();
+
+                                        }
+                                    });
+                        }
+                    }
+                });
 
         OrganizationModel.getInstance().authorize(org.getShortName(), false);
 
@@ -308,18 +308,18 @@ public class OrganizationProfilePanel extends FlowPanel
                 // don't want to be on a different filter with this still in the URL.
                 HashMap<String, String> params = new HashMap<String, String>();
                 params.put("adminFilter", null);
-                Session.getInstance().getEventBus()
-                        .notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(params, false)));
+                Session.getInstance().getEventBus().notifyObservers(
+                        new UpdateHistoryEvent(new CreateUrlRequest(params, false)));
 
-                Session.getInstance().getEventBus()
-                        .notifyObservers(new SwitchToFilterOnPagedFilterPanelEvent("admin", adminFilter, "", true));
+                Session.getInstance().getEventBus().notifyObservers(
+                        new SwitchToFilterOnPagedFilterPanelEvent("admin", adminFilter, "", true));
             }
         }
     }
 
     /**
      * Builds the connections tab.
-     *
+     * 
      * @return The tab.
      */
     private SimpleTab buildConnectionsTab()
@@ -333,39 +333,33 @@ public class OrganizationProfilePanel extends FlowPanel
 
         final PagedListPanel connectionTabContent = new PagedListPanel("connections", "tab", "Connections");
 
-        Session.getInstance()
-                .getEventBus()
-                .addObserver(GotOrganizationEmployeesResponseEvent.class,
-                        new Observer<GotOrganizationEmployeesResponseEvent>()
-                        {
-                            public void update(final GotOrganizationEmployeesResponseEvent event)
-                            {
-                                connectionTabContent.render(event.getResponse(), "No people are in this organization.");
-                            }
-                        });
+        Session.getInstance().getEventBus().addObserver(GotOrganizationEmployeesResponseEvent.class,
+                new Observer<GotOrganizationEmployeesResponseEvent>()
+                {
+                    public void update(final GotOrganizationEmployeesResponseEvent event)
+                    {
+                        connectionTabContent.render(event.getResponse(), "No people are in this organization.");
+                    }
+                });
 
-        Session.getInstance()
-                .getEventBus()
-                .addObserver(GotOrganizationGroupsResponseEvent.class,
-                        new Observer<GotOrganizationGroupsResponseEvent>()
-                        {
-                            public void update(final GotOrganizationGroupsResponseEvent event)
-                            {
-                                connectionTabContent.render(event.getResponse(), "No groups are in this organization.");
-                            }
-                        });
+        Session.getInstance().getEventBus().addObserver(GotOrganizationGroupsResponseEvent.class,
+                new Observer<GotOrganizationGroupsResponseEvent>()
+                {
+                    public void update(final GotOrganizationGroupsResponseEvent event)
+                    {
+                        connectionTabContent.render(event.getResponse(), "No groups are in this organization.");
+                    }
+                });
 
-        Session.getInstance()
-                .getEventBus()
-                .addObserver(GotOrganizationSubOrgsResponseEvent.class,
-                        new Observer<GotOrganizationSubOrgsResponseEvent>()
-                        {
-                            public void update(final GotOrganizationSubOrgsResponseEvent event)
-                            {
-                                connectionTabContent.render(event.getResponse(),
-                                        "No sub organizations are in this organization.");
-                            }
-                        });
+        Session.getInstance().getEventBus().addObserver(GotOrganizationSubOrgsResponseEvent.class,
+                new Observer<GotOrganizationSubOrgsResponseEvent>()
+                {
+                    public void update(final GotOrganizationSubOrgsResponseEvent event)
+                    {
+                        connectionTabContent.render(event.getResponse(),
+                                "No sub organizations are in this organization.");
+                    }
+                });
 
         connectionTabContent.addSet("Employees", OrganizationEmployeesModel.getInstance(), new PersonRenderer(false),
                 new GetDirectorySearchResultsRequest(org.getShortName(), 0, 0, new ResourceSortCriteria(
@@ -396,7 +390,7 @@ public class OrganizationProfilePanel extends FlowPanel
 
     /**
      * Builds the admin tab.
-     *
+     * 
      * @return The tab.
      */
     private SimpleTab buildAdminTab()
@@ -413,21 +407,20 @@ public class OrganizationProfilePanel extends FlowPanel
                 PagedListPanel.URL_PARAM_SORT, Pager.URL_PARAM_START_INDEX, Pager.URL_PARAM_END_INDEX);
 
         // wire up the data retrieval events
-        eventBus.addObserver(GotFlaggedActivitiesResponseEvent.class,
-                new Observer<GotFlaggedActivitiesResponseEvent>()
+        eventBus.addObserver(GotFlaggedActivitiesResponseEvent.class, new Observer<GotFlaggedActivitiesResponseEvent>()
+        {
+            public void update(final GotFlaggedActivitiesResponseEvent event)
+            {
+                if (flaggedActivitiesFilterName.equals(adminTabContent.getCurrentFilter()))
                 {
-                    public void update(final GotFlaggedActivitiesResponseEvent event)
-                    {
-                        if (flaggedActivitiesFilterName.equals(adminTabContent.getCurrentFilter()))
-                        {
-                            adminTabContent.render(event.getResponse(), "No flagged activities.");
-                        }
-                        flaggedActivityCount = event.getResponse().getTotal();
-                        adminTabContent.setFilterTitle(flaggedActivitiesFilterName, "Flagged Activities ("
-                                + flaggedActivityCount + ")");
-                        adminTab.setTitle("Admin (" + (flaggedActivityCount + pendingGroupCount) + ")");
-                    }
-                });
+                    adminTabContent.render(event.getResponse(), "No flagged activities.");
+                }
+                flaggedActivityCount = event.getResponse().getTotal();
+                adminTabContent.setFilterTitle(flaggedActivitiesFilterName, "Flagged Activities ("
+                        + flaggedActivityCount + ")");
+                adminTab.setTitle("Admin (" + (flaggedActivityCount + pendingGroupCount) + ")");
+            }
+        });
 
         eventBus.addObserver(GotPendingGroupsResponseEvent.class, new Observer<GotPendingGroupsResponseEvent>()
         {

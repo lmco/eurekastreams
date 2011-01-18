@@ -113,7 +113,10 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
                 {
                     public void update(final AuthorizeUpdateGroupResponseEvent event)
                     {
-                        OrganizationModel.getInstance().fetch(orgName, true);
+                        if (event.getResponse())
+                        {
+                            OrganizationModel.getInstance().fetch(orgName, true);
+                        }
                     }
                 });
 
@@ -267,7 +270,7 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
                                                 new ShowNotificationEvent(new Notification(
                                                         "An error has occured and the organization '"
                                                                 + entity.getName() + "' was not deleted")));
-                                        
+
                                         processingSpinny.setVisible(false);
                                         deleteButton.setVisible(true);
                                     }

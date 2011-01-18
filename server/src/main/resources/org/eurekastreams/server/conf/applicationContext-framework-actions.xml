@@ -82,8 +82,10 @@
         <!-- Validation -->
         <constructor-arg ref="noValidationStrategy" />
         <!-- Authorization -->
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <!-- Execution -->
         <constructor-arg>            
-            <bean class="org.eurekastreams.server.action.authorization.CurrentUserGroupCoordinatorRecursivelyAuthorization">
+            <bean class="org.eurekastreams.server.action.execution.CoordinatorAccessAuthorizerExecution">
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.request.transformer.EntityIdFromUniqueStringKeyParameter">
                         <constructor-arg ref="bulkDomainGroupsByShortNameMapper"/>
@@ -92,9 +94,7 @@
                 </constructor-arg>
                 <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess"/>
             </bean>
-        </constructor-arg>
-        <!-- Execution -->
-        <constructor-arg ref="noExecutionStrategy" />
+        </constructor-arg>        
         <constructor-arg value="true" />
     </bean>
     
@@ -102,8 +102,10 @@
         <!-- Validation -->
         <constructor-arg ref="noValidationStrategy" />
         <!-- Authorization -->
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <!-- Execution -->
         <constructor-arg>            
-            <bean class="org.eurekastreams.server.action.authorization.CurrentUserOrgCoordinatorRecursivelyAuthorization">
+            <bean class="org.eurekastreams.server.action.execution.CoordinatorAccessAuthorizerExecution">
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.request.transformer.EntityIdFromUniqueStringKeyParameter">
                         <constructor-arg ref="bulkOrganizationsByShortNameMapper"/>
@@ -113,8 +115,6 @@
                 <constructor-arg ref="getRecursiveOrgCoordinators"/>
             </bean> 
         </constructor-arg>
-        <!-- Execution -->
-        <constructor-arg ref="noExecutionStrategy" />
         <constructor-arg value="true" />
     </bean>
     

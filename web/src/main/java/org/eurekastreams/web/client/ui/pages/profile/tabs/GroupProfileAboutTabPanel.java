@@ -97,16 +97,19 @@ public class GroupProfileAboutTabPanel extends ProfileAboutTabPanel
         {
             public void update(final AuthorizeUpdateGroupResponseEvent event)
             {
-                if (!overviewHyperlink.getText().isEmpty())
+                if (event.getResponse())
                 {
-                    overviewHyperlink.setVisible(true);
-                    noOverview.setVisible(false);
-                }
+                    if (!overviewHyperlink.getText().isEmpty())
+                    {
+                        overviewHyperlink.setVisible(true);
+                        noOverview.setVisible(false);
+                    }
 
-                if (!keywordsHyperlink.getText().isEmpty())
-                {
-                    keywordsHyperlink.setVisible(true);
-                    noKeywords.setVisible(false);
+                    if (!keywordsHyperlink.getText().isEmpty())
+                    {
+                        keywordsHyperlink.setVisible(true);
+                        noKeywords.setVisible(false);
+                    }
                 }
             }
         });
