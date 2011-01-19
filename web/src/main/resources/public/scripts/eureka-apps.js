@@ -396,8 +396,6 @@ Eureka.SearchBar = function(callback)
 
 Eureka.ExpandableSectionContainer = function()
 {
-
-
     // Set up the initial container. 
     this.container = jQuery("<div></div>");
     this.container.addClass('expandable-section-container');
@@ -410,7 +408,6 @@ Eureka.ExpandableSectionContainer = function()
     }
     this.addSection = function(titleText, obj, expanded, isEditable, addSection, additionalButton)
     {   
-
         var index = this.sectionCount;
 
         var section = jQuery("<div></div>");
@@ -448,7 +445,6 @@ Eureka.ExpandableSectionContainer = function()
             {
                 title.append(addLink);
             }
-        
         }
 
         if (additionalButton != null)
@@ -578,8 +574,6 @@ Eureka.ExpandableSectionContainer = function()
     {
         return this.container;
     }
-    
-    
 };
 
 Eureka.ListItem = function(itemCount, primaryName, byLine, metaData, obj, onClick, slide, removeHandle)
