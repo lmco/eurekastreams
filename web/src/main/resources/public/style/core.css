@@ -8955,6 +8955,8 @@ body .previous-arrow:hover {
 
 .gadgets-gadget-user-prefs-dialog .label-area {
 	display: inline-block;
+	*display: inline;
+	*zoom: 1;
 	text-align: right;
     width:100px;
 	clear: left;
@@ -8962,6 +8964,8 @@ body .previous-arrow:hover {
 
 .gadgets-gadget-user-prefs-dialog .input-box {
 	display: inline-block;
+	*display: inline;
+	*zoom: 1;
 	width: 200px
 }
 
