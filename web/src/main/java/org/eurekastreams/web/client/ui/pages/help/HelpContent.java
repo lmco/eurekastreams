@@ -20,12 +20,14 @@ import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.GotGroupInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotSystemSettingsResponseEvent;
+import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.GroupModel;
 import org.eurekastreams.web.client.model.SystemSettingsModel;
 import org.eurekastreams.web.client.ui.Session;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * Help content page.
@@ -35,7 +37,7 @@ public class HelpContent extends Composite
     /**
      * Main panel.
      */
-    private FlowPanel panel;
+    private final FlowPanel panel;
 
     /**
      * Event handler for group loading.
@@ -45,7 +47,7 @@ public class HelpContent extends Composite
         /**
          * The already-loaded system settings.
          */
-        private SystemSettings systemSettings;
+        private final SystemSettings systemSettings;
 
         /**
          * Constructor.
@@ -150,10 +152,21 @@ public class HelpContent extends Composite
             leftPanel.add(supportContactHelpPanel);
         }
 
-        FlowPanel rightPanel = new FlowPanel();
+
         DocumentationHelpPanel documentationHelpPanel = new DocumentationHelpPanel();
         documentationHelpPanel.addStyleName("help-documentation-panel");
-        rightPanel.add(documentationHelpPanel);
+
+        FlowPanel documentationWrapperPanel = new FlowPanel();
+        documentationWrapperPanel.addStyleName("help-documentation-wrapper");
+        documentationWrapperPanel.add(documentationHelpPanel);
+
+        FlowPanel rightPanel = new FlowPanel();
+        rightPanel.add(documentationWrapperPanel);
+
+        String version = new WidgetJSNIFacadeImpl().getWindowValue("appVersion");
+        Label versionLabel = new Label("Eureka Streams version " + version);
+        versionLabel.addStyleName("help-app-version");
+        rightPanel.add(versionLabel);
 
         if (leftPanel.getWidgetCount() > 0)
         {

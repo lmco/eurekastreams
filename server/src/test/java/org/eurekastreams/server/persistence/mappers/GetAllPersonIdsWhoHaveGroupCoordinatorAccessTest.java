@@ -122,4 +122,32 @@ public class GetAllPersonIdsWhoHaveGroupCoordinatorAccessTest extends CachedMapp
         assertFalse(sut.hasGroupCoordinatorAccessRecursively(saganId, groupId));
     }
 
+    /**
+     * Test hasCoordinatorAccessRecursively() for org coordinators up the tree.
+     */
+    @Test
+    public void testHasCoordinatorAccessRecursively()
+    {
+        // coordinators for org#6: 99, 142, and for #5: 42
+        final long groupInOrg5Id = 5L; // group in org 5
+        final long groupInOrg6Id = 3L; // group in org 6
+
+        final long fordId = 42L; // coordinator for 5
+        final long burnsId = 99L; // coordinator for 5, 6
+        final long ford2Id = 142L; // coordinator for 6
+        final long smithersId = 98L; // not a coordinator
+
+        // check persissions to org 6, which has 5 up the tree:
+        assertTrue(sut.hasCoordinatorAccessRecursively(fordId, groupInOrg6Id));
+        assertTrue(sut.hasCoordinatorAccessRecursively(burnsId, groupInOrg6Id));
+        assertTrue(sut.hasCoordinatorAccessRecursively(ford2Id, groupInOrg6Id));
+        assertFalse(sut.hasCoordinatorAccessRecursively(smithersId, groupInOrg6Id));
+
+        // check persissions to org 5
+        assertTrue(sut.hasCoordinatorAccessRecursively(fordId, groupInOrg5Id));
+        assertTrue(sut.hasCoordinatorAccessRecursively(burnsId, groupInOrg5Id));
+        assertFalse(sut.hasCoordinatorAccessRecursively(ford2Id, groupInOrg5Id));
+        assertFalse(sut.hasCoordinatorAccessRecursively(smithersId, groupInOrg5Id));
+    }
+
 }

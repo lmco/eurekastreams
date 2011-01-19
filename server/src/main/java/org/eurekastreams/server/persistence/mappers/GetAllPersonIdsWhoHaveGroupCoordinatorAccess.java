@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.eurekastreams.server.action.authorization.CoordinatorAccessAuthorizer;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
@@ -28,7 +29,7 @@ import org.eurekastreams.server.search.modelview.OrganizationModelView;
  * Mapper to get a Set of IDs of all of the organizations recursively above the input org id, loading from cache if
  * possible, from DB if not, then populating the cache.
  */
-public class GetAllPersonIdsWhoHaveGroupCoordinatorAccess
+public class GetAllPersonIdsWhoHaveGroupCoordinatorAccess implements CoordinatorAccessAuthorizer<Long, Long>
 {
     /**
      * Constructor.
@@ -156,6 +157,15 @@ public class GetAllPersonIdsWhoHaveGroupCoordinatorAccess
     {
         Long personId = getPersonIdFromAccountIdMapper.execute(inUserPersonAccountId);
         return hasGroupCoordinatorAccessRecursively(personId, inGroupId);
+    }
+
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public Boolean hasCoordinatorAccessRecursively(final Long inPersonId, final Long inEntityId)
+    {
+        return hasGroupCoordinatorAccessRecursively(inPersonId, inEntityId);
     }
 
 }

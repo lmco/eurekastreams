@@ -133,7 +133,7 @@ public class GroupProfilePanel extends FlowPanel
     private DomainGroup group;
 
     /**
-     * The group entity for this panel. 
+     * The group entity for this panel.
      */
     private DomainGroupEntity groupEntity;
 
@@ -159,10 +159,10 @@ public class GroupProfilePanel extends FlowPanel
 
     /** Number of membership requests (for use on the admin tab label). */
     private int membershipRequestsCount = 0;
-    
+
     /**
      * Constructor.
-     *
+     * 
      * @param accountId
      *            the account id.
      */
@@ -201,17 +201,16 @@ public class GroupProfilePanel extends FlowPanel
                     }
                 });
 
-        EventBus.getInstance().addObserver(ChangeActivityModeEvent.class,
-                new Observer<ChangeActivityModeEvent>()
+        EventBus.getInstance().addObserver(ChangeActivityModeEvent.class, new Observer<ChangeActivityModeEvent>()
+        {
+            public void update(final ChangeActivityModeEvent event)
+            {
+                if (groupEntity != null)
                 {
-                    public void update(final ChangeActivityModeEvent event)
-                    {
-                        if (groupEntity != null)
-                        {
-                            breadCrumbPanel.setGroup(groupEntity, event.isSingleMode());
-                        }
-                    }
-                });
+                    breadCrumbPanel.setGroup(groupEntity, event.isSingleMode());
+                }
+            }
+        });
 
         inProcessor.setQueueRequests(true);
         GroupModel.getInstance().fetch(accountId, false);
@@ -221,7 +220,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * We have the Group, so set up the Profile summary.
-     *
+     * 
      * @param inGroup
      *            the group whose profile is being displayed
      */
@@ -320,26 +319,29 @@ public class GroupProfilePanel extends FlowPanel
         {
             public void update(final AuthorizeUpdateGroupResponseEvent event)
             {
-                profileSettingsLink.removeStyleName("hidden");
-                RootPanel.get().addStyleName("authenticated");
-                setUpChecklist();
-
-                if (!group.isPublicGroup())
+                if (event.getResponse())
                 {
-                    final SimpleTab adminTab = buildAdminTab();
-                    portalPage.addTab(adminTab);
+                    profileSettingsLink.removeStyleName("hidden");
+                    RootPanel.get().addStyleName("authenticated");
+                    setUpChecklist();
 
-                    if ("Admin".equals(Session.getInstance().getParameterValue("tab")))
+                    if (!group.isPublicGroup())
                     {
-                        portalPage.switchToTab("Admin");
-                    }
-                }
+                        final SimpleTab adminTab = buildAdminTab();
+                        portalPage.addTab(adminTab);
 
-                // if posting is disabled for group, re-enable it since
-                // user has org/group coord permissions.
-                if (!group.isStreamPostable())
-                {
-                    streamContent.setStreamScope(new StreamScope(ScopeType.GROUP, inGroup.getShortName()), true);
+                        if ("Admin".equals(Session.getInstance().getParameterValue("tab")))
+                        {
+                            portalPage.switchToTab("Admin");
+                        }
+                    }
+
+                    // if posting is disabled for group, re-enable it since
+                    // user has org/group coord permissions.
+                    if (!group.isStreamPostable())
+                    {
+                        streamContent.setStreamScope(new StreamScope(ScopeType.GROUP, inGroup.getShortName()), true);
+                    }
                 }
             }
         });
@@ -362,7 +364,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Builds the connections tab content.
-     *
+     * 
      * @return The tab.
      */
     private Widget buildConnectionsTabContent()
@@ -435,7 +437,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Creates a new error report box and centers it on the page.
-     *
+     * 
      * @return The error report box, ready to have content added to it.
      */
     private Panel addNewCenteredErrorBox()
@@ -488,7 +490,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Tell the user that this group is restricted.
-     *
+     * 
      * @param inGroup
      *            the restricted access group
      */
@@ -532,7 +534,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Tell the user that this group is pending approval.
-     *
+     * 
      * @param inGroup
      *            the group
      */
@@ -554,7 +556,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Builds the admin tab.
-     *
+     * 
      * @return The tab.
      */
     @SuppressWarnings("unchecked")

@@ -8955,6 +8955,8 @@ body .previous-arrow:hover {
 
 .gadgets-gadget-user-prefs-dialog .label-area {
 	display: inline-block;
+	*display: inline;
+	*zoom: 1;
 	text-align: right;
     width:100px;
 	clear: left;
@@ -8962,6 +8964,8 @@ body .previous-arrow:hover {
 
 .gadgets-gadget-user-prefs-dialog .input-box {
 	display: inline-block;
+	*display: inline;
+	*zoom: 1;
 	width: 200px
 }
 
@@ -13460,10 +13464,27 @@ div.tab-container table.dragdrop-dropTarget-engage {
  * Share Message Dialog
  *****************************************************************************/
 .stream-search-dialog-body,.share-message-dialog-body,.stream-view-dialog-body
-	{
+{
 	padding-left: 20px;
 	padding-right: 20px;
 	padding-bottom: 10px;
+}
+
+.stream-view-dialog
+{
+	width: 550px !important;  /* widen to make room for scrollbar */
+}
+
+.stream-view-dialog > .modal-content-panel
+{
+	max-height: 415px;
+	overflow: auto;
+	*position: relative;  /* so stream buttons scroll with content in IE7 */
+}
+
+.stream-view-dialog-body > .form-container
+{
+	width: 486px;
 }
 
 .share-message-dialog-body {
@@ -13626,6 +13647,12 @@ body .stream-view-dialog .delete-button
 	overflow: none;
 	float: right;
 	display: none;
+}
+
+.gadget-button.gadget-button-spacer {
+	display: inline-block;
+	*display: inline;
+	cursor: default;
 }
 
 .gadget-button.gadget-maximize {
@@ -13838,27 +13865,38 @@ body .stream-view-dialog .delete-button
 	vertical-align: top;
 }
 
-.help .right-panel {
+.help-documentation-wrapper
+{
 	min-height: 200px;
 	border: 1px solid #bbbbbb;
 	margin: 0px;
 	background-color: white;
-	margin: 20px;
 	padding: 20px;
-	width: 450px;
+}
+
+.help-app-version
+{
+	color: #666 !important;
+	margin-top: 20px;
+	text-align: center;
+}
+
+
+.help .right-panel, .help .center-panel
+{  
+	width: 490px;
+	margin: 20px;
+}
+
+.help .right-panel 
+{
 	display: inline-block; 
 	*display: inline; 
 	*zoom: 1;
 }
 
-.help .center-panel {
-	min-height: 200px;
-	border: 1px solid #bbbbbb;
-	margin: 0px;
-	background-color: white;
-	margin: 20px;
-	padding: 20px;
-	width: 450px;
+.help .center-panel 
+{
 	margin-left: auto;
 	margin-right: auto;
 }

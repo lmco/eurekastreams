@@ -123,7 +123,10 @@ public class GroupProfileSettingsTabContent extends FlowPanel
                 {
                     public void update(final AuthorizeUpdateGroupResponseEvent event)
                     {
-                        GroupModel.getInstance().fetch(groupName, true);
+                        if (event.getResponse())
+                        {
+                            GroupModel.getInstance().fetch(groupName, true);
+                        }
                     }
                 });
 

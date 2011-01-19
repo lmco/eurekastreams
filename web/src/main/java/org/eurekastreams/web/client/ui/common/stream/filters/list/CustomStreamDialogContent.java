@@ -64,7 +64,7 @@ public class CustomStreamDialogContent implements DialogContent
     /**
      * Main flow panel.
      */
-    private FlowPanel body = new FlowPanel();
+    private final FlowPanel body = new FlowPanel();
     /**
      * Name.
      */
@@ -110,17 +110,15 @@ public class CustomStreamDialogContent implements DialogContent
     {
         viewId = inStream.getId();
         mode = Method.UPDATE;
-        body.addStyleName("list-edit-modal");
         view = inStream;
         name = inStream.getName();
-                
+
         if (null == name)
         {
             mode = Method.INSERT;
         }
-        
-        setUpForm();
 
+        setUpForm();
     }
 
     /**
@@ -138,11 +136,13 @@ public class CustomStreamDialogContent implements DialogContent
      */
     private void setUpForm()
     {
+        body.addStyleName("list-edit-modal");
         body.clear();
 
         streamLists = new StreamListFormElement(null);
 
-        form = new FormBuilder("Organize streams into custom lists", CustomStreamModel.getInstance(), mode);
+        form = new FormBuilder("Custom streams allow you to merge different streams "
+                + "as well as optionally filter by keyword", CustomStreamModel.getInstance(), mode);
         form.turnOffChangeCheck();
         form.addStyleName("stream-view-dialog-body");
 

@@ -118,4 +118,32 @@ public class GetRecursiveOrgCoordinatorsTest extends CachedMapperTest
         assertTrue(sut.isOrgCoordinatorRecursively(fordId, "tstorgname"));
     }
 
+    /**
+     * Test hasCoordinatorAccessRecursively.
+     */
+    @Test
+    public void testHasCoordinatorAccessRecursively()
+    {
+        // coordinators for org#6: 99, 142, and for #5: 42
+        final long org5Id = 5L; // root org
+        final long org6Id = 6L; // sub org of 6
+
+        final long fordId = 42L; // coordinator for 5
+        final long burnsId = 99L; // coordinator for 5, 6
+        final long ford2Id = 142L; // coordinator for 6
+        final long smithersId = 98L; // not a coordinator
+
+        // check persissions to org 6, which has 5 up the tree:
+        assertTrue(sut.hasCoordinatorAccessRecursively(fordId, org6Id));
+        assertTrue(sut.hasCoordinatorAccessRecursively(burnsId, org6Id));
+        assertTrue(sut.hasCoordinatorAccessRecursively(ford2Id, org6Id));
+        assertFalse(sut.hasCoordinatorAccessRecursively(smithersId, org6Id));
+
+        // check persissions to org 5
+        assertTrue(sut.hasCoordinatorAccessRecursively(fordId, org5Id));
+        assertTrue(sut.hasCoordinatorAccessRecursively(burnsId, org5Id));
+        assertFalse(sut.hasCoordinatorAccessRecursively(ford2Id, org5Id));
+        assertFalse(sut.hasCoordinatorAccessRecursively(smithersId, org5Id));
+    }
+
 }
