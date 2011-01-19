@@ -168,7 +168,7 @@
         <build.queue.hibernatesearch.name>queue/hibernateSearch</build.queue.hibernatesearch.name>
         <build.log.showsql>true</build.log.showsql>
         <build.report.clover.licenseurl>http://example.com/clover.license</build.report.clover.licenseurl>
-        <build.report.checkstyle.rulesurl>http://dev.eurekastreams.org/conf/checkstyle/eurekastreams_eclipse-cs5.0_rules-forcheckin_latest.xml</build.report.checkstyle.rulesurl>
+        <build.report.checkstyle.rulesurl>http://dev.eurekastreams.org/conf/checkstyle/eurekastreams_eclipse-cs5.0_rules-forcheckin_latest.xml?011911</build.report.checkstyle.rulesurl>
         <build.maven.sharedresources.artifactid>eurekastreams-sharedresources</build.maven.sharedresources.artifactid>
         <build.maven.sharedresources.version>1.0-SNAPSHOT</build.maven.sharedresources.version>
         <build.maven.snapshotrepo>http://example.com/content/repositories/snapshots</build.maven.snapshotrepo>
