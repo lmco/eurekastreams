@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,14 +52,12 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
- * GadgetZonePanel. The UI Representation of a Gadget. This is used to wrap the shindig gadget around. JSNI methods are
- * used to add functionality to the GWT elements that are provided by Shindig. This class only wraps methods that
- * manipulate gadget specific functionality. It should not wrap gadgetContainer Methods.
- *
+ * GadgetPanel. The UI Representation of a Gadget. This is used to wrap the shindig gadget around. JSNI methods are used
+ * to add functionality to the GWT elements that are provided by Shindig. This class only wraps methods that manipulate
+ * gadget specific functionality. It should not wrap gadgetContainer Methods.
  */
 public class GadgetPanel extends FlowPanel
 {
-
     /**
      * The GadgetRenderer is the JSNI interface to the gadget container.
      */
@@ -104,6 +102,11 @@ public class GadgetPanel extends FlowPanel
      * Maximize button.
      */
     Anchor maximizeButton = new Anchor("Maximize");
+
+    /**
+     * Spacer button.
+     */
+    Anchor spacerButton = new Anchor("");
 
     /**
      * Help button.
@@ -175,10 +178,10 @@ public class GadgetPanel extends FlowPanel
      * Is this gadget delegating?
      */
     private boolean delegationOn = false;
-
+    
     /**
      * Creates the Gadget render zone and gives the zone a incremented id.
-     *
+     * 
      * @param gadget
      *            The Gadget from the Model you are rendering.
      */
@@ -196,6 +199,7 @@ public class GadgetPanel extends FlowPanel
         title.add(titleLabel);
         closeButton.addStyleName("gadget-close");
         maximizeButton.addStyleName("gadget-maximize");
+        spacerButton.addStyleName("gadget-button-spacer");
         refreshButton.addStyleName("gadget-refresh");
         minimizeButton.addStyleName("gadget-minimize");
         editButton.addStyleName("gadget-edit");
@@ -203,6 +207,7 @@ public class GadgetPanel extends FlowPanel
 
         closeButton.addStyleName("gadget-button");
         maximizeButton.addStyleName("gadget-button");
+        spacerButton.addStyleName("gadget-button");
         refreshButton.addStyleName("gadget-button");
         minimizeButton.addStyleName("gadget-button");
         editButton.addStyleName("gadget-button");
@@ -214,6 +219,7 @@ public class GadgetPanel extends FlowPanel
         titleBar.add(minimizeButton);
         titleBar.add(title);
         titleBar.add(maximizeButton);
+        titleBar.add(spacerButton);
         titleBar.add(closeButton);
         titleBar.add(editButton);
         titleBar.add(helpButton);
@@ -223,6 +229,8 @@ public class GadgetPanel extends FlowPanel
         this.setStylePrimaryName("gadget-zone");
         this.add(titleBarContainer);
         this.add(renderZone);
+        
+        spacerButton.setVisible(false);
 
         // set up the close command
         closeButton.addClickHandler(new ClickHandler()
@@ -273,6 +281,7 @@ public class GadgetPanel extends FlowPanel
                 setGadgetState(State.HELP);
             }
         });
+        
         maximizeButton.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent event)
@@ -287,6 +296,7 @@ public class GadgetPanel extends FlowPanel
                 }
             }
         });
+        
         minimizeButton.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent event)
@@ -481,7 +491,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Gets the entity type of the JSON object.
-     *
+     * 
      * @param jsObj
      *            the JSON object.
      * @return the entity type.
@@ -493,7 +503,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Tell the delegation feature the edit button was clicked.
-     *
+     * 
      * @param gadgetId
      *            the gadget id.
      */
@@ -504,7 +514,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Set the gadget state w/o params.
-     *
+     * 
      * @param state
      *            the gadget state.
      */
@@ -515,7 +525,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Gets the state.
-     *
+     * 
      * @return the state.
      */
     public State getGadgetState()
@@ -525,7 +535,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Setter.
-     *
+     * 
      * @param state
      *            new state of the gadget
      * @param viewParams
@@ -571,6 +581,8 @@ public class GadgetPanel extends FlowPanel
                 gadgetRenderer.changeContainerView("home");
                 gadgetRenderer.refreshGadgetIFrameUrl(gadgetIdModifier.toString(), viewParams);
             }
+            maximizeButton.setVisible(true);
+            spacerButton.setVisible(false);
             Session.getInstance().getEventBus().notifyObservers(
                     new UpdateHistoryEvent(new CreateUrlRequest("canvas", null, false)));
             break;
@@ -597,6 +609,8 @@ public class GadgetPanel extends FlowPanel
             break;
         case MINIMIZED:
             minimizeButton.addStyleName("minimized");
+            maximizeButton.setVisible(false);
+            spacerButton.setVisible(true);
             renderZone.setStyleName(MINIMIZED_CSS_CLASS);
             break;
         default:
@@ -608,7 +622,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Make the gadget draggable.
-     *
+     * 
      * @param inGadgetDragController
      *            the gadget drag controller.
      */
@@ -631,7 +645,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Get the gadget data.
-     *
+     * 
      * @return the gadget data.
      */
     public Gadget getGadgetData()

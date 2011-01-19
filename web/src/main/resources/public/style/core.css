@@ -13649,6 +13649,12 @@ body .stream-view-dialog .delete-button
 	display: none;
 }
 
+.gadget-button.gadget-button-spacer {
+	display: inline-block;
+	*display: inline;
+	cursor: default;
+}
+
 .gadget-button.gadget-maximize {
 	background: url(images/gadgetControls.png) no-repeat scroll 0 0
 		transparent;
