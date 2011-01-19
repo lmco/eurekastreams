@@ -191,10 +191,28 @@
             <bean class="org.codehaus.jackson.map.MappingJsonFactory" />
         </constructor-arg>
         <constructor-arg ref="applicationContextHolder" />
-        <constructor-arg ref="getPersonByAccountIdMapper" /> 
-        <constructor-arg value="true" />
+        <constructor-arg ref="getPersonByAccountIdMapper" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.service.restlets.support.AccountIdOAuthParamStrategy"/>
+        </constructor-arg> 
     </bean>
-       
+    
+    <bean name="actionResourceAccountIdFromUrlAndOAuth" class="org.eurekastreams.server.service.restlets.ActionResource" scope="prototype">
+        <constructor-arg ref="serviceActionController" />
+        <constructor-arg ref="openSocialPrincipalPopulator" />
+        <constructor-arg>
+            <bean class="org.codehaus.jackson.map.MappingJsonFactory" />
+        </constructor-arg>
+        <constructor-arg ref="applicationContextHolder" />
+        <constructor-arg ref="getPersonByAccountIdMapper" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.service.restlets.support.AccountIdUrlAndOAuthParamStrategy">
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.service.restlets.support.AccountIdOAuthParamStrategy"/>
+                </constructor-arg>
+            </bean>
+        </constructor-arg> 
+    </bean>   
        
 	<bean name="streamResource" class="org.eurekastreams.server.service.restlets.StreamResource" scope="prototype">
 		<constructor-arg ref="getActivitiesByRequest" />
@@ -389,7 +407,7 @@
                 </entry>
                 <entry key="/api/{accountidFromUrl}/action/{action}/{requestType}/{requestJSON}">
                     <bean class="org.restlet.ext.spring.SpringFinder">
-                        <lookup-method name="createResource" bean="actionResource" />
+                        <lookup-method name="createResource" bean="${build.web.apirestletbean}" />
                     </bean>
                 </entry>
 			</map>
