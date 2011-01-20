@@ -310,12 +310,13 @@ Eureka.SearchBar = function(callback)
 
     var title = jQuery("<div class='title-bar collapsed search-bar'></div>");
     this.container.append(title);
+	
     title.append(jQuery("<div class='gadget-pre-search'></div>"));
     title.append(input);
     title.append(jQuery("<div class='gadget-post-search'></div>"));
 
     var buttonContainer = jQuery("<div class='button-container'></div>");
-    title.append(buttonContainer);
+    title.prepend(buttonContainer);
 
     Eureka.EventBus.addObserver("switchedView", function(data) {
         if (buttonContainer.width() > 0)
