@@ -2943,11 +2943,8 @@
             </bean>
         </constructor-arg>
         <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.stream.DeleteStreamForCurrentUserExecution">
-                <constructor-arg>
-                    <ref bean="findByIdMapper" />
-                </constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.stream.DeleteStreamForCurrentUserExecution">
+                <constructor-arg ref="deleteAndReorderStreamsDbMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />

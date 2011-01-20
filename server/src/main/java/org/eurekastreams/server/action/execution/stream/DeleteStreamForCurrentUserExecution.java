@@ -16,41 +16,38 @@
 package org.eurekastreams.server.action.execution.stream;
 
 import java.io.Serializable;
-import java.util.List;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
-import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.domain.stream.Stream;
-import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
-import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.DeleteAndReorderStreamsRequest;
 
 /**
  * Delete a stream for the current user.
  */
-@SuppressWarnings("deprecation")
 public class DeleteStreamForCurrentUserExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
-     * Mapper used to retrieve and save the page that holds the streams.
+     * Domain mapper for deleting person_stream entry.
      */
-    private final FindByIdMapper<Person> personMapper;
+    private final DomainMapper<DeleteAndReorderStreamsRequest, Boolean> deleteAndReorderStreamsMapper;
 
     /**
      * Constructor.
-     *
-     * @param inPersonMapper
-     *            person mapper.
+     * 
+     * @param inDeleteAndReorderStreamsDbMapper
+     *            Domain mapper for deleting person_stream entry.
      */
-    public DeleteStreamForCurrentUserExecution(final FindByIdMapper<Person> inPersonMapper)
+    public DeleteStreamForCurrentUserExecution(
+            final DomainMapper<DeleteAndReorderStreamsRequest, Boolean> inDeleteAndReorderStreamsDbMapper)
     {
-        personMapper = inPersonMapper;
+        deleteAndReorderStreamsMapper = inDeleteAndReorderStreamsDbMapper;
     }
 
     /**
      * Adds a stream for the current user.
-     *
+     * 
      * @param inActionContext
      *            the action context.
      * @return the stream ID.
@@ -59,25 +56,9 @@ public class DeleteStreamForCurrentUserExecution implements ExecutionStrategy<Pr
      */
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        Person person = (Person) inActionContext.getState().get("person");
+        deleteAndReorderStreamsMapper.execute(new DeleteAndReorderStreamsRequest(
+                inActionContext.getPrincipal().getId(), (Long) inActionContext.getParams()));
 
-        if (person == null)
-        {
-            person = personMapper.execute(new FindByIdRequest("Person", inActionContext.getPrincipal().getId()));
-        }
-
-        List<Stream> streams = person.getStreams();
-        Long streamId = (Long) inActionContext.getParams();
-
-        for (Stream s : streams)
-        {
-            if (s.getId() == streamId)
-            {
-                streams.remove(s);
-                break;
-            }
-        }
-
-        return streamId;
+        return inActionContext.getParams();
     }
 }
