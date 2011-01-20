@@ -984,7 +984,9 @@
 	<bean id="getFollowedByActivitiesDbMapper"
 		class="org.eurekastreams.server.persistence.mappers.db.GetFollowedByActivitiesDbMapper">
 		<constructor-arg ref="followedActivityIdsLoader" />
-		<constructor-arg value="10" />
+		
+		<!-- Limit how many following activity ids we get from the database -->
+		<constructor-arg value="10000" />
 	</bean>
 
 	<bean id="getFollowedByActivities"
