@@ -2267,6 +2267,8 @@
     <bean id="deleteThemeByIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.DeleteEntityByIdDbMapper">
         <constructor-arg value="org.eurekastreams.server.domain.Theme" />
     </bean>
+    
+    <bean id="deleteAndReorderStreamsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.DeleteAndReorderStreamsDbMapper"/>
         
     <bean id="getPeopleIdsUsingThemeByThemeId" class="org.eurekastreams.server.persistence.mappers.db.GetPeopleIdsUsingThemeByThemeId"/>
     

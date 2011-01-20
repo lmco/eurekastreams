@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Dialog content for creating or editing a stream view.
- *
+ * 
  */
 public class CustomStreamDialogContent implements DialogContent
 {
@@ -102,7 +102,7 @@ public class CustomStreamDialogContent implements DialogContent
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inStream
      *            the view id.
      */
@@ -123,7 +123,7 @@ public class CustomStreamDialogContent implements DialogContent
 
     /**
      * Constructor for create, i.e. doesnt take in a view.
-     *
+     * 
      */
     public CustomStreamDialogContent()
     {
@@ -141,7 +141,8 @@ public class CustomStreamDialogContent implements DialogContent
 
         streamLists = new StreamListFormElement(null);
 
-        form = new FormBuilder("Organize streams into custom lists", CustomStreamModel.getInstance(), mode);
+        form = new FormBuilder("Custom streams allow you to merge different streams "
+                + "as well as optionally filter by keyword", CustomStreamModel.getInstance(), mode);
         form.turnOffChangeCheck();
         form.addStyleName("stream-view-dialog-body");
 
@@ -220,7 +221,7 @@ public class CustomStreamDialogContent implements DialogContent
 
     /**
      * The command to call to close the dialog.
-     *
+     * 
      * @param command
      *            the close command.
      */
@@ -239,7 +240,7 @@ public class CustomStreamDialogContent implements DialogContent
 
     /**
      * Gets the body panel.
-     *
+     * 
      * @return the body.
      */
     public Widget getBody()
@@ -249,7 +250,7 @@ public class CustomStreamDialogContent implements DialogContent
 
     /**
      * Gets the CSS name.
-     *
+     * 
      * @return the class.
      */
     public String getCssName()
@@ -259,7 +260,7 @@ public class CustomStreamDialogContent implements DialogContent
 
     /**
      * Gets the title.
-     *
+     * 
      * @return the title.
      */
     public String getTitle()

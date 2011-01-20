@@ -131,6 +131,7 @@
         <build.web.grbaseurl>http://localhost:8081</build.web.grbaseurl>
         <build.web.baseurl>http://localhost:8080</build.web.baseurl>
         <build.web.host>localhost:8080</build.web.host>
+        <build.web.apirestletbean>actionResource</build.web.apirestletbean>
         <build.gwt.modulename>org.eurekastreams.web.ApplicationDev</build.gwt.modulename>
         <build.gwt.compile.style>PRETTY</build.gwt.compile.style>
         <build.gadget.container.name>eureka</build.gadget.container.name>
@@ -142,6 +143,7 @@
         <build.email.smtpport>25</build.email.smtpport>
         <build.email.address.support>sysadmin@example.com</build.email.address.support>
         <build.spring.security>preauth</build.spring.security>
+        <build.spring.security.apirestletaccess>ROLE_OAUTH_CLIENT</build.spring.security.apirestletaccess>
         <build.security.jaas.forcehttps>false</build.security.jaas.forcehttps>
         <build.security.ldap.connstr>ldaps://ldap.example.com/dc=com?sAMAccountName?sub?(objectClass=*)</build.security.ldap.connstr>
         <build.security.ldap.userdn>CN=sysadmin\\, sysadmin,DC=example,DC=com</build.security.ldap.userdn>
@@ -168,7 +170,7 @@
         <build.queue.hibernatesearch.name>queue/hibernateSearch</build.queue.hibernatesearch.name>
         <build.log.showsql>true</build.log.showsql>
         <build.report.clover.licenseurl>http://example.com/clover.license</build.report.clover.licenseurl>
-        <build.report.checkstyle.rulesurl>http://dev.eurekastreams.org/conf/checkstyle/eurekastreams_eclipse-cs5.0_rules-forcheckin_latest.xml</build.report.checkstyle.rulesurl>
+        <build.report.checkstyle.rulesurl>http://dev.eurekastreams.org/conf/checkstyle/eurekastreams_eclipse-cs5.0_rules-forcheckin_latest.xml?011911</build.report.checkstyle.rulesurl>
         <build.maven.sharedresources.artifactid>eurekastreams-sharedresources</build.maven.sharedresources.artifactid>
         <build.maven.sharedresources.version>1.0-SNAPSHOT</build.maven.sharedresources.version>
         <build.maven.snapshotrepo>http://example.com/content/repositories/snapshots</build.maven.snapshotrepo>
