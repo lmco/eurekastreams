@@ -467,7 +467,7 @@ public class OAuthDataStoreTest
         context.checking(new Expectations()
         {
             {
-                oneOf(principalPopulator).getPrincipal(TEST_ARG1, with(any(String.class)));
+                oneOf(principalPopulator).getPrincipal(with(TEST_ARG1), with(any(String.class)));
 
                 oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
                         with(any(ServiceAction.class)));
@@ -490,7 +490,7 @@ public class OAuthDataStoreTest
         context.checking(new Expectations()
         {
             {
-                oneOf(principalPopulator).getPrincipal(TEST_ARG1, with(any(String.class)));
+                oneOf(principalPopulator).getPrincipal(with(TEST_ARG1), with(any(String.class)));
 
                 oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
                         with(any(ServiceAction.class)));

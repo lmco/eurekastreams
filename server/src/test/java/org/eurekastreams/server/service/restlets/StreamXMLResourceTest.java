@@ -185,7 +185,7 @@ public class StreamXMLResourceTest
                 oneOf(auth).getName();
                 will(returnValue("guid"));
 
-                oneOf(principalPopulator).getPrincipal("guid", with(any(String.class)));
+                oneOf(principalPopulator).getPrincipal(with("guid"), with(any(String.class)));
 
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)), with(equal(action)));
                 will(returnValue(results));
@@ -231,7 +231,7 @@ public class StreamXMLResourceTest
                 oneOf(auth).getName();
                 will(returnValue("guid"));
 
-                oneOf(principalPopulator).getPrincipal("guid", with(any(String.class)));
+                oneOf(principalPopulator).getPrincipal(with("guid"), with(any(String.class)));
 
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)), with(equal(action)));
                 will(returnValue(results));
@@ -278,7 +278,7 @@ public class StreamXMLResourceTest
                 oneOf(auth).getName();
                 will(returnValue("guid"));
 
-                oneOf(principalPopulator).getPrincipal("guid", with(any(String.class)));
+                oneOf(principalPopulator).getPrincipal(with("guid"), with(any(String.class)));
 
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)), with(equal(action)));
                 will(throwException(new Exception("Something went wrong")));

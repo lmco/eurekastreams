@@ -45,7 +45,7 @@ public interface Principal extends Serializable
      */
     Long getId();
 
-    /*
+    /**
      * Retrieve the session id.
      * 
      * @return - Session id.

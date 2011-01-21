@@ -188,7 +188,7 @@ public class PersonServiceTest
                 allowing(mockToken).getViewerId();
                 will(returnValue(USERID_ONE));
 
-                allowing(principalPopulator).getPrincipal(USERID_ONE, with(any(String.class)));
+                allowing(principalPopulator).getPrincipal(with(USERID_ONE), with(any(String.class)));
                 will(returnValue(principal));
 
                 allowing(serviceActionController).execute(with(any(ServiceActionContext.class)),
@@ -219,7 +219,7 @@ public class PersonServiceTest
                 allowing(mockToken).getViewerId();
                 will(returnValue(USERID_ONE));
 
-                allowing(principalPopulator).getPrincipal(USERID_ONE, with(any(String.class)));
+                allowing(principalPopulator).getPrincipal(with(USERID_ONE), with(any(String.class)));
                 will(returnValue(principal));
 
                 allowing(principal).getAccountId();
@@ -252,7 +252,7 @@ public class PersonServiceTest
                 allowing(mockToken).getViewerId();
                 will(returnValue(USERID_ONE));
 
-                allowing(principalPopulator).getPrincipal(USERID_ONE, with(any(String.class)));
+                allowing(principalPopulator).getPrincipal(with(USERID_ONE), with(any(String.class)));
                 will(returnValue(principal));
 
                 allowing(principal).getAccountId();
@@ -303,7 +303,7 @@ public class PersonServiceTest
                 allowing(mockToken).getViewerId();
                 will(returnValue(USERID_ONE));
 
-                allowing(principalPopulator).getPrincipal(USERID_ONE, with(any(String.class)));
+                allowing(principalPopulator).getPrincipal(with(USERID_ONE), with(any(String.class)));
                 will(returnValue(principal));
 
                 allowing(principal).getAccountId();
@@ -341,7 +341,7 @@ public class PersonServiceTest
                 allowing(mockToken).getViewerId();
                 will(returnValue(USERID_ONE));
 
-                allowing(principalPopulator).getPrincipal(USERID_ONE, with(any(String.class)));
+                allowing(principalPopulator).getPrincipal(with(USERID_ONE), with(any(String.class)));
                 will(returnValue(principal));
 
                 allowing(principal).getAccountId();
@@ -382,7 +382,7 @@ public class PersonServiceTest
                 allowing(mockToken).getViewerId();
                 will(returnValue(USERID_ONE));
 
-                allowing(principalPopulator).getPrincipal(USERID_ONE, with(any(String.class)));
+                allowing(principalPopulator).getPrincipal(with(USERID_ONE), with(any(String.class)));
                 will(returnValue(principal));
 
                 allowing(principal).getAccountId();

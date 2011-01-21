@@ -64,7 +64,6 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -214,8 +213,8 @@ public class ApplicationEntryPoint implements EntryPoint
 
                         if (caught instanceof SessionException)
                         {
-                            // This happens when you proxy through a VPN client.
-                            // Window.Location.reload();
+                            Dialog.showDialog(new MessageDialogContent("Unable to Establish Session",
+                            "Please Refresh."));
                         }
                         else
                         {
