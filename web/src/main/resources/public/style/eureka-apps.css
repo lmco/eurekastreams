@@ -527,6 +527,7 @@ table.eureka-table tr.header-row-top-headers th
 	font-size:13px;
 	font-weight:bold;
 	color:#444;
+	position: relative;
 }
 .title-bar.collapsed
 {
@@ -717,8 +718,8 @@ div.list-view-item:hover .fade-out, div.list-view-item.selected .fade-out
 
 .scroll-list
 {
-    margin-top: -20px;
-    margin-bottom: -20px;
+    margin-top: -28px;
+    margin-bottom: -28px;
 }
 
 .scroll-more, .scroll-less
@@ -728,7 +729,6 @@ div.list-view-item:hover .fade-out, div.list-view-item.selected .fade-out
 
 .scroll-less
 {
-    margin-top: 5px;
     position: relative;
     z-index: 100;
     background: transparent url(images/gadget-scrollbar-bg.png) repeat-x 0 0;
@@ -737,7 +737,7 @@ div.list-view-item:hover .fade-out, div.list-view-item.selected .fade-out
 .scroll-more
 {
     position: relative;
-    background: transparent url(images/gadget-scrollbar-bg.png) repeat-x 0 -134px;
+    background: transparent url(images/gadget-scrollbar-bg.png) repeat-x 0 -133px;
 }
 
 .scroll-less:hover
@@ -755,12 +755,12 @@ div.list-view-item:hover .fade-out, div.list-view-item.selected .fade-out
 
 .scroll-less span
 {
-    background: transparent url(images/gadget-scrollbar-arrows.png) no-repeat center 0;
+    background: transparent url(images/gadget-scrollbar-arrows.png) no-repeat center 0px;
 }
 
 .scroll-more span
 {
-    background: transparent url(images/gadget-scrollbar-arrows.png) no-repeat center -134px;
+    background: transparent url(images/gadget-scrollbar-arrows.png) no-repeat center -133px;
 }
 
 .scroll-less:hover span

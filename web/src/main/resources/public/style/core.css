@@ -13478,7 +13478,8 @@ div.tab-container table.dragdrop-dropTarget-engage {
 .stream-view-dialog > .modal-content-panel
 {
 	max-height: 415px;
-	overflow: auto;
+	overflow-y: auto;
+	overflow-x: hidden;
 	*position: relative;  /* so stream buttons scroll with content in IE7 */
 }
 

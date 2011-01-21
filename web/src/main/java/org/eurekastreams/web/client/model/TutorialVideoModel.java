@@ -18,12 +18,10 @@ package org.eurekastreams.web.client.model;
 import java.util.HashSet;
 
 import org.eurekastreams.server.domain.TutorialVideoDTO;
-import org.eurekastreams.web.client.events.GetTutorialVideoResponseEvent;
-import org.eurekastreams.web.client.ui.Session;
 
 /**
  * client model for tutorialvideos.
- *
+ * 
  */
 public class TutorialVideoModel extends BaseModel implements Fetchable<Long>
 {
@@ -34,7 +32,7 @@ public class TutorialVideoModel extends BaseModel implements Fetchable<Long>
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
     public static TutorialVideoModel getInstance()
@@ -47,7 +45,7 @@ public class TutorialVideoModel extends BaseModel implements Fetchable<Long>
      *            the id of the tutorial video.
      * @param useClientCacheIfAvailable
      *            if it should use cache.
-     *
+     * 
      */
     public void fetch(final Long request, final boolean useClientCacheIfAvailable)
     {
@@ -55,7 +53,8 @@ public class TutorialVideoModel extends BaseModel implements Fetchable<Long>
         {
             public void onSuccess(final HashSet<TutorialVideoDTO> response)
             {
-                Session.getInstance().getEventBus().notifyObservers(new GetTutorialVideoResponseEvent(response));
+                // Note: This is turned off until we update the videos
+                // Session.getInstance().getEventBus().notifyObservers(new GetTutorialVideoResponseEvent(response));
             }
         }, useClientCacheIfAvailable);
 

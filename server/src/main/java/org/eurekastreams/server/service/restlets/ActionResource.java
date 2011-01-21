@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,10 @@ import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.ApplicationContextHolder;
+import org.eurekastreams.server.service.restlets.support.AccountIdStrategy;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
+import org.restlet.data.Status;
 import org.restlet.resource.Representation;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.StringRepresentation;
@@ -101,9 +103,9 @@ public class ActionResource extends SmpResource
     private ApplicationContextHolder applicationContextHolder;
 
     /**
-     * Can this action be executed by anyone.
+     * Instance of the AccountIdStrategy to be used for retrieving the accountid from the request.
      */
-    private boolean anonymous;
+    private AccountIdStrategy accountIdParamStrategy;
 
     /**
      * Person mapper.
@@ -121,20 +123,20 @@ public class ActionResource extends SmpResource
      *            the json factory.
      * @param inApplicationContextHolder app context holder.
      * @param inGetPersonMVByAccountId get person.
-     * @param inAnonymous is this servlet anonymous?
+     * @param inAccountIdParamStrategy - instance of the strategy to use for retrieving the account id.
      */
     public ActionResource(final ActionController inServiceActionController,
             final PrincipalPopulator inPrincipalPopulator, final JsonFactory inJsonFactory,
             final ApplicationContextHolder inApplicationContextHolder,
             final DomainMapper<String, PersonModelView> inGetPersonMVByAccountId,
-            final boolean inAnonymous)
+            final AccountIdStrategy inAccountIdParamStrategy)
     {
         serviceActionController = inServiceActionController;
         principalPopulator = inPrincipalPopulator;
         jsonFactory = inJsonFactory;
         applicationContextHolder = inApplicationContextHolder;
         getPersonMVByAccountId = inGetPersonMVByAccountId;
-        anonymous = inAnonymous;
+        accountIdParamStrategy = inAccountIdParamStrategy;
     }
 
     /**
@@ -146,16 +148,7 @@ public class ActionResource extends SmpResource
     @Override
     protected void initParams(final Request request)
     {
-        accountid = (String) request.getAttributes().get("accountid");
-
-        if (anonymous) // It's anonymous, trust what they tell us in the header or the URL, in that order.
-        {
-            if (accountid == null)
-            {
-                accountid = (String) request.getAttributes().get("accountidFromUrl");
-            }
-        }
-
+        accountid = accountIdParamStrategy.getAccountId(request);
         callback = (String) request.getAttributes().get("callback");
         actionKey = (String) request.getAttributes().get("action");
         requestType = (String) request.getAttributes().get("requestType");
@@ -177,6 +170,12 @@ public class ActionResource extends SmpResource
     {
         String jsString = "";
 
+        if(accountid == null)
+        {
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
+                    "accountid of the caller could not be determined.");
+        }
+        
         try
         {
             PersonModelView pmv = getPersonMVByAccountId.execute(accountid);
@@ -217,6 +216,7 @@ public class ActionResource extends SmpResource
         catch (Exception ex)
         {
             log.error("Error excecuting action " + actionKey + " from restlet: " + ex.toString());
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, "Error executing action.");
         }
 
         // JSONP
