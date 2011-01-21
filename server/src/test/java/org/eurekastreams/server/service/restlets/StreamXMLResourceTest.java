@@ -48,7 +48,7 @@ import org.springframework.security.context.SecurityContextHolder;
 
 /**
  * Test for system filter restlet.
- *
+ * 
  */
 @SuppressWarnings("unchecked")
 public class StreamXMLResourceTest
@@ -103,7 +103,6 @@ public class StreamXMLResourceTest
      */
     private Authentication auth = context.mock(Authentication.class);
 
-
     /**
      * Setup.
      */
@@ -121,9 +120,8 @@ public class StreamXMLResourceTest
         otherWords.add("keywords");
         otherWords.add("followedBy");
 
-        sut =
-                new StreamXMLResource(action, serviceActionController, principalPopulator, streamMapper,
-                        new RestletQueryRequestParser(globalWords, multipleEntityWords, otherWords), "");
+        sut = new StreamXMLResource(action, serviceActionController, principalPopulator, streamMapper,
+                new RestletQueryRequestParser(globalWords, multipleEntityWords, otherWords), "");
 
         ActivityDTO activity = new ActivityDTO();
         StreamEntityDTO actor = new StreamEntityDTO();
@@ -158,7 +156,7 @@ public class StreamXMLResourceTest
 
     /**
      * Test.
-     *
+     * 
      * @throws Exception
      *             exception.
      */
@@ -187,8 +185,7 @@ public class StreamXMLResourceTest
                 oneOf(auth).getName();
                 will(returnValue("guid"));
 
-
-                oneOf(principalPopulator).getPrincipal("guid");
+                oneOf(principalPopulator).getPrincipal("guid", with(any(String.class)));
 
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)), with(equal(action)));
                 will(returnValue(results));
@@ -204,7 +201,7 @@ public class StreamXMLResourceTest
 
     /**
      * Test.
-     *
+     * 
      * @throws Exception
      *             exception.
      */
@@ -234,7 +231,7 @@ public class StreamXMLResourceTest
                 oneOf(auth).getName();
                 will(returnValue("guid"));
 
-                oneOf(principalPopulator).getPrincipal("guid");
+                oneOf(principalPopulator).getPrincipal("guid", with(any(String.class)));
 
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)), with(equal(action)));
                 will(returnValue(results));
@@ -250,7 +247,7 @@ public class StreamXMLResourceTest
 
     /**
      * Test representing as ATOM with a bad request.
-     *
+     * 
      * @throws Exception
      *             exception.
      */
@@ -281,7 +278,7 @@ public class StreamXMLResourceTest
                 oneOf(auth).getName();
                 will(returnValue("guid"));
 
-                oneOf(principalPopulator).getPrincipal("guid");
+                oneOf(principalPopulator).getPrincipal("guid", with(any(String.class)));
 
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)), with(equal(action)));
                 will(throwException(new Exception("Something went wrong")));
@@ -292,14 +289,13 @@ public class StreamXMLResourceTest
 
         Representation actual = sut.represent(null);
 
-
         SecurityContextHolder.setContext(originalContext);
         context.assertIsSatisfied();
     }
 
     /**
      * Test representing as JSON with a service exception.
-     *
+     * 
      * @throws Exception
      *             exception.
      */

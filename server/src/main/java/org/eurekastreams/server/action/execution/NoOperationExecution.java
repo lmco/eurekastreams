@@ -17,15 +17,23 @@ package org.eurekastreams.server.action.execution;
 
 import java.io.Serializable;
 
+import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.commons.client.ActionProcessorImpl;
 import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.logging.LogFactory;
 
 /**
  * No-op action used to start session.
  */
 public class NoOperationExecution implements ExecutionStrategy<PrincipalActionContext>
 {
+    /**
+     * Instance of the logger.
+     */
+    private Log log = LogFactory.make();
+    
     /**
      * No-op action.
      * 
@@ -38,7 +46,7 @@ public class NoOperationExecution implements ExecutionStrategy<PrincipalActionCo
     @Override
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        return inActionContext.getPrincipal().getAccountId();
+        return inActionContext.getPrincipal().getSessionId();
     }
 
 }

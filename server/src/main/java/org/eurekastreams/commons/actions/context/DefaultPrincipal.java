@@ -16,10 +16,9 @@
 package org.eurekastreams.commons.actions.context;
 
 /**
- * This class is a default implementation of the Principal interface.  If additional
- * properties are needed, implement Principal in a concrete class along with an associated
- * {@link PrincipalPopulator} class.
- *
+ * This class is a default implementation of the Principal interface. If additional properties are needed, implement
+ * Principal in a concrete class along with an associated {@link PrincipalPopulator} class.
+ * 
  */
 public class DefaultPrincipal implements Principal
 {
@@ -34,6 +33,11 @@ public class DefaultPrincipal implements Principal
     private final String accountId;
 
     /**
+     * Session ID.
+     */
+    private final String sessionId;
+
+    /**
      * Local instance of the OpenSocial id.
      */
     private final String openSocialId;
@@ -45,15 +49,38 @@ public class DefaultPrincipal implements Principal
 
     /**
      * Base constructor for the Principal object.
-     * @param inAccountId - string based account id to create the Principal object with.
-     * @param inOpenSocialId - string based opensocial id to create the Principal object with.
-     * @param inId - Long entity id to create the Principal object with.
+     * 
+     * @param inAccountId
+     *            - string based account id to create the Principal object with.
+     * @param inOpenSocialId
+     *            - string based opensocial id to create the Principal object with.
+     * @param inId
+     *            - Long entity id to create the Principal object with.
+     * @param inSessionId
+     *            - the session ID.
      */
-    public DefaultPrincipal(final String inAccountId, final String inOpenSocialId, final Long inId)
+    public DefaultPrincipal(final String inAccountId, final String inOpenSocialId, final Long inId,
+            final String inSessionId)
     {
         accountId = inAccountId;
         openSocialId = inOpenSocialId;
         id = inId;
+        sessionId = inSessionId;
+    }
+
+    /**
+     * Base constructor for the Principal object with empty session.
+     * 
+     * @param inAccountId
+     *            - string based account id to create the Principal object with.
+     * @param inOpenSocialId
+     *            - string based opensocial id to create the Principal object with.
+     * @param inId
+     *            - Long entity id to create the Principal object with.
+     */
+    public DefaultPrincipal(final String inAccountId, final String inOpenSocialId, final Long inId)
+    {
+        this(inAccountId, inOpenSocialId, inId, "UNSET");
     }
 
     /**
@@ -78,5 +105,13 @@ public class DefaultPrincipal implements Principal
     public Long getId()
     {
         return id;
+    }
+
+    /**
+     * {@inheritDoc}.
+     */
+    public String getSessionId()
+    {
+        return sessionId;
     }
 }

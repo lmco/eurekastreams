@@ -29,7 +29,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
  * Test suite for the {@link PrincipalPopulatorTransWrapper}.
- *
+ * 
  */
 public class PrincipalPopulatorTransWrapperTest
 {
@@ -37,7 +37,7 @@ public class PrincipalPopulatorTransWrapperTest
      * System under test.
      */
     private PrincipalPopulatorTransWrapper sut;
-    
+
     /**
      * Context for building mock objects.
      */
@@ -47,17 +47,17 @@ public class PrincipalPopulatorTransWrapperTest
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
-    
+
     /**
      * The mock transaction manager.
      */
     private PlatformTransactionManager transactionManager = context.mock(PlatformTransactionManager.class);
-    
+
     /**
      * The mocked instance of the {@link PrincipalPopulator} interface.
      */
     private PrincipalPopulator principalPopulator = context.mock(PrincipalPopulator.class);
-    
+
     /**
      * Prepare the sut.
      */
@@ -66,7 +66,7 @@ public class PrincipalPopulatorTransWrapperTest
     {
         sut = new PrincipalPopulatorTransWrapper(principalPopulator, transactionManager);
     }
-    
+
     /**
      * Test successful population.
      */
@@ -78,20 +78,20 @@ public class PrincipalPopulatorTransWrapperTest
             {
                 oneOf(transactionManager).getTransaction(with(any(DefaultTransactionDefinition.class)));
 
-                oneOf(principalPopulator).getPrincipal(with(any(String.class)));
-                
+                oneOf(principalPopulator).getPrincipal(with(any(String.class)), with(any(String.class)));
+
                 oneOf(transactionManager).commit(with(any(TransactionStatus.class)));
             }
         });
-        
-        sut.getPrincipal("testacct");
+
+        sut.getPrincipal("testacct", "");
         context.assertIsSatisfied();
     }
-    
+
     /**
      * Test the failure of retrieving a principal.
      */
-    @Test(expected=PrincipalPopulationException.class)
+    @Test(expected = PrincipalPopulationException.class)
     public void testUnsuccessfulPopulator()
     {
         context.checking(new Expectations()
@@ -99,13 +99,13 @@ public class PrincipalPopulatorTransWrapperTest
             {
                 oneOf(transactionManager).getTransaction(with(any(DefaultTransactionDefinition.class)));
 
-                oneOf(principalPopulator).getPrincipal(with(any(String.class)));
+                oneOf(principalPopulator).getPrincipal(with(any(String.class)), with(any(String.class)));
                 will(throwException(new PrincipalPopulationException()));
-                
+
                 oneOf(transactionManager).rollback(with(any(TransactionStatus.class)));
             }
         });
-        sut.getPrincipal("testacct");
+        sut.getPrincipal("testacct", "");
         context.assertIsSatisfied();
     }
 }

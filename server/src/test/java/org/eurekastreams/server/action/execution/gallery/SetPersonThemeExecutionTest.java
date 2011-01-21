@@ -295,7 +295,12 @@ public class SetPersonThemeExecutionTest
                 // TODO Auto-generated method stub
                 return null;
             }
-
+            
+            @Override
+            public String getSessionId()
+            {
+                return "";
+            }
         });
     }
 }

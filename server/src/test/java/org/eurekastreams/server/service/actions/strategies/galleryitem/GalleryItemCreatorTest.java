@@ -195,6 +195,12 @@ public class GalleryItemCreatorTest
             {
                 return null;
             }
+            
+            @Override
+            public String getSessionId()
+            {
+                return "";
+            }
         });
     }
 }

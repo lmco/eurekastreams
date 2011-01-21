@@ -26,14 +26,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /**
  * The queuable action processor takes in requests to the action rpc service. It has the ability to queue up requests
  * and send them as one request instead of multiple. This is used on page init to save on HTTP transfers.
- *
+ * 
  */
 public class ActionProcessorImpl implements ActionProcessor
 {
     /**
      * The session id.
      */
-    private String sessionId = null;
+    private static String sessionId = null;
     /**
      * The RPC service to call.
      */
@@ -63,7 +63,7 @@ public class ActionProcessorImpl implements ActionProcessor
 
     /**
      * Standard constructor. Takes in an Action RPC Service object.
-     *
+     * 
      * @param inService
      *            the action rpc service to use.
      */
@@ -115,7 +115,7 @@ public class ActionProcessorImpl implements ActionProcessor
     /**
      * Makes a request to the action processor. If the queue is on it only queue's the request, otherwise it fires it
      * off.
-     *
+     * 
      * @param request
      *            The ActionRequest object.
      * @param callback
@@ -134,7 +134,7 @@ public class ActionProcessorImpl implements ActionProcessor
     /**
      * Makes a request to the action rpc service. If the action processor is queueable then it adds it to the queue and
      * waits until the FireQueuedRequests method is called
-     *
+     * 
      * @param actionKey
      *            - identify the action to load.
      * @param param
@@ -150,7 +150,7 @@ public class ActionProcessorImpl implements ActionProcessor
 
     /**
      * Turns the queue on or off.
-     *
+     * 
      * @param queue
      *            The value for enabling or disabling queue.
      */
@@ -161,7 +161,7 @@ public class ActionProcessorImpl implements ActionProcessor
 
     /**
      * Adds an action the queue. Equivalent to makeRequest(...) if the queue is turned on.
-     *
+     * 
      * @param request
      *            The ActionRequest object.
      * @param callback
@@ -170,14 +170,7 @@ public class ActionProcessorImpl implements ActionProcessor
     @SuppressWarnings("unchecked")
     private void addToQueue(final ActionRequest request, final AsyncCallback callback)
     {
-        String currentSessionId = sessionId;
-
-        if (null == currentSessionId)
-        {
-            currentSessionId = Cookies.getCookie("JSESSIONID");
-        }
-
-        request.setSessionId(currentSessionId);
+        request.setSessionId(sessionId);
         request.addCallback(callback);
         request.setId(actionId);
         requestDict.put(actionId, request);
@@ -187,11 +180,23 @@ public class ActionProcessorImpl implements ActionProcessor
 
     /**
      * This is just here for tests.
-     *
+     * 
      * @param inSessionId
      *            the session id.
      */
     public void setSessionId(final String inSessionId)
+    {
+        sessionId = inSessionId;
+    }
+    
+
+    /**
+     * This is just here for tests.
+     * 
+     * @param inSessionId
+     *            the session id.
+     */
+    public static void setCurrentSessionId(final String inSessionId)
     {
         sessionId = inSessionId;
     }

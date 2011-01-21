@@ -46,7 +46,7 @@ import org.junit.Test;
 
 /**
  * This class performs the test for the implementation of the Shindig PersonService interface.
- *
+ * 
  */
 public class PersonServiceTest
 {
@@ -102,7 +102,7 @@ public class PersonServiceTest
      * not supplied from the container side.
      */
     private final UserId testNullId = new UserId(Type.userId, null);
-    
+
     /**
      * A test GroupId object to be used during the tests.
      */
@@ -112,7 +112,7 @@ public class PersonServiceTest
      * A test GroupId object to be used during the tests.
      */
     private final GroupId testFriendsGroupId = new GroupId(GroupId.Type.friends, GROUPID);
-    
+
     /**
      * Context for building mock objects.
      */
@@ -127,7 +127,7 @@ public class PersonServiceTest
      * This is a fake security token taken from Shindig for testing.
      */
     private final SecurityToken mockToken = context.mock(SecurityToken.class);
-            
+
     /**
      * Mocked instance of the getPeopleAction.
      */
@@ -137,7 +137,7 @@ public class PersonServiceTest
      * Mocked instance of the getPeopleAction.
      */
     private final ServiceAction getFollowingAction = context.mock(ServiceAction.class, "getFollowingAction");
-    
+
     /**
      * Service Action Controller.
      */
@@ -157,8 +157,7 @@ public class PersonServiceTest
     /**
      * The Person object needs to be fully qualified because Shindig has a Person object as well.
      */
-    private final PersonModelView eurekastreamsPerson = context
-            .mock(PersonModelView.class);
+    private final PersonModelView eurekastreamsPerson = context.mock(PersonModelView.class);
 
     /**
      * Prepare the test.
@@ -172,7 +171,7 @@ public class PersonServiceTest
 
     /**
      * Test the getPerson method in the PersonService implementation.
-     *
+     * 
      * @throws Exception
      *             - covers all exceptions
      */
@@ -181,7 +180,6 @@ public class PersonServiceTest
     {
         final LinkedList<PersonModelView> testPeople = new LinkedList<PersonModelView>();
         people.add(eurekastreamsPerson);
-        
 
         // Set up expectations
         context.checking(new Expectations()
@@ -189,8 +187,8 @@ public class PersonServiceTest
             {
                 allowing(mockToken).getViewerId();
                 will(returnValue(USERID_ONE));
-                
-                allowing(principalPopulator).getPrincipal(USERID_ONE);
+
+                allowing(principalPopulator).getPrincipal(USERID_ONE, with(any(String.class)));
                 will(returnValue(principal));
 
                 allowing(serviceActionController).execute(with(any(ServiceActionContext.class)),
@@ -208,7 +206,7 @@ public class PersonServiceTest
 
     /**
      * Test forcing an Exception.
-     *
+     * 
      * @throws Exception
      *             - covers all exceptions.
      */
@@ -220,8 +218,8 @@ public class PersonServiceTest
             {
                 allowing(mockToken).getViewerId();
                 will(returnValue(USERID_ONE));
-                
-                allowing(principalPopulator).getPrincipal(USERID_ONE);
+
+                allowing(principalPopulator).getPrincipal(USERID_ONE, with(any(String.class)));
                 will(returnValue(principal));
 
                 allowing(principal).getAccountId();
@@ -240,7 +238,7 @@ public class PersonServiceTest
 
     /**
      * currentUser Test forcing a NumberFormatException.
-     *
+     * 
      * @throws Exception
      *             - covers all exceptions.
      */
@@ -253,8 +251,8 @@ public class PersonServiceTest
 
                 allowing(mockToken).getViewerId();
                 will(returnValue(USERID_ONE));
-                
-                allowing(principalPopulator).getPrincipal(USERID_ONE);
+
+                allowing(principalPopulator).getPrincipal(USERID_ONE, with(any(String.class)));
                 will(returnValue(principal));
 
                 allowing(principal).getAccountId();
@@ -273,7 +271,7 @@ public class PersonServiceTest
 
     /**
      * Test forcing a NumberFormatException.
-     *
+     * 
      * @throws Exception
      *             - covers all exceptions.
      */
@@ -285,7 +283,7 @@ public class PersonServiceTest
 
     /**
      * This test covers retrieving multiple people specified by a set of user ids.
-     *
+     * 
      * @throws Exception
      *             - covers all exceptions
      */
@@ -304,8 +302,8 @@ public class PersonServiceTest
 
                 allowing(mockToken).getViewerId();
                 will(returnValue(USERID_ONE));
-                
-                allowing(principalPopulator).getPrincipal(USERID_ONE);
+
+                allowing(principalPopulator).getPrincipal(USERID_ONE, with(any(String.class)));
                 will(returnValue(principal));
 
                 allowing(principal).getAccountId();
@@ -326,7 +324,7 @@ public class PersonServiceTest
 
     /**
      * This test covers retrieving multiple people specified by a set of user ids.
-     *
+     * 
      * @throws Exception
      *             - covers all exceptions
      */
@@ -335,15 +333,15 @@ public class PersonServiceTest
     {
         LinkedHashSet<UserId> userIdSet = new LinkedHashSet<UserId>();
         CollectionOptions collOptions = new CollectionOptions();
-        final PagedSet<PersonModelView> peopleResults = new PagedSet<PersonModelView>(0, 1, people.size(), people); 
+        final PagedSet<PersonModelView> peopleResults = new PagedSet<PersonModelView>(0, 1, people.size(), people);
         buildPeople();
         context.checking(new Expectations()
         {
             {
                 allowing(mockToken).getViewerId();
                 will(returnValue(USERID_ONE));
-                
-                allowing(principalPopulator).getPrincipal(USERID_ONE);
+
+                allowing(principalPopulator).getPrincipal(USERID_ONE, with(any(String.class)));
                 will(returnValue(principal));
 
                 allowing(principal).getAccountId();
@@ -362,11 +360,10 @@ public class PersonServiceTest
         context.assertIsSatisfied();
     }
 
-    
     /**
      * This test exercises the GetPeople method of the OpenSocial implementation in Shindig. This test throws an
      * exception to test error handling.
-     *
+     * 
      * @throws Exception
      *             - on unhandled errors.
      */
@@ -384,8 +381,8 @@ public class PersonServiceTest
 
                 allowing(mockToken).getViewerId();
                 will(returnValue(USERID_ONE));
-                
-                allowing(principalPopulator).getPrincipal(USERID_ONE);
+
+                allowing(principalPopulator).getPrincipal(USERID_ONE, with(any(String.class)));
                 will(returnValue(principal));
 
                 allowing(principal).getAccountId();
@@ -400,7 +397,7 @@ public class PersonServiceTest
 
         context.assertIsSatisfied();
     }
-    
+
     /**
      * Build the basic collection of people that will be returned in the GetPeople tests.
      */

@@ -124,6 +124,12 @@ public class ReviewPendingGroupAuthorizationStrategyTest
             {
                 return userName;
             }
+            
+            @Override
+            public String getSessionId()
+            {
+                return "";
+            }
         };
     }
 

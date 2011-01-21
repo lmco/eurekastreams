@@ -180,7 +180,7 @@ public class ActionExecutorTest
                 oneOf(springContextMock).getBean("testkey");
                 will(returnValue(serviceActionMock));
 
-                oneOf(principalPopulator).getPrincipal(USERNAME);
+                oneOf(principalPopulator).getPrincipal(USERNAME, "");
 
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)),
                         with(any(ServiceAction.class)));
@@ -220,7 +220,7 @@ public class ActionExecutorTest
                 oneOf(springContextMock).getBean("testkey");
                 will(returnValue(serviceActionMock));
 
-                oneOf(principalPopulator).getPrincipal(USERNAME);
+                oneOf(principalPopulator).getPrincipal(USERNAME, "");
 
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)),
                         with(any(TaskHandlerServiceAction.class)));

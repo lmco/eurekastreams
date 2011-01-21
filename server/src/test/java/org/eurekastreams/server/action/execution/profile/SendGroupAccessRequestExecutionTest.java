@@ -204,6 +204,12 @@ public class SendGroupAccessRequestExecutionTest
                     {
                         return null;
                     }
+
+                    @Override
+                    public String getSessionId()
+                    {
+                        return "";
+                    }
                 };
             }
         }, asyncRequests));

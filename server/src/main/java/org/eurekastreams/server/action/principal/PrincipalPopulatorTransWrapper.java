@@ -57,7 +57,7 @@ public class PrincipalPopulatorTransWrapper implements PrincipalPopulator
      * {@inheritDoc}. Wrapped with a transaction.
      */
     @Override
-    public Principal getPrincipal(final String inAccountId)
+    public Principal getPrincipal(final String inAccountId, final String inSessionId)
     {
         DefaultTransactionDefinition transDef = new DefaultTransactionDefinition();
         transDef.setReadOnly(true);
@@ -66,7 +66,7 @@ public class PrincipalPopulatorTransWrapper implements PrincipalPopulator
         try
         {
             // Get Principal object for current user.
-            currentUserPrincipal = populator.getPrincipal(inAccountId);
+            currentUserPrincipal = populator.getPrincipal(inAccountId, inSessionId);
             transManager.commit(currentStatus);
         }
         catch (Exception ex)
