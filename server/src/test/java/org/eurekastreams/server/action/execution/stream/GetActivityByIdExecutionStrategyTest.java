@@ -250,6 +250,12 @@ public class GetActivityByIdExecutionStrategyTest
                     {
                         return null;
                     }
+                    
+                    @Override
+                    public String getSessionId()
+                    {
+                        return "";
+                    }                    
                 };
             }
 

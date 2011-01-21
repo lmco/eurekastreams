@@ -24,7 +24,8 @@ public interface PrincipalPopulator
     /**
      * Retrieves a populated principal object for the current request.
      * @param inAccountId - String based account id for the Principal.
+     * @param inSessionId - the session ID.
      * @return - instance of the Principal object.
      */
-    Principal getPrincipal(final String inAccountId);
+    Principal getPrincipal(final String inAccountId, final String inSessionId);
 }

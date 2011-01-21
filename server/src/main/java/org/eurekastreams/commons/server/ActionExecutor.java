@@ -35,7 +35,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.security.userdetails.UserDetails;
 
 /**
- *
+ * 
  * The Action Executor class. This class will look up in Spring for the action key. Once the action is found, it will
  * confirm the action requires User Details and the User Details are present. Next, the params will be validated, the
  * user will be authorized, and the action executed.
@@ -80,7 +80,7 @@ public class ActionExecutor
 
     /**
      * Constructor for the executor class.
-     *
+     * 
      * @param inSpringContext
      *            the Spring application context.
      * @param inUserDetails
@@ -103,7 +103,7 @@ public class ActionExecutor
 
     /**
      * Execute method for the class.
-     *
+     * 
      * @return The result as a serializable object.
      */
     @SuppressWarnings("unchecked")
@@ -133,8 +133,8 @@ public class ActionExecutor
                 // grab serializable parameter object.
                 Serializable actionParameter = actionRequest.getParam();
 
-                ServiceActionContext actionContext = new ServiceActionContext(actionParameter,
-                        principalPopulator.getPrincipal(userDetails.getUsername()));
+                ServiceActionContext actionContext = new ServiceActionContext(actionParameter, principalPopulator
+                        .getPrincipal(userDetails.getUsername(), actionRequest.getSessionId()));
                 actionContext.setActionId(actionRequest.getActionKey());
                 result = serviceActionController.execute(actionContext, action);
             }
@@ -145,8 +145,8 @@ public class ActionExecutor
                 // grab serializable parameter object.
                 Serializable actionParameter = actionRequest.getParam();
 
-                ServiceActionContext actionContext = new ServiceActionContext(actionParameter,
-                        principalPopulator.getPrincipal(userDetails.getUsername()));
+                ServiceActionContext actionContext = new ServiceActionContext(actionParameter, principalPopulator
+                        .getPrincipal(userDetails.getUsername(), actionRequest.getSessionId()));
                 actionContext.setActionId(actionRequest.getActionKey());
                 result = serviceActionController.execute(actionContext, action);
             }
@@ -224,7 +224,7 @@ public class ActionExecutor
 
     /**
      * Helper for getting userName.
-     *
+     * 
      * @return user name.
      */
     private String getUserName()

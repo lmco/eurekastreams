@@ -62,14 +62,28 @@ public class OpenSocialPrincipalPopulator implements PrincipalPopulator
     }
 
     /**
+     * Get Sessionless Principal.
+     * 
+     * @param inAccountId
+     *            the account id.
+     * @return the principal.
+     */
+    public Principal getPrincipal(final String inAccountId)
+    {
+        return getPrincipal(inAccountId, "");
+    }
+
+    /**
      * Retrieve the principal object associated with the OpenSocial id passed in.
      * 
      * @param inOpenSocialId
      *            - string opensocial id to retrieve a principal object for.
+     * @param inSessionId
+     *            the session ID.
      * @return {@link Principal} object based on the OpenSocial id passed in.
      */
     @Override
-    public Principal getPrincipal(final String inOpenSocialId)
+    public Principal getPrincipal(final String inOpenSocialId, final String inSessionId)
     {
         PersonModelView user = null;
         try

@@ -180,7 +180,7 @@ public class ActionExecutorTest
                 oneOf(springContextMock).getBean("testkey");
                 will(returnValue(serviceActionMock));
 
-                oneOf(principalPopulator).getPrincipal(USERNAME);
+                oneOf(principalPopulator).getPrincipal(USERNAME, null);
 
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)),
                         with(any(ServiceAction.class)));
@@ -220,7 +220,7 @@ public class ActionExecutorTest
                 oneOf(springContextMock).getBean("testkey");
                 will(returnValue(serviceActionMock));
 
-                oneOf(principalPopulator).getPrincipal(USERNAME);
+                oneOf(principalPopulator).getPrincipal(USERNAME, null);
 
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)),
                         with(any(TaskHandlerServiceAction.class)));
@@ -271,7 +271,7 @@ public class ActionExecutorTest
 
     /**
      * Common parts of tests that insure exceptions do not contain a nested cause.
-     *
+     * 
      * @param inputException
      *            Exception to be thrown.
      * @return Exception returned by SUT.

@@ -198,8 +198,8 @@ public class OAuthDataStoreTest
         context.checking(new Expectations()
         {
             {
-                oneOf(principalPopulator).getPrincipal(with(any(String.class)));
-                
+                oneOf(principalPopulator).getPrincipal(with(any(String.class)), with(any(String.class)));
+
                 oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
                         with(any(ServiceAction.class)));
             }
@@ -220,8 +220,8 @@ public class OAuthDataStoreTest
         context.checking(new Expectations()
         {
             {
-                oneOf(principalPopulator).getPrincipal(with(any(String.class)));
-                
+                oneOf(principalPopulator).getPrincipal(with(any(String.class)), with(any(String.class)));
+
                 oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
                         with(any(ServiceAction.class)));
                 will(throwException(new ExecutionException()));
@@ -244,8 +244,8 @@ public class OAuthDataStoreTest
         context.checking(new Expectations()
         {
             {
-                oneOf(principalPopulator).getPrincipal(with(any(String.class)));
-                
+                oneOf(principalPopulator).getPrincipal(with(any(String.class)), with(any(String.class)));
+
                 oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
                         with(any(ServiceAction.class)));
                 will(returnValue(entry));
@@ -268,8 +268,8 @@ public class OAuthDataStoreTest
         context.checking(new Expectations()
         {
             {
-                oneOf(principalPopulator).getPrincipal(with(any(String.class)));
-                
+                oneOf(principalPopulator).getPrincipal(with(any(String.class)), with(any(String.class)));
+
                 oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
                         with(any(ServiceAction.class)));
                 will(throwException(new ExecutionException()));
@@ -467,8 +467,8 @@ public class OAuthDataStoreTest
         context.checking(new Expectations()
         {
             {
-                oneOf(principalPopulator).getPrincipal(TEST_ARG1);
-                
+                oneOf(principalPopulator).getPrincipal(with(TEST_ARG1), with(any(String.class)));
+
                 oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
                         with(any(ServiceAction.class)));
                 will(returnValue(response));
@@ -490,8 +490,8 @@ public class OAuthDataStoreTest
         context.checking(new Expectations()
         {
             {
-                oneOf(principalPopulator).getPrincipal(TEST_ARG1);
-                
+                oneOf(principalPopulator).getPrincipal(with(TEST_ARG1), with(any(String.class)));
+
                 oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
                         with(any(ServiceAction.class)));
                 will(throwException(new ExecutionException()));

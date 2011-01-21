@@ -312,6 +312,13 @@ public class SetFollowingGroupStatusExecution implements TaskHandlerExecutionStr
             {
                 return followerAccountId;
             }
+            
+
+            @Override
+            public String getSessionId()
+            {
+                return "";
+            }            
         };
     }
 }

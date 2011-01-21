@@ -190,7 +190,7 @@ public class ActionResource extends SmpResource
                 ServiceAction action = (ServiceAction) springBean;
 
                 ServiceActionContext actionContext = new ServiceActionContext(actionParameter, principalPopulator
-                        .getPrincipal(pmv.getOpenSocialId()));
+                        .getPrincipal(pmv.getOpenSocialId(), ""));
                 actionContext.setActionId(request.getActionKey());
                 result = serviceActionController.execute(actionContext, action);
             }
@@ -199,7 +199,7 @@ public class ActionResource extends SmpResource
                 TaskHandlerServiceAction action = (TaskHandlerServiceAction) springBean;
 
                 ServiceActionContext actionContext = new ServiceActionContext(actionParameter, principalPopulator
-                        .getPrincipal(pmv.getOpenSocialId()));
+                        .getPrincipal(pmv.getOpenSocialId(), ""));
                 actionContext.setActionId(request.getActionKey());
                 result = serviceActionController.execute(actionContext, action);
             }

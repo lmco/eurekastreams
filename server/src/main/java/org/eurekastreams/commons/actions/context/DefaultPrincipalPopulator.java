@@ -37,8 +37,8 @@ public final class DefaultPrincipalPopulator implements PrincipalPopulator
      * The id is passed in as null within this implementation.
      * {@inheritDoc}
      */
-    public Principal getPrincipal(final String inAccountId)
+    public Principal getPrincipal(final String inAccountId, final String inSessionId)
     {
-        return new DefaultPrincipal(inAccountId, inAccountId, null);
+        return new DefaultPrincipal(inAccountId, inAccountId, null, inSessionId);
     }
 }

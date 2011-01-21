@@ -55,7 +55,7 @@ import com.sun.syndication.io.SyndFeedOutput;
 
 /**
  * REST end point for stream filters.
- *
+ * 
  */
 public class StreamXMLResource extends SmpResource
 {
@@ -114,7 +114,7 @@ public class StreamXMLResource extends SmpResource
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inAction
      *            the action.
      * @param inServiceActionController
@@ -125,7 +125,8 @@ public class StreamXMLResource extends SmpResource
      *            the stream mapper.
      * @param inRequestParser
      *            Extracts the query out of the request path.
-     * @param inBaseUrl the base url for eureka.
+     * @param inBaseUrl
+     *            the base url for eureka.
      */
     public StreamXMLResource(final ServiceAction inAction, final ActionController inServiceActionController,
             final PrincipalPopulator inPrincipalPopulator, final FindByIdMapper<Stream> inStreamMapper,
@@ -141,7 +142,7 @@ public class StreamXMLResource extends SmpResource
 
     /**
      * init the params.
-     *
+     * 
      * @param request
      *            the request object.
      */
@@ -159,7 +160,7 @@ public class StreamXMLResource extends SmpResource
 
     /**
      * GET the activites.
-     *
+     * 
      * @param variant
      *            the variant.
      * @return the ATOM.
@@ -216,8 +217,8 @@ public class StreamXMLResource extends SmpResource
             log.debug("Making request using: " + queryJson);
             String acctId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-            PrincipalActionContext ac = new ServiceActionContext(queryJson.toString(), principalPopulator
-                    .getPrincipal(acctId));
+            PrincipalActionContext ac = new ServiceActionContext(queryJson.toString(), principalPopulator.getPrincipal(
+                    acctId, ""));
 
             PagedSet<ActivityDTO> activities = (PagedSet<ActivityDTO>) serviceActionController.execute(
                     (ServiceActionContext) ac, action);
@@ -315,7 +316,7 @@ public class StreamXMLResource extends SmpResource
 
     /**
      * Overrides the request path.
-     *
+     * 
      * @param inPathOverride
      *            the string to override the path with.
      */
@@ -326,7 +327,7 @@ public class StreamXMLResource extends SmpResource
 
     /**
      * Get the request path.
-     *
+     * 
      * @return the path.
      */
     public String getPath()

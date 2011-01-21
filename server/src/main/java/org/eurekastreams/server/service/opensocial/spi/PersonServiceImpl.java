@@ -304,7 +304,7 @@ public class PersonServiceImpl implements PersonService
         Principal currentUserPrincipal = null;
         if (inSecurityToken.getViewerId() != null)
         {
-            currentUserPrincipal = principalPopulator.getPrincipal(inSecurityToken.getViewerId());
+            currentUserPrincipal = principalPopulator.getPrincipal(inSecurityToken.getViewerId(), "");
         }
         return currentUserPrincipal;
     }

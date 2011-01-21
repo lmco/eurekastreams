@@ -204,7 +204,7 @@ public class OAuthDataStoreImpl implements OAuthDataStore
         try
         {
             ServiceActionContext currentContext = new ServiceActionContext(entry.getToken(), principalPopulator
-                    .getPrincipal(entry.getUserId()));
+                    .getPrincipal(entry.getUserId(), ""));
             actionController.execute(currentContext, authorizeOAuthTokenAction);
         }
         catch (ExecutionException ex)
@@ -227,8 +227,8 @@ public class OAuthDataStoreImpl implements OAuthDataStore
     {
         try
         {
-            ServiceActionContext currentContext = new ServiceActionContext(entry, principalPopulator
-                    .getPrincipal(entry.getUserId()));
+            ServiceActionContext currentContext = new ServiceActionContext(entry, principalPopulator.getPrincipal(entry
+                    .getUserId(), ""));
             return (OAuthEntry) actionController.execute(currentContext, updateRequestToAccessTokenAction);
         }
         catch (Exception ex)
@@ -348,7 +348,7 @@ public class OAuthDataStoreImpl implements OAuthDataStore
             // application
             // wishes to request information about a user that has their application installed on their start page.
             ServiceActionContext currentContext = new ServiceActionContext(consumerKey, principalPopulator
-                    .getPrincipal(userId));
+                    .getPrincipal(userId, ""));
             response = (SecurityTokenResponse) actionController.execute(currentContext,
                     getSecurityTokenForConsumerRequestAction);
         }

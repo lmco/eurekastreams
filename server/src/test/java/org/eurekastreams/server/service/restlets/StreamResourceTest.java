@@ -52,7 +52,7 @@ import org.restlet.resource.Representation;
 
 /**
  * Test for system filter restlet.
- *
+ * 
  */
 @SuppressWarnings("unchecked")
 public class StreamResourceTest
@@ -114,9 +114,8 @@ public class StreamResourceTest
         otherWords.add("keywords");
         otherWords.add("followedBy");
 
-        sut =
-                new StreamResource(action, serviceActionController, principalPopulator, streamMapper,
-                        new RestletQueryRequestParser(globalWords, multipleEntityWords, otherWords));
+        sut = new StreamResource(action, serviceActionController, principalPopulator, streamMapper,
+                new RestletQueryRequestParser(globalWords, multipleEntityWords, otherWords));
 
         ActivityDTO activity = new ActivityDTO();
         StreamEntityDTO actor = new StreamEntityDTO();
@@ -151,7 +150,7 @@ public class StreamResourceTest
 
     /**
      * Test representing as JSONP.
-     *
+     * 
      * @throws Exception
      *             exception.
      */
@@ -177,7 +176,7 @@ public class StreamResourceTest
                 allowing(request).getAttributes();
                 will(returnValue(attributes));
 
-                oneOf(principalPopulator).getPrincipal("guid");
+                oneOf(principalPopulator).getPrincipal(with("guid"), with(any(String.class)));
 
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)), with(equal(action)));
                 will(returnValue(results));
@@ -221,7 +220,7 @@ public class StreamResourceTest
 
     /**
      * Test representing as JSON.
-     *
+     * 
      * @throws Exception
      *             exception.
      */
@@ -245,7 +244,7 @@ public class StreamResourceTest
                 allowing(request).getAttributes();
                 will(returnValue(attributes));
 
-                oneOf(principalPopulator).getPrincipal("guid");
+                oneOf(principalPopulator).getPrincipal(with("guid"), with(any(String.class)));
 
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)), with(equal(action)));
                 will(returnValue(results));
@@ -280,7 +279,7 @@ public class StreamResourceTest
 
     /**
      * Test representing as JSON with a bad request.
-     *
+     * 
      * @throws Exception
      *             exception.
      */
@@ -304,7 +303,7 @@ public class StreamResourceTest
                 allowing(request).getAttributes();
                 will(returnValue(attributes));
 
-                oneOf(principalPopulator).getPrincipal("guid");
+                oneOf(principalPopulator).getPrincipal(with("guid"), with(any(String.class)));
 
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)), with(equal(action)));
                 will(throwException(new Exception("Something went wrong")));
@@ -324,7 +323,7 @@ public class StreamResourceTest
 
     /**
      * Test representing as JSON with a service exception.
-     *
+     * 
      * @throws Exception
      *             exception.
      */

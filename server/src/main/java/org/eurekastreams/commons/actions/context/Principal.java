@@ -18,27 +18,37 @@ package org.eurekastreams.commons.actions.context;
 import java.io.Serializable;
 
 /**
- * This interface describes the user context of an action execution.
- * The Principal is supplied by the implementation of the supplied {@link PrincipalPopulator}.
- *
+ * This interface describes the user context of an action execution. The Principal is supplied by the implementation of
+ * the supplied {@link PrincipalPopulator}.
+ * 
  */
 public interface Principal extends Serializable
 {
     /**
      * Retrieve the String based account id of the user.
+     * 
      * @return - String based account id.
      */
     String getAccountId();
 
     /**
      * Retrieve the String that represents the OpenSocial id for the current user.
+     * 
      * @return - String based OpenSocial id.
      */
     String getOpenSocialId();
 
     /**
      * Retrieve the Long that represents the current user within persistent storage.
+     * 
      * @return - Long based entity id.
      */
     Long getId();
+
+    /**
+     * Retrieve the session id.
+     * 
+     * @return - Session id.
+     */
+    String getSessionId();
 }

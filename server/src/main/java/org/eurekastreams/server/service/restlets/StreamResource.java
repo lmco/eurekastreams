@@ -202,8 +202,8 @@ public class StreamResource extends SmpResource
                 log.debug("Making request using: " + queryJson);
             }
 
-            PrincipalActionContext ac = new ServiceActionContext(queryJson.toString(), principalPopulator
-                    .getPrincipal(openSocialId));
+            PrincipalActionContext ac = new ServiceActionContext(queryJson.toString(), principalPopulator.getPrincipal(
+                    openSocialId, ""));
             PagedSet<ActivityDTO> activities = (PagedSet<ActivityDTO>) serviceActionController.execute(
                     (ServiceActionContext) ac, action);
 

@@ -142,7 +142,12 @@ public class ThemeIdValidationTest
             {
                 return null;
             }
-
+            
+            @Override
+            public String getSessionId()
+            {
+                return "";
+            }
         });
     }
 }

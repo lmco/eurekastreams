@@ -59,7 +59,7 @@ public class ActionRPCServiceImpl extends PersistentRemoteService implements Act
 
     /**
      * As a servlet, this class' init() method is called automatically. This is how we get context.
-     *
+     * 
      * @param config
      *            the configuration describing the run-time environment.
      */
@@ -95,7 +95,7 @@ public class ActionRPCServiceImpl extends PersistentRemoteService implements Act
     /**
      * Executes the request. This method should contain no logic and act solely as an interface to creating and invoking
      * the action executor.
-     *
+     * 
      * @param user
      *            User making the request.
      * @param request
@@ -110,7 +110,7 @@ public class ActionRPCServiceImpl extends PersistentRemoteService implements Act
 
     /**
      * Execute a single ActionRequest.
-     *
+     * 
      * @param request
      *            the request specification to execute
      * @return the action response encapsulated with the request
@@ -125,7 +125,7 @@ public class ActionRPCServiceImpl extends PersistentRemoteService implements Act
     /**
      * Execute multiple ActionRequests. We don't specify a type for ActionRequst because the types will likely be
      * different for each request.
-     *
+     * 
      * @param requests
      *            the request specifications to execute
      * @return the action response encapsulated with the request
@@ -146,7 +146,7 @@ public class ActionRPCServiceImpl extends PersistentRemoteService implements Act
 
     /**
      * Execute a single ActionRequest.
-     *
+     * 
      * @param request
      *            the request specification to execute
      * @param user
@@ -156,10 +156,14 @@ public class ActionRPCServiceImpl extends PersistentRemoteService implements Act
     @SuppressWarnings("unchecked")
     private ActionRequest execute(final ActionRequest request, final UserDetails user)
     {
+        if (request.getActionKey().equals("noOperation"))
+        {
+            request.setSessionId(this.getThreadLocalRequest().getSession().getId());
+        }
+
         // check that the session id is the session id stamped in the request, ignoring on first action call
         // from ApplicationEntryPoint.
-        if (!request.getActionKey().equals("noOperation")
-                && !this.getThreadLocalRequest().getSession().getId().equals(request.getSessionId()))
+        if (!this.getThreadLocalRequest().getSession().getId().equals(request.getSessionId()))
         {
             request.setResponse(new SessionException("Session Expired"));
             return request;
@@ -172,7 +176,7 @@ public class ActionRPCServiceImpl extends PersistentRemoteService implements Act
 
     /**
      * Try to get the User information from the session.
-     *
+     * 
      * @return represents the user currently in session
      */
     private UserDetails getUserDetails()

@@ -42,7 +42,7 @@ public final class TestContextCreator
     /**
      * Creates a TaskHandlerActionContext<PrincipalActionContext> - used for actions invoked directly by user action
      * which can queue activities.
-     *
+     * 
      * @param params
      *            Action parameters.
      * @param userAccountId
@@ -61,7 +61,7 @@ public final class TestContextCreator
     /**
      * Creates a TaskHandlerActionContext<PrincipalActionContext> - used for actions invoked directly by user action
      * which can queue activities.
-     *
+     * 
      * @param params
      *            Action parameters.
      * @param principal
@@ -109,7 +109,7 @@ public final class TestContextCreator
 
     /**
      * Creates a principal.
-     *
+     * 
      * @param userAccountId
      *            User's account ID.
      * @param userId
@@ -140,7 +140,12 @@ public final class TestContextCreator
             {
                 return null;
             }
+
+            @Override
+            public String getSessionId()
+            {
+                return null;
+            }
         };
     }
-
 }
