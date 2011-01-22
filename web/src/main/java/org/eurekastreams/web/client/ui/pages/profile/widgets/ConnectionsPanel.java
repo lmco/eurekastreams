@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@ package org.eurekastreams.web.client.ui.pages.profile.widgets;
 
 import java.util.HashMap;
 
-import org.eurekastreams.web.client.events.SwitchToFilterOnPagedFilterPanelEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.pagedlist.PagedListPanel;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -36,11 +36,11 @@ public class ConnectionsPanel extends FlowPanel
     /**
      * Connection count panels.
      */
-    private HashMap<String, ConnectionCountPanel> countPanels = new HashMap<String, ConnectionCountPanel>();
+    private final HashMap<String, ConnectionCountPanel> countPanels = new HashMap<String, ConnectionCountPanel>();
     /**
      * The contents.
      */
-    private FlowPanel contents = new FlowPanel();
+    private final FlowPanel contents = new FlowPanel();
 
     /**
      * Constructor. Pass null to prevent a value from being shown.
@@ -58,14 +58,17 @@ public class ConnectionsPanel extends FlowPanel
         SimplePanel simple = new SimplePanel();
         simple.addStyleName("clear");
         this.add(simple);
-
     }
 
     /**
      * Add a connection panel.
-     * @param name the name.
-     * @param sortKey the sort key,
-     * @param number the number.
+     *
+     * @param name
+     *            the name.
+     * @param sortKey
+     *            the sort key,
+     * @param number
+     *            the number.
      */
     public void addConnection(final String name, final String sortKey, final int number)
     {
@@ -93,33 +96,30 @@ public class ConnectionsPanel extends FlowPanel
         {
             public void onClick(final ClickEvent event)
             {
-                if (!Session.getInstance().getParameterValue("tab").equals("Connections"))
-                {
-                    Session.getInstance().getEventBus().notifyObservers(
-                            new UpdateHistoryEvent(new CreateUrlRequest("tab", "Connections", false)));
-                }
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("tab", "Connections");
+                params.put(PagedListPanel.URL_PARAM_LIST_ID, "connections");
+                params.put(PagedListPanel.URL_PARAM_FILTER, name);
                 if (sortKey != null)
                 {
-                    Session.getInstance().getEventBus().notifyObservers(
-                            new SwitchToFilterOnPagedFilterPanelEvent("connections", name, sortKey));
+                    params.put(PagedListPanel.URL_PARAM_SORT, sortKey);
                 }
-                else
-                {
-                    Session.getInstance().getEventBus()
-                            .notifyObservers(new SwitchToFilterOnPagedFilterPanelEvent("connections", name));
-                }
+                Session.getInstance().getEventBus()
+                        .notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(params, true)));
             }
         });
     }
 
     /**
      * Update the count of a panel.
-     * @param name the name.
-     * @param number the number.
+     *
+     * @param name
+     *            the name.
+     * @param number
+     *            the number.
      */
     public void updateCount(final String name, final int number)
     {
         countPanels.get(name).updateCount(number);
     }
-
 }
