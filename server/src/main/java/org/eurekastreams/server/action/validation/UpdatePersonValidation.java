@@ -29,23 +29,23 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Validation for updating person.
- *
+ * 
  */
 public class UpdatePersonValidation implements ValidationStrategy<ServiceActionContext>
 {
 
     /**
      * Use when no length is provided by the Domain Object.
-     *
+     * 
      * This is package protected for use in testing.
      */
     static final int DEFAULT_MAX_STRING_LENGTH = 255;
 
     /**
      * These messages are one off messages only used in this validation.
-     *
+     * 
      * they are package protected for verification in tests.
-     *
+     * 
      */
     /**
      * email length message.
@@ -97,7 +97,7 @@ public class UpdatePersonValidation implements ValidationStrategy<ServiceActionC
     }
 
     /**
-     *
+     * 
      * @param inActionContext
      *            context for the action.
      * @throws ValidationException
@@ -119,7 +119,8 @@ public class UpdatePersonValidation implements ValidationStrategy<ServiceActionC
         String perferredName = (String) vHelper.getAndCheckStringFieldExist(personData,
                 PersonModelView.PREFERREDNAME_KEY, true, ve);
         vHelper.stringMeetsRequirments(PersonModelView.PREFERREDNAME_KEY, perferredName, ve, PREFERREDNAME_MESSAGE,
-                +DEFAULT_MAX_STRING_LENGTH, PREFERREDNAME_MESSAGE, null, null);
+                +DEFAULT_MAX_STRING_LENGTH, PREFERREDNAME_MESSAGE, "^[a-zA-Z\\'\\`\\ \\-]+$",
+                "Display Name has invalid characters.");
 
         String description = (String) vHelper.getAndCheckStringFieldExist(personData, PersonModelView.DESCRIPTION_KEY,
                 true, ve);
