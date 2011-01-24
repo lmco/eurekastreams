@@ -10969,11 +10969,11 @@ div.gadget-zone-chrome-title-bar div.gwt-MenuBar:hover {
 	text-overflow: ellipsis;
 }
 
-.gadget-zone.maximized .gadget-zone-chrome-title-bar-title-button {
-	width: 940px;
+.gadget-zone.maximized .gadget-zone-chrome-title-bar-title-button 
+{
 	margin-left: 10px;
 	position: relative; 
-	*top: -5px;
+	width: 100%;
 }
 
 .gadget-zone-chrome-title-bar-close-button a {
@@ -13477,7 +13477,7 @@ div.tab-container table.dragdrop-dropTarget-engage {
 
 .stream-view-dialog > .modal-content-panel
 {
-	max-height: 415px;
+	max-height: 430px;
 	overflow-y: auto;
 	overflow-x: hidden;
 	*position: relative;  /* so stream buttons scroll with content in IE7 */
@@ -13696,31 +13696,27 @@ body .stream-view-dialog .delete-button
 }
 
 .gadget-zone:hover .gadget-button.gadget-refresh,.gadget-zone:hover .gadget-button.gadget-edit,.gadget-zone:hover .gadget-button.gadget-close,.gadget-zone:hover .gadget-button.gadget-help
-	{
+{
 	display: inline-block; 
 	*display: inline;
 	zoom: 1;
 }
 
 .gadget-zone.maximized .gadget-button.gadget-help, .gadget-zone.maximized .gadget-button.gadget-minimize,.gadget-zone.maximized .gadget-button.gadget-refresh,.gadget-zone.maximized .gadget-button.gadget-edit,.gadget-zone.maximized .gadget-button.gadget-close
-	{
+{
 	display: none;
 }
 
-.gadget-zone.maximized .gadget-button.gadget-maximize {
-	background: url("images/modalCloseBtn.png") no-repeat scroll 0 0
-		transparent;
-	height: 25px;
-	width: 25px;
-	margin-right: 10px;
-	margin-top: -2px;
-	float: none;
-	position: relative;
-	top: -12px; 
-	*top: 0px;
+.gadget-restore
+{
+ 	float: right;
+ 	cursor: pointer;
+ 	font-weight: normal;
+    margin-right: 20px;
 }
-
-.gadget-button.gadget-minimize {
+ 
+.gadget-button.gadget-minimize 
+{
 	float: left;
 	display: inline-block; 
 	*display: inline;
@@ -14554,6 +14550,7 @@ body .url-validator .required-form-label {
 	*display: inline;
 	zoom: 1;
 	margin-right: 5px;
+	vertical-align: top;
 }
 
 .private-icon {
