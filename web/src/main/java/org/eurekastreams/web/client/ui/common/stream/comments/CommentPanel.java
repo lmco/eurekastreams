@@ -87,7 +87,6 @@ public class CommentPanel extends Composite
         
         // Strip out any existing HTML.
         commentBody = jSNIFacade.escapeHtml(commentBody);
-        commentBody = commentBody.replaceAll(" ", "&nbsp;");
         commentBody = commentBody.replaceAll("(\r\n|\n|\r)", "<br />");
         
         // transform links
