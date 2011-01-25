@@ -932,21 +932,6 @@
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 
-	<bean id="textQueryParserBuilder" class="org.eurekastreams.commons.search.QueryParserBuilder"
-		scope="prototype">
-		<constructor-arg value="nothing" />
-		<constructor-arg>
-			<bean class="org.eurekastreams.commons.search.analysis.TextStemmerAnalyzer" />
-		</constructor-arg>
-	</bean>
-
-	<bean id="luceneSearchMapper"
-		class="org.eurekastreams.server.persistence.mappers.LuceneSearchMapper">
-		<property name="queryOptimizer" ref="queryOptimizer" />
-		<property name="queryBuilder" ref="textQueryParserBuilder" />
-
-	</bean>
-
 	<bean id="findLinkInformationByUrlMapper"
 		class="org.eurekastreams.server.persistence.mappers.FindLinkInformationByUrl">
 		<property name="queryOptimizer" ref="queryOptimizer" />
@@ -1612,14 +1597,6 @@
 		<constructor-arg value="5" />
 	</bean>
 
-	<bean id="unstemmedActivityResultsQueryBuilder" class="org.eurekastreams.commons.search.QueryParserBuilder"
-		scope="prototype">
-		<constructor-arg value="_hibernate_class" />
-		<constructor-arg>
-			<bean class="org.apache.lucene.analysis.WhitespaceAnalyzer" />
-		</constructor-arg>
-	</bean>
-
 	<bean id="luceneActivityDataSource"
 		class="org.eurekastreams.server.service.actions.strategies.activity.datasources.LuceneDataSource">
 		<!-- DataSource for searching activities -->
@@ -1645,6 +1622,7 @@
 							<bean
 								class="org.eurekastreams.commons.search.analysis.HashTagTextStemmerSearchAnalyzer" />
 						</constructor-arg>
+						<constructor-arg value="AND" />
 					</bean>
 				</property>
 				<property name="advancedQueryParserBuilder">
@@ -1654,6 +1632,7 @@
 							<bean
 								class="org.eurekastreams.commons.search.analysis.HashTagTextStemmerSearchAnalyzer" />
 						</constructor-arg>
+						<constructor-arg value="AND" />
 					</bean>
 				</property>
 				<property name="resultTransformer">
@@ -1678,7 +1657,16 @@
 						</value>
 					</list>
 				</property>
-				<property name="queryParserBuilder" ref="unstemmedActivityResultsQueryBuilder" />
+				<property name="queryParserBuilder">
+				    <bean id="unstemmedActivityResultsQueryBuilder" class="org.eurekastreams.commons.search.QueryParserBuilder"
+				        scope="prototype">
+				        <constructor-arg value="_hibernate_class" />
+				        <constructor-arg>
+				            <bean class="org.apache.lucene.analysis.WhitespaceAnalyzer" />
+				        </constructor-arg>
+				        <constructor-arg value="AND" />
+				    </bean>
+				</property>
 				<property name="resultTransformer">
 					<bean
 						class="org.eurekastreams.commons.hibernate.SingleFieldResultTransformer">

@@ -34,7 +34,7 @@ import org.hibernate.transform.ResultTransformer;
 /**
  * Hibernate Search request wrapper class. This class makes Hibernate Search/Lucene requests a little bit easier to
  * create.
- *
+ * 
  * Note: This is a work in progress for research and may be removed or heavily refactored. Don't spent too much time
  * understand what's going on here.
  */
@@ -57,7 +57,7 @@ public class ProjectionSearchRequestBuilder
 
     /**
      * Set the entity manager.
-     *
+     * 
      * @param newEntityManager
      *            the entity manager.
      */
@@ -109,7 +109,7 @@ public class ProjectionSearchRequestBuilder
      * Build and return the search query, parsing the input native search string, adding extra parameters needed under
      * the hood including the search score and explanation (if explanation is requested -- it's expensive), the managed
      * entity (if requested - it'll need to go to the database to load that, and setting the projection.
-     *
+     * 
      * @param nativeSearchString
      *            the native search string to parse and use
      * @return the FullTextQuery object, preloaded with the parsed query, all the parameters passed into this class'
@@ -129,7 +129,7 @@ public class ProjectionSearchRequestBuilder
      * text, adding extra parameters needed under the hood including the search score and explanation (if explanation is
      * requested -- it's expensive), the managed entity (if requested - it'll need to go to the database to load that,
      * and setting the projection.
-     *
+     * 
      * @param searchText
      *            text to search for
      * @return the FullTextQuery object, preloaded with the parsed query, all the parameters passed into this class'
@@ -145,7 +145,7 @@ public class ProjectionSearchRequestBuilder
      * text, adding extra parameters needed under the hood including the search score and explanation (if explanation is
      * requested -- it's expensive), the managed entity (if requested - it'll need to go to the database to load that,
      * and setting the projection.
-     *
+     * 
      * @param constraints
      *            an additional native search string. It is appended to the native search string generated for the
      *            searchText.
@@ -182,7 +182,7 @@ public class ProjectionSearchRequestBuilder
 
     /**
      * Prepare the input luceneQuery.
-     *
+     * 
      * @param inQueryParser
      *            the QueryParser to use
      * @param nativeSearchString
@@ -230,7 +230,7 @@ public class ProjectionSearchRequestBuilder
 
     /**
      * Set the paging on the input query (zero-based).
-     *
+     * 
      * @param query
      *            the query to set the paging on
      * @param from
@@ -249,7 +249,7 @@ public class ProjectionSearchRequestBuilder
 
     /**
      * Get a FullTextEntityManager from the entityManager.
-     *
+     * 
      * @return a FullTextEntityManager from the entityManager.
      */
     protected FullTextEntityManager getFullTextEntityManager()
@@ -259,7 +259,7 @@ public class ProjectionSearchRequestBuilder
 
     /**
      * Build the list of fields to retrieve.
-     *
+     * 
      * @return the list of fields to retrieve
      */
     protected List<String> buildFieldList()
@@ -279,7 +279,7 @@ public class ProjectionSearchRequestBuilder
 
     /**
      * Determine whether the input searchText is considered an advanced search.
-     *
+     * 
      * @param searchText
      *            the search text
      * @return whether the input searchText is considered an advanced search.
@@ -294,7 +294,7 @@ public class ProjectionSearchRequestBuilder
     /**
      * Escape special characters that are used for grouping keywords, still allowing wildcard, but removing any bare
      * wildcards.
-     *
+     * 
      * @param s
      *            the search text to escape
      * @return the input search text with all but wildcard characters escaped
@@ -335,7 +335,7 @@ public class ProjectionSearchRequestBuilder
 
     /**
      * Return whether the input char is a whitespace char.
-     *
+     * 
      * @param c
      *            the char to check
      * @return whether the input char is a whitespace char.
@@ -348,10 +348,10 @@ public class ProjectionSearchRequestBuilder
     /**
      * Modified version of QueryString.escape to escape characters that this query builder does not allow. Allow: ", +,
      * -, !, (, ), ~, *, ?.
-     *
+     * 
      * The allowed characters permit the advanced user to search ranges, exclude terms, mandate terms, use fuzzy and
      * wildcard search.
-     *
+     * 
      * @param s
      *            the text to escape
      * @return a cleaned-up version of the input String
@@ -379,7 +379,7 @@ public class ProjectionSearchRequestBuilder
 
     /**
      * Set the types of domain entity classes to search for.
-     *
+     * 
      * @param theResultTypes
      *            the types of domain entity classes to search for.
      */
@@ -403,7 +403,7 @@ public class ProjectionSearchRequestBuilder
     /**
      * Set the search string format, a String.format mask that the user's search terms are applied to as the first
      * parameter.
-     *
+     * 
      * @param theSearchStringFormat
      *            the search string format, a String.format mask that the user's search terms are applied to as the
      *            first parameter.
@@ -415,7 +415,7 @@ public class ProjectionSearchRequestBuilder
 
     /**
      * Set the result transformer, responsible for transforming the property/alias arrays into useful objects.
-     *
+     * 
      * @param theResultTransformer
      *            the result transformer, responsible for transforming the property/alias arrays into useful objects.
      */
@@ -426,7 +426,7 @@ public class ProjectionSearchRequestBuilder
 
     /**
      * Set the QueryParser to use to parse the formatted query string.
-     *
+     * 
      * @param inQueryParserBuilder
      *            the QueryParserBuilder to use to build the QueryParser to parse the formatted query string.
      */
@@ -437,7 +437,7 @@ public class ProjectionSearchRequestBuilder
 
     /**
      * Set which result fields are to be returned by the search.
-     *
+     * 
      * @param theResultFields
      *            which result fields are to be returned by the search
      */
@@ -448,7 +448,7 @@ public class ProjectionSearchRequestBuilder
 
     /**
      * QueryParserBuilder to use for advanced searches.
-     *
+     * 
      * @param inAdvancedQueryParserBuilder
      *            the advancedQueryParserBuilder to set
      */
@@ -459,7 +459,7 @@ public class ProjectionSearchRequestBuilder
 
     /**
      * Get the entity names for logging.
-     *
+     * 
      * @return the entity names for logging
      */
     public String getEntityNames()
