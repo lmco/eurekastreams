@@ -26,6 +26,7 @@
 		<constructor-arg>
 			<bean class="org.eurekastreams.commons.search.analysis.TextStemmerAnalyzer" />
 		</constructor-arg>
+		<constructor-arg value="OR"/>
 	</bean>
 
 
