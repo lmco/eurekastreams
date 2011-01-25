@@ -1144,22 +1144,22 @@ Eureka.ScrolledList = function(obj, moreCallback, size)
 
 	this.disableLess = function()
 	{
-		less.css("opacity", "0");
+		less.css("visibility", "hidden");
 	}
 
 	this.disableMore = function()
 	{
-		more.css("opacity", "0");
+		more.css("visibility", "hidden");
 	}
 
 	this.enableLess = function()
 	{
-		less.css("opacity", "1");
+		less.css("visibility", "visible");
 	}
 
 	this.enableMore = function()
 	{
-		more.css("opacity", "1");
+		more.css("visibility", "visible");
 	}
 
 	this.disableLess();
