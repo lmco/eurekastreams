@@ -15,8 +15,13 @@
  */
 package org.eurekastreams.commons.search;
 
+import java.security.InvalidParameterException;
+
+import org.apache.commons.logging.Log;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queryParser.QueryParser.Operator;
+import org.eurekastreams.commons.logging.LogFactory;
 
 /**
  * Class to build a QueryParser - needed because the QueryParser is not thread-safe. An instance of this class can be
@@ -25,6 +30,11 @@ import org.apache.lucene.queryParser.QueryParser;
  */
 public class QueryParserBuilder
 {
+    /**
+     * Logger.
+     */
+    private Log log = LogFactory.make();
+
     /**
      * Default field to use.
      */
@@ -36,25 +46,49 @@ public class QueryParserBuilder
     private Analyzer analyzer;
 
     /**
+     * The default boolean operator (AND|OR).
+     */
+    private Operator defaultBooleanOperator;
+
+    /**
      * Constructor.
-     *
+     * 
      * @param inDefaultField
      *            the default field to use if none are provided.
      * @param inAnalyzer
      *            the Analyzer to use to parse the query string
+     * @param inDefaultBooleanOperator
+     *            the default boolean operator (AND, OR)
      */
-    public QueryParserBuilder(final String inDefaultField, final Analyzer inAnalyzer)
+    public QueryParserBuilder(final String inDefaultField, final Analyzer inAnalyzer,
+            final String inDefaultBooleanOperator)
     {
         defaultField = inDefaultField;
         analyzer = inAnalyzer;
+        if (inDefaultBooleanOperator.equalsIgnoreCase("OR"))
+        {
+            defaultBooleanOperator = Operator.OR;
+        }
+        else if (inDefaultBooleanOperator.equalsIgnoreCase("AND"))
+        {
+            defaultBooleanOperator = Operator.AND;
+        }
+        else
+        {
+            throw new InvalidParameterException("Valid values for default boolean operator: [AND, OR]");
+        }
     }
 
     /**
      * Build a QueryParser with the constructor-fed default field and analyzer.
-     *
+     * 
      * @return a QueryParser with the constructor-fed default field and analyzer.
      */
     public QueryParser buildQueryParser()
-    {   return new QueryParser(defaultField, analyzer);
+    {
+        QueryParser qp = new QueryParser(defaultField, analyzer);
+        log.info("Setting default boolean operator to " + defaultBooleanOperator.toString());
+        qp.setDefaultOperator(defaultBooleanOperator);
+        return qp;
     }
 }

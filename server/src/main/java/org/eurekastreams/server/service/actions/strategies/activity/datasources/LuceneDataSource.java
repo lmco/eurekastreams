@@ -147,7 +147,6 @@ public class LuceneDataSource implements SortedDataSource
         else
         {
             query = searchRequestBuilder.buildQueryFromNativeSearchString(luceneQuery);
-
         }
 
         if (jsonQuery.containsKey("sortBy"))

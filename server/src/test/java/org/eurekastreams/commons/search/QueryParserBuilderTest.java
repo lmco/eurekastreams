@@ -36,7 +36,8 @@ public class QueryParserBuilderTest
     {
         String defaultField = "fooBar";
         StandardAnalyzer analyzer = new StandardAnalyzer();
-        QueryParserBuilder sut = new QueryParserBuilder(defaultField, analyzer);
+
+        QueryParserBuilder sut = new QueryParserBuilder(defaultField, analyzer, "OR");
 
         // build our query parser
         QueryParser parser = sut.buildQueryParser();

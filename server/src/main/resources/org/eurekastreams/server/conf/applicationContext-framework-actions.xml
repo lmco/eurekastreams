@@ -2531,9 +2531,22 @@
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.gallery.GetGallerySearchResultsExecution">
-                <constructor-arg ref="luceneSearchMapper" />
+            <bean class="org.eurekastreams.server.action.execution.gallery.GetGallerySearchResultsExecution">
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.LuceneSearchMapper">
+                        <property name="queryOptimizer" ref="queryOptimizer" />
+                        <property name="queryBuilder">
+                            <bean id="textQueryParserBuilder" class="org.eurekastreams.commons.search.QueryParserBuilder"
+						        scope="prototype">
+						        <constructor-arg value="nothing" />
+						        <constructor-arg>
+						            <bean class="org.eurekastreams.commons.search.analysis.TextStemmerAnalyzer" />
+						        </constructor-arg>
+						        <constructor-arg value="OR"/>
+						    </bean>
+                        </property>
+                    </bean>
+                </constructor-arg>
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />

@@ -27,6 +27,7 @@
 		<constructor-arg>
 			<bean class="org.apache.lucene.analysis.WhitespaceAnalyzer" />
 		</constructor-arg>
+		<constructor-arg value="OR" />
 	</bean>
 
 	<bean id="luceneFieldBooster" class="org.eurekastreams.commons.search.LuceneFieldBooster"
