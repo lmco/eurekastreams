@@ -157,6 +157,12 @@ input#gadget-search
     z-index: 101;
 }
 
+.content-warning
+{
+    font-size: 11px;
+    margin-bottom: 4px;
+}
+
 .nav-x
 {
 	float:right;

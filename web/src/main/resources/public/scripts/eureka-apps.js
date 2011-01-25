@@ -923,7 +923,7 @@ Eureka.Table = function(tableData, grided)
     }
 }
 
-Eureka.PostBox = function(text, postcb, maxlength)
+Eureka.PostBox = function(text, postcb, maxlength, contentWarning)
 {
 		var input = jQuery("<input class='text-label' id='gadget-search' value='"+text+"' />");
 		input.css("width", jQuery("body").width() - 66);
@@ -934,8 +934,13 @@ Eureka.PostBox = function(text, postcb, maxlength)
 		title.append(jQuery("<div class='gadget-post-search'></div>"));
  		
 		var postComment = jQuery("<div class='post-contents'></div>");
-		var commentInput = jQuery("<textarea rows='4' cols='30' />");
+		var commentInput = jQuery("<textarea rows='3' cols='30' />");
 		var countDown = jQuery("<div class='post-count-down'>" + maxlength + "</div>");
+
+        if (contentWarning != null)
+        {
+            postComment.append("<div class='content-warning'>" + contentWarning + "</div>");
+        }
 
 		commentInput.css("width", jQuery("body").width() - 30);
 		postComment.append(commentInput);
