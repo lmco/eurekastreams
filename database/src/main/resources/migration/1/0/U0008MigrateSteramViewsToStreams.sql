@@ -374,5 +374,5 @@ UPDATE gadget g2 set gadgetuserpref = '{"gadgetTitle" : "' || substring(gadgetus
 -- Migrate Composite Streams
 UPDATE gadget g2 set gadgetuserpref = '{"gadgetTitle" : "' || substring(gadgetuserpref from '"gadgetTitle":"([^"]*)"') || E'", "streamQuery":"saved/' || 
     (SELECT s.id from stream s, gadget g where int4(substring(g.gadgetuserpref from '"filterId":"([a-zA-Z0-9]*)"')) = s.streamviewid AND g.id = g2.id) || '"}' 
-    where g2.gadgetdefinitionid = 22 and g2.gadgetuserpref ~* '"streamtype":"compositestream"';
+    where g2.gadgetdefinitionid = 22 and g2.gadgetuserpref ~* '"streamtype":"compositestream"' and int4(substring(g2.gadgetuserpref from '"filterId":"([a-zA-Z0-9]*)"')) > 4;
 
