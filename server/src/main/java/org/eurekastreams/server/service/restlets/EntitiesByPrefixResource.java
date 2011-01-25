@@ -45,7 +45,7 @@ public class EntitiesByPrefixResource extends WritableResource
     /**
      * Logger.
      */
-    private Log log = LogFactory.getLog(BackgroundResource.class);
+    private final Log log = LogFactory.getLog(BackgroundResource.class);
 
     /**
      * Mapper for getting followed entities.

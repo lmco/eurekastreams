@@ -55,7 +55,7 @@ public class LikeCountWidget extends Composite
     /**
      * Main widget.
      */
-    private FocusPanel widget = new FocusPanel();
+    private final FocusPanel widget = new FocusPanel();
 
     /**
      * Shows users who have liked this.
@@ -95,12 +95,12 @@ public class LikeCountWidget extends Composite
     /**
      * Likers.
      */
-    private List<PersonModelView> likers;
+    private final List<PersonModelView> likers;
 
     /**
      * Activity ID.
      */
-    private Long thisActivityId;
+    private final Long thisActivityId;
 
     /**
      * Liked status.
@@ -152,6 +152,7 @@ public class LikeCountWidget extends Composite
             private boolean actuallyOut = false;
             private static final int TIMER_EXPIRATION = 250;
 
+            @Override
             public void onBrowserEvent(final Event event)
             {
                 super.onBrowserEvent(event);
@@ -166,7 +167,7 @@ public class LikeCountWidget extends Composite
                         {
                             if (actuallyOut)
                             {
-                                EffectsFacade.nativeFadeOut(usersWhoLikedPanelWrapper.getElement(), false);
+                                usersWhoLikedPanelWrapper.setVisible(false);
                             }
 
                         }
@@ -178,7 +179,7 @@ public class LikeCountWidget extends Composite
                 }
                 else if (DOM.eventGetType(event) == Event.ONCLICK)
                 {
-                    EffectsFacade.nativeFadeOut(usersWhoLikedPanelWrapper.getElement(), false);
+                    usersWhoLikedPanelWrapper.setVisible(false);
                 }
             }
         };
@@ -194,7 +195,7 @@ public class LikeCountWidget extends Composite
                 {
                     ActivityLikeModel.getInstance().update(
                             new SetActivityLikeRequest(currentActivityId, LikeActionType.ADD_LIKE));
-                    
+
                     arg0.stopPropagation();
                 }
             }
@@ -249,7 +250,7 @@ public class LikeCountWidget extends Composite
 
     /**
      * Constructor.
-     * 
+     *
      * @param inActivityId
      *            activity id.
      * @param inLikeCount
@@ -278,7 +279,7 @@ public class LikeCountWidget extends Composite
             {
                 showPanel();
 
-                EffectsFacade.nativeFadeIn(usersWhoLikedPanelWrapper.getElement(), false);
+                usersWhoLikedPanelWrapper.setVisible(true);
             }
         });
 
@@ -336,7 +337,7 @@ public class LikeCountWidget extends Composite
 
     /**
      * Update the panel.
-     * 
+     *
      * @param likeActionType
      *            the action that's being taken.
      */
