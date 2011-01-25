@@ -18,6 +18,7 @@ package org.eurekastreams.server.persistence.mappers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,12 +35,13 @@ import org.hibernate.search.jpa.FullTextQuery;
 /**
  * Search for stream-postable people and groups by prefix, using Hibernate Search.
  */
-public class SearchPeopleAndGroupsByPrefix extends ReadMapper<GetEntitiesByPrefixRequest, List<DisplayEntityModelView>>
+public class SearchPeopleAndGroupsByPrefix extends
+        ReadMapper<GetEntitiesByPrefixRequest, List<DisplayEntityModelView>>
 {
     /**
      * Logger.
      */
-    private Log log = LogFactory.getLog(SearchPeopleAndGroupsByPrefix.class);
+    private final Log log = LogFactory.getLog(SearchPeopleAndGroupsByPrefix.class);
 
     /**
      * default max results from query.
@@ -64,11 +66,18 @@ public class SearchPeopleAndGroupsByPrefix extends ReadMapper<GetEntitiesByPrefi
     /**
      * Flag to enable group searching only.
      */
-    private boolean searchGroupsOnly;
+    private final boolean searchGroupsOnly;
+
+    /** Regex to match characters which need to be escaped for Lucene. */
+    private static final String LUCENE_ESCAPE_REGEX_STRING = // \n
+    "[\\\\\\+\\-\\!\\(\\)\\:\\^\\[\\]\\\"\\{\\}\\~\\*\\?\\|\\&]";
+
+    /** Compiled regex to match characters which need to be escaped for Lucene. */
+    private static final Pattern LUCENE_ESCAPE_REGEX = Pattern.compile(LUCENE_ESCAPE_REGEX_STRING);
 
     /**
      * Constructor.
-     * 
+     *
      * @param inMaxResults
      *            the max number of results to return
      * @param inSearchRequestBuilder
@@ -94,7 +103,7 @@ public class SearchPeopleAndGroupsByPrefix extends ReadMapper<GetEntitiesByPrefi
 
     /**
      * Search for people and groups by prefix.
-     * 
+     *
      * @param inRequest
      *            The request object containing parameters for search.
      * @return List of DisplayEntityModelView representing people/groups matching search criteria.
@@ -108,8 +117,9 @@ public class SearchPeopleAndGroupsByPrefix extends ReadMapper<GetEntitiesByPrefi
         // - group: name
         // - both: isStreamPostable, isPublic
         // Due to text stemming, we need to search with and without the wildcard
+        String term = escapeSearchTerm(inRequest.getPrefix());
         String searchText = String.format("+(name:(%1$s* %1$s) lastName:(%1$s* %1$s) preferredName:(%1$s* %1$s)^0.5) "
-                + "+isStreamPostable:true %2$s", inRequest.getPrefix(), getGroupVisibilityClause(inRequest));
+                + "+isStreamPostable:true %2$s", term, getGroupVisibilityClause(inRequest));
 
         if (log.isTraceEnabled())
         {
@@ -121,7 +131,7 @@ public class SearchPeopleAndGroupsByPrefix extends ReadMapper<GetEntitiesByPrefi
         searchRequestBuilder.setPaging(query, 0, maxResults);
 
         // get the model views (via the injected cache transformer)
-        List<ModelView> searchResults = (List<ModelView>) query.getResultList();
+        List<ModelView> searchResults = query.getResultList();
 
         if (log.isTraceEnabled())
         {
@@ -171,7 +181,7 @@ public class SearchPeopleAndGroupsByPrefix extends ReadMapper<GetEntitiesByPrefi
 
     /**
      * Returns search clause used to sort out groups user doesn't have access to.
-     * 
+     *
      * @param inRequest
      *            The search parameters
      * @return Search clause used to sort out groups user doesn't have access to.
@@ -202,6 +212,17 @@ public class SearchPeopleAndGroupsByPrefix extends ReadMapper<GetEntitiesByPrefi
         result.append(")");
 
         return result.toString();
+    }
 
+    /**
+     * Escapes a search term for Lucene.
+     *
+     * @param term
+     *            Term to escape.
+     * @return Escaped term.
+     */
+    private String escapeSearchTerm(final String term)
+    {
+        return LUCENE_ESCAPE_REGEX.matcher(term).replaceAll("\\\\$0");
     }
 }
