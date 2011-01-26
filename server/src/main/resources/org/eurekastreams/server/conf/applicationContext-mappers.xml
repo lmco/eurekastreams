@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
-      http://www.springframework.org/schema/beans/spring-beans.xsd
-      http://www.springframework.org/schema/tx
-      http://www.springframework.org/schema/tx/spring-tx.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
 	<!--
 		**** Beans useful for multiple mappers (particularly in chained
@@ -317,7 +318,7 @@
 			</bean>
 		</constructor-arg>
 
-		<!-- RESULTS COMBINER - pick the non-null one -->
+		<!-- Results combiner:  return whichever is not null -->
 		<constructor-arg ref="nonNullResultsCombiner" />
 		
 		<!-- CACHE REFRESHER -->
@@ -487,7 +488,7 @@
 			</bean>
 		</constructor-arg>
 		
-		<!-- Return which ever is not null -->
+		<!-- Results combiner:  return whichever is not null -->
 		<constructor-arg ref="nonNullResultsCombiner" />
 				
 		<!-- Store the DTO back in cache -->
@@ -583,11 +584,8 @@
 			</bean>
 		</constructor-arg>
 
-		<constructor-arg>
-			<!-- Results combiner - just returns the first non-null value -->
-			<bean
-				class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-		</constructor-arg>
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
 
 		<constructor-arg>
 			<!-- Cache refresher -->
@@ -610,11 +608,8 @@
 			</bean>
 		</constructor-arg>
 
-		<constructor-arg>
-			<!-- Results combiner - just returns the first non-null value -->
-			<bean
-				class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-		</constructor-arg>
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
 
 		<constructor-arg>
 			<!-- Cache refresher -->
@@ -651,11 +646,8 @@
 			</bean>
 		</constructor-arg>
 
-		<constructor-arg>
-			<!-- Results combiner - just returns the first non-null value -->
-			<bean
-				class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-		</constructor-arg>
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
 
 		<constructor-arg>
 			<!-- Cache refresher -->
@@ -693,10 +685,8 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.db.GetTutorialVideosDbMapper" />
         </constructor-arg>
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>
+        <!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
         <constructor-arg>
 	        <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
@@ -726,10 +716,8 @@
                 <constructor-arg ref="jpaAppDataMapper"/>
             </bean>
         </constructor-arg>
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>
+        <!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
@@ -763,10 +751,8 @@
 		        </constructor-arg>
             </bean>
         </constructor-arg>
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>
+        <!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
@@ -790,10 +776,8 @@
                 </constructor-arg>
             </bean>
         </constructor-arg>
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>
+        <!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
@@ -823,10 +807,8 @@
                 <constructor-arg ref="getThemeCssByUuid"/>
             </bean>
         </constructor-arg>
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>
+        <!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
@@ -848,10 +830,8 @@
                 <constructor-arg ref="getThemeCssByUuid_FORCE_REFRESH"/>
             </bean>
         </constructor-arg>
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>
+        <!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
@@ -884,10 +864,8 @@
                 </constructor-arg>
             </bean>
         </constructor-arg>
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>
+        <!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
@@ -908,9 +886,8 @@
                 </constructor-arg>
             </bean>
         </constructor-arg>
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
                 <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_PAGE_PROPERTIES_BY_ID" />
@@ -993,11 +970,8 @@
 		<!-- Database mapper to fall back on if not found in cache -->
 		<constructor-arg ref="getFollowedByActivitiesDbMapper" />
 
-		<constructor-arg>
-			<!-- Results combiner - just returns the first non-null value -->
-			<bean
-				class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-		</constructor-arg>
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
 
 		<!-- Cache refresher -->
 		<constructor-arg ref="refreshFollowedByActivitiesCacheMapper" />
@@ -1017,7 +991,7 @@
 		</constructor-arg>
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getOrganizationsByIdsDbMapper" />
-        <!-- Data combiner -->
+        <!-- Results combiner -->
         <constructor-arg ref="collectionCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="organizationCacheRefresher"/>                        
@@ -1028,7 +1002,7 @@
         <constructor-arg ref="nullResultPartialMapper"/>
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getOrganizationsByIdsDbMapper" />
-        <!-- Data combiner -->
+        <!-- Results combiner -->
         <constructor-arg ref="collectionCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="organizationCacheRefresher"/>                        
@@ -1049,10 +1023,8 @@
 		</constructor-arg>
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getParentOrgIdsRecursiveByOrgIdDbMapper" />
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="orgRecursiveParentOrgIdRefresher" />
     </bean>
@@ -1062,10 +1034,8 @@
 		<constructor-arg ref="nullResultPartialMapper"/>
 		<!-- Database mapper to fall back on if not found in cache -->
 		<constructor-arg ref="getParentOrgIdsRecursiveByOrgIdDbMapper" />
-		<!-- Data combiner -->
-		<constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-		</constructor-arg>
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="orgRecursiveParentOrgIdRefresher" />
 	</bean> 
@@ -1075,10 +1045,8 @@
         <constructor-arg ref="nullResultPartialMapper"/>
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getChildOrgIdsRecursiveByOrgIdDbMapper" />
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
 		<constructor-arg ref="getChildOrgIdsRecursiveByOrgIdCacheRefresher"/>
     </bean>
@@ -1088,10 +1056,8 @@
         <constructor-arg ref="getChildOrgIdsRecursiveByOrgIdCacheMapper"/>
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getChildOrgIdsRecursiveByOrgIdDbMapper" />
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="getChildOrgIdsRecursiveByOrgIdCacheRefresher"/>
     </bean>    
@@ -1117,10 +1083,8 @@
         <constructor-arg ref="nullResultPartialMapper"/>
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getGroupCoordinatorIdsByGroupIdDbMapper" />
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>        
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="getGroupCoordinatorIdsByGroupIdCacheRefresher"/>                      
     </bean>
@@ -1130,10 +1094,8 @@
         <constructor-arg ref="getGroupCoordinatorIdsByGroupIdCacheMapper"/>
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getGroupCoordinatorIdsByGroupIdDbMapper" />
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>        
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="getGroupCoordinatorIdsByGroupIdCacheRefresher"/>                       
     </bean>
@@ -1159,10 +1121,8 @@
         <constructor-arg ref="getOrderedCommentIdsByActivityIdCacheMapper"/>
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getOrderedCommentIdsByActivityIdDbMapper" />
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>        
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="getOrderedCommentIdsByActivityIdCacheRefresher"/>                       
     </bean>
@@ -1190,11 +1150,8 @@
 		<!-- Database mapper to fall back on if not found in cache -->
 		<constructor-arg ref="getFollowedByActivitiesDbMapper" />
 
-		<constructor-arg>
-			<!-- Results combiner - just returns the first non-null value -->
-			<bean
-				class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-		</constructor-arg>
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
 
 		<!-- Cache refresher -->
 		<constructor-arg ref="refreshFollowedByActivitiesCacheMapper" />
@@ -1205,7 +1162,7 @@
         <constructor-arg ref="nullResultPartialMapper"/>
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getGroupsByIdsDbMapper" />
-        <!-- Data combiner -->
+        <!-- Results combiner -->
         <constructor-arg ref="collectionCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="groupCacheRefresher"/>                        
@@ -1216,7 +1173,7 @@
         <constructor-arg ref="getGroupsByIdsCacheMapper"/>
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getGroupsByIdsDbMapper" />
-        <!-- Data combiner -->
+        <!-- Results combiner -->
         <constructor-arg ref="collectionCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="groupCacheRefresher"/>                        
@@ -1235,10 +1192,8 @@
         <constructor-arg ref="nullResultPartialMapper"/>
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getFollowedGroupIdsForPersonByIdDbMapper" />
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>        
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="getFollowedGroupIdsForPersonByIdCacheRefresher" />                       
     </bean>
@@ -1248,10 +1203,8 @@
         <constructor-arg ref="getFollowedGroupIdsForPersonByIdCacheMapper"/>
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getFollowedGroupIdsForPersonByIdDbMapper" />
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>        
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="getFollowedGroupIdsForPersonByIdCacheRefresher" />                       
     </bean>   
@@ -1277,10 +1230,8 @@
         <constructor-arg ref="nullResultPartialMapper"/>
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getFollowerPersonIdsForGroupByIdDbMapper" />
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>        
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="getFollowerPersonIdsForGroupByIdCacheRefresher"/>                       
     </bean>    
@@ -1290,10 +1241,8 @@
         <constructor-arg ref="getFollowerPersonIdsForGroupByIdCacheMapper"/>
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getFollowerPersonIdsForGroupByIdDbMapper" />
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>        
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="getFollowerPersonIdsForGroupByIdCacheRefresher"/>                       
     </bean> 
@@ -1320,10 +1269,8 @@
         <constructor-arg ref="getFollowedPersonIdsForPersonByIdCacheMapper"/>
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getFollowedPersonIdsForPersonByIdDbMapper" />
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>        
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="getFollowedPersonIdsForPersonByIdCacheRefresher"/>                       
     </bean>
@@ -1333,10 +1280,8 @@
         <constructor-arg ref="nullResultPartialMapper"/>
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getFollowedPersonIdsForPersonByIdDbMapper" />
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>        
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="getFollowedPersonIdsForPersonByIdCacheRefresher"/>                        
     </bean> 
@@ -1362,10 +1307,8 @@
         <constructor-arg ref="getFollowerPersonIdsForPersonByIdCacheMapper"/>
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getFollowerPersonIdsForPersonByIdDbMapper" />
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>        
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="getFollowerPersonIdsForPersonByIdCacheRefresher"/>                       
     </bean>
@@ -1375,10 +1318,8 @@
         <constructor-arg ref="nullResultPartialMapper"/>
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getFollowerPersonIdsForPersonByIdDbMapper" />
-        <!-- Data combiner -->
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-        </constructor-arg>        
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="getFollowerPersonIdsForPersonByIdCacheRefresher"/>                       
     </bean> 
@@ -1404,7 +1345,7 @@
         <constructor-arg ref="getPersonsByIdsCacheMapper"/>
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getPersonsByIdsDBMapper" />
-        <!-- Data combiner -->
+        <!-- Results combiner -->
         <constructor-arg ref="collectionCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="personCacheRefresher"/>                        
@@ -1421,7 +1362,7 @@
         <constructor-arg ref="nullResultPartialMapper"/>
         <!-- Database mapper to fall back on if not found in cache -->
         <constructor-arg ref="getPersonsByIdsDBMapper" />
-        <!-- Data combiner -->
+        <!-- Results combiner -->
         <constructor-arg ref="collectionCombiner" />
         <!-- Cache refresher -->
         <constructor-arg ref="personCacheRefresher"/>                        
@@ -2054,17 +1995,61 @@
 	<bean id="getUserIdsWithUnreadApplicationAlertsByDate"
 		class="org.eurekastreams.server.persistence.mappers.db.GetUserIdsWithUnreadApplicationAlertsByDate" />
 
-	<bean id="syncUnreadApplicationAlertCountCacheByUserId"
-		class="org.eurekastreams.server.persistence.mappers.cache.SyncUnreadApplicationAlertCountCacheByUserId">
-		<property name="cache" ref="memcachedCache" />
+	<bean id="getUnreadApplicationAlertCountByUserId" 
+		class="org.eurekastreams.server.persistence.mappers.db.notification.GetUnreadApplicationAlertCountByUserId">
+		<property name="queryOptimizer" ref="queryOptimizer" />
 	</bean>
-
-	<bean id="getCachedAlertCountByUserId"
-		class="org.eurekastreams.server.persistence.mappers.cache.GetCachedAlertCountByUserId">
-		<constructor-arg ref="syncUnreadApplicationAlertCountCacheByUserId" />
-		<property name="cache" ref="memcachedCache" />
+		
+	<bean id="getCachedAlertCountByUserId" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		<!-- Cache mapper -->
+		<constructor-arg>
+		    <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+		       <constructor-arg>
+					<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
+						<constructor-arg>
+							<util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" />
+						</constructor-arg>
+						<constructor-arg ref="toStringCacheKeySuffixTransformer" />
+						<property name="cache" ref="memcachedCache" />
+					</bean>
+				</constructor-arg>
+			</bean>
+		</constructor-arg>
+		<!-- Database mapper -->
+		<constructor-arg ref="getUnreadApplicationAlertCountByUserId" />
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
+		<!-- Cache updater -->
+		<constructor-arg>
+	        <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
+				<constructor-arg>
+					<util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" />
+				</constructor-arg>
+				<constructor-arg ref="toStringCacheKeySuffixTransformer" />
+				<property name="cache" ref="memcachedCache" />
+		    </bean> 
+	    </constructor-arg>       
 	</bean>
-
+	
+	<bean id="getCachedAlertCountByUserId_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		<!-- Cache mapper -->
+		<constructor-arg ref="nullResultPartialMapper" />
+		<!-- Database mapper -->
+		<constructor-arg ref="getUnreadApplicationAlertCountByUserId" />
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
+		<!-- Cache updater -->
+		<constructor-arg>
+	        <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
+				<constructor-arg>
+					<util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER" />
+				</constructor-arg>
+				<constructor-arg ref="toStringCacheKeySuffixTransformer" />
+				<property name="cache" ref="memcachedCache" />
+		    </bean> 
+	    </constructor-arg>       
+	</bean>
+	
 	<bean id="populateOrgChildWithSkeletonParentOrgsCacheMapper"
 		class="org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper">
 		<constructor-arg ref="getOrganizationsByIdsMapper" />

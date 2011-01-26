@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import org.eurekastreams.commons.actions.context.ActionContext;
  */
 public class PassThruRequestTransformer implements RequestTransformer
 {
-
     /**
      * Don't do anything. Used for classes where there is no transformation
      * needed in this instance of the bean.
@@ -36,5 +35,4 @@ public class PassThruRequestTransformer implements RequestTransformer
     {
         return inActionContext.getParams();
     }
-
 }

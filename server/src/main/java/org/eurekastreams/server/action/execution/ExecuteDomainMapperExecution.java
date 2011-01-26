@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,47 +16,43 @@
 package org.eurekastreams.server.action.execution;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 
 /**
  * Executes a configured {@link DomainMapper} with provided params.
- * 
  */
 public class ExecuteDomainMapperExecution implements ExecutionStrategy<ActionContext>
 {
     /**
      * {@link DomainMapper}.
      */
-    private DomainMapper<Serializable, Serializable> domainMapper;
+    private final DomainMapper<Serializable, Serializable> domainMapper;
 
-    /**
-     * Flag indicating if param should be put in list before calling domain mapper.
-     */
-    private boolean putParamInList;
+    /** Strategy to supply mapper parameters from the action context. */
+    private final Transformer<ActionContext, Serializable> parameterSupplier;
 
     /**
      * Constructor.
-     * 
+     *
+     * @param inParameterSupplier
+     *            Strategy to supply mapper parameters from the action context.
      * @param inDomainMapper
      *            {@link DomainMapper}.
-     * @param inPutParamInList
-     *            flag to indicate if parameter should be inserted into a list before being sent to DomainMapper.
      */
-    public ExecuteDomainMapperExecution(final DomainMapper<Serializable, Serializable> inDomainMapper,
-            final boolean inPutParamInList)
+    public ExecuteDomainMapperExecution(final Transformer<ActionContext, Serializable> inParameterSupplier,
+            final DomainMapper<Serializable, Serializable> inDomainMapper)
     {
+        parameterSupplier = inParameterSupplier;
         domainMapper = inDomainMapper;
-        putParamInList = inPutParamInList;
     }
 
     /**
      * Executes a configured {@link DomainMapper} with provided params.
-     * 
+     *
      * @param inActionContext
      *            {@link ActionContext}.
      * @return {@link DomainMapper} results.
@@ -64,9 +60,7 @@ public class ExecuteDomainMapperExecution implements ExecutionStrategy<ActionCon
     @Override
     public Serializable execute(final ActionContext inActionContext)
     {
-
-        return putParamInList ? domainMapper.execute(new ArrayList<Serializable>(Arrays.asList(inActionContext
-                .getParams()))) : domainMapper.execute(inActionContext.getParams());
+        Serializable param = parameterSupplier.transform(inActionContext);
+        return domainMapper.execute(param);
     }
-
 }

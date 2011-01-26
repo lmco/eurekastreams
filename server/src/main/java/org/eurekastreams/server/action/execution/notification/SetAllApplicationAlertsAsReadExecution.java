@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.server.persistence.mappers.cache.SyncUnreadApplicationAlertCountCacheByUserId;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.SetAllApplicationAlertsAsReadByUserId;
 
 /**
@@ -34,28 +34,28 @@ public class SetAllApplicationAlertsAsReadExecution implements ExecutionStrategy
     /**
      * Logger.
      */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /**
      * Mapper to set all application alerts as read.
      */
-    private SetAllApplicationAlertsAsReadByUserId alertMapper;
+    private final SetAllApplicationAlertsAsReadByUserId alertMapper;
 
     /**
      * Mapper to sync database and cache unread alert count.
      */
-    private SyncUnreadApplicationAlertCountCacheByUserId syncMapper;
+    private final DomainMapper<Long, Integer> syncMapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inAlertMapper
      *            the alert mapper to set.
      * @param inSyncMapper
      *            the sync mapper to set.
      */
     public SetAllApplicationAlertsAsReadExecution(final SetAllApplicationAlertsAsReadByUserId inAlertMapper,
-            final SyncUnreadApplicationAlertCountCacheByUserId inSyncMapper)
+            final DomainMapper<Long, Integer> inSyncMapper)
     {
         alertMapper = inAlertMapper;
         syncMapper = inSyncMapper;

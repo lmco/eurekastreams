@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,20 @@ package org.eurekastreams.server.action.request.transformer;
 
 import java.io.Serializable;
 
-import org.eurekastreams.commons.actions.context.ActionContext;
+import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 
 /**
- * Transform a request object into something new.
+ * Transformer which returns the person ID of the principal (current user) in place of the request parameters.
  */
-public interface RequestTransformer extends Transformer<ActionContext, Serializable>
+public class UsePrincipalPersonIdRequestTransformer implements Transformer<PrincipalActionContext, Serializable>
 {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Serializable transform(final PrincipalActionContext inActionContext)
+    {
+        return inActionContext.getPrincipal().getId();
+    }
 }

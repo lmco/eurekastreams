@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.eurekastreams.server.action.execution.notification;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,10 +26,12 @@ import org.eurekastreams.server.domain.ApplicationAlertNotification;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.InsertMapper;
-import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
-import org.eurekastreams.server.persistence.mappers.cache.SyncUnreadApplicationAlertCountCacheByUserId;
 import org.eurekastreams.server.persistence.mappers.stream.CachedMapperTest;
+import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +41,15 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class ApplicationAlertNotifierTest extends CachedMapperTest
 {
-    /**
-     * System under test.
-     */
+    /** Used for mocking objects. */
+    private final JUnit4Mockery context = new JUnit4Mockery()
+    {
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
+
+    /** System under test. */
     private ApplicationAlertNotifier sut;
 
     /** Insert mapper. */
@@ -50,8 +57,7 @@ public class ApplicationAlertNotifierTest extends CachedMapperTest
     InsertMapper<ApplicationAlertNotification> insertMapper;
 
     /** Sync mapper. */
-    @Autowired
-    SyncUnreadApplicationAlertCountCacheByUserId syncMapper;
+    private final DomainMapper<Long, Integer> syncMapper = context.mock(DomainMapper.class, "syncMapper");
 
     /**
      * Setup the sut.
@@ -59,7 +65,6 @@ public class ApplicationAlertNotifierTest extends CachedMapperTest
     @Before
     public void setup()
     {
-        syncMapper.setCache(getCache());
         sut = new ApplicationAlertNotifier(insertMapper, syncMapper);
         sut.setEntityManager(getEntityManager());
     }
@@ -76,25 +81,31 @@ public class ApplicationAlertNotifierTest extends CachedMapperTest
         final long destinationId = 98;
         final long activityId = 6789;
 
-        assertTrue(getCache().get(CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER + recipientId) == null);
+        context.checking(new Expectations()
+        {
+            {
+                exactly(2).of(syncMapper).execute(recipientId);
+            }
+        });
 
-        NotificationDTO commentNotification =
-                new NotificationDTO(Collections.singletonList(recipientId),
+        NotificationDTO commentNotification = new NotificationDTO(Collections.singletonList(recipientId),
                 NotificationType.COMMENT_TO_COMMENTED_POST, actorId, destinationId, EntityType.PERSON, activityId);
-        sut.notify(commentNotification);
+        UserActionRequest asyncRequest1 = sut.notify(commentNotification);
 
-        NotificationDTO followNotification =
-                new NotificationDTO(Collections.singletonList(recipientId),
+        NotificationDTO followNotification = new NotificationDTO(Collections.singletonList(recipientId),
                 NotificationType.FOLLOW_PERSON, actorId, 0, EntityType.PERSON, 0);
-        UserActionRequest currentAsyncRequest = sut.notify(followNotification);
-        List<ApplicationAlertNotification> alerts = getEntityManager().createQuery(
-                "from ApplicationAlertNotification a WHERE recipient.id=:id").setParameter("id", recipientId)
-                .getResultList();
+        UserActionRequest asyncRequest2 = sut.notify(followNotification);
 
+        context.assertIsSatisfied();
+
+        assertNull(asyncRequest1);
+        assertNull(asyncRequest2);
+
+        List<ApplicationAlertNotification> alerts = getEntityManager()
+                .createQuery("from ApplicationAlertNotification a WHERE recipient.id=:id")
+                .setParameter("id", recipientId).getResultList();
         assertEquals(2, alerts.size());
-        assertEquals(2, getCache().get(CacheKeys.UNREAD_APPLICATION_ALERT_COUNT_BY_USER + recipientId));
-        assertTrue(NotificationType.COMMENT_TO_COMMENTED_POST == alerts.get(0).getNotificiationType());
-        assertTrue(NotificationType.FOLLOW_PERSON == alerts.get(1).getNotificiationType());
-        assertNull(currentAsyncRequest);
+        assertEquals(NotificationType.COMMENT_TO_COMMENTED_POST, alerts.get(0).getNotificiationType());
+        assertEquals(NotificationType.FOLLOW_PERSON, alerts.get(1).getNotificiationType());
     }
 }

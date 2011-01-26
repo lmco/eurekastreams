@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.server.persistence.mappers.cache.SyncUnreadApplicationAlertCountCacheByUserId;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.DeleteApplicationAlertsByDate;
 import org.eurekastreams.server.persistence.mappers.db.GetUserIdsWithUnreadApplicationAlertsByDate;
 
@@ -36,31 +36,31 @@ public class DeleteOldApplicationAlertsExecution implements ExecutionStrategy<Ac
     /**
      * Logger.
      */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /**
      * Mapper to delete alerts.
      */
-    private DeleteApplicationAlertsByDate deleteMapper;
+    private final DeleteApplicationAlertsByDate deleteMapper;
 
     /**
      * Mapper to find user ids with old unread alerts.
      */
-    private GetUserIdsWithUnreadApplicationAlertsByDate unreadMapper;
+    private final GetUserIdsWithUnreadApplicationAlertsByDate unreadMapper;
 
     /**
      * Mapper to sync database and cache unread alert count.
      */
-    private SyncUnreadApplicationAlertCountCacheByUserId syncMapper;
+    private final DomainMapper<Long, Integer> syncMapper;
 
     /**
      * Age at which alerts can be deleted.
      */
-    private int ageInDays;
+    private final int ageInDays;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inDeleteMapper
      *            The mapper that performs the application alert deletion from the database.
      * @param inUnreadMapper
@@ -72,7 +72,7 @@ public class DeleteOldApplicationAlertsExecution implements ExecutionStrategy<Ac
      */
     public DeleteOldApplicationAlertsExecution(final DeleteApplicationAlertsByDate inDeleteMapper,
             final GetUserIdsWithUnreadApplicationAlertsByDate inUnreadMapper,
-            final SyncUnreadApplicationAlertCountCacheByUserId inSyncMapper, final int inAgeInDays)
+            final DomainMapper<Long, Integer> inSyncMapper, final int inAgeInDays)
     {
         deleteMapper = inDeleteMapper;
         ageInDays = inAgeInDays;

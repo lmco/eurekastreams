@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.context.ActionContext;
-import org.eurekastreams.server.persistence.mappers.cache.SyncUnreadApplicationAlertCountCacheByUserId;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.DeleteApplicationAlertsByDate;
 import org.eurekastreams.server.persistence.mappers.db.GetUserIdsWithUnreadApplicationAlertsByDate;
 import org.jmock.Expectations;
@@ -53,24 +53,23 @@ public class DeleteOldApplicationAlertsExecutionTest
     /**
      * Alert mapper mock.
      */
-    private DeleteApplicationAlertsByDate deleteMapper = context.mock(DeleteApplicationAlertsByDate.class);
+    private final DeleteApplicationAlertsByDate deleteMapper = context.mock(DeleteApplicationAlertsByDate.class);
 
     /**
      * Unread user ids mapper mock.
      */
-    private GetUserIdsWithUnreadApplicationAlertsByDate unreadMapper = context
+    private final GetUserIdsWithUnreadApplicationAlertsByDate unreadMapper = context
             .mock(GetUserIdsWithUnreadApplicationAlertsByDate.class);
 
     /**
      * Sync mapper mock.
      */
-    private SyncUnreadApplicationAlertCountCacheByUserId syncMapper = context
-            .mock(SyncUnreadApplicationAlertCountCacheByUserId.class);
+    private final DomainMapper<Long, Integer> syncMapper = context.mock(DomainMapper.class);
 
     /**
      * ActionContext mock.
      */
-    private ActionContext actionContext = context.mock(ActionContext.class);
+    private final ActionContext actionContext = context.mock(ActionContext.class);
 
     /**
      * Count of alerts.
