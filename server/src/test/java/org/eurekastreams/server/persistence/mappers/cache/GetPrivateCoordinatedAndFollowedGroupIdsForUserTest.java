@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,18 +50,20 @@ public class GetPrivateCoordinatedAndFollowedGroupIdsForUserTest extends CachedM
     /**
      * Mapper to get all private group ids that a user can view with org or group coordinator access.
      */
-    private GetPrivateGroupsByUserId getPrivateGroupIdsMapper = context.mock(GetPrivateGroupsByUserId.class);
+    private final DomainMapper<Long, Set<Long>> getPrivateGroupIdsMapper = context.mock(DomainMapper.class,
+            "getPrivateGroupIdsMapper");
 
     /**
      * Mapper to get the group ids followed by a person.
      */
-    private DomainMapper<Long, List<Long>> getFollowedGroupIdsMapper = context.mock(DomainMapper.class);
+    private final DomainMapper<Long, List<Long>> getFollowedGroupIdsMapper = context.mock(DomainMapper.class,
+            "getFollowedGroupIdsMapper");
 
     /**
      * Mapper to get the group ids.
      */
-    private GetPrivateCoordinatedAndFollowedGroupIdsForUser sut = new GetPrivateCoordinatedAndFollowedGroupIdsForUser(
-            getPrivateGroupIdsMapper, getFollowedGroupIdsMapper);
+    private final GetPrivateCoordinatedAndFollowedGroupIdsForUser sut = // \n
+    new GetPrivateCoordinatedAndFollowedGroupIdsForUser(getPrivateGroupIdsMapper, getFollowedGroupIdsMapper);
 
     /**
      * Person id for testing.
@@ -210,7 +212,7 @@ public class GetPrivateCoordinatedAndFollowedGroupIdsForUserTest extends CachedM
 
     /**
      * Common assertion that groupId1 and groupId2 are in inResults.
-     * 
+     *
      * @param inResults
      *            results to check
      */

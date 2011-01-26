@@ -1711,14 +1711,55 @@
 	<bean id="getOrganizationCoordinatorIdsByOrganizationIdDbMapper"
 		class="org.eurekastreams.server.persistence.mappers.db.GetOrganizationCoordinatorIdsByOrganizationIdDbMapper" />
 
-	<bean id="getPrivateGroupsByUserId"
-		class="org.eurekastreams.server.persistence.mappers.cache.GetPrivateGroupsByUserId">
+
+	<bean id="getPrivateGroupsByUserIdSource"
+		class="org.eurekastreams.server.persistence.mappers.composite.GetPrivateGroupsByUserId">
 		<constructor-arg ref="getPrivateGroupIdsCoordinatedByPersonMapper" />
 		<constructor-arg ref="getOrgIdsDirectlyCoordinatedByPersonFromDB" />
 		<constructor-arg ref="organizationHierarchyCache" />
 		<constructor-arg ref="getPrivateGroupIdsUnderOrganizationsFromDB" />
+	</bean>
+
+	<bean id="baseGetPrivateGroupsByUserIdCacheHandling" abstract="true">
+		<constructor-arg>
+			<util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR" />
+		</constructor-arg>
+		<constructor-arg ref="toStringCacheKeySuffixTransformer" />
 		<property name="cache" ref="memcachedCache" />
 	</bean>
+
+	<bean id="getPrivateGroupsByUserId" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		<!-- Cache mapper -->
+		<constructor-arg>
+		    <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+		       <constructor-arg>
+					<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper" parent="baseGetPrivateGroupsByUserIdCacheHandling" />
+				</constructor-arg>
+			</bean>
+		</constructor-arg>
+		<!-- Database mapper -->
+		<constructor-arg ref="getPrivateGroupsByUserIdSource" />
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
+		<!-- Cache updater -->
+		<constructor-arg>
+	        <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy" parent="baseGetPrivateGroupsByUserIdCacheHandling" />
+	    </constructor-arg>       
+	</bean>
+	
+	<bean id="getPrivateGroupsByUserId_FORCE_REFRESH" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		<!-- Cache mapper -->
+		<constructor-arg ref="nullResultPartialMapper" />
+		<!-- Database mapper -->
+		<constructor-arg ref="getPrivateGroupsByUserIdSource" />
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
+		<!-- Cache updater -->
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy" parent="baseGetPrivateGroupsByUserIdCacheHandling" />
+	    </constructor-arg>       
+	</bean>
+
 
 	<bean id="addPrivateGroupIdToCachedCoordinatorAccessList"
 		class="org.eurekastreams.server.persistence.mappers.cache.AddPrivateGroupIdToCachedCoordinatorAccessList">

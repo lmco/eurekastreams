@@ -3051,17 +3051,12 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
-    
-    
-
 
     <bean id="organizationCacheUpdaterAsyncAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.profile.OrganizationCacheUpdaterExecution">
-                <constructor-arg ref="getPrivateGroupsByUserId" />
-                <constructor-arg ref="memcachedCache" />
+            <bean class="org.eurekastreams.server.action.execution.profile.OrganizationCacheUpdaterExecution">
+                <constructor-arg ref="getPrivateGroupsByUserId_FORCE_REFRESH" />
                 <constructor-arg ref="saveOrganizationCoordinatorIdsToCache" />
                 <constructor-arg ref="orgParentHierarchyCacheCleaner" />
             </bean>
@@ -3070,21 +3065,18 @@
     </bean>
     
     <bean id="personActivityAvatarUpdaterAsyncAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
-        <!-- Update the author avatar ids in cached activities, comments, and embedded comments authored by a user
--->
+        <!-- Update the author avatar ids in cached activities, comments, and embedded comments authored by a user -->
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.profile.PersonAuthoredActivitiesAndCommentsCacheUpdater">
-                <!-- Update the author information on all cached activities and comments for a user
--->
+                <!-- Update the author information on all cached activities and comments for a user -->
             
                 <constructor-arg ref="getActivityIdsAuthoredByOrOriginallyAuthoredByEntityDBMapper" />
                 <constructor-arg ref="getActivityCommentIdsAuthoredByPersonIdDBMapper" />
                 <constructor-arg ref="getActivityIdsWithFirstOrLastCommentsAuthoredByPersonIdDBMapper" />
                 
                 <constructor-arg>
-                    <!-- Update the author's avatar in all cached activities authored by a user
--->
+                    <!-- Update the author's avatar in all cached activities authored by a user -->
                     <bean class="org.eurekastreams.server.persistence.mappers.cache.UpdateAuthorInfoInCachedActivities">
                         <constructor-arg value="100" />
                         

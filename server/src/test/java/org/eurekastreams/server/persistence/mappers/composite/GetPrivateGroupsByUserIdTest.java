@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.mappers.cache;
+package org.eurekastreams.server.persistence.mappers.composite;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
@@ -24,17 +23,19 @@ import java.util.Set;
 import javax.persistence.Query;
 
 import org.eurekastreams.server.persistence.mappers.GetPrivateGroupIdsCoordinatedByPerson;
+import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.persistence.mappers.cache.GetOrgIdsDirectlyCoordinatedByPerson;
+import org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCache;
 import org.eurekastreams.server.persistence.mappers.db.GetPrivateGroupIdsUnderOrganizations;
-import org.eurekastreams.server.persistence.mappers.stream.CachedMapperTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * This class tests the GetPrivateGroupsByUserId mapper.
- * 
+ *
  */
-public class GetPrivateGroupsByUserIdTest extends CachedMapperTest
+public class GetPrivateGroupsByUserIdTest extends MapperTest
 {
     /**
      * Mapper to retrieve the private group ids that the supplied user is a follower or coordinator for.
@@ -93,7 +94,6 @@ public class GetPrivateGroupsByUserIdTest extends CachedMapperTest
     {
         sut = new GetPrivateGroupsByUserId(privateGroupIdsMapper, orgCoordMapper, orgHierarchyCacheMapper,
                 orgPrivateGroupIdsMapper);
-        sut.setCache(getCache());
         sut.setEntityManager(getEntityManager());
 
         Query updateGroupToPrivate = getEntityManager().createQuery(
@@ -109,16 +109,10 @@ public class GetPrivateGroupsByUserIdTest extends CachedMapperTest
     @Test
     public void testExecuteWithDirectGroupCoordinator()
     {
-        Set<Long> emptyGroupIdsList = (Set<Long>) getCache().get(
-                CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + TEST_GROUP_COORDINATOR_USER_ID);
-        assertNull(emptyGroupIdsList);
+        Set<Long> results = sut.execute(TEST_GROUP_COORDINATOR_USER_ID);
 
-        sut.execute(TEST_GROUP_COORDINATOR_USER_ID);
-
-        Set<Long> groupIdsList = (Set<Long>) getCache().get(
-                CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + TEST_GROUP_COORDINATOR_USER_ID);
-        assertNotNull(groupIdsList);
-        assertTrue(groupIdsList.contains(TEST_PRIVATE_GROUP_ID));
+        assertNotNull(results);
+        assertTrue(results.contains(TEST_PRIVATE_GROUP_ID));
     }
 
     /**
@@ -128,16 +122,10 @@ public class GetPrivateGroupsByUserIdTest extends CachedMapperTest
     @Test
     public void testExecuteWithParentOrgCoordinator()
     {
-        Set<Long> emptyGroupIdsList = (Set<Long>) getCache().get(
-                CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + TEST_PARENT_ORG_COORDINATOR_USER_ID);
-        assertNull(emptyGroupIdsList);
+        Set<Long> results = sut.execute(TEST_PARENT_ORG_COORDINATOR_USER_ID);
 
-        sut.execute(TEST_PARENT_ORG_COORDINATOR_USER_ID);
-
-        Set<Long> groupIdsList = (Set<Long>) getCache().get(
-                CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + TEST_PARENT_ORG_COORDINATOR_USER_ID);
-        assertNotNull(groupIdsList);
-        assertTrue(groupIdsList.contains(TEST_PRIVATE_GROUP_ID));
+        assertNotNull(results);
+        assertTrue(results.contains(TEST_PRIVATE_GROUP_ID));
     }
 
     /**
@@ -147,16 +135,9 @@ public class GetPrivateGroupsByUserIdTest extends CachedMapperTest
     @Test
     public void testExecuteWithOrgCoordinatorInTree()
     {
-        Set<Long> emptyGroupIdsList = (Set<Long>) getCache().get(
-                CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + TEST_ORG_COORDINATOR_USER_ID);
-        assertNull(emptyGroupIdsList);
+        Set<Long> results = sut.execute(TEST_ORG_COORDINATOR_USER_ID);
 
-        sut.execute(TEST_ORG_COORDINATOR_USER_ID);
-
-        Set<Long> groupIdsList = (Set<Long>) getCache().get(
-                CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + TEST_ORG_COORDINATOR_USER_ID);
-        assertNotNull(groupIdsList);
-        assertTrue(groupIdsList.contains(TEST_PRIVATE_GROUP_ID));
+        assertNotNull(results);
+        assertTrue(results.contains(TEST_PRIVATE_GROUP_ID));
     }
-
 }

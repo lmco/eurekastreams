@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,69 +23,57 @@ import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.profile.OrganizationCacheUpdaterRequest;
-import org.eurekastreams.server.persistence.mappers.cache.Cache;
-import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
-import org.eurekastreams.server.persistence.mappers.cache.GetPrivateGroupsByUserId;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.OrgParentHierarchyCacheCleaner;
 import org.eurekastreams.server.persistence.mappers.cache.SaveOrganizationCoordinatorIdsToCache;
 
 /**
  * Execution to perform async tasks after an organization has been updated. This currently includes:
- * 
+ *
  * 1. updating the activity search string for all people that are coordinators of the organization 2. save updated list
  * of coordinators to cache. 3. Conditionally clear the Recursive Org Children ID cache for every Org up the tree from
  * input org (only done on create).
- * 
- * TODO: Actions should not be manipulating the cache directly, this should be done via mapper.
  */
 public class OrganizationCacheUpdaterExecution implements ExecutionStrategy<ActionContext>
 {
     /**
      * Instance of the logger.
      */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /**
      * Mapper to get the private group ids a user has the ability to view activities for through an org/group
      * coordinator role.
      */
-    private final GetPrivateGroupsByUserId privateGroupIdsCacheMapper;
+    private final DomainMapper<Long, Set<Long>> privateGroupIdsCacheRefreshMapper;
 
     /**
      * Cache mapper for Organization coordinators.
      */
-    private SaveOrganizationCoordinatorIdsToCache saveOrgCoordinatorIdsToCacheDAO;
+    private final SaveOrganizationCoordinatorIdsToCache saveOrgCoordinatorIdsToCacheDAO;
 
     /**
      * Mapper to clean the cache of recursive org ids up the tree.
      */
-    private OrgParentHierarchyCacheCleaner orgParentHierarchyCacheCleaner;
-
-    /**
-     * Instance of the cache mapper.
-     */
-    private final Cache cache;
+    private final OrgParentHierarchyCacheCleaner orgParentHierarchyCacheCleaner;
 
     /**
      * Constructor.
-     * 
-     * @param inPrivateGroupIdsCacheMapper
+     *
+     * @param inPrivateGroupIdsCacheRefreshMapper
      *            mapper to retrieve the private group ids that a user has access to view activities through a org/group
      *            coord role.
-     * @param inCache
-     *            - instance of the cache client to access the cache.
      * @param inOrgCoordinatorCacheManager
      *            {@link SaveOrganizationCoordinatorIdsToCache}.
      * @param inOrgParentHierarchyCacheCleaner
      *            {@link OrgParentHierarchyCacheCleaner}.
-     * 
+     *
      */
-    public OrganizationCacheUpdaterExecution(final GetPrivateGroupsByUserId inPrivateGroupIdsCacheMapper,
-            final Cache inCache, final SaveOrganizationCoordinatorIdsToCache inOrgCoordinatorCacheManager,
+    public OrganizationCacheUpdaterExecution(final DomainMapper<Long, Set<Long>> inPrivateGroupIdsCacheRefreshMapper,
+            final SaveOrganizationCoordinatorIdsToCache inOrgCoordinatorCacheManager,
             final OrgParentHierarchyCacheCleaner inOrgParentHierarchyCacheCleaner)
     {
-        privateGroupIdsCacheMapper = inPrivateGroupIdsCacheMapper;
-        cache = inCache;
+        privateGroupIdsCacheRefreshMapper = inPrivateGroupIdsCacheRefreshMapper;
         saveOrgCoordinatorIdsToCacheDAO = inOrgCoordinatorCacheManager;
         orgParentHierarchyCacheCleaner = inOrgParentHierarchyCacheCleaner;
     }
@@ -93,7 +81,7 @@ public class OrganizationCacheUpdaterExecution implements ExecutionStrategy<Acti
     /**
      * Perform the action, updating the coordinator cache list for a Domain Group and rebuilding the security-scoped
      * activity search strings for all coordinators of a Domain Group.
-     * 
+     *
      * @param inActionContext
      *            the action context with the org id to update cache for
      * @return null
@@ -109,11 +97,9 @@ public class OrganizationCacheUpdaterExecution implements ExecutionStrategy<Acti
 
         for (Long coordinatorPersonId : coordinatorIds)
         {
-            // Remove the cache list of the private group ids that the current user
+            // Rebuild (force reload) the cache list of the private group ids that the current user
             // has the ability to view activities for through org/group coordinator access.
-            cache.delete(CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + coordinatorPersonId);
-            // Rebuild that cache list for that particular person.
-            privateGroupIdsCacheMapper.execute(coordinatorPersonId);
+            privateGroupIdsCacheRefreshMapper.execute(coordinatorPersonId);
         }
 
         saveOrgCoordinatorIdsToCacheDAO.execute(request);

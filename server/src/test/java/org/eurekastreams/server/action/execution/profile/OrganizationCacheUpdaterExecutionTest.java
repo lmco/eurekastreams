@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,7 @@ import java.util.Set;
 
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.server.action.request.profile.OrganizationCacheUpdaterRequest;
-import org.eurekastreams.server.persistence.mappers.cache.Cache;
-import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
-import org.eurekastreams.server.persistence.mappers.cache.GetPrivateGroupsByUserId;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.OrgParentHierarchyCacheCleaner;
 import org.eurekastreams.server.persistence.mappers.cache.SaveOrganizationCoordinatorIdsToCache;
 import org.jmock.Expectations;
@@ -49,45 +47,41 @@ public class OrganizationCacheUpdaterExecutionTest
     /**
      * Mocked mapper to get org coordinator ids from the database.
      */
-    private SaveOrganizationCoordinatorIdsToCache orgCoordCacheUpdater = context
+    private final SaveOrganizationCoordinatorIdsToCache orgCoordCacheUpdater = context
             .mock(SaveOrganizationCoordinatorIdsToCache.class);
 
     /**
      * {@link OrganizationCacheUpdaterRequest}.
      */
-    private OrganizationCacheUpdaterRequest request = context.mock(OrganizationCacheUpdaterRequest.class);
+    private final OrganizationCacheUpdaterRequest request = context.mock(OrganizationCacheUpdaterRequest.class);
 
     /**
      * Mocked mapper to retrieve the private group ids a user has the ability to view activities for through an
      * org/group coordinator role.
      */
-    private GetPrivateGroupsByUserId privateGroupIdsCacheMapperMock = context.mock(GetPrivateGroupsByUserId.class);
+    private final DomainMapper<Long, Set<Long>> privateGroupIdsCacheRefreshMapperMock = context.mock(
+            DomainMapper.class, "privateGroupIdsCacheRefreshMapperMock");
 
     /**
      * Mapper to clean the cache of recursive org ids up the tree.
      */
-    private OrgParentHierarchyCacheCleaner orgParentHierarchyCacheCleaner = context
+    private final OrgParentHierarchyCacheCleaner orgParentHierarchyCacheCleaner = context
             .mock(OrgParentHierarchyCacheCleaner.class);
-
-    /**
-     * Mocked instance of the cache client.
-     */
-    private Cache cacheMock = context.mock(Cache.class);
 
     /**
      * {@link ActionContext}.
      */
-    private ActionContext actionContext = context.mock(ActionContext.class);
+    private final ActionContext actionContext = context.mock(ActionContext.class);
 
     /**
      * System under test.
      */
-    private OrganizationCacheUpdaterExecution sut = new OrganizationCacheUpdaterExecution(
-            privateGroupIdsCacheMapperMock, cacheMock, orgCoordCacheUpdater, orgParentHierarchyCacheCleaner);
+    private final OrganizationCacheUpdaterExecution sut = new OrganizationCacheUpdaterExecution(
+            privateGroupIdsCacheRefreshMapperMock, orgCoordCacheUpdater, orgParentHierarchyCacheCleaner);
 
     /**
      * Test execute.
-     * 
+     *
      * @throws Exception
      *             on error
      */
@@ -115,12 +109,9 @@ public class OrganizationCacheUpdaterExecutionTest
                 will(returnValue(coordinatorIds));
 
                 // assert each of the coordinators' search strings are rebuilt
-                oneOf(cacheMock).delete(CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + coord1);
-                oneOf(privateGroupIdsCacheMapperMock).execute(coord1);
-                oneOf(cacheMock).delete(CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + coord2);
-                oneOf(privateGroupIdsCacheMapperMock).execute(coord2);
-                oneOf(cacheMock).delete(CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + coord3);
-                oneOf(privateGroupIdsCacheMapperMock).execute(coord3);
+                oneOf(privateGroupIdsCacheRefreshMapperMock).execute(coord1);
+                oneOf(privateGroupIdsCacheRefreshMapperMock).execute(coord2);
+                oneOf(privateGroupIdsCacheRefreshMapperMock).execute(coord3);
 
                 oneOf(orgCoordCacheUpdater).execute(request);
 
