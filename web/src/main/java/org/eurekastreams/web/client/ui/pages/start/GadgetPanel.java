@@ -199,6 +199,7 @@ public class GadgetPanel extends FlowPanel
         // Style the pieces of the title bar
         title.setStylePrimaryName("gadget-zone-chrome-title-bar-title-button");
         titleLabel.getElement().setId(gadgetTitleLabelPrefix + gadgetIdModifier.toString() + "_title");
+        titleLabel.addStyleName("title-label");
         title.add(restoreButton);
         title.add(titleLabel);
         restoreButton.addStyleName("gadget-restore");

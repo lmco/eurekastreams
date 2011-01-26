@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ public class GadgetDragController extends PickupDragController
     	    shiftLeft + 'px 0px';
     	$wnd.jQuery(".dragdrop-proxy").html(
     	"<span class='dragdrop-proxy-content'>" +
-    		$wnd.jQuery(".dragdrop-dragging .gadget-zone-chrome-title-bar .gwt-Label").text() + "</span>");
+    		$wnd.jQuery(".dragdrop-dragging .gadget-zone-chrome-title-bar .title-label").text() + "</span>");
 
         setTimeout("$wnd.jQuery('.dragdrop-proxy').css('display','inline-block');", 100);
 
