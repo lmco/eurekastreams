@@ -200,6 +200,7 @@ BEGIN
 
     FOR rec IN
         select 
+			p.id as PersonId, 
 			ss.name as StreamSearchName, 
 			ss.id as StreamSearchId,
             ss.streamview_id as StreamViewId,
@@ -225,6 +226,12 @@ BEGIN
         if rec.StreamViewId = 4 then
     	    insert into Stream ("name", streamSearchId, request, version, readonly) values (rec.StreamSearchName, rec.streamsearchid, '{"query":{"savedBy":"%%CURRENT_USER_ACCOUNT_ID%%","keywords":"' || rec.keywords || '"}}', 0, false); 
         end if;
+
+		SELECT MAX(streamindex) + 1 INTO personMaxStreamIndex FROM Person_Stream WHERE personId = rec.PersonId;
+		
+		INSERT INTO person_stream (personId, streamId, streamindex) 
+			VALUES(rec.PersonId, currval('stream_id_seq'), personMaxStreamIndex);
+	       
 	END LOOP;
 
 	-- Add all stream searches without keywords
