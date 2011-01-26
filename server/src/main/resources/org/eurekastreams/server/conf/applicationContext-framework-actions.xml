@@ -1088,8 +1088,7 @@
                         <constructor-arg ref="getOrgCoordinators" />
                         <constructor-arg ref="bulkPeopleMapper" />
                         <property name="organizationLoader">
-                            <bean
-                                class="org.eurekastreams.server.service.actions.strategies.OrganizationPersonLoaderLeaders">
+                            <bean class="org.eurekastreams.server.service.actions.strategies.OrganizationPersonLoaderLeaders">
                                 <constructor-arg ref="bulkPeopleMapper" />
                                 <constructor-arg ref="getOrganizationLeaderIdsByOrgId" />
                             </bean>

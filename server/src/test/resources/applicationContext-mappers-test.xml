@@ -11,10 +11,7 @@
 	<bean id="getPrivateGroupIdsCoordinatedByPerson" 
 		class="org.eurekastreams.server.persistence.mappers.GetPrivateGroupIdsCoordinatedByPerson"/>
 		
-    <bean id="getOrganizationLeaderIdsByOrgId" 
-       class="org.eurekastreams.server.persistence.mappers.cache.GetOrganizationLeaderIdsByOrgId">
-       <property name="cache" ref="testCache" />
-    </bean>
+    <bean class="org.eurekastreams.server.persistence.mappers.db.GetOrganizationLeaderIdsByOrgId" />
 	
 	<bean id="insertLikedActivity"
 		class="org.eurekastreams.server.persistence.mappers.InsertLikedActivity">

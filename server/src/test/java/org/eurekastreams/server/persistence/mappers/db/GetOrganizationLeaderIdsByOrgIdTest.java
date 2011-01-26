@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.mappers.cache;
+package org.eurekastreams.server.persistence.mappers.db;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
-import org.eurekastreams.server.persistence.mappers.stream.CachedMapperTest;
+import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Test for GetOrganizationLeaderIdsByOrgId class.
- * 
  */
-public class GetOrganizationLeaderIdsByOrgIdTest extends CachedMapperTest
+public class GetOrganizationLeaderIdsByOrgIdTest extends MapperTest
 {
     /**
      * System under test.
@@ -36,20 +33,14 @@ public class GetOrganizationLeaderIdsByOrgIdTest extends CachedMapperTest
     private GetOrganizationLeaderIdsByOrgId sut;
 
     /**
-     * Cache plugged into all the mappers.
-     */
-    @Autowired
-    private Cache cache;
-
-    /**
      * Organization id with leaders from dataset.xml.
      */
-    private Long orgIdWithLeaders = 5L;
+    private final Long orgIdWithLeaders = 5L;
 
     /**
      * Organization id with no leaders from dataset.xml.
      */
-    private Long orgIdNoLeaders = 6L;
+    private final Long orgIdNoLeaders = 6L;
 
     /**
      * Test with leaders.
@@ -57,10 +48,7 @@ public class GetOrganizationLeaderIdsByOrgIdTest extends CachedMapperTest
     @Test
     public void testExecuteWithLeaders()
     {
-        String cacheKey = CacheKeys.ORGANIZATION_LEADERS_BY_ORG_ID + orgIdWithLeaders;
-        assertNull(cache.get(cacheKey));
         assertEquals(2, sut.execute(orgIdWithLeaders).size());
-        assertNotNull(cache.get(cacheKey));
     }
 
     /**
@@ -69,10 +57,6 @@ public class GetOrganizationLeaderIdsByOrgIdTest extends CachedMapperTest
     @Test
     public void testExecuteNoLeaders()
     {
-        String cacheKey = CacheKeys.ORGANIZATION_LEADERS_BY_ORG_ID + orgIdNoLeaders;
-        assertNull(cache.get(cacheKey));
         assertEquals(0, sut.execute(orgIdNoLeaders).size());
-        assertNotNull(cache.get(cacheKey));
     }
-
 }

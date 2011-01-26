@@ -154,10 +154,40 @@
 		<constructor-arg value="10000" />
 	</bean>
 
-	<bean id="getOrganizationLeaderIdsByOrgId"
-		class="org.eurekastreams.server.persistence.mappers.cache.GetOrganizationLeaderIdsByOrgId">
-		<property name="cache" ref="memcachedCache" />
+
+	<bean id="getOrganizationLeaderIdsByOrgId" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		<!-- Cache mapper -->
+		<constructor-arg>
+		    <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+		       <constructor-arg>
+					<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
+						<constructor-arg>
+							<util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_LEADERS_BY_ORG_ID" />
+						</constructor-arg>
+						<constructor-arg ref="toStringCacheKeySuffixTransformer" />
+						<property name="cache" ref="memcachedCache" />
+					</bean>
+				</constructor-arg>
+			</bean>
+		</constructor-arg>
+		<!-- Database mapper -->
+		<constructor-arg>
+			<bean class="org.eurekastreams.server.persistence.mappers.db.GetOrganizationLeaderIdsByOrgId" />
+		</constructor-arg>
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
+		<!-- Cache updater -->
+		<constructor-arg>
+	        <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
+				<constructor-arg>
+					<util:constant static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_LEADERS_BY_ORG_ID" />
+				</constructor-arg>
+				<constructor-arg ref="toStringCacheKeySuffixTransformer" />
+				<property name="cache" ref="memcachedCache" />
+		    </bean> 
+	    </constructor-arg>       
 	</bean>
+	
 
 	<bean id="findByIdMapper"
 		class="org.eurekastreams.server.persistence.mappers.FindByIdMapper">

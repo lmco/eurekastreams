@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import java.util.Set;
 
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.persistence.mappers.cache.GetOrganizationLeaderIdsByOrgId;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -34,7 +34,7 @@ import org.junit.Test;
 
 /**
  * Test for OrganizationPersonLoaderLeaders class.
- * 
+ *
  */
 public class OrganizationPersonLoaderLeadersTest
 {
@@ -56,18 +56,18 @@ public class OrganizationPersonLoaderLeadersTest
     /**
      * Organization leader id DAO.
      */
-    private GetOrganizationLeaderIdsByOrgId organizationLeaderIdDAO = context
-            .mock(GetOrganizationLeaderIdsByOrgId.class);
+    private final DomainMapper<Long, Set<Long>> organizationLeaderIdDAO = context.mock(DomainMapper.class,
+            "organizationLeaderIdDAO");
 
     /**
      * Person mapper mock.
      */
-    private GetPeopleByIds getPeopleByIds = context.mock(GetPeopleByIds.class);
+    private final GetPeopleByIds getPeopleByIds = context.mock(GetPeopleByIds.class);
 
     /**
      * Organization mock.
      */
-    private Organization organization = context.mock(Organization.class);
+    private final Organization organization = context.mock(Organization.class);
 
     /**
      * Pre-test setup.
@@ -117,5 +117,4 @@ public class OrganizationPersonLoaderLeadersTest
         sut.setPeopleInOrganization(organization, results);
         context.assertIsSatisfied();
     }
-
 }
