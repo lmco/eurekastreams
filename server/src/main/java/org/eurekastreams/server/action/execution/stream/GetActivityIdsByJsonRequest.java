@@ -115,6 +115,7 @@ public class GetActivityIdsByJsonRequest
     public List<Long> execute(final String inRequest, final Long userEntityId)
     {
         String request = inRequest;
+        Boolean stop = false;
 
         log.debug("Attempted to parse: " + inRequest);
 
@@ -211,11 +212,19 @@ public class GetActivityIdsByJsonRequest
 
             page = securityTrimmer.trim(page, userEntityId);
 
-            results.addAll(page);
+            for (Long item : page)
+            {
+                results.add(item);
+                if (results.size() >= maxResults)
+                {
+                    stop = true;
+                    break;
+                }
+            }
 
             pass++;
         }
-        while (results.size() < maxResults && allKeys.size() >= batchSize);
+        while (!stop && results.size() < maxResults && allKeys.size() >= batchSize);
 
         return results;
     }
