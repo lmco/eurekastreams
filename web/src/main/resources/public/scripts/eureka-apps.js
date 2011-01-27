@@ -603,6 +603,9 @@ Eureka.ListItem = function(itemCount, primaryName, byLine, metaData, obj, onClic
         {
             item.append("<span class='slide-arrow'>&gt;</span>");
             item.click(function() { if(!removeLink.is(":visible")) { Eureka.Container.switchView(obj); } if (onClick != null) { onClick(itemCount); }});
+            setTimeout(function() {
+                item.find('.slide-arrow').css('margin-top', -1 * (item.height() / 2) - 5);
+            }, 250);
         }
         else
         {
