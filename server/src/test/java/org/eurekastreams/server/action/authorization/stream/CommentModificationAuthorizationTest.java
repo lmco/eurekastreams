@@ -24,7 +24,6 @@ import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetCommentsById;
 import org.eurekastreams.server.persistence.strategies.CommentDeletePropertyStrategy;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.jmock.Expectations;
@@ -53,12 +52,12 @@ public class CommentModificationAuthorizationTest
     /**
      * DAO for looking up commentDTO.
      */
-    private GetCommentsById commentDAO = context.mock(GetCommentsById.class);
+    private DomainMapper<List<Long>, List<CommentDTO>> commentDAO = context.mock(DomainMapper.class, "commentDAO");
 
     /**
      * DAO for looking up activity by id.
      */
-    private DomainMapper<List<Long>, List<ActivityDTO>>  activityDAO = context.mock(DomainMapper.class);
+    private DomainMapper<List<Long>, List<ActivityDTO>> activityDAO = context.mock(DomainMapper.class);
 
     /**
      * Strategy for setting Deletable property on CommentDTOs.
