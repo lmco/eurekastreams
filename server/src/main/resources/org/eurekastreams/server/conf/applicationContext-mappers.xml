@@ -234,6 +234,9 @@
     <bean
         id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.COMMENT_IDS_BY_ACTIVITY_ID"
         class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
+        
+    <bean id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.COMMENT_BY_ID"
+            class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />        
                            
 	<bean
 		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.POPULAR_HASH_TAGS_BY_STREAM_TYPE_AND_SHORT_NAME"
@@ -1843,12 +1846,41 @@
 		<property name="bulkDomainGroupsMapper" ref="getGroupsByIdsMapper" />
 		<property name="cache" ref="memcachedCache" />
 	</bean>
+	
+    <bean id="getCommentsById"
+        class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <constructor-arg>
+            <bean
+                class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
+                <constructor-arg ref="toStringCacheKeySuffixTransformer" />
+                <constructor-arg
+                    ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.COMMENT_BY_ID" />
+                <constructor-arg value="False" />
+                <property name="cache" ref="memcachedCache" />
+            </bean>
+        </constructor-arg>
 
-	<bean id="getCommentsById"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetCommentsById">
-		<constructor-arg ref="commentDTOPopulator" />
-		<property name="cache" ref="memcachedCache" />
-	</bean>
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.GetCommentsByIdsDbMapper">
+                <constructor-arg ref="commentDTOPopulator" />
+            </bean>
+        </constructor-arg>
+
+        <constructor-arg ref="collectionCombiner" />
+
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.MultiValueCacheRefreshStrategy">
+                <!-- Prefix -->
+                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.COMMENT_BY_ID" />
+                <!-- Suffix Transformer -->
+                <constructor-arg ref="modelViewToIdTransformer"/>
+                 <!-- Value Transformer -->
+                <constructor-arg ref="passThroughTransformer"/>
+                <!-- Cache -->
+                <constructor-arg ref="memcachedCache" />        
+            </bean>
+        </constructor-arg>
+    </bean>	
 
 	<bean id="deleteActivityComment"
 		class="org.eurekastreams.server.persistence.mappers.stream.DeleteActivityComment">

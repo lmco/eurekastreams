@@ -65,7 +65,7 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
     /**
      * DAO for comments by id.
      */
-    private GetCommentsById commentsByIdDAO;
+    private DomainMapper<List<Long>, List<CommentDTO>> commentsByIdDAO;
 
     /**
      * @param inGetPersonModelViewByAccountIdMapper
@@ -82,7 +82,7 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
     public BulkActivitiesDbMapper(final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper,
             final DomainMapper<List<String>, List<PersonModelView>> inGetPersonModelViewsByAccountIdsMapper,
             final GetDomainGroupsByShortNames inGroupMapper, final DomainMapper<Long, List<Long>> inCommentIdListDAO,
-            final GetCommentsById inCommentsByIdDAO)
+            final DomainMapper<List<Long>, List<CommentDTO>> inCommentsByIdDAO)
     {
         getPersonModelViewByAccountIdMapper = inGetPersonModelViewByAccountIdMapper;
         getPersonModelViewsByAccountIdsMapper = inGetPersonModelViewsByAccountIdsMapper;
