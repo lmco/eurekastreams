@@ -237,10 +237,7 @@
     <bean id="getPrivateGroupIdsUnderOrganizationsFromDB" 
     	class="org.eurekastreams.server.persistence.mappers.db.GetPrivateGroupIdsUnderOrganizations"/>
         
-    <bean id="getOrgIdsDirectlyCoordinatedByPersonFromDB" 
-    	class="org.eurekastreams.server.persistence.mappers.cache.GetOrgIdsDirectlyCoordinatedByPerson">
-    	<property name="cache" ref="testCache" />
-   	</bean>
+    <bean class="org.eurekastreams.server.persistence.mappers.db.GetOrgIdsDirectlyCoordinatedByPerson" />
     
     <bean id="getOrgCoordinators" class="org.eurekastreams.server.persistence.mappers.GetOrgCoordinators">
     	<constructor-arg ref="getOrganizationCoordinatorIdsByOrganizationIdDbMapper"/>

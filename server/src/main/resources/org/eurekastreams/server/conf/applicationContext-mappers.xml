@@ -36,6 +36,14 @@
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 	
+	<!-- ========== CACHE KEYS ========== -->
+	
+	<util:constant id="CacheKeys.ORG_IDS_DIRECTLY_COORD_BY_PERSON" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORG_IDS_DIRECTLY_COORD_BY_PERSON" />
+	
+	
+	
+	
+	
 	<!--
 		Mapper to get the hash tags from the database - insert if not already
 		in the database
@@ -1718,7 +1726,7 @@
 	<bean id="getPrivateGroupsByUserIdSource"
 		class="org.eurekastreams.server.persistence.mappers.composite.GetPrivateGroupsByUserId">
 		<constructor-arg ref="getPrivateGroupIdsCoordinatedByPersonMapper" />
-		<constructor-arg ref="getOrgIdsDirectlyCoordinatedByPersonFromDB" />
+		<constructor-arg ref="getOrgIdsDirectlyCoordinatedByPerson" />
 		<constructor-arg ref="organizationHierarchyCache" />
 		<constructor-arg ref="getPrivateGroupIdsUnderOrganizationsFromDB" />
 	</bean>
@@ -1774,9 +1782,35 @@
 		class="org.eurekastreams.server.persistence.mappers.db.GetPrivateGroupIdsUnderOrganizations" />
 
 	<bean id="getOrgIdsDirectlyCoordinatedByPersonFromDB"
-		class="org.eurekastreams.server.persistence.mappers.cache.GetOrgIdsDirectlyCoordinatedByPerson">
-		<property name="cache" ref="memcachedCache" />
+		class="org.eurekastreams.server.persistence.mappers.db.GetOrgIdsDirectlyCoordinatedByPerson" />
+
+	<bean id="getOrgIdsDirectlyCoordinatedByPerson" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		<!-- Cache mapper -->
+		<constructor-arg>
+		    <bean class="org.eurekastreams.server.persistence.mappers.chained.PartialMapperWrapper">
+		       <constructor-arg>
+					<bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheMapper">
+						<constructor-arg ref="CacheKeys.ORG_IDS_DIRECTLY_COORD_BY_PERSON" />
+						<constructor-arg ref="toStringCacheKeySuffixTransformer" />
+						<property name="cache" ref="memcachedCache" />
+					</bean>
+				</constructor-arg>
+			</bean>
+		</constructor-arg>
+		<!-- Database mapper -->
+		<constructor-arg ref="getOrgIdsDirectlyCoordinatedByPersonFromDB" />
+		<!-- Results combiner:  return whichever is not null -->
+		<constructor-arg ref="nonNullResultsCombiner" />
+		<!-- Cache updater -->
+		<constructor-arg>
+	        <bean class="org.eurekastreams.server.persistence.mappers.cache.SingleValueCacheRefreshStrategy">
+	        	<constructor-arg ref="CacheKeys.ORG_IDS_DIRECTLY_COORD_BY_PERSON" />
+				<constructor-arg ref="toStringCacheKeySuffixTransformer" />
+				<property name="cache" ref="memcachedCache" />
+		    </bean> 
+	    </constructor-arg>       
 	</bean>
+
 
 	<bean id="getOrgCoordinators"
 		class="org.eurekastreams.server.persistence.mappers.GetOrgCoordinators">

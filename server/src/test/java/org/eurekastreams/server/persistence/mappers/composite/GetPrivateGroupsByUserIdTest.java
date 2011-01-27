@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ import javax.persistence.Query;
 
 import org.eurekastreams.server.persistence.mappers.GetPrivateGroupIdsCoordinatedByPerson;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
-import org.eurekastreams.server.persistence.mappers.cache.GetOrgIdsDirectlyCoordinatedByPerson;
 import org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCache;
+import org.eurekastreams.server.persistence.mappers.db.GetOrgIdsDirectlyCoordinatedByPerson;
 import org.eurekastreams.server.persistence.mappers.db.GetPrivateGroupIdsUnderOrganizations;
 import org.junit.Before;
 import org.junit.Test;

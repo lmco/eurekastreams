@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetPrivateGroupIdsCoordinatedByPerson;
 import org.eurekastreams.server.persistence.mappers.ReadMapper;
-import org.eurekastreams.server.persistence.mappers.cache.GetOrgIdsDirectlyCoordinatedByPerson;
 import org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCache;
 import org.eurekastreams.server.persistence.mappers.db.GetPrivateGroupIdsUnderOrganizations;
 
@@ -38,9 +38,9 @@ public class GetPrivateGroupsByUserId extends ReadMapper<Long, Set<Long>>
     private final GetPrivateGroupIdsCoordinatedByPerson privateGroupIdsMapper;
 
     /**
-     * Local instance of mapper to retrieve the org ids from the db that the user is a coord of.
+     * Mapper to retrieve the org ids that the user is a coordinator of.
      */
-    private final GetOrgIdsDirectlyCoordinatedByPerson orgCoordMapper;
+    private final DomainMapper<Long, Set<Long>> orgCoordMapper;
 
     /**
      * Local instance of mapper to retrieve recursive child orgs under a give org.
@@ -58,14 +58,15 @@ public class GetPrivateGroupsByUserId extends ReadMapper<Long, Set<Long>>
      * @param inPrivateGroupIdsMapper
      *            - instance of the {@link GetPrivateGroupIdsCoordinatedByPerson} mapper.
      * @param inOrgCoordMapper
-     *            - instance of the {@link GetOrgIdsDirectlyCoordinatedByPerson} mapper.
+     *            Mapper to retrieve the org ids that the user is a coordinator of.
+     *            (GetOrgIdsDirectlyCoordinatedByPerson)
      * @param inOrgHierarchyCacheMapper
      *            - instance of the {@link OrganizationHierarchyCache} mapper.
      * @param inOrgPrivateGroupIdsMapper
      *            - instance of the {@link GetPrivateGroupIdsUnderOrganizations} mapper.
      */
     public GetPrivateGroupsByUserId(final GetPrivateGroupIdsCoordinatedByPerson inPrivateGroupIdsMapper,
-            final GetOrgIdsDirectlyCoordinatedByPerson inOrgCoordMapper,
+            final DomainMapper<Long, Set<Long>> inOrgCoordMapper,
             final OrganizationHierarchyCache inOrgHierarchyCacheMapper,
             final GetPrivateGroupIdsUnderOrganizations inOrgPrivateGroupIdsMapper)
     {
@@ -83,6 +84,7 @@ public class GetPrivateGroupsByUserId extends ReadMapper<Long, Set<Long>>
      *            - user id of the context to bring back private group ids.
      * @return - Set of private group ids based on the user id context.
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Set<Long> execute(final Long inUserId)
     {
