@@ -5,7 +5,7 @@
     <groupId>org.eurekastreams</groupId>
     <artifactId>eurekastreams-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <name>Eureka Streams Parent</name>
     <url>http://www.eurekastreams.org</url>
     <mailingLists>
@@ -172,8 +172,9 @@
         <build.report.clover.licenseurl>http://example.com/clover.license</build.report.clover.licenseurl>
         <build.report.checkstyle.rulesurl>http://dev.eurekastreams.org/conf/checkstyle/eurekastreams_eclipse-cs5.0_rules-forcheckin_latest.xml?011911</build.report.checkstyle.rulesurl>
         <build.maven.sharedresources.artifactid>eurekastreams-sharedresources</build.maven.sharedresources.artifactid>
-        <build.maven.sharedresources.version>1.0-SNAPSHOT</build.maven.sharedresources.version>
+        <build.maven.sharedresources.version>1.0</build.maven.sharedresources.version>
         <build.maven.snapshotrepo>http://example.com/content/repositories/snapshots</build.maven.snapshotrepo>
+        <build.maven.releaserepo>http://example.com/content/repositories/releases</build.maven.releaserepo>
         <build.infosite.url>http://eurekastreams.org</build.infosite.url>
         <build.infosite.text>eurekastreams.org</build.infosite.text>
         <build.profile.emailregex>.*@.*</build.profile.emailregex>
@@ -554,6 +555,12 @@
          </profile>
      </profiles>	
    <distributionManagement>
+     <!-- Declare the release repository to deploy the eurekastreams-server.jar file to -->
+     <repository>
+       <id>smpreleases</id>
+       <name>Releases</name>
+       <url>${build.maven.releaserepo}</url>
+     </repository>
    <!-- Declare the snapshot repository to deploy the eurekastreams-server.jar file to -->
      <snapshotRepository>
        <id>smpsnapshots</id>
