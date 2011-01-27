@@ -500,37 +500,136 @@
 		</constructor-arg>
 	</bean>
 
-	<!-- Mapper to get people ids by account ids -->
-	<bean id="getPeopleIdsByAccountIdsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
-		<!-- Cache mapper -->
-		<constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
-				<constructor-arg ref="toStringCacheKeySuffixTransformer" />
-				<constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_BY_ACCOUNT_ID" />
-				<constructor-arg value="False" />
-				<property name="cache" ref="memcachedCache" />
-			</bean>
-		</constructor-arg>
-		
-		<!-- Database mapper -->
-		<constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.db.GetIdsFromPointersDbMapper">
-				<constructor-arg value="accountId" />
-				<constructor-arg value="org.eurekastreams.server.domain.Person" />
-			</bean>
-		</constructor-arg>
-	
-		<!-- Combiner -->
-		<constructor-arg ref="collectionCombiner" />
-	
-		<!-- Refresher -->
-		<constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.cache.SetKeyedSingleItemCollectionCacheMapper">
-				<constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_BY_ACCOUNT_ID" />
-				<property name="cache" ref="memcachedCache" />
-			</bean>
-		</constructor-arg>
-	</bean>
+    <!-- Mapper to get people ids by account ids -->
+    <bean id="getPeopleIdsByAccountIdsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache mapper -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
+                <constructor-arg ref="toStringCacheKeySuffixTransformer" />
+                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_BY_ACCOUNT_ID" />
+                <constructor-arg value="False" />
+                <property name="cache" ref="memcachedCache" />
+            </bean>
+        </constructor-arg>
+        
+        <!-- Database mapper -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.GetIdsFromPointersDbMapper">
+                <constructor-arg value="accountId" />
+                <constructor-arg value="org.eurekastreams.server.domain.Person" />
+            </bean>
+        </constructor-arg>
+    
+        <!-- Combiner -->
+        <constructor-arg ref="collectionCombiner" />
+    
+        <!-- Refresher -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SetKeyedSingleItemCollectionCacheMapper">
+                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_BY_ACCOUNT_ID" />
+                <property name="cache" ref="memcachedCache" />
+            </bean>
+        </constructor-arg>
+    </bean>
+    
+    <!-- WBCTODO -->
+    <!-- Mapper to get people ids by open social ids -->
+    <bean id="getPeopleIdsByOpenSocialIdsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache mapper -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
+                <constructor-arg ref="toStringCacheKeySuffixTransformer" />
+                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_BY_OPEN_SOCIAL_ID" />
+                <constructor-arg value="False" />
+                <property name="cache" ref="memcachedCache" />
+            </bean>
+        </constructor-arg>
+        
+        <!-- Database mapper -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.GetIdsFromPointersDbMapper">
+                <constructor-arg value="openSocialId" />
+                <constructor-arg value="org.eurekastreams.server.domain.Person" />
+            </bean>
+        </constructor-arg>
+    
+        <!-- Combiner -->
+        <constructor-arg ref="collectionCombiner" />
+    
+        <!-- Refresher -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SetKeyedSingleItemCollectionCacheMapper">
+                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.PERSON_BY_OPEN_SOCIAL_ID" />
+                <property name="cache" ref="memcachedCache" />
+            </bean>
+        </constructor-arg>
+    </bean>
+    
+    <!-- WBCTODO -->
+    <!-- Mapper to get organization ids by short name -->
+    <bean id="getOrganizationIdsByShortNamesMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache mapper -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
+                <constructor-arg ref="toStringCacheKeySuffixTransformer" />
+                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_BY_SHORT_NAME" />
+                <constructor-arg value="False" />
+                <property name="cache" ref="memcachedCache" />
+            </bean>
+        </constructor-arg>
+        
+        <!-- Database mapper -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.GetIdsFromPointersDbMapper">
+                <constructor-arg value="shortName" />
+                <constructor-arg value="org.eurekastreams.server.domain.Organization" />
+            </bean>
+        </constructor-arg>
+    
+        <!-- Combiner -->
+        <constructor-arg ref="collectionCombiner" />
+    
+        <!-- Refresher -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SetKeyedSingleItemCollectionCacheMapper">
+                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORGANIZATION_BY_SHORT_NAME" />
+                <property name="cache" ref="memcachedCache" />
+            </bean>
+        </constructor-arg>
+    </bean>
+    
+    <!-- WBCTODO -->
+    <!-- Mapper to get organization ids by short name -->
+    <bean id="getDomainGroupIdsByShortNamesMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+        <!-- Cache mapper -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
+                <constructor-arg ref="toStringCacheKeySuffixTransformer" />
+                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.GROUP_BY_SHORT_NAME" />
+                <constructor-arg value="False" />
+                <property name="cache" ref="memcachedCache" />
+            </bean>
+        </constructor-arg>
+        
+        <!-- Database mapper -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.GetIdsFromPointersDbMapper">
+                <constructor-arg value="shortName" />
+                <constructor-arg value="org.eurekastreams.server.domain.DomainGroup" />
+            </bean>
+        </constructor-arg>
+    
+        <!-- Combiner -->
+        <constructor-arg ref="collectionCombiner" />
+    
+        <!-- Refresher -->
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.cache.SetKeyedSingleItemCollectionCacheMapper">
+                <constructor-arg ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.GROUP_BY_SHORT_NAME" />
+                <property name="cache" ref="memcachedCache" />
+            </bean>
+        </constructor-arg>
+    </bean>
 
 	<!-- Mapper to get person id by account id - wraps getPeopleIdsByAccountIds - throws exception when not found -->
 	<bean id="getPersonIdByAccountIdMapper" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
@@ -1829,19 +1928,19 @@
 	<bean id="bulkPeopleByOpenSocialIdMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds">
 		<property name="bulkPeopleMapper" ref="bulkPeopleMapper" />
-		<property name="cache" ref="memcachedCache" />
+		<property name="idsByStringsMapper" ref="getPeopleIdsByOpenSocialIdsMapper" />
 	</bean>
 
 	<bean id="bulkOrganizationsByShortNameMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames">
 		<property name="bulkOrganizationsMapper" ref="getOrganizationsByIdsMapper" />
-		<property name="cache" ref="memcachedCache" />
+		<property name="idsByStringsMapper" ref="getOrganizationIdsByShortNamesMapper" />
 	</bean>
 
 	<bean id="bulkDomainGroupsByShortNameMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames">
 		<property name="bulkDomainGroupsMapper" ref="getGroupsByIdsMapper" />
-		<property name="cache" ref="memcachedCache" />
+		<property name="idsByStringsMapper" ref="getDomainGroupIdsByShortNamesMapper" />
 	</bean>
 
 	<bean id="getCommentsById"

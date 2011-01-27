@@ -16,16 +16,10 @@
 package org.eurekastreams.server.persistence.mappers.stream;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.Transformers;
+import org.eurekastreams.server.persistence.mappers.BaseDomainMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * Gets a list of objects for a given list of pointer ids.
@@ -33,14 +27,23 @@ import org.hibernate.transform.Transformers;
  * @param <ValueType>
  *            the object type being pointed to.
  */
-public abstract class GetItemsByPointerIds<ValueType> extends CachedDomainMapper
+public abstract class GetItemsByPointerIds<ValueType> extends BaseDomainMapper
 {
     /**
-     * Gets the prefix.
-     * 
-     * @return the prefix.
+     * Mapper to get the IDs of objects by a string property.
      */
-    public abstract String getCachePointerKeyPrefix();
+    private DomainMapper<List<String>, List<Long>> idsByStringsMapper;
+
+    /**
+     * Set the mapper to get the IDs of objects by strings.
+     * 
+     * @param inIdsByStringsMapper
+     *            mapper to get the IDs of objects by strings.
+     */
+    public void setIdsByStringsMapper(final DomainMapper<List<String>, List<Long>> inIdsByStringsMapper)
+    {
+        idsByStringsMapper = inIdsByStringsMapper;
+    }
 
     /**
      * Executes bulk method.
@@ -52,39 +55,7 @@ public abstract class GetItemsByPointerIds<ValueType> extends CachedDomainMapper
     protected abstract List<ValueType> bulkExecute(final List<Long> ids);
 
     /**
-     * Gets the property.
-     * 
-     * @return the property.
-     */
-    public abstract String getPointerProperty();
-
-    /**
-     * Gets the entity class.
-     * 
-     * @return the class.
-     */
-    @SuppressWarnings("unchecked")
-    public abstract Class getEntityClass();
-
-    /**
-     * Fetch the Long ID for the input String ID.  This
-     * requires only one cache hit.
-     * 
-     * @param inId
-     *            the string ID
-     * @return the long ID
-     */
-    public Long fetchId(final String inId)
-    {
-        List<String> stringIds = new ArrayList<String>();
-        stringIds.add(inId);
-        Map<String, Long> result = fetchIds(stringIds);
-        return result.get(getCachePointerKeyPrefix() + inId);
-    }
-
-    /**
-     * Fetch an object by its string id.  This requires two
-     * cache hits.
+     * Convenience wrapper around execute - fetch an object by its string id.
      * 
      * @param inId
      *            the string id
@@ -99,103 +70,41 @@ public abstract class GetItemsByPointerIds<ValueType> extends CachedDomainMapper
     }
 
     /**
-     * Fetch the Long ids from the String ids.
+     * Fetch the Long ID for the input String ID.
      * 
-     * @param ids
-     *            the string IDs
-     * @return a Map of String ids to Long idsF
+     * @param inId
+     *            the string ID
+     * @return the long ID
      */
-    @SuppressWarnings("unchecked")
-    public Map<String, Long> fetchIds(final List<String> ids)
+    public Long fetchId(final String inId)
     {
-        if (ids == null || ids.size() == 0)
+        List<String> stringIds = new ArrayList<String>();
+        stringIds.add(inId);
+
+        List<Long> ids = idsByStringsMapper.execute(stringIds);
+        if (ids.size() == 1)
         {
-            return new HashMap<String, Long>();
+            return ids.get(0);
         }
-
-        List<String> stringKeys = new ArrayList<String>();
-        for (String key : ids)
-        {
-            stringKeys.add(getCachePointerKeyPrefix() + key);
-        }
-
-        // Finds item pointers in the cache.
-        Map<String, Long> items = (Map<String, Long>) (Map<String, ? >) getCache().multiGet(stringKeys);
-
-        // Determines if any of the item pointers were missing from the cache
-        List<String> uncachedItemKeys = new ArrayList<String>();
-        for (String itemKey : ids)
-        {
-            if (!items.containsKey(getCachePointerKeyPrefix() + itemKey))
-            {
-                uncachedItemKeys.add(itemKey);
-            }
-        }
-
-        // One or more of the item pointers were missing in the cache so go to the database
-        if (uncachedItemKeys.size() != 0)
-        {
-            Map<String, Long> itemMap = new HashMap<String, Long>();
-            Criteria criteria = getHibernateSession().createCriteria(getEntityClass());
-            ProjectionList fields = Projections.projectionList();
-            fields.add(Projections.property("id").as("itemId"));
-            fields.add(Projections.property(getPointerProperty()).as("pointerId"));
-            criteria.setProjection(fields);
-
-            // Creates the necessary "OR" clauses to get all uncached item pointers
-            Criterion restriction = null;
-            for (int i = 0; i < uncachedItemKeys.size(); i++)
-            {
-                String key = uncachedItemKeys.get(i);
-                if (restriction == null)
-                {
-                    restriction = Restrictions.eq(getPointerProperty(), key);
-                }
-                else
-                {
-                    restriction = Restrictions.or(Restrictions.eq(getPointerProperty(), key), restriction);
-                }
-            }
-
-            criteria.add(restriction);
-            criteria.setResultTransformer(Transformers.aliasToBean(CacheItemPointer.class));
-            List<CacheItemPointer> results = criteria.list();
-
-            for (CacheItemPointer result : results)
-            {
-                itemMap.put(getCachePointerKeyPrefix() + result.getPointerId(), result.getItemId());
-            }
-
-            for (String key : itemMap.keySet())
-            {
-                getCache().set(key, itemMap.get(key));
-            }
-
-            items.putAll(itemMap);
-        }
-
-        return items;
+        return null;
     }
 
     /**
-     * Looks in cache for the necessary DTOs and returns them if found. Otherwise, makes a database call, puts them in
-     * cache, and returns them.
+     * Get entities by their string properties.
      * 
-     * @param ids
-     *            the list of ids that should be found.
+     * @param inStringIds
+     *            the list of string ids that should be found.
      * @return list of DTO objects.
      */
-    @SuppressWarnings("unchecked")
-    public List<ValueType> execute(final List<String> ids)
+    public List<ValueType> execute(final List<String> inStringIds)
     {
-        Map<String, Long> idsMap = fetchIds(ids);
+        List<Long> ids = idsByStringsMapper.execute(inStringIds);
 
         // Checks to see if there's any real work to do
-        if (idsMap == null || idsMap.size() == 0)
+        if (ids == null || ids.size() == 0)
         {
             return new ArrayList<ValueType>();
         }
-
-        return new ArrayList<ValueType>(bulkExecute(new ArrayList(idsMap.values())));
+        return new ArrayList<ValueType>(bulkExecute(ids));
     }
 }

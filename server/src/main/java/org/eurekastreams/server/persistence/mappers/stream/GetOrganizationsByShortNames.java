@@ -17,9 +17,7 @@ package org.eurekastreams.server.persistence.mappers.stream;
 
 import java.util.List;
 
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 
 /**
@@ -34,7 +32,7 @@ public class GetOrganizationsByShortNames extends GetItemsByPointerIds<Organizat
 
     /**
      * Sets bulk mapper.
-     *
+     * 
      * @param inBulkOrganizationsMapper
      *            the bulk mapper to set.
      */
@@ -46,7 +44,7 @@ public class GetOrganizationsByShortNames extends GetItemsByPointerIds<Organizat
 
     /**
      * Execute bulk mapper.
-     *
+     * 
      * @param ids
      *            the list of ids.
      * @return list of orgs.
@@ -55,39 +53,5 @@ public class GetOrganizationsByShortNames extends GetItemsByPointerIds<Organizat
     protected List<OrganizationModelView> bulkExecute(final List<Long> ids)
     {
         return bulkOrganizationsMapper.execute(ids);
-    }
-
-    /**
-     * Get prefix.
-     *
-     * @return prefix.
-     */
-    @Override
-    public String getCachePointerKeyPrefix()
-    {
-        return CacheKeys.ORGANIZATION_BY_SHORT_NAME;
-    }
-
-    /**
-     * Get class.
-     *
-     * @return class.
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public Class getEntityClass()
-    {
-        return Organization.class;
-    }
-
-    /**
-     * Get property name.
-     *
-     * @return property name.
-     */
-    @Override
-    public String getPointerProperty()
-    {
-        return "shortName";
     }
 }

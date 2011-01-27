@@ -17,8 +17,6 @@ package org.eurekastreams.server.persistence.mappers.stream;
 
 import java.util.List;
 
-import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
@@ -53,39 +51,5 @@ public class GetPeopleByOpenSocialIds extends GetItemsByPointerIds<PersonModelVi
     protected List<PersonModelView> bulkExecute(final List<Long> ids)
     {
         return bulkPeopleMapper.execute(ids);
-    }
-
-    /**
-     * Gets the cache key prefix.
-     * 
-     * @return the prefix.
-     */
-    @Override
-    public String getCachePointerKeyPrefix()
-    {
-        return CacheKeys.PERSON_BY_OPEN_SOCIAL_ID;
-    }
-
-    /**
-     * Gets the class.
-     * 
-     * @return the class.
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public Class getEntityClass()
-    {
-        return Person.class;
-    }
-
-    /**
-     * Gets the pointer property.
-     * 
-     * @return the property.
-     */
-    @Override
-    public String getPointerProperty()
-    {
-        return "openSocialId";
     }
 }

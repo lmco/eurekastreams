@@ -17,9 +17,7 @@ package org.eurekastreams.server.persistence.mappers.stream;
 
 import java.util.List;
 
-import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
 /**
@@ -57,40 +55,6 @@ public class GetDomainGroupsByShortNames extends GetItemsByPointerIds<DomainGrou
     protected List<DomainGroupModelView> bulkExecute(final List<Long> ids)
     {
         return bulkDomainGroupsMapper.execute(ids);
-    }
-
-    /**
-     * Get prefix.
-     * 
-     * @return prefix.
-     */
-    @Override
-    public String getCachePointerKeyPrefix()
-    {
-        return CacheKeys.GROUP_BY_SHORT_NAME;
-    }
-
-    /**
-     * Get class.
-     * 
-     * @return class.
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public Class getEntityClass()
-    {
-        return DomainGroup.class;
-    }
-
-    /**
-     * Get property name.
-     * 
-     * @return property name.
-     */
-    @Override
-    public String getPointerProperty()
-    {
-        return "shortName";
     }
 
     /**

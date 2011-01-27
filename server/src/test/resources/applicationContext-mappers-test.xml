@@ -310,19 +310,35 @@
 	<bean id="bulkPeopleByOpenSocialIdMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds">
 		<property name="bulkPeopleMapper" ref="bulkPeopleMapper" />
-		<property name="cache" ref="testCache" />
+		
+		<property name="idsByStringsMapper">
+            <bean class="org.eurekastreams.server.persistence.mappers.db.GetIdsFromPointersDbMapper">
+                <constructor-arg value="openSocialId" />
+                <constructor-arg value="org.eurekastreams.server.domain.Person" />
+            </bean>
+        </property>
 	</bean>
 
 	<bean id="bulkOrganizationsByShortNameMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames">
 		<property name="bulkOrganizationsMapper" ref="getOrganizationsByIdsDbMapper" />
-		<property name="cache" ref="testCache" />
+		<property name="idsByStringsMapper">
+            <bean class="org.eurekastreams.server.persistence.mappers.db.GetIdsFromPointersDbMapper">
+                <constructor-arg value="shortName" />
+                <constructor-arg value="org.eurekastreams.server.domain.Organization" />
+            </bean>
+        </property>
 	</bean>
 
 	<bean id="bulkDomainGroupsByShortNameMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames">
 		<property name="bulkDomainGroupsMapper" ref="getGroupsByIdsDbMapper" />
-		<property name="cache" ref="testCache" />
+		<property name="idsByStringsMapper">
+            <bean class="org.eurekastreams.server.persistence.mappers.db.GetIdsFromPointersDbMapper">
+                <constructor-arg value="shortName" />
+                <constructor-arg value="org.eurekastreams.server.domain.DomainGroup" />
+            </bean>
+        </property>
 	</bean>
 
 	<bean id="getStreamScopeProxyById"
