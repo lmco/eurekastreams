@@ -24,6 +24,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.custom.util.URIComponentUtils;
 import org.eurekastreams.server.persistence.mappers.SearchPeopleAndGroupsByPrefix;
 import org.eurekastreams.server.persistence.mappers.requests.GetEntitiesByPrefixRequest;
 import org.eurekastreams.server.search.modelview.DisplayEntityModelView;
@@ -38,7 +39,6 @@ import org.springframework.security.context.SecurityContextHolder;
 
 /**
  * Restlet for returning person/group entity model views by prefix.
- *
  */
 public class EntitiesByPrefixResource extends WritableResource
 {
@@ -99,8 +99,8 @@ public class EntitiesByPrefixResource extends WritableResource
     }
 
     /**
-     * Initialize parameters from the request object.
-     *            the context of the request
+     * Initialize parameters from the request object. the context of the request
+     *
      * @param request
      *            the client's request
      */
@@ -108,9 +108,8 @@ public class EntitiesByPrefixResource extends WritableResource
     protected void initParams(final Request request)
     {
         Map<String, Object> attributes = request.getAttributes();
-        targetString = ((String) attributes.get("query")).replace("%20", " ");
+        targetString = URIComponentUtils.decodeURIComponent((String) attributes.get("query"));
     }
-
 
     /**
      * Handle GET requests.
@@ -126,46 +125,46 @@ public class EntitiesByPrefixResource extends WritableResource
     {
         try
         {
-	        //ensure targetString is non-null and useful.
-	        if (targetString == null || targetString.length() == 0)
-	        {
-	            log.info("TargetString arguement null or not set."
-	                    + " No search attempted.");
-	            //TODO: find out if this is correct to send back as "null".
-	            return new StringRepresentation("");
-	        }
+            // ensure targetString is non-null and useful.
+            if (targetString == null || targetString.length() == 0)
+            {
+                log.info("TargetString arguement null or not set." + " No search attempted.");
+                // TODO: find out if this is correct to send back as "null".
+                return new StringRepresentation("");
+            }
 
-	        //get current user accountId
-	        String acctId = SecurityContextHolder.getContext().getAuthentication().getName();
+            // get current user accountId
+            String acctId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-	        List<DisplayEntityModelView> results = entitiesDAO.execute(
-	                new GetEntitiesByPrefixRequest(acctId.trim().toLowerCase(), targetString));
+            List<DisplayEntityModelView> results = entitiesDAO.execute(new GetEntitiesByPrefixRequest(acctId.trim()
+                    .toLowerCase(), targetString));
 
-	        JSONObject json = new JSONObject();
+            JSONObject json = new JSONObject();
 
-	        JSONArray jsonEntities = new JSONArray();
-	        for (DisplayEntityModelView femv : results)
-	        {
-	            jsonEntities.add(convertDisplayEntityModelViewToJSON(femv));
-	        }
-	        json.put(ENTITIES_KEY, jsonEntities);
-	        log.debug("EntitiesByPrefixResource: json =   " + json.toString());
+            JSONArray jsonEntities = new JSONArray();
+            for (DisplayEntityModelView femv : results)
+            {
+                jsonEntities.add(convertDisplayEntityModelViewToJSON(femv));
+            }
+            json.put(ENTITIES_KEY, jsonEntities);
+            log.debug("EntitiesByPrefixResource: json =   " + json.toString());
 
-	        Representation rep = new StringRepresentation(json.toString(), MediaType.APPLICATION_JSON);
-	        rep.setExpirationDate(new Date(0L));
-	        return rep;
+            Representation rep = new StringRepresentation(json.toString(), MediaType.APPLICATION_JSON);
+            rep.setExpirationDate(new Date(0L));
+            return rep;
         }
         catch (Exception ex)
         {
-        	log.error("Error occurred retrieving entity.", ex);
-        	throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
-        			"Error occurred retrieving entity.", ex);
+            log.error("Error occurred retrieving entity.", ex);
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, "Error occurred retrieving entity.", ex);
         }
     }
 
     /**
      * Method to convert {@link DisplayEntityModelView} to a JSON object.
-     * @param femv {@link DisplayEntityModelView}.
+     *
+     * @param femv
+     *            {@link DisplayEntityModelView}.
      * @return JSON object representing the {@link DisplayEntityModelView}.
      */
     private Object convertDisplayEntityModelViewToJSON(final DisplayEntityModelView femv)
@@ -178,5 +177,4 @@ public class EntitiesByPrefixResource extends WritableResource
 
         return jsonEntityObject;
     }
-
 }

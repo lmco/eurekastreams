@@ -200,6 +200,7 @@ BEGIN
 
     FOR rec IN
         select 
+			p.id as PersonId, 
 			ss.name as StreamSearchName, 
 			ss.id as StreamSearchId,
             ss.streamview_id as StreamViewId,
@@ -225,6 +226,12 @@ BEGIN
         if rec.StreamViewId = 4 then
     	    insert into Stream ("name", streamSearchId, request, version, readonly) values (rec.StreamSearchName, rec.streamsearchid, '{"query":{"savedBy":"%%CURRENT_USER_ACCOUNT_ID%%","keywords":"' || rec.keywords || '"}}', 0, false); 
         end if;
+
+		SELECT MAX(streamindex) + 1 INTO personMaxStreamIndex FROM Person_Stream WHERE personId = rec.PersonId;
+		
+		INSERT INTO person_stream (personId, streamId, streamindex) 
+			VALUES(rec.PersonId, currval('stream_id_seq'), personMaxStreamIndex);
+	       
 	END LOOP;
 
 	-- Add all stream searches without keywords
@@ -355,24 +362,31 @@ DROP FUNCTION migrateStreamViews();
 DROP FUNCTION migrateStreamSearches();
 
 -- Migrate Persons
-UPDATE gadget set gadgetuserpref = '{"gadgetTitle" : "' || substring(gadgetuserpref from '"gadgetTitle":"([^"]*)"') || E'", "streamQuery":"{\\"query\\":{\\"recipient\\":[{\\"type\\":\\"PERSON\\", \\"name\\":\\"' || 
-    substring(gadgetuserpref from '"shortName:"([a-zA-Z0-9]*)"') || E'\\"}]}}" }' where gadgetdefinitionid = 22 and gadgetuserpref ~* '"streamtype":"personstream"';
+UPDATE gadget set gadgetuserpref = '{"gadgetTitle" : "' || substring(gadgetuserpref from '"gadgetTitle":"([^"]*)"') || '", "streamLocation":people/' ||  substring(gadgetuserpref from '"shortName":"([a-zA-Z0-9]*)"') 
+    || E'", "streamQuery":"{\\"query\\":{\\"recipient\\":[{\\"type\\":\\"PERSON\\", \\"name\\":\\"' || 
+    substring(gadgetuserpref from '"shortName":"([a-zA-Z0-9]*)"') || E'\\"}]}}" }' where gadgetdefinitionid = 22 and gadgetuserpref ~* '"streamtype":"personstream"';
 
 -- Migrate Groups
-UPDATE gadget set gadgetuserpref = '{"gadgetTitle" : "' || substring(gadgetuserpref from '"gadgetTitle":"([^"]*)"') || E'", "streamQuery":"{\\"query\\":{\\"recipient\\":[{\\"type\\":\\"GROUP\\", \\"name\\":\\"' || 
+UPDATE gadget set gadgetuserpref = '{"gadgetTitle" : "' || substring(gadgetuserpref from '"gadgetTitle":"([^"]*)"') || '", "streamLocation":"groups/' || substring(gadgetuserpref from '"shortName":"([a-zA-Z0-9]*)"')
+    || E'", "streamQuery":"{\\"query\\":{\\"recipient\\":[{\\"type\\":\\"GROUP\\", \\"name\\":\\"' || 
     substring(gadgetuserpref from '"shortName":"([a-zA-Z0-9]*)"') || E'\\"}]}}" }' where gadgetdefinitionid = 22 and gadgetuserpref ~* '"streamtype":"groupstream"';
 
 -- Migrate Orgs
-UPDATE gadget set gadgetuserpref = '{"gadgetTitle" : "' || substring(gadgetuserpref from '"gadgetTitle":"([^"]*)"') || E'", "streamQuery":"{\\"query\\":{\\"organization\\": \\"' || 
+UPDATE gadget set gadgetuserpref = '{"gadgetTitle" : "' || substring(gadgetuserpref from '"gadgetTitle":"([^"]*)"') || '", "streamLocation":"organizations/' || substring(gadgetuserpref from '"shortName":"([a-zA-Z0-9]*)"')
+    || E'", "streamQuery":"{\\"query\\":{\\"organization\\": \\"' || 
     substring(gadgetuserpref from '"shortName":"([a-zA-Z0-9]*)"') || E'\\"}" }' where gadgetdefinitionid = 22 and gadgetuserpref ~* '"streamtype":"orgstream"';
 
 -- Migrate Saved Searches
-UPDATE gadget g2 set gadgetuserpref = '{"gadgetTitle" : "' || substring(gadgetuserpref from '"gadgetTitle":"([^"]*)"') || E'", "streamQuery":"saved/' || 
+UPDATE gadget g2 set gadgetuserpref = '{"gadgetTitle" : "' || substring(gadgetuserpref from '"gadgetTitle":"([^"]*)"') || '", "streamLocation":"activity?streamId=' || 
+    (SELECT s.id from stream s, gadget g where int4(substring(g.gadgetuserpref from '"filterId":"([a-zA-Z0-9]*)"')) = s.streamsearchid AND g.id = g2.id)
+    || E'", "streamQuery":"saved/' || 
     (SELECT s.id from stream s, gadget g where int4(substring(g.gadgetuserpref from '"filterId":"([a-zA-Z0-9]*)"')) = s.streamsearchid AND g.id = g2.id) || '"}' 
     where g2.gadgetdefinitionid = 22 and g2.gadgetuserpref ~* '"streamtype":"streamsearch"';
 
 -- Migrate Composite Streams
-UPDATE gadget g2 set gadgetuserpref = '{"gadgetTitle" : "' || substring(gadgetuserpref from '"gadgetTitle":"([^"]*)"') || E'", "streamQuery":"saved/' || 
+UPDATE gadget g2 set gadgetuserpref = '{"gadgetTitle" : "' || substring(gadgetuserpref from '"gadgetTitle":"([^"]*)"')  || '", "streamLocation":"activity?streamId=' ||
+    (SELECT s.id from stream s, gadget g where int4(substring(g.gadgetuserpref from '"filterId":"([a-zA-Z0-9]*)"')) = s.streamviewid AND g.id = g2.id)
+    || E'", "streamQuery":"saved/' || 
     (SELECT s.id from stream s, gadget g where int4(substring(g.gadgetuserpref from '"filterId":"([a-zA-Z0-9]*)"')) = s.streamviewid AND g.id = g2.id) || '"}' 
     where g2.gadgetdefinitionid = 22 and g2.gadgetuserpref ~* '"streamtype":"compositestream"' and int4(substring(g2.gadgetuserpref from '"filterId":"([a-zA-Z0-9]*)"')) > 4;
 

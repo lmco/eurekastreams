@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ import org.eurekastreams.server.domain.ApplicationAlertNotification;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.BaseDomainMapper;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.InsertMapper;
-import org.eurekastreams.server.persistence.mappers.cache.SyncUnreadApplicationAlertCountCacheByUserId;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 
 /**
@@ -32,12 +32,12 @@ public class ApplicationAlertNotifier extends BaseDomainMapper implements Notifi
     /**
      * Mapper to persist the notification.
      */
-    private InsertMapper<ApplicationAlertNotification> insertMapper;
+    private final InsertMapper<ApplicationAlertNotification> insertMapper;
 
     /**
      * Mapper to sync unread alert count in cache.
      */
-    SyncUnreadApplicationAlertCountCacheByUserId syncMapper;
+    private final DomainMapper<Long, Integer> syncMapper;
 
     /**
      * Constructor.
@@ -48,7 +48,7 @@ public class ApplicationAlertNotifier extends BaseDomainMapper implements Notifi
      *            the sync mapper to set.
      */
     public ApplicationAlertNotifier(final InsertMapper<ApplicationAlertNotification> inInsertMapper,
-            final SyncUnreadApplicationAlertCountCacheByUserId inSyncMapper)
+            final DomainMapper<Long, Integer> inSyncMapper)
     {
         insertMapper = inInsertMapper;
         syncMapper = inSyncMapper;

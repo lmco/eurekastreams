@@ -17,9 +17,6 @@ package org.eurekastreams.web.client.ui.common.stream.renderers;
 
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest;
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest.LikeActionType;
-import org.eurekastreams.web.client.events.ActivityLikedChangeEvent;
-import org.eurekastreams.web.client.events.EventBus;
-import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.model.ActivityLikeModel;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -48,7 +45,7 @@ public class LikeWidget extends Composite
 
     /**
      * Default constructor.
-     *
+     * 
      * @param isLiked
      *            whether its liked by the current user.
      * @param activityId
@@ -70,21 +67,11 @@ public class LikeWidget extends Composite
             public void onClick(final ClickEvent event)
             {
                 final LikeActionType actionType = liked ? LikeActionType.REMOVE_LIKE : LikeActionType.ADD_LIKE;
+                liked = !liked;
+                likeLink.setText(liked ? "Unlike" : "Like");
                 ActivityLikeModel.getInstance().update(new SetActivityLikeRequest(activityId, actionType));
             }
 
-        });
-
-        EventBus.getInstance().addObserver(ActivityLikedChangeEvent.class, new Observer<ActivityLikedChangeEvent>()
-        {
-            public void update(final ActivityLikedChangeEvent event)
-            {
-                if (event.getActivityId().equals(activityId))
-                {
-                    liked = event.getActionType() == LikeActionType.ADD_LIKE;
-                    likeLink.setText(event.getActionType() == LikeActionType.ADD_LIKE ? "Unlike" : "Like");
-                }
-            }
         });
 
         initWidget(widget);

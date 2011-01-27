@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.action.request.transformer;
-
-import java.io.Serializable;
-
-import org.eurekastreams.commons.actions.context.ActionContext;
-import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 
 /**
- * Transform a request object into something new.
+ * Tests for mappers which perform their tasks by using other mappers.
  */
-public interface RequestTransformer extends Transformer<ActionContext, Serializable>
-{
-}
+package org.eurekastreams.server.persistence.mappers.composite;

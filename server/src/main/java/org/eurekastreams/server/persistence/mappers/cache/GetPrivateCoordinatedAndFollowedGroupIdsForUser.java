@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,16 +21,16 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
  * Mapper to get a set of domain group ids that include all groups that are private that a user can view activity for.
- * 
+ *
  * This includes all of the private groups that a user has access to view activity for based on either group or org
  * coordinator relationships, as well as the group ids (public or private) that a user is following.
- * 
+ *
  * Since the list contains all groups that the the user follows, some of these ids might be public groups.
  */
 public class GetPrivateCoordinatedAndFollowedGroupIdsForUser extends CachedDomainMapper
@@ -38,28 +38,29 @@ public class GetPrivateCoordinatedAndFollowedGroupIdsForUser extends CachedDomai
     /**
      * Logger.
      */
-    private Log log = LogFactory.getLog(GetPrivateCoordinatedAndFollowedGroupIdsForUser.class);
+    private final Log log = LogFactory.make();
 
     /**
      * Mapper to get all private group ids that a user can view with org or group coordinator access.
      */
-    private GetPrivateGroupsByUserId getPrivateGroupIdsMapper;
+    private final DomainMapper<Long, Set<Long>> getPrivateGroupIdsMapper;
 
     /**
      * Mapper to get the group ids followed by a person.
      */
-    private DomainMapper<Long, List<Long>> getFollowedGroupIdsMapper;
+    private final DomainMapper<Long, List<Long>> getFollowedGroupIdsMapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inGetPrivateGroupIdsMapper
      *            mapper to get a set of group ids that a user has access to see activity for with org or group
      *            coordinator access
      * @param inGetFollowedGroupIdsMapper
      *            mapper to get a list of ids of groups followed by a user
      */
-    public GetPrivateCoordinatedAndFollowedGroupIdsForUser(final GetPrivateGroupsByUserId inGetPrivateGroupIdsMapper,
+    public GetPrivateCoordinatedAndFollowedGroupIdsForUser(
+            final DomainMapper<Long, Set<Long>> inGetPrivateGroupIdsMapper,
             final DomainMapper<Long, List<Long>> inGetFollowedGroupIdsMapper)
     {
         getPrivateGroupIdsMapper = inGetPrivateGroupIdsMapper;
@@ -68,7 +69,7 @@ public class GetPrivateCoordinatedAndFollowedGroupIdsForUser extends CachedDomai
 
     /**
      * Get the set of group ids that a user can view activity for.
-     * 
+     *
      * @param inUserPersonId
      *            the user id to get a list of domain group ids for
      * @return a set of group ids that includes all private groups that a user can view activity for

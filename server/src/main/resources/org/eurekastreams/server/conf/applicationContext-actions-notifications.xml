@@ -106,7 +106,7 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
         </constructor-arg>
-        <constructor-arg ref="syncUnreadApplicationAlertCountCacheByUserId" />
+        <constructor-arg ref="getCachedAlertCountByUserId_FORCE_REFRESH" />
     </bean>
     
     <!-- all notifiers, by ID -->
@@ -542,7 +542,10 @@
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.notification.GetUnreadApplicationAlertCountExecution">
+            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+            	<constructor-arg>
+            		<bean class="org.eurekastreams.server.action.request.transformer.UsePrincipalPersonIdRequestTransformer" />
+            	</constructor-arg>
                 <constructor-arg ref="getCachedAlertCountByUserId" />
             </bean>
         </constructor-arg>
@@ -555,7 +558,7 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.notification.SetAllApplicationAlertsAsReadExecution">
                 <constructor-arg ref="setAllApplicationAlertsAsReadByUserId" />
-                <constructor-arg ref="syncUnreadApplicationAlertCountCacheByUserId" />
+                <constructor-arg ref="getCachedAlertCountByUserId_FORCE_REFRESH" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
@@ -568,7 +571,7 @@
                 class="org.eurekastreams.server.action.execution.notification.DeleteOldApplicationAlertsExecution">
                 <constructor-arg ref="deleteApplicationAlertsByDate" />
                 <constructor-arg ref="getUserIdsWithUnreadApplicationAlertsByDate" />
-                <constructor-arg ref="syncUnreadApplicationAlertCountCacheByUserId" />
+                <constructor-arg ref="getCachedAlertCountByUserId_FORCE_REFRESH" />
                 <!-- Age (in days) at which alerts should be deleted. -->
                 <constructor-arg type="int" value="14" />
             </bean>

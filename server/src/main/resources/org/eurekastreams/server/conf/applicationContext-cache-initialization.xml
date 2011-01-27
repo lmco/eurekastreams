@@ -100,10 +100,8 @@
     <bean id="cacheOrganization" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+            <bean parent="baseParamListExecuteDomainMapperExecution">
                 <constructor-arg ref="getOrganizationsByIdsMapper_FORCE_REFRESH" />
-                <!-- put id in list before calling mapper. -->    
-                <constructor-arg value="True" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -112,10 +110,8 @@
     <bean id="cacheGroup" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+            <bean parent="baseParamListExecuteDomainMapperExecution">
                 <constructor-arg ref="getGroupsByIdsMapper_FORCE_REFRESH" />
-                <!-- put id in list before calling mapper. -->    
-                <constructor-arg value="True" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -124,10 +120,8 @@
     <bean id="cachePerson" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+            <bean parent="baseParamListExecuteDomainMapperExecution">
                 <constructor-arg ref="getPersonsByIdsMapper_FORCE_REFRESH" />
-                <!-- put id in list before calling mapper. -->    
-                <constructor-arg value="True" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -136,9 +130,8 @@
     <bean id="cachePersonPageProperties" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+            <bean parent="baseParamExecuteDomainMapperExecution">
                 <constructor-arg ref="getPersonPagePropertiesById_FORCE_REFRESH" />  
-                <constructor-arg value="False" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -147,10 +140,8 @@
     <bean id="cacheFollowedPersonIdsForPersonList" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+            <bean parent="baseParamExecuteDomainMapperExecution">
                 <constructor-arg ref="getFollowedPersonIdsForPersonByIdMapper_FORCE_REFRESH" />
-                <!-- put id in list before calling mapper. -->    
-                <constructor-arg value="False" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -159,10 +150,8 @@
     <bean id="cacheFollowerPersonIdsForPersonList" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+            <bean parent="baseParamExecuteDomainMapperExecution">
                 <constructor-arg ref="getFollowerPersonIdsForPersonByIdMapper_FORCE_REFRESH" />
-                <!-- put id in list before calling mapper. -->    
-                <constructor-arg value="False" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -171,10 +160,8 @@
     <bean id="cacheFollowedGroupIdsForPersonList" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+            <bean parent="baseParamExecuteDomainMapperExecution">
                 <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper_FORCE_REFRESH" />
-                <!-- put id in list before calling mapper. -->    
-                <constructor-arg value="False" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -183,10 +170,8 @@
     <bean id="cacheFollowerPersonIdsForGroupList" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+            <bean parent="baseParamExecuteDomainMapperExecution">
                 <constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper_FORCE_REFRESH" />
-                <!-- put id in list before calling mapper. -->    
-                <constructor-arg value="False" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -195,10 +180,8 @@
     <bean id="cacheGroupCoordinatorIdsForGroupList" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+            <bean parent="baseParamExecuteDomainMapperExecution">
                 <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper_FORCE_REFRESH" />
-                <!-- put id in list before calling mapper. -->    
-                <constructor-arg value="False" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -207,10 +190,8 @@
     <bean id="cacheRecursiveChildrenForOrganizationList" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+            <bean parent="baseParamExecuteDomainMapperExecution">
                 <constructor-arg ref="getChildOrgIdsRecursiveByOrgIdMapper_FORCE_REFRESH" />
-                <!-- put id in list before calling mapper. -->    
-                <constructor-arg value="False" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -219,10 +200,8 @@
     <bean id="cacheRecursiveParentsForOrganizationList" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+            <bean parent="baseParamExecuteDomainMapperExecution">
                 <constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper_FORCE_REFRESH" />
-                <!-- put id in list before calling mapper. -->    
-                <constructor-arg value="False" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -231,12 +210,10 @@
     <bean id="cacheThemeCss" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+            <bean parent="baseParamExecuteDomainMapperExecution">
                 <!-- This mapper will force refresh of BOTH theme version AND theme css as it is config'd with the 
                     force refresh version of getThemeCssByUuid mapper.-->
                 <constructor-arg ref="getThemeVersionByUuid_FORCE_REFRESH" />
-                <!-- put id in list before calling mapper. -->    
-                <constructor-arg value="False" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,20 @@ package org.eurekastreams.server.action.request.transformer;
 import java.io.Serializable;
 
 import org.eurekastreams.commons.actions.context.ActionContext;
-import org.eurekastreams.server.persistence.mappers.cache.Transformer;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
- * Transform a request object into something new.
+ * Wraps the action context parameter in a list, to allow singular inputs to be used with list-based beans.
  */
-public interface RequestTransformer extends Transformer<ActionContext, Serializable>
+public class WrapInListRequestTransformer implements RequestTransformer
 {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Serializable transform(final ActionContext inActionContext)
+    {
+        return (Serializable) Collections.singletonList(inActionContext.getParams());
+    }
 }

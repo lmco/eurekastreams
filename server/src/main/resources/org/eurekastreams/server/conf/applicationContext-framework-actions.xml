@@ -24,16 +24,12 @@
     <!-- TaskHandler configuration -->
     <!-- ************************* -->
     
-    <!-- A task action executor executing the action request in-method and in-thread.
--->
-
+    <!-- A task action executor executing the action request in-method and in-thread. -->
     <bean id="applicationContextHolder" class="org.eurekastreams.server.service.actions.strategies.ApplicationContextHolder" />
-
 
     <bean id="taskActionExecutor" class="org.eurekastreams.commons.task.TaskActionExecutor" />
 
-    <!-- A threaded task action executor executing the action request in a single new thread.
--->
+    <!-- A threaded task action executor executing the action request in a single new thread. -->
     <bean id="threadedTaskActionExecutor" class="org.eurekastreams.commons.task.ThreadedTaskActionExecutor">
             <constructor-arg ref="taskActionExecutor" />
     </bean>
@@ -73,7 +69,28 @@
     <bean id="asyncActionController" class="org.eurekastreams.commons.server.async.AsyncActionController">
         <constructor-arg ref="transactionManager"/>
     </bean>  
+
+
+	<!-- ========== TRANSFORMERS ========== -->
        
+    <bean id="passThruRequestTransformer" class="org.eurekastreams.server.action.request.transformer.PassThruRequestTransformer"/>
+
+    <bean id="wrapInListRequestTransformer" class="org.eurekastreams.server.action.request.transformer.WrapInListRequestTransformer"/>
+
+    
+	<!-- ========== BASE ACTIONS ========== -->
+	
+    <bean id="baseParamExecuteDomainMapperExecution" abstract="true" 
+    	class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+        <constructor-arg ref="passThruRequestTransformer" />        
+    </bean>
+
+    <bean id="baseParamListExecuteDomainMapperExecution" abstract="true" 
+    	class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+        <constructor-arg ref="wrapInListRequestTransformer" />        
+    </bean>
+	
+	       
     <!-- ******************** -->
     <!-- Action configuration -->
     <!-- ******************** -->
@@ -380,8 +397,6 @@
         <constructor-arg value="true" />
     </bean>
 
-    <bean id="passThruRequestTransformer" class="org.eurekastreams.server.action.request.transformer.PassThruRequestTransformer"/>
-    
     <bean id="deleteEmployment" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
@@ -537,9 +552,8 @@
     <bean id="refreshFollowedByActivities" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />        
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+            <bean parent="baseParamExecuteDomainMapperExecution">
                 <constructor-arg ref="getFollowedByActivities_FORCE_REFRESH" /> 
-                <constructor-arg value="false" />        
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />   
@@ -548,9 +562,8 @@
     <bean id="refreshOrgActivities" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />        
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+            <bean parent="baseParamExecuteDomainMapperExecution">
                 <constructor-arg ref="parentOrgActivityIdMapper_FORCE_REFRESH" /> 
-                <constructor-arg value="false" />        
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />   
@@ -1075,8 +1088,7 @@
                         <constructor-arg ref="getOrgCoordinators" />
                         <constructor-arg ref="bulkPeopleMapper" />
                         <property name="organizationLoader">
-                            <bean
-                                class="org.eurekastreams.server.service.actions.strategies.OrganizationPersonLoaderLeaders">
+                            <bean class="org.eurekastreams.server.service.actions.strategies.OrganizationPersonLoaderLeaders">
                                 <constructor-arg ref="bulkPeopleMapper" />
                                 <constructor-arg ref="getOrganizationLeaderIdsByOrgId" />
                             </bean>
@@ -1379,9 +1391,8 @@
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
-        	<bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+        	<bean parent="baseParamExecuteDomainMapperExecution">
                 <constructor-arg ref="getOrganizationTreeDTOMapper" />
-                <constructor-arg value="false" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -1818,11 +1829,7 @@
 							<!-- Database mapper to fall back on if not found in cache -->
 							<constructor-arg ref="getEveryoneActivityDbMapper" />
 							
-							<constructor-arg>
-								<!-- Results combiner - just returns the first non-null value -->
-								<bean
-									class="org.eurekastreams.server.persistence.mappers.chained.NonNullResultsCombiner" />
-							</constructor-arg>
+							<constructor-arg ref="nonNullResultsCombiner" />
 					
 							<constructor-arg>
 								<!-- Cache refresher - sets the list back to the everyone cache list -->
@@ -2556,10 +2563,8 @@
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+            <bean parent="baseParamExecuteDomainMapperExecution">
                 <constructor-arg ref="getAppDataDTO" />
-                <!-- put id in list before calling mapper. -->    
-                <constructor-arg value="false" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -3046,17 +3051,12 @@
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
-    
-    
-
 
     <bean id="organizationCacheUpdaterAsyncAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
-            <bean
-                class="org.eurekastreams.server.action.execution.profile.OrganizationCacheUpdaterExecution">
-                <constructor-arg ref="getPrivateGroupsByUserId" />
-                <constructor-arg ref="memcachedCache" />
+            <bean class="org.eurekastreams.server.action.execution.profile.OrganizationCacheUpdaterExecution">
+                <constructor-arg ref="getPrivateGroupsByUserId_FORCE_REFRESH" />
                 <constructor-arg ref="saveOrganizationCoordinatorIdsToCache" />
                 <constructor-arg ref="orgParentHierarchyCacheCleaner" />
             </bean>
@@ -3065,21 +3065,18 @@
     </bean>
     
     <bean id="personActivityAvatarUpdaterAsyncAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
-        <!-- Update the author avatar ids in cached activities, comments, and embedded comments authored by a user
--->
+        <!-- Update the author avatar ids in cached activities, comments, and embedded comments authored by a user -->
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.profile.PersonAuthoredActivitiesAndCommentsCacheUpdater">
-                <!-- Update the author information on all cached activities and comments for a user
--->
+                <!-- Update the author information on all cached activities and comments for a user -->
             
                 <constructor-arg ref="getActivityIdsAuthoredByOrOriginallyAuthoredByEntityDBMapper" />
                 <constructor-arg ref="getActivityCommentIdsAuthoredByPersonIdDBMapper" />
                 <constructor-arg ref="getActivityIdsWithFirstOrLastCommentsAuthoredByPersonIdDBMapper" />
                 
                 <constructor-arg>
-                    <!-- Update the author's avatar in all cached activities authored by a user
--->
+                    <!-- Update the author's avatar in all cached activities authored by a user -->
                     <bean class="org.eurekastreams.server.persistence.mappers.cache.UpdateAuthorInfoInCachedActivities">
                         <constructor-arg value="100" />
                         
@@ -4608,10 +4605,8 @@
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
+            <bean parent="baseParamExecuteDomainMapperExecution">
                 <constructor-arg ref="getPersonAdditionalProperties" />
-                <!-- put id in list before calling mapper. -->    
-                <constructor-arg value="false" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />

@@ -11,10 +11,7 @@
 	<bean id="getPrivateGroupIdsCoordinatedByPerson" 
 		class="org.eurekastreams.server.persistence.mappers.GetPrivateGroupIdsCoordinatedByPerson"/>
 		
-    <bean id="getOrganizationLeaderIdsByOrgId" 
-       class="org.eurekastreams.server.persistence.mappers.cache.GetOrganizationLeaderIdsByOrgId">
-       <property name="cache" ref="testCache" />
-    </bean>
+    <bean class="org.eurekastreams.server.persistence.mappers.db.GetOrganizationLeaderIdsByOrgId" />
 	
 	<bean id="insertLikedActivity"
 		class="org.eurekastreams.server.persistence.mappers.InsertLikedActivity">
@@ -439,13 +436,6 @@
 	
 	<bean id="getCommentorIdsByActivityId" class="org.eurekastreams.server.persistence.mappers.db.GetCommentorIdsByActivityId" />
 	
-	<bean id="applicationAlertNotifier" class="org.eurekastreams.server.action.execution.notification.ApplicationAlertNotifier">
-		<constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
-		</constructor-arg>
-		<constructor-arg ref="syncUnreadApplicationAlertCountCacheByUserId" />
-	</bean>
-	
 	<bean id="getNotificationFilterPreferencesByPersonId" class="org.eurekastreams.server.persistence.mappers.db.GetNotificationFilterPreferencesByPersonId" />
 
 	<bean id="setUserNotificationFilterPreferences" class="org.eurekastreams.server.persistence.mappers.db.SetUserNotificationFilterPreferences" />
@@ -465,9 +455,9 @@
 	<bean id="getUserIdsWithUnreadApplicationAlertsByDate"
 		class="org.eurekastreams.server.persistence.mappers.db.GetUserIdsWithUnreadApplicationAlertsByDate" />
 	
-	<bean id="syncUnreadApplicationAlertCountCacheByUserId"
-		class="org.eurekastreams.server.persistence.mappers.cache.SyncUnreadApplicationAlertCountCacheByUserId">
-		<property name="cache" ref="testCache" />
+	<bean id="getUnreadApplicationAlertCountByUserId" 
+		class="org.eurekastreams.server.persistence.mappers.db.notification.GetUnreadApplicationAlertCountByUserId">
+		<property name="queryOptimizer" ref="queryOptimizer" />
 	</bean>
 
 	<bean id="populatePeopleWithSkeletonRelatedOrgsCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.PopulatePeopleWithSkeletonRelatedOrgsCacheMapper">

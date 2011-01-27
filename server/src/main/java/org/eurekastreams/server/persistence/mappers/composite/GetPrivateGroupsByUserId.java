@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.mappers.cache;
+package org.eurekastreams.server.persistence.mappers.composite;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.eurekastreams.server.persistence.mappers.GetPrivateGroupIdsCoordinatedByPerson;
+import org.eurekastreams.server.persistence.mappers.ReadMapper;
+import org.eurekastreams.server.persistence.mappers.cache.GetOrgIdsDirectlyCoordinatedByPerson;
+import org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCache;
 import org.eurekastreams.server.persistence.mappers.db.GetPrivateGroupIdsUnderOrganizations;
-import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
  * This class retrieves a set of private group ids from cache that a user has access to view activities for through
  * either a direct group coordinator role or a parent org tree coordinator role.
- * 
+ *
  */
-public class GetPrivateGroupsByUserId extends CachedDomainMapper
+public class GetPrivateGroupsByUserId extends ReadMapper<Long, Set<Long>>
 {
     /**
      * Local instance of mapper to retrieve the private group ids from the db.
@@ -52,7 +54,7 @@ public class GetPrivateGroupsByUserId extends CachedDomainMapper
 
     /**
      * Constructor.
-     * 
+     *
      * @param inPrivateGroupIdsMapper
      *            - instance of the {@link GetPrivateGroupIdsCoordinatedByPerson} mapper.
      * @param inOrgCoordMapper
@@ -76,7 +78,7 @@ public class GetPrivateGroupsByUserId extends CachedDomainMapper
     /**
      * Retrieve the Set of ids for the private groups that the supplied user has the ability to view either through
      * group/org coordinator access.
-     * 
+     *
      * @param inUserId
      *            - user id of the context to bring back private group ids.
      * @return - Set of private group ids based on the user id context.
@@ -84,31 +86,23 @@ public class GetPrivateGroupsByUserId extends CachedDomainMapper
     @SuppressWarnings("unchecked")
     public Set<Long> execute(final Long inUserId)
     {
-        Set<Long> groupIds = (Set<Long>) getCache().get(
-                CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + inUserId);
+        // Retrieve direct private orgs coordinated.
+        List<Long> results = privateGroupIdsMapper.execute(inUserId);
+        Set<Long> groupIds = new HashSet<Long>(results);
 
-        if (groupIds == null)
+        // Retrieve org ids direct coordinator of.
+        Set<Long> orgCoordResults = orgCoordMapper.execute(inUserId);
+
+        // Retrieve recursive child org ids of orgs direct coordinator of.
+        Set<Long> orgHierarchyResults = new HashSet<Long>();
+        for (Long currentOrgId : orgCoordResults)
         {
-            // Retrieve direct private orgs coordinated.
-            List<Long> results = privateGroupIdsMapper.execute(inUserId);
-            groupIds = new HashSet<Long>(results);
-
-            // Retrieve org ids direct coordinator of.
-            Set<Long> orgCoordResults = orgCoordMapper.execute(inUserId);
-
-            // Retrieve recursive child org ids of orgs direct coordinator of.
-            Set<Long> orgHierarchyResults = new HashSet<Long>();
-            for (Long currentOrgId : orgCoordResults)
-            {
-                orgHierarchyResults.addAll(orgHierarchyCacheMapper.getSelfAndRecursiveChildOrganizations(currentOrgId));
-            }
-            orgCoordResults.addAll(orgHierarchyResults);
-
-            // Retrieve all private groups beneath orgs.
-            groupIds.addAll(orgPrivateGroupIdsMapper.execute(orgCoordResults));
-
-            getCache().set(CacheKeys.PRIVATE_GROUP_IDS_VIEWABLE_BY_PERSON_AS_COORDINATOR + inUserId, groupIds);
+            orgHierarchyResults.addAll(orgHierarchyCacheMapper.getSelfAndRecursiveChildOrganizations(currentOrgId));
         }
+        orgCoordResults.addAll(orgHierarchyResults);
+
+        // Retrieve all private groups beneath orgs.
+        groupIds.addAll(orgPrivateGroupIdsMapper.execute(orgCoordResults));
 
         return groupIds;
     }

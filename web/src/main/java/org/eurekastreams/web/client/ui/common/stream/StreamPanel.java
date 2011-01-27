@@ -93,11 +93,6 @@ public class StreamPanel extends FlowPanel
     private StreamSearchComposite streamSearch;
 
     /**
-     * Non date sort max results.
-     */
-    private static final int NON_DATE_SORT_MAX_RESULTS = 20;
-
-    /**
      * The stream name.
      */
     private String streamName = "";
@@ -353,12 +348,6 @@ public class StreamPanel extends FlowPanel
 
                         updatedJson = StreamJsonRequestFactory.setSort(sort,
                                 StreamJsonRequestFactory.getJSONRequest(updatedJson)).toString();
-
-                        if (!sortPanel.getSort().equals("date"))
-                        {
-                            updatedJson = StreamJsonRequestFactory.setMaxResults(NON_DATE_SORT_MAX_RESULTS,
-                                    StreamJsonRequestFactory.getJSONRequest(updatedJson)).toString();
-                        }
 
                         streamSearch.setTitleText(streamName, shortName, showTitleAsLink);
                         streamSearch.setCanChange(canChange);

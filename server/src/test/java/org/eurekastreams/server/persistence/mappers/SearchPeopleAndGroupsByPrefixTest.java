@@ -37,7 +37,7 @@ import org.junit.Test;
 
 /**
  * Test for SearchPeopleAndGroupsByPrefix class.
- * 
+ *
  */
 public class SearchPeopleAndGroupsByPrefixTest
 {
@@ -54,12 +54,13 @@ public class SearchPeopleAndGroupsByPrefixTest
     /**
      * Mock Search request builder.
      */
-    private ProjectionSearchRequestBuilder searchRequestBuilder = context.mock(ProjectionSearchRequestBuilder.class);
+    private final ProjectionSearchRequestBuilder searchRequestBuilder = context
+            .mock(ProjectionSearchRequestBuilder.class);
 
     /**
      * Mock Mapper to get a list of all group ids that aren't public that a user can see activity for.
      */
-    private GetPrivateCoordinatedAndFollowedGroupIdsForUser getGroupIdsMapper = context
+    private final GetPrivateCoordinatedAndFollowedGroupIdsForUser getGroupIdsMapper = context
             .mock(GetPrivateCoordinatedAndFollowedGroupIdsForUser.class);
 
     /**
@@ -71,12 +72,12 @@ public class SearchPeopleAndGroupsByPrefixTest
     /**
      * Mock GetEntitiesByPrefixRequest.
      */
-    private GetEntitiesByPrefixRequest request = context.mock(GetEntitiesByPrefixRequest.class);
+    private final GetEntitiesByPrefixRequest request = context.mock(GetEntitiesByPrefixRequest.class);
 
     /**
      * Mock full text query.
      */
-    private FullTextQuery query = context.mock(FullTextQuery.class);
+    private final FullTextQuery query = context.mock(FullTextQuery.class);
 
     /**
      * PersonModelView mock.
@@ -96,17 +97,17 @@ public class SearchPeopleAndGroupsByPrefixTest
     /**
      * Search prefix used in tests.
      */
-    private String searchPrefix = "foo";
+    private final String searchPrefix = "foo";
 
     /**
      * User key used in tests.
      */
-    private String userKey = "userKey";
+    private final String userKey = "userKey";
 
     /**
      * User Id used in tests.
      */
-    private Long userId = 1L;
+    private final Long userId = 1L;
 
     /**
      * System under test.
@@ -182,15 +183,15 @@ public class SearchPeopleAndGroupsByPrefixTest
         groupIds.add(5L);
         groupIds.add(6L);
 
-        final String searchString = "+(name:(foo* foo) lastName:(foo* foo) "
-                + "preferredName:(foo* foo)^0.5) +isStreamPostable:true "
+        final String searchString = "+(name:(foo\\-foo* foo\\-foo) lastName:(foo\\-foo* foo\\-foo) "
+                + "preferredName:(foo\\-foo* foo\\-foo)^0.5) +isStreamPostable:true "
                 + "+(isPublic:true ( +id:(5 6 ) -isPublic:true))";
 
         context.checking(new Expectations()
         {
             {
                 oneOf(request).getPrefix();
-                will(returnValue(searchPrefix));
+                will(returnValue("foo-foo"));
 
                 oneOf(request).getUserKey();
                 will(returnValue(userKey));

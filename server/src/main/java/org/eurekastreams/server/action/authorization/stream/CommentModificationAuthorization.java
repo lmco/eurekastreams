@@ -26,7 +26,6 @@ import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetCommentsById;
 import org.eurekastreams.server.persistence.strategies.CommentDeletePropertyStrategy;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 
@@ -46,7 +45,7 @@ public class CommentModificationAuthorization implements AuthorizationStrategy<P
     /**
      * DAO for looking up commentDTO.
      */
-    private GetCommentsById commentDAO;
+    private DomainMapper<List<Long>, List<CommentDTO>> commentDAO;
 
     /**
      * DAO for looking up activity by id.
@@ -68,7 +67,7 @@ public class CommentModificationAuthorization implements AuthorizationStrategy<P
      * @param inCommentDeletableSetter
      *            Strategy for setting comment deletable property.
      */
-    public CommentModificationAuthorization(final GetCommentsById inCommentDAO,
+    public CommentModificationAuthorization(final DomainMapper<List<Long>, List<CommentDTO>> inCommentDAO,
             final DomainMapper<List<Long>, List<ActivityDTO>> inActivityDAO,
             final CommentDeletePropertyStrategy inCommentDeletableSetter)
     {

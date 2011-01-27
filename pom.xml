@@ -480,6 +480,7 @@
                              <failOnViolation>true</failOnViolation>
                              <!-- This excludes files from code coverage -->
                              <excludes>
+                             	  <exclude>org/apache/**</exclude>
                                   <exclude>org/eurekastreams/server/domain/**</exclude>
 				                  <exclude>**/*Test.java</exclude>
 				                  <exclude>**/*Fake.java</exclude>

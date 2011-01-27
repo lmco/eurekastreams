@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,13 @@
  */
 package org.eurekastreams.server.action.execution;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertSame;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -32,12 +29,12 @@ import org.junit.Test;
 
 /**
  * Test for ExecuteDomainMapperExecution.
- * 
+ *
  */
 public class ExecuteDomainMapperExecutionTest
 {
     /** Used for mocking objects. */
-    private JUnit4Mockery context = new JUnit4Mockery()
+    private final JUnit4Mockery context = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -47,17 +44,21 @@ public class ExecuteDomainMapperExecutionTest
     /**
      * Mapper to get list of keys of entities to warm.
      */
-    private DomainMapper<Serializable, Serializable> domainMapper = context.mock(DomainMapper.class);
+    private final DomainMapper<Serializable, Serializable> domainMapper = context.mock(DomainMapper.class);
+
+    /** Strategy to supply mapper parameters from the action context. */
+    private final Transformer<ActionContext, Serializable> parameterSupplier = context.mock(Transformer.class);
 
     /**
      * {@link ActionContext}.
      */
-    private ActionContext actionContext = context.mock(ActionContext.class);
+    private final ActionContext actionContext = context.mock(ActionContext.class);
 
-    /**
-     * List of longs.
-     */
-    private List<Long> results = new ArrayList<Long>(Arrays.asList(5L));
+    /** Mapper result. */
+    private final Serializable mapperResult = context.mock(Serializable.class, "mapperResult");
+
+    /** Extracted parameter. */
+    private final Serializable parameter = context.mock(Serializable.class, "parameter");
 
     /**
      * Test.
@@ -65,52 +66,22 @@ public class ExecuteDomainMapperExecutionTest
     @Test
     public void test()
     {
-        ExecuteDomainMapperExecution sut = new ExecuteDomainMapperExecution(domainMapper, false);
+        ExecuteDomainMapperExecution sut = new ExecuteDomainMapperExecution(parameterSupplier, domainMapper);
 
         context.checking(new Expectations()
         {
             {
-                allowing(actionContext).getParams();
-                will(returnValue("foo"));
+                oneOf(parameterSupplier).transform(with(same(actionContext)));
+                will(returnValue(parameter));
 
-                allowing(domainMapper).execute("foo");
-                will(returnValue(results));
+                oneOf(domainMapper).execute(with(same(parameter)));
+                will(returnValue(mapperResult));
             }
         });
 
         Serializable result = sut.execute(actionContext);
 
-        assertNotNull(result);
-        assertTrue(((List<Long>) result).contains(5L));
-
         context.assertIsSatisfied();
+        assertSame(result, mapperResult);
     }
-
-    /**
-     * Test.
-     */
-    @Test
-    public void testList()
-    {
-        ExecuteDomainMapperExecution sut = new ExecuteDomainMapperExecution(domainMapper, true);
-
-        context.checking(new Expectations()
-        {
-            {
-                allowing(actionContext).getParams();
-                will(returnValue("foo"));
-
-                allowing(domainMapper).execute(with(any(ArrayList.class)));
-                will(returnValue(results));
-            }
-        });
-
-        Serializable result = sut.execute(actionContext);
-
-        assertNotNull(result);
-        assertTrue(((List<Long>) result).contains(5L));
-
-        context.assertIsSatisfied();
-    }
-
 }

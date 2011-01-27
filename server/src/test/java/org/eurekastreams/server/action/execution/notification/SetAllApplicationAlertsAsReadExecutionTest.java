@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import java.util.Date;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
-import org.eurekastreams.server.persistence.mappers.cache.SyncUnreadApplicationAlertCountCacheByUserId;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.SetAllApplicationAlertsAsReadByUserId;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -53,24 +53,23 @@ public class SetAllApplicationAlertsAsReadExecutionTest
     /**
      * PrincipalActionContext mock.
      */
-    private PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
+    private final PrincipalActionContext actionContext = context.mock(PrincipalActionContext.class);
 
     /**
      * Principal mock.
      */
-    private Principal principal = context.mock(Principal.class);
+    private final Principal principal = context.mock(Principal.class);
 
     /**
      * Alert mapper mock.
      */
-    private SetAllApplicationAlertsAsReadByUserId alertMapper = context
+    private final SetAllApplicationAlertsAsReadByUserId alertMapper = context
             .mock(SetAllApplicationAlertsAsReadByUserId.class);
 
     /**
      * Sync mapper mock.
      */
-    private SyncUnreadApplicationAlertCountCacheByUserId syncMapper = context
-            .mock(SyncUnreadApplicationAlertCountCacheByUserId.class);
+    private final DomainMapper<Long, Integer> syncMapper = context.mock(DomainMapper.class);
 
     /**
      * Setup.
@@ -109,7 +108,7 @@ public class SetAllApplicationAlertsAsReadExecutionTest
             }
         });
 
-        assertEquals((Integer) 0, (Integer) sut.execute(actionContext));
+        assertEquals(0, sut.execute(actionContext));
         context.assertIsSatisfied();
     }
 }
