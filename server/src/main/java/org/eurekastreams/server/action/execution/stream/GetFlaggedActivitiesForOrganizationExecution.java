@@ -24,7 +24,10 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.stream.GetFlaggedActivitiesByOrgRequest;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetFlaggedActivitiesForOrganization;
+import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
 
 /**
  * Returns the flagged activities for a given organization.
@@ -40,19 +43,37 @@ public class GetFlaggedActivitiesForOrganizationExecution implements ExecutionSt
     private GetFlaggedActivitiesForOrganization mapper;
 
     /**
+     * ActivityFilter.
+     */
+    private ActivityFilter activityDeletabilityFilter;
+
+    /**
+     * Mapper to get a person model view by account id.
+     */
+    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper;
+
+    /**
      * Constructor.
-     *
+     * 
      * @param inMapper
      *            Mapper.
+     * @param inGetPersonModelViewByAccountIdMapper
+     *            Mapper to get a person model view by account id.
+     * @param inActivityDeletabilityFilter
+     *            ActivityFilter.
      */
-    public GetFlaggedActivitiesForOrganizationExecution(final GetFlaggedActivitiesForOrganization inMapper)
+    public GetFlaggedActivitiesForOrganizationExecution(final GetFlaggedActivitiesForOrganization inMapper,
+            final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper,
+            final ActivityFilter inActivityDeletabilityFilter)
     {
         mapper = inMapper;
+        activityDeletabilityFilter = inActivityDeletabilityFilter;
+        getPersonModelViewByAccountIdMapper = inGetPersonModelViewByAccountIdMapper;
     }
 
     /**
      * Get a paged set of flagged activities directly under an organization.
-     *
+     * 
      * @param inActionContext
      *            the action context having with GetFlaggedActivitiesByOrgRequest param
      * @return a paged set of flagged activities directly under an organization.
@@ -75,6 +96,10 @@ public class GetFlaggedActivitiesForOrganizationExecution implements ExecutionSt
         }
 
         PagedSet<ActivityDTO> activities = mapper.execute(request);
+
+        activityDeletabilityFilter.filter(activities.getPagedSet(), getPersonModelViewByAccountIdMapper
+                .execute(inActionContext.getPrincipal().getAccountId()));
+
         if (log.isInfoEnabled())
         {
             log.info("Found " + activities.getPagedSet().size() + " activities");
