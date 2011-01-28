@@ -65,7 +65,7 @@ public class StreamPanel extends FlowPanel
     /**
      * Error label.
      */
-    private Label error = new Label("");
+    private final Label error = new Label("");
 
     /**
      * Stream panel.
@@ -80,7 +80,7 @@ public class StreamPanel extends FlowPanel
     /**
      * Panel for posting contents.
      */
-    private FlowPanel shadowPanel = new FlowPanel();
+    private final FlowPanel shadowPanel = new FlowPanel();
 
     /**
      * The post widget.
@@ -90,7 +90,7 @@ public class StreamPanel extends FlowPanel
     /**
      * Stream search.
      */
-    private StreamSearchComposite streamSearch;
+    private final StreamSearchComposite streamSearch;
 
     /**
      * The stream name.
@@ -100,17 +100,17 @@ public class StreamPanel extends FlowPanel
     /**
      * Posting disabled panel.
      */
-    private FlowPanel postingDisabled = new FlowPanel();
+    private final FlowPanel postingDisabled = new FlowPanel();
 
     /**
      * Post content panel.
      */
-    private FlowPanel postContent = new FlowPanel();
+    private final FlowPanel postContent = new FlowPanel();
 
     /**
      * Activity Detail Panel.
      */
-    private FlowPanel activityDetailPanel = new FlowPanel();
+    private final FlowPanel activityDetailPanel = new FlowPanel();
 
     /**
      * Activity ID.
@@ -121,7 +121,7 @@ public class StreamPanel extends FlowPanel
      * Stream ID.
      */
     private Long streamId = 0L;
-    
+
     /**
      * Group ID.
      */
@@ -140,16 +140,16 @@ public class StreamPanel extends FlowPanel
     /**
      * Sort panel.
      */
-    private StreamSortPanel sortPanel = new StreamSortPanel();
+    private final StreamSortPanel sortPanel = new StreamSortPanel();
 
     /**
      * Panel to hold a message when the subject is locked.
      */
-    private FlowPanel lockedMessage = new FlowPanel();
+    private final FlowPanel lockedMessage = new FlowPanel();
 
     /**
      * Initialize page.
-     * 
+     *
      * @param showRecipients
      *            if recipients should be shown.
      */
@@ -181,31 +181,32 @@ public class StreamPanel extends FlowPanel
 
         stream.reinitialize();
 
-        EventBus.getInstance().addObserver(UpdatedHistoryParametersEvent.class,
-                new Observer<UpdatedHistoryParametersEvent>()
+        // ---- Wire up events ----
+        final EventBus eventBus = Session.getInstance().getEventBus();
+
+        eventBus.addObserver(UpdatedHistoryParametersEvent.class, new Observer<UpdatedHistoryParametersEvent>()
+        {
+            public void update(final UpdatedHistoryParametersEvent event)
+            {
+                checkHistory(event.getParameters());
+
+                // Only process this once.
+                eventBus.removeObserver(UpdatedHistoryParametersEvent.class, this);
+            }
+        }, true);
+
+        eventBus.addObserver(UpdatedHistoryParametersEvent.class, new Observer<UpdatedHistoryParametersEvent>()
+        {
+            public void update(final UpdatedHistoryParametersEvent event)
+            {
+                if (checkHistory(event.getParameters()))
                 {
-                    public void update(final UpdatedHistoryParametersEvent event)
-                    {
-                        checkHistory(event.getParameters());
+                    eventBus.notifyObservers(StreamReinitializeRequestEvent.getEvent());
+                }
+            }
+        });
 
-                        // Only process this once.
-                        EventBus.getInstance().removeObserver(UpdatedHistoryParametersEvent.class, this);
-                    }
-                }, true);
-
-        EventBus.getInstance().addObserver(UpdatedHistoryParametersEvent.class,
-                new Observer<UpdatedHistoryParametersEvent>()
-                {
-                    public void update(final UpdatedHistoryParametersEvent event)
-                    {
-                        if (checkHistory(event.getParameters()))
-                        {
-                            EventBus.getInstance().notifyObservers(StreamReinitializeRequestEvent.getEvent());
-                        }
-                    }
-                });
-
-        EventBus.getInstance().addObserver(GotActivityResponseEvent.class, new Observer<GotActivityResponseEvent>()
+        eventBus.addObserver(GotActivityResponseEvent.class, new Observer<GotActivityResponseEvent>()
         {
             public void update(final GotActivityResponseEvent event)
             {
@@ -215,7 +216,7 @@ public class StreamPanel extends FlowPanel
             }
         });
 
-        EventBus.getInstance().addObserver(StreamRequestMoreEvent.class, new Observer<StreamRequestMoreEvent>()
+        eventBus.addObserver(StreamRequestMoreEvent.class, new Observer<StreamRequestMoreEvent>()
         {
             public void update(final StreamRequestMoreEvent arg1)
             {
@@ -229,7 +230,7 @@ public class StreamPanel extends FlowPanel
             }
         });
 
-        EventBus.getInstance().addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
+        eventBus.addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
         {
             public void update(final GotStreamResponseEvent event)
             {
@@ -247,27 +248,26 @@ public class StreamPanel extends FlowPanel
 
                 error.setText("");
                 error.setVisible(false);
-                EventBus.getInstance().notifyObservers(updateEvent);
+                eventBus.notifyObservers(updateEvent);
                 stream.setVisible(true);
             }
         });
 
-        EventBus.getInstance().addObserver(StreamReinitializeRequestEvent.class,
-                new Observer<StreamReinitializeRequestEvent>()
-                {
-                    public void update(final StreamReinitializeRequestEvent event)
-                    {
-                        EventBus.getInstance().notifyObservers(new StreamRequestEvent(streamName, jsonQuery, true));
-                    }
-                });
+        eventBus.addObserver(StreamReinitializeRequestEvent.class, new Observer<StreamReinitializeRequestEvent>()
+        {
+            public void update(final StreamReinitializeRequestEvent event)
+            {
+                eventBus.notifyObservers(new StreamRequestEvent(streamName, jsonQuery, true));
+            }
+        });
 
-        EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
+        eventBus.addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
         {
             public void update(final MessageStreamAppendEvent evt)
             {
                 if ("date".equals(sortPanel.getSort()))
                 {
-                    EventBus.getInstance().notifyObservers(StreamReinitializeRequestEvent.getEvent());
+                    eventBus.notifyObservers(StreamReinitializeRequestEvent.getEvent());
                 }
                 else
                 {
@@ -276,7 +276,7 @@ public class StreamPanel extends FlowPanel
             }
         });
 
-        EventBus.getInstance().addObserver(StreamRequestEvent.class, new Observer<StreamRequestEvent>()
+        eventBus.addObserver(StreamRequestEvent.class, new Observer<StreamRequestEvent>()
         {
             public void update(final StreamRequestEvent event)
             {
@@ -358,25 +358,22 @@ public class StreamPanel extends FlowPanel
             }
         });
 
-        EventBus.getInstance().addObserver(StreamSearchBeginEvent.class, new Observer<StreamSearchBeginEvent>()
+        eventBus.addObserver(StreamSearchBeginEvent.class, new Observer<StreamSearchBeginEvent>()
         {
             public void update(final StreamSearchBeginEvent event)
             {
-                Session.getInstance().getEventBus().notifyObservers(
-                        new UpdateHistoryEvent(new CreateUrlRequest("search", String.valueOf(event.getSearchText()),
-                                false)));
+                eventBus.notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest("search", event.getSearchText(),
+                        false)));
             }
         });
 
-        EventBus.getInstance().addObserver(DeletedActivityResponseEvent.class,
-                new Observer<DeletedActivityResponseEvent>()
-                {
-                    public void update(final DeletedActivityResponseEvent ev)
-                    {
-                        EventBus.getInstance().notifyObservers(
-                                new ShowNotificationEvent(new Notification("Activity has been deleted")));
-                    }
-                });
+        eventBus.addObserver(DeletedActivityResponseEvent.class, new Observer<DeletedActivityResponseEvent>()
+        {
+            public void update(final DeletedActivityResponseEvent ev)
+            {
+                eventBus.notifyObservers(new ShowNotificationEvent(new Notification("Activity has been deleted")));
+            }
+        });
     }
 
     /**
@@ -406,7 +403,7 @@ public class StreamPanel extends FlowPanel
 
     /**
      * Check the history for changes.
-     * 
+     *
      * @param history
      *            the history.
      * @return true if it has changed.
@@ -461,7 +458,7 @@ public class StreamPanel extends FlowPanel
 
     /**
      * Set the stream scope to post to.
-     * 
+     *
      * @param streamScope
      *            the scope.
      * @param postingEnabled
@@ -501,7 +498,7 @@ public class StreamPanel extends FlowPanel
 
     /**
      * Set the locked message panel content.
-     * 
+     *
      * @param inPanel
      *            the panel content to set as the locked message.
      */

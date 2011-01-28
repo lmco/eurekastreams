@@ -37,7 +37,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.InlineHyperlink;
@@ -102,12 +101,12 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
     /**
      * In label.
      */
-    private Label in = new Label(" in ");
+    private final Label in = new Label(" in ");
 
     /**
      * View label.
      */
-    private Label viewLbl = new Label("");
+    private final Label viewLbl = new Label("");
 
     /**
      * Last request.
@@ -115,12 +114,12 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
     private String lastRequest = "";
 
     /** Link to add a gadget for the displayed stream. */
-    private Hyperlink addGadgetLink;
+    private final Hyperlink addGadgetLink;
 
     /**
      * Stream to URL transformer.
      */
-    private StreamToUrlTransformer streamUrlTransformer = new StreamToUrlTransformer();
+    private final StreamToUrlTransformer streamUrlTransformer = new StreamToUrlTransformer();
 
     /**
      * The mode of the list (needed for the "add gadget" link).
@@ -232,7 +231,7 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
         {
             public void onClick(final ClickEvent arg0)
             {
-                EventBus.getInstance().notifyObservers(new StreamSearchBeginEvent(""));
+                EventBus.getInstance().notifyObservers(new StreamSearchBeginEvent(null));
                 onSearchCanceled();
             }
         });
@@ -249,18 +248,18 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
         {
             public void update(final GotStreamResponseEvent event)
             {
+                // For the app's location, use the current URL minus a few parameters we know we don't want. (They are
+                // used by other lists, but get left in the URL when switching tabs.)
+                // We don't build the URL from the stream id, since that doesn't take search terms into account.
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("listId", null);
+                params.put("listFilter", null);
+                params.put("listSort", null);
+                params.put("startIndex", null);
+                params.put("endIndex", null);
+                String url = Session.getInstance().generateUrl(new CreateUrlRequest(params));
+
                 String stream = Session.getInstance().getParameterValue("streamId");
-
-                String url = "";
-
-                if (null == stream)
-                {
-                    url = History.getToken();
-                }
-                else
-                {
-                    url = "activity?streamId=" + stream;
-                }
 
                 setAddGadgetLink(titleLbl.getText(), streamUrlTransformer.getUrl(stream, event.getJsonRequest()), url);
             }
@@ -277,7 +276,7 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
 
     /**
      * Update search widget.
-     * 
+     *
      * @param inSearchTerm
      *            the search term.
      */
@@ -288,7 +287,6 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
         searchTermLabel.setText(searchTerm.getText());
         searchTerm.setText(searchTerm.getText());
         searchTerm.checkBox();
-        addGadgetLink.setVisible(false);
     }
 
     /**
@@ -300,12 +298,11 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
         searchTerm.setText("");
         searchTerm.checkBox();
         searchDescription.setVisible(false);
-        addGadgetLink.setVisible(true);
     }
 
     /**
      * Set the title text, generating a hyperlink for group stream titles.
-     * 
+     *
      * @param title
      *            the text.
      * @param shortName
@@ -337,7 +334,7 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
 
     /**
      * Sets if the search can be changed.
-     * 
+     *
      * @param canChange
      *            if the search can be changed.
      */
@@ -351,7 +348,7 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
 
     /**
      * Builds and sets the link for adding the stream as a gadget.
-     * 
+     *
      * @param gadgetTitle
      *            the gadget title.
      * @param streamQuery
@@ -376,7 +373,7 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
     /**
      * Creates the JSON representation of a string value. (Escapes characters and adds string delimiters or returns null
      * keyword as applicable.) See http://www.json.org/ for syntax. Assumes the string contains no control characters.
-     * 
+     *
      * @param input
      *            Input string, possibly null.
      * @return JSON string representation.
