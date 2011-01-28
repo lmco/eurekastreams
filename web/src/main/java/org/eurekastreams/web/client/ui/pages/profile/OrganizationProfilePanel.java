@@ -40,6 +40,7 @@ import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.data.AuthorizeUpdateGroupResponseEvent;
 import org.eurekastreams.web.client.events.data.AuthorizeUpdateOrganizationResponseEvent;
+import org.eurekastreams.web.client.events.data.DeletedActivityResponseEvent;
 import org.eurekastreams.web.client.events.data.GotFlaggedActivitiesResponseEvent;
 import org.eurekastreams.web.client.events.data.GotOrganizationEmployeesResponseEvent;
 import org.eurekastreams.web.client.events.data.GotOrganizationGroupsResponseEvent;
@@ -467,6 +468,14 @@ public class OrganizationProfilePanel extends FlowPanel
                         }
                     }
                 });
+
+        eventBus.addObserver(DeletedActivityResponseEvent.class, new Observer<DeletedActivityResponseEvent>()
+        {
+            public void update(final DeletedActivityResponseEvent ev)
+            {
+                adminTabContent.reload();
+            }
+        });
 
         // prepare the "filters"
         // flagged content "filter"
