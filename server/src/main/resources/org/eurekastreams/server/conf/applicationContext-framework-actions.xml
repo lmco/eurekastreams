@@ -2796,6 +2796,8 @@
             <bean
                 class="org.eurekastreams.server.action.execution.stream.GetFlaggedActivitiesForOrganizationExecution">
                     <constructor-arg ref="getFlaggedActivitiesForOrganizationMapper" />
+                    <constructor-arg ref="getPersonByAccountIdMapper" />
+                    <constructor-arg ref="deleteFilter" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />

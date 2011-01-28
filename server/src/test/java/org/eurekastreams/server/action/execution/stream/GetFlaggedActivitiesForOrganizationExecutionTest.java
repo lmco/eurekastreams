@@ -21,13 +21,17 @@ import static org.junit.Assert.assertSame;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.action.request.stream.GetFlaggedActivitiesByOrgRequest;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetFlaggedActivitiesForOrganization;
+import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -62,6 +66,22 @@ public class GetFlaggedActivitiesForOrganizationExecutionTest
      */
     private Principal principal = context.mock(Principal.class);
 
+    /**
+     * ActivityFilter.
+     */
+    private ActivityFilter activityDeletabilityFilter = context.mock(ActivityFilter.class);
+
+    /**
+     * Mapper to get a person model view by account id.
+     */
+    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = context.mock(
+            DomainMapper.class, "getPersonModelViewByAccountIdMapper");
+
+    /**
+     * {@link PersonModelView}.
+     */
+    private PersonModelView pmv = context.mock(PersonModelView.class);
+
     /** SUT. */
     private GetFlaggedActivitiesForOrganizationExecution sut;
 
@@ -71,7 +91,8 @@ public class GetFlaggedActivitiesForOrganizationExecutionTest
     @Before
     public void setUp()
     {
-        sut = new GetFlaggedActivitiesForOrganizationExecution(mapper);
+        sut = new GetFlaggedActivitiesForOrganizationExecution(mapper, getPersonModelViewByAccountIdMapper,
+                activityDeletabilityFilter);
     }
 
     /**
@@ -84,6 +105,7 @@ public class GetFlaggedActivitiesForOrganizationExecutionTest
         final String accountId = "sldfjkds";
         final GetFlaggedActivitiesByOrgRequest rqst = new GetFlaggedActivitiesByOrgRequest(ORG_ID, 3, 5);
         final PagedSet<ActivityDTO> pagedSet = context.mock(PagedSet.class);
+        final List<ActivityDTO> activities = new ArrayList<ActivityDTO>();
 
         context.checking(new Expectations()
         {
@@ -95,14 +117,19 @@ public class GetFlaggedActivitiesForOrganizationExecutionTest
                 allowing(actionCtx).getParams();
                 will(returnValue(rqst));
 
-                oneOf(actionCtx).getPrincipal();
+                allowing(actionCtx).getPrincipal();
                 will(returnValue(principal));
 
-                oneOf(principal).getAccountId();
+                allowing(principal).getAccountId();
                 will(returnValue(accountId));
 
+                oneOf(getPersonModelViewByAccountIdMapper).execute(accountId);
+                will(returnValue(pmv));
+
                 allowing(pagedSet).getPagedSet();
-                will(returnValue(new ArrayList<ActivityDTO>()));
+                will(returnValue(activities));
+
+                oneOf(activityDeletabilityFilter).filter(activities, pmv);
             }
         });
 
