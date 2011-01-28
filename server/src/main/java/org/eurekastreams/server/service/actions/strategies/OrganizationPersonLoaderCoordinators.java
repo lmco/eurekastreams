@@ -15,12 +15,14 @@
  */
 package org.eurekastreams.server.service.actions.strategies;
 
+import java.util.List;
 import java.util.Set;
 
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetOrgCoordinators;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Populator for loading Organization coordinators.
@@ -43,7 +45,7 @@ public class OrganizationPersonLoaderCoordinators extends OrganizationPersonLoad
      *            PersonDTO DAO.
      */
     public OrganizationPersonLoaderCoordinators(final GetOrgCoordinators inOrgCoordinatorDAO,
-            final GetPeopleByIds inPersonDAO)
+            final DomainMapper<List<Long>, List<PersonModelView>> inPersonDAO)
     {
         super(inPersonDAO);
         orgCoordinatorDAO = inOrgCoordinatorDAO;

@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
+
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
@@ -44,7 +44,7 @@ public class PopulateActivityDTOLikeData implements ActivityFilter
     /**
      * Mapper to get person info.
      */
-    private GetPeopleByIds peopleMapper;
+    private DomainMapper<List<Long>, List<PersonModelView>>peopleMapper;
 
     /**
      * Max number of likers to return.
@@ -66,7 +66,7 @@ public class PopulateActivityDTOLikeData implements ActivityFilter
     public PopulateActivityDTOLikeData(
             final DomainMapper<List<Long>, List<List<Long>>> inGetLikedActivityIdsByUserIdsMapper,
             final DomainMapper<List<Long>, List<List<Long>>> inGetPeopleWhoLikedActivityMapper,
-            final GetPeopleByIds inPeopleMapper, final int inLikerLimit)
+            final DomainMapper<List<Long>, List<PersonModelView>>inPeopleMapper, final int inLikerLimit)
     {
         getLikedActivityIdsByUserIdsMapper = inGetLikedActivityIdsByUserIdsMapper;
         getPeopleWhoLikedActivityMapper = inGetPeopleWhoLikedActivityMapper;

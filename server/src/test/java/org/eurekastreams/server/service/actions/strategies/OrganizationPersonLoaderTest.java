@@ -23,7 +23,8 @@ import java.util.Set;
 
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -54,7 +55,8 @@ public class OrganizationPersonLoaderTest
     /**
      * PersonDTO DAO.
      */
-    private final GetPeopleByIds personDAO = context.mock(GetPeopleByIds.class);
+    private final DomainMapper<List<Long>, List<PersonModelView>> personDAO = context.mock(DomainMapper.class,
+            "personDAO");
 
     /**
      * Organization mock.
@@ -89,10 +91,13 @@ public class OrganizationPersonLoaderTest
         sut = new TesterWithIds(personDAO);
         new ArrayList<Long>(Arrays.asList(2L));
 
+        final List<PersonModelView> people = new ArrayList<PersonModelView>();
+
         context.checking(new Expectations()
         {
             {
                 allowing(personDAO).execute(new ArrayList<Long>(Arrays.asList(2L)));
+                will(returnValue(people));
             }
         });
 
@@ -114,7 +119,7 @@ public class OrganizationPersonLoaderTest
          * @param inPersonDAO
          *            Person DAO.
          */
-        public TesterEmptyIds(final GetPeopleByIds inPersonDAO)
+        public TesterEmptyIds(final DomainMapper<List<Long>, List<PersonModelView>> inPersonDAO)
         {
             super(inPersonDAO);
         }
@@ -152,7 +157,7 @@ public class OrganizationPersonLoaderTest
          * @param inPersonDAO
          *            Person DAO.
          */
-        public TesterWithIds(final GetPeopleByIds inPersonDAO)
+        public TesterWithIds(final DomainMapper<List<Long>, List<PersonModelView>> inPersonDAO)
         {
             super(inPersonDAO);
         }

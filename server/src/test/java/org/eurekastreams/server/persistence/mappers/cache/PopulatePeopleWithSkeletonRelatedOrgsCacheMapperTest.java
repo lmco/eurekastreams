@@ -25,7 +25,6 @@ import java.util.List;
 import org.eurekastreams.server.domain.EntityTestHelper;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
@@ -52,12 +51,14 @@ public class PopulatePeopleWithSkeletonRelatedOrgsCacheMapperTest
     /**
      * Mapper to get organization modelviews by ids.
      */
-    private DomainMapper<List<Long>, List<OrganizationModelView>> getOrgsByIdsMapper = context.mock(DomainMapper.class);
+    private DomainMapper<List<Long>, List<OrganizationModelView>> getOrgsByIdsMapper = context.mock(DomainMapper.class,
+            "getOrgsByIds");
 
     /**
      * Mapper to get person modelviews by ids.
      */
-    private GetPeopleByIds getPeopleByIdsMapper = context.mock(GetPeopleByIds.class);
+    private DomainMapper<List<Long>, List<PersonModelView>> getPeopleByIdsMapper = context.mock(DomainMapper.class,
+            "getPeopleByIds");
 
     /**
      * Test the execute method.

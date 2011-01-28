@@ -30,7 +30,6 @@ import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.EmailerFactory;
 
@@ -40,8 +39,7 @@ import org.eurekastreams.server.service.actions.strategies.EmailerFactory;
 public class TemplateEmailBuilder implements NotificationEmailBuilder
 {
     /** Contains the text to display for an activity type where it doesn't match the enum name. */
-    private static Map<BaseObjectType, String> activityTypeDisplayNameOverrides =
-            new HashMap<BaseObjectType, String>();
+    private static Map<BaseObjectType, String> activityTypeDisplayNameOverrides = new HashMap<BaseObjectType, String>();
 
     /** UI profile page names for each entity type. */
     private static Map<EntityType, String> entityPageNames = new HashMap<EntityType, String>();
@@ -71,7 +69,7 @@ public class TemplateEmailBuilder implements NotificationEmailBuilder
     private EmailerFactory emailer;
 
     /** For getting person info. */
-    private GetPeopleByIds peopleMapper;
+    private DomainMapper<List<Long>, List<PersonModelView>> peopleMapper;
 
     /** For getting system settings. */
     private DomainMapper<MapperRequest<SystemSettings>, SystemSettings> systemSettingsMapper;
@@ -97,10 +95,11 @@ public class TemplateEmailBuilder implements NotificationEmailBuilder
      * @param inHtmlBodyTemplate
      *            Template for the HTML version of the body.
      */
-    public TemplateEmailBuilder(final EmailerFactory inEmailer, final GetPeopleByIds inPeopleMapper,
+    public TemplateEmailBuilder(final EmailerFactory inEmailer,
+            final DomainMapper<List<Long>, List<PersonModelView>> inPeopleMapper,
             final DomainMapper<MapperRequest<SystemSettings>, SystemSettings> inSystemSettingsMapper,
-            final Map<String, String> inExtraProperties,
-            final String inSubjectTemplate, final String inTextBodyTemplate, final String inHtmlBodyTemplate)
+            final Map<String, String> inExtraProperties, final String inSubjectTemplate,
+            final String inTextBodyTemplate, final String inHtmlBodyTemplate)
     {
         emailer = inEmailer;
         peopleMapper = inPeopleMapper;
@@ -122,7 +121,7 @@ public class TemplateEmailBuilder implements NotificationEmailBuilder
 
     /**
      * Builds the email message from the notification and initial properties.
-     *
+     * 
      * @param notif
      *            Notification for which to build message.
      * @param invocationProperties
@@ -230,7 +229,7 @@ public class TemplateEmailBuilder implements NotificationEmailBuilder
 
         /**
          * Constructor.
-         *
+         * 
          * @param inDecorated
          *            Lookup.
          */

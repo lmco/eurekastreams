@@ -18,11 +18,12 @@ package org.eurekastreams.server.action.execution.profile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.server.UserActionRequest;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -48,7 +49,7 @@ public class UpdatePersonDisplayNameCachesTest
     /**
      * Mapper to get people by ids.
      */
-    private GetPeopleByIds getPeopleByIdsMapper = context.mock(GetPeopleByIds.class);
+    private DomainMapper<List<Long>, List<PersonModelView>> getPeopleByIdsMapper = context.mock(DomainMapper.class);
 
     /**
      * System under test.
@@ -66,11 +67,14 @@ public class UpdatePersonDisplayNameCachesTest
         final String personAccountId = "sldkfjsd";
         final PersonModelView person = context.mock(PersonModelView.class);
 
+        final List<PersonModelView> people = new ArrayList<PersonModelView>();
+        people.add(person);
+
         context.checking(new Expectations()
         {
             {
-                oneOf(getPeopleByIdsMapper).execute(personId);
-                will(returnValue(person));
+                oneOf(getPeopleByIdsMapper).execute(with(any(List.class)));
+                will(returnValue(people));
 
                 oneOf(person).getAccountId();
                 will(returnValue(personAccountId));

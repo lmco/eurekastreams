@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.server.UserActionRequest;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.CacheUpdater;
 
@@ -51,7 +51,7 @@ public class UpdatePersonDisplayNameCaches implements CacheUpdater
     /**
      * Mapper to get people by ids.
      */
-    private GetPeopleByIds getPeopleByIdsMapper;
+    private DomainMapper<List<Long>, List<PersonModelView>> getPeopleByIdsMapper;
 
     /**
      * Constructor.
@@ -59,7 +59,7 @@ public class UpdatePersonDisplayNameCaches implements CacheUpdater
      * @param inGetPeopleByIdsMapper
      *            mapper to get people by ids.
      */
-    public UpdatePersonDisplayNameCaches(final GetPeopleByIds inGetPeopleByIdsMapper)
+    public UpdatePersonDisplayNameCaches(final DomainMapper<List<Long>, List<PersonModelView>> inGetPeopleByIdsMapper)
     {
         getPeopleByIdsMapper = inGetPeopleByIdsMapper;
     }
@@ -81,9 +81,11 @@ public class UpdatePersonDisplayNameCaches implements CacheUpdater
         results.add(new UserActionRequest(NOTIFICATION_UPDATE_ACTION_NAME, null, inPersonId));
 
         // the next async action needs the account id
-        PersonModelView person = getPeopleByIdsMapper.execute(inPersonId);
+        List<Long> peopleIds = new ArrayList<Long>();
+        peopleIds.add(inPersonId);
+        List<PersonModelView> people = getPeopleByIdsMapper.execute(peopleIds);
 
-        results.add(new UserActionRequest(ASYNC_PERSONAL_STREAM_POSTS_ACTION_NAME, null, person.getAccountId()));
+        results.add(new UserActionRequest(ASYNC_PERSONAL_STREAM_POSTS_ACTION_NAME, null, people.get(0).getAccountId()));
         return results;
     }
 }

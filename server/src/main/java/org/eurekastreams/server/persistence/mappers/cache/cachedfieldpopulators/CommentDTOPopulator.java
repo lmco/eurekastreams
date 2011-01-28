@@ -19,39 +19,42 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.CommentDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
- * Populates CommentDTOs with properties that can be retrieved 
- * from cache.
- *
+ * Populates CommentDTOs with properties that can be retrieved from cache.
+ * 
  */
 public class CommentDTOPopulator
 {
     /**
      * DAO for finding person model views by id.
      */
-    private GetPeopleByIds personDAO;
-    
+    private DomainMapper<List<Long>, List<PersonModelView>> personDAO;
+
     /**
      * Constructor.
-     * @param inPersonDAO The GetPeopleByIds instance.
+     * 
+     * @param inPersonDAO
+     *            The DomainMapper<List<Long>, List<PersonModelView>> instance.
      */
-    public CommentDTOPopulator(final GetPeopleByIds inPersonDAO)
+    public CommentDTOPopulator(final DomainMapper<List<Long>, List<PersonModelView>> inPersonDAO)
     {
         personDAO = inPersonDAO;
     }
-    
+
     /**
-     * Populates CommentDTOs with properties that can be retrieved from cache.
-     * If inCache is not null, the populated commentDTO will be put in cache under
-     * CacheKeys.COMMENT_BY_ID + id key.
-     * @param inCommentDTO The CommentDTO.
-     * @param inCache The cache.
+     * Populates CommentDTOs with properties that can be retrieved from cache. If inCache is not null, the populated
+     * commentDTO will be put in cache under CacheKeys.COMMENT_BY_ID + id key.
+     * 
+     * @param inCommentDTO
+     *            The CommentDTO.
+     * @param inCache
+     *            The cache.
      */
     public void execute(final CommentDTO inCommentDTO, final Cache inCache)
     {
@@ -59,34 +62,35 @@ public class CommentDTOPopulator
         dtoList.add(inCommentDTO);
         execute(dtoList, null);
     }
-    
+
     /**
-     * Populates CommentDTOs with properties that can be retrieved from cache.
-     * If inCache is not null, the populated commentDTO will be put in cache under
-     * CacheKeys.COMMENT_BY_ID + CommentDTO.getId() key.
-     * @param inCommentDTOs The CommentDTOs to populate.
-     * @param inCache The cache.
+     * Populates CommentDTOs with properties that can be retrieved from cache. If inCache is not null, the populated
+     * commentDTO will be put in cache under CacheKeys.COMMENT_BY_ID + CommentDTO.getId() key.
+     * 
+     * @param inCommentDTOs
+     *            The CommentDTOs to populate.
+     * @param inCache
+     *            The cache.
      */
     @SuppressWarnings("unchecked")
     public void execute(final List<CommentDTO> inCommentDTOs, final Cache inCache)
     {
-        HashMap<Long, PersonModelView> commentAuthors = 
-            new HashMap<Long, PersonModelView>(inCommentDTOs.size());
-        
-        //get list of author entity ids so we can consolidate to one query.
+        HashMap<Long, PersonModelView> commentAuthors = new HashMap<Long, PersonModelView>(inCommentDTOs.size());
+
+        // get list of author entity ids so we can consolidate to one query.
         for (CommentDTO dto : inCommentDTOs)
         {
             commentAuthors.put(dto.getAuthorId(), null);
         }
-        
-        //get author personModelViews from DAO and shove them into map indexed by entityId.
-        List<PersonModelView> authors = personDAO.execute(new ArrayList(commentAuthors.keySet()));        
+
+        // get author personModelViews from DAO and shove them into map indexed by entityId.
+        List<PersonModelView> authors = personDAO.execute(new ArrayList(commentAuthors.keySet()));
         for (PersonModelView pmv : authors)
         {
             commentAuthors.put(pmv.getEntityId(), pmv);
         }
-        
-        //loop yet again to populate and cache commentDTOs
+
+        // loop yet again to populate and cache commentDTOs
         PersonModelView author;
         for (CommentDTO dto : inCommentDTOs)
         {
@@ -98,7 +102,7 @@ public class CommentDTOPopulator
             {
                 inCache.set(CacheKeys.COMMENT_BY_ID + dto.getId(), dto);
             }
-        }         
+        }
     }
 
 }

@@ -22,7 +22,7 @@ import java.util.Set;
 
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
@@ -34,7 +34,7 @@ public abstract class OrganizationPersonLoader extends OrganizationLoaderAbstrac
     /**
      * PersonDTO DAO.
      */
-    private GetPeopleByIds personDAO;
+    private DomainMapper<List<Long>, List<PersonModelView>> personDAO;
 
     /**
      * Constructor.
@@ -42,7 +42,7 @@ public abstract class OrganizationPersonLoader extends OrganizationLoaderAbstrac
      * @param inPersonDAO
      *            PersonDTO DAO.
      */
-    public OrganizationPersonLoader(final GetPeopleByIds inPersonDAO)
+    public OrganizationPersonLoader(final DomainMapper<List<Long>, List<PersonModelView>> inPersonDAO)
     {
         personDAO = inPersonDAO;
     }

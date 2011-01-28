@@ -28,7 +28,6 @@ import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -64,7 +63,7 @@ public class NotificationPopulatorTest
     };
 
     /** Fixture: For getting person info. */
-    private GetPeopleByIds personMapper = context.mock(GetPeopleByIds.class);
+    private DomainMapper<List<Long>, List<PersonModelView>> personMapper = context.mock(DomainMapper.class);
 
     /** Fixture: For getting group info. */
     private DomainMapper<List<Long>, List<DomainGroupModelView>> groupMapper = context.mock(DomainMapper.class,
@@ -113,12 +112,13 @@ public class NotificationPopulatorTest
     public void testPopulateActor()
     {
         notification.setActorId(ACTOR_ID);
-
+        final List<PersonModelView> people = new ArrayList<PersonModelView>();
+        people.add(person);
         context.checking(new Expectations()
         {
             {
-                allowing(personMapper).execute(ACTOR_ID);
-                will(returnValue(person));
+                allowing(personMapper).execute(with(any(List.class)));
+                will(returnValue(people));
             }
         });
 
@@ -161,12 +161,14 @@ public class NotificationPopulatorTest
     public void testPopulateDestinationPerson()
     {
         notification.setDestination(DESTINATION_ID, EntityType.PERSON);
+        final List<PersonModelView> people = new ArrayList<PersonModelView>();
+        people.add(person);
 
         context.checking(new Expectations()
         {
             {
-                allowing(personMapper).execute(DESTINATION_ID);
-                will(returnValue(person));
+                allowing(personMapper).execute(with(any(List.class)));
+                will(returnValue(people));
             }
         });
 

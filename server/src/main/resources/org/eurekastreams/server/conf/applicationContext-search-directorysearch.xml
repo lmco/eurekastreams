@@ -34,7 +34,7 @@
 		class="org.eurekastreams.server.search.directory.CachedModelViewResultTransformer">
 		<property name="getOrgsByIdsMapper" ref="getOrganizationsByIdsMapper" />
 		<property name="getDomainGroupsByIdsMapper" ref="getGroupsByIdsMapper" />
-		<property name="getPeopleByIdsMapper" ref="bulkPeopleMapper" />
+		<property name="getPeopleByIdsMapper" ref="getPersonsByIdsMapper" />
 	</bean>
 
 	<!--

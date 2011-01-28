@@ -111,7 +111,7 @@
 
 	<bean id="commentDTOPopulator"
 		class="org.eurekastreams.server.persistence.mappers.cache.cachedfieldpopulators.CommentDTOPopulator">
-		<constructor-arg ref="bulkPeopleMapper" />
+		<constructor-arg ref="getPersonsByIdsDBMapper" />
 	</bean>
    
 	<bean id="insertStarredActivity"
@@ -294,16 +294,9 @@
 		<property name="cache" ref="testCache" />
 	</bean>	
 
-	<bean id="bulkPeopleMapper"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds">
-		<constructor-arg ref="personQueryStrategy" />
-		<constructor-arg ref="getRelatedOrganizationIdsByPersonId" />
-		<property name="cache" ref="testCache" />
-	</bean>
-
 	<bean id="bulkPeopleByOpenSocialIdMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds">
-		<property name="bulkPeopleMapper" ref="bulkPeopleMapper" />
+		<property name="bulkPeopleMapper" ref="getPersonsByIdsDBMapper" />
 		
 		<property name="idsByStringsMapper">
             <bean class="org.eurekastreams.server.persistence.mappers.db.GetIdsFromPointersDbMapper">
@@ -459,7 +452,7 @@
 
 	<bean id="populatePeopleWithSkeletonRelatedOrgsCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.PopulatePeopleWithSkeletonRelatedOrgsCacheMapper">
 		<constructor-arg ref="getOrganizationsByIdsDbMapper" />
-		<constructor-arg ref="bulkPeopleMapper" />
+		<constructor-arg ref="getPersonsByIdsDBMapper" />
 	</bean>
 	
 	<bean id="deleteGroupActivity" class="org.eurekastreams.server.persistence.mappers.db.DeleteGroupActivity" />

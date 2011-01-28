@@ -28,7 +28,7 @@ import org.eurekastreams.server.domain.stream.GroupStreamDTO;
 import org.eurekastreams.server.domain.stream.StreamFilter;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
+
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.response.GetCurrentUserStreamFiltersResponse;
@@ -56,7 +56,7 @@ public class GetCurrentUserFollowedGroupsExecution implements ExecutionStrategy<
     /**
      * Mapper to get people.
      */
-    private GetPeopleByIds peopleMapper;
+    private DomainMapper<List<Long>, List<PersonModelView>>peopleMapper;
 
     /**
      * Mapper to determine if a user has group coordinator access.
@@ -77,7 +77,7 @@ public class GetCurrentUserFollowedGroupsExecution implements ExecutionStrategy<
      */
     public GetCurrentUserFollowedGroupsExecution(final DomainMapper<Long, List<Long>> inIdsMapper,
             final DomainMapper<List<Long>, List<DomainGroupModelView>> inGroupsMapper,
-            final GetPeopleByIds inPeopleMapper,
+            final DomainMapper<List<Long>, List<PersonModelView>>inPeopleMapper,
             final GetAllPersonIdsWhoHaveGroupCoordinatorAccess inGroupPermissionChecker)
     {
         idsMapper = inIdsMapper;

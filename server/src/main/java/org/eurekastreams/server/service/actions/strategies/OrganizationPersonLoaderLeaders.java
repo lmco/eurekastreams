@@ -15,16 +15,17 @@
  */
 package org.eurekastreams.server.service.actions.strategies;
 
+import java.util.List;
 import java.util.Set;
 
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Populator for loading Organization leaders.
- *
+ * 
  */
 public class OrganizationPersonLoaderLeaders extends OrganizationPersonLoader
 {
@@ -35,13 +36,13 @@ public class OrganizationPersonLoaderLeaders extends OrganizationPersonLoader
 
     /**
      * Constructor.
-     *
+     * 
      * @param inPersonDAO
      *            Person DAO.
      * @param inOrganizationLeaderIdDAO
      *            Organization leader person id DAO.
      */
-    public OrganizationPersonLoaderLeaders(final GetPeopleByIds inPersonDAO,
+    public OrganizationPersonLoaderLeaders(final DomainMapper<List<Long>, List<PersonModelView>> inPersonDAO,
             final DomainMapper<Long, Set<Long>> inOrganizationLeaderIdDAO)
     {
         super(inPersonDAO);

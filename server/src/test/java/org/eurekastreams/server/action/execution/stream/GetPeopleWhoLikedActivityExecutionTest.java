@@ -19,8 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -29,7 +30,7 @@ import org.junit.Test;
 
 /**
  * Test.
- *
+ * 
  */
 public class GetPeopleWhoLikedActivityExecutionTest
 {
@@ -51,13 +52,13 @@ public class GetPeopleWhoLikedActivityExecutionTest
     /**
      * Mapper.
      */
-    private DecoratedPartialResponseDomainMapper<List<Long>, List<List<Long>>> mapper =
-        context.mock(DecoratedPartialResponseDomainMapper.class);
+    private DecoratedPartialResponseDomainMapper<List<Long>, List<List<Long>>> mapper = context
+            .mock(DecoratedPartialResponseDomainMapper.class);
 
     /**
      * People mapper.
      */
-    private GetPeopleByIds peopleMapper = context.mock(GetPeopleByIds.class);
+    private DomainMapper<List<Long>, List<PersonModelView>> peopleMapper = context.mock(DomainMapper.class);
 
     /**
      * Action context.
@@ -74,6 +75,8 @@ public class GetPeopleWhoLikedActivityExecutionTest
         final List<Long> innerList = new ArrayList<Long>();
         returned.add(innerList);
 
+        final List<PersonModelView> peopleList = new ArrayList<PersonModelView>();
+
         sut = new GetPeopleWhoLikedActivityExecution(mapper, peopleMapper);
 
         context.checking(new Expectations()
@@ -84,7 +87,9 @@ public class GetPeopleWhoLikedActivityExecutionTest
 
                 oneOf(mapper).execute(with(any(List.class)));
                 will(returnValue(returned));
+
                 oneOf(peopleMapper).execute(innerList);
+                will(returnValue(peopleList));
             }
         });
 

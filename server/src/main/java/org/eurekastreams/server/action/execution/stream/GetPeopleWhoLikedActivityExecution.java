@@ -21,15 +21,15 @@ import java.util.List;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Get all the people who like a particular activity.
- *
+ * 
  */
 public class GetPeopleWhoLikedActivityExecution implements ExecutionStrategy<PrincipalActionContext>
 {
@@ -41,16 +41,19 @@ public class GetPeopleWhoLikedActivityExecution implements ExecutionStrategy<Pri
     /**
      * People mapper.
      */
-    private GetPeopleByIds peopleMapper;
+    private DomainMapper<List<Long>, List<PersonModelView>> peopleMapper;
 
     /**
      * Default constructor.
-     * @param inMapper the mapper.
-     * @param inPeopleMapper the people mapper.
+     * 
+     * @param inMapper
+     *            the mapper.
+     * @param inPeopleMapper
+     *            the people mapper.
      */
     public GetPeopleWhoLikedActivityExecution(
             final DecoratedPartialResponseDomainMapper<List<Long>, List<List<Long>>> inMapper,
-            final GetPeopleByIds inPeopleMapper)
+            final DomainMapper<List<Long>, List<PersonModelView>> inPeopleMapper)
     {
         mapper = inMapper;
         peopleMapper = inPeopleMapper;
@@ -58,15 +61,19 @@ public class GetPeopleWhoLikedActivityExecution implements ExecutionStrategy<Pri
 
     /**
      * Just execute the mapper, it does all the heavy lifting for this action.
-     * @param inActionContext the action context.
+     * 
+     * @param inActionContext
+     *            the action context.
      * @return the list of people
-     * @throws ExecutionException the exception.
+     * @throws ExecutionException
+     *             the exception.
      */
     @Override
     public ArrayList<PersonModelView> execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        return new ArrayList<PersonModelView>(peopleMapper.execute(
-                mapper.execute(Collections.singletonList(inActionContext.getParams())).get(0)));
+        List<Long> activityIdList = Collections.singletonList(inActionContext.getParams());
+        List<Long> peopleIdsInterested = mapper.execute(activityIdList).get(0);
+        List<PersonModelView> people = peopleMapper.execute(peopleIdsInterested);
+        return new ArrayList<PersonModelView>(people);
     }
-
 }

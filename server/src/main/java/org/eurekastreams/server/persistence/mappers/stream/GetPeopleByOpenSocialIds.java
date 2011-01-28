@@ -17,6 +17,7 @@ package org.eurekastreams.server.persistence.mappers.stream;
 
 import java.util.List;
 
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
@@ -27,7 +28,7 @@ public class GetPeopleByOpenSocialIds extends GetItemsByPointerIds<PersonModelVi
     /**
      * Bulk mapper.
      */
-    private GetPeopleByIds bulkPeopleMapper;
+    private DomainMapper<List<Long>, List<PersonModelView>> bulkPeopleMapper;
 
     /**
      * Sets the bulk mapper.
@@ -35,7 +36,7 @@ public class GetPeopleByOpenSocialIds extends GetItemsByPointerIds<PersonModelVi
      * @param inBulkPeopleMapper
      *            the bulk mapper.
      */
-    public void setBulkPeopleMapper(final GetPeopleByIds inBulkPeopleMapper)
+    public void setBulkPeopleMapper(final DomainMapper<List<Long>, List<PersonModelView>> inBulkPeopleMapper)
     {
         bulkPeopleMapper = inBulkPeopleMapper;
     }

@@ -24,8 +24,8 @@ import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.action.request.profile.GetRequestForGroupMembershipRequest;
 import org.eurekastreams.server.domain.PagedSet;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetRequestsForGroupMembershipByGroup;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
@@ -34,22 +34,21 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 public class GetRequestsForGroupMembershipByGroupExecution implements ExecutionStrategy<ActionContext>
 {
     /** Mapper for people. */
-    private GetPeopleByIds peopleMapper;
+    private DomainMapper<List<Long>, List<PersonModelView>> peopleMapper;
 
     /** Mapper for list of people. */
     private GetRequestsForGroupMembershipByGroup requestMapper;
 
-
     /**
      * Constructor.
-     *
+     * 
      * @param inRequestMapper
      *            Mapper for list of people.
      * @param inPeopleMapper
      *            Mapper for people.
      */
     public GetRequestsForGroupMembershipByGroupExecution(final GetRequestsForGroupMembershipByGroup inRequestMapper,
-            final GetPeopleByIds inPeopleMapper)
+            final DomainMapper<List<Long>, List<PersonModelView>> inPeopleMapper)
     {
         requestMapper = inRequestMapper;
         peopleMapper = inPeopleMapper;

@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.action.execution.notification;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +24,6 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -34,7 +34,7 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 public class NotificationPopulator
 {
     /** For getting person info. */
-    private GetPeopleByIds peopleMapper;
+    private DomainMapper<List<Long>, List<PersonModelView>> peopleMapper;
 
     /** For getting group info. */
     private DomainMapper<List<Long>, List<DomainGroupModelView>> groupMapper;
@@ -57,7 +57,7 @@ public class NotificationPopulator
      * @param inActivitiesMapper
      *            For getting activity info.
      */
-    public NotificationPopulator(final GetPeopleByIds inPeopleMapper,
+    public NotificationPopulator(final DomainMapper<List<Long>, List<PersonModelView>> inPeopleMapper,
             final DomainMapper<List<Long>, List<DomainGroupModelView>> inGroupMapper,
             final DomainMapper<List<Long>, List<OrganizationModelView>> inOrgMapper,
             final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper)
@@ -79,7 +79,9 @@ public class NotificationPopulator
         // populate actor
         if (notif.getActorId() > 0 && (isEmpty(notif.getActorAccountId()) || isEmpty(notif.getActorName())))
         {
-            PersonModelView actor = peopleMapper.execute(notif.getActorId());
+            List<Long> peopleIds = new ArrayList<Long>();
+            peopleIds.add(notif.getActorId());
+            PersonModelView actor = peopleMapper.execute(peopleIds).get(0);
             notif.setActorAccountId(actor.getAccountId());
             notif.setActorName(actor.getDisplayName());
         }
@@ -97,7 +99,9 @@ public class NotificationPopulator
         {
             if (EntityType.PERSON.equals(notif.getDestinationType()))
             {
-                PersonModelView dest = peopleMapper.execute(notif.getDestinationId());
+                List<Long> peopleIds = new ArrayList<Long>();
+                peopleIds.add(notif.getDestinationId());
+                PersonModelView dest = peopleMapper.execute(peopleIds).get(0);
                 notif.setDestinationUniqueId(dest.getAccountId());
                 notif.setDestinationName(dest.getDisplayName());
             }

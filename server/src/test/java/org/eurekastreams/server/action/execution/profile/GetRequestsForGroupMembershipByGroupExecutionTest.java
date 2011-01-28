@@ -26,16 +26,14 @@ import java.util.List;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.action.request.profile.GetRequestForGroupMembershipRequest;
 import org.eurekastreams.server.domain.PagedSet;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetRequestsForGroupMembershipByGroup;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
-
-
 
 /**
  * Tests the action execution.
@@ -63,11 +61,11 @@ public class GetRequestsForGroupMembershipByGroupExecutionTest
     };
 
     /** Mapper for people. */
-    private GetPeopleByIds peopleMapper = context.mock(GetPeopleByIds.class);
+    private DomainMapper<List<Long>, List<PersonModelView>> peopleMapper = context.mock(DomainMapper.class);
 
     /** Mapper for list of people. */
-    private GetRequestsForGroupMembershipByGroup requestMapper =
-            context.mock(GetRequestsForGroupMembershipByGroup.class);
+    private GetRequestsForGroupMembershipByGroup requestMapper = context
+            .mock(GetRequestsForGroupMembershipByGroup.class);
 
     /** Fixture: person. */
     private PersonModelView person1 = context.mock(PersonModelView.class, "person1");
@@ -80,7 +78,6 @@ public class GetRequestsForGroupMembershipByGroupExecutionTest
 
     /** SUT. */
     private GetRequestsForGroupMembershipByGroupExecution sut;
-
 
     /**
      * Setup before each test.

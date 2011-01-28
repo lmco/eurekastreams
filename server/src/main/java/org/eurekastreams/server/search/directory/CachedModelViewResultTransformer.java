@@ -27,9 +27,9 @@ import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.hibernate.transform.ResultTransformer;
 
 /**
@@ -71,7 +71,7 @@ public class CachedModelViewResultTransformer implements ResultTransformer
     /**
      * The mapper to get the people by Ids.
      */
-    private GetPeopleByIds getPeopleByIdsMapper;
+    private DomainMapper<List<Long>, List<PersonModelView>> getPeopleByIdsMapper;
 
     /**
      * Handle list transformation, receiving a list of Maps of property name to value.
@@ -243,12 +243,12 @@ public class CachedModelViewResultTransformer implements ResultTransformer
     }
 
     /**
-     * Set the GetPeopleByIds mapper.
+     * Set the DomainMapper<List<Long>, List<PersonModelView>>mapper.
      * 
      * @param inGetPeopleByIdsMapper
      *            the getPeopleByIdsMapper to set
      */
-    public void setGetPeopleByIdsMapper(final GetPeopleByIds inGetPeopleByIdsMapper)
+    public void setGetPeopleByIdsMapper(final DomainMapper<List<Long>, List<PersonModelView>> inGetPeopleByIdsMapper)
     {
         this.getPeopleByIdsMapper = inGetPeopleByIdsMapper;
     }

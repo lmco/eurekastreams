@@ -150,7 +150,7 @@
 		<constructor-arg>
 			<ref bean="organizationHierarchyCache" />
 		</constructor-arg>
-		<property name="getPeopleByIdsMapper" ref="bulkPeopleMapper" />
+		<property name="getPeopleByIdsMapper" ref="getPersonsByIdsMapper" />
 	</bean>
 
 	<bean id="activityOrCombiner"
@@ -1967,16 +1967,9 @@
 	<bean id="domainGroupQueryStrategy"
 		class="org.eurekastreams.server.persistence.strategies.DomainGroupQueryStrategy" />
 
-	<bean id="bulkPeopleMapper"
-		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds">
-		<constructor-arg ref="personQueryStrategy" />
-		<constructor-arg ref="getRelatedOrganizationIdsByPersonId" />
-		<property name="cache" ref="memcachedCache" />
-	</bean>
-
 	<bean id="bulkPeopleByOpenSocialIdMapper"
 		class="org.eurekastreams.server.persistence.mappers.stream.GetPeopleByOpenSocialIds">
-		<property name="bulkPeopleMapper" ref="bulkPeopleMapper" />
+		<property name="bulkPeopleMapper" ref="getPersonsByIdsMapper" />
 		<property name="idsByStringsMapper" ref="getPeopleIdsByOpenSocialIdsMapper" />
 	</bean>
 
@@ -2127,7 +2120,7 @@
 
 	<bean id="commentDTOPopulator"
 		class="org.eurekastreams.server.persistence.mappers.cache.cachedfieldpopulators.CommentDTOPopulator">
-		<constructor-arg ref="bulkPeopleMapper" />
+		<constructor-arg ref="getPersonsByIdsMapper" />
 	</bean>
 
 	<bean id="getPersonIdsFollowingActivityDestinationStreamMapper"
@@ -2294,7 +2287,7 @@
 	<bean id="populatePeopleWithSkeletonRelatedOrgsCacheMapper"
 		class="org.eurekastreams.server.persistence.mappers.cache.PopulatePeopleWithSkeletonRelatedOrgsCacheMapper">
 		<constructor-arg ref="getOrganizationsByIdsMapper" />
-		<constructor-arg ref="bulkPeopleMapper" />
+		<constructor-arg ref="getPersonsByIdsMapper" />
 	</bean>
 
 	<bean id="deleteGroupActivity"

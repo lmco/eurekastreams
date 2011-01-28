@@ -143,7 +143,7 @@
                 <constructor-arg ref="translators" />
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.action.execution.notification.NotificationPopulator">
-                        <constructor-arg ref="bulkPeopleMapper" />
+                        <constructor-arg ref="getPersonsByIdsMapper" />
                         <constructor-arg ref="getGroupsByIdsMapper" />
                         <constructor-arg ref="getOrganizationsByIdsMapper" />
                         <constructor-arg ref="bulkActivitiesMapper" />
@@ -170,7 +170,7 @@
     <bean id="baseTemplateEmailBuilder" class="org.eurekastreams.server.action.execution.notification.TemplateEmailBuilder"
         abstract="true">
         <constructor-arg ref="emailerFactory" />
-        <constructor-arg ref="bulkPeopleMapper" />
+        <constructor-arg ref="getPersonsByIdsMapper" />
 		 <constructor-arg ref="findSystemSettings" />
         <constructor-arg ref="applicationProperties" />
     </bean>

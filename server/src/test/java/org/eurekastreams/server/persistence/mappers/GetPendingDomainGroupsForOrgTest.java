@@ -25,7 +25,7 @@ import java.util.Set;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCache;
 import org.eurekastreams.server.persistence.mappers.requests.GetPendingDomainGroupsForOrgRequest;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
+
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
@@ -55,7 +55,7 @@ public class GetPendingDomainGroupsForOrgTest extends MapperTest
     /**
      * Mapper to get people by IDs, using cache.
      */
-    private GetPeopleByIds getPeopleByIdsMapperMock = context.mock(GetPeopleByIds.class);
+    private DomainMapper<List<Long>, List<PersonModelView>>getPeopleByIdsMapperMock = context.mock(DomainMapper.class);
 
     /**
      * System under test.

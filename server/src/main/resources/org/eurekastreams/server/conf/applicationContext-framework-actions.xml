@@ -540,7 +540,7 @@
                         class="org.eurekastreams.server.action.execution.stream.GetCurrentUserFollowedGroupsExecution">
                         <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
                         <constructor-arg ref="getGroupsByIdsMapper" />
-                        <constructor-arg ref="bulkPeopleMapper" />
+                        <constructor-arg ref="getPersonsByIdsMapper" />
                         <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
                     </bean>
                 </constructor-arg>
@@ -1086,10 +1086,10 @@
                     <bean
                         class="org.eurekastreams.server.service.actions.strategies.OrganizationPersonLoaderCoordinators">
                         <constructor-arg ref="getOrgCoordinators" />
-                        <constructor-arg ref="bulkPeopleMapper" />
+                        <constructor-arg ref="getPersonsByIdsMapper" />
                         <property name="organizationLoader">
                             <bean class="org.eurekastreams.server.service.actions.strategies.OrganizationPersonLoaderLeaders">
-                                <constructor-arg ref="bulkPeopleMapper" />
+                                <constructor-arg ref="getPersonsByIdsMapper" />
                                 <constructor-arg ref="getOrganizationLeaderIdsByOrgId" />
                             </bean>
                         </property>
@@ -1284,7 +1284,7 @@
                         <constructor-arg ref="getFollowedPersonIdsForPersonByIdMapper" />
                     </bean>
                 </constructor-arg>
-                <constructor-arg ref="bulkPeopleMapper" />
+                <constructor-arg ref="getPersonsByIdsMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -1308,7 +1308,7 @@
                         <constructor-arg ref="getFollowerPersonIdsForPersonByIdMapper" />
                     </bean>
                 </constructor-arg>
-                <constructor-arg ref="bulkPeopleMapper" />
+                <constructor-arg ref="getPersonsByIdsMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -1328,7 +1328,7 @@
             <bean class="org.eurekastreams.server.action.execution.profile.GetFollowingExecution">
                 <constructor-arg ref="bulkDomainGroupsByShortNameMapper" /> <!-- wbc -->
                 <constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
-                <constructor-arg ref="bulkPeopleMapper" />
+                <constructor-arg ref="getPersonsByIdsMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -1937,7 +1937,7 @@
                     class="org.eurekastreams.server.service.actions.strategies.activity.InterpolationListCollider" />            
             </constructor-arg>
             <constructor-arg ref="securityTrimmer" />
-            <constructor-arg ref="bulkPeopleMapper" />
+            <constructor-arg ref="getPersonsByIdsMapper" />
             <constructor-arg value="%%CURRENT_USER_ACCOUNT_ID%%" />            
     </bean>
         
@@ -2066,7 +2066,7 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.profile.GetRequestsForGroupMembershipByGroupExecution">
                 <constructor-arg ref="getRequestsForGroupMembershipMapper" />
-                <constructor-arg ref="bulkPeopleMapper" />
+                <constructor-arg ref="getPersonsByIdsMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
@@ -2746,7 +2746,7 @@
                 class="org.eurekastreams.server.action.execution.stream.GetCurrentUserFollowedGroupsExecution">
                 <constructor-arg ref="getFollowedGroupIdsForPersonByIdMapper" />
                 <constructor-arg ref="getGroupsByIdsMapper" />
-                <constructor-arg ref="bulkPeopleMapper" />
+                <constructor-arg ref="getPersonsByIdsMapper" />
                 <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
             </bean>
         </constructor-arg>
@@ -3046,7 +3046,7 @@
             <bean
                 class="org.eurekastreams.server.action.execution.stream.GetPeopleWhoLikedActivityExecution">
                 <constructor-arg ref="getPeopleWhoLikedActivity" />
-                <constructor-arg ref="bulkPeopleMapper" />
+                <constructor-arg ref="getPersonsByIdsMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
@@ -3615,7 +3615,7 @@
         <constructor-arg ref="jpaPersonMapper" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.profile.UpdatePersonDisplayNameCaches">
-                <constructor-arg ref="bulkPeopleMapper" />
+                <constructor-arg ref="getPersonsByIdsMapper" />
             </bean>
         </constructor-arg>
     </bean>
@@ -3859,7 +3859,7 @@
         class="org.eurekastreams.server.service.actions.strategies.activity.PopulateActivityDTOLikeData">
         <constructor-arg ref="getLikedActivityIdsByUserId" />
         <constructor-arg ref="getPeopleWhoLikedActivity" />
-        <constructor-arg ref="bulkPeopleMapper" />
+        <constructor-arg ref="getPersonsByIdsMapper" />
         <constructor-arg value="10" />
     </bean>
     <bean id="deleteFilter"

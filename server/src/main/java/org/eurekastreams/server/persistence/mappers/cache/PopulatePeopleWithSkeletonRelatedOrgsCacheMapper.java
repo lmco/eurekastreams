@@ -24,7 +24,7 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
+
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
@@ -46,7 +46,7 @@ public class PopulatePeopleWithSkeletonRelatedOrgsCacheMapper
     /**
      * Mapper to get person modelviews by ids.
      */
-    private GetPeopleByIds getPeopleByIdsMapper;
+    private DomainMapper<List<Long>, List<PersonModelView>>getPeopleByIdsMapper;
 
     /**
      * Constructor.
@@ -58,7 +58,7 @@ public class PopulatePeopleWithSkeletonRelatedOrgsCacheMapper
      */
     public PopulatePeopleWithSkeletonRelatedOrgsCacheMapper(
             final DomainMapper<List<Long>, List<OrganizationModelView>> inGetOrgsByIdsMapper,
-            final GetPeopleByIds inGetPeopleByIdsMapper)
+            final DomainMapper<List<Long>, List<PersonModelView>>inGetPeopleByIdsMapper)
     {
         getOrgsByIdsMapper = inGetOrgsByIdsMapper;
         getPeopleByIdsMapper = inGetPeopleByIdsMapper;

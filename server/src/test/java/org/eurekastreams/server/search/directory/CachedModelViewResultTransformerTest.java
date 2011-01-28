@@ -28,7 +28,6 @@ import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -78,7 +77,8 @@ public class CachedModelViewResultTransformerTest
     /**
      * The mapper to get the people by Ids.
      */
-    private GetPeopleByIds getPeopleByIdsMapperMock = context.mock(GetPeopleByIds.class);
+    private DomainMapper<List<Long>, List<PersonModelView>> getPeopleByIdsMapperMock = context.mock(DomainMapper.class,
+            "getPeopleByIdsMapperMock");
 
     /**
      * Test transformTuple.

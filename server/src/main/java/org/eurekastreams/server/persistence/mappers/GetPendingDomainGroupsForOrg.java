@@ -26,7 +26,7 @@ import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCache;
 import org.eurekastreams.server.persistence.mappers.requests.GetPendingDomainGroupsForOrgRequest;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
+
 import org.eurekastreams.server.search.factories.DomainGroupModelViewFactory;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -51,7 +51,7 @@ public class GetPendingDomainGroupsForOrg extends
     /**
      * Mapper to get people by IDs, using cache.
      */
-    private GetPeopleByIds getPeopleByIdsMapper;
+    private DomainMapper<List<Long>, List<PersonModelView>>getPeopleByIdsMapper;
 
     /**
      * Constructor.
@@ -193,7 +193,7 @@ public class GetPendingDomainGroupsForOrg extends
      * @param inGetPeopleByIdsMapper
      *            the getPeopleByIdsMapper to set
      */
-    public void setGetPeopleByIdsMapper(final GetPeopleByIds inGetPeopleByIdsMapper)
+    public void setGetPeopleByIdsMapper(final DomainMapper<List<Long>, List<PersonModelView>>inGetPeopleByIdsMapper)
     {
         this.getPeopleByIdsMapper = inGetPeopleByIdsMapper;
     }

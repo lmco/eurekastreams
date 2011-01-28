@@ -28,7 +28,7 @@ import java.util.List;
 import net.sf.json.JSONObject;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.activity.ActivityFilter;
 import org.eurekastreams.server.service.actions.strategies.activity.ListCollider;
@@ -101,7 +101,7 @@ public class GetActivityIdsByJsonRequestTest
     /**
      * People mapper.
      */
-    private GetPeopleByIds peopleMapper = context.mock(GetPeopleByIds.class);
+    private DomainMapper<List<Long>, List<PersonModelView>> peopleMapper = context.mock(DomainMapper.class);
 
     /**
      * Replace string.
@@ -184,7 +184,7 @@ public class GetActivityIdsByJsonRequestTest
             }
         });
 
-        List<Long> results = (List<Long>) sut.execute(request, personId);
+        List<Long> results = sut.execute(request, personId);
 
         context.assertIsSatisfied();
         assertEquals(1, results.size());
@@ -202,7 +202,11 @@ public class GetActivityIdsByJsonRequestTest
         final String request = "{count:10, query : { followedBy: \"" + replaceString + "\"}}";
 
         final PersonModelView person = context.mock(PersonModelView.class);
-        
+        final List<Long> peopleIds = new ArrayList<Long>();
+        peopleIds.add(personId);
+        final List<PersonModelView> people = new ArrayList<PersonModelView>();
+        people.add(person);
+
         context.checking(new Expectations()
         {
             {
@@ -224,10 +228,10 @@ public class GetActivityIdsByJsonRequestTest
 
                 oneOf(luceneDS).fetch(with(any(JSONObject.class)), with(any(Long.class)));
                 will(returnValue(luceneIds));
-                
-                oneOf(peopleMapper).execute(personId);
-                will(returnValue(person));
-                
+
+                oneOf(peopleMapper).execute(peopleIds);
+                will(returnValue(people));
+
                 oneOf(person).getAccountId();
                 will(returnValue("acctid"));
 
@@ -240,7 +244,7 @@ public class GetActivityIdsByJsonRequestTest
             }
         });
 
-        List<Long> results = (List<Long>) sut.execute(request, personId);
+        List<Long> results = sut.execute(request, personId);
 
         context.assertIsSatisfied();
         assertEquals(1, results.size());
@@ -310,7 +314,7 @@ public class GetActivityIdsByJsonRequestTest
             }
         });
 
-        List<Long> results = (List<Long>) sut.execute(request, personId);
+        List<Long> results = sut.execute(request, personId);
 
         // we're asking for 2 results - we should have gotten back 1 and 7
         assertEquals(2, results.size());
@@ -347,7 +351,7 @@ public class GetActivityIdsByJsonRequestTest
             }
         });
 
-        List<Long> results = (List<Long>) sut.execute(request, personId);
+        List<Long> results = sut.execute(request, personId);
 
         // we're asking for 2 results - we should have gotten back 1 and 7
         assertEquals(3, results.size());

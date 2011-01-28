@@ -25,7 +25,6 @@ import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.response.GetCurrentUserStreamFiltersResponse;
@@ -80,7 +79,8 @@ public class GetCurrentUserFollowedGroupsExecutionTest
     /**
      * People mapper mock.
      */
-    private GetPeopleByIds peopleMapper = context.mock(GetPeopleByIds.class);
+    private DomainMapper<List<Long>, List<PersonModelView>> peopleMapper = context.mock(DomainMapper.class,
+            "personMapper");
 
     /**
      * Mapper to determine if a user has access to update a group.

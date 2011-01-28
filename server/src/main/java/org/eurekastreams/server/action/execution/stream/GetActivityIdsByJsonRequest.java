@@ -22,7 +22,8 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eurekastreams.server.persistence.mappers.stream.GetPeopleByIds;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.activity.ListCollider;
 import org.eurekastreams.server.service.actions.strategies.activity.datasources.DescendingOrderDataSource;
 import org.eurekastreams.server.service.actions.strategies.activity.datasources.SortedDataSource;
@@ -60,7 +61,7 @@ public class GetActivityIdsByJsonRequest
     /**
      * Person mapper.
      */
-    private GetPeopleByIds personMapper;
+    private DomainMapper<List<Long>, List<PersonModelView>> personMapper;
 
     /**
      * String to replace with user name.
@@ -92,8 +93,8 @@ public class GetActivityIdsByJsonRequest
      */
     public GetActivityIdsByJsonRequest(final DescendingOrderDataSource inDescendingOrderdataSource,
             final SortedDataSource inSortedDataSource, final ListCollider inAndCollider,
-            final ActivitySecurityTrimmer inSecurityTrimmer, final GetPeopleByIds inPersonMapper,
-            final String inUserRelaceString)
+            final ActivitySecurityTrimmer inSecurityTrimmer,
+            final DomainMapper<List<Long>, List<PersonModelView>> inPersonMapper, final String inUserRelaceString)
     {
         descendingOrderdataSource = inDescendingOrderdataSource;
         sortedDataSource = inSortedDataSource;
@@ -121,7 +122,9 @@ public class GetActivityIdsByJsonRequest
 
         if (request.contains(userReplaceString))
         {
-            request = request.replaceAll(userReplaceString, personMapper.execute(userEntityId).getAccountId());
+            List<Long> peopleIds = new ArrayList<Long>();
+            peopleIds.add(userEntityId);
+            request = request.replaceAll(userReplaceString, personMapper.execute(peopleIds).get(0).getAccountId());
         }
 
         final JSONObject jsonRequest = JSONObject.fromObject(request);
