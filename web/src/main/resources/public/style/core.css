@@ -8082,6 +8082,7 @@ body .post-expanded-panel .content-warning {
 	zoom: 1;
 	float: right;
 	margin-top:7px;
+    visibility: hidden;
 }
 
 div.new-messages-notification {
