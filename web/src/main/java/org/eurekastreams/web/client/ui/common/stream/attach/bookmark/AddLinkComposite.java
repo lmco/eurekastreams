@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,7 +107,6 @@ public class AddLinkComposite extends FlowPanel implements Bindable
      */
     TextBox title = new TextBox();
 
-
     /**
      * The last fetched links url.
      */
@@ -117,7 +116,6 @@ public class AddLinkComposite extends FlowPanel implements Bindable
      * Max length of title.
      */
     private static final int MAX_LENGTH = 50;
-
 
     /**
      * Constructor.
@@ -177,7 +175,6 @@ public class AddLinkComposite extends FlowPanel implements Bindable
         titleLink.add(title);
 
         titleLink.addStyleName("attach-link-title-entry");
-
 
         EventBus eventBus = Session.getInstance().getEventBus();
         eventBus.addObserver(ParseLinkEvent.getEvent(), new Observer<ParseLinkEvent>()
@@ -273,8 +270,7 @@ public class AddLinkComposite extends FlowPanel implements Bindable
     public void close()
     {
         fetchedLink = "";
-        MessageAttachmentChangedEvent event = new MessageAttachmentChangedEvent(null);
-        Session.getInstance().getEventBus().notifyObservers(event);
+        Session.getInstance().getEventBus().notifyObservers(new MessageAttachmentChangedEvent(null));
     }
 
     /**
@@ -314,17 +310,25 @@ public class AddLinkComposite extends FlowPanel implements Bindable
         {
             public void onBlur(final BlurEvent event)
             {
-                link.setTitle(title.getValue());
+                // This check is a workaround for the real problem, which is that the blur handler is getting wired up
+                // multiple times (once on the first time the user clicks 'add link' and once when the activity is
+                // posted and everything is being cleared out). Maybe this control will get redesigned when
+                // PostToStreamComposite gets refactored from MVC to the current design.
+                if (link != null)
+                {
+                    link.setTitle(title.getValue());
+                }
             }
         });
 
         linkDesc.setText(addedLink.getDescription());
-
     }
 
     /**
      * Fetch link.
-     * @param inLinkUrl link url.
+     *
+     * @param inLinkUrl
+     *            link url.
      */
     public void fetchLink(final String inLinkUrl)
     {
@@ -337,32 +341,32 @@ public class AddLinkComposite extends FlowPanel implements Bindable
         }
         else if (inLinkUrl != fetchedLink)
         {
-            Session.getInstance().getActionProcessor().makeRequest(
-                    new ActionRequestImpl<LinkInformation>("getParsedLinkInformation", inLinkUrl),
-                    new AsyncCallback<LinkInformation>()
-                    {
-                        /* implement the async call back methods */
-                        public void onFailure(final Throwable caught)
-                        {
-                            LinkInformation linkInformation = new LinkInformation();
-                            linkInformation.setTitle(inLinkUrl);
-                            linkInformation.setUrl(inLinkUrl);
+            Session.getInstance()
+                    .getActionProcessor()
+                    .makeRequest(new ActionRequestImpl<LinkInformation>("getParsedLinkInformation", inLinkUrl),
+                            new AsyncCallback<LinkInformation>()
+                            {
+                                /* implement the async call back methods */
+                                public void onFailure(final Throwable caught)
+                                {
+                                    LinkInformation linkInformation = new LinkInformation();
+                                    linkInformation.setTitle(inLinkUrl);
+                                    linkInformation.setUrl(inLinkUrl);
 
-                            MessageAttachmentChangedEvent event = new MessageAttachmentChangedEvent(new Bookmark(
-                                    linkInformation));
-                            Session.getInstance().getEventBus().notifyObservers(event);
-                        }
+                                    MessageAttachmentChangedEvent event = new MessageAttachmentChangedEvent(
+                                            new Bookmark(linkInformation));
+                                    Session.getInstance().getEventBus().notifyObservers(event);
+                                }
 
-                        public void onSuccess(final LinkInformation result)
-                        {
-                            MessageAttachmentChangedEvent event = new MessageAttachmentChangedEvent(
-                                    new Bookmark(result));
-                            Session.getInstance().getEventBus().notifyObservers(event);
-                        }
-                    });
+                                public void onSuccess(final LinkInformation result)
+                                {
+                                    MessageAttachmentChangedEvent event = new MessageAttachmentChangedEvent(
+                                            new Bookmark(result));
+                                    Session.getInstance().getEventBus().notifyObservers(event);
+                                }
+                            });
         }
 
         fetchedLink = inLinkUrl;
     }
-
 }
