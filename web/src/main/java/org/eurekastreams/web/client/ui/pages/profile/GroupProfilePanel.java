@@ -216,6 +216,7 @@ public class GroupProfilePanel extends FlowPanel
         GroupModel.getInstance().fetch(accountId, false);
         AllPopularHashTagsModel.getInstance().fetch(null, true);
         inProcessor.fireQueuedRequests();
+        inProcessor.setQueueRequests(false);
     }
 
     /**
@@ -233,6 +234,8 @@ public class GroupProfilePanel extends FlowPanel
         if (inGroup == null)
         {
             showInvalidGroupMessage();
+            inProcessor.fireQueuedRequests();
+            inProcessor.setQueueRequests(false);
             return;
         }
 
@@ -247,6 +250,8 @@ public class GroupProfilePanel extends FlowPanel
         if (inGroup instanceof RestrictedDomainGroup)
         {
             showRestrictedGroupMessage((RestrictedDomainGroup) inGroup);
+            inProcessor.fireQueuedRequests();
+            inProcessor.setQueueRequests(false);
             return;
         }
         group = (DomainGroup) inGroup;
@@ -254,6 +259,8 @@ public class GroupProfilePanel extends FlowPanel
         if (group.isPending())
         {
             showPendingGroupMessage(inGroup);
+            inProcessor.fireQueuedRequests();
+            inProcessor.setQueueRequests(false);
             return;
         }
 
