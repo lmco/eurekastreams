@@ -115,6 +115,7 @@ public class GadgetMetaDataPanel extends FlowPanel
                 params.put("url", metaData.getGadgetDefinition().getUrl());
                 params.put("category", metaData.getGadgetDefinition().getCategory().toString());
                 params.put("id", String.valueOf(metaData.getGadgetDefinition().getId()));
+                params.put("tab", Session.getInstance().getParameterValue("tab"));
                 final WidgetJSNIFacadeImpl jsni = new WidgetJSNIFacadeImpl();
 
                 editControls.addEditClickHandler(new ClickHandler()
@@ -184,8 +185,8 @@ public class GadgetMetaDataPanel extends FlowPanel
 
                         public void update(final GadgetAddedToStartPageEvent arg1)
                         {
-                            Session.getInstance().getEventBus().notifyObservers(new ShowNotificationEvent(
-                                    new Notification("App has been added")));
+                            Session.getInstance().getEventBus().notifyObservers(
+                                    new ShowNotificationEvent(new Notification("App has been added")));
 
                             if (arg1.getGadget().getGadgetDefinition().getId() == metaData.getGadgetDefinition()
                                     .getId())
