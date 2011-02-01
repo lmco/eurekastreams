@@ -20,12 +20,12 @@ import java.util.Set;
 
 import javax.persistence.Query;
 
-import org.eurekastreams.server.persistence.mappers.ReadMapper;
+import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 /**
  * Get a set of organization ids that a person is directly coordinating.
  */
-public class GetOrgIdsDirectlyCoordinatedByPerson extends ReadMapper<Long, Set<Long>>
+public class GetOrgIdsDirectlyCoordinatedByPerson extends BaseArgDomainMapper<Long, Set<Long>>
 {
     /**
      * Get a set of organization ids that a person is directly coordinating.

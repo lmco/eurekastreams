@@ -20,12 +20,12 @@ import java.util.Set;
 
 import javax.persistence.Query;
 
-import org.eurekastreams.server.persistence.mappers.ReadMapper;
+import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 /**
  * Cached mapper for getting organization leader person ids.
  */
-public class GetOrganizationLeaderIdsByOrgId extends ReadMapper<Long, Set<Long>>
+public class GetOrganizationLeaderIdsByOrgId extends BaseArgDomainMapper<Long, Set<Long>>
 {
     /**
      * Returns list of person ids that represent leaders for given organization.
