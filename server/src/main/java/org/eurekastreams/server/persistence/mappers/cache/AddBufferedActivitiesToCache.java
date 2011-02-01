@@ -44,6 +44,11 @@ public class AddBufferedActivitiesToCache extends CachedDomainMapper
     private DomainMapper<ActivityDTO, List<Long>> getIdsOfPeopleFollowingActivityDestinationStreamMapper;
 
     /**
+     * {@link PostActivityUpdateStreamsByActorMapper}.
+     */
+    private PostActivityUpdateStreamsByActorMapper updateActorActivityStreamMapper;
+
+    /**
      * Default constructor.
      * 
      * @param inBulkActivitiesMapper
@@ -52,15 +57,19 @@ public class AddBufferedActivitiesToCache extends CachedDomainMapper
      *            Cache.
      * @param inGetIdsOfPeopleFollowingActivityDestinationStreamMapper
      *            Mapper to get ids of people following the destination stream of an activity.
+     * @param inUpdateActorActivityStreamMapper
+     *            {@link PostActivityUpdateStreamsByActorMapper}.
      */
     public AddBufferedActivitiesToCache(final DomainMapper<List<Long>, List<ActivityDTO>> inBulkActivitiesMapper,
             final Cache inCache,
-            final DomainMapper<ActivityDTO, List<Long>> inGetIdsOfPeopleFollowingActivityDestinationStreamMapper)
+            final DomainMapper<ActivityDTO, List<Long>> inGetIdsOfPeopleFollowingActivityDestinationStreamMapper,
+            final PostActivityUpdateStreamsByActorMapper inUpdateActorActivityStreamMapper)
     {
         bulkActivitiesMapper = inBulkActivitiesMapper;
         cache = inCache;
         getIdsOfPeopleFollowingActivityDestinationStreamMapper = // 
         inGetIdsOfPeopleFollowingActivityDestinationStreamMapper;
+        updateActorActivityStreamMapper = inUpdateActorActivityStreamMapper;
     }
 
     /**
@@ -92,6 +101,8 @@ public class AddBufferedActivitiesToCache extends CachedDomainMapper
                 }
                 activitesByFollower.get(followerId).add(activity.getId());
             }
+
+            updateActorActivityStreamMapper.execute(activity);
         }
 
         if (!allActivityIds.isEmpty())

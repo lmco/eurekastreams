@@ -121,6 +121,7 @@
 		<constructor-arg ref="bulkActivitiesMapper" />
 		<constructor-arg ref="memcachedCache" />
 		<constructor-arg ref="getPersonIdsFollowingActivityDestinationStreamMapper" />
+		<constructor-arg ref="postActivityUpdateStreamsByActorMapper" />
 	</bean>
 
 	<bean id="jpaFeedReaderMapper" class="org.eurekastreams.server.persistence.FeedReaderMapper"></bean>

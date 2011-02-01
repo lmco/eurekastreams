@@ -54,6 +54,12 @@ public class AddBufferedActivitiesToCacheTest
     private MemcachedCache cache = context.mock(MemcachedCache.class);
 
     /**
+     * {@link PostActivityUpdateStreamsByActorMapper}.
+     */
+    private PostActivityUpdateStreamsByActorMapper updateActorActivityStreamMapper = context
+            .mock(PostActivityUpdateStreamsByActorMapper.class);
+
+    /**
      * Mapper to get a list of all ids of people following destination stream of an activity.
      */
     private DomainMapper<ActivityDTO, List<Long>> getIdsOfPeopleFollowingActivityDestinationStreamMapper = context
@@ -66,7 +72,7 @@ public class AddBufferedActivitiesToCacheTest
     public void testExecute()
     {
         AddBufferedActivitiesToCache sut = new AddBufferedActivitiesToCache(bulkActivitiesMapper, cache,
-                getIdsOfPeopleFollowingActivityDestinationStreamMapper);
+                getIdsOfPeopleFollowingActivityDestinationStreamMapper, updateActorActivityStreamMapper);
 
         final List<Long> activityIds = null;
 
@@ -102,6 +108,8 @@ public class AddBufferedActivitiesToCacheTest
                 oneOf(bulkActivitiesMapper).execute(activityIds);
                 will(returnValue(activities));
 
+                allowing(updateActorActivityStreamMapper).execute(with(any(ActivityDTO.class)));
+
                 oneOf(getIdsOfPeopleFollowingActivityDestinationStreamMapper).execute(activity1);
                 will(returnValue(followerIdsForAct1));
 
@@ -123,7 +131,7 @@ public class AddBufferedActivitiesToCacheTest
     public void testExecuteWithNoActivities()
     {
         AddBufferedActivitiesToCache sut = new AddBufferedActivitiesToCache(bulkActivitiesMapper, cache,
-                getIdsOfPeopleFollowingActivityDestinationStreamMapper);
+                getIdsOfPeopleFollowingActivityDestinationStreamMapper, updateActorActivityStreamMapper);
 
         final List<Long> activityIds = null;
 
