@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,6 +50,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 
 /**
@@ -428,16 +429,24 @@ public class StreamPluginsSettingsTabContent extends Composite
                     dataContainer.add(title);
                     dataContainer.add(sourcePanel);
 
+                    FlowPanel lastUpdatedPanel = new FlowPanel();
+                    lastUpdatedPanel.addStyleName("gadget-ext-info");
+
                     if (feedSubscription.getFeed().getTimeAgo() != null)
                     {
-                        FlowPanel lastUpdatedPanel = new FlowPanel();
-                        lastUpdatedPanel.addStyleName("gadget-ext-info");
-                        lastUpdatedPanel.add(new Label("Last Updated: "));
-
-                        Label lastUpdateTime = new Label(feedSubscription.getFeed().getTimeAgo());
+                        lastUpdatedPanel.add(new InlineLabel("Last Updated: "));
+                        Label lastUpdateTime = new InlineLabel(feedSubscription.getFeed().getTimeAgo());
                         lastUpdateTime.addStyleName("light");
                         lastUpdatedPanel.add(lastUpdateTime);
-
+                    }
+                    if (feedSubscription.getFeed().getIsFeedBroken())
+                    {
+                        Label brokenFeedIndicator = new InlineLabel("Feed may be broken, please check the source.");
+                        brokenFeedIndicator.addStyleName("broken-feed-indicator");
+                        lastUpdatedPanel.add(brokenFeedIndicator);
+                    }
+                    if (lastUpdatedPanel.getWidgetCount() > 0)
+                    {
                         dataContainer.add(lastUpdatedPanel);
                     }
 

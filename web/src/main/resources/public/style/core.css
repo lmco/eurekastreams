@@ -12310,6 +12310,16 @@ body .gallery-search-results-list .options-panel {
 	width: 68px;
 }
 
+.broken-feed-indicator
+{
+	color:  #800000;
+}
+
+span + .broken-feed-indicator
+{
+	margin-left: 10px;
+}
+
 .gallery-upload-note {
 	display: block;
 	margin: 30px;
