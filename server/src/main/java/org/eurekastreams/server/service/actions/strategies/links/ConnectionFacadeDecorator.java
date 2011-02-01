@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,19 @@ package org.eurekastreams.server.service.actions.strategies.links;
 
 import java.net.HttpURLConnection;
 
+
 /**
- * Interface that describes a decorator for a connection facade.  Each decorator
- * takes in an HttpUrlConnection to decorate..
- *
+ * Describes a decorator which configures an aspect of a URL connection.
  */
 public interface ConnectionFacadeDecorator
 {
     /**
-     * Retrieve the list of headers that need to be added to the connection.
-     * @param inConnection - HttpUrlConnection to decorate.
-     * @param inAccountId - Account id of the user making the request.
+     * Configures the connection.
+     *
+     * @param inConnection
+     *            - Connection to decorate. The connection is created but not yet connected.
+     * @param inAccountId
+     *            - Account id of the user making the request.
      */
     void decorate(final HttpURLConnection inConnection, final String inAccountId);
 }

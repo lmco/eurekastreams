@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,25 +29,26 @@ public class HeadersConnectionFacadeDecorator implements ConnectionFacadeDecorat
      * Map of header keys and values to add to the connection.
      */
     private final Map<String, String> headersMap;
-    
+
     /**
      * Constructor.
-     * @param inHeadersMap - map of header keys and values to add to the connection.
+     *
+     * @param inHeadersMap
+     *            Map of header keys and values to add to the connection.
      */
     public HeadersConnectionFacadeDecorator(final Map<String, String> inHeadersMap)
     {
         headersMap = inHeadersMap;
     }
-    
+
     /**
-     * {@inheritDoc}.
-     * Loops through the headers supplied and adds them to the connection object to 
-     * be used when making the request.
+     * {@inheritDoc}. Loops through the headers supplied and adds them to the connection object to be used when making
+     * the request.
      */
     @Override
     public void decorate(final HttpURLConnection inConnection, final String inAccountId)
     {
-        for(Entry<String, String> header: headersMap.entrySet())
+        for (Entry<String, String> header : headersMap.entrySet())
         {
             inConnection.addRequestProperty(header.getKey(), header.getValue());
         }

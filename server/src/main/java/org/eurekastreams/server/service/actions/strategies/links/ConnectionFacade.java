@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
@@ -321,13 +322,16 @@ public class ConnectionFacade
     /**
      * Get the connection.
      *
-     * @param url
+     * @param inUrl
      *            the url.
      * @param inAccountId
      *            account id of the user making the request.
      * @return the connection.
+     * @throws MalformedURLException
+     *             If the URL is invalid.
      */
-    protected HttpURLConnection getConnection(final String url, final String inAccountId)
+    protected HttpURLConnection getConnection(final String inUrl, final String inAccountId)
+            throws MalformedURLException
     {
         HttpURLConnection connection = null;
 
@@ -339,23 +343,12 @@ public class ConnectionFacade
 
         log.info("Using Proxy: " + proxyHost + ":" + proxyPort);
 
-        URL theUrl = null;
+        URL url = getUrl(inUrl);
         try
         {
-            theUrl = getUrl(url);
-        }
-        catch (MalformedURLException e1)
-        {
-            log.error("Bad URL");
-        }
+            // Some sites e.g. Google Images and Digg will not respond to an unrecognized User-Agent.
 
-        try
-        {
-            /**
-             * Some sites e.g. Google Images and Digg will not respond to an unrecognized User-Agent.
-             */
-
-            if (url.startsWith("https"))
+            if ("https".equals(url.getProtocol()))
             {
                 log.trace("Using HTTPS");
 
@@ -372,7 +365,7 @@ public class ConnectionFacade
                     log.error("Error setting SSL Context");
                 }
 
-                connection = (HttpsURLConnection) theUrl.openConnection();
+                connection = (HttpsURLConnection) url.openConnection();
 
                 ((HttpsURLConnection) connection).setHostnameVerifier(new HostnameVerifier()
                 {
@@ -383,20 +376,24 @@ public class ConnectionFacade
                         return true;
                     }
                 });
-
-                connection.setConnectTimeout(connectionTimeOut);
-
-                // Loop through the Header decorators and the map of headers that they contain.
-
             }
             else
             {
-                log.trace("Using HTTP");
-                theUrl = getUrl(url);
+                URLConnection plainConnection = url.openConnection();
 
-                connection = (HttpURLConnection) theUrl.openConnection();
-                connection.setConnectTimeout(connectionTimeOut);
+                if (plainConnection instanceof HttpURLConnection)
+                {
+                    log.trace("Using HTTP");
+                    connection = (HttpURLConnection) plainConnection;
+                }
+                else
+                {
+                    log.info("Closing non-HTTP connection.");
+                    return null;
+                }
             }
+
+            connection.setConnectTimeout(connectionTimeOut);
 
             // Decorate the connection.
             for (ConnectionFacadeDecorator decorator : decorators)
@@ -551,7 +548,7 @@ public class ConnectionFacade
      * @throws MalformedURLException
      *             on bad URL.
      */
-    private URL getUrl(final String url) throws MalformedURLException
+    protected URL getUrl(final String url) throws MalformedURLException
     {
         if (!urlMap.containsKey(url))
         {
@@ -575,7 +572,7 @@ public class ConnectionFacade
     public String getFinalUrl(final String url, final String inAccountId) throws IOException
     {
         HttpURLConnection connection = getConnection(url, inAccountId);
-        if (redirectCodes.contains(connection.getResponseCode()))
+        if (connection != null && redirectCodes.contains(connection.getResponseCode()))
         {
             String redirUrl = connection.getHeaderField("Location");
             log.trace("Found redirect header to: " + redirUrl);

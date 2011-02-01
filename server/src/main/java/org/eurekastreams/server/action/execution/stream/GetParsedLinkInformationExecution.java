@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public class GetParsedLinkInformationExecution implements ExecutionStrategy<Prin
     /**
      * Logger.
      */
-    private Log log = LogFactory.make();
+    private final Log log = LogFactory.make();
 
     /**
      * List of parsing strategies.
@@ -53,7 +53,7 @@ public class GetParsedLinkInformationExecution implements ExecutionStrategy<Prin
     /**
      * The HTTP connection facade.
      */
-    private ConnectionFacade connection;
+    private final ConnectionFacade connection;
 
     /**
      * Link mapper.
@@ -81,7 +81,6 @@ public class GetParsedLinkInformationExecution implements ExecutionStrategy<Prin
             final FindLinkInformationByUrl inMapper, final InsertMapper<LinkInformation> inInsertMapper,
             final List<HtmlLinkParser> inParsingStrategies)
     {
-
         connection = inConnection;
         mapper = inMapper;
         insertMapper = inInsertMapper;
@@ -109,62 +108,48 @@ public class GetParsedLinkInformationExecution implements ExecutionStrategy<Prin
                 url = "http://" + url;
             }
             url = connection.getFinalUrl(url, inActionContext.getPrincipal().getAccountId());
-            UniqueStringRequest req = new UniqueStringRequest(url);
 
+            UniqueStringRequest req = new UniqueStringRequest(url);
             theLink = mapper.execute(req);
 
             if (null == theLink)
             {
                 theLink = new LinkInformation();
-
-                log.debug("Downloading resource: " + url);
-
                 theLink.setUrl(url);
-                String htmlString = "";
-                String host = "";
+                // set the source to the protocol + authority
+                // (Take everything up to the first slash beyond the protocol-authority separator ://)
+                int postAuthorityIndex = url.indexOf("/", url.indexOf("://") + "://".length());
+                theLink.setSource(postAuthorityIndex == -1 ? url : url.substring(0, postAuthorityIndex));
 
                 // Attempt to retrieve the contents of the resource.
+                log.debug("Downloading resource: " + url);
                 try
                 {
-                    htmlString = connection.downloadFile(url, inActionContext.getPrincipal().getAccountId());
+                    String htmlString = connection.downloadFile(url, inActionContext.getPrincipal().getAccountId());
                     htmlString = htmlString.replace("\\s+", " ");
 
-                    host = connection.getHost(url);
+                    String host = connection.getHost(url);
+
+                    for (HtmlLinkParser strategy : parsingStrategies)
+                    {
+                        Matcher match = Pattern.compile(strategy.getRegex()).matcher(host);
+
+                        if (match.find())
+                        {
+                            log.debug("Found: " + strategy.getRegex());
+                            strategy.parseLinkInformation(htmlString, theLink, inActionContext.getPrincipal()
+                                    .getAccountId());
+                            break;
+                        }
+                        else
+                        {
+                            log.debug("Didn't find: " + strategy.getRegex());
+                        }
+                    }
                 }
                 catch (Exception e)
                 {
-                    log.info("Bad url", e);
-                }
-
-                // If there are no additional slashes beyond the protocol, set the source url with
-                // what you have.
-                if (url.indexOf("/", url.indexOf("://") + "://".length()) == -1)
-                {
-                    theLink.setSource(url);
-                }
-                // Set the source with only the first portion of the url, protocol and host.
-                else
-                {
-                    int hostIndex = url.indexOf("/", url.indexOf("://") + "://".length());
-                    theLink.setSource(url.substring(0, hostIndex));
-                }
-
-                for (HtmlLinkParser strategy : parsingStrategies)
-                {
-                    Matcher match = Pattern.compile(strategy.getRegex()).matcher(host);
-
-                    if (match.find())
-                    {
-                        log.debug("Found: " + strategy.getRegex());
-                        strategy.parseLinkInformation(htmlString, theLink, 
-                                inActionContext.getPrincipal().getAccountId());
-                        break;
-                    }
-                    else
-                    {
-                        log.debug("Didn't find: " + strategy.getRegex());
-                    }
-
+                    log.info("Failed to download resource and extract link information from it.", e);
                 }
 
                 theLink.setCreated(new Date());
@@ -174,10 +159,8 @@ public class GetParsedLinkInformationExecution implements ExecutionStrategy<Prin
         }
         catch (Exception ex)
         {
-            log.error("error occurred parsing link.", ex);
             throw new ExecutionException("Error occurred parsing link", ex);
         }
         return theLink;
     }
-
 }

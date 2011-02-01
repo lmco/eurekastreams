@@ -22,10 +22,12 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.MessageAttachmentChangedEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ParseLinkEvent;
+import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.errors.ErrorPostingMessageToNullScopeEvent;
 import org.eurekastreams.web.client.ui.Bindable;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LabeledTextBox;
+import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.common.stream.thumbnail.ThumbnailSelectorComposite;
 
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -116,6 +118,16 @@ public class AddLinkComposite extends FlowPanel implements Bindable
      * Max length of title.
      */
     private static final int MAX_LENGTH = 50;
+
+    /** Message for URLs which fail on getting parsed link information. */
+    private static final String UNVERIFIED_URL_MESSAGE = "URL may be invalid.  "
+            + "Please confirm it was entered correctly.";
+
+    /** Message for URLs which returned missing link information. */
+    private static final String INCOMPLETE_INFO_URL_MESSAGE = "Details about URL could not be retrieved.  "
+            + "Please confirm it was entered correctly.";
+
+
 
     /**
      * Constructor.
@@ -333,11 +345,12 @@ public class AddLinkComposite extends FlowPanel implements Bindable
     public void fetchLink(final String inLinkUrl)
     {
         // very basic url validation
-        if (inLinkUrl == null || inLinkUrl.isEmpty() || !inLinkUrl.startsWith("http") || !inLinkUrl.contains("."))
+        final EventBus eventBus = Session.getInstance().getEventBus();
+        if (inLinkUrl == null || inLinkUrl.isEmpty() || !inLinkUrl.contains("."))
         {
             ErrorPostingMessageToNullScopeEvent error = new ErrorPostingMessageToNullScopeEvent();
             error.setErrorMsg("You must supply a valid url (example: http://www.example.com)");
-            Session.getInstance().getEventBus().notifyObservers(error);
+            eventBus.notifyObservers(error);
         }
         else if (inLinkUrl != fetchedLink)
         {
@@ -355,14 +368,31 @@ public class AddLinkComposite extends FlowPanel implements Bindable
 
                                     MessageAttachmentChangedEvent event = new MessageAttachmentChangedEvent(
                                             new Bookmark(linkInformation));
-                                    Session.getInstance().getEventBus().notifyObservers(event);
+                                    eventBus.notifyObservers(event);
+
+                                    eventBus.notifyObservers(new ShowNotificationEvent(new Notification(
+                                            UNVERIFIED_URL_MESSAGE)));
                                 }
 
                                 public void onSuccess(final LinkInformation result)
                                 {
                                     MessageAttachmentChangedEvent event = new MessageAttachmentChangedEvent(
                                             new Bookmark(result));
-                                    Session.getInstance().getEventBus().notifyObservers(event);
+
+                                    boolean titleBlank = result.getTitle() == null || result.getTitle().isEmpty();
+                                    if (titleBlank)
+                                    {
+                                        result.setTitle(result.getUrl());
+                                    }
+                                    eventBus.notifyObservers(event);
+
+                                    if (titleBlank
+                                            && (result.getDescription() == null || result.getDescription().isEmpty())
+                                            && result.getImageUrls().isEmpty())
+                                    {
+                                        eventBus.notifyObservers(new ShowNotificationEvent(new Notification(
+                                                INCOMPLETE_INFO_URL_MESSAGE)));
+                                    }
                                 }
                             });
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link GetParsedLinkInformationExecution} class.
- * 
+ *
  */
 public class GetParsedLinkInformationExecutionTest
 {
@@ -63,45 +63,45 @@ public class GetParsedLinkInformationExecutionTest
     /**
      * Mock file downloader.
      */
-    private ConnectionFacade fileDownloader = context.mock(ConnectionFacade.class);
+    private final ConnectionFacade fileDownloader = context.mock(ConnectionFacade.class);
 
     /**
      * Mock mapper.
      */
-    private FindLinkInformationByUrl mapperMock = context.mock(FindLinkInformationByUrl.class);
+    private final FindLinkInformationByUrl mapperMock = context.mock(FindLinkInformationByUrl.class);
 
     /**
      * Insert mapper.
      */
-    private InsertMapper<LinkInformation> insertMapper = context.mock(InsertMapper.class);
+    private final InsertMapper<LinkInformation> insertMapper = context.mock(InsertMapper.class);
 
     /**
      * Strategy list.
      */
-    private List<HtmlLinkParser> strategies = new ArrayList<HtmlLinkParser>();
+    private final List<HtmlLinkParser> strategies = new ArrayList<HtmlLinkParser>();
 
     /**
      * Mock image parser.
      */
-    private HtmlLinkInformationParserStrategy imgParser = context.mock(HtmlLinkInformationParserStrategy.class,
+    private final HtmlLinkInformationParserStrategy imgParser = context.mock(HtmlLinkInformationParserStrategy.class,
             "imgParser");
 
     /**
      * Mock description parser.
      */
-    private HtmlLinkInformationParserStrategy descParser = context.mock(HtmlLinkInformationParserStrategy.class,
+    private final HtmlLinkInformationParserStrategy descParser = context.mock(HtmlLinkInformationParserStrategy.class,
             "descParser");
 
     /**
      * Mock title parser.
      */
-    private HtmlLinkInformationParserStrategy titleParser = context.mock(HtmlLinkInformationParserStrategy.class,
+    private final HtmlLinkInformationParserStrategy titleParser = context.mock(HtmlLinkInformationParserStrategy.class,
             "titleParser");
 
     /**
      * Mocked instance of principal object.
      */
-    private Principal principalMock = context.mock(Principal.class);
+    private final Principal principalMock = context.mock(Principal.class);
 
     /**
      * TEst account.
@@ -122,11 +122,20 @@ public class GetParsedLinkInformationExecutionTest
 
         strategies.add(parser);
         sut = new GetParsedLinkInformationExecution(fileDownloader, mapperMock, insertMapper, strategies);
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(principalMock).getAccountId();
+                will(returnValue(TEST_ACCOUNT));
+
+            }
+        });
     }
 
     /**
      * Perform action test.
-     * 
+     *
      * @throws Exception
      *             shouldn't happen.
      */
@@ -140,26 +149,18 @@ public class GetParsedLinkInformationExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(principalMock).getAccountId();
-                will(returnValue(TEST_ACCOUNT));
-                
                 oneOf(fileDownloader).downloadFile(theUrl, TEST_ACCOUNT);
                 will(returnValue(theHtml));
 
-                oneOf(principalMock).getAccountId();
-                will(returnValue(TEST_ACCOUNT));
-                
                 oneOf(fileDownloader).getFinalUrl(theUrl, TEST_ACCOUNT);
                 will(returnValue(theUrl));
 
-                oneOf(principalMock).getAccountId();
-                
                 oneOf(titleParser).parseInformation(with(equal(theHtml)), with(any(LinkInformation.class)),
                         with(any(String.class)));
-                
+
                 oneOf(descParser).parseInformation(with(equal(theHtml)), with(any(LinkInformation.class)),
                         with(any(String.class)));
-                
+
                 oneOf(imgParser).parseInformation(with(equal(theHtml)), with(any(LinkInformation.class)),
                         with(any(String.class)));
 
@@ -184,7 +185,7 @@ public class GetParsedLinkInformationExecutionTest
 
     /**
      * Perform action test.
-     * 
+     *
      * @throws Exception
      *             shouldn't happen.
      */
@@ -198,33 +199,12 @@ public class GetParsedLinkInformationExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(principalMock).getAccountId();
-                will(returnValue(TEST_ACCOUNT));
-                
                 oneOf(fileDownloader).downloadFile(fixedUrl, TEST_ACCOUNT);
                 will(returnValue(theHtml));
 
-                oneOf(principalMock).getAccountId();
-                will(returnValue(TEST_ACCOUNT));
-                
                 oneOf(fileDownloader).getFinalUrl(fixedUrl, TEST_ACCOUNT);
                 will(returnValue(fixedUrl));
 
-                oneOf(principalMock).getAccountId();
-                will(returnValue(TEST_ACCOUNT));
-                
-                oneOf(titleParser).parseInformation(with(equal(theHtml)), with(any(LinkInformation.class)),
-                        with(equal(TEST_ACCOUNT)));
-                
-                
-                oneOf(descParser).parseInformation(with(equal(theHtml)), with(any(LinkInformation.class)),
-                        with(equal(TEST_ACCOUNT)));
-                
-                
-                oneOf(imgParser).parseInformation(with(equal(theHtml)), with(any(LinkInformation.class)),
-                        with(equal(TEST_ACCOUNT)));
-
-                
                 oneOf(mapperMock).execute(with(any(UniqueStringRequest.class)));
                 will(returnValue(null));
 
@@ -246,7 +226,7 @@ public class GetParsedLinkInformationExecutionTest
 
     /**
      * Perform action test when the link is cached.
-     * 
+     *
      * @throws Exception
      *             shouldn't happen.
      */
@@ -261,9 +241,6 @@ public class GetParsedLinkInformationExecutionTest
         context.checking(new Expectations()
         {
             {
-                oneOf(principalMock).getAccountId();
-                will(returnValue(TEST_ACCOUNT));
-                
                 oneOf(fileDownloader).getFinalUrl((String) params[0], TEST_ACCOUNT);
                 will(returnValue(params[0]));
 

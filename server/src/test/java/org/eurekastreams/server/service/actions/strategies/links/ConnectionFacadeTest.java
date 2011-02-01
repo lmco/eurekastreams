@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,11 @@ import static org.junit.Assert.assertSame;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.hamcrest.Description;
@@ -40,6 +43,12 @@ import org.junit.Test;
  */
 public class ConnectionFacadeTest
 {
+    /** Test data. */
+    private static final String URL = "http://www.eurekastreams.org";
+
+    /** Test data. */
+    private static final String ACCOUNT_ID = "jdoe";
+
     /** Used for mocking objects. */
     private final JUnit4Mockery context = new JUnit4Mockery()
     {
@@ -47,6 +56,9 @@ public class ConnectionFacadeTest
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
+
+    /** Fixture: connection. */
+    private final HttpURLConnection connection = context.mock(HttpURLConnection.class);
 
     /** SUT. */
     private ConnectionFacade sut;
@@ -146,6 +158,128 @@ public class ConnectionFacadeTest
         sut.setConnectionTimeOut(connectionTimeout);
     }
 
+    /* ---- getFinalUrl tests ---- */
+
+    /**
+     * Common setup for most getFinalUrl tests.
+     */
+    private void setupForGetFinalUrlTests()
+    {
+        sut = new ConnectionFacade(new ArrayList<ConnectionFacadeDecorator>())
+        {
+            @Override
+            protected HttpURLConnection getConnection(final String inUrl, final String inAccountId)
+                    throws MalformedURLException
+            {
+                return connection;
+            }
+        };
+
+        // checkstyle rules gone too far
+        final int rc301 = 301;
+        final int rc302 = 302;
+        final int rc303 = 303;
+        final int rc307 = 307;
+        sut.setRedirectCodes(Arrays.asList(rc301, rc302, rc303, rc307));
+    }
+
+    /**
+     * Tests getFinalUrl for connection setup failure.
+     *
+     * @throws IOException
+     *             Shouldn't.
+     */
+    @Test
+    public void testGetFinalUrlInvalid() throws IOException
+    {
+        sut = new ConnectionFacade(new ArrayList<ConnectionFacadeDecorator>())
+        {
+            @Override
+            protected HttpURLConnection getConnection(final String inUrl, final String inAccountId)
+                    throws MalformedURLException
+            {
+                return null;
+            }
+        };
+
+        assertEquals(URL, sut.getFinalUrl(URL, ACCOUNT_ID));
+    }
+
+    /**
+     * Tests getFinalUrl.
+     *
+     * @throws IOException
+     *             Shouldn't.
+     */
+    @Test
+    public void testGetFinalUrlRedirectHTTP() throws IOException
+    {
+        final String newUrl = "http://www.apache.org";
+        final int rc = 301;
+
+        setupForGetFinalUrlTests();
+        context.checking(new Expectations()
+        {
+            {
+                allowing(connection).getResponseCode();
+                will(returnValue(rc));
+                allowing(connection).getHeaderField("Location");
+                will(returnValue(newUrl));
+            }
+        });
+
+        assertEquals(newUrl, sut.getFinalUrl(URL, ACCOUNT_ID));
+    }
+
+    /**
+     * Tests getFinalUrl.
+     *
+     * @throws IOException
+     *             Shouldn't.
+     */
+    @Test
+    public void testGetFinalUrlRedirectHTTPS() throws IOException
+    {
+        final String newUrl = "https://www.apache.org";
+        final int rc = 301;
+
+        setupForGetFinalUrlTests();
+        context.checking(new Expectations()
+        {
+            {
+                allowing(connection).getResponseCode();
+                will(returnValue(rc));
+                allowing(connection).getHeaderField("Location");
+                will(returnValue(newUrl));
+            }
+        });
+
+        assertEquals(URL, sut.getFinalUrl(URL, ACCOUNT_ID));
+    }
+
+    /**
+     * Tests getFinalUrl.
+     *
+     * @throws IOException
+     *             Shouldn't.
+     */
+    @Test
+    public void testGetFinalUrlNoRedirect() throws IOException
+    {
+        final int rc = 200;
+
+        setupForGetFinalUrlTests();
+        context.checking(new Expectations()
+        {
+            {
+                allowing(connection).getResponseCode();
+                will(returnValue(rc));
+            }
+        });
+
+        assertEquals(URL, sut.getFinalUrl(URL, ACCOUNT_ID));
+    }
+
     /* ---- File download tests ---- */
 
     /** Test data. */
@@ -153,12 +287,6 @@ public class ConnectionFacadeTest
 
     /** Test data. */
     private static final int MAX_FILE_SIZE = 50;
-
-    /** Test data. */
-    private static final String URL = "http://www.eurekastreams.org";
-
-    /** Test data. */
-    private static final String ACCOUNT_ID = "jdoe";
 
     /** Fixture: httpReader. */
     private final Reader httpReader = context.mock(Reader.class);
@@ -222,7 +350,6 @@ public class ConnectionFacadeTest
         sut.setExpectedDownloadFileLimit(EXPECTED_MAX_FILE_SIZE);
         sut.setMaximumDownloadFileLimit(MAX_FILE_SIZE);
     }
-
 
     /**
      * Tests downloading a file.
@@ -295,7 +422,6 @@ public class ConnectionFacadeTest
 
         context.assertIsSatisfied();
     }
-
 
     /**
      * Tests downloading a file.
