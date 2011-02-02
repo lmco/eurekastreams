@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -152,6 +152,31 @@ public class NotificationDTO implements Serializable
      */
     public NotificationDTO()
     {
+    }
+
+    /**
+     * Copy constructor.
+     * 
+     * @param other
+     *            DTO to clone.
+     */
+    public NotificationDTO(final NotificationDTO other)
+    {
+        recipientIds = other.recipientIds;
+        type = other.type;
+        actorId = other.actorId;
+        actorAccountId = other.actorAccountId;
+        actorName = other.actorName;
+        activityId = other.activityId;
+        activityType = other.activityType;
+        destinationId = other.destinationId;
+        destinationType = other.destinationType;
+        destinationUniqueId = other.destinationUniqueId;
+        destinationName = other.destinationName;
+        auxiliaryType = other.auxiliaryType;
+        auxiliaryUniqueId = other.auxiliaryUniqueId;
+        auxiliaryName = other.auxiliaryName;
+        commentId = other.commentId;
     }
 
     /**

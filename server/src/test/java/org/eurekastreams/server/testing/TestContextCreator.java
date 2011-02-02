@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.commons.actions.context.async.AsyncActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.junit.Ignore;
 
@@ -40,9 +42,23 @@ public final class TestContextCreator
     }
 
     /**
+     * Creates a TaskHandlerActionContext<AsyncActionContext> - used for actions invoked asynchronously which can queue
+     * activities.
+     *
+     * @param params
+     *            Action parameters.
+     * @return Context.
+     */
+    public static TaskHandlerActionContext<ActionContext> createTaskHandlerAsyncContext(final Serializable params)
+    {
+        return new TaskHandlerActionContext<ActionContext>(new AsyncActionContext(params),
+                new ArrayList<UserActionRequest>());
+    }
+
+    /**
      * Creates a TaskHandlerActionContext<PrincipalActionContext> - used for actions invoked directly by user action
      * which can queue activities.
-     * 
+     *
      * @param params
      *            Action parameters.
      * @param userAccountId
@@ -61,7 +77,7 @@ public final class TestContextCreator
     /**
      * Creates a TaskHandlerActionContext<PrincipalActionContext> - used for actions invoked directly by user action
      * which can queue activities.
-     * 
+     *
      * @param params
      *            Action parameters.
      * @param principal
@@ -109,7 +125,7 @@ public final class TestContextCreator
 
     /**
      * Creates a principal.
-     * 
+     *
      * @param userAccountId
      *            User's account ID.
      * @param userId

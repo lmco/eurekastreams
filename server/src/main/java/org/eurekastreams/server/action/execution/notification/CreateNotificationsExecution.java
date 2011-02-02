@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -150,8 +150,6 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
                         recipientFilterPreferences, notifierKey);
                 if (!filteredRecipients.isEmpty())
                 {
-                    notification.setRecipientIds(filteredRecipients);
-
                     // "populate" the notification with any additional data not set by the translator
                     // (Do it here so that if the notification gets completely filtered out, we don't do the work
                     if (!populated)
@@ -168,7 +166,12 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
                                     + " to " + filteredRecipients + " destinationType of "
                                     + notification.getDestinationType());
                         }
-                        UserActionRequest actionRequest = notifiers.get(notifierKey).notify(notification);
+
+                        // clone notification and set recipients
+                        NotificationDTO clonedNotification = new NotificationDTO(notification);
+                        clonedNotification.setRecipientIds(filteredRecipients);
+
+                        UserActionRequest actionRequest = notifiers.get(notifierKey).notify(clonedNotification);
                         if (actionRequest != null)
                         {
                             asyncRequests.add(actionRequest);

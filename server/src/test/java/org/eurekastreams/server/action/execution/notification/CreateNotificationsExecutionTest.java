@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,11 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eurekastreams.commons.actions.context.ActionContext;
-import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.commons.actions.context.async.AsyncActionContext;
-import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.commons.test.EasyMatcher;
 import org.eurekastreams.server.action.execution.notification.translator.NotificationTranslator;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
@@ -41,6 +36,7 @@ import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetNotificationFilterPreferencesByPeopleIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -81,10 +77,10 @@ public class CreateNotificationsExecutionTest
     private final NotificationPopulator populator = context.mock(NotificationPopulator.class);
 
     /** Mock application alert notifier. */
-    private final ApplicationAlertNotifier applicationNotifier = context.mock(ApplicationAlertNotifier.class);
+    private final Notifier applicationNotifier = context.mock(Notifier.class, "appAlertNotifier");
 
     /** Mock email notifier. */
-    private final Notifier emailNotifier = context.mock(Notifier.class);
+    private final Notifier emailNotifier = context.mock(Notifier.class, "emailNotifier");
 
     /** The mock preferences mapper. */
     private final GetNotificationFilterPreferencesByPeopleIds preferencesMapper = context
@@ -95,6 +91,9 @@ public class CreateNotificationsExecutionTest
 
     /** Fixture: person. */
     private final PersonModelView person = context.mock(PersonModelView.class);
+
+    /** Fixture: person. */
+    private final PersonModelView person2 = context.mock(PersonModelView.class, "person2");
 
     /** Fixture: filter. */
     private final RecipientFilter filterAppAlert = context.mock(RecipientFilter.class, "filterAppAlert");
@@ -122,6 +121,7 @@ public class CreateNotificationsExecutionTest
 
         Map<NotificationType, Category> notificationTypeToCategory = new HashMap<NotificationType, Category>();
         notificationTypeToCategory.put(NotificationType.FOLLOW_PERSON, Category.FOLLOW_PERSON);
+        notificationTypeToCategory.put(NotificationType.COMMENT_TO_COMMENTED_POST, Category.COMMENT);
 
         sut = new CreateNotificationsExecution(translators, populator, notifiers, preferencesMapper, personMapper,
                 notificationTypeToCategory, filters);
@@ -150,17 +150,15 @@ public class CreateNotificationsExecutionTest
     @Test
     public void testExecute() throws Exception
     {
-        final List<Long> recipients = new ArrayList<Long>();
-        recipients.add(4L);
+        final List<Long> recipients = Collections.singletonList(4L);
         final NotificationDTO notification = new NotificationDTO(recipients, NotificationType.FOLLOW_PERSON, 1L, 2L,
                 EntityType.PERSON, 3L);
-        final Collection<NotificationDTO> notifications = Collections.singletonList(notification);
 
         context.checking(new Expectations()
         {
             {
                 oneOf(followerTranslator).translate(1, 2, 3);
-                will(returnValue(notifications));
+                will(returnValue(Collections.singletonList(notification)));
 
                 allowing(personMapper).execute(with(equal(4L)));
                 will(returnValue(person));
@@ -177,10 +175,7 @@ public class CreateNotificationsExecutionTest
         });
 
         CreateNotificationsRequest request = new CreateNotificationsRequest(RequestType.FOLLOWER, 1, 2, 3);
-        AsyncActionContext currentContext = new AsyncActionContext(request);
-        TaskHandlerActionContext<ActionContext> currentTaskHandlerContext = new TaskHandlerActionContext<ActionContext>(
-                currentContext, new ArrayList<UserActionRequest>());
-        sut.execute(currentTaskHandlerContext);
+        sut.execute(TestContextCreator.createTaskHandlerAsyncContext(request));
         context.assertIsSatisfied();
     }
 
@@ -194,17 +189,15 @@ public class CreateNotificationsExecutionTest
     @Test
     public void testExecuteNoFilters() throws Exception
     {
-        final List<Long> recipients = new ArrayList<Long>();
-        recipients.add(4L);
+        final List<Long> recipients = Collections.singletonList(4L);
         final NotificationDTO notification = new NotificationDTO(recipients, NotificationType.FOLLOW_PERSON, 1L, 2L,
                 EntityType.PERSON, 3L);
-        final Collection<NotificationDTO> notifications = Collections.singletonList(notification);
 
         context.checking(new Expectations()
         {
             {
                 oneOf(followerTranslator).translate(1, 2, 3);
-                will(returnValue(notifications));
+                will(returnValue(Collections.singletonList(notification)));
 
                 allowing(personMapper).execute(with(equal(4L)));
                 will(returnValue(person));
@@ -224,60 +217,77 @@ public class CreateNotificationsExecutionTest
                 Collections.EMPTY_MAP);
 
         CreateNotificationsRequest request = new CreateNotificationsRequest(RequestType.FOLLOWER, 1, 2, 3);
-        AsyncActionContext currentContext = new AsyncActionContext(request);
-        TaskHandlerActionContext<ActionContext> currentTaskHandlerContext = new TaskHandlerActionContext<ActionContext>(
-                currentContext, new ArrayList<UserActionRequest>());
-        sut.execute(currentTaskHandlerContext);
+        sut.execute(TestContextCreator.createTaskHandlerAsyncContext(request));
         context.assertIsSatisfied();
     }
 
     /**
-     * Tests execute where one of the users has a notification filter preference for this event type.
+     * Tests execute where users have notification filter preferences for this event type. Insures the preferences don't
+     * interact between notifiers.
      *
      * @throws Exception
      *             Shouldn't.
      */
     @SuppressWarnings("unchecked")
     @Test
-    public void testExecuteWithFilteredResults() throws Exception
+    public void testExecuteWithPrefernceFilteredResults() throws Exception
     {
-        final List<Long> recipients = new ArrayList<Long>();
-        recipients.add(4L);
-        final NotificationDTO notification = new NotificationDTO(recipients, NotificationType.FOLLOW_PERSON, 1L, 2L,
-                EntityType.PERSON, 3L);
-        final Collection<NotificationDTO> notifications = Collections.singletonList(notification);
+        final List<Long> recipients = Arrays.asList(4L, 5L);
+        final NotificationDTO notification = new NotificationDTO(recipients,
+                NotificationType.COMMENT_TO_COMMENTED_POST, 1L, 2L, EntityType.PERSON, 3L);
 
-        final NotificationFilterPreferenceDTO pref1 = new NotificationFilterPreferenceDTO(4L, "EMAIL",
-                Category.FOLLOW_PERSON);
         final List<NotificationFilterPreferenceDTO> prefs = new ArrayList<NotificationFilterPreferenceDTO>();
-        prefs.add(pref1);
+        prefs.add(new NotificationFilterPreferenceDTO(4L, "EMAIL", Category.COMMENT));
+        prefs.add(new NotificationFilterPreferenceDTO(5L, "APP_ALERT", Category.COMMENT));
 
         context.checking(new Expectations()
         {
             {
-                oneOf(followerTranslator).translate(1, 2, 3);
-                will(returnValue(notifications));
+                oneOf(commentTranslator).translate(1, 2, 3);
+                will(returnValue(Collections.singletonList(notification)));
 
                 allowing(personMapper).execute(with(equal(4L)));
                 will(returnValue(person));
 
-                oneOf(populator).populate(with(same(notification)));
+                allowing(personMapper).execute(with(equal(5L)));
+                will(returnValue(person2));
 
                 oneOf(preferencesMapper).execute(with(any(List.class)));
                 will(returnValue(prefs));
 
-                oneOf(applicationNotifier).notify(with(any(NotificationDTO.class)));
+                oneOf(populator).populate(with(same(notification)));
+
+                allowing(filterEmail).shouldFilter(with(any(PersonModelView.class)), with(any(NotificationDTO.class)),
+                        with(any(String.class)));
+                will(returnValue(false));
+
+                oneOf(applicationNotifier).notify(with(new EasyMatcher<NotificationDTO>()
+                {
+                    @Override
+                    protected boolean isMatch(final NotificationDTO inTestObject)
+                    {
+                        return inTestObject.getRecipientIds().contains(4L)
+                                && !inTestObject.getRecipientIds().contains(5L);
+                    }
+                }));
                 will(returnValue(null));
+                oneOf(emailNotifier).notify(with(new EasyMatcher<NotificationDTO>()
+                {
+                    @Override
+                    protected boolean isMatch(final NotificationDTO inTestObject)
+                    {
+                        return inTestObject.getRecipientIds().contains(5L)
+                                && !inTestObject.getRecipientIds().contains(4L);
+                    }
+                }));
             }
         });
 
-        CreateNotificationsRequest request = new CreateNotificationsRequest(RequestType.FOLLOWER, 1, 2, 3);
-        AsyncActionContext currentContext = new AsyncActionContext(request);
-        TaskHandlerActionContext<ActionContext> currentTaskHandlerContext = new TaskHandlerActionContext<ActionContext>(
-                currentContext, new ArrayList<UserActionRequest>());
-        sut.execute(currentTaskHandlerContext);
+        CreateNotificationsRequest request = new CreateNotificationsRequest(RequestType.COMMENT, 1, 2, 3);
+        sut.execute(TestContextCreator.createTaskHandlerAsyncContext(request));
         context.assertIsSatisfied();
     }
+
 
     /**
      * Tests execute where one recipient gets filtered.
@@ -289,34 +299,27 @@ public class CreateNotificationsExecutionTest
     @Test
     public void testExecuteWithFilteredRecipient() throws Exception
     {
-        final List<Long> recipients = new ArrayList<Long>();
-        recipients.add(4L);
-        recipients.add(5L);
+        final List<Long> recipients = Arrays.asList(4L, 5L);
         final NotificationDTO notification = new NotificationDTO(recipients, NotificationType.FOLLOW_PERSON, 1L, 2L,
                 EntityType.PERSON, 3L);
-        final Collection<NotificationDTO> notifications = Collections.singletonList(notification);
-
-        final List<NotificationFilterPreferenceDTO> prefs = new ArrayList<NotificationFilterPreferenceDTO>();
-
-        final PersonModelView extraPerson = context.mock(PersonModelView.class, "extraPerson");
 
         context.checking(new Expectations()
         {
             {
                 oneOf(followerTranslator).translate(1, 2, 3);
-                will(returnValue(notifications));
+                will(returnValue(Collections.singletonList(notification)));
 
                 allowing(personMapper).execute(with(equal(4L)));
                 will(returnValue(person));
 
                 allowing(personMapper).execute(with(equal(5L)));
-                will(returnValue(extraPerson));
+                will(returnValue(person2));
 
-                allowing(filterEmail).shouldFilter(extraPerson, notification, "EMAIL");
+                allowing(filterEmail).shouldFilter(person2, notification, "EMAIL");
                 will(returnValue(true));
 
                 oneOf(preferencesMapper).execute(with(any(List.class)));
-                will(returnValue(prefs));
+                will(returnValue(Collections.EMPTY_LIST));
 
                 oneOf(populator).populate(with(same(notification)));
 
@@ -342,12 +345,11 @@ public class CreateNotificationsExecutionTest
         });
 
         CreateNotificationsRequest request = new CreateNotificationsRequest(RequestType.FOLLOWER, 1, 2, 3);
-        AsyncActionContext currentContext = new AsyncActionContext(request);
-        TaskHandlerActionContext<ActionContext> currentTaskHandlerContext = new TaskHandlerActionContext<ActionContext>(
-                currentContext, new ArrayList<UserActionRequest>());
-        sut.execute(currentTaskHandlerContext);
+        sut.execute(TestContextCreator.createTaskHandlerAsyncContext(request));
         context.assertIsSatisfied();
     }
+
+
 
     /**
      * Tests execute with a notifier exception (for coverage).
@@ -359,16 +361,15 @@ public class CreateNotificationsExecutionTest
     @SuppressWarnings("unchecked")
     public void testExecuteNotifierError() throws Exception
     {
-        final List<Long> recipients = Arrays.asList(4L);
+        final List<Long> recipients = Collections.singletonList(4L);
         final NotificationDTO notification = new NotificationDTO(recipients, NotificationType.FOLLOW_PERSON, 1L, 2L,
                 EntityType.PERSON, 3L);
-        final Collection<NotificationDTO> notifications = Collections.singletonList(notification);
 
         context.checking(new Expectations()
         {
             {
                 oneOf(followerTranslator).translate(1, 2, 3);
-                will(returnValue(notifications));
+                will(returnValue(Collections.singletonList(notification)));
 
                 allowing(personMapper).execute(with(equal(4L)));
                 will(returnValue(person));
@@ -386,10 +387,7 @@ public class CreateNotificationsExecutionTest
         });
 
         CreateNotificationsRequest request = new CreateNotificationsRequest(RequestType.FOLLOWER, 1, 2, 3);
-        AsyncActionContext currentContext = new AsyncActionContext(request);
-        TaskHandlerActionContext<ActionContext> currentTaskHandlerContext = new TaskHandlerActionContext<ActionContext>(
-                currentContext, new ArrayList<UserActionRequest>());
-        sut.execute(currentTaskHandlerContext);
+        sut.execute(TestContextCreator.createTaskHandlerAsyncContext(request));
         context.assertIsSatisfied();
     }
 
@@ -400,10 +398,7 @@ public class CreateNotificationsExecutionTest
     public void testExecuteUnlistedRequestType()
     {
         CreateNotificationsRequest request = new CreateNotificationsRequest(RequestType.FLAG_ACTIVITY, 1, 2, 3);
-        AsyncActionContext currentContext = new AsyncActionContext(request);
-        TaskHandlerActionContext<ActionContext> currentTaskHandlerContext = new TaskHandlerActionContext<ActionContext>(
-                currentContext, new ArrayList<UserActionRequest>());
-        assertEquals(Boolean.FALSE, sut.execute(currentTaskHandlerContext));
+        assertEquals(Boolean.FALSE, sut.execute(TestContextCreator.createTaskHandlerAsyncContext(request)));
 
         context.assertIsSatisfied();
     }
