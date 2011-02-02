@@ -676,8 +676,10 @@ Eureka.FeedListView = function(url, canvas, inSectionName, indexToOpen, getFeedL
                         {
                             if(canvas)
                             {
-                var date = new Date(feed.Entry[i].Date);
-                                var currentItem = listView.addItem(feed.Entry[i].Title, '', '', jQuery('<div class="feed-content"><div class="feed-title"><a target="_blank" href="'+feed.Entry[i].Link+'">'+ feed.Entry[i].Title +'</a></div><div class="feed-date">'+ date.toString("MM dd, yyyy") +'</div>' + feed.Entry[i].Summary + '</div><a style="text-align:center;display:block;margin:10px" target="_blank" href="'+feed.Entry[i].Link+'">Click to Rate Article or Add a Comment</a><div class="feed-item-controls"><a href="javascript:Eureka.shareLink(\''+feed.Entry[i].Title+'\',\''+feed.Entry[i].Link+'\');">Share</a></div>'), null, null, null);
+                            	var date = new Date(feed.Entry[i].Date);
+                            	var itemContent = jQuery('<div class="feed-content"><div class="feed-title"><a target="_blank" href="'+feed.Entry[i].Link+'">'+ feed.Entry[i].Title +'</a></div><div class="feed-date">'+ date.toString("MM dd, yyyy") +'</div>' + feed.Entry[i].Summary + '</div><a style="text-align:center;display:block;margin:10px" target="_blank" href="'+feed.Entry[i].Link+'">Click to Rate Article or Add a Comment</a><div class="feed-item-controls"><a href="javascript:Eureka.shareLink(\''+feed.Entry[i].Title+'\',\''+feed.Entry[i].Link+'\');">Share</a></div>');
+                            	itemContent.find('a').attr("target", "_blank");
+                                var currentItem = listView.addItem(feed.Entry[i].Title, '', '', itemContent, null, null, null);
                                 if(indexToOpen == i)
                                 {
                                     currentItem.click();
