@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,8 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.FeedFactory;
 
+import com.sun.syndication.feed.module.base.ValidationException;
+import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 
 /**
@@ -39,12 +41,12 @@ public class GetTitleFromFeedExecution implements ExecutionStrategy<PrincipalAct
     /**
      * Feed fetcher factory, really only needed for testing.
      */
-    private FeedFactory feedFetcherFactory;
+    private final FeedFactory feedFetcherFactory;
 
     /**
      * Logger.
      */
-    private Log logger = LogFactory.make();
+    private final Log logger = LogFactory.make();
 
     /**
      * Default constructor.
@@ -75,17 +77,29 @@ public class GetTitleFromFeedExecution implements ExecutionStrategy<PrincipalAct
         }
 
         // fetch the feeds; use the first result since there should be exactly one
+        SyndFeed syndFeed;
         try
         {
             Map<String, SyndFeed> synFeeds =
                     feedFetcherFactory.getSyndicatedFeed(feedUrlText, Collections.singletonList(inActionContext
                             .getPrincipal().getAccountId()));
-            SyndFeed synFeed = synFeeds.values().iterator().next();
-            return synFeed.getTitle();
+            syndFeed = synFeeds.values().iterator().next();
         }
         catch (Exception e)
         {
             throw new ExecutionException(e);
         }
+
+        // validate the feed
+        for (Object entryObject : syndFeed.getEntries())
+        {
+            SyndEntry entry = (SyndEntry) entryObject;
+            if (entry.getUri() == null || entry.getUri().trim().isEmpty())
+            {
+                throw new ValidationException("Invalid feed.  Every feed entry must contain a URI.");
+            }
+        }
+
+        return syndFeed.getTitle();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.eurekastreams.server.action.execution.feed;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,6 +32,8 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.sun.syndication.feed.module.base.ValidationException;
+import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 
 /**
@@ -58,12 +61,12 @@ public class GetTitleFromFeedExecutionTest
     /**
      * Feed factory mock.
      */
-    private FeedFactory feedFetcherFactory = context.mock(FeedFactory.class);
+    private final FeedFactory feedFetcherFactory = context.mock(FeedFactory.class);
 
     /**
      * Atom feed mock.
      */
-    private SyndFeed atomFeed = context.mock(SyndFeed.class);
+    private final SyndFeed atomFeed = context.mock(SyndFeed.class);
     /**
      * System under test.
      */
@@ -72,11 +75,16 @@ public class GetTitleFromFeedExecutionTest
     /**
      * Action Context for test.
      */
-    private PrincipalActionContext ac = context.mock(PrincipalActionContext.class);
+    private final PrincipalActionContext ac = context.mock(PrincipalActionContext.class);
 
     /** Fixture: principal. */
-    private Principal principal = context.mock(Principal.class);
+    private final Principal principal = context.mock(Principal.class);
 
+    /** Fixture: feed entry. */
+    private final SyndEntry entry1 = context.mock(SyndEntry.class, "entry1");
+
+    /** Fixture: feed entry. */
+    private final SyndEntry entry2 = context.mock(SyndEntry.class, "entry2");
 
     /**
      * Set up the SUT.
@@ -117,6 +125,9 @@ public class GetTitleFromFeedExecutionTest
 
                 allowing(atomFeed).getTitle();
                 will(returnValue("title"));
+
+                allowing(atomFeed).getEntries();
+                will(returnValue(Collections.EMPTY_LIST));
             }
         });
 
@@ -148,5 +159,95 @@ public class GetTitleFromFeedExecutionTest
         sut.execute(ac);
 
         context.assertIsSatisfied();
+    }
+
+    /**
+     * Perform the action successfully.
+     *
+     * @throws Exception
+     *             the exception.
+     */
+    private void coreTestExecuteValidate() throws Exception
+    {
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(feedFetcherFactory).getSyndicatedFeed(with(equal(FEED_URL)),
+                        (List<String>) with(org.hamcrest.Matchers.hasItem(USER)));
+                will(returnValue(Collections.singletonMap(USER, atomFeed)));
+
+                allowing(atomFeed).getTitle();
+                will(returnValue("title"));
+
+                allowing(atomFeed).getEntries();
+                will(returnValue(Arrays.asList(entry1, entry2)));
+            }
+        });
+
+        String title = (String) sut.execute(ac);
+
+        context.assertIsSatisfied();
+
+        assertEquals("title", title);
+    }
+
+    /**
+     * Perform the action successfully.
+     *
+     * @throws Exception
+     *             the exception.
+     */
+    @Test
+    public void testExecuteValidateSuccess() throws Exception
+    {
+        context.checking(new Expectations()
+        {
+            {
+                atLeast(1).of(entry1).getUri();
+                will(returnValue("not empty"));
+
+                atLeast(1).of(entry2).getUri();
+                will(returnValue("also not empty"));
+            }
+        });
+        coreTestExecuteValidate();
+    }
+
+    /**
+     * Perform the action successfully.
+     *
+     * @throws Exception
+     *             the exception.
+     */
+    @Test(expected = ValidationException.class)
+    public void testExecuteValidateErrorNull() throws Exception
+    {
+        context.checking(new Expectations()
+        {
+            {
+                allowing(entry1).getUri();
+                will(returnValue(null));
+            }
+        });
+        coreTestExecuteValidate();
+    }
+
+    /**
+     * Perform the action successfully.
+     *
+     * @throws Exception
+     *             the exception.
+     */
+    @Test(expected = ValidationException.class)
+    public void testExecuteValidateErrorBlank() throws Exception
+    {
+        context.checking(new Expectations()
+        {
+            {
+                allowing(entry1).getUri();
+                will(returnValue("  "));
+            }
+        });
+        coreTestExecuteValidate();
     }
 }
