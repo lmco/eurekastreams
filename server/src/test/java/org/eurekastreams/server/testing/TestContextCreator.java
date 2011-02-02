@@ -87,7 +87,43 @@ public final class TestContextCreator
     public static TaskHandlerActionContext<PrincipalActionContext> createTaskHandlerContextWithPrincipal(
             final Serializable params, final Principal principal)
     {
-        return new TaskHandlerActionContext<PrincipalActionContext>(new PrincipalActionContext()
+        return new TaskHandlerActionContext<PrincipalActionContext>(createPrincipalActionContext(params, principal),
+                new ArrayList<UserActionRequest>());
+    }
+
+    /**
+     * Creates a PrincipalActionContext - used for actions invoked directly by user action which do not queue
+     * activities.
+     *
+     * @param params
+     *            Action parameters.
+     * @param userAccountId
+     *            User's account ID.
+     * @param userId
+     *            User's person ID.
+     * @return Context.
+     */
+    public static PrincipalActionContext createPrincipalActionContext(final Serializable params,
+            final String userAccountId, final long userId)
+    {
+        final Principal principal = createPrincipal(userAccountId, userId);
+        return createPrincipalActionContext(params, principal);
+    }
+
+    /**
+     * Creates a PrincipalActionContext - used for actions invoked directly by user action which do not queue
+     * activities.
+     *
+     * @param params
+     *            Action parameters.
+     * @param principal
+     *            Principal for user requesting action.
+     * @return Context.
+     */
+    public static PrincipalActionContext createPrincipalActionContext(final Serializable params,
+            final Principal principal)
+    {
+        return new PrincipalActionContext()
         {
             /** Fingerprint. */
             private static final long serialVersionUID = 8084060031869042700L;
@@ -120,7 +156,7 @@ public final class TestContextCreator
             {
                 return principal;
             }
-        }, new ArrayList<UserActionRequest>());
+        };
     }
 
     /**

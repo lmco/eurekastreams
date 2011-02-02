@@ -25,6 +25,7 @@ import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.FeedFactory;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -162,8 +163,22 @@ public class GetTitleFromFeedExecutionTest
     }
 
     /**
+     * Perform the action with an error in the feed.
+     * 
+     * @throws Exception
+     *             the exception.
+     */
+    @Test(expected = ExecutionException.class)
+    public void testExecuteInvalidURL() throws Exception
+    {
+        sut.execute(TestContextCreator.createPrincipalActionContext("nosuchprotocol://blah.blah", principal));
+
+        context.assertIsSatisfied();
+    }
+
+    /**
      * Perform the action successfully.
-     *
+     * 
      * @throws Exception
      *             the exception.
      */
