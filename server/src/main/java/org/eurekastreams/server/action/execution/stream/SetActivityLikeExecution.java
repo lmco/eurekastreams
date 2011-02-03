@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.eurekastreams.server.action.execution.stream;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
@@ -42,38 +41,38 @@ import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Action to add or remove like on activity for current user.
- * 
+ *
  */
 public class SetActivityLikeExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
     /**
      * Mapper for adding like.
      */
-    private InsertLikedActivity insertLikedActivity;
+    private final InsertLikedActivity insertLikedActivity;
 
     /**
      * Mapper for removing like.
      */
-    private DeleteLikedActivity deleteLikedActivity;
+    private final DeleteLikedActivity deleteLikedActivity;
 
     /**
      * Activity mapper.
      */
-    private DomainMapper<List<Long>, List<ActivityDTO>> activityMapper;
+    private final DomainMapper<List<Long>, List<ActivityDTO>> activityMapper;
 
     /**
      * The entity indexer.
      */
-    private IndexEntity<Activity> indexEntity;
+    private final IndexEntity<Activity> indexEntity;
 
     /**
      * Find Activity by ID mapper.
      */
-    private FindByIdMapper<Activity> activityEntityMapper;
+    private final FindByIdMapper<Activity> activityEntityMapper;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inInsertLikedActivity
      *            Mapper for liking an activity.
      * @param inDeleteLikedActivity
@@ -105,25 +104,17 @@ public class SetActivityLikeExecution implements TaskHandlerExecutionStrategy<Pr
             throws ExecutionException
     {
         SetActivityLikeRequest request = (SetActivityLikeRequest) inActionContext.getActionContext().getParams();
-        LikedActivity likeActivityData = new LikedActivity(inActionContext.getActionContext().getPrincipal().getId(),
-                request.getActivityId());
+        final Long userId = inActionContext.getActionContext().getPrincipal().getId();
+        LikedActivity likeActivityData = new LikedActivity(userId, request.getActivityId());
 
         ActivityDTO activity = activityMapper.execute(Collections.singletonList(request.getActivityId())).get(0);
 
         if (request.getLikeActionType() == LikeActionType.ADD_LIKE)
         {
-            CreateNotificationsRequest notificationRequest = new CreateNotificationsRequest(RequestType.LIKE,
-                    inActionContext.getActionContext().getPrincipal().getId(), activity.getActor().getId(), request
-                            .getActivityId());
-
-            List<UserActionRequest> queuedRequests = null;
-            // create list if it has not already been done.
-            queuedRequests = queuedRequests == null ? new ArrayList<UserActionRequest>() : queuedRequests;
-
-            // add UserRequest.
-            queuedRequests.add(new UserActionRequest("createNotificationsAction", null, notificationRequest));
-
-            inActionContext.getUserActionRequests().addAll(queuedRequests);
+            CreateNotificationsRequest notificationRequest = new CreateNotificationsRequest(RequestType.LIKE, userId,
+                    0L, request.getActivityId());
+            inActionContext.getUserActionRequests().add(
+                    new UserActionRequest(CreateNotificationsRequest.ACTION_NAME, null, notificationRequest));
 
             insertLikedActivity.execute(likeActivityData);
 

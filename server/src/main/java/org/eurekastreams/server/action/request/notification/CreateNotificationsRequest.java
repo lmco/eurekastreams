@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +22,14 @@ import java.io.Serializable;
  */
 public class CreateNotificationsRequest implements Serializable
 {
+    /** Action used to process this request. */
+    public static final String ACTION_NAME = "createNotificationsAction";
+
     /**
      * Serial version uid.
      */
     private static final long serialVersionUID = -5690584323772486383L;
+
 
     /**
      * Types of events for which a notification may be requested.
@@ -39,7 +43,8 @@ public class CreateNotificationsRequest implements Serializable
         COMMENT,
 
         /**
-         * Someone liked an activity.
+         * Someone liked an activity. Actor=person id of who liked the activity, Destination=not used, Activity=id of
+         * the new post. (Data that should be in this request: Author id, destination stream id & type)
          */
         LIKE,
 
