@@ -225,6 +225,13 @@ public class StreamPanel extends FlowPanel
 
                 // Must be sorted by date to request more.
                 jsonObj = StreamJsonRequestFactory.setSort("date", jsonObj);
+                
+                if (search.length() > 0)
+                {
+                    streamSearch.setSearchTerm(search);
+
+                    jsonObj = StreamJsonRequestFactory.setSearchTerm(search, jsonObj);
+                }
 
                 StreamModel.getInstance().fetch(jsonObj.toString(), false);
             }
