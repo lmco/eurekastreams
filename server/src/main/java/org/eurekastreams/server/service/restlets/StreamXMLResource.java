@@ -30,6 +30,7 @@ import org.eurekastreams.commons.actions.context.PrincipalPopulator;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.server.service.ActionController;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.Stream;
@@ -198,10 +199,13 @@ public class StreamXMLResource extends SmpResource
             {
                 Stream stream = streamMapper.execute(new FindByIdRequest("Stream", streamId));
 
-                feed.setTitle("Eureka Streams: " + stream.getName());
+                String feedTitle = ("Eureka Streams: " + stream.getName()).replace("EUREKA:PARENT_ORG_TAG",
+                        "Parent Organization");
+
+                feed.setTitle(feedTitle);
                 feed.setLink(baseUrl);
 
-                feed.setDescription(stream.getName());
+                feed.setDescription(feedTitle);
 
                 if (stream == null)
                 {
@@ -212,6 +216,13 @@ public class StreamXMLResource extends SmpResource
             else
             {
                 throw new Exception("Unknown request mode.");
+            }
+
+            // add default date sort if sort not specified.
+            JSONObject query = queryJson.getJSONObject("query");
+            if (!query.has("sortBy"))
+            {
+                query.put("sortBy", "date");
             }
 
             log.debug("Making request using: " + queryJson);
@@ -267,11 +278,16 @@ public class StreamXMLResource extends SmpResource
 
                 if (title != null)
                 {
+                    title = title.replace("%EUREKA:ACTORNAME%", activity.getActor().getDisplayName());
                     entry = new SyndEntryImpl();
                     entry.setTitle(title);
                     entry.setAuthor(activity.getActor().getDisplayName());
-                    entry.setLink(baseUrl + "/#activity?activityId=" + activity.getId());
-                    entry.setUri(baseUrl + "/#activity?activityId=" + activity.getId());
+                    String linkPrefix = activity.getDestinationStream().getType() == EntityType.PERSON ? "/#people/"
+                            : "/#groups/";
+                    String link = baseUrl + linkPrefix + activity.getDestinationStream().getUniqueIdentifier()
+                            + "?activityId=" + activity.getId();
+                    entry.setLink(link);
+                    entry.setUri(link);
                     entry.setPublishedDate(activity.getPostedTime());
                     description = new SyndContentImpl();
                     description.setType("text/plain");
