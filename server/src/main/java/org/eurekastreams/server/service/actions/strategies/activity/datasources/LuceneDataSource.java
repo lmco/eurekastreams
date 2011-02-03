@@ -57,6 +57,11 @@ public class LuceneDataSource implements SortedDataSource
      * Transformers.
      */
     private Map<String, PersistenceDataSourceRequestTransformer> transformers;
+    
+    /**
+     * Max allowed results.
+     */
+    private int maxResults = 0;
 
     /**
      * Constructor.
@@ -69,15 +74,18 @@ public class LuceneDataSource implements SortedDataSource
      *            maps requests to Lucene fields.
      * @param inTransformers
      *            the transformers (more than meets the eye).
+     * @param inMaxResults
+     *            max results.
      */
     public LuceneDataSource(final ProjectionSearchRequestBuilder inSearchRequestBuilder,
             final ProjectionSearchRequestBuilder inUnstemmedRequestBuilder, final Map<String, String> inRequestToField,
-            final Map<String, PersistenceDataSourceRequestTransformer> inTransformers)
+            final Map<String, PersistenceDataSourceRequestTransformer> inTransformers, final int inMaxResults)
     {
         searchRequestBuilder = inSearchRequestBuilder;
         unstemmedRequestBuilder = inUnstemmedRequestBuilder;
         requestToField = inRequestToField;
         transformers = inTransformers;
+        maxResults = inMaxResults;
     }
 
     /**
@@ -159,7 +167,7 @@ public class LuceneDataSource implements SortedDataSource
             log.debug("Native Lucene Query: " + query.toString());
         }
 
-        searchRequestBuilder.setPaging(query, 0, inRequest.getInt("count"));
+        searchRequestBuilder.setPaging(query, 0, maxResults);
 
         List<Long> activityIds = query.getResultList();
         if (log.isInfoEnabled())

@@ -63,7 +63,7 @@ import com.sun.syndication.feed.synd.SyndFeed;
  * Goes out to the interwebs, grabs a feed, parses it, stores it in DB and queues it up to be stored in cache. The
  * reason for the queueing is so I don't update the same exact list 100s of times instead of once. This cuts down by
  * multiple orders of magnitude
- *
+ * 
  */
 public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 {
@@ -147,8 +147,13 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
     private UpdateMapper<Feed> updateFeedMapper = null;
 
     /**
+     * Out of order feed list.
+     */
+    private List<String> outOfOrderFeeds;
+
+    /**
      * Default constructor.
-     *
+     * 
      * @param inStandardFeedMappers
      *            Standard feed mappers.
      * @param inSpecificUrlMappers
@@ -169,13 +174,16 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
      *            fetcher.
      * @param inUpdateFeedMapper
      *            updateMapper.
+     * @param inOutOfOrderFeeds
+     *            known out of order feeds.
      */
     public RefreshFeedExecution(final HashMap<BaseObjectType, FeedObjectActivityBuilder> inStandardFeedMappers,
             final List<ObjectBuilderForSpecificUrl> inSpecificUrlMappers,
             final InsertMapper<Activity> inActivityDBInserter, final Cache inCache,
             final FeedFactory inFeedFetcherFactory, final FindByIdMapper<Person> inPersonFinder,
             final FindByIdMapper<DomainGroup> inGroupFinder, final FindByIdMapper<Feed> inFeedFinder,
-            final GadgetMetaDataFetcher inMetaDataFetcher, final UpdateMapper<Feed> inUpdateFeedMapper)
+            final GadgetMetaDataFetcher inMetaDataFetcher, final UpdateMapper<Feed> inUpdateFeedMapper,
+            final List<String> inOutOfOrderFeeds)
     {
         standardFeedMappers = inStandardFeedMappers;
         specificUrlMappers = inSpecificUrlMappers;
@@ -187,11 +195,12 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
         feedFinder = inFeedFinder;
         metaDataFetcher = inMetaDataFetcher;
         updateFeedMapper = inUpdateFeedMapper;
+        outOfOrderFeeds = inOutOfOrderFeeds;
     }
 
     /**
      * {@inheritDoc}.
-     *
+     * 
      * Grab all the feeds, set them as pending, and fire off an async job. to refresh each one.
      */
     public Serializable execute(final ActionContext inActionContext) throws ExecutionException
@@ -202,6 +211,18 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
         Feed feed = feedFinder.execute(new FindByIdRequest("Feed", request.getFeedId()));
         Date lastPostDate = feed.getLastPostDate();
         Long updateFrequency = null;
+        Boolean isOutOfOrder = false;
+
+        log.info("Processor feed: " + feed.getUrl());
+        for (String oooFeed : outOfOrderFeeds)
+        {
+            if (feed.getUrl().contains(oooFeed))
+            {
+                log.info("Feed marked out of order: " + feed.getUrl());
+                isOutOfOrder = true;
+                break;
+            }
+        }
 
         try
         {
@@ -243,8 +264,6 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
                     }
                 }
 
-                Boolean foundGUIDMatch = false;
-
                 if (syndFeed.getEntries().size() > 0)
                 {
                     SyndEntryImpl entry = (SyndEntryImpl) syndFeed.getEntries().get(0);
@@ -267,43 +286,55 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
                         // We were able to parse at least one good entry to completion, so the feed isn't broken.
                         brokenFeed = false;
 
-                        if (!foundGUIDMatch && !feed.getLastSeenGUID().equals(entry.getUri()))
+                        if (isOutOfOrder && feed.getLastSeenGUID().equals(entry.getUri()))
                         {
-                            // create activities per subscriber
-                            for (FeedSubscriber feedSubscriber : subscribers)
-                            {
-                                Activity activityForIndividual = (Activity) activity.clone();
-
-                                if (feedSubscriber.getEntityType().equals(EntityType.PERSON))
-                                {
-                                    Person person =
-                                            personFinder.execute(new FindByIdRequest("Person", feedSubscriber
-                                                    .getEntityId()));
-                                    activityForIndividual.setActorId(person.getAccountId());
-                                    activityForIndividual.setRecipientParentOrg(person.getParentOrganization());
-                                    activityForIndividual.setRecipientStreamScope(person.getStreamScope());
-                                    activityForIndividual.setIsDestinationStreamPublic(true);
-                                }
-                                else if (feedSubscriber.getEntityType().equals(EntityType.GROUP))
-                                {
-                                    DomainGroup group =
-                                            groupFinder.execute(new FindByIdRequest("DomainGroup", feedSubscriber
-                                                    .getEntityId()));
-
-                                    activityForIndividual.setActorId(group.getShortName());
-                                    activityForIndividual.setRecipientParentOrg(group.getParentOrganization());
-                                    activityForIndividual.setRecipientStreamScope(group.getStreamScope());
-                                    activityForIndividual.setIsDestinationStreamPublic(group.isPublicGroup());
-                                }
-                                activityForIndividual.setActorType(feedSubscriber.getEntityType());
-                                insertedActivities.add(activityForIndividual);
-                            }
-
+                            log.info("Match found based on GUID: " + lastSeenGUID);
+                            break;
                         }
                         else
                         {
-                            foundGUIDMatch = true;
+                            log.info("No match found based on GUID: " + entry.getUri());
                         }
+
+                        if (!isOutOfOrder && !entry.getPublishedDate().after(feed.getLastPostDate()))
+                        {
+                            log.info("Match found based on Date: " + feed.getLastPostDate());
+                            break;
+                        }
+                        else
+                        {
+                            log.info("No match found based on Date: " + entry.getPublishedDate() + " Last Post Date: "
+                                    + feed.getLastPostDate());
+                        }
+
+                        // create activities per subscriber
+                        for (FeedSubscriber feedSubscriber : subscribers)
+                        {
+                            Activity activityForIndividual = (Activity) activity.clone();
+
+                            if (feedSubscriber.getEntityType().equals(EntityType.PERSON))
+                            {
+                                Person person = personFinder.execute(new FindByIdRequest("Person", feedSubscriber
+                                        .getEntityId()));
+                                activityForIndividual.setActorId(person.getAccountId());
+                                activityForIndividual.setRecipientParentOrg(person.getParentOrganization());
+                                activityForIndividual.setRecipientStreamScope(person.getStreamScope());
+                                activityForIndividual.setIsDestinationStreamPublic(true);
+                            }
+                            else if (feedSubscriber.getEntityType().equals(EntityType.GROUP))
+                            {
+                                DomainGroup group = groupFinder.execute(new FindByIdRequest("DomainGroup",
+                                        feedSubscriber.getEntityId()));
+
+                                activityForIndividual.setActorId(group.getShortName());
+                                activityForIndividual.setRecipientParentOrg(group.getParentOrganization());
+                                activityForIndividual.setRecipientStreamScope(group.getStreamScope());
+                                activityForIndividual.setIsDestinationStreamPublic(group.isPublicGroup());
+                            }
+                            activityForIndividual.setActorType(feedSubscriber.getEntityType());
+                            insertedActivities.add(activityForIndividual);
+                        }
+
                     }
                     catch (Exception ex)
                     {
@@ -355,7 +386,7 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 
     /**
      * Get the Activity object from an ATOM entry.
-     *
+     * 
      * @param feed
      *            the feed.
      * @param inEntry
@@ -375,7 +406,7 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
         activity.setAppId(feed.getPlugin().getId());
         activity.setAppSource(feed.getUrl());
         final Map<String, GeneralGadgetDefinition> gadgetDefs = //
-                new HashMap<String, GeneralGadgetDefinition>();
+        new HashMap<String, GeneralGadgetDefinition>();
         gadgetDefs.put(feed.getPlugin().getUrl(), feed.getPlugin());
         try
         {
@@ -418,7 +449,7 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 
     /**
      * Returns the subscribers applicable to receive feed results returned for a given requestor.
-     *
+     * 
      * @param requestorId
      *            The requestor.
      * @param feed
@@ -445,7 +476,7 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
 
     /**
      * Get the update frequeuncy in minutes given the period and frequency.
-     *
+     * 
      * @param updatePeriod
      *            Period, hourly, daily, weekly, etc.
      * @param updateFrequency

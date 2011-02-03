@@ -155,4 +155,29 @@
 		</property>
 	</bean>
 	
+	<!--
+		Inject the ActivityLikesClassBridge with the interestingness strategy
+	-->
+	<bean id="likesStrategy" class="org.eurekastreams.server.search.bridge.strategies.WeightedInterestingnessStrategy">
+		<constructor-arg ref="getOrderedCommentIdsByActivityIdMapper" />
+		<constructor-arg ref="getCommentorIdsByActivityId" />
+		<constructor-arg ref="getPeopleWhoLikedActivity" />
+		<constructor-arg value="0" />
+		<constructor-arg value="0" />
+		<constructor-arg value="1" />
+		<constructor-arg value="0" />
+	</bean>
+	
+	<bean
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass"
+			value="org.eurekastreams.server.search.bridge.ActivityLikesClassBridge" />
+		<property name="targetMethod" value="setInterstingnessStrategy" />
+		<property name="arguments">
+			<list>
+				<ref bean="likesStrategy" />
+			</list>
+		</property>
+	</bean>
+	
 </beans>

@@ -1506,6 +1506,11 @@
                 <constructor-arg>
                     <bean class="org.eurekastreams.server.persistence.mappers.UpdateMapper" />
                 </constructor-arg>
+                <constructor-arg>
+                	<list>
+                		<value>www.google.com/reader/public/atom/</value>
+                	</list>
+                </constructor-arg>                
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />

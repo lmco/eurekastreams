@@ -44,6 +44,7 @@ import org.eurekastreams.server.search.bridge.ActivityAuthorClassBridge;
 import org.eurekastreams.server.search.bridge.ActivityContentClassBridge;
 import org.eurekastreams.server.search.bridge.ActivityInterestingClassBridge;
 import org.eurekastreams.server.search.bridge.ActivityLastCommentIdClassBridge;
+import org.eurekastreams.server.search.bridge.ActivityLikesClassBridge;
 import org.eurekastreams.server.search.bridge.ActivityRecipientClassBridge;
 import org.eurekastreams.server.search.bridge.ActivitySourceClassBridge;
 import org.eurekastreams.server.search.bridge.IsActivityPublicClassBridge;
@@ -78,6 +79,9 @@ import org.hibernate.search.annotations.Store;
         @ClassBridge(index = Index.UN_TOKENIZED,
         // new line
         name = "interesting", store = Store.YES, impl = ActivityInterestingClassBridge.class),
+        @ClassBridge(index = Index.UN_TOKENIZED,
+        // new line
+        name = "likes", store = Store.YES, impl = ActivityLikesClassBridge.class),
         @ClassBridge(index = Index.UN_TOKENIZED,
         // new line
         name = "commentdate", store = Store.NO, impl = ActivityLastCommentIdClassBridge.class),

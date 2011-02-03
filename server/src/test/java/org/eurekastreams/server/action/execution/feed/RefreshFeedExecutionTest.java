@@ -61,7 +61,7 @@ import com.sun.syndication.feed.synd.SyndFeed;
 
 /**
  * Test for the RefreshFeedAction.
- *
+ * 
  */
 public class RefreshFeedExecutionTest
 {
@@ -106,8 +106,9 @@ public class RefreshFeedExecutionTest
     /**
      * Standard feed mappers.
      */
-    private final HashMap<BaseObjectType, FeedObjectActivityBuilder> standardFeedMappers =
-            new HashMap<BaseObjectType, FeedObjectActivityBuilder>();
+    private final HashMap<BaseObjectType, FeedObjectActivityBuilder> standardFeedMappers
+    // break
+    = new HashMap<BaseObjectType, FeedObjectActivityBuilder>();
 
     /**
      * Mappers for specific websites.
@@ -145,8 +146,8 @@ public class RefreshFeedExecutionTest
     /**
      * Youtube mapper mock.
      */
-    private final ObjectBuilderForSpecificUrl youTubeMapper =
-            context.mock(ObjectBuilderForSpecificUrl.class, "youtube");
+    private final ObjectBuilderForSpecificUrl youTubeMapper = context
+            .mock(ObjectBuilderForSpecificUrl.class, "youtube");
     /**
      * Notemapper mock.
      */
@@ -190,7 +191,10 @@ public class RefreshFeedExecutionTest
      */
     private final GadgetMetaDataFetcher fetcher = context.mock(GadgetMetaDataFetcher.class);
 
-
+    /**
+     * Unordered feeds.
+     */
+    private List<String> unorderedFeeds = new ArrayList<String>();
 
     /** Fixture: feed. */
     private final Feed feed = context.mock(Feed.class);
@@ -204,10 +208,9 @@ public class RefreshFeedExecutionTest
     /** Fixture: atom feed. */
     private final SyndFeed atomFeed2 = context.mock(SyndFeed.class, "atomFeed2");
 
-
     /**
      * Prep the system under test for the test suite.
-     *
+     * 
      * @throws Exception
      *             exception.
      */
@@ -236,7 +239,7 @@ public class RefreshFeedExecutionTest
         standardFeedMappers.put(BaseObjectType.BOOKMARK, bookmarkMapper);
 
         sut = new RefreshFeedExecution(standardFeedMappers, specificUrlMappers, activityDBInserter, cache,
-                feedFetcherFactory, personMapper, groupMapper, feedMapper, fetcher, updateMapper);
+                feedFetcherFactory, personMapper, groupMapper, feedMapper, fetcher, updateMapper, unorderedFeeds);
         context.checking(new Expectations()
         {
             {
@@ -285,10 +288,8 @@ public class RefreshFeedExecutionTest
                 allowing(fetcher).getGadgetsMetaData(with(any(Map.class)));
                 will(returnValue(metaDataList));
 
-
                 allowing(activityDBInserter).execute(with(any(PersistenceRequest.class)));
                 allowing(cache).addToTopOfList(with(any(String.class)), with(any(ArrayList.class)));
-
 
                 allowing(personMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(personOwner));
@@ -298,8 +299,6 @@ public class RefreshFeedExecutionTest
 
                 allowing(feedMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(feed));
-
-
 
                 // ---- updates always made ----
                 oneOf(feed).setLastPostDate(with(any(Date.class)));
@@ -314,7 +313,7 @@ public class RefreshFeedExecutionTest
 
     /**
      * Setup expectations for fetching anonymously.
-     *
+     * 
      * @throws Exception
      *             Shouldn't.
      */
@@ -331,7 +330,7 @@ public class RefreshFeedExecutionTest
 
     /**
      * Setup expectations for fetching on a per-user basis.
-     *
+     * 
      * @throws Exception
      *             Shouldn't.
      */
@@ -371,7 +370,7 @@ public class RefreshFeedExecutionTest
 
     /**
      * Core behavior for update frequency tests.
-     *
+     * 
      * @param period
      *            Time unit of update period.
      * @param frequency
@@ -421,7 +420,7 @@ public class RefreshFeedExecutionTest
 
     /**
      * Tests SyMod-specified update frequency.
-     *
+     * 
      * @throws Exception
      *             Shouldn't.
      */
@@ -433,7 +432,7 @@ public class RefreshFeedExecutionTest
 
     /**
      * Tests SyMod-specified update frequency.
-     *
+     * 
      * @throws Exception
      *             Shouldn't.
      */
@@ -445,7 +444,7 @@ public class RefreshFeedExecutionTest
 
     /**
      * Tests SyMod-specified update frequency.
-     *
+     * 
      * @throws Exception
      *             Shouldn't.
      */
@@ -457,7 +456,7 @@ public class RefreshFeedExecutionTest
 
     /**
      * Tests SyMod-specified update frequency.
-     *
+     * 
      * @throws Exception
      *             Shouldn't.
      */
@@ -469,7 +468,7 @@ public class RefreshFeedExecutionTest
 
     /**
      * Tests SyMod-specified update frequency.
-     *
+     * 
      * @throws Exception
      *             Shouldn't.
      */
@@ -481,7 +480,7 @@ public class RefreshFeedExecutionTest
 
     /**
      * Tests SyMod-specified update frequency.
-     *
+     * 
      * @throws Exception
      *             Shouldn't.
      */
@@ -491,10 +490,9 @@ public class RefreshFeedExecutionTest
         coreUpdateFrequencyTest(SyModule.YEARLY, 1, MININYEAR);
     }
 
-
     /**
      * Test with no mapper and a specific URL mapper for the feed and 1 entry.
-     *
+     * 
      * @throws Exception
      *             exception feed throws.
      */
@@ -550,7 +548,7 @@ public class RefreshFeedExecutionTest
 
     /**
      * Test with 1 old entry, 1 activitystreams entry, 1 unsupported activitystreams object, and 1 standard note object.
-     *
+     * 
      * @throws Exception
      *             exception feed throws.
      */
@@ -588,41 +586,36 @@ public class RefreshFeedExecutionTest
                 allowing(groupOwner).getShortName();
                 will(returnValue(false));
 
-
                 oneOf(flickrMapper).match(FEED_URL);
                 will(returnValue(false));
 
                 // ENTRY 1
                 allowing(entry1).getPublishedDate();
-                will(returnValue(new Date(1)));
+                will(returnValue(new Date()));
                 allowing(entry1).getUpdatedDate();
 
                 allowing(entry1).getUri();
                 will(returnValue(""));
 
-
                 oneOf(entry1).getModule(ActivityStreamsModule.URI);
                 will(returnValue(null));
 
-
                 // ENTRY 2
                 allowing(entry2).getPublishedDate();
-                will(returnValue(new Date(3)));
+                will(returnValue(new Date()));
 
                 allowing(entry2).getUpdatedDate();
                 will(throwException(new Exception()));
-
 
                 allowing(entry2).getUri();
                 will(returnValue("uri"));
 
                 // ENTRY 3
                 allowing(entry3).getPublishedDate();
-                will(returnValue(new Date(4)));
+                will(returnValue(new Date()));
 
                 allowing(entry3).getUpdatedDate();
-                will(returnValue(new Date(4)));
-
+                will(returnValue(new Date()));
 
                 allowing(entry3).getUri();
                 will(returnValue("uri"));
@@ -640,11 +633,10 @@ public class RefreshFeedExecutionTest
 
                 // ENTRY 4
                 allowing(entry4).getPublishedDate();
-                will(returnValue(new Date(5)));
+                will(returnValue(new Date()));
 
                 allowing(entry4).getUpdatedDate();
-                will(returnValue(new Date(5)));
-
+                will(returnValue(new Date()));
 
                 allowing(entry4).getUri();
                 will(returnValue("uri"));
@@ -654,7 +646,6 @@ public class RefreshFeedExecutionTest
 
                 allowing(atomFeed1).getEntries();
                 will(returnValue(entryList));
-
 
                 oneOf(bookmarkMapper).build(with(equal(feed)), with(equal(entry4)), with(any(Activity.class)));
                 oneOf(bookmarkMapper).build(with(equal(feed)), with(equal(entry1)), with(any(Activity.class)));

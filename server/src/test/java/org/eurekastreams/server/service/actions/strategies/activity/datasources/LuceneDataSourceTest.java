@@ -66,6 +66,11 @@ public class LuceneDataSourceTest
             "unstemmed builder");
 
     /**
+     * Max results.
+     */
+    private static final int MAX_RESULTS = 10;
+
+    /**
      * Setup test fixtures.
      */
     @Before
@@ -74,10 +79,11 @@ public class LuceneDataSourceTest
         final Map<String, String> searchMap = new HashMap<String, String>();
         searchMap.put("keywords", "content");
 
-        final Map<String, PersistenceDataSourceRequestTransformer> transformerMap = 
-            new HashMap<String, PersistenceDataSourceRequestTransformer>();
+        final Map<String, PersistenceDataSourceRequestTransformer> transformerMap
+        // new line
+        = new HashMap<String, PersistenceDataSourceRequestTransformer>();
 
-        sut = new LuceneDataSource(builder, unstemmedBuilder, searchMap, transformerMap);
+        sut = new LuceneDataSource(builder, unstemmedBuilder, searchMap, transformerMap, MAX_RESULTS);
     }
 
     /**
@@ -89,9 +95,7 @@ public class LuceneDataSourceTest
 
         final JSONObject request = new JSONObject();
         final JSONObject query = new JSONObject();
-        final int pageSize = 388;
 
-        request.put("count", pageSize);
         query.put("keywords", "hithere:(foo)");
         request.put("query", query);
 
@@ -107,7 +111,7 @@ public class LuceneDataSourceTest
                 oneOf(ftq).getResultList();
                 will(returnValue(results));
 
-                oneOf(builder).setPaging(ftq, 0, pageSize);
+                oneOf(builder).setPaging(ftq, 0, MAX_RESULTS);
             }
         });
 
@@ -123,9 +127,7 @@ public class LuceneDataSourceTest
     {
         final JSONObject request = new JSONObject();
         final JSONObject query = new JSONObject();
-        final int pageSize = 388;
 
-        request.put("count", pageSize);
         query.put("keywords", "hithere:(foo)");
         query.put("sortBy", "date");
         request.put("query", query);
@@ -145,7 +147,7 @@ public class LuceneDataSourceTest
                 // unfortunately it's difficult to check for the correct type of sort
                 oneOf(ftq).setSort(with(any(Sort.class)));
 
-                oneOf(builder).setPaging(ftq, 0, pageSize);
+                oneOf(builder).setPaging(ftq, 0, MAX_RESULTS);
             }
         });
 

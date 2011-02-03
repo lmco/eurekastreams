@@ -1778,6 +1778,7 @@
 				</entry>
 			</map>
 		</constructor-arg>		
+		<constructor-arg value="10000" />
 	</bean>
 
 	<bean
