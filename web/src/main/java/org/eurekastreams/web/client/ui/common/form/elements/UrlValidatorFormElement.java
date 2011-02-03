@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.eurekastreams.web.client.ui.common.form.elements;
 import java.io.Serializable;
 
 import org.eurekastreams.commons.client.ActionRequestImpl;
+import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.web.client.ui.Session;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -69,6 +70,10 @@ public class UrlValidatorFormElement extends BasicTextBoxFormElement
      * Error label.
      */
     private final Label errorLabel = new Label("Error importing feed");
+
+    /** Label with details about error. */
+    private final Label errorDetail = new Label();
+
     /**
      * Error box.
      */
@@ -192,12 +197,18 @@ public class UrlValidatorFormElement extends BasicTextBoxFormElement
 
         errorBox = new FlowPanel();
         errorBox.addStyleName("form-error-box");
-        errorLabel.addStyleName("error");
-        errorBox.add(errorLabel);
         errorBox.setVisible(false);
-        this.insert(errorBox, 0);
 
         errorLabel.getElement().setId("url-validator-form-element-error-label");
+        errorLabel.addStyleName("error");
+        errorBox.add(errorLabel);
+
+        errorDetail.addStyleName("error");
+        errorBox.add(errorDetail);
+
+        this.insert(errorBox, 0);
+
+
 
         importBtn.addClickHandler(new ClickHandler()
         {
@@ -226,6 +237,15 @@ public class UrlValidatorFormElement extends BasicTextBoxFormElement
                         importBtn.setVisible(true);
                         processingSpinny.setVisible(false);
                         errorBox.setVisible(true);
+                                if (caught instanceof ValidationException)
+                                {
+                                    errorDetail.setVisible(true);
+                                    errorDetail.setText(caught.getMessage());
+                                }
+                                else
+                                {
+                                    errorDetail.setVisible(false);
+                                }
                         requiredLabel.setVisible(true);
                         instructions.setVisible(true);
                         failed = true;

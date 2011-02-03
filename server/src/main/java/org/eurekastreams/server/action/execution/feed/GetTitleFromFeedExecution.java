@@ -25,10 +25,10 @@ import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.FeedFactory;
 
-import com.sun.syndication.feed.module.base.ValidationException;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 
