@@ -24,7 +24,9 @@ import java.util.List;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.service.actions.strategies.activity.plugins.rome.FeedFactory;
+import org.eurekastreams.server.testing.TestContextCreator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -32,7 +34,6 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sun.syndication.feed.module.base.ValidationException;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 
@@ -157,6 +158,20 @@ public class GetTitleFromFeedExecutionTest
         });
 
         sut.execute(ac);
+
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Perform the action with an error in the feed.
+     *
+     * @throws Exception
+     *             the exception.
+     */
+    @Test(expected = ExecutionException.class)
+    public void testExecuteInvalidURL() throws Exception
+    {
+        sut.execute(TestContextCreator.createPrincipalActionContext("nosuchprotocol://blah.blah", principal));
 
         context.assertIsSatisfied();
     }
