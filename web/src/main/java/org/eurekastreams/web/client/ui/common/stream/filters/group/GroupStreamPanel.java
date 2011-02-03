@@ -140,7 +140,7 @@ public class GroupStreamPanel extends Composite implements FilterPanel
                 {
                     unActivate();
                 }
-                
+
                 switchHandled = true;
             }
         });
@@ -187,15 +187,14 @@ public class GroupStreamPanel extends Composite implements FilterPanel
      */
     public void activate()
     {
-        switchHandled= false;
-        
+        switchHandled = false;
+
         this.addStyleName("active");
 
         String jsonRequest = StreamJsonRequestFactory.addRecipient(EntityType.GROUP, group.getShortName(),
                 StreamJsonRequestFactory.getEmptyRequest()).toString();
 
-        Session.getInstance().getEventBus().notifyObservers(
-                new StreamRequestEvent(group.getName(), group.getId(), jsonRequest));
+        Session.getInstance().getEventBus().notifyObservers(new StreamRequestEvent(group.getName(), jsonRequest));
         Session.getInstance().getEventBus().notifyObservers(new ChangeShowStreamRecipientEvent(false));
         Session.getInstance().getEventBus().notifyObservers(new SwitchedToGroupStreamEvent(group));
 

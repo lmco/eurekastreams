@@ -116,14 +116,14 @@ public class StreamSortPanel extends Composite
                             if (i > 0)
                             {
                                 recipientLink.append(",");
-                                
-                                JSONObject entityObject = recipients.get(i).isObject(); 
-                                recipientLink.append(entityObject.get("type").isString().stringValue());
-                                recipientLink.append(":");
-                                recipientLink.append(entityObject.get("name").isString().stringValue());
                             }
+                            JSONObject entityObject = recipients.get(i).isObject();
+                            recipientLink.append(entityObject.get("type").isString().stringValue());
+                            recipientLink.append(":");
+                            recipientLink.append(entityObject.get("name").isString().stringValue());
+
                         }
-                        
+
                         atomLink.setHref(recipientLink.toString());
                     }
 
