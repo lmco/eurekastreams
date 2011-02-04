@@ -360,7 +360,7 @@ public class LikeCountWidget extends Composite
                 currentPerson.setDisplayName(Session.getInstance().getCurrentPerson().getDisplayName());
                 currentPerson.setAccountId(Session.getInstance().getCurrentPerson().getAccountId());
 
-                if (likers.size() == MAXLIKERSSHOWN)
+                if (likers.size() >= MAXLIKERSSHOWN)
                 {
                     likerOverflow = likers.get(MAXLIKERSSHOWN - 1);
                     likers.remove(MAXLIKERSSHOWN - 1);
