@@ -8604,6 +8604,11 @@ body .post-to-stream .post-button.inactive {
     height: 300px;
     overflow: auto;
     padding: 10px;
+}
+
+.liker-modal
+{
+    height: 300px;
     width: 400px;
 }
 
