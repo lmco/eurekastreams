@@ -934,7 +934,7 @@ Eureka.PostBox = function(text, postcb, maxlength, contentWarning)
 		input.css("width", jQuery("body").width() - 66);
 		var title = jQuery("<div class='title-bar collapsed search-bar'></div>");
 		title.css("border-top", "1px solid #BBB");
-    		title.append(jQuery("<div class='gadget-pre-search'></div>"));
+    		title.append(jQuery("<div class='gadget-pre-textbox'></div>"));
 		title.append(input);
 		title.append(jQuery("<div class='gadget-post-search'></div>"));
  		
