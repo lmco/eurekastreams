@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
@@ -44,7 +43,7 @@ public class PopulateActivityDTOLikeData implements ActivityFilter
     /**
      * Mapper to get person info.
      */
-    private DomainMapper<List<Long>, List<PersonModelView>>peopleMapper;
+    private DomainMapper<List<Long>, List<PersonModelView>> peopleMapper;
 
     /**
      * Max number of likers to return.
@@ -66,7 +65,7 @@ public class PopulateActivityDTOLikeData implements ActivityFilter
     public PopulateActivityDTOLikeData(
             final DomainMapper<List<Long>, List<List<Long>>> inGetLikedActivityIdsByUserIdsMapper,
             final DomainMapper<List<Long>, List<List<Long>>> inGetPeopleWhoLikedActivityMapper,
-            final DomainMapper<List<Long>, List<PersonModelView>>inPeopleMapper, final int inLikerLimit)
+            final DomainMapper<List<Long>, List<PersonModelView>> inPeopleMapper, final int inLikerLimit)
     {
         getLikedActivityIdsByUserIdsMapper = inGetLikedActivityIdsByUserIdsMapper;
         getPeopleWhoLikedActivityMapper = inGetPeopleWhoLikedActivityMapper;
@@ -114,7 +113,7 @@ public class PopulateActivityDTOLikeData implements ActivityFilter
         // Build list of all needed likers
         for (List<Long> likerList : likersCollection)
         {
-            if (likerList.size() > likerLimit - 1)
+            if (likerList.size() > likerLimit)
             {
                 allLikerIds.addAll(likerList.subList(0, likerLimit));
             }
@@ -143,7 +142,7 @@ public class PopulateActivityDTOLikeData implements ActivityFilter
 
             List<PersonModelView> likersModels = new LinkedList<PersonModelView>();
 
-            for (int j = 0; j < likers.size() && j < likerLimit - 1; j++)
+            for (int j = 0; j < likers.size() && j < likerLimit; j++)
             {
                 likersModels.add(allLikersMap.get(likers.get(j)));
             }

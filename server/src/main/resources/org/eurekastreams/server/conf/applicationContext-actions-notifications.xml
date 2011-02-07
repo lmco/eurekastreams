@@ -13,7 +13,9 @@
             <bean class="org.eurekastreams.server.action.execution.notification.translator.FollowerTranslator" />
         </entry>
         <entry key="LIKE">
-            <bean class="org.eurekastreams.server.action.execution.notification.translator.LikeTranslator" />
+            <bean class="org.eurekastreams.server.action.execution.notification.translator.LikeTranslator">
+            	<constructor-arg ref="bulkActivitiesMapper" />
+            </bean>
         </entry>
         <entry key="COMMENT">
             <bean class="org.eurekastreams.server.action.execution.notification.translator.CommentTranslator">
@@ -240,7 +242,7 @@
                     <map>
                         <entry key="LIKE_ACTIVITY">
                             <bean parent="baseTemplateEmailBuilder">
-                                <constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) liked $(activity.type)" />
+                                <constructor-arg value="$(eureka.notification.email.subjectprefix)$(actor.name) liked your $(activity.type)" />
                                 <constructor-arg>
                                     <bean parent="baseResourceContentLoader">
                                         <constructor-arg value="classpath:/org/eurekastreams/server/conf/templates/email/Notification-LIKE_ACTIVITY.txt" />

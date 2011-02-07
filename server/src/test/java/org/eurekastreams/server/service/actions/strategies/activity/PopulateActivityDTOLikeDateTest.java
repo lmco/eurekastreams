@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -60,7 +59,7 @@ public class PopulateActivityDTOLikeDateTest
     /**
      * People mapper.
      */
-    private static DomainMapper<List<Long>, List<PersonModelView>>peopleMapper = CONTEXT.mock(DomainMapper.class);
+    private static DomainMapper<List<Long>, List<PersonModelView>> peopleMapper = CONTEXT.mock(DomainMapper.class);
 
     /**
      * System under test.
@@ -231,7 +230,7 @@ public class PopulateActivityDTOLikeDateTest
         usersDTOs.add(new PersonModelView());
         usersDTOs.add(new PersonModelView());
         usersDTOs.add(new PersonModelView());
-
+        usersDTOs.add(new PersonModelView());
 
         CONTEXT.checking(new Expectations()
         {

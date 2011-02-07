@@ -98,6 +98,11 @@ public class LikeCountWidget extends Composite
     private final List<PersonModelView> likers;
 
     /**
+     * Liker overflow.
+     */
+    private PersonModelView likerOverflow;
+
+    /**
      * Activity ID.
      */
     private final Long thisActivityId;
@@ -211,6 +216,7 @@ public class LikeCountWidget extends Composite
                 DialogContent dialogContent = new LikersDialogContent(currentActivityId);
                 Dialog dialog = new Dialog(dialogContent);
                 dialog.setBgVisible(true);
+                dialog.addStyleName("liker-modal");
                 dialog.center();
             }
 
@@ -250,7 +256,7 @@ public class LikeCountWidget extends Composite
 
     /**
      * Constructor.
-     *
+     * 
      * @param inActivityId
      *            activity id.
      * @param inLikeCount
@@ -337,7 +343,7 @@ public class LikeCountWidget extends Composite
 
     /**
      * Update the panel.
-     *
+     * 
      * @param likeActionType
      *            the action that's being taken.
      */
@@ -353,6 +359,12 @@ public class LikeCountWidget extends Composite
                 currentPerson.setAvatarId(Session.getInstance().getCurrentPerson().getAvatarId());
                 currentPerson.setDisplayName(Session.getInstance().getCurrentPerson().getDisplayName());
                 currentPerson.setAccountId(Session.getInstance().getCurrentPerson().getAccountId());
+
+                if (likers.size() >= MAXLIKERSSHOWN)
+                {
+                    likerOverflow = likers.get(MAXLIKERSSHOWN - 1);
+                    likers.remove(MAXLIKERSSHOWN - 1);
+                }
 
                 likers.add(0, currentPerson);
 
@@ -371,6 +383,11 @@ public class LikeCountWidget extends Composite
                             && liker.getId() == Session.getInstance().getCurrentPerson().getId())
                     {
                         likers.remove(liker);
+
+                        if (likerOverflow != null)
+                        {
+                            likers.add(9, likerOverflow);
+                        }
                     }
                 }
 
