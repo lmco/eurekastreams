@@ -46,7 +46,7 @@ public class UnseenActivityNotificationPanel extends FlowPanel
     /**
      * Max number of unseen activities to look for.
      */
-    private static final int MAX_UNSEEN = 1000;
+    private static final int MAX_UNSEEN = 100;
 
     /**
      * Default constructor.

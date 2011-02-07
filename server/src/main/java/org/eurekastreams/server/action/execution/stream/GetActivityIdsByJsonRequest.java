@@ -116,8 +116,6 @@ public class GetActivityIdsByJsonRequest
     public List<Long> execute(final String inRequest, final Long userEntityId)
     {
         String request = inRequest;
-        Boolean stop = false;
-
         log.debug("Attempted to parse: " + inRequest);
 
         if (request.contains(userReplaceString))
@@ -155,12 +153,11 @@ public class GetActivityIdsByJsonRequest
 
         List<Long> allKeys = new ArrayList<Long>();
 
-        // The pass.
-        int pass = 0;
-        int batchSize = 0;
+        final List<Long> sortedDataSet = sortedDataSource.fetch(jsonRequest, userEntityId);
 
-        // paging loop
-        startingIndex = 0;
+        // The pass.
+        int pass = 1;
+        int batchSize = 0;
 
         do
         {
@@ -170,15 +167,14 @@ public class GetActivityIdsByJsonRequest
             // hits
             batchSize = maxResults * (int) (Math.pow(2, pass));
 
-            jsonRequest.put("count", batchSize);
+            jsonRequest.put("count", batchSize + 1);
 
             final List<Long> descendingOrderDataSet = descendingOrderdataSource.fetch(jsonRequest, userEntityId);
 
-            final List<Long> sortedDataSet = sortedDataSource.fetch(jsonRequest, userEntityId);
-
             if (descendingOrderDataSet != null && sortedDataSet != null)
             {
-                allKeys = andCollider.collide(descendingOrderDataSet, sortedDataSet, batchSize);
+                // we have both lists
+                allKeys = andCollider.collide(descendingOrderDataSet, sortedDataSet, batchSize + 1);
             }
             else if (descendingOrderDataSet != null)
             {
@@ -193,43 +189,52 @@ public class GetActivityIdsByJsonRequest
             // increment the start index for next page
             List<Long> page = new ArrayList<Long>();
 
-            // the starting index for this batch - for logging
-            int thisBatchStartIndex = -1;
-            for (int i = startingIndex; i < allKeys.size() && page.size() < batchSize; i++, startingIndex++)
+            // loop across the available keys in allKeys
+            for (int i = startingIndex; i < allKeys.size(); i++, startingIndex++)
             {
+                // if this is within our limits, include it for security trimming
                 if (allKeys.get(i) < maxActivityId && allKeys.get(i) > minActivityId)
                 {
-                    if (thisBatchStartIndex < 0)
-                    {
-                        thisBatchStartIndex = i;
-                    }
                     page.add(allKeys.get(i));
+
+                    if (page.size() == batchSize || i == allKeys.size() - 1)
+                    {
+                        log.debug("Sending a page of " + page.size() + " out for security trimming.");
+
+                        // we've filled up a page - either by hitting our batch size or by hitting the end of allKeys,
+                        // so security trim it
+                        page = securityTrimmer.trim(page, userEntityId);
+
+                        // add the trimmed results to our return list
+                        for (Long item : page)
+                        {
+                            results.add(item);
+                            if (results.size() >= maxResults)
+                            {
+                                log.debug("Filled a full page of " + results.size() + " results.");
+                                return results;
+                            }
+                        }
+
+                        log.info("Return results now has " + results.size() + " results - looking for more");
+
+                        // start over for our next scoped page
+                        page.clear();
+                    }
                 }
             }
 
-            if (log.isTraceEnabled())
-            {
-                log.trace("Paging loop - page size: " + maxResults + "; batchSize: " + batchSize + "; starting index: "
-                        + thisBatchStartIndex);
-            }
-
-            page = securityTrimmer.trim(page, userEntityId);
-
-            for (Long item : page)
-            {
-                results.add(item);
-                if (results.size() >= maxResults)
-                {
-                    stop = true;
-                    break;
-                }
-            }
+            // we've looped across allPages and haven't yet found enough results - increment the pass, and try
+            // getting more into allKeys
 
             pass++;
+
+            log.trace("Done looping?: " + (allKeys.size() <= batchSize) + ", pass: " + pass + ", results.size(): "
+                    + results.size() + ", maxResults: " + maxResults + ", allKeys.size(): " + allKeys.size()
+                    + ", batchSize: " + batchSize);
         }
-        while (!stop && results.size() < maxResults && allKeys.size() >= batchSize);
+        while (allKeys.size() > batchSize);
 
         return results;
     }
-
 }
