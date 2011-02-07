@@ -113,6 +113,16 @@ a
     float: left;
 }
 
+.gadget-pre-textbox
+{	width:29px;
+	height:25px;
+	display:inline-block;
+	*display:inline;
+	zoom:1;
+    float: left;
+	background:url(images/gadget-pre-textbox.png);
+}
+
 input#gadget-search
 {
 	background: #FCFCFC;
