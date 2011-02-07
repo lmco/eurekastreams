@@ -15,10 +15,12 @@
  */
 package org.eurekastreams.server.action.execution.notification.translator;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
@@ -45,6 +47,24 @@ public class LikeTranslator implements NotificationTranslator
     }
 
     /**
+     * Adds the person for the given entity to the recipient list, if ok to do so.
+     *
+     * @param entity
+     *            Entity from activity (may be null).
+     * @param actorId
+     *            ID of person who liked activity.
+     * @param recipients
+     *            List of recipients.
+     */
+    private void addAuthorIfAppropriate(final StreamEntityDTO entity, final long actorId, final List<Long> recipients)
+    {
+        if (entity != null && EntityType.PERSON.equals(entity.getType()) && actorId != entity.getId())
+        {
+            recipients.add(entity.getId());
+        }
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -52,15 +72,17 @@ public class LikeTranslator implements NotificationTranslator
             final long inActivityId)
     {
         ActivityDTO activity = activitiesMapper.execute(Collections.singletonList(inActivityId)).get(0);
-        Long authorId = activity.getActor().getId();
-        if (inActorId == authorId)
+        List<Long> recipients = new ArrayList<Long>();
+
+        addAuthorIfAppropriate(activity.getActor(), inActorId, recipients);
+        addAuthorIfAppropriate(activity.getOriginalActor(), inActorId, recipients);
+        if (recipients.isEmpty())
         {
             return Collections.EMPTY_LIST;
         }
 
         StreamEntityDTO destStream = activity.getDestinationStream();
-        return Collections.singletonList(new NotificationDTO(Collections.singletonList(authorId),
-                NotificationType.LIKE_ACTIVITY, inActorId, destStream.getDestinationEntityId(), destStream.getType(),
-                inActivityId));
+        return Collections.singletonList(new NotificationDTO(recipients, NotificationType.LIKE_ACTIVITY, inActorId,
+                destStream.getDestinationEntityId(), destStream.getType(), inActivityId));
     }
 }
