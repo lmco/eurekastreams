@@ -259,7 +259,10 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
                 params.put("endIndex", null);
                 String url = Session.getInstance().generateUrl(new CreateUrlRequest(params));
 
+                String search = Session.getInstance().getParameterValue("search");
                 String stream = Session.getInstance().getParameterValue("streamId");
+                
+                addGadgetLink.setVisible(search == null);
 
                 setAddGadgetLink(titleLbl.getText(), streamUrlTransformer.getUrl(stream, event.getJsonRequest()), url);
             }

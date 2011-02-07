@@ -283,6 +283,7 @@ Eureka.Form = function(titleText, callback)
 Eureka.SearchBar = function(callback)
 {
     this.container = jQuery("<div></div>");
+    this.callback = callback;
 
     var input = jQuery("<input class='text-label' id='gadget-search' value='Search...' />");
     input.keyup(function(e) {
@@ -370,6 +371,7 @@ Eureka.SearchBar = function(callback)
             resultsFor.detach();
             obj.detach();
             Eureka.resize();
+            jQuery('.app-container').removeClass('search-results-shown');
             input.val('Search...');
                     input.addClass('text-label');
         });
@@ -377,7 +379,7 @@ Eureka.SearchBar = function(callback)
 
         jQuery(".app-container").append(dim);
                 jQuery(".app-container").append(resultsFor);
-        jQuery(".app-container").append(obj);
+        jQuery(".app-container").append(obj).addClass('search-results-shown');
         var top = obj.css("top").replace(/px/,"");
         obj.css("height", obj.height()+parseInt(top));
         Eureka.resize();

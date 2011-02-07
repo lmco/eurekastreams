@@ -464,6 +464,11 @@ table.eureka-table tr.header-row-top-headers th
 	text-align:center;
 }
 
+.search-results .search-bar
+{
+    visibility: hidden;
+}
+
 .tab-bar .begin
 {
 	background:url(images/tab-unselected-left.png);
