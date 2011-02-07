@@ -17,6 +17,7 @@ package org.eurekastreams.server.action.execution.notification.translator;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -35,7 +36,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-
 /**
  * Like translator test.
  */
@@ -43,6 +43,8 @@ public class LikeTranslatorTest
 {
     /** Test data. */
     private static final Long AUTHOR_ID = 81L;
+    /** Test data. */
+    private static final Long ORIGINAL_AUTHOR_ID = 84L;
     /** Test data. */
     private static final Long ACTIVITY_STREAM_ID = 82L;
     /** Test data. */
@@ -62,6 +64,10 @@ public class LikeTranslatorTest
 
     /** Fixture: activity. */
     private final ActivityDTO activity = context.mock(ActivityDTO.class);
+    /** Fixture: author. */
+    private final StreamEntityDTO author = context.mock(StreamEntityDTO.class, "author");
+    /** Fixture: original author. */
+    private final StreamEntityDTO originalAuthor = context.mock(StreamEntityDTO.class, "originalAuthor");
 
     /** SUT. */
     LikeTranslator sut;
@@ -74,7 +80,6 @@ public class LikeTranslatorTest
     {
         sut = new LikeTranslator(activityMapper);
 
-        final StreamEntityDTO author = context.mock(StreamEntityDTO.class, "author");
         final StreamEntityDTO destination = context.mock(StreamEntityDTO.class, "destination");
 
         context.checking(new Expectations()
@@ -82,16 +87,21 @@ public class LikeTranslatorTest
             {
                 allowing(activityMapper).execute(Collections.singletonList(ACTIVITY_ID));
                 will(returnValue(Collections.singletonList(activity)));
-                allowing(activity).getActor();
-                will(returnValue(author));
                 allowing(activity).getDestinationStream();
                 will(returnValue(destination));
-                allowing(author).getId();
-                will(returnValue(AUTHOR_ID));
+
                 allowing(destination).getDestinationEntityId();
                 will(returnValue(ACTIVITY_STREAM_ID));
                 allowing(destination).getType();
                 will(returnValue(EntityType.GROUP));
+
+                allowing(activity).getActor();
+                will(returnValue(author));
+                allowing(author).getId();
+                will(returnValue(AUTHOR_ID));
+
+                allowing(originalAuthor).getId();
+                will(returnValue(ORIGINAL_AUTHOR_ID));
             }
         });
     }
@@ -100,8 +110,18 @@ public class LikeTranslatorTest
      * Translate.
      */
     @Test
-    public void testTranslate()
+    public void testTranslateNotShared()
     {
+        context.checking(new Expectations()
+        {
+            {
+                allowing(author).getType();
+                will(returnValue(EntityType.PERSON));
+                allowing(activity).getOriginalActor();
+                will(returnValue(null));
+            }
+        });
+
         Collection<NotificationDTO> notifs = sut.translate(1L, 0L, ACTIVITY_ID);
         context.assertIsSatisfied();
 
@@ -117,10 +137,72 @@ public class LikeTranslatorTest
      * Translate; actor is author (likes own activity).
      */
     @Test
-    public void testTranslateActorIsAuthor()
+    public void testTranslateNotSharedActorIsAuthor()
     {
+        context.checking(new Expectations()
+        {
+            {
+                allowing(author).getType();
+                will(returnValue(EntityType.PERSON));
+                allowing(activity).getOriginalActor();
+                will(returnValue(null));
+            }
+        });
+
         Collection<NotificationDTO> notifs = sut.translate(AUTHOR_ID, 0L, ACTIVITY_ID);
         context.assertIsSatisfied();
         assertTrue(notifs.isEmpty());
     }
+
+    /**
+     * Translate.
+     */
+    @Test
+    public void testTranslateAuthorIsGroup()
+    {
+        context.checking(new Expectations()
+        {
+            {
+                allowing(author).getType();
+                will(returnValue(EntityType.GROUP));
+                allowing(activity).getOriginalActor();
+                will(returnValue(null));
+            }
+        });
+
+        Collection<NotificationDTO> notifs = sut.translate(1L, 0L, ACTIVITY_ID);
+        context.assertIsSatisfied();
+
+        assertTrue(notifs.isEmpty());
+    }
+
+    /**
+     * Translate.
+     */
+    @Test
+    public void testTranslateShared()
+    {
+        context.checking(new Expectations()
+        {
+            {
+                allowing(author).getType();
+                will(returnValue(EntityType.PERSON));
+                allowing(activity).getOriginalActor();
+                will(returnValue(originalAuthor));
+                allowing(originalAuthor).getType();
+                will(returnValue(EntityType.PERSON));
+            }
+        });
+
+        Collection<NotificationDTO> notifs = sut.translate(1L, 0L, ACTIVITY_ID);
+        context.assertIsSatisfied();
+
+        Assert.assertNotNull(notifs);
+        Assert.assertEquals(1, notifs.size());
+        NotificationDTO notif = notifs.iterator().next();
+        NotificationDTO expected = new NotificationDTO(Arrays.asList(AUTHOR_ID, ORIGINAL_AUTHOR_ID),
+                NotificationType.LIKE_ACTIVITY, 1L, ACTIVITY_STREAM_ID, EntityType.GROUP, ACTIVITY_ID);
+        assertTrue(IsEqualInternally.areEqualInternally(expected, notif));
+    }
+
 }
