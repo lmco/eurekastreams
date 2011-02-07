@@ -270,76 +270,105 @@ public class RefreshFeedExecution implements ExecutionStrategy<ActionContext>
                     lastSeenGUID = entry.getUri();
                 }
 
-                // iterate through each entry in the feed instance
-                for (Object entryObject : syndFeed.getEntries())
+                Boolean brokenOutOfOrder = false;
+
+                if (isOutOfOrder && feed.getLastSeenGUID() != null)
                 {
-                    try
+                    brokenOutOfOrder = true;
+                    // iterate through each entry in the feed instance
+                    for (Object entryObject : syndFeed.getEntries())
                     {
-                        SyndEntryImpl entry = (SyndEntryImpl) entryObject;
-
-                        if (lastPostDate == null || entry.getPublishedDate().after(lastPostDate))
+                        try
                         {
-                            lastPostDate = entry.getPublishedDate();
-                        }
-
-                        Activity activity = getActivityFromATOMEntry(feed, entry, selectedObjectMapper);
-                        // We were able to parse at least one good entry to completion, so the feed isn't broken.
-                        brokenFeed = false;
-
-                        if (isOutOfOrder && feed.getLastSeenGUID().equals(entry.getUri()))
-                        {
-                            log.info("Match found based on GUID: " + lastSeenGUID);
-                            break;
-                        }
-                        else
-                        {
-                            log.info("No match found based on GUID: " + entry.getUri());
-                        }
-
-                        if (!isOutOfOrder && !entry.getPublishedDate().after(feed.getLastPostDate()))
-                        {
-                            log.info("Match found based on Date: " + feed.getLastPostDate());
-                            break;
-                        }
-                        else
-                        {
-                            log.info("No match found based on Date: " + entry.getPublishedDate() + " Last Post Date: "
-                                    + feed.getLastPostDate());
-                        }
-
-                        // create activities per subscriber
-                        for (FeedSubscriber feedSubscriber : subscribers)
-                        {
-                            Activity activityForIndividual = (Activity) activity.clone();
-
-                            if (feedSubscriber.getEntityType().equals(EntityType.PERSON))
+                            SyndEntryImpl entry = (SyndEntryImpl) entryObject;
+                            if (feed.getLastSeenGUID().equals(entry.getUri()))
                             {
-                                Person person = personFinder.execute(new FindByIdRequest("Person", feedSubscriber
-                                        .getEntityId()));
-                                activityForIndividual.setActorId(person.getAccountId());
-                                activityForIndividual.setRecipientParentOrg(person.getParentOrganization());
-                                activityForIndividual.setRecipientStreamScope(person.getStreamScope());
-                                activityForIndividual.setIsDestinationStreamPublic(true);
+                                log.info("Found  matching GUID in out of order feed: " + lastSeenGUID);
+                                brokenOutOfOrder = false;
+                                break;
                             }
-                            else if (feedSubscriber.getEntityType().equals(EntityType.GROUP))
-                            {
-                                DomainGroup group = groupFinder.execute(new FindByIdRequest("DomainGroup",
-                                        feedSubscriber.getEntityId()));
-
-                                activityForIndividual.setActorId(group.getShortName());
-                                activityForIndividual.setRecipientParentOrg(group.getParentOrganization());
-                                activityForIndividual.setRecipientStreamScope(group.getStreamScope());
-                                activityForIndividual.setIsDestinationStreamPublic(group.isPublicGroup());
-                            }
-                            activityForIndividual.setActorType(feedSubscriber.getEntityType());
-                            insertedActivities.add(activityForIndividual);
                         }
-
+                        catch (Exception ex)
+                        {
+                            log.warn("ATOM/RSS entry is not to spec. "
+                                    + "Skipping entry and moving to the next one. Feed url: " + feed.getUrl(), ex);
+                        }
                     }
-                    catch (Exception ex)
+                }
+
+                if (!brokenOutOfOrder)
+                {
+                    // iterate through each entry in the feed instance
+                    for (Object entryObject : syndFeed.getEntries())
                     {
-                        log.warn("ATOM/RSS entry is not to spec. "
-                                + "Skipping entry and moving to the next one. Feed url: " + feed.getUrl(), ex);
+                        try
+                        {
+                            SyndEntryImpl entry = (SyndEntryImpl) entryObject;
+
+                            if (lastPostDate == null || entry.getPublishedDate().after(lastPostDate))
+                            {
+                                lastPostDate = entry.getPublishedDate();
+                            }
+
+                            Activity activity = getActivityFromATOMEntry(feed, entry, selectedObjectMapper);
+                            // We were able to parse at least one good entry to completion, so the feed isn't broken.
+                            brokenFeed = false;
+
+                            if (isOutOfOrder && feed.getLastSeenGUID().equals(entry.getUri()))
+                            {
+                                log.info("Match found based on GUID: " + lastSeenGUID);
+                                break;
+                            }
+                            else
+                            {
+                                log.info("No match found based on GUID: " + entry.getUri());
+                            }
+
+                            if (!isOutOfOrder && !entry.getPublishedDate().after(feed.getLastPostDate()))
+                            {
+                                log.info("Match found based on Date: " + feed.getLastPostDate());
+                                break;
+                            }
+                            else
+                            {
+                                log.info("No match found based on Date: " + entry.getPublishedDate()
+                                        + " Last Post Date: " + feed.getLastPostDate());
+                            }
+
+                            // create activities per subscriber
+                            for (FeedSubscriber feedSubscriber : subscribers)
+                            {
+                                Activity activityForIndividual = (Activity) activity.clone();
+
+                                if (feedSubscriber.getEntityType().equals(EntityType.PERSON))
+                                {
+                                    Person person = personFinder.execute(new FindByIdRequest("Person", feedSubscriber
+                                            .getEntityId()));
+                                    activityForIndividual.setActorId(person.getAccountId());
+                                    activityForIndividual.setRecipientParentOrg(person.getParentOrganization());
+                                    activityForIndividual.setRecipientStreamScope(person.getStreamScope());
+                                    activityForIndividual.setIsDestinationStreamPublic(true);
+                                }
+                                else if (feedSubscriber.getEntityType().equals(EntityType.GROUP))
+                                {
+                                    DomainGroup group = groupFinder.execute(new FindByIdRequest("DomainGroup",
+                                            feedSubscriber.getEntityId()));
+
+                                    activityForIndividual.setActorId(group.getShortName());
+                                    activityForIndividual.setRecipientParentOrg(group.getParentOrganization());
+                                    activityForIndividual.setRecipientStreamScope(group.getStreamScope());
+                                    activityForIndividual.setIsDestinationStreamPublic(group.isPublicGroup());
+                                }
+                                activityForIndividual.setActorType(feedSubscriber.getEntityType());
+                                insertedActivities.add(activityForIndividual);
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            log.warn("ATOM/RSS entry is not to spec. "
+                                    + "Skipping entry and moving to the next one. Feed url: " + feed.getUrl(), ex);
+                        }
                     }
                 }
             }
