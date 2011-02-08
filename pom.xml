@@ -169,7 +169,6 @@
         <build.queue.activity.name>queue/eurekaActivity</build.queue.activity.name>
         <build.queue.hibernatesearch.name>queue/hibernateSearch</build.queue.hibernatesearch.name>
         <build.log.showsql>true</build.log.showsql>
-        <build.report.clover.licenseurl>http://example.com/clover.license</build.report.clover.licenseurl>
         <build.report.checkstyle.rulesurl>http://dev.eurekastreams.org/conf/checkstyle/eurekastreams_eclipse-cs5.0_rules-forcheckin_latest.xml?011911</build.report.checkstyle.rulesurl>
         <build.maven.sharedresources.artifactid>eurekastreams-sharedresources</build.maven.sharedresources.artifactid>
         <build.maven.sharedresources.version>1.0-SNAPSHOT</build.maven.sharedresources.version>
@@ -217,26 +216,7 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.4.1</version>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <formats>
-                        <format>html</format>
-                        <format>xml</format>
-                    </formats>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>cobertura</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
+           <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-reactor-plugin</artifactId>
                 <version>1.0</version>
@@ -271,7 +251,7 @@
         <profile>
             <!--
                 This profile assists in reducing development build times
-                when generating the clover reports.
+                when generating the reports.
             -->
             <id>dev.disablereporting</id>
             <activation>
@@ -470,106 +450,137 @@
             </reporting>
         </profile>
         <profile>
-            <id>clover.report</id>
+            <id>cobertura.report</id>
             <activation>
                 <property>
-                    <name>clover</name>
+                    <name>cobertura</name>
                 </property>
             </activation>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>com.atlassian.maven.plugins</groupId>
-                        <artifactId>maven-clover2-plugin</artifactId>
-                        <version>2.6.3</version>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>cobertura-maven-plugin</artifactId>
+                        <version>2.4</version>
                         <configuration>
-                            <licenseLocation>${build.report.clover.licenseurl}</licenseLocation>
-                            <!--
-                                historical reporting - save the Clover
-                                snapshot between clean builds and only
-                                have one for multimodule projects
-                            -->
-                            <snapshot>${user.home}/.clover/${groupId}/${version}/clover.snapshot</snapshot>
-                            <historyDir>${user.home}/.clover/${groupId}/${artifactId}/${version}/</historyDir>
-                            <generateHistorical>true</generateHistorical>
-                            <!-- needed for multi-module project -->
-                            <singleCloverDatabase>true</singleCloverDatabase>
-                            <!-- set coverage requirement -->
-                            <targetPercentage>90%</targetPercentage>
-                             <failOnViolation>true</failOnViolation>
-                             <!-- This excludes files from code coverage -->
+                            <check>
+                                <totalLineRate>0</totalLineRate>
+                            </check>
+                            <formats>
+                                <format>html</format>
+                                <format>xml</format>
+                            </formats>
+                            <instrumentation>
                              <excludes>
                              	  <exclude>org/apache/**</exclude>
                                   <exclude>org/eurekastreams/server/domain/**</exclude>
-				                  <exclude>**/*Test.java</exclude>
-				                  <exclude>**/*Fake.java</exclude>
-				                  <exclude>**/*Setup.java</exclude>
-				                  <exclude>**/*Support.java</exclude>
-				                  <exclude>**/*AsyncCallbackProxy.java</exclude>
-				                  <exclude>**/*DTO.java</exclude>
-				                  <exclude>**/*Request.java</exclude>
-				                  <exclude>**/*Response.java</exclude>
-				                  <exclude>**/MemcachedCache.java</exclude>
-									<exclude>**/*GuiceModule.java</exclude>
-									<exclude>**/*GuiceConfigurator.java</exclude>
-				                  <exclude>org/eurekastreams/taskqueueprocessor/console/MainApp.java</exclude>
-								  <exclude>org/eurekastreams/performancedatacreator/console/MainApp.java</exclude>
-								  <exclude>org/eurekastreams/server/service/actions/strategies/URLFetcher.java</exclude>
-								  <exclude>org/eurekastreams/server/service/actions/strategies/ImageWriter.java</exclude>
-								  <exclude>org/eurekastreams/server/service/actions/CreatePersonActionFactory.java</exclude>
-								  <exclude>org/eurekastreams/server/service/actions/strategies/galleryitem/*Factory.java</exclude>
-								  <exclude>org/eurekastreams/server/service/servlets/*Servlet.java</exclude>
-								  <exclude>org/eurekastreams/server/service/opensocial/config/ContainerPropertiesModule.java</exclude>
-								  <exclude>org/eurekastreams/server/service/opensocial/config/OAuthModule.java</exclude>
-		                          <exclude>org/eurekastreams/server/service/opensocial/gadgets/spec/*Fetcher.java</exclude>
-								  <exclude>org/eurekastreams/server/service/restlets/WritableResource.java</exclude>
-								  <exclude>org/eurekastreams/server/service/restlets/FeedReaderWritableResource.java</exclude>
-		                          <exclude>org/eurekastreams/server/service/restlets/GadgetUserPrefsResource.java</exclude>
+				                  <exclude>**/*Test.class</exclude>
+				                  <exclude>**/*Fake.class</exclude>
+				                  <exclude>**/*Setup.class</exclude>
+				                  <exclude>**/*Support.class</exclude>
+				                  <exclude>**/*AsyncCallbackProxy.class</exclude>
+				                  <exclude>**/*DTO.class</exclude>
+				                  <exclude>**/*Request.class</exclude>
+				                  <exclude>**/*Response.class</exclude>
+				                  <exclude>**/MemcachedCache.class</exclude>
+								  <exclude>**/*GuiceModule.class</exclude>
+								  <exclude>**/*GuiceConfigurator.class</exclude>
+				                  <exclude>org/eurekastreams/taskqueueprocessor/console/MainApp.class</exclude>
+								  <exclude>org/eurekastreams/performancedatacreator/console/MainApp.class</exclude>
+								  <exclude>org/eurekastreams/server/service/actions/strategies/URLFetcher.class</exclude>
+								  <exclude>org/eurekastreams/server/service/actions/strategies/ImageWriter.class</exclude>
+								  <exclude>org/eurekastreams/server/service/actions/CreatePersonActionFactory.class</exclude>
+								  <exclude>org/eurekastreams/server/service/actions/strategies/galleryitem/*Factory.class</exclude>
+								  <exclude>org/eurekastreams/server/service/servlets/*Servlet.class</exclude>
+								  <exclude>org/eurekastreams/server/service/opensocial/config/ContainerPropertiesModule.class</exclude>
+								  <exclude>org/eurekastreams/server/service/opensocial/config/OAuthModule.class</exclude>
+		                          <exclude>org/eurekastreams/server/service/opensocial/gadgets/spec/*Fetcher.class</exclude>
+								  <exclude>org/eurekastreams/server/service/restlets/WritableResource.class</exclude>
+								  <exclude>org/eurekastreams/server/service/restlets/FeedReaderWritableResource.class</exclude>
+		                          <exclude>org/eurekastreams/server/service/restlets/GadgetUserPrefsResource.class</exclude>
                                   <!--  Commons exclusions -->
-                                  <exclude>**/*Test.java</exclude>
-                                  <exclude>**/*Fake.java</exclude>
-                                  <exclude>**/*MockSupport.java</exclude>
-                                  <exclude>**/*MessageConsumer.java</exclude>
-                                  <exclude>**/*MessageProducer.java</exclude>
-                                  <exclude>**/*Request.java</exclude>
+                                  <exclude>**/*Test.class</exclude>
+                                  <exclude>**/*Fake.class</exclude>
+                                  <exclude>**/*MockSupport.class</exclude>
+                                  <exclude>**/*MessageConsumer.class</exclude>
+                                  <exclude>**/*MessageProducer.class</exclude>
+                                  <exclude>**/*Request.class</exclude>
                                   <!-- this exclusion is included because all this class does is
                                   wrap the spring job bean with some default values and is problematic
                                   to test given the parent class implementation from Spring. -->
-                                  <exclude>**/ActionSubmitterJob.java</exclude>
-                                  <exclude>**/ActionExecutorFactory.java</exclude>
-                                  <exclude>**/ServiceAction.java</exclude>
-                                  <exclude>**/ServiceActionContext.java</exclude>
-                                  <exclude>**/AsyncAction.java</exclude>
-                                  <exclude>**/AsyncActionContext.java</exclude>
-                                  <exclude>**/TaskHandlerActionContext.java</exclude>
-                                  <exclude>**/TaskHandlerAsyncAction.java</exclude>
-                                  <exclude>**/TaskHandlerServiceAction.java</exclude>
-                                  <exclude>**/SessionException.java</exclude>
-                                  <exclude>**/DefaultAuthorization.java</exclude>
-                                  <exclude>**/DefaultPrincipal.java</exclude>
-                                  <exclude>**/DefaultPrincipalPopulator.java</exclude>
-                                  <exclude>**/HttpDocumentFetcherImpl.java</exclude>
-                                  <exclude>**/ActionRPCServiceImpl.java</exclude>
+                                  <exclude>**/ActionSubmitterJob.class</exclude>
+                                  <exclude>**/ActionExecutorFactory.class</exclude>
+                                  <exclude>**/ServiceAction.class</exclude>
+                                  <exclude>**/ServiceActionContext.class</exclude>
+                                  <exclude>**/AsyncAction.class</exclude>
+                                  <exclude>**/AsyncActionContext.class</exclude>
+                                  <exclude>**/TaskHandlerActionContext.class</exclude>
+                                  <exclude>**/TaskHandlerAsyncAction.class</exclude>
+                                  <exclude>**/TaskHandlerServiceAction.class</exclude>
+                                  <exclude>**/SessionException.class</exclude>
+                                  <exclude>**/DefaultAuthorization.class</exclude>
+                                  <exclude>**/DefaultPrincipal.class</exclude>
+                                  <exclude>**/DefaultPrincipalPopulator.class</exclude>
+                                  <exclude>**/HttpDocumentFetcherImpl.class</exclude>
+                                  <exclude>**/ActionRPCServiceImpl.class</exclude>
+                                <exclude>**/*Request.class</exclude>
+                                <exclude>**/*Test.class</exclude>
+                                <exclude>**/*Fake.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Facade*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/Session.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Composite*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Renderer*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Pager*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Notifier*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Widget*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Content*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*EntryPoint*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Panel*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*FormElement*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*FormBuilder*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Factory*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Dialog*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Notification*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Icon*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Tab*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Event*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Carousel*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*CarouselStructure*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*MockSupport*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*LayoutStrategy*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*UploadStrategy*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*Handler*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/GadgetMetaData*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/PropertyMapper*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/ClickableMenuItem*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/dragging/**/*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*JSNIFacadeImpl*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/*GalleryRenderer*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/StreamSearchLinkBuilder*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/**/HideModalDialog*.class</exclude>
+                                <exclude>org/eurekastreams/web/client/AnonymousClassInterceptor*.class</exclude>
+                                <exclude>org/eurekastreams/web/rebind/HashedBindableGenerator*.class</exclude>
+                                <exclude>org/eurekastreams/web/**/*GuiceModule*.class</exclude>
+                                <exclude>com/**/*.class</exclude>
+                                <exclude>net/**/*.class</exclude>
+                                <!-- Exclude the model until a technique for testing the model is developed. -->
+                                <exclude>org/eurekastreams/web/client/model/**/*Model*.class</exclude>
                             </excludes>
-                             <contextFilters>private,iflog</contextFilters>
-                             <statementContexts>
-                                  <iflog>if \(log\.is.*</iflog>
-                             </statementContexts>
-                         </configuration>
-                         <executions>
+                            </instrumentation>
+                        </configuration>
+                        <executions>
                              <execution>
-                                 <id>clover</id>
+                                 <id>cobertura</id>
                                  <phase>verify</phase>
                                  <goals>
-                                     <goal>instrument-test</goal>
-                                     <goal>clover</goal>
+                                     <goal>clean</goal>
                                      <goal>check</goal>
-                                     <goal>save-history</goal>
+                                     <goal>cobertura</goal>
                                  </goals>
                              </execution>
-                         </executions>
-                     </plugin>
-                 </plugins>
+                        </executions>
+                   </plugin>
+                </plugins>
              </build>
          </profile>
      </profiles>	
