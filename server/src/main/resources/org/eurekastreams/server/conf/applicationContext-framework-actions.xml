@@ -2195,7 +2195,82 @@
     </bean>
 
     <bean id="noValidationStrategy" class="org.eurekastreams.commons.actions.NoValidationStrategy">
+    </bean> 
+    
+    <bean id="warmCache" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+        <!-- Validation -->
+        <constructor-arg ref="noValidationStrategy" />
+        <!-- Authorization -->
+        <constructor-arg ref="currentUserRootOrgCoordinatorAuthorization" />
+        <!-- Execution -->
+        <constructor-arg> 
+            <bean class="org.eurekastreams.server.action.execution.QueueAsynchActionExecution">
+                <constructor-arg value="initializeCache" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="true" />
+    </bean>     
+    
+    <bean id="warmCache_people" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+        <!-- Validation -->
+        <constructor-arg ref="noValidationStrategy" />
+        <!-- Authorization -->
+        <constructor-arg ref="currentUserRootOrgCoordinatorAuthorization" />
+        <!-- Execution -->
+        <constructor-arg> 
+            <bean class="org.eurekastreams.server.action.execution.QueueAsynchActionExecution">
+                <constructor-arg value="queuePersonCacheWarmingTasks" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="true" />
     </bean>
+    
+    <bean id="warmCache_groups" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+        <!-- Validation -->
+        <constructor-arg ref="noValidationStrategy" />
+        <!-- Authorization -->
+        <constructor-arg ref="currentUserRootOrgCoordinatorAuthorization" />
+        <!-- Execution -->
+        <constructor-arg> 
+            <bean class="org.eurekastreams.server.action.execution.QueueAsynchActionExecution">
+                <constructor-arg value="queueGroupCacheWarmingTasks" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="true" />
+    </bean>
+    
+    <bean id="warmCache_orgs" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+        <!-- Validation -->
+        <constructor-arg ref="noValidationStrategy" />
+        <!-- Authorization -->
+        <constructor-arg ref="currentUserRootOrgCoordinatorAuthorization" />
+        <!-- Execution -->
+        <constructor-arg> 
+            <bean class="org.eurekastreams.server.action.execution.QueueAsynchActionExecution">
+                <constructor-arg value="queueOrganizationCacheWarmingTasks" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="true" />
+    </bean>     
+    
+    <bean id="warmCache_themes" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+        <!-- Validation -->
+        <constructor-arg ref="noValidationStrategy" />
+        <!-- Authorization -->
+        <constructor-arg ref="currentUserRootOrgCoordinatorAuthorization" />
+        <!-- Execution -->
+        <constructor-arg> 
+            <bean class="org.eurekastreams.server.action.execution.QueueAsynchActionExecution">
+                <constructor-arg value="queueThemeCacheWarmingTasks" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="true" />
+    </bean>      
 
     <bean id="reindexEntities" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
