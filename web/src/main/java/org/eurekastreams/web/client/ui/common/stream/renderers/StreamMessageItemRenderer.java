@@ -50,7 +50,7 @@ import org.eurekastreams.web.client.ui.common.stream.renderers.verb.ShareRendere
 import org.eurekastreams.web.client.ui.common.stream.renderers.verb.VerbRenderer;
 import org.eurekastreams.web.client.ui.common.stream.share.ShareMessageDialogContent;
 import org.eurekastreams.web.client.utility.BaseActivityLinkBuilder;
-import org.eurekastreams.web.client.utility.SamePageActivityLinkBuilder;
+import org.eurekastreams.web.client.utility.InContextActivityLinkBuilder;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -71,7 +71,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 {
     /**
      * State.
-     *
+     * 
      */
     public enum State
     {
@@ -126,11 +126,11 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
     private boolean showComment = false;
 
     /** For building links to activities. */
-    private BaseActivityLinkBuilder activityLinkBuilder = new SamePageActivityLinkBuilder();
+    private BaseActivityLinkBuilder activityLinkBuilder = new InContextActivityLinkBuilder();
 
     /**
      * Constructor.
-     *
+     * 
      * @param inShowRecipient
      *            show the recipient.
      */
@@ -141,7 +141,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Constructor.
-     *
+     * 
      * @param inShowRecipient
      *            show the receipiant.
      * @param inState
@@ -172,7 +172,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Sets showComment.
-     *
+     * 
      * @param inShowComment
      *            value to set.
      */
@@ -210,10 +210,10 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Render a message item.
-     *
+     * 
      * @param msg
      *            the message item.
-     *
+     * 
      * @return the rendered item as a FlowPanel.
      */
     public Panel render(final ActivityDTO msg)
@@ -265,9 +265,8 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         CommentsListPanel commentsPanel = null;
         if (!state.equals(State.READONLY))
         {
-            commentsPanel =
-                    new CommentsListPanel(msg.getFirstComment(), msg.getLastComment(), msg.getCommentCount(), msg
-                            .getEntityId(), msg.isCommentable(), msg.getDestinationStream().getType(), msg
+            commentsPanel = new CommentsListPanel(msg.getFirstComment(), msg.getLastComment(), msg.getCommentCount(),
+                    msg.getEntityId(), msg.isCommentable(), msg.getDestinationStream().getType(), msg
                             .getDestinationStream().getUniqueIdentifier(), activityLinkBuilder);
         }
 
@@ -316,9 +315,8 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         Panel timestampActions = new FlowPanel();
         timestampActions.addStyleName("message-timestamp-actions-area");
 
-        String permalinkUrl =
-                activityLinkBuilder.buildActivityPermalink(msg.getId(), msg.getDestinationStream().getType(), msg
-                        .getDestinationStream().getUniqueIdentifier());
+        String permalinkUrl = activityLinkBuilder.buildActivityPermalink(msg.getId(), msg.getDestinationStream()
+                .getType(), msg.getDestinationStream().getUniqueIdentifier());
 
         DateFormatter dateFormatter = new DateFormatter(new Date());
         Hyperlink dateLink = new InlineHyperlink(dateFormatter.timeAgo(msg.getPostedTime()), permalinkUrl);
@@ -349,8 +347,8 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
         if (verbRenderer.getAllowLike())
         {
-            LikeCountWidget likeCount =
-                    new LikeCountWidget(msg.getEntityId(), msg.getLikeCount(), msg.getLikers(), msg.isLiked());
+            LikeCountWidget likeCount = new LikeCountWidget(msg.getEntityId(), msg.getLikeCount(), msg.getLikers(), msg
+                    .isLiked());
             timestampActions.add(likeCount);
         }
         timestampActions.add(buildActions(msg, mainPanel, commentsPanel, verbRenderer));
@@ -376,7 +374,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Builds the action links panel.
-     *
+     * 
      * @param msg
      *            The message.
      * @param mainPanel
@@ -502,7 +500,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Adds a separator (dot).
-     *
+     * 
      * @param panel
      *            Panel to put the separator in.
      */
@@ -515,7 +513,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Sets up the buttons to manage flagged content.
-     *
+     * 
      * @param msg
      *            The activity.
      * @param mainPanel
@@ -575,7 +573,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Wires up the handler for clicking on a delete link/button.
-     *
+     * 
      * @param widget
      *            The delete link/button.
      * @param msg
@@ -600,7 +598,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Sets up to remove the activity on deletion.
-     *
+     * 
      * @param msg
      *            The activity.
      * @param mainPanel
