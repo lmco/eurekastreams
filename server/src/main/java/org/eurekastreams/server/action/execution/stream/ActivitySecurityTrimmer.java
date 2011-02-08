@@ -72,6 +72,7 @@ public class ActivitySecurityTrimmer
      */
     public List<Long> trim(final List<Long> activityIds, final Long userPersonId)
     {
+        log.debug("Trimming " + activityIds.size() + " activity ids for person#" + userPersonId);
         Set<Long> accessibleGroupIds = getVisibleGroupsForUserMapper.execute(userPersonId);
 
         final Collection<ActivitySecurityDTO> securityDTOs = securityMapper.execute(activityIds);

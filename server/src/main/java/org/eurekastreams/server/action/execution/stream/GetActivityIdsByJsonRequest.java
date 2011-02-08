@@ -163,18 +163,17 @@ public class GetActivityIdsByJsonRequest
         {
             allKeys.clear();
 
-            // multiply the batch size by the multiplier to avoid extra cache
-            // hits
+            // multiply the batch size by the multiplier to avoid extra cache hits
             batchSize = maxResults * (int) (Math.pow(2, pass));
 
-            jsonRequest.put("count", batchSize + 1);
+            jsonRequest.put("count", batchSize);
 
             final List<Long> descendingOrderDataSet = descendingOrderdataSource.fetch(jsonRequest, userEntityId);
 
             if (descendingOrderDataSet != null && sortedDataSet != null)
             {
                 // we have both lists
-                allKeys = andCollider.collide(descendingOrderDataSet, sortedDataSet, batchSize + 1);
+                allKeys = andCollider.collide(descendingOrderDataSet, sortedDataSet, batchSize);
             }
             else if (descendingOrderDataSet != null)
             {
@@ -183,6 +182,13 @@ public class GetActivityIdsByJsonRequest
             else if (sortedDataSet != null)
             {
                 allKeys = sortedDataSet;
+            }
+
+            if (allKeys.size() < startingIndex)
+            {
+                // no more
+                log.debug("No more results to page through after " + allKeys.size());
+                break;
             }
 
             // build a list of activity ids to fetch for this page, and
@@ -219,7 +225,7 @@ public class GetActivityIdsByJsonRequest
                         log.info("Return results now has " + results.size() + " results - looking for more");
 
                         // start over for our next scoped page
-                        page.clear();
+                        page = new ArrayList<Long>();
                     }
                 }
             }
@@ -229,11 +235,11 @@ public class GetActivityIdsByJsonRequest
 
             pass++;
 
-            log.trace("Done looping?: " + (allKeys.size() <= batchSize) + ", pass: " + pass + ", results.size(): "
+            log.trace("Done looping?: " + (allKeys.size() < batchSize) + ", pass: " + pass + ", results.size(): "
                     + results.size() + ", maxResults: " + maxResults + ", allKeys.size(): " + allKeys.size()
                     + ", batchSize: " + batchSize);
         }
-        while (allKeys.size() > batchSize);
+        while (allKeys.size() >= batchSize); // while we got back at least as many as we needed for the recent batch
 
         return results;
     }
