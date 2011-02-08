@@ -464,7 +464,7 @@
                         <version>2.4</version>
                         <configuration>
                             <check>
-                                <totalLineRate>0</totalLineRate>
+                                <totalLineRate>75</totalLineRate>
                             </check>
                             <formats>
                                 <format>html</format>
@@ -563,6 +563,7 @@
                                 <exclude>org/eurekastreams/web/**/*GuiceModule*.class</exclude>
                                 <exclude>com/**/*.class</exclude>
                                 <exclude>net/**/*.class</exclude>
+                                <exclude>javax/**/*.class</exclude>
                                 <!-- Exclude the model until a technique for testing the model is developed. -->
                                 <exclude>org/eurekastreams/web/client/model/**/*Model*.class</exclude>
                             </excludes>
