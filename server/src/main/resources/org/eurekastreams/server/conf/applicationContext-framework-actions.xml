@@ -1802,7 +1802,7 @@
                     ref="getPrivateCoordinatedAndFollowedGroupIdsForUserMapper" />
     </bean>
 
-    <bean id="getActivityIdsByJsonRequest" class="org.eurekastreams.server.action.execution.stream.GetActivityIdsByJsonRequest">
+    <bean id="getActivityIdsByJsonRequest" class="org.eurekastreams.server.action.execution.stream.GetActivityIdsByJson">
             <constructor-arg>
                 <bean class="org.eurekastreams.server.service.actions.strategies.activity.datasources.PersistenceDataSource">
                     <constructor-arg>

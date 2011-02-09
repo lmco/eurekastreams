@@ -97,7 +97,7 @@ public class GetActivitiesByRequestExecutionTest
     /**
      * Get activity by JSON request mock.
      */
-    private GetActivityIdsByJsonRequest getActivityIdsByJsonRequest = context.mock(GetActivityIdsByJsonRequest.class);
+    private GetActivityIdsByJson getActivityIdsByJsonRequest = context.mock(GetActivityIdsByJson.class);
 
     /**
      * Setup text fixtures.
