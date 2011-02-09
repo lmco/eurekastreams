@@ -508,7 +508,7 @@
 <!--
     Profile Activation and Property Description:
         Maven Flag missing (-D):
-            clover - if does not exist, perform operations a certain way
+            cobertura - if does not exist, perform operations a certain way
 
         Maven Flag (-D) with no value:
             ldap-security - if exists, moves the Spring file into place for LDAP security
@@ -518,7 +518,7 @@
             kerb-security - if exists, moves the Spring file into place for JAAS security 
             EnableJMS - if exists, replace the realTimeExecuter to messageProducer enabling queuing of async
                      actions
-            clover - if exists, enable the generation of Clover code coverage reports
+            cobertura - if exists, enable the generation of Clover code coverage reports
             rpm.build - if exists, perform the steps to create an RPM out of the build
 
         Maven Flag (-D) with value:
@@ -611,10 +611,10 @@
             </properties>
         </profile>
         <profile>
-            <id>gwt-no-clover</id>
+            <id>gwt-no-cobertura</id>
             <activation>
                 <property>
-                    <name>!clover</name>
+                    <name>!cobertura</name>
                 </property>
             </activation>
             <build>
@@ -723,94 +723,7 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>clover.report</id>
-            <activation>
-                <property>
-                    <name>clover</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>gwt-maven-plugin</artifactId>
-                        <version>1.1</version>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <configuration>
-                                    <gwtVersion>${gwtVersion}</gwtVersion>
-                                    <module>${build.gwt.modulename}</module>
-                                </configuration>
-                                <goals>
-                                    <goal>compile</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>com.atlassian.maven.plugins</groupId>
-                        <artifactId>maven-clover2-plugin</artifactId>
-                        <configuration>
-                            <licenseLocation>${build.report.clover.licenseurl}</licenseLocation>
-                            <!--
-                                save the Clover snapshot between clean
-                                builds and only have one for multimodule
-                                projects
-                            -->
-                            <snapshot>${user.home}/.clover/${groupId}/${version}/clover.snapshot</snapshot>
-                            <!-- needed for test optimization across a multi-module project -->
-                            <singleCloverDatabase>true</singleCloverDatabase>
-                            <!-- This excludes file from code coverage -->
-                            <excludes>
-                                <exclude>**/*Request.java</exclude>
-                                <exclude>**/*Test.java</exclude>
-                                <exclude>**/*Fake.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*Facade.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/Session.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*Composite.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*Renderer.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*Pager.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*Notifier.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*Widget.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*Content.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*EntryPoint.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*Panel.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*FormElement.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*FormBuilder.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*Factory.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*Dialog.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*Notification.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*Icon.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*Tab.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*Event.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*Carousel.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*CarouselStructure.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*MockSupport.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*LayoutStrategy.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*UploadStrategy.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*Handler.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/GadgetMetaData*.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/PropertyMapper.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/ClickableMenuItem.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/dragging/**/*.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*JSNIFacadeImpl.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/*GalleryRenderer.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/StreamSearchLinkBuilder.java</exclude>
-                                <exclude>org/eurekastreams/web/client/**/HideModalDialog</exclude>
-                                <exclude>org/eurekastreams/web/client/AnonymousClassInterceptor.java</exclude>
-                                <exclude>org/eurekastreams/web/rebind/HashedBindableGenerator.java</exclude>
-                                <exclude>org/eurekastreams/web/**/*GuiceModule.java</exclude>
-                                <!-- Exclude the model until a technique for testing the model is developed. -->
-                                <exclude>org/eurekastreams/web/client/model/**/*Model.java</exclude>
-                            </excludes>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>      
-        <profile>
+       <profile>
             <id>RPM Build</id>
             <activation>
                 <property>
