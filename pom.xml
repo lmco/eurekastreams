@@ -469,7 +469,7 @@
                         <version>2.4</version>
                         <configuration>
                             <check>
-                                <totalLineRate>75</totalLineRate>
+                                <totalLineRate>0</totalLineRate>
                             </check>
                             <formats>
                                 <format>html</format>
