@@ -42,10 +42,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test for GetActivityIdsByJsonRequest class.
+ * Test for GetActivityIdsByJson class.
  * 
  */
-public class GetActivityIdsByJsonRequestTest
+public class GetActivityIdsByJsonTest
 {
     /**
      * Context for building mock objects.
@@ -60,7 +60,7 @@ public class GetActivityIdsByJsonRequestTest
     /**
      * System under test.
      */
-    private GetActivityIdsByJsonRequest sut;
+    private GetActivityIdsByJson sut;
 
     /**
      * Person id.
@@ -127,7 +127,7 @@ public class GetActivityIdsByJsonRequestTest
         List<ActivityFilter> filters = new LinkedList<ActivityFilter>();
         filters.add(filterMock);
 
-        sut = new GetActivityIdsByJsonRequest(memcacheDS, luceneDS, andCollider, securityTrimmer, peopleMapper,
+        sut = new GetActivityIdsByJson(memcacheDS, luceneDS, andCollider, securityTrimmer, peopleMapper,
                 replaceString);
 
         // create the activity ids list

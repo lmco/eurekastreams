@@ -21,7 +21,7 @@ import java.util.List;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.service.actions.strategies.activity.ListCollider;
@@ -31,12 +31,12 @@ import org.eurekastreams.server.service.actions.strategies.activity.datasources.
 /**
  * Get Activity IDs with a JSON request.
  */
-public class GetActivityIdsByJsonRequest
+public class GetActivityIdsByJson
 {
     /**
      * Logger.
      */
-    private Log log = LogFactory.getLog(GetActivityIdsByJsonRequest.class);
+    private Log log = LogFactory.make();
 
     /**
      * Data source that MUST provide results in descending order of ID.
@@ -71,7 +71,7 @@ public class GetActivityIdsByJsonRequest
     /**
      * Public constructor for AOP.
      */
-    public GetActivityIdsByJsonRequest()
+    public GetActivityIdsByJson()
     {
     }
 
@@ -91,7 +91,7 @@ public class GetActivityIdsByJsonRequest
      * @param inUserRelaceString
      *            the string to replace with the user id.
      */
-    public GetActivityIdsByJsonRequest(final DescendingOrderDataSource inDescendingOrderdataSource,
+    public GetActivityIdsByJson(final DescendingOrderDataSource inDescendingOrderdataSource,
             final SortedDataSource inSortedDataSource, final ListCollider inAndCollider,
             final ActivitySecurityTrimmer inSecurityTrimmer,
             final DomainMapper<List<Long>, List<PersonModelView>> inPersonMapper, final String inUserRelaceString)

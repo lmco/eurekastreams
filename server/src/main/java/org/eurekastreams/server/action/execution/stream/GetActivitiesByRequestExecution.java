@@ -66,7 +66,7 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
     /**
      * Get activity IDs by JSON request.
      */
-    private GetActivityIdsByJsonRequest getActivityIdsByJsonRequest;
+    private GetActivityIdsByJson getActivityIdsByJsonRequest;
 
     /**
      * List of filters to apply to action.
@@ -98,7 +98,7 @@ public class GetActivitiesByRequestExecution implements ExecutionStrategy<Princi
     public GetActivitiesByRequestExecution(final DomainMapper<List<Long>, List<ActivityDTO>> inBulkActivitiesMapper,
             final List<ActivityFilter> inFilters,
             final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper,
-            final GetActivityIdsByJsonRequest inGetActivityIdsByJsonRequest)
+            final GetActivityIdsByJson inGetActivityIdsByJsonRequest)
     {
         bulkActivitiesMapper = inBulkActivitiesMapper;
         filters = inFilters;

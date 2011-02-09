@@ -30,7 +30,7 @@ public class GetActivityCount implements ExecutionStrategy<PrincipalActionContex
     /**
      * The get activity executor.
      */
-    private GetActivityIdsByJsonRequest getActivityIdsByJsonRequest;
+    private GetActivityIdsByJson getActivityIdsByJsonRequest;
 
     /**
      * Default constructor.
@@ -38,7 +38,7 @@ public class GetActivityCount implements ExecutionStrategy<PrincipalActionContex
      * @param inGetActivityIdsByJsonRequest
      *            activity getter..
      */
-    public GetActivityCount(final GetActivityIdsByJsonRequest inGetActivityIdsByJsonRequest)
+    public GetActivityCount(final GetActivityIdsByJson inGetActivityIdsByJsonRequest)
     {
         getActivityIdsByJsonRequest = inGetActivityIdsByJsonRequest;
     }

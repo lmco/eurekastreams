@@ -52,7 +52,7 @@ public class GetActivityCountTest
     /**
      * Exe mock.
      */
-    private GetActivityIdsByJsonRequest getIdsMock = context.mock(GetActivityIdsByJsonRequest.class);
+    private GetActivityIdsByJson getIdsMock = context.mock(GetActivityIdsByJson.class);
 
     /**
      * Test. Put in 3 things, get a count of 3.
