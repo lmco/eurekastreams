@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,10 +56,11 @@ public class AbstractModelTest
      */
     AbstractModel sut;
 
-    /**
-     * Mock change handler.
-     */
-    ModelChangeListener changeHandler = context.mock(ModelChangeListener.class);
+    /** Mock change handler. */
+    ModelChangeListener changeHandler = context.mock(ModelChangeListener.class, "changeHandler");
+
+    /** Mock change handler. */
+    ModelChangeListener changeHandler2 = context.mock(ModelChangeListener.class, "changeHandler2");
 
     /**
      * Sets up the test.
@@ -76,14 +77,16 @@ public class AbstractModelTest
      * Tests the change handlers.
      */
     @Test
-    public final void testChangeHandlers()
+    public final void testWithChangeHandlers()
     {
         sut.addChangeListener(EventTypes.TestEvent, changeHandler);
+        sut.addChangeListener(EventTypes.TestEvent, changeHandler2);
 
         context.checking(new Expectations()
         {
             {
                 oneOf(changeHandler).onChange();
+                oneOf(changeHandler2).onChange();
             }
         });
 
@@ -96,7 +99,7 @@ public class AbstractModelTest
      * Tests the change handlers when none exist for an event type.
      */
     @Test
-    public final void testNoChangeHandlers()
+    public final void testWithNoChangeHandlers()
     {
         sut.addChangeListener(EventTypes.TestEvent, changeHandler);
 

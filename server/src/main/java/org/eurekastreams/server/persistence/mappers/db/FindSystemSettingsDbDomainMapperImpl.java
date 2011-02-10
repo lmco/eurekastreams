@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,12 +27,37 @@ import org.eurekastreams.server.persistence.mappers.requests.MapperRequest;
 public class FindSystemSettingsDbDomainMapperImpl extends ReadMapper<MapperRequest, SystemSettings>
 {
     /**
+     * HTML content template used on the site labeling line of the header.
+     */
+    private final String headerTemplate;
+
+    /**
+     * HTML content template used on the site labeling line of the footer.
+     */
+    private final String footerTemplate;
+
+    /**
+     * Constructor.
+     * 
+     * @param inHeaderTemplate
+     *            HTML content template used on the site labeling line of the header.
+     * @param inFooterTemplate
+     *            HTML content template used on the site labeling line of the footer.
+     */
+    public FindSystemSettingsDbDomainMapperImpl(final String inHeaderTemplate, final String inFooterTemplate)
+    {
+        headerTemplate = inHeaderTemplate;
+        footerTemplate = inFooterTemplate;
+    }
+
+    /**
      * Finds the system settings record.
-     *
+     * 
      * @param inRequest
      *            The MapperRequest.
      * @return the requested domain entity.
      */
+    @Override
     public SystemSettings execute(final MapperRequest inRequest)
     {
         Query q = getEntityManager().createQuery("from SystemSettings");
@@ -47,6 +72,10 @@ public class FindSystemSettingsDbDomainMapperImpl extends ReadMapper<MapperReque
             String groupName = (String) q.getSingleResult();
             settings.setSupportStreamGroupDisplayName(groupName);
         }
+
+        settings.setHeaderTemplate(headerTemplate);
+        settings.setFooterTemplate(footerTemplate);
+
         return settings;
     }
 }

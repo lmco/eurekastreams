@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class ActivityTemplateEmailBuilderTest
     private static final long ACTIVITY_ID = 9876L;
 
     /** Used for mocking objects. */
-    private JUnit4Mockery context = new JUnit4Mockery()
+    private final JUnit4Mockery context = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -53,19 +53,20 @@ public class ActivityTemplateEmailBuilderTest
     };
 
     /** List of builders to choose from. */
-    private Map<BaseObjectType, TemplateEmailBuilder> builders = new HashMap<BaseObjectType, TemplateEmailBuilder>();
+    private final Map<BaseObjectType, TemplateEmailBuilder> builders = // \n
+    new HashMap<BaseObjectType, TemplateEmailBuilder>();
 
     /** Fixture: builderNote. */
-    private TemplateEmailBuilder builderNote = context.mock(TemplateEmailBuilder.class, "builderNote");
+    private final TemplateEmailBuilder builderNote = context.mock(TemplateEmailBuilder.class, "builderNote");
 
     /** Fixture: builderBookmark. */
-    private TemplateEmailBuilder builderBookmark = context.mock(TemplateEmailBuilder.class, "builderBookmark");
+    private final TemplateEmailBuilder builderBookmark = context.mock(TemplateEmailBuilder.class, "builderBookmark");
 
     /** Fixture: For getting activity info. */
-    private DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper = context.mock(DomainMapper.class);
+    private final DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper = context.mock(DomainMapper.class);
 
     /** Fixture: message. */
-    private MimeMessage message = context.mock(MimeMessage.class);
+    private final MimeMessage message = context.mock(MimeMessage.class);
 
     /** SUT. */
     private ActivityTemplateEmailBuilder sut;
@@ -74,7 +75,7 @@ public class ActivityTemplateEmailBuilderTest
     private NotificationDTO dto;
 
     /** Fixture: activity. */
-    private ActivityDTO activity;
+    private final ActivityDTO activity;
 
     /**
      * Constructor.
@@ -184,4 +185,27 @@ public class ActivityTemplateEmailBuilderTest
         context.assertIsSatisfied();
     }
 
+    /**
+     * Tests build: null activity.
+     *
+     * @throws Exception
+     *             Should.
+     */
+    @Test(expected = Exception.class)
+    public void testBuildNullActivity() throws Exception
+    {
+        context.checking(new Expectations()
+        {
+            {
+                allowing(activitiesMapper).execute(Collections.singletonList(ACTIVITY_ID));
+                will(returnValue(Collections.singletonList(null)));
+            }
+        });
+
+        dto.setActivity(ACTIVITY_ID, BaseObjectType.NOTE);
+
+        sut.build(dto, message);
+
+        context.assertIsSatisfied();
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * This class creates the Composite for the main footer displayed on the page.
- * 
+ *
  */
 public class FooterComposite extends Composite
 {
@@ -38,7 +38,7 @@ public class FooterComposite extends Composite
     /**
      * The Site Labeling Panel.
      */
-    FlowPanel siteLabeling = new FlowPanel();
+    FlowPanel siteLabelingContainer = new FlowPanel();
 
     /**
      * ToS Dialog.
@@ -86,10 +86,10 @@ public class FooterComposite extends Composite
         navPanel.add(poweredBy);
 
         panel.add(navPanel);
-        panel.add(siteLabeling);
+        panel.add(siteLabelingContainer);
 
         navPanel.addStyleName("footer-nav");
-        siteLabeling.addStyleName("site-labeling");
+        siteLabelingContainer.addStyleName("site-labeling");
         panel.addStyleName("footer-bar");
         initWidget(panel);
     }
@@ -97,11 +97,15 @@ public class FooterComposite extends Composite
     /**
      * Sets Site labeling.
      * 
-     * @param siteLabelingTxt
+     * @param inTemplate
+     *            HTML template content to insert in the footer.
+     * @param inSiteLabel
      *            The text for Site Labeling.
      */
-    public void setSiteLabel(final String siteLabelingTxt)
+    public void setSiteLabelTemplate(final String inTemplate, final String inSiteLabel)
     {
-        siteLabeling.getElement().setInnerHTML(siteLabelingTxt);
+        String siteLabel = inSiteLabel == null ? "" : inSiteLabel;
+        String template = inTemplate.replace("%SITELABEL%", siteLabel);
+        siteLabelingContainer.getElement().setInnerHTML(template);
     }
 }

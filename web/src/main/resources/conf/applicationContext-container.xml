@@ -16,6 +16,7 @@
     <context:property-placeholder location="classpath:conf/eurekastreams-server.properties"/>      
 
 	<!-- Include common resources -->
+	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-settings.xml" />
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-model-${build.system.nodetype}.xml" />
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-model.xml" />
 	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-mappers.xml" />

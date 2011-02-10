@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,7 @@ import org.junit.Test;
 /**
  * Test fixture for ActivityAuthorizationStrategy.
  */
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class ActivityAuthorizationStrategyTest
 {
     /**
@@ -60,38 +61,39 @@ public class ActivityAuthorizationStrategyTest
     /**
      * Groups by shortName DAO.
      */
-    private GetDomainGroupsByShortNames groupByShortNameDAO = context.mock(GetDomainGroupsByShortNames.class);
+    private final GetDomainGroupsByShortNames groupByShortNameDAO = context.mock(GetDomainGroupsByShortNames.class);
 
     /**
      * Mapper to get the personmodelview by account id.
      */
-    private DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = context
+    private final DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = context
             .mock(DomainMapper.class);
 
     /**
      * Group follower ids DAO.
      */
-    private DomainMapper<Long, List<Long>> groupFollowersDAO = context.mock(DomainMapper.class, "groupFollowersDAO");
+    private final DomainMapper<Long, List<Long>> groupFollowersDAO = context.mock(DomainMapper.class,
+            "groupFollowersDAO");
 
     /**
      * ActivityDTO.
      */
-    private ActivityDTO activityDTO = context.mock(ActivityDTO.class);
+    private final ActivityDTO activityDTO = context.mock(ActivityDTO.class);
 
     /**
      * Service action context.
      */
-    private ServiceActionContext serviceActionContext = context.mock(ServiceActionContext.class);
+    private final ServiceActionContext serviceActionContext = context.mock(ServiceActionContext.class);
 
     /**
      * user details.
      */
-    private Principal userPrincipal = context.mock(Principal.class);
+    private final Principal userPrincipal = context.mock(Principal.class);
 
     /**
      * StreamEntityDTO.
      */
-    private StreamEntityDTO streamDTO = context.mock(StreamEntityDTO.class);
+    private final StreamEntityDTO streamDTO = context.mock(StreamEntityDTO.class);
 
     /**
      * StreamScope.
@@ -152,7 +154,7 @@ public class ActivityAuthorizationStrategyTest
     /**
      * Mock instance of {@link ActivityDTOFromParamsStrategy} for retrieving the activity dto from the params.
      */
-    @SuppressWarnings("unchecked")
+
     private final ActivityDTOFromParamsStrategy activityDTOStrategyMock = context
             .mock(ActivityDTOFromParamsStrategy.class);
 
@@ -189,7 +191,6 @@ public class ActivityAuthorizationStrategyTest
      * @throws Exception
      *             - on error.
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testExecutePersonStreamRecipient() throws Exception
     {
@@ -235,7 +236,7 @@ public class ActivityAuthorizationStrategyTest
      * @throws Exception
      *             - on error.
      */
-    @SuppressWarnings("unchecked")
+
     @Test(expected = AuthorizationException.class)
     public void testExecutePersonStreamRecipientWithError() throws Exception
     {
@@ -278,7 +279,6 @@ public class ActivityAuthorizationStrategyTest
      * @throws Exception
      *             - on error.
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testExecutePublicGroupStreamRecipient() throws Exception
     {
@@ -336,7 +336,6 @@ public class ActivityAuthorizationStrategyTest
      * @throws Exception
      *             - on error.
      */
-    @SuppressWarnings("unchecked")
     @Test(expected = AuthorizationException.class)
     public void testExecutePrivateGroupStreamRecipientIsNotFollowerOrCoordinator() throws Exception
     {
@@ -417,7 +416,6 @@ public class ActivityAuthorizationStrategyTest
      * @throws Exception
      *             - on error.
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testExecutePrivateGroupStreamRecipientIsFollower() throws Exception
     {
@@ -483,7 +481,6 @@ public class ActivityAuthorizationStrategyTest
      * @throws Exception
      *             - on error.
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testExecutePrivateGroupStreamRecipientIsCoordinator() throws Exception
     {
@@ -538,7 +535,6 @@ public class ActivityAuthorizationStrategyTest
     /**
      * Test method to test the case where retrieving the activity dto fails.
      */
-    @SuppressWarnings("unchecked")
     @Test(expected = AuthorizationException.class)
     public void testFailedActivityDTOParamsRetrieval()
     {
@@ -553,4 +549,47 @@ public class ActivityAuthorizationStrategyTest
         sut.authorize(serviceActionContext);
         context.assertIsSatisfied();
     }
+
+    /**
+     * Test the case where retrieving the activity dto returns null.
+     */
+    @Test
+    public void testNullActivityDTOParamsRetrieval()
+    {
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(activityDTOStrategyMock).execute(userPrincipal, activityId);
+                will(returnValue(null));
+            }
+        });
+
+        sut.authorize(serviceActionContext);
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test the case where retrieving the activity dto returns null.
+     */
+    @Test(expected = AuthorizationException.class)
+    public void testActivityDestinationInvalid()
+    {
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(activityDTOStrategyMock).execute(userPrincipal, activityId);
+                will(returnValue(activityDTO));
+
+                oneOf(streamDTO).getType();
+                will(returnValue(EntityType.ORGANIZATION));
+
+                oneOf(activityDTO).getDestinationStream();
+                will(returnValue(streamDTO));
+            }
+        });
+
+        sut.authorize(serviceActionContext);
+        context.assertIsSatisfied();
+    }
+
 }

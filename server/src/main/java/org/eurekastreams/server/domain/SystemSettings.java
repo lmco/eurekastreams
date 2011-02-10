@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,19 +49,19 @@ public class SystemSettings extends DomainEntity implements Serializable
      */
     @Transient
     public static final int MAX_SITELABEL_INPUT = 2000;
-    
+
     /**
      * Minimum number of days for the Terms of Service Prompt Interval.
      */
     @Transient
     public static final int MIN_TOS_PROMPT_INTERVAL = 1;
-    
+
     /**
      * Minimum number of days for Content Expiration.
      */
     @Transient
     public static final int MIN_CONTENT_EXPIRATION = 0;
-    
+
     /**
      * Maximum number of days for Content Expiration.
      */
@@ -73,9 +73,9 @@ public class SystemSettings extends DomainEntity implements Serializable
      */
     @Transient
     public static final int MAX_SUPPORT_PHONE_NUMBER_LENGTH = 50;
-    
+
     /**
-     * Max Support Email Address Characters. 
+     * Max Support Email Address Characters.
      */
     @Transient
     public static final int MAX_SUPPORT_EMAIL_ADDRESS_LENGTH = 50;
@@ -125,11 +125,11 @@ public class SystemSettings extends DomainEntity implements Serializable
      */
     @Basic(optional = false)
     private Boolean sendWelcomeEmails;
-    
+
     /**
      * Waring message for Plugins.
      */
-    private String pluginWarning;    
+    private String pluginWarning;
 
     /**
      * The short name of the group stream that provides help to users.
@@ -140,7 +140,7 @@ public class SystemSettings extends DomainEntity implements Serializable
      * The display name of the support group stream.
      */
     @Transient
-    private String supportStreamGroupDisplayName; 
+    private String supportStreamGroupDisplayName;
 
     /**
      * The stream support phone number.
@@ -153,6 +153,18 @@ public class SystemSettings extends DomainEntity implements Serializable
      */
     @Length(max = MAX_SUPPORT_EMAIL_ADDRESS_LENGTH)
     private String supportEmailAddress;
+
+    /**
+     * HTML content template used on the site labeling line of the header.
+     */
+    @Transient
+    private String headerTemplate;
+
+    /**
+     * HTML content template used on the site labeling line of the footer.
+     */
+    @Transient
+    private String footerTemplate;
 
     /**
      * @return Returns the site label.
@@ -168,7 +180,7 @@ public class SystemSettings extends DomainEntity implements Serializable
      */
     public void setSiteLabel(final String inSiteLabel)
     {
-        this.siteLabel = inSiteLabel;
+        siteLabel = inSiteLabel;
     }
 
     /**
@@ -185,7 +197,7 @@ public class SystemSettings extends DomainEntity implements Serializable
      */
     public void setTermsOfService(final String inTermsOfService)
     {
-        this.termsOfService = inTermsOfService;
+        termsOfService = inTermsOfService;
     }
 
     /**
@@ -202,7 +214,7 @@ public class SystemSettings extends DomainEntity implements Serializable
      */
     public void setTosPromptInterval(final int inTosPromptInterval)
     {
-        this.tosPromptInterval = inTosPromptInterval;
+        tosPromptInterval = inTosPromptInterval;
     }
 
     /**
@@ -211,7 +223,7 @@ public class SystemSettings extends DomainEntity implements Serializable
      */
     public void setContentWarningText(final String inContentWarningText)
     {
-        this.contentWarningText = inContentWarningText;
+        contentWarningText = inContentWarningText;
     }
 
     /**
@@ -228,7 +240,7 @@ public class SystemSettings extends DomainEntity implements Serializable
      */
     public void setContentExpiration(final int inContentExpiration)
     {
-        this.contentExpiration = inContentExpiration;
+        contentExpiration = inContentExpiration;
     }
 
     /**
@@ -245,7 +257,7 @@ public class SystemSettings extends DomainEntity implements Serializable
      */
     public void setMembershipCriteria(final List<MembershipCriteria> inMembershipCriteria)
     {
-        this.membershipCriteria = inMembershipCriteria;
+        membershipCriteria = inMembershipCriteria;
     }
 
     /**
@@ -262,7 +274,7 @@ public class SystemSettings extends DomainEntity implements Serializable
      */
     public void setSendWelcomeEmails(final Boolean inSendWelcomeEmails)
     {
-        this.sendWelcomeEmails = inSendWelcomeEmails;
+        sendWelcomeEmails = inSendWelcomeEmails;
     }
 
     /**
@@ -274,17 +286,17 @@ public class SystemSettings extends DomainEntity implements Serializable
     }
 
     /**
-     * 
+     *
      * @param inPluginWarning
      * the plugin warning setter.
      */
     public void setPluginWarning(final String inPluginWarning)
     {
-        this.pluginWarning = inPluginWarning;
+        pluginWarning = inPluginWarning;
     }
-    
+
     /**
-     * 
+     *
      * @return the plugin warning text.
      */
     public String getPluginWarning()
@@ -370,5 +382,39 @@ public class SystemSettings extends DomainEntity implements Serializable
     public String getSupportStreamGroupDisplayName()
     {
         return supportStreamGroupDisplayName;
+    }
+
+    /**
+     * @return the headerTemplate
+     */
+    public String getHeaderTemplate()
+    {
+        return headerTemplate;
+    }
+
+    /**
+     * @param inHeaderTemplate
+     *            the headerTemplate to set
+     */
+    public void setHeaderTemplate(final String inHeaderTemplate)
+    {
+        headerTemplate = inHeaderTemplate;
+    }
+
+    /**
+     * @return the footerTemplate
+     */
+    public String getFooterTemplate()
+    {
+        return footerTemplate;
+    }
+
+    /**
+     * @param inFooterTemplate
+     *            the footerTemplate to set
+     */
+    public void setFooterTemplate(final String inFooterTemplate)
+    {
+        footerTemplate = inFooterTemplate;
     }
 }

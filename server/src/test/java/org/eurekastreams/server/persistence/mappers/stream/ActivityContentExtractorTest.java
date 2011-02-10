@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import static org.junit.Assert.assertNull;
 
 import java.util.HashMap;
 
-import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.junit.Test;
 
@@ -50,6 +49,24 @@ public class ActivityContentExtractorTest
     private final String targetTitle = "38skjsdlkj 2likjsd";
 
     /**
+     * Test when there is no base object.
+     */
+    @Test
+    public void testExtractContentUnsupportedType()
+    {
+        assertNull(sut.extractContent(BaseObjectType.VIDEO, new HashMap<String, String>()));
+    }
+
+    /**
+     * Test when there is no base object.
+     */
+    @Test
+    public void testExtractContentWithNoBaseObject()
+    {
+        assertNull(sut.extractContent(BaseObjectType.NOTE, null));
+    }
+
+    /**
      * Test objectToString() when base object type is Note and there is content.
      */
     @Test
@@ -62,13 +79,12 @@ public class ActivityContentExtractorTest
     }
 
     /**
-     * Test objectToString() when base object type is Note and there is content.
+     * Test when base object type is Note and there is no content.
      */
     @Test
     public void testObjectToStringFromActivityNoteWithNoContent()
     {
-        Activity activity = new Activity();
-        assertNull(sut.extractContent(BaseObjectType.NOTE, null));
+        assertNull(sut.extractContent(BaseObjectType.NOTE, new HashMap<String, String>()));
     }
 
     /**

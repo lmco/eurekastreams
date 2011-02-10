@@ -10,6 +10,7 @@
 
     <context:property-placeholder location="classpath:conf/eurekastreams-server.properties"/>
 
+	<import resource="classpath:/org/eurekastreams/server/conf/applicationContext-settings.xml" />
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-model.xml" />
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-model-indexingNode.xml" />    
     <import resource="classpath:/org/eurekastreams/server/conf/applicationContext-memcached.xml" />
