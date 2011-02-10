@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * The display for the stream plugin settings tab.
- *
+ * 
  */
 public class StreamPluginsSettingsTabContent extends Composite
 {
@@ -121,7 +121,7 @@ public class StreamPluginsSettingsTabContent extends Composite
 
     /**
      * The default constructor.
-     *
+     * 
      * @param inModel
      *            The base model
      */
@@ -170,8 +170,8 @@ public class StreamPluginsSettingsTabContent extends Composite
                     public void update(final DeletedStreamPluginSubscriptionResponseEvent event)
                     {
                         renderInsides();
-                        Session.getInstance().getEventBus().notifyObservers(new ShowNotificationEvent(
-                                new Notification("Stream plugin has been deleted")));
+                        Session.getInstance().getEventBus().notifyObservers(
+                                new ShowNotificationEvent(new Notification("Stream plugin has been deleted")));
                     }
                 });
 
@@ -243,7 +243,7 @@ public class StreamPluginsSettingsTabContent extends Composite
 
     /**
      * Get the metadata for the plugin.
-     *
+     * 
      * @param plugin
      *            the plugin.
      * @return the metadata.
@@ -439,7 +439,8 @@ public class StreamPluginsSettingsTabContent extends Composite
                         lastUpdateTime.addStyleName("light");
                         lastUpdatedPanel.add(lastUpdateTime);
                     }
-                    if (feedSubscription.getFeed().getIsFeedBroken())
+                    if (feedSubscription.getFeed().getIsFeedBroken() != null
+                            && feedSubscription.getFeed().getIsFeedBroken())
                     {
                         Label brokenFeedIndicator = new InlineLabel("Feed may be broken, please check the source.");
                         brokenFeedIndicator.addStyleName("broken-feed-indicator");
@@ -470,7 +471,7 @@ public class StreamPluginsSettingsTabContent extends Composite
 
     /**
      * Selects a plugin from the available plugins, allowing the user to add a new one.
-     *
+     * 
      * @param selectedMetaData
      *            MetaData of the selected plugin
      */
@@ -498,7 +499,7 @@ public class StreamPluginsSettingsTabContent extends Composite
 
     /**
      * Edits a selected feed subscription.
-     *
+     * 
      * @param feedSubscription
      *            The feed subscription being edited
      * @param selectedMetaData
