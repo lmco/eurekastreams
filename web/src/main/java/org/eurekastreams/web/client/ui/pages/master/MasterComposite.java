@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.domain.SystemSettings;
 import org.eurekastreams.server.domain.TutorialVideoDTO;
 import org.eurekastreams.web.client.events.GetTutorialVideoResponseEvent;
 import org.eurekastreams.web.client.events.Observer;
@@ -161,7 +162,7 @@ public class MasterComposite extends Composite
         panel.add(mainContents);
 
         initWidget(panel);
-        
+
         Session.getInstance().getEventBus().addObserver(GetTutorialVideoResponseEvent.class,
                 new Observer<GetTutorialVideoResponseEvent>()
                 {
@@ -297,8 +298,9 @@ public class MasterComposite extends Composite
                 {
                     public void update(final GotSystemSettingsResponseEvent event)
                     {
-                        header.setSiteLabel(event.getResponse().getSiteLabel());
-                        footerPanel.setSiteLabel(event.getResponse().getSiteLabel());
+                        final SystemSettings settings = event.getResponse();
+                        header.setSiteLabelTemplate(settings.getHeaderTemplate(), settings.getSiteLabel());
+                        footerPanel.setSiteLabelTemplate(settings.getFooterTemplate(), settings.getSiteLabel());
                     }
 
                 });

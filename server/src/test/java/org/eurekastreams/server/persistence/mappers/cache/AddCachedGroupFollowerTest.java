@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,23 @@
 package org.eurekastreams.server.persistence.mappers.cache;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import javax.persistence.PersistenceException;
+
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.eurekastreams.server.persistence.mappers.cache.testhelpers.SimpleMemoryCache;
 import org.eurekastreams.server.persistence.mappers.db.GetFollowedGroupIdsForPersonByIdDbMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetFollowerPersonIdsForGroupByIdDbMapper;
 import org.eurekastreams.server.persistence.strategies.DomainGroupQueryStrategy;
+import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +60,7 @@ public class AddCachedGroupFollowerTest extends MapperTest
     /**
      * System under test.
      */
-    private AddCachedGroupFollower mapper;
+    private AddCachedGroupFollower sut;
 
     /**
      * Cache loader for person.
@@ -104,9 +111,9 @@ public class AddCachedGroupFollowerTest extends MapperTest
         followerIdsMapper = new GetFollowerPersonIdsForGroupByIdDbMapper();
         followerIdsMapper.setEntityManager(getEntityManager());
 
-        mapper = new AddCachedGroupFollower(followedGroupIdsMapper, followerIdsMapper);
-        mapper.setCache(cache);
-        mapper.setEntityManager(getEntityManager());
+        sut = new AddCachedGroupFollower(followedGroupIdsMapper, followerIdsMapper);
+        sut.setCache(cache);
+        sut.setEntityManager(getEntityManager());
 
     }
 
@@ -140,7 +147,7 @@ public class AddCachedGroupFollowerTest extends MapperTest
         assertNull(groupIdsFollowing);
 
         // Add fordp2 as a follower to group 1.
-        mapper.execute(TEST_PERSON_ID_3, TEST_GROUP_ID_1);
+        sut.execute(TEST_PERSON_ID_3, TEST_GROUP_ID_1);
 
         // Test that fordp2 was added to the followers of the group.
         List<Long> updatedGroupFollowerIds = cache.getList(CacheKeys.FOLLOWERS_BY_GROUP + TEST_GROUP_ID_1);
@@ -181,7 +188,7 @@ public class AddCachedGroupFollowerTest extends MapperTest
         assertTrue(groupIdsFollowing.contains(TEST_GROUP_ID_1));
 
         // Add smithers as a follower to group 1.
-        mapper.execute(TEST_PERSON_ID_1, TEST_GROUP_ID_1);
+        sut.execute(TEST_PERSON_ID_1, TEST_GROUP_ID_1);
 
         // Test that the followers of the group are unchanged.
         List<Long> updatedGroupFollowerIds = cache.getList(CacheKeys.FOLLOWERS_BY_GROUP + TEST_GROUP_ID_1);
@@ -197,5 +204,37 @@ public class AddCachedGroupFollowerTest extends MapperTest
         assertEquals(1, updatedGroupIdsFollowing.size());
         // Assert that smithers is still following group1.
         assertTrue(updatedGroupIdsFollowing.contains(TEST_GROUP_ID_1));
+    }
+
+    /**
+     * Test adding group followers.
+     */
+    @Test
+    public void testExecuteException()
+    {
+        /** Used for mocking objects. */
+        JUnit4Mockery mockContext = new JUnit4Mockery()
+        {
+            {
+                setImposteriser(ClassImposteriser.INSTANCE);
+            }
+        };
+
+        final DomainMapper followerMapper = mockContext.mock(DomainMapper.class, "followerMapper");
+        final DomainMapper followedMapper = mockContext.mock(DomainMapper.class, "followedMapper");
+
+        sut = new AddCachedGroupFollower(followedMapper, followerMapper);
+        mockContext.checking(new Expectations()
+        {
+            {
+                allowing(followerMapper).execute(TEST_GROUP_ID_1);
+                will(throwException(new PersistenceException()));
+                allowing(followedMapper).execute(TEST_GROUP_ID_1);
+                will(throwException(new PersistenceException()));
+            }
+        });
+
+        assertFalse(sut.execute(TEST_PERSON_ID_1, TEST_GROUP_ID_1));
+        mockContext.assertIsSatisfied();
     }
 }

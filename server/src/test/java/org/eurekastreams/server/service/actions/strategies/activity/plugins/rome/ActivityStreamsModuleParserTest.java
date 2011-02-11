@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public class ActivityStreamsModuleParserTest
     /**
      * System under test.
      */
-    private ActivityStreamsModuleParser sut = new ActivityStreamsModuleParser();
+    private final ActivityStreamsModuleParser sut = new ActivityStreamsModuleParser();
 
     /**
      * Test the getNamespaceUri function.
@@ -81,6 +81,7 @@ public class ActivityStreamsModuleParserTest
         final Element summaryChild = context.mock(Element.class, "summary");
         final Element objTypeChild = context.mock(Element.class, "objTypeError");
         final Element objTypeErrorChild = context.mock(Element.class, "objType");
+        final Element unexpectedChild = context.mock(Element.class, "unexpectedChild");
 
         final List<Element> children = new LinkedList<Element>();
         children.add(titleChild);
@@ -89,6 +90,7 @@ public class ActivityStreamsModuleParserTest
         children.add(summaryChild);
         children.add(objTypeChild);
         children.add(objTypeErrorChild);
+        children.add(unexpectedChild);
 
         context.checking(new Expectations()
         {
@@ -128,6 +130,9 @@ public class ActivityStreamsModuleParserTest
                 will(returnValue("object-type"));
                 oneOf(objTypeErrorChild).getTextTrim();
                 will(returnValue(objectTypeError));
+
+                allowing(unexpectedChild).getName();
+                will(returnValue("unexpected"));
             }
         });
 

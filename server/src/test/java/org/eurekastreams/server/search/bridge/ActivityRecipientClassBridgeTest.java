@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,12 +44,12 @@ public class ActivityRecipientClassBridgeTest
     /**
      * Account id of the person we're testing for.
      */
-    private String testPersonAccountId = "abcdefg";
+    private final String testPersonAccountId = "abcdefg";
 
     /**
      * Short name of the domain group we're testing for.
      */
-    private String testDomainGroupShortName = "hijklmno";
+    private final String testDomainGroupShortName = "hijklmno";
 
     /**
      * Mocked GetDomainGroupsByShortNames.
@@ -74,7 +74,7 @@ public class ActivityRecipientClassBridgeTest
     /**
      * System under test.
      */
-    private ActivityRecipientClassBridge sut = new ActivityRecipientClassBridge();
+    private final ActivityRecipientClassBridge sut = new ActivityRecipientClassBridge();
 
     /**
      * Class teardown method.
@@ -144,6 +144,18 @@ public class ActivityRecipientClassBridgeTest
         Activity activity = new Activity();
         activity.setRecipientStreamScope(new StreamScope(ScopeType.PERSON, testPersonAccountId));
         assertEquals("p" + testPersonId, sut.objectToString(activity));
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test objectToString for unsupported entity type.
+     */
+    @Test(expected = RuntimeException.class)
+    public void testObjectToStringForUnsupportedFromActivityObject()
+    {
+        Activity activity = new Activity();
+        activity.setRecipientStreamScope(new StreamScope(ScopeType.ORGANIZATION, "org"));
+        sut.objectToString(activity);
         context.assertIsSatisfied();
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -280,10 +280,48 @@ public class ActivityServiceImplTest
      *             - covers all exceptions
      */
     @Test
+    public void testCreateActivityBookmark() throws Exception
+    {
+        testActivity.setTemplateParams(Collections.singletonMap("baseObjectType", "BOOKMARK"));
+        final GadgetDefinition gadgetDef = new GadgetDefinition();
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(openSocialPrincipalPopulatorMock).getPrincipal(with(any(String.class)));
+                will(returnValue(principalMock));
+
+                oneOf(principalMock).getOpenSocialId();
+
+                oneOf(principalMock).getAccountId();
+
+                oneOf(serviceActionControllerMock).execute(with(any(ServiceActionContext.class)),
+                        with(any(TaskHandlerAction.class)));
+
+                oneOf(gadgetDefMapper).findById(Long.parseLong(TEST_APP_ID));
+                will(returnValue(gadgetDef));
+                oneOf(gadgetMetaDataFetcher).getGadgetsMetaData(with(any(Map.class)));
+                will(returnValue(Collections.singletonList(new GadgetMetaDataDTO(gadgetDef))));
+            }
+        });
+
+        sut.createActivity(testId, testGroupId, TEST_APP_ID, ACTIVITY_ALL_FIELDS, testActivity, FAKETOKEN);
+
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test for creating an activity.
+     * 
+     * @throws Exception
+     *             - covers all exceptions
+     */
+    @Test
     public void testCreateActivityFile() throws Exception
     {
         testActivity.setTemplateParams(new HashMap<String, String>());
         testActivity.getTemplateParams().put("baseObjectType", "FILE");
+        testActivity.getTemplateParams().put("source", "http://www.example.com");
         final GadgetDefinition gadgetDef = new GadgetDefinition();
 
         context.checking(new Expectations()

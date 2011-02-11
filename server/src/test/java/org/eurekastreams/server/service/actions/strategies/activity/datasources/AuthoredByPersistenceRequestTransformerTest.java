@@ -15,8 +15,6 @@
  */
 package org.eurekastreams.server.service.actions.strategies.activity.datasources;
 
-import java.util.ArrayList;
-
 import junit.framework.Assert;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -79,7 +77,6 @@ public class AuthoredByPersistenceRequestTransformerTest
 
         final String personName = "personName";
         final String groupName = "groupName";
-        final String orgName = "orgName";
 
         final JSONObject personObj = new JSONObject();
         personObj.accumulate("type", "PERSON");
@@ -94,8 +91,6 @@ public class AuthoredByPersistenceRequestTransformerTest
         recipientArr.add(groupObj);
 
         request.accumulate("authoredBy", recipientArr);
-
-        final ArrayList<Long> retVal = new ArrayList<Long>();
 
         final Long groupId = 6L;
 
@@ -112,7 +107,41 @@ public class AuthoredByPersistenceRequestTransformerTest
             }
         });
 
-        Assert.assertEquals("p" + personId + " g" + groupId, sut.transform(request, 0L));
+        Assert.assertEquals("(p" + personId + " OR g" + groupId + ")", sut.transform(request, 0L));
+
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Tests transformation with one author.
+     */
+    @Test
+    public void testOneAuthor()
+    {
+        final JSONObject request = new JSONObject();
+
+        final String personName = "personName";
+
+        final JSONObject personObj = new JSONObject();
+        personObj.accumulate("type", "PERSON");
+        personObj.accumulate("name", personName);
+
+        JSONArray recipientArr = new JSONArray();
+        recipientArr.add(personObj);
+
+        request.accumulate("authoredBy", recipientArr);
+
+        final Long personId = 5L;
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(getPersonIdByAccountIdMapper).execute(personName);
+                will(returnValue(personId));
+            }
+        });
+
+        Assert.assertEquals("(p" + personId + ")", sut.transform(request, 0L));
 
         context.assertIsSatisfied();
     }

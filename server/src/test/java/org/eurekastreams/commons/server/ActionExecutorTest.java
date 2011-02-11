@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public class ActionExecutorTest
     /**
      * Context for building mock objects.
      */
-    private final Mockery context = new JUnit4Mockery()
+    private final Mockery mockContext = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -69,27 +69,27 @@ public class ActionExecutorTest
     /**
      * Mocked Application Spring context.
      */
-    ApplicationContext springContextMock = context.mock(ApplicationContext.class);
+    ApplicationContext springContextMock = mockContext.mock(ApplicationContext.class);
 
     /**
      * Mocked UserDetails that is a valid user details object.
      */
-    private final UserDetails validUserDetailsMock = context.mock(UserDetails.class);
+    private final UserDetails validUserDetailsMock = mockContext.mock(UserDetails.class);
 
     /**
      * Used for GWT traffic while serializing persistent objects.
      */
-    private final PersistentBeanManager persistentBeanManager = context.mock(PersistentBeanManager.class);
+    private final PersistentBeanManager persistentBeanManager = mockContext.mock(PersistentBeanManager.class);
 
     /**
      * Mocked PrincipalPopulator used to populate a principal object for the ServiceActionContext.
      */
-    private final PrincipalPopulator principalPopulator = context.mock(PrincipalPopulator.class);
+    private final PrincipalPopulator principalPopulator = mockContext.mock(PrincipalPopulator.class);
 
     /**
      * Mocked ServiceActionController used to execute ServiceActions.
      */
-    private final ServiceActionController serviceActionController = context.mock(ServiceActionController.class);
+    private final ServiceActionController serviceActionController = mockContext.mock(ServiceActionController.class);
 
     /**
      * The params array of Strings.
@@ -106,10 +106,24 @@ public class ActionExecutorTest
      */
     private static final String USERNAME = "testuser";
 
-    /**
-     * The request action request object.
-     */
+    /** Action request object. */
     private ActionRequestImpl<String> defaultRequest = null;
+
+    /** Action request object. */
+    private ActionRequestImpl<String> nullParmRequest = null;
+
+    /** Fixture: action bean to execute. */
+    private final ServiceAction serviceAction = mockContext.mock(ServiceAction.class, "serviceAction");
+
+    /** Fixture: action bean to execute. */
+    private final TaskHandlerServiceAction taskHandlerAction = mockContext.mock(TaskHandlerServiceAction.class,
+            "taskHandlerAction");
+
+    /** Fixture: generic action result. */
+    private final Serializable genericResult = mockContext.mock(Serializable.class, "genericResult");
+
+    /** Fixture: generic action result. */
+    private final Serializable genericClonedResult = mockContext.mock(Serializable.class, "genericClonedResult");
 
     /**
      * .
@@ -120,10 +134,11 @@ public class ActionExecutorTest
     {
         params = new String[] { "echo me" };
 
-        // set up request
+        // set up requests
         defaultRequest = new ActionRequestImpl<String>(ACTION_KEY, params);
+        nullParmRequest = new ActionRequestImpl<String>(ACTION_KEY, null);
 
-        context.checking(new Expectations()
+        mockContext.checking(new Expectations()
         {
             {
                 allowing(springContextMock).getBean("persistentBeanManager");
@@ -143,12 +158,34 @@ public class ActionExecutorTest
     }
 
     /**
+     * Performs additional setup for a successful action execution scenario.
+     *
+     * @param actionBean
+     *            Object to be returned from Spring as the action bean.
+     */
+    private void setupSuccess(final Object actionBean)
+    {
+        mockContext.checking(new Expectations()
+        {
+            {
+                oneOf(springContextMock).getBean(ACTION_KEY);
+                will(returnValue(actionBean));
+
+                oneOf(principalPopulator).getPrincipal(USERNAME, null);
+
+                oneOf(persistentBeanManager).clone(with(same(genericResult)));
+                will(returnValue(genericClonedResult));
+            }
+        });
+    }
+
+    /**
      * Tests the getters.
      */
     @Test
     public void testGetters()
     {
-        context.checking(new Expectations()
+        mockContext.checking(new Expectations()
         {
             {
                 ignoring(springContextMock);
@@ -161,7 +198,7 @@ public class ActionExecutorTest
         assertSame(springContextMock, sut.getSpringContext());
         assertSame(validUserDetailsMock, sut.getUserDetails());
 
-        context.assertIsSatisfied();
+        mockContext.assertIsSatisfied();
     }
 
     /**
@@ -170,24 +207,17 @@ public class ActionExecutorTest
     @Test
     public final void testExecuteServiceAction()
     {
-        final ServiceAction serviceActionMock = context.mock(ServiceAction.class);
-
-        ActionRequestImpl<String> request = new ActionRequestImpl<String>("testkey", new String("testParam"));
-
-        context.checking(new Expectations()
+        setupSuccess(serviceAction);
+        mockContext.checking(new Expectations()
         {
             {
-                oneOf(springContextMock).getBean("testkey");
-                will(returnValue(serviceActionMock));
-
-                oneOf(principalPopulator).getPrincipal(USERNAME, null);
-
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)),
-                        with(any(ServiceAction.class)));
-
-                oneOf(persistentBeanManager).clone(with(any(String.class)));
+                        with(same(serviceAction)));
+                will(returnValue(genericResult));
             }
         });
+
+        ActionRequestImpl<String> request = new ActionRequestImpl<String>(ACTION_KEY, new String("testParam"));
 
         // Test the setter on the ActionRequest class.
         Assert.assertEquals(request.getParam(), "testParam");
@@ -201,33 +231,26 @@ public class ActionExecutorTest
         // Execute the request.
         sut.execute();
 
-        context.assertIsSatisfied();
+        mockContext.assertIsSatisfied();
     }
 
     /**
-     * Test execution with a ServiceAction.
+     * Test execution with a TaskHandlerServiceAction.
      */
     @Test
     public final void testExecuteAsyncSubmitterServiceAction()
     {
-        final TaskHandlerServiceAction serviceActionMock = context.mock(TaskHandlerServiceAction.class);
-
-        ActionRequestImpl<String> request = new ActionRequestImpl<String>("testkey", new String("testParam"));
-
-        context.checking(new Expectations()
+        setupSuccess(taskHandlerAction);
+        mockContext.checking(new Expectations()
         {
             {
-                oneOf(springContextMock).getBean("testkey");
-                will(returnValue(serviceActionMock));
-
-                oneOf(principalPopulator).getPrincipal(USERNAME, null);
-
                 oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)),
-                        with(any(TaskHandlerServiceAction.class)));
-
-                oneOf(persistentBeanManager).clone(with(any(String.class)));
+                        with(same(taskHandlerAction)));
+                will(returnValue(genericResult));
             }
         });
+
+        ActionRequestImpl<String> request = new ActionRequestImpl<String>(ACTION_KEY, new String("testParam"));
 
         // Test the setter on the ActionRequest class.
         Assert.assertEquals(request.getParam(), "testParam");
@@ -241,7 +264,7 @@ public class ActionExecutorTest
         // Execute the request.
         sut.execute();
 
-        context.assertIsSatisfied();
+        mockContext.assertIsSatisfied();
     }
 
     /**
@@ -251,7 +274,7 @@ public class ActionExecutorTest
     @Test
     public final void testInvalidActionExecution()
     {
-        context.checking(new Expectations()
+        mockContext.checking(new Expectations()
         {
             {
                 oneOf(springContextMock).getBean(ACTION_KEY);
@@ -266,19 +289,190 @@ public class ActionExecutorTest
 
         Assert.assertTrue(results.getResponse() instanceof GeneralException);
 
-        context.assertIsSatisfied();
+        mockContext.assertIsSatisfied();
+    }
+
+    /* ---- Test with a null parameter ---- */
+
+    /**
+     * Test execution with a ServiceAction.
+     */
+    @Test
+    public final void testExecuteServiceActionNullParam()
+    {
+        setupSuccess(serviceAction);
+        mockContext.checking(new Expectations()
+        {
+            {
+                oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)),
+                        with(same(serviceAction)));
+                will(returnValue(genericResult));
+            }
+        });
+
+        sut = new ActionExecutor(springContextMock, validUserDetailsMock, nullParmRequest);
+
+        ActionRequest results = sut.execute();
+
+        mockContext.assertIsSatisfied();
+        assertSame(genericClonedResult, results.getResponse());
+        assertNull(results.getParam());
     }
 
     /**
+     * Test execution with a ServiceAction.
+     */
+    @Test
+    public final void testExecuteServiceActionExceptionNullParam()
+    {
+        mockContext.checking(new Expectations()
+        {
+            {
+                oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)),
+                        with(same(serviceAction)));
+                will(throwException(new ArithmeticException()));
+
+                oneOf(springContextMock).getBean(ACTION_KEY);
+                will(returnValue(serviceAction));
+
+                oneOf(principalPopulator).getPrincipal(USERNAME, null);
+            }
+        });
+
+        sut = new ActionExecutor(springContextMock, validUserDetailsMock, nullParmRequest);
+
+        ActionRequest results = sut.execute();
+
+        mockContext.assertIsSatisfied();
+        assertTrue(results.getResponse() instanceof GeneralException);
+        assertNull(results.getParam());
+    }
+
+    /**
+     * Test execution with a TaskHandlerServiceAction.
+     */
+    @Test
+    public final void testExecuteTaskHandlerServiceActionNullParam()
+    {
+        setupSuccess(serviceAction);
+        mockContext.checking(new Expectations()
+        {
+            {
+                oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)),
+                        with(same(serviceAction)));
+                will(returnValue(genericResult));
+            }
+        });
+
+        sut = new ActionExecutor(springContextMock, validUserDetailsMock, nullParmRequest);
+
+        ActionRequest results = sut.execute();
+
+        mockContext.assertIsSatisfied();
+        assertSame(genericClonedResult, results.getResponse());
+        assertNull(results.getParam());
+    }
+
+    /**
+     * Test the scenario where the bean supplied for the action is not a valid Action type.
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public final void testExecuteNonActionNullParam()
+    {
+        mockContext.checking(new Expectations()
+        {
+            {
+                oneOf(springContextMock).getBean(ACTION_KEY);
+                will(returnValue("String"));
+            }
+        });
+
+        sut = new ActionExecutor(springContextMock, validUserDetailsMock, nullParmRequest);
+
+        ActionRequest results = sut.execute();
+
+        mockContext.assertIsSatisfied();
+        assertTrue(results.getResponse() instanceof GeneralException);
+        assertNull(results.getParam());
+    }
+
+    /**
+     * Test the scenario where the toString of the parameter throws an exception.
+     */
+    @SuppressWarnings("unchecked")
+    public final void testExecuteWithFaultyToString()
+    {
+        setupSuccess(serviceAction);
+        final Serializable requestParm = mockContext.mock(Serializable.class, "requestParm");
+        mockContext.checking(new Expectations()
+        {
+            {
+                allowing(requestParm).toString();
+                will(throwException(new ArithmeticException()));
+
+                oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)),
+                        with(same(serviceAction)));
+                will(returnValue(genericResult));
+            }
+        });
+
+        sut = new ActionExecutor(springContextMock, validUserDetailsMock, new ActionRequestImpl(ACTION_KEY,
+                requestParm));
+
+        ActionRequest results = sut.execute();
+
+        mockContext.assertIsSatisfied();
+        assertSame(genericClonedResult, results.getResponse());
+        assertNull(results.getParam());
+    }
+
+    /**
+     * Test the scenario where the toString of the parameter throws an exception.
+     */
+    @SuppressWarnings("unchecked")
+    public final void testExecuteExceptionWithFaultyToString()
+    {
+        final Serializable requestParm = mockContext.mock(Serializable.class, "requestParm");
+        mockContext.checking(new Expectations()
+        {
+            {
+                allowing(requestParm).toString();
+                will(throwException(new ArithmeticException()));
+
+                oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)),
+                        with(same(serviceAction)));
+                will(throwException(new ArithmeticException()));
+
+                oneOf(springContextMock).getBean(ACTION_KEY);
+                will(returnValue(serviceAction));
+
+                oneOf(principalPopulator).getPrincipal(USERNAME, null);
+            }
+        });
+
+        sut = new ActionExecutor(springContextMock, validUserDetailsMock, new ActionRequestImpl(ACTION_KEY,
+                requestParm));
+
+        ActionRequest results = sut.execute();
+
+        mockContext.assertIsSatisfied();
+        assertTrue(results.getResponse() instanceof GeneralException);
+        assertNull(results.getParam());
+    }
+
+    /* ---- Test action exception handling for various types of exceptions ---- */
+
+    /**
      * Common parts of tests that insure exceptions do not contain a nested cause.
-     * 
+     *
      * @param inputException
      *            Exception to be thrown.
      * @return Exception returned by SUT.
      */
     private Throwable coreForbidNestingExceptionTest(final Throwable inputException)
     {
-        context.checking(new Expectations()
+        mockContext.checking(new Expectations()
         {
             {
                 oneOf(springContextMock).getBean(ACTION_KEY);
@@ -289,7 +483,7 @@ public class ActionExecutorTest
         sut = new ActionExecutor(springContextMock, validUserDetailsMock, defaultRequest);
         ActionRequest result = sut.execute();
 
-        context.assertIsSatisfied();
+        mockContext.assertIsSatisfied();
         Serializable response = result.getResponse();
         assertTrue(response instanceof Throwable);
         Throwable outputException = (Throwable) response;
@@ -303,7 +497,7 @@ public class ActionExecutorTest
     @Test
     public void testExecutionExceptionNested()
     {
-        Throwable exIn = new ExecutionException(new NullPointerException());
+        Throwable exIn = new ExecutionException(new ArithmeticException());
         Throwable exOut = coreForbidNestingExceptionTest(exIn);
         assertTrue(exOut instanceof ExecutionException);
         assertEquals(exIn.getMessage(), exOut.getMessage());
@@ -326,7 +520,7 @@ public class ActionExecutorTest
     @Test
     public void testGeneralExceptionNested()
     {
-        Throwable exIn = new GeneralException(new NullPointerException());
+        Throwable exIn = new GeneralException(new ArithmeticException());
         Throwable exOut = coreForbidNestingExceptionTest(exIn);
         assertTrue(exOut instanceof GeneralException);
         assertEquals(exIn.getMessage(), exOut.getMessage());
@@ -349,7 +543,7 @@ public class ActionExecutorTest
     @Test
     public void testAuthorizationExceptionNested()
     {
-        Throwable exIn = new AuthorizationException(new NullPointerException());
+        Throwable exIn = new AuthorizationException(new ArithmeticException());
         Throwable exOut = coreForbidNestingExceptionTest(exIn);
         assertTrue(exOut instanceof AuthorizationException);
         assertEquals(exIn.getMessage(), exOut.getMessage());

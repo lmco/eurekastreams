@@ -159,6 +159,10 @@ public class GetActivityIdsByJson
         int pass = 1;
         int batchSize = 0;
 
+        // build a list of activity ids to fetch for this page, and
+        // increment the start index for next page
+        List<Long> page = new ArrayList<Long>();
+
         do
         {
             allKeys.clear();
@@ -190,10 +194,6 @@ public class GetActivityIdsByJson
                 log.debug("No more results to page through after " + allKeys.size());
                 break;
             }
-
-            // build a list of activity ids to fetch for this page, and
-            // increment the start index for next page
-            List<Long> page = new ArrayList<Long>();
 
             // loop across the available keys in allKeys
             for (int i = startingIndex; i < allKeys.size(); i++, startingIndex++)
@@ -240,6 +240,20 @@ public class GetActivityIdsByJson
                     + ", batchSize: " + batchSize);
         }
         while (allKeys.size() >= batchSize); // while we got back at least as many as we needed for the recent batch
+
+        if (results.size() < maxResults && page.size() > 0)
+        { // we haven't gotten all our results yet, and we still have results to security trim
+            page = securityTrimmer.trim(page, userEntityId);
+            for (Long item : page)
+            {
+                results.add(item);
+                if (results.size() >= maxResults)
+                {
+                    log.debug("Filled a full page of " + results.size() + " results.");
+                    return results;
+                }
+            }
+        }
 
         return results;
     }

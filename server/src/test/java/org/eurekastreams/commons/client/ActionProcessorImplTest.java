@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ public class ActionProcessorImplTest
     /**
      * ActionRPCServiceAsync.
      */
-    private ActionRPCServiceAsync service = context.mock(ActionRPCServiceAsync.class);
+    private final ActionRPCServiceAsync service = context.mock(ActionRPCServiceAsync.class);
 
     /**
      * ActionRequest result array.
@@ -61,7 +61,7 @@ public class ActionProcessorImplTest
     /**
      * String params array.
      */
-    private String[] paramsRet = { "a", "b", "c" };
+    private final String[] paramsRet = { "a", "b", "c" };
 
     /**
      * The AsyncCallback mock.
@@ -144,6 +144,7 @@ public class ActionProcessorImplTest
                 oneOf(service).execute(with(any(ActionRequest[].class)), with(any(AsyncCallback.class)));
                 will(new CustomAction("Intercept the parameters of the call.")
                 {
+                    @Override
                     public Object invoke(final Invocation invocation) throws Throwable
                     {
                         final Object[] arguments = invocation.getParametersAsArray();
@@ -171,7 +172,7 @@ public class ActionProcessorImplTest
 
         ActionRequest rqst = interceptedRequestList[0];
         assertEquals(action, rqst.getActionKey());
-        assertEquals((int) 0, (int) rqst.getId());
+        assertEquals(0, (int) rqst.getId());
         assertEquals(param, rqst.getParam());
         assertEquals("session", rqst.getSessionId());
 
@@ -232,6 +233,19 @@ public class ActionProcessorImplTest
         rpcCallback.onSuccess(results);
 
         // Verification
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Tests fireQueuedRequests with an empty queue.
+     */
+    @Test
+    public void testFireQueuedRequestsEmptyQueue()
+    {
+        ActionProcessor sut = new ActionProcessorImpl(service);
+
+        sut.fireQueuedRequests();
+
         context.assertIsSatisfied();
     }
 }

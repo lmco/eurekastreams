@@ -170,6 +170,22 @@ public final class TestContextCreator
      */
     public static Principal createPrincipal(final String userAccountId, final long userId)
     {
+        return createPrincipal(userAccountId, userId, null);
+    }
+
+    /**
+     * Creates a principal.
+     * 
+     * @param userAccountId
+     *            User's account ID.
+     * @param userId
+     *            User's person ID.
+     * @param openSocialId
+     *            User's OpenSocial ID.
+     * @return Principal.
+     */
+    public static Principal createPrincipal(final String userAccountId, final long userId, final String openSocialId)
+    {
         return new Principal()
         {
             /** Fingerprint */
@@ -190,7 +206,7 @@ public final class TestContextCreator
             @Override
             public String getOpenSocialId()
             {
-                return null;
+                return openSocialId;
             }
 
             @Override

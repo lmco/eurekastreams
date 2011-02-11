@@ -779,13 +779,7 @@
 			</bean>
 		</constructor-arg>
 
-		<constructor-arg>
-			<!-- Database mapper to fall back on if not found in cache -->
-			<bean
-				class="org.eurekastreams.server.persistence.mappers.db.FindSystemSettingsDbDomainMapperImpl">
-				<property name="queryOptimizer" ref="queryOptimizer" />
-			</bean>
-		</constructor-arg>
+		<constructor-arg ref="findSystemSettingsFromDatabase" />
 
 		<!-- Results combiner:  return whichever is not null -->
 		<constructor-arg ref="nonNullResultsCombiner" />
@@ -802,6 +796,8 @@
 
 	<bean id="findSystemSettingsFromDatabase"
 		class="org.eurekastreams.server.persistence.mappers.db.FindSystemSettingsDbDomainMapperImpl">
+		<constructor-arg ref="headerContentTemplate" />
+		<constructor-arg ref="footerContentTemplate" />
 		<!--
 			Mapper to get the system settings straight from the database - needed
 			for updating it.

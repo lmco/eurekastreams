@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,5 +53,7 @@ public class FindSystemSettingsDbDomainMapperImplTest extends MapperTest
         assertTrue(settings.getSendWelcomeEmails());
         assertEquals("group1", settings.getSupportStreamGroupShortName());
         assertEquals("E Group 1 Name", settings.getSupportStreamGroupDisplayName());
+        assertEquals("HeaderTemplate", settings.getHeaderTemplate());
+        assertEquals("FooterTemplate", settings.getFooterTemplate());
     }
 }

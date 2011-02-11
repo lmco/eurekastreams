@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.eurekastreams.web.client.ui.common.dialog;
+
+import static org.junit.Assert.assertSame;
 
 import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.commons.client.ui.WidgetFactory;
@@ -30,8 +32,8 @@ import com.google.gwt.user.client.ui.ClickListener;
 
 /**
  * Tests the dialog controller.
- * 
- * 
+ *
+ *
  */
 public class DialogControllerTest
 {
@@ -63,7 +65,7 @@ public class DialogControllerTest
     /**
      * Intercepts the close click listener.
      */
-    private final AnonymousClassInterceptor<ClickListener> closeClickInt = 
+    private final AnonymousClassInterceptor<ClickListener> closeClickInt =
         new AnonymousClassInterceptor<ClickListener>();
 
     /**
@@ -90,7 +92,7 @@ public class DialogControllerTest
         context.checking(new Expectations()
         {
             {
-                oneOf(factoryMock).getCommand("hideModalDialog");
+                allowing(factoryMock).getCommand("hideModalDialog");
                 will(returnValue(closeCommand));
 
                 oneOf(dialogMock).addCloseButtonListener(
@@ -132,6 +134,20 @@ public class DialogControllerTest
         closeListener.onClick(null);
 
         context.assertIsSatisfied();
+    }
+
+    /**
+     * Tests getCloseCommand.
+     */
+    @Test
+    public void testGetCloseCommand()
+    {
+        sut.init();
+
+        WidgetCommand result = sut.getCloseCommand();
+
+        context.assertIsSatisfied();
+        assertSame(result, closeCommand);
     }
 
     /**

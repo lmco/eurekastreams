@@ -41,7 +41,7 @@ public class AuthoredByPersistenceRequestTransformer implements PersistenceDataS
 
     /**
      * Constructor.
-     *
+     * 
      * @param inGetPersonIdByAccountIdMapper
      *            the mapper to get person id by account id
      * @param inGroupMapper
@@ -57,7 +57,7 @@ public class AuthoredByPersistenceRequestTransformer implements PersistenceDataS
     /**
      * Transforms a JSON request into a space separated list of author ids, prepended with 'p' for Person, 'g' for
      * Group.
-     *
+     * 
      * @param request
      *            the request.
      * @param userEntityId
@@ -71,11 +71,17 @@ public class AuthoredByPersistenceRequestTransformer implements PersistenceDataS
 
         StringBuilder authorsRequest = new StringBuilder();
 
+        if (authors == null || authors.size() == 0)
+        {
+            return "";
+        }
+
+        authorsRequest.append("(");
         for (int i = 0; i < authors.size(); i++)
         {
             if (i > 0)
             {
-                authorsRequest.append(" ");
+                authorsRequest.append(" OR ");
             }
 
             JSONObject author = authors.getJSONObject(i);
@@ -95,7 +101,7 @@ public class AuthoredByPersistenceRequestTransformer implements PersistenceDataS
                 throw new IllegalArgumentException("Unhandled type.");
             }
         }
-
+        authorsRequest.append(")");
         return authorsRequest.toString();
     }
 }

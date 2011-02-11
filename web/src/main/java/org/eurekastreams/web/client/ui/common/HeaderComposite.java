@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ public class HeaderComposite extends Composite
     /**
      * The Site Labing panel.
      */
-    FlowPanel siteLabeling = new FlowPanel();
+    FlowPanel siteLabelingContainer = new FlowPanel();
 
     /** The search box. */
     private final GlobalSearchComposite profileSearchBox = new GlobalSearchComposite("search profiles");
@@ -229,7 +229,7 @@ public class HeaderComposite extends Composite
         // Style the Elements
         panel.addStyleName("header-bar");
         navPanel.addStyleName("nav-bar");
-        siteLabeling.addStyleName("site-labeling");
+        siteLabelingContainer.addStyleName("site-labeling");
         mainNav.addStyleName("main-nav");
         userNav.addStyleName("user-bar");
 
@@ -238,21 +238,25 @@ public class HeaderComposite extends Composite
         navPanel.add(userNav);
         panel.add(navPanel);
 
-        panel.add(siteLabeling);
+        panel.add(siteLabelingContainer);
 
         initWidget(panel);
         setActive(Session.getInstance().getUrlPage());
     }
 
     /**
-     * Sets the Site labeling.
+     * Sets Site labeling.
      *
-     * @param siteLabelingTxt
-     *            The Text for the Site labeling.
+     * @param inTemplate
+     *            HTML template content to insert in the footer.
+     * @param inSiteLabel
+     *            The text for Site Labeling.
      */
-    public void setSiteLabel(final String siteLabelingTxt)
+    public void setSiteLabelTemplate(final String inTemplate, final String inSiteLabel)
     {
-        siteLabeling.getElement().setInnerHTML(siteLabelingTxt);
+        String siteLabel = inSiteLabel == null ? "" : inSiteLabel;
+        String template = inTemplate.replace("%SITELABEL%", siteLabel);
+        siteLabelingContainer.getElement().setInnerHTML(template);
     }
 
     /**
