@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.web.client.ui.common.stream;
 
+import org.eurekastreams.web.client.events.ChangeActivityModeEvent;
+import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.StreamReinitializeRequestEvent;
 import org.eurekastreams.web.client.events.UserActiveEvent;
@@ -78,7 +80,9 @@ public class UnseenActivityNotificationPanel extends FlowPanel
                     {
                         thisBuffered.setVisible(false);
 
-                        Session.getInstance().getTimer().pauseJob("getUnseenActivityJob");
+                        // remove job if present and clear job from paused list.
+                        Session.getInstance().getTimer().removeTimerJob("getUnseenActivityJob");
+                        Session.getInstance().getTimer().unPauseJob("getUnseenActivityJob");
 
                         // Only show unseen activity if sorted by date.
                         if ("date".equals(event.getSortType()) && event.getStream().getPagedSet().size() > 0)
@@ -88,9 +92,11 @@ public class UnseenActivityNotificationPanel extends FlowPanel
                                     request);
                             request = StreamJsonRequestFactory.setMaxResults(MAX_UNSEEN, request);
 
-                            Session.getInstance().getTimer().changeFetchable("getUnseenActivityJob",
-                                    UnseenActivityCountForViewModel.getInstance());
-                            Session.getInstance().getTimer().changeRequest("getUnseenActivityJob", request.toString());
+                            // add and configure
+                            Session.getInstance().getTimer().addTimerJob("getUnseenActivityJob", 1,
+                                    UnseenActivityCountForViewModel.getInstance(), request.toString(), false);
+
+                            // unpause just to be sure it's cleared.
                             Session.getInstance().getTimer().unPauseJob("getUnseenActivityJob");
                         }
                     }
@@ -127,9 +133,9 @@ public class UnseenActivityNotificationPanel extends FlowPanel
         Session.getInstance().getTimer().addTimerJob("getMouseActivityJob", 1, MouseActivityModel.getInstance(), 5,
                 false);
 
-        Session.getInstance().getTimer().addTimerJob("getUnseenActivityJob", 1,
-                UnseenActivityCountForViewModel.getInstance(), StreamJsonRequestFactory.getEmptyRequest().toString(),
-                false);
+        // Session.getInstance().getTimer().addTimerJob("getUnseenActivityJob", 1,
+        // UnseenActivityCountForViewModel.getInstance(), StreamJsonRequestFactory.getEmptyRequest().toString(),
+        // false);
 
         // user is inactive - pauses the job that gets new activity counts
         Session.getInstance().getEventBus().addObserver(UserInactiveEvent.class, new Observer<UserInactiveEvent>()
@@ -146,6 +152,18 @@ public class UnseenActivityNotificationPanel extends FlowPanel
             public void update(final UserActiveEvent ev)
             {
                 Session.getInstance().getTimer().unPauseJob("getUnseenActivityJob");
+            }
+        });
+
+        EventBus.getInstance().addObserver(ChangeActivityModeEvent.class, new Observer<ChangeActivityModeEvent>()
+        {
+            public void update(final ChangeActivityModeEvent event)
+            {
+                if (event.isSingleMode())
+                {
+                    Session.getInstance().getTimer().removeTimerJob("getUnseenActivityJob");
+                    Session.getInstance().getTimer().unPauseJob("getUnseenActivityJob");
+                }
             }
         });
     }
