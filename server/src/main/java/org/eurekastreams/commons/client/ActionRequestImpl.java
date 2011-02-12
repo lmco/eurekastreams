@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,6 +54,7 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      * 
      * @return the ID
      */
+    @Override
     public Integer getId()
     {
         return id;
@@ -65,6 +66,7 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      * @param inId
      *            the ID
      */
+    @Override
     public void setId(final Integer inId)
     {
         this.id = inId;
@@ -107,6 +109,7 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      * 
      * @return the action key
      */
+    @Override
     public String getActionKey()
     {
         return actionKey;
@@ -118,6 +121,7 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      * @param inActionKey
      *            the action key
      */
+    @Override
     public void setActionKey(final String inActionKey)
     {
         this.actionKey = inActionKey;
@@ -129,6 +133,7 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      * 
      * @return current instance of the Serializable param object for this Request.
      */
+    @Override
     public Serializable getParam()
     {
         return param;
@@ -141,6 +146,7 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      * @param inParam
      *            - value to assign to the param of this ActionRequest.
      */
+    @Override
     public void setParam(final Serializable inParam)
     {
         param = inParam;
@@ -151,6 +157,7 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      * 
      * @return the ServerAction response
      */
+    @Override
     public T getResponse()
     {
         return response;
@@ -162,6 +169,7 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      * @param inResponse
      *            the ServerAction's response
      */
+    @Override
     public void setResponse(final T inResponse)
     {
         this.response = inResponse;
@@ -173,6 +181,7 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      * @param callback
      *            The callback to add.
      */
+    @Override
     public void addCallback(final AsyncCallback<T> callback)
     {
         callbackArray.add(callback);
@@ -184,6 +193,7 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      * @param inResponse
      *            The response object.
      */
+    @Override
     public void executeCallbacks(final T inResponse)
     {
         for (AsyncCallback<T> callback : callbackArray)
@@ -233,57 +243,6 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
     }
 
     /**
-     * Compares two arrays based on their contents.
-     * 
-     * @param first
-     *            One array; must not be null.
-     * @param second
-     *            The other array; must not be null.
-     * @return true if same, false if different.
-     */
-    private boolean compareArrays(final Object[] first, final Object[] second)
-    {
-        if (first.length != second.length)
-        {
-            return false;
-        }
-
-        for (int i = 0; i < first.length; i++)
-        {
-            if (first[i] == null)
-            {
-                if (second[i] != null)
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                boolean firstIsArray = first[i] instanceof Object[];
-                boolean secondIsArray = second[i] instanceof Object[];
-
-                if (firstIsArray != secondIsArray)
-                {
-                    return false;
-                }
-
-                if (firstIsArray)
-                {
-                    if (!compareArrays((Object[]) first[i], (Object[]) second[i]))
-                    {
-                        return false;
-                    }
-                }
-                else if (!first[i].equals(second[i]))
-                {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
      * Recommended to override when overriding equals(). uses actionkey's hashcode.
      * 
      * see http://java.sun.com/javase/6/docs/api/java/lang/Object.html#equals(java.lang.Object)
@@ -301,6 +260,7 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      * 
      * @return the session id.
      */
+    @Override
     public String getSessionId()
     {
         return sessionId;
@@ -312,6 +272,7 @@ public class ActionRequestImpl<T extends Serializable> implements Serializable, 
      * @param inSessionId
      *            the session id.
      */
+    @Override
     public void setSessionId(final String inSessionId)
     {
         sessionId = inSessionId;

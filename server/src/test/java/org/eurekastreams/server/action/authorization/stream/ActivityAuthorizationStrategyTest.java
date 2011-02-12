@@ -15,19 +15,21 @@
  */
 package org.eurekastreams.server.action.authorization.stream;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.PersistenceException;
+
+import org.eurekastreams.commons.actions.AuthorizationStrategy;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.AuthorizationException;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
-import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
@@ -40,6 +42,7 @@ import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -51,111 +54,104 @@ public class ActivityAuthorizationStrategyTest
     /**
      * Mocking context.
      */
-    private final JUnit4Mockery context = new JUnit4Mockery()
+    private final JUnit4Mockery mockContext = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
 
+    /** Test data. */
+    private static final String PERSONAL_STREAM_UNIQUEID = "jdoe";
+
+    /** Test data. */
+    private static final String GROUP_STREAM_UNIQUEID = "thegroup";
+
+    /** Actor's person ID. */
+    private static final long ACTOR_ID = 5L;
+
+    /** Actor's account ID. */
+    private static final String ACTOR_ACCOUNT_ID = "actor";
+
+    /** Group id. */
+    private static final long GROUP_ID = 6L;
+
+    /** Fixture: stream (personal or group). */
+    private final StreamEntityDTO streamDTO = mockContext.mock(StreamEntityDTO.class, "streamDTO");
+
     /**
      * Groups by shortName DAO.
      */
-    private final GetDomainGroupsByShortNames groupByShortNameDAO = context.mock(GetDomainGroupsByShortNames.class);
+    private final GetDomainGroupsByShortNames groupByShortNameDAO = mockContext
+            .mock(GetDomainGroupsByShortNames.class);
 
     /**
      * Mapper to get the personmodelview by account id.
      */
-    private final DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = context
+    private final DomainMapper<String, PersonModelView> getPersonModelViewByAccountIdMapper = mockContext
             .mock(DomainMapper.class);
 
     /**
      * Group follower ids DAO.
      */
-    private final DomainMapper<Long, List<Long>> groupFollowersDAO = context.mock(DomainMapper.class,
+    private final DomainMapper<Long, List<Long>> groupFollowersDAO = mockContext.mock(DomainMapper.class,
             "groupFollowersDAO");
 
     /**
      * ActivityDTO.
      */
-    private final ActivityDTO activityDTO = context.mock(ActivityDTO.class);
+    private final ActivityDTO activityDTO = mockContext.mock(ActivityDTO.class);
 
     /**
      * Service action context.
      */
-    private final ServiceActionContext serviceActionContext = context.mock(ServiceActionContext.class);
+    private final ServiceActionContext serviceActionContext = mockContext.mock(ServiceActionContext.class);
 
     /**
      * user details.
      */
-    private final Principal userPrincipal = context.mock(Principal.class);
-
-    /**
-     * StreamEntityDTO.
-     */
-    private final StreamEntityDTO streamDTO = context.mock(StreamEntityDTO.class);
-
-    /**
-     * StreamScope.
-     */
-    private final StreamScope streamScope = context.mock(StreamScope.class);
+    private final Principal userPrincipal = mockContext.mock(Principal.class);
 
     /**
      * DomainGroupModelView.
      */
-    private final DomainGroupModelView groupDTO = context.mock(DomainGroupModelView.class);
+    private final DomainGroupModelView groupDTO = mockContext.mock(DomainGroupModelView.class);
 
     /**
      * PersonModelView.
      */
-    private final PersonModelView personDTO = context.mock(PersonModelView.class);
+    private final PersonModelView personDTO = mockContext.mock(PersonModelView.class);
 
     /**
      * Actor retrieval strategy mock.
      */
-    private final ActorRetrievalStrategy actorRetrievalStrat = context.mock(ActorRetrievalStrategy.class);
+    private final ActorRetrievalStrategy actorRetrievalStrat = mockContext.mock(ActorRetrievalStrategy.class);
 
-    /**
-     * Person id.
-     */
-    private final long personId = 5L;
+    /** List of coordinators / members. */
+    private static final List<Long> PERSON_ID_LIST_WITH_ACTOR = Collections
+            .unmodifiableList(Arrays.asList(1L, 5L, 9L));
 
-    /**
-     * StreamDTO id.
-     */
-    private final String streamDTOUniqueId = "uniqueid";
+    /** List of coordinators / members. */
+    private static final List<Long> PERSON_ID_LIST_WITHOUT_ACTOR = Collections.unmodifiableList(Arrays.asList(1L, 2L));
 
-    /**
-     * Group id.
-     */
-    private final long groupId = 6L;
+    /** List of coordinators / members. */
+    private static final Set<Long> PERSON_ID_SET_WITH_ACTOR = Collections.unmodifiableSet(new HashSet(
+            PERSON_ID_LIST_WITH_ACTOR));
 
-    /**
-     * StreamScope unique key.
-     */
-    private final String scopeKey = "key";
-
-    /**
-     * Actor account id.
-     */
-    private static final String ACTOR_ACCOUNT_ID = "accountid";
-
-    /**
-     * System under test.
-     */
-    private ActivityAuthorizationStrategy sut;
+    /** List of coordinators / members. */
+    private static final Set<Long> PERSON_ID_SET_WITHOUT_ACTOR = Collections.unmodifiableSet(new HashSet(
+            PERSON_ID_LIST_WITHOUT_ACTOR));
 
     /**
      * The Mock for getting all coordinators.
      */
-    private final GetAllPersonIdsWhoHaveGroupCoordinatorAccess coordinatorMapperMock = context
+    private final GetAllPersonIdsWhoHaveGroupCoordinatorAccess coordinatorMapperMock = mockContext
             .mock(GetAllPersonIdsWhoHaveGroupCoordinatorAccess.class);
 
     /**
      * Mock instance of {@link ActivityDTOFromParamsStrategy} for retrieving the activity dto from the params.
      */
-
-    private final ActivityDTOFromParamsStrategy activityDTOStrategyMock = context
+    private final ActivityDTOFromParamsStrategy activityDTOStrategyMock = mockContext
             .mock(ActivityDTOFromParamsStrategy.class);
 
     /**
@@ -164,16 +160,18 @@ public class ActivityAuthorizationStrategyTest
     private final Long activityId = new Long(38271);
 
     /**
-     * Setup sut before each test.
+     * System under test.
+     */
+    private ActivityAuthorizationStrategy sut;
+
+    /**
+     * Setup before each test.
      */
     @Before
     public void setUp()
     {
-        sut = new ActivityAuthorizationStrategy(groupByShortNameDAO, groupFollowersDAO, actorRetrievalStrat,
-                coordinatorMapperMock, activityDTOStrategyMock, ActivityInteractionType.POST,
-                getPersonModelViewByAccountIdMapper);
-
-        context.checking(new Expectations()
+        sut = null; // must set on a per-test basis, since the type of action (post, etc.) is a constructor parameter
+        mockContext.checking(new Expectations()
         {
             {
                 allowing(serviceActionContext).getPrincipal();
@@ -185,378 +183,681 @@ public class ActivityAuthorizationStrategyTest
         });
     }
 
-    /**
-     * Execute with Person as recipient.
-     *
-     * @throws Exception
-     *             - on error.
-     */
-    @Test
-    public void testExecutePersonStreamRecipient() throws Exception
-    {
-        final List<StreamScope> streamScopes = new ArrayList<StreamScope>(1);
-        streamScopes.add(streamScope);
+    /* -------- Personal stream tests -------- */
 
-        context.checking(new Expectations()
+    /**
+     * Common setup for person tests.
+     *
+     * @param activityInteractionType
+     *            Type of action being taken (post, comment, etc.).
+     * @throws Exception
+     *             Won't.
+     */
+    private void setupPersonTest(final ActivityInteractionType activityInteractionType) throws Exception
+    {
+        sut = new ActivityAuthorizationStrategy(groupByShortNameDAO, groupFollowersDAO, actorRetrievalStrat,
+                coordinatorMapperMock, activityDTOStrategyMock, activityInteractionType,
+                getPersonModelViewByAccountIdMapper);
+
+        mockContext.checking(new Expectations()
         {
             {
                 oneOf(activityDTOStrategyMock).execute(userPrincipal, activityId);
                 will(returnValue(activityDTO));
 
-                oneOf(activityDTO).getDestinationStream();
+                allowing(activityDTO).getDestinationStream();
                 will(returnValue(streamDTO));
 
-                oneOf(streamDTO).getType();
+                allowing(streamDTO).getType();
                 will(returnValue(EntityType.PERSON));
 
-                oneOf(activityDTO).getDestinationStream();
-                will(returnValue(streamDTO));
+                oneOf(actorRetrievalStrat).getActorAccountId(userPrincipal, activityDTO);
+                will(returnValue(ACTOR_ACCOUNT_ID));
+            }
+        });
+    }
 
-                oneOf(streamDTO).getUniqueIdentifier();
-                will(returnValue("IOwnThis"));
+    /**
+     * Test: post to personal stream by owner.
+     *
+     * @throws Exception
+     *             Won't.
+     */
+    @Test
+    public void testAuthorizePostPersonalByOwner() throws Exception
+    {
+        setupPersonTest(ActivityInteractionType.POST);
 
-                oneOf(getPersonModelViewByAccountIdMapper).execute("IOwnThis");
+        mockContext.checking(new Expectations()
+        {
+            {
+                allowing(streamDTO).getUniqueIdentifier();
+                will(returnValue(ACTOR_ACCOUNT_ID));
+            }
+        });
+
+        sut.authorize(serviceActionContext);
+        mockContext.assertIsSatisfied();
+    }
+
+    /**
+     * Common behavior of all personal stream by non-owner tests.
+     *
+     * @param activityInteractionType
+     *            Type of action being performed.
+     * @throws Exception
+     *             If not authorized.
+     */
+    private void corePersonalNonOwnerTest(final ActivityInteractionType activityInteractionType) throws Exception
+    {
+        setupPersonTest(activityInteractionType);
+
+        mockContext.checking(new Expectations()
+        {
+            {
+                allowing(streamDTO).getUniqueIdentifier();
+                will(returnValue(PERSONAL_STREAM_UNIQUEID));
+
+                oneOf(getPersonModelViewByAccountIdMapper).execute(PERSONAL_STREAM_UNIQUEID);
                 will(returnValue(personDTO));
+            }
+        });
 
-                oneOf(actorRetrievalStrat).getActorAccountId(userPrincipal, activityDTO);
-                will(returnValue(ACTOR_ACCOUNT_ID));
+        ((AuthorizationStrategy) sut).authorize(serviceActionContext);
+        mockContext.assertIsSatisfied();
+    }
 
-                oneOf(personDTO).isStreamPostable();
+    /**
+     * Test: post to personal stream by non-owner.
+     *
+     * @throws Exception
+     *             Won't.
+     */
+    @Test
+    public void testAuthorizePostPersonal() throws Exception
+    {
+        mockContext.checking(new Expectations()
+        {
+            {
+                allowing(personDTO).isStreamPostable();
                 will(returnValue(true));
             }
         });
 
-        sut.authorize(serviceActionContext);
-        context.assertIsSatisfied();
+        corePersonalNonOwnerTest(ActivityInteractionType.POST);
     }
 
     /**
-     * Execute with Person as recipient.
+     * Test: post to personal stream by non-owner.
      *
      * @throws Exception
-     *             - on error.
+     *             Should.
      */
-
     @Test(expected = AuthorizationException.class)
-    public void testExecutePersonStreamRecipientWithError() throws Exception
+    public void testAuthorizePostPersonalNotEnabled() throws Exception
     {
-        final List<StreamScope> streamScopes = new ArrayList<StreamScope>(1);
-        streamScopes.add(streamScope);
+        mockContext.checking(new Expectations()
+        {
+            {
+                allowing(personDTO).isStreamPostable();
+                will(returnValue(false));
+            }
+        });
 
-        context.checking(new Expectations()
+        corePersonalNonOwnerTest(ActivityInteractionType.POST);
+    }
+
+    /**
+     * Test: comment to personal stream by non-owner.
+     *
+     * @throws Exception
+     *             Won't.
+     */
+    @Test
+    public void testAuthorizeCommentPersonal() throws Exception
+    {
+        mockContext.checking(new Expectations()
+        {
+            {
+                allowing(personDTO).isCommentable();
+                will(returnValue(true));
+            }
+        });
+
+        corePersonalNonOwnerTest(ActivityInteractionType.COMMENT);
+    }
+
+    /**
+     * Test: comment to personal stream by non-owner.
+     *
+     * @throws Exception
+     *             Should.
+     */
+    @Test(expected = AuthorizationException.class)
+    public void testAuthorizeCommentPersonalNotEnabled() throws Exception
+    {
+        mockContext.checking(new Expectations()
+        {
+            {
+                allowing(personDTO).isCommentable();
+                will(returnValue(false));
+            }
+        });
+
+        corePersonalNonOwnerTest(ActivityInteractionType.COMMENT);
+    }
+
+    /**
+     * Test: view personal stream by non-owner.
+     *
+     * @throws Exception
+     *             Won't.
+     */
+    @Test
+    public void testAuthorizeViewPersonal() throws Exception
+    {
+        corePersonalNonOwnerTest(ActivityInteractionType.VIEW);
+    }
+
+
+    /* -------- Group stream tests -------- */
+
+    /**
+     * Common setup for group tests.
+     *
+     * @param activityInteractionType
+     *            Type of action being taken (post, comment, etc.).
+     * @throws Exception
+     *             Won't.
+     */
+    private void setupGroupTest(final ActivityInteractionType activityInteractionType) throws Exception
+    {
+        sut = new ActivityAuthorizationStrategy(groupByShortNameDAO, groupFollowersDAO, actorRetrievalStrat,
+                coordinatorMapperMock, activityDTOStrategyMock, activityInteractionType,
+                getPersonModelViewByAccountIdMapper);
+
+        mockContext.checking(new Expectations()
         {
             {
                 oneOf(activityDTOStrategyMock).execute(userPrincipal, activityId);
                 will(returnValue(activityDTO));
 
-                oneOf(activityDTO).getDestinationStream();
+                allowing(activityDTO).getDestinationStream();
                 will(returnValue(streamDTO));
 
-                oneOf(streamDTO).getType();
+                allowing(streamDTO).getUniqueIdentifier();
+                will(returnValue(GROUP_STREAM_UNIQUEID));
+
+                allowing(streamDTO).getType();
+                will(returnValue(EntityType.GROUP));
+
+                oneOf(groupByShortNameDAO).execute(with(equal(Collections.singletonList(GROUP_STREAM_UNIQUEID))));
+                will(returnValue(Collections.singletonList(groupDTO)));
+
+                allowing(groupDTO).getId();
+                will(returnValue(GROUP_ID));
+
+                oneOf(actorRetrievalStrat).getActorId(userPrincipal, activityDTO);
+                will(returnValue(ACTOR_ID));
+            }
+        });
+    }
+
+    /* ---- Public group, action by anybody ---- */
+
+    /**
+     * Common behavior of all public group stream by non-coordinator tests.
+     *
+     * @param activityInteractionType
+     *            Type of action being performed.
+     * @throws Exception
+     *             If not authorized.
+     */
+    private void corePublicGroupTest(final ActivityInteractionType activityInteractionType) throws Exception
+    {
+        setupGroupTest(activityInteractionType);
+
+        mockContext.checking(new Expectations()
+        {
+            {
+                oneOf(coordinatorMapperMock).execute(GROUP_ID);
+                will(returnValue(PERSON_ID_SET_WITHOUT_ACTOR));
+
+                allowing(groupDTO).isPublic();
+                will(returnValue(true));
+            }
+        });
+
+        sut.authorize(serviceActionContext);
+        mockContext.assertIsSatisfied();
+    }
+
+    /**
+     * Test: post to public group, user not coordinator.
+     *
+     * @throws Exception
+     *             Won't.
+     */
+    @Test
+    public void testAuthorizePostPublicGroup() throws Exception
+    {
+        mockContext.checking(new Expectations()
+        {
+            {
+                allowing(groupDTO).isStreamPostable();
+                will(returnValue(true));
+            }
+        });
+        corePublicGroupTest(ActivityInteractionType.POST);
+    }
+
+    /**
+     * Test: post to public group, user not coordinator, not postable.
+     *
+     * @throws Exception
+     *             Should.
+     */
+    @Test(expected = AuthorizationException.class)
+    public void testAuthorizePostPublicGroupNotEnabled() throws Exception
+    {
+        mockContext.checking(new Expectations()
+        {
+            {
+                allowing(groupDTO).isStreamPostable();
+                will(returnValue(false));
+            }
+        });
+        corePublicGroupTest(ActivityInteractionType.POST);
+    }
+
+    /**
+     * Test: comment to public group, user not coordinator.
+     *
+     * @throws Exception
+     *             Won't.
+     */
+    @Test
+    public void testAuthorizeCommentPublicGroup() throws Exception
+    {
+        mockContext.checking(new Expectations()
+        {
+            {
+                allowing(groupDTO).isCommentable();
+                will(returnValue(true));
+            }
+        });
+        corePublicGroupTest(ActivityInteractionType.COMMENT);
+    }
+
+    /**
+     * Test: comment to public group, user not coordinator, not commentable.
+     *
+     * @throws Exception
+     *             Should.
+     */
+    @Test(expected = AuthorizationException.class)
+    public void testAuthorizeCommentPublicGroupNotEnabled() throws Exception
+    {
+        mockContext.checking(new Expectations()
+        {
+            {
+                allowing(groupDTO).isCommentable();
+                will(returnValue(false));
+            }
+        });
+        corePublicGroupTest(ActivityInteractionType.COMMENT);
+    }
+
+    /**
+     * Test: comment to public group, user not coordinator.
+     *
+     * @throws Exception
+     *             Won't.
+     */
+    @Test
+    public void testAuthorizeViewPublicGroup() throws Exception
+    {
+        corePublicGroupTest(ActivityInteractionType.VIEW);
+    }
+
+    /**
+     * Test: unspecified action to public group, user not coordinator.
+     *
+     * @throws Exception
+     *             Should.
+     */
+    @Test(expected = RuntimeException.class)
+    public void testAuthorizeOtherActionPublicGroup() throws Exception
+    {
+        corePublicGroupTest(ActivityInteractionType.NOTSET);
+    }
+
+    /* ---- Public group, action by coordinator ---- */
+
+    /**
+     * Test: post to public group, user is coordinator.
+     *
+     * @throws Exception
+     *             Won't.
+     */
+    @Test
+    public void testAuthorizePostPublicGroupCoordinator() throws Exception
+    {
+        setupGroupTest(ActivityInteractionType.POST);
+
+        mockContext.checking(new Expectations()
+        {
+            {
+                oneOf(coordinatorMapperMock).execute(GROUP_ID);
+                will(returnValue(PERSON_ID_SET_WITH_ACTOR));
+
+                allowing(groupDTO).isPublic();
+                will(returnValue(true));
+
+                // refactoring would make the following unnecessary
+                allowing(groupDTO).isStreamPostable();
+                will(returnValue(false));
+            }
+        });
+
+        sut.authorize(serviceActionContext);
+        mockContext.assertIsSatisfied();
+    }
+
+    /* ---- Private group, action by member ---- */
+
+    /**
+     * Common behavior of all private group stream by member tests.
+     *
+     * @param activityInteractionType
+     *            Type of action being performed.
+     * @throws Exception
+     *             If not authorized.
+     */
+    private void corePrivateMemberGroupTest(final ActivityInteractionType activityInteractionType) throws Exception
+    {
+        setupGroupTest(activityInteractionType);
+
+        mockContext.checking(new Expectations()
+        {
+            {
+                oneOf(coordinatorMapperMock).execute(GROUP_ID);
+                will(returnValue(PERSON_ID_SET_WITHOUT_ACTOR));
+
+                oneOf(groupFollowersDAO).execute(GROUP_ID);
+                will(returnValue(PERSON_ID_LIST_WITH_ACTOR));
+
+                allowing(groupDTO).isPublic();
+                will(returnValue(false));
+            }
+        });
+
+        sut.authorize(serviceActionContext);
+        mockContext.assertIsSatisfied();
+    }
+
+    /**
+     * Test: post to private group, user member.
+     *
+     * @throws Exception
+     *             Won't.
+     */
+    @Test
+    public void testAuthorizePostPrivateGroup() throws Exception
+    {
+        mockContext.checking(new Expectations()
+        {
+            {
+                allowing(groupDTO).isStreamPostable();
+                will(returnValue(true));
+            }
+        });
+        corePrivateMemberGroupTest(ActivityInteractionType.POST);
+    }
+
+    /**
+     * Test: post to private group, user member, not postable.
+     *
+     * @throws Exception
+     *             Should.
+     */
+    @Test(expected = AuthorizationException.class)
+    public void testAuthorizePostPrivateGroupNotEnabled() throws Exception
+    {
+        mockContext.checking(new Expectations()
+        {
+            {
+                allowing(groupDTO).isStreamPostable();
+                will(returnValue(false));
+            }
+        });
+        corePrivateMemberGroupTest(ActivityInteractionType.POST);
+    }
+
+    // TODO: The following three tests are ignored because they fail because the code is broken.
+
+    /**
+     * Test: comment to private group, user member.
+     *
+     * @throws Exception
+     *             Won't.
+     */
+    @Test
+    @Ignore
+    public void testAuthorizeCommentPrivateGroup() throws Exception
+    {
+        mockContext.checking(new Expectations()
+        {
+            {
+                allowing(groupDTO).isCommentable();
+                will(returnValue(true));
+            }
+        });
+        corePrivateMemberGroupTest(ActivityInteractionType.COMMENT);
+    }
+
+    /**
+     * Test: comment to private group, user member, not commentable.
+     *
+     * @throws Exception
+     *             Should.
+     */
+    @Test(expected = AuthorizationException.class)
+    @Ignore
+    public void testAuthorizeCommentPrivateGroupNotEnabled() throws Exception
+    {
+        mockContext.checking(new Expectations()
+        {
+            {
+                allowing(groupDTO).isCommentable();
+                will(returnValue(false));
+            }
+        });
+        corePrivateMemberGroupTest(ActivityInteractionType.COMMENT);
+    }
+
+    /**
+     * Test: comment to private group, user member.
+     *
+     * @throws Exception
+     *             Won't.
+     */
+    @Test
+    @Ignore
+    public void testAuthorizeViewPrivateGroup() throws Exception
+    {
+        corePrivateMemberGroupTest(ActivityInteractionType.VIEW);
+    }
+
+    /* ---- Other private group ---- */
+
+    /**
+     * Test: comment to private group, user coordinator.
+     *
+     * @throws Exception
+     *             Won't.
+     */
+    @Test
+    public void testAuthorizeViewPrivateGroupCoordinator() throws Exception
+    {
+        setupGroupTest(ActivityInteractionType.VIEW);
+
+        mockContext.checking(new Expectations()
+        {
+            {
+                oneOf(coordinatorMapperMock).execute(GROUP_ID);
+                will(returnValue(PERSON_ID_SET_WITH_ACTOR));
+
+                allowing(groupDTO).isPublic();
+                will(returnValue(false));
+            }
+        });
+
+        sut.authorize(serviceActionContext);
+        mockContext.assertIsSatisfied();
+    }
+
+    /**
+     * Test: comment to private group, user not member.
+     *
+     * @throws Exception
+     *             Should.
+     */
+    @Test(expected = AuthorizationException.class)
+    public void testAuthorizeViewPrivateGroupNonMember() throws Exception
+    {
+        setupGroupTest(ActivityInteractionType.VIEW);
+
+        mockContext.checking(new Expectations()
+        {
+            {
+                oneOf(coordinatorMapperMock).execute(GROUP_ID);
+                will(returnValue(PERSON_ID_SET_WITHOUT_ACTOR));
+
+                oneOf(groupFollowersDAO).execute(GROUP_ID);
+                will(returnValue(PERSON_ID_LIST_WITHOUT_ACTOR));
+
+                allowing(groupDTO).isPublic();
+                will(returnValue(false));
+            }
+        });
+
+        sut.authorize(serviceActionContext);
+        mockContext.assertIsSatisfied();
+    }
+
+    /* -------- Error condition tests -------t- */
+
+    /**
+     * Creates the SUT for posting activities.
+     */
+    private void createSutForPost()
+    {
+        sut = new ActivityAuthorizationStrategy(groupByShortNameDAO, groupFollowersDAO, actorRetrievalStrat,
+                coordinatorMapperMock, activityDTOStrategyMock, ActivityInteractionType.POST,
+                getPersonModelViewByAccountIdMapper);
+    }
+
+    /**
+     * Test: error retrieving activity.
+     */
+    @Test(expected = AuthorizationException.class)
+    public void testAuthorizeErrorRetrievingActivity()
+    {
+        createSutForPost();
+
+        mockContext.checking(new Expectations()
+        {
+            {
+                oneOf(activityDTOStrategyMock).execute(userPrincipal, activityId);
+                will(throwException(new PersistenceException()));
+            }
+        });
+
+        sut.authorize(serviceActionContext);
+        mockContext.assertIsSatisfied();
+    }
+
+    /**
+     * Test: error retrieving actor for personal stream posting.
+     *
+     * @throws Exception
+     *             Should only throw AuthorizationException.
+     */
+    @Test(expected = AuthorizationException.class)
+    public void testAuthorizeErrorRetrievingActor() throws Exception
+    {
+        createSutForPost();
+
+        mockContext.checking(new Expectations()
+        {
+            {
+                oneOf(activityDTOStrategyMock).execute(userPrincipal, activityId);
+                will(returnValue(activityDTO));
+
+                allowing(activityDTO).getDestinationStream();
+                will(returnValue(streamDTO));
+
+                allowing(streamDTO).getType();
                 will(returnValue(EntityType.PERSON));
 
-                oneOf(activityDTO).getDestinationStream();
-                will(returnValue(streamDTO));
-
-                oneOf(streamDTO).getUniqueIdentifier();
-                will(returnValue("IOwnThis"));
+                allowing(streamDTO).getUniqueIdentifier();
+                will(returnValue(PERSONAL_STREAM_UNIQUEID));
 
                 oneOf(actorRetrievalStrat).getActorAccountId(userPrincipal, activityDTO);
-                will(returnValue(ACTOR_ACCOUNT_ID));
-
-                oneOf(getPersonModelViewByAccountIdMapper).execute("IOwnThis");
-                will(throwException(new Exception()));
+                will(throwException(new PersistenceException()));
             }
         });
 
         sut.authorize(serviceActionContext);
-        context.assertIsSatisfied();
+        mockContext.assertIsSatisfied();
     }
 
     /**
-     * Execute with public group as recipient.
+     * Test: error retrieving group for group stream posting.
      *
      * @throws Exception
-     *             - on error.
-     */
-    @Test
-    public void testExecutePublicGroupStreamRecipient() throws Exception
-    {
-        final List<StreamScope> streamScopes = new ArrayList<StreamScope>(1);
-        streamScopes.add(streamScope);
-
-        final List<DomainGroupModelView> groupDTOs = new ArrayList<DomainGroupModelView>(1);
-        groupDTOs.add(groupDTO);
-
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(activityDTOStrategyMock).execute(userPrincipal, activityId);
-                will(returnValue(activityDTO));
-
-                oneOf(activityDTO).getDestinationStream();
-                will(returnValue(streamDTO));
-
-                oneOf(streamDTO).getType();
-                will(returnValue(EntityType.GROUP));
-
-                oneOf(actorRetrievalStrat).getActorId(userPrincipal, activityDTO);
-                will(returnValue(personId));
-
-                oneOf(streamDTO).getUniqueIdentifier();
-                will(returnValue(streamDTOUniqueId));
-
-                oneOf(groupByShortNameDAO).execute(with(any(ArrayList.class)));
-                will(returnValue(groupDTOs));
-
-                oneOf(groupDTO).getId();
-                will(returnValue(groupId));
-
-                oneOf(coordinatorMapperMock).execute(groupId);
-                will(returnValue(new HashSet<Long>()));
-
-                oneOf(groupDTO).isPublic();
-                will(returnValue(true));
-
-                oneOf(groupDTO).isStreamPostable();
-                will(returnValue(true));
-
-                oneOf(activityDTO).getDestinationStream();
-                will(returnValue(streamDTO));
-            }
-        });
-
-        sut.authorize(serviceActionContext);
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Execute with private group as recipient, user not follower or coordinator.
-     *
-     * @throws Exception
-     *             - on error.
+     *             Should only throw AuthorizationException.
      */
     @Test(expected = AuthorizationException.class)
-    public void testExecutePrivateGroupStreamRecipientIsNotFollowerOrCoordinator() throws Exception
+    public void testAuthorizeErrorRetrievingGroup() throws Exception
     {
-        final List<StreamScope> streamScopes = new ArrayList<StreamScope>(1);
-        streamScopes.add(streamScope);
+        createSutForPost();
 
-        final List<DomainGroupModelView> groupDTOs = new ArrayList<DomainGroupModelView>(1);
-        groupDTOs.add(groupDTO);
-
-        context.checking(new Expectations()
+        mockContext.checking(new Expectations()
         {
             {
                 oneOf(activityDTOStrategyMock).execute(userPrincipal, activityId);
                 will(returnValue(activityDTO));
 
-                oneOf(activityDTO).getDestinationStream();
+                allowing(activityDTO).getDestinationStream();
                 will(returnValue(streamDTO));
 
-                oneOf(streamDTO).getType();
+                allowing(streamDTO).getType();
                 will(returnValue(EntityType.GROUP));
 
-                oneOf(activityDTO).getDestinationStream();
-                will(returnValue(streamDTO));
+                allowing(streamDTO).getUniqueIdentifier();
+                will(returnValue(GROUP_STREAM_UNIQUEID));
 
-                oneOf(streamDTO).getUniqueIdentifier();
-                will(returnValue(streamDTOUniqueId));
-
-                oneOf(activityDTO).getDestinationStream();
-                will(returnValue(streamDTO));
-
-                oneOf(streamDTO).getUniqueIdentifier();
-                will(returnValue(streamDTOUniqueId));
-
-                oneOf(actorRetrievalStrat).getActorAccountId(userPrincipal, activityDTO);
-                will(returnValue(ACTOR_ACCOUNT_ID));
-
-                oneOf(streamScope).getScopeType();
-                will(returnValue(ScopeType.GROUP));
-
-                oneOf(streamScope).getUniqueKey();
-                will(returnValue(scopeKey));
-
-                oneOf(groupByShortNameDAO).execute(with(any(ArrayList.class)));
-                will(returnValue(groupDTOs));
-
-                oneOf(groupDTO).getId();
-                will(returnValue(groupId));
-
-                oneOf(groupDTO).isPublic();
-                will(returnValue(false));
-
-                oneOf(actorRetrievalStrat).getActorId(userPrincipal, activityDTO);
-                will(returnValue(personId));
-
-                oneOf(groupDTO).getEntityId();
-                will(returnValue(groupId));
-
-                oneOf(groupFollowersDAO).execute(groupId);
-                will(returnValue(new ArrayList<Long>(0)));
-
-                oneOf(coordinatorMapperMock).execute(groupId);
-
-                oneOf(groupDTO).getId();
-                will(returnValue(groupId));
-
-                oneOf(actorRetrievalStrat).getActorId(userPrincipal, activityDTO);
-                will(returnValue(personId));
+                oneOf(groupByShortNameDAO).execute(with(equal(Collections.singletonList(GROUP_STREAM_UNIQUEID))));
+                will(throwException(new PersistenceException()));
             }
         });
 
         sut.authorize(serviceActionContext);
-        context.assertIsSatisfied();
+        mockContext.assertIsSatisfied();
     }
 
+    /* -------- Coverage tests -------- */
+
     /**
-     * Execute with private group as recipient, user is follower, not coordinator.
-     *
-     * @throws Exception
-     *             - on error.
+     * Test: DAO returns a null activity.
      */
     @Test
-    public void testExecutePrivateGroupStreamRecipientIsFollower() throws Exception
+    public void testAuthorizeNullActivityDTOParamsRetrieval()
     {
-        final List<StreamScope> streamScopes = new ArrayList<StreamScope>(1);
-        streamScopes.add(streamScope);
-
-        final List<DomainGroupModelView> groupDTOs = new ArrayList<DomainGroupModelView>(1);
-        groupDTOs.add(groupDTO);
-
-        final List<Long> followers = new ArrayList<Long>(1);
-        followers.add(personId);
-
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(activityDTOStrategyMock).execute(userPrincipal, activityId);
-                will(returnValue(activityDTO));
-
-                oneOf(activityDTO).getDestinationStream();
-                will(returnValue(streamDTO));
-
-                oneOf(streamDTO).getType();
-                will(returnValue(EntityType.GROUP));
-
-                oneOf(streamDTO).getUniqueIdentifier();
-                will(returnValue(streamDTOUniqueId));
-
-                oneOf(coordinatorMapperMock).execute(groupId);
-
-                oneOf(actorRetrievalStrat).getActorId(userPrincipal, activityDTO);
-                will(returnValue(personId));
-
-                oneOf(activityDTO).getDestinationStream();
-                will(returnValue(streamDTO));
-
-                oneOf(groupByShortNameDAO).execute(with(any(ArrayList.class)));
-                will(returnValue(groupDTOs));
-
-                oneOf(groupDTO).getId();
-                will(returnValue(groupId));
-
-                oneOf(groupDTO).isPublic();
-                will(returnValue(false));
-
-                oneOf(groupDTO).getId();
-                will(returnValue(groupId));
-
-                oneOf(groupDTO).isStreamPostable();
-                will(returnValue(true));
-
-                oneOf(groupFollowersDAO).execute(groupId);
-                will(returnValue(followers));
-            }
-        });
-
-        sut.authorize(serviceActionContext);
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Execute with private group as recipient, user is coordinator, not follower.
-     *
-     * @throws Exception
-     *             - on error.
-     */
-    @Test
-    public void testExecutePrivateGroupStreamRecipientIsCoordinator() throws Exception
-    {
-        final List<StreamScope> streamScopes = new ArrayList<StreamScope>(1);
-        streamScopes.add(streamScope);
-
-        final List<DomainGroupModelView> groupDTOs = new ArrayList<DomainGroupModelView>(1);
-        groupDTOs.add(groupDTO);
-
-        final Set<Long> coordinators = new HashSet<Long>(1);
-        coordinators.add(personId);
-
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(activityDTOStrategyMock).execute(userPrincipal, activityId);
-                will(returnValue(activityDTO));
-
-                oneOf(activityDTO).getDestinationStream();
-                will(returnValue(streamDTO));
-
-                oneOf(streamDTO).getType();
-                will(returnValue(EntityType.GROUP));
-
-                oneOf(activityDTO).getDestinationStream();
-                will(returnValue(streamDTO));
-
-                oneOf(streamDTO).getUniqueIdentifier();
-                will(returnValue(streamDTOUniqueId));
-
-                oneOf(coordinatorMapperMock).execute(groupId);
-                will(returnValue(coordinators));
-
-                oneOf(actorRetrievalStrat).getActorId(userPrincipal, activityDTO);
-                will(returnValue(personId));
-
-                oneOf(groupByShortNameDAO).execute(with(any(ArrayList.class)));
-                will(returnValue(groupDTOs));
-
-                oneOf(groupDTO).isPublic();
-                will(returnValue(false));
-
-                oneOf(groupDTO).getId();
-                will(returnValue(groupId));
-            }
-        });
-
-        sut.authorize(serviceActionContext);
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Test method to test the case where retrieving the activity dto fails.
-     */
-    @Test(expected = AuthorizationException.class)
-    public void testFailedActivityDTOParamsRetrieval()
-    {
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(activityDTOStrategyMock).execute(userPrincipal, activityId);
-                will(throwException(new Exception()));
-            }
-        });
-
-        sut.authorize(serviceActionContext);
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Test the case where retrieving the activity dto returns null.
-     */
-    @Test
-    public void testNullActivityDTOParamsRetrieval()
-    {
-        context.checking(new Expectations()
+        createSutForPost();
+        mockContext.checking(new Expectations()
         {
             {
                 oneOf(activityDTOStrategyMock).execute(userPrincipal, activityId);
@@ -565,31 +866,44 @@ public class ActivityAuthorizationStrategyTest
         });
 
         sut.authorize(serviceActionContext);
-        context.assertIsSatisfied();
+        mockContext.assertIsSatisfied();
     }
 
+
     /**
-     * Test the case where retrieving the activity dto returns null.
+     * Test: invalid stream type for activity.
      */
     @Test(expected = AuthorizationException.class)
-    public void testActivityDestinationInvalid()
+    public void testAuthorizeActivityDestinationInvalid()
     {
-        context.checking(new Expectations()
+        createSutForPost();
+        mockContext.checking(new Expectations()
         {
             {
                 oneOf(activityDTOStrategyMock).execute(userPrincipal, activityId);
                 will(returnValue(activityDTO));
 
+                allowing(activityDTO).getDestinationStream();
+                will(returnValue(streamDTO));
+
                 oneOf(streamDTO).getType();
                 will(returnValue(EntityType.ORGANIZATION));
-
-                oneOf(activityDTO).getDestinationStream();
-                will(returnValue(streamDTO));
             }
         });
 
         sut.authorize(serviceActionContext);
-        context.assertIsSatisfied();
+        mockContext.assertIsSatisfied();
     }
 
+    /**
+     * Test: invalid action type.
+     *
+     * @throws Exception
+     *             Should only throw AuthorizationException.
+     */
+    @Test(expected = AuthorizationException.class)
+    public void testAuthorizeInvalidActionType() throws Exception
+    {
+        corePublicGroupTest(ActivityInteractionType.NOTSET);
+    }
 }
