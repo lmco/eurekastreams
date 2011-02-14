@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,23 @@
 package org.eurekastreams.web.client.ui.common.dialog.login;
 
 import org.eurekastreams.commons.client.ui.WidgetCommand;
-import org.eurekastreams.commons.client.ui.WidgetController;
-import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.FormLoginCompleteEvent;
 import org.eurekastreams.web.client.ui.Bindable;
-import org.eurekastreams.web.client.ui.PropertyMapper;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
@@ -43,7 +48,7 @@ public class LoginDialogContent implements DialogContent, Bindable
     /**
      * The login form.
      */
-    FormPanel loginForm;
+    private final FormPanel loginForm = new FormPanel();
 
     /**
      * The close command.
@@ -51,58 +56,57 @@ public class LoginDialogContent implements DialogContent, Bindable
     private WidgetCommand closeCommand = null;
 
     /**
-     * The show command.
-     */
-    private WidgetCommand showCommand = null;
-
-    /**
      * The error label.
      */
-    Label errorMessage = new Label("");
+    private final Label errorMessage = new Label("");
 
     /**
      * The submit button.
      */
-    Hyperlink submitButton = new Hyperlink("Submit", History.getToken());
+    private final Hyperlink submitButton = new Hyperlink("Submit", History.getToken());
 
     /**
      * The cancel button.
      */
-    Hyperlink cancelButton = new Hyperlink("Cancel", History.getToken());
+    private final Hyperlink cancelButton = new Hyperlink("Cancel", History.getToken());
 
     /**
-     * The username text box.
+     * The user name text box.
      */
-    TextBox username;
+    private final TextBox username = new TextBox();
 
     /**
      * The password text box.
      */
-    PasswordTextBox password;
+    private final PasswordTextBox password = new PasswordTextBox();
 
     /**
      * Remember me checkbox.
      */
-    CheckBox rememberMe;
+    private final CheckBox rememberMe = new CheckBox("Keep me logged in.");
 
     /**
      * Container for login elements.
      */
-    private FlowPanel loginContentContainer;
+    private final FlowPanel loginContentContainer = new FlowPanel();
 
     /**
      * Default constructor. Builds up widgets.
      */
-    @SuppressWarnings("static-access")
     public LoginDialogContent()
     {
-        // Setup the widgets.
+        setupWidgets();
+        setupEvents();
+    }
 
-        loginForm = new FormPanel();
+    /**
+     * Builds the UI.
+     */
+    private void setupWidgets()
+    {
         loginForm.setAction("/j_spring_security_check");
-        loginForm.setMethod(loginForm.METHOD_POST);
+        loginForm.setMethod(FormPanel.METHOD_POST);
 
-        loginContentContainer = new FlowPanel();
         loginContentContainer.addStyleName("login-content-container");
 
         FlowPanel loginPanel = new FlowPanel();
@@ -123,7 +127,6 @@ public class LoginDialogContent implements DialogContent, Bindable
         usernameLabel.addStyleName("form-label");
         usernamePanel.add(usernameLabel);
 
-        username = new TextBox();
         username.setName("j_username");
         usernamePanel.add(username);
 
@@ -135,7 +138,6 @@ public class LoginDialogContent implements DialogContent, Bindable
         passwordLabel.addStyleName("form-label");
         passwordPanel.add(passwordLabel);
 
-        password = new PasswordTextBox();
         password.setName("j_password");
         passwordPanel.add(password);
 
@@ -143,12 +145,14 @@ public class LoginDialogContent implements DialogContent, Bindable
         returnTo.setName("spring-security-redirect");
         loginPanel.add(returnTo);
 
-        rememberMe = new CheckBox("Keep me logged in.");
+
         rememberMe.setName("_spring_security_remember_me");
 
         loginPanel.add(passwordPanel);
         loginPanel.add(rememberMe);
+
         errorMessage.addStyleName("form-error-box");
+        errorMessage.setVisible(false);
 
         loginContentContainer.add(loginPanel);
 
@@ -159,18 +163,67 @@ public class LoginDialogContent implements DialogContent, Bindable
         loginContentContainer.add(buttonPanel);
 
         loginForm.add(loginContentContainer);
+    }
 
-        // Create and initialize the controller.
-        WidgetController controller = new LoginDialogController(this, EventBus
-                .getInstance(), Session.getInstance());
+    /**
+     * Wires up events.
+     */
+    private void setupEvents()
+    {
+        submitButton.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent inArg0)
+            {
+                loginForm.submit();
+            }
+        });
+        KeyPressHandler enterKeyHandler = new KeyPressHandler()
+        {
+            public void onKeyPress(final KeyPressEvent ev)
+            {
+                if ((ev.getCharCode() == KeyCodes.KEY_ENTER) && !ev.isAnyModifierKeyDown())
+                {
+                    loginForm.submit();
+                }
+            }
+        };
+        username.addKeyPressHandler(enterKeyHandler);
+        password.addKeyPressHandler(enterKeyHandler);
+        rememberMe.addKeyPressHandler(enterKeyHandler);
 
-        PropertyMapper mapper = new PropertyMapper(GWT
-                .create(LoginDialogContent.class), GWT
-                .create(LoginDialogController.class));
+        cancelButton.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent inArg0)
+            {
+                close();
+            }
+        });
 
-        mapper.bind(this, (Bindable) controller);
-
-        controller.init();
+        loginForm.addSubmitCompleteHandler(new SubmitCompleteHandler()
+        {
+            public void onSubmitComplete(final SubmitCompleteEvent ev)
+            {
+                // result ends (or may end) with a newline, so check using startsWith
+                String formReturnValue = ev.getResults();
+                if (formReturnValue.startsWith("LOGIN_SUCCESS"))
+                {
+                    errorMessage.setVisible(false);
+                    close();
+                    Session.getInstance().getEventBus().notifyObservers(new FormLoginCompleteEvent());
+                }
+                else if (formReturnValue.startsWith("LOGIN_DISABLED"))
+                {
+                    errorMessage.setVisible(false);
+                    close();
+                    Window.Location.assign("/requestaccess");
+                }
+                else
+                {
+                    errorMessage.setText("The user name or password you entered was incorrect.");
+                    errorMessage.setVisible(true);
+                }
+            }
+        });
     }
 
     /**
@@ -226,21 +279,13 @@ public class LoginDialogContent implements DialogContent, Bindable
     }
 
     /**
-     * Sets the show command.
-     *
-     * @param inShowCommand
-     *            the command to use.
-     */
-    public void setShowCommand(final WidgetCommand inShowCommand)
-    {
-        showCommand = inShowCommand;
-    }
-
-    /**
      * Provides a hook to fire off events when the dialog is shown.
      */
     public void show()
     {
-        showCommand.execute();
+        username.setText("");
+        password.setText("");
+        errorMessage.setVisible(false);
+        username.setFocus(true);
     }
 }
