@@ -36,7 +36,7 @@ Eureka.BannerBar = function(img, color)
 
     this.getContainer = function()
     {
-        return jQuery("<div style='background: "+color+" url("+img+") no-repeat; height: 20px;'></div>");
+        return jQuery("<div style='background: url("+img+") no-repeat scroll left center "+color+"; height: 44px;'></div>");
     }
 }
 
@@ -293,14 +293,15 @@ Eureka.Form = function(titleText, callback)
     }
 }
 
-Eureka.SearchBar = function(callback)
+Eureka.SearchBar = function(callback, supressType)
 {
     this.container = jQuery("<div></div>");
     this.callback = callback;
+    this.supressType = supressType;
 
     var input = jQuery("<input class='text-label' id='gadget-search' value='Search...' />");
     input.keyup(function(e) {
-        if(e.which == 13 || input.val().length > 2)
+        if(e.which == 13 || (input.val().length > 2 && supressType != true))
         {
             callback(input.val());
         }
