@@ -3596,16 +3596,6 @@
         <constructor-arg ref="findPersonByDirectLdapGroupMembershipMapper"/>       
         <constructor-arg ref="baseLdapPath"/>        
     </bean>
-
-    <bean id="multiSourcePersonLookupStrategy"
-        class="org.eurekastreams.server.service.actions.strategies.MultiSourcePersonLookup">
-        <constructor-arg>
-            <ref bean="personLookupStrategy" />
-        </constructor-arg>
-        <constructor-arg>
-            <ref bean="ldapPersonLookupViaAttribute" />
-        </constructor-arg>
-    </bean>       
     
     <bean id="groupCreator"
         class="org.eurekastreams.server.service.actions.strategies.GroupCreator">

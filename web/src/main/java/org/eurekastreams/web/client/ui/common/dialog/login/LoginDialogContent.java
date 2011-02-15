@@ -24,8 +24,8 @@ import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -177,19 +177,20 @@ public class LoginDialogContent implements DialogContent, Bindable
                 loginForm.submit();
             }
         });
-        KeyPressHandler enterKeyHandler = new KeyPressHandler()
+
+        KeyUpHandler enterKeyHandler = new KeyUpHandler()
         {
-            public void onKeyPress(final KeyPressEvent ev)
+            public void onKeyUp(final KeyUpEvent ev)
             {
-                if ((ev.getCharCode() == KeyCodes.KEY_ENTER) && !ev.isAnyModifierKeyDown())
+                if (ev.getNativeKeyCode() == KeyCodes.KEY_ENTER && !ev.isAnyModifierKeyDown())
                 {
                     loginForm.submit();
                 }
             }
         };
-        username.addKeyPressHandler(enterKeyHandler);
-        password.addKeyPressHandler(enterKeyHandler);
-        rememberMe.addKeyPressHandler(enterKeyHandler);
+        username.addKeyUpHandler(enterKeyHandler);
+        password.addKeyUpHandler(enterKeyHandler);
+        rememberMe.addKeyUpHandler(enterKeyHandler);
 
         cancelButton.addClickHandler(new ClickHandler()
         {

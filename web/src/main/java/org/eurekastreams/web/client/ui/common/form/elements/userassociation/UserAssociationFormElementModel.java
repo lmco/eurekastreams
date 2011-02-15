@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import org.eurekastreams.server.action.request.PersonLookupRequest;
 import org.eurekastreams.server.domain.MembershipCriteria;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.SystemSettings;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.MembershipCriteriaAddedEvent;
 import org.eurekastreams.web.client.events.MembershipCriteriaRemovedEvent;
@@ -49,31 +50,31 @@ public class UserAssociationFormElementModel
     /**
      * Action processor use.
      */
-    private ActionProcessor processor;
+    private final ActionProcessor processor;
 
     /**
      * Membership criteria items.
      */
-    private List<MembershipCriteria> items = new ArrayList<MembershipCriteria>();
+    private final List<MembershipCriteria> items = new ArrayList<MembershipCriteria>();
 
     /**
      * The system settings.
      */
-    private SystemSettings settings;
+    private final SystemSettings settings;
 
     /**
      * The event bus.
      */
-    private EventBus eventBus;
+    private final EventBus eventBus;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inSession
      *            the session.
      * @param inSettings
      *            the the settings.
-     * 
+     *
      */
     public UserAssociationFormElementModel(final Session inSession, final SystemSettings inSettings)
     {
@@ -96,7 +97,7 @@ public class UserAssociationFormElementModel
 
     /**
      * Add membership criteria.
-     * 
+     *
      * @param membershipCritera
      *            the criteria.
      * @param isGroup
@@ -106,40 +107,39 @@ public class UserAssociationFormElementModel
     {
         if (!isGroup)
         {
-        String action = "personLookupOrg";
+            String action = "personLookupOrg";
 
+            PersonLookupRequest request = new PersonLookupRequest(membershipCritera, new Integer(MAX_RESULTS));
+            processor.makeRequest(new ActionRequestImpl<PersonModelView>(action, request),
+                    new AsyncCallback<List<PersonModelView>>()
+                    {
+                        public void onFailure(final Throwable caught)
+                        {
+                            eventBus.notifyObservers(new MembershipCriteriaVerificationFailureEvent());
+                        }
 
-        PersonLookupRequest request = new PersonLookupRequest(membershipCritera, new Integer(MAX_RESULTS));
-        processor.makeRequest(new ActionRequestImpl<Person>(action, request), new AsyncCallback<List<Person>>()
-        {
-            public void onFailure(final Throwable caught)
-            {
-                eventBus.notifyObservers(new MembershipCriteriaVerificationFailureEvent());
-            }
+                        public void onSuccess(final List<PersonModelView> people)
+                        {
+                            eventBus.notifyObservers(new MembershipCriteriaVerificationSuccessEvent(people.size()));
 
-            public void onSuccess(final List<Person> people)
-            {
-                eventBus.notifyObservers(new MembershipCriteriaVerificationSuccessEvent(people.size()));
+                            if (people.size() > 0)
+                            {
+                                MembershipCriteria criteria = new MembershipCriteria();
+                                criteria.setCriteria(membershipCritera);
 
-                if (people.size() > 0)
-                {
-                    MembershipCriteria criteria = new MembershipCriteria();
-                    criteria.setCriteria(membershipCritera);
-
-                    items.add(criteria);
-                    eventBus.notifyObservers(new MembershipCriteriaAddedEvent(criteria, true));
-                }
-                else
-                {
-                    eventBus.notifyObservers(new MembershipCriteriaVerificationNoUsersEvent());
-                }
-            }
-        });
+                                items.add(criteria);
+                                eventBus.notifyObservers(new MembershipCriteriaAddedEvent(criteria, true));
+                            }
+                            else
+                            {
+                                eventBus.notifyObservers(new MembershipCriteriaVerificationNoUsersEvent());
+                            }
+                        }
+                    });
         }
         else
         {
             String action = "groupLookup";
-
 
             GroupLookupRequest request = new GroupLookupRequest(membershipCritera);
             processor.makeRequest(new ActionRequestImpl<Person>(action, request), new AsyncCallback<Boolean>()
@@ -172,7 +172,7 @@ public class UserAssociationFormElementModel
 
     /**
      * Get the membership criteria.
-     * 
+     *
      * @return the criteria.
      */
     public Serializable getMembershipCriteria()
@@ -182,7 +182,7 @@ public class UserAssociationFormElementModel
 
     /**
      * Remove membership criteria.
-     * 
+     *
      * @param inCriteria
      *            the criteria.
      */

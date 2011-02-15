@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -135,6 +135,8 @@ public class PersonTest
         modelView.setEntityId(7L);
         modelView.setEmail("user@domain.com");
         modelView.setDateAdded(aDate);
+        modelView.setLastName("Doe");
+        modelView.setPreferredName("John");
 
         sut = new Person(modelView);
 
@@ -145,6 +147,8 @@ public class PersonTest
         assertEquals("user@domain.com", sut.getEmail());
         assertEquals(optoutvideos, sut.getOptOutVideos());
         assertEquals(aDate, sut.getDateAdded());
+        assertEquals("Doe", sut.getLastName());
+        assertEquals("John", sut.getPreferredName());
     }
 
 
@@ -169,6 +173,8 @@ public class PersonTest
         assertEquals("homers", mv.getAccountId());
         assertEquals("opensocial", mv.getOpenSocialId());
 
+        assertEquals("MaxPower", mv.getPreferredName());
+        assertEquals("simpson", mv.getLastName());
         assertEquals("MaxPower simpson", mv.getDisplayName());
         // TODO: assertEquals(, mv.getFollowersCount());
         assertEquals("engineer", mv.getTitle());

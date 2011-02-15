@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -261,7 +261,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Shows the ToS modal.
-     * 
+     *
      */
     private void displayToS()
     {
@@ -291,7 +291,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires off a gadget change state event.
-     * 
+     *
      * @param id
      *            the gadget id
      * @param view
@@ -307,7 +307,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires of the UpdateGadgetPrefsEvent when called from the gadget container.
-     * 
+     *
      * @param inId
      *            - id of the gadget being updated.
      * @param inPrefs
@@ -321,17 +321,16 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the save command object.
-     * 
+     *
      * @return the save command
      */
     private static Command getEmployeeSelectedCommand()
     {
         return new Command()
         {
-
             public void execute()
             {
-                Person result = dialogContent.getPerson();
+                PersonModelView result = dialogContent.getPerson();
                 AvatarUrlGenerator urlGen = new AvatarUrlGenerator(EntityType.PERSON);
                 String imageUrl = urlGen.getSmallAvatarUrl(result.getId(), result.getAvatarId());
 
@@ -345,8 +344,7 @@ public class ApplicationEntryPoint implements EntryPoint
      */
     public static void launchEmployeeLookup()
     {
-        dialogContent = new EmployeeLookupContent(getEmployeeSelectedCommand(), Session.getInstance()
-                .getActionProcessor());
+        dialogContent = new EmployeeLookupContent(getEmployeeSelectedCommand());
         Dialog newDialog = new Dialog(dialogContent);
         newDialog.setBgVisible(true);
         newDialog.center();
@@ -355,7 +353,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Call the handler when the employee lookup is done.
-     * 
+     *
      * @param ntid
      *            the ntid.
      * @param displayName
@@ -371,7 +369,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the people from the server, convert them to JSON, and feed them back to the handler.
-     * 
+     *
      * @param ntids
      *            the ntids.
      * @param callbackIndex
@@ -446,7 +444,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Call the handler with the JSON data.
-     * 
+     *
      * @param data
      *            the data.
      * @param callbackIndex
@@ -459,7 +457,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Returns an additional property value given a key.
-     * 
+     *
      * @param key
      *            the key.
      * @return the value.
