@@ -1,0 +1,100 @@
+/*
+ * Copyright (c) 2010 Lockheed Martin Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.eurekastreams.server.action.execution.profile;
+
+import static org.junit.Assert.assertEquals;
+
+import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
+import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.server.domain.DomainGroup;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.Test;
+
+/**
+ * Test for CreateGroupExecution.
+ * 
+ */
+public class CreateGroupExecutionTest
+{
+    /**
+     * Context for building mock objects.
+     */
+    private final Mockery context = new JUnit4Mockery()
+    {
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
+
+    /**
+     * Mocked instance of {@link TaskHandlerActionContext}.
+     */
+    private TaskHandlerActionContext taskHandlerActionContext = context.mock(TaskHandlerActionContext.class);
+
+    /**
+     * {@link DomainGroup}.
+     */
+    private DomainGroup dg = context.mock(DomainGroup.class);
+
+    /**
+     * Persist resource action.
+     */
+    private TaskHandlerExecutionStrategy<PrincipalActionContext> persistResourceExecution = context
+            .mock(TaskHandlerExecutionStrategy.class);
+
+    /**
+     * System under test.
+     */
+    private CreateGroupExecution sut = new CreateGroupExecution(persistResourceExecution);
+
+    /**
+     * Test.
+     */
+    @Test
+    public void test()
+    {
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(persistResourceExecution).execute(taskHandlerActionContext);
+                will(returnValue(dg));
+
+                oneOf(dg).getShortName();
+                will(returnValue("sn"));
+
+                oneOf(dg).getParentOrganizationShortName();
+                will(returnValue("posn"));
+
+                oneOf(dg).isPending();
+                will(returnValue(false));
+            }
+        });
+
+        DomainGroupModelView dgmv = sut.execute(taskHandlerActionContext);
+
+        assertEquals(false, dgmv.isPending());
+        assertEquals("sn", dgmv.getShortName());
+        assertEquals("posn", dgmv.getParentOrganizationShortName());
+
+        context.assertIsSatisfied();
+    }
+
+}

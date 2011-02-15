@@ -19,7 +19,6 @@ import java.io.Serializable;
 import java.util.HashSet;
 
 import org.eurekastreams.commons.client.ActionProcessor;
-import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.Person;
@@ -159,12 +158,12 @@ public class CreateGroupPanel extends SettingsPanel
                 {
                     public void update(final InsertedGroupResponseEvent ev)
                     {
-                        DomainGroup group = ev.getResponse();
+                        DomainGroupModelView group = ev.getResponse();
 
                         // destination depends on whether org allows immediate creation of groups
                         CreateUrlRequest urlRqst = !group.isPending() ? new CreateUrlRequest(Page.GROUPS, group
                                 .getShortName()) : new CreateUrlRequest(Page.ORGANIZATIONS, group
-                                .getParentOrganization().getShortName());
+                                .getParentOrganizationShortName());
                         eventBus.notifyObservers(new UpdateHistoryEvent(urlRqst));
 
                         // tell the user what just happened

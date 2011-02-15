@@ -181,8 +181,13 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     private boolean streamPostable = true;
 
     /**
+     * If group is pending approval.
+     */
+    private boolean isPending = false;
+
+    /**
      * Load this object's properties from the input Map.
-     *
+     * 
      * @param properties
      *            the Map of the properties to load
      */
@@ -260,11 +265,15 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
         {
             setStreamPostable((Boolean) properties.get("streamPostable"));
         }
+        if (properties.containsKey("isPending"))
+        {
+            setStreamPostable((Boolean) properties.get("isPending"));
+        }
     }
 
     /**
      * Sets is public.
-     *
+     * 
      * @param inIsPublic
      *            sets isPublic.
      */
@@ -283,7 +292,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Get the entity name.
-     *
+     * 
      * @return the entity name
      */
     @Override
@@ -294,7 +303,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Get the group's avatar id.
-     *
+     * 
      * @return the avatarId
      */
     public String getAvatarId()
@@ -304,7 +313,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the group's avatar id.
-     *
+     * 
      * @param inAvatarId
      *            the avatarId to set
      */
@@ -315,7 +324,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Get the number of people following this group.
-     *
+     * 
      * @return the followersCount
      */
     public int getFollowersCount()
@@ -325,7 +334,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the number of people following this group.
-     *
+     * 
      * @param inFollowersCount
      *            the followersCount to set
      */
@@ -336,7 +345,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * The the number of updates for this group.
-     *
+     * 
      * @return the updatesCount
      */
     public int getUpdatesCount()
@@ -346,7 +355,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the number of updates for this group.
-     *
+     * 
      * @param inUpdatesCount
      *            the updatesCount to set
      */
@@ -357,7 +366,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Get the shortname.
-     *
+     * 
      * @return the shortname.
      */
     public String getShortName()
@@ -367,7 +376,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the shortname.
-     *
+     * 
      * @param inShortName
      *            the shortname.
      */
@@ -378,7 +387,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Get the name of the group.
-     *
+     * 
      * @return the name of the group
      */
     public String getName()
@@ -388,7 +397,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the name of the group.
-     *
+     * 
      * @param inName
      *            the name to set
      */
@@ -399,7 +408,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Get the description of the group.
-     *
+     * 
      * @return the description
      */
     public String getDescription()
@@ -409,7 +418,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the description of the group.
-     *
+     * 
      * @param inDescription
      *            the description to set
      */
@@ -420,7 +429,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Get the date the group was added to the system.
-     *
+     * 
      * @return the dateAdded
      */
     public Date getDateAdded()
@@ -430,7 +439,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the date the group was added to the system.
-     *
+     * 
      * @param inDateAdded
      *            the dateAdded to set
      */
@@ -458,7 +467,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Get the group's parent organization's short name.
-     *
+     * 
      * @return the parentOrganizationShortName
      */
     public String getParentOrganizationShortName()
@@ -468,7 +477,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the group's parent organization's short name.
-     *
+     * 
      * @param inParentOrganizationShortName
      *            the parentOrganizationShortName to set
      */
@@ -479,7 +488,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Get the group's parent organization's name.
-     *
+     * 
      * @return the parentOrganizationName
      */
     public String getParentOrganizationName()
@@ -489,7 +498,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the group's parent organization's name.
-     *
+     * 
      * @param inParentOrganizationName
      *            the parentOrganizationName to set
      */
@@ -499,7 +508,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     }
 
     /**
-     *
+     * 
      * @return the person created by display name.
      */
     public String getPersonCreatedByDisplayName()
@@ -534,7 +543,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * This is only available on the server and is not serialized and sent over the wire.
-     *
+     * 
      * @param inPersonCreatedById
      *            The person created by id.
      */
@@ -554,7 +563,7 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
 
     /**
      * Set the entity id.
-     *
+     * 
      * @param inEntityId
      *            the entity id of the domain group.
      */
@@ -632,5 +641,22 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     public String getUniqueId()
     {
         return shortName;
+    }
+
+    /**
+     * @return the isPending
+     */
+    public boolean isPending()
+    {
+        return isPending;
+    }
+
+    /**
+     * @param inIsPending
+     *            the isPending to set
+     */
+    public void setPending(final boolean inIsPending)
+    {
+        isPending = inIsPending;
     }
 }
