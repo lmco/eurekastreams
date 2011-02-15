@@ -29,6 +29,19 @@ Eureka.EventBus =
 }
 
 
+Eureka.BannerBar = function(img, color)
+{
+    this.img = img;
+    this.color = color;
+
+    this.getContainer = function()
+    {
+        return jQuery("<div style='background: "+color+" url("+img+") no-repeat; height: 20px;'></div>");
+    }
+}
+
+
+
 Eureka.Container =
 {
     viewCount : 0,
