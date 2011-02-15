@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -669,6 +669,8 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         parentOrganization = new Organization(personModelView.getParentOrganizationName(), personModelView
                 .getParentOrganizationShortName());
         additionalProperties = personModelView.getAdditionalProperties();
+        lastName = personModelView.getLastName();
+        preferredName = personModelView.getPreferredName();
     }
 
     /**
@@ -1855,6 +1857,8 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         p.setParentOrganizationName(parentOrganization.getName());
         p.setParentOrganizationShortName(parentOrganization.getShortName());
         p.setAdditionalProperties(getAdditionalProperties());
+        p.setLastName(lastName);
+        p.setPreferredName(preferredName);
 
         return p;
     }

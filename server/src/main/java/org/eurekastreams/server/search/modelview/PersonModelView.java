@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     /**
      * Serial version uuid.
      */
-    private static final long serialVersionUID = -4695870818188965332L;
+    private static final long serialVersionUID = 8393711815963144901L;
 
     /**
      * The key for the title.
@@ -241,6 +241,16 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     private boolean accountLocked = false;
 
     /**
+     * User's last name.
+     */
+    private String lastName = UNINITIALIZED_STRING_VALUE;
+
+    /**
+     * User's preferred name.
+     */
+    private String preferredName = UNINITIALIZED_STRING_VALUE;
+
+    /**
      * Get the name of this entity.
      *
      * @return the name of this entity
@@ -311,6 +321,14 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
         {
             // this should be done as a ClassBridge but ClassBridges can't currently be projected
             setDisplayName((String) properties.get("preferredName") + " " + (String) properties.get("lastName"));
+        }
+        if (properties.containsKey("lastName"))
+        {
+            setLastName((String) properties.get("lastName"));
+        }
+        if (properties.containsKey(PREFERREDNAME_KEY))
+        {
+            setPreferredName((String) properties.get(PREFERREDNAME_KEY));
         }
         if (properties.containsKey("title"))
         {
@@ -935,5 +953,39 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     public void setAccountLocked(final boolean inAccountLocked)
     {
         accountLocked = inAccountLocked;
+    }
+
+    /**
+     * @return the lastName
+     */
+    public String getLastName()
+    {
+        return lastName;
+    }
+
+    /**
+     * @param inLastName
+     *            the lastName to set
+     */
+    public void setLastName(final String inLastName)
+    {
+        lastName = inLastName;
+    }
+
+    /**
+     * @return the preferredName
+     */
+    public String getPreferredName()
+    {
+        return preferredName;
+    }
+
+    /**
+     * @param inPreferredName
+     *            the preferredName to set
+     */
+    public void setPreferredName(final String inPreferredName)
+    {
+        preferredName = inPreferredName;
     }
 }

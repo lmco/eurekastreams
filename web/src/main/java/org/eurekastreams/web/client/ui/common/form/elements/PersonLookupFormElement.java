@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,10 @@ import java.util.HashSet;
 
 import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.ui.common.EditPanel;
-import org.eurekastreams.web.client.ui.common.PersonPanel;
 import org.eurekastreams.web.client.ui.common.EditPanel.Mode;
+import org.eurekastreams.web.client.ui.common.PersonPanel;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.lookup.EmployeeLookupContent;
 
@@ -52,21 +53,21 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
     /**
      * Panel where the looked-up people are displayed.
      */
-    private FlowPanel resultPanel = new FlowPanel();
+    private final FlowPanel resultPanel = new FlowPanel();
 
     /**
      * Collection of looked-up people.
      */
-    private HashSet<Person> persons = new HashSet<Person>();
+    private final HashSet<Person> persons = new HashSet<Person>();
 
     /**
      * The label.
      */
-    private Label label = new Label();
+    private final Label label = new Label();
 
     /**
      * Constructor.
-     * 
+     *
      * @param inTitle
      *            title for the dialog
      * @param inLookupText
@@ -103,7 +104,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
 
             public void onClick(final Widget arg0)
             {
-                dialogContent = new EmployeeLookupContent(getSaveCommand(), inProcessor);
+                dialogContent = new EmployeeLookupContent(getSaveCommand());
                 Dialog newDialog = new Dialog(dialogContent);
                 newDialog.setBgVisible(true);
                 newDialog.center();
@@ -133,7 +134,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Add a person looked up in the modal to the display.
-     * 
+     *
      * @param inPerson
      *            the newly looked-up person
      */
@@ -147,7 +148,8 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
             EditPanel editPanel = new EditPanel(personContainer, Mode.DELETE);
             personContainer.add(editPanel);
 
-            final PersonPanel personPanel = dialogContent.getPerson(inPerson.toPersonModelView());
+            final PersonPanel personPanel = new PersonPanel(inPerson.toPersonModelView(), false, false, false, true);
+
             personContainer.add(personPanel);
             persons.add(inPerson);
             resultPanel.add(personContainer);
@@ -164,7 +166,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Remove a person from the display panel.
-     * 
+     *
      * @param personToBeRemoved
      *            the person object
      * @param panelToBeRemoved
@@ -178,25 +180,24 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Get the save command object.
-     * 
+     *
      * @return the save command
      */
     private Command getSaveCommand()
     {
         return new Command()
         {
-
             public void execute()
             {
-                Person result = dialogContent.getPerson();
-                addPerson(result);
+                PersonModelView result = dialogContent.getPerson();
+                addPerson(new Person(result));
             }
         };
     }
 
     /**
      * Getter.
-     * 
+     *
      * @return the key
      */
     public String getKey()
@@ -206,7 +207,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Returns the collection of Persons who were selected.
-     * 
+     *
      * @return the collection
      */
     public HashSet<Person> getValue()
@@ -216,7 +217,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Gets called if this element has an error.
-     * 
+     *
      * @param errMessage
      *            the error Message.
      */
