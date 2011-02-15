@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.eurekastreams.web.client.ui.pages.profile.settings;
 import java.io.Serializable;
 import java.util.HashSet;
 
-import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.Person;
@@ -56,7 +55,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Organization panel.
- * 
+ *
  */
 public class CreateGroupPanel extends SettingsPanel
 {
@@ -103,7 +102,7 @@ public class CreateGroupPanel extends SettingsPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param parentOrgShortName
      *            parent org shortname.
      */
@@ -125,7 +124,7 @@ public class CreateGroupPanel extends SettingsPanel
 
     /**
      * Set the parent org.
-     * 
+     *
      * @param parentOrg
      *            parent org.
      */
@@ -137,13 +136,12 @@ public class CreateGroupPanel extends SettingsPanel
         this.setPreviousPage(new CreateUrlRequest(Page.ORGANIZATIONS), "< Return to Profile");
 
         Person currentPerson = Session.getInstance().getCurrentPerson();
-        ActionProcessor processor = Session.getInstance().getActionProcessor();
         String coordinstructions = "The group coordinators"
                 + " will be responsible for setting up the group profile, setting group permissions, "
                 + "and managing group access";
         PersonLookupFormElement personLookupFormElement = new PersonLookupFormElement("Group Coordinators",
                 "Add Coordinator", coordinstructions, DomainGroupModelView.COORDINATORS_KEY, new HashSet<Person>(),
-                true, processor);
+                true);
 
         personLookupFormElement.addPerson(currentPerson);
 
@@ -176,7 +174,7 @@ public class CreateGroupPanel extends SettingsPanel
         });
 
         OrgLookupFormElement parentOrgLookup = new OrgLookupFormElement("Parent Organization", "", "",
-                DomainGroupModelView.ORG_PARENT_KEY, "Parent Organization", false, processor, parentOrg, true);
+                DomainGroupModelView.ORG_PARENT_KEY, "Parent Organization", false, parentOrg, true);
         form.addFormElement(parentOrgLookup);
 
         form.addFormDivider();

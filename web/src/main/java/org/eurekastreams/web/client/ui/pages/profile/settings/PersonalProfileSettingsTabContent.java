@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SetBannerEvent;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
@@ -31,8 +32,8 @@ import org.eurekastreams.web.client.events.data.UpdatedPersonalInformationRespon
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.PersonalInformationModel;
 import org.eurekastreams.web.client.ui.Session;
-import org.eurekastreams.web.client.ui.common.autocomplete.AutoCompleteItemDropDownFormElement;
 import org.eurekastreams.web.client.ui.common.autocomplete.AutoCompleteDropDownPanel.ElementType;
+import org.eurekastreams.web.client.ui.common.autocomplete.AutoCompleteItemDropDownFormElement;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder.Method;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicCheckBoxFormElement;
@@ -50,7 +51,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * The Display for Personal Profile Settings Tab.
- *
  */
 public class PersonalProfileSettingsTabContent extends Composite
 {
@@ -79,27 +79,26 @@ public class PersonalProfileSettingsTabContent extends Composite
      */
     public PersonalProfileSettingsTabContent()
     {
-
-        Session.getInstance().getEventBus().addObserver(GotPersonalInformationResponseEvent.class,
+        final EventBus eventBus = Session.getInstance().getEventBus();
+        eventBus.addObserver(GotPersonalInformationResponseEvent.class,
                 new Observer<GotPersonalInformationResponseEvent>()
                 {
                     public void update(final GotPersonalInformationResponseEvent event)
                     {
                         person = event.getResponse();
 
-                        Session.getInstance().getEventBus().notifyObservers(new SetBannerEvent(person));
+                        eventBus.notifyObservers(new SetBannerEvent(person));
 
                         final FormBuilder form = new FormBuilder("", PersonalInformationModel.getInstance(),
                                 Method.UPDATE);
 
-                        Session.getInstance().getEventBus().addObserver(UpdatedPersonalInformationResponseEvent.class,
+                        eventBus.addObserver(UpdatedPersonalInformationResponseEvent.class,
                                 new Observer<UpdatedPersonalInformationResponseEvent>()
                                 {
                                     public void update(final UpdatedPersonalInformationResponseEvent arg1)
                                     {
-                                        Session.getInstance().getEventBus().notifyObservers(
-                                                new ShowNotificationEvent(new Notification(
-                                                        "Your profile has been updated.")));
+                                        eventBus.notifyObservers(new ShowNotificationEvent(new Notification(
+                                                "Your profile has been updated.")));
                                         form.onSuccess();
                                     }
                                 });
@@ -114,12 +113,10 @@ public class PersonalProfileSettingsTabContent extends Composite
                         form.addFormElement(new OrgLookupFormElement("Organization Affiliation",
                                 "Primary Organization",
                                 "Select the organization that you are most closely associated with.",
-                                "parentOrganization", "", true, Session.getInstance().getActionProcessor(), person
-                                        .getParentOrganization(), false));
+                                "parentOrganization", "", true, person.getParentOrganization(), false));
                         form.addFormElement(new MultiOrgLookupFormElement("", "Secondary Organization(s)",
                                 "Select the other organization(s) you actively support.", "relatedOrganizations",
-                                "Secondary", false, Session.getInstance().getActionProcessor(), person
-                                        .getRelatedOrganizations()));
+                                "Secondary", false, person.getRelatedOrganizations()));
                         form.addFormDivider();
 
                         form.addFormElement(new BasicTextBoxFormElement(MAX_LENGTH, false, "Title",

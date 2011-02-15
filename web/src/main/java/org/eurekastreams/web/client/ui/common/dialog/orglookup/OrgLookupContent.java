@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,13 @@ package org.eurekastreams.web.client.ui.common.dialog.orglookup;
 
 import java.util.HashMap;
 
-import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.server.domain.OrganizationTreeDTO;
 import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.model.OrganizationModelViewModel;
+import org.eurekastreams.web.client.model.OrganizationTreeModel;
 import org.eurekastreams.web.client.ui.Bindable;
-import org.eurekastreams.web.client.ui.PropertyMapper;
+import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.ULPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarDisplayPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
@@ -30,7 +31,8 @@ import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Background;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.History;
@@ -54,27 +56,17 @@ public class OrgLookupContent implements DialogContent, Bindable
     /**
      * The lookup form.
      */
-    FormPanel lookupForm;
-
-    /**
-     * The view.
-     */
-    private OrgLookupView view;
-
-    /**
-     * The model.
-     */
-    private OrgLookupModel model;
+    private final FormPanel lookupForm = new FormPanel();
 
     /**
      * The search box.
      */
-    TextBox searchBox;
+    private final TextBox searchBox = new TextBox();
 
     /**
      * The search button.
      */
-    Label searchButton;
+    private final Label searchButton = new Label();
 
     /**
      * The save button.
@@ -94,57 +86,68 @@ public class OrgLookupContent implements DialogContent, Bindable
     /**
      * The list of orgs.
      */
-    ULPanel orgList;
+    private final ULPanel orgList = new ULPanel();
 
     /**
      * The selected org title.
      */
-    Label orgTitle;
+    private final Label orgTitle = new Label();
 
     /**
      * The selected org overview.
      */
-    Label orgOverview;
+    private final Label orgOverview = new Label();
 
     /**
      * Org container.
      */
-    private FlowPanel orgTreeContainer;
-    
+    private final FlowPanel orgTreeContainer = new FlowPanel();
+
     /**
      * Org description panel.
      */
     FlowPanel orgDescriptionPanel;
 
+    /** Command to invoke to save data. */
+    private final Command saveCommand;
+
+    /** The MVVM View Model for this control. */
+    private final OrgLookupViewModel viewModel;
+
     /**
      * Constructor.
      *
-     * @param saveCommand
+     * @param inSaveCommand
      *            called if the Save button gets clicked
-     * @param inProcessor
-     *            for requesting information from the server
      */
-    public OrgLookupContent(final Command saveCommand, final ActionProcessor inProcessor)
+    public OrgLookupContent(final Command inSaveCommand)
     {
-        lookupForm = new FormPanel();
+        saveCommand = inSaveCommand;
+        setupWidgets();
+        setupEvents();
 
+        viewModel = new OrgLookupViewModel(this, OrganizationTreeModel.getInstance(),
+                OrganizationModelViewModel.getInstance(), Session.getInstance().getEventBus());
+        viewModel.init();
+    }
+
+    /**
+     * Builds the UI.
+     */
+    private void setupWidgets()
+    {
         final FlowPanel lookupPanelContainer = new FlowPanel();
         lookupPanelContainer.addStyleName("org-lookup-container");
 
         final FlowPanel lookupPanel = new FlowPanel();
 
-        Label lookupDesc =
-                new Label(
-                        "Find an organization by typing the name in the box, "
-                        + "or by browsing the organization structure.");
+        Label lookupDesc = new Label("Find an organization by typing the name in the box, "
+                + "or by browsing the organization structure.");
         lookupDesc.addStyleName("lookup-description");
 
         lookupPanelContainer.add(lookupDesc);
 
         lookupPanel.addStyleName("lookup");
-
-        searchBox = new TextBox();
-        searchButton = new Label();
 
         FlowPanel searchContainer = new FlowPanel();
         searchContainer.addStyleName("search-list");
@@ -168,9 +171,7 @@ public class OrgLookupContent implements DialogContent, Bindable
         cancel.addStyleName("lookup-cancel-button");
         buttonArea.add(cancel);
 
-        orgTreeContainer = new FlowPanel();
         orgTreeContainer.addStyleName("org-tree-container");
-        orgList = new ULPanel();
 
         orgTreeContainer.add(orgList);
         lookupPanel.add(orgTreeContainer);
@@ -187,11 +188,9 @@ public class OrgLookupContent implements DialogContent, Bindable
 
         descriptionTextContainer.addStyleName("org-description-text");
 
-        orgTitle = new Label();
         orgTitle.addStyleName("org-name");
         descriptionTextContainer.add(orgTitle);
 
-        orgOverview = new Label();
         orgOverview.addStyleName("org-overview");
         descriptionTextContainer.add(orgOverview);
 
@@ -203,18 +202,21 @@ public class OrgLookupContent implements DialogContent, Bindable
         lookupPanelContainer.add(buttonArea);
 
         lookupForm.add(lookupPanelContainer);
+    }
 
-        // Create and initialize the controller.
+    /**
+     * Wires up events.
+     */
+    private void setupEvents()
+    {
 
-        model = new OrgLookupModel(inProcessor, EventBus.getInstance());
-        view = new OrgLookupView(this, model, saveCommand);
-        OrgLookupController controller = new OrgLookupController(model, view, EventBus.getInstance());
-
-        PropertyMapper mapper = new PropertyMapper(GWT.create(OrgLookupContent.class), GWT.create(OrgLookupView.class));
-
-        mapper.bind(this, view);
-
-        controller.init();
+        cancel.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent inArg0)
+            {
+                close();
+            }
+        });
     }
 
     /**
@@ -273,7 +275,7 @@ public class OrgLookupContent implements DialogContent, Bindable
     {
         // Intentionally left blank.
     }
-    
+
     /**
      * Get the selected org shortname.
      *
@@ -281,39 +283,7 @@ public class OrgLookupContent implements DialogContent, Bindable
      */
     public OrganizationTreeDTO getOrg()
     {
-        return model.getSelectedOrg();
-    }
-
-    /**
-     * Get an org tree item.
-     *
-     * @param results
-     *            the org tree.
-     * @param parent
-     *            the parent.
-     * @param inOrgList
-     *            the target list.
-     * @param treeIndex
-     *            the index.
-     * @return the tree item.
-     */
-    public OrganizationTreeItemComposite getOrganizationTreeItem(final OrganizationTreeDTO results,
-            final OrganizationTreeItemComposite parent, final ULPanel inOrgList,
-            final HashMap<OrganizationTreeDTO, OrganizationTreeItemComposite> treeIndex)
-    {
-        return new OrganizationTreeItemComposite(results, parent, inOrgList, treeIndex, EventBus.getInstance());
-    }
-
-    /**
-     * Scroll the tree container element.
-     *
-     * @param i
-     *            number of pixels to scroll.
-     */
-    public void scrollTop(final int i)
-    {
-        scrollTopNative(orgTreeContainer.getElement(), i);
-
+        return viewModel.getSelectedOrg();
     }
 
     /**
@@ -325,6 +295,98 @@ public class OrgLookupContent implements DialogContent, Bindable
      *            the number of pixels to scroll.
      */
     private native void scrollTopNative(final Element element, final int i)/*-{
-                    element.scrollTop = i;
-                }-*/;
+                                                                           element.scrollTop = i;
+                                                                           }-*/;
+
+    /* ---- package-scope methods for use by the MVVM View Model only ---- */
+
+    /**
+     * Populates the control with the org tree.
+     *
+     * @param rootOrg
+     *            Root org.
+     * @param treeIndex
+     *            Index of org to widget to fill.
+     */
+    void populateOrgTree(final OrganizationTreeDTO rootOrg,
+            final HashMap<OrganizationTreeDTO, OrganizationTreeItemComposite> treeIndex)
+    {
+        new OrganizationTreeItemComposite(rootOrg, null, orgList, treeIndex, EventBus.getInstance());
+    }
+
+    /**
+     * Scrolls the display to the given org in the tree.
+     *
+     * @param orgWidget
+     *            Widget representing the org.
+     */
+    void scrollToOrgWidget(final Widget orgWidget)
+    {
+        int pixels = orgWidget.getAbsoluteTop() - orgList.getAbsoluteTop();
+        scrollTopNative(orgTreeContainer.getElement(), pixels);
+    }
+
+    /**
+     * @return the searchBox
+     */
+    TextBox getSearchBox()
+    {
+        return searchBox;
+    }
+
+    /**
+     * @return the searchButton
+     */
+    Label getSearchButton()
+    {
+        return searchButton;
+    }
+
+    /**
+     * @return the save
+     */
+    Hyperlink getSave()
+    {
+        return save;
+    }
+
+    /**
+     * @return the logoImage
+     */
+    AvatarWidget getLogoImage()
+    {
+        return logoImage;
+    }
+
+    /**
+     * @return the orgTitle
+     */
+    Label getOrgTitle()
+    {
+        return orgTitle;
+    }
+
+    /**
+     * @return the orgOverview
+     */
+    Label getOrgOverview()
+    {
+        return orgOverview;
+    }
+
+    /**
+     * @return the orgDescriptionPanel
+     */
+    FlowPanel getOrgDescriptionPanel()
+    {
+        return orgDescriptionPanel;
+    }
+
+    /**
+     * @return the saveCommand
+     */
+    Command getSaveCommand()
+    {
+        return saveCommand;
+    }
 }

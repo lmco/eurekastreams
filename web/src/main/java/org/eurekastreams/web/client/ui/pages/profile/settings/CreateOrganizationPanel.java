@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Organization panel.
- * 
+ *
  */
 public class CreateOrganizationPanel extends SettingsPanel
 {
@@ -65,7 +65,7 @@ public class CreateOrganizationPanel extends SettingsPanel
 
     /**
      * Default constructor.
-     * 
+     *
      * @param parentOrgShortName
      *            parent org shortname.
      */
@@ -87,7 +87,7 @@ public class CreateOrganizationPanel extends SettingsPanel
 
     /**
      * Set the parent org.
-     * 
+     *
      * @param parentOrg
      *            parent org.
      */
@@ -102,8 +102,8 @@ public class CreateOrganizationPanel extends SettingsPanel
         if (!Session.getInstance().getCurrentPersonRoles().contains(Role.ORG_COORDINATOR))
         {
             // shouldn't be here, send them to start page just as if they typed invalid url.
-            Session.getInstance().getEventBus().notifyObservers(
-                    new UpdateHistoryEvent(new CreateUrlRequest(Page.START)));
+            Session.getInstance().getEventBus()
+                    .notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(Page.START)));
             return;
         }
 
@@ -112,13 +112,17 @@ public class CreateOrganizationPanel extends SettingsPanel
                 {
                     public void update(final InsertedOrganizationResponseEvent arg1)
                     {
-                        Session.getInstance().getEventBus().notifyObservers(
-                                new UpdateHistoryEvent(new CreateUrlRequest(Page.ORGANIZATIONS, arg1.getResponse()
-                                        .getShortName())));
+                        Session.getInstance()
+                                .getEventBus()
+                                .notifyObservers(
+                                        new UpdateHistoryEvent(new CreateUrlRequest(Page.ORGANIZATIONS, arg1
+                                                .getResponse().getShortName())));
 
-                        Session.getInstance().getEventBus().notifyObservers(
-                                new ShowNotificationEvent(new Notification(
-                                        "Your sub organization has been successfully created")));
+                        Session.getInstance()
+                                .getEventBus()
+                                .notifyObservers(
+                                        new ShowNotificationEvent(new Notification(
+                                                "Your sub organization has been successfully created")));
                     }
                 });
 
@@ -127,7 +131,6 @@ public class CreateOrganizationPanel extends SettingsPanel
 
         DeferredCommand.addCommand(new Command()
         {
-
             public void execute()
             {
                 orgName.setFocus();
@@ -135,8 +138,7 @@ public class CreateOrganizationPanel extends SettingsPanel
         });
 
         OrgLookupFormElement parentOrgLookup = new OrgLookupFormElement("Parent Organization", "", "",
-                OrganizationModelView.ORG_PARENT_KEY, "", false, Session.getInstance().getActionProcessor(), parentOrg,
-                true);
+                OrganizationModelView.ORG_PARENT_KEY, "", false, parentOrg, true);
         form.addFormElement(parentOrgLookup);
 
         form.addFormDivider();
@@ -165,8 +167,7 @@ public class CreateOrganizationPanel extends SettingsPanel
         PersonLookupFormElement personLookupFormElement = new PersonLookupFormElement("Organization Coordinators",
                 "Add Coordinator",
                 "The organization coordinators will be responsible for setting up the organization profile and "
-                        + "policy.", OrganizationModelView.COORDINATORS_KEY, new LinkedList<Person>(), true, Session
-                        .getInstance().getActionProcessor());
+                        + "policy.", OrganizationModelView.COORDINATORS_KEY, new LinkedList<Person>(), true);
 
         personLookupFormElement.addPerson(currentPerson);
         form.addFormElement(personLookupFormElement);

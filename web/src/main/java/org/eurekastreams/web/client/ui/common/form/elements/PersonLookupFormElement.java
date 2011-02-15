@@ -18,7 +18,6 @@ package org.eurekastreams.web.client.ui.common.form.elements;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.ui.common.EditPanel;
@@ -80,12 +79,9 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
      *            people initially in the element
      * @param inRequired
      *            whether this element represents required data
-     * @param inProcessor
-     *            for sending requests to the server
      */
     public PersonLookupFormElement(final String inTitle, final String inLookupText, final String inInstructions,
-            final String inKey, final Collection<Person> inPersons, final boolean inRequired,
-            final ActionProcessor inProcessor)
+            final String inKey, final Collection<Person> inPersons, final boolean inRequired)
     {
         this.addStyleName("person-lookup-form-element");
         // persons will get populated below using the addPersonMethod()
@@ -101,7 +97,6 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
         lookup.addStyleName("form-lookup-button");
         lookup.addClickListener(new ClickListener()
         {
-
             public void onClick(final Widget arg0)
             {
                 dialogContent = new EmployeeLookupContent(getSaveCommand());

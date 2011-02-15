@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * The basic group settings.
- * 
+ *
  */
 public class GroupProfileSettingsTabContent extends FlowPanel
 {
@@ -87,21 +87,21 @@ public class GroupProfileSettingsTabContent extends FlowPanel
     /**
      * The panel.
      */
-    private FlowPanel panel = new FlowPanel();
+    private final FlowPanel panel = new FlowPanel();
 
     /**
      * The delete-group button.
      */
-    private Anchor deleteButton = new Anchor("");
+    private final Anchor deleteButton = new Anchor("");
 
     /**
      * The processing spinner.
      */
-    private Label processingSpinny = new Label("Processing...");
+    private final Label processingSpinny = new Label("Processing...");
 
     /**
      * Default constructor.
-     * 
+     *
      * @param groupName
      *            the group name.
      */
@@ -136,7 +136,7 @@ public class GroupProfileSettingsTabContent extends FlowPanel
 
     /**
      * Setter.
-     * 
+     *
      * @param entity
      *            the group whose settings will be changed
      */
@@ -217,7 +217,7 @@ public class GroupProfileSettingsTabContent extends FlowPanel
 
         form.addFormElement(new OrgLookupFormElement("Parent Organization", "",
                 "Please use the lookup to select the organization that this group is associated with.",
-                DomainGroupModelView.ORG_PARENT_KEY, "", true, Session.getInstance().getActionProcessor(), group
+                DomainGroupModelView.ORG_PARENT_KEY, "", true, group
                         .getParentOrganization(), false));
         form.addFormDivider();
 
@@ -225,8 +225,7 @@ public class GroupProfileSettingsTabContent extends FlowPanel
                 + "and moderating the group's activity stream";
         Set<Person> coordinatorList = group.getCoordinators();
         form.addFormElement(new PersonLookupFormElement("Group Coordinators", "Add Coordinator", coordinstructions,
-                DomainGroupModelView.COORDINATORS_KEY, coordinatorList, true, Session.getInstance()
-                        .getActionProcessor()));
+                DomainGroupModelView.COORDINATORS_KEY, coordinatorList, true));
 
         form.addFormDivider();
 
