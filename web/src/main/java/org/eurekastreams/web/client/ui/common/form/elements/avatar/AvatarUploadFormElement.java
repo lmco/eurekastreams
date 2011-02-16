@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,29 @@
 package org.eurekastreams.web.client.ui.common.form.elements.avatar;
 
 import org.eurekastreams.commons.client.ActionProcessor;
+import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.web.client.events.ClearUploadedImageEvent;
-import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ClearUploadedImageEvent.ImageType;
+import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.Bindable;
-import org.eurekastreams.web.client.ui.PropertyMapper;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
-import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import org.eurekastreams.web.client.ui.common.dialog.imagecrop.ImageCropContent;
 import org.eurekastreams.web.client.ui.common.form.elements.avatar.strategies.ImageUploadStrategy;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -44,19 +46,14 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * The form element for the avatar upload. Its not a REAL form element because it doesnt save back with the form itself,
  * its Miss Independent.
- * 
+ *
  */
 public class AvatarUploadFormElement extends FlowPanel implements Bindable
 {
     /**
-     * The view.
-     */
-    private AvatarUploadFormElementView view;
-
-    /**
      * The panel.
      */
-    private FlowPanel panel = new FlowPanel();
+    private final FlowPanel panel = new FlowPanel();
     /**
      * the processor.
      */
@@ -88,6 +85,16 @@ public class AvatarUploadFormElement extends FlowPanel implements Bindable
     Image hiddenImage;
 
     /**
+     * The avatar ID of the person.
+     */
+    private String avatarId = "";
+
+    /**
+     * The image crop content widget.
+     */
+    private ImageCropContent imageCropDialog;
+
+    /**
      * The image upload strategy.
      */
     private ImageUploadStrategy strategy;
@@ -95,13 +102,13 @@ public class AvatarUploadFormElement extends FlowPanel implements Bindable
     /**
      * Default description if none is provided.
      */
-    private static String description = 
+    private static String description =
         // line break.
         "Select a JPG, PNG or GIF image from your computer. The maximum file size is 4MB.";
 
     /**
      * Create an avatar upload form element.
-     * 
+     *
      * @param label
      *            the label of the element.
      * @param servletPath
@@ -119,7 +126,7 @@ public class AvatarUploadFormElement extends FlowPanel implements Bindable
 
     /**
      * Create an avatar upload form element.
-     * 
+     *
      * @param label
      *            the label of the element.
      * @param desc
@@ -223,25 +230,71 @@ public class AvatarUploadFormElement extends FlowPanel implements Bindable
         uploadForm.setWidget(panel);
         this.add(uploadForm);
 
-        AvatarUploadFormElementModel model = new AvatarUploadFormElementModel(strategy);
-        AvatarUploadFormElementController controller = new AvatarUploadFormElementController(model,
-                new WidgetJSNIFacadeImpl());
-        view = new AvatarUploadFormElementView(controller, this, strategy);
-        PropertyMapper mapper = new PropertyMapper(GWT.create(AvatarUploadFormElement.class), GWT
-                .create(AvatarUploadFormElementView.class));
+        uploadForm.addSubmitCompleteHandler(new SubmitCompleteHandler()
+        {
+            public void onSubmitComplete(final SubmitCompleteEvent ev)
+            {
+                String result = ev.getResults().replaceAll("\\<.*?\\>", "");
+                final boolean fail = "fail".equals(result);
+                errorBox.setVisible(fail);
+                if (!fail)
+                {
+                    String[] results = result.split(",");
+                    if (results.length >= 4)
+                    {
+                        strategy.setX(Integer.parseInt(results[1]));
+                        strategy.setY(Integer.parseInt(results[2]));
+                        strategy.setCropSize(Integer.parseInt(results[3]));
+                    }
+                    onAvatarIdChanged(results[0], strategy.getEntityType() == EntityType.PERSON);
+                }
+            }
+        });
 
-        mapper.bind(this, view);
-        model.registerView(view);
-        view.init();
+        if (editButton != null)
+        {
+            editButton.addClickHandler(new ClickHandler()
+            {
+                public void onClick(final ClickEvent inArg0)
+                {
+                    // Since the size of the image is required before we can correctly show the
+                    // resize dialog, this method determines the avatar url and sets image url.
+                    // The load event of that image being loaded will kick off the resize modal.
+                    AvatarUrlGenerator urlGenerator = new AvatarUrlGenerator(EntityType.PERSON);
+                    hiddenImage.setUrl(urlGenerator.getOriginalAvatarUrl(strategy.getId(), avatarId));
+                }
+            });
+            hiddenImage.addLoadHandler(new LoadHandler()
+            {
+                public void onLoad(final LoadEvent inEvent)
+                {
+                    strategy = inStrategy;
+                    imageCropDialog = new ImageCropContent(strategy, processor, avatarId, new Command()
+                    {
+                        public void execute()
+                        {
+                            strategy = imageCropDialog.getStrategy();
+                            onAvatarIdChanged(strategy.getImageId(), strategy.getEntityType() == EntityType.PERSON);
+                        }
+                    }, hiddenImage.getWidth() + "px", hiddenImage.getHeight() + "px");
+
+                    Dialog dialog = new Dialog(imageCropDialog);
+                    dialog.setBgVisible(true);
+                    dialog.center();
+                }
+            });
+        }
+
         if (strategy.getImageType().equals(ImageType.BANNER))
         {
-            view.onAvatarIdChanged(strategy.getImageId(), strategy.getId().equals(strategy.getImageEntityId()), true,
+            onAvatarIdChanged(strategy.getImageId(), strategy.getId().equals(strategy.getImageEntityId()), true,
                     strategy.getEntityType() == EntityType.PERSON);
         }
         else
         {
-            view.onAvatarIdChanged(strategy.getImageId(), strategy.getEntityType() == EntityType.PERSON);
+            onAvatarIdChanged(strategy.getImageId(), strategy.getEntityType() == EntityType.PERSON);
         }
+
 
         deleteButton.addClickHandler(new ClickHandler()
         {
@@ -265,13 +318,14 @@ public class AvatarUploadFormElement extends FlowPanel implements Bindable
                         {
                             if (event.getImageType().equals(ImageType.BANNER))
                             {
-                                view.onAvatarIdChanged(event.getEntity().getBannerId(), strategy.getId().equals(
+                                onAvatarIdChanged(event.getEntity().getBannerId(),
+                                        strategy.getId().equals(
                                         event.getEntity().getBannerEntityId()), true,
                                         strategy.getEntityType() == EntityType.PERSON);
                             }
                             else
                             {
-                                view.onAvatarIdChanged(null, strategy.getEntityType() == EntityType.PERSON);
+                                onAvatarIdChanged(null, strategy.getEntityType() == EntityType.PERSON);
                             }
                         }
                     }
@@ -280,67 +334,51 @@ public class AvatarUploadFormElement extends FlowPanel implements Bindable
     }
 
     /**
-     * Creates the inside dialog content for the view.
-     * 
-     * @param inStrategy
-     *            the entity.
-     * @param avatarId
-     *            the avatar id.
-     * @param inImageWidth
-     *            image width.
-     * @param inImageHeight
-     *            image height.
-     * @return the image crop content widget.
-     */
-    ImageCropContent createImageCropContent(final ImageUploadStrategy inStrategy, final String avatarId,
-            final String inImageWidth, final String inImageHeight)
-    {
-        strategy = inStrategy;
-        return new ImageCropContent(strategy, processor, avatarId, new Command()
-        {
-            public void execute()
-            {
-                view.onSave();
-            }
-        }, inImageWidth, inImageHeight);
-    }
-
-    /**
-     * Creates an image for the view.
-     * 
-     * @param inStrategy
-     *            the entity object.
-     * @param avatarId
-     *            the avatar id.
-     * @return the image.
-     */
-    Widget createImage(final ImageUploadStrategy inStrategy, final String avatarId)
-    {
-        strategy = inStrategy;
-        return strategy.getImage(avatarId);
-    }
-
-    /**
-     * Creates the dialog for the view.
-     * 
-     * @param imageCropDialog
-     *            the dialog
-     * @return the dialog.
-     */
-    Dialog createDialog(final DialogContent imageCropDialog)
-    {
-        return new Dialog(imageCropDialog);
-    }
-
-    /**
-     * Set the avatar id.
-     * 
+     * Gets fired off when the avatar ID is changed. param inAvatarId the avatar ID.
+     *
      * @param inAvatarId
      *            the avatar id.
+     * @param setPersonAvatar
+     *            if the person's avatar should be changed.
      */
-    public void setAvatarId(final String inAvatarId)
+    public void onAvatarIdChanged(final String inAvatarId, final boolean setPersonAvatar)
     {
-        view.onAvatarIdChanged(inAvatarId, strategy.getEntityType() == EntityType.PERSON);
+        onAvatarIdChanged(inAvatarId, (inAvatarId != null), (inAvatarId != null), setPersonAvatar);
     }
 
+    /**
+     * Gets fired off when the avatar id is changed.
+     *
+     * @param inAvatarId
+     *            - the avatar id.
+     * @param inDisplayDelete
+     *            - flag telling to display or hide the delete button.
+     * @param inDisplayEdit
+     *            - flag telling to display or hide the edit button
+     * @param setPersonAvatar
+     *            if the person's avatar should be changed.
+     */
+    public void onAvatarIdChanged(final String inAvatarId, final boolean inDisplayDelete, final boolean inDisplayEdit,
+            final boolean setPersonAvatar)
+    {
+        if (setPersonAvatar)
+        {
+            Session.getInstance().getCurrentPerson().setAvatarId(inAvatarId);
+        }
+
+        avatarId = inAvatarId;
+        Widget avatar = strategy.getImage(avatarId);
+        avatarContainer.clear();
+        avatarContainer.add(avatar);
+
+        if (editButton != null)
+        {
+            editButton.setVisible(inDisplayEdit);
+        }
+
+        if (deleteButton != null)
+        {
+            deleteButton.setVisible(inDisplayDelete);
+        }
+    }
 }
