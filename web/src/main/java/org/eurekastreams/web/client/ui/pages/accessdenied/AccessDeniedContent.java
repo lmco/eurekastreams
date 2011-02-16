@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.eurekastreams.web.client.ui.pages.accessdenied;
 import org.eurekastreams.web.client.events.FormLoginCompleteEvent;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
-import org.eurekastreams.web.client.ui.Bindable;
 import org.eurekastreams.web.client.ui.HistoryState;
 import org.eurekastreams.web.client.ui.Session;
 
@@ -34,7 +33,7 @@ import com.google.gwt.user.client.ui.Label;
  * Access denied page.
  *
  */
-public class AccessDeniedContent extends Composite implements Bindable
+public class AccessDeniedContent extends Composite
 {
     /**
      * The history state object.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.eurekastreams.web.client.ui.pages.settings;
 
 import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
-import org.eurekastreams.web.client.ui.Bindable;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.tabs.SimpleTab;
 import org.eurekastreams.web.client.ui.common.tabs.TabContainerPanel;
@@ -31,33 +30,32 @@ import com.google.gwt.user.client.ui.RootPanel;
 /**
  * A directory of item.
  */
-public class SettingsContent extends Composite implements Bindable
+public class SettingsContent extends Composite
 {
-
     /**
      * Holds the tab section of the settings display.
      */
-    TabContainerPanel tabContainer;
+    private final TabContainerPanel tabContainer;
 
     /**
      * Personal Panel.
      */
-    NotificationsSettingsPanelComposite personalPanel;
+    private final NotificationsSettingsPanelComposite personalPanel;
 
     /**
      * System Panel.
      */
-    SystemSettingsPanelComposite systemPanel;
+    private final SystemSettingsPanelComposite systemPanel;
 
     /**
      * processor.
      */
-    ActionProcessor processor;
+    private final ActionProcessor processor;
 
     /**
      * The root panel.
      */
-    Panel rootPanel;
+    private final Panel rootPanel;
 
     /**
      * Constructor.
@@ -87,7 +85,7 @@ public class SettingsContent extends Composite implements Bindable
         }
 
         tabContainer.addTab(new SimpleTab("Notifications", personalPanel));
-        
+
         panel.add(tabContainer);
         tabContainer.init();
         initWidget(panel);

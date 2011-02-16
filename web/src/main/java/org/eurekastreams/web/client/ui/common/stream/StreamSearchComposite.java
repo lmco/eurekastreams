@@ -26,7 +26,6 @@ import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.StreamSearchBeginEvent;
 import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
-import org.eurekastreams.web.client.ui.Bindable;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LabeledTextBox;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
@@ -46,7 +45,7 @@ import com.google.gwt.user.client.ui.Label;
 /**
  * Stream searching widget.
  */
-public class StreamSearchComposite extends FlowPanel implements Bindable
+public class StreamSearchComposite extends FlowPanel
 {
     /**
      * The search button.
@@ -261,7 +260,7 @@ public class StreamSearchComposite extends FlowPanel implements Bindable
 
                 String search = Session.getInstance().getParameterValue("search");
                 String stream = Session.getInstance().getParameterValue("streamId");
-                
+
                 addGadgetLink.setVisible(search == null);
 
                 setAddGadgetLink(titleLbl.getText(), streamUrlTransformer.getUrl(stream, event.getJsonRequest()), url);

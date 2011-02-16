@@ -75,16 +75,16 @@ public class ImageCropContent implements DialogContent
     /**
      * The save button.
      */
-    Hyperlink saveButton;
+    private final Hyperlink saveButton;
     /**
      * The close button.
      */
-    Hyperlink closeButton;
+    private final Hyperlink closeButton;
 
     /**
      * Action processor. TODO: Replace with use of models.
      */
-    ActionProcessor processor;
+    private final ActionProcessor processor;
 
     /**
      * Default constructor.

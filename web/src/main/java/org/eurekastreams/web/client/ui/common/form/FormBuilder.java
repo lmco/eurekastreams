@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,6 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.BaseModel;
 import org.eurekastreams.web.client.model.Insertable;
 import org.eurekastreams.web.client.model.Updateable;
-import org.eurekastreams.web.client.ui.Bindable;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.form.elements.FormElement;
 
@@ -52,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
  * The Form Builder.
  *
  */
-public class FormBuilder extends FlowPanel implements Bindable
+public class FormBuilder extends FlowPanel
 {
     /**
      * Method to call on the BaseModel. (Forms never fetch or delete).
@@ -88,36 +87,36 @@ public class FormBuilder extends FlowPanel implements Bindable
     /**
      * The title of the form.
      */
-    Label formTitle = new Label();
+    private final Label formTitle = new Label();
     /**
      * Contains the form.
      */
-    FlowPanel formContainer = new FlowPanel();
+    private final FlowPanel formContainer = new FlowPanel();
     /**
      * Contains the inner elements of the form.
      */
-    FlowPanel formElementsContainer = new FlowPanel();
+    private final FlowPanel formElementsContainer = new FlowPanel();
     /**
      * The error box for evil.
      */
-    FlowPanel errorBox = new FlowPanel();
+    private final FlowPanel errorBox = new FlowPanel();
     /**
      * The fade panel to disable controls while submitting.
      */
-    FlowPanel fadePanel = new FlowPanel();
+    private final FlowPanel fadePanel = new FlowPanel();
     /**
      * The submit button of the form.
      */
-    Anchor submitButton = new Anchor("");
+    private final Anchor submitButton = new Anchor("");
     /**
      * The cancel button of the form.
      */
-    Hyperlink cancelButton = new Hyperlink("Cancel", History.getToken());
+    private final Hyperlink cancelButton = new Hyperlink("Cancel", History.getToken());
 
     /**
      * The processing spinner.
      */
-    Label processingSpinny = new Label("Processing...");
+    private final Label processingSpinny = new Label("Processing...");
 
     /**
      * The data of the form.
