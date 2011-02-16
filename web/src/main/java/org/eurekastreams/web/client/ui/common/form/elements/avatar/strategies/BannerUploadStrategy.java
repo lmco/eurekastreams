@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.web.client.events.ClearUploadedImageEvent;
-import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ClearUploadedImageEvent.ImageType;
+import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.BaseDataResponseEvent;
 import org.eurekastreams.web.client.events.data.DeleteGroupBannerResponseEvent;
 import org.eurekastreams.web.client.events.data.DeleteOrganizationBannerResponseEvent;
@@ -40,12 +40,12 @@ import com.google.gwt.user.client.ui.Image;
  * @param <T>
  *            The Type of the Bannerable Entity.
  */
-public class BannerUploadStrategy<T extends Bannerable> implements ImageUploadStrategy
+public class BannerUploadStrategy<T extends Bannerable> implements ImageUploadStrategy<T>
 {
     /**
      * the entity.
      */
-    private T entity;
+    private final T entity;
 
     /**
      * Enum for type of Entity.
@@ -260,5 +260,13 @@ public class BannerUploadStrategy<T extends Bannerable> implements ImageUploadSt
     public Long getImageEntityId()
     {
         return entity.getBannerEntityId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setEntity(final T inEntity)
+    {
+        throw new UnsupportedOperationException("Updating entity not applicable to banner uploading.");
     }
 }

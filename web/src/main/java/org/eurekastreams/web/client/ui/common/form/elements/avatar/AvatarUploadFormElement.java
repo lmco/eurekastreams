@@ -22,7 +22,6 @@ import org.eurekastreams.web.client.events.ClearUploadedImageEvent;
 import org.eurekastreams.web.client.events.ClearUploadedImageEvent.ImageType;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
-import org.eurekastreams.web.client.ui.Bindable;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.imagecrop.ImageCropContent;
@@ -46,9 +45,8 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * The form element for the avatar upload. Its not a REAL form element because it doesnt save back with the form itself,
  * its Miss Independent.
- *
  */
-public class AvatarUploadFormElement extends FlowPanel implements Bindable
+public class AvatarUploadFormElement extends FlowPanel
 {
     /**
      * The panel.
@@ -97,14 +95,14 @@ public class AvatarUploadFormElement extends FlowPanel implements Bindable
     /**
      * The image upload strategy.
      */
-    private ImageUploadStrategy strategy;
+    private final ImageUploadStrategy strategy;
 
     /**
      * Default description if none is provided.
      */
     private static String description =
-        // line break.
-        "Select a JPG, PNG or GIF image from your computer. The maximum file size is 4MB.";
+    // line break.
+    "Select a JPG, PNG or GIF image from your computer. The maximum file size is 4MB.";
 
     /**
      * Create an avatar upload form element.
@@ -268,12 +266,10 @@ public class AvatarUploadFormElement extends FlowPanel implements Bindable
             {
                 public void onLoad(final LoadEvent inEvent)
                 {
-                    strategy = inStrategy;
                     imageCropDialog = new ImageCropContent(strategy, processor, avatarId, new Command()
                     {
                         public void execute()
                         {
-                            strategy = imageCropDialog.getStrategy();
                             onAvatarIdChanged(strategy.getImageId(), strategy.getEntityType() == EntityType.PERSON);
                         }
                     }, hiddenImage.getWidth() + "px", hiddenImage.getHeight() + "px");
@@ -295,7 +291,6 @@ public class AvatarUploadFormElement extends FlowPanel implements Bindable
             onAvatarIdChanged(strategy.getImageId(), strategy.getEntityType() == EntityType.PERSON);
         }
 
-
         deleteButton.addClickHandler(new ClickHandler()
         {
             @SuppressWarnings("unchecked")
@@ -308,8 +303,8 @@ public class AvatarUploadFormElement extends FlowPanel implements Bindable
             }
         });
 
-        Session.getInstance().getEventBus().addObserver(ClearUploadedImageEvent.class,
-                new Observer<ClearUploadedImageEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(ClearUploadedImageEvent.class, new Observer<ClearUploadedImageEvent>()
                 {
                     public void update(final ClearUploadedImageEvent event)
                     {
@@ -319,8 +314,7 @@ public class AvatarUploadFormElement extends FlowPanel implements Bindable
                             if (event.getImageType().equals(ImageType.BANNER))
                             {
                                 onAvatarIdChanged(event.getEntity().getBannerId(),
-                                        strategy.getId().equals(
-                                        event.getEntity().getBannerEntityId()), true,
+                                        strategy.getId().equals(event.getEntity().getBannerEntityId()), true,
                                         strategy.getEntityType() == EntityType.PERSON);
                             }
                             else

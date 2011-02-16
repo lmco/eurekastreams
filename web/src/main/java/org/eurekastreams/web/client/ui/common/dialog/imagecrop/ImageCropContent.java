@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,19 +19,22 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eurekastreams.commons.client.ActionProcessor;
+import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.commons.client.ui.WidgetCommand;
+import org.eurekastreams.server.action.request.profile.ResizeAvatarRequest;
+import org.eurekastreams.server.domain.AvatarEntity;
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
-import org.eurekastreams.web.client.ui.Bindable;
-import org.eurekastreams.web.client.ui.PropertyMapper;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import org.eurekastreams.web.client.ui.common.form.elements.avatar.strategies.ImageUploadStrategy;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -41,9 +44,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The insides of the image crop dialog.
- * 
+ *
  */
-public class ImageCropContent implements DialogContent, Bindable
+public class ImageCropContent implements DialogContent
 {
     /**
      * The command to close the dialog.
@@ -52,11 +55,11 @@ public class ImageCropContent implements DialogContent, Bindable
     /**
      * The person object.
      */
-    private ImageUploadStrategy strategy;
+    private final ImageUploadStrategy strategy;
     /**
      * The content panel.
      */
-    private FlowPanel content = new FlowPanel();
+    private final FlowPanel content = new FlowPanel();
     /**
      * The command to exe on save.
      */
@@ -68,7 +71,7 @@ public class ImageCropContent implements DialogContent, Bindable
     /**
      * The image itself.
      */
-    private Image baseImage;
+    private final Image baseImage;
     /**
      * The save button.
      */
@@ -79,16 +82,16 @@ public class ImageCropContent implements DialogContent, Bindable
     Hyperlink closeButton;
 
     /**
-     * The view.
+     * Action processor. TODO: Replace with use of models.
      */
-    private ImageCropContentView view;
+    ActionProcessor processor;
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inStrategy
      *            the entity.
-     * @param processor
+     * @param inProcessor
      *            the processor.
      * @param inAvatarId
      *            the avatar ID.
@@ -99,21 +102,19 @@ public class ImageCropContent implements DialogContent, Bindable
      * @param inImageHeight
      *            Image height.
      */
-    public ImageCropContent(final ImageUploadStrategy inStrategy,
-            final ActionProcessor processor, final String inAvatarId,
-            final Command inSaveCommand, final String inImageWidth,
-            final String inImageHeight)
+    public ImageCropContent(final ImageUploadStrategy inStrategy, final ActionProcessor inProcessor,
+            final String inAvatarId, final Command inSaveCommand, final String inImageWidth, final String inImageHeight)
     {
         saveCommand = inSaveCommand;
+        processor = inProcessor;
 
         content.addStyleName("yui-skin-sam");
         content.addStyleName("avatar-crop-modal");
         strategy = inStrategy;
 
         AvatarUrlGenerator urlGenerator = new AvatarUrlGenerator(EntityType.PERSON);
-        content
-                .add(new Label(
-                        "Drag or resize the box to change your avatar. When you are finished click the save button."));
+        content.add(new Label(
+                "Drag or resize the box to change your avatar. When you are finished click the save button."));
         baseImage = new Image();
         baseImage.setSize(inImageWidth, inImageHeight);
         baseImage.setUrl(urlGenerator.getOriginalAvatarUrl(strategy.getId(), inAvatarId));
@@ -135,33 +136,53 @@ public class ImageCropContent implements DialogContent, Bindable
         closeButton.addStyleName("form-button");
         content.add(closeButton);
 
-        ImageCropContentModel model = new ImageCropContentModel(processor);
-        ImageCropContentController controller = new ImageCropContentController(
-                model);
-        view = new ImageCropContentView(controller, this, saveCommand, strategy);
-        PropertyMapper mapper = new PropertyMapper(GWT
-                .create(ImageCropContent.class), GWT
-                .create(ImageCropContentView.class));
-
-        mapper.bind(this, view);
-        model.registerView(view);
-        view.init();
-
+        setupEvents();
     }
 
     /**
-     * Gets the person so the new avatar can be read.
-     * 
-     * @return the person.
+     * Wire up events.
      */
-    public ImageUploadStrategy getStrategy()
+    private void setupEvents()
     {
-        return view.getStrategy();
+        closeButton.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent inArg0)
+            {
+                close();
+            }
+        });
+
+        saveButton.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent inArg0)
+            {
+                List<Integer> coords = getCoords();
+
+                ResizeAvatarRequest request = new ResizeAvatarRequest(coords.get(0), coords.get(1), coords.get(2),
+                        Boolean.TRUE, strategy.getId());
+
+                // TODO: refactor to new simplified model design (and thus eliminiate use of the action processor here)
+                processor.makeRequest(new ActionRequestImpl<AvatarEntity>(strategy.getResizeAction(), request),
+                        new AsyncCallback<AvatarEntity>()
+                        {
+                            public void onFailure(final Throwable caught)
+                            {
+                            }
+
+                            public void onSuccess(final AvatarEntity result)
+                            {
+                                strategy.setEntity(result);
+                                saveCommand.execute();
+                                close();
+                            }
+                        });
+            }
+        });
     }
 
     /**
      * The title of the login dialog.
-     * 
+     *
      * @return the title.
      */
     public final String getTitle()
@@ -171,7 +192,7 @@ public class ImageCropContent implements DialogContent, Bindable
 
     /**
      * The login form.
-     * 
+     *
      * @return the login form.
      */
     public final Widget getBody()
@@ -181,7 +202,7 @@ public class ImageCropContent implements DialogContent, Bindable
 
     /**
      * Returns the form panel.
-     * 
+     *
      * @return the form panel.
      */
     public FormPanel getFormPanel()
@@ -191,7 +212,7 @@ public class ImageCropContent implements DialogContent, Bindable
 
     /**
      * The command to call to close the dialog.
-     * 
+     *
      * @param command
      *            the close command.
      */
@@ -209,29 +230,16 @@ public class ImageCropContent implements DialogContent, Bindable
     }
 
     /**
-     * Sets the show command.
-     * 
-     * @param inShowCommand
-     *            the command to use.
-     */
-    public void setShowCommand(final WidgetCommand inShowCommand)
-    {
-
-    }
-
-    /**
      * Provides a hook to fire off events when the dialog is shown.
      */
     public void show()
     {
-        imgCrop = createImageCropper("avatarBase", strategy
-                .getX(), strategy.getY(), strategy
-                .getCropSize());
+        imgCrop = createImageCropper("avatarBase", strategy.getX(), strategy.getY(), strategy.getCropSize());
     }
 
     /**
      * Gets the coords from YUI.
-     * 
+     *
      * @return the coords of the crop.
      */
     public List<Integer> getCoords()
@@ -245,7 +253,7 @@ public class ImageCropContent implements DialogContent, Bindable
 
     /**
      * Wraps YUI and creates the image crop.
-     * 
+     *
      * @param imgId
      *            the ID of the image tag.
      * @param x
@@ -256,61 +264,61 @@ public class ImageCropContent implements DialogContent, Bindable
      *            the size of the crop window.
      * @return the JS obj to ref.
      */
-    public static native JavaScriptObject createImageCropper(
-            final String imgId, final int x, final int y, final int size) /*-{
-            
-                                                 var crop =  new $wnd.YAHOO.widget.ImageCropper(imgId, {
-                                                    status: false,
-                                                    ratio: true,
-                                                    minHeight: 75,
-                                                    minWidth: 75,
-                                                    initHeight: size,
-                                                    initWidth: size,
-                                                    initialXY: [x, y]
-                                                 });
-                                                     
-                                                 return crop;
-                                              }-*/;
+    public static native JavaScriptObject createImageCropper(final String imgId, final int x, final int y,
+            final int size) /*-{
+
+                            var crop =  new $wnd.YAHOO.widget.ImageCropper(imgId, {
+                            status: false,
+                            ratio: true,
+                            minHeight: 75,
+                            minWidth: 75,
+                            initHeight: size,
+                            initWidth: size,
+                            initialXY: [x, y]
+                            });
+
+                            return crop;
+                            }-*/;
 
     /**
      * Wraps YUI to get the X coord.
-     * 
+     *
      * @param imgCrop
      *            the JS object.
      * @return the X coord.
      */
     public static native int getX(final JavaScriptObject imgCrop) /*-{
-                                                 var cropArea = imgCrop.getCropCoords();
-                                                 return cropArea.left;
-                                              }-*/;
+                                                                  var cropArea = imgCrop.getCropCoords();
+                                                                  return cropArea.left;
+                                                                  }-*/;
 
     /**
      * Wraps the YUI to get the Y coord.
-     * 
+     *
      * @param imgCrop
      *            the JS object.
      * @return the Y coord.
      */
     public static native int getY(final JavaScriptObject imgCrop) /*-{
-                                                 var cropArea = imgCrop.getCropCoords();
-                                                 return cropArea.top;
-                                               }-*/;
+                                                                  var cropArea = imgCrop.getCropCoords();
+                                                                  return cropArea.top;
+                                                                  }-*/;
 
     /**
      * Wraps the YUI to get the size of the crop.
-     * 
+     *
      * @param imgCrop
      *            the JS object.
      * @return the size of the crop.
      */
     public static native int getSize(final JavaScriptObject imgCrop) /*-{
-                                                 var cropArea = imgCrop.getCropCoords();
-                                                 return cropArea.width;
-                                              }-*/;
+                                                                     var cropArea = imgCrop.getCropCoords();
+                                                                     return cropArea.width;
+                                                                     }-*/;
 
     /**
      * Gets the CSS name for the dialog.
-     * 
+     *
      * @return the css name.
      */
     public String getCssName()
