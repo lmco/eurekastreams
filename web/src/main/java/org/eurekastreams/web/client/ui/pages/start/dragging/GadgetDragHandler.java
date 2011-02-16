@@ -27,8 +27,6 @@ import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandler;
 import com.allen_sauer.gwt.dnd.client.DragStartEvent;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 
 /**
  * The gadget drag handler.
@@ -82,13 +80,7 @@ public class GadgetDragHandler implements DragHandler
                 new ReorderGadgetRequest(tabId, new Long(gadgetZone.getGadgetData().getId()), dropPanel
                         .getZoneNumber(), new Integer(dropPanel.getVisibleGadgetPosition(gadgetZone))));
 
-        DeferredCommand.add(new Command()
-        {
-            public void execute()
-            {
-                gadgetZone.rerender();
-            }
-        });
+        gadgetZone.rerender();
     }
 
     /**
