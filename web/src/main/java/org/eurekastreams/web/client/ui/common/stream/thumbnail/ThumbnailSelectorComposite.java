@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,13 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.thumbnail;
 
+import java.util.LinkedList;
+
 import org.eurekastreams.server.domain.stream.LinkInformation;
 import org.eurekastreams.web.client.ui.Bindable;
-import org.eurekastreams.web.client.ui.PropertyMapper;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -33,49 +35,52 @@ public class ThumbnailSelectorComposite extends FlowPanel implements Bindable
     /**
      * The selected thumbnail.
      */
-    Image selectedThumbnail;
+    private final Image selectedThumbnail = new Image();
 
     /**
      * The next button.
      */
-    Label prevThumb = new Label("<");
+    private final Label prevThumb = new Label("<");
 
     /**
      * The next button.
      */
-    Label nextThumb = new Label(">");
+    private final Label nextThumb = new Label(">");
 
     /**
      * Remove thumbnail check box.
      */
-    CheckBox removeThumbnail = new CheckBox("Don't display image");
+    private final CheckBox removeThumbnail = new CheckBox("Don't display image");
 
     /**
      * Caption for the control.
      */
-    Label caption = new Label("Select Image: ");
+    private final Label caption = new Label("Select Image: ");
 
     /**
      * Selected thumbnail container.
      */
-    private FlowPanel selectedThumbContainer = new FlowPanel();
+    private final FlowPanel selectedThumbContainer = new FlowPanel();
 
     /**
      * Selected thumbnail container.
      */
-    FlowPanel pagingContainer = new FlowPanel();
+    private final FlowPanel pagingContainer = new FlowPanel();
 
-    /**
-     * The view.
-     */
-    private ThumbnailSelectorCompositeView view = null;
+    /** The link. */
+    private LinkInformation link;
+
+    /** Index of selected thumbnail in thumbnail URL list. */
+    private int selectedIndex;
+
+    /** List of thumbnails. */
+    private final LinkedList<String> thumbnailUrls = new LinkedList<String>();
 
     /**
      * Constructor.
      */
     public ThumbnailSelectorComposite()
     {
-        selectedThumbnail = new Image();
         selectedThumbnail.addStyleName("thumbnail");
         this.add(selectedThumbContainer);
         selectedThumbContainer.add(selectedThumbnail);
@@ -89,27 +94,76 @@ public class ThumbnailSelectorComposite extends FlowPanel implements Bindable
         pagingContainer.add(new Label(" | "));
         pagingContainer.add(removeThumbnail);
 
-        ThumbnailSelectorCompositeModel model = new ThumbnailSelectorCompositeModel();
-        view = new ThumbnailSelectorCompositeView(model);
-        ThumbnailSelectorCompositeController controller = new ThumbnailSelectorCompositeController(view, model);
-
-        PropertyMapper mapper = new PropertyMapper(GWT.create(ThumbnailSelectorComposite.class), GWT
-                .create(ThumbnailSelectorCompositeView.class));
-
-        mapper.bind(this, view);
-
-        controller.init();
+        setupEvents();
     }
 
     /**
-     * Set the thumbnail.
-     *
+     * Wire up events.
+     */
+    public void setupEvents()
+    {
+        prevThumb.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent inArg0)
+            {
+                if (selectedIndex > 0)
+                {
+                    selectedIndex--;
+                    updateImage();
+                }
+            }
+        });
+
+        nextThumb.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent inArg0)
+            {
+                selectedIndex++;
+                updateImage();
+            }
+        });
+
+        removeThumbnail.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent ev)
+            {
+                showHideThumbnail();
+            }
+        });
+    }
+
+    /**
+     * Sets the link information for which the control will display thumbnails.
+     * 
      * @param inLink
-     *            the link.
+     *            Link information.
      */
     public void setLink(final LinkInformation inLink)
     {
-        view.setLink(inLink);
+        link = inLink;
+        selectedIndex = 0;
+        thumbnailUrls.clear();
+
+        if (!link.getImageUrls().isEmpty())
+        {
+            for (String imgUrl : link.getImageUrls())
+            {
+                if (link.getLargestImageUrl().equals(imgUrl))
+                {
+                    thumbnailUrls.addFirst(imgUrl);
+                }
+                else
+                {
+                    thumbnailUrls.add(imgUrl);
+                }
+            }
+
+            link.setSelectedThumbnail(thumbnailUrls.get(0));
+        }
+
+        removeThumbnail.setValue(false);
+        showHideThumbnail();
+        updateImage();
     }
 
     /**
@@ -120,5 +174,61 @@ public class ThumbnailSelectorComposite extends FlowPanel implements Bindable
     public FlowPanel getPagingControlls()
     {
         return pagingContainer;
+    }
+
+    /**
+     * Update the image.
+     */
+    private void updateImage()
+    {
+        if (selectedIndex > 0)
+        {
+            prevThumb.removeStyleName("previous-arrow-disabled");
+        }
+        else
+        {
+            prevThumb.addStyleName("previous-arrow-disabled");
+        }
+
+        if (selectedIndex < (thumbnailUrls.size() - 1))
+        {
+            nextThumb.removeStyleName("next-arrow-disabled");
+        }
+        else
+        {
+            nextThumb.addStyleName("next-arrow-disabled");
+        }
+
+        if (selectedIndex < thumbnailUrls.size())
+        {
+            String url = thumbnailUrls.get(selectedIndex);
+            selectedThumbnail.setUrl(url);
+            link.setSelectedThumbnail(url);
+            selectedThumbnail.setVisible(true);
+        }
+        else
+        {
+            selectedThumbnail.setVisible(false);
+        }
+    }
+
+    /**
+     * Sets the thumbnail show/hide.
+     */
+    private void showHideThumbnail()
+    {
+        boolean checked = removeThumbnail.getValue();
+        selectedThumbnail.setVisible(!checked);
+
+        if (checked)
+        {
+            pagingContainer.addStyleName("no-thumbnail");
+            link.setSelectedThumbnail("");
+        }
+        else
+        {
+            pagingContainer.removeStyleName("no-thumbnail");
+            updateImage();
+        }
     }
 }
