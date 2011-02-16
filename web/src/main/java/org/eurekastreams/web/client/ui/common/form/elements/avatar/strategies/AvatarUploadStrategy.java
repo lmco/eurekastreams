@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.domain.AvatarEntity;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.web.client.events.ClearUploadedImageEvent;
-import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ClearUploadedImageEvent.ImageType;
+import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.DeletedGroupAvatarResponseEvent;
 import org.eurekastreams.web.client.events.data.DeletedOrganizationAvatarResponseEvent;
 import org.eurekastreams.web.client.events.data.DeletedPersonAvatarResponseEvent;
@@ -39,7 +39,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @param <T>
  *            The avatar entity type.
  */
-public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUploadStrategy
+public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUploadStrategy<T>
 {
     /**
      * The person.
@@ -55,12 +55,12 @@ public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUpload
     /**
      * The resize action.
      */
-    private String resizeKey;
+    private final String resizeKey;
 
     /**
      * The entity type.
      */
-    private EntityType entityType;
+    private final EntityType entityType;
 
     /**
      * Default constructor.
@@ -266,4 +266,11 @@ public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUpload
         return entity.getId();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public void setEntity(final T inEntity)
+    {
+        entity = inEntity;
+    }
 }

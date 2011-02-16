@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ package org.eurekastreams.web.client.ui.common.form.elements;
 
 import java.io.Serializable;
 
-import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.OrganizationTreeDTO;
 import org.eurekastreams.web.client.events.EventBus;
@@ -38,7 +37,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * Org lookup form element.
- * 
+ *
  */
 public class OrgLookupFormElement extends FlowPanel implements FormElement
 {
@@ -60,15 +59,15 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
     /**
      * Selected org name.
      */
-    private Label selectedOrgName;
+    private final Label selectedOrgName;
 
     /** Title label. */
-    private Label title;
+    private final Label title;
 
     /**
      * Select label.
      */
-    private Label select;
+    private final Label select;
 
     /**
      * Org panel.
@@ -77,7 +76,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Constructor.
-     * 
+     *
      * @param inTitle
      *            the title.
      * @param subTitle
@@ -90,16 +89,14 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
      *            the text of the label that will be put next to the org once it is selected
      * @param inRequired
      *            if it is required.
-     * @param inProcessor
-     *            the action processor.
      * @param inOrg
      *            the organization.
      * @param inReadOnly
      *            if the element is read only.
      */
     public OrgLookupFormElement(final String inTitle, final String subTitle, final String inInstructions,
-            final String inKey, final String inSelectedLabelText, final boolean inRequired,
-            final ActionProcessor inProcessor, final Organization inOrg, final boolean inReadOnly)
+            final String inKey, final String inSelectedLabelText, final boolean inRequired, final Organization inOrg,
+            final boolean inReadOnly)
     {
         this.addStyleName("org-lookup-form-element");
 
@@ -118,7 +115,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
 
         this.add(title);
         this.add(subTitleLabel);
-        
+
         if (inInstructions != null && !inInstructions.isEmpty())
         {
             Label instructions = new Label(inInstructions);
@@ -145,7 +142,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
             {
                 if (!inReadOnly)
                 {
-                    orgLookupContent = new OrgLookupContent(getSaveCommand(), inProcessor);
+                    orgLookupContent = new OrgLookupContent(getSaveCommand());
                     Dialog newDialog = new Dialog(orgLookupContent);
                     newDialog.setBgVisible(true);
                     newDialog.center();
@@ -156,16 +153,15 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
         select.addClickHandler(lookupHandler);
 
         orgPanel = new FlowPanel();
-        
+
         if (!inReadOnly)
         {
             final EditPanel editControls = new EditPanel(orgPanel, Mode.DELETE);
             orgPanel.add(editControls);
             editControls.addDeleteClickHandler(lookupHandler);
         }
-        
-        orgPanel.add(selectedOrgName);
 
+        orgPanel.add(selectedOrgName);
 
         this.add(orgPanel);
         this.add(select);
@@ -183,7 +179,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Get the save command.
-     * 
+     *
      * @return the command.
      */
     private Command getSaveCommand()
@@ -199,7 +195,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Set the org.
-     * 
+     *
      * @param org
      *            the org.
      */
@@ -216,7 +212,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Get the key.
-     * 
+     *
      * @return the key.
      */
     public String getKey()
@@ -226,7 +222,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Get the value.
-     * 
+     *
      * @return the value.
      */
     public Serializable getValue()
@@ -236,7 +232,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Called on error.
-     * 
+     *
      * @param errMessage
      *            the error.
      */

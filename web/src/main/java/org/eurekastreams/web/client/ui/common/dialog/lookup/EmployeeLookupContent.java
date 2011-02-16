@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,17 @@
  */
 package org.eurekastreams.web.client.ui.common.dialog.lookup;
 
-import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.commons.client.ui.WidgetCommand;
-import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.modelview.PersonModelView;
-import org.eurekastreams.web.client.ui.Bindable;
-import org.eurekastreams.web.client.ui.PropertyMapper;
+import org.eurekastreams.web.client.model.PersonLookupModel;
+import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.PersonPanel;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
@@ -38,76 +38,64 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Dialog for looking up an employee.
  */
-public class EmployeeLookupContent implements DialogContent, Bindable
+public class EmployeeLookupContent implements DialogContent
 {
-    /**
-     * The lookup form.
-     */
-    FormPanel lookupForm;
+    /** The lookup form. */
+    private final FormPanel lookupForm = new FormPanel();
 
-    /**
-     * The close command.
-     */
+    /** The close command. */
     private WidgetCommand closeCommand = null;
 
-    /**
-     * The last name text box.
-     */
-    TextBox lastName;
+    /** The last name text box. */
+    private final TextBox lastName = new TextBox();
 
-    /**
-     * The results of the search.
-     */
-    ListBox results;
+    /** The results of the search. */
+    private final ListBox results = new ListBox();
 
-    /**
-     * Search button.
-     */
-    Hyperlink search;
+    /** Search button. */
+    private Hyperlink search;
 
-    /**
-     * Search button.
-     */
-    Hyperlink select;
+    /** Search button. */
+    private Hyperlink select;
 
-    /**
-     * Search button.
-     */
-    Hyperlink cancel;
+    /** Search button. */
+    private Hyperlink cancel;
 
-    /**
-     * Results description.
-     */
-    Label resultsDesc;
+    /** Results description. */
+    private final Label resultsDesc = new Label();
 
-    /**
-     * The person container.
-     */
-    FlowPanel personContainer;
+    /** The person container. */
+    private final FlowPanel personContainer = new FlowPanel();
 
-    /**
-     * The view.
-     */
-    private EmployeeLookupView view;
+    /** Command to save the dialog contents. */
+    private final Command saveCommand;
 
-    /**
-     * The model.
-     */
-    private EmployeeLookupModel model;
+    /** The ViewModel (MVVM). */
+    private final EmployeeLookupViewModel viewModel;
 
     /**
      * Default constructor. Builds up widgets.
-     * 
-     * @param saveCommand
+     *
+     * @param inSaveCommand
      *            command object that is invoked once an employee is selected
-     * @param inProcessor
-     *            ActionProcessor for retrieving employee information from the server
      */
-    public EmployeeLookupContent(final Command saveCommand, final ActionProcessor inProcessor)
+    public EmployeeLookupContent(final Command inSaveCommand)
     {
+        saveCommand = inSaveCommand;
 
-        lookupForm = new FormPanel();
+        setupWidgets();
+        setupEvents();
 
+        viewModel = new EmployeeLookupViewModel(this, PersonLookupModel.getInstance(), Session.getInstance()
+                .getEventBus());
+        viewModel.init();
+    }
+
+    /**
+     * Builds the UI.
+     */
+    private void setupWidgets()
+    {
         final FlowPanel lookupPanelContainer = new FlowPanel();
         lookupPanelContainer.addStyleName("lookup-container");
 
@@ -124,7 +112,6 @@ public class EmployeeLookupContent implements DialogContent, Bindable
         final FlowPanel lastNamePanel = new FlowPanel();
         lastNamePanel.addStyleName("search-list");
 
-        lastName = new TextBox();
         lastNamePanel.add(lastName);
 
         search = new Hyperlink("Search", History.getToken());
@@ -133,7 +120,6 @@ public class EmployeeLookupContent implements DialogContent, Bindable
 
         lookupPanel.add(lastNamePanel);
 
-        results = new ListBox();
         results.setName("results");
         results.addStyleName("results");
         results.setVisibleItemCount(5);
@@ -152,12 +138,10 @@ public class EmployeeLookupContent implements DialogContent, Bindable
 
         lookupPanelContainer.add(lookupPanel);
 
-        personContainer = new FlowPanel();
         personContainer.addStyleName("person-container");
 
         lookupPanelContainer.add(personContainer);
 
-        resultsDesc = new Label("");
         resultsDesc.addStyleName("results-description");
 
         lookupPanelContainer.add(resultsDesc);
@@ -165,24 +149,25 @@ public class EmployeeLookupContent implements DialogContent, Bindable
         lookupPanelContainer.add(buttonArea);
 
         lookupForm.add(lookupPanelContainer);
+    }
 
-        // Create and initialize the controller.
-
-        model = new EmployeeLookupModel(inProcessor);
-        EmployeeLookupController controller = new EmployeeLookupController(model);
-        view = new EmployeeLookupView(this, model, controller, saveCommand);
-
-        PropertyMapper mapper = new PropertyMapper(GWT.create(EmployeeLookupContent.class), GWT
-                .create(EmployeeLookupView.class));
-
-        mapper.bind(this, view);
-
-        view.init();
+    /**
+     * Wires up events.
+     */
+    private void setupEvents()
+    {
+        cancel.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent inArg0)
+            {
+                close();
+            }
+        });
     }
 
     /**
      * The title of the login dialog.
-     * 
+     *
      * @return the title.
      */
     public final String getTitle()
@@ -192,7 +177,7 @@ public class EmployeeLookupContent implements DialogContent, Bindable
 
     /**
      * The login form.
-     * 
+     *
      * @return the login form.
      */
     public final Widget getBody()
@@ -202,7 +187,7 @@ public class EmployeeLookupContent implements DialogContent, Bindable
 
     /**
      * The CSS class to use for this dialog.
-     * 
+     *
      * @return the name of the CSS class to use.
      */
     public String getCssName()
@@ -212,7 +197,7 @@ public class EmployeeLookupContent implements DialogContent, Bindable
 
     /**
      * Returns the form panel.
-     * 
+     *
      * @return the form panel.
      */
     public FormPanel getFormPanel()
@@ -222,14 +207,13 @@ public class EmployeeLookupContent implements DialogContent, Bindable
 
     /**
      * The command to call to close the dialog.
-     * 
+     *
      * @param command
      *            the close command.
      */
     public void setCloseCommand(final WidgetCommand command)
     {
         closeCommand = command;
-        view.setCloseCommand(command);
     }
 
     /**
@@ -241,43 +225,89 @@ public class EmployeeLookupContent implements DialogContent, Bindable
     }
 
     /**
-     * Sets the show command.
-     * 
-     * @param inShowCommand
-     *            the command to use.
-     */
-    public void setShowCommand(final WidgetCommand inShowCommand)
-    {
-
-    }
-
-    /**
      * Provides a hook to fire off events when the dialog is shown.
      */
     public void show()
     {
-        lastName.setFocus(true);
+        DeferredCommand.addCommand(new Command()
+        {
+            public void execute()
+            {
+                lastName.setFocus(true);
+            }
+        });
     }
 
     /**
      * Gets the selected person.
-     * 
+     *
      * @return the selected Person
      */
-    public Person getPerson()
+    public PersonModelView getPerson()
     {
-        return model.getSelectedPerson();
+        return viewModel.getSelectedPerson();
     }
 
     /**
-     * Return a person panel.
-     * 
+     * Update the selected person area to display the given person.
+     *
      * @param personModelView
-     *            the model view.
-     * @return the panel
+     *            Person to display.
      */
-    public PersonPanel getPerson(final PersonModelView personModelView)
+    public void showSelectedPerson(final PersonModelView personModelView)
     {
-        return new PersonPanel(personModelView, false, false, false, true);
+        personContainer.clear();
+        if (personModelView != null)
+        {
+            personContainer.add(new PersonPanel(personModelView, false, false, false, true));
+        }
+    }
+
+    /**
+     * @return the lastName
+     */
+    TextBox getLastName()
+    {
+        return lastName;
+    }
+
+    /**
+     * @return the results
+     */
+    ListBox getResults()
+    {
+        return results;
+    }
+
+    /**
+     * @return the search
+     */
+    Hyperlink getSearch()
+    {
+        return search;
+    }
+
+    /**
+     * @return the select
+     */
+    Hyperlink getSelect()
+    {
+        return select;
+    }
+
+    /**
+     * @return the resultsDesc
+     */
+    Label getResultsDesc()
+    {
+        return resultsDesc;
+    }
+
+    /**
+     * @return the saveCommand
+     */
+    Command getSaveCommand()
+    {
+        return saveCommand;
     }
 }

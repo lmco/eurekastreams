@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.eurekastreams.web.client.ui.common.dialog.message;
 
 import org.eurekastreams.commons.client.ui.WidgetCommand;
-import org.eurekastreams.web.client.ui.Bindable;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 
 import com.google.gwt.user.client.ui.Label;
@@ -25,7 +24,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Template for a login dialog.
  */
-public class MessageDialogContent implements DialogContent, Bindable
+public class MessageDialogContent implements DialogContent
 {
     /**
      * The close command.
@@ -40,16 +39,16 @@ public class MessageDialogContent implements DialogContent, Bindable
     /**
      * The message.
      */
-    private Widget body;
+    private final Widget body;
 
     /**
      * The message.
      */
-    private String title;
+    private final String title;
 
     /**
      * Default constructor. Builds up widgets.
-     * 
+     *
      * @param inTitle
      *            the title.
      * @param inBody
@@ -64,7 +63,7 @@ public class MessageDialogContent implements DialogContent, Bindable
 
     /**
      * Shortcut constructor for a simple string.
-     * 
+     *
      * @param inTitle
      *            the title.
      * @param inMessage
@@ -81,7 +80,7 @@ public class MessageDialogContent implements DialogContent, Bindable
 
     /**
      * The title of the login dialog.
-     * 
+     *
      * @return the title.
      */
     public final String getTitle()
@@ -91,7 +90,7 @@ public class MessageDialogContent implements DialogContent, Bindable
 
     /**
      * The login form.
-     * 
+     *
      * @return the login form.
      */
     public final Widget getBody()
@@ -101,7 +100,7 @@ public class MessageDialogContent implements DialogContent, Bindable
 
     /**
      * The command to call to close the dialog.
-     * 
+     *
      * @param command
      *            the close command.
      */
@@ -112,7 +111,7 @@ public class MessageDialogContent implements DialogContent, Bindable
 
     /**
      * The CSS class to use for this dialog.
-     * 
+     *
      * @return the name of the CSS class to use.
      */
     public String getCssName()
@@ -133,7 +132,7 @@ public class MessageDialogContent implements DialogContent, Bindable
 
     /**
      * Sets the show command.
-     * 
+     *
      * @param inShowCommand
      *            the command to use.
      */

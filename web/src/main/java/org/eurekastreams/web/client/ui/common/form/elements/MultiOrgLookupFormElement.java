@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eurekastreams.server.domain.Organization;
+import org.eurekastreams.server.domain.OrganizationTreeDTO;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.SaveSelectedOrgEvent;
 import org.eurekastreams.web.client.ui.common.EditPanel;
 import org.eurekastreams.web.client.ui.common.EditPanel.Mode;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.orglookup.OrgLookupContent;
-import org.eurekastreams.commons.client.ActionProcessor;
-import org.eurekastreams.server.domain.Organization;
-import org.eurekastreams.server.domain.OrganizationTreeDTO;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -40,7 +39,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * Org lookup form element.
- * 
+ *
  */
 public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
 {
@@ -57,16 +56,16 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
     /**
      * Selected orgs list.
      */
-    private FlowPanel selectedOrgs = new FlowPanel();
+    private final FlowPanel selectedOrgs = new FlowPanel();
 
     /**
      * The list of orgs by shortname.
      */
-    private ArrayList<String> orgs = new ArrayList<String>();
+    private final ArrayList<String> orgs = new ArrayList<String>();
 
     /**
      * Constructor.
-     * 
+     *
      * @param inTitle
      *            the title.
      * @param subTitle
@@ -79,14 +78,12 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
      *            the text of the label that will be put next to the org once it is selected
      * @param inRequired
      *            if it is required.
-     * @param inProcessor
-     *            the action processor.
      * @param relatedOrganizations
      *            related orgs.
      */
     public MultiOrgLookupFormElement(final String inTitle, final String subTitle, final String inInstructions,
             final String inKey, final String inSelectedLabelText, final boolean inRequired,
-            final ActionProcessor inProcessor, final List<Organization> relatedOrganizations)
+            final List<Organization> relatedOrganizations)
     {
         this.addStyleName("org-lookup-form-element");
 
@@ -118,7 +115,7 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
         {
             public void onClick(final ClickEvent event)
             {
-                orgLookupContent = new OrgLookupContent(getSaveCommand(selectedOrgName, selectedLabel), inProcessor);
+                orgLookupContent = new OrgLookupContent(getSaveCommand(selectedOrgName, selectedLabel));
                 Dialog newDialog = new Dialog(orgLookupContent);
                 newDialog.setBgVisible(true);
                 newDialog.center();
@@ -152,12 +149,12 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Get the save command.
-     * 
+     *
      * @param selectedOrgName
      *            the selected org name label.
      * @param selectedLabel
      *            the label that goes with the selected org
-     * 
+     *
      * @return the command.
      */
     private Command getSaveCommand(final Label selectedOrgName, final Label selectedLabel)
@@ -173,7 +170,7 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Add a related org.
-     * 
+     *
      * @param org
      *            the org.
      */
@@ -188,9 +185,9 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
 
             EditPanel editControls = new EditPanel(orgPanel, Mode.DELETE);
             orgPanel.add(editControls);
-            
+
             orgPanel.add(new Label(org.getDisplayName()));
-            
+
             editControls.addDeleteClickHandler(new ClickHandler()
             {
                 public void onClick(final ClickEvent event)
@@ -208,7 +205,7 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Get the key.
-     * 
+     *
      * @return the key.
      */
     public String getKey()
@@ -218,7 +215,7 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Get the value.
-     * 
+     *
      * @return the value.
      */
     public Serializable getValue()
@@ -228,7 +225,7 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Called on error.
-     * 
+     *
      * @param errMessage
      *            the error.
      */

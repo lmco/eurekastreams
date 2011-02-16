@@ -24,7 +24,6 @@ import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ParseLinkEvent;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.errors.ErrorPostingMessageToNullScopeEvent;
-import org.eurekastreams.web.client.ui.Bindable;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LabeledTextBox;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
@@ -42,81 +41,51 @@ import com.google.gwt.user.client.ui.TextBox;
 /**
  * Add link panel.
  */
-public class AddLinkComposite extends FlowPanel implements Bindable
+public class AddLinkComposite extends FlowPanel
 {
-    /**
-     * Add link button.
-     */
-    Label addLink = new Label("attach link");
+    /** Add link button. */
+    private final Label addLink = new Label("attach link");
 
-    /**
-     * Add link button.
-     */
-    Label fetchLink = new Label("Go");
+    /** Add link button. */
+    private final Label fetchLink = new Label("Go");
 
-    /**
-     * The add link panel.
-     */
-    FlowPanel addPanel = new FlowPanel();
+    /** The add link panel. */
+    private final FlowPanel addPanel = new FlowPanel();
 
-    /**
-     * The URL to the link.
-     */
-    LabeledTextBox linkUrl = new LabeledTextBox("http://");
+    /** The URL to the link. */
+    private final LabeledTextBox linkUrl = new LabeledTextBox("http://");
 
-    /**
-     * The display link panel.
-     */
-    FlowPanel displayPanel = new FlowPanel();
+    /** The display link panel. */
+    private final FlowPanel displayPanel = new FlowPanel();
 
-    /**
-     * The link panel.
-     */
-    FlowPanel linkPanel = new FlowPanel();
+    /** The link panel. */
+    private final FlowPanel linkPanel = new FlowPanel();
 
-    /**
-     * Thumbnail selector.
-     */
-    ThumbnailSelectorComposite selector = new ThumbnailSelectorComposite();
+    /** Thumbnail selector. */
+    private final ThumbnailSelectorComposite selector = new ThumbnailSelectorComposite();
 
-    /**
-     * Link URL.
-     */
-    Label linkUrlDisplay = new Label();
+    /** Link URL. */
+    private final Label linkUrlDisplay = new Label();
 
-    /**
-     * The title link.
-     */
-    FlowPanel titleLink = new FlowPanel();
+    /** The title link. */
+    private final FlowPanel titleLink = new FlowPanel();
 
-    /**
-     * Link Description.
-     */
-    Label linkDesc = new Label();
+    /** Link Description. */
+    private final Label linkDesc = new Label();
 
-    /**
-     * The close button.
-     */
-    Label closeDisplayButton = new Label("close");
+    /** The close button. */
+    private final Label closeDisplayButton = new Label("close");
 
-    /**
-     * The close button.
-     */
-    Label closeAddButton = new Label("close");
+    /** The close button. */
+    private final Label closeAddButton = new Label("close");
 
-    /**
-     * Text box.
-     */
-    TextBox title = new TextBox();
+    /** Text box. */
+    private final TextBox title = new TextBox();
 
-    /**
-     * The last fetched links url.
-     */
+    /** The last fetched links url. */
     private String fetchedLink = "";
 
-    /**
-     * Max length of title.
-     */
+    /** Max length of title. */
     private static final int MAX_LENGTH = 50;
 
     /** Message for URLs which fail on getting parsed link information. */

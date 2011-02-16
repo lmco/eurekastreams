@@ -20,6 +20,7 @@ import java.util.HashMap;
 
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.DomainGroupEntity;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.web.client.events.data.AuthorizeUpdateGroupResponseEvent;
 import org.eurekastreams.web.client.events.data.GotGroupInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedGroupResponseEvent;
@@ -28,7 +29,7 @@ import org.eurekastreams.web.client.ui.Session;
 
 /**
  * Group model.
- *
+ * 
  */
 public class GroupModel extends BaseModel implements Authorizable<String>, Fetchable<String>,
         Insertable<HashMap<String, Serializable>>, Updateable<HashMap<String, Serializable>>
@@ -40,7 +41,7 @@ public class GroupModel extends BaseModel implements Authorizable<String>, Fetch
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
     public static GroupModel getInstance()
@@ -67,9 +68,9 @@ public class GroupModel extends BaseModel implements Authorizable<String>, Fetch
      */
     public void insert(final HashMap<String, Serializable> request)
     {
-        super.callWriteAction("createGroup", request, new OnSuccessCommand<DomainGroup>()
+        super.callWriteAction("createGroup", request, new OnSuccessCommand<DomainGroupModelView>()
         {
-            public void onSuccess(final DomainGroup response)
+            public void onSuccess(final DomainGroupModelView response)
             {
                 Session.getInstance().getEventBus().notifyObservers(new InsertedGroupResponseEvent(response));
             }

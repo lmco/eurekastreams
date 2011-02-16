@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,16 +76,16 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
     /**
      * The delete-group button.
      */
-    private Anchor deleteButton = new Anchor("");
+    private final Anchor deleteButton = new Anchor("");
 
     /**
      * The processing spinner.
      */
-    private Label processingSpinny = new Label("Processing...");
+    private final Label processingSpinny = new Label("Processing...");
 
     /**
      * Default constructor.
-     * 
+     *
      * @param orgName
      *            org.
      */
@@ -125,7 +125,7 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
 
     /**
      * Setter.
-     * 
+     *
      * @param entity
      *            the organization whose settings will be changed
      */
@@ -184,7 +184,7 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
         Set<Person> leaderList = entity.getLeaders();
         leaderList = entity.getLeaders();
         form.addFormElement(new PersonLookupFormElement("Leadership", "Add Leader", leaderinstructions,
-                OrganizationModelView.LEADERSHIP_KEY, leaderList, false, processor));
+                OrganizationModelView.LEADERSHIP_KEY, leaderList, false));
 
         form.addFormDivider();
 
@@ -192,7 +192,7 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
                 + "for setting up the organization profile, setting org policy " + "and managing adoption campaigns.";
         Set<Person> coordinatorList = entity.getCoordinators();
         form.addFormElement(new PersonLookupFormElement("Organization Coordinators", "Add Coordinator",
-                coordinstructions, OrganizationModelView.COORDINATORS_KEY, coordinatorList, true, processor));
+                coordinstructions, OrganizationModelView.COORDINATORS_KEY, coordinatorList, true));
 
         form.addFormDivider();
 

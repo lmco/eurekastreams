@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,10 +72,14 @@ public class PersonModelViewTest
      */
     private final int followersCount = 3838;
 
-    /**
-     * Test data.
-     */
-    private final String displayName = "Hey McNow";
+    /** Test data. */
+    private static final String LAST_NAME = "McNow";
+
+    /** Test data. */
+    private static final String PREFERRED_NAME = "Hey";
+
+    /** Test data. */
+    private final String displayName = PREFERRED_NAME + " " + LAST_NAME;
 
     /**
      * The person id.
@@ -189,6 +193,8 @@ public class PersonModelViewTest
         sut.setParentOrganizationShortName(parentOrganizationShortName);
         sut.setDescription(jobDescription);
         sut.setFollowersCount(followersCount);
+        sut.setLastName(LAST_NAME);
+        sut.setPreferredName(PREFERRED_NAME);
         sut.setDisplayName(displayName);
         sut.setAvatarId(avatarId);
         sut.setUpdatesCount(updatesCount);
@@ -285,6 +291,8 @@ public class PersonModelViewTest
         assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getDescription());
         assertEquals(ModelView.UNINITIALIZED_INTEGER_VALUE, sut.getFollowersCount());
         assertEquals(ModelView.UNINITIALIZED_FLOAT_VALUE, sut.getSearchIndexScore(), 0);
+        assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getLastName());
+        assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getPreferredName());
         assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getDisplayName());
         assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getAvatarId());
         assertEquals(ModelView.UNINITIALIZED_INTEGER_VALUE, sut.getUpdatesCount());
@@ -314,6 +322,8 @@ public class PersonModelViewTest
         assertEquals(parentOrganizationShortName, sut.getParentOrganizationShortName());
         assertEquals(jobDescription, sut.getDescription());
         assertEquals(followersCount, sut.getFollowersCount());
+        assertEquals(LAST_NAME, sut.getLastName());
+        assertEquals(PREFERRED_NAME, sut.getPreferredName());
         assertEquals(displayName, sut.getDisplayName());
         assertEquals(avatarId, sut.getAvatarId());
         assertEquals(updatesCount, sut.getUpdatesCount());

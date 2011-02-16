@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,14 @@
 package org.eurekastreams.server.action.execution;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.action.request.PersonLookupRequest;
+import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Person lookup execution strategy.
@@ -30,11 +33,11 @@ public class PersonLookupExecution implements ExecutionStrategy<ActionContext>
     /**
      * Strategy to use for lookup.
      */
-    private PersonLookupUtilityStrategy lookupStrategy;
+    private final PersonLookupUtilityStrategy lookupStrategy;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inLookupStrategy
      *            lookup strategy.
      */
@@ -48,7 +51,14 @@ public class PersonLookupExecution implements ExecutionStrategy<ActionContext>
     {
         // get the people
         PersonLookupRequest params = (PersonLookupRequest) inActionContext.getParams();
-        return (Serializable) lookupStrategy.getPeople(params.getQueryString(), params.getMaxResults());
+
+        // convert to DTOs
+        ArrayList<PersonModelView> people = new ArrayList<PersonModelView>();
+        for (Person person : lookupStrategy.getPeople(params.getQueryString(), params.getMaxResults()))
+        {
+            people.add(person.toPersonModelView());
+        }
+        return people;
     }
 
 }
