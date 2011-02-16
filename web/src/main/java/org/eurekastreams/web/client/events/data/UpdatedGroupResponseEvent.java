@@ -15,19 +15,21 @@
  */
 package org.eurekastreams.web.client.events.data;
 
-import org.eurekastreams.server.domain.DomainGroup;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
 /**
  * Response event object.
- *
+ * 
  */
-public class UpdatedGroupResponseEvent extends BaseDataResponseEvent<DomainGroup>
+public class UpdatedGroupResponseEvent extends BaseDataResponseEvent<DomainGroupModelView>
 {
     /**
      * Default constructor.
-     * @param inResponse response/
+     * 
+     * @param inResponse
+     *            response/
      */
-    public UpdatedGroupResponseEvent(final DomainGroup inResponse)
+    public UpdatedGroupResponseEvent(final DomainGroupModelView inResponse)
     {
         super(inResponse);
     }

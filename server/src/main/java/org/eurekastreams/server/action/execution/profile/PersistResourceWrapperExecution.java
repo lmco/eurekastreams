@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,24 @@
  */
 package org.eurekastreams.server.action.execution.profile;
 
+import java.io.Serializable;
+
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.server.domain.DomainGroup;
-import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 
 /**
- * Action for creating a group. This class wraps the old PersistResourceExecution action and allows us to return non
- * DomainEntity to client.
+ * Action for wrapping existing persistResourceExecution functionality. This allows for control over return value to
+ * client.
+ * 
+ * @param <originalReturnType>
+ *            Return type of wrapped persistResourceExecution.
+ * @param <newReturnType>
+ *            New type to be returned.
  */
-public class CreateGroupExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
+public class PersistResourceWrapperExecution<originalReturnType, newReturnType extends Serializable> implements
+        TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
     /**
      * Persist resource action.
@@ -33,14 +40,24 @@ public class CreateGroupExecution implements TaskHandlerExecutionStrategy<Princi
     private TaskHandlerExecutionStrategy<PrincipalActionContext> persistResourceExecution;
 
     /**
+     * Transformer to convert persistResource result to result sent to client.
+     */
+    private Transformer<originalReturnType, newReturnType> transformer;
+
+    /**
      * Constructor.
      * 
      * @param inPersistResourceExecution
      *            PersistResourceExecution for creating group.
+     * @param inTransformer
+     *            Transformer to convert persistResource result to result sent to client.
      */
-    public CreateGroupExecution(final TaskHandlerExecutionStrategy<PrincipalActionContext> inPersistResourceExecution)
+    public PersistResourceWrapperExecution(
+            final TaskHandlerExecutionStrategy<PrincipalActionContext> inPersistResourceExecution,
+            final Transformer<originalReturnType, newReturnType> inTransformer)
     {
         persistResourceExecution = inPersistResourceExecution;
+        transformer = inTransformer;
     }
 
     /**
@@ -49,20 +66,12 @@ public class CreateGroupExecution implements TaskHandlerExecutionStrategy<Princi
      * 
      * @param inActionContext
      *            the action context.
-     * @return {@link DomainGroupModelView} with only minimal fields set that are used by client. This is not a full
-     *         group representation.
+     * @return New return type of original persistResourceExecution.
      */
     @Override
-    public DomainGroupModelView execute(final TaskHandlerActionContext<PrincipalActionContext> inActionContext)
+    public newReturnType execute(final TaskHandlerActionContext<PrincipalActionContext> inActionContext)
     {
-        DomainGroup createdGroup = (DomainGroup) persistResourceExecution.execute(inActionContext);
-
-        DomainGroupModelView result = new DomainGroupModelView();
-        result.setShortName(createdGroup.getShortName());
-        result.setParentOrganizationShortName(createdGroup.getParentOrganizationShortName());
-        result.setPending(createdGroup.isPending());
-
-        return result;
+        return transformer.transform((originalReturnType) persistResourceExecution.execute(inActionContext));
     }
 
 }

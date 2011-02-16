@@ -18,7 +18,6 @@ package org.eurekastreams.web.client.model;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.DomainGroupEntity;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.web.client.events.data.AuthorizeUpdateGroupResponseEvent;
@@ -96,9 +95,9 @@ public class GroupModel extends BaseModel implements Authorizable<String>, Fetch
      */
     public void update(final HashMap<String, Serializable> request)
     {
-        super.callWriteAction("updateGroup", request, new OnSuccessCommand<DomainGroup>()
+        super.callWriteAction("updateGroup", request, new OnSuccessCommand<DomainGroupModelView>()
         {
-            public void onSuccess(final DomainGroup response)
+            public void onSuccess(final DomainGroupModelView response)
             {
                 Session.getInstance().getEventBus().notifyObservers(new UpdatedGroupResponseEvent(response));
             }

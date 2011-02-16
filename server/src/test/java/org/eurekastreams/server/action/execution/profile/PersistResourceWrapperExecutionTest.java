@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,10 @@
  */
 package org.eurekastreams.server.action.execution.profile;
 
-import static org.junit.Assert.assertEquals;
-
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
-import org.eurekastreams.server.domain.DomainGroup;
-import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -29,10 +26,10 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
 /**
- * Test for CreateGroupExecution.
- * 
+ * Test for PersistResourceWrapperExecution.
  */
-public class CreateGroupExecutionTest
+@SuppressWarnings("unchecked")
+public class PersistResourceWrapperExecutionTest
 {
     /**
      * Context for building mock objects.
@@ -50,9 +47,9 @@ public class CreateGroupExecutionTest
     private TaskHandlerActionContext taskHandlerActionContext = context.mock(TaskHandlerActionContext.class);
 
     /**
-     * {@link DomainGroup}.
+     * Transformer to convert persistResource result to result sent to client.
      */
-    private DomainGroup dg = context.mock(DomainGroup.class);
+    private Transformer transformer = context.mock(Transformer.class);
 
     /**
      * Persist resource action.
@@ -63,7 +60,8 @@ public class CreateGroupExecutionTest
     /**
      * System under test.
      */
-    private CreateGroupExecution sut = new CreateGroupExecution(persistResourceExecution);
+    private PersistResourceWrapperExecution sut = new PersistResourceWrapperExecution(persistResourceExecution,
+            transformer);
 
     /**
      * Test.
@@ -75,25 +73,14 @@ public class CreateGroupExecutionTest
         {
             {
                 oneOf(persistResourceExecution).execute(taskHandlerActionContext);
-                will(returnValue(dg));
+                will(returnValue(null));
 
-                oneOf(dg).getShortName();
-                will(returnValue("sn"));
-
-                oneOf(dg).getParentOrganizationShortName();
-                will(returnValue("posn"));
-
-                oneOf(dg).isPending();
-                will(returnValue(false));
+                oneOf(transformer).transform(null);
+                will(returnValue(null));
             }
         });
 
-        DomainGroupModelView dgmv = sut.execute(taskHandlerActionContext);
-
-        assertEquals(false, dgmv.isPending());
-        assertEquals("sn", dgmv.getShortName());
-        assertEquals("posn", dgmv.getParentOrganizationShortName());
-
+        sut.execute(taskHandlerActionContext);
         context.assertIsSatisfied();
     }
 

@@ -67,7 +67,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * The basic group settings.
- *
+ * 
  */
 public class GroupProfileSettingsTabContent extends FlowPanel
 {
@@ -101,7 +101,7 @@ public class GroupProfileSettingsTabContent extends FlowPanel
 
     /**
      * Default constructor.
-     *
+     * 
      * @param groupName
      *            the group name.
      */
@@ -136,7 +136,7 @@ public class GroupProfileSettingsTabContent extends FlowPanel
 
     /**
      * Setter.
-     *
+     * 
      * @param entity
      *            the group whose settings will be changed
      */
@@ -217,8 +217,7 @@ public class GroupProfileSettingsTabContent extends FlowPanel
 
         form.addFormElement(new OrgLookupFormElement("Parent Organization", "",
                 "Please use the lookup to select the organization that this group is associated with.",
-                DomainGroupModelView.ORG_PARENT_KEY, "", true, group
-                        .getParentOrganization(), false));
+                DomainGroupModelView.ORG_PARENT_KEY, "", true, group.getParentOrganization(), false));
         form.addFormDivider();
 
         String coordinstructions = "The group coordinators will be responsible for managing the organization profile, "

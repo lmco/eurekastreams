@@ -3380,7 +3380,7 @@
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
 	       <!-- Execution -->
-	       <bean class="org.eurekastreams.server.action.execution.profile.CreateGroupExecution">
+	       <bean class="org.eurekastreams.server.action.execution.profile.PersistResourceWrapperExecution">
 		        <constructor-arg>
 		            <bean class="org.eurekastreams.server.action.execution.PersistResourceExecution">
 		                <constructor-arg ref="jpaPersonMapper" />
@@ -3389,6 +3389,7 @@
 		                <constructor-arg ref="groupCreator" />
 		            </bean>
 		        </constructor-arg>
+		        <constructor-arg ref="domainGroupToDomainGroupModelViewTransformer"/>
 	        </bean>
         </constructor-arg>
         <constructor-arg value="false" />
@@ -3416,16 +3417,24 @@
         </constructor-arg>
         <constructor-arg>
             <!-- Execution -->
-            <bean class="org.eurekastreams.server.action.execution.PersistResourceExecution">
-                <constructor-arg ref="jpaPersonMapper" />
-                <constructor-arg ref="createPersonActionFactory" />
-                <constructor-arg ref="updaterStrategy" />
-                <constructor-arg ref="groupUpdater" />
+           <bean class="org.eurekastreams.server.action.execution.profile.PersistResourceWrapperExecution">
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.action.execution.PersistResourceExecution">
+		                <constructor-arg ref="jpaPersonMapper" />
+		                <constructor-arg ref="createPersonActionFactory" />
+		                <constructor-arg ref="updaterStrategy" />
+		                <constructor-arg ref="groupUpdater" />
+		            </bean>
+                </constructor-arg>
+                <constructor-arg ref="domainGroupToDomainGroupModelViewTransformer"/>
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
     </bean>
+    
+    <bean id="domainGroupToDomainGroupModelViewTransformer" 
+    class="org.eurekastreams.server.persistence.mappers.cache.DomainGroupToDomainGroupModelViewTransfomer"/>
 
     <bean id="createPerson" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <!-- Validation -->
