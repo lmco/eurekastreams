@@ -82,13 +82,7 @@ public class GadgetDragHandler implements DragHandler
                 new ReorderGadgetRequest(tabId, new Long(gadgetZone.getGadgetData().getId()), dropPanel
                         .getZoneNumber(), new Integer(dropPanel.getVisibleGadgetPosition(gadgetZone))));
 
-        DeferredCommand.add(new Command()
-        {
-            public void execute()
-            {
-                gadgetZone.rerender();
-            }
-        });
+        gadgetZone.rerender();
     }
 
     /**

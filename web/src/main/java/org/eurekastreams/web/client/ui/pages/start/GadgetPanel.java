@@ -673,10 +673,7 @@ public class GadgetPanel extends FlowPanel
      */
     public void rerender()
     {
-        renderZone.clear();
-        gadgetRenderer.registerSingleGadgetInContainer(gadgetData.getGadgetDefinition().getUrl(), gadgetIdModifier,
-                gadgetData.getGadgetDefinition().getId(), gadgetData.getGadgetUserPref());
-
-        gadgetRenderer.renderGadget(gadgetIdModifier.toString());
+        gadgetRenderer.gadgetIFrameUrlRefreshing(gadgetIdModifier.toString());
+        gadgetRenderer.refreshGadget(gadgetIdModifier.toString());
     }
 }
