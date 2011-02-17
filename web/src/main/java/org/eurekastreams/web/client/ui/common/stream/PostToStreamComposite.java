@@ -29,7 +29,6 @@ import org.eurekastreams.web.client.events.data.GotSystemSettingsResponseEvent;
 import org.eurekastreams.web.client.events.errors.ErrorPostingMessageToNullScopeEvent;
 import org.eurekastreams.web.client.model.ActivityModel;
 import org.eurekastreams.web.client.model.SystemSettingsModel;
-import org.eurekastreams.web.client.ui.Bindable;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.stream.attach.Attachment;
 import org.eurekastreams.web.client.ui.common.stream.attach.bookmark.AddLinkComposite;
@@ -51,7 +50,7 @@ import com.google.gwt.user.client.ui.Panel;
 /**
  * Post a message to the stream.
  */
-public class PostToStreamComposite extends FlowPanel implements Bindable
+public class PostToStreamComposite extends FlowPanel
 {
     /** Maximum length of a message. */
     private static final int MAX_MESSAGE_LENGTH = 250;
