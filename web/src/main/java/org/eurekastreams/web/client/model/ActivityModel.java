@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,35 @@
  */
 package org.eurekastreams.web.client.model;
 
+import java.util.HashMap;
+
+import org.eurekastreams.commons.exceptions.AuthorizationException;
+import org.eurekastreams.server.action.request.stream.PostActivityRequest;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
+import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.data.DeletedActivityResponseEvent;
 import org.eurekastreams.web.client.events.data.GotActivityResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.notifier.Notification;
 
 /**
  * Activity Model.
  *
  */
-public class ActivityModel extends BaseModel implements Fetchable<Long>, Deletable<Long>
+public class ActivityModel extends BaseModel implements Fetchable<Long>, Deletable<Long>,
+        Insertable<PostActivityRequest>
 {
-    /**
-     * Singleton.
-     */
+    /** Singleton. */
     private static ActivityModel model = new ActivityModel();
+
+    /** Action keys used to post an activity per recipient type. */
+    private final HashMap<EntityType, String> postActivityActionKeysByType = new HashMap<EntityType, String>();
+
+    /** Event bus. */
+    private final EventBus eventBus;
 
     /**
      * Gets the singleton.
@@ -42,8 +56,18 @@ public class ActivityModel extends BaseModel implements Fetchable<Long>, Deletab
     }
 
     /**
+     * Constructor.
+     */
+    public ActivityModel()
+    {
+        eventBus = Session.getInstance().getEventBus();
+        postActivityActionKeysByType.put(EntityType.GROUP, "postGroupActivityServiceActionTaskHandler");
+        postActivityActionKeysByType.put(EntityType.PERSON, "postPersonActivityServiceActionTaskHandler");
+    }
+
+    /**
      * Retrieves a list of activities for the org.
-     * 
+     *
      * @param inRequest
      *            Request.
      * @param inUseClientCacheIfAvailable
@@ -51,20 +75,18 @@ public class ActivityModel extends BaseModel implements Fetchable<Long>, Deletab
      */
     public void fetch(final Long inRequest, final boolean inUseClientCacheIfAvailable)
     {
-        super.callReadAction("getActivityById", inRequest,
-                new OnSuccessCommand<ActivityDTO>()
-                {
-                    public void onSuccess(final ActivityDTO response)
-                    {
-                        Session.getInstance().getEventBus().notifyObservers(
-                                new GotActivityResponseEvent(response));
-                    }
-                }, inUseClientCacheIfAvailable);
+        super.callReadAction("getActivityById", inRequest, new OnSuccessCommand<ActivityDTO>()
+        {
+            public void onSuccess(final ActivityDTO response)
+            {
+                Session.getInstance().getEventBus().notifyObservers(new GotActivityResponseEvent(response));
+            }
+        }, inUseClientCacheIfAvailable);
     }
 
     /**
      * Deletes an activity.
-     * 
+     *
      * @param request
      *            Activity id.
      */
@@ -74,8 +96,32 @@ public class ActivityModel extends BaseModel implements Fetchable<Long>, Deletab
         {
             public void onSuccess(final Boolean response)
             {
-                Session.getInstance().getEventBus().notifyObservers(new DeletedActivityResponseEvent(request));
+                eventBus.notifyObservers(new DeletedActivityResponseEvent(request));
             }
         });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void insert(final PostActivityRequest inRequest)
+    {
+        super.callWriteAction(
+                postActivityActionKeysByType.get(inRequest.getActivityDTO().getDestinationStream().getType()),
+                inRequest, new OnSuccessCommand<ActivityDTO>()
+                {
+                    public void onSuccess(final ActivityDTO result)
+                    {
+                        eventBus.notifyObservers(new MessageStreamAppendEvent(result));
+                    }
+                }, new OnFailureCommand()
+                {
+                    public void onFailure(final Throwable inEx)
+                    {
+                        eventBus.notifyObservers(new ShowNotificationEvent(new Notification(
+                                inEx instanceof AuthorizationException ? "Not allowed to post to this stream."
+                                        : "Error posting to stream.")));
+                    }
+                });
     }
 }
