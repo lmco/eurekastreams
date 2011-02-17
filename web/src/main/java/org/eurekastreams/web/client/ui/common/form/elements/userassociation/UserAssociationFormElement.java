@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,29 @@
 package org.eurekastreams.web.client.ui.common.form.elements.userassociation;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
+import org.eurekastreams.server.domain.MembershipCriteria;
 import org.eurekastreams.server.domain.SystemSettings;
+import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.MembershipCriteriaAddedEvent;
+import org.eurekastreams.web.client.events.MembershipCriteriaRemovedEvent;
+import org.eurekastreams.web.client.events.MembershipCriteriaVerificationFailureEvent;
+import org.eurekastreams.web.client.events.MembershipCriteriaVerificationNoUsersEvent;
+import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.jsni.WidgetJSNIFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
+import org.eurekastreams.web.client.model.MembershipCriteriaVerificationModel;
+import org.eurekastreams.web.client.model.requests.MembershipCriteriaVerificationRequest;
 import org.eurekastreams.web.client.ui.Bindable;
-import org.eurekastreams.web.client.ui.PropertyMapper;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.form.elements.FormElement;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -37,70 +51,75 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class UserAssociationFormElement extends FlowPanel implements FormElement, Bindable
 {
-    /**
-     * The controller.
-     */
-    private UserAssociationFormElementController controller;
+    /** Group description. */
+    private static final String GROUP_DESC = "Enter the name of the LDAP group.";
 
-    // Package level widgets.
-    /**
-     * The access groups panel.
-     */
-    FlowPanel accessGroupsPanel;
+    /** Attribute description. */
+    private static final String ATTR_DESC = "Specify an LDAP attribute (in the format: attribute=value)";
 
-    /**
-     * Textbox containing the LDAP group.
-     */
-    TextBox membershipCriteria;
+    /** Message for verification with no users. */
+    private static final String VERIFY_NO_USERS_MESSAGE = //\n
+        "No matching groups or users were found. Please check your query and search again.";
 
-    /**
-     * Radio button to search LDAP by group name.
-     */
-    RadioButton group;
+    /** Message for verification failures. */
+    private static final String VERIFY_FAILURE_MESSAGE = //\n
+    "There was an error processing your request. Please check your query and search again.";
 
-    /**
-     * Verifying label.
-     */
-    Label verifying;
+    /** The access groups panel. */
+    private FlowPanel accessGroupsPanel;
 
-    /**
-     * Verify button.
-     */
-    Anchor verifyButton;
+    /** Textbox containing the LDAP group. */
+    private TextBox membershipCriteria;
 
-    /**
-     * Required label.
-     */
-    Label requiredLabel;
+    /** Radio button to search LDAP by group name. */
+    private RadioButton group;
 
-    /**
-     * Results label.
-     */
-    Label results;
+    /** Verifying label. */
+    private Label verifying;
 
-    /**
-     * Description.
-     */
-    Label description;
+    /** Verify button. */
+    private Anchor verifyButton;
 
-    /**
-     * Radio button to search LDAP by attribute.
-     */
-    RadioButton attr;
+    /** Required label. */
+    private Label requiredLabel;
 
-    /**
-     * The model.
-     */
-    private UserAssociationFormElementModel model;
+    /** Results label. */
+    private Label results;
+
+    /** Description. */
+    private Label description;
+
+    /** Radio button to search LDAP by attribute. */
+    private RadioButton attr;
+
+    /** The JSNI Facade. */
+    private final WidgetJSNIFacade jSNIFacade = new WidgetJSNIFacadeImpl();
+
+    /** Membership criteria items. */
+    private final ArrayList<MembershipCriteria> items = new ArrayList<MembershipCriteria>();
+
 
     /**
      * Constructor.
      *
      * @param inSettings
      *            the system settings.
-     *
      */
     public UserAssociationFormElement(final SystemSettings inSettings)
+    {
+        setupWidgets();
+        setupEvents();
+
+        for (MembershipCriteria criterion : inSettings.getMembershipCriteria())
+        {
+            addMembershipCriteria(criterion);
+        }
+    }
+
+    /**
+     * Builds the UI.
+     */
+    private void setupWidgets()
     {
         this.addStyleName("form-user-association");
 
@@ -131,7 +150,6 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
 
         membershipCriteria = new TextBox();
 
-
         // Need to do this to fix an especially nasty IE CSS bug (input margin inheritance)
         final SimplePanel textWrapper = new SimplePanel();
         textWrapper.addStyleName("input-wrapper");
@@ -147,7 +165,7 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
 
         results = new Label();
 
-        description = new Label();
+        description = new Label(GROUP_DESC);
         description.addStyleName("form-instructions");
 
         this.add(results);
@@ -163,19 +181,111 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
         accessGroupsPanel = new FlowPanel();
         accessGroupsPanel.addStyleName("access-groups");
         this.add(accessGroupsPanel);
+    }
 
-        model = new UserAssociationFormElementModel(Session.getInstance(), inSettings);
+    /**
+     * Wires up events.
+     */
+    private void setupEvents()
+    {
+        EventBus eventBus = Session.getInstance().getEventBus();
 
-        UserAssociationFormElementView view = new UserAssociationFormElementView(model, new WidgetJSNIFacadeImpl());
+        // update the UI when group / attribute search is selected.
+        group.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent event)
+            {
+                description.setText(GROUP_DESC);
+            }
+        });
+        attr.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent event)
+            {
+                description.setText(ATTR_DESC);
+            }
+        });
 
-        PropertyMapper mapper = new PropertyMapper(GWT.create(UserAssociationFormElement.class), GWT
-                .create(UserAssociationFormElementView.class));
+        // make verification request to the server when user clicks verify button / presses enter
+        verifyButton.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent inArg0)
+            {
+                initiateVerification();
+            }
+        });
+        membershipCriteria.addKeyUpHandler(new KeyUpHandler()
+        {
+            public void onKeyUp(final KeyUpEvent ev)
+            {
+                if (ev.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+                {
+                    initiateVerification();
+                }
+            }
+        });
 
-        mapper.bind(this, view);
+        // got verification result: criterion matched some users
+        eventBus.addObserver(MembershipCriteriaAddedEvent.class, new Observer<MembershipCriteriaAddedEvent>()
+        {
+            public void update(final MembershipCriteriaAddedEvent ev)
+            {
+                membershipCriteria.setText("");
+                results.setVisible(false);
+                verifyingDone();
 
-        controller = new UserAssociationFormElementController(Session.getInstance(), view, model);
+                addMembershipCriteria(ev.getMembershipCriteria());
+            }
+        });
 
-        controller.init();
+        // got verification result: criterion matched no users
+        eventBus.addObserver(MembershipCriteriaVerificationNoUsersEvent.class,
+                new Observer<MembershipCriteriaVerificationNoUsersEvent>()
+                {
+                    public void update(final MembershipCriteriaVerificationNoUsersEvent event)
+                    {
+                        results.setVisible(true);
+                        results.addStyleName("form-error-box");
+                        results.setText(VERIFY_NO_USERS_MESSAGE);
+                        verifyingDone();
+                    }
+                });
+
+        // got verification result: query failed
+        eventBus.addObserver(MembershipCriteriaVerificationFailureEvent.class,
+                new Observer<MembershipCriteriaVerificationFailureEvent>()
+                {
+                    public void update(final MembershipCriteriaVerificationFailureEvent event)
+                    {
+                        results.setVisible(true);
+                        results.setText(VERIFY_FAILURE_MESSAGE);
+                        verifyingDone();
+                    }
+                });
+    }
+
+    /**
+     * Do the verification.
+     */
+    private void initiateVerification()
+    {
+        verifying.setVisible(true);
+        verifyButton.setVisible(false);
+        requiredLabel.setVisible(false);
+        results.setVisible(false);
+
+        MembershipCriteriaVerificationModel.getInstance().fetch(
+                new MembershipCriteriaVerificationRequest(membershipCriteria.getText(), group.getValue()), false);
+    }
+
+    /**
+     * Actions taken when a verification finishes.
+     */
+    private void verifyingDone()
+    {
+        verifying.setVisible(false);
+        verifyButton.setVisible(true);
+        requiredLabel.setVisible(true);
     }
 
     /**
@@ -191,7 +301,7 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
      */
     public Serializable getValue()
     {
-        return model.getMembershipCriteria();
+        return items;
     }
 
     /**
@@ -211,4 +321,31 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
     {
     }
 
+    /**
+     * Add membership criteria.
+     *
+     * @param criterion
+     *            the membership criteria.
+     */
+    public void addMembershipCriteria(final MembershipCriteria criterion)
+    {
+        items.add(criterion);
+
+        final MembershipCriteriaItemComposite membershipCriteriaComposite = new MembershipCriteriaItemComposite(
+                criterion.getCriteria());
+        accessGroupsPanel.add(membershipCriteriaComposite);
+
+        membershipCriteriaComposite.addDeleteClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent event)
+            {
+                if (jSNIFacade.confirm("Are you sure you want to delete '" + criterion.getCriteria() + "'"))
+                {
+                    accessGroupsPanel.remove(membershipCriteriaComposite);
+                    Session.getInstance().getEventBus().notifyObservers(new MembershipCriteriaRemovedEvent(criterion));
+                    items.remove(criterion);
+                }
+            }
+        });
+    }
 }
