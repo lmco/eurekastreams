@@ -17,7 +17,6 @@ package org.eurekastreams.web.client.ui.common.dialog.login;
 
 import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.web.client.events.FormLoginCompleteEvent;
-import org.eurekastreams.web.client.ui.Bindable;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 
@@ -43,51 +42,33 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Template for a login dialog.
  */
-public class LoginDialogContent implements DialogContent, Bindable
+public class LoginDialogContent implements DialogContent
 {
-    /**
-     * The login form.
-     */
+    /** The login form. */
     private final FormPanel loginForm = new FormPanel();
 
-    /**
-     * The close command.
-     */
+    /** The close command. */
     private WidgetCommand closeCommand = null;
 
-    /**
-     * The error label.
-     */
+    /** The error label. */
     private final Label errorMessage = new Label("");
 
-    /**
-     * The submit button.
-     */
+    /** The submit button. */
     private final Hyperlink submitButton = new Hyperlink("Submit", History.getToken());
 
-    /**
-     * The cancel button.
-     */
+    /** The cancel button. */
     private final Hyperlink cancelButton = new Hyperlink("Cancel", History.getToken());
 
-    /**
-     * The user name text box.
-     */
+    /** The user name text box. */
     private final TextBox username = new TextBox();
 
-    /**
-     * The password text box.
-     */
+    /** The password text box. */
     private final PasswordTextBox password = new PasswordTextBox();
 
-    /**
-     * Remember me checkbox.
-     */
+    /** Remember me checkbox. */
     private final CheckBox rememberMe = new CheckBox("Keep me logged in.");
 
-    /**
-     * Container for login elements.
-     */
+    /** Container for login elements. */
     private final FlowPanel loginContentContainer = new FlowPanel();
 
     /**

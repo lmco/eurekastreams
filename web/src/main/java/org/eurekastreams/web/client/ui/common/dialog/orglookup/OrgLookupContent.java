@@ -22,7 +22,6 @@ import org.eurekastreams.server.domain.OrganizationTreeDTO;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.model.OrganizationModelViewModel;
 import org.eurekastreams.web.client.model.OrganizationTreeModel;
-import org.eurekastreams.web.client.ui.Bindable;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.ULPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarDisplayPanel;
@@ -46,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Org lookup modal.
  */
-public class OrgLookupContent implements DialogContent, Bindable
+public class OrgLookupContent implements DialogContent
 {
     /**
      * The close command.
@@ -71,17 +70,17 @@ public class OrgLookupContent implements DialogContent, Bindable
     /**
      * The save button.
      */
-    Hyperlink save;
+    private Hyperlink save;
 
     /**
      * The cancel button.
      */
-    Hyperlink cancel;
+    private Hyperlink cancel;
 
     /**
      * The avatar.
      */
-    AvatarWidget logoImage;
+    private AvatarWidget logoImage;
 
     /**
      * The list of orgs.
