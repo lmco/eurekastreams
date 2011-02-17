@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 import org.eurekastreams.server.domain.Organization;
+import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.web.client.events.data.AuthorizeUpdateOrganizationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotOrganizationInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedOrganizationResponseEvent;
@@ -67,9 +68,9 @@ public class OrganizationModel extends BaseModel implements Fetchable<String>,
      */
     public void insert(final HashMap<String, Serializable> request)
     {
-        super.callWriteAction("createOrganization", request, new OnSuccessCommand<Organization>()
+        super.callWriteAction("createOrganization", request, new OnSuccessCommand<OrganizationModelView>()
         {
-            public void onSuccess(final Organization response)
+            public void onSuccess(final OrganizationModelView response)
             {
                 Session.getInstance().getEventBus().notifyObservers(new InsertedOrganizationResponseEvent(response));
             }
@@ -96,9 +97,9 @@ public class OrganizationModel extends BaseModel implements Fetchable<String>,
      */
     public void update(final HashMap<String, Serializable> request)
     {
-        super.callWriteAction("updateOrganization", request, new OnSuccessCommand<Organization>()
+        super.callWriteAction("updateOrganization", request, new OnSuccessCommand<OrganizationModelView>()
         {
-            public void onSuccess(final Organization response)
+            public void onSuccess(final OrganizationModelView response)
             {
                 Session.getInstance().getEventBus().notifyObservers(new UpdatedOrganizationResponseEvent(response));
             }

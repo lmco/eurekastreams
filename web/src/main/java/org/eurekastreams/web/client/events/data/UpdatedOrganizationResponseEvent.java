@@ -15,19 +15,21 @@
  */
 package org.eurekastreams.web.client.events.data;
 
-import org.eurekastreams.server.domain.Organization;
+import org.eurekastreams.server.search.modelview.OrganizationModelView;
 
 /**
  * Response event object.
- *
+ * 
  */
-public class UpdatedOrganizationResponseEvent extends BaseDataResponseEvent<Organization>
+public class UpdatedOrganizationResponseEvent extends BaseDataResponseEvent<OrganizationModelView>
 {
     /**
      * Default constructor.
-     * @param inResponse response/
+     * 
+     * @param inResponse
+     *            response/
      */
-    public UpdatedOrganizationResponseEvent(final Organization inResponse)
+    public UpdatedOrganizationResponseEvent(final OrganizationModelView inResponse)
     {
         super(inResponse);
     }
