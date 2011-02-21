@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.attach.bookmark;
 
-import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.server.domain.stream.LinkInformation;
 import org.eurekastreams.web.client.events.EventBus;
@@ -100,11 +99,8 @@ public class AddLinkComposite extends FlowPanel
 
     /**
      * Constructor.
-     *
-     * @param inProcessor
-     *            the action processor.
      */
-    public AddLinkComposite(final ActionProcessor inProcessor)
+    public AddLinkComposite()
     {
         /*
          * Add the widgets.

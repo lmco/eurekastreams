@@ -20,8 +20,8 @@ package org.eurekastreams.web.client.ui.common.form.elements;
 
 import java.io.Serializable;
 
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.OrganizationTreeDTO;
+import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.SaveSelectedOrgEvent;
 import org.eurekastreams.web.client.ui.common.EditPanel;
@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * Org lookup form element.
- *
+ * 
  */
 public class OrgLookupFormElement extends FlowPanel implements FormElement
 {
@@ -76,7 +76,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Constructor.
-     *
+     * 
      * @param inTitle
      *            the title.
      * @param subTitle
@@ -95,8 +95,8 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
      *            if the element is read only.
      */
     public OrgLookupFormElement(final String inTitle, final String subTitle, final String inInstructions,
-            final String inKey, final String inSelectedLabelText, final boolean inRequired, final Organization inOrg,
-            final boolean inReadOnly)
+            final String inKey, final String inSelectedLabelText, final boolean inRequired,
+            final OrganizationModelView inOrg, final boolean inReadOnly)
     {
         this.addStyleName("org-lookup-form-element");
 
@@ -170,7 +170,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
         {
             OrganizationTreeDTO orgTree = new OrganizationTreeDTO();
             orgTree.setDisplayName(inOrg.getName());
-            orgTree.setOrgId(inOrg.getId());
+            orgTree.setOrgId(inOrg.getEntityId());
             orgTree.setShortName(inOrg.getShortName());
 
             setOrg(orgTree);
@@ -179,7 +179,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Get the save command.
-     *
+     * 
      * @return the command.
      */
     private Command getSaveCommand()
@@ -195,7 +195,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Set the org.
-     *
+     * 
      * @param org
      *            the org.
      */
@@ -212,7 +212,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Get the key.
-     *
+     * 
      * @return the key.
      */
     public String getKey()
@@ -222,7 +222,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Get the value.
-     *
+     * 
      * @return the value.
      */
     public Serializable getValue()
@@ -232,7 +232,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Called on error.
-     *
+     * 
      * @param errMessage
      *            the error.
      */

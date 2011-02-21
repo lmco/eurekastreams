@@ -30,7 +30,6 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.MembershipCriteriaVerificationModel;
 import org.eurekastreams.web.client.model.requests.MembershipCriteriaVerificationRequest;
-import org.eurekastreams.web.client.ui.Bindable;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.form.elements.FormElement;
 
@@ -49,7 +48,7 @@ import com.google.gwt.user.client.ui.TextBox;
 /**
  * User association form element.
  */
-public class UserAssociationFormElement extends FlowPanel implements FormElement, Bindable
+public class UserAssociationFormElement extends FlowPanel implements FormElement
 {
     /** Group description. */
     private static final String GROUP_DESC = "Enter the name of the LDAP group.";

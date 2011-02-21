@@ -23,9 +23,11 @@ import org.eurekastreams.server.domain.DomainFormatUtility;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.DomainGroupEntity;
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SetBannerEvent;
@@ -215,9 +217,20 @@ public class GroupProfileSettingsTabContent extends FlowPanel
                 "If your group has a website, you can enter the URL above", false));
         form.addFormDivider();
 
+        // create OrgModelView from groupParentOrg
+        Organization parentOrg = group.getParentOrganization();
+        OrganizationModelView parentOrgModelView = null;
+        if (parentOrg != null)
+        {
+            parentOrgModelView = new OrganizationModelView();
+            parentOrgModelView.setName(parentOrg.getName());
+            parentOrgModelView.setShortName(parentOrg.getShortName());
+            parentOrgModelView.setEntityId(parentOrg.getId());
+        }
+
         form.addFormElement(new OrgLookupFormElement("Parent Organization", "",
                 "Please use the lookup to select the organization that this group is associated with.",
-                DomainGroupModelView.ORG_PARENT_KEY, "", true, group.getParentOrganization(), false));
+                DomainGroupModelView.ORG_PARENT_KEY, "", true, parentOrgModelView, false));
         form.addFormDivider();
 
         String coordinstructions = "The group coordinators will be responsible for managing the organization profile, "

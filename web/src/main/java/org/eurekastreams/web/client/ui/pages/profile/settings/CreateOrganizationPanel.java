@@ -17,7 +17,6 @@ package org.eurekastreams.web.client.ui.pages.profile.settings;
 
 import java.util.LinkedList;
 
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
@@ -26,7 +25,7 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
-import org.eurekastreams.web.client.events.data.GotOrganizationInformationResponseEvent;
+import org.eurekastreams.web.client.events.data.GotOrganizationModelViewInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedOrganizationResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.OrganizationModel;
@@ -49,7 +48,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Organization panel.
- *
+ * 
  */
 public class CreateOrganizationPanel extends SettingsPanel
 {
@@ -65,7 +64,7 @@ public class CreateOrganizationPanel extends SettingsPanel
 
     /**
      * Default constructor.
-     *
+     * 
      * @param parentOrgShortName
      *            parent org shortname.
      */
@@ -73,28 +72,28 @@ public class CreateOrganizationPanel extends SettingsPanel
     {
         super(panel, "Create a Sub Organization");
 
-        EventBus.getInstance().addObserver(GotOrganizationInformationResponseEvent.class,
-                new Observer<GotOrganizationInformationResponseEvent>()
+        EventBus.getInstance().addObserver(GotOrganizationModelViewInformationResponseEvent.class,
+                new Observer<GotOrganizationModelViewInformationResponseEvent>()
                 {
-                    public void update(final GotOrganizationInformationResponseEvent event)
+                    public void update(final GotOrganizationModelViewInformationResponseEvent event)
                     {
                         setEntity(event.getResponse());
                     }
                 });
 
-        OrganizationModel.getInstance().fetch(parentOrgShortName, true);
+        OrganizationModel.getInstance().fetchModelView(parentOrgShortName, true);
     }
 
     /**
      * Set the parent org.
-     *
+     * 
      * @param parentOrg
      *            parent org.
      */
-    public void setEntity(final Organization parentOrg)
+    public void setEntity(final OrganizationModelView parentOrg)
     {
         this.clearContentPanel();
-        this.setPreviousPage(new CreateUrlRequest(Page.ORGANIZATIONS), "< Return to Profile");
+        this.setPreviousPage(new CreateUrlRequest(Page.ORGANIZATIONS, parentOrg.getShortName()), "< Return to Profile");
 
         RootPanel.get().addStyleName("form-body");
         FormBuilder form = new FormBuilder("", OrganizationModel.getInstance(), Method.INSERT);
@@ -102,8 +101,8 @@ public class CreateOrganizationPanel extends SettingsPanel
         if (!Session.getInstance().getCurrentPersonRoles().contains(Role.ORG_COORDINATOR))
         {
             // shouldn't be here, send them to start page just as if they typed invalid url.
-            Session.getInstance().getEventBus()
-                    .notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(Page.START)));
+            Session.getInstance().getEventBus().notifyObservers(
+                    new UpdateHistoryEvent(new CreateUrlRequest(Page.START)));
             return;
         }
 
@@ -112,17 +111,13 @@ public class CreateOrganizationPanel extends SettingsPanel
                 {
                     public void update(final InsertedOrganizationResponseEvent arg1)
                     {
-                        Session.getInstance()
-                                .getEventBus()
-                                .notifyObservers(
-                                        new UpdateHistoryEvent(new CreateUrlRequest(Page.ORGANIZATIONS, arg1
-                                                .getResponse().getShortName())));
+                        Session.getInstance().getEventBus().notifyObservers(
+                                new UpdateHistoryEvent(new CreateUrlRequest(Page.ORGANIZATIONS, arg1.getResponse()
+                                        .getShortName())));
 
-                        Session.getInstance()
-                                .getEventBus()
-                                .notifyObservers(
-                                        new ShowNotificationEvent(new Notification(
-                                                "Your sub organization has been successfully created")));
+                        Session.getInstance().getEventBus().notifyObservers(
+                                new ShowNotificationEvent(new Notification(
+                                        "Your sub organization has been successfully created")));
                     }
                 });
 

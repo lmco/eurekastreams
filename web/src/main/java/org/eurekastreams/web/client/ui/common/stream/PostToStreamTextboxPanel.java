@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.autocomplete.AutoCompleteDropDownPanel;
 
 import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.user.client.ui.KeyboardListener;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 
 /**
  * Post top panel.
@@ -43,12 +43,14 @@ public class PostToStreamTextboxPanel extends AutoCompleteDropDownPanel
     }
 
     /**
-     * Keyboard listener.
-     * @param listener the listener.
+     * Adds a handler for keypresses.
+     * 
+     * @param handler
+     *            the handler.
      */
-    public void addKeyboardListener(final KeyboardListener listener)
+    public void addKeystrokeHandler(final KeyUpHandler handler)
     {
-        getTextArea().addKeyboardListener(listener);
+        getTextArea().addKeyUpHandler(handler);
     }
 
     /**

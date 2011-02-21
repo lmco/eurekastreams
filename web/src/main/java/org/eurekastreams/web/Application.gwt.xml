@@ -16,9 +16,4 @@
 
 	<!-- Specify the app entry point class.                         -->
 	<entry-point class='org.eurekastreams.web.client.ui.pages.master.ApplicationEntryPoint' />
-
-	<!-- Sets up the binder generator for the magic binding class -->
-	<generate-with class="org.eurekastreams.web.rebind.HashedBindableGenerator">
-		<when-type-assignable class="org.eurekastreams.web.client.ui.Bindable" />
-	</generate-with>
 </module>
