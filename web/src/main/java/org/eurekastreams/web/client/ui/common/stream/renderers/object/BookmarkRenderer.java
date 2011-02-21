@@ -73,8 +73,13 @@ public class BookmarkRenderer implements ObjectRenderer
      */
     private static native String getBaseUrl(final String url)
     /*-{
-        var re = new RegExp('^([a-z]+://[^/]+)', 'im');
-        return url.match(re)[1].toString();
+        try {
+            var re = new RegExp('^([a-z]+://[^/]+)', 'im');
+            return url.match(re)[1].toString();
+        } catch(e)
+        {
+            return url;
+        }
     }-*/;
 
     /**
