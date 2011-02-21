@@ -18,7 +18,6 @@ package org.eurekastreams.web.client.ui.common.stream.thumbnail;
 import java.util.LinkedList;
 
 import org.eurekastreams.server.domain.stream.LinkInformation;
-import org.eurekastreams.web.client.ui.Bindable;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -30,7 +29,7 @@ import com.google.gwt.user.client.ui.Label;
 /**
  * Thumbnail selector.
  */
-public class ThumbnailSelectorComposite extends FlowPanel implements Bindable
+public class ThumbnailSelectorComposite extends FlowPanel
 {
     /**
      * The selected thumbnail.
@@ -134,7 +133,7 @@ public class ThumbnailSelectorComposite extends FlowPanel implements Bindable
 
     /**
      * Sets the link information for which the control will display thumbnails.
-     * 
+     *
      * @param inLink
      *            Link information.
      */

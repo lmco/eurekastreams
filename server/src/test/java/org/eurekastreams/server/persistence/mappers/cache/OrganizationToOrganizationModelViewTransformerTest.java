@@ -61,12 +61,20 @@ public class OrganizationToOrganizationModelViewTransformerTest
             {
                 oneOf(originalObject).getShortName();
                 will(returnValue("sn"));
+
+                oneOf(originalObject).getName();
+                will(returnValue("name"));
+
+                oneOf(originalObject).getId();
+                will(returnValue(5L));
             }
         });
 
         OrganizationModelView mv = sut.transform(originalObject);
 
         assertEquals("sn", mv.getShortName());
+        assertEquals("name", mv.getName());
+        assertEquals(5L, mv.getEntityId());
 
         context.assertIsSatisfied();
     }

@@ -22,6 +22,7 @@ import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.web.client.events.data.AuthorizeUpdateOrganizationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotOrganizationInformationResponseEvent;
+import org.eurekastreams.web.client.events.data.GotOrganizationModelViewInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedOrganizationResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedOrganizationResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
@@ -88,6 +89,21 @@ public class OrganizationModel extends BaseModel implements Fetchable<String>,
             {
                 Session.getInstance().getEventBus().notifyObservers(
                         new GotOrganizationInformationResponseEvent(response));
+            }
+        }, useClientCacheIfAvailable);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void fetchModelView(final String request, final boolean useClientCacheIfAvailable)
+    {
+        super.callReadAction("getOrganizationModelView", request, new OnSuccessCommand<OrganizationModelView>()
+        {
+            public void onSuccess(final OrganizationModelView response)
+            {
+                Session.getInstance().getEventBus().notifyObservers(
+                        new GotOrganizationModelViewInformationResponseEvent(response));
             }
         }, useClientCacheIfAvailable);
     }

@@ -18,16 +18,16 @@ package org.eurekastreams.web.client.ui.pages.profile.settings;
 import java.io.Serializable;
 import java.util.HashSet;
 
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SaveSelectedOrgEvent;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
-import org.eurekastreams.web.client.events.data.GotOrganizationInformationResponseEvent;
+import org.eurekastreams.web.client.events.data.GotOrganizationModelViewInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedGroupResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.GroupModel;
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Organization panel.
- *
+ * 
  */
 public class CreateGroupPanel extends SettingsPanel
 {
@@ -102,7 +102,7 @@ public class CreateGroupPanel extends SettingsPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param parentOrgShortName
      *            parent org shortname.
      */
@@ -110,30 +110,30 @@ public class CreateGroupPanel extends SettingsPanel
     {
         super(panel, "Create a Group");
 
-        EventBus.getInstance().addObserver(GotOrganizationInformationResponseEvent.class,
-                new Observer<GotOrganizationInformationResponseEvent>()
+        EventBus.getInstance().addObserver(GotOrganizationModelViewInformationResponseEvent.class,
+                new Observer<GotOrganizationModelViewInformationResponseEvent>()
                 {
-                    public void update(final GotOrganizationInformationResponseEvent event)
+                    public void update(final GotOrganizationModelViewInformationResponseEvent event)
                     {
                         setEntity(event.getResponse());
                     }
                 });
 
-        OrganizationModel.getInstance().fetch(parentOrgShortName, true);
+        OrganizationModel.getInstance().fetchModelView(parentOrgShortName, true);
     }
 
     /**
      * Set the parent org.
-     *
+     * 
      * @param parentOrg
      *            parent org.
      */
-    public void setEntity(final Organization parentOrg)
+    public void setEntity(final OrganizationModelView parentOrg)
     {
         final EventBus eventBus = Session.getInstance().getEventBus();
 
         this.clearContentPanel();
-        this.setPreviousPage(new CreateUrlRequest(Page.ORGANIZATIONS), "< Return to Profile");
+        this.setPreviousPage(new CreateUrlRequest(Page.ORGANIZATIONS, parentOrg.getShortName()), "< Return to Profile");
 
         Person currentPerson = Session.getInstance().getCurrentPerson();
         String coordinstructions = "The group coordinators"

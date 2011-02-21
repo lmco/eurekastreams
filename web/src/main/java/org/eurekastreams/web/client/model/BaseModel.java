@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Base model. Gets you free CRUD.
- *
  */
 public abstract class BaseModel
 {
@@ -64,6 +63,20 @@ public abstract class BaseModel
     }
 
     /**
+     * Command to execute on failure.
+     */
+    public interface OnFailureCommand
+    {
+        /**
+         * Action to perform on failure.
+         *
+         * @param ex
+         *            Exception recieved.
+         */
+        void onFailure(Throwable ex);
+    }
+
+    /**
      * Call read action.
      *
      * @param actionKey
@@ -78,6 +91,27 @@ public abstract class BaseModel
     protected void callReadAction(final String actionKey, final Serializable request,
             final OnSuccessCommand successCommand, final boolean useClientCacheIfAvailable)
     {
+        callReadAction(actionKey, request, successCommand, null, useClientCacheIfAvailable);
+    }
+
+    /**
+     * Call read action.
+     *
+     * @param actionKey
+     *            the action.
+     * @param request
+     *            the request.
+     * @param successCommand
+     *            the success command.
+     * @param failureCommand
+     *            Executed on failure.
+     * @param useClientCacheIfAvailable
+     *            use the cache.
+     */
+    protected void callReadAction(final String actionKey, final Serializable request,
+            final OnSuccessCommand successCommand, final OnFailureCommand failureCommand,
+            final boolean useClientCacheIfAvailable)
+    {
         if (cachedData.get(actionKey) != null
                 && useClientCacheIfAvailable
                 && ((request == null && cachedRequests.get(actionKey) == null) || (areRequestsEqual(
@@ -88,7 +122,7 @@ public abstract class BaseModel
         else
         {
             cachedRequests.put(actionKey, request);
-            callAction(actionKey, request, successCommand, useClientCacheIfAvailable);
+            callAction(actionKey, request, successCommand, failureCommand, useClientCacheIfAvailable);
         }
     }
 
@@ -105,8 +139,26 @@ public abstract class BaseModel
     protected void callWriteAction(final String actionKey, final Serializable request,
             final OnSuccessCommand successCommand)
     {
+        callWriteAction(actionKey, request, successCommand, null);
+    }
+
+    /**
+     * Call write action.
+     *
+     * @param actionKey
+     *            the action key.
+     * @param request
+     *            the request.
+     * @param successCommand
+     *            successcommand.
+     * @param failureCommand
+     *            Executed on failure.
+     */
+    protected void callWriteAction(final String actionKey, final Serializable request,
+            final OnSuccessCommand successCommand, final OnFailureCommand failureCommand)
+    {
         cachedData.clear();
-        callAction(actionKey, request, successCommand, false);
+        callAction(actionKey, request, successCommand, failureCommand, false);
     }
 
     /**
@@ -118,11 +170,13 @@ public abstract class BaseModel
      *            request.
      * @param successCommand
      *            on successs command.
+     * @param failureCommand
+     *            Executed on failure.
      * @param useClientCacheIfAvailable
      *            use the cache.
      */
     private void callAction(final String actionKey, final Serializable request, final OnSuccessCommand successCommand,
-            final boolean useClientCacheIfAvailable)
+            final OnFailureCommand failureCommand, final boolean useClientCacheIfAvailable)
     {
         final BaseModel thisBuffered = this;
         ActionRequest<Serializable> serverRqst = new ActionRequestImpl<Serializable>(actionKey, request);
@@ -133,7 +187,11 @@ public abstract class BaseModel
                 cachedRequests.remove(actionKey);
                 cachedData.remove(actionKey);
 
-                if (caught instanceof ValidationException)
+                if (failureCommand != null)
+                {
+                    failureCommand.onFailure(caught);
+                }
+                else if (caught instanceof ValidationException)
                 {
                     Session.getInstance().getEventBus()
                             .notifyObservers(new ValidationExceptionResponseEvent((ValidationException) caught));
