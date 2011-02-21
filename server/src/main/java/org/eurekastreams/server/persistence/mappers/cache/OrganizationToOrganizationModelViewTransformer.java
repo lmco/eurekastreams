@@ -38,6 +38,8 @@ public class OrganizationToOrganizationModelViewTransformer implements Transform
         OrganizationModelView result = new OrganizationModelView();
 
         result.setShortName(inTransformType.getShortName());
+        result.setName(inTransformType.getName());
+        result.setEntityId(inTransformType.getId());
 
         return result;
     }

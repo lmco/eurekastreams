@@ -166,7 +166,7 @@ public class OrganizationProfilePanel extends FlowPanel
         profileSettingsLink = new Hyperlink("Configure", "");
         addSubOrgLink = new Hyperlink("", "");
         final Hyperlink addGroupLink = new Hyperlink("", Session.getInstance().generateUrl(
-                new CreateUrlRequest(Page.NEW_GROUP)));
+                new CreateUrlRequest(Page.NEW_GROUP, accountId)));
 
         ActionProcessor inProcessor = Session.getInstance().getActionProcessor();
 
@@ -258,9 +258,9 @@ public class OrganizationProfilePanel extends FlowPanel
                         {
 
                             profileSettingsLink.setTargetHistoryToken(Session.getInstance().generateUrl(
-                                    new CreateUrlRequest(Page.ORG_SETTINGS, inOrg.getShortName())));
+                                    new CreateUrlRequest(Page.ORG_SETTINGS, org.getShortName())));
                             addSubOrgLink.setTargetHistoryToken(Session.getInstance().generateUrl(
-                                    new CreateUrlRequest(Page.NEW_ORG)));
+                                    new CreateUrlRequest(Page.NEW_ORG, org.getShortName())));
 
                             profileSettingsLink.removeStyleName("hidden");
                             addSubOrgLink.removeStyleName("hidden");

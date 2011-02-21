@@ -20,8 +20,10 @@ import java.util.HashMap;
 import org.eurekastreams.server.domain.BackgroundItemType;
 import org.eurekastreams.server.domain.DomainFormatUtility;
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
@@ -32,8 +34,8 @@ import org.eurekastreams.web.client.events.data.UpdatedPersonalInformationRespon
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.PersonalInformationModel;
 import org.eurekastreams.web.client.ui.Session;
-import org.eurekastreams.web.client.ui.common.autocomplete.AutoCompleteDropDownPanel.ElementType;
 import org.eurekastreams.web.client.ui.common.autocomplete.AutoCompleteItemDropDownFormElement;
+import org.eurekastreams.web.client.ui.common.autocomplete.AutoCompleteDropDownPanel.ElementType;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder.Method;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicCheckBoxFormElement;
@@ -110,10 +112,21 @@ public class PersonalProfileSettingsTabContent extends Composite
                                         "resizePersonAvatar", EntityType.PERSON)));
                         form.addFormDivider();
 
+                        // create OrgModelView from groupParentOrg
+                        Organization parentOrg = person.getParentOrganization();
+                        OrganizationModelView parentOrgModelView = null;
+                        if (parentOrg != null)
+                        {
+                            parentOrgModelView = new OrganizationModelView();
+                            parentOrgModelView.setName(parentOrg.getName());
+                            parentOrgModelView.setShortName(parentOrg.getShortName());
+                            parentOrgModelView.setEntityId(parentOrg.getId());
+                        }
+
                         form.addFormElement(new OrgLookupFormElement("Organization Affiliation",
                                 "Primary Organization",
                                 "Select the organization that you are most closely associated with.",
-                                "parentOrganization", "", true, person.getParentOrganization(), false));
+                                "parentOrganization", "", true, parentOrgModelView, false));
                         form.addFormElement(new MultiOrgLookupFormElement("", "Secondary Organization(s)",
                                 "Select the other organization(s) you actively support.", "relatedOrganizations",
                                 "Secondary", false, person.getRelatedOrganizations()));
