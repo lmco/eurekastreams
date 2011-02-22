@@ -15,6 +15,9 @@
  */
 package org.eurekastreams.web.client.ui.pages.profile;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
 import org.eurekastreams.server.action.request.profile.GetRequestForGroupMembershipRequest;
@@ -22,6 +25,7 @@ import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.DomainGroupEntity;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
+import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.RestrictedDomainGroup;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
@@ -414,8 +418,16 @@ public class GroupProfilePanel extends FlowPanel
         connectionTabContent.addSet("Members", GroupMembersModel.getInstance(), memberRenderer,
                 new GetFollowersFollowingRequest(EntityType.GROUP, group.getShortName(), 0, 0));
 
+        // TODO-MIGRATION:
+        Set<PersonModelView> groupCoordinators = new HashSet<PersonModelView>();
+        for (Person p : group.getCoordinators())
+        {
+            groupCoordinators.add(p.toPersonModelView());
+        }
+        // END-MIGRATION
+
         connectionTabContent.addSet("Coordinators", GroupCoordinatorsModel.getInstance(), new PersonRenderer(false),
-                new GetGroupCoordinatorsRequest(group.getShortName(), group.getCoordinators()));
+                new GetGroupCoordinatorsRequest(group.getShortName(), groupCoordinators));
 
         return connectionTabContent;
     }

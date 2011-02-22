@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.server.domain.PagedSet;
-import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.data.GotGroupCoordinatorsResponseEvent;
 import org.eurekastreams.web.client.model.requests.GetGroupCoordinatorsRequest;
@@ -27,7 +26,7 @@ import org.eurekastreams.web.client.ui.Session;
 
 /**
  * Group Coordinators Model.
- *
+ * 
  */
 public class GroupCoordinatorsModel implements Fetchable<GetGroupCoordinatorsRequest>
 {
@@ -38,7 +37,7 @@ public class GroupCoordinatorsModel implements Fetchable<GetGroupCoordinatorsReq
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
     public static GroupCoordinatorsModel getInstance()
@@ -55,11 +54,11 @@ public class GroupCoordinatorsModel implements Fetchable<GetGroupCoordinatorsReq
         int count = 0;
 
         List<PersonModelView> peopleList = new ArrayList<PersonModelView>();
-        for (Person person : request.getCoordinators())
+        for (PersonModelView personMv : request.getCoordinators())
         {
             if (count >= request.getStartIndex() && count <= request.getEndIndex())
             {
-                peopleList.add(person.toPersonModelView());
+                peopleList.add(personMv);
             }
             count++;
         }
