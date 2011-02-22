@@ -47,7 +47,6 @@ import org.eurekastreams.web.client.model.PersonalBiographyModel;
 import org.eurekastreams.web.client.model.PersonalEducationModel;
 import org.eurekastreams.web.client.model.PersonalEmploymentModel;
 import org.eurekastreams.web.client.model.PersonalInformationModel;
-import org.eurekastreams.web.client.model.PersonalStreamSettingsModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LeftBarPanel;
 import org.eurekastreams.web.client.ui.common.pagedlist.GroupRenderer;
@@ -471,7 +470,6 @@ public class PersonalProfilePanel extends FlowPanel
         PersonalBiographyModel.getInstance().fetch(person.getAccountId(), true);
         PersonalEducationModel.getInstance().fetch(person.getId(), true);
         PersonalEmploymentModel.getInstance().fetch(person.getId(), true);
-        PersonalStreamSettingsModel.getInstance().fetch(person.getAccountId(), true);
         Session.getInstance().getActionProcessor().setQueueRequests(false);
         Session.getInstance().getActionProcessor().fireQueuedRequests();
     }
