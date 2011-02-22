@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.web.client.ui.pages.profile.settings;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.eurekastreams.commons.client.ActionProcessor;
@@ -24,6 +25,7 @@ import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
@@ -85,7 +87,7 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
 
     /**
      * Default constructor.
-     *
+     * 
      * @param orgName
      *            org.
      */
@@ -125,7 +127,7 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
 
     /**
      * Setter.
-     *
+     * 
      * @param entity
      *            the organization whose settings will be changed
      */
@@ -181,8 +183,15 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
 
         String leaderinstructions = "Add the organization's leaders "
                 + "in the order you would like them to appear on the profile.";
-        Set<Person> leaderList = entity.getLeaders();
-        leaderList = entity.getLeaders();
+
+        // TODO-MIGRATION
+        Set<PersonModelView> leaderList = new HashSet<PersonModelView>();
+        for (Person p : entity.getLeaders())
+        {
+            leaderList.add(p.toPersonModelView());
+        }
+        // END-MIGRATION
+
         form.addFormElement(new PersonLookupFormElement("Leadership", "Add Leader", leaderinstructions,
                 OrganizationModelView.LEADERSHIP_KEY, leaderList, false));
 
@@ -190,7 +199,15 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
 
         String coordinstructions = "The organization coordinators will be responsible "
                 + "for setting up the organization profile, setting org policy " + "and managing adoption campaigns.";
-        Set<Person> coordinatorList = entity.getCoordinators();
+
+        // TODO-MIGRATION
+        Set<PersonModelView> coordinatorList = new HashSet<PersonModelView>();
+        for (Person p : entity.getCoordinators())
+        {
+            coordinatorList.add(p.toPersonModelView());
+        }
+        // END-MIGRATION
+
         form.addFormElement(new PersonLookupFormElement("Organization Coordinators", "Add Coordinator",
                 coordinstructions, OrganizationModelView.COORDINATORS_KEY, coordinatorList, true));
 

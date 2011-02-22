@@ -16,6 +16,7 @@
 package org.eurekastreams.web.client.ui.pages.profile.settings;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.eurekastreams.commons.client.ActionRequestImpl;
@@ -28,6 +29,7 @@ import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SetBannerEvent;
@@ -235,9 +237,17 @@ public class GroupProfileSettingsTabContent extends FlowPanel
 
         String coordinstructions = "The group coordinators will be responsible for managing the organization profile, "
                 + "and moderating the group's activity stream";
-        Set<Person> coordinatorList = group.getCoordinators();
+
+        // TODO-MIGRATION:
+        Set<PersonModelView> groupCoordinators = new HashSet<PersonModelView>();
+        for (Person p : group.getCoordinators())
+        {
+            groupCoordinators.add(p.toPersonModelView());
+        }
+        // END-MIGRATION
+
         form.addFormElement(new PersonLookupFormElement("Group Coordinators", "Add Coordinator", coordinstructions,
-                DomainGroupModelView.COORDINATORS_KEY, coordinatorList, true));
+                DomainGroupModelView.COORDINATORS_KEY, groupCoordinators, true));
 
         form.addFormDivider();
 

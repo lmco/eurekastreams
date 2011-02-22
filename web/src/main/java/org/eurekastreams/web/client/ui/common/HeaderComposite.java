@@ -19,8 +19,8 @@ import java.util.HashMap;
 
 import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.modelview.AuthenticationType;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SwitchedHistoryViewEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * HeaderComposite draws the header bar for the user.
- *
+ * 
  */
 public class HeaderComposite extends Composite
 {
@@ -106,13 +106,14 @@ public class HeaderComposite extends Composite
                     }
                 }, true);
     }
+
     /**
      * Render the header.
-     *
+     * 
      * @param viewer
      *            - user to display.
      */
-    public void render(final Person viewer)
+    public void render(final PersonModelView viewer)
     {
         HorizontalULPanel userNav;
         FlowPanel panel = new FlowPanel();
@@ -139,7 +140,6 @@ public class HeaderComposite extends Composite
         myProfileLink.addStyleName("nav-bar-button");
         Hyperlink helpLink = new Hyperlink("Help", Session.getInstance().generateUrl(new CreateUrlRequest(Page.HELP)));
         helpLink.addStyleName("nav-bar-button");
-
 
         externalPageLinkPanel.add(externalLink);
         externalPageLinkPanel.addStyleName("external-header-button");
@@ -246,7 +246,7 @@ public class HeaderComposite extends Composite
 
     /**
      * Sets Site labeling.
-     *
+     * 
      * @param inTemplate
      *            HTML template content to insert in the footer.
      * @param inSiteLabel
@@ -261,7 +261,7 @@ public class HeaderComposite extends Composite
 
     /**
      * Set the top button as active.
-     *
+     * 
      * @param page
      *            the page to activate.
      */

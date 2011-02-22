@@ -18,8 +18,8 @@ package org.eurekastreams.web.client.ui.pages.profile.settings;
 import java.util.LinkedList;
 
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
@@ -157,12 +157,12 @@ public class CreateOrganizationPanel extends SettingsPanel
 
         form.addFormDivider();
 
-        Person currentPerson = Session.getInstance().getCurrentPerson();
+        PersonModelView currentPerson = Session.getInstance().getCurrentPerson();
 
         PersonLookupFormElement personLookupFormElement = new PersonLookupFormElement("Organization Coordinators",
                 "Add Coordinator",
                 "The organization coordinators will be responsible for setting up the organization profile and "
-                        + "policy.", OrganizationModelView.COORDINATORS_KEY, new LinkedList<Person>(), true);
+                        + "policy.", OrganizationModelView.COORDINATORS_KEY, new LinkedList<PersonModelView>(), true);
 
         personLookupFormElement.addPerson(currentPerson);
         form.addFormElement(personLookupFormElement);
