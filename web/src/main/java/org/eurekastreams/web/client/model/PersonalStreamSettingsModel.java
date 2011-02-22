@@ -27,7 +27,7 @@ import org.eurekastreams.web.client.ui.Session;
  * Represents the model for personal stream settings, used to drive personal stream settings tab.
  */
 public class PersonalStreamSettingsModel extends BaseModel implements Fetchable<String>,
-Updateable<HashMap<String, Serializable>>
+        Updateable<HashMap<String, Serializable>>
 {
     /**
      * Singleton.
@@ -36,7 +36,7 @@ Updateable<HashMap<String, Serializable>>
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
     public static PersonalStreamSettingsModel getInstance()
@@ -50,13 +50,13 @@ Updateable<HashMap<String, Serializable>>
     public void fetch(final String request, final boolean useClientCacheIfAvailable)
     {
         super.callReadAction("getPerson", request, new OnSuccessCommand<Person>()
-                {
-                    public void onSuccess(final Person response)
-                    {
-                        Session.getInstance().getEventBus().notifyObservers(
-                                new GotPersonalStreamSettingsResponseEvent(response));
-                    }
-                }, useClientCacheIfAvailable);
+        {
+            public void onSuccess(final Person response)
+            {
+                Session.getInstance().getEventBus().notifyObservers(
+                        new GotPersonalStreamSettingsResponseEvent(response));
+            }
+        }, useClientCacheIfAvailable);
     }
 
     /**
@@ -65,13 +65,13 @@ Updateable<HashMap<String, Serializable>>
     public void update(final HashMap<String, Serializable> request)
     {
         super.callWriteAction("updatePerson", request, new OnSuccessCommand<Person>()
-                {
-                    public void onSuccess(final Person response)
-                    {
-                        Session.getInstance().getEventBus().notifyObservers(
-                                new UpdatedPersonalStreamSettingsResponseEvent(response));
-                    }
-                });
+        {
+            public void onSuccess(final Person response)
+            {
+                Session.getInstance().getEventBus().notifyObservers(
+                        new UpdatedPersonalStreamSettingsResponseEvent(response));
+            }
+        });
 
         CustomStreamModel.getInstance().clearCache();
     }

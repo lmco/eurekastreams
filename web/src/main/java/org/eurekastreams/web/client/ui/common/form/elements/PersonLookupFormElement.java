@@ -18,11 +18,10 @@ package org.eurekastreams.web.client.ui.common.form.elements;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.ui.common.EditPanel;
-import org.eurekastreams.web.client.ui.common.EditPanel.Mode;
 import org.eurekastreams.web.client.ui.common.PersonPanel;
+import org.eurekastreams.web.client.ui.common.EditPanel.Mode;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.lookup.EmployeeLookupContent;
 
@@ -57,7 +56,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
     /**
      * Collection of looked-up people.
      */
-    private final HashSet<Person> persons = new HashSet<Person>();
+    private final HashSet<PersonModelView> persons = new HashSet<PersonModelView>();
 
     /**
      * The label.
@@ -66,7 +65,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Constructor.
-     *
+     * 
      * @param inTitle
      *            title for the dialog
      * @param inLookupText
@@ -81,7 +80,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
      *            whether this element represents required data
      */
     public PersonLookupFormElement(final String inTitle, final String inLookupText, final String inInstructions,
-            final String inKey, final Collection<Person> inPersons, final boolean inRequired)
+            final String inKey, final Collection<PersonModelView> inPersons, final boolean inRequired)
     {
         this.addStyleName("person-lookup-form-element");
         // persons will get populated below using the addPersonMethod()
@@ -121,7 +120,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
         this.add(resultPanel);
         this.add(lookup);
 
-        for (Person person : inPersons)
+        for (PersonModelView person : inPersons)
         {
             addPerson(person);
         }
@@ -129,11 +128,11 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Add a person looked up in the modal to the display.
-     *
+     * 
      * @param inPerson
      *            the newly looked-up person
      */
-    public void addPerson(final Person inPerson)
+    public void addPerson(final PersonModelView inPerson)
     {
         if (!persons.contains(inPerson))
         {
@@ -143,7 +142,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
             EditPanel editPanel = new EditPanel(personContainer, Mode.DELETE);
             personContainer.add(editPanel);
 
-            final PersonPanel personPanel = new PersonPanel(inPerson.toPersonModelView(), false, false, false, true);
+            final PersonPanel personPanel = new PersonPanel(inPerson, false, false, false, true);
 
             personContainer.add(personPanel);
             persons.add(inPerson);
@@ -161,13 +160,13 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Remove a person from the display panel.
-     *
+     * 
      * @param personToBeRemoved
      *            the person object
      * @param panelToBeRemoved
      *            the display panel
      */
-    private void removePerson(final Person personToBeRemoved, final FlowPanel panelToBeRemoved)
+    private void removePerson(final PersonModelView personToBeRemoved, final FlowPanel panelToBeRemoved)
     {
         resultPanel.remove(panelToBeRemoved);
         persons.remove(personToBeRemoved);
@@ -175,7 +174,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Get the save command object.
-     *
+     * 
      * @return the save command
      */
     private Command getSaveCommand()
@@ -185,14 +184,14 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
             public void execute()
             {
                 PersonModelView result = dialogContent.getPerson();
-                addPerson(new Person(result));
+                addPerson(result);
             }
         };
     }
 
     /**
      * Getter.
-     *
+     * 
      * @return the key
      */
     public String getKey()
@@ -202,17 +201,17 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Returns the collection of Persons who were selected.
-     *
+     * 
      * @return the collection
      */
-    public HashSet<Person> getValue()
+    public HashSet<PersonModelView> getValue()
     {
         return persons;
     }
 
     /**
      * Gets called if this element has an error.
-     *
+     * 
      * @param errMessage
      *            the error Message.
      */

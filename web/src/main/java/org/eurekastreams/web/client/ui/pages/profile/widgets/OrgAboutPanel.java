@@ -30,8 +30,16 @@ public class OrgAboutPanel extends FlowPanel
     /**
      * Constructor.
      * 
-     * @param subject
-     *            the organization being described.
+     * @param inOrgName
+     *            Org Name.
+     * @param inOrgEntityId
+     *            Org id.
+     * @param inAvatarId
+     *            Avatar id.
+     * @param inOrgUrl
+     *            Org url.
+     * @param inOrgDescription
+     *            Org description.
      */
     public OrgAboutPanel(final String inOrgName, final long inOrgEntityId, final String inAvatarId,
             final String inOrgUrl, final String inOrgDescription)

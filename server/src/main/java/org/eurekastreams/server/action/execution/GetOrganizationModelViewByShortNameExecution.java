@@ -74,6 +74,14 @@ public class GetOrganizationModelViewByShortNameExecution implements ExecutionSt
      *            {@link GetOrganizationsByShortNames}.
      * @param inRootOrgNameMapper
      *            {@link GetRootOrganizationIdAndShortName}.
+     * @param inOrgLeaderIdsMapper
+     *            Get org leader ids for an org.
+     * @param inOrgCoordinatorIdsMapper
+     *            Get org coordinator ids for an org.
+     * @param inPersonModelViewsByIdMapper
+     *            Get PersonModelViews by id.
+     * @param inGetBannerIdStrategy
+     *            Mapper to retrieve the banner id if it is not directly configured.
      */
     public GetOrganizationModelViewByShortNameExecution(final GetOrganizationsByShortNames inMapper,
             final GetRootOrganizationIdAndShortName inRootOrgNameMapper,

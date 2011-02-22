@@ -632,6 +632,8 @@ public class OrganizationModelView extends ModelView implements Serializable, Ba
 
     /**
      * Needed for avatarEntity interface.
+     * 
+     * @return entity id.
      */
     @Override
     public long getId()

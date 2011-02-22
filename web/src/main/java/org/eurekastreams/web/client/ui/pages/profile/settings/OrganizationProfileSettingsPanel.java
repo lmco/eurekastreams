@@ -182,6 +182,7 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
 
         String leaderinstructions = "Add the organization's leaders "
                 + "in the order you would like them to appear on the profile.";
+
         Set<PersonModelView> leaderList = new HashSet<PersonModelView>(entity.getLeaders());
         form.addFormElement(new PersonModelViewLookupFormElement("Leadership", "Add Leader", leaderinstructions,
                 OrganizationModelView.LEADERSHIP_KEY, leaderList, false));
@@ -190,6 +191,7 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
 
         String coordinstructions = "The organization coordinators will be responsible "
                 + "for setting up the organization profile, setting org policy " + "and managing adoption campaigns.";
+
         Set<PersonModelView> coordinatorList = new HashSet<PersonModelView>(entity.getCoordinators());
         form.addFormElement(new PersonModelViewLookupFormElement("Organization Coordinators", "Add Coordinator",
                 coordinstructions, OrganizationModelView.COORDINATORS_KEY, coordinatorList, true));

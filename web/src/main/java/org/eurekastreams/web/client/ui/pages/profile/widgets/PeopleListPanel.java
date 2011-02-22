@@ -108,10 +108,8 @@ public class PeopleListPanel extends FlowPanel
      *            the title to be displayed above the people
      * @param maxDisplayed
      *            the maximum number of people to display
-     * @param urlRequest
-     *            the url to go to.
-     * @param filterReq
-     *            the view of the connection tab to go to.
+     * @param bogus
+     *            not used.
      */
     public PeopleListPanel(final Set<PersonModelView> people, final String title, final int maxDisplayed,
             final Long bogus)

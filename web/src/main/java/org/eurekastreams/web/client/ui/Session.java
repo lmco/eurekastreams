@@ -21,8 +21,8 @@ import java.util.Set;
 
 import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.modelview.AuthenticationType;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.InsertOptOutVideoResponseEvent;
@@ -50,7 +50,6 @@ public class Session
      */
     private static HistoryHandler history = null;
 
-
     /**
      * Current person's roles.
      */
@@ -59,7 +58,7 @@ public class Session
     /**
      * Current person.
      */
-    private static Person currentPerson = null;
+    private static PersonModelView currentPerson = null;
 
     /**
      * Authentication type.
@@ -93,19 +92,19 @@ public class Session
     {
         EventBus.getInstance().addObserver(InsertOptOutVideoResponseEvent.class,
                 new Observer<InsertOptOutVideoResponseEvent>()
-        {
-            public void update(final InsertOptOutVideoResponseEvent insertVideoResponse)
-            {
-                HashSet<Long> videoList = currentPerson.getOptOutVideos();
-                videoList.add(insertVideoResponse.getResponse());
-                currentPerson.setOptOutVideos(videoList);
-            }
-        });
+                {
+                    public void update(final InsertOptOutVideoResponseEvent insertVideoResponse)
+                    {
+                        HashSet<Long> videoList = currentPerson.getOptOutVideos();
+                        videoList.add(insertVideoResponse.getResponse());
+                        currentPerson.setOptOutVideos(videoList);
+                    }
+                });
     }
 
     /**
      * Get the instance of the session.
-     *
+     * 
      * @return the session.
      */
     public static Session getInstance()
@@ -120,7 +119,7 @@ public class Session
 
     /**
      * Sets the instance of the session for unit testing.
-     *
+     * 
      * @param inInstance
      *            New instance.
      */
@@ -131,28 +130,28 @@ public class Session
 
     /**
      * Set the current person.
-     *
+     * 
      * @param inCurrentPerson
      *            the current person.
      */
-    public void setCurrentPerson(final Person inCurrentPerson)
+    public void setCurrentPerson(final PersonModelView inCurrentPerson)
     {
         currentPerson = inCurrentPerson;
     }
 
     /**
      * Get the current person.
-     *
+     * 
      * @return the current person.
      */
-    public Person getCurrentPerson()
+    public PersonModelView getCurrentPerson()
     {
         return currentPerson;
     }
 
     /**
      * Set the current persons roles.
-     *
+     * 
      * @param inRoles
      *            the roles.
      */
@@ -163,7 +162,7 @@ public class Session
 
     /**
      * Get the current persons roles.
-     *
+     * 
      * @return the roles.
      */
     public Set<Role> getCurrentPersonRoles()
@@ -207,12 +206,14 @@ public class Session
 
     /**
      * Get the timer.
+     * 
      * @return the timer.
      */
     public Timer getTimer()
     {
         return timer;
     }
+
     /**
      * @return the authenticationType
      */
@@ -232,7 +233,7 @@ public class Session
 
     /**
      * Set history handler.
-     *
+     * 
      * @param inHistory
      *            history handler.
      */
@@ -243,7 +244,7 @@ public class Session
 
     /**
      * Get a url.
-     *
+     * 
      * @param request
      *            request.
      * @return the url.
@@ -254,11 +255,11 @@ public class Session
     }
 
     /**
-     * Get the value of a current parameter.
-     * NOTE: Do NOT use this to "monitor" the history param, only to grab
-     * a one time instance of it. Use the UpdatedHistoryParametersEvent to
-     * listen to a parameter.
-     * @param key the key.
+     * Get the value of a current parameter. NOTE: Do NOT use this to "monitor" the history param, only to grab a one
+     * time instance of it. Use the UpdatedHistoryParametersEvent to listen to a parameter.
+     * 
+     * @param key
+     *            the key.
      * @return the value.
      */
     public String getParameterValue(final String key)
@@ -276,7 +277,7 @@ public class Session
 
     /**
      * Get the current views.
-     *
+     * 
      * @return the views.
      */
     public List<String> getUrlViews()
@@ -303,6 +304,7 @@ public class Session
 
     /**
      * Get the logger.
+     * 
      * @return the logger.
      */
     public Log getLogger()

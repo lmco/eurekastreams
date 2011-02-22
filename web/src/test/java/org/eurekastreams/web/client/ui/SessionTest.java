@@ -20,8 +20,8 @@ import static org.junit.Assert.assertSame;
 import junit.framework.Assert;
 
 import org.eurekastreams.commons.client.ActionProcessor;
-import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.modelview.AuthenticationType;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -79,7 +79,7 @@ public class SessionTest
     @Test
     public final void currentPersonPropertyTest()
     {
-        Person person = context.mock(Person.class);
+        PersonModelView person = context.mock(PersonModelView.class);
 
         sut.setCurrentPerson(person);
 
@@ -92,13 +92,13 @@ public class SessionTest
     @Test
     public final void authenticationTypeTest()
     {
-        //verify default value
+        // verify default value
         assertEquals(AuthenticationType.NOTSET, sut.getAuthenticationType());
 
-        //set new value
+        // set new value
         sut.setAuthenticationType(AuthenticationType.FORM);
 
-        //verify new value
+        // verify new value
         assertEquals(AuthenticationType.FORM, sut.getAuthenticationType());
     }
 

@@ -19,9 +19,9 @@ import java.io.Serializable;
 import java.util.HashSet;
 
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SaveSelectedOrgEvent;
@@ -135,13 +135,13 @@ public class CreateGroupPanel extends SettingsPanel
         this.clearContentPanel();
         this.setPreviousPage(new CreateUrlRequest(Page.ORGANIZATIONS, parentOrg.getShortName()), "< Return to Profile");
 
-        Person currentPerson = Session.getInstance().getCurrentPerson();
+        PersonModelView currentPerson = Session.getInstance().getCurrentPerson();
         String coordinstructions = "The group coordinators"
                 + " will be responsible for setting up the group profile, setting group permissions, "
                 + "and managing group access";
         PersonLookupFormElement personLookupFormElement = new PersonLookupFormElement("Group Coordinators",
-                "Add Coordinator", coordinstructions, DomainGroupModelView.COORDINATORS_KEY, new HashSet<Person>(),
-                true);
+                "Add Coordinator", coordinstructions, DomainGroupModelView.COORDINATORS_KEY,
+                new HashSet<PersonModelView>(), true);
 
         personLookupFormElement.addPerson(currentPerson);
 

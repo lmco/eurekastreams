@@ -19,18 +19,18 @@ import java.io.Serializable;
 import java.util.Set;
 
 import org.eurekastreams.server.action.request.PageableRequest;
-import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Get Group Coordinators Request.
- *
+ * 
  */
 public class GetGroupCoordinatorsRequest implements Serializable, PageableRequest
 {
     /**
      * Coordinators.
      */
-    private Set<Person> coordinators;
+    private Set<PersonModelView> coordinators;
     /**
      * Start index.
      */
@@ -46,10 +46,13 @@ public class GetGroupCoordinatorsRequest implements Serializable, PageableReques
 
     /**
      * Default constructor.
-     * @param inGroupShortName group short name,
-     * @param inCoordinators coordinators.
+     * 
+     * @param inGroupShortName
+     *            group short name,
+     * @param inCoordinators
+     *            coordinators.
      */
-    public GetGroupCoordinatorsRequest(final String inGroupShortName, final Set<Person> inCoordinators)
+    public GetGroupCoordinatorsRequest(final String inGroupShortName, final Set<PersonModelView> inCoordinators)
     {
         groupShortName = inGroupShortName;
         coordinators = inCoordinators;
@@ -57,15 +60,17 @@ public class GetGroupCoordinatorsRequest implements Serializable, PageableReques
 
     /**
      * Get coordinators.
+     * 
      * @return coordinators.
      */
-    public Set<Person> getCoordinators()
+    public Set<PersonModelView> getCoordinators()
     {
         return coordinators;
     }
 
     /**
      * Get group short name.
+     * 
      * @return group short name.
      */
     public String getGroupShortName()
@@ -75,6 +80,7 @@ public class GetGroupCoordinatorsRequest implements Serializable, PageableReques
 
     /**
      * Get end index.
+     * 
      * @return index.
      */
     public Integer getEndIndex()
@@ -84,6 +90,7 @@ public class GetGroupCoordinatorsRequest implements Serializable, PageableReques
 
     /**
      * Get start index.
+     * 
      * @return index.
      */
     public Integer getStartIndex()
@@ -93,7 +100,9 @@ public class GetGroupCoordinatorsRequest implements Serializable, PageableReques
 
     /**
      * Set end index.
-     * @param inEndIndex the end index.
+     * 
+     * @param inEndIndex
+     *            the end index.
      */
     public void setEndIndex(final Integer inEndIndex)
     {
@@ -102,7 +111,9 @@ public class GetGroupCoordinatorsRequest implements Serializable, PageableReques
 
     /**
      * Set start index.
-     * @param inStartIndex the start index.
+     * 
+     * @param inStartIndex
+     *            the start index.
      */
     public void setStartIndex(final Integer inStartIndex)
     {
