@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.SwitchToFilterOnPagedFilterPanelEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
@@ -43,7 +44,7 @@ public class PeopleListPanel extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param people
      *            the Person records to display
      * @param title
@@ -100,7 +101,50 @@ public class PeopleListPanel extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
+     * @param people
+     *            the Person records to display
+     * @param title
+     *            the title to be displayed above the people
+     * @param maxDisplayed
+     *            the maximum number of people to display
+     * @param urlRequest
+     *            the url to go to.
+     * @param filterReq
+     *            the view of the connection tab to go to.
+     */
+    public PeopleListPanel(final Set<PersonModelView> people, final String title, final int maxDisplayed,
+            final Long bogus)
+    {
+        if (people.size() > 0)
+        {
+            int cap = (maxDisplayed == DISPLAY_ALL) ? people.size() : maxDisplayed;
+            Label leadership = new Label(title);
+            leadership.addStyleName("profile-subheader");
+            this.add(leadership);
+
+            PersonPanel personPanel;
+            int i = 0;
+            Iterator<PersonModelView> iter = people.iterator();
+            while (iter.hasNext() && i < cap)
+            {
+                personPanel = new PersonPanel(iter.next(), false, true);
+                this.add(personPanel);
+                i++;
+            }
+
+            if (i < people.size())
+            {
+                Anchor moreLabel = new Anchor(Integer.toString(people.size() - i) + " more");
+                moreLabel.addStyleName("profile-more-people-link");
+                this.add(moreLabel);
+            }
+        }
+    }
+
+    /**
+     * Constructor.
+     * 
      * @param people
      *            the Person records to display
      * @param title

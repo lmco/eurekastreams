@@ -20,9 +20,10 @@ import org.eurekastreams.server.domain.Bannerable;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Organization;
+import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.web.client.events.ClearUploadedImageEvent;
-import org.eurekastreams.web.client.events.ClearUploadedImageEvent.ImageType;
 import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.ClearUploadedImageEvent.ImageType;
 import org.eurekastreams.web.client.events.data.BaseDataResponseEvent;
 import org.eurekastreams.web.client.events.data.DeleteGroupBannerResponseEvent;
 import org.eurekastreams.web.client.events.data.DeleteOrganizationBannerResponseEvent;
@@ -36,7 +37,7 @@ import com.google.gwt.user.client.ui.Image;
 
 /**
  * Banner uploadStratagy.
- *
+ * 
  * @param <T>
  *            The Type of the Bannerable Entity.
  */
@@ -64,19 +65,19 @@ public class BannerUploadStrategy<T extends Bannerable> implements ImageUploadSt
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inEntity
      *            the entity.
      * @param inEntityId
-     *          id of the entity to upload the banner for.
+     *            id of the entity to upload the banner for.
      */
     public BannerUploadStrategy(final T inEntity, final Long inEntityId)
     {
-        //TODO:Once the profile pages are entirely split from the domain models, refactor this to use DTO's correctly.
+        // TODO:Once the profile pages are entirely split from the domain models, refactor this to use DTO's correctly.
         entity = inEntity;
         entityId = inEntityId;
 
-        if (entity.getClass() == Organization.class)
+        if (entity.getClass() == Organization.class || entity.getClass() == OrganizationModelView.class)
         {
             entityType = EntityType.ORGANIZATION;
             deleteAction = OrganizationBannerModel.getInstance();
@@ -87,20 +88,19 @@ public class BannerUploadStrategy<T extends Bannerable> implements ImageUploadSt
             deleteAction = GroupBannerModel.getInstance();
         }
 
-        Session.getInstance().getEventBus().addObservers(
-                new Observer<BaseDataResponseEvent<Bannerable>>()
-                {
-                    public void update(final BaseDataResponseEvent<Bannerable> arg1)
-                    {
-                        Session.getInstance().getEventBus().notifyObservers(
-                                new ClearUploadedImageEvent(entityType, ImageType.BANNER, arg1.getResponse()));
-                    }
-                }, DeleteGroupBannerResponseEvent.class, DeleteOrganizationBannerResponseEvent.class);
+        Session.getInstance().getEventBus().addObservers(new Observer<BaseDataResponseEvent<Bannerable>>()
+        {
+            public void update(final BaseDataResponseEvent<Bannerable> arg1)
+            {
+                Session.getInstance().getEventBus().notifyObservers(
+                        new ClearUploadedImageEvent(entityType, ImageType.BANNER, arg1.getResponse()));
+            }
+        }, DeleteGroupBannerResponseEvent.class, DeleteOrganizationBannerResponseEvent.class);
     }
 
     /**
      * Gets the crop size.
-     *
+     * 
      * @return the crop size.
      */
     public Integer getCropSize()
@@ -110,7 +110,7 @@ public class BannerUploadStrategy<T extends Bannerable> implements ImageUploadSt
 
     /**
      * Gets the id of the entity.
-     *
+     * 
      * @return the id.
      */
     public Long getId()
@@ -120,7 +120,7 @@ public class BannerUploadStrategy<T extends Bannerable> implements ImageUploadSt
 
     /**
      * Gets the image id.
-     *
+     * 
      * @return the image id.
      */
     public String getImageId()
@@ -130,7 +130,7 @@ public class BannerUploadStrategy<T extends Bannerable> implements ImageUploadSt
 
     /**
      * gets the crop X.
-     *
+     * 
      * @return the X.
      */
     public Integer getX()
@@ -140,7 +140,7 @@ public class BannerUploadStrategy<T extends Bannerable> implements ImageUploadSt
 
     /**
      * gets the crop Y.
-     *
+     * 
      * @return the crop y.
      */
     public Integer getY()
@@ -150,7 +150,7 @@ public class BannerUploadStrategy<T extends Bannerable> implements ImageUploadSt
 
     /**
      * Gets whether or not the strategy is resizable.
-     *
+     * 
      * @return the value.
      */
     public Boolean isResizable()
@@ -160,7 +160,7 @@ public class BannerUploadStrategy<T extends Bannerable> implements ImageUploadSt
 
     /**
      * sets the crop size.
-     *
+     * 
      * @param size
      *            the crop size.
      */
@@ -171,7 +171,7 @@ public class BannerUploadStrategy<T extends Bannerable> implements ImageUploadSt
 
     /**
      * Sets the X coord of the image crop.
-     *
+     * 
      * @param x
      *            the x coord.
      */
@@ -182,7 +182,7 @@ public class BannerUploadStrategy<T extends Bannerable> implements ImageUploadSt
 
     /**
      * Sets the y coord of the image crop.
-     *
+     * 
      * @param y
      *            the y coord.
      */
@@ -193,7 +193,7 @@ public class BannerUploadStrategy<T extends Bannerable> implements ImageUploadSt
 
     /**
      * Gets the image.
-     *
+     * 
      * @param imageId
      *            the image id.
      * @return the image.
@@ -210,7 +210,7 @@ public class BannerUploadStrategy<T extends Bannerable> implements ImageUploadSt
 
     /**
      * Gets the params to send to the delete action.
-     *
+     * 
      * @return the params.
      */
     public Long getDeleteParam()
@@ -220,7 +220,7 @@ public class BannerUploadStrategy<T extends Bannerable> implements ImageUploadSt
 
     /**
      * Gets the delete action key.
-     *
+     * 
      * @return the delete action key.
      */
     public Deletable getDeleteAction()
@@ -230,23 +230,27 @@ public class BannerUploadStrategy<T extends Bannerable> implements ImageUploadSt
 
     /**
      * Gets the resize action key. There is no resize action for Banner,
-     *
+     * 
      * @return Returns a blank String.
      */
     public String getResizeAction()
     {
         return "";
     }
+
     /**
      * Get the entity type.
+     * 
      * @return the entity type.
      */
     public EntityType getEntityType()
     {
         return entityType;
     }
+
     /**
      * Get the image type.
+     * 
      * @return the image type.
      */
     public ImageType getImageType()

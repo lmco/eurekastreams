@@ -119,7 +119,7 @@ public class CreateGroupPanel extends SettingsPanel
                     }
                 });
 
-        OrganizationModel.getInstance().fetchModelView(parentOrgShortName, true);
+        OrganizationModel.getInstance().fetch(parentOrgShortName, true);
     }
 
     /**

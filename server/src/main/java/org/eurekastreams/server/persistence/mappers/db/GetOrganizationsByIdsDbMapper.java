@@ -37,7 +37,7 @@ public class GetOrganizationsByIdsDbMapper extends BaseArgDomainMapper<List<Long
     /**
      * Looks in cache for the necessary DTOs and returns them if found. Otherwise, makes a database call, puts them in
      * cache, and returns them.
-     *
+     * 
      * @param ids
      *            the list of ids that should be found.
      * @return list of DTO objects.
@@ -62,10 +62,15 @@ public class GetOrganizationsByIdsDbMapper extends BaseArgDomainMapper<List<Long
         fields.add(getColumn("descendantEmployeeCount"));
         fields.add(Projections.property("employeeFollowerCount").as("followersCount"));
         fields.add(getColumn("updatesCount"));
-        fields.add(getColumn("avatarId"));
         fields.add(getColumn("overview"));
         fields.add(Projections.property("stream.id").as("streamId"));
         fields.add(getColumn("bannerId"));
+        fields.add(getColumn("url"));
+        fields.add(getColumn("allUsersCanCreateGroups"));
+        fields.add(getColumn("avatarId"));
+        fields.add(getColumn("avatarCropSize"));
+        fields.add(getColumn("avatarCropX"));
+        fields.add(getColumn("avatarCropY"));
         criteria.setProjection(fields);
 
         criteria.createAlias("streamScope", "stream");

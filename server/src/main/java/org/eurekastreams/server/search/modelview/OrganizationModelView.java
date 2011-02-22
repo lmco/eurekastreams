@@ -16,14 +16,17 @@
 package org.eurekastreams.server.search.modelview;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 import org.eurekastreams.commons.search.modelview.ModelView;
+import org.eurekastreams.server.domain.AvatarEntity;
+import org.eurekastreams.server.domain.Bannerable;
 
 /**
  * A lightweight view of an Organization containing everything needed for display of a search result of an Organization.
  */
-public class OrganizationModelView extends ModelView implements Serializable
+public class OrganizationModelView extends ModelView implements Serializable, Bannerable, AvatarEntity
 {
     /** Fingerprint. */
     private static final long serialVersionUID = -802463140572809635L;
@@ -81,6 +84,11 @@ public class OrganizationModelView extends ModelView implements Serializable
     private String description = UNINITIALIZED_STRING_VALUE;
 
     /**
+     * The organization url.
+     */
+    private String url = UNINITIALIZED_STRING_VALUE;
+
+    /**
      * The number of followers for this organization.
      */
     private int followersCount = UNINITIALIZED_INTEGER_VALUE;
@@ -116,6 +124,21 @@ public class OrganizationModelView extends ModelView implements Serializable
     private String avatarId = UNINITIALIZED_STRING_VALUE;
 
     /**
+     * Avatar crop size.
+     */
+    private Integer avatarCropSize = null;
+
+    /**
+     * Avatar crop value x.
+     */
+    private Integer avatarCropX = null;
+
+    /**
+     * Avatar crop value y.
+     */
+    private Integer avatarCropY = null;
+
+    /**
      * The org's overview.
      */
     private String overview;
@@ -131,8 +154,28 @@ public class OrganizationModelView extends ModelView implements Serializable
     private String bannerId = UNINITIALIZED_STRING_VALUE;
 
     /**
+     * Banner entityId.
+     */
+    private Long bannerEntityId = UNINITIALIZED_LONG_VALUE;
+
+    /**
+     * create groups flag.
+     */
+    private boolean allUsersCanCreateGroups;
+
+    /**
+     * Org leader personModelViews.
+     */
+    private List<PersonModelView> leaders;
+
+    /**
+     * Org coordinator personModelViews.
+     */
+    private List<PersonModelView> coordinators;
+
+    /**
      * Get the name of this entity.
-     *
+     * 
      * @return the name of this entity
      */
     @Override
@@ -143,7 +186,7 @@ public class OrganizationModelView extends ModelView implements Serializable
 
     /**
      * Load this object's properties from the input Map.
-     *
+     * 
      * @param properties
      *            the Map of the properties to load
      */
@@ -160,6 +203,10 @@ public class OrganizationModelView extends ModelView implements Serializable
         if (properties.containsKey("description"))
         {
             setDescription((String) properties.get("description"));
+        }
+        if (properties.containsKey("url"))
+        {
+            setUrl((String) properties.get("url"));
         }
         if (properties.containsKey("followersCount"))
         {
@@ -189,6 +236,18 @@ public class OrganizationModelView extends ModelView implements Serializable
         {
             setAvatarId(((String) properties.get("avatarId")));
         }
+        if (properties.containsKey("avatarCropSize"))
+        {
+            setAvatarCropSize((Integer) properties.get("avatarCropSize"));
+        }
+        if (properties.containsKey("avatarCropX"))
+        {
+            setAvatarCropX((Integer) properties.get("avatarCropX"));
+        }
+        if (properties.containsKey("avatarCropY"))
+        {
+            setAvatarCropY((Integer) properties.get("avatarCropY"));
+        }
         if (properties.containsKey("overview"))
         {
             setOverview((String) properties.get("overview"));
@@ -205,6 +264,11 @@ public class OrganizationModelView extends ModelView implements Serializable
         {
             setBannerId((String) properties.get("bannerId"));
         }
+        if (properties.containsKey("allUsersCanCreateGroups"))
+        {
+            setAllUsersCanCreateGroups((Boolean) properties.get("allUsersCanCreateGroups"));
+        }
+
     }
 
     /**
@@ -226,7 +290,7 @@ public class OrganizationModelView extends ModelView implements Serializable
 
     /**
      * Get the name of the organization.
-     *
+     * 
      * @return the name of the organization
      */
     public String getName()
@@ -236,7 +300,7 @@ public class OrganizationModelView extends ModelView implements Serializable
 
     /**
      * Set the name of the organization.
-     *
+     * 
      * @param inName
      *            the name to set
      */
@@ -247,7 +311,7 @@ public class OrganizationModelView extends ModelView implements Serializable
 
     /**
      * Get the description of the organization.
-     *
+     * 
      * @return the description
      */
     public String getDescription()
@@ -257,7 +321,7 @@ public class OrganizationModelView extends ModelView implements Serializable
 
     /**
      * Set the description of the organization.
-     *
+     * 
      * @param inDescription
      *            the description to set
      */
@@ -268,7 +332,7 @@ public class OrganizationModelView extends ModelView implements Serializable
 
     /**
      * Get the follower count.
-     *
+     * 
      * @return the followersCount
      */
     public int getFollowersCount()
@@ -278,7 +342,7 @@ public class OrganizationModelView extends ModelView implements Serializable
 
     /**
      * Set the follower count.
-     *
+     * 
      * @param inFollowersCount
      *            the followersCount to set
      */
@@ -289,7 +353,7 @@ public class OrganizationModelView extends ModelView implements Serializable
 
     /**
      * Get the shortname.
-     *
+     * 
      * @return the shortname.
      */
     public String getShortName()
@@ -299,7 +363,7 @@ public class OrganizationModelView extends ModelView implements Serializable
 
     /**
      * Set the shortname.
-     *
+     * 
      * @param inShortName
      *            the shortname.
      */
@@ -310,7 +374,7 @@ public class OrganizationModelView extends ModelView implements Serializable
 
     /**
      * Get the recursive employee count.
-     *
+     * 
      * @return the employeeCount
      */
     public int getDescendantEmployeeCount()
@@ -320,7 +384,7 @@ public class OrganizationModelView extends ModelView implements Serializable
 
     /**
      * Set the recursive employee count.
-     *
+     * 
      * @param inEmployeesCount
      *            the employeeCount to set
      */
@@ -331,7 +395,7 @@ public class OrganizationModelView extends ModelView implements Serializable
 
     /**
      * Get the recursive group count.
-     *
+     * 
      * @return the groupCount
      */
     public int getDescendantGroupCount()
@@ -341,7 +405,7 @@ public class OrganizationModelView extends ModelView implements Serializable
 
     /**
      * Set the recursive group count.
-     *
+     * 
      * @param inGroupsCount
      *            the groupCount to set
      */
@@ -352,7 +416,7 @@ public class OrganizationModelView extends ModelView implements Serializable
 
     /**
      * Get the organization count (non-recursive).
-     *
+     * 
      * @return the organizationCount
      */
     public int getChildOrganizationCount()
@@ -362,7 +426,7 @@ public class OrganizationModelView extends ModelView implements Serializable
 
     /**
      * Set the organization count (non-recursive).
-     *
+     * 
      * @param inOrganizationsCount
      *            the organizationCount to set
      */
@@ -372,29 +436,8 @@ public class OrganizationModelView extends ModelView implements Serializable
     }
 
     /**
-     * Get the org's avatar id.
-     *
-     * @return the avatarId
-     */
-    public String getAvatarId()
-    {
-        return avatarId;
-    }
-
-    /**
-     * Set the org's avatar id.
-     *
-     * @param inAvatarId
-     *            the avatarId to set
-     */
-    public void setAvatarId(final String inAvatarId)
-    {
-        avatarId = inAvatarId;
-    }
-
-    /**
      * Get the number of updates for this org.
-     *
+     * 
      * @return the updatesCount
      */
     public int getUpdatesCount()
@@ -404,7 +447,7 @@ public class OrganizationModelView extends ModelView implements Serializable
 
     /**
      * Set the number of updates for this org.
-     *
+     * 
      * @param inUpdatesCount
      *            the updatesCount to set
      */
@@ -415,7 +458,7 @@ public class OrganizationModelView extends ModelView implements Serializable
 
     /**
      * Set the entity id.
-     *
+     * 
      * @param inEntityId
      *            the entity id of the organization.
      */
@@ -461,8 +504,25 @@ public class OrganizationModelView extends ModelView implements Serializable
     }
 
     /**
+     * @return the leaders
+     */
+    public List<PersonModelView> getLeaders()
+    {
+        return leaders;
+    }
+
+    /**
+     * @param inLeaders
+     *            the leaders to set
+     */
+    public void setLeaders(final List<PersonModelView> inLeaders)
+    {
+        leaders = inLeaders;
+    }
+
+    /**
      * Get the organization banner id.
-     *
+     * 
      * @return the organization banner id
      */
     public String getBannerId()
@@ -472,7 +532,7 @@ public class OrganizationModelView extends ModelView implements Serializable
 
     /**
      * Set the organization banner id.
-     *
+     * 
      * @param inBannerId
      *            the banner id to set
      */
@@ -480,4 +540,154 @@ public class OrganizationModelView extends ModelView implements Serializable
     {
         bannerId = inBannerId;
     }
+
+    /**
+     * @return the bannerEntityId
+     */
+    public Long getBannerEntityId()
+    {
+        return bannerEntityId;
+    }
+
+    /**
+     * @param inBannerEntityId
+     *            the bannerEntityId to set
+     */
+    public void setBannerEntityId(final Long inBannerEntityId)
+    {
+        bannerEntityId = inBannerEntityId;
+    }
+
+    /**
+     * @return the url
+     */
+    public String getUrl()
+    {
+        return url;
+    }
+
+    /**
+     * @param inUrl
+     *            the url to set
+     */
+    public void setUrl(final String inUrl)
+    {
+        url = inUrl;
+    }
+
+    /**
+     * @return the coordinators
+     */
+    public List<PersonModelView> getCoordinators()
+    {
+        return coordinators;
+    }
+
+    /**
+     * @param inCoordinators
+     *            the coordinators to set
+     */
+    public void setCoordinators(final List<PersonModelView> inCoordinators)
+    {
+        coordinators = inCoordinators;
+    }
+
+    /**
+     * @return the allUsersCanCreateGroups
+     */
+    public boolean getAllUsersCanCreateGroups()
+    {
+        return allUsersCanCreateGroups;
+    }
+
+    /**
+     * @param inAllUsersCanCreateGroups
+     *            the allUsersCanCreateGroups to set
+     */
+    public void setAllUsersCanCreateGroups(final boolean inAllUsersCanCreateGroups)
+    {
+        allUsersCanCreateGroups = inAllUsersCanCreateGroups;
+    }
+
+    /**
+     * Get the org's avatar id.
+     * 
+     * @return the avatarId
+     */
+    public String getAvatarId()
+    {
+        return avatarId;
+    }
+
+    /**
+     * Set the org's avatar id.
+     * 
+     * @param inAvatarId
+     *            the avatarId to set
+     */
+    public void setAvatarId(final String inAvatarId)
+    {
+        avatarId = inAvatarId;
+    }
+
+    /**
+     * Needed for avatarEntity interface.
+     */
+    @Override
+    public long getId()
+    {
+        return getEntityId();
+    }
+
+    /**
+     * @return the avatarCropSize
+     */
+    public Integer getAvatarCropSize()
+    {
+        return avatarCropSize;
+    }
+
+    /**
+     * @param inAvatarCropSize
+     *            the avatarCropSize to set
+     */
+    public void setAvatarCropSize(final Integer inAvatarCropSize)
+    {
+        avatarCropSize = inAvatarCropSize;
+    }
+
+    /**
+     * @return the avatarCropX
+     */
+    public Integer getAvatarCropX()
+    {
+        return avatarCropX;
+    }
+
+    /**
+     * @param inAvatarCropX
+     *            the avatarCropX to set
+     */
+    public void setAvatarCropX(final Integer inAvatarCropX)
+    {
+        avatarCropX = inAvatarCropX;
+    }
+
+    /**
+     * @return the avatarCropY
+     */
+    public Integer getAvatarCropY()
+    {
+        return avatarCropY;
+    }
+
+    /**
+     * @param inAvatarCropY
+     *            the avatarCropY to set
+     */
+    public void setAvatarCropY(final Integer inAvatarCropY)
+    {
+        avatarCropY = inAvatarCropY;
+    }
+
 }

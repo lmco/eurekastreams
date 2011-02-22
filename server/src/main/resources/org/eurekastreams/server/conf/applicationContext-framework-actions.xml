@@ -1106,7 +1106,18 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.GetOrganizationModelViewByShortNameExecution">
                 <constructor-arg ref="bulkOrganizationsByShortNameMapper" />
-                <constructor-arg ref="getRootOrganizationIdAndShortNameMapper" />                
+                <constructor-arg ref="getRootOrganizationIdAndShortNameMapper" />   
+                <constructor-arg ref="getOrganizationLeaderIdsByOrgId" />
+                <constructor-arg ref="getOrgCoordinators" />                
+                <constructor-arg ref="getPersonsByIdsMapper" />
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.action.execution.GetBannerIdByParentOrganizationStrategy">
+                        <constructor-arg ref="getOrganizationsByIdsMapper" />
+                        <constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />
+                        <constructor-arg ref="findByIdMapper" />
+                        <constructor-arg value="Organization" />
+                    </bean>
+                </constructor-arg>             
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />

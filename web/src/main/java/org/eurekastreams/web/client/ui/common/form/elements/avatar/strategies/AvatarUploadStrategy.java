@@ -19,8 +19,8 @@ import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.server.domain.AvatarEntity;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.web.client.events.ClearUploadedImageEvent;
-import org.eurekastreams.web.client.events.ClearUploadedImageEvent.ImageType;
 import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.ClearUploadedImageEvent.ImageType;
 import org.eurekastreams.web.client.events.data.DeletedGroupAvatarResponseEvent;
 import org.eurekastreams.web.client.events.data.DeletedOrganizationAvatarResponseEvent;
 import org.eurekastreams.web.client.events.data.DeletedPersonAvatarResponseEvent;
@@ -35,7 +35,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Generic Avatar Upload strategy.
- *
+ * 
  * @param <T>
  *            The avatar entity type.
  */
@@ -64,7 +64,7 @@ public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUpload
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inEntity
      *            the entity.
      * @param inResizeKey
@@ -106,7 +106,7 @@ public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUpload
 
     /**
      * Gets the image id.
-     *
+     * 
      * @return the image id.
      */
     public String getImageId()
@@ -116,7 +116,7 @@ public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUpload
 
     /**
      * Gets whether or not the strategy is resizable.
-     *
+     * 
      * @return the value.
      */
     public Boolean isResizable()
@@ -126,7 +126,7 @@ public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUpload
 
     /**
      * sets the crop size.
-     *
+     * 
      * @param size
      *            the crop size.
      */
@@ -137,7 +137,7 @@ public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUpload
 
     /**
      * Sets the X coord of the image crop.
-     *
+     * 
      * @param x
      *            the x coord.
      */
@@ -148,7 +148,7 @@ public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUpload
 
     /**
      * Sets the y coord of the image crop.
-     *
+     * 
      * @param y
      *            the y coord.
      */
@@ -159,7 +159,7 @@ public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUpload
 
     /**
      * Gets the id of the entity.
-     *
+     * 
      * @return the id.
      */
     public Long getId()
@@ -169,7 +169,7 @@ public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUpload
 
     /**
      * Gets the crop size.
-     *
+     * 
      * @return the crop size.
      */
     public Integer getCropSize()
@@ -179,7 +179,7 @@ public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUpload
 
     /**
      * gets the crop X.
-     *
+     * 
      * @return the X.
      */
     public Integer getX()
@@ -189,7 +189,7 @@ public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUpload
 
     /**
      * gets the crop Y.
-     *
+     * 
      * @return the crop y.
      */
     public Integer getY()
@@ -199,7 +199,7 @@ public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUpload
 
     /**
      * Gets the image.
-     *
+     * 
      * @param imageId
      *            the image id.
      * @return the image.
@@ -207,12 +207,13 @@ public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUpload
     public Widget getImage(final String imageId)
     {
         entity.setAvatarId(imageId);
-        return new AvatarWidget(entity, entityType, AvatarWidget.Size.Normal, AvatarWidget.Background.White);
+        return new AvatarWidget(entity.getId(), imageId, entityType, AvatarWidget.Size.Normal);
+        // return new AvatarWidget(entity, entityType, AvatarWidget.Size.Normal, AvatarWidget.Background.White);
     }
 
     /**
      * Gets the param to send to the delete action.
-     *
+     * 
      * @return the params.
      */
     public Long getDeleteParam()
@@ -222,7 +223,7 @@ public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUpload
 
     /**
      * Gets the delete action key.
-     *
+     * 
      * @return the delete action key.
      */
     @SuppressWarnings("unchecked")
@@ -233,7 +234,7 @@ public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUpload
 
     /**
      * Gets the delete action key.
-     *
+     * 
      * @return the delete action key.
      */
     public String getResizeAction()
@@ -243,14 +244,17 @@ public class AvatarUploadStrategy<T extends AvatarEntity> implements ImageUpload
 
     /**
      * Get the entity type.
+     * 
      * @return the entity type.
      */
     public EntityType getEntityType()
     {
         return entityType;
     }
+
     /**
      * Get the image type.
+     * 
      * @return the image type.
      */
     public ImageType getImageType()

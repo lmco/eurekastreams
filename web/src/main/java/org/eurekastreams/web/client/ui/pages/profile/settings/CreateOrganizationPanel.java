@@ -81,7 +81,7 @@ public class CreateOrganizationPanel extends SettingsPanel
                     }
                 });
 
-        OrganizationModel.getInstance().fetchModelView(parentOrgShortName, true);
+        OrganizationModel.getInstance().fetch(parentOrgShortName, true);
     }
 
     /**

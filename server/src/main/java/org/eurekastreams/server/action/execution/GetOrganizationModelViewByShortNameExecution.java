@@ -16,12 +16,20 @@
 package org.eurekastreams.server.action.execution;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
+import org.eurekastreams.server.persistence.mappers.DomainMapper;
+import org.eurekastreams.server.persistence.mappers.GetOrgCoordinators;
 import org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName;
 import org.eurekastreams.server.persistence.mappers.stream.GetOrganizationsByShortNames;
+import org.eurekastreams.server.search.modelview.OrganizationModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Return OrganizationModelView by short name.
@@ -40,6 +48,26 @@ public class GetOrganizationModelViewByShortNameExecution implements ExecutionSt
     private GetRootOrganizationIdAndShortName rootOrgNameMapper;
 
     /**
+     * Get org leader ids for an org.
+     */
+    private DomainMapper<Long, Set<Long>> orgLeaderIdsMapper;
+
+    /**
+     * Get org coordinator ids for an org.
+     */
+    private GetOrgCoordinators orgCoordinatorIdsMapper;
+
+    /**
+     * Get PersonModelViews by id.
+     */
+    private DomainMapper<List<Long>, List<PersonModelView>> personModelViewsByIdMapper;
+
+    /**
+     * Mapper to retrieve the banner id if it is not directly configured.
+     */
+    private GetBannerIdByParentOrganizationStrategy getBannerIdStrategy;
+
+    /**
      * Constructor.
      * 
      * @param inMapper
@@ -48,10 +76,18 @@ public class GetOrganizationModelViewByShortNameExecution implements ExecutionSt
      *            {@link GetRootOrganizationIdAndShortName}.
      */
     public GetOrganizationModelViewByShortNameExecution(final GetOrganizationsByShortNames inMapper,
-            final GetRootOrganizationIdAndShortName inRootOrgNameMapper)
+            final GetRootOrganizationIdAndShortName inRootOrgNameMapper,
+            final DomainMapper<Long, Set<Long>> inOrgLeaderIdsMapper,
+            final GetOrgCoordinators inOrgCoordinatorIdsMapper,
+            final DomainMapper<List<Long>, List<PersonModelView>> inPersonModelViewsByIdMapper,
+            final GetBannerIdByParentOrganizationStrategy inGetBannerIdStrategy)
     {
         mapper = inMapper;
         rootOrgNameMapper = inRootOrgNameMapper;
+        orgLeaderIdsMapper = inOrgLeaderIdsMapper;
+        orgCoordinatorIdsMapper = inOrgCoordinatorIdsMapper;
+        personModelViewsByIdMapper = inPersonModelViewsByIdMapper;
+        getBannerIdStrategy = inGetBannerIdStrategy;
     }
 
     @SuppressWarnings("unchecked")
@@ -64,7 +100,54 @@ public class GetOrganizationModelViewByShortNameExecution implements ExecutionSt
         {
             orgShortName = rootOrgNameMapper.getRootOrganizationShortName();
         }
-        return mapper.execute(Collections.singletonList(orgShortName)).get(0);
-    }
 
+        OrganizationModelView result = mapper.execute(Collections.singletonList(orgShortName)).get(0);
+
+        long orgId = result.getEntityId();
+
+        // get leader/coordinator ids
+        Set<Long> leaderIds = orgLeaderIdsMapper.execute(orgId);
+        Set<Long> coordIds = orgCoordinatorIdsMapper.execute(orgId);
+
+        // combine them to remove dups and make single call to get model views.
+        Set<Long> allIds = new HashSet<Long>();
+        allIds.addAll(leaderIds);
+        allIds.addAll(coordIds);
+
+        List<PersonModelView> personModelViews = personModelViewsByIdMapper.execute(new ArrayList<Long>(allIds));
+
+        // create model view lists from results.
+        List<PersonModelView> leaders = new ArrayList<PersonModelView>();
+        List<PersonModelView> coordinators = new ArrayList<PersonModelView>();
+        for (PersonModelView pmv : personModelViews)
+        {
+            Long id = pmv.getEntityId();
+
+            // if id in leaders, add to leaders, then check if coordinator too, If not in leader, must have come from
+            // coordinator so skip the check and just add it.
+            if (leaderIds.contains(id))
+            {
+                leaders.add(pmv);
+                if (coordIds.contains(id))
+                {
+                    coordinators.add(pmv);
+                }
+            }
+            else
+            {
+                coordinators.add(pmv);
+            }
+        }
+
+        result.setLeaders(leaders);
+        result.setCoordinators(coordinators);
+
+        result.setBannerEntityId(result.getEntityId());
+        if (result.getBannerId() == null)
+        {
+            getBannerIdStrategy.getBannerId(result.getParentOrganizationId(), result);
+        }
+
+        return result;
+    }
 }
