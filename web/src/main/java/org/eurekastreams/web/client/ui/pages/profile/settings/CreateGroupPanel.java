@@ -40,7 +40,7 @@ import org.eurekastreams.web.client.ui.common.form.elements.BasicRadioButtonForm
 import org.eurekastreams.web.client.ui.common.form.elements.BasicRadioButtonGroupFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextBoxFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.OrgLookupFormElement;
-import org.eurekastreams.web.client.ui.common.form.elements.PersonLookupFormElement;
+import org.eurekastreams.web.client.ui.common.form.elements.PersonModelViewLookupFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.ShortnameFormElement;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 
@@ -139,8 +139,8 @@ public class CreateGroupPanel extends SettingsPanel
         String coordinstructions = "The group coordinators"
                 + " will be responsible for setting up the group profile, setting group permissions, "
                 + "and managing group access";
-        PersonLookupFormElement personLookupFormElement = new PersonLookupFormElement("Group Coordinators",
-                "Add Coordinator", coordinstructions, DomainGroupModelView.COORDINATORS_KEY,
+        PersonModelViewLookupFormElement personLookupFormElement = new PersonModelViewLookupFormElement(
+                "Group Coordinators", "Add Coordinator", coordinstructions, DomainGroupModelView.COORDINATORS_KEY,
                 new HashSet<PersonModelView>(), true);
 
         personLookupFormElement.addPerson(currentPerson);

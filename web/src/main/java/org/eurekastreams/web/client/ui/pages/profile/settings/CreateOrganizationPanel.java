@@ -35,7 +35,7 @@ import org.eurekastreams.web.client.ui.common.form.FormBuilder;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder.Method;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextBoxFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.OrgLookupFormElement;
-import org.eurekastreams.web.client.ui.common.form.elements.PersonLookupFormElement;
+import org.eurekastreams.web.client.ui.common.form.elements.PersonModelViewLookupFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.ShortnameFormElement;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 
@@ -159,8 +159,8 @@ public class CreateOrganizationPanel extends SettingsPanel
 
         PersonModelView currentPerson = Session.getInstance().getCurrentPerson();
 
-        PersonLookupFormElement personLookupFormElement = new PersonLookupFormElement("Organization Coordinators",
-                "Add Coordinator",
+        PersonModelViewLookupFormElement personLookupFormElement = new PersonModelViewLookupFormElement(
+                "Organization Coordinators", "Add Coordinator",
                 "The organization coordinators will be responsible for setting up the organization profile and "
                         + "policy.", OrganizationModelView.COORDINATORS_KEY, new LinkedList<PersonModelView>(), true);
 
