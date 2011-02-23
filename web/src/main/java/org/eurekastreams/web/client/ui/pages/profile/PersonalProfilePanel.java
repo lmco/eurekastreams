@@ -233,7 +233,7 @@ public class PersonalProfilePanel extends FlowPanel
         followers = person.getFollowersCount();
 
         // Update the Profile summary
-        about.setPerson(person);
+        about.setPerson(person.toPersonModelView());
         connectionsPanel = new ConnectionsPanel();
         connectionsPanel.addConnection("Followers", null, person.getFollowersCount());
         connectionsPanel.addConnection("Following", null, person.getFollowingCount(), "center");

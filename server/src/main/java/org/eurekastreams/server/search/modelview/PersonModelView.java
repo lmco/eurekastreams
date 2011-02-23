@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.domain.ActivityRestrictionEntity;
+import org.eurekastreams.server.domain.AvatarEntity;
 import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.Followable;
 import org.eurekastreams.server.domain.HasEmail;
@@ -32,12 +33,13 @@ import org.eurekastreams.server.domain.HasEmail;
 /**
  * A lightweight view of a Person containing everything needed for display of a search result of an Person.
  */
-public class PersonModelView extends ModelView implements Serializable, HasEmail, Followable, ActivityRestrictionEntity
+public class PersonModelView extends ModelView implements Serializable, HasEmail, Followable,
+        ActivityRestrictionEntity, AvatarEntity
 {
     /**
-     * Serial version uuid.
+     * Serial version uid.
      */
-    private static final long serialVersionUID = 8393711815963144901L;
+    private static final long serialVersionUID = -6296522247214374637L;
 
     /**
      * The key for the title.
@@ -92,7 +94,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Role in the system.
-     *
+     * 
      */
     public enum Role implements Serializable
     {
@@ -161,6 +163,16 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     private int followersCount = UNINITIALIZED_INTEGER_VALUE;
 
     /**
+     * The number of people following this person.
+     */
+    private int followingCount = UNINITIALIZED_INTEGER_VALUE;
+
+    /**
+     * The number of groups a person is in.
+     */
+    private int groupsCount = UNINITIALIZED_INTEGER_VALUE;
+
+    /**
      * Line index for composite streams.
      */
     private int compositeStreamHiddenLineIndex = UNINITIALIZED_INTEGER_VALUE;
@@ -179,6 +191,21 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
      * The person's avatar id.
      */
     private String avatarId = UNINITIALIZED_STRING_VALUE;
+
+    /**
+     * Avatar crop size.
+     */
+    private Integer avatarCropSize = UNINITIALIZED_INTEGER_VALUE;
+
+    /**
+     * Avatar crop value x.
+     */
+    private Integer avatarCropX = UNINITIALIZED_INTEGER_VALUE;
+
+    /**
+     * Avatar crop value y.
+     */
+    private Integer avatarCropY = UNINITIALIZED_INTEGER_VALUE;
 
     /**
      * The number of updates for this person.
@@ -251,8 +278,19 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     private String preferredName = UNINITIALIZED_STRING_VALUE;
 
     /**
+     * User's job description.
+     */
+    private String jobDescription = UNINITIALIZED_STRING_VALUE;
+
+    /**
+     * A person's related organizations - null if not set, empty list if none. Only the id, name, and short name are
+     * populated.
+     */
+    private List<OrganizationModelView> relatedOrganizations = null;
+
+    /**
      * Get the name of this entity.
-     *
+     * 
      * @return the name of this entity
      */
     @Override
@@ -270,7 +308,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Load this object's properties from the input Map.
-     *
+     * 
      * @param properties
      *            the Map of the properties to load
      */
@@ -354,6 +392,14 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
         {
             setFollowersCount((Integer) properties.get("followersCount"));
         }
+        if (properties.containsKey("followeringCount"))
+        {
+            setFollowingCount((Integer) properties.get("followeringCount"));
+        }
+        if (properties.containsKey("groupsCount"))
+        {
+            setGroupsCount((Integer) properties.get("groupsCount"));
+        }
         if (properties.containsKey("updatesCount"))
         {
             setUpdatesCount((Integer) properties.get("updatesCount"));
@@ -406,11 +452,15 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
         {
             setAccountLocked((Boolean) properties.get("accountLocked"));
         }
+        if (properties.containsKey("jobDescription"))
+        {
+            setJobDescription((String) properties.get("jobDescription"));
+        }
     }
 
     /**
      * Get the date the person was added to the system.
-     *
+     * 
      * @return the dateAdded
      */
     public Date getDateAdded()
@@ -420,7 +470,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the date the person was added to the system.
-     *
+     * 
      * @param inDateAdded
      *            the dateAdded to set
      */
@@ -431,7 +481,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's account id.
-     *
+     * 
      * @return the accountId
      */
     public String getAccountId()
@@ -441,7 +491,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's account id.
-     *
+     * 
      * @param inAccountId
      *            the accountId to set
      */
@@ -452,7 +502,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's OpenSocial id.
-     *
+     * 
      * @return the openSocialId
      */
     public String getOpenSocialId()
@@ -462,7 +512,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's OpenSocial id.
-     *
+     * 
      * @param inOpenSocialId
      *            the openSocialId to set
      */
@@ -473,7 +523,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's title.
-     *
+     * 
      * @return the title
      */
     public String getTitle()
@@ -483,7 +533,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's title.
-     *
+     * 
      * @param inTitle
      *            the title to set
      */
@@ -494,7 +544,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's parent organization's id.
-     *
+     * 
      * @return the parentOrganizationId
      */
     public long getParentOrganizationId()
@@ -504,7 +554,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's parent organization's id.
-     *
+     * 
      * @param inParentOrganizationId
      *            the parentOrganizationId to set
      */
@@ -515,7 +565,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's parent organization's short name.
-     *
+     * 
      * @return the parentOrganizationShortName
      */
     @Override
@@ -526,7 +576,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's parent organization's short name.
-     *
+     * 
      * @param inParentOrganizationShortName
      *            the parentOrganizationShortName to set
      */
@@ -537,7 +587,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's parent organization's name.
-     *
+     * 
      * @return the parentOrganizationName
      */
     @Override
@@ -548,7 +598,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's parent organization's name.
-     *
+     * 
      * @param inParentOrganizationName
      *            the parentOrganizationName to set
      */
@@ -559,7 +609,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's description.
-     *
+     * 
      * @return the description
      */
     public String getDescription()
@@ -569,7 +619,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's description.
-     *
+     * 
      * @param inDescription
      *            the description to set
      */
@@ -580,7 +630,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the number of people following this person.
-     *
+     * 
      * @return the followersCount
      */
     @Override
@@ -590,8 +640,25 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     }
 
     /**
+     * @return the groupsCount
+     */
+    public int getGroupsCount()
+    {
+        return groupsCount;
+    }
+
+    /**
+     * @param inGroupsCount
+     *            the groupsCount to set
+     */
+    public void setGroupsCount(final int inGroupsCount)
+    {
+        groupsCount = inGroupsCount;
+    }
+
+    /**
      * Set the number of people following this person.
-     *
+     * 
      * @param inFollowersCount
      *            the followersCount to set
      */
@@ -602,7 +669,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's display name.
-     *
+     * 
      * @return the displayName
      */
     public String getDisplayName()
@@ -612,7 +679,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's display name.
-     *
+     * 
      * @param inDisplayName
      *            the displayName to set
      */
@@ -623,7 +690,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the person's avatar id.
-     *
+     * 
      * @return the avatarId
      */
     public String getAvatarId()
@@ -633,7 +700,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the person's avatar id.
-     *
+     * 
      * @param inAvatarId
      *            the avatarId to set
      */
@@ -644,7 +711,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the entity id.
-     *
+     * 
      * @param inEntityId
      *            the entity id of the person.
      */
@@ -657,7 +724,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * The the number of updates for this person.
-     *
+     * 
      * @return the updatesCount
      */
     public int getUpdatesCount()
@@ -667,7 +734,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the number of updates for this person.
-     *
+     * 
      * @param inUpdatesCount
      *            the updatesCount to set
      */
@@ -729,7 +796,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the roles.
-     *
+     * 
      * @param inRoles
      *            the roles.
      */
@@ -740,7 +807,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Gets the roles.
-     *
+     * 
      * @return the roles.
      */
     public Set<Role> getRoles()
@@ -838,7 +905,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the IDs of the related organizations for this person.
-     *
+     * 
      * @return the IDs of the related organizations for this person.
      */
     public List<Long> getRelatedOrganizationIds()
@@ -848,7 +915,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the IDs of the related organizations for this person.
-     *
+     * 
      * @param inRelatedOrganizationIds
      *            the IDs of the related organizations for this person
      */
@@ -858,7 +925,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     }
 
     /**
-     *
+     * 
      * @return videos the person has opted out of.
      */
     public HashSet<Long> getOptOutVideos()
@@ -868,10 +935,10 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * set the set of videos a person has opted out of.
-     *
+     * 
      * @param inOptOutVideos
      *            the set of videos.
-     *
+     * 
      */
     public void setOptOutVideos(final HashSet<Long> inOptOutVideos)
     {
@@ -898,7 +965,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Get the last date the person accepted the terms of service.
-     *
+     * 
      * @return the last date the person accepted the terms of service
      */
     public Date getLastAcceptedTermsOfService()
@@ -908,7 +975,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * Set the last date the person accepted the terms of service.
-     *
+     * 
      * @param inLastAcceptedTermsOfService
      *            the last date the person accepted the terms of service.
      */
@@ -919,7 +986,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * The additionalProperties setter.
-     *
+     * 
      * @param inAdditionalProperties
      *            the properties hashmap to set
      */
@@ -930,7 +997,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
 
     /**
      * The additionalProperties getter.
-     *
+     * 
      * @return additionalProperties hashmap.
      */
     public HashMap<String, String> getAdditionalProperties()
@@ -973,6 +1040,23 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     }
 
     /**
+     * @return the followingCount
+     */
+    public int getFollowingCount()
+    {
+        return followingCount;
+    }
+
+    /**
+     * @param inFollowingCount
+     *            the followingCount to set
+     */
+    public void setFollowingCount(final int inFollowingCount)
+    {
+        followingCount = inFollowingCount;
+    }
+
+    /**
      * @return the preferredName
      */
     public String getPreferredName()
@@ -988,4 +1072,90 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     {
         preferredName = inPreferredName;
     }
+
+    /**
+     * @return the jobDescription
+     */
+    public String getJobDescription()
+    {
+        return jobDescription;
+    }
+
+    /**
+     * @param inJobDescription
+     *            the jobDescription to set
+     */
+    public void setJobDescription(final String inJobDescription)
+    {
+        jobDescription = inJobDescription;
+    }
+
+    /**
+     * @return the relatedOrganizations
+     */
+    public List<OrganizationModelView> getRelatedOrganizations()
+    {
+        return relatedOrganizations;
+    }
+
+    /**
+     * @param inRelatedOrganizations
+     *            the relatedOrganizations to set
+     */
+    public void setRelatedOrganizations(final List<OrganizationModelView> inRelatedOrganizations)
+    {
+        relatedOrganizations = inRelatedOrganizations;
+    }
+
+    /**
+     * @return the avatarCropSize
+     */
+    public Integer getAvatarCropSize()
+    {
+        return avatarCropSize;
+    }
+
+    /**
+     * @param inAvatarCropSize
+     *            the avatarCropSize to set
+     */
+    public void setAvatarCropSize(final Integer inAvatarCropSize)
+    {
+        avatarCropSize = inAvatarCropSize;
+    }
+
+    /**
+     * @return the avatarCropX
+     */
+    public Integer getAvatarCropX()
+    {
+        return avatarCropX;
+    }
+
+    /**
+     * @param inAvatarCropX
+     *            the avatarCropX to set
+     */
+    public void setAvatarCropX(final Integer inAvatarCropX)
+    {
+        avatarCropX = inAvatarCropX;
+    }
+
+    /**
+     * @return the avatarCropY
+     */
+    public Integer getAvatarCropY()
+    {
+        return avatarCropY;
+    }
+
+    /**
+     * @param inAvatarCropY
+     *            the avatarCropY to set
+     */
+    public void setAvatarCropY(final Integer inAvatarCropY)
+    {
+        avatarCropY = inAvatarCropY;
+    }
+
 }

@@ -78,7 +78,11 @@
         <id>Maven Central</id>
         <url>http://repo1.maven.org/maven2/</url>
       </repository>
-	  <repository>
+      <repository>
+        <id>JBoss maven2</id>
+        <url>http://repository.jboss.org/maven2</url>
+      </repository>
+      <repository>
 	    <id>jboss</id>
 	    <url>https://repository.jboss.org/nexus/content/groups/public/</url>
 	  </repository>
@@ -108,6 +112,10 @@
         <snapshots>
             <enabled>false</enabled>
         </snapshots>
+      </repository>
+      <repository>
+        <id>GWT-DND</id>
+        <url>http://kanboard.kenai.com/maven2</url>
       </repository>
       <repository>
         <id>spy</id>
