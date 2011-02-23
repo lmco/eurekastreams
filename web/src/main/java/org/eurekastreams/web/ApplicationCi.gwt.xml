@@ -4,6 +4,7 @@
 	<inherits name="com.google.gwt.json.JSON" />
 	<inherits name='net.sf.gilead.Gilead4Gwt' />
 	<inherits name="org.eurekastreams.server.Domain" />
+    <inherits name="com.google.gwt.resources.Resources" />
 	<inherits name="org.eurekastreams.commons.ActionRPCService" />
 	
 	<!-- Browser-sensitive code should use the 'user.agent' property -->

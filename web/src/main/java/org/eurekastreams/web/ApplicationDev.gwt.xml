@@ -1,6 +1,7 @@
 <module>
 	<inherits name='com.google.gwt.user.User' />
 	<inherits name="com.google.gwt.json.JSON" />
+    <inherits name="com.google.gwt.resources.Resources" />
 	<inherits name="org.eurekastreams.commons.ActionRPCService" />
 	<inherits name="org.eurekastreams.server.Domain" />
 	<inherits name='com.allen_sauer.gwt.dnd.gwt-dnd' />

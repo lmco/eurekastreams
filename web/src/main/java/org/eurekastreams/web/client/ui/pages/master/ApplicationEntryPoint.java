@@ -127,6 +127,8 @@ public class ApplicationEntryPoint implements EntryPoint
      */
     public void onModuleLoad()
     {
+        ResourceBundle.INSTANCE.coreCss().ensureInjected();
+        
         session.setActionProcessor(processor);
         session.setEventBus(EventBus.getInstance());
         session.setPeriodicEventManager(new PeriodicEventManager(APP_IDLE_TIMEOUT, new TimerFactory(), processor));
