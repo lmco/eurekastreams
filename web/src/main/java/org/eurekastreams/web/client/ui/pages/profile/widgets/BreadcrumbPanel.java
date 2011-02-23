@@ -25,8 +25,8 @@ import org.eurekastreams.server.domain.BreadcrumbDTO;
 import org.eurekastreams.server.domain.DomainGroupEntity;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 
@@ -64,10 +64,16 @@ public class BreadcrumbPanel extends FlowPanel
      * @param inPerson
      *            the person whose info we are displaying.
      */
-    public void setPerson(final Person inPerson)
+    public void setPerson(final PersonModelView inPerson)
     {
-        buildBreadcrumbs(inPerson.getParentOrganization(), inPerson.getPreferredName() + " " + inPerson.getLastName(),
-                true, false);
+        OrganizationModelView orgMv = new OrganizationModelView();
+        orgMv.setEntityId(inPerson.getParentOrganizationId());
+        orgMv.setShortName(inPerson.getParentOrganizationShortName());
+        orgMv.setName(inPerson.getParentOrganizationName());
+
+        // note: we don't have the parent organization's parent org id, but that's okay because of the 3rd parameter
+        // is set to true, which means the parent org's parent org won't be used
+        buildBreadcrumbs(orgMv, inPerson.getPreferredName() + " " + inPerson.getLastName(), true, false);
     }
 
     /**

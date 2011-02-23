@@ -1891,7 +1891,9 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         p.setAvatarCropSize(avatarCropSize);
         p.setAvatarCropX(avatarCropX);
         p.setAvatarCropY(avatarCropY);
-
+        p.setCellPhone(cellPhone);
+        p.setWorkPhone(workPhone);
+        p.setFax(fax);
         return p;
     }
 }

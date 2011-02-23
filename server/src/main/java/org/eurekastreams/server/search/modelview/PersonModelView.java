@@ -283,6 +283,21 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     private String jobDescription = UNINITIALIZED_STRING_VALUE;
 
     /**
+     * Work phone number.
+     */
+    private String workPhone = UNINITIALIZED_STRING_VALUE;
+
+    /**
+     * Cell phone number.
+     */
+    private String cellPhone = UNINITIALIZED_STRING_VALUE;
+
+    /**
+     * Fax number.
+     */
+    private String fax = UNINITIALIZED_STRING_VALUE;
+
+    /**
      * A person's related organizations - null if not set, empty list if none. Only the id, name, and short name are
      * populated.
      */
@@ -334,6 +349,18 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
         if (properties.containsKey("avatarId"))
         {
             setAvatarId((String) properties.get("avatarId"));
+        }
+        if (properties.containsKey("avatarCropSize"))
+        {
+            setAvatarCropSize((Integer) properties.get("avatarCropSize"));
+        }
+        if (properties.containsKey("avatarCropX"))
+        {
+            setAvatarCropX((Integer) properties.get("avatarCropX"));
+        }
+        if (properties.containsKey("avatarCropY"))
+        {
+            setAvatarCropY((Integer) properties.get("avatarCropY"));
         }
         if (properties.containsKey("optOutVideoIds"))
         {
@@ -455,6 +482,18 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
         if (properties.containsKey("jobDescription"))
         {
             setJobDescription((String) properties.get("jobDescription"));
+        }
+        if (properties.containsKey("workPhone"))
+        {
+            setWorkPhone((String) properties.get("workPhone"));
+        }
+        if (properties.containsKey("cellPhone"))
+        {
+            setCellPhone((String) properties.get("cellPhone"));
+        }
+        if (properties.containsKey("fax"))
+        {
+            setFax((String) properties.get("fax"));
         }
     }
 
@@ -1156,6 +1195,57 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     public void setAvatarCropY(final Integer inAvatarCropY)
     {
         avatarCropY = inAvatarCropY;
+    }
+
+    /**
+     * @return the cellPhone
+     */
+    public String getCellPhone()
+    {
+        return cellPhone;
+    }
+
+    /**
+     * @param inCellPhone
+     *            the cellPhone to set
+     */
+    public void setCellPhone(final String inCellPhone)
+    {
+        cellPhone = inCellPhone;
+    }
+
+    /**
+     * @return the fax
+     */
+    public String getFax()
+    {
+        return fax;
+    }
+
+    /**
+     * @param inFax
+     *            the fax to set
+     */
+    public void setFax(final String inFax)
+    {
+        fax = inFax;
+    }
+
+    /**
+     * @return the workPhone
+     */
+    public String getWorkPhone()
+    {
+        return workPhone;
+    }
+
+    /**
+     * @param inWorkPhone
+     *            the workPhone to set
+     */
+    public void setWorkPhone(final String inWorkPhone)
+    {
+        workPhone = inWorkPhone;
     }
 
 }

@@ -210,11 +210,12 @@ public class PersonalProfilePanel extends FlowPanel
         inProcessor.setQueueRequests(true);
 
         person = inPerson;
-
         if (person == null)
         {
             showInvalidPersonMessage();
         }
+
+        PersonModelView personModelView = person.toPersonModelView();
 
         leftBarPanel.clear();
         portalPageContainer.clear();
@@ -222,22 +223,22 @@ public class PersonalProfilePanel extends FlowPanel
         // Set the banner.
         Session.getInstance().getEventBus().notifyObservers(new SetBannerEvent(inPerson));
 
-        if (person.getAccountId().equals(Session.getInstance().getCurrentPerson().getAccountId()))
+        if (personModelView.getAccountId().equals(Session.getInstance().getCurrentPerson().getAccountId()))
         {
             profileSettingsLink.removeStyleName("hidden");
             RootPanel.get().addStyleName("authenticated");
         }
 
-        breadCrumbPanel.setPerson(person);
+        breadCrumbPanel.setPerson(personModelView);
 
-        followers = person.getFollowersCount();
+        followers = personModelView.getFollowersCount();
 
         // Update the Profile summary
-        about.setPerson(person.toPersonModelView());
+        about.setPerson(personModelView);
         connectionsPanel = new ConnectionsPanel();
-        connectionsPanel.addConnection("Followers", null, person.getFollowersCount());
-        connectionsPanel.addConnection("Following", null, person.getFollowingCount(), "center");
-        connectionsPanel.addConnection("Groups", null, person.getGroupCount());
+        connectionsPanel.addConnection("Followers", null, personModelView.getFollowersCount());
+        connectionsPanel.addConnection("Following", null, personModelView.getFollowingCount(), "center");
+        connectionsPanel.addConnection("Groups", null, personModelView.getGroupsCount());
 
         Session.getInstance().getEventBus().addObserver(InsertedPersonFollowerResponseEvent.class,
                 new Observer<InsertedPersonFollowerResponseEvent>()
@@ -260,7 +261,7 @@ public class PersonalProfilePanel extends FlowPanel
                 });
 
         // Make the Connections Tab
-        final PagedListPanel connectionTabContent = createConnectionsTabContent(person);
+        final PagedListPanel connectionTabContent = createConnectionsTabContent(personModelView);
 
         // update the list of members after joining/leaving the group
         Observer<BaseDataResponseEvent<Integer>> followChangeObserver = new Observer<BaseDataResponseEvent<Integer>>()
@@ -280,28 +281,28 @@ public class PersonalProfilePanel extends FlowPanel
                 .addObserver(DeletedPersonFollowersResponseEvent.class, followChangeObserver);
 
         leftBarPanel.addChildWidget(about);
-        leftBarPanel.addChildWidget(new PopularHashtagsPanel(ScopeType.PERSON, person.getAccountId()));
+        leftBarPanel.addChildWidget(new PopularHashtagsPanel(ScopeType.PERSON, personModelView.getAccountId()));
         leftBarPanel.addChildWidget(connectionsPanel);
-        leftBarPanel.addChildWidget(new ContactInfoPanel(person));
+        leftBarPanel.addChildWidget(new ContactInfoPanel(personModelView));
 
-        if (person.getAccountId().equals(Session.getInstance().getCurrentPerson().getAccountId()))
+        if (personModelView.getAccountId().equals(Session.getInstance().getCurrentPerson().getAccountId()))
         {
             setUpChecklist();
         }
 
         final StreamPanel streamContent = new StreamPanel(false);
-        streamContent.setStreamScope(person.getStreamScope(),
-                (person.isStreamPostable() || (currentUser.getAccountId() == person.getAccountId())));
+        streamContent.setStreamScope(person.getStreamScope(), (personModelView.isStreamPostable() || (currentUser
+                .getAccountId() == personModelView.getAccountId())));
 
-        if (person.isAccountLocked())
+        if (personModelView.isAccountLocked())
         {
             streamContent.setLockedMessagePanel(generateLockedUserMessage());
         }
 
-        String jsonRequest = StreamJsonRequestFactory.addRecipient(EntityType.PERSON, person.getAccountId(),
+        String jsonRequest = StreamJsonRequestFactory.addRecipient(EntityType.PERSON, personModelView.getAccountId(),
                 StreamJsonRequestFactory.getEmptyRequest()).toString();
 
-        EventBus.getInstance().notifyObservers(new StreamRequestEvent(person.getDisplayName(), jsonRequest));
+        EventBus.getInstance().notifyObservers(new StreamRequestEvent(personModelView.getDisplayName(), jsonRequest));
 
         portalPage = new TabContainerPanel();
 
@@ -481,7 +482,7 @@ public class PersonalProfilePanel extends FlowPanel
      *            Person whose profile is being displayed.
      * @return Tab content.
      */
-    private PagedListPanel createConnectionsTabContent(final Person inPerson)
+    private PagedListPanel createConnectionsTabContent(final PersonModelView inPerson)
     {
         final PagedListPanel connectionTabContent = new PagedListPanel("connections");
 
