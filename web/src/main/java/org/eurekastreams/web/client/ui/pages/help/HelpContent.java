@@ -15,10 +15,10 @@
  */
 package org.eurekastreams.web.client.ui.pages.help;
 
-import org.eurekastreams.server.domain.DomainGroupEntity;
 import org.eurekastreams.server.domain.SystemSettings;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.web.client.events.Observer;
-import org.eurekastreams.web.client.events.data.GotGroupInformationResponseEvent;
+import org.eurekastreams.web.client.events.data.GotGroupModelViewInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotSystemSettingsResponseEvent;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.GroupModel;
@@ -42,7 +42,7 @@ public class HelpContent extends Composite
     /**
      * Event handler for group loading.
      */
-    private class GotGroupResponseEvent implements Observer<GotGroupInformationResponseEvent>
+    private class GotGroupResponseEvent implements Observer<GotGroupModelViewInformationResponseEvent>
     {
         /**
          * The already-loaded system settings.
@@ -51,7 +51,7 @@ public class HelpContent extends Composite
 
         /**
          * Constructor.
-         *
+         * 
          * @param inSystemSettings
          *            the already-loaded system settings.
          */
@@ -62,18 +62,19 @@ public class HelpContent extends Composite
 
         /**
          * Event handler for when the group is loaded.
-         *
+         * 
          * @param supportGroupEvent
          *            group-loaded event
          */
-        public void update(final GotGroupInformationResponseEvent supportGroupEvent)
+        public void update(final GotGroupModelViewInformationResponseEvent supportGroupEvent)
         {
             // make sure the group that was just loaded is the support group
-            DomainGroupEntity group = supportGroupEvent.getResponse();
+            DomainGroupModelView group = supportGroupEvent.getResponse();
             if (group.getShortName().equals(systemSettings.getSupportStreamGroupShortName()))
             {
                 // this is the group we're looking for, setup the form
-                Session.getInstance().getEventBus().removeObserver(GotGroupInformationResponseEvent.class, this);
+                Session.getInstance().getEventBus().removeObserver(GotGroupModelViewInformationResponseEvent.class,
+                        this);
                 buildPage(systemSettings, group);
             }
         }
@@ -101,10 +102,11 @@ public class HelpContent extends Composite
                                 && settings.getSupportStreamGroupShortName().length() > 0)
                         {
                             // the support group is set, go get it
-                            Session.getInstance().getEventBus().addObserver(GotGroupInformationResponseEvent.class,
+                            Session.getInstance().getEventBus().addObserver(
+                                    GotGroupModelViewInformationResponseEvent.class,
                                     new GotGroupResponseEvent(settings));
 
-                            GroupModel.getInstance().fetch(settings.getSupportStreamGroupShortName(), true);
+                            GroupModel.getInstance().fetchModelView(settings.getSupportStreamGroupShortName(), true);
                         }
                         else
                         {
@@ -120,13 +122,13 @@ public class HelpContent extends Composite
 
     /**
      * Build the page.
-     *
+     * 
      * @param settings
      *            the SystemSettings
      * @param supportGroup
      *            the support Domain Group
      */
-    private void buildPage(final SystemSettings settings, final DomainGroupEntity supportGroup)
+    private void buildPage(final SystemSettings settings, final DomainGroupModelView supportGroup)
     {
         FlowPanel leftPanel = new FlowPanel();
         leftPanel.addStyleName("left-panel");
@@ -151,7 +153,6 @@ public class HelpContent extends Composite
             supportContactHelpPanel.addStyleName("support-stream-contact-panel");
             leftPanel.add(supportContactHelpPanel);
         }
-
 
         DocumentationHelpPanel documentationHelpPanel = new DocumentationHelpPanel();
         documentationHelpPanel.addStyleName("help-documentation-panel");

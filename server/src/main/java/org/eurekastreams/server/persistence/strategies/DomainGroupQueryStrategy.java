@@ -33,13 +33,13 @@ public class DomainGroupQueryStrategy
 {
     /**
      * Build the base Criteria object.
-     *
+     * 
      * @param hibernateSession
-     * 		the hibernate session used to create the criteria.
+     *            the hibernate session used to create the criteria.
      * @return the base criteria object.
      */
-	public Criteria getCriteria(final Session hibernateSession)
-	{
+    public Criteria getCriteria(final Session hibernateSession)
+    {
         Criteria criteria = hibernateSession.createCriteria(DomainGroup.class);
         ProjectionList fields = Projections.projectionList();
         fields.add(getColumn("id"));
@@ -51,6 +51,9 @@ public class DomainGroupQueryStrategy
         fields.add(getColumn("followersCount"));
         fields.add(getColumn("dateAdded"));
         fields.add(getColumn("avatarId"));
+        fields.add(getColumn("avatarCropSize"));
+        fields.add(getColumn("avatarCropX"));
+        fields.add(getColumn("avatarCropY"));
         fields.add(getColumn("commentable"));
         fields.add(getColumn("streamPostable"));
         fields.add(Projections.property("po.name").as("parentOrganizationName"));
@@ -68,16 +71,16 @@ public class DomainGroupQueryStrategy
         // TODO: this needs to change - we should figure out how to remove this rule
         criteria.add(Restrictions.eq("isPending", false));
 
-        ModelViewResultTransformer<DomainGroupModelView> resultTransformer
-        	= new ModelViewResultTransformer<DomainGroupModelView>(new DomainGroupModelViewFactory());
+        ModelViewResultTransformer<DomainGroupModelView> resultTransformer = //
+        new ModelViewResultTransformer<DomainGroupModelView>(new DomainGroupModelViewFactory());
         criteria.setResultTransformer(resultTransformer);
 
         return criteria;
-	}
+    }
 
     /**
      * Build the PropertyProjection with alias.
-     *
+     * 
      * @param propertyName
      *            the property name
      * @return the PropertyProjection with alias

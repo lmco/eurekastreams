@@ -15,14 +15,13 @@
  */
 package org.eurekastreams.web.client.ui.pages.help;
 
-import org.eurekastreams.server.domain.DomainGroupEntity;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.SystemSettings;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
-import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Background;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -56,13 +55,13 @@ public class SupportStreamHelpPanel extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param inSettings
      *            the system settings
      * @param inSupportGroup
      *            the support domain group
      */
-    public SupportStreamHelpPanel(final SystemSettings inSettings, final DomainGroupEntity inSupportGroup)
+    public SupportStreamHelpPanel(final SystemSettings inSettings, final DomainGroupModelView inSupportGroup)
     {
         Label headerLabel = new Label("Support Stream");
         headerPanel.add(headerLabel);
@@ -72,7 +71,7 @@ public class SupportStreamHelpPanel extends FlowPanel
         add(contentPanel);
 
         logoPanel.add(new AvatarWidget(inSupportGroup.getId(), inSupportGroup.getAvatarId(), EntityType.GROUP,
-                Size.Normal, Background.Gray));
+                Size.Normal));
         logoPanel.addStyleName("support-group-logo-panel");
 
         contentPanel.addStyleName("content-panel");

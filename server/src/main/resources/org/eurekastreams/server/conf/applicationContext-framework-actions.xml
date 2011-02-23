@@ -1145,6 +1145,28 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>
+    
+    <bean id="getGroupModelView" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.GetDomainGroupModelViewByShortNameExectution">
+                <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+                <constructor-arg ref="populateOrgChildWithSkeletonParentOrgsCacheMapper" />
+                <constructor-arg ref="getAllPersonIdsWhoHaveGroupCoordinatorAccess" />
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.action.execution.GetBannerIdByParentOrganizationStrategy">
+                        <constructor-arg ref="getOrganizationsByIdsMapper" />
+                        <constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />
+                        <constructor-arg ref="findByIdMapper" />
+                        <constructor-arg value="DomainGroup" />
+                    </bean>
+                </constructor-arg>
+                <constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>    
 
     <bean id="addGadget" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
