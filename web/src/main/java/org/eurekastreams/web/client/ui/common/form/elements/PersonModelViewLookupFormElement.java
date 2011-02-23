@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 Lockheed Martin Corporation
+ * Copyright (c) 2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.eurekastreams.web.client.ui.common.form.elements;
 import java.util.Collection;
 import java.util.HashSet;
 
+import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.ui.common.EditPanel;
 import org.eurekastreams.web.client.ui.common.PersonPanel;
@@ -36,7 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * An element that encapsulates the lookup and display of a person record. This element is put on a form.
  */
-public class PersonLookupFormElement extends FlowPanel implements FormElement
+public class PersonModelViewLookupFormElement extends FlowPanel implements FormElement
 {
     /**
      * The lookup dialog.
@@ -79,8 +80,9 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
      * @param inRequired
      *            whether this element represents required data
      */
-    public PersonLookupFormElement(final String inTitle, final String inLookupText, final String inInstructions,
-            final String inKey, final Collection<PersonModelView> inPersons, final boolean inRequired)
+    public PersonModelViewLookupFormElement(final String inTitle, final String inLookupText,
+            final String inInstructions, final String inKey, final Collection<PersonModelView> inPersons,
+            final boolean inRequired)
     {
         this.addStyleName("person-lookup-form-element");
         // persons will get populated below using the addPersonMethod()
@@ -183,8 +185,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
         {
             public void execute()
             {
-                PersonModelView result = dialogContent.getPerson();
-                addPerson(result);
+                addPerson(dialogContent.getPerson());
             }
         };
     }
@@ -204,9 +205,14 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
      * 
      * @return the collection
      */
-    public HashSet<PersonModelView> getValue()
+    public HashSet<Person> getValue()
     {
-        return persons;
+        HashSet<Person> results = new HashSet<Person>(persons.size());
+        for (PersonModelView pmv : persons)
+        {
+            results.add(new Person(pmv));
+        }
+        return results;
     }
 
     /**

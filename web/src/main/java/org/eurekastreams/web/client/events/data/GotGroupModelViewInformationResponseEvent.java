@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,22 @@
  */
 package org.eurekastreams.web.client.events.data;
 
-import org.eurekastreams.server.domain.Organization;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 
 /**
- * Response event.
- *
+ * Got groups.
+ * 
  */
-public class GotOrganizationInformationResponseEvent extends BaseDataResponseEvent<Organization>
+public class GotGroupModelViewInformationResponseEvent extends BaseDataResponseEvent<DomainGroupModelView>
 {
+
     /**
      * Default constructor.
-     * @param inResponse the response.
+     * 
+     * @param inResponse
+     *            response.
      */
-    public GotOrganizationInformationResponseEvent(final Organization inResponse)
+    public GotGroupModelViewInformationResponseEvent(final DomainGroupModelView inResponse)
     {
         super(inResponse);
     }

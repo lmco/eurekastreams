@@ -22,6 +22,7 @@ import org.eurekastreams.server.domain.DomainGroupEntity;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.web.client.events.data.AuthorizeUpdateGroupResponseEvent;
 import org.eurekastreams.web.client.events.data.GotGroupInformationResponseEvent;
+import org.eurekastreams.web.client.events.data.GotGroupModelViewInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedGroupResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedGroupResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
@@ -86,6 +87,21 @@ public class GroupModel extends BaseModel implements Authorizable<String>, Fetch
             public void onSuccess(final DomainGroupEntity response)
             {
                 Session.getInstance().getEventBus().notifyObservers(new GotGroupInformationResponseEvent(response));
+            }
+        }, useClientCacheIfAvailable);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void fetchModelView(final String request, final boolean useClientCacheIfAvailable)
+    {
+        super.callReadAction("getGroupModelView", request, new OnSuccessCommand<DomainGroupModelView>()
+        {
+            public void onSuccess(final DomainGroupModelView response)
+            {
+                Session.getInstance().getEventBus().notifyObservers(
+                        new GotGroupModelViewInformationResponseEvent(response));
             }
         }, useClientCacheIfAvailable);
     }

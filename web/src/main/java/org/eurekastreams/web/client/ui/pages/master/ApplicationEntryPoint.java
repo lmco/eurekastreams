@@ -28,7 +28,6 @@ import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.commons.exceptions.SessionException;
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.TermsOfServiceDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -213,8 +212,9 @@ public class ApplicationEntryPoint implements EntryPoint
 
                         if (caught instanceof SessionException)
                         {
-                            Dialog.showDialog(new MessageDialogContent("Unable to Establish Session",
-                            "Please Refresh."));
+                            Dialog
+                                    .showDialog(new MessageDialogContent("Unable to Establish Session",
+                                            "Please Refresh."));
                         }
                         else
                         {
@@ -232,12 +232,11 @@ public class ApplicationEntryPoint implements EntryPoint
                             return;
                         }
 
-                        Person result = new Person(resultMV);
                         session.setAuthenticationType(resultMV.getAuthenticationType());
-                        session.setCurrentPerson(result);
+                        session.setCurrentPerson(resultMV);
                         session.setCurrentPersonRoles(resultMV.getRoles());
-                        jSNIFacade.setViewer(result.getOpenSocialId(), result.getAccountId());
-                        jSNIFacade.setOwner(result.getOpenSocialId());
+                        jSNIFacade.setViewer(resultMV.getOpenSocialId(), resultMV.getAccountId());
+                        jSNIFacade.setOwner(resultMV.getOpenSocialId());
                         processor.setQueueRequests(true);
 
                         // create the StartTabs model before the event bus is buffered, so it's event wiring stays
@@ -261,7 +260,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Shows the ToS modal.
-     *
+     * 
      */
     private void displayToS()
     {
@@ -291,7 +290,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires off a gadget change state event.
-     *
+     * 
      * @param id
      *            the gadget id
      * @param view
@@ -307,7 +306,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires of the UpdateGadgetPrefsEvent when called from the gadget container.
-     *
+     * 
      * @param inId
      *            - id of the gadget being updated.
      * @param inPrefs
@@ -321,7 +320,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the save command object.
-     *
+     * 
      * @return the save command
      */
     private static Command getEmployeeSelectedCommand()
@@ -353,7 +352,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Call the handler when the employee lookup is done.
-     *
+     * 
      * @param ntid
      *            the ntid.
      * @param displayName
@@ -369,7 +368,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the people from the server, convert them to JSON, and feed them back to the handler.
-     *
+     * 
      * @param ntids
      *            the ntids.
      * @param callbackIndex
@@ -444,7 +443,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Call the handler with the JSON data.
-     *
+     * 
      * @param data
      *            the data.
      * @param callbackIndex
@@ -457,7 +456,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Returns an additional property value given a key.
-     *
+     * 
      * @param key
      *            the key.
      * @return the value.

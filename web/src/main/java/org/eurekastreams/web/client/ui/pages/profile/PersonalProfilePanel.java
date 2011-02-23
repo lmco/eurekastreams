@@ -22,6 +22,7 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SetBannerEvent;
@@ -46,7 +47,6 @@ import org.eurekastreams.web.client.model.PersonalBiographyModel;
 import org.eurekastreams.web.client.model.PersonalEducationModel;
 import org.eurekastreams.web.client.model.PersonalEmploymentModel;
 import org.eurekastreams.web.client.model.PersonalInformationModel;
-import org.eurekastreams.web.client.model.PersonalStreamSettingsModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LeftBarPanel;
 import org.eurekastreams.web.client.ui.common.pagedlist.GroupRenderer;
@@ -89,7 +89,7 @@ public class PersonalProfilePanel extends FlowPanel
     /**
      * Gets current user in session.
      */
-    private final Person currentUser = Session.getInstance().getCurrentPerson();
+    private final PersonModelView currentUser = Session.getInstance().getCurrentPerson();
     /**
      * Holds the PortalPage section of the profile display.
      */
@@ -132,7 +132,8 @@ public class PersonalProfilePanel extends FlowPanel
     /**
      * The panel that shows the checklist.
      */
-    private final ChecklistProgressBarPanel checklistPanel = new ChecklistProgressBarPanel("Employee Profile Checklist",
+    private final ChecklistProgressBarPanel checklistPanel = new ChecklistProgressBarPanel(
+            "Employee Profile Checklist",
             "Completing your profile is easy: upload your picture, enter your contact information, "
                     + "and add some work and personal related information. Employees that fill "
                     + "out their profile are more likely to be found by others across your organization.",
@@ -150,7 +151,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param accountId
      *            the account id.
      */
@@ -199,7 +200,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * We have the Person, so set up the Profile summary.
-     *
+     * 
      * @param inPerson
      *            the person whose profile is being displayed
      */
@@ -319,7 +320,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * Generates a panel to use as the message when a user is locked out of the system.
-     *
+     * 
      * @return the Panel content containing the locked message.
      */
     private Panel generateLockedUserMessage()
@@ -366,10 +367,10 @@ public class PersonalProfilePanel extends FlowPanel
         msgHeader.addStyleName("warning-message");
 
         Hyperlink directoryLink = new Hyperlink("profiles", Session.getInstance().generateUrl(
-            new CreateUrlRequest(Page.ORGANIZATIONS, "")));
+                new CreateUrlRequest(Page.ORGANIZATIONS, "")));
         Label msgText1 = new Label("The person you were looking for could not be found. Try browsing the  ");
         Label msgText2 = new Label(
-            " or searching the profiles by entering the name in the \"search profiles\" box above.");
+                " or searching the profiles by entering the name in the \"search profiles\" box above.");
 
         FlowPanel msgText = new FlowPanel();
         msgText.add(msgText1);
@@ -383,7 +384,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * Creates a new error report box and centers it on the page.
-     *
+     * 
      * @return The error report box, ready to have content added to it.
      */
     private Panel addNewCenteredErrorBox()
@@ -400,7 +401,6 @@ public class PersonalProfilePanel extends FlowPanel
 
         return errorReport;
     }
-                                                                                                                    
 
     /**
      * Set up the checklist.
@@ -470,14 +470,13 @@ public class PersonalProfilePanel extends FlowPanel
         PersonalBiographyModel.getInstance().fetch(person.getAccountId(), true);
         PersonalEducationModel.getInstance().fetch(person.getId(), true);
         PersonalEmploymentModel.getInstance().fetch(person.getId(), true);
-        PersonalStreamSettingsModel.getInstance().fetch(person.getAccountId(), true);
         Session.getInstance().getActionProcessor().setQueueRequests(false);
         Session.getInstance().getActionProcessor().fireQueuedRequests();
     }
 
     /**
      * Creates and sets up the connections tab content.
-     *
+     * 
      * @param inPerson
      *            Person whose profile is being displayed.
      * @return Tab content.

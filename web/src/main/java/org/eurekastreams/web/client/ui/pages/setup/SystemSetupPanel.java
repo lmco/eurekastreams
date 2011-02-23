@@ -19,8 +19,8 @@ import java.util.ArrayList;
 
 import org.eurekastreams.server.domain.MembershipCriteria;
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.SystemSettings;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.data.InsertedRootOrganizationResponseEvent;
@@ -100,7 +100,7 @@ public class SystemSetupPanel extends FlowPanel
         Label step3 = form.addFormLabel("");
         step3.addStyleName("step-3");
 
-        final ArrayList<Person> coordinators = new ArrayList<Person>();
+        final ArrayList<PersonModelView> coordinators = new ArrayList<PersonModelView>();
 
         final PersonLookupFormElement personLookup = new PersonLookupFormElement("Define your coordinators",
                 "Add Coordinator", "Identify who will create your organization structure and make policy decisions",

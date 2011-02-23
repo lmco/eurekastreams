@@ -16,7 +16,6 @@
 package org.eurekastreams.web.client.ui.pages.profile.widgets;
 
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
 
 import com.google.gwt.user.client.ui.Anchor;
@@ -30,34 +29,42 @@ public class OrgAboutPanel extends FlowPanel
 {
     /**
      * Constructor.
-     *
-     * @param subject
-     *            the organization being described.
+     * 
+     * @param inOrgName
+     *            Org Name.
+     * @param inOrgEntityId
+     *            Org id.
+     * @param inAvatarId
+     *            Avatar id.
+     * @param inOrgUrl
+     *            Org url.
+     * @param inOrgDescription
+     *            Org description.
      */
-    public OrgAboutPanel(final Organization subject)
+    public OrgAboutPanel(final String inOrgName, final long inOrgEntityId, final String inAvatarId,
+            final String inOrgUrl, final String inOrgDescription)
     {
-        add(new AvatarWidget(subject, EntityType.ORGANIZATION, AvatarWidget.Size.Normal,
-                AvatarWidget.Background.White));
+        add(new AvatarWidget(inOrgEntityId, inAvatarId, EntityType.ORGANIZATION, AvatarWidget.Size.Normal));
 
-        Label title = new Label(subject.getName());
+        Label title = new Label(inOrgName);
         title.addStyleName("profile-org-title");
         this.add(title);
 
-        Anchor url = new Anchor("Website", subject.getUrl(), "_NEW");
+        Anchor url = new Anchor("Website", inOrgUrl, "_NEW");
         url.addStyleName("profile-website");
-        if (subject.getUrl() == null)
+        if (inOrgUrl == null)
         {
             url.addStyleName("no-value");
         }
         this.add(url);
 
-        if (subject.getDescription() != null && !subject.getDescription().equals(""))
+        if (inOrgDescription != null && !inOrgDescription.equals(""))
         {
             Label subheader = new Label("");
             subheader.addStyleName("profile-subheader");
             this.add(subheader);
 
-            Label mission = new Label(subject.getDescription());
+            Label mission = new Label(inOrgDescription);
             mission.addStyleName("profile-mission");
             this.add(mission);
         }

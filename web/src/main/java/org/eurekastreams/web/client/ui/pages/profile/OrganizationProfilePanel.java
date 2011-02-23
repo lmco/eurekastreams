@@ -17,19 +17,21 @@ package org.eurekastreams.web.client.ui.pages.profile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.server.action.request.directory.GetDirectorySearchResultsRequest;
 import org.eurekastreams.server.action.request.profile.GetPendingGroupsRequest;
 import org.eurekastreams.server.action.request.stream.GetFlaggedActivitiesByOrgRequest;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.ResourceSortCriteria;
 import org.eurekastreams.server.domain.ResourceSortCriterion;
 import org.eurekastreams.server.domain.ResourceSortCriterion.SortDirection;
 import org.eurekastreams.server.domain.ResourceSortCriterion.SortField;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
+import org.eurekastreams.server.search.modelview.OrganizationModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SetBannerEvent;
@@ -44,7 +46,7 @@ import org.eurekastreams.web.client.events.data.DeletedActivityResponseEvent;
 import org.eurekastreams.web.client.events.data.GotFlaggedActivitiesResponseEvent;
 import org.eurekastreams.web.client.events.data.GotOrganizationEmployeesResponseEvent;
 import org.eurekastreams.web.client.events.data.GotOrganizationGroupsResponseEvent;
-import org.eurekastreams.web.client.events.data.GotOrganizationInformationResponseEvent;
+import org.eurekastreams.web.client.events.data.GotOrganizationModelViewInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotOrganizationSubOrgsResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPendingGroupsResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedActivityFlagResponseEvent;
@@ -129,7 +131,7 @@ public class OrganizationProfilePanel extends FlowPanel
     /**
      * The org.
      */
-    private Organization org;
+    private OrganizationModelView org;
 
     /**
      * Connections Panel Holds the Small boxes with the connect counts.
@@ -191,10 +193,10 @@ public class OrganizationProfilePanel extends FlowPanel
 
         this.addStyleName("profile-page");
 
-        EventBus.getInstance().addObserver(GotOrganizationInformationResponseEvent.class,
-                new Observer<GotOrganizationInformationResponseEvent>()
+        EventBus.getInstance().addObserver(GotOrganizationModelViewInformationResponseEvent.class,
+                new Observer<GotOrganizationModelViewInformationResponseEvent>()
                 {
-                    public void update(final GotOrganizationInformationResponseEvent event)
+                    public void update(final GotOrganizationModelViewInformationResponseEvent event)
                     {
                         addGroupLink.setVisible(true);
                         setEntity(event.getResponse());
@@ -210,7 +212,7 @@ public class OrganizationProfilePanel extends FlowPanel
      * @param inOrg
      *            the person whose profile is being displayed
      */
-    public void setEntity(final Organization inOrg)
+    public void setEntity(final OrganizationModelView inOrg)
     {
         org = inOrg;
 
@@ -225,7 +227,8 @@ public class OrganizationProfilePanel extends FlowPanel
         // Update the Profile summary
         leftBarPanel.clear();
 
-        leftBarPanel.addChildWidget(new OrgAboutPanel(org));
+        leftBarPanel.addChildWidget(new OrgAboutPanel(org.getName(), org.getEntityId(), org.getAvatarId(),
+                org.getUrl(), org.getDescription()));
         leftBarPanel.addChildWidget(new PopularHashtagsPanel(ScopeType.ORGANIZATION, org.getShortName()));
 
         connectionsPanel = new ConnectionsPanel();
@@ -237,7 +240,8 @@ public class OrganizationProfilePanel extends FlowPanel
 
         leftBarPanel.addChildWidget(connectionsPanel);
 
-        leftBarPanel.addChildWidget(new PeopleListPanel(org.getLeaders(), "Leadership", PeopleListPanel.DISPLAY_ALL));
+        leftBarPanel.addChildWidget(new PeopleListPanel(new HashSet<PersonModelView>(org.getLeaders()), "Leadership",
+                PeopleListPanel.DISPLAY_ALL, null));
 
         final StreamPanel streamContent = new StreamPanel(true);
         String jsonRequest = StreamJsonRequestFactory.setOrganization(org.getShortName(),
@@ -441,7 +445,7 @@ public class OrganizationProfilePanel extends FlowPanel
         // We need the counts for both of the lists, but at most one list will perform an initial data load, we need to
         // force the load. (Only the list which is visible will load; if the tab is inactive then there are zero
         // visible lists.)
-        FlaggedActivityModel.getInstance().fetch(new GetFlaggedActivitiesByOrgRequest(org.getId(), 0, 1), false);
+        FlaggedActivityModel.getInstance().fetch(new GetFlaggedActivitiesByOrgRequest(org.getEntityId(), 0, 1), false);
         PendingGroupsModel.getInstance().fetch(new GetPendingGroupsRequest(org.getShortName(), 0, 1), false);
 
         // wire up events to refresh the list when something is removed
@@ -486,7 +490,7 @@ public class OrganizationProfilePanel extends FlowPanel
         activityLinkBuilder.addExtraParameter("manageFlagged", "true");
         flaggedRenderer.setActivityLinkBuilder(activityLinkBuilder);
         adminTabContent.addSet(flaggedActivitiesFilterName, FlaggedActivityModel.getInstance(), flaggedRenderer,
-                new GetFlaggedActivitiesByOrgRequest(org.getId(), 0, 0));
+                new GetFlaggedActivitiesByOrgRequest(org.getEntityId(), 0, 0));
         // pending groups "filter"
         adminTabContent.addSet(pendingGroupsFilterName, PendingGroupsModel.getInstance(), new PendingGroupRenderer(),
                 new GetPendingGroupsRequest(org.getShortName(), 0, 0));
