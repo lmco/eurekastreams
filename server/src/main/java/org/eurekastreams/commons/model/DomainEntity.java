@@ -22,7 +22,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
-import net.sf.gilead.pojo.java5.LightEntity;
+import net.sf.gilead.pojo.gwt.LightEntity;
 
 /**
  * The parent class for all domain entities. Contains the unique id key and

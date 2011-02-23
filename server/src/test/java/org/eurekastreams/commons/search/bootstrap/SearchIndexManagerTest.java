@@ -19,7 +19,6 @@ import org.hibernate.CacheMode;
 import org.hibernate.Query;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
-import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.SearchFactory;
 import org.jmock.Expectations;
@@ -101,7 +100,7 @@ public class SearchIndexManagerTest
                 one(fullTextSessionMock).createQuery("FROM SearchIndexManagerTest");
                 will(returnValue(queryMock));
 
-                one(queryMock).setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+//                one(queryMock).setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
                 will(returnValue(queryMock));
 
                 one(queryMock).setCacheMode(CacheMode.IGNORE);
@@ -187,7 +186,7 @@ public class SearchIndexManagerTest
                 one(fullTextSessionMock).createQuery("FROM HeyNow");
                 will(returnValue(queryMock));
 
-                one(queryMock).setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+//                one(queryMock).setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
                 will(returnValue(queryMock));
 
                 one(queryMock).setCacheMode(CacheMode.IGNORE);

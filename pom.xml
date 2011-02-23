@@ -71,16 +71,16 @@
 	    <url>http://download.java.net/maven/2/</url>
 	  </repository>
 	  <repository>
-	    <id>gwt maven</id>
-	    <url>http://gwt-maven.googlecode.com/svn/trunk/mavenrepo</url>
-	  </repository>
-	  <repository>
 	    <id>ibilio</id>
 	    <url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
 	  </repository>
+      <repository>
+        <id>Maven Central</id>
+        <url>http://repo1.maven.org/maven2/</url>
+      </repository>
 	  <repository>
 	    <id>jboss</id>
-	    <url>http://repository.jboss.com/maven2</url>
+	    <url>https://repository.jboss.org/nexus/content/groups/public/</url>
 	  </repository>
 	  <repository>
 	    <id>maven plugins</id>
@@ -126,7 +126,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding> 
-        <gwtVersion>1.7.0</gwtVersion>
+        <gwtVersion>2.2.0</gwtVersion>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <build.web.grbaseurl>http://localhost:8081</build.web.grbaseurl>
         <build.web.baseurl>http://localhost:8080</build.web.baseurl>

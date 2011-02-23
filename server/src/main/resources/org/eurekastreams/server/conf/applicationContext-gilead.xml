@@ -7,15 +7,15 @@
       http://www.springframework.org/schema/tx
       http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-	<bean id="proxyStore" class="net.sf.gilead.core.store.stateless.StatelessProxyStore" />
-
-	<bean id="persistenceUtil" class="net.sf.gilead.core.hibernate.HibernateJpaUtil">
-		<property name="entityManagerFactory" ref="entityManagerFactory"/>
-	</bean>
-
-	<bean id="persistentBeanManager" class="net.sf.gilead.core.PersistentBeanManager">
-		<property name="proxyStore" ref="proxyStore"/>
-		<property name="persistenceUtil" ref="persistenceUtil"/>
-	</bean>
-
+    <bean id="proxySerializer" class="net.sf.gilead.core.serialization.GwtProxySerialization" />
+    <bean id="proxyStore" class="net.sf.gilead.core.store.stateless.StatelessProxyStore">
+        <property name="proxySerializer" ref="proxySerializer" />
+    </bean>
+    <bean id="persistenceUtil" class="net.sf.gilead.core.hibernate.jpa.HibernateJpaUtil">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+    <bean id="persistentBeanManager" class="net.sf.gilead.core.PersistentBeanManager">
+        <property name="proxyStore" ref="proxyStore"/>
+        <property name="persistenceUtil" ref="persistenceUtil"/>
+    </bean>
 </beans>

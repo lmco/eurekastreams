@@ -2,7 +2,7 @@
 	<inherits name='com.google.gwt.user.User' />
 	<inherits name='com.allen_sauer.gwt.dnd.gwt-dnd' />
 	<inherits name="com.google.gwt.json.JSON" />
-	<inherits name='net.sf.gilead.Adapter4Gwt15' />
+	<inherits name='net.sf.gilead.Gilead4Gwt' />
 	<inherits name="org.eurekastreams.server.Domain" />
 	<inherits name="org.eurekastreams.commons.ActionRPCService" />
 	

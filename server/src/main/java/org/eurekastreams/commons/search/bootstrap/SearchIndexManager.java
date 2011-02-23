@@ -21,7 +21,6 @@ import org.hibernate.CacheMode;
 import org.hibernate.Query;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
-import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.search.FullTextSession;
 
 /**
@@ -99,7 +98,7 @@ public class SearchIndexManager
         log.info("Creating query to find batches of " + entityName);
         Query q = search.createQuery("FROM " + entityName)
         // set the result transformer
-                .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
+        //        .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY) <TODO COMMENTED OUT>
                 // minimize cache
                 .setCacheMode(CacheMode.IGNORE)
                 // limit fetch size
