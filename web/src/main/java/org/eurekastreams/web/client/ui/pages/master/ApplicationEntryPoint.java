@@ -129,6 +129,11 @@ public class ApplicationEntryPoint implements EntryPoint
     {
         ResourceBundle.INSTANCE.coreCss().ensureInjected();
         
+        if (getUserAgent().contains("msie 7"))
+        {
+            ResourceBundle.INSTANCE.ieCss().ensureInjected();
+        }
+        
         session.setActionProcessor(processor);
         session.setEventBus(EventBus.getInstance());
         session.setPeriodicEventManager(new PeriodicEventManager(APP_IDLE_TIMEOUT, new TimerFactory(), processor));
@@ -521,4 +526,16 @@ public class ApplicationEntryPoint implements EntryPoint
                 });
         });
     }-*/;
+    
+    /**
+     * Get the user agent (for detecting IE7).
+     * 
+     * @return the user agent.
+     */
+    public static native String getUserAgent()
+    /*-{
+        return navigator.userAgent.toLowerCase();
+    }-*/;
+
+    
 }

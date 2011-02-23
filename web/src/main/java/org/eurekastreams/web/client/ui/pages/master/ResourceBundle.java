@@ -12,4 +12,8 @@ public interface ResourceBundle extends ClientBundle
     @NotStrict
     @Source("style/core.css")
     public CssResource coreCss();
+    
+    @NotStrict
+    @Source("style/ie.css")
+    public CssResource ieCss();
 }
