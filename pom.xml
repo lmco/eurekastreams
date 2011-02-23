@@ -84,7 +84,7 @@
       </repository>
       <repository>
 	    <id>jboss</id>
-	    <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+	    <url>http://repository.jboss.org/nexus/content/groups/public/</url>
 	  </repository>
 	  <repository>
 	    <id>maven plugins</id>
@@ -108,7 +108,7 @@
       </repository>
       <repository>
         <id>gilead</id>
-        <url>https://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo</url>
+        <url>http://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo</url>
         <snapshots>
             <enabled>false</enabled>
         </snapshots>
