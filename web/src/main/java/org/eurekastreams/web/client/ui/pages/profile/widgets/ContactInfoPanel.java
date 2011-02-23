@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.web.client.ui.pages.profile.widgets;
 
-import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -28,11 +28,11 @@ public class ContactInfoPanel extends FlowPanel
 {
     /**
      * Constructor.
-     *
+     * 
      * @param person
      *            the person whose information is to be displayed.
      */
-    public ContactInfoPanel(final Person person)
+    public ContactInfoPanel(final PersonModelView person)
     {
         Label label = new Label("Contact Information");
         label.addStyleName("profile-subheader");
@@ -43,9 +43,8 @@ public class ContactInfoPanel extends FlowPanel
             // Email should never be null, but just in case
             if (person.getEmail() != null)
             {
-                HTML emailLink =
-                        new HTML("<a href=\"mailto:" + person.getEmail() + "\">" + person.getPreferredName() + " "
-                                + person.getLastName() + "</a>");
+                HTML emailLink = new HTML("<a href=\"mailto:" + person.getEmail() + "\">" + person.getPreferredName()
+                        + " " + person.getLastName() + "</a>");
                 emailLink.addStyleName("profile-email");
                 emailLink.addStyleName("profile-contact-info");
                 this.add(emailLink);
@@ -70,7 +69,7 @@ public class ContactInfoPanel extends FlowPanel
 
     /**
      * Utility method to apply text and style for a new label.
-     *
+     * 
      * @param text
      *            the label's text
      * @param style
