@@ -16,12 +16,12 @@
 package org.eurekastreams.web.client.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.eurekastreams.server.domain.ApplicationAlertNotification;
 import org.eurekastreams.web.client.events.NotificationCountAvailableEvent;
 import org.eurekastreams.web.client.events.data.GotNotificationListResponseEvent;
-import org.eurekastreams.web.client.events.data.SerializableList;
 import org.eurekastreams.web.client.ui.Session;
 
 /**
@@ -50,9 +50,9 @@ public class NotificationListModel extends BaseModel implements Fetchable<Serial
     public void fetch(final Serializable request, final boolean useClientCacheIfAvailable)
     {
         super.callReadAction("getApplicationAlerts", request,
-                new OnSuccessCommand<SerializableList<ApplicationAlertNotification>>()
+                new OnSuccessCommand<ArrayList<ApplicationAlertNotification>>()
                 {
-                    public void onSuccess(final SerializableList<ApplicationAlertNotification> response)
+                    public void onSuccess(final ArrayList<ApplicationAlertNotification> response)
                     {
                         Session.getInstance().getEventBus().notifyObservers(
                                 new GotNotificationListResponseEvent(response));

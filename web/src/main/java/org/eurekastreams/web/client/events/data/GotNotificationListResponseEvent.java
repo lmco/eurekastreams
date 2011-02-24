@@ -15,13 +15,15 @@
  */
 package org.eurekastreams.web.client.events.data;
 
+import java.util.ArrayList;
+
 import org.eurekastreams.server.domain.ApplicationAlertNotification;
 
 /**
  * List of application alert notifications received.
  */
 public class GotNotificationListResponseEvent extends
-        BaseDataResponseEvent<SerializableList<ApplicationAlertNotification>>
+        BaseDataResponseEvent<ArrayList<ApplicationAlertNotification>>
 {
     /**
      * Constructor.
@@ -29,7 +31,7 @@ public class GotNotificationListResponseEvent extends
      * @param inResponse
      *            Response.
      */
-    public GotNotificationListResponseEvent(final SerializableList<ApplicationAlertNotification> inResponse)
+    public GotNotificationListResponseEvent(final ArrayList<ApplicationAlertNotification> inResponse)
     {
         super(inResponse);
     }
