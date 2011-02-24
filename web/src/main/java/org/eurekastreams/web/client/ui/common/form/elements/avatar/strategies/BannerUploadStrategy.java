@@ -20,6 +20,7 @@ import org.eurekastreams.server.domain.Bannerable;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Organization;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.web.client.events.ClearUploadedImageEvent;
 import org.eurekastreams.web.client.events.Observer;
@@ -82,7 +83,7 @@ public class BannerUploadStrategy<T extends Bannerable> implements ImageUploadSt
             entityType = EntityType.ORGANIZATION;
             deleteAction = OrganizationBannerModel.getInstance();
         }
-        else if (entity.getClass() == DomainGroup.class)
+        else if (entity.getClass() == DomainGroup.class || entity.getClass() == DomainGroupModelView.class)
         {
             entityType = EntityType.GROUP;
             deleteAction = GroupBannerModel.getInstance();

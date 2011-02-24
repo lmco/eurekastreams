@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.domain.ActivityRestrictionEntity;
+import org.eurekastreams.server.domain.AvatarEntity;
 import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.Bannerable;
 import org.eurekastreams.server.domain.Followable;
@@ -28,7 +29,8 @@ import org.eurekastreams.server.domain.Followable;
 /**
  * ModelView for DomainGroup.
  */
-public class DomainGroupModelView extends ModelView implements Followable, ActivityRestrictionEntity, Bannerable
+public class DomainGroupModelView extends ModelView implements Followable, ActivityRestrictionEntity, Bannerable,
+        AvatarEntity
 {
     /**
      * The serial version id.
@@ -147,6 +149,21 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     private String avatarId = UNINITIALIZED_STRING_VALUE;
 
     /**
+     * Avatar crop size.
+     */
+    private Integer avatarCropSize = null;
+
+    /**
+     * Avatar crop value x.
+     */
+    private Integer avatarCropX = null;
+
+    /**
+     * Avatar crop value y.
+     */
+    private Integer avatarCropY = null;
+
+    /**
      * If the group is public.
      */
     private Boolean isPublic = false;
@@ -223,6 +240,16 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     private List<String> capabilities;
 
     /**
+     * Suppresses notifications to group coordinators when new activities are posted.
+     */
+    private boolean suppressPostNotifToCoordinator;
+
+    /**
+     * Suppresses notifications to group members when new activities are posted.
+     */
+    private boolean suppressPostNotifToMember;
+
+    /**
      * Load this object's properties from the input Map.
      * 
      * @param properties
@@ -241,6 +268,18 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
         if (properties.containsKey("avatarId"))
         {
             setAvatarId((String) properties.get("avatarId"));
+        }
+        if (properties.containsKey("avatarCropSize"))
+        {
+            setAvatarCropSize((Integer) properties.get("avatarCropSize"));
+        }
+        if (properties.containsKey("avatarCropX"))
+        {
+            setAvatarCropX((Integer) properties.get("avatarCropX"));
+        }
+        if (properties.containsKey("avatarCropY"))
+        {
+            setAvatarCropY((Integer) properties.get("avatarCropY"));
         }
         if (properties.containsKey("parentOrganizationId"))
         {
@@ -317,6 +356,14 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
         if (properties.containsKey("overview"))
         {
             setOverview((String) properties.get("overview"));
+        }
+        if (properties.containsKey("suppressPostNotifToCoordinator"))
+        {
+            setSuppressPostNotifToCoordinator((Boolean) properties.get("suppressPostNotifToCoordinator"));
+        }
+        if (properties.containsKey("suppressPostNotifToMember"))
+        {
+            setSuppressPostNotifToMember((Boolean) properties.get("suppressPostNotifToMember"));
         }
     }
 
@@ -817,4 +864,90 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     {
         capabilities = inCapabilities;
     }
+
+    /**
+     * @return the avatarCropSize
+     */
+    public Integer getAvatarCropSize()
+    {
+        return avatarCropSize;
+    }
+
+    /**
+     * @param inAvatarCropSize
+     *            the avatarCropSize to set
+     */
+    public void setAvatarCropSize(final Integer inAvatarCropSize)
+    {
+        avatarCropSize = inAvatarCropSize;
+    }
+
+    /**
+     * @return the avatarCropX
+     */
+    public Integer getAvatarCropX()
+    {
+        return avatarCropX;
+    }
+
+    /**
+     * @param inAvatarCropX
+     *            the avatarCropX to set
+     */
+    public void setAvatarCropX(final Integer inAvatarCropX)
+    {
+        avatarCropX = inAvatarCropX;
+    }
+
+    /**
+     * @return the avatarCropY
+     */
+    public Integer getAvatarCropY()
+    {
+        return avatarCropY;
+    }
+
+    /**
+     * @param inAvatarCropY
+     *            the avatarCropY to set
+     */
+    public void setAvatarCropY(final Integer inAvatarCropY)
+    {
+        avatarCropY = inAvatarCropY;
+    }
+
+    /**
+     * @return the suppressPostNotifToCoordinator
+     */
+    public boolean isSuppressPostNotifToCoordinator()
+    {
+        return suppressPostNotifToCoordinator;
+    }
+
+    /**
+     * @param inSuppressPostNotifToCoordinator
+     *            the suppressPostNotifToCoordinator to set
+     */
+    public void setSuppressPostNotifToCoordinator(final boolean inSuppressPostNotifToCoordinator)
+    {
+        suppressPostNotifToCoordinator = inSuppressPostNotifToCoordinator;
+    }
+
+    /**
+     * @return the suppressPostNotifToMember
+     */
+    public boolean isSuppressPostNotifToMember()
+    {
+        return suppressPostNotifToMember;
+    }
+
+    /**
+     * @param inSuppressPostNotifToMember
+     *            the suppressPostNotifToMember to set
+     */
+    public void setSuppressPostNotifToMember(final boolean inSuppressPostNotifToMember)
+    {
+        suppressPostNotifToMember = inSuppressPostNotifToMember;
+    }
+
 }

@@ -27,6 +27,7 @@ import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.domain.ActivityRestrictionEntity;
 import org.eurekastreams.server.domain.AvatarEntity;
 import org.eurekastreams.server.domain.BackgroundItem;
+import org.eurekastreams.server.domain.Bannerable;
 import org.eurekastreams.server.domain.Followable;
 import org.eurekastreams.server.domain.HasEmail;
 
@@ -34,7 +35,7 @@ import org.eurekastreams.server.domain.HasEmail;
  * A lightweight view of a Person containing everything needed for display of a search result of an Person.
  */
 public class PersonModelView extends ModelView implements Serializable, HasEmail, Followable,
-        ActivityRestrictionEntity, AvatarEntity
+        ActivityRestrictionEntity, AvatarEntity, Bannerable
 {
     /**
      * Serial version uid.
@@ -314,6 +315,11 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     private String biography = UNINITIALIZED_STRING_VALUE;
 
     /**
+     * Banner id.
+     */
+    private String bannerId = UNINITIALIZED_STRING_VALUE;
+
+    /**
      * Get the name of this entity.
      * 
      * @return the name of this entity
@@ -512,6 +518,10 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
         if (properties.containsKey("biography"))
         {
             setBiography((String) properties.get("biography"));
+        }
+        if (properties.containsKey("bannerId"))
+        {
+            setBannerId((String) properties.get("bannerId"));
         }
     }
 
@@ -1298,6 +1308,48 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     public void setBiography(final String inBiography)
     {
         biography = inBiography;
+    }
+
+    /**
+     * @see org.eurekastreams.server.domain.Bannerable#getBannerEntityId()
+     * @return the Person id
+     */
+    @Override
+    public Long getBannerEntityId()
+    {
+        return getEntityId();
+    }
+
+    /**
+     * @see org.eurekastreams.server.domain.Bannerable#getBannerId()
+     * @return the banner id
+     */
+    @Override
+    public String getBannerId()
+    {
+        return bannerId;
+    }
+
+    /**
+     * @see org.eurekastreams.server.domain.Bannerable#setBannerEntityId(java.lang.Long)
+     * @param inBannerEntityId
+     *            the person id
+     */
+    @Override
+    public void setBannerEntityId(final Long inBannerEntityId)
+    {
+        setEntityId(inBannerEntityId);
+    }
+
+    /**
+     * @see org.eurekastreams.server.domain.Bannerable#setBannerId(java.lang.String)
+     * @param inBannerId
+     *            the banner id
+     */
+    @Override
+    public void setBannerId(final String inBannerId)
+    {
+        bannerId = inBannerId;
     }
 
 }

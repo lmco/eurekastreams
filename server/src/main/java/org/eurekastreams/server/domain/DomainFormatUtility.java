@@ -32,7 +32,7 @@ public final class DomainFormatUtility
 
     /**
      * Stores the keywords provided as a list of capabilities.
-     *
+     * 
      * @param keywordList
      *            Comma-separated keyword list
      * @return List of capabilities described by the keyword list.
@@ -78,6 +78,32 @@ public final class DomainFormatUtility
                 builder.append(", ");
             }
             builder.append(item.getName());
+        }
+        return builder.toString();
+    }
+
+    /**
+     * Builds a displayable string (for edit boxes).
+     * 
+     * @param items
+     *            List of background items.
+     * @return Displayable string.
+     */
+    public static String buildCapabilitiesStringFromStrings(final List<String> items)
+    {
+        StringBuilder builder = new StringBuilder();
+        boolean first = true;
+        for (String item : items)
+        {
+            if (first)
+            {
+                first = false;
+            }
+            else
+            {
+                builder.append(", ");
+            }
+            builder.append(item);
         }
         return builder.toString();
     }

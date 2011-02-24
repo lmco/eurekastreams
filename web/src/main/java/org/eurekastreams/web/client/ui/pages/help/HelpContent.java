@@ -106,7 +106,7 @@ public class HelpContent extends Composite
                                     GotGroupModelViewInformationResponseEvent.class,
                                     new GotGroupResponseEvent(settings));
 
-                            GroupModel.getInstance().fetchModelView(settings.getSupportStreamGroupShortName(), true);
+                            GroupModel.getInstance().fetch(settings.getSupportStreamGroupShortName(), true);
                         }
                         else
                         {

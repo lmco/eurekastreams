@@ -127,34 +127,37 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
         String shortName = (String) inActionContext.getParams();
         DomainGroupModelView result = groupByShortNameMapper.fetchUniqueResult(shortName);
 
-        // set banner for group.
-        result.setBannerEntityId(result.getId());
-        if (result.getBannerId() == null)
+        if (result != null)
         {
-            getBannerIdStrategy.getBannerId(result.getParentOrganizationId(), result);
-        }
+            // set banner for group.
+            result.setBannerEntityId(result.getId());
+            if (result.getBannerId() == null)
+            {
+                getBannerIdStrategy.getBannerId(result.getParentOrganizationId(), result);
+            }
 
-        // short circuit here if restricted for user.
-        if (!isAccessPermitted(inActionContext.getPrincipal(), result))
-        {
-            // convert to new limited model view to prevent data leakage as model view grows.
-            DomainGroupModelView restricted = new DomainGroupModelView();
-            restricted.setRestricted(true);
-            restricted.setEntityId(result.getId());
-            restricted.setBannerId(result.getBannerId());
-            restricted.setName(result.getName());
-            restricted.setShortName(result.getShortName());
-            return restricted;
-        }
-        else
-        {
-            result.setRestricted(false);
-        }
+            // short circuit here if restricted for user.
+            if (!isAccessPermitted(inActionContext.getPrincipal(), result))
+            {
+                // convert to new limited model view to prevent data leakage as model view grows.
+                DomainGroupModelView restricted = new DomainGroupModelView();
+                restricted.setRestricted(true);
+                restricted.setEntityId(result.getId());
+                restricted.setBannerId(result.getBannerId());
+                restricted.setName(result.getName());
+                restricted.setShortName(result.getShortName());
+                return restricted;
+            }
+            else
+            {
+                result.setRestricted(false);
+            }
 
-        result.setCoordinators(personModelViewsByIdMapper.execute(groupCoordinatorIdsByGroupIdMapper.execute(result
-                .getId())));
+            result.setCoordinators(personModelViewsByIdMapper.execute(groupCoordinatorIdsByGroupIdMapper.execute(result
+                    .getId())));
 
-        result.setCapabilities(getCapabilities(result.getId()));
+            result.setCapabilities(getCapabilities(result.getId()));
+        }
 
         return result;
     }
