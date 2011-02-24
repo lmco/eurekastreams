@@ -24,7 +24,7 @@ import javax.persistence.Entity;
 import javax.persistence.PostPersist;
 import javax.persistence.PostUpdate;
 
-import net.sf.gilead.pojo.java5.LightEntity;
+import net.sf.gilead.pojo.gwt.LightEntity;
 
 import org.eurekastreams.server.domain.EntityCacheUpdater;
 

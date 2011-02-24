@@ -144,8 +144,13 @@
   <listener>
     <listener-class>org.springframework.security.ui.session.HttpSessionEventPublisher</listener-class>
   </listener>-->
-    
   <!-- end spring security listeners -->
+    
+  <!-- Render a Gadget -->
+  <servlet>
+    <servlet-name>org.eurekastreams.commons.server.ActionRPCServiceImpl/gwt_rpc</servlet-name>
+    <servlet-class>org.eurekastreams.commons.server.ActionRPCServiceImpl</servlet-class>
+  </servlet>
 
   <!-- Render a Gadget -->
   <servlet>
@@ -306,6 +311,11 @@
   <servlet-mapping>
     <servlet-name>makeRequest</servlet-name>
     <url-pattern>/gadgets/makeRequest</url-pattern>
+  </servlet-mapping>
+
+   <servlet-mapping>
+    <servlet-name>org.eurekastreams.commons.server.ActionRPCServiceImpl/gwt_rpc</servlet-name>
+    <url-pattern>/gwt_rpc</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>

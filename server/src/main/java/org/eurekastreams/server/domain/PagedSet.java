@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.gilead.pojo.java5.LightEntity;
+import net.sf.gilead.pojo.gwt.LightEntity;
 
 // TODO merge this with uinnovate's PagedSet and use from commons
 

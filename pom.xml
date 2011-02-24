@@ -71,16 +71,20 @@
 	    <url>http://download.java.net/maven/2/</url>
 	  </repository>
 	  <repository>
-	    <id>gwt maven</id>
-	    <url>http://gwt-maven.googlecode.com/svn/trunk/mavenrepo</url>
-	  </repository>
-	  <repository>
 	    <id>ibilio</id>
 	    <url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
 	  </repository>
-	  <repository>
+      <repository>
+        <id>Maven Central</id>
+        <url>http://repo1.maven.org/maven2/</url>
+      </repository>
+      <repository>
+        <id>JBoss maven2</id>
+        <url>http://repository.jboss.org/maven2</url>
+      </repository>
+      <repository>
 	    <id>jboss</id>
-	    <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+	    <url>http://repository.jboss.org/nexus/content/groups/public/</url>
 	  </repository>
 	  <repository>
 	    <id>maven plugins</id>
@@ -104,10 +108,14 @@
       </repository>
       <repository>
         <id>gilead</id>
-        <url>https://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo</url>
+        <url>http://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo</url>
         <snapshots>
             <enabled>false</enabled>
         </snapshots>
+      </repository>
+      <repository>
+        <id>GWT-DND</id>
+        <url>http://kanboard.kenai.com/maven2</url>
       </repository>
       <repository>
         <id>spy</id>
@@ -126,13 +134,13 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding> 
-        <gwtVersion>1.7.0</gwtVersion>
+        <gwtVersion>2.2.0</gwtVersion>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <build.web.grbaseurl>http://localhost:8081</build.web.grbaseurl>
         <build.web.baseurl>http://localhost:8080</build.web.baseurl>
         <build.web.host>localhost:8080</build.web.host>
         <build.web.apirestletbean>actionResource</build.web.apirestletbean>
-        <build.gwt.modulename>org.eurekastreams.web.ApplicationDev</build.gwt.modulename>
+        <build.gwt.modulename>org.eurekastreams.web.Application</build.gwt.modulename>
         <build.gwt.compile.style>PRETTY</build.gwt.compile.style>
         <build.gadget.container.name>eureka</build.gadget.container.name>
         <build.gadget.container.protocol>http://</build.gadget.container.protocol>

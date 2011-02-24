@@ -22,7 +22,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
-import net.sf.gilead.pojo.java5.LightEntity;
+import net.sf.gilead.pojo.gwt.LightEntity;
 
 /**
  * Object representing the person follower/following relationship.

@@ -22,20 +22,16 @@ import java.util.Map;
 import org.eurekastreams.commons.model.DomainEntity;
 
 /**
- * Abstract class used to represent a simple, lightweight view of an entity.
- * Subclasses just need to provide a getter and setter for each property to
- * expose, wrapping the 'setParameter' and 'getParameter' methods in this class.
- * The setters should take a property of the correct type, then call
- * super.setParameter([parameterName], [String version]) with a String version
- * of that value. The getter should return the value of
- * super.getParameter([parameterName]), and should be of type String.
- *
- * Implementations of this abstract class should feel free to use
- * non-string-based properties if needed, not using this class's implementation,
- * but the idea is that View objects are to display data, not manipulate it.
- *
- * TODO: Create and implement an interface to inject a HashMap of properties so
- * we don't have to use reflection anymore.
+ * Abstract class used to represent a simple, lightweight view of an entity. Subclasses just need to provide a getter
+ * and setter for each property to expose, wrapping the 'setParameter' and 'getParameter' methods in this class. The
+ * setters should take a property of the correct type, then call super.setParameter([parameterName], [String version])
+ * with a String version of that value. The getter should return the value of super.getParameter([parameterName]), and
+ * should be of type String.
+ * 
+ * Implementations of this abstract class should feel free to use non-string-based properties if needed, not using this
+ * class's implementation, but the idea is that View objects are to display data, not manipulate it.
+ * 
+ * TODO: Create and implement an interface to inject a HashMap of properties so we don't have to use reflection anymore.
  */
 public abstract class ModelView implements Serializable
 {
@@ -46,10 +42,9 @@ public abstract class ModelView implements Serializable
 
     /**
      * Load any properties that may have been returned from the search query.
-     *
+     * 
      * @param properties
-     *            a Map of properties returned by the search - injest any that
-     *            this class handles.
+     *            a Map of properties returned by the search - injest any that this class handles.
      */
     public void loadProperties(final Map<String, Object> properties)
     {
@@ -80,7 +75,7 @@ public abstract class ModelView implements Serializable
 
     /**
      * Get the name of this entity for toString - supplied by child.
-     *
+     * 
      * @return the name of this entity for toString
      */
     protected abstract String getEntityName();
@@ -88,7 +83,7 @@ public abstract class ModelView implements Serializable
     /**
      * Value to use for uninitialized String properties.
      */
-    public static final String UNINITIALIZED_STRING_VALUE = "(value not returned by search query)";
+    public static final String UNINITIALIZED_STRING_VALUE = "(value not returned by query)";
 
     /**
      * Value to use for uninitialized Long properties.
@@ -131,14 +126,13 @@ public abstract class ModelView implements Serializable
     private DomainEntity managedEntity;
 
     /**
-     * Extra information used to keep track of which search words matched which
-     * search fields.
+     * Extra information used to keep track of which search words matched which search fields.
      */
     private FieldMatch fieldMatch;
 
     /**
      * Return the managed Hibernate entity - only loaded if requested.
-     *
+     * 
      * @return the managed Hibernate entity.
      */
     protected DomainEntity getManagedEntity()
@@ -148,7 +142,7 @@ public abstract class ModelView implements Serializable
 
     /**
      * Set the managed entity (for serialization).
-     *
+     * 
      * @param theManagedEntity
      *            the managed entity to set
      */
@@ -159,7 +153,7 @@ public abstract class ModelView implements Serializable
 
     /**
      * Set the object's id (for serialization).
-     *
+     * 
      * @param inEntityId
      *            the id of the entity
      */
@@ -170,7 +164,7 @@ public abstract class ModelView implements Serializable
 
     /**
      * Get the Entity's id.
-     *
+     * 
      * @return the Entity's id.
      */
     public long getEntityId()
@@ -179,11 +173,9 @@ public abstract class ModelView implements Serializable
     }
 
     /**
-     * Get the search result's score, relative to the rest of the current
-     * request batch.
-     *
-     * @return the search result's score, relative to the rest of the current
-     *         request batch.
+     * Get the search result's score, relative to the rest of the current request batch.
+     * 
+     * @return the search result's score, relative to the rest of the current request batch.
      */
     public float getSearchIndexScore()
     {
@@ -191,12 +183,10 @@ public abstract class ModelView implements Serializable
     }
 
     /**
-     * Set the search result's score, relative to the rest of the current
-     * request batch.
-     *
+     * Set the search result's score, relative to the rest of the current request batch.
+     * 
      * @param theSearchScore
-     *            the search result's score, relative to the rest of the current
-     *            request batch.
+     *            the search result's score, relative to the rest of the current request batch.
      */
     protected void setSearchIndexScore(final float theSearchScore)
     {
@@ -204,14 +194,13 @@ public abstract class ModelView implements Serializable
     }
 
     /**
-     * The cached value of the previous toString() call, or null if not yet
-     * determined.
+     * The cached value of the previous toString() call, or null if not yet determined.
      */
     private String toStringValue = null;
 
     /**
      * Base toString implementation - hibernate class name and ID.
-     *
+     * 
      * @return a formatted message of [ClassName]#[ID]
      */
     @Override
@@ -235,7 +224,7 @@ public abstract class ModelView implements Serializable
 
     /**
      * Check if search explanation information is loaded.
-     *
+     * 
      * @return whether search explanation information is loaded.
      */
     public boolean hasSearchIndexExplanation()
@@ -250,7 +239,7 @@ public abstract class ModelView implements Serializable
 
     /**
      * Get the String representation of the search index explanation.
-     *
+     * 
      * @return the searchExplanationString
      */
     public String getSearchIndexExplanationString()
@@ -260,19 +249,18 @@ public abstract class ModelView implements Serializable
 
     /**
      * Set the string representation of the search index explanation.
-     *
+     * 
      * @param inSearchIndexExplanationString
      *            the searchExplanationString to set
      */
-    public void setSearchIndexExplanationString(
-            final String inSearchIndexExplanationString)
+    public void setSearchIndexExplanationString(final String inSearchIndexExplanationString)
     {
         searchIndexExplanationString = inSearchIndexExplanationString;
     }
 
     /**
      * Get the FieldMatch.
-     *
+     * 
      * @return the fieldMatch
      */
     public FieldMatch getFieldMatch()
@@ -282,7 +270,7 @@ public abstract class ModelView implements Serializable
 
     /**
      * Set the FieldMatch.
-     *
+     * 
      * @param inFieldMatch
      *            the fieldMatch to set
      */
@@ -293,6 +281,7 @@ public abstract class ModelView implements Serializable
 
     /**
      * Get the serverDateTime of when this object was populated by the server.
+     * 
      * @return - current server Date when the object was populated.
      */
     public Date getServerDateTime()
@@ -302,7 +291,9 @@ public abstract class ModelView implements Serializable
 
     /**
      * Set the serverDateTime of when this object was populated by the server.
-     * @param inServerDateTime - current server Date when the object was populated.
+     * 
+     * @param inServerDateTime
+     *            - current server Date when the object was populated.
      */
     public void setServerDateTime(final Date inServerDateTime)
     {

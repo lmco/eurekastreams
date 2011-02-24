@@ -21,7 +21,7 @@ package org.eurekastreams.server.domain;
  * @param <T>
  *            the type of entity managed
  */
-public interface EntityCacheUpdater<T extends net.sf.gilead.pojo.java5.LightEntity>
+public interface EntityCacheUpdater<T extends net.sf.gilead.pojo.gwt.LightEntity>
 {
     /**
      * Called on an entity that has just been updated.

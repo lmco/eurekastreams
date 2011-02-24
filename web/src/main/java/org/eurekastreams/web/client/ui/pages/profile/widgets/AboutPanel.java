@@ -15,16 +15,17 @@
  */
 package org.eurekastreams.web.client.ui.pages.profile.widgets;
 
-import java.util.List;
 import java.util.HashMap;
+import java.util.List;
 
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.search.modelview.OrganizationModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
+import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -43,11 +44,11 @@ public class AboutPanel extends FlowPanel
     /**
      * The Person whose data are being shown.
      */
-    private Person person = null;
+    private PersonModelView person = null;
 
     /**
      * Constructor.
-     *
+     * 
      * @param personAccountId
      *            the person whose being describe by this AboutPanel.
      */
@@ -58,32 +59,30 @@ public class AboutPanel extends FlowPanel
 
     /**
      * Loads up the person.
-     *
+     * 
      * @param inPerson
      *            the person.
      */
-    public void setPerson(final Person inPerson)
+    public void setPerson(final PersonModelView inPerson)
     {
         this.clear();
         person = inPerson;
         String nameStr = "";
         String titleStr = "";
 
-        Organization org = null;
-        List<Organization> relatedOrgs = null;
+        List<OrganizationModelView> relatedOrgs = null;
 
         String jobDescriptionStr = "";
         if (null != person)
         {
             nameStr = person.getPreferredName() + " " + person.getLastName();
             titleStr = person.getTitle();
-            org = person.getParentOrganization();
+
             jobDescriptionStr = person.getJobDescription();
             relatedOrgs = person.getRelatedOrganizations();
         }
 
-        AvatarWidget photo = new AvatarWidget(person, EntityType.PERSON, AvatarWidget.Size.Normal,
-                AvatarWidget.Background.White);
+        AvatarWidget photo = new AvatarWidget(person, EntityType.PERSON, Size.Normal);
         photo.addStyleName("profile-photo");
         this.add(photo);
 
@@ -107,18 +106,17 @@ public class AboutPanel extends FlowPanel
             this.add(jobDescription);
         }
 
-
         if (null != relatedOrgs && relatedOrgs.size() > 0)
         {
             Label orgLabel = new Label("Also supporting");
             orgLabel.addStyleName("also-supporting-org");
             this.add(orgLabel);
 
-            for (Organization relatedOrg : relatedOrgs)
+            for (OrganizationModelView relatedOrg : relatedOrgs)
             {
                 HashMap<String, String> params = new HashMap<String, String>();
                 params.put("tab", "Stream");
-                
+
                 Hyperlink orgLink = new Hyperlink(relatedOrg.getName(), Session.getInstance().generateUrl(
                         new CreateUrlRequest(Page.ORGANIZATIONS, relatedOrg.getShortName(), params)));
                 orgLink.addStyleName("profile-org");
@@ -127,8 +125,4 @@ public class AboutPanel extends FlowPanel
         }
 
     }
-
-
-
-
 }

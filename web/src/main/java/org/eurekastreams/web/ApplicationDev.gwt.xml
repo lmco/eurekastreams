@@ -1,24 +1,11 @@
 <module>
 	<inherits name='com.google.gwt.user.User' />
-	<inherits name='com.allen_sauer.gwt.dnd.gwt-dnd' />
 	<inherits name="com.google.gwt.json.JSON" />
-	<inherits name='net.sf.gilead.Adapter4Gwt15' />
-	<inherits name="org.eurekastreams.server.Domain" />
+    <inherits name="com.google.gwt.resources.Resources" />
 	<inherits name="org.eurekastreams.commons.ActionRPCService" />
-	
-	<!-- Browser-sensitive code should use the 'user.agent' property -->
-<!--      <set-property name="user.agent" value="ie6,ie8,gecko,gecko1_8,safari,opera"/> -->
+	<inherits name="org.eurekastreams.server.Domain" />
+	<inherits name='com.allen_sauer.gwt.dnd.gwt-dnd' />
+    <inherits name='net.sf.gilead.Gilead4Gwt'/>
     <set-property name="user.agent" value="ie6,ie8,gecko1_8"/>    
-	
-
-	<!-- Sets up the Action RPC service -->
-	<servlet path="/gwt_rpc" class="org.eurekastreams.commons.server.ActionRPCServiceImpl" />
-
-	<!-- Specify the app entry point class.                         -->
 	<entry-point class='org.eurekastreams.web.client.ui.pages.master.ApplicationEntryPoint' />
-
-	<!-- Uncomment to enable GWT logging -->
-	<!--<inherits name="com.allen_sauer.gwt.log.gwt-log-TRACE" />
-	<set-property name="log_DivLogger" value="DISABLED" />-->
-
 </module>

@@ -17,10 +17,7 @@ package org.eurekastreams.commons.server;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-
-import net.sf.gilead.core.PersistentBeanManager;
-import net.sf.gilead.gwt.PersistentRemoteService;
-
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.commons.client.ActionRPCService;
@@ -35,7 +32,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 /**
  * Server-side implementation of ActionRPCService.
  */
-public class ActionRPCServiceImpl extends PersistentRemoteService implements ActionRPCService
+public class ActionRPCServiceImpl extends RemoteServiceServlet implements ActionRPCService
 {
     /**
      * Serialization id.
@@ -78,8 +75,6 @@ public class ActionRPCServiceImpl extends PersistentRemoteService implements Act
         }
 
         springContext = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
-
-        setBeanManager((PersistentBeanManager) springContext.getBean("persistentBeanManager"));
 
         actionExecutorFactory = (ActionExecutorFactory) springContext.getBean("actionExecutorFactory");
     }

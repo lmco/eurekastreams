@@ -1,14 +1,3 @@
-/******************************************************************************
- * YUI CSS
- * Taken from skin.css which is the union of all the other YUI CSS files.
- * Images stored locally to avoid mixed http/https issues.
- *****************************************************************************/
-/*
-Copyright (c) 2009, Yahoo! Inc. All rights reserved.
-Code licensed under the BSD License:
-http://developer.yahoo.net/yui/license.txt
-version: 2.7.0
-*/
 .yui-skin-sam .yui-ac {
 	position: relative;
 	font-family: verdana;
@@ -85,19 +74,17 @@ version: 2.7.0
 
 .yui-button .first-child {
 	display: block; 
-	*display: inline-block;
 }
 
 .yui-button button,.yui-button a {
 	display: block; 
-	*display: inline-block;
 	border: none;
 	margin: 0;
 }
 
+
 .yui-button button {
 	background-color: transparent; 
-	*overflow: visible;
 	cursor: pointer;
 }
 
@@ -109,7 +96,7 @@ version: 2.7.0
 	border-width: 1px 0;
 	border-style: solid;
 	border-color: #bbbbbb;
-	background: url(images/yui/sprite.png) repeat-x 0 0;
+	background: url(style/images/yui/sprite.png) repeat-x 0 0;
 	margin: auto .25em;
 }
 
@@ -125,15 +112,8 @@ version: 2.7.0
 	padding: 0 10px;
 	font-size: 93%;
 	line-height: 2; 
-	*line-height: 1.7;
 	min-height: 2em; 
-	*min-height: auto;
 	color: #000;
-}
-
-.yui-skin-sam .yui-button a { 
-	*line-height: 1.875; 
-	*padding-bottom: 1px;
 }
 
 .yui-skin-sam .yui-split-button button,.yui-skin-sam .yui-menu-button button
@@ -144,11 +124,11 @@ version: 2.7.0
 }
 
 .yui-skin-sam .yui-menu-button button {
-	background-image: url(images/yui/menu-button-arrow.png);
+	background-image: url(style/images/yui/menu-button-arrow.png);
 }
 
 .yui-skin-sam .yui-split-button button {
-	background-image: url(images/yui/split-button-arrow.png);
+	background-image: url(style/images/yui/split-button-arrow.png);
 }
 
 .yui-skin-sam .yui-button-focus {
@@ -166,7 +146,7 @@ version: 2.7.0
 }
 
 .yui-skin-sam .yui-split-button-focus button {
-	background-image: url(images/yui/split-button-arrow-focus.png);
+	background-image: url(style/images/yui/split-button-arrow-focus.png);
 }
 
 .yui-skin-sam .yui-button-hover {
@@ -184,7 +164,7 @@ version: 2.7.0
 }
 
 .yui-skin-sam .yui-split-button-hover button {
-	background-image: url(images/yui/split-button-arrow-hover.png);
+	background-image: url(style/images/yui/split-button-arrow-hover.png);
 }
 
 .yui-skin-sam .yui-button-active {
@@ -211,7 +191,7 @@ version: 2.7.0
 }
 
 .yui-skin-sam .yui-split-button-activeoption button {
-	background-image: url(images/yui/split-button-arrow-active.png);
+	background-image: url(style/images/yui/split-button-arrow-active.png);
 }
 
 .yui-skin-sam .yui-radio-button-checked,.yui-skin-sam .yui-checkbox-button-checked
@@ -246,11 +226,11 @@ version: 2.7.0
 }
 
 .yui-skin-sam .yui-menu-button-disabled button {
-	background-image: url(images/yui/menu-button-arrow-disabled.png);
+	background-image: url(style/images/yui/menu-button-arrow-disabled.png);
 }
 
 .yui-skin-sam .yui-split-button-disabled button {
-	background-image: url(images/yui/split-button-arrow-disabled.png);
+	background-image: url(style/images/yui/split-button-arrow-disabled.png);
 }
 
 .yui-calcontainer {
@@ -348,8 +328,6 @@ version: 2.7.0
 
 .yui-calcontainer .yui-cal-nav .yui-cal-nav-btn button {
 	display: block; 
-	*display: inline-block; 
-	*overflow: visible;
 	border: none;
 	background-color: transparent;
 	cursor: pointer;
@@ -382,7 +360,7 @@ p#clear {
 }
 
 .yui-skin-sam .yui-calcontainer .title {
-	background: url(images/yui/sprite.png) repeat-x 0 0;
+	background: url(style/images/yui/sprite.png) repeat-x 0 0;
 	border-bottom: 1px solid #ccc;
 	font: 100% sans-serif;
 	color: #000;
@@ -404,7 +382,7 @@ p#clear {
 }
 
 .yui-skin-sam .yui-calcontainer .calclose {
-	background: url(images/yui/sprite.png) no-repeat 0 -300px;
+	background: url(style/images/yui/sprite.png) no-repeat 0 -300px;
 	width: 25px;
 	height: 15px;
 	top: .4em;
@@ -439,7 +417,7 @@ p#clear {
 }
 
 .yui-skin-sam .yui-calendar .calnavleft {
-	background: url(images/yui/sprite.png) no-repeat 0 -450px;
+	background: url(style/images/yui/sprite.png) no-repeat 0 -450px;
 	width: 25px;
 	height: 15px;
 	top: 0;
@@ -450,7 +428,7 @@ p#clear {
 }
 
 .yui-skin-sam .yui-calendar .calnavright {
-	background: url(images/yui/sprite.png) no-repeat 0 -500px;
+	background: url(style/images/yui/sprite.png) no-repeat 0 -500px;
 	width: 25px;
 	height: 15px;
 	top: 0;
@@ -584,7 +562,7 @@ p#clear {
 }
 
 .yui-skin-sam .yui-calendar a.calnav:hover {
-	background: url(images/yui/sprite.png) repeat-x 0 0;
+	background: url(style/images/yui/sprite.png) repeat-x 0 0;
 	border-color: #A0A0A0;
 	cursor: pointer;
 }
@@ -654,7 +632,7 @@ p#clear {
 
 .yui-skin-sam .yui-calcontainer .yui-cal-nav .yui-cal-nav-btn {
 	border: 1px solid #bbbbbb;
-	background: url(images/yui/sprite.png) repeat-x 0 0;
+	background: url(style/images/yui/sprite.png) repeat-x 0 0;
 	background-color: #ccc;
 	margin: auto .15em;
 }
@@ -663,9 +641,7 @@ p#clear {
 	padding: 0 8px;
 	font-size: 93%;
 	line-height: 2; 
-	*line-height: 1.7;
 	min-height: 2em; 
-	*min-height: auto;
 	color: #000;
 }
 
@@ -673,7 +649,7 @@ p#clear {
 	{
 	border: 1px solid #304369;
 	background-color: #426fd9;
-	background: url(images/yui/sprite.png) repeat-x 0 -1400px;
+	background: url(style/images/yui/sprite.png) repeat-x 0 -1400px;
 }
 
 .yui-skin-sam .yui-calcontainer .yui-cal-nav .yui-cal-nav-btn.yui-default button
@@ -718,12 +694,8 @@ p#clear {
 	margin: 1px;
 	overflow: hidden;
 	padding: 0;
-	text-align: center; 
-	*float: none; 
-	*display: inline-block; 
-	*zoom: 1; 
-	*display: inline;
-}
+	text-align: center;
+} 
 
 .yui-carousel .yui-carousel-item-selected {
 	border: 1px dashed #000;
@@ -768,13 +740,13 @@ p#clear {
 }
 
 .yui-skin-sam .yui-carousel-nav {
-	background: url(images/yui/sprite.png) repeat-x 0 0;
+	background: url(style/images/yui/sprite.png) repeat-x 0 0;
 	padding: 3px;
 	text-align: right;
 }
 
 .yui-skin-sam .yui-carousel-button {
-	background: url(images/yui/sprite.png) no-repeat 0 -600px;
+	background: url(style/images/yui/sprite.png) no-repeat 0 -600px;
 	float: right;
 	height: 19px;
 	margin: 5px;
@@ -809,7 +781,6 @@ p#clear {
 	background-position: 0 -550px;
 	margin-left: -100px;
 	margin-right: 50px; 
-	*margin: 5px 5px 5px -90px;
 }
 
 .yui-skin-sam .yui-carousel-vertical span.yui-carousel-first-button {
@@ -831,18 +802,11 @@ p#clear {
 	margin: 0;
 	margin-left: -220px;
 	margin-right: 100px; 
-	*margin-left: -160px; 
-	*margin-right: 0;
 	padding: 0;
-}
-
-.yui-skin-sam .yui-carousel-min-width .yui-carousel-nav ul { 
-	*margin-left: -170px;
 }
 
 .yui-skin-sam .yui-carousel-nav select {
 	position: relative; 
-	*right: 50px;
 	top: 4px;
 }
 
@@ -850,11 +814,11 @@ p#clear {
 	{
 	float: none;
 	margin: 0; 
-	*zoom: 1;
+	zoom: 1;
 }
 
 .yui-skin-sam .yui-carousel-nav ul li {
-	background: url(images/yui/sprite.png) no-repeat 0 -650px;
+	background: url(style/images/yui/sprite.png) no-repeat 0 -650px;
 	cursor: pointer;
 	float: left;
 	height: 9px;
@@ -885,7 +849,7 @@ p#clear {
 }
 
 .yui-skin-sam .yui-carousel-item-loading {
-	background: url(images/yui/ajax-loader.gif) no-repeat 50% 50%;
+	background: url(style/images/yui/ajax-loader.gif) no-repeat 50% 50%;
 	position: relative;
 	text-indent: -150px;
 }
@@ -939,7 +903,7 @@ p#clear {
 	left: 200px;
 	height: 183px;
 	width: 14px;
-	background: url(images/yui/hue_bg.png) no-repeat;
+	background: url(style/images/yui/hue_bg.png) no-repeat;
 	top: 4px;
 }
 
@@ -952,14 +916,14 @@ p#clear {
 	height: 182px;
 	width: 182px;
 	background-color: #F00;
-	background-image: url(images/yui/picker_mask.png);
+	background-image: url(style/images/yui/picker_mask.png);
 }
 
 * html .yui-picker-bg {
 	background-image: none;
 	filter: progid :   DXImageTransform.Microsoft.AlphaImageLoader (   src =
 		
-		 'images/yui/picker_mask.png', sizingMethod =   'scale' );
+		 'style/images/yui/picker_mask.png', sizingMethod =   'scale' );
 }
 
 .yui-picker-mask {
@@ -1043,10 +1007,10 @@ p#clear {
 .yui-picker-controls a {
 	font: 1em verdana, helvetica, clean, sans-serif;
 	display: block; 
-	*display: inline-block;
 	padding: 0;
 	color: #000;
 }
+
 
 .yui-overlay,.yui-panel-container {
 	visibility: hidden;
@@ -1139,8 +1103,8 @@ p#clear {
 
 .yui-skin-sam .yui-panel-container {
 	padding: 0 1px; 
-	*padding: 2px;
 }
+
 
 .yui-skin-sam .yui-panel {
 	position: relative;
@@ -1150,20 +1114,19 @@ p#clear {
 	border-width: 1px 0;
 	border-color: #bbbbbb;
 	z-index: 1; 
-	*border-width: 1px; 
-	*zoom: 1;
-	_zoom: normal;
+	zoom: 1;
 }
 
+
 .yui-skin-sam .yui-panel .hd,.yui-skin-sam .yui-panel .bd,.yui-skin-sam .yui-panel .ft
-	{
+{
 	border-style: solid;
 	border-width: 0 1px;
 	border-color: #bbbbbb;
 	margin: 0 -1px; 
-	*margin: 0; 
-	*border: 0;
 }
+
+
 
 .yui-skin-sam .yui-panel .hd {
 	border-bottom: solid 1px #ccc;
@@ -1177,11 +1140,11 @@ p#clear {
 	padding: 0 10px;
 	font-size: 93%;
 	line-height: 2; 
-	*line-height: 1.9;
 	font-weight: bold;
 	color: #000;
-	background: url(images/yui/sprite.png) repeat-x 0 -200px;
+	background: url(style/images/yui/sprite.png) repeat-x 0 -200px;
 }
+
 
 .yui-skin-sam .yui-panel .bd {
 	padding: 10px;
@@ -1199,7 +1162,7 @@ p#clear {
 	right: 6px;
 	width: 25px;
 	height: 15px;
-	background: url(images/yui/sprite.png) no-repeat 0 -300px;
+	background: url(style/images/yui/sprite.png) no-repeat 0 -300px;
 	cursor: pointer;
 }
 
@@ -1223,16 +1186,6 @@ p#clear {
 	left: -3px;
 	right: -3px;
 	bottom: -3px; 
-	*top: 4px; 
-	*left: -1px; 
-	*right: -1px; 
-	*bottom: -1px;
-	_top: 0;
-	_left: 0;
-	_right: 0;
-	_bottom: 0;
-	_margin-top: 3px;
-	_margin-left: -1px;
 	background-color: #000;
 	opacity: .12;
 	filter: alpha(opacity =   12);
@@ -1280,7 +1233,7 @@ p#clear {
 }
 
 .yui-skin-sam .yui-simple-dialog .bd .yui-icon {
-	background: url(images/yui/sprite.png) no-repeat 0 0;
+	background: url(style/images/yui/sprite.png) no-repeat 0 0;
 	width: 16px;
 	height: 16px;
 	margin-right: 10px;
@@ -1428,10 +1381,10 @@ th.yui-dt-hidden .yui-dt-liner,td.yui-dt-hidden .yui-dt-liner,th.yui-dt-hidden .
 	font-family: verdana;
 	font-size: inherit;
 	border-collapse: separate; 
-	*border-collapse: collapse;
 	border-spacing: 0;
 	border: 1px solid #7F7F7F;
 }
+
 
 .yui-skin-sam .yui-dt thead {
 	border-spacing: 0;
@@ -1448,7 +1401,7 @@ th.yui-dt-hidden .yui-dt-liner,td.yui-dt-hidden .yui-dt-liner,th.yui-dt-hidden .
 }
 
 .yui-skin-sam .yui-dt th {
-	background: #D8D8DA url(images/yui/sprite.png) repeat-x 0 0;
+	background: #D8D8DA url(style/images/yui/sprite.png) repeat-x 0 0;
 }
 
 .yui-skin-sam .yui-dt th,.yui-skin-sam .yui-dt th a {
@@ -1532,7 +1485,7 @@ th.yui-dt-hidden .yui-dt-liner,td.yui-dt-hidden .yui-dt-liner,th.yui-dt-hidden .
 }
 
 .yui-skin-sam th.yui-dt-asc,.yui-skin-sam th.yui-dt-desc {
-	background: url(images/yui/sprite.png) repeat-x 0 -100px;
+	background: url(style/images/yui/sprite.png) repeat-x 0 -100px;
 }
 
 .yui-skin-sam th.yui-dt-sortable .yui-dt-label {
@@ -1540,11 +1493,11 @@ th.yui-dt-hidden .yui-dt-liner,td.yui-dt-hidden .yui-dt-liner,th.yui-dt-hidden .
 }
 
 .yui-skin-sam th.yui-dt-asc .yui-dt-liner {
-	background: url(images/yui/dt-arrow-up.png) no-repeat right;
+	background: url(style/images/yui/dt-arrow-up.png) no-repeat right;
 }
 
 .yui-skin-sam th.yui-dt-desc .yui-dt-liner {
-	background: url(images/yui/dt-arrow-dn.png) no-repeat right;
+	background: url(style/images/yui/dt-arrow-dn.png) no-repeat right;
 }
 
 tbody .yui-dt-editable {
@@ -1569,7 +1522,7 @@ tbody .yui-dt-editable {
 }
 
 .yui-dt-editor .yui-dt-button button {
-	background: url(images/yui/sprite.png) repeat-x 0 0;
+	background: url(style/images/yui/sprite.png) repeat-x 0 0;
 	border: 1px solid #999;
 	width: 4em;
 	height: 1.8em;
@@ -1577,19 +1530,19 @@ tbody .yui-dt-editable {
 }
 
 .yui-dt-editor .yui-dt-button button.yui-dt-default {
-	background: url(images/yui/sprite.png) repeat-x 0 -1400px;
+	background: url(style/images/yui/sprite.png) repeat-x 0 -1400px;
 	background-color: #5584E0;
 	border: 1px solid #304369;
 	color: #FFF;
 }
 
 .yui-dt-editor .yui-dt-button button:hover {
-	background: url(images/yui/sprite.png) repeat-x 0 -1300px;
+	background: url(style/images/yui/sprite.png) repeat-x 0 -1300px;
 	color: #000;
 }
 
 .yui-dt-editor .yui-dt-button button:active {
-	background: url(images/yui/sprite.png) repeat-x 0 -1700px;
+	background: url(style/images/yui/sprite.png) repeat-x 0 -1700px;
 	color: #000;
 }
 
@@ -1820,8 +1773,8 @@ tbody .yui-dt-editable {
 
 .yui-toolbar-container.yui-toolbar-grouped span.yui-toolbar-separator {
 	height: 45px; 
-	*height: 50px;
 }
+
 
 .yui-toolbar-container.yui-toolbar-grouped .yui-toolbar-group span.yui-toolbar-separator
 	{
@@ -2118,10 +2071,12 @@ tbody .yui-dt-editable {
 
 .yui-editor-panel .yui-toolbar-bordersize span a span.yui-toolbar-bordersize-0
 	{ 
-	*top: 0;
 	text-indent: 0;
 	font-size: 75%;
 }
+
+
+
 
 .yui-editor-panel .yui-toolbar-bordersize span a span.yui-toolbar-bordersize-1
 	{
@@ -2136,23 +2091,23 @@ tbody .yui-dt-editable {
 .yui-editor-panel .yui-toolbar-bordersize span a span.yui-toolbar-bordersize-3
 	{
 	top: 2px; 
-	*top: -5px;
 	border-bottom: 3px solid black;
 }
 
 .yui-editor-panel .yui-toolbar-bordersize span a span.yui-toolbar-bordersize-4
-	{
+{
 	top: 1px; 
-	*top: -5px;
 	border-bottom: 4px solid black;
 }
+
+
 
 .yui-editor-panel .yui-toolbar-bordersize span a span.yui-toolbar-bordersize-5
 	{
 	top: 1px; 
-	*top: -5px;
 	border-bottom: 5px solid black;
 }
+
 
 .yui-toolbar-container .yui-toolbar-bordersize-menu,.yui-toolbar-container .yui-toolbar-bordertype-menu
 	{
@@ -2168,9 +2123,9 @@ tbody .yui-dt-editable {
 	{
 	position: absolute;
 	left: -12px; 
-	*top: 14px; 
-	*left: 0;
 }
+
+
 
 .yui-toolbar-bordersize-menu li.yui-toolbar-bordersize-1 a {
 	border-bottom: 1px solid black;
@@ -2319,7 +2274,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 }
 
 .yui-skin-sam .yui-toolbar-container .yui-toolbar-titlebar {
-	background: url(images/yui/sprite.png) repeat-x 0 -200px;
+	background: url(style/images/yui/sprite.png) repeat-x 0 -200px;
 	position: relative;
 }
 
@@ -2395,7 +2350,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 }
 
 .yui-skin-sam .yui-toolbar-container .collapse {
-	background: url(images/yui/sprite.png) no-repeat 0 -400px;
+	background: url(style/images/yui/sprite.png) no-repeat 0 -400px;
 }
 
 .yui-skin-sam .yui-toolbar-container .yui-toolbar-titlebar span.collapse
@@ -2413,7 +2368,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 
 .yui-skin-sam .yui-toolbar-container .yui-push-button,.yui-skin-sam .yui-toolbar-container .yui-color-button,.yui-skin-sam .yui-toolbar-container .yui-menu-button
 	{
-	background: url(images/yui/sprite.png) repeat-x 0 0;
+	background: url(style/images/yui/sprite.png) repeat-x 0 0;
 	position: relative;
 	display: block;
 	height: 22px;
@@ -2471,9 +2426,6 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 	border-color: #ccc;
 }
 
-.yui-skin-sam .yui-toolbar-container .yui-button .first-child { 
-	*left: 0;
-}
 
 .yui-skin-sam .yui-toolbar-container .yui-toolbar-fontname {
 	width: 135px;
@@ -2484,12 +2436,12 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 }
 
 .yui-skin-sam .yui-toolbar-container .yui-button-hover {
-	background: url(images/yui/sprite.png) repeat-x 0 -1300px;
+	background: url(style/images/yui/sprite.png) repeat-x 0 -1300px;
 	border-color: #bbbbbb;
 }
 
 .yui-skin-sam .yui-toolbar-container .yui-button-selected {
-	background: url(images/yui/sprite.png) repeat-x 0 -1700px;
+	background: url(style/images/yui/sprite.png) repeat-x 0 -1700px;
 	border-color: #bbbbbb;
 }
 
@@ -2510,19 +2462,19 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 	height: 18px;
 	width: 18px;
 	overflow: hidden;
-	background: url(images/yui/editor-sprite.gif) no-repeat 30px 30px;
+	background: url(style/images/yui/editor-sprite.gif) no-repeat 30px 30px;
 }
 
 .yui-skin-sam .yui-toolbar-container .yui-button-selected span.yui-toolbar-icon,.yui-skin-sam .yui-toolbar-container .yui-button-hover span.yui-toolbar-icon
 	{
-	background-image: url(images/yui/editor-sprite-active.gif);
+	background-image: url(style/images/yui/editor-sprite-active.gif);
 }
 
 .yui-skin-sam .yui-toolbar-container .visible .yuimenuitemlabel {
 	cursor: pointer;
-	color: #000; 
-	*position: relative;
+	color: #000;
 }
+
 
 .yui-skin-sam .yui-toolbar-container .yui-button-menu {
 	background-color: #fff;
@@ -2722,7 +2674,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 .yui-skin-sam .yui-toolbar-container .yui-toolbar-spinbutton a.up,.yui-skin-sam .yui-toolbar-container .yui-toolbar-spinbutton a.down
 	{
 	right: 2px;
-	background: url(images/yui/editor-sprite.gif) no-repeat 0 -1222px;
+	background: url(style/images/yui/editor-sprite.gif) no-repeat 0 -1222px;
 	overflow: hidden;
 	height: 6px;
 	width: 7px;
@@ -2753,7 +2705,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 
 .yui-skin-sam .yui-toolbar-container .yui-toolbar-select span.yui-toolbar-icon
 	{
-	background: url(images/yui/editor-sprite.gif) no-repeat 0 -1144px;
+	background: url(style/images/yui/editor-sprite.gif) no-repeat 0 -1144px;
 	overflow: hidden;
 	right: -2px;
 	top: 0;
@@ -2788,7 +2740,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 .yui-skin-sam .yui-editor-panel .hd h3 {
 	color: #000;
 	border: 1px solid #bbbbbb;
-	background: url(images/yui/sprite.png) repeat-x 0 -200px;
+	background: url(style/images/yui/sprite.png) repeat-x 0 -200px;
 	width: 99%;
 	position: relative;
 	margin: 0;
@@ -2879,10 +2831,10 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 
 .yui-skin-sam .yui-editor-panel .height-width {
 	margin: 3px 0 0 35px; 
-	*margin-left: 14px;
 	width: 42%; 
-	*width: 44%;
 }
+
+
 
 .yui-skin-sam .yui-editor-panel .yui-toolbar-group-border {
 	width: 190px;
@@ -2902,9 +2854,9 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 }
 
 .yui-skin-sam .yui-editor-panel .yui-toolbar-group-padding h3 {
-	margin-left: 25px; 
-	*margin-left: 12px;
-}
+	margin-left: 25px;
+} 
+
 
 .yui-skin-sam .yui-editor-panel .yui-toolbar-group-textflow {
 	width: 182px;
@@ -2923,7 +2875,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 }
 
 .yui-skin-sam .yui-editor-panel .hd span.close {
-	background: url(images/yui/sprite.png) no-repeat 0 -300px;
+	background: url(style/images/yui/sprite.png) no-repeat 0 -300px;
 	cursor: pointer;
 	display: block;
 	height: 16px;
@@ -2948,7 +2900,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 }
 
 .yui-skin-sam .yui-editor-panel .ft span.tip span.icon {
-	background: url(images/yui/editor-sprite.gif) no-repeat 0 -1260px;
+	background: url(style/images/yui/editor-sprite.gif) no-repeat 0 -1260px;
 	display: block;
 	height: 20px;
 	left: 2px;
@@ -2973,7 +2925,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 	left: 25px;
 	text-indent: 9999px;
 	overflow: hidden;
-	background: url(images/yui/editor-knob.gif) no-repeat 0 0;
+	background: url(style/images/yui/editor-knob.gif) no-repeat 0 0;
 }
 
 .yui-skin-sam .yui-editor-panel .yui-toolbar-container {
@@ -2988,7 +2940,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 }
 
 .yui-editor-blankimage {
-	background-image: url(images/yui/blankimage.png);
+	background-image: url(style/images/yui/blankimage.png);
 }
 
 .yui-skin-sam .yui-editor-container .yui-resize-handle-br {
@@ -3234,64 +3186,64 @@ body.yui-layout {
 
 .yui-skin-sam .yui-layout .yui-layout-unit-left div.yui-layout-hd .collapse
 	{
-	background: transparent url(images/yui/layout_sprite.png) no-repeat
+	background: transparent url(style/images/yui/layout_sprite.png) no-repeat
 		-20px -160px;
 	border: 1px solid #bbbbbb;
 }
 
 .yui-skin-sam .yui-layout .yui-layout-clip-left .collapse {
-	background: transparent url(images/yui/layout_sprite.png) no-repeat
+	background: transparent url(style/images/yui/layout_sprite.png) no-repeat
 		-20px -140px;
 	border: 1px solid #bbbbbb;
 }
 
 .yui-skin-sam .yui-layout .yui-layout-unit-right div.yui-layout-hd .collapse
 	{
-	background: transparent url(images/yui/layout_sprite.png) no-repeat
+	background: transparent url(style/images/yui/layout_sprite.png) no-repeat
 		-20px -200px;
 	border: 1px solid #bbbbbb;
 }
 
 .yui-skin-sam .yui-layout .yui-layout-clip-right .collapse {
-	background: transparent url(images/yui/layout_sprite.png) no-repeat
+	background: transparent url(style/images/yui/layout_sprite.png) no-repeat
 		-20px -120px;
 	border: 1px solid #bbbbbb;
 }
 
 .yui-skin-sam .yui-layout .yui-layout-unit-top div.yui-layout-hd .collapse
 	{
-	background: transparent url(images/yui/layout_sprite.png) no-repeat
+	background: transparent url(style/images/yui/layout_sprite.png) no-repeat
 		-20px -220px;
 	border: 1px solid #bbbbbb;
 }
 
 .yui-skin-sam .yui-layout .yui-layout-clip-top .collapse {
-	background: transparent url(images/yui/layout_sprite.png) no-repeat
+	background: transparent url(style/images/yui/layout_sprite.png) no-repeat
 		-20px -240px;
 	border: 1px solid #bbbbbb;
 }
 
 .yui-skin-sam .yui-layout .yui-layout-unit-bottom div.yui-layout-hd .collapse
 	{
-	background: transparent url(images/yui/layout_sprite.png) no-repeat
+	background: transparent url(style/images/yui/layout_sprite.png) no-repeat
 		-20px -260px;
 	border: 1px solid #bbbbbb;
 }
 
 .yui-skin-sam .yui-layout .yui-layout-clip-bottom .collapse {
-	background: transparent url(images/yui/layout_sprite.png) no-repeat
+	background: transparent url(style/images/yui/layout_sprite.png) no-repeat
 		-20px -180px;
 	border: 1px solid #bbbbbb;
 }
 
 .yui-skin-sam .yui-layout .yui-layout-unit div.yui-layout-hd .close {
-	background: transparent url(images/yui/layout_sprite.png) no-repeat
+	background: transparent url(style/images/yui/layout_sprite.png) no-repeat
 		-20px -100px;
 	border: 1px solid #bbbbbb;
 }
 
 .yui-skin-sam .yui-layout .yui-layout-hd {
-	background: url(images/yui/sprite.png) repeat-x 0 -1400px;
+	background: url(style/images/yui/sprite.png) repeat-x 0 -1400px;
 	border: 1px solid #bbbbbb;
 }
 
@@ -3309,11 +3261,11 @@ body.yui-layout {
 	border: 1px solid #bbbbbb;
 	border-bottom: none;
 	border-top: none; 
-	*border-bottom-width: 0; 
-	*border-top-width: 0;
 	background-color: #f2f2f2;
 	text-align: left;
 }
+
+
 
 .yui-skin-sam .yui-layout .yui-layout-unit div.yui-layout-bd-noft {
 	border-bottom: 1px solid #bbbbbb;
@@ -3334,9 +3286,10 @@ body.yui-layout {
 .yui-skin-sam .yui-layout div.yui-layout-ft {
 	border: 1px solid #bbbbbb;
 	border-top: none; 
-	*border-top-width: 0;
 	background-color: #f2f2f2;
 }
+
+
 
 .yui-skin-sam .yui-layout-unit .yui-resize-handle {
 	background-color: transparent;
@@ -3373,7 +3326,7 @@ body.yui-layout {
 	width: 6px;
 	top: 45%;
 	left: 0px;
-	background: transparent url(images/yui/layout_sprite.png) no-repeat 0
+	background: transparent url(style/images/yui/layout_sprite.png) no-repeat 0
 		-5px;
 }
 
@@ -3383,7 +3336,7 @@ body.yui-layout {
 	height: 6px;
 	width: 16px;
 	left: 45%;
-	background: transparent url(images/yui/layout_sprite.png) no-repeat
+	background: transparent url(style/images/yui/layout_sprite.png) no-repeat
 		-20px 0;
 }
 
@@ -3526,14 +3479,6 @@ body.yui-layout {
 	white-space: nowrap;
 }
 
-.yuimenubar ul { 
-	*zoom: 1;
-}
-
-.yuimenubar .yuimenu ul { 
-	*zoom: normal;
-}
-
 .yuimenubar>.bd>ul:after {
 	content: ".";
 	display: block;
@@ -3600,10 +3545,10 @@ body.yui-layout {
 .yui-skin-sam .yuimenubar {
 	font-size: 93%;
 	line-height: 2; 
-	*line-height: 1.9;
 	border: solid 1px #bbbbbb;
-	background: url(images/yui/sprite.png) repeat-x 0 0;
+	background: url(style/images/yui/sprite.png) repeat-x 0 0;
 }
+
 
 .yui-skin-sam .yuimenubarnav .yuimenubaritem {
 	border-right: solid 1px #ccc;
@@ -3617,22 +3562,21 @@ body.yui-layout {
 	border-style: solid;
 	border-color: #bbbbbb;
 	border-width: 1px 0; 
-	*position: relative;
 	margin: -1px 0;
 }
 
+
 .yui-skin-sam .yuimenubarnav .yuimenubaritemlabel {
-	padding-right: 20px; 
-	*display: inline-block;
+	padding-right: 20px;
 }
 
 .yui-skin-sam .yuimenubarnav .yuimenubaritemlabel-hassubmenu {
-	background: url(images/yui/menubaritem_submenuindicator.png) right
+	background: url(style/images/yui/menubaritem_submenuindicator.png) right
 		center no-repeat;
 }
 
 .yui-skin-sam .yuimenubaritem-selected {
-	background: url(images/yui/sprite.png) repeat-x 0 -1700px;
+	background: url(style/images/yui/sprite.png) repeat-x 0 -1700px;
 }
 
 .yui-skin-sam .yuimenubaritemlabel-selected {
@@ -3641,9 +3585,10 @@ body.yui-layout {
 
 .yui-skin-sam .yuimenubarnav .yuimenubaritemlabel-selected {
 	border-left-width: 1px;
-	margin-left: -1px; 
-	*left: -1px;
+	margin-left: -1px;
 }
+
+
 
 .yui-skin-sam .yuimenubaritemlabel-disabled {
 	cursor: default;
@@ -3652,29 +3597,24 @@ body.yui-layout {
 
 .yui-skin-sam .yuimenubarnav .yuimenubaritemlabel-hassubmenu-disabled {
 	background-image:
-		url(images/yui/menubaritem_submenuindicator_disabled.png);
+		url(style/images/yui/menubaritem_submenuindicator_disabled.png);
 }
 
 .yui-skin-sam .yuimenu {
 	font-size: 93%;
 	line-height: 1.5; 
-	*line-height: 1.45;
 }
+
 
 .yui-skin-sam .yuimenubar .yuimenu,.yui-skin-sam .yuimenu .yuimenu {
 	font-size: 100%;
 }
 
 .yui-skin-sam .yuimenu .bd { 
-	*zoom: 1;
-	_zoom: normal;
 	border: solid 1px #bbbbbb;
 	background-color: #fff;
 }
 
-.yui-skin-sam .yuimenu .yuimenu .bd { 
-	*zoom: normal;
-}
 
 .yui-skin-sam .yuimenu ul {
 	padding: 3px 0;
@@ -3710,7 +3650,7 @@ body.yui-layout {
 	{
 	height: 16px;
 	border: solid 1px #bbbbbb;
-	background: #fff url(images/yui/sprite.png) no-repeat 0 0;
+	background: #fff url(style/images/yui/sprite.png) no-repeat 0 0;
 }
 
 .yui-skin-sam .yuimenu .topscrollbar {
@@ -3743,18 +3683,18 @@ body.yui-layout {
 }
 
 .yui-skin-sam .yuimenuitemlabel .helptext {
-	margin-top: -1.5em; 
-	*margin-top: -1.45em;
-}
+	margin-top: -1.5em;
+} 
+
 
 .yui-skin-sam .yuimenuitem-hassubmenu {
-	background-image: url(images/yui/menuitem_submenuindicator.png);
+	background-image: url(style/images/yui/menuitem_submenuindicator.png);
 	background-position: right center;
 	background-repeat: no-repeat;
 }
 
 .yui-skin-sam .yuimenuitem-checked {
-	background-image: url(images/yui/menuitem_checkbox.png);
+	background-image: url(style/images/yui/menuitem_checkbox.png);
 	background-position: left center;
 	background-repeat: no-repeat;
 }
@@ -3775,12 +3715,12 @@ body.yui-layout {
 }
 
 .yui-skin-sam .yuimenuitem-hassubmenu-disabled {
-	background-image: url(images/yui/menuitem_submenuindicator_disabled.png)
+	background-image: url(style/images/yui/menuitem_submenuindicator_disabled.png)
 		;
 }
 
 .yui-skin-sam .yuimenuitem-checked-disabled {
-	background-image: url(images/yui/menuitem_checkbox_disabled.png);
+	background-image: url(style/images/yui/menuitem_checkbox_disabled.png);
 }
 
 .yui-skin-sam .yui-pg-container {
@@ -3860,7 +3800,7 @@ body.yui-layout {
 }
 
 .yui-skin-sam .yui-pv .hd {
-	background: url(images/yui/header_background.png) repeat-x;
+	background: url(style/images/yui/header_background.png) repeat-x;
 	min-height: 30px;
 	overflow: hidden;
 	zoom: 1;
@@ -3893,7 +3833,7 @@ body.yui-layout {
 .yui-skin-sam .yui-pv .hd span.yui-pv-busy {
 	height: 18px;
 	width: 18px;
-	background: url(images/yui/wait.gif) no-repeat;
+	background: url(style/images/yui/wait.gif) no-repeat;
 	overflow: hidden;
 	display: block;
 	float: right;
@@ -3950,12 +3890,12 @@ body.yui-layout {
 }
 
 .yui-skin-sam .yui-pv th.yui-dt-asc .yui-dt-liner {
-	background: transparent url(images/yui/asc.gif) no-repeat scroll right
+	background: transparent url(style/images/yui/asc.gif) no-repeat scroll right
 		center;
 }
 
 .yui-skin-sam .yui-pv th.yui-dt-desc .yui-dt-liner {
-	background: transparent url(images/yui/desc.gif) no-repeat scroll right
+	background: transparent url(style/images/yui/desc.gif) no-repeat scroll right
 		center;
 }
 
@@ -4251,7 +4191,7 @@ body.yui-layout {
 
 .yui-skin-sam .yui-resize .yui-resize-handle-inner-r,.yui-skin-sam .yui-resize .yui-resize-handle-inner-l
 	{
-	background: transparent url(images/yui/layout_sprite.png) no-repeat 0
+	background: transparent url(style/images/yui/layout_sprite.png) no-repeat 0
 		-5px;
 	height: 16px;
 	width: 5px;
@@ -4261,7 +4201,7 @@ body.yui-layout {
 
 .yui-skin-sam .yui-resize .yui-resize-handle-inner-t,.yui-skin-sam .yui-resize .yui-resize-handle-inner-b
 	{
-	background: transparent url(images/yui/layout_sprite.png) no-repeat
+	background: transparent url(style/images/yui/layout_sprite.png) no-repeat
 		-20px 0;
 	height: 5px;
 	width: 16px;
@@ -4270,25 +4210,25 @@ body.yui-layout {
 }
 
 .yui-skin-sam .yui-resize .yui-resize-handle-br {
-	background-image: url(images/yui/layout_sprite.png);
+	background-image: url(style/images/yui/layout_sprite.png);
 	background-repeat: no-repeat;
 	background-position: -22px -62px;
 }
 
 .yui-skin-sam .yui-resize .yui-resize-handle-tr {
-	background-image: url(images/yui/layout_sprite.png);
+	background-image: url(style/images/yui/layout_sprite.png);
 	background-repeat: no-repeat;
 	background-position: -22px -42px;
 }
 
 .yui-skin-sam .yui-resize .yui-resize-handle-tl {
-	background-image: url(images/yui/layout_sprite.png);
+	background-image: url(style/images/yui/layout_sprite.png);
 	background-repeat: no-repeat;
 	background-position: -22px -82px;
 }
 
 .yui-skin-sam .yui-resize .yui-resize-handle-bl {
-	background-image: url(images/yui/layout_sprite.png);
+	background-image: url(style/images/yui/layout_sprite.png);
 	background-repeat: no-repeat;
 	background-position: -22px -23px;
 }
@@ -4420,8 +4360,8 @@ body.yui-layout {
 
 .yui-toolbar-container.yui-toolbar-grouped span.yui-toolbar-separator {
 	height: 45px; 
-	*height: 50px;
 }
+
 
 .yui-toolbar-container.yui-toolbar-grouped .yui-toolbar-group span.yui-toolbar-separator
 	{
@@ -4717,8 +4657,7 @@ body.yui-layout {
 }
 
 .yui-editor-panel .yui-toolbar-bordersize span a span.yui-toolbar-bordersize-0
-	{ 
-	*top: 0;
+{ 
 	text-indent: 0;
 	font-size: 75%;
 }
@@ -4736,23 +4675,22 @@ body.yui-layout {
 .yui-editor-panel .yui-toolbar-bordersize span a span.yui-toolbar-bordersize-3
 	{
 	top: 2px; 
-	*top: -5px;
 	border-bottom: 3px solid black;
 }
+
 
 .yui-editor-panel .yui-toolbar-bordersize span a span.yui-toolbar-bordersize-4
 	{
 	top: 1px; 
-	*top: -5px;
 	border-bottom: 4px solid black;
 }
 
 .yui-editor-panel .yui-toolbar-bordersize span a span.yui-toolbar-bordersize-5
 	{
 	top: 1px; 
-	*top: -5px;
 	border-bottom: 5px solid black;
 }
+
 
 .yui-toolbar-container .yui-toolbar-bordersize-menu,.yui-toolbar-container .yui-toolbar-bordertype-menu
 	{
@@ -4767,10 +4705,9 @@ body.yui-layout {
 .yui-toolbar-bordersize-menu .yuimenuitemlabel .checkedindicator,.yui-toolbar-bordertype-menu .yuimenuitemlabel .checkedindicator
 	{
 	position: absolute;
-	left: -12px; 
-	*top: 14px; 
-	*left: 0;
-}
+	left: -12px;
+} 
+
 
 .yui-toolbar-bordersize-menu li.yui-toolbar-bordersize-1 a {
 	border-bottom: 1px solid black;
@@ -4919,7 +4856,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 }
 
 .yui-skin-sam .yui-toolbar-container .yui-toolbar-titlebar {
-	background: url(images/yui/sprite.png) repeat-x 0 -200px;
+	background: url(style/images/yui/sprite.png) repeat-x 0 -200px;
 	position: relative;
 }
 
@@ -4995,7 +4932,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 }
 
 .yui-skin-sam .yui-toolbar-container .collapse {
-	background: url(images/yui/sprite.png) no-repeat 0 -400px;
+	background: url(style/images/yui/sprite.png) no-repeat 0 -400px;
 }
 
 .yui-skin-sam .yui-toolbar-container .yui-toolbar-titlebar span.collapse
@@ -5013,7 +4950,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 
 .yui-skin-sam .yui-toolbar-container .yui-push-button,.yui-skin-sam .yui-toolbar-container .yui-color-button,.yui-skin-sam .yui-toolbar-container .yui-menu-button
 	{
-	background: url(images/yui/sprite.png) repeat-x 0 0;
+	background: url(style/images/yui/sprite.png) repeat-x 0 0;
 	position: relative;
 	display: block;
 	height: 22px;
@@ -5071,9 +5008,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 	border-color: #ccc;
 }
 
-.yui-skin-sam .yui-toolbar-container .yui-button .first-child { 
-	*left: 0;
-}
+
 
 .yui-skin-sam .yui-toolbar-container .yui-toolbar-fontname {
 	width: 135px;
@@ -5084,12 +5019,12 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 }
 
 .yui-skin-sam .yui-toolbar-container .yui-button-hover {
-	background: url(images/yui/sprite.png) repeat-x 0 -1300px;
+	background: url(style/images/yui/sprite.png) repeat-x 0 -1300px;
 	border-color: #bbbbbb;
 }
 
 .yui-skin-sam .yui-toolbar-container .yui-button-selected {
-	background: url(images/yui/sprite.png) repeat-x 0 -1700px;
+	background: url(style/images/yui/sprite.png) repeat-x 0 -1700px;
 	border-color: #bbbbbb;
 }
 
@@ -5110,19 +5045,19 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 	height: 18px;
 	width: 18px;
 	overflow: hidden;
-	background: url(images/yui/editor-sprite.gif) no-repeat 30px 30px;
+	background: url(style/images/yui/editor-sprite.gif) no-repeat 30px 30px;
 }
 
 .yui-skin-sam .yui-toolbar-container .yui-button-selected span.yui-toolbar-icon,.yui-skin-sam .yui-toolbar-container .yui-button-hover span.yui-toolbar-icon
 	{
-	background-image: url(images/yui/editor-sprite-active.gif);
+	background-image: url(style/images/yui/editor-sprite-active.gif);
 }
 
 .yui-skin-sam .yui-toolbar-container .visible .yuimenuitemlabel {
 	cursor: pointer;
-	color: #000; 
-	*position: relative;
-}
+	color: #000;
+} 
+
 
 .yui-skin-sam .yui-toolbar-container .yui-button-menu {
 	background-color: #fff;
@@ -5322,7 +5257,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 .yui-skin-sam .yui-toolbar-container .yui-toolbar-spinbutton a.up,.yui-skin-sam .yui-toolbar-container .yui-toolbar-spinbutton a.down
 	{
 	right: 2px;
-	background: url(images/yui/editor-sprite.gif) no-repeat 0 -1222px;
+	background: url(style/images/yui/editor-sprite.gif) no-repeat 0 -1222px;
 	overflow: hidden;
 	height: 6px;
 	width: 7px;
@@ -5353,7 +5288,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 
 .yui-skin-sam .yui-toolbar-container .yui-toolbar-select span.yui-toolbar-icon
 	{
-	background: url(images/yui/editor-sprite.gif) no-repeat 0 -1144px;
+	background: url(style/images/yui/editor-sprite.gif) no-repeat 0 -1144px;
 	overflow: hidden;
 	right: -2px;
 	top: 0;
@@ -5388,7 +5323,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 .yui-skin-sam .yui-editor-panel .hd h3 {
 	color: #000;
 	border: 1px solid #bbbbbb;
-	background: url(images/yui/sprite.png) repeat-x 0 -200px;
+	background: url(style/images/yui/sprite.png) repeat-x 0 -200px;
 	width: 99%;
 	position: relative;
 	margin: 0;
@@ -5479,10 +5414,9 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 
 .yui-skin-sam .yui-editor-panel .height-width {
 	margin: 3px 0 0 35px; 
-	*margin-left: 14px;
-	width: 42%; 
-	*width: 44%;
-}
+	width: 42%;
+} 
+
 
 .yui-skin-sam .yui-editor-panel .yui-toolbar-group-border {
 	width: 190px;
@@ -5502,9 +5436,9 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 }
 
 .yui-skin-sam .yui-editor-panel .yui-toolbar-group-padding h3 {
-	margin-left: 25px; 
-	*margin-left: 12px;
-}
+	margin-left: 25px;
+} 
+
 
 .yui-skin-sam .yui-editor-panel .yui-toolbar-group-textflow {
 	width: 182px;
@@ -5523,7 +5457,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 }
 
 .yui-skin-sam .yui-editor-panel .hd span.close {
-	background: url(images/yui/sprite.png) no-repeat 0 -300px;
+	background: url(style/images/yui/sprite.png) no-repeat 0 -300px;
 	cursor: pointer;
 	display: block;
 	height: 16px;
@@ -5548,7 +5482,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 }
 
 .yui-skin-sam .yui-editor-panel .ft span.tip span.icon {
-	background: url(images/yui/editor-sprite.gif) no-repeat 0 -1260px;
+	background: url(style/images/yui/editor-sprite.gif) no-repeat 0 -1260px;
 	display: block;
 	height: 20px;
 	left: 2px;
@@ -5573,7 +5507,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 	left: 25px;
 	text-indent: 9999px;
 	overflow: hidden;
-	background: url(images/yui/editor-knob.gif) no-repeat 0 0;
+	background: url(style/images/yui/editor-knob.gif) no-repeat 0 0;
 }
 
 .yui-skin-sam .yui-editor-panel .yui-toolbar-container {
@@ -5588,7 +5522,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 }
 
 .yui-editor-blankimage {
-	background-image: url(images/yui/blankimage.png);
+	background-image: url(style/images/yui/blankimage.png);
 }
 
 .yui-skin-sam .yui-editor-container .yui-resize-handle-br {
@@ -5608,7 +5542,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 }
 
 .yui-skin-sam .yui-h-slider {
-	background: url(images/yui/bg-h.gif) no-repeat 5px 0;
+	background: url(style/images/yui/bg-h.gif) no-repeat 5px 0;
 	height: 28px;
 	width: 228px;
 }
@@ -5618,7 +5552,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 }
 
 .yui-skin-sam .yui-v-slider {
-	background: url(images/yui/bg-v.gif) no-repeat 12px 0;
+	background: url(style/images/yui/bg-v.gif) no-repeat 12px 0;
 	height: 228px;
 	width: 48px;
 }
@@ -5688,11 +5622,11 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 	{
 	display: inline-block;
 	display: -moz-inline-stack; 
-	*display: inline;
 	vertical-align: bottom;
 	cursor: pointer;
 	zoom: 1;
 }
+
 
 .yui-navset-left .yui-nav li,.yui-navset-right .yui-nav li {
 	display: block;
@@ -5764,7 +5698,7 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 
 .yui-skin-sam .yui-navset .yui-nav a,.yui-skin-sam .yui-navset .yui-navset-top .yui-nav a
 	{
-	background: #d8d8d8 url(images/yui/sprite.png) repeat-x;
+	background: #d8d8d8 url(style/images/yui/sprite.png) repeat-x;
 	border: solid #a3a3a3;
 	border-width: 0 1px;
 	color: #000;
@@ -5787,13 +5721,13 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 
 .yui-skin-sam .yui-navset .yui-nav .selected a,.yui-skin-sam .yui-navset .yui-nav .selected a:focus,.yui-skin-sam .yui-navset .yui-nav .selected a:hover
 	{
-	background: #2647a0 url(images/yui/sprite.png) repeat-x left -1400px;
+	background: #2647a0 url(style/images/yui/sprite.png) repeat-x left -1400px;
 	color: #fff;
 }
 
 .yui-skin-sam .yui-navset .yui-nav a:hover,.yui-skin-sam .yui-navset .yui-nav a:focus
 	{
-	background: #bfdaff url(images/yui/sprite.png) repeat-x left -1300px;
+	background: #bfdaff url(style/images/yui/sprite.png) repeat-x left -1300px;
 	outline: 0;
 }
 
@@ -5928,81 +5862,81 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 .ygtvtn {
 	width: 18px;
 	height: 22px;
-	background: url(images/yui/treeview-sprite.gif) 0 -5600px no-repeat;
+	background: url(style/images/yui/treeview-sprite.gif) 0 -5600px no-repeat;
 }
 
 .ygtvtm {
 	width: 18px;
 	height: 22px;
 	cursor: pointer;
-	background: url(images/yui/treeview-sprite.gif) 0 -4000px no-repeat;
+	background: url(style/images/yui/treeview-sprite.gif) 0 -4000px no-repeat;
 }
 
 .ygtvtmh,.ygtvtmhh {
 	width: 18px;
 	height: 22px;
 	cursor: pointer;
-	background: url(images/yui/treeview-sprite.gif) 0 -4800px no-repeat;
+	background: url(style/images/yui/treeview-sprite.gif) 0 -4800px no-repeat;
 }
 
 .ygtvtp {
 	width: 18px;
 	height: 22px;
 	cursor: pointer;
-	background: url(images/yui/treeview-sprite.gif) 0 -6400px no-repeat;
+	background: url(style/images/yui/treeview-sprite.gif) 0 -6400px no-repeat;
 }
 
 .ygtvtph,.ygtvtphh {
 	width: 18px;
 	height: 22px;
 	cursor: pointer;
-	background: url(images/yui/treeview-sprite.gif) 0 -7200px no-repeat;
+	background: url(style/images/yui/treeview-sprite.gif) 0 -7200px no-repeat;
 }
 
 .ygtvln {
 	width: 18px;
 	height: 22px;
-	background: url(images/yui/treeview-sprite.gif) 0 -1600px no-repeat;
+	background: url(style/images/yui/treeview-sprite.gif) 0 -1600px no-repeat;
 }
 
 .ygtvlm {
 	width: 18px;
 	height: 22px;
 	cursor: pointer;
-	background: url(images/yui/treeview-sprite.gif) 0 0px no-repeat;
+	background: url(style/images/yui/treeview-sprite.gif) 0 0px no-repeat;
 }
 
 .ygtvlmh,.ygtvlmhh {
 	width: 18px;
 	height: 22px;
 	cursor: pointer;
-	background: url(images/yui/treeview-sprite.gif) 0 -800px no-repeat;
+	background: url(style/images/yui/treeview-sprite.gif) 0 -800px no-repeat;
 }
 
 .ygtvlp {
 	width: 18px;
 	height: 22px;
 	cursor: pointer;
-	background: url(images/yui/treeview-sprite.gif) 0 -2400px no-repeat;
+	background: url(style/images/yui/treeview-sprite.gif) 0 -2400px no-repeat;
 }
 
 .ygtvlph,.ygtvlphh {
 	width: 18px;
 	height: 22px;
 	cursor: pointer;
-	background: url(images/yui/treeview-sprite.gif) 0 -3200px no-repeat;
+	background: url(style/images/yui/treeview-sprite.gif) 0 -3200px no-repeat;
 }
 
 .ygtvloading {
 	width: 18px;
 	height: 22px;
-	background: url(images/yui/treeview-loading.gif) 0 0 no-repeat;
+	background: url(style/images/yui/treeview-loading.gif) 0 0 no-repeat;
 }
 
 .ygtvdepthcell {
 	width: 18px;
 	height: 22px;
-	background: url(images/yui/treeview-sprite.gif) 0 -8000px no-repeat;
+	background: url(style/images/yui/treeview-sprite.gif) 0 -8000px no-repeat;
 }
 
 .ygtvblankdepthcell {
@@ -6051,21 +5985,21 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 .ygtvok {
 	width: 18px;
 	height: 22px;
-	background: url(images/yui/treeview-sprite.gif) 0 -8800px no-repeat;
+	background: url(style/images/yui/treeview-sprite.gif) 0 -8800px no-repeat;
 }
 
 .ygtvok:hover {
-	background: url(images/yui/treeview-sprite.gif) 0 -8844px no-repeat;
+	background: url(style/images/yui/treeview-sprite.gif) 0 -8844px no-repeat;
 }
 
 .ygtvcancel {
 	width: 18px;
 	height: 22px;
-	background: url(images/yui/treeview-sprite.gif) 0 -8822px no-repeat;
+	background: url(style/images/yui/treeview-sprite.gif) 0 -8822px no-repeat;
 }
 
 .ygtvcancel:hover {
-	background: url(images/yui/treeview-sprite.gif) 0 -8866px no-repeat;
+	background: url(style/images/yui/treeview-sprite.gif) 0 -8866px no-repeat;
 }
 
 .ygtv-label-editor {
@@ -6107,35 +6041,14 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 	margin: auto;
 }
 
-/*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-	/******************************************************************************
- * YUI CSS overrides
- *****************************************************************************/
-	/* for imagecropper.css */
 .yui-skin-sam .yui-crop .yui-crop-mask {
 	background-color: #333333;
 }
 
-/* for resize.css */
 .yui-resize-proxy {
 	border: 1px dashed #333333;
 }
 
-/* for carousel.css */
 .yui-carousel-element li {
 	border: 1px solid #bbbbbb;
 }
@@ -6156,15 +6069,10 @@ h2.yui-editor-skipheader,h3.yui-editor-skipheader {
 	text-align: left;
 }
 
-/******************************************************************************
- * Global
- * CSS Rules that apply to elements or are used globally
- *****************************************************************************/
 * {
 	outline: none;
 }
 
-/* Forces a vertical scrollbar if one is not needed, to prevent the centering from shifting. */
 html {
 	overflow-y: scroll;
 }
@@ -6204,7 +6112,7 @@ button {
 
 .error {
 	color: red;
-	background: transparent url(images/red-error-icon-sm.png) no-repeat
+	background: transparent url(style/images/red-error-icon-sm.png) no-repeat
 		scroll 0 0;
 	height: 24px;
 	padding-left: 25px;
@@ -6248,8 +6156,8 @@ a:hover,.linked-label:hover {
 .clear {
 	clear: both;
 	height: 1px; 
-	*font-size: 1px;
 }
+
 
 .shadow-container {
 	background-color: #dddddd;
@@ -6272,7 +6180,7 @@ input.empty-labeled-textbox {
 .content-warning {
 	font-style: italic;
 	color: #666;
-	background: transparent url(images/information-circle-icon.png)
+	background: transparent url(style/images/information-circle-icon.png)
 		no-repeat scroll 0 0;
 	padding-left: 20px;
 	z-index: 1 ! important;
@@ -6292,9 +6200,6 @@ img {
 	display: inline;
 }
 
-/******************************************************************************
- * Header
- *****************************************************************************/
 body .main-contents .header-container {
 	position: relative;
 	padding-bottom: 0px;
@@ -6317,7 +6222,7 @@ body .main-contents .header-container {
 }
 
 .header-bar .search-list {
-	background: url('images/global-nav-bar-5px.png');
+	background: url('style/images/global-nav-bar-5px.png');
 	background-repeat: repeat-x;
 	height: 24px;
 }
@@ -6331,7 +6236,7 @@ body .main-contents .header-container {
 }
 
 .nav-bar {
-	background: url('images/navBg.png');
+	background: url('style/images/navBg.png');
 	background-repeat: repeat-x;
 	height: 35px;
 	width: 100%;
@@ -6362,7 +6267,7 @@ body .main-contents .header-container {
 
 .external-header-button {
 	width: 47px;
-	background: url('images/navLogo.png');
+	background: url('style/images/navLogo.png');
 	cursor: pointer;
 }
 
@@ -6375,32 +6280,32 @@ body .main-contents .header-container {
 
 .start-header-button>div {
 	width: 79px;
-	background: url('images/navStartPage.png');
+	background: url('style/images/navStartPage.png');
 }
 
 .activity-header-button>div {
 	width: 79px;
-	background: url('images/navActivity.png');
+	background: url('style/images/navActivity.png');
 }
 
 .directory-header-button>div {
 	width: 84px;
-	background: url('images/navProfiles.png');
+	background: url('style/images/navProfiles.png');
 }
 
 .my-profile-header-button>div {
 	width: 74px;
-	background: url('images/navMyProfile.png');
+	background: url('style/images/navMyProfile.png');
 }
 
 .settings-header-button>div {
 	width: 64px;
-	background: url('images/navSettings.png');
+	background: url('style/images/navSettings.png');
 }
 
 .help-header-button>div {
 	width: 46px;
-	background: url('images/navHelp.png');
+	background: url('style/images/navHelp.png');
 }
 
 .nav-bar ul.horizontal li div {
@@ -6413,15 +6318,6 @@ body .main-contents .header-container {
 	padding-top: 10px;
 }
 
-.nav-bar ul.main-nav li { 
-	*display: inline;
-	zoom: 1;
-}
-
-.nav-bar ul.user-bar li div { 
-	*display: inline;
-	zoom: 1;
-}
 
 .main-nav {
 	height: 35px;
@@ -6482,9 +6378,6 @@ body .main-nav .active  a,body .main-nav .active a:link,body .main-nav .active a
 	background: none;
 }
 
-/******************************************************************************
- * Lists
- *****************************************************************************/
 ul.horizontal {
 	padding-top: 3px;
 }
@@ -6492,8 +6385,8 @@ ul.horizontal {
 ul.horizontal,ul.horizontal li {
 	list-style: none;
 	display: inline-block;
-    *display: inline;
 }
+
 
 ul.horizontal li {
 	vertical-align: top;
@@ -6506,7 +6399,7 @@ ul.horizontal li div {
 	padding-right: 0px;
 }
 
-ul.barred li { /** border-left:1px solid white; */
+ul.barred li { 
 	padding-left: 0px;
 }
 
@@ -6514,9 +6407,6 @@ ul.barred li:first-child a {
 	border-left: none !important
 }
 
-/******************************************************************************
- * Structural
- *****************************************************************************/
 .main-contents div table {
 	width: 99%;
 }
@@ -6550,17 +6440,11 @@ div.content {
 	padding-bottom: 135px;
 }
 
-/******************************************************************************
- * Banner
- *****************************************************************************/
 div.banner-container {
 	padding-top: 100px;
 	border-bottom: 1px solid #BBBBBB;
 }
 
-/******************************************************************************
- * Footer
- *****************************************************************************/
 .footer-nav {
 	width: 100%;
 	padding-top: 5px;
@@ -6569,7 +6453,7 @@ div.banner-container {
 }
 
 .footer-nav .terms-of-service-link {
-	background-image:url("images/footerTermsOfService.png");
+	background-image:url("style/images/footerTermsOfService.png");
 	background-repeat:no-repeat;
 	display:block;
 	height:7px;
@@ -6582,7 +6466,7 @@ div.banner-container {
 }
 
 .footer-nav .powered-by-eureka {
-	background-image: url(images/poweredByEurekaStreams.png);
+	background-image: url(style/images/poweredByEurekaStreams.png);
 	height: 37px;
 	width: 212px;
 	float: right;
@@ -6592,7 +6476,7 @@ div.banner-container {
 }
 
 .footer-bar {
-	background-image: url(images/footerBackground.png);
+	background-image: url(style/images/footerBackground.png);
 	height: 95px;
 	width: 990px;
 	margin-top: -95px;
@@ -6602,7 +6486,6 @@ div.banner-container {
 	padding-left: 0;
 	margin-top: 20px;
 	display: inline-block; 
-	*display: inline;
 	zoom: 1;
 	margin-left: 0;
 }
@@ -6624,9 +6507,6 @@ div.banner-container {
 	padding-left: 15px;
 }
 
-/******************************************************************************
- * Modal
- *****************************************************************************/
 .gwt-PopupPanel {
 	border: 5px solid #808080;
 	padding: 0px;
@@ -6669,13 +6549,13 @@ div.banner-container {
 	margin-right: 4px;
 	position: relative;
 	z-index: 1001;
-	background: url(images/modalCloseBtn.png) no-repeat;
+	background: url(style/images/modalCloseBtn.png) no-repeat;
 	overflow: hidden;
 	text-indent: -1000em;
 }
 
 .modal-close:hover {
-	background: url(images/modalCloseBtnHover.png) no-repeat;
+	background: url(style/images/modalCloseBtnHover.png) no-repeat;
 }
 
 .modal-close a {
@@ -6688,17 +6568,15 @@ div.banner-container {
 }
 
 .modal-close a:hover {
-	background: url(images/modalCloseBtn.png) no-repeat;
+	background: url(style/images/modalCloseBtn.png) no-repeat;
 }
 
 .modal-title {
-	background: #eeeeee url(images/globalnavBg.png) repeat-x;
+	background: #eeeeee url(style/images/globalnavBg.png) repeat-x;
 	display: block;
 	height: 38px;
-	padding: 5px 3px; 
-	*padding-bottom: 10px;
-}
-
+	padding: 5px 3px;
+} 
 .modal-title .gwt-Label {
 	color: white;
 	font-size: 17px;
@@ -6706,9 +6584,6 @@ div.banner-container {
 	padding-left: 10px;
 }
 
-/******************************************************************************
- * Buttons
- *****************************************************************************/
 .confirm-button,.deny-button,.approve-button {
 	text-indent: 1000px;
 	overflow: hidden;
@@ -6718,27 +6593,27 @@ div.banner-container {
 
 .confirm-button {
 	width: 58px;
-	background: transparent url(images/confirm-btn-small.png) no-repeat;
+	background: transparent url(style/images/confirm-btn-small.png) no-repeat;
 	margin-right: 10px;
 }
 
 .approve-button {
 	width: 50px;
-	background: transparent url(images/approveBtnSmall.png) no-repeat;
+	background: transparent url(style/images/approveBtnSmall.png) no-repeat;
 }
 
 .deny-button {
 	width: 50px;
-	background: transparent url(images/denyBtnSmall.png) no-repeat;
+	background: transparent url(style/images/denyBtnSmall.png) no-repeat;
 }
 
 .login-button,.cancel-button {
 	display: inline-block;
 	zoom: 1; 
-	*display: inline;
 	overflow: hidden;
 	margin-right: 20px;
 }
+
 
 .login-button {
 	width: 75px;
@@ -6756,11 +6631,11 @@ div.banner-container {
 }
 
 .login-button a {
-	background: url(images/loginBtn.png);
+	background: url(style/images/loginBtn.png);
 }
 
 .cancel-button a {
-	background: url(images/cancelBtn.png);
+	background: url(style/images/cancelBtn.png);
 }
 
 div.close-button {
@@ -6773,16 +6648,14 @@ div.close-button {
 div.close-button a {
 	display: block;
 	padding-top: 20px;
-	background: url(images/modalCloseBtnSmall.png) no-repeat;
+	background: url(style/images/modalCloseBtnSmall.png) no-repeat;
 }
 
 div.close-button a:hover {
-	background: url(images/modalCloseBtnSmallHover.png) no-repeat;
+	background: url(style/images/modalCloseBtnSmallHover.png) no-repeat;
 }
 
-/******************************************************************************
- * Setup
- *****************************************************************************/
+
 .setup {
 	background-color: #dddddd;
 }
@@ -6813,25 +6686,25 @@ div.close-button a:hover {
 }
 
 .setup .step-1 {
-	background: url(images/step-1.png) no-repeat 30px 0;
+	background: url(style/images/step-1.png) no-repeat 30px 0;
 	height: 190px ! important;
 	margin-bottom: -230px;
 }
 
 .setup .step-2 {
-	background: url(images/step-2.png) no-repeat 30px 0;
+	background: url(style/images/step-2.png) no-repeat 30px 0;
 	height: 140px ! important;
 	margin-bottom: -180px;
 }
 
 .setup .step-3 {
-	background: url(images/step-3.png) no-repeat 30px 0;
+	background: url(style/images/step-3.png) no-repeat 30px 0;
 	height: 80px ! important;
 	margin-bottom: -120px;
 }
 
 .setup .step-4 {
-	background: url(images/step-4.png) no-repeat 30px 0;
+	background: url(style/images/step-4.png) no-repeat 30px 0;
 	height: 155px ! important;
 	margin-bottom: -195px;
 }
@@ -6869,7 +6742,7 @@ div.close-button a:hover {
 }
 
 .setup .form-submit-button a {
-	background-image: url(images/complete-setup-btn.png);
+	background-image: url(style/images/complete-setup-btn.png);
 }
 
 .setup .form-user-association .access-groups,.setup .form-sub-success,.setup .form-sub-error,.setup .person-lookup-form-element .person-container
@@ -6878,7 +6751,7 @@ div.close-button a:hover {
 }
 
 .welcome-to-eureka {
-	background: transparent url(images/welcome-icon-large.png) no-repeat
+	background: transparent url(style/images/welcome-icon-large.png) no-repeat
 		scroll 0 0;
 	height: 129px;
 	padding-left: 367px;
@@ -6889,9 +6762,7 @@ div.close-button a:hover {
 	width: 650px;
 }
 
-/******************************************************************************
- * Login
- *****************************************************************************/
+
 .login-content-container {
 	display: block;
 	width: 360px;
@@ -6975,9 +6846,7 @@ div.close-button a:hover {
 	background-color: #eeeeee;
 }
 
-/******************************************************************************
- * Employee Lookup
- *****************************************************************************/
+
 .employee-lookup-dialog {
 	width: 650px;
 }
@@ -7038,11 +6907,11 @@ div.close-button a:hover {
 }
 
 .lookup-select-button-inactive {
-	background: url(images/selectBtnInactive.png);
+	background: url(style/images/selectBtnInactive.png);
 }
 
 .lookup-select-button-active {
-	background: url(images/selectBtnActive.png);
+	background: url(style/images/selectBtnActive.png);
 }
 
 .lookup-cancel-button {
@@ -7064,12 +6933,11 @@ div.close-button a:hover {
 }
 
 .modal-content-panel form {
-	/* IE helpfully adds 20px margins to forms. Let's clear that out. */
 	margin: 0px;
 }
 
 .modal-content-panel .delete-button {
-	background: url("images/deleteBtn.png") repeat scroll 0 0 transparent;
+	background: url("style/images/deleteBtn.png") repeat scroll 0 0 transparent;
 	float: right;
 	height: 25px;
 	position: relative;
@@ -7083,12 +6951,8 @@ div.close-button a:hover {
 	width: auto;
 }
 
-/******************************************************************************
- * Organization Lookup
- *****************************************************************************/
+
 .org-lookup-form-element .form-lookup-button { 
-	*float: left; 
-	*margin-left: 220px;
 	margin-left: 15px;
 	display: block;
 }
@@ -7101,21 +6965,18 @@ div.close-button a:hover {
 	width: auto;
 	max-width: 400px;
 	margin-bottom: 5px; 
-	*margin-bottom: -10px !important;
 	margin-top: 2px;
 	margin-left: 15px;
 	padding-right: 7px;
 	padding-bottom: 5px;
 	border-bottom: 1px solid #BBBBBB;
-	display: inline-block; 
-	*display: inline; 
-	*zoom: 1;
-}
+	display: inline-block;
+} 
 
 .org-lookup-form-element .required-form-label {
-	position: relative; 
-	*top: -20px;
-}
+	position: relative;
+} 
+
 
 .multi-org-form-element-item {
 	margin-left: 15px;
@@ -7123,9 +6984,9 @@ div.close-button a:hover {
 
 .selected-org-name {
 	width: 250px;
-	display: inline-block; 
-	*display: inline;
-}
+	display: inline-block;
+} 
+
 
 .org-lookup-form-element .selected-org-name {
 	color: #525252;
@@ -7194,19 +7055,19 @@ body .org-tree-container>.org-tree {
 
 body .org-lookup-container .org-tree .expandable {
 	display: inline-block; 
-	*display: inline;
 	zoom: 1;
 	width: 11px;
 	height: 11px;
-	background: transparent url(images/plus.png) no-repeat scroll 0 0;
+	background: transparent url(style/images/plus.png) no-repeat scroll 0 0;
 	margin-right: 5px;
 	position: relative;
 	top: 5px;
 	float: left;
 }
 
+
 body .org-lookup-container .org-tree .expanded {
-	background: transparent url(images/minus.png) no-repeat scroll 0 0
+	background: transparent url(style/images/minus.png) no-repeat scroll 0 0
 		! important;
 }
 
@@ -7240,14 +7101,11 @@ body .org-lookup-container .org-tree .expanded {
 
 .multi-org-form-element-item>.gwt-Label {
 	display: inline-block; 
-	*display: inline;
 	zoom: 1;
 	width: 250px;
 }
 
-/******************************************************************************
- * Tabs
- *****************************************************************************/
+
 .portal-boundary div.tab-container {
 	padding-left: 5px;
 }
@@ -7284,7 +7142,6 @@ div.tab {
 }
 
 div.tab-container div.active,div.tab-container div.dropping {
-	/* Override tab style */
 	background-image: none ! important;
 	background-color: white;
 	border-bottom-width: 0px;
@@ -7311,7 +7168,6 @@ div.tab-container div.tab div div.gwt-Label {
 
 body div.tab-container div.active div div.gwt-Label {
 	padding-right: 0px;
-	/*	top: 0; */
 }
 
 .themeable div.tab {
@@ -7330,7 +7186,7 @@ body.themeable div.tab,body.themeable div.new-tab-button {
 }
 
 body.themeable div.new-tab-button {
-	background-image: url(images/gradient-overlay-25px.png);
+	background-image: url(style/images/gradient-overlay-25px.png);
 	background-repeat: repeat-x;
 	background-position: bottom;
 	overflow: hidden;
@@ -7361,7 +7217,7 @@ body.themeable div.new-tab-button {
 div.tab div div.gwt-MenuBar {
 	clear: both;
 	display: none;
-	background: url('images/menu-inactive.png') no-repeat;
+	background: url('style/images/menu-inactive.png') no-repeat;
 	overflow: hidden;
 	width: 13px;
 	height: 12px;
@@ -7371,16 +7227,13 @@ div.tab div div.gwt-MenuBar {
 }
 
 div.tab div div.gwt-MenuBar:hover {
-	background: url('images/menu-active.png') no-repeat;
+	background: url('style/images/menu-active.png') no-repeat;
 }
 
 div.gadget-zone-chrome-title-bar td.gwt-MenuItem {
 	text-indent: -100px
 }
 
-/******************************************************************************
- * Notifications
- *****************************************************************************/
 .notification-bar {
 	text-align: center;
 	width: 100%;
@@ -7391,29 +7244,29 @@ div.gadget-zone-chrome-title-bar td.gwt-MenuItem {
 .notification-bar .message,.notification-bar .notification-left,.notification-bar .notification-right
 	{
 	display: inline-block; 
-	*display: inline;
 	zoom: 1;
 }
+
 
 .notification-bar .message {
 	color: #343434;
 	width: auto;
 	height: 36px;
-	background: transparent url(images/feedbackMessageBoxCenter.png);
+	background: transparent url(style/images/feedbackMessageBoxCenter.png);
 	vertical-align: top;
 	padding-left: 15px;
-	padding-right: 5px; 
-	*padding-right: 0;
-}
+	padding-right: 5px;
+} 
+
 
 .notification-bar .notification-left {
-	background: transparent url(images/feedbackMessageBoxLeft.png);
+	background: transparent url(style/images/feedbackMessageBoxLeft.png);
 	height: 36px;
 	width: 5px;
 }
 
 .notification-bar .notification-right {
-	background: transparent url(images/feedbackMessageBoxRight.png);
+	background: transparent url(style/images/feedbackMessageBoxRight.png);
 	height: 36px;
 	width: 8px;
 }
@@ -7441,15 +7294,13 @@ div.message>div:first-child {
 	top: 8px;
 	margin-right: 5px;
 	zoom: 1;
-	display: inline-block; 
-	*display: inline;
-}
+	display: inline-block;
+} 
+
 
 div.message>span:first-child {
-	margin-right: 10px; 
-	*position: relative; 
-	*top: 3px;
-}
+	margin-right: 10px;
+} 
 
 div.message div.content .gwt-Hyperlink {
 	margin-left: 15px;
@@ -7460,15 +7311,16 @@ div.message .close-notification,div.message .undo-notification,div.message .undo
 	margin-left: 5px;
 	padding: 3px;
 	display: inline-block; 
-	*display: inline;
 	zoom: 1;
 	overflow: hidden;
 	text-indent: 1000em;
 	position: relative;
 }
 
+
+
 div.message .close-notification {
-	background: transparent url(images/modalCloseBtnSmall.png) no-repeat
+	background: transparent url(style/images/modalCloseBtnSmall.png) no-repeat
 		scroll 3px 3px;
 	top: 6px;
 	width: 15px;
@@ -7476,11 +7328,11 @@ div.message .close-notification {
 }
 
 div.message .close-notification:hover {
-	background-image: url(images/modalCloseBtnSmallHover.png);
+	background-image: url(style/images/modalCloseBtnSmallHover.png);
 }
 
 div.message .undo-seperator {
-	background: transparent url(images/feedbackMessageSeperator.png)
+	background: transparent url(style/images/feedbackMessageSeperator.png)
 		no-repeat scroll 3px 3px;
 	width: 2px;
 	height: 25px;
@@ -7488,7 +7340,7 @@ div.message .undo-seperator {
 }
 
 div.message .undo-notification {
-	background: transparent url(images/feedbackMessageUndoBtn.png) no-repeat
+	background: transparent url(style/images/feedbackMessageUndoBtn.png) no-repeat
 		scroll 3px 3px;
 	width: 15px;
 	height: 15px;
@@ -7497,18 +7349,14 @@ div.message .undo-notification {
 }
 
 div.message .undo-notification:hover {
-	background-image: url(images/feedbackMessageUndoBtnHover.png);
+	background-image: url(style/images/feedbackMessageUndoBtnHover.png);
 }
 
 div.notification-bar div.message div {
 	display: inline-block; 
-	*display: inline;
 	zoom: 1;
 }
 
-/******************************************************************************
- * Portal Page
- *****************************************************************************/
 div.active-layout {
 	float: left;
 	padding-left: 15px;
@@ -7533,25 +7381,22 @@ div.portal-pref-pane div.title div.gwt-Label {
 	padding-bottom: 5px;
 	text-align: left;
 	width: 300px;
-	display: inline-block; 
-	*display: inline;
-	zoom: 1;
-}
+	display: inline-block;
+} 
+
 
 div.portal-pref-pane div.title-bar-widget {
 	display: inline-block;
 	width: 470px;
-	text-align: right; 
-	*display: inline;
-	zoom: 1;
-}
+	text-align: right;
+} 
+
 
 div.portal-pref-pane div.title a.gwt-Anchor {
-	background: url(images/modalCloseBtn.png);
+	background: url(style/images/modalCloseBtn.png);
 	display: inline-block;
 	float: right;
 	margin-top: 10px; 
-	*margin-top: -30px;
 	height: 0px;
 	width: 24px;
 	overflow: hidden;
@@ -7579,35 +7424,35 @@ div.layout-icon a {
 }
 
 div.onecolumn a {
-	background: url('images/layout1Col.png') no-repeat;
+	background: url('style/images/layout1Col.png') no-repeat;
 }
 
 div.twocolumn a {
-	background: url('images/layout2col.png') no-repeat;
+	background: url('style/images/layout2col.png') no-repeat;
 }
 
 div.twocolumnleftwide a {
-	background: url('images/layout2Colb.png') no-repeat;
+	background: url('style/images/layout2Colb.png') no-repeat;
 }
 
 div.twocolumnrightwide a {
-	background: url('images/layout2Cola.png') no-repeat;
+	background: url('style/images/layout2Cola.png') no-repeat;
 }
 
 div.threecolumn a {
-	background: url('images/layout3Col.png') no-repeat;
+	background: url('style/images/layout3Col.png') no-repeat;
 }
 
 div.threecolumnleftwideheader a {
-	background: url('images/layout4Cola.png') no-repeat;
+	background: url('style/images/layout4Cola.png') no-repeat;
 }
 
 div.threecolumnrightwideheader a {
-	background: url('images/layout4Colb.png') no-repeat;
+	background: url('style/images/layout4Colb.png') no-repeat;
 }
 
 div.fourcolumn a {
-	background: url('images/layout4Col.png') no-repeat;
+	background: url('style/images/layout4Col.png') no-repeat;
 }
 
 div.carousel-clip-region {
@@ -7655,21 +7500,18 @@ div.active.dropping div.gwt-MenuBar {
 
 div.portal-pref-pane {
 	height: 275px;
-	background: url(images/layoutBG.png);
+	background: url(style/images/layoutBG.png);
 	padding: 10px;
 }
 
 div.portal-pref-pane div.inner {
 	margin: 10px auto -1px;
-	*margin-top: 5px;
 	width: 920px;
 	padding-bottom: 10px;
-	*padding-bottom: 15px;
 	border: 2px solid #cccccc;
-	background-color: white; 
-	*position: relative; 
-	*top: 10px;
-}
+	background-color: white;
+} 
+
 
 .two-thirds-column td {
 	width: 50%;
@@ -7677,7 +7519,6 @@ div.portal-pref-pane div.inner {
 
 .start-tab-content-container .drop-zone {
     padding-bottom: 20px;
-    *padding-bottom: 10px;
 }
 
 .drop-zone {
@@ -7750,9 +7591,7 @@ div.tab div div.dragdrop-handle,.gwt-Hyperlink {
 div.layout-spacer {
 	height: 20px;
 	width: 100%;
-	*width: auto;
 }
-
 div.layout-container table.dragdrop-dropTarget {
 	border: 2px solid transparent;
 	padding-left: 10px;
@@ -7764,9 +7603,9 @@ div.layout-container table.dragdrop-dropTarget {
 
 .portal-boundary {
 	clear: both;
-	margin-top: -64px; 
-	*margin-top: -59px;
-}
+	margin-top: -64px;
+} 
+
 
 .start-tab-content-container .dragdrop-positioner {
 	margin-top: 10px ! important;
@@ -7781,9 +7620,6 @@ div.layout-container table.dragdrop-dropTarget {
 	width: auto !important;
 }
 
-/******************************************************************************
- * Terms of Service
- *****************************************************************************/
 .terms-of-service-modal {
 	overflow: auto;
 	width: 500px;
@@ -7805,11 +7641,11 @@ body .read-only-tos .explanation
 
 .terms-of-service-modal .agree-button {
 	margin: 20px 10px 10px 30px;
-	background: url(images/agree-btn.png);
+	background: url(style/images/agree-btn.png);
 }
 
 body .terms-of-service-modal .agree-button-disabled {
-	background: url(images/agree-btn-inactive.png);
+	background: url(style/images/agree-btn-inactive.png);
 }
 
 .terms-of-service-modal .agree-button {
@@ -7818,11 +7654,11 @@ body .terms-of-service-modal .agree-button-disabled {
 	text-indent: 1000px;
 	display: inline-block;
 	zoom: 1; 
-	*display: inline;
 	overflow: hidden;
 	float: left;
 	margin-top: 20px;
 }
+
 
 .terms-of-service-modal .disagree-button {
 	position: relative;
@@ -7837,7 +7673,7 @@ body .terms-of-service-modal .agree-button-disabled {
 }
 
 .terms-of-service-modal .header {
-	background: transparent url(images/information-circle-icon.png)
+	background: transparent url(style/images/information-circle-icon.png)
 		no-repeat scroll 0 0;
 	padding-left: 20px;
 	margin: 10px 0 10px 15px;
@@ -7871,9 +7707,6 @@ body .terms-of-service-modal .agree-button-disabled {
 	top: 2px;
 }
 
-/******************************************************************************
- * Editable items
- *****************************************************************************/
 .editable-item .edit-controls {
 	width: auto;
 }
@@ -7885,16 +7718,16 @@ body .terms-of-service-modal .agree-button-disabled {
 
 .editable-item:hover .edit-controls {
 	display: inline-block; 
-	*display: inline;
 	zoom: 1;
 	cursor: pointer;
 }
 
+
 .delete,.edit {
 	display: inline-block; 
-	*display: inline;
 	zoom: 1;
 }
+
 
 .edit {
 	border-right: 1px solid #BBBBBB;
@@ -7910,18 +7743,15 @@ body .terms-of-service-modal .agree-button-disabled {
 	color: #F4BD00;
 }
 
-/******************************************************************************
- * Stream
- *****************************************************************************/
 .post-to-stream-container {
 	margin: 10px 10px 0px 10px; 
 	border: 1px solid #bbbbbb; 
-	*zoom: 1;
+	zoom: 1;
 }
 
 .post-to-stream {
 	padding: 10px 105px 10px 10px;
-	*zoom: 1;
+	zoom: 1;
 }
 
 .profile .post-to-stream
@@ -7930,9 +7760,9 @@ body .terms-of-service-modal .agree-button-disabled {
 }
 
 .post-to-stream.small {
-	overflow: hidden; 
-	*height: 34px;
-}
+	overflow: hidden;
+} 
+
 
 body .post-expanded-panel .content-warning {
 	
@@ -7946,23 +7776,20 @@ body .post-expanded-panel .content-warning {
 	background: #EEEEEE;
 	overflow: auto;
 	color: #333333; 
-	*position: static !important; 
-	*padding-bottom: 3px; 
-	*padding-top: 1px;
 	position: relative;
 }
+
 
 .header-bar .search-list {
 	position: relative;
 	top: 5px;
 	margin-left: 1px;
-	margin-right: 3px; 
-	*height: 22px; 
-	*top: 3px;
-}
+	margin-right: 3px;
+} 
+
 
 .header-bar .search-list .search-list-button {
-	background: #E2E2E2 url(images/globalNavSearchBtn.png) no-repeat scroll
+	background: #E2E2E2 url(style/images/globalNavSearchBtn.png) no-repeat scroll
 		0 1px;
 	height: 22px;
 	width: 25px;
@@ -7973,11 +7800,9 @@ body .post-expanded-panel .content-warning {
 	background-color: #E2E2E2;
 	color: #666;
 	border-top: 1px solid #999;
-	padding: 3px; 
-	*position: relative ! important; 
-	*top: -1px; 
-	*zoom: 1;
-}
+	padding: 3px;
+} 
+
 
 .search-list input {
 	border: 1px solid #BBB;
@@ -7985,11 +7810,9 @@ body .post-expanded-panel .content-warning {
 	width: 200px;
 	height: 16px;
 	padding: 3px;
-	vertical-align: text-top; 
-	*position: static !important;
-	/* position static for IE so autocomplete dropdown doesn't go behind it. (IE7 bug)
-	 See http://www.webmasterworld.com/css/3337315.htm */
-}
+	vertical-align: text-top;
+} 
+
 
 .search-header .title-wrapper {
 	max-width: 300px;
@@ -7998,21 +7821,15 @@ body .post-expanded-panel .content-warning {
 	float: left;
 	margin-left: 5px;
 	margin-top: 3px; 
-	*margin-top: 7px;
 	text-align: left;
 	position: relative;
-}
-
-.search-header input,.search-header .search-list-button { 
-	*position: relative ! important; 
-	*top: 2px;
 }
 
 .search-header .stream-title-fader {
 	width: 59px;
 	height: 20px;
 	top: 0;
-	background-image: url(images/streamHeaderOverlay.png);
+	background-image: url(style/images/streamHeaderOverlay.png);
 	zoom: 1;
 	display: block;
 	position: absolute ! important;
@@ -8024,7 +7841,6 @@ body .post-expanded-panel .content-warning {
 .search-header .title {
 	text-align: left;
     display: inline-block;
-    *display: inline;
     zoom: 1;
     vertical-align: top;
 	font-size: 14px;
@@ -8040,7 +7856,7 @@ body .post-expanded-panel .content-warning {
 .search-header .add-as-gadget {
 	float: left;
 	margin-left: 10px;
-	background: transparent url(images/createGadget.png) no-repeat scroll
+	background: transparent url(style/images/createGadget.png) no-repeat scroll
 		left bottom;
 	width: 30px;
 	line-height: 20px;
@@ -8048,13 +7864,12 @@ body .post-expanded-panel .content-warning {
 	text-indent: 1000em;
 	overflow: hidden;
 	margin-top: 2px; 
-	*margin-top: 6px;
 	position: relative;
 	z-index: 11 ! important;
 }
 
 .search-header .add-as-gadget:hover {
-	background: transparent url(images/createGadgetHover.png) no-repeat
+	background: transparent url(style/images/createGadgetHover.png) no-repeat
 		scroll left bottom;
 	text-indent: 35px;
 	width: auto;
@@ -8074,15 +7889,16 @@ body .post-expanded-panel .content-warning {
 
 .stream-atom-link
 {
-	background: transparent url(images/feed-icon-16x16.png);
+	background: transparent url(style/images/feed-icon-16x16.png);
 	width: 16px;
 	height: 16px;
 	display: inline-block;
-	*display: inline;
 	zoom: 1;
 	float: right;
 	margin-top:7px;
 }
+
+
 
 div.new-messages-notification {
 	margin-left: 35px;
@@ -8110,16 +7926,14 @@ div.new-messages-notification>div.refresh-stream {
 }
 
 .search-list .search-list-button {
-	background: transparent url(images/activityStreamSearchBtn.png)
+	background: transparent url(style/images/activityStreamSearchBtn.png)
 		no-repeat scroll left center;
 	border: 1px solid #BBB;
 	border-left: none;
 	height: 22px;
 	display: inline-block; 
-	*display: inline;
 	zoom: 1;
 	margin-top: 0; 
-	*margin-top: 1px;
 	width: 25px;
 	text-indent: 1000px;
 	overflow: hidden;
@@ -8130,10 +7944,9 @@ div.new-messages-notification>div.refresh-stream {
 .search-description {
 	background-color: #ffe488;
 	margin: 0 10px;
-	padding: 10px; 
-	*overflow: auto; 
-	*padding-bottom: 7px;
-}
+	padding: 10px;
+} 
+
 
 .search-description>div {
 	display: inline;
@@ -8146,11 +7959,6 @@ div.new-messages-notification>div.refresh-stream {
 	margin-right: 10px;
 }
 
-.profile .search-description .save-search { 
-	*right: 40px;
-}
-
-/* Activity Stream, Post:  Post input area */
 .post-to-stream .post-to-stream-title {
 	font-weight: bold;
 	margin-bottom: 5px;
@@ -8177,7 +7985,7 @@ div.new-messages-notification>div.refresh-stream {
 	border: 1px solid #bbbbbb;
 	font-size: 14px;
 	display: inline-block; 
-	*zoom: 1;
+	zoom: 1;
 }
 
 .profile .post-to-stream textarea {
@@ -8201,9 +8009,9 @@ body .post-to-stream.small .content-warning {
 	padding-top: 10px;
 	font-size: 12px;
 	font-style: normal;
-	background-position: left 10px; 
-	*position: static !important;
-}
+	background-position: left 10px;
+} 
+
 
 .post-to-stream.small .show-attach-link-panel,.post-to-stream.small .attach-link,.post-to-stream.small .post-to,.post-to-stream.small .characters-remaining,.post-to-stream.small .link-panel
 	{
@@ -8226,17 +8034,14 @@ body .post-to-stream .over-character-limit {
 	position: absolute !important;
 	top: 0px;
 	right: -90px;
-	display: inline-block; 
-	*display: inline; 
-	*zoom: 1;
-}
+	display: inline-block;
+} 
 
-/* Activity Stream, Post:  "Post To" stream selector */
+
 .post-to {
 	margin-top: 3px;
 	text-align: right;
 	width: 580px; 
-	*top: -5px;
 }
 
 .post-to .label {
@@ -8246,12 +8051,8 @@ body .post-to-stream .over-character-limit {
 
 .post-to .auto-complete {
 	display: inline-block; 
-	*display: inline; 
-	*zoom: 1;
-	margin-left: 5px; 
-	*margin-left: -20px; 
-	*width: 150px;
-}
+	margin-left: 5px;
+} 
 
 .share-message-dialog .post-to .auto-complete {
     padding-right: 8px;
@@ -8259,9 +8060,8 @@ body .post-to-stream .over-character-limit {
 .post-to .auto-complete input {
 	padding: 3px;
 	height: 16px;
-	padding-left: 7px; 
-	*top: 5px;
-}
+	padding-left: 7px;
+} 
 
 .share-message-dialog .auto-complete input {
 	top: -0;
@@ -8283,8 +8083,7 @@ body .post-to-stream .over-character-limit {
 
 .post-to .yui-ac-container
 {
-	width: 160px;	
-	*width: 158px;	
+	width: 160px;		
 }
 
 .post-to .yui-ac-input {
@@ -8310,7 +8109,6 @@ body .post-to-stream .over-character-limit {
 	display: none;
 }
 
-/* Activity Stream, Post:  Attach Link */
 .link-panel {
 	background-color: #EEE;
 	padding: 20px;
@@ -8330,7 +8128,7 @@ body .post-to-stream .over-character-limit {
 }
 
 .attach-link>.close,.link-panel>.close,.search-description>.close {
-	background: transparent url(images/modalCloseBtnSmall.png) no-repeat
+	background: transparent url(style/images/modalCloseBtnSmall.png) no-repeat
 		scroll 0 0;
 	text-indent: 1000em;
 	width: 21px;
@@ -8386,7 +8184,7 @@ body .post-to-stream .over-character-limit {
 .post-to-stream .show-attach-link-panel {
 	bottom: 0px;
 	padding-left: 20px;
-	background: url(images/postLinkBtnActive.png) no-repeat scroll 0 0;
+	background: url(style/images/postLinkBtnActive.png) no-repeat scroll 0 0;
 	height: 22px;
 	width: 100px;
 }
@@ -8397,7 +8195,7 @@ body .post-to-stream .over-character-limit {
 }
 
 body .attach-link .verifying-link {
-	background-image: url(images/wait-spinner.gif);
+	background-image: url(style/images/wait-spinner.gif);
 	height: 31px;
 }
 
@@ -8412,7 +8210,7 @@ body .attach-link .verifying-link {
 
 .post-to-stream .post-button {
 	text-indent: 1000em;
-	background: transparent url(images/postBtn.png) repeat scroll 0 0;
+	background: transparent url(style/images/postBtn.png) repeat scroll 0 0;
 	width: 77px;
 	height: 34px;
 	overflow: hidden;
@@ -8420,13 +8218,11 @@ body .attach-link .verifying-link {
 }
 
 body .post-to-stream .post-button.inactive {
-	background: transparent url(images/postBtnInactive.png) repeat scroll 0
+	background: transparent url(style/images/postBtnInactive.png) repeat scroll 0
 		0;
 }
 
-.stream-message-item { /* border-bottom: 1px solid #bbbbbb;
-		I cannot think of anywhere in the app where message items DO have a bottom border.  Everywhere I can think of, the style is overridden to remove it.
-	*/
+.stream-message-item { 
 	padding-bottom: 5px;
 	margin-top: 15px;
 	margin-left: 17px;
@@ -8459,14 +8255,14 @@ body .post-to-stream .post-button.inactive {
 }
 
 .flag-ignore-button {
-	background: transparent url(images/allowflaggedBtn.png) no-repeat scroll
+	background: transparent url(style/images/allowflaggedBtn.png) no-repeat scroll
 		0 0;
 	width: 58px;
 	height: 16px;
 }
 
 .flag-delete-button {
-	background: transparent url(images/deleteBtnSmall.png) no-repeat scroll
+	background: transparent url(style/images/deleteBtnSmall.png) no-repeat scroll
 		0 0;
 	width: 58px;
 	height: 16px;
@@ -8477,10 +8273,6 @@ body .post-to-stream .post-button.inactive {
 	padding-left: 20px;
 	overflow: hidden;
 	margin-left: 25px;
-}
-
-.stream-message-item .message-metadata span { 
-	*margin-left: -5px;
 }
 
 .thumbnail {
@@ -8548,10 +8340,10 @@ body .post-to-stream .post-button.inactive {
 
 .stream-message-item .message-metadata div {
 	display: inline-block; 
-	*display: inline;
 	zoom: 1;
 	color: #666666;
 }
+
 
 .message-metadata-source {
 	font-size: 14px;
@@ -8620,20 +8412,20 @@ body .post-to-stream .post-button.inactive {
 .like-count-widget
 {
 	zoom: 1;
-	background: transparent url(images/like-bg-front.png) no-repeat
+	background: transparent url(style/images/like-bg-front.png) no-repeat
 		scroll 0 0;
 	margin-left: 5px;
 	margin-right: 5px;
 	display: inline-block;
-	*display: inline;
 	height: 20px;
 	padding-left: 25px;
 	z-index: 100;
 }
 
+
 .users-who-liked-activity-wrapper
 {
-	background: transparent url(images/like-bg-front-hover.png) no-repeat
+	background: transparent url(style/images/like-bg-front-hover.png) no-repeat
 		scroll 0 0 ! important;
 }
 
@@ -8648,17 +8440,16 @@ body .post-to-stream .post-button.inactive {
 
 .like-count-widget .like-count
 {
-	background: transparent url(images/like-bg-back.png) no-repeat
+	background: transparent url(style/images/like-bg-back.png) no-repeat
 		scroll top right;
 	padding-right: 6px;
 	display: inline-block;
-	*display: inline;
-	zoom: 1;
 }
+
 
 .users-who-liked-activity-wrapper .like-count
 {
-	background: transparent url(images/like-bg-back-hover.png) no-repeat
+	background: transparent url(style/images/like-bg-back-hover.png) no-repeat
 		scroll top right;
 }
 
@@ -8669,31 +8460,30 @@ body .post-to-stream .post-button.inactive {
 	padding: 0 3px;
 	background-color: #e4e4e4;
 	display: inline-block;
-	*display: inline;
 	height: 19px;
 	padding-top: 1px;
 	margin-top: 1px;
-	zoom: 1;
 }
+
 	
 .users-who-liked-activity-wrapper a
 {
 	color: #fff;
 	background-color: #666;
 	font-size: 11px;
-	*height: 18px ! important;
 }
+
 
 .users-who-liked-activity .users-who-liked-activity-header
 {
-	background: transparent url(images/like-modal-top.png) repeat scroll 0	0;
+	background: transparent url(style/images/like-modal-top.png) repeat scroll 0	0;
 	height: 10px;	
 	zoom: 1;
 }
 
 .users-who-liked-activity .users-who-liked-activity-body
 {
-	background: transparent url(images/like-modal-bg.png) repeat scroll 0	0;
+	background: transparent url(style/images/like-modal-bg.png) repeat scroll 0	0;
 	padding: 0 10px 5px;
 	zoom: 1;
 }
@@ -8721,20 +8511,20 @@ body .post-to-stream .post-button.inactive {
 	height: 30px;
 	width: 30px;
 	display: inline-block;
-	*display: inline;
 }
+
 
 .users-who-liked-activity .users-who-liked-activity-body > div > * > a
 {
 	zoom: 1;
 	display: inline-block;
-	*display: inline;
 }
+
 
 
 .users-who-liked-activity .users-who-liked-activity-footer
 {
-	background: transparent url(images/like-modal-bottom.png) repeat scroll 0	0;
+	background: transparent url(style/images/like-modal-bottom.png) repeat scroll 0	0;
 	height: 9px;	
 	zoom: 1;
 }
@@ -8743,9 +8533,6 @@ body .post-to-stream .post-button.inactive {
 {
 	position: absolute ! important;
 	margin-left: -25px;
-	*margin-left: -27px;
-	*margin-top: -2px;
-	
 }
 
 .users-who-liked-activity
@@ -8760,10 +8547,9 @@ body .post-to-stream .post-button.inactive {
 }
 
 .stream-message-item:hover .message-actions-area {
-	display: inline-block; 
-	*display: inline;
-	zoom: 1;
-}
+	display: inline-block;
+} 
+
 
 .message-comment:first-child {
 	margin-top: 10px;
@@ -8771,9 +8557,8 @@ body .post-to-stream .post-button.inactive {
 
 .message-comment:hover .comment-actions-area {
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 }
+
 
 .action-link-separator {
 	font-size: 8px;
@@ -8784,33 +8569,33 @@ body .post-to-stream .post-button.inactive {
 
 .icon
 {
-	background: transparent url('images/icon-unknown-large.png') no-repeat scroll left center;
+	background: transparent url('style/images/icon-unknown-large.png') no-repeat scroll left center;
 	padding-left: 55px;
 	min-height: 50px;
 }
 .icon-ppt, .icon-pptx
 {
-	background-image: url('images/icon-ppt-large.png');
+	background-image: url('style/images/icon-ppt-large.png');
 }
 .icon-xls, .icon-xlsx
 {
-	background-image: url('images/icon-xls-large.png');
+	background-image: url('style/images/icon-xls-large.png');
 }
 .icon-doc, .icon-docx, .icon-txt, .icon-pdf
 {
-	background-image: url('images/icon-doc-large.png');
+	background-image: url('style/images/icon-doc-large.png');
 }
 .icon-mpp
 {
-	background-image: url('images/icon-mpp-large.png');
+	background-image: url('style/images/icon-mpp-large.png');
 }
 .icon-accdb
 {
-	background-image: url('images/icon-accd-large.png');
+	background-image: url('style/images/icon-accd-large.png');
 }
 .icon-jpg, .icon-jpeg, .icon-png, .icon-gif, .icon-bmp
 {
-	background-image: url('images/icon-image-large.png');
+	background-image: url('style/images/icon-image-large.png');
 }
 
 
@@ -8836,34 +8621,34 @@ body .post-to-stream .post-button.inactive {
 }
 
 .next-arrow {
-	background: transparent url(images/linkImgPagingRight.png)
+	background: transparent url(style/images/linkImgPagingRight.png)
 		no-repeat scroll 0 0;
 	margin-right: 10px;
 }
 
 body .next-arrow-disabled {
-    background: transparent url(images/linkImgPagingRight.png)
+    background: transparent url(style/images/linkImgPagingRight.png)
         no-repeat scroll 0 -38px ;
 }
 
 body .next-arrow:hover {
-    background: transparent url(images/linkImgPagingRight.png)
+    background: transparent url(style/images/linkImgPagingRight.png)
         no-repeat scroll 0 -19px ;
 }
 
 .previous-arrow {
-	background: transparent url(images/linkImgPagingLeft.png)
+	background: transparent url(style/images/linkImgPagingLeft.png)
 		no-repeat scroll 0 0;
 	margin-left: 10px;
 }
 
 body .previous-arrow-disabled {
-	background: transparent url(images/linkImgPagingLeft.png)
+	background: transparent url(style/images/linkImgPagingLeft.png)
 		no-repeat scroll 0 -38px;
 }
 
 body .previous-arrow:hover {
-    background: transparent url(images/linkImgPagingLeft.png)
+    background: transparent url(style/images/linkImgPagingLeft.png)
         no-repeat scroll 0 -19px;
 }
 
@@ -8888,20 +8673,16 @@ body .previous-arrow:hover {
 }
 
 .thumbnail-selector-controls div {
-	display: inline-block; 
-	*display: inline;
-	zoom: 1;
-}
+	display: inline-block;
+} 
+
 
 .thumbnail-selector-controls.no-thumbnail div {
 	display: none;
 }
 
-/******************************************************************************
- * Gadgets
- *****************************************************************************/
 .gadget-zone-chrome-title-bar-refresh-button a {
-	background: url(images/refresh-inactive.png) no-repeat center center;
+	background: url(style/images/refresh-inactive.png) no-repeat center center;
 	display: block;
 	width: 20px;
 	height: 20px;
@@ -8923,7 +8704,7 @@ body .previous-arrow:hover {
 }
 
 .gadget-zone-chrome-title-bar-refresh-button a:hover {
-	background: url(images/refresh-active.png) no-repeat center center;
+	background: url(style/images/refresh-active.png) no-repeat center center;
 }
 
 .gadgets-gadget {
@@ -8935,7 +8716,7 @@ body .previous-arrow:hover {
 	height: 100px;
 	padding-top: 50px;
 	text-align: center;
-	background: url(images/wait-spinner.gif) no-repeat center center;
+	background: url(style/images/wait-spinner.gif) no-repeat center center;
 	display: inline-block;
 }
 
@@ -8967,19 +8748,17 @@ body .previous-arrow:hover {
 
 .gadgets-gadget-user-prefs-dialog .label-area {
 	display: inline-block;
-	*display: inline;
-	*zoom: 1;
 	text-align: right;
     width:100px;
 	clear: left;
 }
 
+
 .gadgets-gadget-user-prefs-dialog .input-box {
 	display: inline-block;
-	*display: inline;
-	*zoom: 1;
 	width: 200px
-}
+	}
+
 
 .gadgets-gadget-user-prefs-dialog .input-box .text-box {
 	width: 200px
@@ -9078,7 +8857,7 @@ body .previous-arrow:hover {
 
 .form-error-box {
 	background-color: #FFD7D7;
-	background-image: url(images/validationWarning.png);
+	background-image: url(style/images/validationWarning.png);
 	background-position: 10px 10px;
 	background-repeat: no-repeat;
 	border: 2px solid red;
@@ -9099,10 +8878,9 @@ body .previous-arrow:hover {
 	display: block;
 	top: 0;
 	left: 0;
-	z-index: 1000; 
-	*background-color: #FFFFFF; 
-	*filter: alpha(opacity =     0);
-}
+	z-index: 1000;
+} 
+
 
 .hideable-textarea .required-form-label {
 	top: -23px;
@@ -9130,7 +8908,7 @@ body .previous-arrow:hover {
 }
 
 .posting-disabled-box>div {
-	background: url(images/information-circle-icon.png) no-repeat 0 0;
+	background: url(style/images/information-circle-icon.png) no-repeat 0 0;
 	margin: 0px auto;
 	width: 300px;
 	padding: 0px 20px;
@@ -9139,10 +8917,9 @@ body .previous-arrow:hover {
 
 .form-user-association .top-label {
 	display: inline-block; 
-	*display: block; 
-	*float: left;
 	margin-top: 0px;
 }
+
 
 .user-assoc-people-results {
 	font-color: #666;
@@ -9259,10 +9036,9 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 	color: #666666;
 	display: inline-block;
 	font-weight: bold;
-	margin-left: 10px; 
-	*display: inline; 
-	*zoom: 1;
-}
+	margin-left: 10px;
+} 
+
 
 .form-element .characters-remaining.over-character-limit {
 	color: red;
@@ -9298,26 +9074,24 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 	width: 77px;
 	overflow: hidden;
 	display: inline-block;
-	zoom: 1; 
-	*display: inline;
 }
+
 
 .form-button a {
 	padding-left: 1000px;
 	display: inline-block;
 	zoom: 1; 
-	*display: inline;
 	height: 25px;
 }
+
 
 .form-cancel-button,.form-submit-button,.form-update-button,.form-share-button
 	{
 	display: inline-block;
-	zoom: 1; 
-	*display: inline;
 	overflow: hidden;
 	float: left;
 }
+
 
 .form-submit-button,.form-update-button {
 	margin-top: 20px;
@@ -9346,17 +9120,17 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 	overflow: hidden;
 	text-decoration: none;
 	margin: 5px 0 0; 
-	*margin: 0;
 	text-align: left;
 }
 
+
 .form-submit-button a,a.form-submit-button {
-	background: url(images/submitBtn.png);
+	background: url(style/images/submitBtn.png);
 	width: 77px;
 }
 
 .form-update-button a,a.form-update-button {
-	background-image: url(images/saveChangesBtn.png);
+	background-image: url(style/images/saveChangesBtn.png);
 	width: 103px;
 }
 
@@ -9375,11 +9149,11 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 }
 
 .form-photo-button-panel a.form-resize-button {
-	background: transparent url(images/resizeBtn.png) no-repeat left center;
+	background: transparent url(style/images/resizeBtn.png) no-repeat left center;
 }
 
 .form-photo-button-panel a.form-delete-button {
-	background: transparent url(images/deleteTrashcanBtnActive.png)
+	background: transparent url(style/images/deleteTrashcanBtnActive.png)
 		no-repeat left center;
 }
 
@@ -9388,12 +9162,12 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 }
 
 .form-resize-button a,a.form-resize-button {
-	background: transparent url(images/resizeBtn.png) no-repeat;
+	background: transparent url(style/images/resizeBtn.png) no-repeat;
 	width: 73px;
 }
 
 .form-delete-group-button a,a.form-delete-group-button {
-	background: transparent url(images/deleteGroupBtn.png) no-repeat;
+	background: transparent url(style/images/deleteGroupBtn.png) no-repeat;
 	width: 99px;
 	height: 26px;
 	margin-left: 100px;
@@ -9408,7 +9182,7 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 }
 
 .form-delete-org-button a,a.form-delete-org-button {
-    background: transparent url(images/deleteOrgBtn.png) no-repeat;
+    background: transparent url(style/images/deleteOrgBtn.png) no-repeat;
     width: 99px;
     height: 26px;
     margin-left: 100px;
@@ -9425,7 +9199,7 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 .deleteFollower {
 	margin-left: 70px;
 	margin-top: 6px;
-	background: transparent url(images/deleteBtnSmall.png) no-repeat;
+	background: transparent url(style/images/deleteBtnSmall.png) no-repeat;
 	width: 73px;
 	text-indent: -5000px;
 	height: 16px;
@@ -9434,7 +9208,7 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 .form-small-delete-button {
 	width: 50px;
 	height: 17px;
-	background: url(images/deleteBtnSmall.png);
+	background: url(style/images/deleteBtnSmall.png);
 	overflow: hidden;
 	text-indent: 1000px;
 	cursor: pointer;
@@ -9452,7 +9226,7 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 .access-list-refresh-button {
 	width: 87px;
 	height: 25px;
-	background: url(images/refreshAccesListBtn.png);
+	background: url(style/images/refreshAccesListBtn.png);
 	cursor: pointer;
 	margin-top: 10px;
 }
@@ -9463,7 +9237,7 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 	overflow: hidden;
 	cursor: pointer;
 	font-size: 11px;
-	background: url(images/plus-icon.png) no-repeat left 2px;
+	background: url(style/images/plus-icon.png) no-repeat left 2px;
 	padding-left: 15px;
 }
 
@@ -9476,13 +9250,10 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 }
 
 .form-verify-button a {
-	background: url(images/verifyBtn.png);
+	background: url(style/images/verifyBtn.png);
 	width: 75px;
 	display: inline-block;
 	height: 26px;
-	/*	position: absolute;
-	top: 20px;
-	left: 540px;*/
 }
 
 .form-user-association .form-verify-button a {
@@ -9494,13 +9265,13 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 }
 
 .form-upload-button a,a.form-upload-button {
-	background: url(images/uploadBtn.png);
+	background: url(style/images/uploadBtn.png);
 	width: 77px;
 	height: 25px;
 }
 
 .form-save-button a {
-	background: url(images/saveBtn.png);
+	background: url(style/images/saveBtn.png);
 	width: 75px;
 }
 
@@ -9509,11 +9280,9 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 	padding: 10px 20px;
 	margin-left: 80px;
 	width: 325px; 
-	*width: 400px;
-	display: inline-block; 
-	*display: inline;
-	zoom: 1;
-}
+	display: inline-block;
+} 
+
 
 .form-upload-panel .gwt-Label {
 	padding-top: 5px;
@@ -9527,15 +9296,11 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 .form-user-association .search-ldap-label {
 	margin-bottom: 10px;
 	margin-top: 10px;
-	display: inline-block; 
-	*display: inline;
-}
+	display: inline-block;
+} 
 
-.form-user-association .radio-button-container { 
-	*margin-top: 5px; 
-	*margin-bottom: 10px; 
-	*clear: both;
-}
+
+
 
 .form-user-association .gwt-RadioButton input {
 	width: 20px;
@@ -9547,7 +9312,6 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 
 .form-user-association .group-check-box {
 	margin-left: 10px;
-	/* plus the 10 on the radio button itself yields 20 */
 }
 
 .form-sub-success,.form-sub-error {
@@ -9564,12 +9328,10 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 
 .form-verifying-spinny,.form-submit-spinny {
 	display: inline-block;
-	zoom: 1; 
-	*display: inline;
 }
 
 .form-verifying-spinny,.form-submit-spinny,.wait-spinner {
-	background-image: url(images/wait-spinner.gif);
+	background-image: url(style/images/wait-spinner.gif);
 	background-repeat: no-repeat;
 }
 
@@ -9610,11 +9372,11 @@ body .modal-content-panel .form-processing-spinny {
 }
 
 .form-sub-success {
-	background-image: url(images/verifyGoodIcon.png);
+	background-image: url(style/images/verifyGoodIcon.png);
 }
 
 .form-sub-error {
-	background-image: url(images/verifyErrorIcon.png);
+	background-image: url(style/images/verifyErrorIcon.png);
 }
 
 .form-user-association .gwt-TextBox {
@@ -9645,13 +9407,11 @@ body .modal-content-panel .form-processing-spinny {
 }
 
 .person-lookup-form-element .form-instructions {
-	zoom: 1;
 	margin-top: 0px;
 	position: relative;
 	width: auto;
 	max-width: 400px;
 	display: inline-block; 
-	*display: inline;
 	margin-left: 15px;
 	margin-bottom: 5px;
 	padding-bottom: 5px;
@@ -9672,9 +9432,9 @@ body .shortname-form-element {
 
 body .shortname-form-element .required-form-label {
 	top: 10px;
-	float: none; 
-	*margin-left: 5px;
-}
+	float: none;
+} 
+
 
 body .shortname-form-element input {
 	width: 200px;
@@ -9684,19 +9444,19 @@ body .shortname-form-element input {
 .shortname-form-element .form-instructions {
 	clear: both;
 	padding-top: 10px; 
-	*padding-top: 5px;
 	width: 420px;
 }
 
+
 .basic-textbox.form-element .required-form-label {
-	margin-top: 37px; 
-	*margin-left: 0px;
-}
+	margin-top: 37px;
+} 
+
 
 .person-lookup-form-element .required-form-label {
-	top: 0; 
-	*top: -17px;
-}
+	top: 0;
+} 
+
 
 .person-lookup-form-element .form-lookup-button {
 	margin-left: 15px;
@@ -9716,12 +9476,12 @@ body .shortname-form-element input {
 .person-lookup-form-element .person-container .connection-item {
 	display: inline-block;
 	zoom: 1; 
-	*display: inline;
 	margin: 10px 0px;
 }
 
+
 .person-lookup-form-element .delete-panel {
-	background: transparent url(images/deleteTab.png) no-repeat scroll left
+	background: transparent url(style/images/deleteTab.png) no-repeat scroll left
 		top;
 	float: left;
 	height: 25px;
@@ -9729,16 +9489,15 @@ body .shortname-form-element input {
 	margin-top: 10px;
 	padding: 5px 7px 0px 0px;
 	width: 23px; 
-	*margin-top: -69px;
 	display: none;
 }
 
+
 .person-lookup-form-element .person-container:hover .list-item+.delete-panel,.person-lookup-form-element .person-container .list-item+.delete-panel:hover
 	{
-	display: inline-block; 
-	*display: inline;
-	zoom: 1;
-}
+	display: inline-block;
+} 
+
 
 .person .email {
 	color: #333333 !important;
@@ -9757,17 +9516,15 @@ body .shortname-form-element input {
 
 .avatar-modification-panel {
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	vertical-align: top;
 }
+
 
 .avatar-container {
 	display: inline-block;
 	vertical-align: top; 
-	*display: inline;
-	zoom: 1;
 }
+
 
 .form-element .banner {
 	width: 300px;
@@ -9831,11 +9588,10 @@ body .shortname-form-element input {
 
 .yui-carousel-horizontal {
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	margin-left: 200px;
 	margin-top: -170px;
 }
+
 
 .yui-carousel-horizontal {
 	width: 695px !important;
@@ -9844,31 +9600,28 @@ body .shortname-form-element input {
 .gwt-MenuBarPopup {
 	z-index: 100000;
 	margin-left: -2px;
-	*margin-top: -1px;
 }
 
 .edit-button a {
 	text-indent: -1000em;
-	background: transparent url(images/editBtnSmall.png) repeat scroll 0 0;
+	background: transparent url(style/images/editBtnSmall.png) repeat scroll 0 0;
 	width: 58px;
 	height: 16px;
 	overflow: hidden;
-	display: inline-block; 
-	*display: block;
-	zoom: 1;
-}
+	display: inline-block;
+} 
+
 
 .search-button a {
 	text-indent: -1000em;
-	background: transparent url(images/search-icon-sm-gold.png) repeat
+	background: transparent url(style/images/search-icon-sm-gold.png) repeat
 		scroll 0 0;
 	width: 58px;
 	height: 16px;
 	overflow: hidden;
-	display: inline-block; 
-	*display: block;
-	zoom: 1;
-}
+	display: inline-block;
+} 
+
 
 .edit-button,.search-button {
 	display: inline-block;
@@ -9876,25 +9629,23 @@ body .shortname-form-element input {
 
 .delete-button a {
 	text-indent: -1000em;
-	background: transparent url(images/deleteBtnSmall.png) repeat scroll 0 0
+	background: transparent url(style/images/deleteBtnSmall.png) repeat scroll 0 0
 		;
 	width: 58px;
 	height: 16px;
 	overflow: hidden;
-	display: inline-block; 
-	*display: block;
-	zoom: 1;
-}
+	display: inline-block;
+} 
+
 
 .delete-button {
-	display: inline-block; 
-	*display: inline;
-	zoom: 1;
-}
+	display: inline-block;
+} 
+
 
 .done-button a {
 	text-indent: -1000em;
-	background: transparent url(images/doneBtnSmall.png) repeat scroll 0 0;
+	background: transparent url(style/images/doneBtnSmall.png) repeat scroll 0 0;
 	width: 58px;
 	height: 16px;
 	overflow: hidden;
@@ -9907,7 +9658,7 @@ body .shortname-form-element input {
 
 .add-button a {
 	text-indent: -1000em;
-	background: transparent url(images/addBtnSmall.png) repeat scroll 0 0;
+	background: transparent url(style/images/addBtnSmall.png) repeat scroll 0 0;
 	width: 58px;
 	height: 16px;
 	overflow: hidden;
@@ -9919,35 +9670,26 @@ body .shortname-form-element input {
 }
 
 .add-button-submit {
-	background: transparent url(images/addBtnLarge.png) no-repeat;
+	background: transparent url(style/images/addBtnLarge.png) no-repeat;
 	height: 26px;
 	width: 77px;
 	display: inline-block;
 	text-indent: -100px;
 	overflow: hidden;
 	vertical-align: middle;
-	cursor: pointer; 
-	*display: inline;
-	zoom: 1;
-}
-
-/**
- * Options Panel
- */
+	cursor: pointer;
+} 
 .options {
 	list-style: none;
 	padding-left: 0;
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	margin: 5px 0;
 	font-size: 12px;
 }
 
+
 .options>li {
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	height: 22px;
 	margin-right: 10px;
 }
@@ -9964,7 +9706,7 @@ body .shortname-form-element input {
 	position: absolute;
 	top: 0;
 	right: 0;
-	background-image: url(images/activitypageListItemOverlayInActive.png);
+	background-image: url(style/images/activitypageListItemOverlayInActive.png);
 }
 
 .filters .filter .edit-button {
@@ -9973,7 +9715,7 @@ body .shortname-form-element input {
 
 .filters .filter:hover .filter-seperator,.filters .filter.active .filter-seperator
 	{
-	background-image: url(images/activitypageListItemOverlayActive.png)
+	background-image: url(style/images/activitypageListItemOverlayActive.png)
 		! important;
 	right: 50px;
 }
@@ -10002,12 +9744,6 @@ body .shortname-form-element input {
 	cursor: pointer;
 }
 
-.options>li>:hover,.filters .filter { /*
-    background-color: #F7EDB0;
-    */
-	
-}
-
 .options>li>:hover,.filters .filter:hover,.filters .filter.active {
 	background-color: #FFE488;
 }
@@ -10024,16 +9760,6 @@ body .options>li>.option-title:hover {
 	background-color: #F7EDB0;
 }
 
-/**
- * Styling for the content pager widget.
- */ /* this overrides what's in Application.css */ /*
-.main-contents div table.pager-container
-{
-	width: 200px;
-	margin-top: 15px;
-	float: right;
-}
-*/
 .pager-container {
 	display: block;
 	float: right;
@@ -10061,22 +9787,21 @@ body .options>li>.option-title:hover {
 	height: 23px;
 	margin-top: 2px;
 	cursor: pointer;
-	/* gets overridden if adding dependant style */
-	background-image: url('images/pagingRightBtnActive.png');
+	background-image: url('style/images/pagingRightBtnActive.png');
 }
 
 .pager-forward:hover {
-	background-image: url('images/pagingRightBtnHover.png');
+	background-image: url('style/images/pagingRightBtnHover.png');
 }
 
 .pager-forward-disabled:hover {
-	background-image: url('images/pagingRightBtnInactive.png');
+	background-image: url('style/images/pagingRightBtnInactive.png');
 	cursor: default;
 }
 
 .pager-forward-disabled {
 	cursor: default;
-	background-image: url('images/pagingRightBtnInactive.png');
+	background-image: url('style/images/pagingRightBtnInactive.png');
 }
 
 .pager-backward {
@@ -10090,22 +9815,21 @@ body .options>li>.option-title:hover {
 	display: inline-block;
 	cursor: pointer;
 	padding-left: 10px;
-	/* gets overridden if adding dependant style */
-	background: url('images/pagingLeftBtnActive.png') no-repeat 11px 0px;
+	background: url('style/images/pagingLeftBtnActive.png') no-repeat 11px 0px;
 }
 
 .pager-backward:hover {
-	background: url('images/pagingLeftBtnHover.png') no-repeat 11px 0px;
+	background: url('style/images/pagingLeftBtnHover.png') no-repeat 11px 0px;
 }
 
 .pager-backward-disabled:hover {
-	background: url('images/pagingLeftBtnInactive.png') no-repeat 11px 0px;
+	background: url('style/images/pagingLeftBtnInactive.png') no-repeat 11px 0px;
 	cursor: default;
 }
 
 .pager-backward-disabled {
 	cursor: default;
-	background: url('images/pagingLeftBtnInactive.png') no-repeat 11px 0px;
+	background: url('style/images/pagingLeftBtnInactive.png') no-repeat 11px 0px;
 }
 
 .connection-master {
@@ -10150,13 +9874,10 @@ body .options>li>.option-title:hover {
 
 .connection-col-left,.connection-col-right {
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	margin: 0px 10px;
 	min-height: 30px;
 	vertical-align: top;
 }
-
 .connection-item-panel {
 	display: block;
 	margin-left: 20px;
@@ -10165,8 +9886,6 @@ body .options>li>.option-title:hover {
 
 .connection-item-info {
 	display: inline-block;
-	zoom: 1; 
-	*display: inline;
 	text-align: left;
 	padding-left: 20px;
 	vertical-align: top;
@@ -10177,6 +9896,7 @@ body .options>li>.option-title:hover {
 	margin-top: -3px;
 }
 
+
 .connection-item {
 	display: block;
 	width: 325px;
@@ -10184,39 +9904,35 @@ body .options>li>.option-title:hover {
 }
 
 .connection-button-add a {
-	background-image: url('images/addBtnSmall.png');
+	background-image: url('style/images/addBtnSmall.png');
 }
 
 .connection-button-edit a {
-	background-image: url('images/editBtnSmall.png');
+	background-image: url('style/images/editBtnSmall.png');
 }
 
 .connection-button-delete a {
-	background-image: url('images/deleteBtnSmall.png');
+	background-image: url('style/images/deleteBtnSmall.png');
 }
 
 .connection-button-done a {
 	display: right !important;
-	background-image: url('images/doneBtnSmall.png');
+	background-image: url('style/images/doneBtnSmall.png');
 }
 
 .options .connection-filter-button, .options .sort-option {
 	margin-right: 15px;
 	text-decoration: none;
 	color: black;
-	padding: 5px 10px; 
-	*position: relative; 
-	*zoom: 1;
-}
+	padding: 5px 10px;
+} 
+
 
 .options .connection-filter-button.active, .options .sort-option.active {
 	background-color: #FFE488;
 }
 
-.sort-option {
-	*position: relative;
-	*top: -5px;	
-}
+
 
 .connection-edit-panel {
 	height: 30px;
@@ -10226,7 +9942,7 @@ body .options>li>.option-title:hover {
 .connection-edit-panel a {
 	display: inline-block;
 	float: right;
-	margin: 5px 5px 5px 0px; /*top right bottom left*/
+	margin: 5px 5px 5px 0px;
 	overflow: hidden;
 	text-indent: -1000em;
 	width: 57px;
@@ -10247,9 +9963,9 @@ body .options>li>.option-title:hover {
 
 .navpanel .options {
 	position: relative;
-	top: 5px; 
-	*float: left;
-}
+	top: 5px;
+} 
+
 
 .navpanel .options .gwt-Label {
 	float: left;
@@ -10294,9 +10010,6 @@ body .options>li>.option-title:hover {
 	text-align: center;
 }
 
-/******************************************************************************
- * Settings
- *****************************************************************************/
 .settings .portal-boundary {
 	top: 0;
 	clear: both;
@@ -10360,9 +10073,9 @@ body .options>li>.option-title:hover {
 }
 
 .settings .hideable-richtextarea .yui-editor-container {
-	display: inline-block ! important; 
-	*float: left;
-}
+	display: inline-block ! important;
+} 
+
 
 .settings .hideable-richtextarea {
 	margin-top: 10px;
@@ -10380,16 +10093,15 @@ body .options>li>.option-title:hover {
 
 .tos-prompt-interval input.prompt-interval {
 	width: 30px;
-	margin: 0 8px; 
-	*left: 8px;
-}
+	margin: 0 8px;
+} 
+
 
 .settings .activity-expiration {
 	margin-left: 25px;
-	clear: both; 
-	*margin-top: 8px; 
-	*zoom: 1;
-}
+	clear: both;
+} 
+
 
 .settings .activity-expiration>* {
 	float: left;
@@ -10399,39 +10111,27 @@ body .options>li>.option-title:hover {
 
 .settings .activity-expiration>.required-form-label {
 	float: right;
-	top: -16px; 
-	*top: -25px;
-}
+	top: -16px;
+} 
+
 
 .settings .activity-expiration .form-label,.settings .activity-expiration .form-instructions
 	{
-	margin-top: 13px; 
-	*margin-top: 8px; 
-	*margin-left: 0px;
-}
+	margin-top: 13px;
+} 
+
 
 .settings .activity-expiration input {
 	margin: 8px;
-	margin-bottom: 0px; 
-	*margin-top: 0px;
-}
-
-.hiding-checkboxes label { 
-	*position: static;
-}
-
-.system-settings .hiding-checkboxes label { 
-	*margin-left: 5px;
-}
+	margin-bottom: 0px;
+} 
 
 .settings .activity-expiration .form-instructions {
 	font-style: normal;
 	color: #333333;
-	clear: none; 
-	*position: static ! important;
-}
+	clear: none;
+} 
 
-/* Personal Settings tab */
 .personal-settings .form-submit-button,.personal-settings .form-submit-spinny
 	{
 	margin-left: 15px;
@@ -10476,8 +10176,8 @@ body .options>li>.option-title:hover {
 
 .personal-settings-background .yui-skin-sam .yui-ac-container {
     top: 1.8em;
-    *top: 1.7em;
 }
+
 
 .personal-settings-background .employment,.personal-settings-background .education
 	{
@@ -10519,7 +10219,7 @@ body .options>li>.option-title:hover {
 }
 
 .personal-settings-background .add-new-background {
-	background: transparent url('images/plus-icon.png') no-repeat left 8px;
+	background: transparent url('style/images/plus-icon.png') no-repeat left 8px;
 	border-top: solid 1px #CCCCCC;
 	padding-top: 5px;
 	padding-left: 15px;
@@ -10558,16 +10258,9 @@ body .options>li>.option-title:hover {
 	margin-left: 10px;
 }
 
-.personal-settings-background .auto-complete.yui-skin-sam .yui-ac-container
-	{ 
-	*margin-top: -15px;
-}
-
 .system-settings input[type=checkbox] {
-	margin-left: 0px; 
-	*margin-right: 3px; 
-	*width: 13px;
-}
+	margin-left: 0px;
+} 
 
 .system-settings .welcome-email-checkbox .form-label,.system-settings .hideable-richtextarea .form-label
 	{
@@ -10587,19 +10280,17 @@ body .options>li>.option-title:hover {
 }
 
 .date-picker-form-element select {
-	margin-right: 10px; 
-	*margin-left: 2px;
-}
+	margin-right: 10px;
+} 
 
 .date-picker-form-element .form-text {
 	margin-right: 10px;
 	font-weight: bold;
 	color: #333333;
 	padding-bottom: 5px;
-	display: inline-block; 
-	*display: inline;
-	zoom: 1;
-}
+	display: inline-block;
+} 
+
 
 .date-picker-form-element input {
 	width: auto;
@@ -10614,27 +10305,19 @@ body .options>li>.option-title:hover {
 	vertical-align: middle;
 	width: 150px;
 	display: inline-block; 
-	*display: inline;
 	zoom: 1;
-	margin-bottom: 10px; 
-	*position: relative; 
-	*top: 2px;
+	margin-bottom: 10px;
 }
 
-.date-picker-form-element .gwt-CheckBox input { 
-	*border: none;
-}
+
 
 .date-picker-form-element .required-form-label {
 	margin-right: 300px;
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	position: relative;
 	top: -3px;
 }
 
-/* Personal Settings - Notifications */
 .notif-settings-form>.form-container {
 	margin-left: 15px !important;
 }
@@ -10675,9 +10358,6 @@ body .options>li>.option-title:hover {
 	font-weight: bold;
 }
 
-/******************************************************************************
- * Directory
- *****************************************************************************/
 .directory .connection-master {
 	margin: 20px;
 	margin-left: 200px;
@@ -10686,16 +10366,10 @@ body .options>li>.option-title:hover {
 
 .directory .options.views {
 	margin-top: 95px; 
-	*margin-top: 105px;
 	position: absolute;
 	left: 15px;
 	width: 180px;
 }
-
-.options.views>div,.options>div>div { 
-	*margin-top: 5px;
-}
-
 .directory .results-header {
 	background-color: #F0DB62;
 	padding: 10px 20px;
@@ -10707,9 +10381,8 @@ body .options>li>.option-title:hover {
 
 .directory-header {
 	margin: 20px 10px 0;
-	font-size: 18px; 
-	*padding-top: 10px;
-}
+	font-size: 18px;
+} 
 
 .directory .navpanel {
 	min-height: 0;
@@ -10739,8 +10412,6 @@ body .options>li>.option-title:hover {
 
 .list-option-panel {
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	float: left;
 }
 
@@ -10750,10 +10421,8 @@ body .options>li>.option-title:hover {
 }
 
 .list-item .avatar {
-	display: inline-block; 
-	*display: inline;
-	zoom: 1;
-}
+	display: inline-block;
+} 
 
 body .extended-view .extended-info {
 	display: block;
@@ -10761,27 +10430,23 @@ body .extended-view .extended-info {
 
 body .organization-title {
 	font-weight: bold;
-	display: inline-block; 
-	*display: inline;
-	zoom: 1;
-}
+	display: inline-block;
+} 
 
 body .organization-suborgs {
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	margin-left: 10px;
 	position: relative;
 	top: 2px;
 	width: 18px;
 	height: 14px;
 	cursor: pointer;
-	background: transparent url(images/drill-down-inactive.png) no-repeat
+	background: transparent url(style/images/drill-down-inactive.png) no-repeat
 		scroll 0 0;
 }
 
 body .organization-suborgs:hover {
-	background: transparent url(images/drill-down-active.png) no-repeat
+	background: transparent url(style/images/drill-down-active.png) no-repeat
 		scroll 0 0;
 }
 
@@ -10801,20 +10466,20 @@ body .organization-suborgs:hover {
 }
 
 body .create-organization-link {
-	background-image: url(images/createOrganizationBtn.png);
+	background-image: url(style/images/createOrganizationBtn.png);
 	width: 143px;
 	display: block;
 }
 
 body .create-group-link {
-	background-image: url(images/createGroupBtn.png);
+	background-image: url(style/images/createGroupBtn.png);
 	width: 100px;
 	display: block;
 }
 
 .request-group-access {
 	padding-left: 20px;
-	background: transparent url(images/private-icon.png) no-repeat scroll 0
+	background: transparent url(style/images/private-icon.png) no-repeat scroll 0
 		0;
 	clear: both;
 	display: block;
@@ -10872,7 +10537,6 @@ body .create-group-link {
 	margin-bottom: 3px;
 }
 
-/* The default here is the basic view, which does not include the mission-statement */
 .directory-list .group .mission-statement {
 	display: none;
 }
@@ -10910,9 +10574,6 @@ body .create-group-link {
 	margin-top: 5px;
 }
 
-/******************************************************************************
- * Gadgets
- *****************************************************************************/
 .maximized-gadget {
 	margin: 0px;
 }
@@ -10941,7 +10602,7 @@ div.gadget-zone.maximized {
 }
 
 .gadget-zone-chrome-title-bar {
-	background: url(images/gradient-overlay-25px.png);
+	background: url(style/images/gradient-overlay-25px.png);
 	width: 100%;
 	height: 23px;
 	padding-top: 2px;
@@ -10949,7 +10610,7 @@ div.gadget-zone.maximized {
 
 div.gadget-zone-chrome-title-bar div.gwt-MenuBar {
 	float: right;
-	background: url('images/menu-inactive.png') no-repeat center center;
+	background: url('style/images/menu-inactive.png') no-repeat center center;
 	overflow: hidden;
 	width: 20px;
 	height: 20px;
@@ -10957,7 +10618,7 @@ div.gadget-zone-chrome-title-bar div.gwt-MenuBar {
 }
 
 div.gadget-zone-chrome-title-bar div.gwt-MenuBar:hover {
-	background: url('images/menu-active.png') no-repeat center center;
+	background: url('style/images/menu-active.png') no-repeat center center;
 }
 
 .gadgets-zone-gadget-content {
@@ -10970,8 +10631,6 @@ div.gadget-zone-chrome-title-bar div.gwt-MenuBar:hover {
 
 .gadget-zone-chrome-title-bar-title-button {
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	padding-top: 2px;
 	margin-left: 5px;
 	font-weight: bold;
@@ -10981,6 +10640,7 @@ div.gadget-zone-chrome-title-bar div.gwt-MenuBar:hover {
 	text-overflow: ellipsis;
 }
 
+
 .gadget-zone.maximized .gadget-zone-chrome-title-bar-title-button 
 {
 	margin-left: 10px;
@@ -10989,7 +10649,7 @@ div.gadget-zone-chrome-title-bar div.gwt-MenuBar:hover {
 }
 
 .gadget-zone-chrome-title-bar-close-button a {
-	background: url(images/remove-inactive.png) no-repeat center center;
+	background: url(style/images/remove-inactive.png) no-repeat center center;
 	display: block;
 	width: 20px;
 	height: 20px;
@@ -10997,11 +10657,11 @@ div.gadget-zone-chrome-title-bar div.gwt-MenuBar:hover {
 }
 
 .gadget-zone-chrome-title-bar-close-button a:hover {
-	background: url(images/remove-active.png) no-repeat center center;
+	background: url(style/images/remove-active.png) no-repeat center center;
 }
 
 a.gadget-zone-chrome-title-bar-maximize-button {
-	background: url(images/maximize-inactive.png) no-repeat center center;
+	background: url(style/images/maximize-inactive.png) no-repeat center center;
 	display: block;
 	width: 20px;
 	height: 20px;
@@ -11009,11 +10669,11 @@ a.gadget-zone-chrome-title-bar-maximize-button {
 }
 
 a.gadget-zone-chrome-title-bar-maximize-button:hover {
-	background: url(images/maximize-active.png) no-repeat center center;
+	background: url(style/images/maximize-active.png) no-repeat center center;
 }
 
 a.gadget-zone-chrome-title-bar-restore-button {
-	background: url(images/minimize-inactive.png) no-repeat center center;
+	background: url(style/images/minimize-inactive.png) no-repeat center center;
 	display: block;
 	width: 20px;
 	height: 20px;
@@ -11021,7 +10681,7 @@ a.gadget-zone-chrome-title-bar-restore-button {
 }
 
 a.gadget-zone-chrome-title-bar-restore-button:hover {
-	background: url(images/minimize-active.png) no-repeat center center;
+	background: url(style/images/minimize-active.png) no-repeat center center;
 }
 
 .gadget-zone-minimized {
@@ -11029,7 +10689,7 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 }
 
 .gadget-zone-chrome-title-bar-minimize-button a {
-	background: url(images/minimize-inactive.png) no-repeat center center;
+	background: url(style/images/minimize-inactive.png) no-repeat center center;
 	display: block;
 	width: 20px;
 	height: 20px;
@@ -11037,11 +10697,11 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 }
 
 .gadget-zone-chrome-title-bar-minimize-button a:hover {
-	background: url(images/minimize-active.png) no-repeat center center;
+	background: url(style/images/minimize-active.png) no-repeat center center;
 }
 
 .gadget-zone-chrome-title-bar-edit-button a {
-	background: url(images/edit-inactive.png) no-repeat center center;
+	background: url(style/images/edit-inactive.png) no-repeat center center;
 	display: block;
 	width: 20px;
 	height: 20px;
@@ -11049,11 +10709,11 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 }
 
 .gadget-zone-chrome-title-bar-edit-button a:hover {
-	background: url(images/edit-active.png) no-repeat center center;
+	background: url(style/images/edit-active.png) no-repeat center center;
 }
 
 .gadget-zone-chrome-title-bar-refresh-button a {
-	background: url(images/refresh-inactive.png) no-repeat center center;
+	background: url(style/images/refresh-inactive.png) no-repeat center center;
 	display: block;
 	width: 20px;
 	height: 20px;
@@ -11061,7 +10721,7 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 }
 
 .gadget-zone-chrome-title-bar-refresh-button a:hover {
-	background: url(images/refresh-active.png) no-repeat center center;
+	background: url(style/images/refresh-active.png) no-repeat center center;
 }
 
 .gadgets-gadget {
@@ -11074,20 +10734,16 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 	clear:both;
 }
 
-/******************************************************************************
- * CSS for Profiles
- *****************************************************************************/
 .confirmed,.denied {
 	width: 91px;
 	height: 18px;
-	/* text-indent: 1000px; */
 	margin-top: 8px;
 	overflow: hidden;
 }
 
 .confirmed {
 	text-indent: 1000px;
-	background: transparent url(images/confirmed.png) no-repeat;
+	background: transparent url(style/images/confirmed.png) no-repeat;
 }
 
 .denied {
@@ -11096,10 +10752,9 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 
 .left-bar-container {
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	vertical-align: top;
 }
+
 
 .left-bar {
 	width: 215px;
@@ -11110,23 +10765,18 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 	margin-top: 20px;
 }
 
-.left-bar-child-first {
-	
-}
-
 .profile-add-sub-org {
-	background: transparent url(images/createSubOrgBtn.png) no-repeat;
+	background: transparent url(style/images/createSubOrgBtn.png) no-repeat;
 	margin: 0px 20px -27px 765px;
 	width: 99px;
 	height: 27px;
 	position: relative;
-	z-index: 100; 
-	*display: block;
-	zoom: 1;
-}
+	z-index: 100;
+} 
+
 
 .profile-add-group {
-	background: transparent url(images/createGroupBtn.png) no-repeat;
+	background: transparent url(style/images/createGroupBtn.png) no-repeat;
 	margin: 0px 20px -27px 871px;
 	width: 99px;
 	height: 27px;
@@ -11138,10 +10788,10 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 	display: inline;
 	margin-right: 10px;
 	margin-bottom: 20px; 
-	*margin-bottom: 10px;
 	margin-top: 0;
 	float: left;
 }
+
 
 .profile-name {
 	margin-top: 10px;
@@ -11188,7 +10838,7 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 }
 
 .profile-follow-me-btn {
-	background-image: url('images/followBtn.png');
+	background-image: url('style/images/followBtn.png');
 	border: 0;
 	margin-top: 62px;
 	display: inline-block;
@@ -11206,7 +10856,7 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 }
 
 .profile-unfollow-me-btn {
-	background-image: url('images/stopFollowBtn.png');
+	background-image: url('style/images/stopFollowBtn.png');
 	border: 0;
 	margin-top: 62px;
 	display: inline-block;
@@ -11224,7 +10874,7 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 }
 
 .profile-disabled-follow-me-btn {
-	background-image: url('images/followBtnInactive.png');
+	background-image: url('style/images/followBtnInactive.png');
 	border: 0;
 	margin-top: 62px;
 	display: inline-block;
@@ -11254,7 +10904,7 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 }
 
 .profile-connection-count {
-	background-image: url('images/connectionsInactiveBtn.png');
+	background-image: url('style/images/connectionsInactiveBtn.png');
 	font-family: Verdana;
 	font-size: 14px;
 	font-weight: bold;
@@ -11272,7 +10922,7 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 }
 
 .profile-connection-count:hover {
-	background-image: url('images/connectionsActiveBtn.png');
+	background-image: url('style/images/connectionsActiveBtn.png');
 }
 
 .profile-connection-label {
@@ -11283,10 +10933,9 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 
 .profile-connection-subpanel {
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	text-align: center;
 }
+
 
 .profile-connection-subpanel.center {
 	margin: 0px 26px;
@@ -11303,45 +10952,44 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 }
 
 .profile-location {
-	background-image: url('images/locationIcon.png');
+	background-image: url('style/images/locationIcon.png');
 	background-repeat: no-repeat;
 }
 
 .profile-location a {
 	color: #0000FF;
-	text-decoration: none; /* avoid underlining */
+	text-decoration: none;
 }
 
 .profile-email {
-	background: url('images/emailIcon.png') no-repeat 0px 0px;
+	background: url('style/images/emailIcon.png') no-repeat 0px 0px;
 }
 
 .profile-work-phone {
-	background: url('images/phoneIcon.png') no-repeat 3px 0px;
+	background: url('style/images/phoneIcon.png') no-repeat 3px 0px;
 }
 
 .profile-cell-phone {
-	background: url('images/celllcon.png') no-repeat 5px 0px;
+	background: url('style/images/celllcon.png') no-repeat 5px 0px;
 }
 
 .profile-fax {
-	background: url('images/faxIcon.png') no-repeat 2px 0px;
+	background: url('style/images/faxIcon.png') no-repeat 2px 0px;
 }
 
 .profile-page-container {
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	width: 713px;
 	vertical-align: top;
 	margin-right: 20px;
 }
 
+
 .profile-gadgets-container {
 	position: relative;
-	top: -28px; 
-	*top: -23px;
-}
+	top: -28px;
+} 
+
 
 .profile-gadgets-container .gadget-container {
 	padding-bottom: 10px;
@@ -11364,11 +11012,9 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 
 .maximized-gadget .drop-zone.maximized-drop-zone
 {
-    margin-top: -19px; 
-    *margin-top: 0px; 
-    *position: relative; 
-    *top: -25px;
-}
+    margin-top: -19px;
+} 
+
 
 .configure-tab {
 	margin-left: 897px;
@@ -11378,11 +11024,9 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 	z-index: 999;
 	padding: 3px 10px;
 	border-bottom: 2px solid; 
-	*position: relative; 
-	*top: 58px; 
-	*float: right;
 	font-size: 12px;
 }
+
 
 .profile .configure-tab {
 	margin-left: 887px;
@@ -11473,8 +11117,8 @@ div.profile-settings-tab-container div.tab-container {
 .privacy-settings .privacy-settings-value {
 	margin-top: 10px;
 	margin-left: 15px; 
-	*display: inline;
 }
+
 
 .privacy-settings .privacy-settings-note {
 	margin-left: 30px;
@@ -11483,9 +11127,9 @@ div.profile-settings-tab-container div.tab-container {
 .privacy-settings .form-static-value {
 	font-weight: bold;
 	color: #333333;
-	font-size: 11px; 
-	*display: inline;
-}
+	font-size: 11px;
+} 
+
 
 .privacy-settings .form-instructions {
 	width: 480px;
@@ -11493,10 +11137,6 @@ div.profile-settings-tab-container div.tab-container {
 
 .privacy-settings .form-checkBox {
 	width: 480px;
-}
-
-.privacy-settings { /* padding-top: 0px; */
-	
 }
 
 .privacy-settings .form-label {
@@ -11565,7 +11205,7 @@ div.profile-settings-tab-container div.tab-container {
 }
 
 .error-message {
-	background-image: url(images/warningIconLarge.png);
+	background-image: url(style/images/warningIconLarge.png);
 	background-repeat: no-repeat;
 	padding-left: 30px;
 	height: 40px;
@@ -11624,7 +11264,7 @@ div.profile-settings-tab-container div.tab-container {
 }
 
 .warning-message {
-	background-image: url(images/notFoundIconLarge.png);
+	background-image: url(style/images/notFoundIconLarge.png);
 	background-repeat: no-repeat;
 	padding-left: 30px;
 	height: 40px;
@@ -11644,19 +11284,16 @@ div.profile-settings-tab-container div.tab-container {
 	margin-top: 20px;
 }
 
-/* overriding some values from application.css */
 div.tab-container {
 	margin-top: 17px;
 	padding-top: 10px;
-	/* in employee profile page */
-	/* set to 0 so tab aligns with tab container */
 	padding-left: 0px;
 	top: 1px;
 }
 
 .profile-settings-tab-content>div>.form-container>.form-submit-button,.stream-settings-tab-content>div>div>div>.form-container>.form-submit-button,.stream-plugins-feed-subscriptions-container-edit a.form-submit-button,body .edit-position a.form-submit-button,body .edit-school a.form-submit-button,.group-profile-settings-panel a.form-submit-button,.org-profile-settings-panel a.form-submit-button,.list-edit-modal a.form-submit-button,.stream-search-dialog-body-edit a.form-submit-button,.notif-settings-form a.form-submit-button,.system-settings a.form-submit-button
 	{
-	background-image: url(images/saveChangesBtn.png);
+	background-image: url(style/images/saveChangesBtn.png);
 	width: 103px;
 }
 
@@ -11685,10 +11322,10 @@ div.stream-container div.layout-container {
 
 .start-tab-content-container {
 	padding-bottom: 10px;
-	padding-top: 20px; 
-	*padding-top: 25px;
 	z-index: 900;
-}
+	padding-top: 20px;
+} 
+
 
 .start-tab-content-container>table .gadget-zone.maximized {
 	z-index: 900;
@@ -11715,10 +11352,9 @@ div.stream-container div.layout-container {
 .profile-group-statistics :first-child {
 	text-align: right;
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	width: 30px;
 }
+
 
 .profile-about {
 	padding-left: 10px;
@@ -11727,13 +11363,12 @@ div.stream-container div.layout-container {
 
 .profile-about-column {
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	margin-left: 10px;
 	margin-right: 10px;
 	width: 325px;
 	vertical-align: top;
 }
+
 
 .profile-about-background {
 	margin-top: 20px;
@@ -11825,7 +11460,7 @@ div.stream-container div.layout-container {
 }
 
 .profile-website {
-	background-image: url(images/websiteIcon.png);
+	background-image: url(style/images/websiteIcon.png);
 	background-repeat: no-repeat;
 	background-position: 0px;
 	padding-left: 20px;
@@ -11878,10 +11513,9 @@ div.stream-container div.layout-container {
 .left-bar-child .connection-item .connection-item-info {
 	width: 139px;
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	padding: 0px 10px;
 }
+
 
 .checklist-desc {
 	border-bottom: 1px solid #bbbbbb;
@@ -11905,8 +11539,6 @@ div.stream-container div.layout-container {
 
 .checklist-done,.checklist-not-done {
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	height: 20px;
 	padding-top: 50px;
 	width: 50px;
@@ -11915,18 +11547,17 @@ div.stream-container div.layout-container {
 	font-weight: bold;
 }
 
+
 .checklist-done {
-	background: url(images/checkListChecked.png) no-repeat 5px 5px;
+	background: url(style/images/checkListChecked.png) no-repeat 5px 5px;
 }
 
 .checklist-not-done {
-	background: url(images/checklistUnchecked.png) no-repeat 5px 5px;
+	background: url(style/images/checklistUnchecked.png) no-repeat 5px 5px;
 }
 
 .checklist-task-desc {
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	margin-left: 10px;
 	vertical-align: top;
 	margin-top: 5px;
@@ -11947,11 +11578,11 @@ div.stream-container div.layout-container {
 	border-right: 1px solid #AAAAAA;
 	margin-bottom: 10px;
 	margin-top: 10px;
-	background: url(images/progressBarShadow.png);
+	background: url(style/images/progressBarShadow.png);
 }
 
 .checklist-progress-bar>div {
-	background: url(images/progressBarFill.png);
+	background: url(style/images/progressBarFill.png);
 	height: 15px;
 }
 
@@ -12039,9 +11670,8 @@ body .gallery-search-results-list .options-panel {
 	border-width: 0;
 	position: absolute;
 	padding-left: 0;
-	width: 180px; 
-	*left: 20px;
-}
+	width: 180px;
+} 
 
 .gallery-master .navpanel {
 	margin-bottom: 0;
@@ -12050,9 +11680,8 @@ body .gallery-search-results-list .options-panel {
 .gallery-master .edit-controls {
 	float: none;
 	position: absolute;
-	right: 30px; 
-	*margin-top: 10px;
-}
+	right: 30px;
+} 
 
 .gallery-master .tab-container-composite .search-list {
 	position: relative;
@@ -12090,13 +11719,12 @@ body .gallery-search-results-list .options-panel {
 
 .gallery-categories {
 	display: inline-block;
-	zoom: 1; 
-	*display: inline;
 	height: 100%;
 	vertical-align: top;
 	width: 150px;
 	position: absolute;
 }
+
 
 .search-metadata {
 	margin-left: 65px;
@@ -12106,11 +11734,10 @@ body .gallery-search-results-list .options-panel {
 
 .search-metadata div {
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	color: #666666;
 	margin-right: 5px;
 }
+
 
 .search-metadata .search-metadata-key {
 	color: #333333;
@@ -12149,7 +11776,6 @@ body .gallery-search-results-list .options-panel {
 	padding-bottom: 10px;
 	padding-top: 10px;
 	font-size: 12px;
-	/*clear: both;*/
 }
 
 .gadget-meta-data.small {
@@ -12164,9 +11790,9 @@ body .gallery-search-results-list .options-panel {
 .gadget-meta-data>div {
 	display: inline-block;
 	zoom: 1; 
-	*display: inline;
 	vertical-align: top;
 }
+
 
 .gadget-meta-data {
 	width: 100%;
@@ -12217,13 +11843,12 @@ body .gallery-search-results-list .options-panel {
 .gadget-title-url {
 	color: #126ABC;
 	display: inline-block;
-	zoom: 1; 
-	*display: inline;
 	padding-bottom: 5px;
 	padding-top: 5px;
 	text-decoration: none;
 	font-size: 11px;
 }
+
 
 .gadget-ext-info {
 	font-size: 11px;
@@ -12288,7 +11913,7 @@ body .gallery-search-results-list .options-panel {
 }
 
 .gadget-meta-data .apply-gadget a,.gadget-meta-data .apply-theme {
-	background: url(images/addThemeGadgetBtnSmall.png);
+	background: url(style/images/addThemeGadgetBtnSmall.png);
 	display: block;
 	height: 18px;
 	width: 58px;
@@ -12301,12 +11926,12 @@ body .gallery-search-results-list .options-panel {
 }
 
 .gadget-meta-data .apply-theme {
-	background: url(images/applyBtnSmall.png);
+	background: url(style/images/applyBtnSmall.png);
 	cursor: pointer;
 }
 
 .gadget-meta-data .apply-gadget.active {
-	background: url(images/addedButton.png);
+	background: url(style/images/addedButton.png);
 	height: 17px;
 	width: 61px;
 	margin-top: 9px;
@@ -12317,7 +11942,7 @@ body .gallery-search-results-list .options-panel {
 }
 
 .gadget-meta-data .apply-theme.active {
-	background: url(images/appliedButton.png);
+	background: url(style/images/appliedButton.png);
 	height: 17px;
 	width: 68px;
 }
@@ -12350,9 +11975,6 @@ span + .broken-feed-indicator
 	text-decoration: none;
 }
 
-/* The following styles are used by the AvatarWidget.  They should NEVER be combined with other page-layout styles.
-Anywhere that needs to use an AvatarWidget directly (i.e. not wrapped in an AvatarLinkPanel or AvatarDisplayPanel)
-should add the style "avatar" to the instance of the AvatarWidget and then write style rules against that. */
 .avatar-image {
 	border: 1px solid #BBB;
 	background: white;
@@ -12408,14 +12030,14 @@ li.yui-carousel-item-selected:active,li.yui-carousel-item-selected:focus,li.yui-
 }
 
 .small-theme .apply-theme {
-	margin-left: 30px; 
-	*margin-left: 10px;
-}
+	margin-left: 30px;
+} 
+
 
 .small-theme .apply-theme.active {
-	margin-left: 27px; 
-	*margin-left: 10px;
-}
+	margin-left: 27px;
+} 
+
 
 .small-theme .apply-theme {
 	margin-top: 0 !important;
@@ -12440,12 +12062,12 @@ li.yui-carousel-item-selected:active,li.yui-carousel-item-selected:focus,li.yui-
 }
 
 .open-gallery-button a {
-	background: transparent url(images/gallery-btn.png) no-repeat scroll 0 0
+	background: transparent url(style/images/gallery-btn.png) no-repeat scroll 0 0
 		;
 }
 
 .open-gallery-button-pressed a {
-	background: transparent url(images/gallery-btn-pressed.png) no-repeat
+	background: transparent url(style/images/gallery-btn-pressed.png) no-repeat
 		scroll 0 0;
 }
 
@@ -12506,23 +12128,19 @@ body .stream-page-container>div.form-error-box {
 
 .filters {
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	margin-right: 10px; 
-	*margin-right: 0px;
 	padding: 10px;
 	vertical-align: top;
 	width: 200px;
 }
 
+
 .stream-page-container .stream-container,.search-results-list .results-list
 	{
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
-	width: 100%; 
-	*margin-left: -10px;
-}
+	width: 100%;
+} 
+
 
 .stream-list-item .filter-label {
 	display: inline-block;
@@ -12544,7 +12162,7 @@ body .stream-page-container>div.form-error-box {
 }
 
 .stream-list-item .gwt-MenuBar-horizontal {
-	background: url(images/menu-inactive.png);
+	background: url(style/images/menu-inactive.png);
 	background-position: 0 3px;
 	background-repeat: no-repeat;
 	display: none;
@@ -12554,7 +12172,7 @@ body .stream-page-container>div.form-error-box {
 }
 
 .stream-list-item .move-handle {
-	background: url(images/moveBtnInactive.png);
+	background: url(style/images/moveBtnInactive.png);
 	background-repeat: no-repeat;
 	background-position: 0 3px;
 	display: none;
@@ -12567,28 +12185,26 @@ body .stream-page-container>div.form-error-box {
 }
 
 .stream-list-item .move-handle:hover {
-	background: url(images/moveBtnActive.png);
+	background: url(style/images/moveBtnActive.png);
 	background-repeat: no-repeat;
 	background-position: 0 3px;
 }
 
 .filter.active .move-handle,.stream-list-item:hover .move-handle {
-	display: inline-block; 
-	*display: inline;
-	zoom: 1;
-}
+	display: inline-block;
+} 
+
 
 .stream-list-item .gwt-MenuBar-horizontal:hover {
-	background: url(images/menu-active.png);
+	background: url(style/images/menu-active.png);
 	background-position: 0 3px;
 	background-repeat: no-repeat;
 }
 
 .stream-list-item.active .gwt-MenuBar-horizontal {
-	display: inline-block; 
-	*display: inline;
-	zoom: 1;
-}
+	display: inline-block;
+} 
+
 
 .filters .header {
 	font-weight: bold;
@@ -12598,26 +12214,24 @@ body .stream-page-container>div.form-error-box {
 }
 
 .filters .header .gwt-Label {
-	display: inline-block; 
-	*display: inline;
-	zoom: 1;
+	display: inline-block;
 	width: 154px;
-}
+} 
+
 
 .filters .header .addbutton {
-	background: url(images/plus-icon.png);
+	background: url(style/images/plus-icon.png);
 	background-position: 7px 6px;
 	background-repeat: no-repeat;
 	overflow: hidden;
 	width: 23px;
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	padding-left: 23px;
 	padding-top: 2px;
 	font-weight: normal;
 	font-size: 12px;
 }
+
 
 .filters .hide {
 	display: none;
@@ -12627,9 +12241,6 @@ body .stream-page-container>div.form-error-box {
 	display: block;
 }
 
-/******************************************************************************
- * Create / Edit List dialog
- *****************************************************************************/
 .stream-view-dialog .form-title,.stream-search-dialog .form-title,.share-message-dialog .form-title
 	{
 	border-bottom: 1px solid #BBB;
@@ -12663,42 +12274,10 @@ body .stream-page-container>div.form-error-box {
 	margin-bottom: 20px;
 	width: 380px;
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 }
-
-.modal-content-panel .form-container>a.form-submit-button { 
-	*z-index: 100;
-}
-
-.modal-content-panel .form-container>div,.modal-content-panel .form-container>div>.scope-form-element,.modal-content-panel .form-container>div>.scope-form-element>.yui-ac,.modal-content-panel .form-container>div>.scope-form-element>.yui-ac>.yui-ac-container
-	{ 
-	*z-index: 2000;
-}
-
-
-.scope-form-element .yui-ac-container
-{
-    *z-index: 2000;
-}
-
-.scope-form-element .yui-ac-content
-{
-    *top: -25px;
-	*z-index: 2001;
-    zoom: 1;
-}
-
-.modal-content-panel .form-container>div>.scope-form-element>.yui-ac>.yui-ac-container>.yui-ac-content
-	{ 
-	*z-index: 3000;
-}
-
 .stream-view-dialog .auto-complete {
 	margin-left: 0px;
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	position: static !important;
 }
 
@@ -12711,7 +12290,6 @@ body .stream-page-container>div.form-error-box {
 	width: 418px;
 	top: auto;
 	margin-top: -2px;
-    *margin-top: 1.7em;
 }
 
 .stream-view-dialog .characters-remaining.over-character-limit {
@@ -12736,15 +12314,10 @@ body .stream-page-container>div.form-error-box {
 	position: relative;
 }
 
-.share-message-dialog-body .stream-scope { 
-	*margin-left: -20px;
-}
 
 .stream-scope {
-	background: url(images/stream-scope-bg.png);
+	background: url(style/images/stream-scope-bg.png);
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	width: 103px;
 	height: 17px;
 	margin-bottom: 10px;
@@ -12752,34 +12325,28 @@ body .stream-page-container>div.form-error-box {
 	padding-left: 5px;
 	padding-top: 3px;
 	font-size: 10px;
-	text-align: left; 
-	*position: relative; 
-	*top: 5px;
-}
+	text-align: left;
+} 
+
 
 .stream-scope .gwt-Label {
 	width: 85px;
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	height: 15px;
 	vertical-align: top; 
-	*margin-top: -3px;
 	margin-top: -1px;
 }
 
 .stream-scope .gwt-Hyperlink {
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	width: 15px;
 }
 
 .stream-scope .gwt-Hyperlink a {
-	background: url(images/stream-scope-x.png);
+	background: url(style/images/stream-scope-x.png);
 	background-position: 7px 3px;
 	background-repeat: no-repeat;
 	display: block;
@@ -12788,9 +12355,8 @@ body .stream-page-container>div.form-error-box {
 }
 
 .scope-form-element .required-form-label {
-	margin-top: 16px; 
-	*margin-top: -19px;
-}
+	margin-top: 16px;
+} 
 
 .list-member-instructions {
 	color: #666666;
@@ -12838,17 +12404,16 @@ body .stream-page-container>div.form-error-box {
 	padding-bottom: 5px;
 	padding-left: 15px;
 	padding-top: 2px;
-	background: url(images/triangle-right.png);
+	background: url(style/images/triangle-right.png);
 	background-repeat: no-repeat;
 	background-position: 3px 6px;
 	text-decoration: none;
 	width: 100%;
-	display: inline-block; 
-	*display: block;
-}
+	display: inline-block;
+} 
 
 .filters .show-more.show-less {
-	background: url(images/triangle-down.png);
+	background: url(style/images/triangle-down.png);
 	background-repeat: no-repeat;
 	background-position: 3px 6px;
 }
@@ -12862,10 +12427,8 @@ body .stream-page-container>div.form-error-box {
 }
 
 .save-search.saved {
-	background: url(images/saved-button.png);
+	background: url(style/images/saved-button.png);
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	height: 17px;
 	width: 73px;
 	text-indent: 1000em;
@@ -12930,10 +12493,6 @@ body .dragdrop-proxy {
 	min-height: 0;
 }
 
-.stream-view-dialog .post-to .auto-complete { 
-	*margin-top: 6px;
-}
-
 .message-comment {
 	margin-left: 75px;
 	padding: 5px;
@@ -12974,16 +12533,15 @@ body .dragdrop-proxy {
 	padding-right: 10px;
 	overflow: hidden;
 	font-size: 13px;
-	line-height: 1.5; 
-	*float: left;
-}
+	line-height: 1.5;
+} 
 
 .message-comment>.body>.message-comment-text {
 	padding-left: 5px;
 }
 
 .message-comment .warning,.share-message-dialog .warning {
-	background: url(images/information-circle-icon.png) no-repeat left 2px;
+	background: url(style/images/information-circle-icon.png) no-repeat left 2px;
 	color: #666666;
 	font-size: 11px;
 	padding-left: 25px;
@@ -13015,19 +12573,18 @@ body .dragdrop-proxy {
 }
 
 .message-comment .post-button {
-	background: transparent url(images/postBtnSmall.png) no-repeat scroll 0
+	background: transparent url(style/images/postBtnSmall.png) no-repeat scroll 0
 		0;
 	width: 40px;
 	height: 16px;
 	margin-top: 5px;
 	overflow: hidden;
 	text-indent: -1000em;
-	margin-left: 477px; 
-	*margin-left: 475px;
-}
+	margin-left: 477px;
+} 
 
 .message-comment .post-button.inactive {
-	background-image: url(images/postBtnSmallInactive.png);
+	background-image: url(style/images/postBtnSmallInactive.png);
 }
 
 .over-character-limit {
@@ -13058,7 +12615,7 @@ body .dragdrop-proxy {
 }
 
 .access-denied .eureka-logo-small {
-	background-image: url(images/poweredByEurekaStreams.png);
+	background-image: url(style/images/poweredByEurekaStreams.png);
 	background-position: -90px 0;
 	background-repeat: no-repeat;
 	height: 37px;
@@ -13072,7 +12629,7 @@ body .dragdrop-proxy {
 
 .access-denied .notice {
 	background-color: white;
-	background-image: url(images/information-circle-icon.png);
+	background-image: url(style/images/information-circle-icon.png);
 	background-repeat: no-repeat;
 	background-position: 10px 10px;
 	border: 1px solid #BBBBBB;
@@ -13097,19 +12654,14 @@ body .dragdrop-proxy {
 	left: -10000px;
 }
 
-/******************************************************************************
- * Notifications
- *****************************************************************************/
 li.notif-count-list-item {
 	padding-right: 2px !important;
 	position: relative;
 }
 
 body .user-bar li div.notif-count {
-	background: transparent url(images/navNotification.png);
+	background: transparent url(style/images/navNotification.png);
 	display: inline-block;
-	zoom: 1; 
-	*display: inline !important;
 	height: 24px;
 	padding-left: 31px;
 	padding-right: 5px;
@@ -13144,7 +12696,7 @@ body .user-bar li div.notif-count:hover {
 
 .notif-edit-settings-link a {
 	padding-left: 20px;
-	background: transparent url(images/notifySettingsIcon.png) no-repeat
+	background: transparent url(style/images/notifySettingsIcon.png) no-repeat
 		left center;
 	margin-right: 10px;
 }
@@ -13158,7 +12710,7 @@ body .user-bar li div.notif-count:hover {
 }
 
 .notif-wait {
-	background: transparent url(images/wait-spinner.gif) no-repeat center
+	background: transparent url(style/images/wait-spinner.gif) no-repeat center
 		center;
 	width: 600px;
 	height: 350px;
@@ -13197,32 +12749,32 @@ body .user-bar li div.notif-count:hover {
 }
 
 .notif-entry-post .icon {
-	background-image: url(images/notificationsIconsSprite.png);
+	background-image: url(style/images/notificationsIconsSprite.png);
 	background-position: 0px 0px;
 }
 
 .notif-entry-comment .icon {
-	background-image: url(images/notificationsIconsSprite.png);
+	background-image: url(style/images/notificationsIconsSprite.png);
 	background-position: 0px -25px;
 }
 
 .notif-entry-flag .icon {
-	background-image: url(images/notificationsIconsSprite.png);
+	background-image: url(style/images/notificationsIconsSprite.png);
 	background-position: 0px -75px;
 }
 
 .notif-entry-follow .icon {
-	background-image: url(images/notificationsIconsSprite.png);
+	background-image: url(style/images/notificationsIconsSprite.png);
 	background-position: 0px -50px;
 }
 
 .notif-entry-new-group .icon {
-	background-image: url(images/notificationsIconsSprite.png);
+	background-image: url(style/images/notificationsIconsSprite.png);
 	background-position: 0px -100px;
 }
 
 .notif-entry-like .icon {
-	background-image: url(images/notificationsIconsSprite.png);
+	background-image: url(style/images/notificationsIconsSprite.png);
 	background-position: 0px -120px;
 }
 
@@ -13237,12 +12789,12 @@ body .user-bar li div.notif-count:hover {
 }
 
 .modal-content-panel {
-	background: #EEEEEE url(images/globalNavshadow.png) repeat-x scroll 0 0;
+	background: #EEEEEE url(style/images/globalNavshadow.png) repeat-x scroll 0 0;
 	margin-top: -15px; 
-	*margin-top: -20px;
-	padding-top: 10px; 
-	*padding-top: 15px;
-}
+	padding-top: 10px;
+} 
+
+
 
 .modal-content-panel .form-submit-button,.modal-content-panel .form-update-button
 	{
@@ -13279,11 +12831,6 @@ body .user-bar li div.notif-count:hover {
 	font-size: 10px;
 }
 
-.optoutable-video-modal .form-checkBox label { 
-	*padding-bottom: 10px; 
-	*vertical-align: middle;
-}
-
 .videoDialog {
 	overflow: auto;
 	background: #EEEEEE;
@@ -13291,10 +12838,6 @@ body .user-bar li div.notif-count:hover {
 
 .videoDialog .modal {
 	display: inline-block;
-}
-
-.biography .form-instructions { 
-	*line-height: 0px;
 }
 
 .biography .form-error-box {
@@ -13434,13 +12977,8 @@ div.tab-container table.dragdrop-dropTarget-engage {
 	height:16px;
 	margin-bottom: 10px;
 	display: inline-block;
-	*display: inline;
-	zoom: 1;
 }
 
-.settings-panel .settings-content .form-container { 
-	*margin-top: -10px;
-}
 
 .stream-list-item a.edit-button {
 	color: #B59C46 !important;
@@ -13456,11 +12994,9 @@ div.tab-container table.dragdrop-dropTarget-engage {
 }
 
 .stream-list-item .delete-button {
-	background: transparent url(images/trashBtnInactive.png) no-repeat left
+	background: transparent url(style/images/trashBtnInactive.png) no-repeat left
 		3px;
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	width: 15px;
 	text-indent: -1000em;
 	margin-left: 4px;
@@ -13472,19 +13008,14 @@ div.tab-container table.dragdrop-dropTarget-engage {
 .stream-list-item:hover a.edit-button,.stream-list-item:hover .delete-button
 	{
 	visibility: visible;
-	display: inline-block; 
-	*display: inline;
-	zoom: 1;
-}
+	display: inline-block;
+} 
 
 .stream-list-item .delete-button:hover {
-	background: transparent url(images/trashBtnActive.png) no-repeat left
+	background: transparent url(style/images/trashBtnActive.png) no-repeat left
 		3px;
 }
 
-/******************************************************************************
- * Share Message Dialog
- *****************************************************************************/
 .stream-search-dialog-body,.share-message-dialog-body,.stream-view-dialog-body
 {
 	padding-left: 20px;
@@ -13494,7 +13025,7 @@ div.tab-container table.dragdrop-dropTarget-engage {
 
 .stream-view-dialog
 {
-	width: 550px !important;  /* widen to make room for scrollbar */
+	width: 550px !important;  
 }
 
 .stream-view-dialog > .modal-content-panel
@@ -13502,9 +13033,7 @@ div.tab-container table.dragdrop-dropTarget-engage {
 	max-height: 430px;
 	overflow-y: auto;
 	overflow-x: hidden;
-	*position: relative;  /* so stream buttons scroll with content in IE7 */
 }
-
 .stream-view-dialog-body > .form-container
 {
 	width: 486px;
@@ -13538,9 +13067,7 @@ div.tab-container table.dragdrop-dropTarget-engage {
 	border: none;
 }
 
-.share-message-dialog  .message-label { 
-	*margin-top: 20px;
-}
+
 
 .share-message-dialog  .message-box {
 	border: 1px #BBBBBB solid;
@@ -13556,14 +13083,12 @@ div.tab-container table.dragdrop-dropTarget-engage {
 	vertical-align: top;
 	width: 35px;
 	text-align: right;
-	display: inline-block; 
-	*display: inline;
-	zoom: 1;
+	display: inline-block;
 	position: absolute;
 	float: none;
 	right: 30px; 
-	*bottom: 50px;
-}
+} 
+
 
 .form-share-button {
 	position: relative;
@@ -13572,13 +13097,13 @@ div.tab-container table.dragdrop-dropTarget-engage {
 }
 
 .form-share-button a {
-	background: url(images/share-btn.png) no-repeat 0 0;
+	background: url(style/images/share-btn.png) no-repeat 0 0;
 	width: 75px;
 	height: 26px;
 }
 
 .form-share-button.inactive a {
-	background: url(images/shareBtnInactive.png) no-repeat 0 0;
+	background: url(style/images/shareBtnInactive.png) no-repeat 0 0;
 }
 
 .share-message-dialog .share-message-cancel {
@@ -13589,9 +13114,6 @@ div.tab-container table.dragdrop-dropTarget-engage {
 	padding-left: 0px;
 }
 
-/******************************************************************************
- *
- *****************************************************************************/
 .stream-view-dialog,.stream-search-dialog {
 	width: 526px;
 }
@@ -13643,27 +13165,10 @@ body .stream-view-dialog .delete-button
     padding-bottom: 10px;
 }
 
-.stream-view-dialog .form-container .form-submit-spinny { 
-	*float: none; 
-	*height: 48px;
-}
 
-.stream-search-dialog-body .form-container .form-submit-spinny { 
-	*float: none; 
-	*height: 48px;
-}
 
-.stream-view-dialog .form-container .form-cancel-button,.stream-search-dialog-body .form-container .form-cancel-button
-	{ 
-	*vertical-align: top;
-}
-
-/******************************************************************************
- *
- *****************************************************************************/
 .gadget-button {
 	margin-top: 3px; 
-	*margin-top: -19px;
 	width: 17px;
 	height: 17px;
 	text-indent: -1000em;
@@ -13674,55 +13179,53 @@ body .stream-view-dialog .delete-button
 
 .gadget-button.gadget-button-spacer {
 	display: inline-block;
-	*display: inline;
 	cursor: default;
 }
 
+
 .gadget-button.gadget-maximize {
-	background: url(images/gadgetControls.png) no-repeat scroll 0 0
+	background: url(style/images/gadgetControls.png) no-repeat scroll 0 0
 		transparent;
-	display: inline-block; 
-	*display: inline;
-	zoom: 1;
-}
+	display: inline-block;
+} 
+
 
 .gadget-button.gadget-help {
-    background: url(images/gadgetControls.png) no-repeat scroll 0 -260px
+    background: url(style/images/gadgetControls.png) no-repeat scroll 0 -260px
         transparent;
 }
 
 .gadget-button.gadget-refresh {
-	background: url(images/gadgetControls.png) no-repeat scroll 0 -20px
+	background: url(style/images/gadgetControls.png) no-repeat scroll 0 -20px
 		transparent;
 }
 
 .gadget-button.gadget-edit {
-	background: url(images/gadgetControls.png) no-repeat scroll 0 -40px
+	background: url(style/images/gadgetControls.png) no-repeat scroll 0 -40px
 		transparent;
 }
 
 .gadget-button.gadget-close {
-	background: url(images/gadgetControls.png) no-repeat scroll 0 -60px
+	background: url(style/images/gadgetControls.png) no-repeat scroll 0 -60px
 		transparent;
 }
 
 .gadget-button.gadget-minimize {
-	background: url("images/gadgetControls.png") no-repeat scroll 5px -76px
-		transparent; 
-	*margin-top: 3px;
-}
+	background: url("style/images/gadgetControls.png") no-repeat scroll 5px -76px
+		transparent;
+} 
+
 
 .gadget-button.gadget-minimize.minimized {
-	background: url("images/gadgetControls.png") no-repeat scroll 5px -98px
+	background: url("style/images/gadgetControls.png") no-repeat scroll 5px -98px
 		transparent;
 }
 
 .gadget-zone:hover .gadget-button.gadget-refresh,.gadget-zone:hover .gadget-button.gadget-edit,.gadget-zone:hover .gadget-button.gadget-close,.gadget-zone:hover .gadget-button.gadget-help
 {
-	display: inline-block; 
-	*display: inline;
-	zoom: 1;
-}
+	display: inline-block;
+} 
+
 
 .gadget-zone.maximized .gadget-button.gadget-help, .gadget-zone.maximized .gadget-button.gadget-minimize,.gadget-zone.maximized .gadget-button.gadget-refresh,.gadget-zone.maximized .gadget-button.gadget-edit,.gadget-zone.maximized .gadget-button.gadget-close
 {
@@ -13741,9 +13244,8 @@ body .stream-view-dialog .delete-button
 {
 	float: left;
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 }
+
 
 .gallery .bottom-pager {
 	border-top: none;
@@ -13790,17 +13292,14 @@ body .stream-view-dialog .delete-button
 }
 
 .add-gadget {
-	background: url("images/addGadgetBtn.png") repeat scroll 0 0 transparent
+	background: url("style/images/addGadgetBtn.png") repeat scroll 0 0 transparent
 		;
 }
 
 .add-theme {
-	background: url("images/addThemeBtn.png") repeat scroll 0 0 transparent;
+	background: url("style/images/addThemeBtn.png") repeat scroll 0 0 transparent;
 }
 
-/******************************************************************************
- * Help Page Settings
- *****************************************************************************/
 .help-page-settings {
 	padding-top: 0px;
 	padding-left: 10px;
@@ -13841,9 +13340,6 @@ body .stream-view-dialog .delete-button
 	z-index: 2001;
 }
 
-/******************************************************************************
- * Help Panel
- *****************************************************************************/
 .help {
 	width: 100%;
 	height: 600px;
@@ -13875,14 +13371,13 @@ body .stream-view-dialog .delete-button
 
 .help .left-panel {
 	display: inline-block; 
-	*display: inline; 
-	*zoom: 1;
 	margin: 20px;
 	padding-left: 20px;
 	padding-right: 20px;
 	width: 350px;
 	vertical-align: top;
 }
+
 
 .help-documentation-wrapper
 {
@@ -13909,10 +13404,9 @@ body .stream-view-dialog .delete-button
 
 .help .right-panel 
 {
-	display: inline-block; 
-	*display: inline; 
-	*zoom: 1;
-}
+	display: inline-block;
+} 
+
 
 .help .center-panel 
 {
@@ -13922,40 +13416,37 @@ body .stream-view-dialog .delete-button
 
 .help .help-documentation-panel .header-description-component {
 	margin-left: 4px;
-	display: inline-block; 
-	*display: inline; 
-	*zoom: 1;
-}
+	display: inline-block;
+} 
+
 
 .help .help-documentation-panel .getting-started-help-image-box,.help .help-documentation-panel .instructional-videos-help-image-box,.help .help-documentation-panel .faqs-help-image-box
 	{
 	width: 50px;
 	height: 50px;
 	margin-right: 10px;
-	display: inline-block; 
-	*display: inline; 
-	*zoom: 1;
-}
+	display: inline-block;
+} 
+
 
 .help .help-documentation-panel .getting-started-help-image-box {
-	background: url('images/gettingStartedIcon.png') repeat scroll 40px 0 transparent;
+	background: url('style/images/gettingStartedIcon.png') repeat scroll 40px 0 transparent;
 }
 
 .help .help-documentation-panel .instructional-videos-help-image-box {
-	background: url('images/tourIcon.png') repeat scroll 40px 0 transparent;
+	background: url('style/images/tourIcon.png') repeat scroll 40px 0 transparent;
 }
 
 .help .help-documentation-panel .faqs-help-image-box {
-	background: url('images/faqIcon.png') repeat scroll 40px 0 transparent;
+	background: url('style/images/faqIcon.png') repeat scroll 40px 0 transparent;
 }
 
 .help .help-documentation-panel .help-documentation-text-block {
 	display: inline-block; 
-	*display: inline; 
-	*zoom: 1;
 	vertical-align: top;
 	padding-top: 3px;
 }
+
 
 .help-documentation-text-block .gwt-Label
 {
@@ -13973,7 +13464,7 @@ body .stream-view-dialog .delete-button
 	margin-top: 5px;
 	margin-left: auto;
 	margin-right: auto;
-	background: url('images/launchEurekaStreamsOrgBtn.png');
+	background: url('style/images/launchEurekaStreamsOrgBtn.png');
 	overflow: hidden;
 	text-indent: -1000em;
 }
@@ -14000,15 +13491,11 @@ body .stream-view-dialog .delete-button
 .help .support-stream-help-panel .support-group-logo-panel {
 	vertical-align: top;
 	padding-top: 4px;
-	display: inline-block; 
-	*display: inline; 
-	*zoom: 1;
-}
+	display: inline-block;
+} 
 
 .help .support-stream-help-panel .support-group-description-panel {
 	display: inline-block; 
-	*display: inline; 
-	*zoom: 1;
 	width: 250px;
 	margin-left: 10px;
 }
@@ -14020,14 +13507,14 @@ body .stream-view-dialog .delete-button
 .help .support-stream-contact-panel .support-phone-number-label {
 	margin-top: 10px;
 	height: 15px;
-	background: url('images/phoneIcon.png') no-repeat;
+	background: url('style/images/phoneIcon.png') no-repeat;
 	padding-left: 35px;
 }
 
 .help .support-stream-contact-panel .support-email-label {
 	margin-top: 10px;
 	height: 15px;
-	background: url('images/emailIcon.png') no-repeat;
+	background: url('style/images/emailIcon.png') no-repeat;
 	padding-left: 35px;
 }
 
@@ -14071,15 +13558,11 @@ body .stream-view-dialog .delete-button
 
 .unseen-activity div.unseen-label {
 	display: inline-block; 
-	*display: inline;
 	position: relative;
-	top: -5px; 
-	*top: -2px;
-}
+	top: -5px;
+} 
 
-.unseen-activity div.unseen-label div { 
-	*display: inline;
-}
+
 
 .unseen-activity div.unseen-label a {
 	color: #666;
@@ -14087,17 +13570,16 @@ body .stream-view-dialog .delete-button
 }
 
 .unseen-activity a {
-	background: url('images/refreshStream.png') no-repeat;
+	background: url('style/images/refreshStream.png') no-repeat;
 	height: 20px;
 	overflow: hidden;
 	text-indent: 1000em;
 	width: 83px;
 	margin-left: 10px;
 	display: inline-block; 
-	*display: inline;
 	margin-top: 2px;
-	zoom: 1;
 }
+
 
 .group-private-extra-note {
 	margin-top: 5px;
@@ -14109,18 +13591,16 @@ body .stream-view-dialog .delete-button
 
 .group .profile-follow-me-btn {
 	height: 25px;
-	background-image: url(images/joinBtn.png);
+	background-image: url(style/images/joinBtn.png);
 }
 
 .group .profile-unfollow-me-btn {
 	height: 25px;
-	background-image: url(images/leaveBtn.png);
+	background-image: url(style/images/leaveBtn.png);
 }
 
 .stream-plugins-settings-container {
 	margin-left: 260px; 
-	*display: inline;
-	zoom: 1;
 }
 
 .stream-plugins-settings-container .filters {
@@ -14129,9 +13609,9 @@ body .stream-view-dialog .delete-button
 }
 
 .stream-plugins-settings-container .filter .gwt-Image {
-	padding-right: 5px; 
-	*float: left;
-}
+	padding-right: 5px;
+} 
+
 
 .stream-plugins-settings-container .filter-label {
 	width: 164px !IMPORTANT;
@@ -14139,13 +13619,10 @@ body .stream-view-dialog .delete-button
 
 .stream-plugins-feed-subscriptions-container {
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	width: 690px;
 	margin-top: 15px;
-	margin-left: 10px; 
-	*margin-left: -10px;
-}
+	margin-left: 10px;
+} 
 
 .stream-plugins-feed-subscriptions-container .header {
 	font-weight: bold;
@@ -14157,16 +13634,15 @@ body .stream-view-dialog .delete-button
 
 .stream-plugins-feed-subscriptions-container .header .gwt-Label {
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	width: 220px;
 }
+
 
 .stream-plugins-meta-data .image-container,.stream-plugins-add-feed-meta-data .image-container
 	{
 	height: 50px;
 	width: 50px;
-	background-image: url(images/pluginThumbnailsBg.png);
+	background-image: url(style/images/pluginThumbnailsBg.png);
 	text-align: center;
 	margin-right: 20px;
 }
@@ -14174,15 +13650,11 @@ body .stream-view-dialog .delete-button
 .stream-plugins-meta-data .stream-plugins-screenshot,.stream-plugins-add-feed-meta-data .stream-plugins-screenshot
 	{
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	vertical-align: middle;
 	height: 51px;
 	width: 51px;
-	padding-top: 9px; 
-	*padding-bottom: 6px; 
-	*height: 39px;
-}
+	padding-top: 9px;
+} 
 
 .stream-plugins-meta-data .gwt-Image,.stream-plugins-add-feed-meta-data .gwt-Image
 	{
@@ -14191,8 +13663,6 @@ body .stream-view-dialog .delete-button
 
 .stream-plugins-meta-data>div,.stream-plugins-add-feed-meta-data>div {
 	display: inline-block;
-	zoom: 1; 
-	*display: inline;
 	vertical-align: top;
 	width: 90%;
 }
@@ -14220,14 +13690,12 @@ body .stream-view-dialog .delete-button
 
 .stream-plugins-meta-data .edit-button {
 	text-indent: -1000em;
-	background: transparent url(images/editBtnSmall.png) repeat scroll 0 0;
+	background: transparent url(style/images/editBtnSmall.png) repeat scroll 0 0;
 	width: 58px;
 	height: 16px;
 	overflow: hidden;
-	display: inline-block; 
-	*display: block;
-	zoom: 1;
-}
+	display: inline-block;
+} 
 
 .stream-plugins-meta-data .gadget-ext-info {
 	margin-bottom: 2px;
@@ -14251,65 +13719,43 @@ body .stream-view-dialog .delete-button
 }
 
 .stream-plugin-conf-panel .form-upload-button a {
-	background: url(images/importBtn.png) no-repeat;
-	height: 25px; 
-	*position: relative; 
-	*top: -5px;
-}
-
-.stream-plugin-conf-panel .form-submit-spinny { 
-	*position: relative; 
-	*top: -5px;
-}
-
-.stream-plugin-conf-panel .required-form-label { 
-	*position: relative; 
-	*top: 5px;
-}
+	background: url(style/images/importBtn.png) no-repeat;
+	height: 25px;
+} 
 
 .url-panel .small-x {
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	vertical-align: top;
 	float: right;
 }
 
 .url-panel .gwt-Label {
-	display: inline-block; 
-	*display: inline;
-	zoom: 1;
-}
+	display: inline-block;
+} 
+
 
 .url-panel {
-	display: inline-block; 
-	*display: inline;
-	zoom: 1;
+	display: inline-block;
 	padding: 3px;
 	padding-left: 20px;
 	width: 400px;
 	border: 1px solid black;
-}
+} 
 
 .url-label {
 	overflow: hidden;
 	height: 17px;
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	max-width: 350px;
 }
 
 .stream-plugin-conf-panel .form-container {
 	border: none; 
-	*width: 95%; 
-	*display: inline;
-	zoom: 1;
 	margin-left: -30px;
 }
 
 .stream-plugin-conf-panel .url-panel {
-	background: url(images/readOnlyFeedBox.png) no-repeat 0 0;
+	background: url(style/images/readOnlyFeedBox.png) no-repeat 0 0;
 	height: 20px;
 	margin-top: -5px;
 	padding: 4px;
@@ -14346,8 +13792,6 @@ body .stream-view-dialog .delete-button
 
 .stream-plugin-checkbox label {
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	padding-left: 20px;
 	padding-right: 15px;
 	margin-top: -17px;
@@ -14411,13 +13855,12 @@ body .stream-view-dialog .delete-button
 
 .plugins-master .add-gadget {
 	margin-top: -35px; 
-	*margin-top: -38px;
 	height: 26px;
-	background: url(images/addPluginBtn.png);
+	background: url(style/images/addPluginBtn.png);
 }
 
 .plugins-master .image-container {
-	background-image: url("images/pluginThumbnailsBg.png");
+	background-image: url("style/images/pluginThumbnailsBg.png");
 	height: 50px;
 	margin-right: 20px;
 	text-align: center;
@@ -14438,9 +13881,9 @@ body .stream-view-dialog .delete-button
 .plugins-master .image-container .gwt-Image {
 	width: auto;
 	height: auto;
-	padding-left: 7px; 
-	*margin-top: 7px;
-}
+	padding-left: 7px;
+} 
+
 
 .stream-plugins-meta-data.last {
 	border: none;
@@ -14463,10 +13906,9 @@ body .stream-view-dialog .delete-button
 }
 
 .pending-group-membership-item>div {
-	display: inline-block; 
-	*display: inline; 
-	*zoom: 1;
-}
+	display: inline-block;
+} 
+
 
 .pending-group-membership-item>.pending-buttons {
 	vertical-align: top;
@@ -14491,14 +13933,14 @@ body .stream-view-dialog .delete-button
 	font-size: 16px;
 	font-weight: bold;
 	color: red;
-	background: transparent url('images/red-error-icon-sm.png') no-repeat
+	background: transparent url('style/images/red-error-icon-sm.png') no-repeat
 		scroll top left;
-	line-height: 25px; /* Make line tall enough to not cut off the icon */
+	line-height: 25px; 
 	height: 25px;
 }
 
 .private-group>.group-error-msg-panel-title {
-	background: transparent url('images/private-icon.png') no-repeat scroll
+	background: transparent url('style/images/private-icon.png') no-repeat scroll
 		top left;
 	color: #126ABC;
 }
@@ -14511,17 +13953,12 @@ body .stream-view-dialog .delete-button
 .request-access-button {
 	width: 108px;
 	height: 31px;
-	background: transparent url('images/RequestAccessButton-Enabled.png')
+	background: transparent url('style/images/RequestAccessButton-Enabled.png')
 		no-repeat scroll center center;
 }
 
 .request-access-button.label-button-disabled {
-	background-image: url('images/RequestAccessButton-Disabled.png');
-}
-
-/* ---- Standard styles for SpinnerLabelButton ---- */
-.label-button {
-	
+	background-image: url('style/images/RequestAccessButton-Disabled.png');
 }
 
 .label-button-enabled {
@@ -14529,23 +13966,19 @@ body .stream-view-dialog .delete-button
 }
 
 .label-button-wait-spinner {
-	background: transparent url('images/wait-spinner.gif') no-repeat scroll
+	background: transparent url('style/images/wait-spinner.gif') no-repeat scroll
 		center center;
 }
 
-/* -------- */
-	/* Use the 'wait-active' style on a panel to hide its children and show a wait spinner, thus disabling the controls while the action is taking place. */
 .wait-active {
-	background: transparent url('images/wait-spinner.gif') no-repeat scroll
+	background: transparent url('style/images/wait-spinner.gif') no-repeat scroll
 		center center;
 }
 
 .wait-active>* {
-	/* Use visibility hidden instead of display none so that the panel retains its size/shape. */
 	visibility: hidden;
 }
 
-/* -------- */
 .url-validator {
 	width: 575px;
 }
@@ -14569,17 +14002,16 @@ body .url-validator .required-form-label {
 {
 	color: #666;
 	display: inline-block; 
-	*display: inline;
-	zoom: 1;
 	margin-right: 5px;
 	vertical-align: top;
 }
+
 
 .private-icon {
 	float: left;
 	height: 16px;
 	width: 16px;
-	background: transparent url('images/private-icon-small.png') no-repeat
+	background: transparent url('style/images/private-icon-small.png') no-repeat
 		scroll center left;
 }
 
@@ -14596,7 +14028,7 @@ body .url-validator .required-form-label {
 }
 
 .profile .connection-master .display-name.private {
-	background: url(images/private-icon-small.png) no-repeat scroll 0 3px
+	background: url(style/images/private-icon-small.png) no-repeat scroll 0 3px
 		transparent;
 	padding-left: 15px;
 }
@@ -14611,7 +14043,6 @@ body .url-validator .required-form-label {
 	min-height: 0;
 }
 
-/**** Delete member from private group ****/
 .removable-person>.delete {
 	display: none;
 }
@@ -14645,8 +14076,6 @@ body .url-validator .required-form-label {
 .scope-form-element
 {
     display: inline-block; 
-    *display: inline; 
-    *zoom: 1;
     width:90%;
 }
 
@@ -14732,9 +14161,8 @@ body .url-validator .required-form-label {
 .delegation-item .avatar
 {
 	display:inline-block;
-	*display:inline;
-	zoom:1;
 }
+
 .delegation-item .avatar-image
 {
 	height:35px;
@@ -14750,3 +14178,8 @@ body .url-validator .required-form-label {
 {
 	padding: 10px;
 }
+html, body 
+{ 
+	height: 100%
+}
+

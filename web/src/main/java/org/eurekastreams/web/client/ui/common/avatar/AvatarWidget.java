@@ -60,7 +60,7 @@ public class AvatarWidget extends Composite
 
     /**
      * Constructor: Doesn't specify whose avatar, for setting dynamically later.
-     *
+     * 
      * @param size
      *            the avatar size.
      */
@@ -74,7 +74,7 @@ public class AvatarWidget extends Composite
 
     /**
      * Creates an avatar for the given entity.
-     *
+     * 
      * @param entity
      *            the entity that has the avatar.
      * @param type
@@ -89,7 +89,7 @@ public class AvatarWidget extends Composite
 
     /**
      * Creates an avatar for the given entity.
-     *
+     * 
      * @param entityId
      *            the entity ID.
      * @param avatarId
@@ -107,7 +107,7 @@ public class AvatarWidget extends Composite
 
     /**
      * Creates an avatar for the given entity.
-     *
+     * 
      * @param entityId
      *            the entity ID.
      * @param avatarId
@@ -119,8 +119,8 @@ public class AvatarWidget extends Composite
      * @param title
      *            the title.
      */
-    public AvatarWidget(final long entityId, final String avatarId, final EntityType type, final Size size, 
-        final String title)
+    public AvatarWidget(final long entityId, final String avatarId, final EntityType type, final Size size,
+            final String title)
     {
         this(size);
         setAvatar(entityId, avatarId, type, title);
@@ -128,7 +128,7 @@ public class AvatarWidget extends Composite
 
     /**
      * Creates an avatar for the given entity.
-     *
+     * 
      * @param entity
      *            the entity that has the avatar.
      * @param type
@@ -145,7 +145,7 @@ public class AvatarWidget extends Composite
 
     /**
      * Constructor: Doesn't specify whose avatar, for setting dynamically later.
-     *
+     * 
      * @param size
      *            the avatar size.
      * @param bg
@@ -157,9 +157,9 @@ public class AvatarWidget extends Composite
         this(size);
     }
 
-     /**
+    /**
      * Creates an avatar for the given entity.
-     *
+     * 
      * @param entity
      *            the entity that has the avatar.
      * @param type
@@ -177,7 +177,7 @@ public class AvatarWidget extends Composite
 
     /**
      * Creates an avatar for the given entity.
-     *
+     * 
      * @param entityId
      *            the entity ID.
      * @param avatarId
@@ -199,7 +199,7 @@ public class AvatarWidget extends Composite
 
     /**
      * Sets the avatar to be for the given entity (for dynamically changing it).
-     *
+     * 
      * @param entityId
      *            the entity ID.
      * @param avatarId
@@ -211,10 +211,10 @@ public class AvatarWidget extends Composite
     {
         setAvatar(entityId, avatarId, type, "");
     }
- 
+
     /**
      * Sets the avatar to be for the given entity (for dynamically changing it).
-     *
+     * 
      * @param entityId
      *            the entity ID.
      * @param avatarId
@@ -227,9 +227,8 @@ public class AvatarWidget extends Composite
     public void setAvatar(final long entityId, final String avatarId, final EntityType type, final String title)
     {
         AvatarUrlGenerator urlGen = new AvatarUrlGenerator(type);
-        String imageUrl =
-                imageSize.equals(Size.Normal) ? urlGen.getNormalAvatarUrl(entityId, avatarId) : urlGen
-                        .getSmallAvatarUrl(entityId, avatarId);
+        String imageUrl = imageSize.equals(Size.Normal) ? urlGen.getNormalAvatarUrl(entityId, avatarId) : urlGen
+                .getSmallAvatarUrl(entityId, avatarId);
         image.setUrl(imageUrl);
         if (title.length() > 0)
         {

@@ -48,7 +48,7 @@ public class PersonalProfileAboutTabPanel extends ProfileAboutTabPanel
 {
     /**
      * Constructor.
-     *
+     * 
      * @param person
      *            Person whose data to display.
      */
@@ -129,6 +129,7 @@ public class PersonalProfileAboutTabPanel extends ProfileAboutTabPanel
         }
         else
         {
+            // TODO: keep sending this as a list of background items - will be changed to a list of Strings
             interestsPanel.add(new BackgroundItemLinksPanel("interests or hobbies", items));
         }
 
@@ -207,7 +208,7 @@ public class PersonalProfileAboutTabPanel extends ProfileAboutTabPanel
 
     /**
      * strips html out of String.
-     *
+     * 
      * @param htmlString
      *            the string to strip.
      * @return a stripped string.
@@ -227,7 +228,7 @@ public class PersonalProfileAboutTabPanel extends ProfileAboutTabPanel
     /**
      * Checks if the URL is relative (and thus needs to have http:// added on the front). JSNI due to limited regex
      * support in GWT 1.7.
-     *
+     * 
      * @param href
      *            URL to check.
      * @return True if needs prefix; false if not.
