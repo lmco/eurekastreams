@@ -17,10 +17,8 @@ package org.eurekastreams.web.client.ui.pages.profile;
 
 import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
-import org.eurekastreams.server.domain.BackgroundItemType;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -123,7 +121,7 @@ public class PersonalProfilePanel extends FlowPanel
     /**
      * The person whose profile we're looking at.
      */
-    private Person person;
+    private PersonModelView personModelView;
 
     /**
      * Followers.
@@ -188,7 +186,7 @@ public class PersonalProfilePanel extends FlowPanel
                         // the same request to the model as is being processed here. Unless the observer is unwired
                         // first, it will be called a second time.
                         EventBus.getInstance().removeObserver(GotPersonalInformationResponseEvent.class, this);
-                        setEntity(event.getResponse());
+                        setEntity(event.getResponse().toPersonModelView());
                     }
                 });
 
@@ -205,17 +203,16 @@ public class PersonalProfilePanel extends FlowPanel
      * @param inPerson
      *            the person whose profile is being displayed
      */
-    public void setEntity(final Person inPerson)
+    public void setEntity(final PersonModelView inPerson)
     {
         ActionProcessor inProcessor = Session.getInstance().getActionProcessor();
         inProcessor.setQueueRequests(true);
 
-        person = inPerson;
-        if (person == null)
+        if (inPerson == null)
         {
             showInvalidPersonMessage();
         }
-        PersonModelView personModelView = person.toPersonModelView();
+        personModelView = inPerson;
 
         leftBarPanel.clear();
         portalPageContainer.clear();
@@ -415,10 +412,9 @@ public class PersonalProfilePanel extends FlowPanel
 
         checklistPanel.addTask(new Task("Basic Information",
                 "Upload your picture, share a list of your skills and interests, provide a description of what you "
-                        + "do, and add your contact information."), (person.getAvatarId() != null
-                && person.getJobDescription() != null && person.getBackground() != null && person.getBackground()
-                .getBackgroundItems(BackgroundItemType.SKILL) != null)
-                && person.getBackground().getBackgroundItems(BackgroundItemType.SKILL).size() > 0);
+                        + "do, and add your contact information."), personModelView.getAvatarId() != null
+                && personModelView.getJobDescription() != null && personModelView.getInterests() != null
+                && personModelView.getInterests().size() > 0);
 
         final Task biographyTask = new Task("Biography", "Provide an overview of your professional background.",
                 "Work History & Education");
@@ -469,9 +465,9 @@ public class PersonalProfilePanel extends FlowPanel
                 });
 
         Session.getInstance().getActionProcessor().setQueueRequests(true);
-        PersonalBiographyModel.getInstance().fetch(person.getAccountId(), true);
-        PersonalEducationModel.getInstance().fetch(person.getId(), true);
-        PersonalEmploymentModel.getInstance().fetch(person.getId(), true);
+        PersonalBiographyModel.getInstance().fetch(personModelView.getAccountId(), true);
+        PersonalEducationModel.getInstance().fetch(personModelView.getId(), true);
+        PersonalEmploymentModel.getInstance().fetch(personModelView.getId(), true);
         Session.getInstance().getActionProcessor().setQueueRequests(false);
         Session.getInstance().getActionProcessor().fireQueuedRequests();
     }

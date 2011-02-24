@@ -1894,6 +1894,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         p.setCellPhone(cellPhone);
         p.setWorkPhone(workPhone);
         p.setFax(fax);
+        p.setBannerId(bannerId);
 
         if (background != null)
         {
