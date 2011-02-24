@@ -65,6 +65,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.Window;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -154,8 +155,7 @@ public class ApplicationEntryPoint implements EntryPoint
             {
                 public void update(final FormLoginCompleteEvent event)
                 {
-                    loginDialog.setBgVisible(false);
-                    loadPerson();
+                    Window.Location.reload();
                 }
             });
 
