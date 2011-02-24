@@ -59,6 +59,8 @@ public class DomainGroupQueryStrategy
         fields.add(getColumn("overview"));
         fields.add(getColumn("commentable"));
         fields.add(getColumn("streamPostable"));
+        fields.add(getColumn("suppressPostNotifToMember"));
+        fields.add(getColumn("suppressPostNotifToCoordinator"));
         fields.add(Projections.property("po.name").as("parentOrganizationName"));
         fields.add(Projections.property("po.shortName").as("parentOrganizationShortName"));
         fields.add(Projections.property("po.id").as("parentOrganizationId"));
