@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.web.client.ui.pages.profile.widgets;
 
-import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
 
@@ -35,7 +34,7 @@ public class GroupAboutPanel extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param shortName
      *            the organization being described.
      */
@@ -46,39 +45,48 @@ public class GroupAboutPanel extends FlowPanel
 
     /**
      * Sets the group.
-     *
-     * @param subject
-     *            the group.
+     * 
+     * @param inName
+     *            Name.
+     * @param inEntityId
+     *            id.
+     * @param inAvatarId
+     *            Avatar id.
+     * @param inUrl
+     *            url.
+     * @param inDescription
+     *            description.
      */
-    public void setGroup(final DomainGroup subject)
+    public void setGroup(final String inName, final long inEntityId, final String inAvatarId, final String inUrl,
+            final String inDescription)
     {
         this.clear();
-        AvatarWidget photo = new AvatarWidget(subject, EntityType.GROUP, AvatarWidget.Size.Normal,
-                AvatarWidget.Background.White);
+        AvatarWidget photo = new AvatarWidget(inEntityId, inAvatarId, EntityType.ORGANIZATION, //
+                AvatarWidget.Size.Normal);
         photo.addStyleName("profile-photo");
         this.add(photo);
 
         this.add(follow);
 
-        Label title = new Label(subject.getName());
+        Label title = new Label(inName);
         title.addStyleName("profile-org-title");
         this.add(title);
 
-        Anchor url = new Anchor("Website", subject.getUrl(), "_NEW");
+        Anchor url = new Anchor("Website", inUrl, "_NEW");
         url.addStyleName("profile-website");
-        if (subject.getUrl() == null)
+        if (inUrl == null)
         {
             url.addStyleName("no-value");
         }
         this.add(url);
 
-        if (subject.getDescription() != null && !subject.getDescription().equals(""))
+        if (inDescription != null && !inDescription.equals(""))
         {
             Label subheader = new Label("");
             subheader.addStyleName("profile-subheader");
             this.add(subheader);
 
-            Label mission = new Label(subject.getDescription());
+            Label mission = new Label(inDescription);
             mission.addStyleName("profile-mission");
             this.add(mission);
         }

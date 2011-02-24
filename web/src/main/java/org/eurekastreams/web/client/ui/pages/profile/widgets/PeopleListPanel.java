@@ -108,11 +108,15 @@ public class PeopleListPanel extends FlowPanel
      *            the title to be displayed above the people
      * @param maxDisplayed
      *            the maximum number of people to display
+     * @param urlRequest
+     *            the url to go to.
+     * @param filterReq
+     *            the view of the connection tab to go to.
      * @param bogus
      *            not used.
      */
     public PeopleListPanel(final Set<PersonModelView> people, final String title, final int maxDisplayed,
-            final Long bogus)
+            final CreateUrlRequest urlRequest, final SwitchToFilterOnPagedFilterPanelEvent filterReq, final Long bogus)
     {
         if (people.size() > 0)
         {
@@ -135,6 +139,20 @@ public class PeopleListPanel extends FlowPanel
             {
                 Anchor moreLabel = new Anchor(Integer.toString(people.size() - i) + " more");
                 moreLabel.addStyleName("profile-more-people-link");
+                if (urlRequest != null)
+                {
+                    moreLabel.addClickHandler(new ClickHandler()
+                    {
+                        public void onClick(final ClickEvent event)
+                        {
+                            Session.getInstance().getEventBus().notifyObservers(new UpdateHistoryEvent(urlRequest));
+                            if (filterReq != null)
+                            {
+                                Session.getInstance().getEventBus().notifyObservers(filterReq);
+                            }
+                        }
+                    });
+                }
                 this.add(moreLabel);
             }
         }

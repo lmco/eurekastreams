@@ -22,10 +22,10 @@ import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.server.action.request.profile.GetBreadcrumbsListRequest;
 import org.eurekastreams.server.domain.BreadcrumbDTO;
-import org.eurekastreams.server.domain.DomainGroupEntity;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
@@ -78,9 +78,13 @@ public class BreadcrumbPanel extends FlowPanel
      * @param showItemLink
      *            flag to show this item in the trail as a link that wipes out all params when clicked.
      */
-    public void setGroup(final DomainGroupEntity inGroup, final boolean showItemLink)
+    public void setGroup(final DomainGroupModelView inGroup, final boolean showItemLink)
     {
-        buildBreadcrumbs(inGroup.getParentOrganization(), inGroup.getName(), true, showItemLink);
+        OrganizationModelView parentOrgModelView = new OrganizationModelView();
+        parentOrgModelView.setName(inGroup.getParentOrganizationName());
+        parentOrgModelView.setEntityId(inGroup.getParentOrganizationId());
+        parentOrgModelView.setShortName(inGroup.getParentOrganizationShortName());
+        buildBreadcrumbs(parentOrgModelView, inGroup.getName(), true, showItemLink);
     }
 
     /**

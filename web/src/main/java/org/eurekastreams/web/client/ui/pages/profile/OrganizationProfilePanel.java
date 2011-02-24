@@ -241,7 +241,7 @@ public class OrganizationProfilePanel extends FlowPanel
         leftBarPanel.addChildWidget(connectionsPanel);
 
         leftBarPanel.addChildWidget(new PeopleListPanel(new HashSet<PersonModelView>(org.getLeaders()), "Leadership",
-                PeopleListPanel.DISPLAY_ALL, null));
+                PeopleListPanel.DISPLAY_ALL, null, null, null));
 
         final StreamPanel streamContent = new StreamPanel(true);
         String jsonRequest = StreamJsonRequestFactory.setOrganization(org.getShortName(),
