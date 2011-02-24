@@ -16,15 +16,19 @@
 package org.eurekastreams.server.action.execution;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.server.domain.BackgroundItem;
+import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper;
+import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -72,6 +76,11 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
     private DomainMapper<List<Long>, List<PersonModelView>> personModelViewsByIdMapper;
 
     /**
+     * Mapper for getting group entity.
+     */
+    private DomainMapper<FindByIdRequest, DomainGroup> groupEntityMapper;
+
+    /**
      * Constructor.
      * 
      * @param inGroupByShortNameMapper
@@ -88,6 +97,8 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
      *            Get ids for direct group coordinators.
      * @param inPersonModelViewsByIdMapper
      *            Get PersonModelViews by id.
+     * @param inGroupEntityMapper
+     *            Mapper for getting group entity.
      */
     @SuppressWarnings("unchecked")
     public GetDomainGroupModelViewByShortNameExectution(
@@ -97,7 +108,8 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
             final GetBannerIdByParentOrganizationStrategy inGetBannerIdStrategy,
             final DomainMapper<Long, List<Long>> inGroupFollowerIdsMapper,
             final DomainMapper<Long, List<Long>> inGroupCoordinatorIdsByGroupIdMapper,
-            final DomainMapper<List<Long>, List<PersonModelView>> inPersonModelViewsByIdMapper)
+            final DomainMapper<List<Long>, List<PersonModelView>> inPersonModelViewsByIdMapper,
+            final DomainMapper<FindByIdRequest, DomainGroup> inGroupEntityMapper)
     {
         groupByShortNameMapper = inGroupByShortNameMapper;
         populateOrgChildWithSkeletonParentOrgsCacheMapper = inPopulateOrgChildWithSkeletonParentOrgsCacheMapper;
@@ -106,6 +118,7 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
         groupFollowerIdsMapper = inGroupFollowerIdsMapper;
         groupCoordinatorIdsByGroupIdMapper = inGroupCoordinatorIdsByGroupIdMapper;
         personModelViewsByIdMapper = inPersonModelViewsByIdMapper;
+        groupEntityMapper = inGroupEntityMapper;
     }
 
     @Override
@@ -141,7 +154,31 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
         result.setCoordinators(personModelViewsByIdMapper.execute(groupCoordinatorIdsByGroupIdMapper.execute(result
                 .getId())));
 
+        result.setCapabilities(getCapabilities(result.getId()));
+
         return result;
+    }
+
+    /**
+     * Get group capabilities.
+     * 
+     * @param groupId
+     *            id
+     * @return list of capabilities (strings).
+     */
+    // TODO: for now this comes from entity as it did before. Should create new mapper and set up cache for group
+    // capabilities to improve performance.
+    private List<String> getCapabilities(final Long groupId)
+    {
+        List<String> results = new ArrayList<String>();
+        DomainGroup g = groupEntityMapper.execute(new FindByIdRequest("DomainGroup", groupId));
+        List<BackgroundItem> caps = g.getCapabilities();
+        for (BackgroundItem bgi : caps)
+        {
+            results.add(bgi.getName());
+        }
+
+        return results;
     }
 
     /**

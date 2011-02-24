@@ -21,9 +21,12 @@ import java.util.List;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.server.domain.BackgroundItem;
+import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper;
+import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -93,6 +96,17 @@ public class GetDomainGroupModelViewByShortNameExectutionTest
             DomainMapper.class, "personModelViewsByIdMapper");
 
     /**
+     * Mapper for getting group entity.
+     */
+    private DomainMapper<FindByIdRequest, DomainGroup> groupEntityMapper = context.mock(DomainMapper.class,
+            "groupEntityMapper");
+
+    /**
+     * DomainGroup entity mock.
+     */
+    private DomainGroup dg = context.mock(DomainGroup.class);
+
+    /**
      * Group short name.
      */
     private final String shortname = "shortName";
@@ -118,7 +132,7 @@ public class GetDomainGroupModelViewByShortNameExectutionTest
     private GetDomainGroupModelViewByShortNameExectution sut = new GetDomainGroupModelViewByShortNameExectution(
             groupByShortNameMapper, populateOrgChildWithSkeletonParentOrgsCacheMapper, groupCoordinatorIdsDAO,
             getBannerIdStrategy, groupFollowerIdsMapper, groupCoordinatorIdsByGroupIdMapper, //
-            personModelViewsByIdMapper);
+            personModelViewsByIdMapper, groupEntityMapper);
 
     // TODO: Minimal pass testing. Beef this up a bit for non public and restricted groups.
     /**
@@ -162,6 +176,14 @@ public class GetDomainGroupModelViewByShortNameExectutionTest
                 will(returnValue(coords));
 
                 oneOf(dgmv).setCoordinators(coords);
+
+                oneOf(groupEntityMapper).execute(with(any(FindByIdRequest.class)));
+                will(returnValue(dg));
+
+                oneOf(dg).getCapabilities();
+                will(returnValue(new ArrayList<BackgroundItem>()));
+
+                oneOf(dgmv).setCapabilities(new ArrayList<String>());
             }
         });
 
