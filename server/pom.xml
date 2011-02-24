@@ -477,8 +477,8 @@
 	</dependencies>
 	<pluginRepositories>
 		<pluginRepository>
-			<id>Codehaus Snapshots</id>
-			<url>http://snapshots.repository.codehaus.org/</url>
+			<id>Eurekastreams Snapshots</id>
+			<url>http://maven.eurekastreams.org/</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>

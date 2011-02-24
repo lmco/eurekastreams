@@ -51,8 +51,8 @@
     </modules>
     <pluginRepositories>
         <pluginRepository>
-            <id>codehaus snapshot repository</id>
-            <url>http://snapshots.repository.codehaus.org/</url>
+            <id>Eureka Streams repository</id>
+            <url>http://maven.eurekastreams.org/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -65,70 +65,6 @@
 	    	<enabled>false</enabled>
 	    </snapshots>
 	    <url>http://maven.eurekastreams.org</url>
-	  </repository>
-	  <repository>
-	    <id>Dev.Java.Net</id>
-	    <url>http://download.java.net/maven/2/</url>
-	  </repository>
-	  <repository>
-	    <id>ibilio</id>
-	    <url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
-	  </repository>
-      <repository>
-        <id>Maven Central</id>
-        <url>http://repo1.maven.org/maven2/</url>
-      </repository>
-      <repository>
-        <id>JBoss maven2</id>
-        <url>http://repository.jboss.org/maven2</url>
-      </repository>
-      <repository>
-	    <id>jboss</id>
-	    <url>http://repository.jboss.org/nexus/content/groups/public/</url>
-	  </repository>
-	  <repository>
-	    <id>maven plugins</id>
-	    <url>http://maven-plugins.sourceforge.net/repository</url>
-	  </repository>
-	  <repository>
-	    <id>restlet</id>
-	    <url>http://maven.restlet.org/</url>
-	  </repository>
-      <repository>
-        <id>caja</id>
-        <url>http://google-caja.googlecode.com/svn/maven</url>
-      </repository>
-      <repository>
-        <id>oauth</id>
-        <url>http://oauth.googlecode.com/svn/code/maven</url>
-      </repository>
-      <repository>
-        <id>guice</id>
-        <url>http://guice-maven.googlecode.com/svn/trunk/</url>
-      </repository>
-      <repository>
-        <id>gilead</id>
-        <url>http://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo</url>
-        <snapshots>
-            <enabled>false</enabled>
-        </snapshots>
-      </repository>
-      <repository>
-        <id>GWT-DND</id>
-        <url>http://kanboard.kenai.com/maven2</url>
-      </repository>
-      <repository>
-        <id>spy</id>
-        <name>Spy Repository</name>
-        <layout>default</layout>
-        <url>http://bleu.west.spy.net/~dustin/m2repo/</url>
-        <snapshots>
-           <enabled>false</enabled>
-        </snapshots>
-      </repository>
-	  <repository>
-	    <id>codehaus snapshots</id>
-	    <url>http://snapshots.repository.codehaus.org/org/codehaus</url>
 	  </repository>
 	</repositories>
     <properties>
