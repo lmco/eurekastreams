@@ -17,14 +17,15 @@ package org.eurekastreams.web.client.ui.pages.settings;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eurekastreams.server.action.response.settings.RetrieveSettingsResponse;
 import org.eurekastreams.server.domain.NotificationFilterPreference;
-import org.eurekastreams.server.domain.NotificationFilterPreference.Category;
 import org.eurekastreams.server.domain.NotificationFilterPreferenceDTO;
 import org.eurekastreams.server.domain.Page;
+import org.eurekastreams.server.domain.NotificationFilterPreference.Category;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.data.GotPersonalSettingsResponseEvent;
@@ -123,7 +124,7 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
         setupFormCommands();
 
         buildNotificationPreferencesSection((Collection<NotificationFilterPreferenceDTO>) inSettings
-                .get(RetrieveSettingsResponse.SETTINGS_NOTIFICATION_FILTERS), (Map<String, String>) inSupport
+                .get(RetrieveSettingsResponse.SETTINGS_NOTIFICATION_FILTERS), (HashMap<String, String>) inSupport
                 .get(RetrieveSettingsResponse.SUPPORT_NOTIFIER_TYPES));
 
         add(form);
@@ -138,7 +139,7 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
      *            List of available notifiers.
      */
     private void buildNotificationPreferencesSection(final Collection<NotificationFilterPreferenceDTO> filters,
-            final Map<String, String> notifiers)
+            final HashMap<String, String> notifiers)
     {
         Label label;
 
