@@ -123,7 +123,7 @@ public class GroupProfileSettingsTabContent extends FlowPanel
                     {
                         if (event.getResponse())
                         {
-                            GroupModel.getInstance().fetchModelView(groupName, true);
+                            GroupModel.getInstance().fetch(groupName, true);
                         }
                     }
                 });

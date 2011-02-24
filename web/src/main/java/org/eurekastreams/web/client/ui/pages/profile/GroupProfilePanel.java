@@ -213,7 +213,7 @@ public class GroupProfilePanel extends FlowPanel
         });
 
         inProcessor.setQueueRequests(true);
-        GroupModel.getInstance().fetchModelView(accountId, false);
+        GroupModel.getInstance().fetch(accountId, false);
         AllPopularHashTagsModel.getInstance().fetch(null, true);
         inProcessor.fireQueuedRequests();
         inProcessor.setQueueRequests(false);
