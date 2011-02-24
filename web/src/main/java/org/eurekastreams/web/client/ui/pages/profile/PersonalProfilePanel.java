@@ -21,6 +21,7 @@ import org.eurekastreams.server.domain.BackgroundItemType;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
@@ -214,7 +215,6 @@ public class PersonalProfilePanel extends FlowPanel
         {
             showInvalidPersonMessage();
         }
-
         PersonModelView personModelView = person.toPersonModelView();
 
         leftBarPanel.clear();
@@ -291,8 +291,9 @@ public class PersonalProfilePanel extends FlowPanel
         }
 
         final StreamPanel streamContent = new StreamPanel(false);
-        streamContent.setStreamScope(person.getStreamScope(), (personModelView.isStreamPostable() || (currentUser
-                .getAccountId() == personModelView.getAccountId())));
+        streamContent.setStreamScope(new StreamScope(ScopeType.PERSON, personModelView.getAccountId(), personModelView
+                .getStreamId()), (personModelView.isStreamPostable() || (currentUser.getAccountId() == personModelView
+                .getAccountId())));
 
         if (personModelView.isAccountLocked())
         {
@@ -308,7 +309,7 @@ public class PersonalProfilePanel extends FlowPanel
 
         portalPage.addTab(new SimpleTab("Stream", streamContent));
         portalPage.addTab(new SimpleTab("Connections", connectionTabContent));
-        portalPage.addTab(new SimpleTab("About", new PersonalProfileAboutTabPanel(person)));
+        portalPage.addTab(new SimpleTab("About", new PersonalProfileAboutTabPanel(personModelView)));
         portalPage.init();
 
         portalPage.setStyleName("profile-gadgets-container");

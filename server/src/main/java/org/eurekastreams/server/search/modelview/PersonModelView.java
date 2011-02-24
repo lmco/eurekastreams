@@ -304,6 +304,16 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     private List<OrganizationModelView> relatedOrganizations = null;
 
     /**
+     * A person's interests - null if not set, empty list if none.
+     */
+    private List<String> interests = null;
+
+    /**
+     * A person's biography.
+     */
+    private String biography = UNINITIALIZED_STRING_VALUE;
+
+    /**
      * Get the name of this entity.
      * 
      * @return the name of this entity
@@ -494,6 +504,14 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
         if (properties.containsKey("fax"))
         {
             setFax((String) properties.get("fax"));
+        }
+        if (properties.containsKey("interests"))
+        {
+            setInterests((List<String>) properties.get("interests"));
+        }
+        if (properties.containsKey("biography"))
+        {
+            setBiography((String) properties.get("biography"));
         }
     }
 
@@ -1246,6 +1264,40 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     public void setWorkPhone(final String inWorkPhone)
     {
         workPhone = inWorkPhone;
+    }
+
+    /**
+     * @return the interests
+     */
+    public List<String> getInterests()
+    {
+        return interests;
+    }
+
+    /**
+     * @param inInterests
+     *            the interests to set
+     */
+    public void setInterests(final List<String> inInterests)
+    {
+        interests = inInterests;
+    }
+
+    /**
+     * @return the biography
+     */
+    public String getBiography()
+    {
+        return biography;
+    }
+
+    /**
+     * @param inBiography
+     *            the biography to set
+     */
+    public void setBiography(final String inBiography)
+    {
+        biography = inBiography;
     }
 
 }
