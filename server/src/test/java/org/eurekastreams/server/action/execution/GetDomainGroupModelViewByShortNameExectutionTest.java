@@ -15,13 +15,21 @@
  */
 package org.eurekastreams.server.action.execution;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.eurekastreams.commons.actions.context.Principal;
+import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.server.domain.BackgroundItem;
+import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper;
+import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -31,6 +39,7 @@ import org.junit.Test;
  * Test for GetDomainGroupModelViewByShortNameExectution.
  * 
  */
+@SuppressWarnings("unchecked")
 public class GetDomainGroupModelViewByShortNameExectutionTest
 {
     /** Used for mocking objects. */
@@ -61,7 +70,6 @@ public class GetDomainGroupModelViewByShortNameExectutionTest
     /**
      * Strategy to retrieve the banner id if it is not directly configured.
      */
-    @SuppressWarnings("unchecked")
     private GetBannerIdByParentOrganizationStrategy getBannerIdStrategy = context
             .mock(GetBannerIdByParentOrganizationStrategy.class);
 
@@ -76,30 +84,110 @@ public class GetDomainGroupModelViewByShortNameExectutionTest
     private DomainGroupModelView dgmv = context.mock(DomainGroupModelView.class);
 
     /**
-     * GroupId.
+     * Get ids for direct group coordinators.
      */
-    private final String groupId = "shortName";
+    private DomainMapper<Long, List<Long>> groupCoordinatorIdsByGroupIdMapper = context.mock(DomainMapper.class,
+            "groupCoordinatorIdsByGroupIdMapper");
+
+    /**
+     * Get PersonModelViews by id.
+     */
+    private DomainMapper<List<Long>, List<PersonModelView>> personModelViewsByIdMapper = context.mock(
+            DomainMapper.class, "personModelViewsByIdMapper");
+
+    /**
+     * Mapper for getting group entity.
+     */
+    private DomainMapper<FindByIdRequest, DomainGroup> groupEntityMapper = context.mock(DomainMapper.class,
+            "groupEntityMapper");
+
+    /**
+     * DomainGroup entity mock.
+     */
+    private DomainGroup dg = context.mock(DomainGroup.class);
+
+    /**
+     * Group short name.
+     */
+    private final String shortname = "shortName";
+
+    /**
+     * Group Id.
+     */
+    private final Long groupId = 5L;
+
+    /**
+     * {@link PrincipalActionContext}.
+     */
+    private PrincipalActionContext pac = context.mock(PrincipalActionContext.class);
+
+    /**
+     * {@link Principal}.
+     */
+    private Principal principal = context.mock(Principal.class);
 
     /**
      * System under test.
      */
     private GetDomainGroupModelViewByShortNameExectution sut = new GetDomainGroupModelViewByShortNameExectution(
             groupByShortNameMapper, populateOrgChildWithSkeletonParentOrgsCacheMapper, groupCoordinatorIdsDAO,
-            getBannerIdStrategy, groupFollowerIdsMapper);
+            getBannerIdStrategy, groupFollowerIdsMapper, groupCoordinatorIdsByGroupIdMapper, //
+            personModelViewsByIdMapper, groupEntityMapper);
 
+    // TODO: Minimal pass testing. Beef this up a bit for non public and restricted groups.
     /**
      * Test.
      */
     @Test
     public void test()
     {
+        final ArrayList<Long> coordIds = new ArrayList<Long>(Arrays.asList(1L));
+        final ArrayList<PersonModelView> coords = new ArrayList<PersonModelView>(Arrays.asList(new PersonModelView()));
+
         context.checking(new Expectations()
         {
             {
-                oneOf(groupByShortNameMapper).fetchUniqueResult(groupId);
+                allowing(pac).getParams();
+                will(returnValue(shortname));
+
+                allowing(pac).getPrincipal();
+                will(returnValue(principal));
+
+                oneOf(groupByShortNameMapper).fetchUniqueResult(shortname);
                 will(returnValue(dgmv));
+
+                allowing(dgmv).getId();
+                will(returnValue(groupId));
+
+                oneOf(dgmv).setBannerEntityId(groupId);
+
+                oneOf(dgmv).getBannerId();
+                will(returnValue("bannerId"));
+
+                oneOf(dgmv).isPublic();
+                will(returnValue(true));
+
+                oneOf(dgmv).setRestricted(false);
+
+                oneOf(groupCoordinatorIdsByGroupIdMapper).execute(groupId);
+                will(returnValue(coordIds));
+
+                oneOf(personModelViewsByIdMapper).execute(coordIds);
+                will(returnValue(coords));
+
+                oneOf(dgmv).setCoordinators(coords);
+
+                oneOf(groupEntityMapper).execute(with(any(FindByIdRequest.class)));
+                will(returnValue(dg));
+
+                oneOf(dg).getCapabilities();
+                will(returnValue(new ArrayList<BackgroundItem>()));
+
+                oneOf(dgmv).setCapabilities(new ArrayList<String>());
             }
         });
 
+        sut.execute(pac);
+        context.assertIsSatisfied();
     }
 }

@@ -15,10 +15,14 @@
  */
 package org.eurekastreams.web.client.ui.pages.profile.tabs;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-import org.eurekastreams.server.domain.DomainGroup;
+import org.eurekastreams.server.domain.BackgroundItem;
+import org.eurekastreams.server.domain.BackgroundItemType;
 import org.eurekastreams.server.domain.Page;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.AuthorizeUpdateGroupResponseEvent;
@@ -41,7 +45,7 @@ public class GroupProfileAboutTabPanel extends ProfileAboutTabPanel
      * @param group
      *            Group to display.
      */
-    public GroupProfileAboutTabPanel(final DomainGroup group)
+    public GroupProfileAboutTabPanel(final DomainGroupModelView group)
     {
         final HashMap<String, String> basicInfoTabURL = new HashMap<String, String>();
         basicInfoTabURL.put("tab", "Basic Info");
@@ -57,7 +61,6 @@ public class GroupProfileAboutTabPanel extends ProfileAboutTabPanel
 
         final Hyperlink overviewHyperlink = new Hyperlink();
         final Hyperlink keywordsHyperlink = new Hyperlink();
-
         addLeft(overviewPanel);
         addRight(keywordsPanel);
 
@@ -77,7 +80,7 @@ public class GroupProfileAboutTabPanel extends ProfileAboutTabPanel
             overviewPanel.add(overview);
         }
 
-        if (group.getCapabilities().isEmpty())
+        if (group.getCapabilities() == null || group.getCapabilities().isEmpty())
         {
             keywordsHyperlink.setText("Add keywords.");
             keywordsHyperlink.setTargetHistoryToken(Session.getInstance().generateUrl(target));
@@ -88,7 +91,13 @@ public class GroupProfileAboutTabPanel extends ProfileAboutTabPanel
         }
         else
         {
-            keywordsPanel.add(new BackgroundItemLinksPanel("keywords", group.getCapabilities()));
+            List<String> caps = group.getCapabilities();
+            List<BackgroundItem> bgitems = new ArrayList<BackgroundItem>();
+            for (String cap : caps)
+            {
+                bgitems.add(new BackgroundItem(cap, BackgroundItemType.NOT_SET));
+            }
+            keywordsPanel.add(new BackgroundItemLinksPanel("keywords", bgitems));
         }
 
         // Shows the appropriate "add" links for group coordinators, if necessary.

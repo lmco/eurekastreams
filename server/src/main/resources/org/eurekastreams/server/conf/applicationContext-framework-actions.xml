@@ -1163,6 +1163,9 @@
                     </bean>
                 </constructor-arg>
                 <constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
+                <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" />
+                <constructor-arg ref="getPersonsByIdsMapper" />
+                <constructor-arg ref="findByIdMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />

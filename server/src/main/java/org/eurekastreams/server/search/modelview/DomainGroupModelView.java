@@ -16,17 +16,19 @@
 package org.eurekastreams.server.search.modelview;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.domain.ActivityRestrictionEntity;
 import org.eurekastreams.server.domain.BackgroundItem;
+import org.eurekastreams.server.domain.Bannerable;
 import org.eurekastreams.server.domain.Followable;
 
 /**
  * ModelView for DomainGroup.
  */
-public class DomainGroupModelView extends ModelView implements Followable, ActivityRestrictionEntity
+public class DomainGroupModelView extends ModelView implements Followable, ActivityRestrictionEntity, Bannerable
 {
     /**
      * The serial version id.
@@ -150,6 +152,11 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     private Boolean isPublic = false;
 
     /**
+     * Flag for restricted access.
+     */
+    private Boolean restricted = true;
+
+    /**
      * The account id of the person that created this group.
      */
     private String personCreatedByAccountId = UNINITIALIZED_STRING_VALUE;
@@ -184,6 +191,36 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
      * If group is pending approval.
      */
     private boolean isPending = false;
+
+    /**
+     * Banner id.
+     */
+    private String bannerId = null;
+
+    /**
+     * The organization url.
+     */
+    private String url = null;
+
+    /**
+     * Group overview.
+     */
+    private String overview = null;
+
+    /**
+     * Banner entityId.
+     */
+    private Long bannerEntityId = UNINITIALIZED_LONG_VALUE;
+
+    /**
+     * Org coordinator personModelViews.
+     */
+    private List<PersonModelView> coordinators;
+
+    /**
+     * List of capability names.
+     */
+    private List<String> capabilities;
 
     /**
      * Load this object's properties from the input Map.
@@ -268,6 +305,18 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
         if (properties.containsKey("isPending"))
         {
             setStreamPostable((Boolean) properties.get("isPending"));
+        }
+        if (properties.containsKey("bannerId"))
+        {
+            setBannerId((String) properties.get("bannerId"));
+        }
+        if (properties.containsKey("url"))
+        {
+            setUrl((String) properties.get("url"));
+        }
+        if (properties.containsKey("overview"))
+        {
+            setOverview((String) properties.get("overview"));
         }
     }
 
@@ -658,5 +707,114 @@ public class DomainGroupModelView extends ModelView implements Followable, Activ
     public void setPending(final boolean inIsPending)
     {
         isPending = inIsPending;
+    }
+
+    @Override
+    public Long getBannerEntityId()
+    {
+        return bannerEntityId;
+    }
+
+    @Override
+    public String getBannerId()
+    {
+        return bannerId;
+    }
+
+    @Override
+    public void setBannerEntityId(final Long inBannerEntityId)
+    {
+        bannerEntityId = inBannerEntityId;
+    }
+
+    @Override
+    public void setBannerId(final String inBannerId)
+    {
+        bannerId = inBannerId;
+    }
+
+    /**
+     * @return the url
+     */
+    public String getUrl()
+    {
+        return url;
+    }
+
+    /**
+     * @param inUrl
+     *            the url to set
+     */
+    public void setUrl(final String inUrl)
+    {
+        url = inUrl;
+    }
+
+    /**
+     * @return the coordinators
+     */
+    public List<PersonModelView> getCoordinators()
+    {
+        return coordinators;
+    }
+
+    /**
+     * @param inCoordinators
+     *            the coordinators to set
+     */
+    public void setCoordinators(final List<PersonModelView> inCoordinators)
+    {
+        coordinators = inCoordinators;
+    }
+
+    /**
+     * @return the overview
+     */
+    public String getOverview()
+    {
+        return overview;
+    }
+
+    /**
+     * @param inOverview
+     *            the overview to set
+     */
+    public void setOverview(final String inOverview)
+    {
+        overview = inOverview;
+    }
+
+    /**
+     * @return the restricted
+     */
+    public Boolean isRestricted()
+    {
+        return restricted;
+    }
+
+    /**
+     * @param inRestricted
+     *            the restricted to set
+     */
+    public void setRestricted(final Boolean inRestricted)
+    {
+        restricted = inRestricted;
+    }
+
+    /**
+     * @return the capabilities
+     */
+    public List<String> getCapabilities()
+    {
+        return capabilities;
+    }
+
+    /**
+     * @param inCapabilities
+     *            the capabilities to set
+     */
+    public void setCapabilities(final List<String> inCapabilities)
+    {
+        capabilities = inCapabilities;
     }
 }

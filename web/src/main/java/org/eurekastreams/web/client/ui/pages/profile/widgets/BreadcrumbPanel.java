@@ -22,9 +22,9 @@ import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.server.action.request.profile.GetBreadcrumbsListRequest;
 import org.eurekastreams.server.domain.BreadcrumbDTO;
-import org.eurekastreams.server.domain.DomainGroupEntity;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Page;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
@@ -84,9 +84,13 @@ public class BreadcrumbPanel extends FlowPanel
      * @param showItemLink
      *            flag to show this item in the trail as a link that wipes out all params when clicked.
      */
-    public void setGroup(final DomainGroupEntity inGroup, final boolean showItemLink)
+    public void setGroup(final DomainGroupModelView inGroup, final boolean showItemLink)
     {
-        buildBreadcrumbs(inGroup.getParentOrganization(), inGroup.getName(), true, showItemLink);
+        OrganizationModelView parentOrgModelView = new OrganizationModelView();
+        parentOrgModelView.setName(inGroup.getParentOrganizationName());
+        parentOrgModelView.setEntityId(inGroup.getParentOrganizationId());
+        parentOrgModelView.setShortName(inGroup.getParentOrganizationShortName());
+        buildBreadcrumbs(parentOrgModelView, inGroup.getName(), true, showItemLink);
     }
 
     /**
@@ -116,11 +120,11 @@ public class BreadcrumbPanel extends FlowPanel
     private void buildBreadcrumbs(final OrganizationModelView org, final String thisItem, final boolean showParent,
             final boolean showItemLink)
     {
-        GetBreadcrumbsListRequest request = new GetBreadcrumbsListRequest(org.getEntityId());
+        GetBreadcrumbsListRequest request = new GetBreadcrumbsListRequest(org.getId());
 
         // No need to get the organization hierarchy if the supplied org is the root org
         // and breadcrumbs are being displayed on an Org profile page.
-        if (!showParent && (org.getParentOrganizationId() == org.getEntityId()))
+        if (!showParent && (org.getParentOrganizationId() == org.getId()))
         {
             displayBreadcrumbs(new ArrayList<BreadcrumbDTO>(), thisItem, showParent, showItemLink);
         }

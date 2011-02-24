@@ -50,7 +50,7 @@ import org.eurekastreams.web.client.ui.common.form.elements.BasicRadioButtonGrou
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextAreaFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextBoxFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.OrgLookupFormElement;
-import org.eurekastreams.web.client.ui.common.form.elements.PersonLookupFormElement;
+import org.eurekastreams.web.client.ui.common.form.elements.PersonModelViewLookupFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.RichTextAreaFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.ValueOnlyFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.avatar.AvatarUploadFormElement;
@@ -246,8 +246,8 @@ public class GroupProfileSettingsTabContent extends FlowPanel
         }
         // END-MIGRATION
 
-        form.addFormElement(new PersonLookupFormElement("Group Coordinators", "Add Coordinator", coordinstructions,
-                DomainGroupModelView.COORDINATORS_KEY, groupCoordinators, true));
+        form.addFormElement(new PersonModelViewLookupFormElement("Group Coordinators", "Add Coordinator",
+                coordinstructions, DomainGroupModelView.COORDINATORS_KEY, groupCoordinators, true));
 
         form.addFormDivider();
 

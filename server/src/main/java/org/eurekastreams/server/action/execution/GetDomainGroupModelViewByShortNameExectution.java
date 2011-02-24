@@ -16,16 +16,22 @@
 package org.eurekastreams.server.action.execution;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
+import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
+import org.eurekastreams.server.domain.BackgroundItem;
+import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetAllPersonIdsWhoHaveGroupCoordinatorAccess;
 import org.eurekastreams.server.persistence.mappers.cache.PopulateOrgChildWithSkeletonParentOrgsCacheMapper;
+import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Return DomainGroupModelView for provided group shortName.
@@ -60,6 +66,21 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
     private DomainMapper<Long, List<Long>> groupFollowerIdsMapper;
 
     /**
+     * Get ids for direct group coordinators.
+     */
+    private DomainMapper<Long, List<Long>> groupCoordinatorIdsByGroupIdMapper;
+
+    /**
+     * Get PersonModelViews by id.
+     */
+    private DomainMapper<List<Long>, List<PersonModelView>> personModelViewsByIdMapper;
+
+    /**
+     * Mapper for getting group entity.
+     */
+    private DomainMapper<FindByIdRequest, DomainGroup> groupEntityMapper;
+
+    /**
      * Constructor.
      * 
      * @param inGroupByShortNameMapper
@@ -72,6 +93,12 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
      *            Instance of the {@link GetBannerIdByParentOrganizationStrategy}.
      * @param inGroupFollowerIdsMapper
      *            Instance of the {@link GetGroupFollowerIds}.
+     * @param inGroupCoordinatorIdsByGroupIdMapper
+     *            Get ids for direct group coordinators.
+     * @param inPersonModelViewsByIdMapper
+     *            Get PersonModelViews by id.
+     * @param inGroupEntityMapper
+     *            Mapper for getting group entity.
      */
     @SuppressWarnings("unchecked")
     public GetDomainGroupModelViewByShortNameExectution(
@@ -79,13 +106,19 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
             final PopulateOrgChildWithSkeletonParentOrgsCacheMapper inPopulateOrgChildWithSkeletonParentOrgsCacheMapper,
             final GetAllPersonIdsWhoHaveGroupCoordinatorAccess inGroupCoordinatorIdsDAO,
             final GetBannerIdByParentOrganizationStrategy inGetBannerIdStrategy,
-            final DomainMapper<Long, List<Long>> inGroupFollowerIdsMapper)
+            final DomainMapper<Long, List<Long>> inGroupFollowerIdsMapper,
+            final DomainMapper<Long, List<Long>> inGroupCoordinatorIdsByGroupIdMapper,
+            final DomainMapper<List<Long>, List<PersonModelView>> inPersonModelViewsByIdMapper,
+            final DomainMapper<FindByIdRequest, DomainGroup> inGroupEntityMapper)
     {
         groupByShortNameMapper = inGroupByShortNameMapper;
         populateOrgChildWithSkeletonParentOrgsCacheMapper = inPopulateOrgChildWithSkeletonParentOrgsCacheMapper;
         groupCoordinatorIdsDAO = inGroupCoordinatorIdsDAO;
         getBannerIdStrategy = inGetBannerIdStrategy;
         groupFollowerIdsMapper = inGroupFollowerIdsMapper;
+        groupCoordinatorIdsByGroupIdMapper = inGroupCoordinatorIdsByGroupIdMapper;
+        personModelViewsByIdMapper = inPersonModelViewsByIdMapper;
+        groupEntityMapper = inGroupEntityMapper;
     }
 
     @Override
@@ -94,7 +127,94 @@ public class GetDomainGroupModelViewByShortNameExectution implements ExecutionSt
         String shortName = (String) inActionContext.getParams();
         DomainGroupModelView result = groupByShortNameMapper.fetchUniqueResult(shortName);
 
+        // set banner for group.
+        result.setBannerEntityId(result.getId());
+        if (result.getBannerId() == null)
+        {
+            getBannerIdStrategy.getBannerId(result.getParentOrganizationId(), result);
+        }
+
+        // short circuit here if restricted for user.
+        if (!isAccessPermitted(inActionContext.getPrincipal(), result))
+        {
+            // convert to new limited model view to prevent data leakage as model view grows.
+            DomainGroupModelView restricted = new DomainGroupModelView();
+            restricted.setRestricted(true);
+            restricted.setEntityId(result.getId());
+            restricted.setBannerId(result.getBannerId());
+            restricted.setName(result.getName());
+            restricted.setShortName(result.getShortName());
+            return restricted;
+        }
+        else
+        {
+            result.setRestricted(false);
+        }
+
+        result.setCoordinators(personModelViewsByIdMapper.execute(groupCoordinatorIdsByGroupIdMapper.execute(result
+                .getId())));
+
+        result.setCapabilities(getCapabilities(result.getId()));
+
         return result;
+    }
+
+    /**
+     * Get group capabilities.
+     * 
+     * @param groupId
+     *            id
+     * @return list of capabilities (strings).
+     */
+    // TODO: for now this comes from entity as it did before. Should create new mapper and set up cache for group
+    // capabilities to improve performance.
+    private List<String> getCapabilities(final Long groupId)
+    {
+        List<String> results = new ArrayList<String>();
+        DomainGroup g = groupEntityMapper.execute(new FindByIdRequest("DomainGroup", groupId));
+        List<BackgroundItem> caps = g.getCapabilities();
+        for (BackgroundItem bgi : caps)
+        {
+            results.add(bgi.getName());
+        }
+
+        return results;
+    }
+
+    /**
+     * Check whether this group has restricted access and whether the current user is allowed access.
+     * 
+     * @param inPrincipal
+     *            user principal.
+     * @param inGroup
+     *            the group the user wants to view
+     * @return true if this person is allowed to see this group, false otherwise
+     */
+    private boolean isAccessPermitted(final Principal inPrincipal, final DomainGroupModelView inGroup)
+    {
+        // if group is public or user is coordinator recursively or follower, return true, otherwise false.
+        return (inGroup.isPublic() || groupCoordinatorIdsDAO.execute(inGroup.getId()).contains(inPrincipal.getId()) //
+        || isUserFollowingGroup(inPrincipal.getId(), inGroup.getId()));
+
+    }
+
+    /**
+     * Checks to see if user is following a group.
+     * 
+     * @param userId
+     *            the user id being checked.
+     * @param groupId
+     *            the group being checked.
+     * @return true if user is a follower, false otherwise.
+     */
+    private boolean isUserFollowingGroup(final long userId, final long groupId)
+    {
+        List<Long> ids = groupFollowerIdsMapper.execute(groupId);
+        if (ids.contains(userId))
+        {
+            return true;
+        }
+        return false;
     }
 
 }

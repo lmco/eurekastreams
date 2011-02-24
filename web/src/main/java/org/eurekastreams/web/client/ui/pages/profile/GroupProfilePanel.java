@@ -16,19 +16,15 @@
 package org.eurekastreams.web.client.ui.pages.profile;
 
 import java.util.HashSet;
-import java.util.Set;
 
 import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
 import org.eurekastreams.server.action.request.profile.GetRequestForGroupMembershipRequest;
-import org.eurekastreams.server.domain.DomainGroup;
-import org.eurekastreams.server.domain.DomainGroupEntity;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.domain.Person;
-import org.eurekastreams.server.domain.RestrictedDomainGroup;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
+import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.ChangeActivityModeEvent;
 import org.eurekastreams.web.client.events.EventBus;
@@ -42,8 +38,8 @@ import org.eurekastreams.web.client.events.data.BaseDataResponseEvent;
 import org.eurekastreams.web.client.events.data.DeletedGroupMemberResponseEvent;
 import org.eurekastreams.web.client.events.data.DeletedRequestForGroupMembershipResponseEvent;
 import org.eurekastreams.web.client.events.data.GotGroupCoordinatorsResponseEvent;
-import org.eurekastreams.web.client.events.data.GotGroupInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotGroupMembersResponseEvent;
+import org.eurekastreams.web.client.events.data.GotGroupModelViewInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotRequestForGroupMembershipResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedGroupMemberResponseEvent;
 import org.eurekastreams.web.client.events.data.InsertedRequestForGroupMembershipResponseEvent;
@@ -134,12 +130,12 @@ public class GroupProfilePanel extends FlowPanel
     /**
      * The group whose profile we're looking at.
      */
-    private DomainGroup group;
+    private DomainGroupModelView group;
 
     /**
      * The group entity for this panel.
      */
-    private DomainGroupEntity groupEntity;
+    private DomainGroupModelView groupEntity;
 
     /**
      * The panel that shows the checklist.
@@ -196,10 +192,10 @@ public class GroupProfilePanel extends FlowPanel
 
         this.addStyleName("profile-page");
 
-        EventBus.getInstance().addObserver(GotGroupInformationResponseEvent.class,
-                new Observer<GotGroupInformationResponseEvent>()
+        EventBus.getInstance().addObserver(GotGroupModelViewInformationResponseEvent.class,
+                new Observer<GotGroupModelViewInformationResponseEvent>()
                 {
-                    public void update(final GotGroupInformationResponseEvent event)
+                    public void update(final GotGroupModelViewInformationResponseEvent event)
                     {
                         setEntity(event.getResponse());
                     }
@@ -217,7 +213,7 @@ public class GroupProfilePanel extends FlowPanel
         });
 
         inProcessor.setQueueRequests(true);
-        GroupModel.getInstance().fetch(accountId, false);
+        GroupModel.getInstance().fetchModelView(accountId, false);
         AllPopularHashTagsModel.getInstance().fetch(null, true);
         inProcessor.fireQueuedRequests();
         inProcessor.setQueueRequests(false);
@@ -229,7 +225,7 @@ public class GroupProfilePanel extends FlowPanel
      * @param inGroup
      *            the group whose profile is being displayed
      */
-    private void setEntity(final DomainGroupEntity inGroup)
+    private void setEntity(final DomainGroupModelView inGroup)
     {
         groupEntity = inGroup;
         ActionProcessor inProcessor = Session.getInstance().getActionProcessor();
@@ -251,18 +247,18 @@ public class GroupProfilePanel extends FlowPanel
 
         breadCrumbPanel.setGroup(inGroup, false);
 
-        if (inGroup instanceof RestrictedDomainGroup)
+        if (inGroup.isRestricted())
         {
-            showRestrictedGroupMessage((RestrictedDomainGroup) inGroup);
+            showRestrictedGroupMessage(inGroup);
             inProcessor.fireQueuedRequests();
             inProcessor.setQueueRequests(false);
             return;
         }
-        group = (DomainGroup) inGroup;
+        group = inGroup;
 
         if (group.isPending())
         {
-            showPendingGroupMessage(inGroup);
+            showPendingGroupMessage();
             inProcessor.fireQueuedRequests();
             inProcessor.setQueueRequests(false);
             return;
@@ -282,7 +278,8 @@ public class GroupProfilePanel extends FlowPanel
         members = group.getFollowersCount();
 
         // Update the Profile summary
-        about.setGroup(group);
+        about.setGroup(inGroup.getName(), inGroup.getId(), inGroup.getAvatarId(), inGroup.getUrl(), inGroup
+                .getDescription());
         connectionsPanel = new ConnectionsPanel();
         connectionsPanel.addConnection("Members", null, group.getFollowersCount());
 
@@ -304,9 +301,9 @@ public class GroupProfilePanel extends FlowPanel
             }
         });
 
-        PeopleListPanel coordinatorPanel = new PeopleListPanel(inGroup.getCoordinators(), "Coordinators", 2,
-                new CreateUrlRequest("tab", "Connections", true), new SwitchToFilterOnPagedFilterPanelEvent(
-                        "connections", "Coordinators"));
+        PeopleListPanel coordinatorPanel = new PeopleListPanel(new HashSet<PersonModelView>(inGroup.getCoordinators()),
+                "Coordinators", 2, new CreateUrlRequest("tab", "Connections", true),
+                new SwitchToFilterOnPagedFilterPanelEvent("connections", "Coordinators"), null);
 
         leftBarPanel.addChildWidget(about);
         leftBarPanel.addChildWidget(new PopularHashtagsPanel(ScopeType.GROUP, group.getShortName()));
@@ -314,7 +311,10 @@ public class GroupProfilePanel extends FlowPanel
         leftBarPanel.addChildWidget(coordinatorPanel);
 
         final StreamPanel streamContent = new StreamPanel(false);
-        streamContent.setStreamScope(group.getStreamScope(), group.isStreamPostable());
+        StreamScope groupStreamScope = new StreamScope(group.getName(), ScopeType.GROUP, group.getShortName(), group
+                .getStreamId());
+
+        streamContent.setStreamScope(groupStreamScope, group.isStreamPostable());
 
         String jsonRequest = StreamJsonRequestFactory.addRecipient(EntityType.GROUP, group.getShortName(),
                 StreamJsonRequestFactory.getEmptyRequest()).toString();
@@ -336,7 +336,7 @@ public class GroupProfilePanel extends FlowPanel
                     RootPanel.get().addStyleName("authenticated");
                     setUpChecklist();
 
-                    if (!group.isPublicGroup())
+                    if (!group.isPublic())
                     {
                         final SimpleTab adminTab = buildAdminTab();
                         portalPage.addTab(adminTab);
@@ -413,21 +413,14 @@ public class GroupProfilePanel extends FlowPanel
             }
         }, InsertedGroupMemberResponseEvent.class, DeletedGroupMemberResponseEvent.class);
 
-        ItemRenderer<PersonModelView> memberRenderer = group.isPublicGroup() ? new PersonRenderer(false)
+        ItemRenderer<PersonModelView> memberRenderer = group.isPublic() ? new PersonRenderer(false)
                 : new RemovableGroupMemberPersonRenderer(group.getUniqueId());
         connectionTabContent.addSet("Members", GroupMembersModel.getInstance(), memberRenderer,
                 new GetFollowersFollowingRequest(EntityType.GROUP, group.getShortName(), 0, 0));
 
-        // TODO-MIGRATION:
-        Set<PersonModelView> groupCoordinators = new HashSet<PersonModelView>();
-        for (Person p : group.getCoordinators())
-        {
-            groupCoordinators.add(p.toPersonModelView());
-        }
-        // END-MIGRATION
-
         connectionTabContent.addSet("Coordinators", GroupCoordinatorsModel.getInstance(), new PersonRenderer(false),
-                new GetGroupCoordinatorsRequest(group.getShortName(), groupCoordinators));
+                new GetGroupCoordinatorsRequest(group.getShortName(), new HashSet<PersonModelView>(group
+                        .getCoordinators())));
 
         return connectionTabContent;
     }
@@ -513,7 +506,7 @@ public class GroupProfilePanel extends FlowPanel
      * @param inGroup
      *            the restricted access group
      */
-    private void showRestrictedGroupMessage(final RestrictedDomainGroup inGroup)
+    private void showRestrictedGroupMessage(final DomainGroupModelView inGroup)
     {
         Panel errorReport = addNewCenteredErrorBox();
         errorReport.addStyleName("group-error-msg-panel");
@@ -554,10 +547,8 @@ public class GroupProfilePanel extends FlowPanel
     /**
      * Tell the user that this group is pending approval.
      * 
-     * @param inGroup
-     *            the group
      */
-    private void showPendingGroupMessage(final DomainGroupEntity inGroup)
+    private void showPendingGroupMessage()
     {
         Panel errorReport = addNewCenteredErrorBox();
         errorReport.addStyleName("group-error-msg-panel");
