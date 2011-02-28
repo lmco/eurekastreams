@@ -186,7 +186,7 @@ public class PersonalProfilePanel extends FlowPanel
                         // the same request to the model as is being processed here. Unless the observer is unwired
                         // first, it will be called a second time.
                         EventBus.getInstance().removeObserver(GotPersonalInformationResponseEvent.class, this);
-                        setEntity(event.getResponse().toPersonModelView());
+                        setEntity(event.getResponse());
                     }
                 });
 

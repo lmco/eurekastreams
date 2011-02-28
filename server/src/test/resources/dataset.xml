@@ -243,11 +243,14 @@
 		authorEmail="vswatter@gmail.com" numberOfUsers="23"
 		created="2009-01-01 12:00:00.000" />
 
+    <Background id="1099" personId="99" version="1118" />
 	<Background id="1042" personId="42" version="1117" />
 	<BackgroundItem id="120" version="0" backgroundType="SKILL"
 		name="skill_1" />
 	<BackgroundItem id="121" version="0" backgroundType="SKILL"
-		name="skill_2" />
+        name="skill_2" />
+    <BackgroundItem id="999923" version="0" backgroundType="SKILL"
+        name="skill_2" />
 	<BackgroundItem id="122" version="0" backgroundType="SKILL"
 		name="skill_3" />
 	<BackgroundItem id="126" version="0" backgroundType="HONOR"
@@ -274,13 +277,22 @@
 	<BackgroundItem id="136" version="0" backgroundType="ACTIVITY_OR_SOCIETY"
 		name="activity_1" />
 
+    
+
 	<BackgroundItem id="4743" version="0" backgroundtype="INTEREST"
 		name="Earthlings" />
 	<Background_Interests Background_Id="1042"
-		interestIndex="0" BackgroundItem_Id="4743" />
-
-	<Organization_Capability OrganizationId="6"
-		capabilityId="130" />
+        interestIndex="0" BackgroundItem_Id="4743" />
+        
+    <!-- Ford Prefect skills: skill_1, skill_2 -->
+    <Background_Skills Background_Id="1042" skillsIndex="0" BackgroundItem_Id="120" />
+    <Background_Skills Background_Id="1042" skillsIndex="1" BackgroundItem_Id="121" />
+    
+    <!-- Monty Burns skills: skill_2, skill_3 -->    
+    <Background_Skills Background_Id="1099" skillsIndex="0" BackgroundItem_Id="999923" />
+    <Background_Skills Background_Id="1099" skillsIndex="1" BackgroundItem_Id="122" />
+        
+	<Organization_Capability OrganizationId="6" capabilityId="130" />
 
 	<Job id="2042" personId="42" version="1117" companyName="Example"
 		industry="Aerospace" title="Engineer" datefrom="2008-01-01 12:00:00.000"

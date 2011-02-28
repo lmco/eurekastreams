@@ -15,22 +15,23 @@
  */
 package org.eurekastreams.web.client.events.data;
 
-import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Represents an event when the personal information has been updated.
- *
+ * 
  */
-public class GotPersonalInformationResponseEvent extends BaseDataResponseEvent<Person>
+public class GotPersonalInformationResponseEvent extends BaseDataResponseEvent<PersonModelView>
 {
     /**
      * Default constructor.
-     * @param inResponse the response.
+     * 
+     * @param inResponse
+     *            the response.
      */
-    public GotPersonalInformationResponseEvent(final Person inResponse)
+    public GotPersonalInformationResponseEvent(final PersonModelView inResponse)
     {
         super(inResponse);
     }
-
 
 }

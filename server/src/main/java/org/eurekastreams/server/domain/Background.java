@@ -37,8 +37,7 @@ import org.hibernate.annotations.IndexColumn;
 public class Background extends DomainEntity implements Serializable
 {
     /**
-     * Private reference back to the person for mapper queries originating with
-     * the background.
+     * Private reference back to the person for mapper queries originating with the background.
      */
     @SuppressWarnings("unused")
     @OneToOne(fetch = FetchType.LAZY)
@@ -87,7 +86,7 @@ public class Background extends DomainEntity implements Serializable
 
     /**
      * Private constructor.
-     *
+     * 
      * unused warning is suppressed because it actually is used in reflection.
      */
     @SuppressWarnings("unused")
@@ -97,7 +96,7 @@ public class Background extends DomainEntity implements Serializable
 
     /**
      * Public constructor.
-     *
+     * 
      * @param inPerson
      *            to create the background for.
      */
@@ -108,7 +107,7 @@ public class Background extends DomainEntity implements Serializable
 
     /**
      * Get the list of background items for the specified background type.
-     *
+     * 
      * @param inBackgroundType
      *            get all items of this type.
      * @return the list of background items
@@ -144,10 +143,10 @@ public class Background extends DomainEntity implements Serializable
 
     /**
      * Set the list of background items for the specified background type.
-     *
+     * 
      * @param inBackgroundItems
      *            the background items to persist.
-     *
+     * 
      * @param inBackgroundType
      *            the items are of this type.
      */
@@ -173,7 +172,6 @@ public class Background extends DomainEntity implements Serializable
             throw new IllegalArgumentException(msg);
         }
     }
-
 
     // private getters and setters for serialization.
     /**

@@ -22,6 +22,7 @@ import java.util.HashSet;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators;
 import org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName;
@@ -115,6 +116,12 @@ public class GetPersonModelViewExecutionTest
             .mock(TermsOfServiceAcceptanceStrategy.class);
 
     /**
+     * Banner getter for person.
+     */
+    private GetBannerIdByParentOrganizationStrategy<Person> getBannerIdStrategy = // 
+    context.mock(GetBannerIdByParentOrganizationStrategy.class);
+
+    /**
      * User account id for tests.
      */
     private String accountId = "accountid";
@@ -123,7 +130,7 @@ public class GetPersonModelViewExecutionTest
      * System under test.
      */
     private GetPersonModelViewExecution sut = new GetPersonModelViewExecution(orgCoordinatorDAO, orgCoordinatorDAOUp,
-            rootOrgDAO, getPersonModelViewByAccountIdMapper, toSAcceptanceStrategy);
+            rootOrgDAO, getPersonModelViewByAccountIdMapper, toSAcceptanceStrategy, getBannerIdStrategy);
 
     /**
      * Pre-test setup.
@@ -159,10 +166,14 @@ public class GetPersonModelViewExecutionTest
 
         final Date personLastAcceptedTOSDate = new Date();
         retPerson.setLastAcceptedTermsOfService(personLastAcceptedTOSDate);
+        retPerson.setParentOrganizationId(9);
 
         context.checking(new Expectations()
         {
             {
+                allowing(actionContext).getParams();
+                will(returnValue("snuts"));
+
                 allowing(actionContext).getPrincipal();
                 will(returnValue(actionContextPrincipal));
 
@@ -178,7 +189,7 @@ public class GetPersonModelViewExecutionTest
                 oneOf(userDetails).getAuthenticationType();
                 will(returnValue(AuthenticationType.NOTSET));
 
-                oneOf(getPersonModelViewByAccountIdMapper).execute(accountId);
+                oneOf(getPersonModelViewByAccountIdMapper).execute("snuts");
                 will(returnValue(retPerson));
 
                 oneOf(toSAcceptanceStrategy).isValidTermsOfServiceAcceptanceDate(with(personLastAcceptedTOSDate));
@@ -192,6 +203,8 @@ public class GetPersonModelViewExecutionTest
 
                 oneOf(orgCoordinatorDAOUp).isOrgCoordinatorRecursively(4L, 0L);
                 will(returnValue(true));
+
+                oneOf(getBannerIdStrategy).getBannerId(9L, retPerson);
             }
         });
 
@@ -217,12 +230,16 @@ public class GetPersonModelViewExecutionTest
         final PersonModelView retPerson = new PersonModelView();
         retPerson.setRoles(new HashSet<Role>());
         retPerson.setEntityId(4L);
+        retPerson.setParentOrganizationId(9L);
         final Date personLastAcceptedTOSDate = new Date();
         retPerson.setLastAcceptedTermsOfService(personLastAcceptedTOSDate);
 
         context.checking(new Expectations()
         {
             {
+                allowing(actionContext).getParams();
+                will(returnValue(null));
+
                 allowing(actionContext).getPrincipal();
                 will(returnValue(actionContextPrincipal));
 
@@ -253,6 +270,7 @@ public class GetPersonModelViewExecutionTest
                 oneOf(orgCoordinatorDAOUp).isOrgCoordinatorRecursively(4L, 0L);
                 will(returnValue(false));
 
+                oneOf(getBannerIdStrategy).getBannerId(9L, retPerson);
             }
         });
 

@@ -40,7 +40,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     /**
      * Serial version uid.
      */
-    private static final long serialVersionUID = -6296522247214374637L;
+    private static final long serialVersionUID = -9138290551061823903L;
 
     /**
      * The key for the title.
@@ -320,6 +320,11 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     private String bannerId = UNINITIALIZED_STRING_VALUE;
 
     /**
+     * Banner entity id - transient, may be set to the person's parent org's banner id.
+     */
+    private Long bannerEntityId = null;
+
+    /**
      * Get the name of this entity.
      * 
      * @return the name of this entity
@@ -435,9 +440,9 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
         {
             setFollowersCount((Integer) properties.get("followersCount"));
         }
-        if (properties.containsKey("followeringCount"))
+        if (properties.containsKey("followingCount"))
         {
-            setFollowingCount((Integer) properties.get("followeringCount"));
+            setFollowingCount((Integer) properties.get("followingCount"));
         }
         if (properties.containsKey("groupsCount"))
         {
@@ -1317,7 +1322,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     @Override
     public Long getBannerEntityId()
     {
-        return getEntityId();
+        return bannerEntityId;
     }
 
     /**
@@ -1338,7 +1343,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     @Override
     public void setBannerEntityId(final Long inBannerEntityId)
     {
-        setEntityId(inBannerEntityId);
+        bannerEntityId = inBannerEntityId;
     }
 
     /**

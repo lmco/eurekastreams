@@ -33,7 +33,7 @@ public class PersonQueryStrategy
 {
     /**
      * Build the base Criteria object.
-     *
+     * 
      * @param hibernateSession
      *            the hibernate session used to create the criteria.
      * @return the base criteria object.
@@ -48,12 +48,17 @@ public class PersonQueryStrategy
         fields.add(getColumn("accountId"));
         fields.add(getColumn("openSocialId"));
         fields.add(getColumn("avatarId"));
+        fields.add(getColumn("avatarCropX"));
+        fields.add(getColumn("avatarCropY"));
+        fields.add(getColumn("avatarCropSize"));
         fields.add(getColumn("lastName"));
         fields.add(getColumn("preferredName"));
         fields.add(getColumn("jobDescription"));
         fields.add(getColumn("title"));
         fields.add(getColumn("overview"));
         fields.add(getColumn("followersCount"));
+        fields.add(getColumn("followingCount"));
+        fields.add(getColumn("groupsCount"));
         fields.add(getColumn("optOutVideoIds"));
         fields.add(getColumn("updatesCount"));
         fields.add(getColumn("email"));
@@ -63,6 +68,10 @@ public class PersonQueryStrategy
         fields.add(getColumn("groupStreamHiddenLineIndex"));
         fields.add(getColumn("lastAcceptedTermsOfService"));
         fields.add(getColumn("accountLocked"));
+        fields.add(getColumn("workPhone"));
+        fields.add(getColumn("cellPhone"));
+        fields.add(getColumn("fax"));
+        fields.add(getColumn("biography"));
         fields.add(Projections.property("streamViewHiddenLineIndex").as("compositeStreamHiddenLineIndex"));
         fields.add(Projections.property("po.id").as("parentOrganizationId"));
         fields.add(Projections.property("po.name").as("parentOrganizationName"));
@@ -81,7 +90,7 @@ public class PersonQueryStrategy
 
     /**
      * Build the PropertyProjection with alias.
-     *
+     * 
      * @param propertyName
      *            the property name
      * @return the PropertyProjection with alias

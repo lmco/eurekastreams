@@ -50,16 +50,6 @@ public class OAuthAuthorizeContentController
     public void init()
     {
         processor.setQueueRequests(true);
-
-        /*
-         * Serializable[] params = { null, TabGroupType.START }; this.processor.makeRequest(new
-         * ActionRequestImpl<Person>("getPerson", params), new AsyncCallback<Person>()
-         * 
-         * { public void onFailure(final Throwable caught) { }
-         * 
-         * public void onSuccess(final Person result) { result.getOpenSocialId(); result.getAccountId(); } });
-         */
-
         processor.makeRequest(new ActionRequestImpl<Serializable>("oauthAuthorize", Window.Location
                 .getParameter("oauth_token")), new AsyncCallback<Serializable>()
         {
@@ -88,6 +78,6 @@ public class OAuthAuthorizeContentController
      *            - url to redirect to.
      */
     private static native void redirectToUrl(final String url)/*-{
-                    $wnd.location = url;
-                }-*/;
+                                $wnd.location = url;
+                            }-*/;
 }

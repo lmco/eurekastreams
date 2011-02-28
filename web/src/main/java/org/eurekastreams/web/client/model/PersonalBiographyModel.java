@@ -18,7 +18,7 @@ package org.eurekastreams.web.client.model;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import org.eurekastreams.server.domain.Person;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.data.GotPersonalBiographyResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedPersonalBiographyResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
@@ -36,7 +36,7 @@ public class PersonalBiographyModel extends BaseModel implements Fetchable<Strin
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
     public static PersonalBiographyModel getInstance()
@@ -49,9 +49,9 @@ public class PersonalBiographyModel extends BaseModel implements Fetchable<Strin
      */
     public void fetch(final String request, final boolean useClientCacheIfAvailable)
     {
-        super.callReadAction("getPerson", request, new OnSuccessCommand<Person>()
+        super.callReadAction("getPersonModelView", request, new OnSuccessCommand<PersonModelView>()
         {
-            public void onSuccess(final Person response)
+            public void onSuccess(final PersonModelView response)
             {
                 Session.getInstance().getEventBus().notifyObservers(
                         new GotPersonalBiographyResponseEvent(response.getBiography()));

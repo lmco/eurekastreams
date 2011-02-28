@@ -162,16 +162,7 @@
 		</constructor-arg>
 		
 		<!-- mapper to look up people by ids -->
-		<constructor-arg>
-			<bean class="org.eurekastreams.server.persistence.mappers.db.GetPersonsByIds">
-		        <constructor-arg>
-		        	<bean class="org.eurekastreams.server.persistence.strategies.PersonQueryStrategy" />
-		        </constructor-arg>
-		        <constructor-arg>
-		        	<bean class="org.eurekastreams.server.persistence.mappers.GetRelatedOrganizationIdsByPersonId" />
-		        </constructor-arg>
-		    </bean>
-		</constructor-arg>
+		<constructor-arg ref="getPersonsByIdsDBMapper" />
 	</bean>
 
 	<!-- Mapper to get person model view by account id - wraps getPeopleByAccountIdsMapper - throws exception when not found
@@ -502,9 +493,12 @@
         <constructor-arg value="id"/>        
     </bean>
     
+    <bean id="getPeopleSkillsByPeopleIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetSkillsAndInterestsByEmployeeIdsDbMapper" />
     <bean id="getPersonsByIdsDBMapper" class="org.eurekastreams.server.persistence.mappers.db.GetPersonsByIds">
         <constructor-arg ref="personQueryStrategy" />
         <constructor-arg ref="getRelatedOrganizationIdsByPersonId" />
+        <constructor-arg ref="getOrganizationsByIdsDbMapper" />
+        <constructor-arg ref="getPeopleSkillsByPeopleIdsDbMapper" />
     </bean>
     
     <bean id="getGroupsByIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetGroupsByIdsDbMapper">
