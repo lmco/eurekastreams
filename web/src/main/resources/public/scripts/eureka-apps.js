@@ -36,7 +36,7 @@ Eureka.BannerBar = function(img, color)
 
     this.getContainer = function()
     {
-        return jQuery("<div style='background: url("+img+") no-repeat scroll left center "+color+"; height: 44px;'></div>");
+        return jQuery("<div style='background: url("+img+") no-repeat scroll left center "+color+"; height: 40px;'></div>");
     }
 }
 
@@ -619,8 +619,8 @@ Eureka.ListItem = function(itemCount, primaryName, byLine, metaData, obj, onClic
         {
             item.append("<span class='slide-arrow'>&gt;</span>");
             item.click(function() { if(!removeLink.is(":visible")) { Eureka.Container.switchView(obj); } if (onClick != null) { onClick(itemCount); }});
-            setTimeout(function() {
-                item.find('.slide-arrow').css('margin-top', -1 * (item.height() / 2) - 5);
+            setInterval(function() {
+                item.find('.slide-arrow').css('margin-top', -1 * (item.height() / 2) - 5).show();
             }, 250);
         }
         else
@@ -736,7 +736,7 @@ Eureka.Tab = function(name, tabContainer)
 {
     this.container = jQuery("<div class='tab'><div class='inner'>" + name + "</div></div>");
     
-    this.container.click(function() {tabContainer.switchToTab(name); Eureka.resize(); });
+    this.container.click(function() { jQuery('.slide-arrow').hide(); tabContainer.switchToTab(name); Eureka.resize(); });
      
     this.getContainer = function()
     {
