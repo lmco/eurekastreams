@@ -40,7 +40,6 @@ import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.SwitchToFilterOnPagedFilterPanelEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
-import org.eurekastreams.web.client.events.data.AuthorizeUpdateGroupResponseEvent;
 import org.eurekastreams.web.client.events.data.AuthorizeUpdateOrganizationResponseEvent;
 import org.eurekastreams.web.client.events.data.DeletedActivityResponseEvent;
 import org.eurekastreams.web.client.events.data.GotFlaggedActivitiesResponseEvent;
@@ -254,13 +253,12 @@ public class OrganizationProfilePanel extends FlowPanel
         portalPage.addTab(buildConnectionsTab());
 
         Session.getInstance().getEventBus().addObserver(AuthorizeUpdateOrganizationResponseEvent.class,
-                new Observer<AuthorizeUpdateGroupResponseEvent>()
+                new Observer<AuthorizeUpdateOrganizationResponseEvent>()
                 {
-                    public void update(final AuthorizeUpdateGroupResponseEvent event)
+                    public void update(final AuthorizeUpdateOrganizationResponseEvent event)
                     {
                         if (event.getResponse())
                         {
-
                             profileSettingsLink.setTargetHistoryToken(Session.getInstance().generateUrl(
                                     new CreateUrlRequest(Page.ORG_SETTINGS, org.getShortName())));
                             addSubOrgLink.setTargetHistoryToken(Session.getInstance().generateUrl(
@@ -292,7 +290,6 @@ public class OrganizationProfilePanel extends FlowPanel
                 });
 
         OrganizationModel.getInstance().authorize(org.getShortName(), false);
-
         portalPage.init();
         portalPage.setStyleName("profile-gadgets-container");
         portalPageContainer.add(portalPage);

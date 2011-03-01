@@ -22,7 +22,7 @@ import java.util.Map.Entry;
 
 /**
  * The Event Bus.
- *
+ * 
  */
 public class EventBus
 {
@@ -41,17 +41,17 @@ public class EventBus
      * Stores the observers.
      */
     @SuppressWarnings("unchecked")
-    private HashMap<Class, List<Observer<?>>> observerHandlers = new HashMap<Class, List<Observer<?>>>();
+    private HashMap<Class, List<Observer< ? >>> observerHandlers = new HashMap<Class, List<Observer< ? >>>();
 
     /**
      * Buffered observers.
      */
     @SuppressWarnings("unchecked")
-    private HashMap<Class, List<Observer<?>>> bufferedObserverHandlers = new HashMap<Class, List<Observer<?>>>();
+    private HashMap<Class, List<Observer< ? >>> bufferedObserverHandlers = new HashMap<Class, List<Observer< ? >>>();
 
     /**
      * Gets an instance of the event bus.
-     *
+     * 
      * @return the event bus.
      */
     public static EventBus getInstance()
@@ -66,13 +66,13 @@ public class EventBus
 
     /**
      * Adds an observer.
-     *
+     * 
      * @param event
      *            the event.
      * @param observer
      *            the observer.
      */
-    public void addObserver(final Object event, final Observer<?> observer)
+    public void addObserver(final Object event, final Observer< ? > observer)
     {
         addObserver(event.getClass(), observer);
     }
@@ -97,19 +97,19 @@ public class EventBus
      * Clones an event map. Cannot use Map.clone() since it is a shallow copy and does not clone the lists, thus using
      * the same list objects in the clone as in the original, resulting in observers added after the buffering to be
      * retained after the restore.
-     *
+     * 
      * @param map
      *            Event map to clone.
      * @return Cloned map.
      */
     @SuppressWarnings("unchecked")
-    private HashMap<Class, List<Observer<?>>> cloneEventMap(final HashMap<Class, List<Observer<?>>> map)
+    private HashMap<Class, List<Observer< ? >>> cloneEventMap(final HashMap<Class, List<Observer< ? >>> map)
     {
-        HashMap<Class, List<Observer<?>>> newMap = new HashMap<Class, List<Observer<?>>>(map.size());
+        HashMap<Class, List<Observer< ? >>> newMap = new HashMap<Class, List<Observer< ? >>>(map.size());
 
-        for (Entry<Class, List<Observer<?>>> entry : map.entrySet())
+        for (Entry<Class, List<Observer< ? >>> entry : map.entrySet())
         {
-            newMap.put(entry.getKey(), new LinkedList<Observer<?>>(entry.getValue()));
+            newMap.put(entry.getKey(), new LinkedList<Observer< ? >>(entry.getValue()));
         }
 
         return newMap;
@@ -117,7 +117,7 @@ public class EventBus
 
     /**
      * Adds an observer.
-     *
+     * 
      * @param event
      *            the event class.
      * @param observer
@@ -125,7 +125,7 @@ public class EventBus
      * @param fireLastEvent
      *            fire the last known event of that type.
      */
-    public void addObserver(final Class<? extends Object> event, final Observer<?> observer,
+    public void addObserver(final Class< ? extends Object> event, final Observer< ? > observer,
             final Boolean fireLastEvent)
     {
         addObserver(event, observer);
@@ -138,14 +138,14 @@ public class EventBus
 
     /**
      * Fire the last event.
-     *
+     * 
      * @param event
      *            the event type.
      * @param observer
      *            the observer to fire.
      */
     @SuppressWarnings("unchecked")
-    private void fireLastEvent(final Class<? extends Object> event, final Observer observer)
+    private void fireLastEvent(final Class< ? extends Object> event, final Observer observer)
     {
         Object lastEvent = lastFiredEvent.get(event);
 
@@ -157,7 +157,7 @@ public class EventBus
 
     /**
      * Adds an observer to many events.
-     *
+     * 
      * @param events
      *            the event classes
      * @param observer
@@ -173,17 +173,17 @@ public class EventBus
 
     /**
      * Adds an observer.
-     *
+     * 
      * @param event
      *            the event class.
      * @param observer
      *            the observer.
      */
-    public void addObserver(final Class<? extends Object> event, final Observer<?> observer)
+    public void addObserver(final Class< ? extends Object> event, final Observer< ? > observer)
     {
         if (!observerHandlers.containsKey(event))
         {
-            List<Observer<?>> observers = new LinkedList<Observer<?>>();
+            List<Observer< ? >> observers = new LinkedList<Observer< ? >>();
             observerHandlers.put(event, observers);
         }
 
@@ -192,28 +192,28 @@ public class EventBus
 
     /**
      * Removes an observer.
-     *
+     * 
      * @param event
      *            the event for which to remove the observer.
      * @param observer
      *            the observer.
      */
-    public void removeObserver(final Object event, final Observer<?> observer)
+    public void removeObserver(final Object event, final Observer< ? > observer)
     {
         removeObserver(event.getClass(), observer);
     }
 
     /**
      * Removes an observer.
-     *
+     * 
      * @param event
      *            the event class.
      * @param observer
      *            the observer.
      */
-    public void removeObserver(final Class<? extends Object> event, final Observer<?> observer)
+    public void removeObserver(final Class< ? extends Object> event, final Observer< ? > observer)
     {
-        final List<Observer<?>> list = observerHandlers.get(event);
+        final List<Observer< ? >> list = observerHandlers.get(event);
         if (list != null)
         {
             list.remove(observer);
@@ -230,7 +230,7 @@ public class EventBus
 
     /**
      * Notifies the observers that subscribe to an event.
-     *
+     * 
      * @param event
      *            the event.
      */
@@ -238,7 +238,7 @@ public class EventBus
     public void notifyObservers(final Object event)
     {
         lastFiredEvent.put(event.getClass(), event);
-        List<Observer<?>> observers = observerHandlers.get(event.getClass());
+        List<Observer< ? >> observers = observerHandlers.get(event.getClass());
         if (observers != null)
         {
             for (Observer observer : observers)

@@ -30,7 +30,6 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
-import org.eurekastreams.web.client.events.data.AuthorizeUpdateGroupResponseEvent;
 import org.eurekastreams.web.client.events.data.AuthorizeUpdateOrganizationResponseEvent;
 import org.eurekastreams.web.client.events.data.GotOrganizationModelViewInformationResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedOrganizationResponseEvent;
@@ -110,9 +109,9 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
                 });
 
         Session.getInstance().getEventBus().addObserver(AuthorizeUpdateOrganizationResponseEvent.class,
-                new Observer<AuthorizeUpdateGroupResponseEvent>()
+                new Observer<AuthorizeUpdateOrganizationResponseEvent>()
                 {
-                    public void update(final AuthorizeUpdateGroupResponseEvent event)
+                    public void update(final AuthorizeUpdateOrganizationResponseEvent event)
                     {
                         if (event.getResponse())
                         {
