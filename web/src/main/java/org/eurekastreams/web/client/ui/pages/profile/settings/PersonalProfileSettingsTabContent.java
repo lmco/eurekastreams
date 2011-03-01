@@ -17,10 +17,8 @@ package org.eurekastreams.web.client.ui.pages.profile.settings;
 
 import java.util.HashMap;
 
-import org.eurekastreams.server.domain.BackgroundItemType;
 import org.eurekastreams.server.domain.DomainFormatUtility;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
@@ -59,7 +57,7 @@ public class PersonalProfileSettingsTabContent extends Composite
     /**
      * The person.
      */
-    Person person;
+    PersonModelView person;
 
     /**
      * The Flow panel.
@@ -108,20 +106,16 @@ public class PersonalProfileSettingsTabContent extends Composite
                         form.addFormElement(new ValueOnlyFormElement("accountId", person.getAccountId()));
 
                         form.addWidget(new AvatarUploadFormElement("Photo", "/eurekastreams/personavatarupload",
-                                Session.getInstance().getActionProcessor(), new AvatarUploadStrategy<Person>(person,
-                                        "resizePersonAvatar", EntityType.PERSON)));
+                                Session.getInstance().getActionProcessor(), new AvatarUploadStrategy<PersonModelView>(
+                                        person, "resizePersonAvatar", EntityType.PERSON)));
                         form.addFormDivider();
 
                         // create OrgModelView from groupParentOrg
-                        Organization parentOrg = person.getParentOrganization();
                         OrganizationModelView parentOrgModelView = null;
-                        if (parentOrg != null)
-                        {
-                            parentOrgModelView = new OrganizationModelView();
-                            parentOrgModelView.setName(parentOrg.getName());
-                            parentOrgModelView.setShortName(parentOrg.getShortName());
-                            parentOrgModelView.setEntityId(parentOrg.getId());
-                        }
+                        parentOrgModelView = new OrganizationModelView();
+                        parentOrgModelView.setName(person.getParentOrganizationName());
+                        parentOrgModelView.setShortName(person.getParentOrganizationShortName());
+                        parentOrgModelView.setEntityId(person.getParentOrganizationId());
 
                         form.addFormElement(new OrgLookupFormElement("Organization Affiliation",
                                 "Primary Organization",
@@ -129,7 +123,7 @@ public class PersonalProfileSettingsTabContent extends Composite
                                 "parentOrganization", "", true, parentOrgModelView, false));
                         form.addFormElement(new MultiOrgLookupFormElement("", "Secondary Organization(s)",
                                 "Select the other organization(s) you actively support.", "relatedOrganizations",
-                                "Secondary", false, person.getRelatedOrganizations()));
+                                "Secondary", false, person.getRelatedOrganizations(), true));
                         form.addFormDivider();
 
                         form.addFormElement(new BasicTextBoxFormElement(MAX_LENGTH, false, "Title",
@@ -146,12 +140,8 @@ public class PersonalProfileSettingsTabContent extends Composite
                                 "Enter a brief description of your job responsibilities.", false));
                         form.addFormDivider();
 
-                        String skills = "";
-                        if (person.getBackground() != null)
-                        {
-                            skills = DomainFormatUtility.buildCapabilitiesString(person.getBackground()
-                                    .getBackgroundItems(BackgroundItemType.SKILL));
-                        }
+                        String skills = DomainFormatUtility.buildCapabilitiesStringFromStrings(person.getInterests());
+
                         form.addFormElement(new AutoCompleteItemDropDownFormElement("Interests",
                                 PersonModelView.SKILLS_KEY, skills,
                                 "Add keywords that describe your work experience, skills, interests, or "

@@ -15,8 +15,11 @@
  */
 package org.eurekastreams.server.action.execution;
 
+import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.commons.logging.LogFactory;
+import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators;
 import org.eurekastreams.server.persistence.mappers.GetRootOrganizationIdAndShortName;
@@ -32,6 +35,11 @@ import org.springframework.security.context.SecurityContextHolder;
  */
 public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalActionContext>
 {
+    /**
+     * Logger.
+     */
+    private Log log = LogFactory.make();
+
     /**
      * Mapper to get the root org.
      */
@@ -58,6 +66,11 @@ public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalA
     private TermsOfServiceAcceptanceStrategy toSAcceptanceStrategy;
 
     /**
+     * Strategy to retrieve the banner id if it is not directly configured.
+     */
+    private final GetBannerIdByParentOrganizationStrategy<Person> getBannerIdStrategy;
+
+    /**
      * Constructor that sets up the mapper.
      * 
      * @param inRecursiveOrgMapperDownTree
@@ -70,18 +83,22 @@ public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalA
      *            - mapper to get a PersonModelView by account id
      * @param inTosAcceptanceStrategy
      *            the strategy to check if the user's terms of service acceptance is current
+     * @param inGetBannerIdStrategy
+     *            strategy to get the banner id for the person
      */
     public GetPersonModelViewExecution(final GetRecursiveOrgCoordinators inRecursiveOrgMapperDownTree,
             final GetRecursiveOrgCoordinators inRecursiveOrgMapperUpTree,
             final GetRootOrganizationIdAndShortName inRootOrgMapper,
             final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper,
-            final TermsOfServiceAcceptanceStrategy inTosAcceptanceStrategy)
+            final TermsOfServiceAcceptanceStrategy inTosAcceptanceStrategy,
+            final GetBannerIdByParentOrganizationStrategy<Person> inGetBannerIdStrategy)
     {
         rootOrgMapper = inRootOrgMapper;
         recursiveOrgMapperDownTree = inRecursiveOrgMapperDownTree;
         recursiveOrgMapperUpTree = inRecursiveOrgMapperUpTree;
         getPersonModelViewByAccountIdMapper = inGetPersonModelViewByAccountIdMapper;
         toSAcceptanceStrategy = inTosAcceptanceStrategy;
+        getBannerIdStrategy = inGetBannerIdStrategy;
     }
 
     /**
@@ -95,18 +112,27 @@ public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalA
     @Override
     public PersonModelView execute(final PrincipalActionContext inActionContext)
     {
-        PersonModelView person = getPersonModelViewByAccountIdMapper.execute(inActionContext.getPrincipal()
-                .getAccountId());
+        String accountId = (String) inActionContext.getParams();
+
+        if (accountId == null)
+        {
+            accountId = inActionContext.getPrincipal().getAccountId();
+            log.debug("no account id in the params - using current user's account id: " + accountId);
+        }
+
+        PersonModelView person = getPersonModelViewByAccountIdMapper.execute(accountId);
 
         // TODO: fill out other roles here as necessary
         if (recursiveOrgMapperDownTree.isOrgCoordinatorRecursively(person.getEntityId(), rootOrgMapper
                 .getRootOrganizationId()))
         {
+            log.debug("user " + accountId + " is a root org coordinator.");
             person.getRoles().add((Role.ORG_COORDINATOR));
         }
         if (recursiveOrgMapperUpTree.isOrgCoordinatorRecursively(person.getEntityId(), rootOrgMapper
                 .getRootOrganizationId()))
         {
+            log.debug("user " + accountId + " is a root org coordinator.");
             person.getRoles().add((Role.ROOT_ORG_COORDINATOR));
         }
 
@@ -115,7 +141,14 @@ public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalA
         person.setTosAcceptance(toSAcceptanceStrategy.isValidTermsOfServiceAcceptanceDate(person
                 .getLastAcceptedTermsOfService()));
         person.setAuthenticationType(userDetails.getAuthenticationType());
+
+        // Set the transient banner id on the person with the first parent org that
+        // has a banner id configured starting with the direct parent and walking up
+        // the tree.
+        getBannerIdStrategy.getBannerId(person.getParentOrganizationId(), person);
+
+        log.debug("Found banner for " + accountId + " - " + person.getBannerId());
+
         return person;
     }
-
 }

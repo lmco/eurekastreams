@@ -28,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Test for GetPersonsByIds.
- *
+ * 
  */
 public class GetPersonsByIdsTest extends MapperTest
 {
@@ -78,7 +78,7 @@ public class GetPersonsByIdsTest extends MapperTest
 
     /**
      * Assert the input PersonModelView is Smithers.
-     *
+     * 
      * @param person
      *            the person to test
      */

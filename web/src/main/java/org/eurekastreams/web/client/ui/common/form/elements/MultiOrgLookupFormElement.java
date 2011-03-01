@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.OrganizationTreeDTO;
+import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.SaveSelectedOrgEvent;
 import org.eurekastreams.web.client.ui.common.EditPanel;
@@ -39,7 +40,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * Org lookup form element.
- *
+ * 
  */
 public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
 {
@@ -65,7 +66,7 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Constructor.
-     *
+     * 
      * @param inTitle
      *            the title.
      * @param subTitle
@@ -91,7 +92,6 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
 
         Label title = new Label(inTitle);
         title.addStyleName("form-label");
-
 
         Label subTitleLabel = new Label(subTitle);
         subTitleLabel.addStyleName("form-sub-title");
@@ -148,13 +148,98 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
     }
 
     /**
+     * Constructor.
+     * 
+     * @param inTitle
+     *            the title.
+     * @param subTitle
+     *            a sub title.
+     * @param inInstructions
+     *            the instructions.
+     * @param inKey
+     *            the key.
+     * @param inSelectedLabelText
+     *            the text of the label that will be put next to the org once it is selected
+     * @param inRequired
+     *            if it is required.
+     * @param relatedOrganizations
+     *            related orgs.
+     * @param doNothing
+     *            temporary until we remove Organization
+     */
+    public MultiOrgLookupFormElement(final String inTitle, final String subTitle, final String inInstructions,
+            final String inKey, final String inSelectedLabelText, final boolean inRequired,
+            final List<OrganizationModelView> relatedOrganizations, final boolean doNothing)
+    {
+        this.addStyleName("org-lookup-form-element");
+
+        key = inKey;
+
+        Label title = new Label(inTitle);
+        title.addStyleName("form-label");
+
+        Label subTitleLabel = new Label(subTitle);
+        subTitleLabel.addStyleName("form-sub-title");
+        Label instructions = new Label(inInstructions);
+        instructions.addStyleName("form-instructions");
+
+        this.add(title);
+        this.add(subTitleLabel);
+        this.add(instructions);
+        this.add(selectedOrgs);
+
+        Label select = new Label("Add Organization");
+        select.addStyleName("form-button form-lookup-button");
+        final Label selectedOrgName = new Label();
+        selectedOrgName.addStyleName("selected-org-name");
+        final Label selectedLabel = new Label(inSelectedLabelText);
+        selectedLabel.addStyleName("org-select-label");
+        selectedLabel.setVisible(false);
+
+        select.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent event)
+            {
+                orgLookupContent = new OrgLookupContent(getSaveCommand(selectedOrgName, selectedLabel));
+                Dialog newDialog = new Dialog(orgLookupContent);
+                newDialog.setBgVisible(true);
+                newDialog.center();
+            }
+
+        });
+
+        this.add(select);
+
+        if (inRequired)
+        {
+            Label requiredLabel = new Label("(required)");
+            requiredLabel.addStyleName("required-form-label");
+            this.add(requiredLabel);
+        }
+
+        this.add(selectedOrgName);
+        this.add(selectedLabel);
+
+        for (OrganizationModelView org : relatedOrganizations)
+        {
+            final OrganizationTreeDTO treeItem = new OrganizationTreeDTO();
+
+            treeItem.setDisplayName(org.getName());
+            treeItem.setOrgId(org.getId());
+            treeItem.setShortName(org.getShortName());
+
+            addRelatedOrg(treeItem);
+        }
+    }
+
+    /**
      * Get the save command.
-     *
+     * 
      * @param selectedOrgName
      *            the selected org name label.
      * @param selectedLabel
      *            the label that goes with the selected org
-     *
+     * 
      * @return the command.
      */
     private Command getSaveCommand(final Label selectedOrgName, final Label selectedLabel)
@@ -170,7 +255,7 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Add a related org.
-     *
+     * 
      * @param org
      *            the org.
      */
@@ -205,7 +290,7 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Get the key.
-     *
+     * 
      * @return the key.
      */
     public String getKey()
@@ -215,7 +300,7 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Get the value.
-     *
+     * 
      * @return the value.
      */
     public Serializable getValue()
@@ -225,7 +310,7 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Called on error.
-     *
+     * 
      * @param errMessage
      *            the error.
      */

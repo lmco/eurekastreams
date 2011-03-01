@@ -575,7 +575,6 @@
         </constructor-arg>
     </bean>
     
-    <!-- WBCTODO -->
     <!-- Mapper to get people ids by open social ids -->
     <bean id="getPeopleIdsByOpenSocialIdsMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache mapper -->
@@ -608,7 +607,6 @@
         </constructor-arg>
     </bean>
     
-    <!-- WBCTODO -->
     <!-- Mapper to get organization ids by short name -->
     <bean id="getOrganizationIdsByShortNamesMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache mapper -->
@@ -641,7 +639,6 @@
         </constructor-arg>
     </bean>
     
-    <!-- WBCTODO -->
     <!-- Mapper to get organization ids by short name -->
     <bean id="getDomainGroupIdsByShortNamesMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache mapper -->
@@ -2433,6 +2430,8 @@
 
 	<!-- End ldap mappers -->
 	
+	<bean id="getPeopleSkillsByPeopleIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetSkillsAndInterestsByEmployeeIdsDbMapper" />
+	
     <bean id="deleteOrganizationMapper" class="org.eurekastreams.server.persistence.mappers.db.DeleteOrganizationDbMapper" >
         <constructor-arg ref="findByIdMapper"/>
     </bean>
@@ -2460,6 +2459,8 @@
     <bean id="getPersonsByIdsDBMapper" class="org.eurekastreams.server.persistence.mappers.db.GetPersonsByIds">
         <constructor-arg ref="personQueryStrategy" />
         <constructor-arg ref="getRelatedOrganizationIdsByPersonId" />
+        <constructor-arg ref="getOrganizationsByIdsMapper" />
+        <constructor-arg ref="getPeopleSkillsByPeopleIdsDbMapper" />
     </bean>  
     
     <bean id="getGroupsByIdsDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetGroupsByIdsDbMapper">

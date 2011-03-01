@@ -1653,6 +1653,14 @@
                         <constructor-arg ref="findSystemSettings"/>
                     </bean>
                 </constructor-arg>
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.action.execution.GetBannerIdByParentOrganizationStrategy">
+                        <constructor-arg ref="getOrganizationsByIdsMapper" />
+                        <constructor-arg ref="getParentOrgIdsRecursiveByOrgIdMapper" />
+                        <constructor-arg ref="findByIdMapper" />
+                        <constructor-arg value="Person" />
+                    </bean>
+                </constructor-arg>
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
