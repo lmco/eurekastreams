@@ -129,6 +129,7 @@ public class ApplicationEntryPoint implements EntryPoint
     public void onModuleLoad()
     {
         ResourceBundle.INSTANCE.coreCss().ensureInjected();
+        ResourceBundle.INSTANCE.yuiCss().ensureInjected();
         
         if (getUserAgent().contains("msie 7"))
         {
