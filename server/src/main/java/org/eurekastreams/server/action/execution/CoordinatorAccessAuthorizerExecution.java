@@ -15,8 +15,10 @@
  */
 package org.eurekastreams.server.action.execution;
 
+import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.authorization.CoordinatorAccessAuthorizer;
 import org.eurekastreams.server.action.request.transformer.RequestTransformer;
 
@@ -26,6 +28,11 @@ import org.eurekastreams.server.action.request.transformer.RequestTransformer;
  */
 public class CoordinatorAccessAuthorizerExecution implements ExecutionStrategy<PrincipalActionContext>
 {
+    /**
+     * Logger.
+     */
+    private Log log = LogFactory.make();
+
     /**
      * Transform entity id from request.
      */
@@ -64,7 +71,12 @@ public class CoordinatorAccessAuthorizerExecution implements ExecutionStrategy<P
         Long entityId = Long.valueOf((String) entityIdTransformer.transform(inActionContext));
         Long personId = inActionContext.getPrincipal().getId();
 
-        return entityPermissionsChecker.hasCoordinatorAccessRecursively(personId, entityId);
+        boolean hasAccess = entityPermissionsChecker.hasCoordinatorAccessRecursively(personId, entityId);
+
+        log.info("PersonId: " + personId + " " + (hasAccess ? "has" : "does not have")
+                + " access to entity with entityId: " + entityId);
+
+        return hasAccess;
     }
 
 }
