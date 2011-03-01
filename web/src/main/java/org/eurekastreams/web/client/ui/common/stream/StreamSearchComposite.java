@@ -34,8 +34,8 @@ import org.eurekastreams.web.client.ui.common.stream.filters.list.CustomStreamDi
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.InlineHyperlink;
@@ -200,11 +200,12 @@ public class StreamSearchComposite extends FlowPanel
             }
         });
 
-        searchTerm.addKeyPressHandler(new KeyPressHandler()
+        searchTerm.addKeyUpHandler(new KeyUpHandler()
         {
-            public void onKeyPress(final KeyPressEvent event)
+            public void onKeyUp(final KeyUpEvent ev)
             {
-                if (event.getCharCode() == KeyCodes.KEY_ENTER)
+                if (ev.getNativeKeyCode() == KeyCodes.KEY_ENTER && !ev.isAnyModifierKeyDown()
+                        && searchTerm.getText().length() > 0)
                 {
                     onSearch();
                 }
@@ -278,7 +279,7 @@ public class StreamSearchComposite extends FlowPanel
 
     /**
      * Update search widget.
-     *
+     * 
      * @param inSearchTerm
      *            the search term.
      */
@@ -304,7 +305,7 @@ public class StreamSearchComposite extends FlowPanel
 
     /**
      * Set the title text, generating a hyperlink for group stream titles.
-     *
+     * 
      * @param title
      *            the text.
      * @param shortName
@@ -336,7 +337,7 @@ public class StreamSearchComposite extends FlowPanel
 
     /**
      * Sets if the search can be changed.
-     *
+     * 
      * @param canChange
      *            if the search can be changed.
      */
@@ -350,7 +351,7 @@ public class StreamSearchComposite extends FlowPanel
 
     /**
      * Builds and sets the link for adding the stream as a gadget.
-     *
+     * 
      * @param gadgetTitle
      *            the gadget title.
      * @param streamQuery
@@ -375,7 +376,7 @@ public class StreamSearchComposite extends FlowPanel
     /**
      * Creates the JSON representation of a string value. (Escapes characters and adds string delimiters or returns null
      * keyword as applicable.) See http://www.json.org/ for syntax. Assumes the string contains no control characters.
-     *
+     * 
      * @param input
      *            Input string, possibly null.
      * @return JSON string representation.
@@ -385,4 +386,3 @@ public class StreamSearchComposite extends FlowPanel
          return input == null ? 'null' : '"' + input.replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"';
        }-*/;
 }
-
