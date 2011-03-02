@@ -40,6 +40,7 @@ import org.eurekastreams.web.client.ui.common.stream.decorators.verb.PostPopulat
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.Timer;
@@ -99,7 +100,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param inScope
      *            the scope.
      */
@@ -114,7 +115,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Builds the UI.
-     *
+     * 
      * @param inScope
      *            the scope.
      */
@@ -179,9 +180,18 @@ public class PostToStreamComposite extends FlowPanel
         // user typed in message text box
         message.addKeystrokeHandler(new KeyUpHandler()
         {
-            public void onKeyUp(final KeyUpEvent inArg0)
+            public void onKeyUp(final KeyUpEvent ev)
             {
-                checkMessageTextChanged();
+                if (ev.getNativeKeyCode() == KeyCodes.KEY_ENTER && ev.isControlKeyDown()
+                        && message.getText().length() > 0)
+                {
+                    checkMessageTextChanged();
+                    handlePostMessage();
+                }
+                else
+                {
+                    checkMessageTextChanged();
+                }
             }
         });
 
@@ -191,14 +201,7 @@ public class PostToStreamComposite extends FlowPanel
             public void onClick(final ClickEvent ev)
             {
                 checkMessageTextChanged();
-
-                if (!postButton.getStyleName().contains("inactive") && messageText.length() <= MAX_MESSAGE_LENGTH
-                        && (!messageText.isEmpty() || attachment != null))
-                {
-                    hidePostButton();
-                    postMessage();
-                    lastFetched = "";
-                }
+                handlePostMessage();
             }
         });
 
@@ -325,8 +328,22 @@ public class PostToStreamComposite extends FlowPanel
        }-*/;
 
     /**
+     * Handle the post activity action - triggered by CONTROL-ENTER or clicking the Post button.
+     */
+    private void handlePostMessage()
+    {
+        if (!postButton.getStyleName().contains("inactive") && messageText.length() <= MAX_MESSAGE_LENGTH
+                && (!messageText.isEmpty() || attachment != null))
+        {
+            hidePostButton();
+            postMessage();
+            lastFetched = "";
+        }
+    }
+
+    /**
      * Set the scope.
-     *
+     * 
      * @param inScope
      *            the scope.
      */
@@ -449,11 +466,9 @@ public class PostToStreamComposite extends FlowPanel
             return;
         }
 
-        EntityType recipientType = ScopeType.PERSON.equals(scope.getScopeType()) ? EntityType.PERSON
-                : EntityType.GROUP;
+        EntityType recipientType = ScopeType.PERSON.equals(scope.getScopeType()) ? EntityType.PERSON : EntityType.GROUP;
 
-        ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator()
-                : new NotePopulator();
+        ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator() : new NotePopulator();
 
         PostActivityRequest postRequest = new PostActivityRequest(activityPopulator.getActivityDTO(messageText,
                 recipientType, scope.getUniqueKey(), new PostPopulator(), objectStrat));
