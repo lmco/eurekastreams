@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.web.client.ui.common.form.elements;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -100,13 +102,13 @@ public class BasicTextAreaFormElement extends FlowPanel implements FormElement
     {
         key = inKey;
         label.setText(labelVal);
-        label.addStyleName("form-label");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
         textBox.setText(value);
         size = inSize;
 
         if (required)
         {
-            requiredLabel.addStyleName("required-form-label");
+            requiredLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requiredFormLabel());
             requiredLabel.setText("(required)");
         }
 
@@ -117,17 +119,17 @@ public class BasicTextAreaFormElement extends FlowPanel implements FormElement
         // Need to do this to fix an especially nasty IE CSS bug (input margin inheritance)
         final SimplePanel textWrapper = new SimplePanel();
         textWrapper.add(textBox);
-        textWrapper.addStyleName("input-wrapper");
+        textWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inputWrapper());
 
         this.add(textWrapper);
 
-        instructions.addStyleName("form-instructions");
+        instructions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
         instructions.setText(inInstructions);
 
         if (size != null)
         {
             countDown = new Label(Integer.toString(size - textBox.getText().length()));
-            countDown.addStyleName("characters-remaining");
+            countDown.addStyleName(StaticResourceBundle.INSTANCE.coreCss().charactersRemaining());
             this.add(countDown);
 
             textBox.addKeyUpHandler(new KeyUpHandler()
@@ -162,13 +164,13 @@ public class BasicTextAreaFormElement extends FlowPanel implements FormElement
         countDown.setText(charsRemaining.toString());
         if (charsRemaining >= 0 && charsRemaining != size)
         {
-            countDown.removeStyleName("over-character-limit");
+            countDown.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().overCharacterLimit());
         }
         else
         {
             if (charsRemaining != size)
             {
-                countDown.addStyleName("over-character-limit");
+                countDown.addStyleName(StaticResourceBundle.INSTANCE.coreCss().overCharacterLimit());
 
             }
         }
@@ -213,7 +215,7 @@ public class BasicTextAreaFormElement extends FlowPanel implements FormElement
      */
     public void onError(final String errMessage)
     {
-        label.addStyleName("form-error");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**
@@ -221,7 +223,7 @@ public class BasicTextAreaFormElement extends FlowPanel implements FormElement
      */
     public void onSuccess()
     {
-        label.removeStyleName("form-error");
+        label.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
 }

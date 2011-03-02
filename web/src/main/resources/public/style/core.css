@@ -1,3 +1,18 @@
+@external .themeable;
+@external .banner-container;
+@external .icon-*;
+@external .configure-tab;
+@external .site-labeling;
+@external .new-tab-button;
+@external .tab;
+@external .tab-container;
+@external .active;
+@external .layout-container;
+@external .gadget-zone;
+@external .gadget-zone-chrome-title-bar;
+@external .gadget-zone-chrome-title-bar-title-button; 
+@external .main-contents;
+
 * {
 	outline: none;
 }
@@ -337,6 +352,8 @@ ul.barred li:first-child a {
 .themeable .main-contents .header-container+div {
 	width: auto;
 }
+
+
 
 .themeable .main-contents,.themeable .footer-bar {
 	background-color: transparent;

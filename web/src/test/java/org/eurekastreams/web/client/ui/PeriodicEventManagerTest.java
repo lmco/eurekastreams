@@ -249,7 +249,7 @@ incrementTime();
                 when(state.is("notLast"));
 
                 oneOf(timer).cancel();
-                when(state.is("last"));
+                when(state.is(StaticResourceBundle.INSTANCE.coreCss().last()));
 
                 allowing(actionProcessor).setQueueRequests(true);
                 allowing(actionProcessor).fireQueuedRequests();
@@ -261,7 +261,7 @@ incrementTime();
         {
             if (i == IDLE_TIMEOUT)
             {
-                state.become("last");
+                state.become(StaticResourceBundle.INSTANCE.coreCss().last());
             }
             hdlr.run();
 
@@ -292,7 +292,7 @@ incrementTime();
         {
             {
                 oneOf(timer).cancel();
-                when(state.is("last"));
+                when(state.is(StaticResourceBundle.INSTANCE.coreCss().last()));
             }
         });
 
@@ -300,7 +300,7 @@ incrementTime();
         {
             if (i == IDLE_TIMEOUT + activityAtTime)
             {
-                state.become("last");
+                state.become(StaticResourceBundle.INSTANCE.coreCss().last());
             }
             if (i == activityAtTime)
             {

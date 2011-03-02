@@ -27,10 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eurekastreams.commons.exceptions.ValidationException;
+import org.eurekastreams.server.domain.Organization;
 import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
-import org.eurekastreams.server.domain.Organization;
-import org.eurekastreams.commons.exceptions.ValidationException;
 
 /**
  * uses reflection to update an object.

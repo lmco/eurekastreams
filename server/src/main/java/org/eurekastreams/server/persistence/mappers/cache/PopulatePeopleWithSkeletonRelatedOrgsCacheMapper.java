@@ -24,7 +24,6 @@ import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 

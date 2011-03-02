@@ -39,6 +39,7 @@ import org.eurekastreams.web.client.ui.common.form.elements.JSNICommandFormEleme
 import org.eurekastreams.web.client.ui.common.form.elements.UrlValidatorFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.ValueOnlyFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.UrlValidatorFormElement.GenerateUrlCommand;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
@@ -136,7 +137,7 @@ public class StreamPluginConfigurationPanel extends FlowPanel
 
 
         formBuilder = new FormBuilder("", model, mode);
-        this.addStyleName("stream-plugin-conf-panel");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamPluginConfPanel());
         formBuilder.setVisible(false);
 
         final Integer random = Random.nextInt(10000);
@@ -147,7 +148,7 @@ public class StreamPluginConfigurationPanel extends FlowPanel
         this.add(gadgetDiv);
 
         spinny = new FlowPanel();
-        spinny.addStyleName("gadgets-gadget-loading");
+        spinny.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetsGadgetLoading());
 
         this.add(spinny);
 
@@ -167,7 +168,7 @@ public class StreamPluginConfigurationPanel extends FlowPanel
                 });
         SystemSettingsModel.getInstance().fetch(null, true);
 
-        lastCheckBox.addStyleName("stream-plugin-checkbox");
+        lastCheckBox.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamPluginCheckbox());
 
         formBuilder.setOnCancelHistoryToken(History.getToken());
         formBuilder.addWidget(new PluginMetaDataDescriptionPanel(metaData));

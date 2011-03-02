@@ -23,6 +23,7 @@ import org.eurekastreams.web.client.model.ActivityLikersModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import org.eurekastreams.web.client.ui.common.pagedlist.PersonRenderer;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -109,7 +110,8 @@ public class LikersDialogContent implements DialogContent
      */
     public void show()
     {
-        body.addStyleName("form-submit-spinny form-processing-spinny");
+        body.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formSubmitSpinny());
+        body.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formProcessingSpinny());
         ActivityLikersModel.getInstance().fetch(activityId, false);
 
         Session.getInstance().getEventBus().addObserver(GotActivityLikersResponseEvent.class,
@@ -117,13 +119,13 @@ public class LikersDialogContent implements DialogContent
                 {
                     public void update(final GotActivityLikersResponseEvent event)
                     {
-                        body.removeStyleName("form-submit-spinny");
+                        body.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formSubmitSpinny());
                         body.removeStyleName("form-processing-spinny");
 
                         PersonRenderer renderer = new PersonRenderer(false);
 
                         FlowPanel scrollable = new FlowPanel();
-                        scrollable.addStyleName("likers-content");
+                        scrollable.addStyleName(StaticResourceBundle.INSTANCE.coreCss().likersContent());
                         body.add(scrollable);
 
                         for (PersonModelView person : event.getResponse())

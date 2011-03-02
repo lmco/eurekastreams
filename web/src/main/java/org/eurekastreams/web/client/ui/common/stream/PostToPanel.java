@@ -27,6 +27,7 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.common.autocomplete.AutoCompleteEntityDropDownPanel;
 import org.eurekastreams.web.client.ui.common.stream.filters.list.StreamScopePanel;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Random;
@@ -101,7 +102,7 @@ public class PostToPanel extends FlowPanel
         myScope = postScope;
         WidgetJSNIFacade jSNIFacade = new WidgetJSNIFacadeImpl();
         mine.setChecked(true);
-        this.addStyleName("post-to");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postTo());
 
         if ((!jSNIFacade.getSecondToLastUrlToken().equals("people") && !jSNIFacade.getSecondToLastUrlToken().equals(
                 "groups"))
@@ -111,7 +112,7 @@ public class PostToPanel extends FlowPanel
             final PostToPanel thisBuffered = this;
 
             Label postTo = new InlineLabel("Post to:");
-            postTo.addStyleName("label");
+            postTo.addStyleName(StaticResourceBundle.INSTANCE.coreCss().label());
             this.add(postTo);
 
             this.add(mine);

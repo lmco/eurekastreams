@@ -21,6 +21,7 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.SettingsPanel;
 import org.eurekastreams.web.client.ui.common.tabs.SimpleTab;
 import org.eurekastreams.web.client.ui.common.tabs.TabContainerPanel;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 
@@ -51,13 +52,13 @@ public class PersonalProfileSettingsPanel extends SettingsPanel
         TabContainerPanel portalPage = new TabContainerPanel();
 
         PersonalProfileSettingsTabContent profileTabContent = new PersonalProfileSettingsTabContent();
-        profileTabContent.addStyleName("profile-settings-tab-content");
+        profileTabContent.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileSettingsTabContent());
 
         PersonalBackgroundTabContent personalBackgroundTabContent = new PersonalBackgroundTabContent();
-        personalBackgroundTabContent.addStyleName("profile-settings-tab-content");
+        personalBackgroundTabContent.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileSettingsTabContent());
 
         PersonalStreamSettingsTabContent personalStreamSettingsTabContent = new PersonalStreamSettingsTabContent();
-        personalStreamSettingsTabContent.addStyleName("profile-settings-tab-content");
+        personalStreamSettingsTabContent.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileSettingsTabContent());
 
         portalPage.addTab(new SimpleTab("Basic Info", profileTabContent));
         portalPage.addTab(new SimpleTab("Work History & Education", personalBackgroundTabContent));
@@ -65,10 +66,10 @@ public class PersonalProfileSettingsPanel extends SettingsPanel
         portalPage.init();
 
         portalPageContainer.add(portalPage);
-        portalPageContainer.addStyleName("profile-settings-tab-container");
+        portalPageContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileSettingsTabContainer());
 
         panel.add(portalPageContainer);
-        panel.addStyleName("profile-page");
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profilePage());
 
     }
 }

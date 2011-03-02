@@ -29,6 +29,7 @@ import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Background;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -136,23 +137,23 @@ public class OrgLookupContent implements DialogContent
     private void setupWidgets()
     {
         final FlowPanel lookupPanelContainer = new FlowPanel();
-        lookupPanelContainer.addStyleName("org-lookup-container");
+        lookupPanelContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().orgLookupContainer());
 
         final FlowPanel lookupPanel = new FlowPanel();
 
         Label lookupDesc = new Label("Find an organization by typing the name in the box, "
                 + "or by browsing the organization structure.");
-        lookupDesc.addStyleName("lookup-description");
+        lookupDesc.addStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupDescription());
 
         lookupPanelContainer.add(lookupDesc);
 
-        lookupPanel.addStyleName("lookup");
+        lookupPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().lookup());
 
         FlowPanel searchContainer = new FlowPanel();
-        searchContainer.addStyleName("search-list");
+        searchContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchList());
 
         searchButton.setTitle("search organization");
-        searchButton.addStyleName("search-list-button");
+        searchButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchListButton());
 
         searchContainer.add(searchBox);
         searchContainer.add(searchButton);
@@ -160,17 +161,17 @@ public class OrgLookupContent implements DialogContent
         lookupPanel.add(searchContainer);
 
         final FlowPanel buttonArea = new FlowPanel();
-        buttonArea.addStyleName("button-area");
+        buttonArea.addStyleName(StaticResourceBundle.INSTANCE.coreCss().buttonArea());
 
         save = new Hyperlink("Select", History.getToken());
-        save.addStyleName("lookup-select-button-inactive");
+        save.addStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupSelectButtonInactive());
         buttonArea.add(save);
 
         cancel = new Hyperlink("Cancel", History.getToken());
-        cancel.addStyleName("lookup-cancel-button");
+        cancel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupCancelButton());
         buttonArea.add(cancel);
 
-        orgTreeContainer.addStyleName("org-tree-container");
+        orgTreeContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().orgTreeContainer());
 
         orgTreeContainer.add(orgList);
         lookupPanel.add(orgTreeContainer);
@@ -178,23 +179,23 @@ public class OrgLookupContent implements DialogContent
         lookupPanelContainer.add(lookupPanel);
 
         orgDescriptionPanel = new FlowPanel();
-        orgDescriptionPanel.addStyleName("org-description");
+        orgDescriptionPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().orgDescription());
 
         logoImage = new AvatarWidget(Size.Small, Background.Gray);
         orgDescriptionPanel.add(new AvatarDisplayPanel(logoImage));
 
         FlowPanel descriptionTextContainer = new FlowPanel();
 
-        descriptionTextContainer.addStyleName("org-description-text");
+        descriptionTextContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().orgDescriptionText());
 
-        orgTitle.addStyleName("org-name");
+        orgTitle.addStyleName(StaticResourceBundle.INSTANCE.coreCss().orgName());
         descriptionTextContainer.add(orgTitle);
 
-        orgOverview.addStyleName("org-overview");
+        orgOverview.addStyleName(StaticResourceBundle.INSTANCE.coreCss().orgOverview());
         descriptionTextContainer.add(orgOverview);
 
         orgDescriptionPanel.add(descriptionTextContainer);
-        orgDescriptionPanel.addStyleName("display-none");
+        orgDescriptionPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
 
         lookupPanelContainer.add(orgDescriptionPanel);
 

@@ -17,6 +17,7 @@ package org.eurekastreams.web.client.ui.common.dialog.message;
 
 import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -72,7 +73,7 @@ public class MessageDialogContent implements DialogContent
     public MessageDialogContent(final String inTitle, final String inMessage)
     {
         final Label messageLabel = new Label(inMessage);
-        messageLabel.addStyleName("dialog-message-text");
+        messageLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().dialogMessageText());
 
         title = inTitle;
         body = messageLabel;

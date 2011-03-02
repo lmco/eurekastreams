@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.web.client.ui.common;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -63,9 +65,9 @@ public class EditPanel extends FlowPanel
     {
         Widget parent = inParent;
 
-        parent.addStyleName("editable-item");
+        parent.addStyleName(StaticResourceBundle.INSTANCE.coreCss().editableItem());
 
-        this.addStyleName("edit-controls");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().editControls());
 
         boolean isEdit = Mode.EDIT.equals(inMode) || Mode.EDIT_AND_DELETE.equals(inMode);
         boolean isDelete = Mode.DELETE.equals(inMode) || Mode.EDIT_AND_DELETE.equals(inMode);
@@ -74,7 +76,7 @@ public class EditPanel extends FlowPanel
         
         if (isEdit)
         {
-            editPanel.addStyleName("edit");
+            editPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().edit());
             this.add(editPanel);
         }
 
@@ -82,7 +84,7 @@ public class EditPanel extends FlowPanel
 
         if (isDelete)
         {
-            deletePanel.addStyleName("delete");
+            deletePanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().delete());
             this.add(deletePanel);
         }
 

@@ -26,6 +26,7 @@ import org.eurekastreams.web.client.model.SearchResultsPeopleModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.pagedlist.PagedListPanel;
 import org.eurekastreams.web.client.ui.common.pagedlist.SingleColumnPagedListRenderer;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -79,19 +80,19 @@ public class SearchContent extends FlowPanel
                     }
                 });
 
-        RootPanel.get().addStyleName("directory");
+        RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().directory());
 
         searchResultsPanel = new PagedListPanel("searchResults", new SingleColumnPagedListRenderer());
-        searchResultsPanel.addStyleName("search-results");
+        searchResultsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchResults());
         FlowPanel contentPanel = new FlowPanel();
 
         Label header = new Label("Profile Search Results");
-        header.addStyleName("directory-header");
+        header.addStyleName(StaticResourceBundle.INSTANCE.coreCss().directoryHeader());
         this.add(header);
         this.add(contentPanel);
 
         FlowPanel resultsHeaderPanel = new FlowPanel();
-        resultsHeaderPanel.addStyleName("results-header");
+        resultsHeaderPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().resultsHeader());
         resultsHeaderPanel.add(new InlineLabel("Search Results for: "));
         resultsHeaderPanel.add(queryText);
 

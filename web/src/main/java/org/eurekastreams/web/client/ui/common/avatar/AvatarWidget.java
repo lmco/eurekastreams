@@ -18,6 +18,7 @@ package org.eurekastreams.web.client.ui.common.avatar;
 import org.eurekastreams.server.domain.AvatarEntity;
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
@@ -67,8 +68,21 @@ public class AvatarWidget extends Composite
     public AvatarWidget(final Size size)
     {
         imageSize = size;
-        image.addStyleName("avatar-image");
-        image.addStyleName("avatar-image-" + size.toString());
+        image.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatarImage());
+        
+        if (size.toString().toLowerCase().equals("small"))
+        {
+            image.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatarImageSmall());            
+        }
+        if (size.toString().toLowerCase().equals("verysmall"))
+        {
+            image.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatarImageVerySmall());            
+        }
+        if (size.toString().toLowerCase().equals("normal"))
+        {
+            image.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatarImageNormal());            
+        }
+        
         initWidget(image);
     }
 

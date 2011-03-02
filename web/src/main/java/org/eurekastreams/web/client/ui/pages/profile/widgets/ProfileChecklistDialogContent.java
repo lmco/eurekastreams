@@ -20,6 +20,7 @@ import java.util.List;
 import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.profile.Task;
 
 import com.google.gwt.user.client.ui.ClickListener;
@@ -119,11 +120,11 @@ public class ProfileChecklistDialogContent implements DialogContent
     {
         final DialogContent thisBuffered = this;
         Label descriptionLbl = new Label(description);
-        descriptionLbl.addStyleName("checklist-desc");
+        descriptionLbl.addStyleName(StaticResourceBundle.INSTANCE.coreCss().checklistDesc());
         content.add(descriptionLbl);
 
         final FlowPanel taskContainer = new FlowPanel();
-        taskContainer.addStyleName("task-container");
+        taskContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().taskContainer());
         content.add(taskContainer);
 
         // tasks
@@ -150,7 +151,7 @@ public class ProfileChecklistDialogContent implements DialogContent
         }
 
         FlowPanel bottomBar = new FlowPanel();
-        bottomBar.addStyleName("checklist-bottom-bar");
+        bottomBar.addStyleName(StaticResourceBundle.INSTANCE.coreCss().checklistBottomBar());
         bottomBar.add(new HTML("Your profile is <strong>" + String.valueOf(percentage) + "%</strong> complete"));
 
         content.add(bottomBar);
@@ -165,7 +166,7 @@ public class ProfileChecklistDialogContent implements DialogContent
      */
     public String getCssName()
     {
-        return "image-crop-dialog";
+        return StaticResourceBundle.INSTANCE.coreCss().imageCropDialog();
     }
 
     /**

@@ -17,7 +17,7 @@ package org.eurekastreams.commons.server;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.commons.client.ActionRPCService;
@@ -28,6 +28,8 @@ import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.userdetails.UserDetails;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
  * Server-side implementation of ActionRPCService.

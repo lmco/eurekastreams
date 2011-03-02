@@ -27,6 +27,7 @@ import org.eurekastreams.web.client.model.PersonalEmploymentModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.EditPanel;
 import org.eurekastreams.web.client.ui.common.EditPanel.Mode;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -157,7 +158,7 @@ public class EmploymentPanel extends FlowPanel
         
         Hyperlink title = new Hyperlink(job.getTitle(), Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.SEARCH, "", getSearchParams(job.getTitle()))));
-        title.setStyleName("title");
+        title.setStyleName(StaticResourceBundle.INSTANCE.coreCss().title());
         employmentPanel.add(title);
         
         Hyperlink companyName = new Hyperlink(job.getCompanyName(), Session.getInstance().generateUrl(
@@ -174,10 +175,10 @@ public class EmploymentPanel extends FlowPanel
             employmentDates.setText(Integer.toString(YEAR_CONVERSION + job.getDateFrom().getYear()) + " - "
                     + Integer.toString(YEAR_CONVERSION + job.getDateTo().getYear()));
         }
-        employmentDates.setStyleName("description");
+        employmentDates.setStyleName(StaticResourceBundle.INSTANCE.coreCss().description());
 
         Label description = new Label(job.getDescription());
-        description.setStyleName("description");
+        description.setStyleName(StaticResourceBundle.INSTANCE.coreCss().description());
         
         this.add(employmentPanel);
 

@@ -30,6 +30,7 @@ import org.eurekastreams.web.client.ui.common.form.elements.BasicDropDownFormEle
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextAreaFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.IntegerTextBoxFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.ValueOnlyFormElement;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Command;
@@ -154,7 +155,7 @@ public class CreateOrUpdateEducationPanel extends FlowPanel
         else
         {
             form = new FormBuilder("Edit School", PersonalEducationModel.getInstance(), Method.UPDATE);
-            form.addStyleName("edit-school");
+            form.addStyleName(StaticResourceBundle.INSTANCE.coreCss().editSchool());
             degree = new BasicDropDownFormElement("Degree", "degree", degrees, education.getDegree(), "", true);
 
             form.addFormElement(new ValueOnlyFormElement("id", education.getId()));

@@ -45,6 +45,7 @@ import org.eurekastreams.web.client.ui.common.form.elements.ValueOnlyFormElement
 import org.eurekastreams.web.client.ui.common.form.elements.avatar.AvatarUploadFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.avatar.strategies.AvatarUploadStrategy;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -169,16 +170,16 @@ public class PersonalProfileSettingsTabContent extends Composite
                         BasicCheckBoxFormElement blockCommentPost = new BasicCheckBoxFormElement(null, "commentable",
                                 " Allow others to comment on activity in your stream", false, person.isCommentable());
 
-                        blockWallPost.addStyleName("stream-moderation");
-                        blockCommentPost.addStyleName("stream-moderation");
-                        blockCommentPost.addStyleName("comment-moderation");
+                        blockWallPost.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamModeration());
+                        blockCommentPost.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamModeration());
+                        blockCommentPost.addStyleName(StaticResourceBundle.INSTANCE.coreCss().commentModeration());
 
                         form.addFormElement(blockWallPost);
                         form.addFormElement(blockCommentPost);
                         form.addFormDivider();
 
                         HashMap<String, String> currentPageParams = new HashMap<String, String>();
-                        currentPageParams.put("tab", "Basic+Info");
+                        currentPageParams.put(StaticResourceBundle.INSTANCE.coreCss().tab(), "Basic+Info");
 
                         form.setOnCancelHistoryToken(Session.getInstance().generateUrl(
                                 new CreateUrlRequest(Page.PEOPLE, person.getAccountId())));

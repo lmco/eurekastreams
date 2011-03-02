@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.eurekastreams.server.domain.ApplicationAlertNotification;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Panel;
 
@@ -47,7 +48,7 @@ public class FlagActivityMessageRenderer extends NotificationMessageRenderer
         appendText(parent, " ");
 
         Map<String, String> params = new HashMap<String, String>();
-        params.put("tab", "Admin");
+        params.put(StaticResourceBundle.INSTANCE.coreCss().tab(), "Admin");
         params.put("adminFilter", "Flagged Activities");
         appendLink(parent, "flagged", new CreateUrlRequest(getEntityProfilePage(notification.getDestinationType()),
                 notification.getDestinationUniqueId(), params));

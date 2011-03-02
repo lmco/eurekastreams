@@ -29,6 +29,7 @@ import org.eurekastreams.web.client.ui.common.form.FormBuilder;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder.Method;
 import org.eurekastreams.web.client.ui.common.form.elements.RichTextAreaFormElement;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -83,7 +84,7 @@ public class PersonalBackgroundTabContent extends Composite
                                 TEXT_EDITOR_WIDTH, false));
 
                         HashMap<String, String> currentPageParams = new HashMap<String, String>();
-                        currentPageParams.put("tab", "Work History & Education");
+                        currentPageParams.put(StaticResourceBundle.INSTANCE.coreCss().tab(), "Work History & Education");
                         String currentPageHistoryToken = Session.getInstance().generateUrl(
                                 new CreateUrlRequest(Page.PERSONAL_SETTINGS, Session.getInstance().getCurrentPerson()
                                         .getAccountId(), currentPageParams));

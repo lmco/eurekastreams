@@ -26,7 +26,6 @@ import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyCache;
 import org.eurekastreams.server.persistence.mappers.requests.GetPendingDomainGroupsForOrgRequest;
-
 import org.eurekastreams.server.search.factories.DomainGroupModelViewFactory;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;

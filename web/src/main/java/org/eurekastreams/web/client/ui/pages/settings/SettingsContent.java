@@ -21,6 +21,7 @@ import org.eurekastreams.server.search.modelview.PersonModelView.Role;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.tabs.SimpleTab;
 import org.eurekastreams.web.client.ui.common.tabs.TabContainerPanel;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -69,12 +70,12 @@ public class SettingsContent extends Composite
         processor = inProcessor;
 
         rootPanel = RootPanel.get();
-        rootPanel.addStyleName("settings");
+        rootPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().settings());
 
         personalPanel = new NotificationsSettingsPanelComposite();
-        personalPanel.addStyleName("settings-tab");
+        personalPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().settingsTab());
         systemPanel = new SystemSettingsPanelComposite(processor);
-        systemPanel.addStyleName("settings-tab");
+        systemPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().settingsTab());
 
         tabContainer = new TabContainerPanel();
 

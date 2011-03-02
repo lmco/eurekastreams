@@ -31,6 +31,6 @@ public class BannerPanel extends FlowPanel
     public BannerPanel()
     {
         this.getElement().setAttribute("id", "banner");
-        this.addStyleName("banner-container");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().bannerContainer());
     }
 }

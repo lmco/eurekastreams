@@ -20,6 +20,7 @@ import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.model.NotificationCountModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -43,7 +44,7 @@ public class NotificationCountWidget extends Composite
     public NotificationCountWidget()
     {
         // -- UI setup --
-        countLabel.addStyleName("notif-count");
+        countLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifCount());
         initWidget(countLabel);
 
         // -- MVC setup --

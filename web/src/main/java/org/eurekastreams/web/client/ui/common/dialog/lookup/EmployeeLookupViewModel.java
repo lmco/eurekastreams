@@ -23,6 +23,7 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.GotPersonLookupResponseEvent;
 import org.eurekastreams.web.client.model.Fetchable;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -200,13 +201,13 @@ public class EmployeeLookupViewModel
         Widget select = view.getSelect();
         if (selectedPerson != null)
         {
-            select.removeStyleName("lookup-select-button-inactive");
-            select.addStyleName("lookup-select-button-active");
+            select.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupSelectButtonInactive());
+            select.addStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupSelectButtonActive());
         }
         else
         {
-            select.removeStyleName("lookup-select-button-active");
-            select.addStyleName("lookup-select-button-inactive");
+            select.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupSelectButtonActive());
+            select.addStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupSelectButtonInactive());
         }
     }
 
@@ -221,13 +222,13 @@ public class EmployeeLookupViewModel
         Widget search = view.getSearch();
         if (active)
         {
-            search.removeStyleName("lookup-search-button-inactive");
-            search.addStyleName("lookup-search-button-active");
+            search.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupSelectButtonInactive());
+            search.addStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupSelectButtonActive());
         }
         else
         {
-            search.removeStyleName("lookup-search-button-active");
-            search.addStyleName("lookup-search-button-inactive");
+            search.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupSelectButtonActive());
+            search.addStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupSelectButtonInactive());
         }
     }
 }

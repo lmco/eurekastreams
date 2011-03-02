@@ -21,6 +21,7 @@ import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -41,7 +42,7 @@ public class BackgroundItemLinksPanel extends FlowPanel
      */
     public BackgroundItemLinksPanel(final String contentDescription, final List<BackgroundItem> items)
     {
-        addStyleName("profile-about-background-item-links");
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileAboutBackgroundItemLinks());
 
         if (items != null && !items.isEmpty())
         {
@@ -62,7 +63,7 @@ public class BackgroundItemLinksPanel extends FlowPanel
                 String text = item.getName();
                 String url = Session.getInstance().generateUrl(new CreateUrlRequest(Page.SEARCH, "query", text));
                 InlineHyperlink link = new InlineHyperlink(text, url);
-                link.addStyleName("profile-about-backgrounditem-link");
+                link.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileAboutBackgrounditemLink());
                 add(link);
             }
         }

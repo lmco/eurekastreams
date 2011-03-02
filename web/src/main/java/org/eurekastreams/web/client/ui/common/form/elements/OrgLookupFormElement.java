@@ -28,6 +28,7 @@ import org.eurekastreams.web.client.ui.common.EditPanel;
 import org.eurekastreams.web.client.ui.common.EditPanel.Mode;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.orglookup.OrgLookupContent;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -98,20 +99,15 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
             final String inKey, final String inSelectedLabelText, final boolean inRequired,
             final OrganizationModelView inOrg, final boolean inReadOnly)
     {
-        this.addStyleName("org-lookup-form-element");
-
-        if (inReadOnly)
-        {
-            this.addStyleName("org-lookup-form-element-readonly");
-        }
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().orgLookupFormElement());
 
         key = inKey;
 
         title = new Label(inTitle);
-        title.addStyleName("form-label");
+        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
 
         Label subTitleLabel = new Label(subTitle);
-        subTitleLabel.addStyleName("form-sub-title");
+        subTitleLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formSubTitle());
 
         this.add(title);
         this.add(subTitleLabel);
@@ -119,22 +115,23 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
         if (inInstructions != null && !inInstructions.isEmpty())
         {
             Label instructions = new Label(inInstructions);
-            instructions.addStyleName("form-instructions");
+            instructions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
             this.add(instructions);
         }
 
         if (inRequired)
         {
             Label requiredLabel = new Label("(required)");
-            requiredLabel.addStyleName("required-form-label");
+            requiredLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requiredFormLabel());
             this.add(requiredLabel);
         }
 
         select = new Label("Lookup");
-        select.addStyleName("form-button form-lookup-button");
+        select.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formButton());
+        select.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLookupButton());
         selectedOrgName = new Label();
         selectedOrgName.setVisible(false);
-        selectedOrgName.addStyleName("selected-org-name");
+        selectedOrgName.addStyleName(StaticResourceBundle.INSTANCE.coreCss().selectedOrgName());
 
         ClickHandler lookupHandler = new ClickHandler()
         {
@@ -238,7 +235,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
      */
     public void onError(final String errMessage)
     {
-        title.addStyleName("form-error");
+        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**
@@ -246,7 +243,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
      */
     public void onSuccess()
     {
-        title.removeStyleName("form-error");
+        title.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**

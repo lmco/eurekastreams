@@ -43,6 +43,7 @@ import org.eurekastreams.web.client.ui.common.EditPanel;
 import org.eurekastreams.web.client.ui.common.EditPanel.Mode;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder.Method;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -215,13 +216,13 @@ public class StreamPluginsSettingsTabContent extends Composite
         feedSubscriptionsContainer.clear();
         feedSubscriptionsContainer.setVisible(true);
 
-        streamPluginSettingsContainer.addStyleName("stream-plugins-settings-container");
+        streamPluginSettingsContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamPluginsSettingsContainer());
 
-        availablePluginsContainer.addStyleName("filters");
+        availablePluginsContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().filters());
 
         getPluginsAndFeedSubscriptions();
 
-        feedSubscriptionsContainer.addStyleName("stream-plugins-feed-subscriptions-container");
+        feedSubscriptionsContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamPluginsFeedSubscriptionsContainer());
 
         feedSubscriptions.add(new FeedSubscriber());
 
@@ -269,7 +270,7 @@ public class StreamPluginsSettingsTabContent extends Composite
     {
         availablePluginsContainer.clear();
         Label availablePluginsHeader = new Label("Available Plugins");
-        availablePluginsHeader.addStyleName("header");
+        availablePluginsHeader.addStyleName(StaticResourceBundle.INSTANCE.coreCss().header());
         availablePluginsContainer.add(availablePluginsHeader);
 
         if (availablePlugins.size() > 0)
@@ -285,13 +286,13 @@ public class StreamPluginsSettingsTabContent extends Composite
             for (final GadgetMetaDataDTO metaDataItem : availablePluginsMetaData)
             {
                 FlowPanel filterPanel = new FlowPanel();
-                filterPanel.addStyleName("filter");
+                filterPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().filter());
 
                 FlowPanel listItemPanel = new FlowPanel();
-                listItemPanel.addStyleName("stream-list-item");
+                listItemPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamListItem());
 
                 FlowPanel labelContainer = new FlowPanel();
-                labelContainer.addStyleName("filter-label");
+                labelContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().filterLabel());
                 Label pluginTitle = new Label(metaDataItem.getTitle());
 
                 pluginTitle.addClickHandler(new ClickHandler()
@@ -351,13 +352,13 @@ public class StreamPluginsSettingsTabContent extends Composite
         feedSubscriptionsContainer.clear();
 
         Label feedSubscriptionsHeader = new Label("My Plugins");
-        feedSubscriptionsHeader.addStyleName("header");
+        feedSubscriptionsHeader.addStyleName(StaticResourceBundle.INSTANCE.coreCss().header());
         feedSubscriptionsContainer.add(feedSubscriptionsHeader);
 
         if (feedSubscriptions.size() > 0)
         {
             Label feedDescription = new Label("Click on any of the plugins on the left to add them to your stream.");
-            feedDescription.addStyleName("description");
+            feedDescription.addStyleName(StaticResourceBundle.INSTANCE.coreCss().description());
             feedSubscriptionsContainer.add(feedDescription);
 
             int count = 0;
@@ -369,26 +370,26 @@ public class StreamPluginsSettingsTabContent extends Composite
                 {
                     final GadgetMetaDataDTO metaDataItem = getMetaDataForPlugin(feedSubscription.getFeed().getPlugin());
                     FlowPanel feedContainer = new FlowPanel();
-                    feedContainer.addStyleName("stream-plugins-meta-data");
+                    feedContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamPluginsMetaData());
 
                     if (count == size - 1)
                     {
-                        feedContainer.addStyleName("last");
+                        feedContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().last());
                     }
                     count++;
 
                     FlowPanel imageContainer = new FlowPanel();
-                    imageContainer.addStyleName("image-container");
+                    imageContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().imageContainer());
 
                     FlowPanel screenshot = new FlowPanel();
-                    screenshot.addStyleName("stream-plugins-screenshot");
+                    screenshot.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamPluginsScreenshot());
 
                     screenshot.add(new Image(metaDataItem.getScreenshot()));
 
                     imageContainer.add(screenshot);
 
                     FlowPanel dataContainer = new FlowPanel();
-                    dataContainer.setStyleName("gadget-data");
+                    dataContainer.setStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetData());
 
                     EditPanel editControls = new EditPanel(dataContainer, Mode.EDIT_AND_DELETE);
 
@@ -418,10 +419,10 @@ public class StreamPluginsSettingsTabContent extends Composite
                     dataContainer.add(editControls);
 
                     Label title = new Label(feedSubscription.getFeed().getTitle());
-                    title.addStyleName("title");
+                    title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().title());
 
                     FlowPanel sourcePanel = new FlowPanel();
-                    sourcePanel.addStyleName("gadget-ext-info");
+                    sourcePanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetExtInfo());
                     sourcePanel.add(new Label("Source: "));
                     sourcePanel.add(new Anchor(feedSubscription.getFeed().getUrl(),
                             feedSubscription.getFeed().getUrl(), "_new"));
@@ -430,20 +431,20 @@ public class StreamPluginsSettingsTabContent extends Composite
                     dataContainer.add(sourcePanel);
 
                     FlowPanel lastUpdatedPanel = new FlowPanel();
-                    lastUpdatedPanel.addStyleName("gadget-ext-info");
+                    lastUpdatedPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetExtInfo());
 
                     if (feedSubscription.getFeed().getTimeAgo() != null)
                     {
                         lastUpdatedPanel.add(new InlineLabel("Last Updated: "));
                         Label lastUpdateTime = new InlineLabel(feedSubscription.getFeed().getTimeAgo());
-                        lastUpdateTime.addStyleName("light");
+                        lastUpdateTime.addStyleName(StaticResourceBundle.INSTANCE.coreCss().light());
                         lastUpdatedPanel.add(lastUpdateTime);
                     }
                     if (feedSubscription.getFeed().getIsFeedBroken() != null
                             && feedSubscription.getFeed().getIsFeedBroken())
                     {
                         Label brokenFeedIndicator = new InlineLabel("Feed may be broken, please check the source.");
-                        brokenFeedIndicator.addStyleName("broken-feed-indicator");
+                        brokenFeedIndicator.addStyleName(StaticResourceBundle.INSTANCE.coreCss().brokenFeedIndicator());
                         lastUpdatedPanel.add(brokenFeedIndicator);
                     }
                     if (lastUpdatedPanel.getWidgetCount() > 0)
@@ -464,7 +465,7 @@ public class StreamPluginsSettingsTabContent extends Composite
         {
             Label feedDescription = new Label("No plugins configured. "
                     + "Select an available plugin to publish activity to the stream.");
-            feedDescription.setStyleName("description");
+            feedDescription.setStyleName(StaticResourceBundle.INSTANCE.coreCss().description());
             feedSubscriptionsContainer.add(feedDescription);
         }
     }
@@ -479,10 +480,10 @@ public class StreamPluginsSettingsTabContent extends Composite
     {
         for (FlowPanel pluginPanel : availablePluginsById.values())
         {
-            pluginPanel.removeStyleName("active");
+            pluginPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
         }
 
-        availablePluginsById.get(selectedMetaData.getGadgetDefinition().getId()).addStyleName("active");
+        availablePluginsById.get(selectedMetaData.getGadgetDefinition().getId()).addStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
         feedSubscriptionsContainer.setVisible(false);
 
         streamPluginSettingsContainer.clear();

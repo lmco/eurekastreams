@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.web.client.ui.pages.help;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -36,14 +38,14 @@ public class SupportContactHelpPanel extends FlowPanel
     public SupportContactHelpPanel(final String inSupportPhoneNumber, final String inSupportEmailAddress)
     {
         FlowPanel headerPanel = new FlowPanel();
-        headerPanel.addStyleName("header");
+        headerPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().header());
         headerPanel.add(new Label("Contact Information"));
         this.add(headerPanel);
 
         if (inSupportPhoneNumber != null && inSupportPhoneNumber.length() > 0)
         {
             Label supportPhoneNumberLabel = new Label(inSupportPhoneNumber);
-            supportPhoneNumberLabel.addStyleName("support-phone-number-label");
+            supportPhoneNumberLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().supportPhoneNumberLabel());
             this.add(supportPhoneNumberLabel);
         }
 
@@ -51,7 +53,7 @@ public class SupportContactHelpPanel extends FlowPanel
         {
             FlowPanel supportEmailPanel = new FlowPanel();
             Anchor supportEmailAnchor = new Anchor(inSupportEmailAddress, "mailto:" + inSupportEmailAddress);
-            supportEmailPanel.addStyleName("support-email-label");
+            supportEmailPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().supportEmailLabel());
             supportEmailPanel.add(supportEmailAnchor);
             this.add(supportEmailPanel);
         }

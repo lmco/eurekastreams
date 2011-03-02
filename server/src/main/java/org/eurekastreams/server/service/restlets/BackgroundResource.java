@@ -26,14 +26,14 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eurekastreams.server.domain.BackgroundItemType;
+import org.eurekastreams.server.persistence.BackgroundMapper;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.resource.Representation;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.StringRepresentation;
 import org.restlet.resource.Variant;
-import org.eurekastreams.server.domain.BackgroundItemType;
-import org.eurekastreams.server.persistence.BackgroundMapper;
 
 /**
  * Used to supply autocomplete for various types of Background data.

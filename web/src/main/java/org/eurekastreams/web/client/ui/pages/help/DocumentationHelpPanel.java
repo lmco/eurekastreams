@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.web.client.ui.pages.help;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -44,7 +46,7 @@ public class DocumentationHelpPanel extends FlowPanel
         add(buildDescriptionPanel());
 
         FlowPanel videoPanel = new FlowPanel();
-        videoPanel.addStyleName("documentation-bullet-block");
+        videoPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().documentationBulletBlock());
         videoPanel.add(buildTourPanel());
         videoPanel.add(buildGettingStartedPanel());
         videoPanel.add(buildFaqsPanel());
@@ -61,7 +63,7 @@ public class DocumentationHelpPanel extends FlowPanel
     private FlowPanel buildHeaderPanel()
     {
         FlowPanel headerPanel = new FlowPanel();
-        headerPanel.addStyleName("header");
+        headerPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().header());
 
         Label headerLabel = new Label("Help Documentation");
         headerPanel.add(headerLabel);
@@ -79,16 +81,16 @@ public class DocumentationHelpPanel extends FlowPanel
         Anchor anchor = new Anchor("Eureka Streams", getEurekaStreamsUrl(), "_blank");
         Label descLabel2 = new Label("website.");
 
-        descLabel1.addStyleName("header-description-component");
-        anchor.addStyleName("header-description-component");
-        descLabel2.addStyleName("header-description-component");
+        descLabel1.addStyleName(StaticResourceBundle.INSTANCE.coreCss().headerDescriptionComponent());
+        anchor.addStyleName(StaticResourceBundle.INSTANCE.coreCss().headerDescriptionComponent());
+        descLabel2.addStyleName(StaticResourceBundle.INSTANCE.coreCss().headerDescriptionComponent());
 
         FlowPanel panel = new FlowPanel();
         panel.add(descLabel1);
         panel.add(anchor);
         panel.add(descLabel2);
 
-        panel.addStyleName("documentation-bullet");
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().documentationBullet());
         return panel;
     }
 
@@ -101,7 +103,7 @@ public class DocumentationHelpPanel extends FlowPanel
     {
         FlowPanel panel = new FlowPanel();
         Anchor imageBlockPanel = new Anchor("", "http://eurekastreams.org/tours/reputation", "_blank");
-        imageBlockPanel.addStyleName("getting-started-help-image-box");
+        imageBlockPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gettingStartedHelpImageBox());
 
         FlowPanel textPanel = new FlowPanel();
         textPanel.setStyleName("help-documentation-text-block");
@@ -110,14 +112,14 @@ public class DocumentationHelpPanel extends FlowPanel
         panel.add(textPanel);
 
         Anchor header = new Anchor("Tour", "http://eurekastreams.org/tours/reputation", "_blank");
-        header.addStyleName("display-name");
+        header.addStyleName(StaticResourceBundle.INSTANCE.coreCss().displayName());
         Label content = new Label("Learn how Eureka Streams can help you: build your reputation and career, "
                 + "enhance your team’s or community’s communication, and create your own personalized experience.");
 
         textPanel.add(header);
         textPanel.add(content);
 
-        panel.addStyleName("documentation-bullet");
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().documentationBullet());
         return panel;
     }
 
@@ -130,7 +132,7 @@ public class DocumentationHelpPanel extends FlowPanel
     {
         FlowPanel panel = new FlowPanel();
         Anchor imageBlockPanel = new Anchor("", "http://eurekastreams.org/getting-started", "_blank");
-        imageBlockPanel.addStyleName("instructional-videos-help-image-box");
+        imageBlockPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().instructionalVideosHelpImageBox());
 
         FlowPanel textPanel = new FlowPanel();
         textPanel.setStyleName("help-documentation-text-block");
@@ -139,14 +141,14 @@ public class DocumentationHelpPanel extends FlowPanel
         panel.add(textPanel);
 
         Anchor header = new Anchor("Getting Started Videos", "http://eurekastreams.org/getting-started", "_blank");
-        header.addStyleName("display-name");
+        header.addStyleName(StaticResourceBundle.INSTANCE.coreCss().displayName());
         Label content = new Label("View short video overviews showing you how to get "
                 + "started with of the primary features and functions of Eureka Streams");
 
         textPanel.add(header);
         textPanel.add(content);
 
-        panel.addStyleName("documentation-bullet");
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().documentationBullet());
         return panel;
     }
 
@@ -159,7 +161,7 @@ public class DocumentationHelpPanel extends FlowPanel
     {
         FlowPanel panel = new FlowPanel();
         Anchor imageBlockPanel = new Anchor("", "http://eurekastreams.org/faqs", "_blank");
-        imageBlockPanel.addStyleName("faqs-help-image-box ");
+        imageBlockPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().faqsHelpImageBox());
 
         FlowPanel textPanel = new FlowPanel();
         textPanel.setStyleName("help-documentation-text-block");
@@ -168,13 +170,13 @@ public class DocumentationHelpPanel extends FlowPanel
         panel.add(textPanel);
 
         Anchor header = new Anchor("FAQs", "http://eurekastreams.org/faqs", "_blank");
-        header.addStyleName("display-name");
+        header.addStyleName(StaticResourceBundle.INSTANCE.coreCss().displayName());
         Label content = new Label("Get answers to some of the most frequently asked questions about Eureka Streams.");
 
         textPanel.add(header);
         textPanel.add(content);
 
-        panel.addStyleName("documentation-bullet");
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().documentationBullet());
         return panel;
     }
 
@@ -188,7 +190,7 @@ public class DocumentationHelpPanel extends FlowPanel
         FlowPanel panel = new FlowPanel();
 
         HTML goToContainer = new HTML("<a href='http://eurekastreams.org' target='_blank'></a>");
-        goToContainer.addStyleName("go-to-eureka-streams-image-label");
+        goToContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().goToEurekaStreamsImageLabel());
 
         panel.add(goToContainer);
 

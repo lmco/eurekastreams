@@ -25,6 +25,8 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eurekastreams.server.domain.BackgroundItemType;
+import org.eurekastreams.server.domain.Enrollment;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Status;
@@ -32,8 +34,6 @@ import org.restlet.resource.Representation;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.StringRepresentation;
 import org.restlet.resource.Variant;
-import org.eurekastreams.server.domain.BackgroundItemType;
-import org.eurekastreams.server.domain.Enrollment;
 
 /**
  * REST end-point for an enrollment entry.

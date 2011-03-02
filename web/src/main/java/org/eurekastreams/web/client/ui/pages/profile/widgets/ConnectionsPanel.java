@@ -21,6 +21,7 @@ import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.pagedlist.PagedListPanel;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -49,14 +50,13 @@ public class ConnectionsPanel extends FlowPanel
     public ConnectionsPanel()
     {
         Label subheader = new Label("Connections");
-        subheader.addStyleName("profile-subheader");
+        subheader.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileSubheader());
         this.add(subheader);
 
         this.add(contents);
-        contents.addStyleName("connection-count-contents");
 
         SimplePanel simple = new SimplePanel();
-        simple.addStyleName("clear");
+        simple.addStyleName(StaticResourceBundle.INSTANCE.coreCss().clear());
         this.add(simple);
     }
 
@@ -97,7 +97,7 @@ public class ConnectionsPanel extends FlowPanel
             public void onClick(final ClickEvent event)
             {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("tab", "Connections");
+                params.put(StaticResourceBundle.INSTANCE.coreCss().tab(), "Connections");
                 params.put(PagedListPanel.URL_PARAM_LIST_ID, "connections");
                 params.put(PagedListPanel.URL_PARAM_FILTER, name);
                 if (sortKey != null)

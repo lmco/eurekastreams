@@ -30,6 +30,7 @@ import org.eurekastreams.web.client.ui.common.form.FormBuilder;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder.Method;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextBoxFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.ValueOnlyFormElement;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -136,7 +137,7 @@ public class CustomStreamDialogContent implements DialogContent
      */
     private void setUpForm()
     {
-        body.addStyleName("list-edit-modal");
+        body.addStyleName(StaticResourceBundle.INSTANCE.coreCss().listEditModal());
         body.clear();
 
         streamLists = new StreamListFormElement(null);
@@ -144,7 +145,7 @@ public class CustomStreamDialogContent implements DialogContent
         form = new FormBuilder("Custom streams allow you to merge different streams "
                 + "as well as optionally filter by keyword", CustomStreamModel.getInstance(), mode);
         form.turnOffChangeCheck();
-        form.addStyleName("stream-view-dialog-body");
+        form.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamViewDialogBody());
 
         Session.getInstance().getEventBus().addObserver(CustomStreamCreatedEvent.class,
                 new Observer<CustomStreamCreatedEvent>()
@@ -199,7 +200,7 @@ public class CustomStreamDialogContent implements DialogContent
 
         if (mode.equals(Method.UPDATE))
         {
-            Anchor deleteButton = new Anchor("delete");
+            Anchor deleteButton = new Anchor(StaticResourceBundle.INSTANCE.coreCss().delete());
             deleteButton.addClickHandler(new ClickHandler()
             {
                 public void onClick(final ClickEvent event)
@@ -214,7 +215,7 @@ public class CustomStreamDialogContent implements DialogContent
                     }
                 }
             });
-            deleteButton.addStyleName("delete-button");
+            deleteButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().deleteButton());
             form.add(deleteButton);
         }
     }

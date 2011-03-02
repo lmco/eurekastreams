@@ -21,6 +21,7 @@ import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Background;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -55,7 +56,7 @@ public class AvatarRenderer
     public Widget render(final Long id, final String avatarId)
     {
         AvatarWidget avatar = new AvatarWidget(id, avatarId, EntityType.PERSON, Size.Small, Background.White);
-        avatar.addStyleName("avatar");
+        avatar.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatar());
         return avatar;
     }
 
@@ -73,7 +74,7 @@ public class AvatarRenderer
     public Widget render(final Long id, final String avatarId, final EntityType type)
     {
         AvatarWidget avatar = new AvatarWidget(id, avatarId, type, Size.Small, Background.White);
-        avatar.addStyleName("avatar");
+        avatar.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatar());
         return avatar;
     }
 }

@@ -63,7 +63,7 @@ public class ActivityDTOPopulatorTest
     @Test
     public final void testWithNothingNull()
     {
-        String content = "content";
+        String content = StaticResourceBundle.INSTANCE.coreCss().content();
         EntityType destinationType = EntityType.PERSON;
         String destinationId = "username1";
 
@@ -78,7 +78,7 @@ public class ActivityDTOPopulatorTest
         ActivityDTO result = sut.getActivityDTO(content, destinationType, destinationId,
                 verbPopulator, objPopulator);
 
-        Assert.assertEquals(content, result.getBaseObjectProperties().get("content"));
+        Assert.assertEquals(content, result.getBaseObjectProperties().get(StaticResourceBundle.INSTANCE.coreCss().content()));
         Assert.assertEquals(destinationType, result.getDestinationStream().getType());
         Assert.assertEquals(destinationId, result.getDestinationStream().getUniqueIdentifier());
         
@@ -91,7 +91,7 @@ public class ActivityDTOPopulatorTest
     @Test
     public final void testWithVerbNull()
     {
-        String content = "content";
+        String content = StaticResourceBundle.INSTANCE.coreCss().content();
         EntityType destinationType = EntityType.PERSON;
         String destinationId = "username1";
 
@@ -105,7 +105,7 @@ public class ActivityDTOPopulatorTest
         ActivityDTO result = sut.getActivityDTO(content, destinationType, destinationId,
                 null, objPopulator);
 
-        Assert.assertEquals(content, result.getBaseObjectProperties().get("content"));
+        Assert.assertEquals(content, result.getBaseObjectProperties().get(StaticResourceBundle.INSTANCE.coreCss().content()));
         Assert.assertEquals(destinationType, result.getDestinationStream().getType());
         Assert.assertEquals(destinationId, result.getDestinationStream().getUniqueIdentifier());
         
@@ -118,7 +118,7 @@ public class ActivityDTOPopulatorTest
     @Test
     public final void testWithObjNull()
     {
-        String content = "content";
+        String content = StaticResourceBundle.INSTANCE.coreCss().content();
         EntityType destinationType = EntityType.PERSON;
         String destinationId = "username1";
 
@@ -132,7 +132,7 @@ public class ActivityDTOPopulatorTest
         ActivityDTO result = sut.getActivityDTO(content, destinationType, destinationId,
                 verbPopulator, null);
 
-        Assert.assertEquals(content, result.getBaseObjectProperties().get("content"));
+        Assert.assertEquals(content, result.getBaseObjectProperties().get(StaticResourceBundle.INSTANCE.coreCss().content()));
         Assert.assertEquals(destinationType, result.getDestinationStream().getType());
         Assert.assertEquals(destinationId, result.getDestinationStream().getUniqueIdentifier());
         

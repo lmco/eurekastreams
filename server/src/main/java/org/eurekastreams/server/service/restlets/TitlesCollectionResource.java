@@ -25,13 +25,13 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eurekastreams.server.persistence.JobMapper;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.resource.Representation;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.StringRepresentation;
 import org.restlet.resource.Variant;
-import org.eurekastreams.server.persistence.JobMapper;
 
 /**
  * Resource to provide a list of job titles based on a specified prefix.

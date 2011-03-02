@@ -26,12 +26,12 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 /**
  * Resource Bundle for Eureka Streams.
  */
-public interface ResourceBundle extends ClientBundle
+public interface StaticResourceBundle extends ClientBundle
 {
     /**
      * The instance of the bundle.
      */
-    ResourceBundle INSTANCE = GWT.create(ResourceBundle.class);
+    StaticResourceBundle INSTANCE = GWT.create(StaticResourceBundle.class);
 
     /**
      * Core CSS.
@@ -39,7 +39,7 @@ public interface ResourceBundle extends ClientBundle
      */
     @NotStrict
     @Source("style/core.css")
-    CssResource coreCss();
+    CoreCss coreCss();
      
     /**
      * YUI CSS.
@@ -57,86 +57,167 @@ public interface ResourceBundle extends ClientBundle
     @Source("style/ie.css")
     CssResource ieCss();
     
+    /**
+     * @return image.
+     */
     @Source("style/images/navLogo.png")
     ImageResource navLogo();
     
+    /**
+     * @return image.
+     */
     @Source("style/images/navStartPage.png")
     ImageResource navStartPage();
     
+    /**
+     * @return image.
+     */
     @Source("style/images/navActivity.png")
     ImageResource navActivity();
 
+    /**
+     * @return image.
+     */
     @Source("style/images/navProfiles.png")
     ImageResource navProfiles();
 
+    /**
+     * @return image.
+     */
     @Source("style/images/navMyProfile.png")
     ImageResource navMyProfile();
 
+    /**
+     * @return image.
+     */
     @Source("style/images/navSettings.png")
     ImageResource navSettings();
 
+    /**
+     * @return image.
+     */
     @Source("style/images/navHelp.png")
     ImageResource navHelp();
 
+    /**
+     * @return image.
+     */
     @Source("style/images/red-error-icon-sm.png")
     ImageResource redErrorIconSmall();
 
+    /**
+     * @return image.
+     */
     @Source("style/images/information-circle-icon.png")
     ImageResource informationCircleIcon();
 
+    /**
+     * @return image.
+     */
     @Source("style/images/global-nav-bar-5px.png")
     ImageResource globalNavBar5px();
     
+    /**
+     * @return image.
+     */
     @Source("style/images/footerTermsOfService.png")
     ImageResource footerTermsOfService();
     
+    /**
+     * @return image.
+     */
     @Source("style/images/poweredByEurekaStreams.png")
     ImageResource poweredByEurekaStreams();
     
+    /**
+     * @return image.
+     */
     @Source("style/images/footerBackground.png")
     ImageResource footerBackground();
-
+    
+    /**
+     * @return image.
+     */
     @Source("style/images/globalNavSearchBtn.png")
     ImageResource globalNavSearchBtn();
     
+    /**
+     * @return image.
+     */
     @Source("style/images/navBg.png")
     @ImageOptions(repeatStyle=RepeatStyle.Horizontal)
     ImageResource navBg();
 
+    /**
+     * @return image.
+     */
     @Source("style/images/globalnavBg.png")
     @ImageOptions(repeatStyle=RepeatStyle.Horizontal)
     ImageResource globalNavBg();
 
+    /**
+     * @return image.
+     */
     @Source("style/images/navNotification.png")
     ImageResource navNotification();
 
+    /**
+     * @return image.
+     */
     @Source("style/images/streamHeaderOverlay.png")
     ImageResource streamHeaderOverlay();
 
+    /**
+     * @return image.
+     */
     @Source("style/images/createGadget.png")
     ImageResource createGadget();
     
+    /**
+     * @return image.
+     */
     @Source("style/images/createGadgetHover.png")
     ImageResource createGadgetHover();
     
+    /**
+     * @return image.
+     */
     @Source("style/images/activityStreamSearchBtn.png")
     ImageResource activityStreamSearchBtn(); 
     
+    /**
+     * @return image.
+     */
     @Source("style/images/feed-icon-16x16.png")
     ImageResource feedIcon16();
     
+    /**
+     * @return image.
+     */
     @Source("style/images/activitypageListItemOverlayInActive.png")
     ImageResource activitypageListItemOverlayInActive();
     
+    /**
+     * @return image.
+     */
     @Source("style/images/postBtnInactive.png")
     ImageResource postBtnInactive();
 
+    /**
+     * @return image.
+     */
     @Source("style/images/postBtn.png")
     ImageResource postBtn();
     
+    /**
+     * @return image.
+     */
     @Source("style/images/moveBtnInactive.png")
     ImageResource moveBtnInactive();
 
+    /**
+     * @return image.
+     */
     @Source("style/images/moveBtnActive.png")
     ImageResource moveBtnActive();
 }

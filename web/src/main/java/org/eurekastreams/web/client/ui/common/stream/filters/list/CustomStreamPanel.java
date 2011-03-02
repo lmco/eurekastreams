@@ -28,6 +28,7 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.stream.filters.FilterPanel;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -79,17 +80,17 @@ public class CustomStreamPanel extends Composite implements FilterPanel
     public CustomStreamPanel(final Stream inStream)
     {
         FocusPanel container = new FocusPanel();
-        container.addStyleName("filter");
+        container.addStyleName(StaticResourceBundle.INSTANCE.coreCss().filter());
 
         FlowPanel panel = new FlowPanel();
 
         labelContainer = new FlowPanel();
-        labelContainer.addStyleName("filter-label");
+        labelContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().filterLabel());
         label = new Label(inStream.getName());
         labelContainer.add(label);
         stream = inStream;
 
-        panel.addStyleName("stream-list-item");
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamListItem());
         readOnly = stream.getReadOnly();
 
         container.addClickHandler(new ClickHandler()
@@ -103,11 +104,11 @@ public class CustomStreamPanel extends Composite implements FilterPanel
         panel.add(labelContainer);
 
         moveHandle = new Label("move");
-        moveHandle.addStyleName("move-handle");
+        moveHandle.addStyleName(StaticResourceBundle.INSTANCE.coreCss().moveHandle());
         panel.add(moveHandle);
 
         InlineLabel seperator = new InlineLabel();
-        seperator.addStyleName("filter-seperator");
+        seperator.addStyleName(StaticResourceBundle.INSTANCE.coreCss().filterSeperator());
         panel.add(seperator);
 
         seperator.addClickHandler(new ClickHandler()
@@ -120,7 +121,7 @@ public class CustomStreamPanel extends Composite implements FilterPanel
 
         if (!readOnly)
         {
-            Anchor editButton = new Anchor("edit");
+            Anchor editButton = new Anchor(StaticResourceBundle.INSTANCE.coreCss().edit());
             editButton.addClickHandler(new ClickHandler()
             {
                 public void onClick(final ClickEvent event)
@@ -133,7 +134,7 @@ public class CustomStreamPanel extends Composite implements FilterPanel
                     event.stopPropagation();
                 }
             });
-            editButton.addStyleName("edit-button");
+            editButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().editButton());
             panel.add(editButton);
 
         }
@@ -199,7 +200,7 @@ public class CustomStreamPanel extends Composite implements FilterPanel
         Session.getInstance().getEventBus().notifyObservers(
                 new StreamRequestEvent(stream.getName(), stream.getId(), stream.getRequest()));
 
-        this.addStyleName("active");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
 
         Session.getInstance().getEventBus().notifyObservers(new SwitchedToCustomStreamEvent());
         Session.getInstance().getEventBus().notifyObservers(new ChangeShowStreamRecipientEvent(true));
@@ -210,7 +211,7 @@ public class CustomStreamPanel extends Composite implements FilterPanel
      */
     public void unActivate()
     {
-        this.removeStyleName("active");
+        this.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
     }
 
     /**

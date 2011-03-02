@@ -19,6 +19,7 @@ package org.eurekastreams.web.client.ui.common.autocomplete;
 import java.io.Serializable;
 
 import org.eurekastreams.web.client.ui.common.form.elements.FormElement;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Label;
 
@@ -137,17 +138,17 @@ public class AutoCompleteItemDropDownFormElement extends AutoCompleteDropDownPan
         delimiter = inDelimiter;
 
         label.setText(inLabelVal);
-        label.setStyleName("form-label");
+        label.setStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
 
         setText(inCurrentValue);
 
         if (inRequired)
         {
-            requiredLabel.addStyleName("required-form-label");
+            requiredLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requiredFormLabel());
             requiredLabel.setText("(required)");
         }
 
-        instructions.addStyleName("form-instructions");
+        instructions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
         instructions.setText(inInstructions);
 
         this.insert(label, 0);
@@ -195,7 +196,7 @@ public class AutoCompleteItemDropDownFormElement extends AutoCompleteDropDownPan
      */
     public void onError(final String errMessage)
     {
-        label.addStyleName("form-error");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**
@@ -203,7 +204,7 @@ public class AutoCompleteItemDropDownFormElement extends AutoCompleteDropDownPan
      */
     public void onSuccess()
     {
-        label.removeStyleName("form-error");
+        label.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**

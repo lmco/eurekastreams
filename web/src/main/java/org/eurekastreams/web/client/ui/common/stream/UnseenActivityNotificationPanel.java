@@ -26,6 +26,7 @@ import org.eurekastreams.web.client.events.data.GotUnseenActivitiesCountResponse
 import org.eurekastreams.web.client.model.MouseActivityModel;
 import org.eurekastreams.web.client.model.UnseenActivityCountForViewModel;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -56,10 +57,10 @@ public class UnseenActivityNotificationPanel extends FlowPanel
     public UnseenActivityNotificationPanel()
     {
         final FlowPanel thisBuffered = this;
-        this.addStyleName("unseen-activity");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().unseenActivity());
         this.setVisible(false);
 
-        unseenActivityCount.addStyleName("unseen-label");
+        unseenActivityCount.addStyleName(StaticResourceBundle.INSTANCE.coreCss().unseenLabel());
 
         Anchor refreshStream = new Anchor("Refresh Stream");
         refreshStream.addClickHandler(new ClickHandler()

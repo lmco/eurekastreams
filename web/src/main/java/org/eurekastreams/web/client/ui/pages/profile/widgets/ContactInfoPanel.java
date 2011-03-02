@@ -16,6 +16,7 @@
 package org.eurekastreams.web.client.ui.pages.profile.widgets;
 
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -35,7 +36,7 @@ public class ContactInfoPanel extends FlowPanel
     public ContactInfoPanel(final PersonModelView person)
     {
         Label label = new Label("Contact Information");
-        label.addStyleName("profile-subheader");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileSubheader());
         this.add(label);
 
         if (null != person)
@@ -45,8 +46,8 @@ public class ContactInfoPanel extends FlowPanel
             {
                 HTML emailLink = new HTML("<a href=\"mailto:" + person.getEmail() + "\">" + person.getPreferredName()
                         + " " + person.getLastName() + "</a>");
-                emailLink.addStyleName("profile-email");
-                emailLink.addStyleName("profile-contact-info");
+                emailLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileEmail());
+                emailLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileContactInfo());
                 this.add(emailLink);
             }
 
@@ -80,7 +81,7 @@ public class ContactInfoPanel extends FlowPanel
     {
         Label label = new Label(text);
         label.addStyleName(style);
-        label.addStyleName("profile-contact-info");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileContactInfo());
         return label;
     }
 }

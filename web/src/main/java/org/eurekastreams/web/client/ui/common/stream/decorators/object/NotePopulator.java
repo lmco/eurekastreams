@@ -15,9 +15,9 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.decorators.object;
 
-import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulatorStrategy;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
+import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulatorStrategy;
 
 /**
  * The note populator.

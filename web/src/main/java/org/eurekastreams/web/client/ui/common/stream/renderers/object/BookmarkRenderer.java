@@ -20,6 +20,7 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.common.stream.transformers.HashtagLinkTransformer;
 import org.eurekastreams.web.client.ui.common.stream.transformers.HyperlinkTransformer;
 import org.eurekastreams.web.client.ui.common.stream.transformers.StreamSearchLinkBuilder;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
@@ -48,10 +49,10 @@ public class BookmarkRenderer implements ObjectRenderer
             sourceUrl = getBaseUrl(targetUrl);
         }
 
-        if (activity.getBaseObjectProperties().get("thumbnail") != null
-                && activity.getBaseObjectProperties().get("thumbnail").length() > 0)
+        if (activity.getBaseObjectProperties().get(StaticResourceBundle.INSTANCE.coreCss().thumbnail()) != null
+                && activity.getBaseObjectProperties().get(StaticResourceBundle.INSTANCE.coreCss().thumbnail()).length() > 0)
         {
-            html += "<img class='thumbnail' src='" + activity.getBaseObjectProperties().get("thumbnail") + "'></div>";
+            html += "<img class='thumbnail' src='" + activity.getBaseObjectProperties().get(StaticResourceBundle.INSTANCE.coreCss().thumbnail()) + "'></div>";
         }
 
         html +=
@@ -59,7 +60,7 @@ public class BookmarkRenderer implements ObjectRenderer
                         + "\" target=\"_blank\">" + activity.getBaseObjectProperties().get("targetTitle") + "</a>"
                         + "</div><div class='url'>source: <a href=\"" + sourceUrl + "\" target=\"_blank\">" + sourceUrl
                         + "</a></div>" + "<div class='gwt-Label meta-description'>"
-                        + activity.getBaseObjectProperties().get("description") + "</div></div>";
+                        + activity.getBaseObjectProperties().get(StaticResourceBundle.INSTANCE.coreCss().description()) + "</div></div>";
 
         return new HTML(html);
     }
@@ -91,7 +92,7 @@ public class BookmarkRenderer implements ObjectRenderer
      */
     public Widget getContentWidget(final ActivityDTO activity)
     {
-        String activityContent = activity.getBaseObjectProperties().get("content");
+        String activityContent = activity.getBaseObjectProperties().get(StaticResourceBundle.INSTANCE.coreCss().content());
         if (activityContent == null || activityContent.trim().isEmpty())
         {
             return null;
@@ -104,7 +105,7 @@ public class BookmarkRenderer implements ObjectRenderer
         html = new HashtagLinkTransformer(new StreamSearchLinkBuilder()).transform(html);
 
         HTML widget = new HTML(html);
-        widget.addStyleName("message-body");
+        widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageBody());
 
         return widget;
     }

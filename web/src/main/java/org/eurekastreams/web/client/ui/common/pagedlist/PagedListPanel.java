@@ -32,6 +32,7 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.Fetchable;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.Pager;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -40,7 +41,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 
 /**
- * This is a fairly complex control. Basically, it supports a series of "filters" (which can be though of as data sets.
+ * This is a fairly complex control. Basically, it supports a series of StaticResourceBundle.INSTANCE.coreCss().filters() (which can be though of as data sets.
  * These's data sets can be sorted and/or paged. Add sets by feeding it Fetchable models and a renderer for the
  * individual items, and this control should take care of all the logic.
  *
@@ -155,21 +156,21 @@ public class PagedListPanel extends FlowPanel
         listId = inListId;
         bottomPager = new Pager("filteredPager" + listId, true);
 
-        waitSpinner.addStyleName("wait-spinner");
+        waitSpinner.addStyleName(StaticResourceBundle.INSTANCE.coreCss().waitSpinner());
 
-        this.addStyleName("connection-master");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionMaster());
         filterContainer.add(new Label("View:"));
 
         navPanel = new FlowPanel();
-        navPanel.addStyleName("navpanel");
+        navPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navpanel());
         navPanel.add(filterContainer);
         navPanel.add(sortContainer);
         this.add(navPanel);
 
-        filterContainer.addStyleName("options");
-        filterContainer.addStyleName("views");
-        sortContainer.addStyleName("options");
-        bottomPager.addStyleName("bottom-pager");
+        filterContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().options());
+        filterContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().views());
+        sortContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().options());
+        bottomPager.addStyleName(StaticResourceBundle.INSTANCE.coreCss().bottomPager());
 
         this.add(waitSpinner);
         this.add(renderContainer);
@@ -252,7 +253,7 @@ public class PagedListPanel extends FlowPanel
         this.add(bottomPager);
 
         FlowPanel clear = new FlowPanel();
-        clear.addStyleName("clear");
+        clear.addStyleName(StaticResourceBundle.INSTANCE.coreCss().clear());
         this.add(clear);
     }
 
@@ -432,19 +433,19 @@ public class PagedListPanel extends FlowPanel
     {
         for (Anchor filterLink : filterLinks.values())
         {
-            filterLink.removeStyleName("active");
+            filterLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
         }
 
         if (sortLinks.get(currentFilter) != null)
         {
             for (Anchor sortLink : sortLinks.get(currentFilter).values())
             {
-                sortLink.removeStyleName("active");
+                sortLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
             }
 
             if (sortLinks.get(currentFilter).get(currentSortKey) != null)
             {
-                sortLinks.get(currentFilter).get(currentSortKey).addStyleName("active");
+                sortLinks.get(currentFilter).get(currentSortKey).addStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
             }
         }
 
@@ -458,7 +459,7 @@ public class PagedListPanel extends FlowPanel
             sortContainer.clear();
         }
 
-        filterLinks.get(currentFilter).addStyleName("active");
+        filterLinks.get(currentFilter).addStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
 
         refreshData();
     }
@@ -473,7 +474,7 @@ public class PagedListPanel extends FlowPanel
         PageableRequest request = requests.get(currentFilter).get(currentSortKey);
         request.setStartIndex(currentStartIndex);
         request.setEndIndex(currentEndIndex);
-        renderContainer.addStyleName("hidden");
+        renderContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
         fetchers.get(currentFilter).fetch(request, false);
     }
 
@@ -522,7 +523,7 @@ public class PagedListPanel extends FlowPanel
             fetchers.put(name, fetchable);
 
             Anchor filterLink = new Anchor(name);
-            filterLink.addStyleName("connection-filter-button");
+            filterLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionFilterButton());
 
             filterLink.addClickHandler(new ClickHandler()
             {
@@ -549,7 +550,7 @@ public class PagedListPanel extends FlowPanel
             }
 
             Anchor sortLink = new Anchor(sortKey);
-            sortLink.addStyleName("connection-filter-button");
+            sortLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionFilterButton());
             sortLink.addClickHandler(new ClickHandler()
             {
                 public void onClick(final ClickEvent event)
@@ -635,14 +636,14 @@ public class PagedListPanel extends FlowPanel
 
         if (items.getTotal() > 0)
         {
-            this.removeStyleName("empty-list");
+            this.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().emptyList());
         }
         else
         {
-            this.addStyleName("empty-list");
+            this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().emptyList());
         }
         pageRenderer.render(renderContainer, render, items, noItemsMessage);
-        renderContainer.removeStyleName("hidden");
+        renderContainer.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
 
         bottomPager.setTotal(items.getTotal());
         waitSpinner.setVisible(false);

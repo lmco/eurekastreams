@@ -18,6 +18,7 @@ package org.eurekastreams.web.client.ui.common.pagedlist;
 import java.io.Serializable;
 
 import org.eurekastreams.server.domain.PagedSet;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
@@ -36,7 +37,7 @@ public class SingleColumnPagedListRenderer implements PagedListRenderer
         if (items.getTotal() == 0)
         {
             Label noItemsMessageLabel = new Label(noItemsMessage);
-            noItemsMessageLabel.addStyleName("connection-item-empty");
+            noItemsMessageLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemEmpty());
             renderContainer.add(noItemsMessageLabel);
         }
         else

@@ -17,6 +17,8 @@ package org.eurekastreams.server.action.request.profile;
 
 import java.io.Serializable;
 
+import org.eurekastreams.server.action.execution.profile.DomainGroupCacheUpdaterAsyncExecution;
+
 /**
  * Request class for the {@link DomainGroupCacheUpdaterAsyncExecution}.
  *

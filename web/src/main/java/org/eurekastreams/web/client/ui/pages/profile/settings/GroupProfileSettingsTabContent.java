@@ -51,6 +51,7 @@ import org.eurekastreams.web.client.ui.common.form.elements.avatar.AvatarUploadF
 import org.eurekastreams.web.client.ui.common.form.elements.avatar.strategies.AvatarUploadStrategy;
 import org.eurekastreams.web.client.ui.common.form.elements.avatar.strategies.BannerUploadStrategy;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -142,7 +143,6 @@ public class GroupProfileSettingsTabContent extends FlowPanel
     {
         // Set the banner.
         Session.getInstance().getEventBus().notifyObservers(new SetBannerEvent(entity));
-        RootPanel.get().addStyleName("form-body");
 
         final FormBuilder form = new FormBuilder("", GroupModel.getInstance(), Method.UPDATE);
 
@@ -188,10 +188,10 @@ public class GroupProfileSettingsTabContent extends FlowPanel
                 TEXT_EDITOR_WIDTH, false));
         HTML html = new HTML("<strong>Tip:</strong> Include more detailed information about your group, "
                 + "type of content you would like people to post, or other relevant guidelines.");
-        html.addStyleName("form-instructions");
+        html.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
         Panel instructionPanel = new SimplePanel();
         instructionPanel.add(html);
-        instructionPanel.addStyleName("form-element");
+        instructionPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formElement());
         form.addWidget(instructionPanel);
 
         form.addFormDivider();
@@ -207,7 +207,7 @@ public class GroupProfileSettingsTabContent extends FlowPanel
         form.addFormElement(keywords);
         form.addFormDivider();
 
-        form.addFormElement(new BasicTextBoxFormElement("Website URL", "url", entity.getUrl(),
+        form.addFormElement(new BasicTextBoxFormElement("Website URL", StaticResourceBundle.INSTANCE.coreCss().url(), entity.getUrl(),
                 "If your group has a website, you can enter the URL above", false));
         form.addFormDivider();
 
@@ -243,11 +243,11 @@ public class GroupProfileSettingsTabContent extends FlowPanel
 
         final Label currentPrivacySettingLabel = new Label();
         currentPrivacySettingLabel.setText("Privacy Settings");
-        currentPrivacySettingLabel.addStyleName("form-label");
+        currentPrivacySettingLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
         final FlowPanel currentPrivacySettingDescription = new FlowPanel();
         final Label currentPrivacySettingDescriptionTitle = new Label();
         currentPrivacySettingDescriptionTitle.setText(entity.isPublic() ? "Public" : "Private");
-        currentPrivacySettingDescriptionTitle.addStyleName("form-static-value");
+        currentPrivacySettingDescriptionTitle.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formStaticValue());
         final Label currentPrivacySettingDescriptionInfo = new Label();
         if (entity.isPublic())
         {
@@ -260,13 +260,13 @@ public class GroupProfileSettingsTabContent extends FlowPanel
                     + " approved by the group's coordinators.  Group coordinators can view a list of pending "
                     + "requests by going to the admin tab on the group's profile.");
         }
-        currentPrivacySettingDescriptionInfo.addStyleName("form-instructions");
+        currentPrivacySettingDescriptionInfo.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
         currentPrivacySettingDescription.add(currentPrivacySettingDescriptionTitle);
         currentPrivacySettingDescription.add(currentPrivacySettingDescriptionInfo);
-        currentPrivacySettingDescription.addStyleName("privacy-settings-value");
+        currentPrivacySettingDescription.addStyleName(StaticResourceBundle.INSTANCE.coreCss().privacySettingsValue());
         final FlowPanel currentPrivacySettingPanel = new FlowPanel();
-        currentPrivacySettingPanel.addStyleName("form-element");
-        currentPrivacySettingPanel.addStyleName("privacy-settings");
+        currentPrivacySettingPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formElement());
+        currentPrivacySettingPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().privacySettings());
         currentPrivacySettingPanel.add(currentPrivacySettingLabel);
         currentPrivacySettingPanel.add(currentPrivacySettingDescription);
         form.addWidget(currentPrivacySettingPanel);
@@ -276,7 +276,8 @@ public class GroupProfileSettingsTabContent extends FlowPanel
             final HTML privateNote = new HTML("<span class=\"form-static-value\">Please Note:</span> "
                     + "This group's name and description will be visible whenever employees browse or"
                     + " search profiles.");
-            privateNote.addStyleName("privacy-settings-note form-instructions");
+            privateNote.addStyleName(StaticResourceBundle.INSTANCE.coreCss().privacySettingsNote());
+            privateNote.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
             currentPrivacySettingPanel.add(privateNote);
         }
 
@@ -290,9 +291,9 @@ public class GroupProfileSettingsTabContent extends FlowPanel
                 DomainGroupModelView.STREAM_COMMENTABLE_KEY,
                 "Allow others to comment on activity in your group's stream", false, entity.isCommentable());
 
-        blockWallPost.addStyleName("stream-moderation");
-        blockCommentPost.addStyleName("stream-moderation");
-        blockCommentPost.addStyleName("comment-moderation");
+        blockWallPost.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamModeration());
+        blockCommentPost.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamModeration());
+        blockCommentPost.addStyleName(StaticResourceBundle.INSTANCE.coreCss().commentModeration());
 
         form.addFormElement(blockWallPost);
         form.addFormElement(blockCommentPost);
@@ -307,7 +308,7 @@ public class GroupProfileSettingsTabContent extends FlowPanel
                 "Eureka Streams will notify group members and coordinators when new activity has taken place "
                         + "in this group", false, !entity.isSuppressPostNotifToMember());
         noMemberPostNotif.setReverseValue(true);
-        noMemberPostNotif.addStyleName("group-notif-suppress");
+        noMemberPostNotif.addStyleName(StaticResourceBundle.INSTANCE.coreCss().groupNotifSuppress());
         form.addFormElement(noMemberPostNotif);
 
         BasicCheckBoxFormElement noCoordPostNotif = new BasicCheckBoxFormElement(null,
@@ -315,15 +316,15 @@ public class GroupProfileSettingsTabContent extends FlowPanel
                 "Allow group coordinators to receive emails and in-app notifications when activity is posted "
                         + "to this group", false, !entity.isSuppressPostNotifToCoordinator());
         noCoordPostNotif.setReverseValue(true);
-        noCoordPostNotif.addStyleName("group-notif-suppress");
+        noCoordPostNotif.addStyleName(StaticResourceBundle.INSTANCE.coreCss().groupNotifSuppress());
         form.addFormElement(noCoordPostNotif);
 
         form.addFormDivider();
 
         // ---- Action buttons ----
 
-        deleteButton.addStyleName("form-delete-group-button");
-        deleteButton.addStyleName("form-button");
+        deleteButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formDeleteGroupButton());
+        deleteButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formButton());
 
         deleteButton.addClickHandler(new ClickHandler()
         {
@@ -372,7 +373,7 @@ public class GroupProfileSettingsTabContent extends FlowPanel
         form.addWidgetToFormContainer(deleteButton);
 
         processingSpinny.setVisible(false);
-        processingSpinny.addStyleName("form-submit-spinny");
+        processingSpinny.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formSubmitSpinny());
         form.addWidgetToFormContainer(processingSpinny);
 
         form.setOnCancelHistoryToken(Session.getInstance().generateUrl(

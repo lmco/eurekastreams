@@ -34,6 +34,7 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.form.elements.FormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.StreamScopeFormElement;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -86,8 +87,8 @@ public class StreamListFormElement extends FlowPanel implements FormElement
                 "Enter the name of an employee or group.", false, true, "/resources/autocomplete/entities/",
                 MAX_NAME, MAX_ITEMS);
 
-        this.addStyleName("stream-lists");
-        label.addStyleName("form-label");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamLists());
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
         this.add(label);
 
         this.add(streamOptions);
@@ -284,7 +285,7 @@ public class StreamListFormElement extends FlowPanel implements FormElement
      */
     public String getKey()
     {
-        return "stream";
+        return StaticResourceBundle.INSTANCE.coreCss().stream();
     }
 
     /**
@@ -356,7 +357,7 @@ public class StreamListFormElement extends FlowPanel implements FormElement
      */
     public void onError(final String errMessage)
     {
-        label.addStyleName("form-error");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**
@@ -364,7 +365,7 @@ public class StreamListFormElement extends FlowPanel implements FormElement
      */
     public void onSuccess()
     {
-        label.removeStyleName("form-error");
+        label.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
 
     }
 }

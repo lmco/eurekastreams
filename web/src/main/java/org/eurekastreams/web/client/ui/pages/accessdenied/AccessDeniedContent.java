@@ -20,6 +20,7 @@ import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.HistoryState;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
@@ -47,10 +48,10 @@ public class AccessDeniedContent extends Composite
     {
 
         FlowPanel panel = new FlowPanel();
-        panel.addStyleName("access-denied");
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().accessDenied());
 
         Label logo = new Label();
-        logo.addStyleName("eureka-logo-small");
+        logo.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaLogoSmall());
         panel.add(logo);
 
         panel.add(new HTML("<strong>Informed decisions powered by real-time streams of information</strong>"
@@ -65,7 +66,7 @@ public class AccessDeniedContent extends Composite
         String supportEmail = new WidgetJSNIFacadeImpl().getWindowValue("supportEmailAddress");
 
         FlowPanel accessDeniedPanel = new FlowPanel();
-        accessDeniedPanel.addStyleName("notice");
+        accessDeniedPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notice());
         accessDeniedPanel.add(new InlineLabel("You do not currently have access to Eureka Streams, to request access "
                 + "please contact "));
         accessDeniedPanel.add(new Anchor("our product support team", "mailto:" + supportEmail));
@@ -78,9 +79,9 @@ public class AccessDeniedContent extends Composite
                     public void update(final FormLoginCompleteEvent arg1)
                     {
                         String url = "/";
-                        if (!history.getValue("url").equals(""))
+                        if (!history.getValue(StaticResourceBundle.INSTANCE.coreCss().url()).equals(""))
                         {
-                            url = history.getValue("url");
+                            url = history.getValue(StaticResourceBundle.INSTANCE.coreCss().url());
                         }
                         Window.Location.assign(url);
                     }

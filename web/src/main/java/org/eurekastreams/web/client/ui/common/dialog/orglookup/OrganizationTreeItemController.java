@@ -15,10 +15,11 @@
  */
 package org.eurekastreams.web.client.ui.common.dialog.orglookup;
 
+import org.eurekastreams.server.domain.OrganizationTreeDTO;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.OrgSelectedEvent;
 import org.eurekastreams.web.client.ui.common.ULPanel;
-import org.eurekastreams.server.domain.OrganizationTreeDTO;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -111,11 +112,11 @@ public class OrganizationTreeItemController
 
         if (show)
         {
-            expand.addStyleName("expanded");
+            expand.addStyleName(StaticResourceBundle.INSTANCE.coreCss().expanded());
         }
         else
         {
-            expand.removeStyleName("expanded");
+            expand.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().expanded());
         }
 
     }
@@ -135,11 +136,11 @@ public class OrganizationTreeItemController
     {
         if (null != selectedTreeItem)
         {
-            selectedTreeItem.removeStyleName("selected");
+            selectedTreeItem.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().selected());
         }
 
         selectedTreeItem = treeItem;
-        selectedTreeItem.addStyleName("selected");
+        selectedTreeItem.addStyleName(StaticResourceBundle.INSTANCE.coreCss().selected());
 
         showAncestors(parent);
 

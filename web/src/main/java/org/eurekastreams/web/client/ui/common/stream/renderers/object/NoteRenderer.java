@@ -20,6 +20,7 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.common.stream.transformers.HashtagLinkTransformer;
 import org.eurekastreams.web.client.ui.common.stream.transformers.HyperlinkTransformer;
 import org.eurekastreams.web.client.ui.common.stream.transformers.StreamSearchLinkBuilder;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
@@ -56,7 +57,7 @@ public class NoteRenderer implements ObjectRenderer
      */
     public Widget getContentWidget(final ActivityDTO activity)
     {
-        String activityContent = activity.getBaseObjectProperties().get("content").replace("%EUREKA:ACTORNAME%",
+        String activityContent = activity.getBaseObjectProperties().get(StaticResourceBundle.INSTANCE.coreCss().content()).replace("%EUREKA:ACTORNAME%",
                 activity.getActor().getDisplayName());
 
         if (activityContent == null)
@@ -75,7 +76,7 @@ public class NoteRenderer implements ObjectRenderer
         html = new HashtagLinkTransformer(new StreamSearchLinkBuilder()).transform(html);
 
         HTML widget = new HTML(html);
-        widget.addStyleName("message-body");
+        widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageBody());
 
         return widget;
     }

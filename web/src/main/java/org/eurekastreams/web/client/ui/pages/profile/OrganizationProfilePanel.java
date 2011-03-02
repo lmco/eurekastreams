@@ -72,6 +72,7 @@ import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.common.tabs.SimpleTab;
 import org.eurekastreams.web.client.ui.common.tabs.TabContainerPanel;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.BreadcrumbPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.ConnectionsPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.OrgAboutPanel;
@@ -162,7 +163,7 @@ public class OrganizationProfilePanel extends FlowPanel
      */
     public OrganizationProfilePanel(final String accountId)
     {
-        RootPanel.get().addStyleName("profile");
+        RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().profile());
 
         profileSettingsLink = new Hyperlink("Configure", "");
         addSubOrgLink = new Hyperlink("", "");
@@ -172,13 +173,13 @@ public class OrganizationProfilePanel extends FlowPanel
         ActionProcessor inProcessor = Session.getInstance().getActionProcessor();
 
         addGroupLink.setVisible(false);
-        portalPageContainer.addStyleName("profile-page-container");
-        profileSettingsLink.addStyleName("configure-tab");
-        profileSettingsLink.addStyleName("hidden");
-        addSubOrgLink.addStyleName("profile-add-sub-org");
-        addSubOrgLink.addStyleName("hidden");
-        addGroupLink.addStyleName("profile-add-group");
-        leftBarContainer.addStyleName("left-bar-container");
+        portalPageContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profilePageContainer());
+        profileSettingsLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().configureTab());
+        profileSettingsLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+        addSubOrgLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileAddSubOrg());
+        addSubOrgLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+        addGroupLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileAddGroup());
+        leftBarContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().leftBarContainer());
         breadCrumbPanel = new BreadcrumbPanel(inProcessor);
 
         this.add(breadCrumbPanel);
@@ -190,7 +191,7 @@ public class OrganizationProfilePanel extends FlowPanel
         this.add(portalPageContainer);
         this.add(clearPanel);
 
-        this.addStyleName("profile-page");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profilePage());
 
         EventBus.getInstance().addObserver(GotOrganizationModelViewInformationResponseEvent.class,
                 new Observer<GotOrganizationModelViewInformationResponseEvent>()
@@ -235,7 +236,6 @@ public class OrganizationProfilePanel extends FlowPanel
         connectionsPanel.addConnection("Employees", "Recently Added", org.getDescendantEmployeeCount());
         connectionsPanel.addConnection("Groups", "Recently Added", orgDescendantGroupCount, "center");
         connectionsPanel.addConnection("Sub Orgs", null, org.getChildOrganizationCount());
-        connectionsPanel.addStyleName("org-connections");
 
         leftBarPanel.addChildWidget(connectionsPanel);
 
@@ -264,9 +264,9 @@ public class OrganizationProfilePanel extends FlowPanel
                             addSubOrgLink.setTargetHistoryToken(Session.getInstance().generateUrl(
                                     new CreateUrlRequest(Page.NEW_ORG, org.getShortName())));
 
-                            profileSettingsLink.removeStyleName("hidden");
-                            addSubOrgLink.removeStyleName("hidden");
-                            RootPanel.get().addStyleName("authenticated");
+                            profileSettingsLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+                            addSubOrgLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+                            RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().authenticated());
 
                             final SimpleTab adminTab = buildAdminTab();
                             portalPage.addTab(adminTab);
@@ -300,7 +300,7 @@ public class OrganizationProfilePanel extends FlowPanel
      */
     private void switchToAdminTabFilterIfRequested()
     {
-        if ("Admin".equals(Session.getInstance().getParameterValue("tab")))
+        if ("Admin".equals(Session.getInstance().getParameterValue(StaticResourceBundle.INSTANCE.coreCss().tab())))
         {
             portalPage.switchToTab("Admin");
             String adminFilter = Session.getInstance().getParameterValue("adminFilter");
@@ -333,7 +333,7 @@ public class OrganizationProfilePanel extends FlowPanel
         List<ResourceSortCriterion> critsForFollowers = new ArrayList<ResourceSortCriterion>();
         critsForFollowers.add(new ResourceSortCriterion(SortField.FOLLOWERS_COUNT, SortDirection.DESCENDING));
 
-        final PagedListPanel connectionTabContent = new PagedListPanel("connections", "tab", "Connections");
+        final PagedListPanel connectionTabContent = new PagedListPanel("connections", StaticResourceBundle.INSTANCE.coreCss().tab(), "Connections");
 
         Session.getInstance().getEventBus().addObserver(GotOrganizationEmployeesResponseEvent.class,
                 new Observer<GotOrganizationEmployeesResponseEvent>()
@@ -402,7 +402,7 @@ public class OrganizationProfilePanel extends FlowPanel
         final String pendingGroupsFilterName = "Group Requests";
 
         // set up the tab itself
-        final PagedListPanel adminTabContent = new PagedListPanel("admin", new SingleColumnPagedListRenderer(), "tab",
+        final PagedListPanel adminTabContent = new PagedListPanel("admin", new SingleColumnPagedListRenderer(), StaticResourceBundle.INSTANCE.coreCss().tab(),
                 "Admin");
         final SimpleTab adminTab = new SimpleTab("Admin", adminTabContent);
         adminTab.setParamsToClear(PagedListPanel.URL_PARAM_LIST_ID, PagedListPanel.URL_PARAM_FILTER,
@@ -478,8 +478,8 @@ public class OrganizationProfilePanel extends FlowPanel
             }
         });
 
-        // prepare the "filters"
-        // flagged content "filter"
+        // prepare the StaticResourceBundle.INSTANCE.coreCss().filters()
+        // flagged content StaticResourceBundle.INSTANCE.coreCss().filter()
         StreamMessageItemRenderer flaggedRenderer = new StreamMessageItemRenderer(true);
         flaggedRenderer.setShowManageFlagged(true);
         flaggedRenderer.setShowComment(true);
@@ -488,7 +488,7 @@ public class OrganizationProfilePanel extends FlowPanel
         flaggedRenderer.setActivityLinkBuilder(activityLinkBuilder);
         adminTabContent.addSet(flaggedActivitiesFilterName, FlaggedActivityModel.getInstance(), flaggedRenderer,
                 new GetFlaggedActivitiesByOrgRequest(org.getEntityId(), 0, 0));
-        // pending groups "filter"
+        // pending groups StaticResourceBundle.INSTANCE.coreCss().filter()
         adminTabContent.addSet(pendingGroupsFilterName, PendingGroupsModel.getInstance(), new PendingGroupRenderer(),
                 new GetPendingGroupsRequest(org.getShortName(), 0, 0));
 

@@ -31,6 +31,7 @@ import org.eurekastreams.web.client.ui.common.form.elements.BasicDropDownFormEle
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextAreaFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.DateRangePickerFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.ValueOnlyFormElement;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Command;
@@ -118,7 +119,7 @@ public class CreateOrUpdateEmploymentPanel extends FlowPanel
                 "Industry", "industry", getIndustryValues(), "", "", true);
         
         AutoCompleteItemDropDownFormElement title = new AutoCompleteItemDropDownFormElement("Title",
-                "title", "", "", true, "/resources/autocomplete/titles/", "titles", "");
+                StaticResourceBundle.INSTANCE.coreCss().title(), "", "", true, "/resources/autocomplete/titles/", "titles", "");
         title.setMaxLength(MAX_LENGTH);
         
         title.setOnItemSelectedCommand(new AutoCompleteItemDropDownFormElement.OnItemSelectedCommand()
@@ -133,7 +134,7 @@ public class CreateOrUpdateEmploymentPanel extends FlowPanel
                 "I currently work here", "", true);
         
         BasicTextAreaFormElement description = new BasicTextAreaFormElement(MAX_DESCRIPTION, "Description",
-                "description", "", "Add some details of the position, so users viewing your profile can get a quick "
+                StaticResourceBundle.INSTANCE.coreCss().description(), "", "Add some details of the position, so users viewing your profile can get a quick "
                 + "idea what the position involves.", false);
         
         if (employment == null)
@@ -144,7 +145,7 @@ public class CreateOrUpdateEmploymentPanel extends FlowPanel
         else
         {
             form = new FormBuilder("Edit Position", PersonalEmploymentModel.getInstance(), Method.UPDATE);
-            form.addStyleName("edit-position");
+            form.addStyleName(StaticResourceBundle.INSTANCE.coreCss().editPosition());
 
             form.addFormElement(new ValueOnlyFormElement("id", employment.getId()));
             companyName.setValue(employment.getCompanyName());

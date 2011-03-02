@@ -15,8 +15,8 @@
  */
 package org.eurekastreams.server.service.actions.strategies.activity;
 
-import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.commons.exceptions.ValidationException;
+import org.eurekastreams.server.domain.stream.ActivityDTO;
 
 /**
  * This class provides the validation for Activity Post Verbs.

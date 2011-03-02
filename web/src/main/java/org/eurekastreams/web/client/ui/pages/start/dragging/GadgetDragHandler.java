@@ -20,6 +20,7 @@ import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.model.GadgetModel;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.start.GadgetPanel;
 import org.eurekastreams.web.client.ui.pages.start.layouts.DropZonePanel;
 
@@ -53,7 +54,7 @@ public class GadgetDragHandler implements DragHandler
                 {
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
-                        final String tabName = event.getParameters().get("tab");
+                        final String tabName = event.getParameters().get(StaticResourceBundle.INSTANCE.coreCss().tab());
                         if (tabName != null)
                         {
                             tabId = Long.valueOf(tabName);

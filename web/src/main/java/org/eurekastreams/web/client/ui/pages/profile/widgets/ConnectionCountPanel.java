@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.web.client.ui.pages.profile.widgets;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -68,18 +70,18 @@ public class ConnectionCountPanel extends FlowPanel
             countStr = countInKStr.substring(0, countInKStr.indexOf(".") + 2) + "K";
         }
 
-        this.addStyleName("profile-connection-subpanel");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileConnectionSubpanel());
         if (!style.equals(""))
         {
             this.addStyleName(style);
         }
 
         countLabel = new Label(countStr);
-        countLabel.addStyleName("profile-connection-count");
+        countLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileConnectionCount());
         this.add(countLabel);
 
         Label followersLabel = new Label(description);
-        followersLabel.addStyleName("profile-connection-label");
+        followersLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileConnectionLabel());
         this.add(followersLabel);
     }
 

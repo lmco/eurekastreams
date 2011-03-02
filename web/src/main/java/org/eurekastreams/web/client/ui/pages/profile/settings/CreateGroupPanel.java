@@ -43,6 +43,7 @@ import org.eurekastreams.web.client.ui.common.form.elements.OrgLookupFormElement
 import org.eurekastreams.web.client.ui.common.form.elements.PersonModelViewLookupFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.ShortnameFormElement;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
@@ -145,7 +146,6 @@ public class CreateGroupPanel extends SettingsPanel
 
         personLookupFormElement.addPerson(currentPerson);
 
-        RootPanel.get().addStyleName("form-body");
         final FormBuilder form = new FormBuilder("", GroupModel.getInstance(), Method.INSERT);
 
         eventBus.addObserver(SaveSelectedOrgEvent.class, new Observer<SaveSelectedOrgEvent>()
@@ -191,8 +191,6 @@ public class CreateGroupPanel extends SettingsPanel
             }
         });
 
-        groupName.addStyleName("group-name");
-
         form.addFormElement(groupName);
 
         form.addFormDivider();
@@ -202,7 +200,7 @@ public class CreateGroupPanel extends SettingsPanel
                 "Please restrict your group's name in the web address "
                         + "to 20 lower case alpha numeric characters without spaces.", true);
 
-        shortName.addStyleName("group-short-name");
+        shortName.addStyleName(StaticResourceBundle.INSTANCE.coreCss().groupShortName());
 
         form.addFormElement(shortName);
         form.addOnCancelCommand(new Command()
@@ -231,7 +229,7 @@ public class CreateGroupPanel extends SettingsPanel
                 "Restrict access to users approved by this group's coordinators.", "false", Boolean.FALSE);
 
         Panel extraInstructions = new FlowPanel();
-        extraInstructions.addStyleName("group-private-extra-note");
+        extraInstructions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().groupPrivateExtraNote());
         extraInstructions.add(new InlineLabel("Please Note: "));
         extraInstructions.add(new InlineLabel(
                 "This group's name and description will be visible whenever employees browse or search profiles."));

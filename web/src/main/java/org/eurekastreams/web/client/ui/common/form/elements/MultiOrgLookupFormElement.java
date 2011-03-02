@@ -31,6 +31,7 @@ import org.eurekastreams.web.client.ui.common.EditPanel;
 import org.eurekastreams.web.client.ui.common.EditPanel.Mode;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.orglookup.OrgLookupContent;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -86,17 +87,17 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
             final String inKey, final String inSelectedLabelText, final boolean inRequired,
             final List<Organization> relatedOrganizations)
     {
-        this.addStyleName("org-lookup-form-element");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().orgLookupFormElement());
 
         key = inKey;
 
         Label title = new Label(inTitle);
-        title.addStyleName("form-label");
+        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
 
         Label subTitleLabel = new Label(subTitle);
-        subTitleLabel.addStyleName("form-sub-title");
+        subTitleLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formSubTitle());
         Label instructions = new Label(inInstructions);
-        instructions.addStyleName("form-instructions");
+        instructions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
 
         this.add(title);
         this.add(subTitleLabel);
@@ -104,11 +105,11 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
         this.add(selectedOrgs);
 
         Label select = new Label("Add Organization");
-        select.addStyleName("form-button form-lookup-button");
+        select.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formButton());
+        select.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLookupButton());
         final Label selectedOrgName = new Label();
-        selectedOrgName.addStyleName("selected-org-name");
+        selectedOrgName.addStyleName(StaticResourceBundle.INSTANCE.coreCss().selectedOrgName());
         final Label selectedLabel = new Label(inSelectedLabelText);
-        selectedLabel.addStyleName("org-select-label");
         selectedLabel.setVisible(false);
 
         select.addClickHandler(new ClickHandler()
@@ -128,7 +129,7 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
         if (inRequired)
         {
             Label requiredLabel = new Label("(required)");
-            requiredLabel.addStyleName("required-form-label");
+            requiredLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requiredFormLabel());
             this.add(requiredLabel);
         }
 
@@ -171,17 +172,17 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
             final String inKey, final String inSelectedLabelText, final boolean inRequired,
             final List<OrganizationModelView> relatedOrganizations, final boolean doNothing)
     {
-        this.addStyleName("org-lookup-form-element");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().orgLookupFormElement());
 
         key = inKey;
 
         Label title = new Label(inTitle);
-        title.addStyleName("form-label");
+        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
 
         Label subTitleLabel = new Label(subTitle);
-        subTitleLabel.addStyleName("form-sub-title");
+        subTitleLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formSubTitle());
         Label instructions = new Label(inInstructions);
-        instructions.addStyleName("form-instructions");
+        instructions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
 
         this.add(title);
         this.add(subTitleLabel);
@@ -189,11 +190,11 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
         this.add(selectedOrgs);
 
         Label select = new Label("Add Organization");
-        select.addStyleName("form-button form-lookup-button");
+        select.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formButton());
+        select.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLookupButton());
         final Label selectedOrgName = new Label();
-        selectedOrgName.addStyleName("selected-org-name");
+        selectedOrgName.addStyleName(StaticResourceBundle.INSTANCE.coreCss().selectedOrgName());
         final Label selectedLabel = new Label(inSelectedLabelText);
-        selectedLabel.addStyleName("org-select-label");
         selectedLabel.setVisible(false);
 
         select.addClickHandler(new ClickHandler()
@@ -213,7 +214,7 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
         if (inRequired)
         {
             Label requiredLabel = new Label("(required)");
-            requiredLabel.addStyleName("required-form-label");
+            requiredLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requiredFormLabel());
             this.add(requiredLabel);
         }
 
@@ -266,7 +267,7 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
             orgs.add(org.getShortName());
 
             final FlowPanel orgPanel = new FlowPanel();
-            orgPanel.addStyleName("multi-org-form-element-item");
+            orgPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().multiOrgFormElementItem());
 
             EditPanel editControls = new EditPanel(orgPanel, Mode.DELETE);
             orgPanel.add(editControls);

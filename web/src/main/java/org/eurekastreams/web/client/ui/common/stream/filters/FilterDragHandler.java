@@ -17,6 +17,7 @@ package org.eurekastreams.web.client.ui.common.stream.filters;
 
 import org.eurekastreams.server.action.request.stream.SetStreamOrderRequest;
 import org.eurekastreams.web.client.model.Reorderable;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandler;
@@ -75,12 +76,12 @@ public class FilterDragHandler implements DragHandler
         if (itemIndex > hiddenLineIndex)
         {
             itemIndex--;
-            ((Widget) listItem).addStyleName("hide");
+            ((Widget) listItem).addStyleName(StaticResourceBundle.INSTANCE.coreCss().hide());
             listPanel.showTextOnHiddenLine();
         }
         else
         {
-            ((Widget) listItem).removeStyleName("hide");
+            ((Widget) listItem).removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hide());
             listPanel.hideTextOnHiddenLine(hiddenLineIndex);
         }
 

@@ -19,6 +19,7 @@ import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.server.action.request.stream.SetActivityStarRequest;
 import org.eurekastreams.server.action.request.stream.SetActivityStarRequest.StarActionType;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -45,7 +46,7 @@ public class StarLinkWidget extends InlineLabel
     {
         starred = isStarred;
 
-        addStyleName("linked-label star");
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
         setText();
 
         addClickHandler(new ClickHandler()

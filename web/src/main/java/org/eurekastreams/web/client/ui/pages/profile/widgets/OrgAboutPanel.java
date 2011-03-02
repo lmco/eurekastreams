@@ -17,6 +17,7 @@ package org.eurekastreams.web.client.ui.pages.profile.widgets;
 
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -47,25 +48,25 @@ public class OrgAboutPanel extends FlowPanel
         add(new AvatarWidget(inOrgEntityId, inAvatarId, EntityType.ORGANIZATION, AvatarWidget.Size.Normal));
 
         Label title = new Label(inOrgName);
-        title.addStyleName("profile-org-title");
+        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileOrgTitle());
         this.add(title);
 
         Anchor url = new Anchor("Website", inOrgUrl, "_NEW");
-        url.addStyleName("profile-website");
+        url.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileWebsite());
         if (inOrgUrl == null)
         {
-            url.addStyleName("no-value");
+            url.addStyleName(StaticResourceBundle.INSTANCE.coreCss().noValue());
         }
         this.add(url);
 
         if (inOrgDescription != null && !inOrgDescription.equals(""))
         {
             Label subheader = new Label("");
-            subheader.addStyleName("profile-subheader");
+            subheader.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileSubheader());
             this.add(subheader);
 
             Label mission = new Label(inOrgDescription);
-            mission.addStyleName("profile-mission");
+            mission.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileMission());
             this.add(mission);
         }
     }

@@ -66,6 +66,7 @@ import org.eurekastreams.web.client.ui.common.pagedlist.ThemeRenderer;
 import org.eurekastreams.web.client.ui.common.tabs.SimpleTab;
 import org.eurekastreams.web.client.ui.common.tabs.TabContainerPanel;
 import org.eurekastreams.web.client.ui.pages.master.MasterComposite;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -150,12 +151,12 @@ public class GalleryContent extends SettingsPanel
         super(panel, "Configure");
 
         this.clearContentPanel();
-        RootPanel.get().addStyleName("gallery");
-        panel.addStyleName("gallery-master");
+        RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().gallery());
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().galleryMaster());
 
-        addGadget.addStyleName("add-gadget");
+        addGadget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addGadget());
         addGadget.setVisible(false);
-        addTheme.addStyleName("add-theme");
+        addTheme.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addTheme());
         addTheme.setVisible(false);
 
         panel.add(galleryPortalContainer);
@@ -343,11 +344,11 @@ public class GalleryContent extends SettingsPanel
         });
 
         final HashMap<String, String> gadgetParams = new HashMap<String, String>();
-        gadgetParams.put("tab", Session.getInstance().getParameterValue("tab"));
+        gadgetParams.put(StaticResourceBundle.INSTANCE.coreCss().tab(), Session.getInstance().getParameterValue(StaticResourceBundle.INSTANCE.coreCss().tab()));
         gadgetParams.put("galleryTab", "Apps");
 
         final HashMap<String, String> themeParams = new HashMap<String, String>();
-        themeParams.put("tab", Session.getInstance().getParameterValue("tab"));
+        themeParams.put(StaticResourceBundle.INSTANCE.coreCss().tab(), Session.getInstance().getParameterValue(StaticResourceBundle.INSTANCE.coreCss().tab()));
         themeParams.put("galleryTab", "Themes");
 
         Session.getInstance().getEventBus().addObserver(InsertedGadgetDefinitionResponseEvent.class,
@@ -465,8 +466,8 @@ public class GalleryContent extends SettingsPanel
                             galleryAddOrEditContainer.setVisible(false);
                             galleryPortalContainer.setVisible(true);
 
-                            setPreviousPage(new CreateUrlRequest(Page.START, "tab", Session.getInstance()
-                                    .getParameterValue("tab")), "< Return to Start Page");
+                            setPreviousPage(new CreateUrlRequest(Page.START, StaticResourceBundle.INSTANCE.coreCss().tab(), Session.getInstance()
+                                    .getParameterValue(StaticResourceBundle.INSTANCE.coreCss().tab())), "< Return to Start Page");
                             Session.getInstance().getEventBus().notifyObservers(new HideNotificationEvent());
                             setPageTitle("Configure");
 
@@ -496,7 +497,7 @@ public class GalleryContent extends SettingsPanel
         String id = "";
 
         Map<String, String> urlParams = new HashMap<String, String>();
-        urlParams.put("tab", Session.getInstance().getParameterValue("tab"));
+        urlParams.put(StaticResourceBundle.INSTANCE.coreCss().tab(), Session.getInstance().getParameterValue(StaticResourceBundle.INSTANCE.coreCss().tab()));
         urlParams.put("galleryTab", "Themes");
 
         this.setPreviousPage(new CreateUrlRequest(Page.GALLERY, urlParams), "< Return to Configure Page");
@@ -508,7 +509,7 @@ public class GalleryContent extends SettingsPanel
         {
             title = "Edit Theme";
             method = Method.UPDATE;
-            defaultUrl = Session.getInstance().getParameterValue("url");
+            defaultUrl = Session.getInstance().getParameterValue(StaticResourceBundle.INSTANCE.coreCss().url());
 
             defaultCategory = Session.getInstance().getParameterValue("category");
             id = Session.getInstance().getParameterValue("id");
@@ -535,7 +536,7 @@ public class GalleryContent extends SettingsPanel
 
         form.addFormDivider();
 
-        form.addFormElement(new BasicTextBoxFormElement("Theme XML:", "url", defaultUrl,
+        form.addFormElement(new BasicTextBoxFormElement("Theme XML:", StaticResourceBundle.INSTANCE.coreCss().url(), defaultUrl,
                 "Enter the link to the xml file", true));
 
         form.addFormDivider();
@@ -557,7 +558,7 @@ public class GalleryContent extends SettingsPanel
         String id = "";
 
         Map<String, String> urlParams = new HashMap<String, String>();
-        urlParams.put("tab", Session.getInstance().getParameterValue("tab"));
+        urlParams.put(StaticResourceBundle.INSTANCE.coreCss().tab(), Session.getInstance().getParameterValue(StaticResourceBundle.INSTANCE.coreCss().tab()));
         urlParams.put("galleryTab", "Apps");
 
         this.setPreviousPage(new CreateUrlRequest(Page.GALLERY, urlParams), "< Return to Configure Page");
@@ -569,7 +570,7 @@ public class GalleryContent extends SettingsPanel
         {
             title = "Edit App";
             method = Method.UPDATE;
-            defaultUrl = Session.getInstance().getParameterValue("url");
+            defaultUrl = Session.getInstance().getParameterValue(StaticResourceBundle.INSTANCE.coreCss().url());
 
             defaultCategory = Session.getInstance().getParameterValue("category");
             id = Session.getInstance().getParameterValue("id");
@@ -596,7 +597,7 @@ public class GalleryContent extends SettingsPanel
 
         form.addFormDivider();
 
-        form.addFormElement(new BasicTextBoxFormElement("App XML:", "url", defaultUrl,
+        form.addFormElement(new BasicTextBoxFormElement("App XML:", StaticResourceBundle.INSTANCE.coreCss().url(), defaultUrl,
                 "Enter the link to the xml file", true));
 
         form.addFormDivider();

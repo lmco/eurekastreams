@@ -26,6 +26,7 @@ import org.eurekastreams.web.client.ui.common.pagedlist.GroupRenderer;
 import org.eurekastreams.web.client.ui.common.pagedlist.ItemRenderer;
 import org.eurekastreams.web.client.ui.common.pagedlist.OrganizationRenderer;
 import org.eurekastreams.web.client.ui.common.pagedlist.PersonRenderer;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -107,7 +108,7 @@ public class SearchResultItemRenderer implements ItemRenderer<ModelView>
         {
             Label resultsLbl =  new Label("Matches found in: ");
             matchedWidget.add(resultsLbl);
-            matchedWidget.addStyleName("search-metadata");
+            matchedWidget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchMetadata());
             resultWidget.add(matchedWidget);
         }
 
@@ -120,7 +121,7 @@ public class SearchResultItemRenderer implements ItemRenderer<ModelView>
                 keyLabel.setText(keyLabel.getText() + ", ");
             }
 
-            keyLabel.addStyleName("search-metadata-key");
+            keyLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchMetadataKey());
 
             matchedWidget.add(keyLabel);
         }

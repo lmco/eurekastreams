@@ -25,6 +25,7 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -71,15 +72,15 @@ public class PersonPanel extends FlowPanel
     public PersonPanel(final PersonModelView person, final boolean makeLinkable, final boolean showFollowers,
             final boolean showDescription, final boolean showEmail)
     {
-        addStyleName("connection-item");
-        addStyleName("list-item");
-        addStyleName("person");
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItem());
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().listItem());
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().person());
 
         add(new AvatarLinkPanel(EntityType.PERSON, person.getUniqueId(), person.getId(), person.getAvatarId(),
                 Size.Small));
 
         FlowPanel infoPanel = new FlowPanel();
-        infoPanel.setStyleName("connection-item-info");
+        infoPanel.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemInfo());
 
         Widget name;
         Widget org;
@@ -113,7 +114,8 @@ public class PersonPanel extends FlowPanel
             if (descriptionText != null && !descriptionText.isEmpty())
             {
                 Label about = new Label(descriptionText);
-                about.addStyleName("short-bio extended-info");
+                about.addStyleName(StaticResourceBundle.INSTANCE.coreCss().shortBio());
+                about.addStyleName(StaticResourceBundle.INSTANCE.coreCss().extendedInfo());
                 infoPanel.add(about);
             }
         }
@@ -121,13 +123,13 @@ public class PersonPanel extends FlowPanel
         if (showFollowers)
         {
             FlowPanel followersPanel = new FlowPanel();
-            followersPanel.addStyleName("connection-item-followers");
+            followersPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowers());
 
             InlineLabel followers = new InlineLabel("Followers: ");
             followersPanel.add(followers);
 
             InlineLabel followersCount = new InlineLabel(Integer.toString(person.getFollowersCount()));
-            followersCount.addStyleName("connection-item-followers-data");
+            followersCount.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowersData());
             followersPanel.add(followersCount);
 
             insertActionSeparator(followersPanel);
@@ -136,7 +138,7 @@ public class PersonPanel extends FlowPanel
 
             DateFormatter dateFormatter = new DateFormatter(new Date());
             InlineLabel dateAdded = new InlineLabel(dateFormatter.timeAgo(person.getDateAdded(), true));
-            dateAdded.addStyleName("connection-item-followers-data");
+            dateAdded.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowersData());
             followersPanel.add(dateAdded);
 
             infoPanel.add(followersPanel);
@@ -148,7 +150,8 @@ public class PersonPanel extends FlowPanel
             if (emailText != null && !emailText.isEmpty())
             {
                 Label email = new Label(emailText);
-                email.addStyleName("email extended-info");
+                email.addStyleName(StaticResourceBundle.INSTANCE.coreCss().email());
+                email.addStyleName(StaticResourceBundle.INSTANCE.coreCss().extendedInfo());
                 infoPanel.add(email);
             }
         }
@@ -166,7 +169,7 @@ public class PersonPanel extends FlowPanel
     private void insertActionSeparator(final Panel panel)
     {
         Label sep = new InlineLabel("\u2219");
-        sep.addStyleName("action-link-separator");
+        sep.addStyleName(StaticResourceBundle.INSTANCE.coreCss().actionLinkSeparator());
         panel.add(sep);
     }
 }

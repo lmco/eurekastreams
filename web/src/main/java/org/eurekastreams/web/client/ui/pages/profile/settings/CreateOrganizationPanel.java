@@ -38,6 +38,7 @@ import org.eurekastreams.web.client.ui.common.form.elements.OrgLookupFormElement
 import org.eurekastreams.web.client.ui.common.form.elements.PersonModelViewLookupFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.ShortnameFormElement;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
@@ -95,7 +96,6 @@ public class CreateOrganizationPanel extends SettingsPanel
         this.clearContentPanel();
         this.setPreviousPage(new CreateUrlRequest(Page.ORGANIZATIONS, parentOrg.getShortName()), "< Return to Profile");
 
-        RootPanel.get().addStyleName("form-body");
         FormBuilder form = new FormBuilder("", OrganizationModel.getInstance(), Method.INSERT);
 
         if (!Session.getInstance().getCurrentPersonRoles().contains(Role.ORG_COORDINATOR))

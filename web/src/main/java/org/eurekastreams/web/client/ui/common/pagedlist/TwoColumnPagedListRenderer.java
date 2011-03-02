@@ -18,6 +18,7 @@ package org.eurekastreams.web.client.ui.common.pagedlist;
 import java.io.Serializable;
 
 import org.eurekastreams.server.domain.PagedSet;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -35,16 +36,16 @@ public class TwoColumnPagedListRenderer implements PagedListRenderer
             final PagedSet<? extends Serializable> items, final String noItemsMessage)
     {
         Panel left = new FlowPanel();
-        left.addStyleName("connection-col-left");
+        left.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionColLeft());
         Panel right = new FlowPanel();
-        right.addStyleName("connection-col-right");
+        right.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionColRight());
 
         int count = 0;
 
         if (items.getTotal() == 0)
         {
             Label noItemsMessageLabel = new Label(noItemsMessage);
-            noItemsMessageLabel.addStyleName("connection-item-empty");
+            noItemsMessageLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemEmpty());
             renderContainer.add(noItemsMessageLabel);
         }
         else

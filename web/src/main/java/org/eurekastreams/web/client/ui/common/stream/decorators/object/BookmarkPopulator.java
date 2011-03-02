@@ -15,10 +15,11 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.decorators.object;
 
-import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulatorStrategy;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.domain.stream.LinkInformation;
+import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulatorStrategy;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 /**
  * Populates an activityDTO with bookmark properties.
@@ -50,13 +51,13 @@ public class BookmarkPopulator implements ActivityDTOPopulatorStrategy
     public void populate(final ActivityDTO activity)
     {
         activity.setBaseObjectType(BaseObjectType.BOOKMARK);
-        activity.getBaseObjectProperties().put("description",
+        activity.getBaseObjectProperties().put(StaticResourceBundle.INSTANCE.coreCss().description(),
                 linkInformation.getDescription());
         activity.getBaseObjectProperties().put("targetUrl",
                 linkInformation.getUrl());
         activity.getBaseObjectProperties().put("targetTitle",
                 linkInformation.getTitle());
-        activity.getBaseObjectProperties().put("thumbnail",
+        activity.getBaseObjectProperties().put(StaticResourceBundle.INSTANCE.coreCss().thumbnail(),
                 linkInformation.getSelectedThumbnail());
 
     }

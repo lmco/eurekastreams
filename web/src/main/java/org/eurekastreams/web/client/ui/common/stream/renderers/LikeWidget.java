@@ -18,6 +18,7 @@ package org.eurekastreams.web.client.ui.common.stream.renderers;
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest;
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest.LikeActionType;
 import org.eurekastreams.web.client.model.ActivityLikeModel;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -53,10 +54,10 @@ public class LikeWidget extends Composite
      */
     public LikeWidget(final Boolean isLiked, final Long activityId)
     {
-        widget.addStyleName("like-wrapper");
+        widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().likeWrapper());
         liked = isLiked;
 
-        likeLink.addStyleName("linked-label like");
+        likeLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
 
         likeLink.setText(isLiked ? "Unlike" : "Like");
 

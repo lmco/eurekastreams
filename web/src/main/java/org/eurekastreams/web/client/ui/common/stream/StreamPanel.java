@@ -42,6 +42,7 @@ import org.eurekastreams.web.client.model.StreamModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -155,13 +156,13 @@ public class StreamPanel extends FlowPanel
      */
     public StreamPanel(final Boolean showRecipients)
     {
-        this.addStyleName("layout-container");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().layoutContainer());
 
         stream = new StreamListPanel(new StreamMessageItemRenderer(showRecipients));
-        stream.addStyleName("stream");
+        stream.addStyleName(StaticResourceBundle.INSTANCE.coreCss().stream());
         stream.setVisible(false);
 
-        shadowPanel.addStyleName("post-to-stream-container");
+        shadowPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postToStreamContainer());
         shadowPanel.setVisible(false);
 
         streamSearch = new StreamSearchComposite();
@@ -497,7 +498,7 @@ public class StreamPanel extends FlowPanel
             FlowPanel postingDisabledMessage = new FlowPanel();
 
             postingDisabledMessage.getElement().setInnerHTML("Posting messages has been disabled for this stream.");
-            postingDisabled.addStyleName("posting-disabled-box");
+            postingDisabled.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postingDisabledBox());
             postingDisabled.add(postingDisabledMessage);
             postContent.add(postingDisabled);
         }

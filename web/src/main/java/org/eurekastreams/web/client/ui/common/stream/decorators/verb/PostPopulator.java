@@ -15,9 +15,9 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.decorators.verb;
 
-import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulatorStrategy;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.ActivityVerb;
+import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulatorStrategy;
 
 /**
  * Populates for post verbs.

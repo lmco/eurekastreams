@@ -25,6 +25,7 @@ import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.dnd.client.drop.IndexedDropController;
@@ -122,7 +123,7 @@ public class FilterListPanel extends FlowPanel
 
         FlowPanel header = new FlowPanel();
         Label headerLbl = new Label(renderer.getTitle());
-        header.addStyleName("header");
+        header.addStyleName(StaticResourceBundle.INSTANCE.coreCss().header());
 
         this.add(header);
         header.add(headerLbl);
@@ -131,7 +132,7 @@ public class FilterListPanel extends FlowPanel
         {
             Anchor addView = new Anchor("add");
             FlowPanel addButton = new FlowPanel();
-            addButton.addStyleName("addbutton");
+            addButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addButton());
             addButton.add(addView);
             addView.addClickListener(new ClickListener()
             {
@@ -166,7 +167,7 @@ public class FilterListPanel extends FlowPanel
             FilterPanel listItem = renderer.getFilterPanel(view);
             if (count > hiddenLineIndex)
             {
-                ((Widget) listItem).addStyleName("hide");
+                ((Widget) listItem).addStyleName(StaticResourceBundle.INSTANCE.coreCss().hide());
             }
             if (count == hiddenLineIndex + 1)
             {
@@ -182,7 +183,7 @@ public class FilterListPanel extends FlowPanel
         {
             addedHiddenLine = true;
             addHiddenLine();
-            showMore.addStyleName("hide-text");
+            showMore.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hideText());
         }
 
         viewBoundaryPanel.add(panel);
@@ -241,9 +242,9 @@ public class FilterListPanel extends FlowPanel
                 else
                 {
                     hidden = true;
-                    thisBuffered.removeStyleName("unhide");
+                    thisBuffered.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().unhide());
                     showMore.setText("show more");
-                    showMore.removeStyleName("show-less");
+                    showMore.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().showLess());
                 }
             }
         });
@@ -260,7 +261,7 @@ public class FilterListPanel extends FlowPanel
     {
         if (inHiddenLineIndex == listCache.size())
         {
-            showMore.addStyleName("hide-text");
+            showMore.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hideText());
         }
     }
 
@@ -269,7 +270,7 @@ public class FilterListPanel extends FlowPanel
      */
     public void showTextOnHiddenLine()
     {
-        showMore.removeStyleName("hide-text");
+        showMore.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hideText());
     }
 
     /**
@@ -305,7 +306,7 @@ public class FilterListPanel extends FlowPanel
     {
         unhide();
         FilterPanel listItem = renderer.getFilterPanel(filter);
-        ((Widget) listItem).addStyleName("hide");
+        ((Widget) listItem).addStyleName(StaticResourceBundle.INSTANCE.coreCss().hide());
         listCache.put(filter.getId(), listItem);
         panel.add((Widget) listItem);
         viewDragController.makeDraggable((Widget) listItem, listItem.getMoveHandle());
@@ -316,11 +317,11 @@ public class FilterListPanel extends FlowPanel
         {
             addedHiddenLine = true;
             addHiddenLine();
-            showMore.addStyleName("hide-text");
+            showMore.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hideText());
         }
         else
         {
-            showMore.removeStyleName("hide-text");
+            showMore.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hideText());
         }
     }
 
@@ -379,16 +380,16 @@ public class FilterListPanel extends FlowPanel
             if (panel.getWidgetCount() > 0)
             {
                 panel.insert(showMore, 1);
-                panel.getWidget(0).removeStyleName("hide");
+                panel.getWidget(0).removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hide());
             }
         }
         if (itemIndex == panel.getWidgetCount() - 1)
         {
-            showMore.addStyleName("hide-text");
+            showMore.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hideText());
         }
         else
         {
-            showMore.removeStyleName("hide-text");
+            showMore.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hideText());
         }
     }
 
@@ -418,9 +419,9 @@ public class FilterListPanel extends FlowPanel
     public void unhide()
     {
         hidden = false;
-        this.addStyleName("unhide");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().unhide());
         showMore.setText("show less");
-        showMore.addStyleName("show-less");
+        showMore.addStyleName(StaticResourceBundle.INSTANCE.coreCss().showLess());
     }
 
     /**

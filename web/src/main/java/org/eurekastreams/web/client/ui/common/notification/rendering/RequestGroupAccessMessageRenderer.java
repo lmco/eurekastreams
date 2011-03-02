@@ -17,6 +17,7 @@ package org.eurekastreams.web.client.ui.common.notification.rendering;
 
 import org.eurekastreams.server.domain.ApplicationAlertNotification;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Panel;
 /**
@@ -42,7 +43,7 @@ public class RequestGroupAccessMessageRenderer extends NotificationMessageRender
         appendActorLink(parent, notification);
         appendText(parent, " ");
         appendLink(parent, "requested", new CreateUrlRequest(getEntityProfilePage(notification.getDestinationType()),
-                notification.getDestinationUniqueId(), "tab", "Admin"));
+                notification.getDestinationUniqueId(), StaticResourceBundle.INSTANCE.coreCss().tab(), "Admin"));
         appendText(parent, " to join the ");
         appendDestinationLink(parent, notification);
         appendText(parent, " private group.");

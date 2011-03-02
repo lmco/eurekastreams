@@ -17,6 +17,8 @@ package org.eurekastreams.web.client.ui.common.form.elements;
 
 import java.io.Serializable;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -69,13 +71,13 @@ public class BasicRadioButtonFormElement extends FlowPanel
 
         rb = new RadioButton(inGroupName, label);
         rb.setChecked(selected);
-        rb.addStyleName("form-radioButton");
+        rb.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formRadioButton());
 
         this.add(rb);
         if (inInstructions != null && !inInstructions.isEmpty())
         {
             instructionsPanel = new FlowPanel();
-            instructionsPanel.addStyleName("form-instructions");
+            instructionsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
             add(instructionsPanel);
 
             instructionsPanel.add(new InlineLabel(inInstructions));

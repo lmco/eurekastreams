@@ -37,6 +37,7 @@ import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopul
 import org.eurekastreams.web.client.ui.common.stream.decorators.verb.SharePopulator;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer.State;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -123,13 +124,13 @@ public class ShareMessageDialogContent implements DialogContent
         actionKeys.put(EntityType.GROUP, "postGroupActivityServiceActionTaskHandler");
         actionKeys.put(EntityType.PERSON, "postPersonActivityServiceActionTaskHandler");
 
-        body.addStyleName("share-message-dialog-body");
+        body.addStyleName(StaticResourceBundle.INSTANCE.coreCss().shareMessageDialogBody());
 
         Label loading = new Label("Share this activity to your stream or another stream");
-        loading.setStyleName("form-title");
+        loading.setStyleName(StaticResourceBundle.INSTANCE.coreCss().formTitle());
         body.add(loading);
         
-        errorMsg.addStyleName("form-error-box");
+        errorMsg.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formErrorBox());
         errorMsg.setVisible(false);
         body.add(errorMsg);
         
@@ -141,18 +142,17 @@ public class ShareMessageDialogContent implements DialogContent
         body.add(messageRenderer.render(sharedMessage));
 
         Label messageLabel = new Label("Comment:");
-        messageLabel.addStyleName("form-label");
-        messageLabel.addStyleName("message-label");
+        messageLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
         body.add(messageLabel);
-        commentBox.addStyleName("message-box");
+        commentBox.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageBox());
         body.add(commentBox);
 
         countDown.setText(Integer.toString(MAXLENGTH));
-        countDown.addStyleName("characters-remaining");
+        countDown.addStyleName(StaticResourceBundle.INSTANCE.coreCss().charactersRemaining());
         body.add(countDown);
 
         final Label warning = new Label();
-        warning.addStyleName("warning");
+        warning.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warning());
         body.add(warning);
         Session.getInstance().getEventBus().addObserver(GotSystemSettingsResponseEvent.class,
                 new Observer<GotSystemSettingsResponseEvent>()
@@ -166,13 +166,13 @@ public class ShareMessageDialogContent implements DialogContent
         SystemSettingsModel.getInstance().fetch(null, true);
 
         share = new Hyperlink("share", History.getToken());
-        share.addStyleName("form-button");
-        share.addStyleName("form-share-button");
+        share.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formButton());
+        share.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formShareButton());
 
         Hyperlink cancel = new Hyperlink("Cancel", History.getToken());
-        cancel.addStyleName("form-button");
-        cancel.addStyleName("form-cancel-button");
-        cancel.addStyleName("share-message-cancel");
+        cancel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formButton());
+        cancel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formCancelButton());
+        cancel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().shareMessageCancel());
 
         body.add(share);
         body.add(cancel);
@@ -343,14 +343,14 @@ public class ShareMessageDialogContent implements DialogContent
         countDown.setText(charsRemaining.toString());
         if (charsRemaining >= 0)
         {
-            countDown.removeStyleName("over-character-limit");
-            share.removeStyleName("inactive");
+            countDown.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().overCharacterLimit());
+            share.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().inactive());
             inactive = false;
         }
         else
         {
-            countDown.addStyleName("over-character-limit");
-            share.addStyleName("inactive");
+            countDown.addStyleName(StaticResourceBundle.INSTANCE.coreCss().overCharacterLimit());
+            share.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inactive());
             inactive = true;
         }
     }

@@ -27,6 +27,7 @@ import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.events.data.GotStartPageTabsResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.start.GadgetPanel;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -67,7 +68,7 @@ public class DropZonePanel extends VerticalPanel
     {
         DropZonePanel retPanel = new DropZonePanel();
 
-        retPanel.addStyleName("drop-zone-column-33");
+        retPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().dropZoneColumn33());
         retPanel.setZoneNumber(inZoneNumber);
         return retPanel;
     }
@@ -82,7 +83,7 @@ public class DropZonePanel extends VerticalPanel
     public static DropZonePanel getTwoThirdColumnDropZone(final int inZoneNumber)
     {
         DropZonePanel retPanel = new DropZonePanel();
-        retPanel.addStyleName("drop-zone-column-66");
+        retPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().dropZoneColumn66());
         retPanel.setZoneNumber(inZoneNumber);
         return retPanel;
     }
@@ -97,7 +98,7 @@ public class DropZonePanel extends VerticalPanel
     public static DropZonePanel getHalfColumnDropZone(final int inZoneNumber)
     {
         DropZonePanel retPanel = new DropZonePanel();
-        retPanel.addStyleName("drop-zone-column-50");
+        retPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().dropZoneColumn50());
         retPanel.setZoneNumber(inZoneNumber);
         return retPanel;
     }
@@ -112,7 +113,7 @@ public class DropZonePanel extends VerticalPanel
     public static DropZonePanel getQuarterColumnDropZone(final int inZoneNumber)
     {
         DropZonePanel retPanel = new DropZonePanel();
-        retPanel.addStyleName("drop-zone-column-25");
+        retPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().dropZoneColumn25());
         retPanel.setZoneNumber(inZoneNumber);
         return retPanel;
     }
@@ -127,7 +128,7 @@ public class DropZonePanel extends VerticalPanel
     public static DropZonePanel getFullRowDropZone(final int inZoneNumber)
     {
         DropZonePanel retPanel = new DropZonePanel();
-        retPanel.addStyleName("drop-zone-row");
+        retPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().dropZoneRow());
         retPanel.setZoneNumber(inZoneNumber);
         return retPanel;
     }
@@ -148,16 +149,16 @@ public class DropZonePanel extends VerticalPanel
     public DropZonePanel()
     {
         // this class is used for maximizing the drop zone.
-        this.addStyleName("drop-zone");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().dropZone());
         Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
                 new Observer<UpdatedHistoryParametersEvent>()
                 {
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
                         lastHistoryEvent = event;
-                        if (event.getParameters().get("tab") != null)
+                        if (event.getParameters().get(StaticResourceBundle.INSTANCE.coreCss().tab()) != null)
                         {
-                            tabId = event.getParameters().get("tab");
+                            tabId = event.getParameters().get(StaticResourceBundle.INSTANCE.coreCss().tab());
                         }
                     }
                 }, true);
@@ -274,9 +275,9 @@ public class DropZonePanel extends VerticalPanel
                 HashMap<String, String> params = new HashMap<String, String>();
                 params.put("dropzone", getZoneNumber().toString());
 
-                if (lastHistoryEvent == null || lastHistoryEvent.getParameters().get("tab") == null)
+                if (lastHistoryEvent == null || lastHistoryEvent.getParameters().get(StaticResourceBundle.INSTANCE.coreCss().tab()) == null)
                 {
-                    params.put("tab", tabId);
+                    params.put(StaticResourceBundle.INSTANCE.coreCss().tab(), tabId);
                 }
 
                 Session.getInstance().getEventBus().notifyObservers(
@@ -284,7 +285,7 @@ public class DropZonePanel extends VerticalPanel
             }
         });
         spacer.add(addAGadget);
-        spacer.addStyleName("layout-spacer");
+        spacer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().layoutSpacer());
         spacer.setVisible(false);
         this.add(spacer);
     }

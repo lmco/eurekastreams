@@ -87,7 +87,7 @@ public class OrganizationTreeItemControllerTest
 
                 oneOf(children).setVisible(false);
 
-                oneOf(expand).removeStyleName("expanded");
+                oneOf(expand).removeStyleName(StaticResourceBundle.INSTANCE.coreCss().expanded());
             }
         });
 
@@ -116,7 +116,7 @@ public class OrganizationTreeItemControllerTest
                 oneOf(displayName).addClickHandler(with(any(ClickHandler.class)));
                 will(displayClickInt);
 
-                oneOf(treeItem).addStyleName("selected");
+                oneOf(treeItem).addStyleName(StaticResourceBundle.INSTANCE.coreCss().selected());
 
                 oneOf(parent).showChildren(true);
 
@@ -147,7 +147,7 @@ public class OrganizationTreeItemControllerTest
             {
                 oneOf(children).setVisible(true);
 
-                oneOf(expand).addStyleName("expanded");
+                oneOf(expand).addStyleName(StaticResourceBundle.INSTANCE.coreCss().expanded());
             }
         });
 
@@ -169,7 +169,7 @@ public class OrganizationTreeItemControllerTest
             {
                 oneOf(children).setVisible(false);
 
-                oneOf(expand).removeStyleName("expanded");
+                oneOf(expand).removeStyleName(StaticResourceBundle.INSTANCE.coreCss().expanded());
             }
         });
 
@@ -192,7 +192,7 @@ public class OrganizationTreeItemControllerTest
         context.checking(new Expectations()
         {
             {
-                oneOf(treeItem).addStyleName("selected");
+                oneOf(treeItem).addStyleName(StaticResourceBundle.INSTANCE.coreCss().selected());
                 oneOf(parent).showChildren(true);
                 oneOf(parent).showAncestors();
                 oneOf(eventBus).notifyObservers(with(any(OrgSelectedEvent.class)));
@@ -221,8 +221,8 @@ public class OrganizationTreeItemControllerTest
         context.checking(new Expectations()
         {
             {
-                oneOf(selectedTreeItem).removeStyleName("selected");
-                oneOf(treeItem).addStyleName("selected");
+                oneOf(selectedTreeItem).removeStyleName(StaticResourceBundle.INSTANCE.coreCss().selected());
+                oneOf(treeItem).addStyleName(StaticResourceBundle.INSTANCE.coreCss().selected());
                 oneOf(parent).showChildren(true);
                 oneOf(parent).showAncestors();
                 oneOf(eventBus).notifyObservers(with(any(OrgSelectedEvent.class)));

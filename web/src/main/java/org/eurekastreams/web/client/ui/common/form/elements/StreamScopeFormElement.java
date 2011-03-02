@@ -28,6 +28,7 @@ import org.eurekastreams.web.client.events.StreamScopeAddedEvent;
 import org.eurekastreams.web.client.events.StreamScopeDeletedEvent;
 import org.eurekastreams.web.client.ui.common.autocomplete.AutoCompleteEntityDropDownPanel;
 import org.eurekastreams.web.client.ui.common.stream.filters.list.StreamScopeListPanel;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -119,13 +120,13 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
         key = inKey;
         allowMultiple = inAllowMultiple;
         maxItems = inMaxItems;
-        this.addStyleName("scope-form-element");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().scopeFormElement());
 
         listMembers = new Label(inTitle);
-        listMembers.addStyleName("form-label");
+        listMembers.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
 
         final Label instructions = new Label(inInstructions);
-        instructions.addStyleName("form-instructions");
+        instructions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
         
         final Set<String> uniqueKeys = new HashSet<String>();
         for (StreamScope scope : inScopes)
@@ -191,7 +192,7 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
         if (isRequired)
         {
             Label requiredLabel = new Label("(required)");
-            requiredLabel.addStyleName("required-form-label");
+            requiredLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requiredFormLabel());
             this.add(requiredLabel);
         }
 
@@ -265,7 +266,7 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
      */
     public void onError(final String errMessage)
     {
-        listMembers.addStyleName("form-error");
+        listMembers.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**
@@ -273,7 +274,7 @@ public class StreamScopeFormElement extends FlowPanel implements FormElement
      */
     public void onSuccess()
     {
-        listMembers.removeStyleName("form-error");
+        listMembers.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
 }

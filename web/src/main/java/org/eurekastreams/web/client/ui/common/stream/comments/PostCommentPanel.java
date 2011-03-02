@@ -28,6 +28,7 @@ import org.eurekastreams.web.client.ui.TimerHandler;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Background;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -103,7 +104,7 @@ public class PostCommentPanel extends FlowPanel
     public PostCommentPanel(final Long inMessageId, final boolean inFullCollapse)
     {
         messageId = inMessageId;
-        this.addStyleName("message-comment");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageComment());
         unActivate();
         fullCollapse = inFullCollapse;
     }
@@ -117,7 +118,9 @@ public class PostCommentPanel extends FlowPanel
         {
             this.clear();
             Label postAComment = new Label("post a comment");
-            postAComment.addStyleName("unactive simulated-text-box");
+            postAComment.addStyleName(StaticResourceBundle.INSTANCE.coreCss().unactive());
+            postAComment.addStyleName(StaticResourceBundle.INSTANCE.coreCss().simulatedTextBox());
+            
             postAComment.addClickHandler(new ClickHandler()
             {
                 public void onClick(final ClickEvent event)
@@ -142,26 +145,27 @@ public class PostCommentPanel extends FlowPanel
         this.setVisible(true);
         Widget avatar = new AvatarWidget(Session.getInstance().getCurrentPerson().getId(), Session.getInstance()
                 .getCurrentPerson().getAvatarId(), EntityType.PERSON, Size.VerySmall, Background.White);
-        avatar.addStyleName("avatar");
+        avatar.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatar());
         this.add(avatar);
 
         FlowPanel body = new FlowPanel();
-        body.addStyleName("body");
+        body.addStyleName(StaticResourceBundle.INSTANCE.coreCss().body());
 
         commentBox = new TextArea();
         body.add(commentBox);
         commentBox.setFocus(true);
 
         countDown = new Label(Integer.toString(MAXLENGTH));
-        countDown.addStyleName("characters-remaining");
+        countDown.addStyleName(StaticResourceBundle.INSTANCE.coreCss().charactersRemaining());
         body.add(countDown);
 
         post = new Hyperlink("post", History.getToken());
-        post.addStyleName("post-button");
-        post.addStyleName("inactive");
+        post.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postButton());
+        post.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inactive());
 
         final Label warning = new Label();
-        warning.addStyleName("warning hidden");
+        warning.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warning());
+        warning.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
         body.add(warning);
 
         Session.getInstance().getEventBus().addObserver(GotSystemSettingsResponseEvent.class,
@@ -172,7 +176,7 @@ public class PostCommentPanel extends FlowPanel
                         String text = event.getResponse().getContentWarningText();
                         if (text != null && !text.isEmpty())
                         {
-                            warning.removeStyleName("hidden");
+                            warning.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
                             warning.setText(text);
                         }
                     }
@@ -282,18 +286,18 @@ public class PostCommentPanel extends FlowPanel
         countDown.setText(charsRemaining.toString());
         if (charsRemaining >= 0 && charsRemaining != MAXLENGTH)
         {
-            countDown.removeStyleName("over-character-limit");
-            post.removeStyleName("inactive");
+            countDown.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().overCharacterLimit());
+            post.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().inactive());
             inactive = false;
         }
         else
         {
             if (charsRemaining != MAXLENGTH)
             {
-                countDown.addStyleName("over-character-limit");
+                countDown.addStyleName(StaticResourceBundle.INSTANCE.coreCss().overCharacterLimit());
 
             }
-            post.addStyleName("inactive");
+            post.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inactive());
             inactive = true;
         }
     }

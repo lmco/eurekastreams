@@ -19,13 +19,14 @@ import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.web.client.events.ClearUploadedImageEvent;
-import org.eurekastreams.web.client.events.ClearUploadedImageEvent.ImageType;
 import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.ClearUploadedImageEvent.ImageType;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.imagecrop.ImageCropContent;
 import org.eurekastreams.web.client.ui.common.form.elements.avatar.strategies.ImageUploadStrategy;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -36,11 +37,11 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 
 /**
  * The form element for the avatar upload. Its not a REAL form element because it doesnt save back with the form itself,
@@ -144,14 +145,14 @@ public class AvatarUploadFormElement extends FlowPanel
         Boolean resizeable = strategy.isResizable();
 
         errorBox = new FlowPanel();
-        errorBox.addStyleName("form-error-box");
+        errorBox.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formErrorBox());
         errorBox.add(new Label("There was an error uploading your image. Please be sure "
                 + "that your photo is under 4MB and is a PNG, JPG, or GIF."));
 
         errorBox.setVisible(false);
 
-        this.addStyleName("form-avatar-upload");
-        this.addStyleName("form-element");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formAvatarUpload());
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formElement());
 
         processor = inProcessor;
         // AvatarEntity Entity = inEntity;
@@ -162,36 +163,36 @@ public class AvatarUploadFormElement extends FlowPanel
         uploadForm.setMethod(FormPanel.METHOD_POST);
 
         Label photoLabel = new Label(label);
-        photoLabel.addStyleName("form-label");
+        photoLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
         panel.add(photoLabel);
 
         FlowPanel avatarModificationPanel = new FlowPanel();
-        avatarModificationPanel.addStyleName("avatar-modification-panel");
+        avatarModificationPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatarModificationPanel());
 
-        avatarContainer.addStyleName("avatar-container");
+        avatarContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatarContainer());
         avatarModificationPanel.add(avatarContainer);
 
         FlowPanel photoButtonPanel = new FlowPanel();
-        photoButtonPanel.addStyleName("form-photo-button-panel");
+        photoButtonPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formPhotoButtonPanel());
 
         if (resizeable)
         {
             editButton = new Anchor("Resize");
-            editButton.addStyleName("form-resize-button");
-            editButton.addStyleName("form-button");
+            editButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formResizeButton());
+            editButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formButton());
             photoButtonPanel.add(editButton);
         }
 
         deleteButton = new Anchor("Delete");
-        deleteButton.addStyleName("form-delete-button");
-        deleteButton.addStyleName("form-button");
+        deleteButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formDeleteButton());
+        deleteButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formButton());
         photoButtonPanel.add(deleteButton);
 
         avatarModificationPanel.add(photoButtonPanel);
         panel.add(avatarModificationPanel);
 
         FlowPanel uploadPanel = new FlowPanel();
-        uploadPanel.addStyleName("form-upload-panel");
+        uploadPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formUploadPanel());
         uploadPanel.add(errorBox);
 
         // Wrapping the FileUpload because otherwise IE7 shifts it way
@@ -200,19 +201,19 @@ public class AvatarUploadFormElement extends FlowPanel
         FlowPanel fileUploadWrapper = new FlowPanel();
         FileUpload upload = new FileUpload();
         upload.setName("imageUploadFormElement");
-        upload.addStyleName("form-avatar-file-upload");
+        upload.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formAvatarUpload());
         fileUploadWrapper.add(upload);
         uploadPanel.add(fileUploadWrapper);
 
         uploadPanel.add(new Label(description));
         Anchor submitButton = new Anchor("");
-        submitButton.addStyleName("form-upload-button");
-        submitButton.addStyleName("form-button");
+        submitButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formUploadButton());
+        submitButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formButton());
 
         uploadPanel.add(submitButton);
 
         hiddenImage = new Image();
-        hiddenImage.addStyleName("avatar-hidden-original");
+        hiddenImage.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatarHiddenOriginal());
         uploadPanel.add(hiddenImage);
 
         panel.add(uploadPanel);

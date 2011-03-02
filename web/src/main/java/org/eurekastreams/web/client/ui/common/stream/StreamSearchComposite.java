@@ -30,6 +30,7 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LabeledTextBox;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.stream.filters.list.CustomStreamDialogContent;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -75,7 +76,7 @@ public class StreamSearchComposite extends FlowPanel
     /**
      * Close button.
      */
-    Label closeButton = new Label("close");
+    Label closeButton = new Label(StaticResourceBundle.INSTANCE.coreCss().close());
 
     /**
      * Search duration.
@@ -136,51 +137,51 @@ public class StreamSearchComposite extends FlowPanel
     {
         FlowPanel streamSearch = new FlowPanel();
 
-        this.addStyleName("stream-search-composite");
-        streamSearch.addStyleName("search-header search-list");
+        streamSearch.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchHeader());
+        streamSearch.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchList());
 
         InlineLabel fader = new InlineLabel();
-        fader.addStyleName("stream-title-fader");
+        fader.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamTitleFader());
         streamSearch.add(fader);
 
-        titleWrapper.addStyleName("title-wrapper");
+        titleWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().titleWrapper());
 
         titleLbl = new Label();
-        titleLbl.addStyleName("title");
+        titleLbl.addStyleName(StaticResourceBundle.INSTANCE.coreCss().title());
         titleWrapper.add(titleLbl);
 
         titleWrapper.add(titleLink);
-        titleLink.addStyleName("title");
+        titleLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().title());
         titleLink.setVisible(false);
 
         streamSearch.add(titleWrapper);
 
         addGadgetLink = new InlineHyperlink("create app", "");
-        addGadgetLink.addStyleName("add-as-gadget");
+        addGadgetLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addAsGadget());
         streamSearch.add(addGadgetLink);
 
         searchTerm.setTitle("search this stream");
         streamSearch.add(searchTerm);
 
-        searchGo.addStyleName("search-list-button");
+        searchGo.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchListButton());
         streamSearch.add(searchGo);
 
         searchDescription.setVisible(false);
-        searchDescription.addStyleName("search-description");
+        searchDescription.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchDescription());
 
-        closeButton.addStyleName("close");
+        closeButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().close());
         searchDescription.add(closeButton);
 
-        saveSearch.addStyleName("save-search");
+        saveSearch.addStyleName(StaticResourceBundle.INSTANCE.coreCss().saveSearch());
         searchDescription.add(saveSearch);
 
         Label searchResultsFor = new Label("Results for: ");
-        searchResultsFor.addStyleName("search-results-for");
+        searchResultsFor.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchResultsFor());
 
         searchDescription.add(searchResultsFor);
-        searchTermLabel.addStyleName("search-term");
-        viewLbl.addStyleName("search-term");
-        in.addStyleName("search-results-for");
+        searchTermLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchTerm());
+        viewLbl.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchTerm());
+        in.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchResultsFor());
         searchDescription.add(searchTermLabel);
         searchDescription.add(in);
         searchDescription.add(viewLbl);
@@ -362,7 +363,7 @@ public class StreamSearchComposite extends FlowPanel
     {
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("action", "addGadget");
-        params.put("url", "{d7a58391-5375-4c76-b5fc-a431c42a7555}");
+        params.put(StaticResourceBundle.INSTANCE.coreCss().url(), "{d7a58391-5375-4c76-b5fc-a431c42a7555}");
         params.put("prefs", "{\"streamQuery\":" + makeJsonString(streamQuery) + ",\"gadgetTitle\":"
                 + makeJsonString(gadgetTitle) + ",\"streamLocation\":" + makeJsonString(location) + "}");
         String url = Session.getInstance().generateUrl(new CreateUrlRequest(Page.START, params));

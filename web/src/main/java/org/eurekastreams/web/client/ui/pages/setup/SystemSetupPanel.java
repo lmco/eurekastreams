@@ -33,6 +33,7 @@ import org.eurekastreams.web.client.ui.common.form.elements.BasicTextBoxFormElem
 import org.eurekastreams.web.client.ui.common.form.elements.PersonLookupFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.ValueOnlyFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.userassociation.UserAssociationFormElement;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -50,10 +51,10 @@ public class SystemSetupPanel extends FlowPanel
     {
         Session session = Session.getInstance();
 
-        RootPanel.get().setStyleName("setup");
+        RootPanel.get().setStyleName(StaticResourceBundle.INSTANCE.coreCss().setup());
 
         FlowPanel welcome = new FlowPanel();
-        welcome.addStyleName("welcome-to-eureka");
+        welcome.addStyleName(StaticResourceBundle.INSTANCE.coreCss().welcomeToEureka());
 
         welcome.add(new Label("Your installation is almost complete!"));
         welcome.add(new Label("Please complete the following steps."));
@@ -81,7 +82,7 @@ public class SystemSetupPanel extends FlowPanel
         form.addFormElement(orgParent);
 
         Label step1 = form.addFormLabel("");
-        step1.addStyleName("step-1");
+        step1.addStyleName(StaticResourceBundle.INSTANCE.coreCss().step1());
 
         final BasicTextBoxFormElement orgTitle = new BasicTextBoxFormElement("Name your organization.", "name", "",
                 "This will be the root of the directory structure.", true);
@@ -92,13 +93,13 @@ public class SystemSetupPanel extends FlowPanel
         form.addFormElement(shortName);
 
         Label step2 = form.addFormLabel("");
-        step2.addStyleName("step-2");
+        step2.addStyleName(StaticResourceBundle.INSTANCE.coreCss().step2());
 
         final UserAssociationFormElement userAssoc = new UserAssociationFormElement(settings);
         form.addFormElement(userAssoc);
 
         Label step3 = form.addFormLabel("");
-        step3.addStyleName("step-3");
+        step3.addStyleName(StaticResourceBundle.INSTANCE.coreCss().step3());
 
         final ArrayList<PersonModelView> coordinators = new ArrayList<PersonModelView>();
 
@@ -109,16 +110,12 @@ public class SystemSetupPanel extends FlowPanel
         form.addFormElement(personLookup);
 
         Label step4 = form.addFormLabel("");
-        step4.addStyleName("step-4");
+        step4.addStyleName(StaticResourceBundle.INSTANCE.coreCss().step4());
 
         Label step4Label = form.addFormLabel("Save these settings.");
-        step4Label.addStyleName("form-label step4-label");
 
         Label step4Instructions = form.addFormLabel("Organization coordinators can always edit these settings from "
                 + " the 'System' tab of the settings page.");
-        step4Instructions.addStyleName("step4-instructions form-instructions");
-        step4Instructions.removeStyleName("form-label");
-        step4Instructions.removeStyleName("form-standalone-label");
 
         this.add(form);
     }

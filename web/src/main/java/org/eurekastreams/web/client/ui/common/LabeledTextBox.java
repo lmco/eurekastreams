@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.web.client.ui.common;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 import com.google.gwt.user.client.ui.FocusListener;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -94,7 +96,7 @@ public class LabeledTextBox extends TextBox
         else
         {
             labeled = false;
-            this.removeStyleName("empty-labeled-textbox");
+            this.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().emptyLabeledTextbox());
         }
     }
 
@@ -106,7 +108,7 @@ public class LabeledTextBox extends TextBox
         if (!hasFocus)
         {
             labeled = true;
-            this.addStyleName("empty-labeled-textbox");
+            this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().emptyLabeledTextbox());
             super.setText(label);
         }
         else
@@ -125,7 +127,7 @@ public class LabeledTextBox extends TextBox
     public void setText(final String text)
     {
         labeled = false;
-        this.removeStyleName("empty-labeled-textbox");
+        this.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().emptyLabeledTextbox());
         super.setText(text);
     }
 

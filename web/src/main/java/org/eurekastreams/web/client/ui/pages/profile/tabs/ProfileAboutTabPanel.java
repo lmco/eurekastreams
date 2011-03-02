@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.web.client.ui.pages.profile.tabs;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
@@ -36,10 +38,11 @@ public abstract class ProfileAboutTabPanel extends FlowPanel
      */
     protected ProfileAboutTabPanel()
     {
-        addStyleName("layout-container profile-about");
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().layoutContainer());
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileAbout());
 
-        leftColumn.addStyleName("profile-about-column");
-        rightColumn.addStyleName("profile-about-column");
+        leftColumn.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileAboutColumn());
+        rightColumn.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileAboutColumn());
 
         add(leftColumn);
         add(rightColumn);
@@ -77,10 +80,10 @@ public abstract class ProfileAboutTabPanel extends FlowPanel
     protected Panel createTitledPanel(final String title)
     {
         Panel panel = new FlowPanel();
-        panel.addStyleName("profile-about-background");
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileAboutBackground());
 
         Label label = new Label(title);
-        label.addStyleName("profile-about-section-header");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileAboutSectionHeader());
         panel.add(label);
 
         return panel;

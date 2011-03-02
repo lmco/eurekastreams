@@ -28,6 +28,7 @@ import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.AuthorizeUpdateGroupResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.BackgroundItemLinksPanel;
 
 import com.google.gwt.user.client.ui.HTML;
@@ -48,7 +49,7 @@ public class GroupProfileAboutTabPanel extends ProfileAboutTabPanel
     public GroupProfileAboutTabPanel(final DomainGroupModelView group)
     {
         final HashMap<String, String> basicInfoTabURL = new HashMap<String, String>();
-        basicInfoTabURL.put("tab", "Basic Info");
+        basicInfoTabURL.put(StaticResourceBundle.INSTANCE.coreCss().tab(), "Basic Info");
 
         CreateUrlRequest target = new CreateUrlRequest(Page.GROUP_SETTINGS, group.getShortName());
         target.setParameters(basicInfoTabURL);
@@ -76,7 +77,7 @@ public class GroupProfileAboutTabPanel extends ProfileAboutTabPanel
         else
         {
             HTML overview = new HTML(group.getOverview());
-            overview.addStyleName("profile-about-overview");
+            overview.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileAboutOverview());
             overviewPanel.add(overview);
         }
 

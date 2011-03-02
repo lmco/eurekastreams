@@ -34,6 +34,7 @@ import org.eurekastreams.web.client.model.Insertable;
 import org.eurekastreams.web.client.model.Updateable;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.form.elements.FormElement;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -152,23 +153,24 @@ public class FormBuilder extends FlowPanel
     {
         baseModel = inBaseModel;
         method = inMethod;
-        submitButton.addStyleName("form-submit-button");
-        cancelButton.addStyleName("form-cancel-button");
-        errorBox.addStyleName("form-error-box");
+        submitButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formSubmitButton());
+        cancelButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formCancelButton());
+        errorBox.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formErrorBox());
         formContainer.add(errorBox);
 
-        formContainer.addStyleName("form-container");
+        formContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formContainer());
 
         formContainer.add(formElementsContainer);
 
         fadePanel.setVisible(false);
-        fadePanel.addStyleName("form-disable");
+        fadePanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formDisable());
         formContainer.add(fadePanel);
 
         formContainer.add(submitButton);
 
         processingSpinny.setVisible(false);
-        processingSpinny.addStyleName("form-submit-spinny form-processing-spinny");
+        processingSpinny.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formSubmitSpinny());
+        processingSpinny.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formProcessingSpinny());
         formContainer.add(processingSpinny);
 
         formContainer.add(cancelButton);
@@ -176,7 +178,7 @@ public class FormBuilder extends FlowPanel
         if (!title.equals(""))
         {
             formTitle.setText(title);
-            formTitle.addStyleName("form-title");
+            formTitle.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formTitle());
             this.add(formTitle);
         }
 
@@ -372,7 +374,7 @@ public class FormBuilder extends FlowPanel
      */
     public void setSubmitButtonClass(final String cssClass)
     {
-        submitButton.removeStyleName("form-submit-button");
+        submitButton.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formSubmitButton());
         submitButton.addStyleName(cssClass);
     }
 
@@ -420,7 +422,7 @@ public class FormBuilder extends FlowPanel
     {
         if (element instanceof Widget)
         {
-            ((Widget) element).addStyleName("form-element");
+            ((Widget) element).addStyleName(StaticResourceBundle.INSTANCE.coreCss().formElement());
             if (addedLastFormElement)
             {
                 formElementsContainer.insert((Widget) element, formElementsContainer.getWidgetCount() - 1);
@@ -446,7 +448,7 @@ public class FormBuilder extends FlowPanel
     {
         if (element instanceof Widget)
         {
-            ((Widget) element).addStyleName("form-element");
+            ((Widget) element).addStyleName(StaticResourceBundle.INSTANCE.coreCss().formElement());
             formElementsContainer.insert((Widget) element, formElementsContainer.getWidgetCount());
             addedLastFormElement = true;
         }
@@ -481,7 +483,7 @@ public class FormBuilder extends FlowPanel
     public void addFormDivider()
     {
         Label divider = new Label();
-        divider.addStyleName("form-divider");
+        divider.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formDivider());
         formElementsContainer.add(divider);
     }
 
@@ -501,7 +503,7 @@ public class FormBuilder extends FlowPanel
     public void addClear()
     {
         FlowPanel clear = new FlowPanel();
-        clear.addStyleName("clear");
+        clear.addStyleName(StaticResourceBundle.INSTANCE.coreCss().clear());
         formElementsContainer.add(clear);
     }
 
@@ -515,8 +517,8 @@ public class FormBuilder extends FlowPanel
     public Label addFormLabel(final String header)
     {
         Label subHeader = new Label(header);
-        subHeader.addStyleName("form-label");
-        subHeader.addStyleName("form-standalone-label");
+        subHeader.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
+        subHeader.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formStandaloneLabel());
         formElementsContainer.add(subHeader);
 
         return subHeader;

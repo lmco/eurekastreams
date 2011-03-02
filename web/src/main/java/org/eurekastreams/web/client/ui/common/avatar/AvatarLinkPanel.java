@@ -15,20 +15,21 @@
  */
 package org.eurekastreams.web.client.ui.common.avatar;
 
+import java.util.HashMap;
+
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Background;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.InlineHyperlink;
 import com.google.gwt.user.client.ui.Panel;
-
-import java.util.HashMap;
 
 /**
  * Displays an avatar and makes it link to the proper item's profile page.
@@ -48,7 +49,7 @@ public class AvatarLinkPanel extends Composite
     public AvatarLinkPanel(final EntityType entityType, final String entityUniqueId, final AvatarWidget avatar)
     {
         Panel main = new FlowPanel();
-        main.addStyleName("avatar");
+        main.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatar());
         initWidget(main);
 
         Page page;
@@ -68,7 +69,7 @@ public class AvatarLinkPanel extends Composite
             return;
         }
         HashMap<String, String> params = new HashMap<String, String>();
-        params.put("tab", "Stream");
+        params.put(StaticResourceBundle.INSTANCE.coreCss().tab(), "Stream");
 
         String linkUrl = Session.getInstance().generateUrl(new CreateUrlRequest(page, entityUniqueId, params));
 

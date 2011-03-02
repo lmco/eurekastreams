@@ -17,11 +17,11 @@ package org.eurekastreams.server.service.actions.strategies.directory;
 
 import java.util.List;
 
-import org.hibernate.search.jpa.FullTextQuery;
 import org.eurekastreams.commons.search.ProjectionSearchRequestBuilder;
 import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.domain.ResourceSortCriteria;
+import org.hibernate.search.jpa.FullTextQuery;
 
 /**
  * Strategy to get the children of an organization.

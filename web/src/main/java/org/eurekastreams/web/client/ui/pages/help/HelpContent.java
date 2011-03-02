@@ -24,6 +24,7 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.GroupModel;
 import org.eurekastreams.web.client.model.SystemSettingsModel;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -86,7 +87,7 @@ public class HelpContent extends Composite
     public HelpContent()
     {
         panel = new FlowPanel();
-        panel.addStyleName("help");
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().help());
 
         // get the system settings, asynchronously
         Session.getInstance().getEventBus().addObserver(GotSystemSettingsResponseEvent.class,
@@ -131,13 +132,13 @@ public class HelpContent extends Composite
     private void buildPage(final SystemSettings settings, final DomainGroupModelView supportGroup)
     {
         FlowPanel leftPanel = new FlowPanel();
-        leftPanel.addStyleName("left-panel");
+        leftPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().leftPanel());
 
         if (supportGroup != null)
         {
             // there's a support group - add the "Support Stream" panel
             SupportStreamHelpPanel supportStreamHelpPanel = new SupportStreamHelpPanel(settings, supportGroup);
-            supportStreamHelpPanel.addStyleName("support-stream-help-panel");
+            supportStreamHelpPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().supportStreamHelpPanel());
             leftPanel.add(supportStreamHelpPanel);
         }
 
@@ -150,15 +151,15 @@ public class HelpContent extends Composite
             // we have either the support email address or phone number - show the contact panel
             SupportContactHelpPanel supportContactHelpPanel = new SupportContactHelpPanel(supportPhoneNumber,
                     supportEmailAddress);
-            supportContactHelpPanel.addStyleName("support-stream-contact-panel");
+            supportContactHelpPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().supportStreamContactPanel());
             leftPanel.add(supportContactHelpPanel);
         }
 
         DocumentationHelpPanel documentationHelpPanel = new DocumentationHelpPanel();
-        documentationHelpPanel.addStyleName("help-documentation-panel");
+        documentationHelpPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().helpDocumentationPanel());
 
         FlowPanel documentationWrapperPanel = new FlowPanel();
-        documentationWrapperPanel.addStyleName("help-documentation-wrapper");
+        documentationWrapperPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().helpDocumentationWrapper());
         documentationWrapperPanel.add(documentationHelpPanel);
 
         FlowPanel rightPanel = new FlowPanel();
@@ -166,21 +167,21 @@ public class HelpContent extends Composite
 
         String version = new WidgetJSNIFacadeImpl().getWindowValue("appVersion");
         Label versionLabel = new Label("Eureka Streams version " + version);
-        versionLabel.addStyleName("help-app-version");
+        versionLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().helpAppVersion());
         rightPanel.add(versionLabel);
 
         if (leftPanel.getWidgetCount() > 0)
         {
             // we have widgets in the left panel, so show it
-            leftPanel.addStyleName("left-panel");
+            leftPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().leftPanel());
             panel.add(leftPanel);
 
-            rightPanel.addStyleName("right-panel");
+            rightPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().rightPanel());
         }
         else
         {
             // no widgets in the left panel - show the right panel only, and centered
-            rightPanel.addStyleName("center-panel");
+            rightPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().centerPanel());
         }
         panel.add(rightPanel);
     }

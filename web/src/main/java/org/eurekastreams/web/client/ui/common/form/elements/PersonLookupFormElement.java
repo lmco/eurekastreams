@@ -24,6 +24,7 @@ import org.eurekastreams.web.client.ui.common.PersonPanel;
 import org.eurekastreams.web.client.ui.common.EditPanel.Mode;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.lookup.EmployeeLookupContent;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -82,18 +83,18 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
     public PersonLookupFormElement(final String inTitle, final String inLookupText, final String inInstructions,
             final String inKey, final Collection<PersonModelView> inPersons, final boolean inRequired)
     {
-        this.addStyleName("person-lookup-form-element");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().personLookupFormElement());
         // persons will get populated below using the addPersonMethod()
         // persons = new HashSet<Person>(inPersons);
         key = inKey;
         label.setText(inTitle);
-        label.addStyleName("form-label");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
         Label requiredLabel = new Label();
         Label instructions = new Label();
 
         Label lookup = new Label(inLookupText);
-        lookup.addStyleName("form-button");
-        lookup.addStyleName("form-lookup-button");
+        lookup.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formButton());
+        lookup.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLookupButton());
         lookup.addClickListener(new ClickListener()
         {
             public void onClick(final Widget arg0)
@@ -107,11 +108,11 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
 
         if (inRequired)
         {
-            requiredLabel.addStyleName("required-form-label");
+            requiredLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requiredFormLabel());
             requiredLabel.setText("(required)");
         }
 
-        instructions.addStyleName("form-instructions");
+        instructions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
         instructions.setText(inInstructions);
 
         this.add(label);
@@ -137,7 +138,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
         if (!persons.contains(inPerson))
         {
             final FlowPanel personContainer = new FlowPanel();
-            personContainer.addStyleName("person-container");
+            personContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().personContainer());
 
             EditPanel editPanel = new EditPanel(personContainer, Mode.DELETE);
             personContainer.add(editPanel);
@@ -217,7 +218,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
      */
     public void onError(final String errMessage)
     {
-        label.addStyleName("form-error");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**
@@ -225,7 +226,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
      */
     public void onSuccess()
     {
-        label.removeStyleName("form-error");
+        label.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
 }

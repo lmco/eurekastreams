@@ -37,10 +37,10 @@ public class BookmarkPopulatorTest
     public final void populate()
     {
         LinkInformation info = new LinkInformation();
-        info.setDescription("description");
-        info.setUrl("url");
-        info.setTitle("title");
-        info.setSelectedThumbnail("thumbnail");
+        info.setDescription(StaticResourceBundle.INSTANCE.coreCss().description());
+        info.setUrl(StaticResourceBundle.INSTANCE.coreCss().url());
+        info.setTitle(StaticResourceBundle.INSTANCE.coreCss().title());
+        info.setSelectedThumbnail(StaticResourceBundle.INSTANCE.coreCss().thumbnail());
 
         BookmarkPopulator sut = new BookmarkPopulator();
         sut.setLinkInformation(info);
@@ -51,13 +51,13 @@ public class BookmarkPopulatorTest
 
         Assert.assertEquals(BaseObjectType.BOOKMARK, activity
                 .getBaseObjectType());
-        Assert.assertEquals("description", activity.getBaseObjectProperties()
-                .get("description"));
-        Assert.assertEquals("url", activity.getBaseObjectProperties().get(
+        Assert.assertEquals(StaticResourceBundle.INSTANCE.coreCss().description(), activity.getBaseObjectProperties()
+                .get(StaticResourceBundle.INSTANCE.coreCss().description()));
+        Assert.assertEquals(StaticResourceBundle.INSTANCE.coreCss().url(), activity.getBaseObjectProperties().get(
                 "targetUrl"));
-        Assert.assertEquals("title", activity.getBaseObjectProperties().get(
+        Assert.assertEquals(StaticResourceBundle.INSTANCE.coreCss().title(), activity.getBaseObjectProperties().get(
                 "targetTitle"));
-        Assert.assertEquals("thumbnail", activity.getBaseObjectProperties()
-                .get("thumbnail"));
+        Assert.assertEquals(StaticResourceBundle.INSTANCE.coreCss().thumbnail(), activity.getBaseObjectProperties()
+                .get(StaticResourceBundle.INSTANCE.coreCss().thumbnail()));
     }
 }

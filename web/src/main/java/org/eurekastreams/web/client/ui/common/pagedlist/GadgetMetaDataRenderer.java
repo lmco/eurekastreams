@@ -19,6 +19,7 @@ import org.eurekastreams.server.domain.gadgetspec.GadgetMetaDataDTO;
 import org.eurekastreams.web.client.model.GadgetDefinitionModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.GadgetMetaDataPanel;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Panel;
 
@@ -38,7 +39,7 @@ public class GadgetMetaDataRenderer implements ItemRenderer<GadgetMetaDataDTO>
      */
     public Panel render(final GadgetMetaDataDTO item)
     {
-        String tabParam = Session.getInstance().getParameterValue("tab");
+        String tabParam = Session.getInstance().getParameterValue(StaticResourceBundle.INSTANCE.coreCss().tab());
         return new GadgetMetaDataPanel(item, tabParam != null ? Long.valueOf(tabParam) : null,
                 GadgetDefinitionModel.getInstance(), "Are you sure you want to delete this app? "
                         + "Deleting this app will remove it from the start page of every user that has "

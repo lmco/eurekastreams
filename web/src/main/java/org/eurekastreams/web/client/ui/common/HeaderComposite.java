@@ -27,6 +27,7 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.DialogFactory;
 import org.eurekastreams.web.client.ui.common.notification.NotificationCountWidget;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.search.GlobalSearchComposite;
 
 import com.google.gwt.user.client.History;
@@ -120,37 +121,37 @@ public class HeaderComposite extends Composite
         FlowPanel navPanel = new FlowPanel();
 
         Anchor externalLink = new Anchor("Eureka Streams", "http://www.eurekastreams.org", "_blank");
-        externalLink.addStyleName("nav-bar-button");
+        externalLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
 
         Hyperlink startPageLink = new Hyperlink("Start Page", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.START)));
-        startPageLink.addStyleName("nav-bar-button");
+        startPageLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
         Hyperlink activityLink = new Hyperlink("Activity", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.ACTIVITY)));
-        activityLink.addStyleName("nav-bar-button");
+        activityLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
         Hyperlink directoryLink = new Hyperlink("Profiles", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.ORGANIZATIONS)));
-        directoryLink.addStyleName("nav-bar-button");
+        directoryLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
 
         Hyperlink settingsLink = new Hyperlink("Settings", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.SETTINGS)));
-        settingsLink.addStyleName("nav-bar-button");
+        settingsLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
         Hyperlink myProfileLink = new Hyperlink("My Profile", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.PEOPLE, viewer.getAccountId())));
-        myProfileLink.addStyleName("nav-bar-button");
+        myProfileLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
         Hyperlink helpLink = new Hyperlink("Help", Session.getInstance().generateUrl(new CreateUrlRequest(Page.HELP)));
-        helpLink.addStyleName("nav-bar-button");
+        helpLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBarButton());
 
         externalPageLinkPanel.add(externalLink);
-        externalPageLinkPanel.addStyleName("external-header-button");
+        externalPageLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().externalHeaderButton());
         startPageLinkPanel.add(startPageLink);
-        startPageLinkPanel.addStyleName("start-header-button");
+        startPageLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().startHeaderButton());
         activityLinkPanel.add(activityLink);
-        activityLinkPanel.addStyleName("activity-header-button");
+        activityLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().activityHeaderButton());
         directoryLinkPanel.add(directoryLink);
-        directoryLinkPanel.addStyleName("directory-header-button");
+        directoryLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().directoryHeaderButton());
         settingsLinkPanel.add(settingsLink);
-        settingsLinkPanel.addStyleName("settings-header-button");
+        settingsLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().settingsHeaderButton());
 
         // galleryLinkPanel.add(galleryLink);
 
@@ -204,13 +205,13 @@ public class HeaderComposite extends Composite
 
             FlowPanel myProfileLinkPanel = new FlowPanel();
             myProfileLinkPanel.add(myProfileLink);
-            myProfileLinkPanel.addStyleName("my-profile-header-button");
+            myProfileLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().myProfileHeaderButton());
             userNav.add(myProfileLinkPanel);
 
             userNav.add(settingsLinkPanel);
 
             FlowPanel helpLinkPanel = new FlowPanel();
-            helpLinkPanel.addStyleName("help-header-button");
+            helpLinkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().helpHeaderButton());
             helpLinkPanel.add(helpLink);
             userNav.add(helpLinkPanel);
 
@@ -227,11 +228,11 @@ public class HeaderComposite extends Composite
         }
 
         // Style the Elements
-        panel.addStyleName("header-bar");
-        navPanel.addStyleName("nav-bar");
-        siteLabelingContainer.addStyleName("site-labeling");
-        mainNav.addStyleName("main-nav");
-        userNav.addStyleName("user-bar");
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().headerBar());
+        navPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navBar());
+        siteLabelingContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().siteLabeling());
+        mainNav.addStyleName(StaticResourceBundle.INSTANCE.coreCss().mainNav());
+        userNav.addStyleName(StaticResourceBundle.INSTANCE.coreCss().userBar());
 
         // Add the elements to the main panel
         navPanel.add(mainNav);
@@ -269,12 +270,12 @@ public class HeaderComposite extends Composite
     {
         for (Page specificPage : linkMap.keySet())
         {
-            linkMap.get(specificPage).removeStyleName("active");
+            linkMap.get(specificPage).removeStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
         }
 
         if (linkMap.containsKey(page))
         {
-            linkMap.get(page).addStyleName("active");
+            linkMap.get(page).addStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
         }
     }
 }
