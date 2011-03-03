@@ -307,7 +307,7 @@ public class ShareMessageDialogContent implements DialogContent
      */
     public String getCssName()
     {
-        return "share-message-dialog";
+        return StaticResourceBundle.INSTANCE.coreCss().shareMessageDialog();
     }
 
     /**

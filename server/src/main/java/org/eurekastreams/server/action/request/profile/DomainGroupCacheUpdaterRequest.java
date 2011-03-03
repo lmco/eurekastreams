@@ -17,11 +17,9 @@ package org.eurekastreams.server.action.request.profile;
 
 import java.io.Serializable;
 
-import org.eurekastreams.server.action.execution.profile.DomainGroupCacheUpdaterAsyncExecution;
-
 /**
  * Request class for the {@link DomainGroupCacheUpdaterAsyncExecution}.
- *
+ * 
  */
 public class DomainGroupCacheUpdaterRequest implements Serializable
 {
@@ -29,17 +27,17 @@ public class DomainGroupCacheUpdaterRequest implements Serializable
      * Serialization version id.
      */
     private static final long serialVersionUID = -4780527099952462926L;
-    
+
     /**
      * Id of the group context for the request.
      */
     private Long domainGroupId;
-    
+
     /**
      * Whether or not the request context was called as an update.
      */
     private boolean update;
-    
+
     /**
      * For serialization only.
      */
@@ -48,21 +46,25 @@ public class DomainGroupCacheUpdaterRequest implements Serializable
     {
         // no op.
     }
-    
+
     /**
      * Constructor.
-     * @param inDomainGroupId - value of the group id to use for this request.
-     * @param inUpdate - value of the update flag to indicate whether or not the action should
-     * be performed in the context of an update.
+     * 
+     * @param inDomainGroupId
+     *            - value of the group id to use for this request.
+     * @param inUpdate
+     *            - value of the update flag to indicate whether or not the action should be performed in the context of
+     *            an update.
      */
     public DomainGroupCacheUpdaterRequest(final Long inDomainGroupId, final boolean inUpdate)
     {
         domainGroupId = inDomainGroupId;
         update = inUpdate;
     }
-    
+
     /**
      * Retrieve the group id for this request.
+     * 
      * @return - long value of the group id.
      */
     public Long getDomainGroupId()
@@ -72,28 +74,33 @@ public class DomainGroupCacheUpdaterRequest implements Serializable
 
     /**
      * Set the group id for this request.
-     * @param inDomainGroupId the group id
+     * 
+     * @param inDomainGroupId
+     *            the group id
      */
     public void setDomainGroupId(final Long inDomainGroupId)
     {
-    	this.domainGroupId = inDomainGroupId;
+        this.domainGroupId = inDomainGroupId;
     }
-    
+
     /**
      * Boolean indicating whether or not this request is in the context of an update or not.
+     * 
      * @return - boolean value to indicate update context.
      */
     public boolean getIsUpdate()
     {
         return update;
     }
-    
+
     /**
      * Indicating whether or not this request is in the context of an update or not.
-     * @param inUpdate boolean value to indicate update context.
+     * 
+     * @param inUpdate
+     *            boolean value to indicate update context.
      */
     public void setIsUpdate(final boolean inUpdate)
     {
-    	this.update = inUpdate;
+        this.update = inUpdate;
     }
 }

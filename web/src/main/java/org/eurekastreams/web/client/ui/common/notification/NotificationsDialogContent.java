@@ -153,7 +153,7 @@ public class NotificationsDialogContent implements DialogContent
      */
     public String getCssName()
     {
-        return "notif-modal";
+        return StaticResourceBundle.INSTANCE.coreCss().notifModal();
     }
 
     /**

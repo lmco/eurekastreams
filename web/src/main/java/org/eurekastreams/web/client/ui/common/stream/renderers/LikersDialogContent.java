@@ -74,7 +74,7 @@ public class LikersDialogContent implements DialogContent
      */
     public String getCssName()
     {
-        return "likers-modal";
+        return StaticResourceBundle.INSTANCE.coreCss().likerModal();
     }
 
     /**

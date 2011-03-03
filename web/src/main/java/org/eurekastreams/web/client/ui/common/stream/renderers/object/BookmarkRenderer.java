@@ -27,21 +27,22 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Renders a bookmark object.
- *
+ * 
  */
 public class BookmarkRenderer implements ObjectRenderer
 {
 
     /**
      * Renders the bookmark attachment.
-     *
+     * 
      * @param activity
      *            the activity.
      * @return the widget.
      */
     public Widget getAttachmentWidget(final ActivityDTO activity)
     {
-        String html = "<div class='message-link has-thumbnail'><div>";
+        String html = "<div class='" + StaticResourceBundle.INSTANCE.coreCss().messageLink() + " "
+                + StaticResourceBundle.INSTANCE.coreCss().hasThumbnail() + "'><div>";
         String targetUrl = activity.getBaseObjectProperties().get("targetUrl");
         String sourceUrl = activity.getBaseObjectProperties().get("source");
         if (sourceUrl == null)
@@ -49,25 +50,26 @@ public class BookmarkRenderer implements ObjectRenderer
             sourceUrl = getBaseUrl(targetUrl);
         }
 
-        if (activity.getBaseObjectProperties().get(StaticResourceBundle.INSTANCE.coreCss().thumbnail()) != null
-                && activity.getBaseObjectProperties().get(StaticResourceBundle.INSTANCE.coreCss().thumbnail()).length() > 0)
+        if (activity.getBaseObjectProperties().get("thumbnail") != null
+                && activity.getBaseObjectProperties().get("thumbnail").length() > 0)
         {
-            html += "<img class='thumbnail' src='" + activity.getBaseObjectProperties().get(StaticResourceBundle.INSTANCE.coreCss().thumbnail()) + "'></div>";
+            html += "<img class='" + StaticResourceBundle.INSTANCE.coreCss().thumbnail() + "' src='"
+                    + activity.getBaseObjectProperties().get("thumbnail") + "'></div>";
         }
 
-        html +=
-                "<div><a class=\"title\" href=\"" + activity.getBaseObjectProperties().get("targetUrl")
-                        + "\" target=\"_blank\">" + activity.getBaseObjectProperties().get("targetTitle") + "</a>"
-                        + "</div><div class='url'>source: <a href=\"" + sourceUrl + "\" target=\"_blank\">" + sourceUrl
-                        + "</a></div>" + "<div class='gwt-Label meta-description'>"
-                        + activity.getBaseObjectProperties().get(StaticResourceBundle.INSTANCE.coreCss().description()) + "</div></div>";
+        html += "<div><a class=\"" + StaticResourceBundle.INSTANCE.coreCss().title() + "\" href=\""
+                + activity.getBaseObjectProperties().get("targetUrl") + "\" target=\"_blank\">"
+                + activity.getBaseObjectProperties().get("targetTitle") + "</a>"
+                + "</div><div class='url'>source: <a href=\"" + sourceUrl + "\" target=\"_blank\">" + sourceUrl
+                + "</a></div>" + "<div class='gwt-Label " + StaticResourceBundle.INSTANCE.coreCss().metaDescription()
+                + "'>" + activity.getBaseObjectProperties().get(".description") + "</div></div>";
 
         return new HTML(html);
     }
 
     /**
      * Gets the base URL (host name and protocol) from a url.
-     *
+     * 
      * @param url
      *            the url.
      * @return the base url.
@@ -85,14 +87,14 @@ public class BookmarkRenderer implements ObjectRenderer
 
     /**
      * Renders the content widget.
-     *
+     * 
      * @param activity
      *            the activity.
      * @return the widget.
      */
     public Widget getContentWidget(final ActivityDTO activity)
     {
-        String activityContent = activity.getBaseObjectProperties().get(StaticResourceBundle.INSTANCE.coreCss().content());
+        String activityContent = activity.getBaseObjectProperties().get("content");
         if (activityContent == null || activityContent.trim().isEmpty())
         {
             return null;

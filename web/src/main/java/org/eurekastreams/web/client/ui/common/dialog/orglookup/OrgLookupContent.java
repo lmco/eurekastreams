@@ -244,7 +244,7 @@ public class OrgLookupContent implements DialogContent
      */
     public String getCssName()
     {
-        return "org-lookup-dialog";
+        return StaticResourceBundle.INSTANCE.coreCss().orgLookupDialog();
     }
 
     /**

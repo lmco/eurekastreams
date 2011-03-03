@@ -324,6 +324,6 @@ public class ImageCropContent implements DialogContent
      */
     public String getCssName()
     {
-        return "image-crop-dialog";
+        return StaticResourceBundle.INSTANCE.coreCss().imageCropDialog();
     }
 }

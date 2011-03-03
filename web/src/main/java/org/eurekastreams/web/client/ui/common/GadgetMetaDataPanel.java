@@ -113,10 +113,10 @@ public class GadgetMetaDataPanel extends FlowPanel
             {
                 final HashMap<String, String> params = new HashMap<String, String>();
                 params.put("action", "editApp");
-                params.put(StaticResourceBundle.INSTANCE.coreCss().url(), metaData.getGadgetDefinition().getUrl());
+                params.put("url", metaData.getGadgetDefinition().getUrl());
                 params.put("category", metaData.getGadgetDefinition().getCategory().toString());
                 params.put("id", String.valueOf(metaData.getGadgetDefinition().getId()));
-                params.put(StaticResourceBundle.INSTANCE.coreCss().tab(), Session.getInstance().getParameterValue(StaticResourceBundle.INSTANCE.coreCss().tab()));
+                params.put("tab", Session.getInstance().getParameterValue("tab"));
                 final WidgetJSNIFacadeImpl jsni = new WidgetJSNIFacadeImpl();
 
                 editControls.addEditClickHandler(new ClickHandler()

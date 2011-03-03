@@ -21,7 +21,7 @@ package org.eurekastreams.web.client.ui.pages.master;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
- *
+ * Banner Panel.
  */
 public class BannerPanel extends FlowPanel
 {

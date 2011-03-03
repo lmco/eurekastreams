@@ -121,7 +121,7 @@ public class CustomStreamPanel extends Composite implements FilterPanel
 
         if (!readOnly)
         {
-            Anchor editButton = new Anchor(StaticResourceBundle.INSTANCE.coreCss().edit());
+            Anchor editButton = new Anchor("edit");
             editButton.addClickHandler(new ClickHandler()
             {
                 public void onClick(final ClickEvent event)

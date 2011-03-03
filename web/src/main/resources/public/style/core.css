@@ -12,6 +12,15 @@
 @external .gadget-zone-chrome-title-bar;
 @external .gadget-zone-chrome-title-bar-title-button; 
 @external .main-contents;
+@external .yui-skin-sam;
+@external .post-button;
+@external .small;
+@external .inactive;
+@external .post-to-stream;
+@external .auto-complete;
+@external .gwt-*;
+@external .gadgets-gadget;
+@external .dragdrop*;
 
 * {
 	outline: none;
@@ -410,6 +419,7 @@ div.banner-container {
 @sprite .footer-bar {
 	gwt-image: "footerBackground";
 	margin-top: -95px;
+	width: 100%;
 }
 
 .footer-bar .horizontal {

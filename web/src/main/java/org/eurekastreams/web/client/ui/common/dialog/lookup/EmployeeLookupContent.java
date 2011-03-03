@@ -193,7 +193,7 @@ public class EmployeeLookupContent implements DialogContent
      */
     public String getCssName()
     {
-        return "employee-lookup-dialog";
+        return StaticResourceBundle.INSTANCE.coreCss().employeeLookupDialog();
     }
 
     /**

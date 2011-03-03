@@ -35,7 +35,7 @@ public class NoteRenderer implements ObjectRenderer
      * JSNI Facade.
      */
     private WidgetJSNIFacadeImpl jSNIFacade = new WidgetJSNIFacadeImpl();
-    
+
     /**
      * Renders the attachment.
      * 
@@ -57,18 +57,18 @@ public class NoteRenderer implements ObjectRenderer
      */
     public Widget getContentWidget(final ActivityDTO activity)
     {
-        String activityContent = activity.getBaseObjectProperties().get(StaticResourceBundle.INSTANCE.coreCss().content()).replace("%EUREKA:ACTORNAME%",
+        String activityContent = activity.getBaseObjectProperties().get("content").replace("%EUREKA:ACTORNAME%",
                 activity.getActor().getDisplayName());
 
         if (activityContent == null)
         {
             activityContent = "";
         }
-        
+
         // Strip out any existing HTML.
         activityContent = jSNIFacade.escapeHtml(activityContent);
         activityContent = activityContent.replaceAll("(\r\n|\n|\r)", "<br />");
-        
+
         // first transform links to hyperlinks
         String html = new HyperlinkTransformer(new WidgetJSNIFacadeImpl()).transform(activityContent);
 

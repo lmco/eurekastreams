@@ -27,49 +27,53 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Renders videos.
- *
+ * 
  */
 public class VideoRenderer implements ObjectRenderer
 {
 
     /**
      * Renders the bookmark attachment.
-     *
+     * 
      * @param activity
      *            the activity.
      * @return the widget.
      */
     public Widget getAttachmentWidget(final ActivityDTO activity)
     {
-        String html = "<div class='message-link has-thumbnail video'><div>";
+        String html = "<div class='" + StaticResourceBundle.INSTANCE.coreCss().messageLink() + " "
+                + StaticResourceBundle.INSTANCE.coreCss().hasThumbnail()
+                + StaticResourceBundle.INSTANCE.coreCss().video() + "'><div>";
 
-        if (activity.getBaseObjectProperties().get(StaticResourceBundle.INSTANCE.coreCss().thumbnail()) != null
-                && activity.getBaseObjectProperties().get(StaticResourceBundle.INSTANCE.coreCss().thumbnail()).length() > 0)
+        if (activity.getBaseObjectProperties().get("thumbnail") != null
+                && activity.getBaseObjectProperties().get("thumbnail").length() > 0)
         {
-            html += "<a class=\"thumbnail\" href=\"" + activity.getBaseObjectProperties().get("videoPageUrl");
+            html += "<a class=\"" + StaticResourceBundle.INSTANCE.coreCss().thumbnail() + "\" href=\""
+                    + activity.getBaseObjectProperties().get("videoPageUrl");
             html += "\" target=\"_blank\">";
-            html += "<img class='thumbnail' src='";
-            html += activity.getBaseObjectProperties().get(StaticResourceBundle.INSTANCE.coreCss().thumbnail()) + "'></a></div>";
+            html += "<img class='" + StaticResourceBundle.INSTANCE.coreCss().thumbnail() + "' src='";
+            html += activity.getBaseObjectProperties().get("thumbnail") + "'></a></div>";
         }
 
-        html += "<div><a class=\"title\" href=\"" + activity.getBaseObjectProperties().get("videoPageUrl")
-                + "\" target=\"_blank\">" + activity.getBaseObjectProperties().get(StaticResourceBundle.INSTANCE.coreCss().title()) + "</a>"
-                + "</div><div class='gwt-Label meta-description'>"
-                + activity.getBaseObjectProperties().get(StaticResourceBundle.INSTANCE.coreCss().description()) + "</div></div>";
+        html += "<div><a class=\"" + StaticResourceBundle.INSTANCE.coreCss().title() + "\" href=\""
+                + activity.getBaseObjectProperties().get("videoPageUrl") + "\" target=\"_blank\">"
+                + activity.getBaseObjectProperties().get("title") + "</a>" + "</div><div class='gwt-Label "
+                + StaticResourceBundle.INSTANCE.coreCss().metaDescription() + "'>"
+                + activity.getBaseObjectProperties().get("description") + "</div></div>";
 
         return new HTML(html);
     }
 
     /**
      * Renders the content widget.
-     *
+     * 
      * @param activity
      *            the activity.
      * @return the widget.
      */
     public Widget getContentWidget(final ActivityDTO activity)
     {
-        String activityContent = activity.getBaseObjectProperties().get(StaticResourceBundle.INSTANCE.coreCss().content());
+        String activityContent = activity.getBaseObjectProperties().get("content");
 
         // first transform links to hyperlinks
         String html = new HyperlinkTransformer(new WidgetJSNIFacadeImpl()).transform(activityContent);

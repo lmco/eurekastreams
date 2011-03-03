@@ -132,7 +132,7 @@ public class FilterListPanel extends FlowPanel
         {
             Anchor addView = new Anchor("add");
             FlowPanel addButton = new FlowPanel();
-            addButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addButton());
+            addButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().filterAddButton());
             addButton.add(addView);
             addView.addClickListener(new ClickListener()
             {
@@ -230,7 +230,7 @@ public class FilterListPanel extends FlowPanel
     {
         final FilterListPanel thisBuffered = this;
         addedHiddenLine = true;
-        showMore.setStyleName("show-more");
+        showMore.setStyleName(StaticResourceBundle.INSTANCE.coreCss().showMore());
         showMore.addClickListener(new ClickListener()
         {
             public void onClick(final Widget arg0)

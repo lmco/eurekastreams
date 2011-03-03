@@ -256,7 +256,7 @@ public class CustomStreamDialogContent implements DialogContent
      */
     public String getCssName()
     {
-        return "stream-view-dialog";
+        return StaticResourceBundle.INSTANCE.coreCss().streamViewDialog();
     }
 
     /**

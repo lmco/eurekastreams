@@ -121,7 +121,7 @@ public class PostToStreamComposite extends FlowPanel
      */
     private void setupWidgets(final StreamScope inScope)
     {
-        this.getElement().setAttribute("id", StaticResourceBundle.INSTANCE.coreCss().postToStream());
+        this.getElement().setAttribute("id", "post-to-stream");
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().small());
 
         charsRemaining = new Label();
@@ -299,29 +299,28 @@ public class PostToStreamComposite extends FlowPanel
     /*-{
            $wnd.overPoster = false;
            $doc.onmousedown = function() {
-           if(!$wnd.overPoster && $wnd.jQuery(".post-button").is(".inactive"))
-           {
-           setTimeout("$wnd.jQuery('#post-to-stream').addClass('small');",500);
-           setTimeout("$wnd.jQuery('#post-to-stream textarea').val('Something to share?');",500);
-           }
-           else if($wnd.overPoster && $wnd.jQuery("#post-to-stream").is(".small"))
-           {
-           $wnd.jQuery('#post-to-stream textarea').focus();
-           }
+               if(!$wnd.overPoster && $wnd.jQuery(".post-button").is(".inactive"))
+               {
+                   setTimeout("$wnd.jQuery('#post-to-stream').addClass('small');",500);
+                   setTimeout("$wnd.jQuery('#post-to-stream textarea').val('Something to share?');",500);
+               }
+               else if($wnd.overPoster && $wnd.jQuery("#post-to-stream").is(".small"))
+               {
+                   $wnd.jQuery('#post-to-stream textarea').focus();
+               }
 
-           }
+           };
 
-           $wnd.jQuery("#post-to-stream textarea").focus(
-           function() {
-           if($wnd.jQuery("#post-to-stream").is(".small")) {
-           $wnd.jQuery("#post-to-stream").removeClass(StaticResourceBundle.INSTANCE.coreCss().small());
-           $wnd.jQuery("#post-to-stream textarea").val("");
-           }
-           });
+               $wnd.jQuery("#post-to-stream textarea").focus(function() {
+                   if($wnd.jQuery("#post-to-stream").is(".small")) {
+                       $wnd.jQuery("#post-to-stream").removeClass("small");
+                       $wnd.jQuery("#post-to-stream textarea").val("");
+                   }
+               });
 
-           $wnd.jQuery("#post-to-stream").hover(
-           function() { $wnd.overPoster = true; },
-           function() { $wnd.overPoster = false; });
+               $wnd.jQuery("#post-to-stream").hover(
+                   function() { $wnd.overPoster = true; },
+                   function() { $wnd.overPoster = false; });
        }-*/;
 
     /**

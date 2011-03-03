@@ -61,7 +61,7 @@ public class SettingsPanel extends FlowPanel
         setPageTitle(inPageTitle);
 
         RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().settingsPanel());
-        contentPanel.setStyleName("settings-content");
+        contentPanel.setStyleName(StaticResourceBundle.INSTANCE.coreCss().settingsContent());
 
         FlowPanel title = new FlowPanel();
         title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().settingsTitleBar());

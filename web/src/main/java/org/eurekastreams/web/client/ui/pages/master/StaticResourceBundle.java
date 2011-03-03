@@ -133,6 +133,7 @@ public interface StaticResourceBundle extends ClientBundle
      * @return image.
      */
     @Source("style/images/footerBackground.png")
+    @ImageOptions(repeatStyle=RepeatStyle.Horizontal)
     ImageResource footerBackground();
     
     /**

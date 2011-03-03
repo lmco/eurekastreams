@@ -17,6 +17,8 @@ package org.eurekastreams.web.client.ui.pages.master;
 
 import com.google.gwt.resources.client.CssResource;
 
+// IGNORED BY CHECKSTYLE
+
 public interface CoreCss extends CssResource
 {    
     @ClassName("access-denied")
@@ -66,7 +68,8 @@ public interface CoreCss extends CssResource
     @ClassName("add-theme")
     String addTheme();
 
-    String addbutton();
+    @ClassName("addbutton")
+    String filterAddButton();
 
     @ClassName("agree-button")
     String agreeButton();

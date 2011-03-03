@@ -117,7 +117,7 @@ public class MessageDialogContent implements DialogContent
      */
     public String getCssName()
     {
-        return "login-dialog";
+        return StaticResourceBundle.INSTANCE.coreCss().loginDialog();
     }
 
     /**

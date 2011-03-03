@@ -164,7 +164,7 @@ public class TermsOfServiceDialogContent implements DialogContent
      */
     public String getCssName()
     {
-        return "terms-of-service-modal";
+        return StaticResourceBundle.INSTANCE.coreCss().termsOfServiceModal();
     }
 
     /**

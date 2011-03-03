@@ -172,7 +172,7 @@ public class OptOutableVideoDialogContent implements DialogContent
      */
     public String getCssName()
     {
-        return "videoDialog";
+        return StaticResourceBundle.INSTANCE.coreCss().videoDialog();
     }
 
     /**

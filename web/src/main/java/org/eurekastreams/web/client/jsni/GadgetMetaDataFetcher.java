@@ -409,15 +409,15 @@ public class GadgetMetaDataFetcher extends FlowPanel
     private native void fetchMetaData(final String[] url) /*-{
                                                         var request = '{';
                                                         request += '"context": {';
-                                                        request += '"country": StaticResourceBundle.INSTANCE.coreCss().default(),';
-                                                        request += '"language": StaticResourceBundle.INSTANCE.coreCss().default(),';
+                                                        request += '"country": "default",';
+                                                        request += '"language": "default",';
                                                         request += '"view": "preview",';
                                                         request += '"container": "eureka"';
                                                         request += '},"gadgets": [';
 
                                                         for(var i=0;i<url.length;i++)
                                                         {
-                                                            request += '{StaticResourceBundle.INSTANCE.coreCss().url(): "' + url[i] +  '"}';
+                                                            request += '{"url": "' + url[i] +  '"}';
                                                             if(i!=url.length-1)
                                                             {
                                                                 request += ",";

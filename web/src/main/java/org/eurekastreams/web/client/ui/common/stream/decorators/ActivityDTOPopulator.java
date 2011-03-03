@@ -53,7 +53,7 @@ public class ActivityDTOPopulator
         ActivityDTO activity = new ActivityDTO();
         HashMap<String, String> props = new HashMap<String, String>();
         activity.setBaseObjectProperties(props);
-        activity.getBaseObjectProperties().put(StaticResourceBundle.INSTANCE.coreCss().content(), inContent);
+        activity.getBaseObjectProperties().put("content", inContent);
 
         StreamEntityDTO destination = new StreamEntityDTO();
         destination.setUniqueIdentifier(inDestinationUniqueId);
