@@ -75,7 +75,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * The content page for the gallery.
- *
+ * 
  */
 public class GalleryContent extends SettingsPanel
 {
@@ -144,7 +144,7 @@ public class GalleryContent extends SettingsPanel
 
     /**
      * Default constructor.
-     *
+     * 
      */
     public GalleryContent()
     {
@@ -344,11 +344,11 @@ public class GalleryContent extends SettingsPanel
         });
 
         final HashMap<String, String> gadgetParams = new HashMap<String, String>();
-        gadgetParams.put(StaticResourceBundle.INSTANCE.coreCss().tab(), Session.getInstance().getParameterValue(StaticResourceBundle.INSTANCE.coreCss().tab()));
+        gadgetParams.put("tab", Session.getInstance().getParameterValue("tab"));
         gadgetParams.put("galleryTab", "Apps");
 
         final HashMap<String, String> themeParams = new HashMap<String, String>();
-        themeParams.put(StaticResourceBundle.INSTANCE.coreCss().tab(), Session.getInstance().getParameterValue(StaticResourceBundle.INSTANCE.coreCss().tab()));
+        themeParams.put("tab", Session.getInstance().getParameterValue("tab"));
         themeParams.put("galleryTab", "Themes");
 
         Session.getInstance().getEventBus().addObserver(InsertedGadgetDefinitionResponseEvent.class,
@@ -415,7 +415,7 @@ public class GalleryContent extends SettingsPanel
 
     /**
      * What happens after we get the start tabs (for the theme).
-     *
+     * 
      * @param event
      *            the event.
      */
@@ -466,8 +466,8 @@ public class GalleryContent extends SettingsPanel
                             galleryAddOrEditContainer.setVisible(false);
                             galleryPortalContainer.setVisible(true);
 
-                            setPreviousPage(new CreateUrlRequest(Page.START, StaticResourceBundle.INSTANCE.coreCss().tab(), Session.getInstance()
-                                    .getParameterValue(StaticResourceBundle.INSTANCE.coreCss().tab())), "< Return to Start Page");
+                            setPreviousPage(new CreateUrlRequest(Page.START, "tab", Session.getInstance()
+                                    .getParameterValue("tab")), "< Return to Start Page");
                             Session.getInstance().getEventBus().notifyObservers(new HideNotificationEvent());
                             setPageTitle("Configure");
 
@@ -486,7 +486,7 @@ public class GalleryContent extends SettingsPanel
 
     /**
      * Render the create or edit screen for a theme.
-     *
+     * 
      * @param categories
      *            the params from the history token.
      */
@@ -497,7 +497,7 @@ public class GalleryContent extends SettingsPanel
         String id = "";
 
         Map<String, String> urlParams = new HashMap<String, String>();
-        urlParams.put(StaticResourceBundle.INSTANCE.coreCss().tab(), Session.getInstance().getParameterValue(StaticResourceBundle.INSTANCE.coreCss().tab()));
+        urlParams.put("tab", Session.getInstance().getParameterValue("tab"));
         urlParams.put("galleryTab", "Themes");
 
         this.setPreviousPage(new CreateUrlRequest(Page.GALLERY, urlParams), "< Return to Configure Page");
@@ -509,7 +509,7 @@ public class GalleryContent extends SettingsPanel
         {
             title = "Edit Theme";
             method = Method.UPDATE;
-            defaultUrl = Session.getInstance().getParameterValue(StaticResourceBundle.INSTANCE.coreCss().url());
+            defaultUrl = Session.getInstance().getParameterValue("url");
 
             defaultCategory = Session.getInstance().getParameterValue("category");
             id = Session.getInstance().getParameterValue("id");
@@ -536,7 +536,7 @@ public class GalleryContent extends SettingsPanel
 
         form.addFormDivider();
 
-        form.addFormElement(new BasicTextBoxFormElement("Theme XML:", StaticResourceBundle.INSTANCE.coreCss().url(), defaultUrl,
+        form.addFormElement(new BasicTextBoxFormElement("Theme XML:", "url", defaultUrl,
                 "Enter the link to the xml file", true));
 
         form.addFormDivider();
@@ -546,7 +546,7 @@ public class GalleryContent extends SettingsPanel
 
     /**
      * Render the create or edit screen for a gadget.
-     *
+     * 
      * @param categories
      *            the params from the history token.
      */
@@ -558,7 +558,7 @@ public class GalleryContent extends SettingsPanel
         String id = "";
 
         Map<String, String> urlParams = new HashMap<String, String>();
-        urlParams.put(StaticResourceBundle.INSTANCE.coreCss().tab(), Session.getInstance().getParameterValue(StaticResourceBundle.INSTANCE.coreCss().tab()));
+        urlParams.put("tab", Session.getInstance().getParameterValue("tab"));
         urlParams.put("galleryTab", "Apps");
 
         this.setPreviousPage(new CreateUrlRequest(Page.GALLERY, urlParams), "< Return to Configure Page");
@@ -570,7 +570,7 @@ public class GalleryContent extends SettingsPanel
         {
             title = "Edit App";
             method = Method.UPDATE;
-            defaultUrl = Session.getInstance().getParameterValue(StaticResourceBundle.INSTANCE.coreCss().url());
+            defaultUrl = Session.getInstance().getParameterValue("url");
 
             defaultCategory = Session.getInstance().getParameterValue("category");
             id = Session.getInstance().getParameterValue("id");
@@ -597,8 +597,8 @@ public class GalleryContent extends SettingsPanel
 
         form.addFormDivider();
 
-        form.addFormElement(new BasicTextBoxFormElement("App XML:", StaticResourceBundle.INSTANCE.coreCss().url(), defaultUrl,
-                "Enter the link to the xml file", true));
+        form.addFormElement(new BasicTextBoxFormElement("App XML:", "url",
+                defaultUrl, "Enter the link to the xml file", true));
 
         form.addFormDivider();
 

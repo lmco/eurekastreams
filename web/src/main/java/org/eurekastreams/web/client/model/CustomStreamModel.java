@@ -27,7 +27,6 @@ import org.eurekastreams.web.client.events.CustomStreamUpdatedEvent;
 import org.eurekastreams.web.client.events.data.GotCurrentUserCustomStreamsResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
-import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -76,14 +75,14 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
      */
     public void insert(final HashMap<String, Serializable> request)
     {
-        JSONObject json = JSONParser.parse((String) request.get(StaticResourceBundle.INSTANCE.coreCss().stream())).isObject();
-        
+        JSONObject json = JSONParser.parse("stream").isObject();
+
         if (!"".equals(request.get(StreamJsonRequestFactory.SEARCH_KEY)))
         {
-            json = StreamJsonRequestFactory.setSearchTerm((String) request
-                    .get(StreamJsonRequestFactory.SEARCH_KEY), json);
+            json = StreamJsonRequestFactory.setSearchTerm((String) request.get(StreamJsonRequestFactory.SEARCH_KEY),
+                    json);
         }
-        
+
         Stream stream = new Stream();
         stream.setRequest(json.toString());
         stream.setName((String) request.get("name"));
@@ -104,14 +103,14 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
      */
     public void update(final HashMap<String, Serializable> request)
     {
-        JSONObject json = JSONParser.parse((String) request.get(StaticResourceBundle.INSTANCE.coreCss().stream())).isObject();
-        
+        JSONObject json = JSONParser.parse("stream").isObject();
+
         if (!"".equals(request.get(StreamJsonRequestFactory.SEARCH_KEY)))
         {
-            json = StreamJsonRequestFactory.setSearchTerm((String) request
-                    .get(StreamJsonRequestFactory.SEARCH_KEY), json);
+            json = StreamJsonRequestFactory.setSearchTerm((String) request.get(StreamJsonRequestFactory.SEARCH_KEY),
+                    json);
         }
-        
+
         Stream stream = new Stream();
         stream.setRequest(json.toString());
         stream.setName((String) request.get("name"));

@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.web.client.ui.common.form.elements;
 
-import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 /**
  * Extends a sub text box form element (this is kind of a hack, because it should be able to do either sub or regular.

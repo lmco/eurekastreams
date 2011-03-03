@@ -179,7 +179,7 @@ public class PersonalProfileSettingsTabContent extends Composite
                         form.addFormDivider();
 
                         HashMap<String, String> currentPageParams = new HashMap<String, String>();
-                        currentPageParams.put(StaticResourceBundle.INSTANCE.coreCss().tab(), "Basic+Info");
+                        currentPageParams.put("tab", "Basic+Info");
 
                         form.setOnCancelHistoryToken(Session.getInstance().generateUrl(
                                 new CreateUrlRequest(Page.PEOPLE, person.getAccountId())));

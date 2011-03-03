@@ -107,7 +107,7 @@ public class AvatarUploadFormElement extends FlowPanel
 
     /**
      * Create an avatar upload form element.
-     *
+     * 
      * @param label
      *            the label of the element.
      * @param servletPath
@@ -125,7 +125,7 @@ public class AvatarUploadFormElement extends FlowPanel
 
     /**
      * Create an avatar upload form element.
-     *
+     * 
      * @param label
      *            the label of the element.
      * @param desc
@@ -304,8 +304,8 @@ public class AvatarUploadFormElement extends FlowPanel
             }
         });
 
-        Session.getInstance().getEventBus()
-                .addObserver(ClearUploadedImageEvent.class, new Observer<ClearUploadedImageEvent>()
+        Session.getInstance().getEventBus().addObserver(ClearUploadedImageEvent.class,
+                new Observer<ClearUploadedImageEvent>()
                 {
                     public void update(final ClearUploadedImageEvent event)
                     {
@@ -314,8 +314,8 @@ public class AvatarUploadFormElement extends FlowPanel
                         {
                             if (event.getImageType().equals(ImageType.BANNER))
                             {
-                                onAvatarIdChanged(event.getEntity().getBannerId(),
-                                        strategy.getId().equals(event.getEntity().getBannerEntityId()), true,
+                                onAvatarIdChanged(event.getEntity().getBannerId(), strategy.getId().equals(
+                                        event.getEntity().getBannerEntityId()), true,
                                         strategy.getEntityType() == EntityType.PERSON);
                             }
                             else
@@ -330,7 +330,7 @@ public class AvatarUploadFormElement extends FlowPanel
 
     /**
      * Gets fired off when the avatar ID is changed. param inAvatarId the avatar ID.
-     *
+     * 
      * @param inAvatarId
      *            the avatar id.
      * @param setPersonAvatar
@@ -343,7 +343,7 @@ public class AvatarUploadFormElement extends FlowPanel
 
     /**
      * Gets fired off when the avatar id is changed.
-     *
+     * 
      * @param inAvatarId
      *            - the avatar id.
      * @param inDisplayDelete

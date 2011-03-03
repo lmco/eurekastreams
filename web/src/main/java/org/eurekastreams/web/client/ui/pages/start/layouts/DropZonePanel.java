@@ -50,7 +50,7 @@ public class DropZonePanel extends VerticalPanel
     /**
      * Last history event.
      */
-     private UpdatedHistoryParametersEvent lastHistoryEvent = null;
+    private UpdatedHistoryParametersEvent lastHistoryEvent = null;
 
     /**
      * List of gadget zones.
@@ -156,9 +156,9 @@ public class DropZonePanel extends VerticalPanel
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
                         lastHistoryEvent = event;
-                        if (event.getParameters().get(StaticResourceBundle.INSTANCE.coreCss().tab()) != null)
+                        if (event.getParameters().get("tab") != null)
                         {
-                            tabId = event.getParameters().get(StaticResourceBundle.INSTANCE.coreCss().tab());
+                            tabId = event.getParameters().get("tab");
                         }
                     }
                 }, true);
@@ -275,9 +275,9 @@ public class DropZonePanel extends VerticalPanel
                 HashMap<String, String> params = new HashMap<String, String>();
                 params.put("dropzone", getZoneNumber().toString());
 
-                if (lastHistoryEvent == null || lastHistoryEvent.getParameters().get(StaticResourceBundle.INSTANCE.coreCss().tab()) == null)
+                if (lastHistoryEvent == null || lastHistoryEvent.getParameters().get("tab") == null)
                 {
-                    params.put(StaticResourceBundle.INSTANCE.coreCss().tab(), tabId);
+                    params.put("tab", tabId);
                 }
 
                 Session.getInstance().getEventBus().notifyObservers(

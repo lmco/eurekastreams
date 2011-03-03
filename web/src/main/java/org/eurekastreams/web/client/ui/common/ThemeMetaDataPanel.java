@@ -90,7 +90,7 @@ public class ThemeMetaDataPanel extends FlowPanel
 
             final HashMap<String, String> params = new HashMap<String, String>();
             params.put("action", "editTheme");
-            params.put(StaticResourceBundle.INSTANCE.coreCss().url(), theme.getUrl());
+            params.put("url", theme.getUrl());
             params.put("category", theme.getCategory().toString());
             params.put("id", String.valueOf(theme.getId()));
 

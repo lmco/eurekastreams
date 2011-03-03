@@ -58,7 +58,8 @@ public class PersonalProfileSettingsPanel extends SettingsPanel
         personalBackgroundTabContent.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileSettingsTabContent());
 
         PersonalStreamSettingsTabContent personalStreamSettingsTabContent = new PersonalStreamSettingsTabContent();
-        personalStreamSettingsTabContent.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileSettingsTabContent());
+        personalStreamSettingsTabContent.addStyleName(StaticResourceBundle.INSTANCE.coreCss()
+                .profileSettingsTabContent());
 
         portalPage.addTab(new SimpleTab("Basic Info", profileTabContent));
         portalPage.addTab(new SimpleTab("Work History & Education", personalBackgroundTabContent));

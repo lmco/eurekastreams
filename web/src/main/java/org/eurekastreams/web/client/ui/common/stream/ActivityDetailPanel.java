@@ -99,7 +99,7 @@ public class ActivityDetailPanel extends FlowPanel
                             OrganizationModelView org = ev.getResponse();
                             String url =
                                     Session.getInstance().generateUrl(
-                                            new CreateUrlRequest(Page.ORGANIZATIONS, org.getShortName(), StaticResourceBundle.INSTANCE.coreCss().tab(),
+                                            new CreateUrlRequest(Page.ORGANIZATIONS, org.getShortName(), "tab",
                                                     "Admin"));
                             linkPanel.add(new InlineHyperlink("Manage flagged content for organization "
                                     + org.getName(), url));

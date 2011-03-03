@@ -300,7 +300,7 @@ public class OrganizationProfilePanel extends FlowPanel
      */
     private void switchToAdminTabFilterIfRequested()
     {
-        if ("Admin".equals(Session.getInstance().getParameterValue(StaticResourceBundle.INSTANCE.coreCss().tab())))
+        if ("Admin".equals(Session.getInstance().getParameterValue("tab")))
         {
             portalPage.switchToTab("Admin");
             String adminFilter = Session.getInstance().getParameterValue("adminFilter");
@@ -333,7 +333,8 @@ public class OrganizationProfilePanel extends FlowPanel
         List<ResourceSortCriterion> critsForFollowers = new ArrayList<ResourceSortCriterion>();
         critsForFollowers.add(new ResourceSortCriterion(SortField.FOLLOWERS_COUNT, SortDirection.DESCENDING));
 
-        final PagedListPanel connectionTabContent = new PagedListPanel("connections", StaticResourceBundle.INSTANCE.coreCss().tab(), "Connections");
+        final PagedListPanel connectionTabContent = new PagedListPanel("connections", StaticResourceBundle.INSTANCE
+                .coreCss().tab(), "Connections");
 
         Session.getInstance().getEventBus().addObserver(GotOrganizationEmployeesResponseEvent.class,
                 new Observer<GotOrganizationEmployeesResponseEvent>()
@@ -402,7 +403,7 @@ public class OrganizationProfilePanel extends FlowPanel
         final String pendingGroupsFilterName = "Group Requests";
 
         // set up the tab itself
-        final PagedListPanel adminTabContent = new PagedListPanel("admin", new SingleColumnPagedListRenderer(), StaticResourceBundle.INSTANCE.coreCss().tab(),
+        final PagedListPanel adminTabContent = new PagedListPanel("admin", new SingleColumnPagedListRenderer(), "tab",
                 "Admin");
         final SimpleTab adminTab = new SimpleTab("Admin", adminTabContent);
         adminTab.setParamsToClear(PagedListPanel.URL_PARAM_LIST_ID, PagedListPanel.URL_PARAM_FILTER,

@@ -107,10 +107,9 @@ public class StreamPluginsPanel extends FlowPanel
         this.clear();
 
         HashMap<String, String> params = new HashMap<String, String>();
-        params.put(StaticResourceBundle.INSTANCE.coreCss().tab(), "Plugins");
+        params.put("tab", "Plugins");
         params.put("action", "newPlugin");
-        addPlugin =  new Hyperlink("Add Plugin", Session.getInstance().generateUrl(
-                new CreateUrlRequest(params)));
+        addPlugin = new Hyperlink("Add Plugin", Session.getInstance().generateUrl(new CreateUrlRequest(params)));
 
         RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().gallery());
         panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().galleryMaster());
@@ -172,21 +171,23 @@ public class StreamPluginsPanel extends FlowPanel
                     public void update(final InsertedPluginDefinitionResponseEvent arg1)
                     {
                         Session.getInstance().getEventBus().notifyObservers(
-                                new UpdateHistoryEvent(new CreateUrlRequest(Page.SETTINGS, StaticResourceBundle.INSTANCE.coreCss().tab(), "Plugins")));
+                                new UpdateHistoryEvent(new CreateUrlRequest(Page.SETTINGS, "tab", "Plugins")));
                         pluginTab.reload();
-                        Session.getInstance().getEventBus().notifyObservers(new ShowNotificationEvent(
-                                new Notification("Stream Plugin has been successfully added")));
+                        Session.getInstance().getEventBus()
+                                .notifyObservers(
+                                        new ShowNotificationEvent(new Notification(
+                                                "Stream Plugin has been successfully added")));
                     }
                 });
-
 
         Session.getInstance().getEventBus().addObserver(DeletedPluginDefinitionResponseEvent.class,
                 new Observer<DeletedPluginDefinitionResponseEvent>()
                 {
                     public void update(final DeletedPluginDefinitionResponseEvent arg1)
                     {
-                        Session.getInstance().getEventBus().notifyObservers(new ShowNotificationEvent(
-                                new Notification("Stream Plugin has been successfully deleted")));
+                        Session.getInstance().getEventBus().notifyObservers(
+                                new ShowNotificationEvent(new Notification(
+                                        "Stream Plugin has been successfully deleted")));
                     }
                 });
 
@@ -206,18 +207,18 @@ public class StreamPluginsPanel extends FlowPanel
                             String defaultUrl = "";
                             String id = "";
 
-                            FormBuilder form = new FormBuilder("Submit a Plugin",
-                                    PluginDefinitionModel.getInstance(), Method.INSERT);
+                            FormBuilder form = new FormBuilder("Submit a Plugin", PluginDefinitionModel.getInstance(),
+                                    Method.INSERT);
 
                             form.turnOffChangeCheck();
                             form.setOnCancelHistoryToken(Session.getInstance().generateUrl(
-                                    new CreateUrlRequest(Page.SETTINGS, StaticResourceBundle.INSTANCE.coreCss().tab(), "Plugins")));
+                                    new CreateUrlRequest(Page.SETTINGS, "tab", "Plugins")));
                             form.addFormElement(new ValueOnlyFormElement("id", id));
-                            form
-                                    .addWidget(new HTML(
-                                "<span class='gallery-upload-note'><strong>Please Note:</strong><br />"
-                                + "Please be sure your XML file includes the required fields. You will not be able to "
-                                + "upload the XML without the required fields.</span>"));
+                            form.addWidget(new HTML(
+                                    "<span class='gallery-upload-note'><strong>Please Note:</strong><br />"
+                                            + "Please be sure your XML file includes the required fields."
+                                            + " You will not be able to upload the XML without the required"
+                                            + " fields.</span>"));
                             form.addFormDivider();
 
                             List<String> categories = new LinkedList<String>();
@@ -227,7 +228,7 @@ public class StreamPluginsPanel extends FlowPanel
 
                             form.addFormDivider();
 
-                            form.addFormElement(new BasicTextBoxFormElement("Plugin XML:", StaticResourceBundle.INSTANCE.coreCss().url(), defaultUrl,
+                            form.addFormElement(new BasicTextBoxFormElement("Plugin XML:", "url", defaultUrl,
                                     "Enter the link to the xml file", true));
 
                             form.addFormDivider();

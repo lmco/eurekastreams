@@ -42,8 +42,8 @@ public class OrganizationRenderer implements ItemRenderer<OrganizationModelView>
     public Panel render(final OrganizationModelView org)
     {
         FlowPanel orgPanel = new FlowPanel();
-        orgPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItem());;
-        orgPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().listItem());;
+        orgPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItem());
+        orgPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().listItem());
 
         orgPanel.add(new AvatarLinkPanel(EntityType.ORGANIZATION, org.getShortName(), org.getEntityId(), org
                 .getAvatarId(), Size.Small));

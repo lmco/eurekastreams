@@ -71,7 +71,7 @@ public class TaskPanel extends FlowPanel
         if (task.getTab() != "")
         {
             HashMap<String, String> linkParams = new HashMap<String, String>();
-            linkParams.put(StaticResourceBundle.INSTANCE.coreCss().tab(), task.getTab());
+            linkParams.put("tab", task.getTab());
             inTarget.setParameters(linkParams);
         }
 

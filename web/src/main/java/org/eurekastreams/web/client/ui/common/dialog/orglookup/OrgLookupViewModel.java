@@ -66,7 +66,7 @@ public class OrgLookupViewModel
 
     /**
      * Constructor.
-     *
+     * 
      * @param inView
      *            View to manage.
      * @param inOrgTreeModel
@@ -153,8 +153,10 @@ public class OrgLookupViewModel
                     public void update(final GotOrganizationModelViewResponseEvent ev)
                     {
                         OrganizationModelView org = ev.getResponse();
-                        view.getOrgDescriptionPanel().removeStyleName(StaticResourceBundle.INSTANCE.coreCss().displayNone());
-                        view.getSave().removeStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupSelectButtonInactive());
+                        view.getOrgDescriptionPanel().removeStyleName(
+                                StaticResourceBundle.INSTANCE.coreCss().displayNone());
+                        view.getSave().removeStyleName(
+                                StaticResourceBundle.INSTANCE.coreCss().lookupSelectButtonInactive());
                         view.getSave().addStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupSelectButtonActive());
                         view.getOrgTitle().setText(org.getName());
                         view.getOrgOverview().setText(org.getOverview() != null ? org.getOverview() : "");
@@ -190,7 +192,7 @@ public class OrgLookupViewModel
 
     /**
      * Add organization and children to search list.
-     *
+     * 
      * @param org
      *            the org.
      */

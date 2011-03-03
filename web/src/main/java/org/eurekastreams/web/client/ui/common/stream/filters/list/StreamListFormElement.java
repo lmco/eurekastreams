@@ -285,7 +285,7 @@ public class StreamListFormElement extends FlowPanel implements FormElement
      */
     public String getKey()
     {
-        return StaticResourceBundle.INSTANCE.coreCss().stream();
+        return "stream";
     }
 
     /**

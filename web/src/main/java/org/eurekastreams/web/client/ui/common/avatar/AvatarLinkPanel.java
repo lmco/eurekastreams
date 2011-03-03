@@ -69,7 +69,7 @@ public class AvatarLinkPanel extends Composite
             return;
         }
         HashMap<String, String> params = new HashMap<String, String>();
-        params.put(StaticResourceBundle.INSTANCE.coreCss().tab(), "Stream");
+        params.put("tab", "Stream");
 
         String linkUrl = Session.getInstance().generateUrl(new CreateUrlRequest(page, entityUniqueId, params));
 

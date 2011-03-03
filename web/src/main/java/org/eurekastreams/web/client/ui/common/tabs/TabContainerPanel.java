@@ -86,7 +86,7 @@ public class TabContainerPanel extends AbsolutePanel
      */
     public TabContainerPanel()
     {
-        this(StaticResourceBundle.INSTANCE.coreCss().tab());
+        this("tab");
     }
 
     /**

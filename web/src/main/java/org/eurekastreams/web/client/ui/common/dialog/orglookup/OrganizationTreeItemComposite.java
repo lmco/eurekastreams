@@ -89,7 +89,7 @@ public class OrganizationTreeItemComposite extends FlowPanel
         parent = inParent;
         eventBus = inEventBus;
 
-        controller = new OrganizationTreeItemController(eventBus);
+        controller = new OrganizationTreeItemController(eventBus, StaticResourceBundle.INSTANCE.coreCss());
 
         treeIndex.put(orgTree, this);
 

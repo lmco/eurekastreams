@@ -70,7 +70,7 @@ public class NotificationsDialogContent implements DialogContent
 
         Hyperlink editSettings =
                 new Hyperlink("edit settings", Session.getInstance().generateUrl(
-                        new CreateUrlRequest(Page.SETTINGS, null, StaticResourceBundle.INSTANCE.coreCss().tab(), "Notifications")));
+                        new CreateUrlRequest(Page.SETTINGS, null, "tab", "Notifications")));
         editSettings.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifEditSettingsLink());
         main.add(editSettings);
 

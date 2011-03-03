@@ -132,11 +132,6 @@ public class ApplicationEntryPoint implements EntryPoint
         ((CssResource) StaticResourceBundle.INSTANCE.coreCss()).ensureInjected();
         StaticResourceBundle.INSTANCE.yuiCss().ensureInjected();
         
-        if (getUserAgent().contains("msie 7"))
-        {
-            StaticResourceBundle.INSTANCE.ieCss().ensureInjected();
-        }
-        
         session.setActionProcessor(processor);
         session.setEventBus(EventBus.getInstance());
         session.setPeriodicEventManager(new PeriodicEventManager(APP_IDLE_TIMEOUT, new TimerFactory(), processor));

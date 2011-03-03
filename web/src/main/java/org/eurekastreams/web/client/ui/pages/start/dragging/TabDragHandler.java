@@ -34,7 +34,7 @@ public class TabDragHandler implements DragHandler
 
     /**
      * Default constructor.
-     *
+     * 
      */
     public TabDragHandler()
     {
@@ -42,7 +42,7 @@ public class TabDragHandler implements DragHandler
 
     /**
      * What happens when we're done drag and dropping.
-     *
+     * 
      * @param event
      *            the event to fire on drag end.
      */
@@ -58,7 +58,7 @@ public class TabDragHandler implements DragHandler
 
     /**
      * What happens when we start dragging (nothing).
-     *
+     * 
      * @param event
      *            the event to fire on drag start.
      */
@@ -68,7 +68,7 @@ public class TabDragHandler implements DragHandler
 
     /**
      * What happens right before we stop dragging (nothing).
-     *
+     * 
      * @param event
      *            the event to fire right before dragging ends.
      * @throws VetoDragException
@@ -80,7 +80,7 @@ public class TabDragHandler implements DragHandler
 
     /**
      * What happens right before we start dragging (nothing).
-     *
+     * 
      * @param event
      *            the event to fire right before dragging starts.
      * @throws VetoDragException

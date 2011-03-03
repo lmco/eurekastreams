@@ -303,7 +303,7 @@ public class GroupProfilePanel extends FlowPanel
         });
 
         PeopleListPanel coordinatorPanel = new PeopleListPanel(new HashSet<PersonModelView>(inGroup.getCoordinators()),
-                "Coordinators", 2, new CreateUrlRequest(StaticResourceBundle.INSTANCE.coreCss().tab(), "Connections", true),
+                "Coordinators", 2, new CreateUrlRequest("tab", "Connections", true),
                 new SwitchToFilterOnPagedFilterPanelEvent("connections", "Coordinators"), null);
 
         leftBarPanel.addChildWidget(about);
@@ -342,7 +342,7 @@ public class GroupProfilePanel extends FlowPanel
                         final SimpleTab adminTab = buildAdminTab();
                         portalPage.addTab(adminTab);
 
-                        if ("Admin".equals(Session.getInstance().getParameterValue(StaticResourceBundle.INSTANCE.coreCss().tab())))
+                        if ("Admin".equals(Session.getInstance().getParameterValue("tab")))
                         {
                             portalPage.switchToTab("Admin");
                         }

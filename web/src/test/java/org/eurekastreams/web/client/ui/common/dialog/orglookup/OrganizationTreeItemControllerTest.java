@@ -15,16 +15,17 @@
  */
 package org.eurekastreams.web.client.ui.common.dialog.orglookup;
 
+import org.eurekastreams.server.domain.OrganizationTreeDTO;
 import org.eurekastreams.web.client.AnonymousClassInterceptor;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.OrgSelectedEvent;
 import org.eurekastreams.web.client.ui.common.ULPanel;
+import org.eurekastreams.web.client.ui.pages.master.CoreCss;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
-import org.eurekastreams.server.domain.OrganizationTreeDTO;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.junit.GWTMockUtilities;
@@ -57,12 +58,17 @@ public class OrganizationTreeItemControllerTest
     private EventBus eventBus = context.mock(EventBus.class);
 
     /**
+     * Css Resource.
+     */
+    private CoreCss css = context.mock(CoreCss.class);
+
+    /**
      * Setup the test fixtures.
      */
     @Before
     public final void setUp()
     {
-        sut = new OrganizationTreeItemController(eventBus);
+        sut = new OrganizationTreeItemController(eventBus, css);
     }
 
     /**
@@ -79,6 +85,9 @@ public class OrganizationTreeItemControllerTest
         context.checking(new Expectations()
         {
             {
+                allowing(css).expanded();
+                will(returnValue("expanded"));
+
                 oneOf(expand).addClickHandler(with(any(ClickHandler.class)));
                 will(expandClickInt);
 
@@ -87,7 +96,7 @@ public class OrganizationTreeItemControllerTest
 
                 oneOf(children).setVisible(false);
 
-                oneOf(expand).removeStyleName(StaticResourceBundle.INSTANCE.coreCss().expanded());
+                oneOf(expand).removeStyleName("expanded");
             }
         });
 
@@ -116,7 +125,10 @@ public class OrganizationTreeItemControllerTest
                 oneOf(displayName).addClickHandler(with(any(ClickHandler.class)));
                 will(displayClickInt);
 
-                oneOf(treeItem).addStyleName(StaticResourceBundle.INSTANCE.coreCss().selected());
+                oneOf(css).selected();
+                will(returnValue("selected"));
+
+                oneOf(treeItem).addStyleName("selected");
 
                 oneOf(parent).showChildren(true);
 
@@ -145,9 +157,11 @@ public class OrganizationTreeItemControllerTest
         context.checking(new Expectations()
         {
             {
+                allowing(css).expanded();
+                will(returnValue("expanded"));
                 oneOf(children).setVisible(true);
 
-                oneOf(expand).addStyleName(StaticResourceBundle.INSTANCE.coreCss().expanded());
+                oneOf(expand).addStyleName("expanded");
             }
         });
 
@@ -167,9 +181,12 @@ public class OrganizationTreeItemControllerTest
         context.checking(new Expectations()
         {
             {
+
+                allowing(css).expanded();
+                will(returnValue("expanded"));
                 oneOf(children).setVisible(false);
 
-                oneOf(expand).removeStyleName(StaticResourceBundle.INSTANCE.coreCss().expanded());
+                oneOf(expand).removeStyleName("expanded");
             }
         });
 
@@ -192,7 +209,10 @@ public class OrganizationTreeItemControllerTest
         context.checking(new Expectations()
         {
             {
-                oneOf(treeItem).addStyleName(StaticResourceBundle.INSTANCE.coreCss().selected());
+
+                oneOf(css).selected();
+                will(returnValue("selected"));
+                oneOf(treeItem).addStyleName("selected");
                 oneOf(parent).showChildren(true);
                 oneOf(parent).showAncestors();
                 oneOf(eventBus).notifyObservers(with(any(OrgSelectedEvent.class)));
@@ -221,8 +241,10 @@ public class OrganizationTreeItemControllerTest
         context.checking(new Expectations()
         {
             {
-                oneOf(selectedTreeItem).removeStyleName(StaticResourceBundle.INSTANCE.coreCss().selected());
-                oneOf(treeItem).addStyleName(StaticResourceBundle.INSTANCE.coreCss().selected());
+                allowing(css).selected();
+                will(returnValue("selected"));
+                oneOf(selectedTreeItem).removeStyleName("selected");
+                oneOf(treeItem).addStyleName("selected");
                 oneOf(parent).showChildren(true);
                 oneOf(parent).showAncestors();
                 oneOf(eventBus).notifyObservers(with(any(OrgSelectedEvent.class)));

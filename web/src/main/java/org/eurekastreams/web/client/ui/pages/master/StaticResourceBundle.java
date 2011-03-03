@@ -50,14 +50,6 @@ public interface StaticResourceBundle extends ClientBundle
     CssResource yuiCss();
     
     /**
-     * IE CSS.
-     * @return ie.css.
-     */
-    @NotStrict
-    @Source("style/ie.css")
-    CssResource ieCss();
-    
-    /**
      * @return image.
      */
     @Source("style/images/navLogo.png")

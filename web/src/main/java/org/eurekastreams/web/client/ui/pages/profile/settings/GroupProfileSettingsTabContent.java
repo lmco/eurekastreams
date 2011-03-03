@@ -61,7 +61,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
@@ -207,7 +206,7 @@ public class GroupProfileSettingsTabContent extends FlowPanel
         form.addFormElement(keywords);
         form.addFormDivider();
 
-        form.addFormElement(new BasicTextBoxFormElement("Website URL", StaticResourceBundle.INSTANCE.coreCss().url(), entity.getUrl(),
+        form.addFormElement(new BasicTextBoxFormElement("Website URL", "url", entity.getUrl(),
                 "If your group has a website, you can enter the URL above", false));
         form.addFormDivider();
 

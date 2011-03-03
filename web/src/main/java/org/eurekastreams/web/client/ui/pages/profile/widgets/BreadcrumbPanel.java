@@ -218,7 +218,7 @@ public class BreadcrumbPanel extends FlowPanel
         this.clear();
 
         HashMap<String, String> params = new HashMap<String, String>();
-        params.put(StaticResourceBundle.INSTANCE.coreCss().tab(), "Stream");
+        params.put("tab", "Stream");
 
         for (BreadcrumbDTO crumb : breadcrumbs)
         {

@@ -100,7 +100,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param inScope
      *            the scope.
      */
@@ -115,7 +115,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Builds the UI.
-     *
+     * 
      * @param inScope
      *            the scope.
      */
@@ -192,8 +192,8 @@ public class PostToStreamComposite extends FlowPanel
             {
                 checkMessageTextChanged();
 
-                if (!postButton.getStyleName().contains(StaticResourceBundle.INSTANCE.coreCss().inactive()) && messageText.length() <= MAX_MESSAGE_LENGTH
-                        && (!messageText.isEmpty() || attachment != null))
+                if (!postButton.getStyleName().contains(StaticResourceBundle.INSTANCE.coreCss().inactive())
+                        && messageText.length() <= MAX_MESSAGE_LENGTH && (!messageText.isEmpty() || attachment != null))
                 {
                     hidePostButton();
                     postMessage();
@@ -325,7 +325,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Set the scope.
-     *
+     * 
      * @param inScope
      *            the scope.
      */
@@ -448,11 +448,9 @@ public class PostToStreamComposite extends FlowPanel
             return;
         }
 
-        EntityType recipientType = ScopeType.PERSON.equals(scope.getScopeType()) ? EntityType.PERSON
-                : EntityType.GROUP;
+        EntityType recipientType = ScopeType.PERSON.equals(scope.getScopeType()) ? EntityType.PERSON : EntityType.GROUP;
 
-        ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator()
-                : new NotePopulator();
+        ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator() : new NotePopulator();
 
         PostActivityRequest postRequest = new PostActivityRequest(activityPopulator.getActivityDTO(messageText,
                 recipientType, scope.getUniqueKey(), new PostPopulator(), objectStrat));

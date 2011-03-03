@@ -49,7 +49,7 @@ public class GroupProfileAboutTabPanel extends ProfileAboutTabPanel
     public GroupProfileAboutTabPanel(final DomainGroupModelView group)
     {
         final HashMap<String, String> basicInfoTabURL = new HashMap<String, String>();
-        basicInfoTabURL.put(StaticResourceBundle.INSTANCE.coreCss().tab(), "Basic Info");
+        basicInfoTabURL.put("tab", "Basic Info");
 
         CreateUrlRequest target = new CreateUrlRequest(Page.GROUP_SETTINGS, group.getShortName());
         target.setParameters(basicInfoTabURL);

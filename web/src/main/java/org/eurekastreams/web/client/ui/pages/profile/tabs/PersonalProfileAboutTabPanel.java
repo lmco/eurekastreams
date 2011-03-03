@@ -57,10 +57,10 @@ public class PersonalProfileAboutTabPanel extends ProfileAboutTabPanel
     public PersonalProfileAboutTabPanel(final PersonModelView person)
     {
         final HashMap<String, String> workHistoryTabURL = new HashMap<String, String>();
-        workHistoryTabURL.put(StaticResourceBundle.INSTANCE.coreCss().tab(), "Work History & Education");
+        workHistoryTabURL.put("tab", "Work History & Education");
 
         final HashMap<String, String> basicInfoTabURL = new HashMap<String, String>();
-        basicInfoTabURL.put(StaticResourceBundle.INSTANCE.coreCss().tab(), "Basic Info");
+        basicInfoTabURL.put("tab", "Basic Info");
 
         final Panel biographyPanel = createTitledPanel("Biography");
         final Panel interestsPanel = createTitledPanel("Interests");

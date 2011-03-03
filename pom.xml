@@ -168,6 +168,8 @@
                      <configLocation>${build.report.checkstyle.rulesurl}</configLocation>
                      <includeTestSourceDirectory>true</includeTestSourceDirectory>
                      <failsOnError>true</failsOnError>
+                     <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
+                     <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
                  </configuration>
                  <phase>validate</phase>
                  <goals>

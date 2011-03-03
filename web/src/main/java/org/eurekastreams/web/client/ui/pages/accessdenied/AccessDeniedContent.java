@@ -79,9 +79,9 @@ public class AccessDeniedContent extends Composite
                     public void update(final FormLoginCompleteEvent arg1)
                     {
                         String url = "/";
-                        if (!history.getValue(StaticResourceBundle.INSTANCE.coreCss().url()).equals(""))
+                        if (!history.getValue("url").equals(""))
                         {
-                            url = history.getValue(StaticResourceBundle.INSTANCE.coreCss().url());
+                            url = history.getValue("url");
                         }
                         Window.Location.assign(url);
                     }

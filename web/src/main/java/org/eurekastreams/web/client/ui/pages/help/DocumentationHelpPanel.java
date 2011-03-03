@@ -34,8 +34,8 @@ public class DocumentationHelpPanel extends FlowPanel
      * @return the eureka streams url
      */
     private static native String getEurekaStreamsUrl() /*-{
-                    return $wnd.eurekastreams.util.getExternalUrl();
-                }-*/;
+                       return $wnd.eurekastreams.util.getExternalUrl();
+                   }-*/;
 
     /**
      * Constructor.
@@ -106,7 +106,7 @@ public class DocumentationHelpPanel extends FlowPanel
         imageBlockPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gettingStartedHelpImageBox());
 
         FlowPanel textPanel = new FlowPanel();
-        textPanel.setStyleName("help-documentation-text-block");
+        textPanel.setStyleName(StaticResourceBundle.INSTANCE.coreCss().helpDocumentationTextBlock());
 
         panel.add(imageBlockPanel);
         panel.add(textPanel);
@@ -135,7 +135,7 @@ public class DocumentationHelpPanel extends FlowPanel
         imageBlockPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().instructionalVideosHelpImageBox());
 
         FlowPanel textPanel = new FlowPanel();
-        textPanel.setStyleName("help-documentation-text-block");
+        textPanel.setStyleName(StaticResourceBundle.INSTANCE.coreCss().helpDocumentationTextBlock());
 
         panel.add(imageBlockPanel);
         panel.add(textPanel);
@@ -164,7 +164,7 @@ public class DocumentationHelpPanel extends FlowPanel
         imageBlockPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().faqsHelpImageBox());
 
         FlowPanel textPanel = new FlowPanel();
-        textPanel.setStyleName("help-documentation-text-block");
+        textPanel.setStyleName(StaticResourceBundle.INSTANCE.coreCss().helpDocumentationTextBlock());
 
         panel.add(imageBlockPanel);
         panel.add(textPanel);

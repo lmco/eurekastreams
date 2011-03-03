@@ -46,12 +46,12 @@ public class CreateOrUpdateEmploymentPanel extends FlowPanel
      * The page history token to direct to upon saving or canceling.
      */
     private String pageHistoryToken;
-    
+
     /**
      * Max length for autocomplete fields.
      */
     private static final int MAX_LENGTH = 50;
-    
+
     /**
      * Maximum description length.
      */
@@ -68,7 +68,7 @@ public class CreateOrUpdateEmploymentPanel extends FlowPanel
         pageHistoryToken = Session.getInstance().generateUrl(new CreateUrlRequest());
         createForm(employment);
     }
-    
+
     /**
      * Default constructor.
      * 
@@ -82,7 +82,7 @@ public class CreateOrUpdateEmploymentPanel extends FlowPanel
         pageHistoryToken = inPageHistoryToken;
         createForm(employment);
     }
-    
+
     /**
      * Clears the form.
      */
@@ -90,7 +90,7 @@ public class CreateOrUpdateEmploymentPanel extends FlowPanel
     {
         createForm(null);
     }
-    
+
     /**
      * Recreates the form.
      * 
@@ -100,48 +100,50 @@ public class CreateOrUpdateEmploymentPanel extends FlowPanel
     private void createForm(final Job employment)
     {
         this.clear();
-        
+
         FormBuilder form;
-        
+
         AutoCompleteItemDropDownFormElement companyName = new AutoCompleteItemDropDownFormElement("Company Name",
                 "companyName", "", "", true, "/resources/autocomplete/companies/", "companies", "");
         companyName.setMaxLength(MAX_LENGTH);
-        
+
         companyName.setOnItemSelectedCommand(new AutoCompleteItemDropDownFormElement.OnItemSelectedCommand()
         {
             public void itemSelected(final JavaScriptObject obj)
             {
-                
+
             }
         });
-        
-        BasicDropDownFormElement industry = new BasicDropDownFormElement(
-                "Industry", "industry", getIndustryValues(), "", "", true);
-        
+
+        BasicDropDownFormElement industry = new BasicDropDownFormElement("Industry", "industry", getIndustryValues(),
+                "", "", true);
+
         AutoCompleteItemDropDownFormElement title = new AutoCompleteItemDropDownFormElement("Title",
-                StaticResourceBundle.INSTANCE.coreCss().title(), "", "", true, "/resources/autocomplete/titles/", "titles", "");
+                StaticResourceBundle.INSTANCE.coreCss().title(), "", "", true, "/resources/autocomplete/titles/",
+                "titles", "");
         title.setMaxLength(MAX_LENGTH);
-        
+
         title.setOnItemSelectedCommand(new AutoCompleteItemDropDownFormElement.OnItemSelectedCommand()
         {
             public void itemSelected(final JavaScriptObject obj)
             {
-                
+
             }
         });
-                
-        DateRangePickerFormElement timePeriod = new DateRangePickerFormElement("Time Period", "dates", "", 
+
+        DateRangePickerFormElement timePeriod = new DateRangePickerFormElement("Time Period", "dates", "",
                 "I currently work here", "", true);
-        
+
         BasicTextAreaFormElement description = new BasicTextAreaFormElement(MAX_DESCRIPTION, "Description",
-                StaticResourceBundle.INSTANCE.coreCss().description(), "", "Add some details of the position, so users viewing your profile can get a quick "
-                + "idea what the position involves.", false);
-        
+                StaticResourceBundle.INSTANCE.coreCss().description(), "",
+                "Add some details of the position, so users viewing your profile can get a quick "
+                        + "idea what the position involves.", false);
+
         if (employment == null)
         {
             form = new FormBuilder("Add Position", PersonalEmploymentModel.getInstance(), Method.INSERT);
             industry = new BasicDropDownFormElement("Industry", "industry", getIndustryValues(), "", "", true);
-        }        
+        }
         else
         {
             form = new FormBuilder("Edit Position", PersonalEmploymentModel.getInstance(), Method.UPDATE);
@@ -149,24 +151,24 @@ public class CreateOrUpdateEmploymentPanel extends FlowPanel
 
             form.addFormElement(new ValueOnlyFormElement("id", employment.getId()));
             companyName.setValue(employment.getCompanyName());
-            industry = new BasicDropDownFormElement(
-                    "Industry", "industry", getIndustryValues(), employment.getIndustry(), "", true);
+            industry = new BasicDropDownFormElement("Industry", "industry", getIndustryValues(), employment
+                    .getIndustry(), "", true);
             title.setValue(employment.getTitle());
             timePeriod.setValue(employment.getDateFrom(), employment.getDateTo());
             description.setValue(employment.getDescription());
         }
-               
-        form.addFormElement(companyName);        
-        form.addFormElement(industry);              
-        form.addFormElement(title);        
+
+        form.addFormElement(companyName);
+        form.addFormElement(industry);
+        form.addFormElement(title);
         form.addFormElement(timePeriod);
         form.addFormElement(description);
         form.addFormDivider();
-        
+
         form.addOnCancelCommand(new Command()
         {
             public void execute()
-            {                
+            {
                 if (employment == null)
                 {
                     Session.getInstance().getEventBus().notifyObservers(new BackgroundEmploymentAddCanceledEvent());
@@ -175,24 +177,23 @@ public class CreateOrUpdateEmploymentPanel extends FlowPanel
                 {
                     Session.getInstance().getEventBus().notifyObservers(new BackgroundEmploymentEditCanceledEvent());
                 }
-            }            
+            }
         });
-        
+
         form.setOnCancelHistoryToken(pageHistoryToken);
-        
+
         this.add(form);
     }
-    
+
     /**
      * Creates an array list of all possible Industry values.
      * 
-     * @return
-     *            The array list of industries.
+     * @return The array list of industries.
      */
     private Map<String, String> getIndustryValues()
     {
         Map<String, String> values = new HashMap<String, String>();
-        
+
         values.put("", "Select");
         values.put("Accounting", "Accounting");
         values.put("Airlines/Aviation", "Airlines/Aviation");

@@ -116,7 +116,7 @@ public class AboutPanel extends FlowPanel
             for (OrganizationModelView relatedOrg : relatedOrgs)
             {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put(StaticResourceBundle.INSTANCE.coreCss().tab(), "Stream");
+                params.put("tab", "Stream");
 
                 Hyperlink orgLink = new Hyperlink(relatedOrg.getName(), Session.getInstance().generateUrl(
                         new CreateUrlRequest(Page.ORGANIZATIONS, relatedOrg.getShortName(), params)));

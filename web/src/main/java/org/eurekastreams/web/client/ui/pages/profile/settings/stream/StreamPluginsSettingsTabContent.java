@@ -216,13 +216,15 @@ public class StreamPluginsSettingsTabContent extends Composite
         feedSubscriptionsContainer.clear();
         feedSubscriptionsContainer.setVisible(true);
 
-        streamPluginSettingsContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamPluginsSettingsContainer());
+        streamPluginSettingsContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss()
+                .streamPluginsSettingsContainer());
 
         availablePluginsContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().filters());
 
         getPluginsAndFeedSubscriptions();
 
-        feedSubscriptionsContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamPluginsFeedSubscriptionsContainer());
+        feedSubscriptionsContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss()
+                .streamPluginsFeedSubscriptionsContainer());
 
         feedSubscriptions.add(new FeedSubscriber());
 
@@ -483,7 +485,8 @@ public class StreamPluginsSettingsTabContent extends Composite
             pluginPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
         }
 
-        availablePluginsById.get(selectedMetaData.getGadgetDefinition().getId()).addStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
+        availablePluginsById.get(selectedMetaData.getGadgetDefinition().getId()).addStyleName(
+                StaticResourceBundle.INSTANCE.coreCss().active());
         feedSubscriptionsContainer.setVisible(false);
 
         streamPluginSettingsContainer.clear();

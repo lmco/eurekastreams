@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.eurekastreams.server.domain.ApplicationAlertNotification;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
-import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Panel;
 
@@ -50,7 +49,7 @@ public class RequestNewGroupMessageRenderer extends NotificationMessageRenderer
 
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("adminFilter", "Group Requests");
-        parameters.put(StaticResourceBundle.INSTANCE.coreCss().tab(), "Admin");
+        parameters.put("tab", "Admin");
         appendLink(inParent, "pending approval", new CreateUrlRequest(getEntityProfilePage(inNotification
                 .getDestinationType()), inNotification.getDestinationUniqueId(), parameters));
 

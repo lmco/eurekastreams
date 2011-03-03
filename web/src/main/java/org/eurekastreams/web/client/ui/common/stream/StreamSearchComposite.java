@@ -76,7 +76,7 @@ public class StreamSearchComposite extends FlowPanel
     /**
      * Close button.
      */
-    Label closeButton = new Label(StaticResourceBundle.INSTANCE.coreCss().close());
+    Label closeButton = new Label("close");
 
     /**
      * Search duration.
@@ -363,7 +363,7 @@ public class StreamSearchComposite extends FlowPanel
     {
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("action", "addGadget");
-        params.put(StaticResourceBundle.INSTANCE.coreCss().url(), "{d7a58391-5375-4c76-b5fc-a431c42a7555}");
+        params.put("url", "{d7a58391-5375-4c76-b5fc-a431c42a7555}");
         params.put("prefs", "{\"streamQuery\":" + makeJsonString(streamQuery) + ",\"gadgetTitle\":"
                 + makeJsonString(gadgetTitle) + ",\"streamLocation\":" + makeJsonString(location) + "}");
         String url = Session.getInstance().generateUrl(new CreateUrlRequest(Page.START, params));

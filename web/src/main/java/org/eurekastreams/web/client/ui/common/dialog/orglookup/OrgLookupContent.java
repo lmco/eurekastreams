@@ -102,7 +102,7 @@ public class OrgLookupContent implements DialogContent
      * Org container.
      */
     private final FlowPanel orgTreeContainer = new FlowPanel();
-
+    
     /**
      * Org description panel.
      */

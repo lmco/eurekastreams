@@ -38,14 +38,12 @@ import org.eurekastreams.web.client.ui.common.form.elements.OrgLookupFormElement
 import org.eurekastreams.web.client.ui.common.form.elements.PersonModelViewLookupFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.ShortnameFormElement;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
-import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Organization panel.

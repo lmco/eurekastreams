@@ -97,7 +97,7 @@ public class ConnectionsPanel extends FlowPanel
             public void onClick(final ClickEvent event)
             {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put(StaticResourceBundle.INSTANCE.coreCss().tab(), "Connections");
+                params.put("tab", "Connections");
                 params.put(PagedListPanel.URL_PARAM_LIST_ID, "connections");
                 params.put(PagedListPanel.URL_PARAM_FILTER, name);
                 if (sortKey != null)

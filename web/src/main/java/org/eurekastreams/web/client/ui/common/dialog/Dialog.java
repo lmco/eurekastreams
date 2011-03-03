@@ -93,7 +93,7 @@ public class Dialog extends PopupPanel
      */
     public Dialog(final DialogContent content)
     {
-        super(false, true);
+        super(false, false);
 
         addBg();
 

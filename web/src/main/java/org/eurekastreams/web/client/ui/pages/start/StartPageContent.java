@@ -195,7 +195,7 @@ public class StartPageContent extends FlowPanel
                                 });
 
                         HashMap<String, String> params = new HashMap<String, String>();
-                        params.put(StaticResourceBundle.INSTANCE.coreCss().tab(), Long.toString(tabDomainObjects.get(0).getId()));
+                        params.put("tab", Long.toString(tabDomainObjects.get(0).getId()));
                         params.put("galleryTab", "Apps");
                         settings.setTargetHistoryToken(Session.getInstance().generateUrl(
                                 new CreateUrlRequest(Page.GALLERY, params)));
@@ -209,10 +209,12 @@ public class StartPageContent extends FlowPanel
                                         // Note: parameters do not need to be decoded here - that's already done by
                                         // HistoryHandler before it published the event
 
-                                        if (event.getParameters().get(StaticResourceBundle.INSTANCE.coreCss().tab()) != null)
+                                        if (event.getParameters().get("tab")
+                                        // line break
+                                        != null)
                                         {
                                             HashMap<String, String> params = new HashMap<String, String>();
-                                            params.put(StaticResourceBundle.INSTANCE.coreCss().tab(), event.getParameters().get(StaticResourceBundle.INSTANCE.coreCss().tab()));
+                                            params.put("tab", event.getParameters().get("tab"));
 
                                             params.put("galleryTab", "Apps");
                                             settings.setTargetHistoryToken(Session.getInstance().generateUrl(
@@ -222,11 +224,11 @@ public class StartPageContent extends FlowPanel
                                         if (event.getParameters().get("action").equals("addGadget"))
                                         {
                                             String prefs = event.getParameters().get("prefs");
-                                            String url = event.getParameters().get(StaticResourceBundle.INSTANCE.coreCss().url());
+                                            String url = event.getParameters().get("url");
 
                                             // Clear current action
                                             event.getParameters().put("action", "");
-                                            event.getParameters().put(StaticResourceBundle.INSTANCE.coreCss().url(), "");
+                                            event.getParameters().put("url", "");
                                             event.getParameters().put("prefs", "");
                                             EventBus.getInstance().notifyObservers(
                                                     new UpdatedHistoryParametersEvent(event.getParameters()));
@@ -240,7 +242,7 @@ public class StartPageContent extends FlowPanel
                                             // Clear current action
                                             EventBus.getInstance().notifyObservers(
                                                     new UpdatedHistoryParametersEvent(event.getParameters()));
-                                            String url = event.getParameters().get(StaticResourceBundle.INSTANCE.coreCss().url());
+                                            String url = event.getParameters().get("url");
                                             ThemeModel.getInstance().set(url);
                                         }
                                     }
@@ -278,7 +280,7 @@ public class StartPageContent extends FlowPanel
                                                 new StartPageTabReadyEvent(tab));
 
                                         Session.getInstance().getEventBus().notifyObservers(
-                                                new UpdateHistoryEvent(new CreateUrlRequest(StaticResourceBundle.INSTANCE.coreCss().tab(), tab.getIdentifier(),
+                                                new UpdateHistoryEvent(new CreateUrlRequest("tab", tab.getIdentifier(),
                                                         true)));
                                     }
                                 });
@@ -305,7 +307,7 @@ public class StartPageContent extends FlowPanel
 
                                         // Highlight the first tab
                                         Session.getInstance().getEventBus().notifyObservers(
-                                                new UpdateHistoryEvent(new CreateUrlRequest(StaticResourceBundle.INSTANCE.coreCss().tab(), ((StartPageTab) tabs
+                                                new UpdateHistoryEvent(new CreateUrlRequest("tab", ((StartPageTab) tabs
                                                         .getTab(0)).getIdentifier(), true)));
 
                                         // Only one tab left (the new tab counts as 1). Disable remove.
