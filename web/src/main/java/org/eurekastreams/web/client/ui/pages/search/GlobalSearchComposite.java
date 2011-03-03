@@ -31,8 +31,8 @@ import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 
@@ -48,7 +48,7 @@ public class GlobalSearchComposite extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param label
      *            the label for the uninitialized textbox.
      */
@@ -76,11 +76,12 @@ public class GlobalSearchComposite extends FlowPanel
             }
         });
 
-        searchTerm.addKeyPressHandler(new KeyPressHandler()
+        searchTerm.addKeyUpHandler(new KeyUpHandler()
         {
-            public void onKeyPress(final KeyPressEvent event)
+            public void onKeyUp(final KeyUpEvent ev)
             {
-                if (event.getCharCode() == KeyCodes.KEY_ENTER && searchTerm.getText().length() > 0)
+                if (ev.getNativeKeyCode() == KeyCodes.KEY_ENTER && !ev.isAnyModifierKeyDown()
+                        && searchTerm.getText().length() > 0)
                 {
                     eventBus.notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(Page.SEARCH,
                             generateParams(searchTerm.getText()), false)));
@@ -114,7 +115,7 @@ public class GlobalSearchComposite extends FlowPanel
 
     /**
      * Creates a hashmap for the history parameters to pass to the search page.
-     *
+     * 
      * @param query
      *            the search string.
      * @return the hashmap of all necessary initial search parameters.

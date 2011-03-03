@@ -87,6 +87,10 @@
             <enabled>false</enabled>
         </snapshots>
       </repository>
+      <repository>
+        <id>restlet</id>
+        <url>http://maven.restlet.org/</url>
+      </repository>
 	</repositories>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
