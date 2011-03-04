@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
-import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
@@ -48,11 +47,11 @@ public class WordListInjectionTokenizerTest
     /**
      * Token stream.
      */
-    private final TokenStream tokenStream = context.mock(TokenStream.class);
+    private TokenStream tokenStream;
 
     /**
      * Test next() with a null token and empty word list.
-     *
+     * 
      * @throws IOException
      *             on error
      */
@@ -60,13 +59,8 @@ public class WordListInjectionTokenizerTest
     public void testNextWithNullTokenAndEmptyWordList() throws IOException
     {
         final Token token = new Token(null, 0, 0);
-        context.checking(new Expectations()
-        {
-            {
-                one(tokenStream).next(token);
-                will(returnValue(null));
-            }
-        });
+        List<Token> tokens = new ArrayList<Token>();
+        tokenStream = new TokenStreamTestHelper(tokens);
 
         final List<String> wordsToInject = new ArrayList<String>();
         WordListInjectionTokenizer sut = new WordListInjectionTokenizer(wordsToInject, tokenStream);
@@ -76,7 +70,7 @@ public class WordListInjectionTokenizerTest
 
     /**
      * Test next() with a non-null token and no words in the list.
-     *
+     * 
      * @throws IOException
      *             on error
      */
@@ -84,13 +78,9 @@ public class WordListInjectionTokenizerTest
     public void testNextWithNonNullTokenAndNoWordList() throws IOException
     {
         final Token token = new Token("foo", 0, 3);
-        context.checking(new Expectations()
-        {
-            {
-                one(tokenStream).next(token);
-                will(returnValue(token));
-            }
-        });
+        List<Token> tokens = new ArrayList<Token>();
+        tokens.add(token);
+        tokenStream = new TokenStreamTestHelper(tokens);
 
         final List<String> wordsToInject = new ArrayList<String>();
         WordListInjectionTokenizer sut = new WordListInjectionTokenizer(wordsToInject, tokenStream);
@@ -103,7 +93,7 @@ public class WordListInjectionTokenizerTest
 
     /**
      * Test next() with a non-null token and words in the list.
-     *
+     * 
      * @throws IOException
      *             on error
      */
@@ -111,13 +101,9 @@ public class WordListInjectionTokenizerTest
     public void testNextWithNonNullTokenAndWordsInList() throws IOException
     {
         final Token token = new Token("foo", 0, 3);
-        context.checking(new Expectations()
-        {
-            {
-                one(tokenStream).next(token);
-                will(returnValue(token));
-            }
-        });
+        List<Token> tokens = new ArrayList<Token>();
+        tokens.add(token);
+        tokenStream = new TokenStreamTestHelper(tokens);
 
         final List<String> wordsToInject = new ArrayList<String>();
         wordsToInject.add("FOOOO");
@@ -132,7 +118,7 @@ public class WordListInjectionTokenizerTest
 
     /**
      * Test next() with null token and a word in the list.
-     *
+     * 
      * @throws IOException
      *             on error
      */
@@ -140,13 +126,8 @@ public class WordListInjectionTokenizerTest
     public void testNextWithNullTokenAndWordInList() throws IOException
     {
         final Token token = new Token(null, 0, 0);
-        context.checking(new Expectations()
-        {
-            {
-                one(tokenStream).next(token);
-                will(returnValue(null));
-            }
-        });
+        List<Token> tokens = new ArrayList<Token>();
+        tokenStream = new TokenStreamTestHelper(tokens);
 
         final List<String> wordsToInject = new ArrayList<String>();
         wordsToInject.add("FOOOO");
