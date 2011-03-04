@@ -88,6 +88,10 @@ public class ActivityContentClassBridge implements StringBridge
             contentAsString.append(comment.getBody());
         }
 
+        // add the random constant
+        contentAsString.append(" ");
+        contentAsString.append(Activity.CONSTANT_KEYWORD_IN_EVERY_ACTIVITY_CONTENT);
+
         return contentAsString.toString();
     }
 }

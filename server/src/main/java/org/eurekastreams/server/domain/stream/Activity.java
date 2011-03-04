@@ -96,6 +96,11 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
     private static final long serialVersionUID = -6112350966831240411L;
 
     /**
+     * This (random) value is search-indexed in every activity so that we can allow the user to make NOT queries.
+     */
+    public static final String CONSTANT_KEYWORD_IN_EVERY_ACTIVITY_CONTENT = "e5qgryyme4elshgvkkmq";
+
+    /**
      * App type.
      */
     @Enumerated(EnumType.STRING)

@@ -27,6 +27,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.lucene.search.Sort;
 import org.eurekastreams.commons.search.ProjectionSearchRequestBuilder;
+import org.eurekastreams.server.domain.stream.Activity;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -106,6 +107,108 @@ public class LuceneDataSourceTest
         {
             {
                 oneOf(builder).buildQueryFromNativeSearchString("+content:(hithere(foo)) ");
+                will(returnValue(ftq));
+
+                oneOf(ftq).getResultList();
+                will(returnValue(results));
+
+                oneOf(builder).setPaging(ftq, 0, MAX_RESULTS);
+            }
+        });
+
+        assertSame(results, sut.fetch(request, 0L));
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test execute method with the user excluding a keyword with !.
+     */
+    @Test
+    public void testExecuteWithBangKeyword()
+    {
+
+        final JSONObject request = new JSONObject();
+        final JSONObject query = new JSONObject();
+
+        query.put("keywords", "!BACON");
+        request.put("query", query);
+
+        final FullTextQuery ftq = context.mock(FullTextQuery.class);
+        final List<Long> results = new ArrayList<Long>();
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(builder).buildQueryFromNativeSearchString(
+                        "+content:(" + Activity.CONSTANT_KEYWORD_IN_EVERY_ACTIVITY_CONTENT + " !BACON) ");
+                will(returnValue(ftq));
+
+                oneOf(ftq).getResultList();
+                will(returnValue(results));
+
+                oneOf(builder).setPaging(ftq, 0, MAX_RESULTS);
+            }
+        });
+
+        assertSame(results, sut.fetch(request, 0L));
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test execute method with the user excluding a keyword with !.
+     */
+    @Test
+    public void testExecuteWithNOTKeyword()
+    {
+
+        final JSONObject request = new JSONObject();
+        final JSONObject query = new JSONObject();
+
+        query.put("keywords", "NOT BACON");
+        request.put("query", query);
+
+        final FullTextQuery ftq = context.mock(FullTextQuery.class);
+        final List<Long> results = new ArrayList<Long>();
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(builder).buildQueryFromNativeSearchString(
+                        "+content:(" + Activity.CONSTANT_KEYWORD_IN_EVERY_ACTIVITY_CONTENT + " NOT BACON) ");
+                will(returnValue(ftq));
+
+                oneOf(ftq).getResultList();
+                will(returnValue(results));
+
+                oneOf(builder).setPaging(ftq, 0, MAX_RESULTS);
+            }
+        });
+
+        assertSame(results, sut.fetch(request, 0L));
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test execute method with the user excluding a keyword with !.
+     */
+    @Test
+    public void testExecuteWithMinusKeyword()
+    {
+
+        final JSONObject request = new JSONObject();
+        final JSONObject query = new JSONObject();
+
+        query.put("keywords", "-BACON");
+        request.put("query", query);
+
+        final FullTextQuery ftq = context.mock(FullTextQuery.class);
+        final List<Long> results = new ArrayList<Long>();
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(builder).buildQueryFromNativeSearchString(
+                        "+content:(" + Activity.CONSTANT_KEYWORD_IN_EVERY_ACTIVITY_CONTENT + " -BACON) ");
                 will(returnValue(ftq));
 
                 oneOf(ftq).getResultList();
