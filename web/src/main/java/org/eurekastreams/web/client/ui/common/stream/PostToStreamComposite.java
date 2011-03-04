@@ -37,6 +37,7 @@ import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopul
 import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulatorStrategy;
 import org.eurekastreams.web.client.ui.common.stream.decorators.object.NotePopulator;
 import org.eurekastreams.web.client.ui.common.stream.decorators.verb.PostPopulator;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
