@@ -20,7 +20,7 @@ import com.google.gwt.resources.client.CssResource;
 // IGNORED BY CHECKSTYLE
 
 public interface CoreCss extends CssResource
-{    
+{
     @ClassName("access-denied")
     String accessDenied();
 

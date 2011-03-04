@@ -118,9 +118,8 @@ public class CreateOrUpdateEmploymentPanel extends FlowPanel
         BasicDropDownFormElement industry = new BasicDropDownFormElement("Industry", "industry", getIndustryValues(),
                 "", "", true);
 
-        AutoCompleteItemDropDownFormElement title = new AutoCompleteItemDropDownFormElement("Title",
-                StaticResourceBundle.INSTANCE.coreCss().title(), "", "", true, "/resources/autocomplete/titles/",
-                "titles", "");
+        AutoCompleteItemDropDownFormElement title = new AutoCompleteItemDropDownFormElement("Title", "title", "", "",
+                true, "/resources/autocomplete/titles/", "titles", "");
         title.setMaxLength(MAX_LENGTH);
 
         title.setOnItemSelectedCommand(new AutoCompleteItemDropDownFormElement.OnItemSelectedCommand()
@@ -135,8 +134,7 @@ public class CreateOrUpdateEmploymentPanel extends FlowPanel
                 "I currently work here", "", true);
 
         BasicTextAreaFormElement description = new BasicTextAreaFormElement(MAX_DESCRIPTION, "Description",
-                StaticResourceBundle.INSTANCE.coreCss().description(), "",
-                "Add some details of the position, so users viewing your profile can get a quick "
+                "description", "", "Add some details of the position, so users viewing your profile can get a quick "
                         + "idea what the position involves.", false);
 
         if (employment == null)

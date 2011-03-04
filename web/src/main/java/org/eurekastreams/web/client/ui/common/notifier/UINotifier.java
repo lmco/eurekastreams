@@ -73,7 +73,7 @@ public class UINotifier extends FlowPanel
         this.add(contentPanel);
         this.add(messageRight);
 
-        this.setStyleName("notification-bar");
+        this.setStyleName(StaticResourceBundle.INSTANCE.coreCss().notificationBar());
         closeButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().closeNotification());
         closeButton.addClickHandler(new ClickHandler()
         {

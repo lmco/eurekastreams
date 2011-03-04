@@ -61,7 +61,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
@@ -129,7 +128,7 @@ public class ApplicationEntryPoint implements EntryPoint
      */
     public void onModuleLoad()
     {
-        ((CssResource) StaticResourceBundle.INSTANCE.coreCss()).ensureInjected();
+        StaticResourceBundle.INSTANCE.coreCss().ensureInjected();
         StaticResourceBundle.INSTANCE.yuiCss().ensureInjected();
         
         session.setActionProcessor(processor);

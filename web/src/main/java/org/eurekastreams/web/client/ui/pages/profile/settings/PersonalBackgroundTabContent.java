@@ -29,6 +29,7 @@ import org.eurekastreams.web.client.ui.common.form.FormBuilder;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder.Method;
 import org.eurekastreams.web.client.ui.common.form.elements.RichTextAreaFormElement;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -65,7 +66,7 @@ public class PersonalBackgroundTabContent extends Composite
                         final FormBuilder form = new FormBuilder("", PersonalBiographyModel.getInstance(),
                                 Method.UPDATE);
 
-                        form.setStyleName("biography");
+                        form.setStyleName(StaticResourceBundle.INSTANCE.coreCss().biography());
 
                         Session.getInstance().getEventBus().addObserver(UpdatedPersonalBiographyResponseEvent.class,
                                 new Observer<UpdatedPersonalBiographyResponseEvent>()

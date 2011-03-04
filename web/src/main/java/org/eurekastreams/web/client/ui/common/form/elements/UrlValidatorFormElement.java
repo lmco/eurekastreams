@@ -182,7 +182,7 @@ public class UrlValidatorFormElement extends BasicTextBoxFormElement
 
         urlPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().urlPanel());
         urlPanel.setVisible(false);
-        urlLabel.setStyleName("url-label");
+        urlLabel.setStyleName(StaticResourceBundle.INSTANCE.coreCss().urlLabel());
         urlPanel.add(closeUrlPanel);
         urlPanel.add(urlLabel);
         this.insert(urlPanel, 3);

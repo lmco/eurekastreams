@@ -37,7 +37,6 @@ public interface StaticResourceBundle extends ClientBundle
      * Core CSS.
      * @return core.css.
      */
-    @NotStrict
     @Source("style/core.css")
     CoreCss coreCss();
      

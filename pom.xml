@@ -102,7 +102,7 @@
         <build.web.host>localhost:8080</build.web.host>
         <build.web.apirestletbean>actionResource</build.web.apirestletbean>
         <build.gwt.modulename>org.eurekastreams.web.Application</build.gwt.modulename>
-        <build.gwt.compile.style>PRETTY</build.gwt.compile.style>
+        <build.gwt.compile.style>OBF</build.gwt.compile.style>
         <build.gadget.container.name>eureka</build.gadget.container.name>
         <build.gadget.container.protocol>http://</build.gadget.container.protocol>
         <build.gadget.shindig.version>2.0.1.2</build.gadget.shindig.version>

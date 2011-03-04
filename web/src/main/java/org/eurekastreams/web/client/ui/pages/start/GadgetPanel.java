@@ -166,7 +166,7 @@ public class GadgetPanel extends FlowPanel
     /**
      * The class applied when a gadget is minimized.
      */
-    private static final String MINIMIZED_CSS_CLASS = "gadget-zone-minimized";
+    private static final String MINIMIZED_CSS_CLASS = StaticResourceBundle.INSTANCE.coreCss().gadgetZoneMinimized();
 
     /**
      * The gadget drag controller.
@@ -185,7 +185,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Creates the Gadget render zone and gives the zone a incremented id.
-     *
+     * 
      * @param gadget
      *            The Gadget from the Model you are rendering.
      */
@@ -351,8 +351,8 @@ public class GadgetPanel extends FlowPanel
     {
         final GadgetPanel thisBuffered = this;
 
-        Session.getInstance().getEventBus()
-                .addObserver(DeletedGadgetResponseEvent.class, new Observer<DeletedGadgetResponseEvent>()
+        Session.getInstance().getEventBus().addObserver(DeletedGadgetResponseEvent.class,
+                new Observer<DeletedGadgetResponseEvent>()
                 {
                     public void update(final DeletedGadgetResponseEvent event)
                     {
@@ -360,24 +360,22 @@ public class GadgetPanel extends FlowPanel
                         {
                             thisBuffered.setVisible(false);
                             thisBuffered.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
-                            Session.getInstance()
-                                    .getEventBus()
-                                    .notifyObservers(
-                                            new ShowNotificationEvent(new Notification(new UndoDeleteNotification(
-                                                    "App", new ClickHandler()
-                                                    {
-                                                        public void onClick(final ClickEvent event)
-                                                        {
-                                                            GadgetModel.getInstance().undoDelete(gadgetData.getId());
-                                                            Session.getInstance().getEventBus()
-                                                                    .notifyObservers(new HideNotificationEvent());
-                                                        }
-                                                    }), "")));
+                            Session.getInstance().getEventBus().notifyObservers(
+                                    new ShowNotificationEvent(new Notification(new UndoDeleteNotification("App",
+                                            new ClickHandler()
+                                            {
+                                                public void onClick(final ClickEvent event)
+                                                {
+                                                    GadgetModel.getInstance().undoDelete(gadgetData.getId());
+                                                    Session.getInstance().getEventBus().notifyObservers(
+                                                            new HideNotificationEvent());
+                                                }
+                                            }), "")));
                         }
                     }
                 });
-        Session.getInstance().getEventBus()
-                .addObserver(UnDeletedGadgetResponseEvent.class, new Observer<UnDeletedGadgetResponseEvent>()
+        Session.getInstance().getEventBus().addObserver(UnDeletedGadgetResponseEvent.class,
+                new Observer<UnDeletedGadgetResponseEvent>()
                 {
                     public void update(final UnDeletedGadgetResponseEvent arg1)
                     {
@@ -388,8 +386,8 @@ public class GadgetPanel extends FlowPanel
                         }
                     }
                 });
-        Session.getInstance().getEventBus()
-                .addObserver(GotGadgetMetaDataEvent.class, new Observer<GotGadgetMetaDataEvent>()
+        Session.getInstance().getEventBus().addObserver(GotGadgetMetaDataEvent.class,
+                new Observer<GotGadgetMetaDataEvent>()
                 {
                     public void update(final GotGadgetMetaDataEvent arg1)
                     {
@@ -445,8 +443,8 @@ public class GadgetPanel extends FlowPanel
                         }
                     }
                 });
-        Session.getInstance().getEventBus()
-                .addObserver(GadgetStateChangeEvent.class, new Observer<GadgetStateChangeEvent>()
+        Session.getInstance().getEventBus().addObserver(GadgetStateChangeEvent.class,
+                new Observer<GadgetStateChangeEvent>()
                 {
                     public void update(final GadgetStateChangeEvent event)
                     {
@@ -463,8 +461,8 @@ public class GadgetPanel extends FlowPanel
                         }
                     }
                 });
-        Session.getInstance().getEventBus()
-                .addObserver(UpdateGadgetPrefsEvent.class, new Observer<UpdateGadgetPrefsEvent>()
+        Session.getInstance().getEventBus().addObserver(UpdateGadgetPrefsEvent.class,
+                new Observer<UpdateGadgetPrefsEvent>()
                 {
                     public void update(final UpdateGadgetPrefsEvent event)
                     {
@@ -475,8 +473,8 @@ public class GadgetPanel extends FlowPanel
                     }
                 });
 
-        Session.getInstance().getEventBus()
-                .addObserver(UpdatedHistoryParametersEvent.class, new Observer<UpdatedHistoryParametersEvent>()
+        Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
+                new Observer<UpdatedHistoryParametersEvent>()
                 {
                     public void update(final UpdatedHistoryParametersEvent arg1)
                     {
@@ -501,7 +499,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Gets the entity type of the JSON object.
-     *
+     * 
      * @param jsObj
      *            the JSON object.
      * @return the entity type.
@@ -513,7 +511,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Tell the delegation feature the edit button was clicked.
-     *
+     * 
      * @param gadgetId
      *            the gadget id.
      */
@@ -524,7 +522,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Set the gadget state w/o params.
-     *
+     * 
      * @param state
      *            the gadget state.
      */
@@ -535,7 +533,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Gets the state.
-     *
+     * 
      * @return the state.
      */
     public State getGadgetState()
@@ -545,7 +543,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Setter.
-     *
+     * 
      * @param state
      *            new state of the gadget
      * @param viewParams
@@ -594,8 +592,8 @@ public class GadgetPanel extends FlowPanel
             restoreButton.setVisible(false);
             maximizeButton.setVisible(true);
             spacerButton.setVisible(false);
-            Session.getInstance().getEventBus()
-                    .notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest("canvas", null, false)));
+            Session.getInstance().getEventBus().notifyObservers(
+                    new UpdateHistoryEvent(new CreateUrlRequest("canvas", null, false)));
             break;
         case MAXIMIZED:
             makeGadgetUndraggable();
@@ -617,8 +615,8 @@ public class GadgetPanel extends FlowPanel
             maximizeButton.setVisible(false);
 
             gadgetRenderer.maximizeGadgetZone(this.getElement());
-            Session.getInstance().getEventBus()
-                    .notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest("canvas", "true", false)));
+            Session.getInstance().getEventBus().notifyObservers(
+                    new UpdateHistoryEvent(new CreateUrlRequest("canvas", "true", false)));
             break;
         case MINIMIZED:
             minimizeButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().minimized());
@@ -636,7 +634,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Make the gadget draggable.
-     *
+     * 
      * @param inGadgetDragController
      *            the gadget drag controller.
      */
@@ -659,7 +657,7 @@ public class GadgetPanel extends FlowPanel
 
     /**
      * Get the gadget data.
-     *
+     * 
      * @return the gadget data.
      */
     public Gadget getGadgetData()

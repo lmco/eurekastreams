@@ -234,7 +234,8 @@ public class OrganizationProfilePanel extends FlowPanel
         connectionsPanel = new ConnectionsPanel();
         orgDescendantGroupCount = org.getDescendantGroupCount();
         connectionsPanel.addConnection("Employees", "Recently Added", org.getDescendantEmployeeCount());
-        connectionsPanel.addConnection("Groups", "Recently Added", orgDescendantGroupCount, "center");
+        connectionsPanel.addConnection("Groups", "Recently Added", orgDescendantGroupCount,
+                StaticResourceBundle.INSTANCE.coreCss().center());
         connectionsPanel.addConnection("Sub Orgs", null, org.getChildOrganizationCount());
 
         leftBarPanel.addChildWidget(connectionsPanel);
@@ -291,7 +292,7 @@ public class OrganizationProfilePanel extends FlowPanel
 
         OrganizationModel.getInstance().authorize(org.getShortName(), false);
         portalPage.init();
-        portalPage.setStyleName("profile-gadgets-container");
+        portalPage.setStyleName(StaticResourceBundle.INSTANCE.coreCss().profileGadgetsContainer());
         portalPageContainer.add(portalPage);
     }
 

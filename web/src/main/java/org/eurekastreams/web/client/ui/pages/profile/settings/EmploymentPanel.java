@@ -111,7 +111,7 @@ public class EmploymentPanel extends FlowPanel
     {
         pageHistoryToken = inPageHistoryToken;
         
-        this.setStyleName("employment");
+        this.setStyleName(StaticResourceBundle.INSTANCE.coreCss().employment());
 
         if (!readOnly)
         {
@@ -163,7 +163,7 @@ public class EmploymentPanel extends FlowPanel
         
         Hyperlink companyName = new Hyperlink(job.getCompanyName(), Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.SEARCH, "", getSearchParams(job.getCompanyName()))));        
-        companyName.setStyleName("sub-title");
+        companyName.setStyleName(StaticResourceBundle.INSTANCE.coreCss().subTitle());
         Label employmentDates = new Label();
         if (job.getDateTo() == null)
         {

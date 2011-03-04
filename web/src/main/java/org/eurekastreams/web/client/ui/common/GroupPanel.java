@@ -87,8 +87,8 @@ public class GroupPanel extends FlowPanel
             name = new Label(group.getName());
             org = new Label(group.getParentOrganizationName());
         }
-        name.setStyleName("connection-item-name");
-        org.setStyleName("connection-item-organization");
+        name.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemName());
+        org.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemOrganization());
 
         infoPanel.add(name);
         infoPanel.add(org);

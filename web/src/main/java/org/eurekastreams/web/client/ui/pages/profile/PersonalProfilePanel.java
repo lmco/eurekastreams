@@ -235,7 +235,8 @@ public class PersonalProfilePanel extends FlowPanel
         about.setPerson(personModelView);
         connectionsPanel = new ConnectionsPanel();
         connectionsPanel.addConnection("Followers", null, personModelView.getFollowersCount());
-        connectionsPanel.addConnection("Following", null, personModelView.getFollowingCount(), "center");
+        connectionsPanel.addConnection("Following", null, personModelView.getFollowingCount(),
+                StaticResourceBundle.INSTANCE.coreCss().center());
         connectionsPanel.addConnection("Groups", null, personModelView.getGroupsCount());
 
         Session.getInstance().getEventBus().addObserver(InsertedPersonFollowerResponseEvent.class,
@@ -310,7 +311,7 @@ public class PersonalProfilePanel extends FlowPanel
         portalPage.addTab(new SimpleTab("About", new PersonalProfileAboutTabPanel(personModelView)));
         portalPage.init();
 
-        portalPage.setStyleName("profile-gadgets-container");
+        portalPage.setStyleName(StaticResourceBundle.INSTANCE.coreCss().profileGadgetsContainer());
 
         portalPageContainer.add(portalPage);
 

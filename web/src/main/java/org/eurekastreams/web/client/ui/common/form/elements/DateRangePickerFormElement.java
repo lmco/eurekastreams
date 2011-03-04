@@ -126,14 +126,14 @@ public class DateRangePickerFormElement extends FlowPanel implements FormElement
         label.setStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
         
         checkBoxLabel.setText(inCheckBoxLabel);
-        checkBoxLabel.setStyleName("check-box-label");
+        checkBoxLabel.setStyleName(StaticResourceBundle.INSTANCE.coreCss().checkBoxLabel());
         
-        presentLabel.setStyleName("form-text");
-        toLabel.setStyleName("form-text");
+        presentLabel.setStyleName(StaticResourceBundle.INSTANCE.coreCss().formText());
+        toLabel.setStyleName(StaticResourceBundle.INSTANCE.coreCss().formText());
         key = inKey;
         value = inValue;
         
-        this.setStyleName("date-picker-form-element");
+        this.setStyleName(StaticResourceBundle.INSTANCE.coreCss().datePickerFormElement());
         
         setMonths(startMonthDropDown);
         setMonths(endMonthDropDown);

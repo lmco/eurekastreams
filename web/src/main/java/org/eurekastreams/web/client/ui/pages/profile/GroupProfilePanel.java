@@ -364,7 +364,7 @@ public class GroupProfilePanel extends FlowPanel
         portalPage.addTab(new SimpleTab("About", new GroupProfileAboutTabPanel(group)));
         portalPage.init();
 
-        portalPage.setStyleName("profile-gadgets-container");
+        portalPage.setStyleName(StaticResourceBundle.INSTANCE.coreCss().profileGadgetsContainer());
 
         portalPageContainer.add(portalPage);
 

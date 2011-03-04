@@ -98,11 +98,11 @@ public class PersonPanel extends FlowPanel
             name = new Label(person.getDisplayName());
             org = new Label(person.getParentOrganizationName());
         }
-        name.setStyleName("connection-item-name");
-        org.setStyleName("connection-item-organization");
+        name.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemName());
+        org.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemOrganization());
 
         Label title = new Label(person.getTitle());
-        title.setStyleName("connection-item-title");
+        title.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemTitle());
 
         infoPanel.add(name);
         infoPanel.add(title);

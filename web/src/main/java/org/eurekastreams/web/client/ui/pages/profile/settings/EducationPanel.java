@@ -106,7 +106,7 @@ public class EducationPanel extends FlowPanel
      */
     public EducationPanel(final Enrollment enrollment, final boolean readOnly, final String inPageHistoryToken)
     {
-        this.setStyleName("education");
+        this.setStyleName(StaticResourceBundle.INSTANCE.coreCss().education());
 
         if (!readOnly)
         {
