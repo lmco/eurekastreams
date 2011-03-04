@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.web.client.ui.common;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 
 /**
  * Styled Horizontal UL Panel.
@@ -27,7 +29,7 @@ public class HorizontalULPanel extends ULPanel
      */
     public HorizontalULPanel()
     {
-        this.addStyleName("horizontal");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().horizontal());
     }
 
     /**
@@ -40,11 +42,11 @@ public class HorizontalULPanel extends ULPanel
     {
         if (showBars)
         {
-            this.addStyleName("barred");
+            this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().barred());
         } 
         else
         {
-            this.removeStyleName("barred");
+            this.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().barred());
         }
     }
 }

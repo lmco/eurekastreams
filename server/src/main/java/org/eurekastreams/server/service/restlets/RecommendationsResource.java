@@ -26,12 +26,12 @@ import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
-import org.restlet.data.Request;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.Recommendation;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.persistence.RecommendationMapper;
+import org.restlet.data.Request;
 
 /**
  * Abstract class that contains the commonalities between the Entry and Collection

@@ -26,6 +26,7 @@ import org.eurekastreams.web.client.events.data.GotSearchResultsResponseEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LabeledTextBox;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -56,8 +57,8 @@ public class GlobalSearchComposite extends FlowPanel
         searchTerm = new LabeledTextBox(label);
 
         Label searchButton = new Label("Search");
-        searchButton.addStyleName("search-list-button");
-        addStyleName("search-list");
+        searchButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchListButton());
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchList());
         add(searchTerm);
         add(searchButton);
 

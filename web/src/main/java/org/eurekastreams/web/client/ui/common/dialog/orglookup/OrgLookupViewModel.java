@@ -29,6 +29,7 @@ import org.eurekastreams.web.client.events.OrgSelectedEvent;
 import org.eurekastreams.web.client.events.data.GotOrganizationModelViewResponseEvent;
 import org.eurekastreams.web.client.events.data.GotOrganizationTreeResponseEvent;
 import org.eurekastreams.web.client.model.Fetchable;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -65,7 +66,7 @@ public class OrgLookupViewModel
 
     /**
      * Constructor.
-     *
+     * 
      * @param inView
      *            View to manage.
      * @param inOrgTreeModel
@@ -152,9 +153,11 @@ public class OrgLookupViewModel
                     public void update(final GotOrganizationModelViewResponseEvent ev)
                     {
                         OrganizationModelView org = ev.getResponse();
-                        view.getOrgDescriptionPanel().removeStyleName("display-none");
-                        view.getSave().removeStyleName("lookup-select-button-inactive");
-                        view.getSave().addStyleName("lookup-select-button-active");
+                        view.getOrgDescriptionPanel().removeStyleName(
+                                StaticResourceBundle.INSTANCE.coreCss().displayNone());
+                        view.getSave().removeStyleName(
+                                StaticResourceBundle.INSTANCE.coreCss().lookupSelectButtonInactive());
+                        view.getSave().addStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupSelectButtonActive());
                         view.getOrgTitle().setText(org.getName());
                         view.getOrgOverview().setText(org.getOverview() != null ? org.getOverview() : "");
                         view.getLogoImage().setAvatar(org.getEntityId(), org.getAvatarId(), EntityType.ORGANIZATION);
@@ -189,7 +192,7 @@ public class OrgLookupViewModel
 
     /**
      * Add organization and children to search list.
-     *
+     * 
      * @param org
      *            the org.
      */

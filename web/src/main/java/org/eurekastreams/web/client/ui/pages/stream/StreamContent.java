@@ -32,6 +32,7 @@ import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
 import org.eurekastreams.web.client.ui.common.stream.filters.FilterListPanel;
 import org.eurekastreams.web.client.ui.common.stream.filters.group.GroupStreamRenderer;
 import org.eurekastreams.web.client.ui.common.stream.filters.list.CustomStreamRenderer;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
@@ -99,17 +100,17 @@ public class StreamContent extends Composite
         panel = new FlowPanel();
         initWidget(panel);
 
-        filters.addStyleName("filters");
-        errorLabel.addStyleName("form-error-box");
+        filters.addStyleName(StaticResourceBundle.INSTANCE.coreCss().filters());
+        errorLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formErrorBox());
         errorLabel.setVisible(false);
 
         streamView = new StreamPanel(true);
         streamPanel.add(streamView);
 
-        RootPanel.get().addStyleName("stream");
+        RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().stream());
 
-        panel.addStyleName("stream-page-container");
-        streamPanel.addStyleName("stream-container");
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamPageContainer());
+        streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamContainer());
 
         Session.getInstance().getEventBus().addObserver(UserLoggedInEvent.class, new Observer<UserLoggedInEvent>()
         {

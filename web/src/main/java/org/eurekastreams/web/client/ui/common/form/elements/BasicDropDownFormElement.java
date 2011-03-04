@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -70,15 +72,15 @@ public class BasicDropDownFormElement extends FlowPanel implements FormElement
     {
         key = inKey;
         label.setText(labelVal);
-        label.addStyleName("form-label");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
 
         if (required)
         {
-            requiredLabel.addStyleName("required-form-label");
+            requiredLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requiredFormLabel());
             requiredLabel.setText("(required)");
         }
 
-        instructions.addStyleName("form-instructions");
+        instructions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
         instructions.setText(inInstructions);
         
         instructions.setVisible(inInstructions.length() > 0);
@@ -218,7 +220,7 @@ public class BasicDropDownFormElement extends FlowPanel implements FormElement
      */
     public void onError(final String errMessage)
     {
-        label.addStyleName("form-error");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**
@@ -226,6 +228,6 @@ public class BasicDropDownFormElement extends FlowPanel implements FormElement
      */
     public void onSuccess()
     {
-        label.removeStyleName("form-error");
+        label.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 }

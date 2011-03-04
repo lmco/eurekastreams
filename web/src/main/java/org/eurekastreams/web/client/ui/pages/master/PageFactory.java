@@ -30,7 +30,6 @@ import org.eurekastreams.web.client.ui.pages.profile.settings.CreateOrganization
 import org.eurekastreams.web.client.ui.pages.profile.settings.GroupProfileSettingsPanel;
 import org.eurekastreams.web.client.ui.pages.profile.settings.OrganizationProfileSettingsPanel;
 import org.eurekastreams.web.client.ui.pages.profile.settings.PersonalProfileSettingsPanel;
-import org.eurekastreams.web.client.ui.pages.search.AdvancedSearchContent;
 import org.eurekastreams.web.client.ui.pages.search.SearchContent;
 import org.eurekastreams.web.client.ui.pages.settings.SettingsContent;
 import org.eurekastreams.web.client.ui.pages.start.StartPageContent;
@@ -69,8 +68,6 @@ public class PageFactory
         {
         case ACTION:
             return new ActionExecutorPanel(Session.getInstance().getActionProcessor(), view);
-        case ADVANCED_SEARCH:
-            return new AdvancedSearchContent();
         case SEARCH:
             return new SearchContent();
         case SETTINGS:

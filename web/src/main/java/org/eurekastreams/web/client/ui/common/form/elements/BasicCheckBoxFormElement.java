@@ -17,6 +17,8 @@ package org.eurekastreams.web.client.ui.common.form.elements;
 
 import java.io.Serializable;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -102,16 +104,16 @@ public class BasicCheckBoxFormElement extends FlowPanel implements FormElement
     {
         if (required)
         {
-            requiredLabel.addStyleName("required-form-label");
+            requiredLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requiredFormLabel());
             requiredLabel.setText("(required)");
         }
         body = new FlowPanel();
         key = inKey;
         label.setText(labelVal);
-        label.addStyleName("form-label");
-        body.addStyleName("form-checkBox");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
+        body.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formCheckBox());
         
-        instructions.addStyleName("form-instructions");
+        instructions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
         instructions.setText(inInstructions);
 
         // Fix IE bug, shows empty divs
@@ -156,11 +158,11 @@ public class BasicCheckBoxFormElement extends FlowPanel implements FormElement
         cb.setEnabled(enabled);
         if (!enabled)
         {
-            cb.addStyleName("form-checkBox-disabled");
+            cb.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formCheckBoxDisabled());
         }
         else
         {
-            cb.removeStyleName("form-checkBox-disabled");
+            cb.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formCheckBoxDisabled());
         }
     }
     
@@ -200,7 +202,7 @@ public class BasicCheckBoxFormElement extends FlowPanel implements FormElement
      */
     public void onError(final String errMessage)
     {
-        label.addStyleName("form-error");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**
@@ -208,7 +210,7 @@ public class BasicCheckBoxFormElement extends FlowPanel implements FormElement
      */
     public void onSuccess()
     {
-        label.removeStyleName("form-error");
+        label.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**

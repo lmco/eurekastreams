@@ -26,6 +26,7 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -83,7 +84,7 @@ public class AboutPanel extends FlowPanel
         }
 
         AvatarWidget photo = new AvatarWidget(person, EntityType.PERSON, Size.Normal);
-        photo.addStyleName("profile-photo");
+        photo.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profilePhoto());
         this.add(photo);
 
         if (!person.getAccountId().equals(Session.getInstance().getCurrentPerson().getAccountId()))
@@ -92,24 +93,24 @@ public class AboutPanel extends FlowPanel
         }
 
         Label name = new Label(nameStr);
-        name.addStyleName("profile-name");
+        name.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileName());
         this.add(name);
 
         Label title = new Label(titleStr);
-        title.addStyleName("profile-title");
+        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileTitle());
         this.add(title);
 
         if (jobDescriptionStr != null && !jobDescriptionStr.equals(""))
         {
             Label jobDescription = new Label(jobDescriptionStr);
-            jobDescription.addStyleName("profile-quote");
+            jobDescription.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileQuote());
             this.add(jobDescription);
         }
 
         if (null != relatedOrgs && relatedOrgs.size() > 0)
         {
             Label orgLabel = new Label("Also supporting");
-            orgLabel.addStyleName("also-supporting-org");
+            orgLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().alsoSupportingOrg());
             this.add(orgLabel);
 
             for (OrganizationModelView relatedOrg : relatedOrgs)
@@ -119,7 +120,7 @@ public class AboutPanel extends FlowPanel
 
                 Hyperlink orgLink = new Hyperlink(relatedOrg.getName(), Session.getInstance().generateUrl(
                         new CreateUrlRequest(Page.ORGANIZATIONS, relatedOrg.getShortName(), params)));
-                orgLink.addStyleName("profile-org");
+                orgLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileOrg());
                 this.add(orgLink);
             }
         }

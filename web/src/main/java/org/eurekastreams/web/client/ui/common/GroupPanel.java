@@ -25,6 +25,7 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -53,19 +54,19 @@ public class GroupPanel extends FlowPanel
     public GroupPanel(final DomainGroupModelView group, final boolean makeLinkable, final boolean showFollowers,
             final boolean showDescription)
     {
-        addStyleName("connection-item");
-        addStyleName("list-item");
-        addStyleName("group");
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItem());
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().listItem());
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().group());
 
         add(new AvatarLinkPanel(EntityType.GROUP, group.getUniqueId(), group.getId(), group.getAvatarId(), Size.Small));
 
         FlowPanel infoPanel = new FlowPanel();
-        infoPanel.setStyleName("connection-item-info");
+        infoPanel.setStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemInfo());
 
         if (!group.isPublic())
         {
             Label icon = new Label();
-            icon.addStyleName("private-icon");
+            icon.addStyleName(StaticResourceBundle.INSTANCE.coreCss().privateIcon());
             icon.setTitle("Private Group");
             infoPanel.add(icon);
         }
@@ -98,7 +99,7 @@ public class GroupPanel extends FlowPanel
             if (descriptionText != null && !descriptionText.isEmpty())
             {
                 Label about = new Label(descriptionText);
-                about.addStyleName("mission-statement");
+                about.addStyleName(StaticResourceBundle.INSTANCE.coreCss().missionStatement());
                 infoPanel.add(about);
             }
         }
@@ -106,13 +107,13 @@ public class GroupPanel extends FlowPanel
         if (showFollowers)
         {
             FlowPanel followersPanel = new FlowPanel();
-            followersPanel.addStyleName("connection-item-followers");
+            followersPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowers());
 
             InlineLabel followers = new InlineLabel("Followers: ");
             followersPanel.add(followers);
 
             InlineLabel followersCount = new InlineLabel(Integer.toString(group.getFollowersCount()));
-            followersCount.addStyleName("connection-item-followers-data");
+            followersCount.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowersData());
             followersPanel.add(followersCount);
 
             insertActionSeparator(followersPanel);
@@ -121,7 +122,7 @@ public class GroupPanel extends FlowPanel
 
             DateFormatter dateFormatter = new DateFormatter(new Date());
             InlineLabel dateAdded = new InlineLabel(dateFormatter.timeAgo(group.getDateAdded(), true));
-            dateAdded.addStyleName("connection-item-followers-data");
+            dateAdded.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowersData());
             followersPanel.add(dateAdded);
 
             infoPanel.add(followersPanel);
@@ -139,7 +140,7 @@ public class GroupPanel extends FlowPanel
     private void insertActionSeparator(final Panel panel)
     {
         Label sep = new InlineLabel("\u2219");
-        sep.addStyleName("action-link-separator");
+        sep.addStyleName(StaticResourceBundle.INSTANCE.coreCss().actionLinkSeparator());
         panel.add(sep);
     }
 }

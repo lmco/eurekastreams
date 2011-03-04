@@ -32,6 +32,7 @@ import org.eurekastreams.web.client.model.Deletable;
 import org.eurekastreams.web.client.model.GroupBannerModel;
 import org.eurekastreams.web.client.model.OrganizationBannerModel;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -203,7 +204,7 @@ public class BannerUploadStrategy<T extends Bannerable> implements ImageUploadSt
     {
         AvatarUrlGenerator urlGenerator = new AvatarUrlGenerator(entityType);
         FlowPanel imageContainer = new FlowPanel();
-        imageContainer.addStyleName("banner");
+        imageContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().banner());
         imageContainer.add(new Image(urlGenerator.getBannerUrl(imageId)));
 
         return imageContainer;

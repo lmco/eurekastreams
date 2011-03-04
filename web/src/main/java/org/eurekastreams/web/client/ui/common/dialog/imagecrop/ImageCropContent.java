@@ -29,6 +29,7 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import org.eurekastreams.web.client.ui.common.form.elements.avatar.strategies.ImageUploadStrategy;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -108,8 +109,8 @@ public class ImageCropContent implements DialogContent
         saveCommand = inSaveCommand;
         processor = inProcessor;
 
-        content.addStyleName("yui-skin-sam");
-        content.addStyleName("avatar-crop-modal");
+        content.addStyleName(StaticResourceBundle.INSTANCE.coreCss().yuiSkinSam());
+        content.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatarCropModal());
         strategy = inStrategy;
 
         AvatarUrlGenerator urlGenerator = new AvatarUrlGenerator(EntityType.PERSON);
@@ -121,19 +122,19 @@ public class ImageCropContent implements DialogContent
         baseImage.getElement().setAttribute("id", "avatarBase");
 
         FlowPanel imageContainer = new FlowPanel();
-        imageContainer.addStyleName("image-container");
+        imageContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().imageContainer());
         imageContainer.add(baseImage);
 
         content.add(imageContainer);
 
         saveButton = new Hyperlink("save", Session.getInstance().generateUrl(new CreateUrlRequest()));
-        saveButton.addStyleName("form-save-button");
-        saveButton.addStyleName("form-button");
+        saveButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formSaveButton());
+        saveButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formButton());
         content.add(saveButton);
 
-        closeButton = new Hyperlink("cancel", "settings");
-        closeButton.addStyleName("form-cancel-button");
-        closeButton.addStyleName("form-button");
+        closeButton = new Hyperlink("cancel", StaticResourceBundle.INSTANCE.coreCss().settings());
+        closeButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formCancelButton());
+        closeButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formButton());
         content.add(closeButton);
 
         setupEvents();
@@ -323,6 +324,6 @@ public class ImageCropContent implements DialogContent
      */
     public String getCssName()
     {
-        return "image-crop-dialog";
+        return StaticResourceBundle.INSTANCE.coreCss().imageCropDialog();
     }
 }

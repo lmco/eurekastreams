@@ -22,6 +22,7 @@ import org.eurekastreams.web.client.events.PagerUpdatedEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -97,13 +98,13 @@ public class Pager extends FlowPanel
     public Pager(final String inPagerId, final boolean showPageButtons)
     {
         pagerId = inPagerId;
-        this.addStyleName("pager-container");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().pagerContainer());
         final Pager thisBuffered = this;
 
         if (showPageButtons)
         {
             this.add(next);
-            next.addStyleName("pager-forward");
+            next.addStyleName(StaticResourceBundle.INSTANCE.coreCss().pagerForward());
             next.addClickHandler(new ClickHandler()
             {
                 public void onClick(final ClickEvent event)
@@ -125,7 +126,7 @@ public class Pager extends FlowPanel
             });
 
             this.add(prev);
-            prev.addStyleName("pager-backward");
+            prev.addStyleName(StaticResourceBundle.INSTANCE.coreCss().pagerBackward());
             prev.addClickHandler(new ClickHandler()
             {
                 public void onClick(final ClickEvent event)
@@ -148,7 +149,7 @@ public class Pager extends FlowPanel
         }
 
         this.add(totalLabel);
-        totalLabel.addStyleName("pager-range");
+        totalLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().pagerRange());
 
         refreshState();
 
@@ -196,20 +197,20 @@ public class Pager extends FlowPanel
 
             if (endIndex + 1 < total)
             {
-                next.removeStyleName("pager-forward-disabled");
+                next.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().pagerForwardDisabled());
             }
             else
             {
-                next.addStyleName("pager-forward-disabled");
+                next.addStyleName(StaticResourceBundle.INSTANCE.coreCss().pagerForwardDisabled());
             }
 
             if (startIndex != 0)
             {
-                prev.removeStyleName("pager-backward-disabled");
+                prev.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().pagerBackwardDisabled());
             }
             else
             {
-                prev.addStyleName("pager-backward-disabled");
+                prev.addStyleName(StaticResourceBundle.INSTANCE.coreCss().pagerBackwardDisabled());
             }
         }
 

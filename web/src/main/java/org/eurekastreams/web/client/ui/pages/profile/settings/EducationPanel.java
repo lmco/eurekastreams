@@ -27,6 +27,7 @@ import org.eurekastreams.web.client.model.PersonalEducationModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.EditPanel;
 import org.eurekastreams.web.client.ui.common.EditPanel.Mode;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -150,7 +151,7 @@ public class EducationPanel extends FlowPanel
         }
         Hyperlink schoolName = new Hyperlink(enrollment.getSchoolName(), Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.SEARCH, "", getSearchParams(enrollment.getSchoolName()))));
-        schoolName.setStyleName("title");
+        schoolName.setStyleName(StaticResourceBundle.INSTANCE.coreCss().title());
         educationPanel.add(schoolName);
 
         InlineLabel degree = new InlineLabel(enrollment.getDegree() + ", ");
@@ -161,11 +162,11 @@ public class EducationPanel extends FlowPanel
         if (enrollment.getGradDate() != null)
         {
             graduationDate = new Label(Integer.toString(YEAR_CONVERSION + enrollment.getGradDate().getYear()));
-            graduationDate.setStyleName("description");
+            graduationDate.setStyleName(StaticResourceBundle.INSTANCE.coreCss().description());
         }
 
         Label additionalDetails = new Label(enrollment.getAdditionalDetails());
-        additionalDetails.setStyleName("description");
+        additionalDetails.setStyleName(StaticResourceBundle.INSTANCE.coreCss().description());
 
         this.add(educationPanel);
 

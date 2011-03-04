@@ -18,6 +18,7 @@ package org.eurekastreams.web.client.ui.common.avatar;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Background;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -37,7 +38,7 @@ public class AvatarDisplayPanel extends Composite
     public AvatarDisplayPanel(final AvatarWidget avatar)
     {
         Panel main = new FlowPanel();
-        main.addStyleName("avatar");
+        main.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatar());
         main.add(avatar);
         initWidget(main);
     }

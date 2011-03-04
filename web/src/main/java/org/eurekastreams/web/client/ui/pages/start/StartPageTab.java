@@ -33,6 +33,7 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.StartTabsModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.tabs.SimpleTab;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.start.layouts.TabLayoutSelectorPanel;
 
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -106,8 +107,7 @@ public class StartPageTab extends SimpleTab
     public StartPageTab()
     {
         super("+");
-        getFocusPanel().addStyleName("new-tab");
-        textBox.addStyleName("new-tab-textbox");
+        textBox.addStyleName(StaticResourceBundle.INSTANCE.coreCss().newTabTextbox());
         textBox.setMaxLength(TabTemplate.MAX_TAB_NAME_LENGTH);
         getPanel().add(textBox);
         textBox.setVisible(false);
@@ -171,10 +171,10 @@ public class StartPageTab extends SimpleTab
         tab = inTab;
 
         menu.addItem("X", menuItems);
-        menu.addStyleName("tab-menu");
+        menu.addStyleName(StaticResourceBundle.INSTANCE.coreCss().tabMenu());
         getPanel().add(menu);
 
-        textBox.addStyleName("new-tab-textbox");
+        textBox.addStyleName(StaticResourceBundle.INSTANCE.coreCss().newTabTextbox());
         textBox.setMaxLength(TabTemplate.MAX_TAB_NAME_LENGTH);
         textBox.addBlurHandler(new BlurHandler()
         {
@@ -336,11 +336,11 @@ public class StartPageTab extends SimpleTab
             ((StartPageTabContent) getContents()).renderGadgets();
             if (((StartPageTabContent) getContents()).isAnyGadgetMaximized())
             {
-                RootPanel.get().addStyleName("maximized-gadget");
+                RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().maximizedGadget());
             }
             else
             {
-                RootPanel.get().removeStyleName("maximized-gadget");
+                RootPanel.get().removeStyleName(StaticResourceBundle.INSTANCE.coreCss().maximizedGadget());
             }
         }
     }

@@ -33,6 +33,7 @@ import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -190,7 +191,7 @@ public class LikeCountWidget extends Composite
         };
 
         final Anchor transparentLikeLink = new Anchor();
-        transparentLikeLink.addStyleName("transparent-like-link");
+        transparentLikeLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().transparentLikeLink());
 
         transparentLikeLink.addClickHandler(new ClickHandler()
         {
@@ -216,34 +217,34 @@ public class LikeCountWidget extends Composite
                 DialogContent dialogContent = new LikersDialogContent(currentActivityId);
                 Dialog dialog = new Dialog(dialogContent);
                 dialog.setBgVisible(true);
-                dialog.addStyleName("liker-modal");
+                dialog.addStyleName(StaticResourceBundle.INSTANCE.coreCss().likerModal());
                 dialog.center();
             }
 
         });
 
         usersWhoLikedPanelWrapper.setVisible(false);
-        usersWhoLikedPanelWrapper.addStyleName("users-who-liked-activity-wrapper like-count-widget");
+        usersWhoLikedPanelWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().usersWhoLikedActivityWrapper());
         RootPanel.get().add(usersWhoLikedPanelWrapper);
 
         final FocusPanel innerLikeCountPanel = new FocusPanel();
-        innerLikeCountPanel.addStyleName("like-count");
+        innerLikeCountPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().likeCount());
         innerLikeCountPanel.add(innerLikeCountLink);
 
         usersWhoLikedPanelWrapper.add(innerLikeCountPanel);
 
         usersWhoLikedPanelWrapper.add(usersWhoLikedPanel);
-        usersWhoLikedPanel.addStyleName("users-who-liked-activity");
+        usersWhoLikedPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().usersWhoLikedActivity());
 
         FlowPanel userLikedHeader = new FlowPanel();
-        userLikedHeader.addStyleName("users-who-liked-activity-header");
+        userLikedHeader.addStyleName(StaticResourceBundle.INSTANCE.coreCss().usersWhoLikedActivityHeader());
         usersWhoLikedPanel.add(userLikedHeader);
 
-        userLikedBody.addStyleName("users-who-liked-activity-body");
+        userLikedBody.addStyleName(StaticResourceBundle.INSTANCE.coreCss().usersWhoLikedActivityBody());
         usersWhoLikedPanel.add(userLikedBody);
 
         FlowPanel userLikedFooter = new FlowPanel();
-        userLikedFooter.addStyleName("users-who-liked-activity-footer");
+        userLikedFooter.addStyleName(StaticResourceBundle.INSTANCE.coreCss().usersWhoLikedActivityFooter());
         usersWhoLikedPanel.add(userLikedFooter);
 
         userLikedBody.add(likedLabel);
@@ -290,11 +291,11 @@ public class LikeCountWidget extends Composite
         });
 
         likers = inLikers;
-        widget.addStyleName("like-count-widget");
+        widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().likeCountWidget());
         likeCount = inLikeCount;
 
         final FlowPanel likeCountPanel = new FlowPanel();
-        likeCountPanel.addStyleName("like-count");
+        likeCountPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().likeCount());
         likeCountPanel.add(likeCountLink);
 
         widget.add(likeCountPanel);

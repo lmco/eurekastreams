@@ -18,6 +18,7 @@ package org.eurekastreams.web.client.ui.common.form.elements;
 import java.io.Serializable;
 
 import org.eurekastreams.web.client.ui.common.LabeledTextBox;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -144,21 +145,21 @@ public class BasicTextBoxFormElement extends FlowPanel implements FormElement
     public BasicTextBoxFormElement(final String labelVal, final String inKey, final String value,
             final String inInstructions, final boolean required)
     {
-        this.addStyleName("basic-textbox");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().basicTextbox());
 
         key = inKey;
         label.setText(labelVal);
-        label.addStyleName("form-label");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
         textBox.setText(value);
         textBox.checkBox();
 
         if (required)
         {
-            requiredLabel.addStyleName("required-form-label");
+            requiredLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requiredFormLabel());
             requiredLabel.setText("(required)");
         }
 
-        instructions.addStyleName("form-instructions");
+        instructions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
         instructions.setText(inInstructions);
 
         // Fix IE bug, shows empty divs
@@ -166,7 +167,7 @@ public class BasicTextBoxFormElement extends FlowPanel implements FormElement
 
         // Need to do this to fix an especially nasty IE CSS bug (input margin inheritance)
         final SimplePanel textWrapper = new SimplePanel();
-        textWrapper.addStyleName("input-wrapper");
+        textWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inputWrapper());
         textWrapper.add(textBox);
 
         this.add(requiredLabel);
@@ -223,7 +224,7 @@ public class BasicTextBoxFormElement extends FlowPanel implements FormElement
      */
     public void onError(final String errMessage)
     {
-        label.addStyleName("form-error");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**
@@ -231,7 +232,7 @@ public class BasicTextBoxFormElement extends FlowPanel implements FormElement
      */
     public void onSuccess()
     {
-        label.removeStyleName("form-error");
+        label.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**
@@ -248,7 +249,7 @@ public class BasicTextBoxFormElement extends FlowPanel implements FormElement
         if (matchSize)
         {
             textBox.setVisibleLength(inSize);
-            textBox.addStyleName("variable");
+            textBox.addStyleName(StaticResourceBundle.INSTANCE.coreCss().variable());
         }
     }
 

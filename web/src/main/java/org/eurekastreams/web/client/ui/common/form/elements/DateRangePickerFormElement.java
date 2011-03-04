@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import org.eurekastreams.web.client.ui.common.LabeledTextBox;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -122,7 +123,7 @@ public class DateRangePickerFormElement extends FlowPanel implements FormElement
             final String inCheckBoxLabel, final String inInstructions, final boolean inRequired)
     {
         label.setText(inLabel);
-        label.setStyleName("form-label");
+        label.setStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
         
         checkBoxLabel.setText(inCheckBoxLabel);
         checkBoxLabel.setStyleName("check-box-label");
@@ -139,21 +140,21 @@ public class DateRangePickerFormElement extends FlowPanel implements FormElement
         
         startYear.setMaxLength(4);
         startYear.setVisibleLength(4);
-        startYear.addStyleName("variable");
+        startYear.addStyleName(StaticResourceBundle.INSTANCE.coreCss().variable());
         
         endYear.setMaxLength(4);
         endYear.setVisibleLength(4);
-        endYear.addStyleName("variable");
+        endYear.addStyleName(StaticResourceBundle.INSTANCE.coreCss().variable());
        
         if (inRequired)
         {
-            requiredLabel.addStyleName("required-form-label");
+            requiredLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requiredFormLabel());
             requiredLabel.setText("(required)");
         }
         
         presentLabel.setVisible(false);
         
-        instructions.addStyleName("form-instructions");
+        instructions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
         instructions.setText(inInstructions);
         
         checkBox.addValueChangeHandler(new ValueChangeHandler<Boolean>()
@@ -263,7 +264,7 @@ public class DateRangePickerFormElement extends FlowPanel implements FormElement
      */
     public void onError(final String errMessage)
     {
-        label.addStyleName("form-error");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**
@@ -271,7 +272,7 @@ public class DateRangePickerFormElement extends FlowPanel implements FormElement
      */
     public void onSuccess()
     {
-        label.removeStyleName("form-error");
+        label.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
     
     /**

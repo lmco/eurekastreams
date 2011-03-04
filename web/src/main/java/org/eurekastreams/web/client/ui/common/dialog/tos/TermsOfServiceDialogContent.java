@@ -20,6 +20,7 @@ import org.eurekastreams.server.domain.TermsOfServiceDTO;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -80,25 +81,25 @@ public class TermsOfServiceDialogContent implements DialogContent
         tos = inTos;
 
         HTML tosText = new HTML(tos.getTermsOfService());
-        tosText.addStyleName("tos-body");
+        tosText.addStyleName(StaticResourceBundle.INSTANCE.coreCss().tosBody());
 
         Label tosExplanation = new Label("Please confirm below you have read and understand the terms of service.");
-        tosExplanation.addStyleName("explanation");
+        tosExplanation.addStyleName(StaticResourceBundle.INSTANCE.coreCss().explanation());
         Label tosHeader = new Label("Terms of Service");
-        tosHeader.addStyleName("header");
+        tosHeader.addStyleName(StaticResourceBundle.INSTANCE.coreCss().header());
 
         body.add(tosExplanation);
         body.add(tosHeader);
         body.add(tosText);
 
         acceptTos = new Hyperlink("Accept", History.getToken());
-        acceptTos.addStyleName("agree-button");
-        acceptTos.addStyleName("agree-button-disabled");
+        acceptTos.addStyleName(StaticResourceBundle.INSTANCE.coreCss().agreeButton());
+        acceptTos.addStyleName(StaticResourceBundle.INSTANCE.coreCss().agreeButtonDisabled());
         cancelTos = new Anchor("Cancel", "http://www.eurekastreams.org");
-        cancelTos.addStyleName("disagree-button");
+        cancelTos.addStyleName(StaticResourceBundle.INSTANCE.coreCss().disagreeButton());
 
         confirmCheckBox = new CheckBox("I have read and understand the terms of service.");
-        confirmCheckBox.addStyleName("confirm-checkbox");
+        confirmCheckBox.addStyleName(StaticResourceBundle.INSTANCE.coreCss().confirmCheckbox());
 
         if (!readOnly)
         {
@@ -108,7 +109,7 @@ public class TermsOfServiceDialogContent implements DialogContent
         }
         else
         {
-            body.addStyleName("read-only-tos");
+            body.addStyleName(StaticResourceBundle.INSTANCE.coreCss().readOnlyTos());
         }
 
         final TermsOfServiceDialogModel model = new TermsOfServiceDialogModel(Session.getInstance(), EventBus
@@ -163,7 +164,7 @@ public class TermsOfServiceDialogContent implements DialogContent
      */
     public String getCssName()
     {
-        return "terms-of-service-modal";
+        return StaticResourceBundle.INSTANCE.coreCss().termsOfServiceModal();
     }
 
     /**
@@ -205,11 +206,11 @@ public class TermsOfServiceDialogContent implements DialogContent
     {
         if (agree)
         {
-            acceptTos.removeStyleName("agree-button-disabled");
+            acceptTos.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().agreeButtonDisabled());
         }
         else
         {
-            acceptTos.addStyleName("agree-button-disabled");
+            acceptTos.addStyleName(StaticResourceBundle.INSTANCE.coreCss().agreeButtonDisabled());
         }
 
     }

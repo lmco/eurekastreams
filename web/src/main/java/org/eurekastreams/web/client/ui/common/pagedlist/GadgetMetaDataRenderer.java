@@ -24,14 +24,14 @@ import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Renderer for gadgets.
- *
+ * 
  */
 public class GadgetMetaDataRenderer implements ItemRenderer<GadgetMetaDataDTO>
 {
 
     /**
      * Render the panel.
-     *
+     * 
      * @param item
      *            the gadget meta data.
      * @return the panel.
@@ -39,10 +39,9 @@ public class GadgetMetaDataRenderer implements ItemRenderer<GadgetMetaDataDTO>
     public Panel render(final GadgetMetaDataDTO item)
     {
         String tabParam = Session.getInstance().getParameterValue("tab");
-        return new GadgetMetaDataPanel(item, tabParam != null ? Long.valueOf(tabParam) : null,
-                GadgetDefinitionModel.getInstance(), "Are you sure you want to delete this app? "
-                        + "Deleting this app will remove it from the start page of every user that has "
-                        + "added it to a tab.");
+        return new GadgetMetaDataPanel(item, tabParam != null ? Long.valueOf(tabParam) : null, GadgetDefinitionModel
+                .getInstance(), "Are you sure you want to delete this app? "
+                + "Deleting this app will remove it from the start page of every user that has added it to a tab.");
     }
 
 }

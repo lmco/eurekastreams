@@ -32,6 +32,7 @@ import org.eurekastreams.web.client.model.ThemeModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.EditPanel.Mode;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -81,7 +82,7 @@ public class ThemeMetaDataPanel extends FlowPanel
     {
         theme = inTheme;
 
-        this.addStyleName("gadget-meta-data");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetMetaData());
 
         if (Session.getInstance().getCurrentPersonRoles().contains(Role.ORG_COORDINATOR))
         {
@@ -127,17 +128,17 @@ public class ThemeMetaDataPanel extends FlowPanel
 
         FlowPanel dataPanel = new FlowPanel();
         FlowPanel bannerPanel = new FlowPanel();
-        bannerPanel.addStyleName("banner");
+        bannerPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().banner());
         bannerPanel.add(new Image(theme.getBannerId()));
         Label title = new Label(theme.getName());
-        title.addStyleName("title");
+        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().title());
 
         dataPanel.add(bannerPanel);
         dataPanel.add(title);
 
         dataPanel.add(new Label(theme.getDescription()));
         FlowPanel gadgetExtInfo = new FlowPanel();
-        gadgetExtInfo.addStyleName("gadget-ext-info");
+        gadgetExtInfo.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetExtInfo());
         gadgetExtInfo.add(new HTML("Category: "));
         Anchor category = new Anchor();
         category.setText(theme.getCategory().getName());
@@ -164,7 +165,7 @@ public class ThemeMetaDataPanel extends FlowPanel
         dataPanel.add(gadgetExtInfo);
 
         applyTheme = new Label("Apply Theme");
-        applyTheme.addStyleName("apply-theme");
+        applyTheme.addStyleName(StaticResourceBundle.INSTANCE.coreCss().applyTheme());
         applyTheme.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent event)
@@ -204,7 +205,7 @@ public class ThemeMetaDataPanel extends FlowPanel
     private void insertActionSeparator(final Panel panel)
     {
         Label sep = new InlineLabel("\u2219");
-        sep.addStyleName("action-link-separator");
+        sep.addStyleName(StaticResourceBundle.INSTANCE.coreCss().actionLinkSeparator());
         panel.add(sep);
     }
 
@@ -228,11 +229,11 @@ public class ThemeMetaDataPanel extends FlowPanel
     {
         if (active)
         {
-            applyTheme.addStyleName("active");
+            applyTheme.addStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
         }
         else
         {
-            applyTheme.removeStyleName("active");
+            applyTheme.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
         }
     }
 }

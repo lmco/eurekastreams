@@ -44,6 +44,7 @@ import org.eurekastreams.web.client.ui.common.form.elements.ValueOnlyFormElement
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.common.pagedlist.PagedListPanel;
 import org.eurekastreams.web.client.ui.common.pagedlist.PluginMetaDataRenderer;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -108,15 +109,14 @@ public class StreamPluginsPanel extends FlowPanel
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("tab", "Plugins");
         params.put("action", "newPlugin");
-        addPlugin =  new Hyperlink("Add Plugin", Session.getInstance().generateUrl(
-                new CreateUrlRequest(params)));
+        addPlugin = new Hyperlink("Add Plugin", Session.getInstance().generateUrl(new CreateUrlRequest(params)));
 
-        RootPanel.get().addStyleName("gallery");
-        panel.addStyleName("gallery-master");
-        panel.addStyleName("plugins-master");
-        galleryAddOrEditContainer.addStyleName("settings-tab");
+        RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().gallery());
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().galleryMaster());
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().pluginsMaster());
+        galleryAddOrEditContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().settingsTab());
         this.add(panel);
-        addPlugin.addStyleName("add-gadget");
+        addPlugin.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addGadget());
 
         panel.add(galleryPortalContainer);
         panel.add(galleryAddOrEditContainer);
@@ -173,19 +173,21 @@ public class StreamPluginsPanel extends FlowPanel
                         Session.getInstance().getEventBus().notifyObservers(
                                 new UpdateHistoryEvent(new CreateUrlRequest(Page.SETTINGS, "tab", "Plugins")));
                         pluginTab.reload();
-                        Session.getInstance().getEventBus().notifyObservers(new ShowNotificationEvent(
-                                new Notification("Stream Plugin has been successfully added")));
+                        Session.getInstance().getEventBus()
+                                .notifyObservers(
+                                        new ShowNotificationEvent(new Notification(
+                                                "Stream Plugin has been successfully added")));
                     }
                 });
-
 
         Session.getInstance().getEventBus().addObserver(DeletedPluginDefinitionResponseEvent.class,
                 new Observer<DeletedPluginDefinitionResponseEvent>()
                 {
                     public void update(final DeletedPluginDefinitionResponseEvent arg1)
                     {
-                        Session.getInstance().getEventBus().notifyObservers(new ShowNotificationEvent(
-                                new Notification("Stream Plugin has been successfully deleted")));
+                        Session.getInstance().getEventBus().notifyObservers(
+                                new ShowNotificationEvent(new Notification(
+                                        "Stream Plugin has been successfully deleted")));
                     }
                 });
 
@@ -205,18 +207,18 @@ public class StreamPluginsPanel extends FlowPanel
                             String defaultUrl = "";
                             String id = "";
 
-                            FormBuilder form = new FormBuilder("Submit a Plugin",
-                                    PluginDefinitionModel.getInstance(), Method.INSERT);
+                            FormBuilder form = new FormBuilder("Submit a Plugin", PluginDefinitionModel.getInstance(),
+                                    Method.INSERT);
 
                             form.turnOffChangeCheck();
                             form.setOnCancelHistoryToken(Session.getInstance().generateUrl(
                                     new CreateUrlRequest(Page.SETTINGS, "tab", "Plugins")));
                             form.addFormElement(new ValueOnlyFormElement("id", id));
-                            form
-                                    .addWidget(new HTML(
-                                "<span class='gallery-upload-note'><strong>Please Note:</strong><br />"
-                                + "Please be sure your XML file includes the required fields. You will not be able to "
-                                + "upload the XML without the required fields.</span>"));
+                            form.addWidget(new HTML(
+                                    "<span class='gallery-upload-note'><strong>Please Note:</strong><br />"
+                                            + "Please be sure your XML file includes the required fields."
+                                            + " You will not be able to upload the XML without the required"
+                                            + " fields.</span>"));
                             form.addFormDivider();
 
                             List<String> categories = new LinkedList<String>();

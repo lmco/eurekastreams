@@ -16,8 +16,8 @@
 package org.eurekastreams.web.client.ui.pages.profile.settings;
 
 import org.eurekastreams.server.domain.Job;
-import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.BackgroundEmploymentAddCanceledEvent;
+import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.data.DeletedPersonalEmploymentResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonalEmploymentResponseEvent;
@@ -27,6 +27,7 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.PersonalEmploymentModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -77,10 +78,10 @@ public class EmploymentListPanel extends FlowPanel
         pageHistoryToken = inPageHistoryToken;
         
         final Label addNewPosition = new Label("Add position");
-        addNewPosition.addStyleName("linked-label");
+        addNewPosition.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
         
         addPosition.add(addNewPosition);
-        addPosition.addStyleName("add-new-background");
+        addPosition.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addNewBackground());
         
         Session.getInstance().getEventBus().addObserver(GotPersonalEmploymentResponseEvent.class,
                 new Observer<GotPersonalEmploymentResponseEvent>()
@@ -88,10 +89,10 @@ public class EmploymentListPanel extends FlowPanel
                     public void update(final GotPersonalEmploymentResponseEvent event)
                     {                       
                         panel.clear();
-                        panel.addStyleName("personal-settings-background");
+                        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().personalSettingsBackground());
                         
                         Label title = new Label("Work History");
-                        title.addStyleName("title");
+                        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().title());
                         panel.add(title);
                         
                         for (Job job : event.getResponse())

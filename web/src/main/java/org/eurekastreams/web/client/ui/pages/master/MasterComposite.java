@@ -147,18 +147,18 @@ public class MasterComposite extends Composite
             }
         };
         panel.sinkEvents(Event.KEYEVENTS | Event.FOCUSEVENTS | Event.MOUSEEVENTS & ~Event.ONMOUSEMOVE);
-        panel.addStyleName("main");
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().main());
 
-        headerPanel.addStyleName("header-container");
+        headerPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().headerContainer());
 
-        notifier.addStyleName("master-notifier");
+        notifier.addStyleName(StaticResourceBundle.INSTANCE.coreCss().masterNotifier());
         panel.add(notifier);
 
-        mainContents.addStyleName("main-contents");
+        mainContents.addStyleName(StaticResourceBundle.INSTANCE.coreCss().mainContents());
         mainContents.add(headerPanel);
 
         mainContents.add(contentPanel);
-        contentPanel.addStyleName("content");
+        contentPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().content());
         panel.add(mainContents);
 
         initWidget(panel);

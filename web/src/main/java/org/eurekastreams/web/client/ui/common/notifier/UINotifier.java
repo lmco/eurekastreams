@@ -22,6 +22,7 @@ import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -38,7 +39,7 @@ public class UINotifier extends FlowPanel
     /**
      * The close button.
      */
-    private Anchor closeButton = new Anchor("close");
+    private Anchor closeButton = new Anchor(StaticResourceBundle.INSTANCE.coreCss().close());
 
     /**
      * The content panel.
@@ -61,19 +62,19 @@ public class UINotifier extends FlowPanel
     public UINotifier()
     {
         this.setVisible(false);
-        contentPanel.addStyleName("message");
+        contentPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().message());
 
         FlowPanel messageLeft = new FlowPanel();
-        messageLeft.addStyleName("notification-left");
+        messageLeft.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notificationLeft());
         FlowPanel messageRight = new FlowPanel();
-        messageRight.addStyleName("notification-right");
+        messageRight.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notificationRight());
 
         this.add(messageLeft);
         this.add(contentPanel);
         this.add(messageRight);
 
         this.setStyleName("notification-bar");
-        closeButton.addStyleName("close-notification");
+        closeButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().closeNotification());
         closeButton.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent arg0)
@@ -82,7 +83,7 @@ public class UINotifier extends FlowPanel
             }
         });
 
-        undoSeperator.addStyleName("undo-seperator");
+        undoSeperator.addStyleName(StaticResourceBundle.INSTANCE.coreCss().undoSeperator());
 
         Session.getInstance().getEventBus().addObserver(ShowNotificationEvent.class,
                 new Observer<ShowNotificationEvent>()

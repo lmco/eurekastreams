@@ -18,6 +18,7 @@ package org.eurekastreams.web.client.ui.common.stream.filters.list;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.StreamScopeDeletedEvent;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -38,11 +39,11 @@ public class StreamScopePanel extends FlowPanel
     public StreamScopePanel(final StreamScope scope)
     {
 
-        this.addStyleName("stream-scope");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamScope());
         if (scope.getDisplayName() == null)
         {
             this.add(new Label(scope.getUniqueKey()));
-            this.addStyleName("deleted");
+            this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().deleted());
         }
         else
         {
@@ -50,7 +51,7 @@ public class StreamScopePanel extends FlowPanel
         }
 
         FlowPanel anchorContainer = new FlowPanel();
-        anchorContainer.addStyleName("gwt-Hyperlink");
+        anchorContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gwtHyperlink());
         Anchor close = new Anchor("X");
         close.addClickListener(new ClickListener()
         {

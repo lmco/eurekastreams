@@ -23,6 +23,7 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -65,25 +66,25 @@ public class SupportStreamHelpPanel extends FlowPanel
     {
         Label headerLabel = new Label("Support Stream");
         headerPanel.add(headerLabel);
-        headerPanel.addStyleName("header");
+        headerPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().header());
         contentPanel.add(descriptionPanel);
         add(headerPanel);
         add(contentPanel);
 
         logoPanel.add(new AvatarWidget(inSupportGroup.getId(), inSupportGroup.getAvatarId(), EntityType.GROUP,
                 Size.Normal));
-        logoPanel.addStyleName("support-group-logo-panel");
+        logoPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().supportGroupLogoPanel());
 
-        contentPanel.addStyleName("content-panel");
+        contentPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().contentPanel());
         contentPanel.add(logoPanel);
         descriptionPanel.add(new Label(inSupportGroup.getDescription()));
 
         Hyperlink gotoStreamLink = new Hyperlink("Go to Stream", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.GROUPS, inSettings.getSupportStreamGroupShortName())));
         descriptionPanel.add(gotoStreamLink);
-        gotoStreamLink.addStyleName("go-to-support-group-stream-link");
+        gotoStreamLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().goToSupportGroupStreamLink());
 
         contentPanel.add(descriptionPanel);
-        descriptionPanel.addStyleName("support-group-description-panel");
+        descriptionPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().supportGroupDescriptionPanel());
     }
 }

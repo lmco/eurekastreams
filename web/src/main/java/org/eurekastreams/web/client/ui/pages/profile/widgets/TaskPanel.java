@@ -19,6 +19,7 @@ import java.util.HashMap;
 
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.profile.Task;
 
 import com.google.gwt.user.client.ui.ClickListener;
@@ -51,21 +52,21 @@ public class TaskPanel extends FlowPanel
      */
     public TaskPanel(final Task task, final boolean done, final int percentage, final CreateUrlRequest inTarget)
     {
-        this.addStyleName("checklist-task");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().checklistTask());
 
         Label percentageLabel = new Label(String.valueOf(percentage) + "%");
         if (done)
         {
-            percentageLabel.addStyleName("checklist-done");
+            percentageLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().checklistDone());
         }
         else
         {
-            percentageLabel.addStyleName("checklist-not-done");
+            percentageLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().checklistNotDone());
         }
         this.add(percentageLabel);
 
         FlowPanel taskPanel = new FlowPanel();
-        taskPanel.addStyleName("checklist-task-desc");
+        taskPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().checklistTaskDesc());
 
         if (task.getTab() != "")
         {
@@ -76,7 +77,7 @@ public class TaskPanel extends FlowPanel
 
         defaultTaskTitle = new Hyperlink(task.getName(), Session.getInstance().generateUrl(inTarget));
 
-        defaultTaskTitle.addStyleName("task-title");
+        defaultTaskTitle.addStyleName(StaticResourceBundle.INSTANCE.coreCss().taskTitle());
 
         taskPanel.add(defaultTaskTitle);
         taskPanel.add(new Label(task.getDescription()));

@@ -21,6 +21,7 @@ import java.util.Map;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -107,7 +108,7 @@ public class SimpleTab extends FlowPanel
      */
     public SimpleTab(final String inIdentifier, final String inTitle, final Widget inContents)
     {
-        this.addStyleName("tab");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().tab());
         focusPanel.add(panel);
         this.add(focusPanel);
 
@@ -248,7 +249,7 @@ public class SimpleTab extends FlowPanel
      */
     public void select()
     {
-        addStyleName("active");
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
     }
 
     /**
@@ -256,7 +257,7 @@ public class SimpleTab extends FlowPanel
      */
     public void unSelect()
     {
-        removeStyleName("active");
+        removeStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
     }
 
     /**

@@ -16,6 +16,7 @@
 package org.eurekastreams.web.client.ui.pages.profile.settings.stream;
 
 import org.eurekastreams.server.domain.gadgetspec.GadgetMetaDataDTO;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -35,13 +36,13 @@ public class PluginMetaDataDescriptionPanel extends FlowPanel
     public PluginMetaDataDescriptionPanel(final GadgetMetaDataDTO metaData)
     {
         FlowPanel feedContainer = new FlowPanel();
-        feedContainer.addStyleName("stream-plugins-add-feed-meta-data");
+        feedContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamPluginsAddFeedMetaData());
 
         FlowPanel imageContainer = new FlowPanel();
-        imageContainer.addStyleName("image-container");
+        imageContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().imageContainer());
 
         FlowPanel screenshot = new FlowPanel();
-        screenshot.addStyleName("stream-plugins-screenshot");
+        screenshot.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamPluginsScreenshot());
 
         screenshot.add(new Image(
                 metaData.getScreenshot()));
@@ -49,14 +50,14 @@ public class PluginMetaDataDescriptionPanel extends FlowPanel
         imageContainer.add(screenshot);
 
         FlowPanel dataContainer = new FlowPanel();
-        dataContainer.setStyleName("gadget-data");
+        dataContainer.setStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetData());
 
         Label title = new Label(metaData.getTitle());
-        title.addStyleName("title");
+        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().title());
 
         String[] descriptionArray = metaData.getDescription().split("\\|");
         HTML description = new HTML(convertToSafeHTML(descriptionArray[0]));
-        description.addStyleName("description");
+        description.addStyleName(StaticResourceBundle.INSTANCE.coreCss().description());
 
         dataContainer.add(title);
         dataContainer.add(description);

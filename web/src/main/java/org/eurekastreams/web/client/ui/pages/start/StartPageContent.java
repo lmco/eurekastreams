@@ -51,6 +51,7 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.common.notifier.UndoDeleteNotification;
 import org.eurekastreams.web.client.ui.common.tabs.TabContainerPanel;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.start.dragging.NoInsertAtEndIndexDropController;
 import org.eurekastreams.web.client.ui.pages.start.dragging.TabDragHandler;
 
@@ -96,7 +97,7 @@ public class StartPageContent extends FlowPanel
      */
     public StartPageContent()
     {
-        RootPanel.get().addStyleName("themeable");
+        RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().themeable());
 
         final List<StartPageTab> startTabs = new ArrayList<StartPageTab>();
 
@@ -150,7 +151,7 @@ public class StartPageContent extends FlowPanel
 
                         thisBuffered.add(settings);
                         thisBuffered.add(tabs);
-                        settings.addStyleName("configure-tab");
+                        settings.addStyleName(StaticResourceBundle.INSTANCE.coreCss().configureTab());
 
                         tabs.init();
 
@@ -180,7 +181,7 @@ public class StartPageContent extends FlowPanel
                         GadgetMetaDataFetcher fetcher = new GadgetMetaDataFetcher(gadgetDefList);
                         fetcher.fetchMetaData();
 
-                        thisBuffered.addStyleName("portal-boundary");
+                        thisBuffered.addStyleName(StaticResourceBundle.INSTANCE.coreCss().portalBoundary());
 
                         Session.getInstance().getEventBus().addObserver(ThemeChangedEvent.getEvent(),
                                 new Observer<ThemeChangedEvent>()
@@ -208,7 +209,9 @@ public class StartPageContent extends FlowPanel
                                         // Note: parameters do not need to be decoded here - that's already done by
                                         // HistoryHandler before it published the event
 
-                                        if (event.getParameters().get("tab") != null)
+                                        if (event.getParameters().get("tab")
+                                        // line break
+                                        != null)
                                         {
                                             HashMap<String, String> params = new HashMap<String, String>();
                                             params.put("tab", event.getParameters().get("tab"));

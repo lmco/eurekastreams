@@ -15,10 +15,10 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.attach.bookmark;
 
+import org.eurekastreams.server.domain.stream.LinkInformation;
 import org.eurekastreams.web.client.ui.common.stream.attach.Attachment;
 import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulatorStrategy;
 import org.eurekastreams.web.client.ui.common.stream.decorators.object.BookmarkPopulator;
-import org.eurekastreams.server.domain.stream.LinkInformation;
 
 /**
  * This class represents a bookmark attachment. It SHOULD contain all the fields

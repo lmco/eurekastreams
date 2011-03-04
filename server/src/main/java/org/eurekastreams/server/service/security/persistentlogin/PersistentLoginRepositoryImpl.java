@@ -15,13 +15,12 @@
  */
 package org.eurekastreams.server.service.security.persistentlogin;
 
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
-import org.eurekastreams.server.domain.PersistentLogin;
-import org.eurekastreams.server.persistence.PersistentLoginMapper;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eurekastreams.server.domain.PersistentLogin;
+import org.eurekastreams.server.persistence.PersistentLoginMapper;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 /**
  * Implementation of PersistentLogin data store interface. Methods here are

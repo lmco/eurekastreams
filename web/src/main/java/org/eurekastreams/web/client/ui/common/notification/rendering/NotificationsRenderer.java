@@ -21,6 +21,7 @@ import java.util.Map;
 import org.eurekastreams.commons.formatting.DateFormatter;
 import org.eurekastreams.server.domain.ApplicationAlertNotification;
 import org.eurekastreams.server.domain.NotificationType;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -72,21 +73,21 @@ public class NotificationsRenderer
     {
         // build the main panel
         Panel main = new FlowPanel();
-        main.addStyleName("notif-entry");
+        main.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifEntry());
         if (!notif.isRead())
         {
-            main.addStyleName("notif-entry-unread");
+            main.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifEntryUnread());
         }
 
         // -- icon side --
         Widget icon = new Label();
-        icon.addStyleName("icon");
+        icon.addStyleName(StaticResourceBundle.INSTANCE.coreCss().icon());
         main.add(icon);
 
         // -- text side --
 
         Panel textPanel = new FlowPanel();
-        textPanel.addStyleName("notif-text-side");
+        textPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifTextSide());
         main.add(textPanel);
 
         // build the message text
@@ -99,7 +100,7 @@ public class NotificationsRenderer
 
         // build the time
         Label when = new Label(dateFormatter.timeAgo(notif.getNotificationDate()));
-        when.addStyleName("notif-timestamp");
+        when.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifTimestamp());
         textPanel.add(when);
 
         return main;

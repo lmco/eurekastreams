@@ -17,6 +17,8 @@ package org.eurekastreams.web.client.ui.common.form.elements;
 
 import java.io.Serializable;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -80,10 +82,10 @@ public class BasicRadioButtonGroupFormElement extends FlowPanel implements FormE
         key = inKey;
         radioButtonGroupName = groupName;
         label.setText(labelVal);
-        label.addStyleName("form-label");
-        radioButtonPanel.addStyleName("form-radioButtonGroup");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
+        radioButtonPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formRadioButtonGroup());
         radioButtonPanel.clear();
-        instructions.addStyleName("form-instructions");
+        instructions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
         instructions.setText(inInstructions);
 
         this.add(label);
@@ -195,7 +197,7 @@ public class BasicRadioButtonGroupFormElement extends FlowPanel implements FormE
      */
     public void onError(final String errMessage)
     {
-        label.addStyleName("form-error");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**
@@ -203,7 +205,7 @@ public class BasicRadioButtonGroupFormElement extends FlowPanel implements FormE
      */
     public void onSuccess()
     {
-        label.removeStyleName("form-error");
+        label.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**

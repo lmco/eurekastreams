@@ -122,7 +122,7 @@ public class PostToStreamComposite extends FlowPanel
     private void setupWidgets(final StreamScope inScope)
     {
         this.getElement().setAttribute("id", "post-to-stream");
-        this.addStyleName("small");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().small());
 
         charsRemaining = new Label();
         postButton = new Label("Post");
@@ -130,29 +130,29 @@ public class PostToStreamComposite extends FlowPanel
         message.setText("Something to share?");
         message.setVisible(false); // Hide until post ready event.
 
-        this.addStyleName("post-to-stream");
-        errorMsg.addStyleName("form-error-box");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postToStream());
+        errorMsg.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formErrorBox());
         errorMsg.setVisible(false);
         this.add(errorMsg);
 
         FlowPanel postInfoContainer = new FlowPanel();
-        postInfoContainer.addStyleName("post-info-container");
+        postInfoContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postInfoContainer());
 
-        postButton.addStyleName("post-button");
+        postButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postButton());
         postInfoContainer.add(postButton);
 
-        charsRemaining.addStyleName("characters-remaining");
+        charsRemaining.addStyleName(StaticResourceBundle.INSTANCE.coreCss().charactersRemaining());
         postInfoContainer.add(charsRemaining);
 
         Panel entryPanel = new FlowPanel();
-        entryPanel.addStyleName("post-entry-panel");
+        entryPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postEntryPanel());
         entryPanel.add(message);
         entryPanel.add(postInfoContainer);
         add(entryPanel);
 
         // below text area: links and post to on one line, then content warning below
         Panel expandedPanel = new FlowPanel();
-        expandedPanel.addStyleName("post-expanded-panel");
+        expandedPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postExpandedPanel());
 
         postToPanel = new PostToPanel(inScope);
         expandedPanel.add(postToPanel);
@@ -160,8 +160,7 @@ public class PostToStreamComposite extends FlowPanel
         expandedPanel.add(links);
 
         contentWarning = new Label();
-        contentWarningContainer.addStyleName("content-warning");
-        contentWarning.addStyleName("content-warning-text");
+        contentWarningContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().contentWarning());
         contentWarningContainer.add(contentWarning);
         expandedPanel.add(contentWarningContainer);
 
@@ -210,7 +209,7 @@ public class PostToStreamComposite extends FlowPanel
         {
             public void update(final MessageStreamAppendEvent event)
             {
-                addStyleName("small");
+                addStyleName(StaticResourceBundle.INSTANCE.coreCss().small());
                 message.setText("Something to share?");
             }
         });
@@ -286,7 +285,7 @@ public class PostToStreamComposite extends FlowPanel
             @Override
             public void run()
             {
-                if (!getStyleName().contains("small"))
+                if (!getStyleName().contains(StaticResourceBundle.INSTANCE.coreCss().small()))
                 {
                     checkForLinks();
                 }
@@ -302,29 +301,28 @@ public class PostToStreamComposite extends FlowPanel
     /*-{
            $wnd.overPoster = false;
            $doc.onmousedown = function() {
-           if(!$wnd.overPoster && $wnd.jQuery(".post-button").is(".inactive"))
-           {
-           setTimeout("$wnd.jQuery('#post-to-stream').addClass('small');",500);
-           setTimeout("$wnd.jQuery('#post-to-stream textarea').val('Something to share?');",500);
-           }
-           else if($wnd.overPoster && $wnd.jQuery("#post-to-stream").is(".small"))
-           {
-           $wnd.jQuery('#post-to-stream textarea').focus();
-           }
+               if(!$wnd.overPoster && $wnd.jQuery(".post-button").is(".inactive"))
+               {
+                   setTimeout("$wnd.jQuery('#post-to-stream').addClass('small');",500);
+                   setTimeout("$wnd.jQuery('#post-to-stream textarea').val('Something to share?');",500);
+               }
+               else if($wnd.overPoster && $wnd.jQuery("#post-to-stream").is(".small"))
+               {
+                   $wnd.jQuery('#post-to-stream textarea').focus();
+               }
 
-           }
+           };
 
-           $wnd.jQuery("#post-to-stream textarea").focus(
-           function() {
-           if($wnd.jQuery("#post-to-stream").is(".small")) {
-           $wnd.jQuery("#post-to-stream").removeClass("small");
-           $wnd.jQuery("#post-to-stream textarea").val("");
-           }
-           });
+               $wnd.jQuery("#post-to-stream textarea").focus(function() {
+                   if($wnd.jQuery("#post-to-stream").is(".small")) {
+                       $wnd.jQuery("#post-to-stream").removeClass("small");
+                       $wnd.jQuery("#post-to-stream textarea").val("");
+                   }
+               });
 
-           $wnd.jQuery("#post-to-stream").hover(
-           function() { $wnd.overPoster = true; },
-           function() { $wnd.overPoster = false; });
+               $wnd.jQuery("#post-to-stream").hover(
+                   function() { $wnd.overPoster = true; },
+                   function() { $wnd.overPoster = false; });
        }-*/;
 
     /**
@@ -371,7 +369,7 @@ public class PostToStreamComposite extends FlowPanel
      */
     private void checkForLinks()
     {
-        if (!getStyleName().contains("small"))
+        if (!getStyleName().contains(StaticResourceBundle.INSTANCE.coreCss().small()))
         {
             if (attachment == null || !(attachment instanceof Bookmark))
             {
@@ -428,11 +426,11 @@ public class PostToStreamComposite extends FlowPanel
 
         if (textLength > MAX_MESSAGE_LENGTH)
         {
-            charsRemaining.addStyleName("over-character-limit");
+            charsRemaining.addStyleName(StaticResourceBundle.INSTANCE.coreCss().overCharacterLimit());
         }
         else
         {
-            charsRemaining.removeStyleName("over-character-limit");
+            charsRemaining.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().overCharacterLimit());
         }
     }
 
@@ -441,7 +439,7 @@ public class PostToStreamComposite extends FlowPanel
      */
     private void hidePostButton()
     {
-        postButton.addStyleName("inactive");
+        postButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inactive());
     }
 
     /**
@@ -449,7 +447,7 @@ public class PostToStreamComposite extends FlowPanel
      */
     private void showPostButton()
     {
-        postButton.removeStyleName("inactive");
+        postButton.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().inactive());
     }
 
     /**

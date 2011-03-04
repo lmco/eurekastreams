@@ -25,6 +25,7 @@ import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.model.PopularHashTagsModel;
 import org.eurekastreams.web.client.ui.common.stream.transformers.HashtagLinkTransformer;
 import org.eurekastreams.web.client.ui.common.stream.transformers.StreamSearchLinkBuilder;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -64,10 +65,10 @@ public class PopularHashtagsPanel extends FlowPanel
                         final List<String> hashTags = response.getPopularHashTags();
 
                         final Label title = new Label("Popular Hashtags");
-                        title.addStyleName("profile-subheader");
+                        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileSubheader());
 
                         widget.add(title);
-                        widget.addStyleName("popular-hashtags");
+                        widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().popularHashtags());
 
                         if (hashTags.size() > 0)
                         {

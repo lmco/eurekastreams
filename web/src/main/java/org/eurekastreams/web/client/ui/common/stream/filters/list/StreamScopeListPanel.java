@@ -22,6 +22,7 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.StreamScopeAddedEvent;
 import org.eurekastreams.web.client.events.StreamScopeDeletedEvent;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 
@@ -44,8 +45,8 @@ public class StreamScopeListPanel extends FlowPanel
     public StreamScopeListPanel(final LinkedList<StreamScope> inScopes)
     {
         this.setVisible(false);
-        this.addStyleName("stream-scope-container");
-        this.getElement().setAttribute("id", "stream-scope-container");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamScopeContainer());
+        this.getElement().setAttribute("id", StaticResourceBundle.INSTANCE.coreCss().streamScopeContainer());
         scopes = inScopes;
         render();
 
@@ -100,7 +101,7 @@ public class StreamScopeListPanel extends FlowPanel
      */
     private static native void scrollToBottom()
     /*-{
-            var objDiv = $doc.getElementById("stream-scope-container");
+            var objDiv = $doc.getElementById(StaticResourceBundle.INSTANCE.coreCss().streamScopeContainer());
             objDiv.scrollTop = objDiv.scrollHeight;
     }-*/;
 

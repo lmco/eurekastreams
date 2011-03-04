@@ -15,25 +15,23 @@
  */
 package org.eurekastreams.web.client.ui.common.form.elements;
 
+
 /**
- * Extends a sub text box form element (this is kind of a hack, because it
- * should be able to do either sub or regular. Right now all our phone inputs
- * are basic text box, so agiley, I did it this way. Refactor when the need arises
- * to have non sub phone elements.
+ * Extends a sub text box form element (this is kind of a hack, because it should be able to do either sub or regular.
+ * Right now all our phone inputs are basic text box, so agiley, I did it this way. Refactor when the need arises to
+ * have non sub phone elements.
  * 
  */
 
-//TODO cstephe-I suggest we get rid of sub test box form element.  
-//We should just be able to pass in a class if not class is passed in it uses the form-element class
-
-public class PhoneInputFormElement extends BasicTextBoxFormElement implements
-        FormElement
+// TODO cstephe-I suggest we get rid of sub test box form element.
+// We should just be able to pass in a class if not class is passed in it uses the form-element class
+public class PhoneInputFormElement extends BasicTextBoxFormElement implements FormElement
 {
     /**
      * The length of the phone number if there happens to be a leading 1.
      */
     private static final int LENGTH_OF_PHONE_WITH_LEADING_ONE = 11;
-    
+
     /**
      * Creates a text box input that correctly formats a phone input.
      * 
@@ -48,18 +46,14 @@ public class PhoneInputFormElement extends BasicTextBoxFormElement implements
      * @param required
      *            whether or not this is required.
      */
-    public PhoneInputFormElement(final String labelVal, final String inKey,
-            final String value, final String inInstructions,
-            final boolean required)
+    public PhoneInputFormElement(final String labelVal, final String inKey, final String value,
+            final String inInstructions, final boolean required)
     {
-        super(labelVal, inKey, formatPhoneNumber(value), inInstructions,
-                required);
-        this.addStyleName("form-phone-input");
+        super(labelVal, inKey, formatPhoneNumber(value), inInstructions, required);
     }
 
     /**
-     * Format the phone number by injecting dashes between the numbers (e.g.
-     * 6105550424 becomes 610-555-0424).
+     * Format the phone number by injecting dashes between the numbers (e.g. 6105550424 becomes 610-555-0424).
      * 
      * @param inPhone
      *            the unformated phone number.
@@ -72,15 +66,13 @@ public class PhoneInputFormElement extends BasicTextBoxFormElement implements
             return "";
         }
         String phoneNumber = inPhone;
-        phoneNumber = phoneNumber.substring(0, 3) + "-"
-                + phoneNumber.substring(3, 6) + "-" + phoneNumber.substring(6);
+        phoneNumber = phoneNumber.substring(0, 3) + "-" + phoneNumber.substring(3, 6) + "-" + phoneNumber.substring(6);
         return phoneNumber;
     }
 
     /**
-     * Before we give back the value from what the user typed in, strip out any
-     * character thats not numeric. Also, if the leading number is a 1, strip
-     * that out as well. So 1 (610) 555-0424 becomes 6105550424.
+     * Before we give back the value from what the user typed in, strip out any character thats not numeric. Also, if
+     * the leading number is a 1, strip that out as well. So 1 (610) 555-0424 becomes 6105550424.
      * 
      * @return the formatted value.
      */
@@ -88,8 +80,7 @@ public class PhoneInputFormElement extends BasicTextBoxFormElement implements
     public String getValue()
     {
         String value = super.getValue().toString().replaceAll("[^0-9]", "");
-        if (value.length() == LENGTH_OF_PHONE_WITH_LEADING_ONE
-                && value.charAt(0) == '1')
+        if (value.length() == LENGTH_OF_PHONE_WITH_LEADING_ONE && value.charAt(0) == '1')
         {
             value = value.substring(1);
         }

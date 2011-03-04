@@ -35,6 +35,7 @@ import org.eurekastreams.web.client.model.requests.AddGadgetToStartPageRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.EditPanel.Mode;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -150,9 +151,9 @@ public class GadgetMetaDataPanel extends FlowPanel
         }
 
         FlowPanel imageContainer = new FlowPanel();
-        imageContainer.addStyleName("image-container");
+        imageContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().imageContainer());
 
-        this.addStyleName("gadget-meta-data");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetMetaData());
 
         // Im a gadget.
         if (tabId != null)
@@ -167,7 +168,7 @@ public class GadgetMetaDataPanel extends FlowPanel
             }
 
             applyGadget = new Hyperlink("Apply App", History.getToken());
-            applyGadget.addStyleName("apply-gadget");
+            applyGadget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().applyGadget());
             applyGadget.addClickHandler(new ClickHandler()
             {
                 public void onClick(final ClickEvent event)
@@ -211,25 +212,25 @@ public class GadgetMetaDataPanel extends FlowPanel
             if (metaData.getScreenshot() != null && !metaData.getScreenshot().equals(""))
             {
                 FlowPanel screenShot = new FlowPanel();
-                screenShot.addStyleName("stream-plugins-screenshot");
+                screenShot.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamPluginsScreenshot());
                 imageContainer.add(screenShot);
                 screenShot.add(new Image(metaData.getScreenshot()));
             }
         }
 
         FlowPanel dataPanel = new FlowPanel();
-        dataPanel.addStyleName("gadget-data");
+        dataPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetData());
 
         Label title = new Label(metaData.getTitle());
-        title.addStyleName("title");
+        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().title());
         dataPanel.add(title);
         dataPanel.add(new HTML(metaData.getDescription()));
         Anchor titleUrl = new Anchor(metaData.getTitleUrl(), metaData.getTitleUrl(), "_blank");
-        titleUrl.addStyleName("gadget-title-url");
+        titleUrl.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetTitleUrl());
 
         dataPanel.add(titleUrl);
         FlowPanel gadgetExtInfo = new FlowPanel();
-        gadgetExtInfo.addStyleName("gadget-ext-info");
+        gadgetExtInfo.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetExtInfo());
         gadgetExtInfo.add(new HTML("Category: "));
         Anchor category = new Anchor();
         category.setText(metaData.getGadgetDefinition().getCategory().getName());
@@ -269,7 +270,7 @@ public class GadgetMetaDataPanel extends FlowPanel
     private void insertActionSeparator(final Panel panel)
     {
         Label sep = new InlineLabel("\u2219");
-        sep.addStyleName("action-link-separator");
+        sep.addStyleName(StaticResourceBundle.INSTANCE.coreCss().actionLinkSeparator());
         panel.add(sep);
     }
 
@@ -283,11 +284,11 @@ public class GadgetMetaDataPanel extends FlowPanel
     {
         if (active)
         {
-            applyGadget.addStyleName("active");
+            applyGadget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
         }
         else
         {
-            applyGadget.removeStyleName("active");
+            applyGadget.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
         }
     }
 }

@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.web.client.ui.common;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -35,7 +37,7 @@ public class LeftBarPanel extends FlowPanel
     {
         //panel = new FlowPanel();
         //this.initWidget(panel);
-        this.addStyleName("left-bar");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().leftBar());
     }
 
     /**
@@ -46,11 +48,7 @@ public class LeftBarPanel extends FlowPanel
      */
     public void addChildWidget(final Widget widget)
     {
-        if (!this.iterator().hasNext())
-        {
-            widget.addStyleName("left-bar-child-first");
-        }
-        widget.addStyleName("left-bar-child");
+        widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().leftBarChild());
         this.add(widget);
     }
 }

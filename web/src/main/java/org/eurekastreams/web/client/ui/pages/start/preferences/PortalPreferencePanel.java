@@ -18,6 +18,7 @@ package org.eurekastreams.web.client.ui.pages.start.preferences;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.PreferencePaneInactivateEvent;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -68,10 +69,10 @@ public class PortalPreferencePanel extends FlowPanel
      */
     public PortalPreferencePanel()
     {
-        this.addStyleName("portal-pref-pane");
-        titleBarWidgetContainer.addStyleName("title-bar-widget");
-        innerPanel.addStyleName("inner");
-        titlePanel.addStyleName("title");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().portalPrefPane());
+        titleBarWidgetContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().titleBarWidget());
+        innerPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inner());
+        titlePanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().title());
         titlePanel.add(name);
         titlePanel.add(titleBarWidgetContainer);
         titlePanel.add(closeButton);
@@ -106,7 +107,7 @@ public class PortalPreferencePanel extends FlowPanel
     public void hidePanel()
     {
         this.setVisible(false);
-        RootPanel.get().removeStyleName("pref-panel-visible");
+        RootPanel.get().removeStyleName(StaticResourceBundle.INSTANCE.coreCss().prefPanelVisible());
     }
 
     /**
@@ -114,7 +115,7 @@ public class PortalPreferencePanel extends FlowPanel
      */
     public void showPanel()
     {
-        RootPanel.get().addStyleName("pref-panel-visible");
+        RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().prefPanelVisible());
         this.setVisible(true);
     }
 

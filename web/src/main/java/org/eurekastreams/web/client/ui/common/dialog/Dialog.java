@@ -16,6 +16,7 @@
 package org.eurekastreams.web.client.ui.common.dialog;
 
 import org.eurekastreams.commons.client.ui.WidgetCommand;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
@@ -76,7 +77,7 @@ public class Dialog extends PopupPanel
         if (bgPanel == null)
         {
             bgPanel = new FlowPanel();
-            bgPanel.addStyleName("modal-bg");
+            bgPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().modalBg());
 
             bgPanel.setVisible(false);
 
@@ -92,7 +93,7 @@ public class Dialog extends PopupPanel
      */
     public Dialog(final DialogContent content)
     {
-        super(false, true);
+        super(false, false);
 
         addBg();
 
@@ -101,7 +102,7 @@ public class Dialog extends PopupPanel
 
         setContent(content);
 
-        modalPanel.addStyleName("modal");
+        modalPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().modal());
         setWidget(modalPanel);
 
         controller.init();
@@ -124,9 +125,9 @@ public class Dialog extends PopupPanel
 
         // Title Panel
         FlowPanel titlePanel = new FlowPanel();
-        titlePanel.addStyleName("modal-title");
+        titlePanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().modalTitle());
 
-        closeButton.addStyleName("modal-close");
+        closeButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().modalClose());
         titlePanel.add(closeButton);
 
         title.setText(dialogContent.getTitle());
@@ -136,7 +137,7 @@ public class Dialog extends PopupPanel
 
         // Content Panel
         FlowPanel bodyContainer = new FlowPanel();
-        bodyContainer.addStyleName("modal-content-panel");
+        bodyContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().modalContentPanel());
         bodyContainer.add(dialogContent.getBody());
         modalPanel.add(bodyContainer);
     }
@@ -218,13 +219,13 @@ public class Dialog extends PopupPanel
     @Override
     public void center()
     {
-        this.addStyleName("hidden");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
         super.show();
         dialogContent.show();
         int offsetTop = (Window.getClientHeight() - this.getElement().getScrollHeight()) / 2;
         int offsetLeft = (Window.getClientWidth() - this.getElement().getScrollWidth()) / 2;
         this.setPopupPosition(offsetLeft, offsetTop);
-        this.removeStyleName("hidden");
+        this.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
     }
 
     /**

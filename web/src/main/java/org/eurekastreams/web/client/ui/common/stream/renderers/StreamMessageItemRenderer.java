@@ -49,6 +49,7 @@ import org.eurekastreams.web.client.ui.common.stream.renderers.verb.PostRenderer
 import org.eurekastreams.web.client.ui.common.stream.renderers.verb.ShareRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.verb.VerbRenderer;
 import org.eurekastreams.web.client.ui.common.stream.share.ShareMessageDialogContent;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.utility.BaseActivityLinkBuilder;
 import org.eurekastreams.web.client.utility.InContextActivityLinkBuilder;
 
@@ -228,7 +229,8 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         }
 
         Panel mainPanel = new FlowPanel();
-        mainPanel.addStyleName("stream-message-item list-item");
+        mainPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamMessageItem());
+        mainPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().listItem());
         mainPanel.addStyleName(state.toString());
 
         VerbRenderer verbRenderer = verbDictionary.get(msg.getVerb());
@@ -241,7 +243,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         if (doManageFlagged)
         {
             leftColumn = new FlowPanel();
-            leftColumn.addStyleName("left-column");
+            leftColumn.addStyleName(StaticResourceBundle.INSTANCE.coreCss().leftColumn());
             mainPanel.add(leftColumn);
         }
 
@@ -259,7 +261,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         }
 
         FlowPanel msgContent = new FlowPanel();
-        msgContent.addStyleName("description");
+        msgContent.addStyleName(StaticResourceBundle.INSTANCE.coreCss().description());
         mainPanel.add(msgContent);
 
         CommentsListPanel commentsPanel = null;
@@ -272,7 +274,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
         // row for who posted
         Panel sourceMetaData = new FlowPanel();
-        sourceMetaData.addStyleName("message-metadata-source");
+        sourceMetaData.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageMetadataSource());
         for (MetadataLinkRenderer itemRenderer : verbRenderer.getSourceMetaDataItemRenderers())
         {
             Widget metaDataItem = itemRenderer.render();
@@ -285,7 +287,6 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
         // content
         FlowPanel nonMetaData = new FlowPanel();
-        nonMetaData.addStyleName("message-container");
         nonMetaData.addStyleName(state.toString());
 
         Widget content = verbRenderer.getContent();
@@ -297,7 +298,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
         // additional metadata
         FlowPanel metaData = new FlowPanel();
-        metaData.addStyleName("message-metadata-additional");
+        metaData.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageMetadataAdditional());
         for (MetadataLinkRenderer itemRenderer : verbRenderer.getMetaDataItemRenderers())
         {
             Widget metaDataItem = itemRenderer.render();
@@ -313,14 +314,14 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
         // timestamp and actions
         Panel timestampActions = new FlowPanel();
-        timestampActions.addStyleName("message-timestamp-actions-area");
+        timestampActions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageTimestampActionsArea());
 
         String permalinkUrl = activityLinkBuilder.buildActivityPermalink(msg.getId(), msg.getDestinationStream()
                 .getType(), msg.getDestinationStream().getUniqueIdentifier());
 
         DateFormatter dateFormatter = new DateFormatter(new Date());
         Hyperlink dateLink = new InlineHyperlink(dateFormatter.timeAgo(msg.getPostedTime()), permalinkUrl);
-        dateLink.addStyleName("message-timestamp-link");
+        dateLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageTimestampLink());
         timestampActions.add(dateLink);
 
         if (msg.getAppName() != null)
@@ -329,7 +330,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
             if (appSource != null)
             {
                 FlowPanel viaPanel = new FlowPanel();
-                viaPanel.addStyleName("via-metadata");
+                viaPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().viaMetadata());
                 viaPanel.add(new InlineLabel("via "));
                 viaPanel.add(new Anchor(msg.getAppName(), appSource));
                 timestampActions.add(viaPanel);
@@ -337,7 +338,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
             else
             {
                 InlineLabel viaLine = new InlineLabel("via " + msg.getAppName());
-                viaLine.addStyleName("via-metadata");
+                viaLine.addStyleName(StaticResourceBundle.INSTANCE.coreCss().viaMetadata());
                 timestampActions.add(viaLine);
             }
             // TODO: If appSource is not supplied, the link should go to the respective galleries for apps and plugins.
@@ -391,7 +392,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         final EventBus eventBus = Session.getInstance().getEventBus();
 
         Panel actionsPanel = new FlowPanel();
-        actionsPanel.addStyleName("message-actions-area");
+        actionsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageActionsArea());
 
         // Comment
         // The verb is used for activities that are always now commentable. The msg.isCOmmentable is used for activities
@@ -399,7 +400,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         if (commentsPanel != null && verbRenderer.getAllowComment() && msg.isCommentable())
         {
             Label commentLink = new InlineLabel("Comment");
-            commentLink.addStyleName("comment action-link linked-label");
+            commentLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
             actionsPanel.add(commentLink);
 
             commentLink.addClickHandler(new ClickHandler()
@@ -416,7 +417,6 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         {
             insertActionSeparator(actionsPanel);
             Widget like = new LikeWidget(msg.isLiked(), msg.getEntityId());
-            like.addStyleName("action-link");
             actionsPanel.add(like);
         }
 
@@ -425,7 +425,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         {
             insertActionSeparator(actionsPanel);
             Label shareLink = new InlineLabel("Share");
-            shareLink.addStyleName("share action-link linked-label");
+            shareLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
             actionsPanel.add(shareLink);
 
             shareLink.addClickHandler(new ClickHandler()
@@ -445,7 +445,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         {
             insertActionSeparator(actionsPanel);
             Label link = new InlineLabel("Flag");
-            link.addStyleName("flag action-link linked-label");
+            link.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
             actionsPanel.add(link);
 
             link.addClickHandler(new ClickHandler()
@@ -480,7 +480,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         {
             insertActionSeparator(actionsPanel);
             Label deleteLink = new InlineLabel("Delete");
-            deleteLink.addStyleName("delete action-link linked-label");
+            deleteLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
             actionsPanel.add(deleteLink);
 
             setupDeleteClickHandler(deleteLink, msg, mainPanel);
@@ -491,7 +491,6 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         {
             insertActionSeparator(actionsPanel);
             Widget star = new StarLinkWidget(msg.isStarred(), msg.getEntityId());
-            star.addStyleName("action-link");
             actionsPanel.add(star);
         }
 
@@ -507,7 +506,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
     private void insertActionSeparator(final Panel panel)
     {
         Label sep = new InlineLabel("\u2219");
-        sep.addStyleName("action-link-separator");
+        sep.addStyleName(StaticResourceBundle.INSTANCE.coreCss().actionLinkSeparator());
         panel.add(sep);
     }
 
@@ -523,16 +522,16 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
     private Widget buildManageFlaggedControls(final ActivityDTO msg, final Panel mainPanel)
     {
         final Panel buttonsPanel = new FlowPanel();
-        buttonsPanel.addStyleName("flag-controls");
+        buttonsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().flagControls());
 
         Label ignoreButton = new Label("Ignore");
-        ignoreButton.addStyleName("flag-ignore-button button-label");
+        ignoreButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().flagIgnoreButton());
         buttonsPanel.add(ignoreButton);
         ignoreButton.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent ev)
             {
-                buttonsPanel.addStyleName("wait-active");
+                buttonsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().waitActive());
                 if (singleView)
                 {
                     Session.getInstance().getEventBus().addObserver(UpdatedActivityFlagResponseEvent.class,
@@ -553,7 +552,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         });
 
         Label deleteButton = new Label("Delete");
-        deleteButton.addStyleName("flag-delete-button button-label");
+        deleteButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().flagDeleteButton());
         buttonsPanel.add(deleteButton);
         deleteButton.addClickHandler(new ClickHandler()
         {
@@ -561,7 +560,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
             {
                 if (new WidgetJSNIFacadeImpl().confirm("Are you sure you want to delete this activity?"))
                 {
-                    buttonsPanel.addStyleName("wait-active");
+                    buttonsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().waitActive());
                     setupDeleteFadeout(msg, mainPanel);
                     ActivityModel.getInstance().delete(msg.getId());
                 }

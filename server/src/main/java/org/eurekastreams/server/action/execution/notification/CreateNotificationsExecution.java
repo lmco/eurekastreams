@@ -32,9 +32,9 @@ import org.eurekastreams.server.action.execution.notification.translator.Notific
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.domain.NotificationDTO;
-import org.eurekastreams.server.domain.NotificationFilterPreference.Category;
 import org.eurekastreams.server.domain.NotificationFilterPreferenceDTO;
 import org.eurekastreams.server.domain.NotificationType;
+import org.eurekastreams.server.domain.NotificationFilterPreference.Category;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetNotificationFilterPreferencesByPeopleIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;

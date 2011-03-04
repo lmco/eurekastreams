@@ -18,6 +18,8 @@ package org.eurekastreams.web.client.ui.pages.start.layouts;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 /**
@@ -41,12 +43,12 @@ public class ThreeColumnRightWideHeaderLayoutStrategy implements
     public ThreeColumnRightWideHeaderLayoutStrategy()
     {
         DropZonePanel rightColumn = DropZonePanel.getTwoThirdColumnDropZone(0);
-        rightColumn.addStyleName("multi-zone");
+        rightColumn.addStyleName(StaticResourceBundle.INSTANCE.coreCss().multiZone());
         HorizontalPanel horzPanel = new HorizontalPanel();
-        horzPanel.addStyleName("two-thirds-column");
+        horzPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().twoThirdsColumn());
 
         DropZonePanel headerPanel = DropZonePanel.getFullRowDropZone(0);
-        headerPanel.addStyleName("header-zone");
+        headerPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().headerZone());
         DropZonePanel leftPanel = DropZonePanel.getThirdColumnDropZone(1);
         DropZonePanel centerPanel = DropZonePanel.getFullRowDropZone(2);
         DropZonePanel rightPanel = DropZonePanel.getFullRowDropZone(3);

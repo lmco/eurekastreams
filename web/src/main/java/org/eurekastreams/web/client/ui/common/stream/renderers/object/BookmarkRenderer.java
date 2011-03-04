@@ -20,27 +20,29 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.common.stream.transformers.HashtagLinkTransformer;
 import org.eurekastreams.web.client.ui.common.stream.transformers.HyperlinkTransformer;
 import org.eurekastreams.web.client.ui.common.stream.transformers.StreamSearchLinkBuilder;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Renders a bookmark object.
- *
+ * 
  */
 public class BookmarkRenderer implements ObjectRenderer
 {
 
     /**
      * Renders the bookmark attachment.
-     *
+     * 
      * @param activity
      *            the activity.
      * @return the widget.
      */
     public Widget getAttachmentWidget(final ActivityDTO activity)
     {
-        String html = "<div class='message-link has-thumbnail'><div>";
+        String html = "<div class='" + StaticResourceBundle.INSTANCE.coreCss().messageLink() + " "
+                + StaticResourceBundle.INSTANCE.coreCss().hasThumbnail() + "'><div>";
         String targetUrl = activity.getBaseObjectProperties().get("targetUrl");
         String sourceUrl = activity.getBaseObjectProperties().get("source");
         if (sourceUrl == null)
@@ -51,22 +53,23 @@ public class BookmarkRenderer implements ObjectRenderer
         if (activity.getBaseObjectProperties().get("thumbnail") != null
                 && activity.getBaseObjectProperties().get("thumbnail").length() > 0)
         {
-            html += "<img class='thumbnail' src='" + activity.getBaseObjectProperties().get("thumbnail") + "'></div>";
+            html += "<img class='" + StaticResourceBundle.INSTANCE.coreCss().thumbnail() + "' src='"
+                    + activity.getBaseObjectProperties().get("thumbnail") + "'></div>";
         }
 
-        html +=
-                "<div><a class=\"title\" href=\"" + activity.getBaseObjectProperties().get("targetUrl")
-                        + "\" target=\"_blank\">" + activity.getBaseObjectProperties().get("targetTitle") + "</a>"
-                        + "</div><div class='url'>source: <a href=\"" + sourceUrl + "\" target=\"_blank\">" + sourceUrl
-                        + "</a></div>" + "<div class='gwt-Label meta-description'>"
-                        + activity.getBaseObjectProperties().get("description") + "</div></div>";
+        html += "<div><a class=\"" + StaticResourceBundle.INSTANCE.coreCss().title() + "\" href=\""
+                + activity.getBaseObjectProperties().get("targetUrl") + "\" target=\"_blank\">"
+                + activity.getBaseObjectProperties().get("targetTitle") + "</a>"
+                + "</div><div class='url'>source: <a href=\"" + sourceUrl + "\" target=\"_blank\">" + sourceUrl
+                + "</a></div>" + "<div class='gwt-Label " + StaticResourceBundle.INSTANCE.coreCss().metaDescription()
+                + "'>" + activity.getBaseObjectProperties().get(".description") + "</div></div>";
 
         return new HTML(html);
     }
 
     /**
      * Gets the base URL (host name and protocol) from a url.
-     *
+     * 
      * @param url
      *            the url.
      * @return the base url.
@@ -84,7 +87,7 @@ public class BookmarkRenderer implements ObjectRenderer
 
     /**
      * Renders the content widget.
-     *
+     * 
      * @param activity
      *            the activity.
      * @return the widget.
@@ -104,7 +107,7 @@ public class BookmarkRenderer implements ObjectRenderer
         html = new HashtagLinkTransformer(new StreamSearchLinkBuilder()).transform(html);
 
         HTML widget = new HTML(html);
-        widget.addStyleName("message-body");
+        widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageBody());
 
         return widget;
     }

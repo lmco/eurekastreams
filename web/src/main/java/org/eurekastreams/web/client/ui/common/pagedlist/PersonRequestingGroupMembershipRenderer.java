@@ -24,6 +24,7 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.GroupMembersModel;
 import org.eurekastreams.web.client.model.GroupMembershipRequestModel;
 import org.eurekastreams.web.client.ui.common.PersonPanel;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -62,22 +63,22 @@ public class PersonRequestingGroupMembershipRenderer implements ItemRenderer<Per
     public Panel render(final PersonModelView item)
     {
         Panel panel = new FlowPanel();
-        panel.addStyleName("pending-group-membership-item");
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().pendingGroupMembershipItem());
 
         // -- build UI --
 
         // buttons panel (left side)
 
         final Panel buttonsPanel = new FlowPanel();
-        buttonsPanel.addStyleName("pending-buttons");
+        buttonsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().pendingButtons());
         panel.add(buttonsPanel);
 
         final Label approveButton = new Label("Approve");
-        approveButton.addStyleName("approve-button");
+        approveButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().approveButton());
         buttonsPanel.add(approveButton);
 
         final Label denyButton = new Label("Deny");
-        denyButton.addStyleName("deny-button");
+        denyButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().denyButton());
         buttonsPanel.add(denyButton);
 
         // person panel (right side)
@@ -89,7 +90,7 @@ public class PersonRequestingGroupMembershipRenderer implements ItemRenderer<Per
         {
             public void onClick(final ClickEvent event)
             {
-                buttonsPanel.addStyleName("wait-active");
+                buttonsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().waitActive());
 
                 GroupMembersModel.getInstance().insert(
                         new SetFollowingStatusRequest(item.getAccountId(), groupShortname, EntityType.GROUP, false,
@@ -103,7 +104,7 @@ public class PersonRequestingGroupMembershipRenderer implements ItemRenderer<Per
             {
                 if (new WidgetJSNIFacadeImpl().confirm("Are you sure you want to deny this user membership?"))
                 {
-                    buttonsPanel.addStyleName("wait-active");
+                    buttonsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().waitActive());
 
                      GroupMembershipRequestModel.getInstance().delete(
                             new RequestForGroupMembershipRequest(groupId, item.getEntityId()));

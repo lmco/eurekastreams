@@ -28,6 +28,7 @@ import org.eurekastreams.web.client.model.GroupMembersModel;
 import org.eurekastreams.web.client.model.Insertable;
 import org.eurekastreams.web.client.model.PersonFollowersModel;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -141,15 +142,15 @@ public class FollowPanel extends FlowPanel
         {
         case FOLLOWING:
             followMe.removeStyleName(followMe.getStyleName());
-            followMe.addStyleName("profile-unfollow-me-btn");
+            followMe.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileUnfollowMeBtn());
             break;
         case NOTFOLLOWING:
             followMe.removeStyleName(followMe.getStyleName());
-            followMe.addStyleName("profile-follow-me-btn");
+            followMe.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileFollowMeBtn());
             break;
         default:
             followMe.removeStyleName(followMe.getStyleName());
-            followMe.addStyleName("profile-disabled-follow-me-btn");
+            followMe.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileDisabledFollowMeBtn());
             break;
         }
     }

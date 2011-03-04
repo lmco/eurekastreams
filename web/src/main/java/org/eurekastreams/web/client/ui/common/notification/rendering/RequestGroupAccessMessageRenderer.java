@@ -19,6 +19,7 @@ import org.eurekastreams.server.domain.ApplicationAlertNotification;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 
 import com.google.gwt.user.client.ui.Panel;
+
 /**
  * Builds the notification message.
  */

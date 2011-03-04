@@ -18,6 +18,7 @@ package org.eurekastreams.web.client.ui.common.form.elements;
 import java.io.Serializable;
 
 import org.eurekastreams.web.client.ui.common.LabeledTextBox;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
@@ -76,24 +77,24 @@ public class ShortnameFormElement extends FlowPanel implements FormElement
     public ShortnameFormElement(final String labelVal, final String inKey, final String value, final String inUrl,
             final String inInstructions, final boolean required)
     {
-        this.addStyleName("shortname-form-element");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().shortnameFormElement());
 
         key = inKey;
         label.setText(labelVal);
-        label.addStyleName("form-label");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
         textBox.setMaxLength(SHORTNAME_LENGTH);
         textBox.setText(value);
         textBox.checkBox();
         final Label url = new Label(inUrl);
-        url.addStyleName("shortname-url");
+        url.addStyleName(StaticResourceBundle.INSTANCE.coreCss().shortnameUrl());
 
         if (required)
         {
-            requiredLabel.addStyleName("required-form-label");
+            requiredLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requiredFormLabel());
             requiredLabel.setText("(required)");
         }
 
-        instructions.addStyleName("form-instructions");
+        instructions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
         instructions.setText(inInstructions);
 
         // Fix IE bug, shows empty divs
@@ -109,7 +110,7 @@ public class ShortnameFormElement extends FlowPanel implements FormElement
 
         // Need to do this to fix an especially nasty IE CSS bug (input margin inheritance)
         final SimplePanel textWrapper = new SimplePanel();
-        textWrapper.addStyleName("input-wrapper");
+        textWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inputWrapper());
         textWrapper.add(textBox);
 
         this.add(label);
@@ -167,7 +168,7 @@ public class ShortnameFormElement extends FlowPanel implements FormElement
      */
     public void onError(final String errMessage)
     {
-        label.addStyleName("form-error");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**
@@ -175,6 +176,6 @@ public class ShortnameFormElement extends FlowPanel implements FormElement
      */
     public void onSuccess()
     {
-        label.removeStyleName("form-error");
+        label.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 }

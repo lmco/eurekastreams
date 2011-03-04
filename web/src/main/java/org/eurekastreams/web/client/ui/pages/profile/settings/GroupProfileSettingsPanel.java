@@ -21,6 +21,7 @@ import org.eurekastreams.web.client.model.GroupStreamPluginSubscriptionModel;
 import org.eurekastreams.web.client.ui.common.SettingsPanel;
 import org.eurekastreams.web.client.ui.common.tabs.SimpleTab;
 import org.eurekastreams.web.client.ui.common.tabs.TabContainerPanel;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.profile.settings.stream.StreamPluginsSettingsTabContent;
 
 import com.google.gwt.user.client.ui.Anchor;
@@ -60,27 +61,27 @@ public class GroupProfileSettingsPanel extends SettingsPanel
         this.clearContentPanel();
         
         this.setPreviousPage(new CreateUrlRequest(Page.GROUPS, groupName), "< Return to Profile");
-        panel.addStyleName("group-profile-settings-panel");
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().groupProfileSettingsPanel());
 
         FlowPanel portalPageContainer = new FlowPanel();
         TabContainerPanel portalPage = new TabContainerPanel();
 
         GroupProfileSettingsTabContent profileTabContent = new GroupProfileSettingsTabContent(groupName);
-        profileTabContent.addStyleName("profile-settings-tab-content");
+        profileTabContent.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileSettingsTabContent());
 
         StreamPluginsSettingsTabContent streamSettingsTabContent = new StreamPluginsSettingsTabContent(
                 GroupStreamPluginSubscriptionModel.getInstance());
-        streamSettingsTabContent.addStyleName("profile-settings-tab-content");
+        streamSettingsTabContent.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileSettingsTabContent());
 
         portalPage.addTab(new SimpleTab("Basic Info", profileTabContent));
         portalPage.addTab(new SimpleTab("Stream Plugins", streamSettingsTabContent));
         portalPage.init();
 
         portalPageContainer.add(portalPage);
-        portalPageContainer.addStyleName("profile-settings-tab-container");
+        portalPageContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileSettingsTabContainer());
 
         panel.add(portalPageContainer);
-        panel.addStyleName("profile-page");
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profilePage());
     }
 
 }

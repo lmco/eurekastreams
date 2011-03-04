@@ -49,6 +49,7 @@ import org.eurekastreams.web.client.ui.common.form.elements.avatar.AvatarUploadF
 import org.eurekastreams.web.client.ui.common.form.elements.avatar.strategies.AvatarUploadStrategy;
 import org.eurekastreams.web.client.ui.common.form.elements.avatar.strategies.BannerUploadStrategy;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -56,7 +57,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * A panel for changing the settings of an organization.
@@ -97,7 +97,7 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
 
         this.setPreviousPage(new CreateUrlRequest(Page.ORGANIZATIONS, orgName), "< Return to Profile");
 
-        panel.addStyleName("org-profile-settings-panel");
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().orgProfileSettingsPanel());
 
         EventBus.getInstance().addObserver(GotOrganizationModelViewInformationResponseEvent.class,
                 new Observer<GotOrganizationModelViewInformationResponseEvent>()
@@ -132,7 +132,6 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
     public void setEntity(final OrganizationModelView entity)
     {
         ActionProcessor processor = Session.getInstance().getActionProcessor();
-        RootPanel.get().addStyleName("form-body");
 
         FormBuilder form = new FormBuilder("", OrganizationModel.getInstance(), Method.UPDATE);
 
@@ -203,7 +202,7 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
                 "/eurekastreams/bannerupload?type=Organization&entityName=" + entity.getShortName(), processor,
                 new BannerUploadStrategy<OrganizationModelView>(entity, entity.getId()));
 
-        banner.addStyleName("banner-upload-form-element");
+        banner.addStyleName(StaticResourceBundle.INSTANCE.coreCss().bannerUploadFormElement());
 
         form.addWidget(banner);
 
@@ -219,7 +218,7 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
         // these are opposites, the value needs to be reversed when the form gets submitted.
         groupCreationPolicy.setReverseValue(true);
 
-        groupCreationPolicy.addStyleName("org-group-policy");
+        groupCreationPolicy.addStyleName(StaticResourceBundle.INSTANCE.coreCss().orgGroupPolicy());
         form.addFormElement(groupCreationPolicy);
 
         form.addFormDivider();
@@ -229,8 +228,8 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
 
         if (Session.getInstance().getCurrentPersonRoles().contains(Role.ROOT_ORG_COORDINATOR))
         {
-            deleteButton.addStyleName("form-delete-org-button");
-            deleteButton.addStyleName("form-button");
+            deleteButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formDeleteOrgButton());
+            deleteButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formButton());
 
             deleteButton.addClickHandler(new ClickHandler()
             {
@@ -283,7 +282,7 @@ public class OrganizationProfileSettingsPanel extends SettingsPanel
             form.addWidgetToFormContainer(deleteButton);
 
             processingSpinny.setVisible(false);
-            processingSpinny.addStyleName("form-submit-spinny");
+            processingSpinny.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formSubmitSpinny());
             form.addWidgetToFormContainer(processingSpinny);
         }
 

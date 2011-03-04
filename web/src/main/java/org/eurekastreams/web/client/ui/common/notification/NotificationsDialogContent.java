@@ -29,6 +29,7 @@ import org.eurekastreams.web.client.model.NotificationListModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import org.eurekastreams.web.client.ui.common.notification.rendering.NotificationsRenderer;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -65,20 +66,20 @@ public class NotificationsDialogContent implements DialogContent
     public NotificationsDialogContent()
     {
         // -- build UI --
-        main.addStyleName("notif-dialog-main");
+        main.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifDialogMain());
 
         Hyperlink editSettings =
                 new Hyperlink("edit settings", Session.getInstance().generateUrl(
                         new CreateUrlRequest(Page.SETTINGS, null, "tab", "Notifications")));
-        editSettings.addStyleName("notif-edit-settings-link");
+        editSettings.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifEditSettingsLink());
         main.add(editSettings);
 
-        scrollPanel.addStyleName("notif-scroll-list");
+        scrollPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifScrollList());
 
         scrollPanel.add(listPanel);
 
         main.add(scrollPanel);
-        listPanel.addStyleName("notif-wait");
+        listPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifWait());
 
         // -- setup events --
         final EventBus eventBus = Session.getInstance().getEventBus();
@@ -152,7 +153,7 @@ public class NotificationsDialogContent implements DialogContent
      */
     public String getCssName()
     {
-        return "notif-modal";
+        return StaticResourceBundle.INSTANCE.coreCss().notifModal();
     }
 
     /**
@@ -187,7 +188,7 @@ public class NotificationsDialogContent implements DialogContent
     private void displayNotifications(final List<ApplicationAlertNotification> list)
     {
         listPanel.clear();
-        listPanel.removeStyleName("notif-wait");
+        listPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().notifWait());
         if (list.size() > 0)
         {
             NotificationsRenderer renderer = new NotificationsRenderer();
@@ -200,7 +201,6 @@ public class NotificationsDialogContent implements DialogContent
                 catch (Exception ex)
                 {
                     Label label = new Label("Cannot display notification");
-                    label.addStyleName("notif-notification-error");
                     listPanel.add(label);
                 }
             }
@@ -211,7 +211,7 @@ public class NotificationsDialogContent implements DialogContent
         else
         {
             Label label = new Label("No notifications");
-            label.addStyleName("notif-no-notifications");
+            label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifNoNotifications());
             listPanel.add(label);
         }
     }

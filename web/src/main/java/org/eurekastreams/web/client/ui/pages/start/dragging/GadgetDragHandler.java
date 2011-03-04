@@ -40,7 +40,7 @@ public class GadgetDragHandler implements DragHandler
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inTabId
      *            the tab id.
      */
@@ -48,8 +48,8 @@ public class GadgetDragHandler implements DragHandler
     {
         tabId = inTabId;
 
-        Session.getInstance().getEventBus()
-                .addObserver(UpdatedHistoryParametersEvent.class, new Observer<UpdatedHistoryParametersEvent>()
+        Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
+                new Observer<UpdatedHistoryParametersEvent>()
                 {
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
@@ -64,7 +64,7 @@ public class GadgetDragHandler implements DragHandler
 
     /**
      * What happens when we're done drag and dropping.
-     *
+     * 
      * @param event
      *            the event that fires when dragging ends.
      */
@@ -77,15 +77,15 @@ public class GadgetDragHandler implements DragHandler
         gadgetZone.setDropZone(dropPanel);
 
         GadgetModel.getInstance().reorder(
-                new ReorderGadgetRequest(tabId, new Long(gadgetZone.getGadgetData().getId()), dropPanel
-                        .getZoneNumber(), new Integer(dropPanel.getVisibleGadgetPosition(gadgetZone))));
+                new ReorderGadgetRequest(tabId, new Long(gadgetZone.getGadgetData().getId()),
+                        dropPanel.getZoneNumber(), new Integer(dropPanel.getVisibleGadgetPosition(gadgetZone))));
 
         gadgetZone.rerender();
     }
 
     /**
      * What happens when we start dragging (nothing).
-     *
+     * 
      * @param event
      *            the event that fires when dragging starts.
      */
@@ -95,7 +95,7 @@ public class GadgetDragHandler implements DragHandler
 
     /**
      * What happens right before we stop dragging (nothing).
-     *
+     * 
      * @param event
      *            the event that fires right before dragging ends.
      * @throws VetoDragException
@@ -109,7 +109,7 @@ public class GadgetDragHandler implements DragHandler
     /**
      * What happens right before we start dragging. Int his case, we want to widen the spacer widget from 1px to 30 px
      * to make it easier to drop into empty columns.
-     *
+     * 
      * @param event
      *            the event that fires right before dragging starts.
      * @throws VetoDragException

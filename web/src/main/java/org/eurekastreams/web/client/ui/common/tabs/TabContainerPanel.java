@@ -20,6 +20,7 @@ import java.util.HashMap;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.allen_sauer.gwt.dnd.client.DragHandler;
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
@@ -76,7 +77,7 @@ public class TabContainerPanel extends AbsolutePanel
     private boolean draggable = false;
 
     /**
-     * The history token key. Default to "tab".
+     * The history token key. Default to StaticResourceBundle.INSTANCE.coreCss().tab().
      */
     private String key;
 
@@ -99,8 +100,8 @@ public class TabContainerPanel extends AbsolutePanel
         key = inKey;
         tabBoundaryPanel.setWidth("100%");
         tabBoundaryPanel.add(tabDropZone);
-        tabBoundaryPanel.addStyleName("tab-container");
-        this.addStyleName("tab-container-parent");
+        tabBoundaryPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().tabContainer());
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().tabContainerParent());
 
         this.add(tabBoundaryPanel);
         this.add(tabContents);

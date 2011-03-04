@@ -17,6 +17,8 @@ package org.eurekastreams.web.client.ui.common.form.elements;
 
 import java.io.Serializable;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Random;
@@ -109,17 +111,17 @@ public class RichTextAreaFormElement extends FlowPanel implements FormElement
     {
         key = inKey;
         label.setText(labelVal);
-        label.addStyleName("form-label");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
         textArea.setText(value);
         // Add random int to ID to prevent bug where text areas are rendered twice
         // when user leaves page and then comes back without refreshing.
         textArea.getElement().setId(inKey + Random.nextInt());
 
-        this.addStyleName("yui-skin-sam");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().yuiSkinSam());
 
         if (required)
         {
-            requiredLabel.addStyleName("required-form-label");
+            requiredLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requiredFormLabel());
             requiredLabel.setText("(required)");
         }
 
@@ -129,7 +131,7 @@ public class RichTextAreaFormElement extends FlowPanel implements FormElement
 
         if (inInstructions != null && !inInstructions.isEmpty())
         {
-            instructions.addStyleName("form-instructions");
+            instructions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
             instructions.setText(inInstructions);
             this.add(instructions);
         }
@@ -223,7 +225,7 @@ public class RichTextAreaFormElement extends FlowPanel implements FormElement
      */
     public void onError(final String errMessage)
     {
-        label.addStyleName("form-error");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**
@@ -231,7 +233,7 @@ public class RichTextAreaFormElement extends FlowPanel implements FormElement
      */
     public void onSuccess()
     {
-        label.removeStyleName("form-error");
+        label.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**

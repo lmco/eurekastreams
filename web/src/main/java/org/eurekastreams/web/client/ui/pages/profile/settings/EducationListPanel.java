@@ -27,6 +27,7 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.PersonalEducationModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -77,10 +78,10 @@ public class EducationListPanel extends FlowPanel
         pageHistoryToken = inPageHistoryToken;
         
         final Label addNewSchool = new Label("Add school");
-        addNewSchool.addStyleName("linked-label");
+        addNewSchool.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
         
         addSchool.add(addNewSchool);
-        addSchool.addStyleName("add-new-background");
+        addSchool.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addNewBackground());
         
         Session.getInstance().getEventBus().addObserver(GotPersonalEducationResponseEvent.class,
                 new Observer<GotPersonalEducationResponseEvent>()
@@ -88,10 +89,10 @@ public class EducationListPanel extends FlowPanel
                     public void update(final GotPersonalEducationResponseEvent event)
                     {                       
                         panel.clear();
-                        panel.addStyleName("personal-settings-background");
+                        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().personalSettingsBackground());
                         
                         Label title = new Label("Education");
-                        title.addStyleName("title");
+                        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().title());
                         panel.add(title);
                         
                         for (Enrollment enrollment : event.getResponse())

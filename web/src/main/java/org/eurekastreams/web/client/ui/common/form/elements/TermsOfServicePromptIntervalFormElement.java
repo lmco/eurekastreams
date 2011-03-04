@@ -17,6 +17,8 @@ package org.eurekastreams.web.client.ui.common.form.elements;
 
 import java.io.Serializable;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
@@ -56,19 +58,19 @@ public class TermsOfServicePromptIntervalFormElement extends FlowPanel implement
         key = inKey;
 
         promptInterval.setValue(Integer.toString(value));
-        promptInterval.addStyleName("prompt-interval");
+        promptInterval.addStyleName(StaticResourceBundle.INSTANCE.coreCss().promptInterval());
         promptInterval.setMaxLength(5);
         promptInterval.setName(key);
 
         Label promptLabel = new Label("Prompt Interval");
-        promptLabel.addStyleName("form-label");
+        promptLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
 
         this.add(promptLabel);
         this.add(new InlineLabel("every"));
         this.add(promptInterval);
         this.add(new InlineLabel("days"));
 
-        this.addStyleName("tos-prompt-interval");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().tosPromptInterval());
     }
 
     /**
@@ -110,7 +112,7 @@ public class TermsOfServicePromptIntervalFormElement extends FlowPanel implement
      */
     public void onError(final String errMessage)
     {
-        this.addStyleName("form-error");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**
@@ -118,6 +120,6 @@ public class TermsOfServicePromptIntervalFormElement extends FlowPanel implement
      */
     public void onSuccess()
     {
-        this.removeStyleName("form-error");
+        this.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 }

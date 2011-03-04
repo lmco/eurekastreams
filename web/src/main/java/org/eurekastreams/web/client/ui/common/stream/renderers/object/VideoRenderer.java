@@ -20,40 +20,45 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.common.stream.transformers.HashtagLinkTransformer;
 import org.eurekastreams.web.client.ui.common.stream.transformers.HyperlinkTransformer;
 import org.eurekastreams.web.client.ui.common.stream.transformers.StreamSearchLinkBuilder;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Renders videos.
- *
+ * 
  */
 public class VideoRenderer implements ObjectRenderer
 {
 
     /**
      * Renders the bookmark attachment.
-     *
+     * 
      * @param activity
      *            the activity.
      * @return the widget.
      */
     public Widget getAttachmentWidget(final ActivityDTO activity)
     {
-        String html = "<div class='message-link has-thumbnail video'><div>";
+        String html = "<div class='" + StaticResourceBundle.INSTANCE.coreCss().messageLink() + " "
+                + StaticResourceBundle.INSTANCE.coreCss().hasThumbnail()
+                + StaticResourceBundle.INSTANCE.coreCss().video() + "'><div>";
 
         if (activity.getBaseObjectProperties().get("thumbnail") != null
                 && activity.getBaseObjectProperties().get("thumbnail").length() > 0)
         {
-            html += "<a class=\"thumbnail\" href=\"" + activity.getBaseObjectProperties().get("videoPageUrl");
+            html += "<a class=\"" + StaticResourceBundle.INSTANCE.coreCss().thumbnail() + "\" href=\""
+                    + activity.getBaseObjectProperties().get("videoPageUrl");
             html += "\" target=\"_blank\">";
-            html += "<img class='thumbnail' src='";
+            html += "<img class='" + StaticResourceBundle.INSTANCE.coreCss().thumbnail() + "' src='";
             html += activity.getBaseObjectProperties().get("thumbnail") + "'></a></div>";
         }
 
-        html += "<div><a class=\"title\" href=\"" + activity.getBaseObjectProperties().get("videoPageUrl")
-                + "\" target=\"_blank\">" + activity.getBaseObjectProperties().get("title") + "</a>"
-                + "</div><div class='gwt-Label meta-description'>"
+        html += "<div><a class=\"" + StaticResourceBundle.INSTANCE.coreCss().title() + "\" href=\""
+                + activity.getBaseObjectProperties().get("videoPageUrl") + "\" target=\"_blank\">"
+                + activity.getBaseObjectProperties().get("title") + "</a>" + "</div><div class='gwt-Label "
+                + StaticResourceBundle.INSTANCE.coreCss().metaDescription() + "'>"
                 + activity.getBaseObjectProperties().get("description") + "</div></div>";
 
         return new HTML(html);
@@ -61,7 +66,7 @@ public class VideoRenderer implements ObjectRenderer
 
     /**
      * Renders the content widget.
-     *
+     * 
      * @param activity
      *            the activity.
      * @return the widget.
@@ -77,7 +82,7 @@ public class VideoRenderer implements ObjectRenderer
         html = new HashtagLinkTransformer(new StreamSearchLinkBuilder()).transform(html);
 
         HTML widget = new HTML(html);
-        widget.addStyleName("message-body");
+        widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageBody());
 
         return widget;
     }

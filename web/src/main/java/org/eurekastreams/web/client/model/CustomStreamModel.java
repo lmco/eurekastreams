@@ -75,14 +75,14 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
      */
     public void insert(final HashMap<String, Serializable> request)
     {
-        JSONObject json = JSONParser.parse((String) request.get("stream")).isObject();
-        
+        JSONObject json = JSONParser.parse("stream").isObject();
+
         if (!"".equals(request.get(StreamJsonRequestFactory.SEARCH_KEY)))
         {
-            json = StreamJsonRequestFactory.setSearchTerm((String) request
-                    .get(StreamJsonRequestFactory.SEARCH_KEY), json);
+            json = StreamJsonRequestFactory.setSearchTerm((String) request.get(StreamJsonRequestFactory.SEARCH_KEY),
+                    json);
         }
-        
+
         Stream stream = new Stream();
         stream.setRequest(json.toString());
         stream.setName((String) request.get("name"));
@@ -103,14 +103,14 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
      */
     public void update(final HashMap<String, Serializable> request)
     {
-        JSONObject json = JSONParser.parse((String) request.get("stream")).isObject();
-        
+        JSONObject json = JSONParser.parse("stream").isObject();
+
         if (!"".equals(request.get(StreamJsonRequestFactory.SEARCH_KEY)))
         {
-            json = StreamJsonRequestFactory.setSearchTerm((String) request
-                    .get(StreamJsonRequestFactory.SEARCH_KEY), json);
+            json = StreamJsonRequestFactory.setSearchTerm((String) request.get(StreamJsonRequestFactory.SEARCH_KEY),
+                    json);
         }
-        
+
         Stream stream = new Stream();
         stream.setRequest(json.toString());
         stream.setName((String) request.get("name"));

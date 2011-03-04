@@ -16,6 +16,7 @@
 package org.eurekastreams.server.service.security.preauth;
 
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.security.ui.FilterChainOrder;
 import org.springframework.security.ui.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.ui.preauth.PreAuthenticatedCredentialsNotFoundException;

@@ -28,6 +28,7 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 import org.eurekastreams.web.client.ui.common.stream.filters.FilterPanel;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -85,18 +86,18 @@ public class GroupStreamPanel extends Composite implements FilterPanel
     {
         renderer = inRenderer;
         FocusPanel container = new FocusPanel();
-        container.addStyleName("filter");
+        container.addStyleName(StaticResourceBundle.INSTANCE.coreCss().filter());
 
         FlowPanel panel = new FlowPanel();
 
         labelContainer = new FlowPanel();
-        labelContainer.addStyleName("filter-label");
+        labelContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().filterLabel());
         label = new Label(inGroup.getName());
         labelContainer.add(label);
 
         group = inGroup;
 
-        panel.addStyleName("stream-list-item");
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamListItem());
 
         container.addClickHandler(new ClickHandler()
         {
@@ -108,7 +109,7 @@ public class GroupStreamPanel extends Composite implements FilterPanel
 
         panel.add(labelContainer);
         InlineLabel seperator = new InlineLabel();
-        seperator.addStyleName("filter-seperator");
+        seperator.addStyleName(StaticResourceBundle.INSTANCE.coreCss().filterSeperator());
         panel.add(seperator);
 
         seperator.addClickHandler(new ClickHandler()
@@ -120,7 +121,7 @@ public class GroupStreamPanel extends Composite implements FilterPanel
         });
 
         moveHandle = new Label("move");
-        moveHandle.addStyleName("move-handle");
+        moveHandle.addStyleName(StaticResourceBundle.INSTANCE.coreCss().moveHandle());
         panel.add(moveHandle);
 
         Session.getInstance().getEventBus().addObserver(SwitchedToActivityDetailViewEvent.class,
@@ -189,7 +190,7 @@ public class GroupStreamPanel extends Composite implements FilterPanel
     {
         switchHandled = false;
 
-        this.addStyleName("active");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
 
         String jsonRequest = StreamJsonRequestFactory.addRecipient(EntityType.GROUP, group.getShortName(),
                 StreamJsonRequestFactory.getEmptyRequest()).toString();
@@ -205,7 +206,7 @@ public class GroupStreamPanel extends Composite implements FilterPanel
      */
     public void unActivate()
     {
-        this.removeStyleName("active");
+        this.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
     }
 
     /**

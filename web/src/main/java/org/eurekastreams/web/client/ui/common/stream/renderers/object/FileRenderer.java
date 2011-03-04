@@ -21,6 +21,7 @@ import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -47,7 +48,9 @@ public class FileRenderer implements ObjectRenderer
         String fileExt = getFileExt(url);
 
         FlowPanel mainPanel = new FlowPanel();
-        mainPanel.addStyleName("icon message-link has-thumbnail");
+        mainPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().icon());
+        mainPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageLink());
+        mainPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hasThumbnail());
         if (fileExt != null)
         {
             mainPanel.addStyleName("icon-" + fileExt);
@@ -58,12 +61,12 @@ public class FileRenderer implements ObjectRenderer
         Widget link;
 
         link = new Anchor(title, url);
-        link.addStyleName("title");
+        link.addStyleName(StaticResourceBundle.INSTANCE.coreCss().title());
         mainPanel.add(link);
 
         // source line
         line = new FlowPanel();
-        line.addStyleName("url");
+        line.addStyleName(StaticResourceBundle.INSTANCE.coreCss().url());
         text = new InlineLabel("source: ");
         line.add(text);
         link = new Anchor(source, source);
@@ -78,7 +81,7 @@ public class FileRenderer implements ObjectRenderer
             if (authorAccountId != null)
             {
                 line = new FlowPanel();
-                line.addStyleName("url");
+                line.addStyleName(StaticResourceBundle.INSTANCE.coreCss().url());
                 text = new InlineLabel("Modified by: ");
                 line.add(text);
                 String authorUrl =
@@ -90,7 +93,7 @@ public class FileRenderer implements ObjectRenderer
             else
             {
                 text = new Label("Modified by:  " + authorName);
-                text.addStyleName("url");
+                text.addStyleName(StaticResourceBundle.INSTANCE.coreCss().url());
                 mainPanel.add(text);
             }
         }

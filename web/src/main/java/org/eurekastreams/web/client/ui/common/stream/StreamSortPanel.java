@@ -25,6 +25,7 @@ import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -73,15 +74,15 @@ public class StreamSortPanel extends Composite
     {
         initWidget(widget);
 
-        widget.addStyleName("navpanel");
+        widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navpanel());
 
         FlowPanel options = new FlowPanel();
-        options.addStyleName("options");
+        options.addStyleName(StaticResourceBundle.INSTANCE.coreCss().options());
 
         widget.add(options);
 
         final Anchor atomLink = new Anchor();
-        atomLink.addStyleName("stream-atom-link");
+        atomLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamAtomLink());
         atomLink.setTarget("_NEW");
         widget.add(atomLink);
 
@@ -131,22 +132,24 @@ public class StreamSortPanel extends Composite
             }
         });
 
-        options.add(new Label("Sort:"));
+        Label sortLabel = new Label("Sort:");
+        sortLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gwtLabel());
+        options.add(sortLabel);
 
         final Anchor dateSort = new Anchor("Recent");
         dateSort.setTitle("Sorted by activity post date.");
-        dateSort.addStyleName("sort-option");
+        dateSort.addStyleName(StaticResourceBundle.INSTANCE.coreCss().sortOption());
         options.add(dateSort);
         linkMap.put("date", dateSort);
 
         final Anchor interestingSort = new Anchor("Popular");
-        interestingSort.addStyleName("sort-option");
+        interestingSort.addStyleName(StaticResourceBundle.INSTANCE.coreCss().sortOption());
         options.add(interestingSort);
         linkMap.put("interesting", interestingSort);
 
         final Anchor commentSort = new Anchor("Active");
         commentSort.setTitle("Sorted by last comment date");
-        commentSort.addStyleName("sort-option");
+        commentSort.addStyleName(StaticResourceBundle.INSTANCE.coreCss().sortOption());
         options.add(commentSort);
         linkMap.put("commentdate", commentSort);
 
@@ -206,11 +209,11 @@ public class StreamSortPanel extends Composite
         sort = updatedSort;
         if (null != activeSort)
         {
-            activeSort.removeStyleName("active");
+            activeSort.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
         }
 
         activeSort = linkMap.get(sort);
-        activeSort.addStyleName("active");
+        activeSort.addStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
 
         if (setHistory)
         {

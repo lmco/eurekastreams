@@ -26,12 +26,12 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.restlet.data.Request;
-import org.restlet.data.Status;
-import org.restlet.resource.ResourceException;
 import org.eurekastreams.server.domain.Job;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.JobMapper;
+import org.restlet.data.Request;
+import org.restlet.data.Status;
+import org.restlet.resource.ResourceException;
 
 /**
  * REST abstract endpoint class for an job resource.

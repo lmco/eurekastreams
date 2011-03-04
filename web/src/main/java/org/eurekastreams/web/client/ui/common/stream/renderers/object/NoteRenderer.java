@@ -20,6 +20,7 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.common.stream.transformers.HashtagLinkTransformer;
 import org.eurekastreams.web.client.ui.common.stream.transformers.HyperlinkTransformer;
 import org.eurekastreams.web.client.ui.common.stream.transformers.StreamSearchLinkBuilder;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
@@ -34,7 +35,7 @@ public class NoteRenderer implements ObjectRenderer
      * JSNI Facade.
      */
     private WidgetJSNIFacadeImpl jSNIFacade = new WidgetJSNIFacadeImpl();
-    
+
     /**
      * Renders the attachment.
      * 
@@ -63,11 +64,11 @@ public class NoteRenderer implements ObjectRenderer
         {
             activityContent = "";
         }
-        
+
         // Strip out any existing HTML.
         activityContent = jSNIFacade.escapeHtml(activityContent);
         activityContent = activityContent.replaceAll("(\r\n|\n|\r)", "<br />");
-        
+
         // first transform links to hyperlinks
         String html = new HyperlinkTransformer(new WidgetJSNIFacadeImpl()).transform(activityContent);
 
@@ -75,7 +76,7 @@ public class NoteRenderer implements ObjectRenderer
         html = new HashtagLinkTransformer(new StreamSearchLinkBuilder()).transform(html);
 
         HTML widget = new HTML(html);
-        widget.addStyleName("message-body");
+        widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageBody());
 
         return widget;
     }

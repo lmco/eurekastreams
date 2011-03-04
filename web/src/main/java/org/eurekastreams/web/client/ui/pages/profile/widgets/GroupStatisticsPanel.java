@@ -16,6 +16,7 @@
 package org.eurekastreams.web.client.ui.pages.profile.widgets;
 
 import org.eurekastreams.server.domain.DomainGroup;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -35,7 +36,7 @@ public class GroupStatisticsPanel extends FlowPanel
     public GroupStatisticsPanel(final DomainGroup inGroup)
     {
         Label leadership = new Label("Statistics");
-        leadership.addStyleName("profile-subheader");
+        leadership.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileSubheader());
         this.add(leadership);
 
         // TODO: replace with meaningful statistics
@@ -55,7 +56,7 @@ public class GroupStatisticsPanel extends FlowPanel
     private void setupStat(final String value, final String label)
     {
         FlowPanel panel = new FlowPanel();
-        panel.addStyleName("profile-statistics");
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileStatistics());
         
         panel.add(new Label(label));
         panel.add(new Hyperlink(value, ""));

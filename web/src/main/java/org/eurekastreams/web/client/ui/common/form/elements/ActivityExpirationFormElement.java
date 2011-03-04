@@ -17,6 +17,8 @@ package org.eurekastreams.web.client.ui.common.form.elements;
 
 import java.io.Serializable;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -79,8 +81,7 @@ public class ActivityExpirationFormElement extends FlowPanel implements FormElem
         hidableIntTextBox = new IntegerTextBoxFormElement(3, "every ", "", value == null ? "" : value.toString(),
                 " days", required);
         hidingCheckBox.addClickListener(hidePanel);
-        hidingCheckBox.addStyleName("hiding-checkboxes");
-        hidableIntTextBox.addStyleName("activity-expiration");
+        hidableIntTextBox.addStyleName(StaticResourceBundle.INSTANCE.coreCss().activityExpiration());
         this.add(hidingCheckBox);
         this.add(hidableIntTextBox);
 
@@ -163,7 +164,7 @@ public class ActivityExpirationFormElement extends FlowPanel implements FormElem
      */
     public void onError(final String errMessage)
     {
-        hidingCheckBox.getLabel().addStyleName("form-error");
+        hidingCheckBox.getLabel().addStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**
@@ -171,7 +172,7 @@ public class ActivityExpirationFormElement extends FlowPanel implements FormElem
      */
     public void onSuccess()
     {
-        hidingCheckBox.getLabel().removeStyleName("form-error");
+        hidingCheckBox.getLabel().removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
 }

@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.web.client.ui.common.form.elements;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
@@ -47,9 +49,9 @@ public class SubTextBoxFormElement extends BasicTextBoxFormElement implements
             final boolean required)
     {
         super(labelVal, inKey, value, inInstructions, required);
-        this.addStyleName("form-sub-element");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formSubElement());
         FlowPanel clear = new FlowPanel();
-        clear.addStyleName("clear");
+        clear.addStyleName(StaticResourceBundle.INSTANCE.coreCss().clear());
         this.add(clear);
     }
 

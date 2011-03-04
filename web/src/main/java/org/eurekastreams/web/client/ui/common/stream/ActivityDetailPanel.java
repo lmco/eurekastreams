@@ -29,6 +29,7 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.OrganizationModelViewModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineHyperlink;
@@ -75,7 +76,7 @@ public class ActivityDetailPanel extends FlowPanel
         }
 
         final Panel linkPanel = new FlowPanel();
-        linkPanel.addStyleName("manage-flagged-links-panel");
+        linkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().manageFlaggedLinksPanel());
         thisBuffered.insert(linkPanel, 0);
 
         Map<String, String> params = new HashMap<String, String>();
@@ -114,22 +115,22 @@ public class ActivityDetailPanel extends FlowPanel
     private void showNotFound()
     {
         Panel errorReport = new FlowPanel();
-        errorReport.addStyleName("warning-report");
+        errorReport.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warningReport());
 
         FlowPanel centeringPanel = new FlowPanel();
-        centeringPanel.addStyleName("warning-report-container");
+        centeringPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warningReportContainer());
         centeringPanel.add(errorReport);
         add(centeringPanel);
 
         FlowPanel msgPanel = new FlowPanel();
 
         Label msgHeader = new Label("Activity not found");
-        msgHeader.addStyleName("warning-message");
+        msgHeader.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warningMessage());
 
         Label msgText = new Label("The activity you were looking for could not be found.");
         FlowPanel text = new FlowPanel();
         text.add(msgText);
-        text.addStyleName("error-message-text");
+        text.addStyleName(StaticResourceBundle.INSTANCE.coreCss().errorMessageText());
 
         msgPanel.add(msgHeader);
         msgPanel.add(msgText);

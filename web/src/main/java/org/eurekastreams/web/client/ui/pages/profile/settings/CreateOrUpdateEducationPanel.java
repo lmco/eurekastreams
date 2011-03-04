@@ -30,6 +30,7 @@ import org.eurekastreams.web.client.ui.common.form.elements.BasicDropDownFormEle
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextAreaFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.IntegerTextBoxFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.ValueOnlyFormElement;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Command;
@@ -44,12 +45,12 @@ public class CreateOrUpdateEducationPanel extends FlowPanel
      * for converting date.getYear into yyyy format.
      */
     private static final int YEAR_CONVERSION = 1900;
-    
+
     /**
      * Max length for autocomplete fields.
      */
     private static final int MAX_LENGTH = 50;
-    
+
     /**
      * Maximum details length.
      */
@@ -62,7 +63,7 @@ public class CreateOrUpdateEducationPanel extends FlowPanel
 
     /**
      * Default constructor.
-     *
+     * 
      * @param education
      *            The enrollment.
      */
@@ -74,7 +75,7 @@ public class CreateOrUpdateEducationPanel extends FlowPanel
 
     /**
      * Default constructor.
-     *
+     * 
      * @param education
      *            The enrollment.
      * @param inPageHistoryToken
@@ -91,12 +92,12 @@ public class CreateOrUpdateEducationPanel extends FlowPanel
      */
     public void clearData()
     {
-         createForm(null);
+        createForm(null);
     }
 
-    /**A
-     * Recreates the form.
-     *
+    /**
+     * A Recreates the form.
+     * 
      * @param education
      *            The enrollment.
      */
@@ -141,10 +142,10 @@ public class CreateOrUpdateEducationPanel extends FlowPanel
 
         IntegerTextBoxFormElement yearGraduated = new IntegerTextBoxFormElement("yyyy", 4, "Year Graduated",
                 "yearGraduated", "", "Currently a student? Enter your expected graduation year.", false);
-        
+
         BasicTextAreaFormElement additionalDetails = new BasicTextAreaFormElement(MAX_DETAILS, "Additional Details",
                 "additionalDetails", "", "Add any additional comments about your academic studies such as awards, "
-                + "papers authored, honors received, etc.", false);
+                        + "papers authored, honors received, etc.", false);
 
         if (education == null)
         {
@@ -154,7 +155,7 @@ public class CreateOrUpdateEducationPanel extends FlowPanel
         else
         {
             form = new FormBuilder("Edit School", PersonalEducationModel.getInstance(), Method.UPDATE);
-            form.addStyleName("edit-school");
+            form.addStyleName(StaticResourceBundle.INSTANCE.coreCss().editSchool());
             degree = new BasicDropDownFormElement("Degree", "degree", degrees, education.getDegree(), "", true);
 
             form.addFormElement(new ValueOnlyFormElement("id", education.getId()));
@@ -178,17 +179,17 @@ public class CreateOrUpdateEducationPanel extends FlowPanel
 
         form.addOnCancelCommand(new Command()
         {
-           public void execute()
-           {
-               if (education == null)
-               {
-                   Session.getInstance().getEventBus().notifyObservers(new BackgroundEducationAddCanceledEvent());
-               }
-               else
-               {
-                   Session.getInstance().getEventBus().notifyObservers(new BackgroundEducationEditCanceledEvent());
-               }
-           }
+            public void execute()
+            {
+                if (education == null)
+                {
+                    Session.getInstance().getEventBus().notifyObservers(new BackgroundEducationAddCanceledEvent());
+                }
+                else
+                {
+                    Session.getInstance().getEventBus().notifyObservers(new BackgroundEducationEditCanceledEvent());
+                }
+            }
         });
 
         form.setOnCancelHistoryToken(pageHistoryToken);

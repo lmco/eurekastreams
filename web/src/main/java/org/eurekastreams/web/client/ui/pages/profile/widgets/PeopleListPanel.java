@@ -25,6 +25,7 @@ import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.PersonPanel;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -63,7 +64,7 @@ public class PeopleListPanel extends FlowPanel
         {
             int cap = (maxDisplayed == DISPLAY_ALL) ? people.size() : maxDisplayed;
             Label leadership = new Label(title);
-            leadership.addStyleName("profile-subheader");
+            leadership.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileSubheader());
             this.add(leadership);
 
             PersonPanel personPanel;
@@ -79,7 +80,6 @@ public class PeopleListPanel extends FlowPanel
             if (i < people.size())
             {
                 Anchor moreLabel = new Anchor(Integer.toString(people.size() - i) + " more");
-                moreLabel.addStyleName("profile-more-people-link");
                 if (urlRequest != null)
                 {
                     moreLabel.addClickHandler(new ClickHandler()
@@ -122,7 +122,7 @@ public class PeopleListPanel extends FlowPanel
         {
             int cap = (maxDisplayed == DISPLAY_ALL) ? people.size() : maxDisplayed;
             Label leadership = new Label(title);
-            leadership.addStyleName("profile-subheader");
+            leadership.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileSubheader());
             this.add(leadership);
 
             PersonPanel personPanel;
@@ -138,7 +138,6 @@ public class PeopleListPanel extends FlowPanel
             if (i < people.size())
             {
                 Anchor moreLabel = new Anchor(Integer.toString(people.size() - i) + " more");
-                moreLabel.addStyleName("profile-more-people-link");
                 if (urlRequest != null)
                 {
                     moreLabel.addClickHandler(new ClickHandler()

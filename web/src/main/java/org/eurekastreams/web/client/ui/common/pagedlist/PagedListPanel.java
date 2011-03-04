@@ -32,6 +32,7 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.Fetchable;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.Pager;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -40,10 +41,11 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 
 /**
- * This is a fairly complex control. Basically, it supports a series of "filters" (which can be though of as data sets.
- * These's data sets can be sorted and/or paged. Add sets by feeding it Fetchable models and a renderer for the
- * individual items, and this control should take care of all the logic.
- *
+ * This is a fairly complex control. Basically, it supports a series of
+ * StaticResourceBundle.INSTANCE.coreCss().filters() (which can be though of as data sets. These's data sets can be
+ * sorted and/or paged. Add sets by feeding it Fetchable models and a renderer for the individual items, and this
+ * control should take care of all the logic.
+ * 
  */
 public class PagedListPanel extends FlowPanel
 {
@@ -128,10 +130,9 @@ public class PagedListPanel extends FlowPanel
     /** Waiting spinner. */
     FlowPanel waitSpinner = new FlowPanel();
 
-
     /**
      * Default constructor.
-     *
+     * 
      * @param inListId
      *            the list id.
      */
@@ -142,7 +143,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param inListId
      *            the list id.
      * @param inContextParam
@@ -155,21 +156,21 @@ public class PagedListPanel extends FlowPanel
         listId = inListId;
         bottomPager = new Pager("filteredPager" + listId, true);
 
-        waitSpinner.addStyleName("wait-spinner");
+        waitSpinner.addStyleName(StaticResourceBundle.INSTANCE.coreCss().waitSpinner());
 
-        this.addStyleName("connection-master");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionMaster());
         filterContainer.add(new Label("View:"));
 
         navPanel = new FlowPanel();
-        navPanel.addStyleName("navpanel");
+        navPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navpanel());
         navPanel.add(filterContainer);
         navPanel.add(sortContainer);
         this.add(navPanel);
 
-        filterContainer.addStyleName("options");
-        filterContainer.addStyleName("views");
-        sortContainer.addStyleName("options");
-        bottomPager.addStyleName("bottom-pager");
+        filterContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().options());
+        filterContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().views());
+        sortContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().options());
+        bottomPager.addStyleName(StaticResourceBundle.INSTANCE.coreCss().bottomPager());
 
         this.add(waitSpinner);
         this.add(renderContainer);
@@ -188,26 +189,24 @@ public class PagedListPanel extends FlowPanel
             }
         });
 
-        Session.getInstance()
-                .getEventBus()
-                .addObserver(SwitchToFilterOnPagedFilterPanelEvent.class,
-                        new Observer<SwitchToFilterOnPagedFilterPanelEvent>()
+        Session.getInstance().getEventBus().addObserver(SwitchToFilterOnPagedFilterPanelEvent.class,
+                new Observer<SwitchToFilterOnPagedFilterPanelEvent>()
+                {
+                    public void update(final SwitchToFilterOnPagedFilterPanelEvent event)
+                    {
+                        // ignore events for other lists
+                        if (!listId.equals(event.getListId()))
                         {
-                            public void update(final SwitchToFilterOnPagedFilterPanelEvent event)
-                            {
-                                // ignore events for other lists
-                                if (!listId.equals(event.getListId()))
-                                {
-                                    return;
-                                }
+                            return;
+                        }
 
-                                updateStateIfChanged(event.getFilterName(), event.getSortKey(), null, null,
-                                        !event.isFromUrlChange());
-                            }
-                        });
+                        updateStateIfChanged(event.getFilterName(), event.getSortKey(), null, null, !event
+                                .isFromUrlChange());
+                    }
+                });
 
-        Session.getInstance().getEventBus()
-                .addObserver(UpdatedHistoryParametersEvent.class, new Observer<UpdatedHistoryParametersEvent>()
+        Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
+                new Observer<UpdatedHistoryParametersEvent>()
                 {
                     public void update(final UpdatedHistoryParametersEvent event)
                     {
@@ -242,9 +241,8 @@ public class PagedListPanel extends FlowPanel
                         // only handle event if initialized
                         else
                         {
-                            updateStateIfChanged(parms.get(URL_PARAM_FILTER), parms.get(URL_PARAM_SORT),
-                                    parms.get(Pager.URL_PARAM_START_INDEX), parms.get(Pager.URL_PARAM_END_INDEX),
-                                    false);
+                            updateStateIfChanged(parms.get(URL_PARAM_FILTER), parms.get(URL_PARAM_SORT), parms
+                                    .get(Pager.URL_PARAM_START_INDEX), parms.get(Pager.URL_PARAM_END_INDEX), false);
                         }
                     }
                 }, true);
@@ -252,13 +250,13 @@ public class PagedListPanel extends FlowPanel
         this.add(bottomPager);
 
         FlowPanel clear = new FlowPanel();
-        clear.addStyleName("clear");
+        clear.addStyleName(StaticResourceBundle.INSTANCE.coreCss().clear());
         this.add(clear);
     }
 
     /**
      * Constructor.
-     *
+     * 
      * @param inListId
      *            the list id.
      * @param inPageRenderer
@@ -272,7 +270,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param inListId
      *            the list id.
      * @param inPageRenderer
@@ -291,7 +289,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Updates the state of the widget (loading data, etc.) if the current state does not match the desired state.
-     *
+     * 
      * @param inFilter
      *            Requested filter name.
      * @param inSort
@@ -375,8 +373,8 @@ public class PagedListPanel extends FlowPanel
             params.put(URL_PARAM_SORT, currentSortKey);
             params.put(Pager.URL_PARAM_START_INDEX, currentStartIndex.toString());
             params.put(Pager.URL_PARAM_END_INDEX, currentEndIndex.toString());
-            Session.getInstance().getEventBus()
-                    .notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(params, false)));
+            Session.getInstance().getEventBus().notifyObservers(
+                    new UpdateHistoryEvent(new CreateUrlRequest(params, false)));
         }
 
         return true;
@@ -415,7 +413,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Reload the panel to a default filter.
-     *
+     * 
      * @param filter
      *            The default filter to use after reset.
      */
@@ -432,19 +430,20 @@ public class PagedListPanel extends FlowPanel
     {
         for (Anchor filterLink : filterLinks.values())
         {
-            filterLink.removeStyleName("active");
+            filterLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
         }
 
         if (sortLinks.get(currentFilter) != null)
         {
             for (Anchor sortLink : sortLinks.get(currentFilter).values())
             {
-                sortLink.removeStyleName("active");
+                sortLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
             }
 
             if (sortLinks.get(currentFilter).get(currentSortKey) != null)
             {
-                sortLinks.get(currentFilter).get(currentSortKey).addStyleName("active");
+                sortLinks.get(currentFilter).get(currentSortKey).addStyleName(
+                        StaticResourceBundle.INSTANCE.coreCss().active());
             }
         }
 
@@ -458,7 +457,7 @@ public class PagedListPanel extends FlowPanel
             sortContainer.clear();
         }
 
-        filterLinks.get(currentFilter).addStyleName("active");
+        filterLinks.get(currentFilter).addStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
 
         refreshData();
     }
@@ -473,13 +472,13 @@ public class PagedListPanel extends FlowPanel
         PageableRequest request = requests.get(currentFilter).get(currentSortKey);
         request.setStartIndex(currentStartIndex);
         request.setEndIndex(currentEndIndex);
-        renderContainer.addStyleName("hidden");
+        renderContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
         fetchers.get(currentFilter).fetch(request, false);
     }
 
     /**
      * Add a filter w/o a sort.
-     *
+     * 
      * @param name
      *            name of the filter.
      * @param fetchable
@@ -498,7 +497,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Add a filter w/o a sort.
-     *
+     * 
      * @param name
      *            name of the filter.
      * @param fetchable
@@ -522,7 +521,7 @@ public class PagedListPanel extends FlowPanel
             fetchers.put(name, fetchable);
 
             Anchor filterLink = new Anchor(name);
-            filterLink.addStyleName("connection-filter-button");
+            filterLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionFilterButton());
 
             filterLink.addClickHandler(new ClickHandler()
             {
@@ -549,7 +548,7 @@ public class PagedListPanel extends FlowPanel
             }
 
             Anchor sortLink = new Anchor(sortKey);
-            sortLink.addStyleName("connection-filter-button");
+            sortLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionFilterButton());
             sortLink.addClickHandler(new ClickHandler()
             {
                 public void onClick(final ClickEvent event)
@@ -587,7 +586,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Updates the request for a given set that has no sort key.
-     *
+     * 
      * @param name
      *            The name of the set to update.
      * @param request
@@ -600,7 +599,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Updates the request for a given set.
-     *
+     * 
      * @param name
      *            The name of the set to update.
      * @param request
@@ -619,7 +618,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Render the panel.
-     *
+     * 
      * @param <T>
      *            the type of item.
      * @param items
@@ -635,14 +634,14 @@ public class PagedListPanel extends FlowPanel
 
         if (items.getTotal() > 0)
         {
-            this.removeStyleName("empty-list");
+            this.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().emptyList());
         }
         else
         {
-            this.addStyleName("empty-list");
+            this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().emptyList());
         }
         pageRenderer.render(renderContainer, render, items, noItemsMessage);
-        renderContainer.removeStyleName("hidden");
+        renderContainer.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
 
         bottomPager.setTotal(items.getTotal());
         waitSpinner.setVisible(false);
@@ -658,7 +657,7 @@ public class PagedListPanel extends FlowPanel
 
     /**
      * Sets the text displayed on the filter link.
-     *
+     * 
      * @param name
      *            The name of the filter.
      * @param title

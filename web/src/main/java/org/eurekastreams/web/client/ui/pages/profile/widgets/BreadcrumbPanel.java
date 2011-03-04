@@ -29,6 +29,7 @@ import org.eurekastreams.server.search.modelview.OrganizationModelView;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -54,7 +55,7 @@ public class BreadcrumbPanel extends FlowPanel
     public BreadcrumbPanel(final ActionProcessor inProcessor)
     {
         processor = inProcessor;
-        this.addStyleName("breadcrumb");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().breadcrumb());
     }
 
     /**
@@ -223,11 +224,10 @@ public class BreadcrumbPanel extends FlowPanel
         {
             Hyperlink crumbLink = new Hyperlink(crumb.getText(), Session.getInstance().generateUrl(
                     new CreateUrlRequest(crumb.getPage(), crumb.getView(), params)));
-            crumbLink.addStyleName("breadcrumb-link");
             this.add(crumbLink);
 
             separator = new Label(">");
-            separator.addStyleName("breadcrumb-separator");
+            separator.addStyleName(StaticResourceBundle.INSTANCE.coreCss().breadcrumbSeparator());
             this.add(separator);
         }
 
@@ -235,15 +235,14 @@ public class BreadcrumbPanel extends FlowPanel
         {
             Hyperlink crumbLink = new Hyperlink(thisItem, Session.getInstance().generateUrl(
                     new CreateUrlRequest(new HashMap<String, String>(), true)));
-            crumbLink.addStyleName("breadcrumb-link");
-            crumbLink.addStyleName("breadcrumb-label");
+            crumbLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().breadcrumbLabel());
             this.add(crumbLink);
         }
         else
         {
             Label label = new Label();
             label.setText(thisItem);
-            label.addStyleName("breadcrumb-label");
+            label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().breadcrumbLabel());
             this.add(label);
         }
     }

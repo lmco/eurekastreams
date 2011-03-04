@@ -19,6 +19,7 @@ import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.web.client.events.FormLoginCompleteEvent;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -30,14 +31,14 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 
 /**
  * Template for a login dialog.
@@ -88,24 +89,24 @@ public class LoginDialogContent implements DialogContent
         loginForm.setAction("/j_spring_security_check");
         loginForm.setMethod(FormPanel.METHOD_POST);
 
-        loginContentContainer.addStyleName("login-content-container");
+        loginContentContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().loginContentContainer());
 
         FlowPanel loginPanel = new FlowPanel();
-        loginPanel.addStyleName("login-content");
+        loginPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().loginContent());
         loginForm.setWidget(loginPanel);
 
         FlowPanel navPanel = new FlowPanel();
-        navPanel.addStyleName("login-nav-panel");
+        navPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().loginNavPanel());
         navPanel.add(errorMessage);
         loginContentContainer.add(navPanel);
 
-        submitButton.addStyleName("login-button");
-        cancelButton.addStyleName("cancel-button");
+        submitButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().loginButton());
+        cancelButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().cancelButton());
 
         final FlowPanel usernamePanel = new FlowPanel();
-        usernamePanel.addStyleName("form-element");
+        usernamePanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formElement());
         Label usernameLabel = new Label("Username: ");
-        usernameLabel.addStyleName("form-label");
+        usernameLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
         usernamePanel.add(usernameLabel);
 
         username.setName("j_username");
@@ -115,8 +116,8 @@ public class LoginDialogContent implements DialogContent
 
         final FlowPanel passwordPanel = new FlowPanel();
         Label passwordLabel = new Label("Password: ");
-        passwordPanel.addStyleName("form-element");
-        passwordLabel.addStyleName("form-label");
+        passwordPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formElement());
+        passwordLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
         passwordPanel.add(passwordLabel);
 
         password.setName("j_password");
@@ -132,13 +133,13 @@ public class LoginDialogContent implements DialogContent
         loginPanel.add(passwordPanel);
         loginPanel.add(rememberMe);
 
-        errorMessage.addStyleName("form-error-box");
+        errorMessage.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formErrorBox());
         errorMessage.setVisible(false);
 
         loginContentContainer.add(loginPanel);
 
         FlowPanel buttonPanel = new FlowPanel();
-        buttonPanel.addStyleName("login-button-panel");
+        buttonPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().loginButtonPanel());
         buttonPanel.add(submitButton);
         buttonPanel.add(cancelButton);
         loginContentContainer.add(buttonPanel);
@@ -246,7 +247,7 @@ public class LoginDialogContent implements DialogContent
      */
     public String getCssName()
     {
-        return "login-dialog";
+        return StaticResourceBundle.INSTANCE.coreCss().loginDialog();
     }
 
     /**

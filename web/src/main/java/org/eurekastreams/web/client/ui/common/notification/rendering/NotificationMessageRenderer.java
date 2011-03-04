@@ -24,6 +24,7 @@ import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.web.client.events.DialogLinkClickedEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.utility.InContextActivityLinkBuilder;
 import org.eurekastreams.web.client.utility.LinkBuilderHelper;
 
@@ -119,7 +120,7 @@ public abstract class NotificationMessageRenderer
             case BOOKMARK:
                 return "link";
             case NOTE:
-                return "message";
+                return StaticResourceBundle.INSTANCE.coreCss().message();
             default:
                 return type.name().toLowerCase();
             }

@@ -32,6 +32,7 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.PersonalEducationModel;
 import org.eurekastreams.web.client.model.PersonalEmploymentModel;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.profile.settings.EducationPanel;
 import org.eurekastreams.web.client.ui.pages.profile.settings.EmploymentPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.BackgroundItemLinksPanel;
@@ -90,7 +91,7 @@ public class PersonalProfileAboutTabPanel extends ProfileAboutTabPanel
         else
         {
             HTML bio = new HTML(person.getBiography());
-            bio.addStyleName("profile-about-biography");
+            bio.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileAboutBiography());
             biographyPanel.add(bio);
 
             // force URLs to absolute

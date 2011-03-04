@@ -19,6 +19,7 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineHyperlink;
@@ -109,7 +110,7 @@ public class MetadataLinkRenderer
             if (label != null && !label.isEmpty())
             {
                 Panel main = new FlowPanel();
-                main.addStyleName("inline-panel");
+                main.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inlinePanel());
                 main.add(new InlineLabel(label + " "));
                 main.add(new InlineHyperlink(name, url));
                 return main;

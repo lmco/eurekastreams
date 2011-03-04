@@ -32,6 +32,7 @@ import org.eurekastreams.web.client.model.MembershipCriteriaVerificationModel;
 import org.eurekastreams.web.client.model.requests.MembershipCriteriaVerificationRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.form.elements.FormElement;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -120,28 +121,29 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
      */
     private void setupWidgets()
     {
-        this.addStyleName("form-user-association");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formUserAssociation());
 
         Label label = new Label("Access List");
-        label.addStyleName("form-label");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
 
         Label topDesc = new Label("Specify the users that you want to have access to Eureka.");
-        topDesc.addStyleName("form-instructions top-label");
+        topDesc.addStyleName(StaticResourceBundle.INSTANCE.coreCss().topLabel());
+        topDesc.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
 
         requiredLabel = new Label();
-        requiredLabel.addStyleName("required-form-label");
+        requiredLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requiredFormLabel());
         requiredLabel.setText("(required)");
 
         FlowPanel radioButtons = new FlowPanel();
-        radioButtons.addStyleName("radio-button-container");
-
+        
         Label searchLDAPBy = new Label("Search by LDAP");
-        searchLDAPBy.addStyleName("form-label search-ldap-label");
+        searchLDAPBy.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchLdapLabel());
+        searchLDAPBy.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
 
         group = new RadioButton("ldap", "Group Name");
         attr = new RadioButton("ldap", "Attribute");
         group.setValue(true);
-        group.addStyleName("group-check-box");
+        group.addStyleName(StaticResourceBundle.INSTANCE.coreCss().groupCheckBox());
 
         radioButtons.add(searchLDAPBy);
         radioButtons.add(group);
@@ -151,21 +153,21 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
 
         // Need to do this to fix an especially nasty IE CSS bug (input margin inheritance)
         final SimplePanel textWrapper = new SimplePanel();
-        textWrapper.addStyleName("input-wrapper");
+        textWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inputWrapper());
         textWrapper.add(membershipCriteria);
 
         verifyButton = new Anchor("");
-        verifyButton.addStyleName("add-button-submit");
-        verifyButton.addStyleName("form-button");
+        verifyButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addButtonSubmit());
+        verifyButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formButton());
 
         verifying = new Label("");
-        verifying.addStyleName("form-verifying-spinny");
+        verifying.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formVerifyingSpinny());
         verifying.setVisible(false);
 
         results = new Label();
 
         description = new Label(GROUP_DESC);
-        description.addStyleName("form-instructions");
+        description.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
 
         this.add(results);
         this.add(label);
@@ -178,7 +180,7 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
         this.add(description);
 
         accessGroupsPanel = new FlowPanel();
-        accessGroupsPanel.addStyleName("access-groups");
+        accessGroupsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().accessGroups());
         this.add(accessGroupsPanel);
     }
 
@@ -244,7 +246,7 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
                     public void update(final MembershipCriteriaVerificationNoUsersEvent event)
                     {
                         results.setVisible(true);
-                        results.addStyleName("form-error-box");
+                        results.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formErrorBox());
                         results.setText(VERIFY_NO_USERS_MESSAGE);
                         verifyingDone();
                     }

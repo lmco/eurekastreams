@@ -28,6 +28,7 @@ import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.jsni.EffectsFacade;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.utility.BaseActivityLinkBuilder;
 import org.eurekastreams.web.client.utility.LinkBuilderHelper;
 
@@ -120,13 +121,13 @@ public class CommentsListPanel extends FlowPanel
 
                 showAllComments = new Anchor("View all " + commentCount.toString() + " comments", "#" + url);
 
-                showAllComments.addStyleName("show-all-comments");
+                showAllComments.addStyleName(StaticResourceBundle.INSTANCE.coreCss().showAllComments());
                 this.add(showAllComments);
             }
             else if (commentCount > 2)
             {
                 showAllComments = new Anchor("View all " + commentCount.toString() + " comments");
-                showAllComments.addStyleName("show-all-comments");
+                showAllComments.addStyleName(StaticResourceBundle.INSTANCE.coreCss().showAllComments());
 
                 showAllComments.addClickHandler(new ClickHandler()
                 {

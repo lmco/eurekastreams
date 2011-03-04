@@ -44,6 +44,7 @@ import org.eurekastreams.web.client.ui.common.form.elements.StreamScopeFormEleme
 import org.eurekastreams.web.client.ui.common.form.elements.TermsOfServicePromptIntervalFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.userassociation.UserAssociationFormElement;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -147,7 +148,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
     {
         processor = inProcessor;
 
-        addStyleName("system-settings");
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().systemSettings());
 
         hideTOSIntPanel = new ClickListener()
         {
@@ -319,7 +320,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
                         + "on an interval of your choice.  You can also add a link to the full "
                         + "Terms of Service document.", true);
 
-        tosElement.addStyleName("hideable-textarea");
+        tosElement.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hideableTextarea());
 
         Integer promptVal = systemSettingValues.getTosPromptInterval();
 
@@ -335,13 +336,13 @@ public class SystemSettingsPanelComposite extends FlowPanel
                 "Send email invitations to new users as their accounts are created.", false, systemSettingValues
                         .getSendWelcomeEmails());
 
-        sendEmails.addStyleName("welcome-email-checkbox");
+        sendEmails.addStyleName(StaticResourceBundle.INSTANCE.coreCss().welcomeEmailCheckbox());
 
         membershipRefreshButton = initializeRefreshButton();
 
         FlowPanel clearPanel = new FlowPanel();
 
-        clearPanel.addStyleName("clear");
+        clearPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().clear());
 
         sendEmails.add(membershipRefreshButton);
         form.addFormElement(sendEmails);
@@ -385,15 +386,15 @@ public class SystemSettingsPanelComposite extends FlowPanel
     private void addHelpPageElementsToForm(final SystemSettings systemSettingValues, final FormBuilder form)
     {
         FlowPanel container = new FlowPanel();
-        container.addStyleName("form-element");
-        container.addStyleName("help-page-settings");
+        container.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formElement());
+        container.addStyleName(StaticResourceBundle.INSTANCE.coreCss().helpPageSettings());
 
         Label helpPageHeaderLabel = new Label("Help Page");
-        helpPageHeaderLabel.addStyleName("form-label");
+        helpPageHeaderLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
         container.add(helpPageHeaderLabel);
 
         FlowPanel instructionsPanel = new FlowPanel();
-        instructionsPanel.addStyleName("form-instructions");
+        instructionsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
         instructionsPanel.add(new InlineLabel("The information listed below will appear on the "));
         instructionsPanel.add(new InlineHyperlink("help", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.HELP))));
@@ -412,9 +413,9 @@ public class SystemSettingsPanelComposite extends FlowPanel
         helpSupportEmailAddress.setValue(systemSettingValues.getSupportEmailAddress() == null ? ""
                 : systemSettingValues.getSupportEmailAddress());
 
-        helpSupportPhoneNumber.addStyleName("help-form-element help-phone-number");
-        helpSupportEmailAddress.addStyleName("help-form-element help-email-address");
-
+        helpSupportPhoneNumber.addStyleName(StaticResourceBundle.INSTANCE.coreCss().helpFormElement());
+        helpSupportEmailAddress.addStyleName(StaticResourceBundle.INSTANCE.coreCss().helpFormElement());
+        
         if (systemSettingValues.getSupportStreamGroupShortName() != null)
         {
             StreamScope scope = new StreamScope(ScopeType.GROUP, systemSettingValues.getSupportStreamGroupShortName());
@@ -436,7 +437,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
     private Label initializeRefreshButton()
     {
         Label button = new Label();
-        button.addStyleName("access-list-refresh-button");
+        button.addStyleName(StaticResourceBundle.INSTANCE.coreCss().accessListRefreshButton());
         button.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent event)

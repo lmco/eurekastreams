@@ -15,10 +15,11 @@
  */
 package org.eurekastreams.web.client.ui.common.dialog.orglookup;
 
+import org.eurekastreams.server.domain.OrganizationTreeDTO;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.OrgSelectedEvent;
 import org.eurekastreams.web.client.ui.common.ULPanel;
-import org.eurekastreams.server.domain.OrganizationTreeDTO;
+import org.eurekastreams.web.client.ui.pages.master.CoreCss;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -40,14 +41,22 @@ public class OrganizationTreeItemController
     private EventBus eventBus;
 
     /**
+     * CSS resource.
+     */
+    private CoreCss css;
+
+    /**
      * Constructor.
      * 
      * @param inEventBus
      *            the event bus.
+     * @param inCss
+     *            CSS resource.
      */
-    public OrganizationTreeItemController(final EventBus inEventBus)
+    public OrganizationTreeItemController(final EventBus inEventBus, final CoreCss inCss)
     {
         eventBus = inEventBus;
+        css = inCss;
     }
 
     /**
@@ -111,11 +120,11 @@ public class OrganizationTreeItemController
 
         if (show)
         {
-            expand.addStyleName("expanded");
+            expand.addStyleName(css.expanded());
         }
         else
         {
-            expand.removeStyleName("expanded");
+            expand.removeStyleName(css.expanded());
         }
 
     }
@@ -135,11 +144,11 @@ public class OrganizationTreeItemController
     {
         if (null != selectedTreeItem)
         {
-            selectedTreeItem.removeStyleName("selected");
+            selectedTreeItem.removeStyleName(css.selected());
         }
 
         selectedTreeItem = treeItem;
-        selectedTreeItem.addStyleName("selected");
+        selectedTreeItem.addStyleName(css.selected());
 
         showAncestors(parent);
 

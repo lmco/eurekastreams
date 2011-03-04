@@ -27,6 +27,7 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.StartTabsModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.OLPanel;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.start.preferences.PortalPreferenceFacade;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -93,8 +94,9 @@ public class TabLayoutSelectorPanel extends FlowPanel implements PortalPreferenc
     {
         tabId = inTabId;
 
-        this.addStyleName("yui-skin-sam");
-        activeLayout.setStyleName("active-layout");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().yuiSkinSam());
+        this.addStyleDependentName(StaticResourceBundle.INSTANCE.coreCss().yuiSkinSam());
+        activeLayout.setStyleName(StaticResourceBundle.INSTANCE.coreCss().activeLayout());
         this.add(activeLayout);
         this.add(carousel);
         setActiveLayout(inLayout);
@@ -132,7 +134,7 @@ public class TabLayoutSelectorPanel extends FlowPanel implements PortalPreferenc
             for (final Layout layout : Layout.values())
             {
                 Hyperlink icon = new Hyperlink();
-                icon.addStyleName("layout-icon");
+                icon.addStyleName(StaticResourceBundle.INSTANCE.coreCss().layoutIcon());
                 icon.setText("layout");
                 icon.setTargetHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest()));
                 icon.addStyleName(layout.toString().toLowerCase());
@@ -189,7 +191,7 @@ public class TabLayoutSelectorPanel extends FlowPanel implements PortalPreferenc
     {
         currentLayout = layout;
         Hyperlink layoutIcon = new Hyperlink();
-        layoutIcon.addStyleName("layout-icon");
+        layoutIcon.addStyleName(StaticResourceBundle.INSTANCE.coreCss().layoutIcon());
         layoutIcon.setText("layout");
         layoutIcon.addStyleName(layout.toString().toLowerCase());
 

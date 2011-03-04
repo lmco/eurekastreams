@@ -22,6 +22,7 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -41,46 +42,46 @@ public class OrganizationRenderer implements ItemRenderer<OrganizationModelView>
     public Panel render(final OrganizationModelView org)
     {
         FlowPanel orgPanel = new FlowPanel();
-        orgPanel.addStyleName("connection-item list-item");
-        orgPanel.addStyleName("organization-item");
+        orgPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItem());
+        orgPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().listItem());
 
         orgPanel.add(new AvatarLinkPanel(EntityType.ORGANIZATION, org.getShortName(), org.getEntityId(), org
                 .getAvatarId(), Size.Small));
 
         FlowPanel organizationAbout = new FlowPanel();
-        organizationAbout.addStyleName("connection-item-info");
+        organizationAbout.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemInfo());
 
         String url = Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.ORGANIZATIONS, org.getShortName()));
         Hyperlink orgTitleLink = new Hyperlink(org.getName(), url);
-        orgTitleLink.addStyleName("organization-title");
+        orgTitleLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().organizationTitle());
         organizationAbout.add(orgTitleLink);
 
         if (null != org.getDescription())
         {
             Label description = new Label(org.getDescription());
-            description.addStyleName("org-overview");
+            description.addStyleName(StaticResourceBundle.INSTANCE.coreCss().orgOverview());
             organizationAbout.add(description);
         }
 
         FlowPanel orgMetaData = new FlowPanel();
-        orgMetaData.addStyleName("connection-item-followers");
+        orgMetaData.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowers());
 
         orgMetaData.add(new InlineLabel("Emp: "));
         InlineLabel descendentEmpLabel = new InlineLabel("" + org.getDescendantEmployeeCount());
-        descendentEmpLabel.addStyleName("connection-item-followers-data");
+        descendentEmpLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowersData());
         orgMetaData.add(descendentEmpLabel);
         insertActionSeparator(orgMetaData);
 
         orgMetaData.add(new InlineLabel("Groups: "));
         InlineLabel descendentGroupLabel = new InlineLabel("" + org.getDescendantGroupCount());
-        descendentGroupLabel.addStyleName("connection-item-followers-data");
+        descendentGroupLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowersData());
         orgMetaData.add(descendentGroupLabel);
         insertActionSeparator(orgMetaData);
 
         orgMetaData.add(new InlineLabel("Sub Orgs: "));
         InlineLabel childOrgLabel = new InlineLabel("" + org.getChildOrganizationCount());
-        childOrgLabel.addStyleName("connection-item-followers-data");
+        childOrgLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowersData());
         orgMetaData.add(childOrgLabel);
 
         organizationAbout.add(orgMetaData);
@@ -99,7 +100,7 @@ public class OrganizationRenderer implements ItemRenderer<OrganizationModelView>
     private void insertActionSeparator(final Panel panel)
     {
         Label sep = new InlineLabel("\u2219");
-        sep.addStyleName("action-link-separator");
+        sep.addStyleName(StaticResourceBundle.INSTANCE.coreCss().actionLinkSeparator());
         panel.add(sep);
     }
 }

@@ -18,10 +18,10 @@ package org.eurekastreams.web.client.ui.common.stream.decorators.verb;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulatorStrategy;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.ActivityVerb;
 import org.eurekastreams.server.search.modelview.CommentDTO;
+import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulatorStrategy;
 
 /**
  * Populates the dto for share verbs.

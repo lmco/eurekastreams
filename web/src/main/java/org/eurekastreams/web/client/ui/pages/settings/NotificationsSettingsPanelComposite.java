@@ -37,6 +37,7 @@ import org.eurekastreams.web.client.ui.common.form.FormBuilder;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder.Method;
 import org.eurekastreams.web.client.ui.common.form.elements.FormElement;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -93,7 +94,7 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
     public NotificationsSettingsPanelComposite()
     {
         // UI setup
-        addStyleName("personal-settings");
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().personalSettings());
 
         // listen for model events
         Session.getInstance().getEventBus().addObserver(GotPersonalSettingsResponseEvent.class,
@@ -119,7 +120,7 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
     public void generateForm(final Map<String, Object> inSettings, final Map<String, Object> inSupport)
     {
         form = new FormBuilder("", PersonalSettingsModel.getInstance(), Method.UPDATE);
-        form.addStyleName("notif-settings-form");
+        form.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifSettingsForm());
         form.turnOffChangeCheck();
         setupFormCommands();
 
@@ -144,49 +145,48 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
         Label label;
 
         Panel panel = new FlowPanel();
-        panel.addStyleName("notif-settings-panel");
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifSettingsPanel());
         form.addWidget(panel);
 
         label = new Label("My Activity and Connections");
-        label.addStyleName("form-label");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
         panel.add(label);
 
         label = new Label("Eureka Streams will notify you when new activity has taken place that involves you.");
-        label.addStyleName("instructions");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().instructions());
         panel.add(label);
 
         panel.add(buildNotificationFilterGrid(notifiers, PERSONAL_PREF_CATEGORIES, filters));
 
         label = new Label("My Groups' Activity and Connections");
-        label.addStyleName("form-label");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
         panel.add(label);
 
         label =
                 new Label("Eureka Streams will notify you when new activity has taken place in the groups that "
                         + "you coordinate or groups that you have joined.");
-        label.addStyleName("instructions");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().instructions());
         panel.add(label);
 
         panel.add(buildNotificationFilterGrid(notifiers, GROUP_PREF_CATEGORIES, filters));
 
         label = new Label("My Organizations' Activity and Connections");
-        label.addStyleName("form-label");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
         panel.add(label);
 
         label =
                 new Label("Eureka Streams will notify you when new activity has "
                         + "taken place in the organizations that you coordinate.");
-        label.addStyleName("instructions");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().instructions());
         panel.add(label);
 
         panel.add(buildNotificationFilterGrid(notifiers, ORG_PREF_CATEGORIES, filters));
 
         label = new InlineLabel("Email notifications will be sent to: ");
-        label.addStyleName("notif-email-caption");
         panel.add(label);
 
         label = new InlineLabel(Session.getInstance().getCurrentPerson().getEmail());
-        label.addStyleName("notif-email-value");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifEmailValue());
         panel.add(label);
     }
 
@@ -205,7 +205,7 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
             final Map<String, Category> categories, final Collection<NotificationFilterPreferenceDTO> filters)
     {
         Grid grid = new Grid(1 + categories.size(), 1 + notifiers.size());
-        grid.addStyleName("notif-grid");
+        grid.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifGrid());
 
         // display each category name (one per row)
         int row = 0;

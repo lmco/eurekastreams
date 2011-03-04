@@ -34,6 +34,7 @@ import org.eurekastreams.web.client.events.data.UpdatedGadgetMinimizedStateRespo
 import org.eurekastreams.web.client.jsni.GadgetMetaDataFetcher;
 import org.eurekastreams.web.client.jsni.GadgetRenderer;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.start.dragging.GadgetDragController;
 import org.eurekastreams.web.client.ui.pages.start.dragging.GadgetDragHandler;
 import org.eurekastreams.web.client.ui.pages.start.dragging.NoInsertAtEndIndexDropController;
@@ -118,7 +119,7 @@ public class StartPageTabContent extends FlowPanel
      */
     public StartPageTabContent(final Tab inTab)
     {
-        layoutContainer.addStyleName("start-tab-content-container");
+        layoutContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().startTabContentContainer());
         prefPanel.setPreferenceWidget(new TabLayoutSelectorPanel(inTab.getId(), inTab.getTabLayout()));
         this.add(prefPanel);
         prefPanel.hidePanel();
@@ -189,7 +190,7 @@ public class StartPageTabContent extends FlowPanel
 
         // The break panel is needed for CSS lameness so the footer doesn't
         // float up.
-        breakPanel.addStyleName("break");
+        breakPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().breakClass());
         layoutContainer.add(breakPanel);
         resetEmptyZones();
 
@@ -205,12 +206,12 @@ public class StartPageTabContent extends FlowPanel
 
             if (dropZone.getVisibleGadgetCount() == 0)
             {
-                dropZone.addStyleName("empty-zone");
+                dropZone.addStyleName(StaticResourceBundle.INSTANCE.coreCss().emptyZone());
             }
             else
             {
                 dropZone.setVisible(true);
-                dropZone.removeStyleName("empty-zone");
+                dropZone.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().emptyZone());
             }
         }
     }

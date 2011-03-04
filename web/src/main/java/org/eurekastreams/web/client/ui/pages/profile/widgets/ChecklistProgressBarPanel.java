@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.profile.Task;
 
 import com.google.gwt.user.client.History;
@@ -101,10 +102,10 @@ public class ChecklistProgressBarPanel extends FlowPanel
                 + "%</span> complete");
 
         this.add(percentComplete);
-        this.addStyleName("checklist-complete-sen");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().checklistCompleteSen());
 
         FlowPanel progressBarContainer = new FlowPanel();
-        progressBarContainer.addStyleName("checklist-progress-bar");
+        progressBarContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().checklistProgressBar());
 
         progressBarContainer.add(progressBar);
 
@@ -112,7 +113,7 @@ public class ChecklistProgressBarPanel extends FlowPanel
 
         Hyperlink launchCheckList = new Hyperlink("Launch Checklist", History.getToken());
 
-        launchCheckList.addStyleName("launch-checklist");
+        launchCheckList.addStyleName(StaticResourceBundle.INSTANCE.coreCss().launchChecklist());
         launchCheckList.addClickListener(new ClickListener()
         {
             public void onClick(final Widget arg0)

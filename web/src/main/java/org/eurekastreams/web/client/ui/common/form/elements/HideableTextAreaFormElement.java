@@ -17,6 +17,8 @@ package org.eurekastreams.web.client.ui.common.form.elements;
 
 import java.io.Serializable;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -99,13 +101,13 @@ public class HideableTextAreaFormElement extends FlowPanel implements FormElemen
 
         FlowPanel checkboxInstructionsPanel = new FlowPanel();
         checkboxInstructionsPanel.getElement().setInnerHTML(checkboxInstructions);
-        checkboxInstructionsPanel.addStyleName("form-instructions");
-        this.addStyleName("hideable-textarea");
+        checkboxInstructionsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hideableTextarea());
 
         hidableTxtArea = new BasicTextAreaFormElement(inSize, null, "", value, null, true);
         hidingCheckBox.addClickListener(hidePanel);
 
-        hidableTxtArea.addStyleName("site-label");
+        hidableTxtArea.addStyleName(StaticResourceBundle.INSTANCE.coreCss().siteLabeling());
 
         this.add(hidingCheckBox);        
         this.add(hidableTxtArea);
@@ -184,7 +186,7 @@ public class HideableTextAreaFormElement extends FlowPanel implements FormElemen
      */
     public void onError(final String errMessage)
     {
-        hidingCheckBox.getLabel().addStyleName("form-error");
+        hidingCheckBox.getLabel().addStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**
@@ -192,6 +194,6 @@ public class HideableTextAreaFormElement extends FlowPanel implements FormElemen
      */
     public void onSuccess()
     {
-        hidingCheckBox.getLabel().removeStyleName("form-error");
+        hidingCheckBox.getLabel().removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 }

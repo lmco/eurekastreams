@@ -19,6 +19,7 @@ package org.eurekastreams.web.client.ui.pages.start.dragging;
 
 import org.eurekastreams.server.action.request.start.ReorderGadgetRequest;
 import org.eurekastreams.web.client.model.GadgetModel;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.start.GadgetPanel;
 import org.eurekastreams.web.client.ui.pages.start.StartPageTab;
 import org.eurekastreams.web.client.ui.pages.start.StartPageTabContent;
@@ -76,7 +77,7 @@ public class TabSelectingDropController extends AbstractDropController
     @Override
     public void onEnter(final DragContext context)
     {
-        tab.addStyleName("dropping");
+        tab.addStyleName(StaticResourceBundle.INSTANCE.coreCss().dropping());
     }
 
     /**
@@ -87,7 +88,7 @@ public class TabSelectingDropController extends AbstractDropController
     public void onLeave(final DragContext context)
     {
         super.onLeave(context);
-        tab.removeStyleName("dropping");
+        tab.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().dropping());
     }
 
 }

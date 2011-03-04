@@ -27,6 +27,7 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.LabeledTextBox;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.common.stream.thumbnail.ThumbnailSelectorComposite;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -73,10 +74,10 @@ public class AddLinkComposite extends FlowPanel
     private final Label linkDesc = new Label();
 
     /** The close button. */
-    private final Label closeDisplayButton = new Label("close");
+    private final Label closeDisplayButton = new Label(StaticResourceBundle.INSTANCE.coreCss().close());
 
     /** The close button. */
-    private final Label closeAddButton = new Label("close");
+    private final Label closeAddButton = new Label(StaticResourceBundle.INSTANCE.coreCss().close());
 
     /** Text box. */
     private final TextBox title = new TextBox();
@@ -109,7 +110,7 @@ public class AddLinkComposite extends FlowPanel
         add(displayPanel);
         add(addPanel);
 
-        this.addStyleName("attach-link-container");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().attachLinkContainer());
 
         /*
          * Hide the other panels.
@@ -117,32 +118,32 @@ public class AddLinkComposite extends FlowPanel
         addPanel.setVisible(false);
         displayPanel.setVisible(false);
 
-        addLink.addStyleName("show-attach-link-panel");
+        addLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().showAttachLinkPanel());
 
         /**
          * Setup the add panel.
          */
-        addPanel.addStyleName("attach-link");
-        closeAddButton.addStyleName("close");
+        addPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().attachLink());
+        closeAddButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().close());
         addPanel.add(closeAddButton);
 
         Label addLinkLabel = new Label("Add Link");
-        addLinkLabel.addStyleName("title");
+        addLinkLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().title());
         addPanel.add(addLinkLabel);
 
         addPanel.add(linkUrl);
         addPanel.add(fetchLink);
-        fetchLink.addStyleName("add-button-submit");
+        fetchLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addButtonSubmit());
 
         /*
          * Setup the display pane.
          */
-        closeDisplayButton.addStyleName("close");
+        closeDisplayButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().close());
         displayPanel.add(closeDisplayButton);
-        displayPanel.addStyleName("link-panel");
-        linkPanel.addStyleName("message-link");
-        linkUrlDisplay.addStyleName("url");
-        linkDesc.addStyleName("meta-description");
+        displayPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkPanel());
+        linkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageLink());
+        linkUrlDisplay.addStyleName(StaticResourceBundle.INSTANCE.coreCss().url());
+        linkDesc.addStyleName(StaticResourceBundle.INSTANCE.coreCss().metaDescription());
         linkPanel.add(selector);
         linkPanel.add(titleLink);
         linkPanel.add(linkUrlDisplay);
@@ -151,7 +152,7 @@ public class AddLinkComposite extends FlowPanel
         displayPanel.add(linkPanel);
         titleLink.add(title);
 
-        titleLink.addStyleName("attach-link-title-entry");
+        titleLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().attachLinkTitleEntry());
 
         EventBus eventBus = Session.getInstance().getEventBus();
         eventBus.addObserver(ParseLinkEvent.getEvent(), new Observer<ParseLinkEvent>()
@@ -160,7 +161,7 @@ public class AddLinkComposite extends FlowPanel
             {
                 onAddLinkClicked();
                 linkUrl.setText(event.getUrl());
-                fetchLink.addStyleName("verifying-link");
+                fetchLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().verifyingLink());
                 fetchLink(event.getUrl());
             }
         });
@@ -185,7 +186,7 @@ public class AddLinkComposite extends FlowPanel
                 {
                     public void update(final ErrorPostingMessageToNullScopeEvent event)
                     {
-                        fetchLink.removeStyleName("verifying-link");
+                        fetchLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().verifyingLink());
                     }
                 });
 
@@ -193,7 +194,7 @@ public class AddLinkComposite extends FlowPanel
         {
             public void onClick(final ClickEvent event)
             {
-                fetchLink.addStyleName("verifying-link");
+                fetchLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().verifyingLink());
                 fetchLink(linkUrl.getText());
             }
         });
@@ -268,7 +269,7 @@ public class AddLinkComposite extends FlowPanel
         }
 
         addPanel.setVisible(false);
-        fetchLink.removeStyleName("verifying-link");
+        fetchLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().verifyingLink());
         displayPanel.setVisible(null != link);
         addLink.setVisible(null == link);
 
@@ -276,7 +277,7 @@ public class AddLinkComposite extends FlowPanel
 
         if (addedLink.getImageUrls().size() > 0)
         {
-            linkPanel.addStyleName("has-thumbnail");
+            linkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hasThumbnail());
         }
 
         linkUrlDisplay.setText("source: " + addedLink.getSource());

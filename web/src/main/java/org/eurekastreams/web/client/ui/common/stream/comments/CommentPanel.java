@@ -32,6 +32,7 @@ import org.eurekastreams.web.client.ui.common.stream.renderers.MetadataLinkRende
 import org.eurekastreams.web.client.ui.common.stream.transformers.HashtagLinkTransformer;
 import org.eurekastreams.web.client.ui.common.stream.transformers.HyperlinkTransformer;
 import org.eurekastreams.web.client.ui.common.stream.transformers.StreamSearchLinkBuilder;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -68,18 +69,18 @@ public class CommentPanel extends Composite
     public CommentPanel(final CommentDTO comment)
     {
         final FlowPanel commentContainer = new FlowPanel();
-        commentContainer.addStyleName("message-comment");
+        commentContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageComment());
 
         commentContainer.add(new AvatarLinkPanel(EntityType.PERSON, comment.getAuthorAccountId(), comment
                 .getAuthorId(), comment.getAuthorAvatarId(), Size.VerySmall, Background.White));
 
         FlowPanel body = new FlowPanel();
-        body.addStyleName("body");
+        body.addStyleName(StaticResourceBundle.INSTANCE.coreCss().body());
         commentContainer.add(body);
 
         Widget author =
                 new MetadataLinkRenderer("", comment.getAuthorAccountId(), comment.getAuthorDisplayName()).render();
-        author.addStyleName("message-comment-author");
+        author.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageCommentAuthor());
         body.add(author);
 
         // first transform links to hyperlinks
@@ -96,31 +97,33 @@ public class CommentPanel extends Composite
         commentBody = new HashtagLinkTransformer(new StreamSearchLinkBuilder()).transform(commentBody);
         
         Widget text = new InlineHTML(commentBody);
-        text.addStyleName("message-comment-text");
+        text.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageCommentText());
         body.add(text);
 
         // timestamp and actions
         Panel timestampActions = new FlowPanel();
-        timestampActions.addStyleName("comment-timestamp-actions-area");
+        timestampActions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().commentTimestamp());
         body.add(timestampActions);
 
         DateFormatter dateFormatter = new DateFormatter(new Date());
         Label dateLink = new InlineLabel(dateFormatter.timeAgo(comment.getTimeSent()));
-        dateLink.addStyleName("comment-timestamp");
+        dateLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().commentTimestamp());
         timestampActions.add(dateLink);
 
         Panel actionsPanel = new FlowPanel();
-        actionsPanel.addStyleName("comment-actions-area");
+        actionsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().commentActionsArea());
         timestampActions.add(actionsPanel);
 
         if (comment.isDeletable())
         {
             Label sep = new InlineLabel("\u2219");
-            sep.addStyleName("action-link-separator");
+            sep.addStyleName(StaticResourceBundle.INSTANCE.coreCss().actionLinkSeparator());
             actionsPanel.add(sep);
 
             Label deleteLink = new InlineLabel("Delete");
-            deleteLink.addStyleName("delete action-link linked-label");
+            deleteLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().delete());
+            deleteLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
+            
             actionsPanel.add(deleteLink);
 
             deleteLink.addClickHandler(new ClickHandler()

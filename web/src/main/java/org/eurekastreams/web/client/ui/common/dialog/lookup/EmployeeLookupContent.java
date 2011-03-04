@@ -21,6 +21,7 @@ import org.eurekastreams.web.client.model.PersonLookupModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.PersonPanel;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -97,52 +98,52 @@ public class EmployeeLookupContent implements DialogContent
     private void setupWidgets()
     {
         final FlowPanel lookupPanelContainer = new FlowPanel();
-        lookupPanelContainer.addStyleName("lookup-container");
+        lookupPanelContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupContainer());
 
         final FlowPanel lookupPanel = new FlowPanel();
 
         Label lookupDesc = new Label("Enter the last name, first name of the user you want to lookup. "
                 + "If there are greater than 50 results, please enter more of the last name and first name.");
-        lookupDesc.addStyleName("lookup-description");
+        lookupDesc.addStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupDescription());
 
         lookupPanelContainer.add(lookupDesc);
 
-        lookupPanel.addStyleName("lookup");
+        lookupPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().lookup());
 
         final FlowPanel lastNamePanel = new FlowPanel();
-        lastNamePanel.addStyleName("search-list");
+        lastNamePanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchList());
 
         lastNamePanel.add(lastName);
 
         search = new Hyperlink("Search", History.getToken());
-        search.addStyleName("search-list-button");
+        search.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchListButton());
         lastNamePanel.add(search);
 
         lookupPanel.add(lastNamePanel);
 
-        results.setName("results");
-        results.addStyleName("results");
+        results.setName(StaticResourceBundle.INSTANCE.coreCss().results());
+        results.addStyleName(StaticResourceBundle.INSTANCE.coreCss().results());
         results.setVisibleItemCount(5);
         lookupPanel.add(results);
 
         final FlowPanel buttonArea = new FlowPanel();
-        buttonArea.addStyleName("button-area");
+        buttonArea.addStyleName(StaticResourceBundle.INSTANCE.coreCss().buttonArea());
 
         select = new Hyperlink("Select", History.getToken());
-        select.addStyleName("lookup-select-button-inactive");
+        select.addStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupSelectButtonInactive());
         buttonArea.add(select);
 
         cancel = new Hyperlink("Cancel", History.getToken());
-        cancel.addStyleName("lookup-cancel-button");
+        cancel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupCancelButton());
         buttonArea.add(cancel);
 
         lookupPanelContainer.add(lookupPanel);
 
-        personContainer.addStyleName("person-container");
+        personContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().personContainer());
 
         lookupPanelContainer.add(personContainer);
 
-        resultsDesc.addStyleName("results-description");
+        resultsDesc.addStyleName(StaticResourceBundle.INSTANCE.coreCss().resultsDescription());
 
         lookupPanelContainer.add(resultsDesc);
 
@@ -192,7 +193,7 @@ public class EmployeeLookupContent implements DialogContent
      */
     public String getCssName()
     {
-        return "employee-lookup-dialog";
+        return StaticResourceBundle.INSTANCE.coreCss().employeeLookupDialog();
     }
 
     /**

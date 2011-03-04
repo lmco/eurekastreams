@@ -24,6 +24,7 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.FlashWidget;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicCheckBoxFormElement;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -96,7 +97,7 @@ public class OptOutableVideoDialogContent implements DialogContent
         final HTML textContent = new HTML();
         FlowPanel breakdiv = new FlowPanel();
 
-        breakdiv.addStyleName("break");
+        breakdiv.addStyleName(StaticResourceBundle.INSTANCE.coreCss().breakClass());
         FlowPanel textDiv = new FlowPanel();
         textDiv.add(textContent);
         dontShowAgain = new BasicCheckBoxFormElement(null, ((Long) tutorialVideo.getEntityId()).toString(),
@@ -104,9 +105,9 @@ public class OptOutableVideoDialogContent implements DialogContent
 
         textContent.setHTML("<b>" + tutorialVideo.getInnerContentTitle() + "</b><br/>"
                 + tutorialVideo.getInnerContent());
-        textDiv.addStyleName("content_text");
+        textDiv.addStyleName(StaticResourceBundle.INSTANCE.coreCss().content_text());
 
-        body.addStyleName("optoutable-video-modal");
+        body.addStyleName(StaticResourceBundle.INSTANCE.coreCss().optoutableVideoModal());
         body.add(dontShowAgain);
         body.add(breakdiv);
         body.add(textDiv);
@@ -116,7 +117,7 @@ public class OptOutableVideoDialogContent implements DialogContent
             flashVideo = new FlashWidget();
             flashVideo.setFlashWidget(tutorialVideo.getVideoUrl(), ((Long) tutorialVideo.getEntityId()).toString(),
                     tutorialVideo.getVideoWidth(), tutorialVideo.getVideoHeight());
-            flashVideo.addStyleName("content_video");
+            flashVideo.addStyleName(StaticResourceBundle.INSTANCE.coreCss().content_video());
             body.add(flashVideo);
         }
 
@@ -171,7 +172,7 @@ public class OptOutableVideoDialogContent implements DialogContent
      */
     public String getCssName()
     {
-        return "videoDialog";
+        return StaticResourceBundle.INSTANCE.coreCss().videoDialog();
     }
 
     /**

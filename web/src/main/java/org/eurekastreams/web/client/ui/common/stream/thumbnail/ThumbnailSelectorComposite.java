@@ -18,6 +18,7 @@ package org.eurekastreams.web.client.ui.common.stream.thumbnail;
 import java.util.LinkedList;
 
 import org.eurekastreams.server.domain.stream.LinkInformation;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -80,16 +81,16 @@ public class ThumbnailSelectorComposite extends FlowPanel
      */
     public ThumbnailSelectorComposite()
     {
-        selectedThumbnail.addStyleName("thumbnail");
+        selectedThumbnail.addStyleName(StaticResourceBundle.INSTANCE.coreCss().thumbnail());
         this.add(selectedThumbContainer);
         selectedThumbContainer.add(selectedThumbnail);
 
-        pagingContainer.addStyleName("thumbnail-selector-controls");
+        pagingContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().thumbnailSelectorControls());
         pagingContainer.add(caption);
         pagingContainer.add(prevThumb);
-        prevThumb.addStyleName("previous-arrow");
+        prevThumb.addStyleName(StaticResourceBundle.INSTANCE.coreCss().previousArrow());
         pagingContainer.add(nextThumb);
-        nextThumb.addStyleName("next-arrow");
+        nextThumb.addStyleName(StaticResourceBundle.INSTANCE.coreCss().nextArrow());
         pagingContainer.add(new Label(" | "));
         pagingContainer.add(removeThumbnail);
 
@@ -182,20 +183,20 @@ public class ThumbnailSelectorComposite extends FlowPanel
     {
         if (selectedIndex > 0)
         {
-            prevThumb.removeStyleName("previous-arrow-disabled");
+            prevThumb.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().previousArrowDisabled());
         }
         else
         {
-            prevThumb.addStyleName("previous-arrow-disabled");
+            prevThumb.addStyleName(StaticResourceBundle.INSTANCE.coreCss().previousArrowDisabled());
         }
 
         if (selectedIndex < (thumbnailUrls.size() - 1))
         {
-            nextThumb.removeStyleName("next-arrow-disabled");
+            nextThumb.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().nextArrowDisabled());
         }
         else
         {
-            nextThumb.addStyleName("next-arrow-disabled");
+            nextThumb.addStyleName(StaticResourceBundle.INSTANCE.coreCss().nextArrowDisabled());
         }
 
         if (selectedIndex < thumbnailUrls.size())
@@ -221,12 +222,12 @@ public class ThumbnailSelectorComposite extends FlowPanel
 
         if (checked)
         {
-            pagingContainer.addStyleName("no-thumbnail");
+            pagingContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().noThumbnail());
             link.setSelectedThumbnail("");
         }
         else
         {
-            pagingContainer.removeStyleName("no-thumbnail");
+            pagingContainer.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().noThumbnail());
             updateImage();
         }
     }

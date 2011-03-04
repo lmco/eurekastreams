@@ -20,6 +20,7 @@ import java.io.Serializable;
 import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -160,12 +161,12 @@ public class UrlValidatorFormElement extends BasicTextBoxFormElement
         thisBuffered = this;
         originalValueFormElement = new ValueOnlyFormElement(inKey + "original", value);
 
-        this.addStyleName("url-validator");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().urlValidator());
 
         generateUrlCommand = inGenerateUrlCommand;
 
         Hyperlink closeUrlPanel = new Hyperlink("Delete", History.getToken());
-        closeUrlPanel.addStyleName("small-x");
+        closeUrlPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().smallX());
         closeUrlPanel.addClickHandler(new ClickHandler()
         {
 
@@ -179,7 +180,7 @@ public class UrlValidatorFormElement extends BasicTextBoxFormElement
             }
         });
 
-        urlPanel.addStyleName("url-panel");
+        urlPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().urlPanel());
         urlPanel.setVisible(false);
         urlLabel.setStyleName("url-label");
         urlPanel.add(closeUrlPanel);
@@ -187,23 +188,23 @@ public class UrlValidatorFormElement extends BasicTextBoxFormElement
         this.insert(urlPanel, 3);
 
         importBtn = new Hyperlink("import", History.getToken());
-        importBtn.addStyleName("import-button");
-        importBtn.addStyleName("form-upload-button");
-        importBtn.addStyleName("form-button");
+        importBtn.addStyleName(StaticResourceBundle.INSTANCE.coreCss().importButton());
+        importBtn.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formUploadButton());
+        importBtn.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formButton());
         this.insert(importBtn, 4);
         processingSpinny.setVisible(false);
-        processingSpinny.addStyleName("form-submit-spinny");
+        processingSpinny.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formSubmitSpinny());
         this.insert(processingSpinny, 5);
 
         errorBox = new FlowPanel();
-        errorBox.addStyleName("form-error-box");
+        errorBox.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formErrorBox());
         errorBox.setVisible(false);
 
         errorLabel.getElement().setId("url-validator-form-element-error-label");
-        errorLabel.addStyleName("error");
+        errorLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().error());
         errorBox.add(errorLabel);
 
-        errorDetail.addStyleName("error");
+        errorDetail.addStyleName(StaticResourceBundle.INSTANCE.coreCss().error());
         errorBox.add(errorDetail);
 
         this.insert(errorBox, 0);

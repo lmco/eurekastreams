@@ -17,9 +17,10 @@ package org.eurekastreams.web.client.ui.common.dialog.orglookup;
 
 import java.util.HashMap;
 
+import org.eurekastreams.server.domain.OrganizationTreeDTO;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.ui.common.ULPanel;
-import org.eurekastreams.server.domain.OrganizationTreeDTO;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -88,19 +89,19 @@ public class OrganizationTreeItemComposite extends FlowPanel
         parent = inParent;
         eventBus = inEventBus;
 
-        controller = new OrganizationTreeItemController(eventBus);
+        controller = new OrganizationTreeItemController(eventBus, StaticResourceBundle.INSTANCE.coreCss());
 
         treeIndex.put(orgTree, this);
 
         container.add(this);
-        container.addStyleName("org-tree");
+        container.addStyleName(StaticResourceBundle.INSTANCE.coreCss().orgTree());
 
         expand = new Label(" ");
-        expand.addStyleName("expandable");
+        expand.addStyleName(StaticResourceBundle.INSTANCE.coreCss().expandable());
         this.add(expand);
 
         Label displayName = new Label(orgTree.getDisplayName());
-        displayName.addStyleName("org-name");
+        displayName.addStyleName(StaticResourceBundle.INSTANCE.coreCss().orgName());
         this.add(displayName);
 
         children = new ULPanel();
@@ -120,7 +121,6 @@ public class OrganizationTreeItemComposite extends FlowPanel
         else
         {
             expand.setVisible(false);
-            this.addStyleName("no-children");
         }
 
         controller.wireUpSelectButton(displayName, treeItem, orgTree, parent);

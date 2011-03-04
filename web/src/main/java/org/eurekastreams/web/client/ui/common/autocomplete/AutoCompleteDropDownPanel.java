@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.web.client.ui.common.autocomplete;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
@@ -115,8 +117,8 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
     {
         elementType = inElementType;
 
-        this.addStyleName("yui-skin-sam");
-        this.addStyleName("auto-complete");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().yuiSkinSam());
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().autoComplete());
 
         // Need to do this to fix an especially nasty IE CSS bug (input margin inheritance)
         final SimplePanel textWrapper = new SimplePanel();
@@ -132,11 +134,11 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
             textWrapper.add(textArea);
         }
 
-        textWrapper.addStyleName("input-wrapper");
+        textWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inputWrapper());
         this.add(textWrapper);
 
         resultsPanel.getElement().setAttribute("id", "acra-" + rand);
-        clearPanel.setStyleName("clear");
+        clearPanel.setStyleName(StaticResourceBundle.INSTANCE.coreCss().clear());
 
         this.add(clearPanel);
         this.add(resultsPanel);
@@ -161,14 +163,14 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
         if (elementType == ElementType.TEXTBOX)
         {
             textBox.setText(text);
-            textBox.addStyleName("default");
+            textBox.addStyleName(StaticResourceBundle.INSTANCE.coreCss().defaultClass());
             textBox.addFocusListener(new FocusListener()
             {
 
                 public void onFocus(final Widget arg0)
                 {
                     textBox.setText("");
-                    textBox.removeStyleName("default");
+                    textBox.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().defaultClass());
                 }
 
                 public void onLostFocus(final Widget arg0)
@@ -179,14 +181,14 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
         else
         {
             textArea.setText(text);
-            textArea.addStyleName("default");
+            textArea.addStyleName(StaticResourceBundle.INSTANCE.coreCss().defaultClass());
             textArea.addFocusListener(new FocusListener()
             {
 
                 public void onFocus(final Widget arg0)
                 {
                     textArea.setText("");
-                    textArea.removeStyleName("default");
+                    textArea.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().defaultClass());
                 }
 
                 public void onLostFocus(final Widget arg0)

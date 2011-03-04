@@ -17,6 +17,8 @@ package org.eurekastreams.web.client.ui.common.form.elements;
 
 import java.io.Serializable;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -72,13 +74,13 @@ public class HideableRichTextAreaFormElement extends FlowPanel implements FormEl
 
         FlowPanel checkboxInstructionsPanel = new FlowPanel();
         checkboxInstructionsPanel.getElement().setInnerHTML(inCheckboxInstructions);
-        checkboxInstructionsPanel.addStyleName("form-instructions");
+        checkboxInstructionsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formInstructions());
 
         txtArea = new RichTextAreaFormElement("Message ", "richTextArea", inValue, "", required);
         hidingCheckBox.addClickListener(hidePanel);
-        hidingCheckBox.addStyleName("hiding-checkboxes");
-
-        txtArea.addStyleName("site-label hideable-richtextarea yui-skin-sam");
+        
+        txtArea.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hideableRichtextarea());
+        txtArea.addStyleName(StaticResourceBundle.INSTANCE.coreCss().yuiSkinSam());
 
         this.add(hidingCheckBox);
         this.add(txtArea);
@@ -172,7 +174,7 @@ public class HideableRichTextAreaFormElement extends FlowPanel implements FormEl
      */
     public void onError(final String errMessage)
     {
-        hidingCheckBox.getLabel().addStyleName("form-error");
+        hidingCheckBox.getLabel().addStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**
@@ -180,7 +182,7 @@ public class HideableRichTextAreaFormElement extends FlowPanel implements FormEl
      */
     public void onSuccess()
     {
-        hidingCheckBox.getLabel().removeStyleName("form-error");
+        hidingCheckBox.getLabel().removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formError());
     }
 
     /**

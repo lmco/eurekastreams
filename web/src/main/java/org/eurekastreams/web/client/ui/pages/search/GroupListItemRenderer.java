@@ -25,6 +25,7 @@ import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Background;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.pagedlist.ItemRenderer;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.requestaccess.RequestAccessPanel;
 
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -49,19 +50,21 @@ public class GroupListItemRenderer implements ItemRenderer<DomainGroupModelView>
     public FlowPanel render(final DomainGroupModelView group)
     {
         FlowPanel groupPanel = new FlowPanel();
-        groupPanel.addStyleName("connection-item list-item group");
+        groupPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().group());
+        groupPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().listItem());
+        groupPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItem());
 
         groupPanel.add(new AvatarLinkPanel(EntityType.GROUP, group.getShortName(), group.getEntityId(), group
                 .getAvatarId(), Size.Small, Background.White));
 
         FlowPanel groupAbout = new FlowPanel();
-        groupAbout.addStyleName("connection-item-info");
+        groupAbout.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemInfo());
 
         String url;
 
         url = Session.getInstance().generateUrl(new CreateUrlRequest(Page.GROUPS, group.getShortName()));
         Hyperlink groupNameLink = new Hyperlink(group.getName(), url);
-        groupNameLink.addStyleName("display-name");
+        groupNameLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().displayName());
         groupAbout.add(groupNameLink);
 
         url = Session.getInstance().generateUrl(
@@ -71,16 +74,17 @@ public class GroupListItemRenderer implements ItemRenderer<DomainGroupModelView>
         if (null != group.getDescription())
         {
             Label about = new Label(group.getDescription());
-            about.addStyleName("mission-statement");
+            about.addStyleName(StaticResourceBundle.INSTANCE.coreCss().missionStatement());
             groupAbout.add(about);
         }
 
         FlowPanel groupMetaData = new FlowPanel();
-        groupMetaData.addStyleName("connection-item-followers");
+        groupMetaData.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowers());
 
-        groupMetaData.add(new HTML("Followers: <span class='light'>" + group.getFollowersCount() + "</span>"));
+        groupMetaData.add(new HTML("Followers: <span class='" + StaticResourceBundle.INSTANCE.coreCss().light() + "'>"
+                + group.getFollowersCount() + "</span>"));
         insertActionSeparator(groupMetaData);
-        groupMetaData.add(new HTML("Added: <span class='light'>"
+        groupMetaData.add(new HTML("Added: <span class='" + StaticResourceBundle.INSTANCE.coreCss().light() + "'>"
                 + new DateFormatter().timeAgo(group.getDateAdded(), true) + "</span>"));
 
         groupAbout.add(groupMetaData);
@@ -89,7 +93,7 @@ public class GroupListItemRenderer implements ItemRenderer<DomainGroupModelView>
         {
             RequestAccessPanel reqAccess = new RequestAccessPanel(group.getShortName());
             groupAbout.add(reqAccess);
-            groupNameLink.addStyleName("private");
+            groupNameLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().privateClass());
         }
 
         groupPanel.add(groupAbout);
@@ -106,7 +110,7 @@ public class GroupListItemRenderer implements ItemRenderer<DomainGroupModelView>
     private void insertActionSeparator(final Panel panel)
     {
         Label sep = new InlineLabel("\u2219");
-        sep.addStyleName("action-link-separator");
+        sep.addStyleName(StaticResourceBundle.INSTANCE.coreCss().actionLinkSeparator());
         panel.add(sep);
     }
 }

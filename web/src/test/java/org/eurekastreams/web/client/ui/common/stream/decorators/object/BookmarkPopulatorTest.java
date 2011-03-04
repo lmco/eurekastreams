@@ -26,7 +26,7 @@ import org.eurekastreams.server.domain.stream.LinkInformation;
 
 /**
  * Test the bookmark populator.
- *
+ * 
  */
 public class BookmarkPopulatorTest
 {
@@ -49,15 +49,10 @@ public class BookmarkPopulatorTest
         activity.setBaseObjectProperties(new HashMap<String, String>());
         sut.populate(activity);
 
-        Assert.assertEquals(BaseObjectType.BOOKMARK, activity
-                .getBaseObjectType());
-        Assert.assertEquals("description", activity.getBaseObjectProperties()
-                .get("description"));
-        Assert.assertEquals("url", activity.getBaseObjectProperties().get(
-                "targetUrl"));
-        Assert.assertEquals("title", activity.getBaseObjectProperties().get(
-                "targetTitle"));
-        Assert.assertEquals("thumbnail", activity.getBaseObjectProperties()
-                .get("thumbnail"));
+        Assert.assertEquals(BaseObjectType.BOOKMARK, activity.getBaseObjectType());
+        Assert.assertEquals("description", activity.getBaseObjectProperties().get("description"));
+        Assert.assertEquals("url", activity.getBaseObjectProperties().get("targetUrl"));
+        Assert.assertEquals("title", activity.getBaseObjectProperties().get("targetTitle"));
+        Assert.assertEquals("thumbnail", activity.getBaseObjectProperties().get("thumbnail"));
     }
 }

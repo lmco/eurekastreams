@@ -37,6 +37,7 @@ import org.eurekastreams.web.client.model.GadgetModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.common.notifier.UndoDeleteNotification;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.start.layouts.DropZonePanel;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
@@ -197,29 +198,28 @@ public class GadgetPanel extends FlowPanel
 
         gadgetData = gadget;
         // Style the pieces of the title bar
-        title.setStylePrimaryName("gadget-zone-chrome-title-bar-title-button");
+        title.setStylePrimaryName(StaticResourceBundle.INSTANCE.coreCss().gadgetZoneChromeTitleBarTitleButton());
         titleLabel.getElement().setId(gadgetTitleLabelPrefix + gadgetIdModifier.toString() + "_title");
-        titleLabel.addStyleName("title-label");
         title.add(restoreButton);
         title.add(titleLabel);
-        restoreButton.addStyleName("gadget-restore");
-        closeButton.addStyleName("gadget-close");
-        maximizeButton.addStyleName("gadget-maximize");
-        spacerButton.addStyleName("gadget-button-spacer");
-        refreshButton.addStyleName("gadget-refresh");
-        minimizeButton.addStyleName("gadget-minimize");
-        editButton.addStyleName("gadget-edit");
-        helpButton.addStyleName("gadget-help");
+        restoreButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetRestore());
+        closeButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetClose());
+        maximizeButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetMaximize());
+        spacerButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetButtonSpacer());
+        refreshButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetRefresh());
+        minimizeButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetMinimize());
+        editButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetEdit());
+        helpButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetHelp());
 
-        closeButton.addStyleName("gadget-button");
-        maximizeButton.addStyleName("gadget-button");
-        spacerButton.addStyleName("gadget-button");
-        refreshButton.addStyleName("gadget-button");
-        minimizeButton.addStyleName("gadget-button");
-        editButton.addStyleName("gadget-button");
-        helpButton.addStyleName("gadget-button");
+        closeButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetButton());
+        maximizeButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetButton());
+        spacerButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetButton());
+        refreshButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetButton());
+        minimizeButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetButton());
+        editButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetButton());
+        helpButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gadgetButton());
         // Creates the title Bar
-        titleBar.setStylePrimaryName("gadget-zone-chrome-title-bar");
+        titleBar.setStylePrimaryName(StaticResourceBundle.INSTANCE.coreCss().gadgetZoneChromeTitleBar());
         titleBar.getElement().setId("gadgets-gadget-title-bar-" + gadgetIdModifier.toString());
         // Add buttons to title bar
         titleBar.add(minimizeButton);
@@ -232,7 +232,7 @@ public class GadgetPanel extends FlowPanel
         titleBar.add(refreshButton);
 
         titleBarContainer.add(titleBar);
-        this.setStylePrimaryName("gadget-zone");
+        this.setStylePrimaryName(StaticResourceBundle.INSTANCE.coreCss().gadgetZone());
         this.add(titleBarContainer);
         this.add(renderZone);
 
@@ -359,7 +359,7 @@ public class GadgetPanel extends FlowPanel
                         if (event.getResponse() == gadgetData.getId())
                         {
                             thisBuffered.setVisible(false);
-                            thisBuffered.addStyleName("hidden");
+                            thisBuffered.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
                             Session.getInstance()
                                     .getEventBus()
                                     .notifyObservers(
@@ -384,7 +384,7 @@ public class GadgetPanel extends FlowPanel
                         if (arg1.getResponse().getId() == gadgetData.getId())
                         {
                             thisBuffered.setVisible(true);
-                            thisBuffered.removeStyleName("hidden");
+                            thisBuffered.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
                         }
                     }
                 });
@@ -574,15 +574,15 @@ public class GadgetPanel extends FlowPanel
             break;
         case NORMAL:
             gadgetDragController.makeDraggable(this, titleBarContainer);
-            RootPanel.get().removeStyleName("maximized-gadget");
+            RootPanel.get().removeStyleName(StaticResourceBundle.INSTANCE.coreCss().maximizedGadget());
 
             if (null != parentDropZone)
             {
-                parentDropZone.removeStyleName("maximized-drop-zone");
+                parentDropZone.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().maximizedDropZone());
             }
 
             gadgetRenderer.restoreGadgetZone();
-            minimizeButton.removeStyleName("minimized");
+            minimizeButton.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().minimized());
             renderZone.setStyleName("");
             if (previousGadgetState == State.MAXIMIZED || previousGadgetState == State.HELP)
             {
@@ -599,11 +599,11 @@ public class GadgetPanel extends FlowPanel
             break;
         case MAXIMIZED:
             makeGadgetUndraggable();
-            RootPanel.get().addStyleName("maximized-gadget");
+            RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().maximizedGadget());
 
             if (null != parentDropZone)
             {
-                parentDropZone.addStyleName("maximized-drop-zone");
+                parentDropZone.addStyleName(StaticResourceBundle.INSTANCE.coreCss().maximizedDropZone());
             }
 
             gadgetRenderer.gadgetIFrameUrlRefreshing(gadgetIdModifier.toString());
@@ -612,7 +612,7 @@ public class GadgetPanel extends FlowPanel
             gadgetRenderer.refreshGadgetIFrameUrl(gadgetIdModifier.toString(), viewParams);
             gadgetRenderer.changeContainerView("home");
 
-            minimizeButton.removeStyleName("minimized");
+            minimizeButton.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().minimized());
             restoreButton.setVisible(true);
             maximizeButton.setVisible(false);
 
@@ -621,7 +621,7 @@ public class GadgetPanel extends FlowPanel
                     .notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest("canvas", "true", false)));
             break;
         case MINIMIZED:
-            minimizeButton.addStyleName("minimized");
+            minimizeButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().minimized());
             maximizeButton.setVisible(false);
             restoreButton.setVisible(false);
             spacerButton.setVisible(true);

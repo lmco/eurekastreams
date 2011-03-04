@@ -22,6 +22,7 @@ import org.eurekastreams.web.client.events.data.InsertedRequestForGroupMembershi
 import org.eurekastreams.web.client.model.GroupMembershipRequestModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -49,7 +50,7 @@ public class RequestAccessPanel extends FlowPanel
         final EventBus eventBus = Session.getInstance().getEventBus();
 
         // TODO make it look like the wireframe
-        this.addStyleName("request-group-access");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requestGroupAccess());
         this.add(new Label("private group: please contact the "));
         this.add(request);
         this.add(new Label(" to request access"));
@@ -65,7 +66,6 @@ public class RequestAccessPanel extends FlowPanel
                         // TODO disable button instead
                         clear();
                         Label sent = new Label("Request Sent");
-                        sent.addStyleName("response");
                         add(sent);
                     }
                 });

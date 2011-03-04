@@ -44,7 +44,6 @@ import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Organization panel.
@@ -95,7 +94,6 @@ public class CreateOrganizationPanel extends SettingsPanel
         this.clearContentPanel();
         this.setPreviousPage(new CreateUrlRequest(Page.ORGANIZATIONS, parentOrg.getShortName()), "< Return to Profile");
 
-        RootPanel.get().addStyleName("form-body");
         FormBuilder form = new FormBuilder("", OrganizationModel.getInstance(), Method.INSERT);
 
         if (!Session.getInstance().getCurrentPersonRoles().contains(Role.ORG_COORDINATOR))

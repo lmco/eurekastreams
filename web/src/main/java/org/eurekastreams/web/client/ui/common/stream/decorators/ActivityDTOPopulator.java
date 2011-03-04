@@ -22,8 +22,7 @@ import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 
 /**
- * base activity DTO populator. Takes in the verb and object strategies and
- * returns the Activity DTO.
+ * base activity DTO populator. Takes in the verb and object strategies and returns the Activity DTO.
  * 
  */
 public class ActivityDTOPopulator
@@ -43,10 +42,8 @@ public class ActivityDTOPopulator
      *            object populator.
      * @return the activity DTO.
      */
-    public ActivityDTO getActivityDTO(final String inContent,
-            final EntityType inDestinationType,
-            final String inDestinationUniqueId,
-            final ActivityDTOPopulatorStrategy verbPopulator,
+    public ActivityDTO getActivityDTO(final String inContent, final EntityType inDestinationType,
+            final String inDestinationUniqueId, final ActivityDTOPopulatorStrategy verbPopulator,
             final ActivityDTOPopulatorStrategy objectPopulator)
     {
         ActivityDTO activity = new ActivityDTO();

@@ -61,11 +61,12 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.Window;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -128,13 +129,8 @@ public class ApplicationEntryPoint implements EntryPoint
      */
     public void onModuleLoad()
     {
-        ResourceBundle.INSTANCE.coreCss().ensureInjected();
-        ResourceBundle.INSTANCE.yuiCss().ensureInjected();
-        
-        if (getUserAgent().contains("msie 7"))
-        {
-            ResourceBundle.INSTANCE.ieCss().ensureInjected();
-        }
+        ((CssResource) StaticResourceBundle.INSTANCE.coreCss()).ensureInjected();
+        StaticResourceBundle.INSTANCE.yuiCss().ensureInjected();
         
         session.setActionProcessor(processor);
         session.setEventBus(EventBus.getInstance());

@@ -65,6 +65,7 @@ import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
 import org.eurekastreams.web.client.ui.common.tabs.SimpleTab;
 import org.eurekastreams.web.client.ui.common.tabs.TabContainerPanel;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.profile.tabs.GroupProfileAboutTabPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.BreadcrumbPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.ChecklistProgressBarPanel;
@@ -168,8 +169,8 @@ public class GroupProfilePanel extends FlowPanel
      */
     public GroupProfilePanel(final String accountId)
     {
-        RootPanel.get().addStyleName("profile");
-        RootPanel.get().addStyleName("group");
+        RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().profile());
+        RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().group());
 
         profileSettingsLink = new Hyperlink("Configure", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.GROUP_SETTINGS, accountId)));
@@ -177,10 +178,10 @@ public class GroupProfilePanel extends FlowPanel
         ActionProcessor inProcessor = Session.getInstance().getActionProcessor();
 
         about = new GroupAboutPanel(accountId);
-        portalPageContainer.addStyleName("profile-page-container");
-        profileSettingsLink.addStyleName("configure-tab");
-        profileSettingsLink.addStyleName("hidden");
-        leftBarContainer.addStyleName("left-bar-container");
+        portalPageContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profilePageContainer());
+        profileSettingsLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().configureTab());
+        profileSettingsLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+        leftBarContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().leftBarContainer());
         breadCrumbPanel = new BreadcrumbPanel(inProcessor);
 
         this.add(breadCrumbPanel);
@@ -190,7 +191,7 @@ public class GroupProfilePanel extends FlowPanel
         this.add(portalPageContainer);
         this.add(clearPanel);
 
-        this.addStyleName("profile-page");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profilePage());
 
         EventBus.getInstance().addObserver(GotGroupModelViewInformationResponseEvent.class,
                 new Observer<GotGroupModelViewInformationResponseEvent>()
@@ -332,8 +333,8 @@ public class GroupProfilePanel extends FlowPanel
             {
                 if (event.getResponse())
                 {
-                    profileSettingsLink.removeStyleName("hidden");
-                    RootPanel.get().addStyleName("authenticated");
+                    profileSettingsLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+                    RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().authenticated());
                     setUpChecklist();
 
                     if (!group.isPublic())
@@ -430,7 +431,7 @@ public class GroupProfilePanel extends FlowPanel
      */
     private void setUpChecklist()
     {
-        checklistDivider.addStyleName("left-bar-child-divider");
+        checklistDivider.addStyleName(StaticResourceBundle.INSTANCE.coreCss().leftBarChildDivider());
         leftBarPanel.add(checklistDivider);
         leftBarPanel.add(checklistPanel);
 
@@ -456,11 +457,11 @@ public class GroupProfilePanel extends FlowPanel
     {
         // create panel
         Panel errorReport = new FlowPanel();
-        errorReport.addStyleName("warning-report");
+        errorReport.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warningReport());
 
         // center on page
         FlowPanel centeringPanel = new FlowPanel();
-        centeringPanel.addStyleName("warning-report-container");
+        centeringPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warningReportContainer());
         centeringPanel.add(errorReport);
         add(centeringPanel);
 
@@ -480,7 +481,7 @@ public class GroupProfilePanel extends FlowPanel
         FlowPanel msgPanel = new FlowPanel();
 
         Label msgHeader = new Label("Profile not found");
-        msgHeader.addStyleName("warning-message");
+        msgHeader.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warningMessage());
 
         Hyperlink directoryLink = new Hyperlink("profiles", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.ORGANIZATIONS, "")));
@@ -492,7 +493,7 @@ public class GroupProfilePanel extends FlowPanel
         msgText.add(msgText1);
         msgText.add(directoryLink);
         msgText.add(msgText2);
-        msgText.addStyleName("error-message-text");
+        msgText.addStyleName(StaticResourceBundle.INSTANCE.coreCss().errorMessageText());
 
         msgPanel.add(msgHeader);
         msgPanel.add(msgText);
@@ -509,16 +510,16 @@ public class GroupProfilePanel extends FlowPanel
     private void showRestrictedGroupMessage(final DomainGroupModelView inGroup)
     {
         Panel errorReport = addNewCenteredErrorBox();
-        errorReport.addStyleName("group-error-msg-panel");
-        errorReport.addStyleName("private-group");
+        errorReport.addStyleName(StaticResourceBundle.INSTANCE.coreCss().groupErrorMsgPanel());
+        errorReport.addStyleName(StaticResourceBundle.INSTANCE.coreCss().privateGroup());
 
         Label title = new Label("Private Group");
-        title.addStyleName("group-error-msg-panel-title");
+        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().groupErrorMsgPanelTitle());
         errorReport.add(title);
 
         Label message = new Label("To access this group you must request access from the group's coordinator.  "
                 + "The group coordinator will respond to your request via email.");
-        message.addStyleName("group-error-msg-panel-text");
+        message.addStyleName(StaticResourceBundle.INSTANCE.coreCss().groupErrorMsgPanelText());
         errorReport.add(message);
 
         final SpinnerLabelButton button = new SpinnerLabelButton(new ClickHandler()
@@ -528,7 +529,7 @@ public class GroupProfilePanel extends FlowPanel
                 GroupMembershipRequestModel.getInstance().insert(inGroup.getShortName());
             }
         });
-        button.addStyleName("request-access-button");
+        button.addStyleName(StaticResourceBundle.INSTANCE.coreCss().requestAccessButton());
         errorReport.add(button);
 
         final EventBus eventBus = Session.getInstance().getEventBus();
@@ -551,16 +552,16 @@ public class GroupProfilePanel extends FlowPanel
     private void showPendingGroupMessage()
     {
         Panel errorReport = addNewCenteredErrorBox();
-        errorReport.addStyleName("group-error-msg-panel");
-        errorReport.addStyleName("pending-group");
+        errorReport.addStyleName(StaticResourceBundle.INSTANCE.coreCss().groupErrorMsgPanel());
+        errorReport.addStyleName(StaticResourceBundle.INSTANCE.coreCss().pendingGroup());
 
         Label title = new Label("Pending Group");
-        title.addStyleName("group-error-msg-panel-title");
+        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().groupErrorMsgPanelTitle());
         errorReport.add(title);
 
         Label message = new Label(
                 "This group is awaiting an organization coordinator to approve it.  Please try again later.");
-        message.addStyleName("group-error-msg-panel-text");
+        message.addStyleName(StaticResourceBundle.INSTANCE.coreCss().groupErrorMsgPanelText());
         errorReport.add(message);
     }
 
@@ -596,7 +597,7 @@ public class GroupProfilePanel extends FlowPanel
                     }
                 });
 
-        // request the non-active "filters" to get the counts
+        // request the non-active StaticResourceBundle.INSTANCE.coreCss().filters() to get the counts
         // Note: if there was more than one list on this tab with counts, we would need to trigger all of the lists to
         // be loaded so that we could get their counts. per example here:
         // PendingGroupsModel.getInstance().fetch(new GetPendingGroupsRequest(org.getShortName(), 0, 1), false);
@@ -611,8 +612,8 @@ public class GroupProfilePanel extends FlowPanel
 
         }, DeletedRequestForGroupMembershipResponseEvent.class, InsertedGroupMemberResponseEvent.class);
 
-        // prepare the "filters"
-        // membership request "filter"
+        // prepare the StaticResourceBundle.INSTANCE.coreCss().filters()
+        // membership request StaticResourceBundle.INSTANCE.coreCss().filter()
         adminTabContent.addSet(membershipRequestsFilterName, GroupMembershipRequestModel.getInstance(),
                 new PersonRequestingGroupMembershipRenderer(group.getId(), group.getShortName()),
                 new GetRequestForGroupMembershipRequest(group.getId(), 0, 0));

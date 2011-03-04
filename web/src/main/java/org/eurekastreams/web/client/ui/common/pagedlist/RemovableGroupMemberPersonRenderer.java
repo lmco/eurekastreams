@@ -23,6 +23,7 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.GroupMembersModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.PersonPanel;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -58,12 +59,11 @@ public class RemovableGroupMemberPersonRenderer implements ItemRenderer<PersonMo
         // don't allow user to delete themselves
         if (Session.getInstance().getCurrentPerson().getId() != item.getEntityId())
         {
-            panel.addStyleName("removable-person");
+            panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().removablePerson());
 
             Label deleteLink = new Label("Delete");
-            deleteLink.addStyleName("action-link");
-            deleteLink.addStyleName("linked-label");
-            deleteLink.addStyleName("delete");
+            deleteLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
+            deleteLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().delete());
             panel.add(deleteLink);
 
             deleteLink.addClickHandler(new ClickHandler()

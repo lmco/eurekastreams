@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.web.client.ui.common.notifier;
 
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
+
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -39,7 +41,7 @@ public class UndoDeleteNotification extends FlowPanel
     public UndoDeleteNotification(final String widgetName, final ClickHandler clickHandler)
     {
         Anchor undoButton = new Anchor("undo delete");
-        undoButton.addStyleName("undo-notification");
+        undoButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().undoNotification());
 
         this.clear();
         this.add(new HTML("<div>" + widgetName + " has been removed&nbsp</div>"));

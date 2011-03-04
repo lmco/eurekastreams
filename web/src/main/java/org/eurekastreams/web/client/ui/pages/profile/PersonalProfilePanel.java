@@ -55,6 +55,7 @@ import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
 import org.eurekastreams.web.client.ui.common.tabs.SimpleTab;
 import org.eurekastreams.web.client.ui.common.tabs.TabContainerPanel;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.profile.tabs.PersonalProfileAboutTabPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.AboutPanel;
 import org.eurekastreams.web.client.ui.pages.profile.widgets.BreadcrumbPanel;
@@ -158,14 +159,14 @@ public class PersonalProfilePanel extends FlowPanel
     {
         profileSettingsLink = new Hyperlink("Configure", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.PERSONAL_SETTINGS, accountId)));
-        RootPanel.get().addStyleName("profile");
+        RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().profile());
 
         ActionProcessor inProcessor = Session.getInstance().getActionProcessor();
         about = new AboutPanel(accountId);
-        portalPageContainer.addStyleName("profile-page-container");
-        profileSettingsLink.addStyleName("configure-tab");
-        profileSettingsLink.addStyleName("hidden");
-        leftBarContainer.addStyleName("left-bar-container");
+        portalPageContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profilePageContainer());
+        profileSettingsLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().configureTab());
+        profileSettingsLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+        leftBarContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().leftBarContainer());
         breadCrumbPanel = new BreadcrumbPanel(inProcessor);
 
         this.add(breadCrumbPanel);
@@ -175,7 +176,7 @@ public class PersonalProfilePanel extends FlowPanel
         this.add(portalPageContainer);
         this.add(clearPanel);
 
-        this.addStyleName("profile-page");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profilePage());
 
         EventBus.getInstance().addObserver(GotPersonalInformationResponseEvent.class,
                 new Observer<GotPersonalInformationResponseEvent>()
@@ -222,8 +223,8 @@ public class PersonalProfilePanel extends FlowPanel
 
         if (personModelView.getAccountId().equals(Session.getInstance().getCurrentPerson().getAccountId()))
         {
-            profileSettingsLink.removeStyleName("hidden");
-            RootPanel.get().addStyleName("authenticated");
+            profileSettingsLink.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+            RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().authenticated());
         }
 
         breadCrumbPanel.setPerson(personModelView);
@@ -325,23 +326,23 @@ public class PersonalProfilePanel extends FlowPanel
     private Panel generateLockedUserMessage()
     {
         Panel errorReport = new FlowPanel();
-        errorReport.addStyleName("error-report");
+        errorReport.addStyleName(StaticResourceBundle.INSTANCE.coreCss().errorReport());
 
         FlowPanel centeringPanel = new FlowPanel();
-        centeringPanel.addStyleName("error-report-container");
+        centeringPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().errorReportContainer());
         centeringPanel.add(errorReport);
         add(centeringPanel);
 
         FlowPanel msgPanel = new FlowPanel();
 
         Label msgHeader = new Label("Employee no longer has access to Eureka Streams");
-        msgHeader.addStyleName("error-message");
+        msgHeader.addStyleName(StaticResourceBundle.INSTANCE.coreCss().errorMessage());
 
         Label msgText = new Label("This employee no longer has access to Eureka Streams. This could be due to a change"
                 + " of assignment within the company or due to leaving the company.");
         FlowPanel text = new FlowPanel();
         text.add(msgText);
-        text.addStyleName("error-message-text");
+        text.addStyleName(StaticResourceBundle.INSTANCE.coreCss().errorMessageText());
 
         msgPanel.add(msgHeader);
         msgPanel.add(msgText);
@@ -363,7 +364,7 @@ public class PersonalProfilePanel extends FlowPanel
         FlowPanel msgPanel = new FlowPanel();
 
         Label msgHeader = new Label("Profile not found");
-        msgHeader.addStyleName("warning-message");
+        msgHeader.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warningMessage());
 
         Hyperlink directoryLink = new Hyperlink("profiles", Session.getInstance().generateUrl(
                 new CreateUrlRequest(Page.ORGANIZATIONS, "")));
@@ -375,7 +376,7 @@ public class PersonalProfilePanel extends FlowPanel
         msgText.add(msgText1);
         msgText.add(directoryLink);
         msgText.add(msgText2);
-        msgText.addStyleName("error-message-text");
+        msgText.addStyleName(StaticResourceBundle.INSTANCE.coreCss().errorMessageText());
         msgPanel.add(msgHeader);
         msgPanel.add(msgText);
         errorReport.add(msgPanel);
@@ -390,11 +391,11 @@ public class PersonalProfilePanel extends FlowPanel
     {
         // create panel
         Panel errorReport = new FlowPanel();
-        errorReport.addStyleName("warning-report");
+        errorReport.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warningReport());
 
         // center on page
         FlowPanel centeringPanel = new FlowPanel();
-        centeringPanel.addStyleName("warning-report-container");
+        centeringPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().warningReportContainer());
         centeringPanel.add(errorReport);
         add(centeringPanel);
 
@@ -406,7 +407,7 @@ public class PersonalProfilePanel extends FlowPanel
      */
     private void setUpChecklist()
     {
-        checklistDivider.addStyleName("left-bar-child-divider");
+        checklistDivider.addStyleName(StaticResourceBundle.INSTANCE.coreCss().leftBarChildDivider());
         leftBarPanel.add(checklistDivider);
         leftBarPanel.add(checklistPanel);
 

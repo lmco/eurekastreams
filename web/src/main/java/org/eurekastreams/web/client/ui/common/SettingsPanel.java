@@ -17,6 +17,7 @@ package org.eurekastreams.web.client.ui.common;
 
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -59,11 +60,11 @@ public class SettingsPanel extends FlowPanel
         contentPanel = inContentPanel;
         setPageTitle(inPageTitle);
 
-        RootPanel.get().addStyleName("settings-panel");
-        contentPanel.setStyleName("settings-content");
+        RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().settingsPanel());
+        contentPanel.setStyleName(StaticResourceBundle.INSTANCE.coreCss().settingsContent());
 
         FlowPanel title = new FlowPanel();
-        title.addStyleName("settings-title-bar");
+        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().settingsTitleBar());
         close = new Hyperlink();
         title.add(close);
         pageTitleLabel.setText(inPageTitle);
@@ -96,7 +97,7 @@ public class SettingsPanel extends FlowPanel
         contentPanel.clear();
 
         FlowPanel title = new FlowPanel();
-        title.addStyleName("settings-title-bar");
+        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().settingsTitleBar());
         title.add(close);
         title.add(pageTitleLabel);
         contentPanel.add(title);

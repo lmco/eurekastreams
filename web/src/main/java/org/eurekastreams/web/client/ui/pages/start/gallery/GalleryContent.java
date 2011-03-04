@@ -66,6 +66,7 @@ import org.eurekastreams.web.client.ui.common.pagedlist.ThemeRenderer;
 import org.eurekastreams.web.client.ui.common.tabs.SimpleTab;
 import org.eurekastreams.web.client.ui.common.tabs.TabContainerPanel;
 import org.eurekastreams.web.client.ui.pages.master.MasterComposite;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -74,7 +75,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * The content page for the gallery.
- *
+ * 
  */
 public class GalleryContent extends SettingsPanel
 {
@@ -143,19 +144,19 @@ public class GalleryContent extends SettingsPanel
 
     /**
      * Default constructor.
-     *
+     * 
      */
     public GalleryContent()
     {
         super(panel, "Configure");
 
         this.clearContentPanel();
-        RootPanel.get().addStyleName("gallery");
-        panel.addStyleName("gallery-master");
+        RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().gallery());
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().galleryMaster());
 
-        addGadget.addStyleName("add-gadget");
+        addGadget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addGadget());
         addGadget.setVisible(false);
-        addTheme.addStyleName("add-theme");
+        addTheme.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addTheme());
         addTheme.setVisible(false);
 
         panel.add(galleryPortalContainer);
@@ -414,7 +415,7 @@ public class GalleryContent extends SettingsPanel
 
     /**
      * What happens after we get the start tabs (for the theme).
-     *
+     * 
      * @param event
      *            the event.
      */
@@ -485,7 +486,7 @@ public class GalleryContent extends SettingsPanel
 
     /**
      * Render the create or edit screen for a theme.
-     *
+     * 
      * @param categories
      *            the params from the history token.
      */
@@ -545,7 +546,7 @@ public class GalleryContent extends SettingsPanel
 
     /**
      * Render the create or edit screen for a gadget.
-     *
+     * 
      * @param categories
      *            the params from the history token.
      */
@@ -596,8 +597,8 @@ public class GalleryContent extends SettingsPanel
 
         form.addFormDivider();
 
-        form.addFormElement(new BasicTextBoxFormElement("App XML:", "url", defaultUrl,
-                "Enter the link to the xml file", true));
+        form.addFormElement(new BasicTextBoxFormElement("App XML:", "url",
+                defaultUrl, "Enter the link to the xml file", true));
 
         form.addFormDivider();
 

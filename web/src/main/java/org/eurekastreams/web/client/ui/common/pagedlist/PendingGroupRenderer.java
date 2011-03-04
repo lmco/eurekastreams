@@ -28,6 +28,7 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.PendingGroupsModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -52,34 +53,37 @@ public class PendingGroupRenderer implements ItemRenderer<DomainGroupModelView>
     public Panel render(final DomainGroupModelView group)
     {
         final FlowPanel groupPanel = new FlowPanel();
-        groupPanel.addStyleName("group directory-item list-item pending-group");
+        groupPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().group());
+        groupPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().directoryItem());
+        groupPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().listItem());
+        groupPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().pendingGroup());
 
         // -- buttons panel (left side) --
 
         final Panel buttonsPanel = new FlowPanel();
-        buttonsPanel.addStyleName("pending-group-buttons");
+        buttonsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().pendingGroupButtons());
         groupPanel.add(buttonsPanel);
 
         final Label confirmButton = new Label("Confirm");
-        confirmButton.addStyleName("approve-button");
+        confirmButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().approveButton());
         buttonsPanel.add(confirmButton);
 
         final Label denyButton = new Label("Deny");
-        denyButton.addStyleName("deny-button");
+        denyButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().denyButton());
         buttonsPanel.add(denyButton);
 
         // -- group info (right side) --
 
         FlowPanel groupAbout = new FlowPanel();
-        groupAbout.addStyleName("description");
+        groupAbout.addStyleName(StaticResourceBundle.INSTANCE.coreCss().description());
         groupPanel.add(groupAbout);
 
         Label groupName = new Label(group.getName());
-        groupName.addStyleName("display-name");
+        groupName.addStyleName(StaticResourceBundle.INSTANCE.coreCss().displayName());
         groupAbout.add(groupName);
 
         FlowPanel groupMetaData = new FlowPanel();
-        groupMetaData.addStyleName("connection-item-followers");
+        groupMetaData.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowers());
         groupMetaData.add(new InlineLabel(new DateFormatter().timeAgo(group.getDateAdded(), true)));
         insertActionSeparator(groupMetaData);
         groupMetaData.add(new InlineLabel("By: "));
@@ -90,7 +94,7 @@ public class PendingGroupRenderer implements ItemRenderer<DomainGroupModelView>
         insertActionSeparator(groupMetaData);
         groupMetaData.add(new InlineLabel("Privacy Setting: "));
         Label label = new InlineLabel(group.isPublic() ? "Public" : "Private");
-        label.addStyleName("connection-item-followers-data");
+        label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowersData());
         groupMetaData.add(label);
 
         groupAbout.add(groupMetaData);
@@ -101,7 +105,7 @@ public class PendingGroupRenderer implements ItemRenderer<DomainGroupModelView>
         {
             public void onClick(final ClickEvent event)
             {
-                buttonsPanel.addStyleName("wait-active");
+                buttonsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().waitActive());
 
                 PendingGroupsModel.getInstance().update(new ReviewPendingGroupRequest(group.getShortName(), true));
             }
@@ -113,7 +117,7 @@ public class PendingGroupRenderer implements ItemRenderer<DomainGroupModelView>
             {
                 if (new WidgetJSNIFacadeImpl().confirm("Are you sure you want to deny creation of this group?"))
                 {
-                    buttonsPanel.addStyleName("wait-active");
+                    buttonsPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().waitActive());
 
                     PendingGroupsModel.getInstance()
                             .update(new ReviewPendingGroupRequest(group.getShortName(), false));
@@ -151,7 +155,7 @@ public class PendingGroupRenderer implements ItemRenderer<DomainGroupModelView>
     private void insertActionSeparator(final Panel panel)
     {
         Label sep = new InlineLabel(BULLET);
-        sep.addStyleName("action-link-separator");
+        sep.addStyleName(StaticResourceBundle.INSTANCE.coreCss().actionLinkSeparator());
         panel.add(sep);
     }
 }

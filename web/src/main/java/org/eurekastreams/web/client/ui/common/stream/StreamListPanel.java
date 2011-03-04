@@ -24,6 +24,7 @@ import org.eurekastreams.web.client.events.StreamRequestMoreEvent;
 import org.eurekastreams.web.client.events.data.DeletedActivityResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.pagedlist.ItemRenderer;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -89,17 +90,18 @@ public class StreamListPanel extends FlowPanel
         itemPanel = new FlowPanel();
         moreButton = new Label("View More");
 
-        errorLabel.addStyleName("form-error-box");
+        errorLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formErrorBox());
         errorLabel.setVisible(false);
 
         noResults = new Label("No activity has been posted.");
-        noResults.addStyleName("no-results");
+        noResults.addStyleName(StaticResourceBundle.INSTANCE.coreCss().noResults());
         noResults.setVisible(false);
 
-        moreButton.addStyleName("more-button linked-label");
+        moreButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().moreButton());
+        moreButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
         moreButton.setVisible(false);
 
-        waitSpinner.addStyleName("wait-spinner");
+        waitSpinner.addStyleName(StaticResourceBundle.INSTANCE.coreCss().waitSpinner());
 
         this.add(itemPanel);
         this.add(errorLabel);

@@ -21,6 +21,7 @@ import org.eurekastreams.web.client.events.data.GotSystemSettingsResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.tos.TermsOfServiceDialogContent;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -55,7 +56,7 @@ public class FooterComposite extends Composite
         FlowPanel navPanel = new FlowPanel();
 
         Anchor termsOfService = new Anchor("Terms of Service");
-        termsOfService.addStyleName("terms-of-service-link");
+        termsOfService.addStyleName(StaticResourceBundle.INSTANCE.coreCss().termsOfServiceLink());
 
         Session.getInstance().getEventBus().addObserver(GotSystemSettingsResponseEvent.class,
                 new Observer<GotSystemSettingsResponseEvent>()
@@ -82,15 +83,15 @@ public class FooterComposite extends Composite
         navPanel.add(termsOfService);
 
         Anchor poweredBy = new Anchor("", "http://www.eurekastreams.org", "_blank");
-        poweredBy.addStyleName("powered-by-eureka");
+        poweredBy.addStyleName(StaticResourceBundle.INSTANCE.coreCss().poweredByEureka());
         navPanel.add(poweredBy);
 
         panel.add(navPanel);
         panel.add(siteLabelingContainer);
 
-        navPanel.addStyleName("footer-nav");
-        siteLabelingContainer.addStyleName("site-labeling");
-        panel.addStyleName("footer-bar");
+        navPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().footerNav());
+        siteLabelingContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().siteLabeling());
+        panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().footerBar());
         initWidget(panel);
     }
 

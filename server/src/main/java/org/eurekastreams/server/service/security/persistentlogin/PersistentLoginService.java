@@ -15,6 +15,15 @@
  */
 package org.eurekastreams.server.service.security.persistentlogin;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.eurekastreams.server.domain.PersistentLogin;
+import org.eurekastreams.server.service.security.userdetails.ExtendedUserDetails;
 import org.springframework.security.Authentication;
 import org.springframework.security.ui.rememberme.InvalidCookieException;
 import org.springframework.security.ui.rememberme.TokenBasedRememberMeServices;
@@ -22,14 +31,6 @@ import org.springframework.security.userdetails.UserDetails;
 import org.springframework.security.userdetails.UserDetailsService;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-import org.eurekastreams.server.domain.PersistentLogin;
-import org.eurekastreams.server.service.security.userdetails.ExtendedUserDetails;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.UUID;
 
 /**
  * Persistent login service based on Spring's TokenBasedRememberMeServcies

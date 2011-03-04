@@ -17,13 +17,14 @@ package org.eurekastreams.web.client.ui.pages.profile.settings.stream;
 
 import org.eurekastreams.server.domain.gadgetspec.GadgetMetaDataDTO;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder.Method;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 
 /**
  * The display for the add and edit feed subscriptions panel.
- *
+ * 
  */
 public class EditFeedSubscriptionPanel extends FlowPanel
 {
@@ -35,36 +36,33 @@ public class EditFeedSubscriptionPanel extends FlowPanel
 
     /**
      * Default Constructor.
-     *
+     * 
      * @param inMetaData
-     *             The metadata of the selected plugin
+     *            The metadata of the selected plugin
      * @param mode
-     *             The mode of the panel
+     *            The mode of the panel
      */
     public EditFeedSubscriptionPanel(final GadgetMetaDataDTO inMetaData, final Method mode)
     {
         metaData = inMetaData;
 
-        this.addStyleName("stream-plugins-feed-subscriptions-container");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamPluginsFeedSubscriptionsContainer());
 
         Label feedSubscriptionsHeader = new Label();
 
         if (mode == Method.INSERT)
         {
             feedSubscriptionsHeader.setText("Add a New Plugin");
-            this.addStyleName("stream-plugins-feed-subscriptions-container-add");
         }
         else if (mode == Method.UPDATE)
         {
             feedSubscriptionsHeader.setText("Edit Plugin");
-            this.addStyleName("stream-plugins-feed-subscriptions-container-edit");
+            this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamPluginsFeedSubscriptionsContainerEdit());
         }
 
-        feedSubscriptionsHeader.addStyleName("header");
+        feedSubscriptionsHeader.addStyleName(StaticResourceBundle.INSTANCE.coreCss().header());
         this.add(feedSubscriptionsHeader);
 
-
     }
-
 
 }

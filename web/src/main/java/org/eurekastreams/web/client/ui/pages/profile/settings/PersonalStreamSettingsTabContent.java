@@ -19,6 +19,7 @@ package org.eurekastreams.web.client.ui.pages.profile.settings;
 import org.eurekastreams.server.domain.gadgetspec.GadgetMetaDataDTO;
 import org.eurekastreams.server.domain.stream.plugins.FeedSubscriber;
 import org.eurekastreams.web.client.model.PersonStreamPluginSubscriptionModel;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.profile.settings.stream.StreamPluginsSettingsTabContent;
 
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -45,7 +46,7 @@ public class PersonalStreamSettingsTabContent extends FlowPanel
     public PersonalStreamSettingsTabContent()
     {
         this.add(panel);
-        this.addStyleName("stream-settings-tab-content");
+        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamSettingsTabContent());
     	content = new StreamPluginsSettingsTabContent(PersonStreamPluginSubscriptionModel.getInstance());
 
         final FlowPanel pluginsContainer = new FlowPanel();

@@ -17,9 +17,9 @@ package org.eurekastreams.server.service.actions.strategies.galleryitem;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.domain.GalleryItem;
 import org.eurekastreams.server.persistence.GalleryItemMapper;
-import org.eurekastreams.commons.exceptions.ValidationException;
 
 /**
  * Updates a gallery item.
