@@ -65,6 +65,11 @@ public class ActivityContentClassBridgeTest
     private final String content = "sldkjf lkjsdf sldkjf sldkfj sdlfkj sdfjkl";
 
     /**
+     * component added by the constant keyword.
+     */
+    private final String constantKeywordComponent = " " + Activity.CONSTANT_KEYWORD_IN_EVERY_ACTIVITY_CONTENT;
+
+    /**
      * Title.
      */
     private final String targetTitle = "38skjsdlkj 2likjsd";
@@ -112,7 +117,7 @@ public class ActivityContentClassBridgeTest
             }
         });
 
-        assertEquals(content, sut.objectToString(activity));
+        assertEquals(content + constantKeywordComponent, sut.objectToString(activity));
     }
 
     /**
@@ -135,7 +140,7 @@ public class ActivityContentClassBridgeTest
             }
         });
 
-        assertEquals("", sut.objectToString(activity));
+        assertEquals(constantKeywordComponent, sut.objectToString(activity));
     }
 
     /**
@@ -164,7 +169,8 @@ public class ActivityContentClassBridgeTest
             }
         });
 
-        assertEquals(content + " " + targetTitle + " " + description, sut.objectToString(activity).trim());
+        assertEquals(content + " " + targetTitle + " " + description + constantKeywordComponent, sut.objectToString(
+                activity).trim());
     }
 
     /**
@@ -192,7 +198,7 @@ public class ActivityContentClassBridgeTest
             }
         });
 
-        assertEquals(content + " " + description, sut.objectToString(activity).trim());
+        assertEquals(content + " " + description + constantKeywordComponent, sut.objectToString(activity).trim());
     }
 
     /**
@@ -220,7 +226,7 @@ public class ActivityContentClassBridgeTest
             }
         });
 
-        assertEquals(content + " " + targetTitle, sut.objectToString(activity).trim());
+        assertEquals(content + " " + targetTitle + constantKeywordComponent, sut.objectToString(activity).trim());
     }
 
     /**
@@ -248,7 +254,7 @@ public class ActivityContentClassBridgeTest
             }
         });
 
-        assertEquals(content + " " + description, sut.objectToString(activity).trim());
+        assertEquals(content + " " + description + constantKeywordComponent, sut.objectToString(activity).trim());
     }
 
     /**
@@ -275,7 +281,7 @@ public class ActivityContentClassBridgeTest
             }
         });
 
-        assertEquals(content, sut.objectToString(activity).trim());
+        assertEquals(content + constantKeywordComponent, sut.objectToString(activity).trim());
     }
 
     /**
@@ -302,7 +308,7 @@ public class ActivityContentClassBridgeTest
             }
         });
 
-        assertEquals(description, sut.objectToString(activity).trim());
+        assertEquals(description + constantKeywordComponent, sut.objectToString(activity).trim());
     }
 
     /**
@@ -329,7 +335,7 @@ public class ActivityContentClassBridgeTest
             }
         });
 
-        assertEquals(targetTitle, sut.objectToString(activity).trim());
+        assertEquals(targetTitle + constantKeywordComponent, sut.objectToString(activity).trim());
     }
 
     /**
@@ -352,7 +358,7 @@ public class ActivityContentClassBridgeTest
             }
         });
 
-        assertEquals("", sut.objectToString(activity));
+        assertEquals(constantKeywordComponent, sut.objectToString(activity));
     }
 
     /**
@@ -389,7 +395,7 @@ public class ActivityContentClassBridgeTest
             }
         });
 
-        assertEquals(description + " " + comment1.getBody() + " " + comment2.getBody(), sut.objectToString(activity)
-                .trim());
+        assertEquals(description + " " + comment1.getBody() + " " + comment2.getBody() + constantKeywordComponent, sut
+                .objectToString(activity).trim());
     }
 }

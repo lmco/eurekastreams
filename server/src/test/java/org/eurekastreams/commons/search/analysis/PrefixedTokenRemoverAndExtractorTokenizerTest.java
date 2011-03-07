@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
-import org.jmock.Expectations;
 import org.jmock.Sequence;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -49,7 +48,7 @@ public class PrefixedTokenRemoverAndExtractorTokenizerTest
     /**
      * Token stream.
      */
-    private final TokenStream tokenStream = context.mock(TokenStream.class);
+    private TokenStream tokenStream;
 
     /**
      * Reusable token.
@@ -58,7 +57,7 @@ public class PrefixedTokenRemoverAndExtractorTokenizerTest
 
     /**
      * Test next() with a token that has a prefix and the prefix in the middle of the word.
-     *
+     * 
      * @throws IOException
      *             on error
      */
@@ -66,22 +65,13 @@ public class PrefixedTokenRemoverAndExtractorTokenizerTest
     public void testNextWithPrefixAndMidReplacement() throws IOException
     {
         List<String> extractedKeywords = new ArrayList<String>();
-        final Sequence sequence = context.sequence("sequence-name");
         final Token token1 = new Token("FOObar123fooFOOfoo", 0, "FOObar123fooFOOfoo".length());
         final Token token2 = new Token("hi", 0, "hi".length());
 
-        context.checking(new Expectations()
-        {
-            {
-                one(tokenStream).next(reusableToken);
-                will(returnValue(token1));
-                inSequence(sequence);
-
-                one(tokenStream).next(reusableToken);
-                will(returnValue(token2));
-                inSequence(sequence);
-            }
-        });
+        List<Token> tokens = new ArrayList<Token>();
+        tokens.add(token1);
+        tokens.add(token2);
+        tokenStream = new TokenStreamTestHelper(tokens);
 
         PrefixedTokenRemoverAndExtractorTokenizer sut = new PrefixedTokenRemoverAndExtractorTokenizer(tokenStream,
                 "FOO", "#", extractedKeywords);
@@ -94,13 +84,11 @@ public class PrefixedTokenRemoverAndExtractorTokenizerTest
 
         assertEquals(1, extractedKeywords.size());
         assertEquals("#bar123foo#foo", extractedKeywords.get(0));
-
-        context.assertIsSatisfied();
     }
 
     /**
      * Test next() with content that has a prefix but no replacement.
-     *
+     * 
      * @throws IOException
      *             on error
      */
@@ -108,22 +96,13 @@ public class PrefixedTokenRemoverAndExtractorTokenizerTest
     public void testNextWithPrefixButNoReplacement() throws IOException
     {
         List<String> extractedKeywords = new ArrayList<String>();
-        final Sequence sequence = context.sequence("sequence-name");
         final Token token1 = new Token("FOObar123fooFOfoo", 0, "FOObar123fooFOfoo".length());
         final Token token2 = new Token("hi", 0, "hi".length());
 
-        context.checking(new Expectations()
-        {
-            {
-                one(tokenStream).next(reusableToken);
-                will(returnValue(token1));
-                inSequence(sequence);
-
-                one(tokenStream).next(reusableToken);
-                will(returnValue(token2));
-                inSequence(sequence);
-            }
-        });
+        List<Token> tokens = new ArrayList<Token>();
+        tokens.add(token1);
+        tokens.add(token2);
+        tokenStream = new TokenStreamTestHelper(tokens);
 
         PrefixedTokenRemoverAndExtractorTokenizer sut = new PrefixedTokenRemoverAndExtractorTokenizer(tokenStream,
                 "FOO", "#", extractedKeywords);
@@ -136,13 +115,11 @@ public class PrefixedTokenRemoverAndExtractorTokenizerTest
 
         assertEquals(1, extractedKeywords.size());
         assertEquals("#bar123fooFOfoo", extractedKeywords.get(0));
-
-        context.assertIsSatisfied();
     }
 
     /**
      * Test next() with content that doesn't have any prefix.
-     *
+     * 
      * @throws IOException
      *             on error
      */
@@ -154,7 +131,7 @@ public class PrefixedTokenRemoverAndExtractorTokenizerTest
 
     /**
      * Test next() with content that doesn't have any prefix, but does have a replacement.
-     *
+     * 
      * @throws IOException
      *             on error
      */
@@ -166,7 +143,7 @@ public class PrefixedTokenRemoverAndExtractorTokenizerTest
 
     /**
      * Perform a test with no token left.
-     *
+     * 
      * @throws IOException
      *             on error
      */
@@ -174,24 +151,17 @@ public class PrefixedTokenRemoverAndExtractorTokenizerTest
     public void testNextWithNoToken() throws IOException
     {
         List<String> extractedKeywords = new ArrayList<String>();
-        context.checking(new Expectations()
-        {
-            {
-                one(tokenStream).next(reusableToken);
-                will(returnValue(null));
-            }
-        });
+        List<Token> tokens = new ArrayList<Token>();
+        tokenStream = new TokenStreamTestHelper(tokens);
 
         PrefixedTokenRemoverAndExtractorTokenizer sut = new PrefixedTokenRemoverAndExtractorTokenizer(tokenStream,
                 "FOO", "#", extractedKeywords);
         assertNull(null, sut.next(reusableToken));
-
-        context.assertIsSatisfied();
     }
 
     /**
      * Perform a test with an empty token, followed by a valid token.
-     *
+     * 
      * @throws IOException
      *             on error
      */
@@ -199,22 +169,13 @@ public class PrefixedTokenRemoverAndExtractorTokenizerTest
     public void testNextWithEmptyThenValidToken() throws IOException
     {
         List<String> extractedKeywords = new ArrayList<String>();
-        final Sequence sequence = context.sequence("sequence-name");
         final Token token1 = new Token("", 0, 0);
         final Token token2 = new Token("ABCD", 0, "ABCD".length());
 
-        context.checking(new Expectations()
-        {
-            {
-                one(tokenStream).next(reusableToken);
-                will(returnValue(token1));
-                inSequence(sequence);
-
-                one(tokenStream).next(reusableToken);
-                will(returnValue(token2));
-                inSequence(sequence);
-            }
-        });
+        List<Token> tokens = new ArrayList<Token>();
+        tokens.add(token1);
+        tokens.add(token2);
+        tokenStream = new TokenStreamTestHelper(tokens);
 
         PrefixedTokenRemoverAndExtractorTokenizer sut = new PrefixedTokenRemoverAndExtractorTokenizer(tokenStream,
                 "FOO", "#", extractedKeywords);
@@ -224,13 +185,11 @@ public class PrefixedTokenRemoverAndExtractorTokenizerTest
         assertEquals("ABCD", token2.term());
         assertEquals(0, token2.startOffset());
         assertEquals("ABCD".length(), token2.endOffset());
-
-        context.assertIsSatisfied();
     }
 
     /**
      * Perform a test with the input parameters.
-     *
+     * 
      * @param replaceFrom
      *            the text to replace from
      * @param replaceTo
@@ -250,13 +209,9 @@ public class PrefixedTokenRemoverAndExtractorTokenizerTest
         List<String> extractedKeywords = new ArrayList<String>();
         final Token returnToken = new Token(input, 0, input.length());
 
-        context.checking(new Expectations()
-        {
-            {
-                one(tokenStream).next(reusableToken);
-                will(returnValue(returnToken));
-            }
-        });
+        List<Token> tokens = new ArrayList<Token>();
+        tokens.add(returnToken);
+        tokenStream = new TokenStreamTestHelper(tokens);
 
         PrefixedTokenRemoverAndExtractorTokenizer sut = new PrefixedTokenRemoverAndExtractorTokenizer(tokenStream,
                 replaceFrom, replaceTo, extractedKeywords);
@@ -266,7 +221,5 @@ public class PrefixedTokenRemoverAndExtractorTokenizerTest
         assertEquals(expectedReturn, returnToken.term());
         assertEquals(0, returnToken.startOffset());
         assertEquals(expectedReturn.length(), returnToken.endOffset());
-
-        context.assertIsSatisfied();
     }
 }

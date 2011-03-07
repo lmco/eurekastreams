@@ -26,6 +26,7 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.search.ProjectionSearchRequestBuilder;
+import org.eurekastreams.server.domain.stream.Activity;
 import org.hibernate.search.jpa.FullTextQuery;
 
 /**
@@ -57,7 +58,7 @@ public class LuceneDataSource implements SortedDataSource
      * Transformers.
      */
     private Map<String, PersistenceDataSourceRequestTransformer> transformers;
-    
+
     /**
      * Max allowed results.
      */
@@ -142,7 +143,31 @@ public class LuceneDataSource implements SortedDataSource
                     searchWord = (String) transformers.get(req).transform(jsonQuery, userEntityId);
                 }
 
-                luceneQuery += "+" + entry.getValue() + ":(" + searchWord + ") ";
+                // if this is activity content - keep track of it for special content-only handling
+                if (req.toLowerCase().equals("keywords"))
+                {
+                    if (searchWord.contains("NOT ") || searchWord.contains("!") || searchWord.contains("-"))
+                    {
+                        // searching content with a NOT component
+                        log.info("User is querying for activity content with:(" + searchWord
+                                + ") and seems to be using a NOT/!/- component.  Lucene doesn't allow "
+                                + "NOT queries with one component, so I'll add a constant keyword that "
+                                + "I know is present: " + Activity.CONSTANT_KEYWORD_IN_EVERY_ACTIVITY_CONTENT);
+
+                        luceneQuery += "+" + entry.getValue() + ":("
+                                + Activity.CONSTANT_KEYWORD_IN_EVERY_ACTIVITY_CONTENT + " " + searchWord + ") ";
+                    }
+                    else
+                    {
+                        // searching content without NOT component
+                        luceneQuery += "+" + entry.getValue() + ":(" + searchWord + ") ";
+                    }
+                }
+                else
+                {
+                    // searching non-content
+                    luceneQuery += "+" + entry.getValue() + ":(" + searchWord + ") ";
+                }
             }
         }
 
