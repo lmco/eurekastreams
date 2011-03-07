@@ -35,181 +35,225 @@ public interface StaticResourceBundle extends ClientBundle
 
     /**
      * Core CSS.
+     * 
      * @return core.css.
      */
     @Source("style/core.css")
     CoreCss coreCss();
-     
+
     /**
      * YUI CSS.
+     * 
      * @return yui-core.css.
      */
     @NotStrict
     @Source("style/yui-core.css")
     CssResource yuiCss();
-    
-    /**
-     * @return image.
-     */
+
     @Source("style/images/navLogo.png")
     ImageResource navLogo();
-    
-    /**
-     * @return image.
-     */
+
     @Source("style/images/navStartPage.png")
     ImageResource navStartPage();
-    
-    /**
-     * @return image.
-     */
+
     @Source("style/images/navActivity.png")
     ImageResource navActivity();
 
-    /**
-     * @return image.
-     */
     @Source("style/images/navProfiles.png")
     ImageResource navProfiles();
 
-    /**
-     * @return image.
-     */
     @Source("style/images/navMyProfile.png")
     ImageResource navMyProfile();
 
-    /**
-     * @return image.
-     */
     @Source("style/images/navSettings.png")
     ImageResource navSettings();
 
-    /**
-     * @return image.
-     */
     @Source("style/images/navHelp.png")
     ImageResource navHelp();
 
-    /**
-     * @return image.
-     */
     @Source("style/images/red-error-icon-sm.png")
     ImageResource redErrorIconSmall();
 
-    /**
-     * @return image.
-     */
     @Source("style/images/information-circle-icon.png")
     ImageResource informationCircleIcon();
 
-    /**
-     * @return image.
-     */
     @Source("style/images/global-nav-bar-5px.png")
     ImageResource globalNavBar5px();
-    
-    /**
-     * @return image.
-     */
+
     @Source("style/images/footerTermsOfService.png")
     ImageResource footerTermsOfService();
-    
-    /**
-     * @return image.
-     */
+
     @Source("style/images/poweredByEurekaStreams.png")
     ImageResource poweredByEurekaStreams();
-    
-    /**
-     * @return image.
-     */
+
     @Source("style/images/footerBackground.png")
-    @ImageOptions(repeatStyle=RepeatStyle.Horizontal)
+    @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource footerBackground();
-    
-    /**
-     * @return image.
-     */
+
     @Source("style/images/globalNavSearchBtn.png")
     ImageResource globalNavSearchBtn();
-    
-    /**
-     * @return image.
-     */
+
     @Source("style/images/navBg.png")
-    @ImageOptions(repeatStyle=RepeatStyle.Horizontal)
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
     ImageResource navBg();
 
-    /**
-     * @return image.
-     */
     @Source("style/images/globalnavBg.png")
-    @ImageOptions(repeatStyle=RepeatStyle.Horizontal)
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
     ImageResource globalNavBg();
 
-    /**
-     * @return image.
-     */
     @Source("style/images/navNotification.png")
     ImageResource navNotification();
 
-    /**
-     * @return image.
-     */
     @Source("style/images/streamHeaderOverlay.png")
     ImageResource streamHeaderOverlay();
 
-    /**
-     * @return image.
-     */
     @Source("style/images/createGadget.png")
     ImageResource createGadget();
-    
-    /**
-     * @return image.
-     */
+
     @Source("style/images/createGadgetHover.png")
     ImageResource createGadgetHover();
-    
-    /**
-     * @return image.
-     */
+
     @Source("style/images/activityStreamSearchBtn.png")
-    ImageResource activityStreamSearchBtn(); 
-    
-    /**
-     * @return image.
-     */
+    ImageResource activityStreamSearchBtn();
+
     @Source("style/images/feed-icon-16x16.png")
     ImageResource feedIcon16();
-    
-    /**
-     * @return image.
-     */
+
     @Source("style/images/activitypageListItemOverlayInActive.png")
     ImageResource activitypageListItemOverlayInActive();
-    
-    /**
-     * @return image.
-     */
+
+    @Source("style/images/activitypageListItemOverlayActive.png")
+    ImageResource activitypageListItemOverlayActive();
+
     @Source("style/images/postBtnInactive.png")
     ImageResource postBtnInactive();
 
-    /**
-     * @return image.
-     */
     @Source("style/images/postBtn.png")
     ImageResource postBtn();
-    
-    /**
-     * @return image.
-     */
+
     @Source("style/images/moveBtnInactive.png")
     ImageResource moveBtnInactive();
 
-    /**
-     * @return image.
-     */
     @Source("style/images/moveBtnActive.png")
     ImageResource moveBtnActive();
+
+    @Source("style/images/modalCloseBtn.png")
+    ImageResource modalCloseBtn();
+
+    @Source("style/images/modalCloseBtnHover.png")
+    ImageResource modalCloseBtnHover();
+
+    @Source("style/images/createOrganizationBtn.png")
+    ImageResource createOrganizationBtn();
+
+    @Source("style/images/createGroupBtn.png")
+    ImageResource createGroupBtn();
+
+    @Source("style/images/private-icon.png")
+    ImageResource privateIcon();
+
+    @Source("style/images/confirm-btn-small.png")
+    ImageResource confirmBtnSmall();
+
+    @Source("style/images/approveBtnSmall.png")
+    ImageResource approveBtnSmall();
+
+    @Source("style/images/denyBtnSmall.png")
+    ImageResource denyBtnSmall();
+
+    @Source("style/images/loginBtn.png")
+    ImageResource loginBtn();
+
+    @Source("style/images/cancelBtn.png")
+    ImageResource cancelBtn();
+
+    @Source("style/images/feedbackMessageBoxCenter.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
+    ImageResource feedbackMessageBoxCenter();
+
+    @Source("style/images/feedbackMessageBoxLeft.png")
+    ImageResource feedbackMessageBoxLeft();
+
+    @Source("style/images/feedbackMessageBoxRight.png")
+    ImageResource feedbackMessageBoxRight();
+
+    @Source("style/images/createSubOrgBtn.png")
+    ImageResource createSubOrgBtn();
+
+    @Source("style/images/websiteIcon.png")
+    ImageResource websiteIcon();
+
+    @Source("style/images/connectionsActiveBtn.png")
+    ImageResource connectionsActiveBtn();
+
+    @Source("style/images/connectionsInactiveBtn.png")
+    ImageResource connectionsInactiveBtn();
+
+    @Source("style/images/wait-spinner.gif")
+    ImageResource waitSpinner();
+
+    @Source("style/images/search-icon-sm-gold.png")
+    ImageResource searchIconSmGold();
+
+    @Source("style/images/verifyGoodIcon.png")
+    ImageResource verifyGoodIcon();
+
+    @Source("style/images/verifyErrorIcon.png")
+    ImageResource verifyErrorIcon();
+
+    @Source("style/images/deleteBtnSmall.png")
+    ImageResource deleteBtnSmall();
+
+    @Source("style/images/doneBtnSmall.png")
+    ImageResource doneBtnSmall();
+
+    @Source("style/images/addBtnSmall.png")
+    ImageResource addBtnSmall();
+
+    @Source("style/images/addBtnLarge.png")
+    ImageResource addBtnLarge();
+
+    @Source("style/images/editBtnSmall.png")
+    ImageResource editBtnSmall();
+
+    @Source("style/images/locationIcon.png")
+    ImageResource locationIcon();
+
+    @Source("style/images/emailIcon.png")
+    ImageResource emailIcon();
+
+    @Source("style/images/phoneIcon.png")
+    ImageResource phoneIcon();
+
+    @Source("style/images/celllcon.png")
+    ImageResource cellIcon();
+
+    @Source("style/images/faxIcon.png")
+    ImageResource faxIcon();
+
+    @Source("style/images/progressBarShadow.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Both)
+    ImageResource progressBarShadow();
+
+    @Source("style/images/progressBarFill.png")
+    @ImageOptions(repeatStyle = RepeatStyle.Both)
+    ImageResource progressBarFill();
+
+    @Source("style/images/appliedButton.png")
+    ImageResource appliedButton();
+
+    @Source("style/images/addedButton.png")
+    ImageResource addedButton();
+
+    @Source("style/images/applyBtnSmall.png")
+    ImageResource applyBtnSmall();
+
+    @Source("style/images/addThemeGadgetBtnSmall.png")
+    ImageResource addThemeGadgetBtnSmall();
+
+    @Source("style/images/triangle-right.png")
+    ImageResource triangleRight();
+    
+    @Source("style/images/plus-icon.png")
+    ImageResource plusIcon();
 }

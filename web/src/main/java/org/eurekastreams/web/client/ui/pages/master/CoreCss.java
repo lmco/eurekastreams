@@ -1415,12 +1415,6 @@ public interface CoreCss extends CssResource
 
     String onecolumn();
 
-    @ClassName("open-gallery-button")
-    String openGalleryButton();
-
-    @ClassName("open-gallery-button-pressed")
-    String openGalleryButtonPressed();
-
     @ClassName("option-title")
     String optionTitle();
 
@@ -1840,8 +1834,6 @@ public interface CoreCss extends CssResource
     @ClassName("settings-title-bar")
     String settingsTitleBar();
 
-    String setup();
-
     @ClassName("shadow-container")
     String shadowContainer();
 
@@ -1900,24 +1892,6 @@ public interface CoreCss extends CssResource
 
     @ClassName("start-tab-content-container")
     String startTabContentContainer();
-
-    @ClassName("step-1")
-    String step1();
-
-    @ClassName("step-2")
-    String step2();
-
-    @ClassName("step-3")
-    String step3();
-
-    @ClassName("step-4")
-    String step4();
-
-    @ClassName("step4-instructions")
-    String step4Instructions();
-
-    @ClassName("step4-label")
-    String step4Label();
 
     String stream();
 

@@ -619,6 +619,7 @@
                             <webXmlServletPathAsIs>true</webXmlServletPathAsIs>
                             <runTarget>Application.html</runTarget>
                             <noServer>true</noServer>
+                            <compileReport>true</compileReport>
                             <port>8080</port>
                             <hostedWebapp>ROOT</hostedWebapp>
                             <style>${build.gwt.compile.style}</style>

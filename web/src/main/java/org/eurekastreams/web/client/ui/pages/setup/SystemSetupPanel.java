@@ -37,7 +37,6 @@ import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Initial system setup panel.
@@ -50,8 +49,6 @@ public class SystemSetupPanel extends FlowPanel
     public SystemSetupPanel()
     {
         Session session = Session.getInstance();
-
-        RootPanel.get().setStyleName(StaticResourceBundle.INSTANCE.coreCss().setup());
 
         FlowPanel welcome = new FlowPanel();
         welcome.addStyleName(StaticResourceBundle.INSTANCE.coreCss().welcomeToEureka());
@@ -82,7 +79,6 @@ public class SystemSetupPanel extends FlowPanel
         form.addFormElement(orgParent);
 
         Label step1 = form.addFormLabel("");
-        step1.addStyleName(StaticResourceBundle.INSTANCE.coreCss().step1());
 
         final BasicTextBoxFormElement orgTitle = new BasicTextBoxFormElement("Name your organization.", "name", "",
                 "This will be the root of the directory structure.", true);
@@ -93,13 +89,11 @@ public class SystemSetupPanel extends FlowPanel
         form.addFormElement(shortName);
 
         Label step2 = form.addFormLabel("");
-        step2.addStyleName(StaticResourceBundle.INSTANCE.coreCss().step2());
 
         final UserAssociationFormElement userAssoc = new UserAssociationFormElement(settings);
         form.addFormElement(userAssoc);
 
         Label step3 = form.addFormLabel("");
-        step3.addStyleName(StaticResourceBundle.INSTANCE.coreCss().step3());
 
         final ArrayList<PersonModelView> coordinators = new ArrayList<PersonModelView>();
 
@@ -110,7 +104,6 @@ public class SystemSetupPanel extends FlowPanel
         form.addFormElement(personLookup);
 
         Label step4 = form.addFormLabel("");
-        step4.addStyleName(StaticResourceBundle.INSTANCE.coreCss().step4());
 
         Label step4Label = form.addFormLabel("Save these settings.");
 

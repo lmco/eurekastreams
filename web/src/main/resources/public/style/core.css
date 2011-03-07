@@ -474,21 +474,18 @@ div.banner-container {
 	text-align: left;
 }
 
-.modal-close {
-	display: inline-block;
+@sprite .modal-close {
+	gwt-image: "modalCloseBtn";
 	float: right;
-	height: 25px !important;
-	width: 25px !important;
 	margin-right: 4px;
 	position: relative;
 	z-index: 1001;
-	background: url(style/images/modalCloseBtn.png) no-repeat;
 	overflow: hidden;
 	text-indent: -1000em;
 }
 
-.modal-close:hover {
-	background: url(style/images/modalCloseBtnHover.png) no-repeat;
+@sprite .modal-close:hover {
+	gwt-image: "modalCloseBtnHover";
 }
 
 .modal-close a {
@@ -500,8 +497,8 @@ div.banner-container {
 	float: right;
 }
 
-.modal-close a:hover {
-	background: url(style/images/modalCloseBtn.png) no-repeat;
+@sprite .modal-close a:hover {
+	gwt-image: "modalCloseBtn";
 }
 
 @sprite .modal-title {
@@ -526,21 +523,17 @@ div.banner-container {
 	margin-bottom: 10px;
 }
 
-.confirm-button {
-	width: 58px;
-	background: transparent url(style/images/confirm-btn-small.png)
-		no-repeat;
+@sprite .confirm-button {
+	gwt-image: "confirmBtnSmall";
 	margin-right: 10px;
 }
 
-.approve-button {
-	width: 50px;
-	background: transparent url(style/images/approveBtnSmall.png) no-repeat;
+@sprite .approve-button {
+	gwt-image: "approveBtnSmall";
 }
 
-.deny-button {
-	width: 50px;
-	background: transparent url(style/images/denyBtnSmall.png) no-repeat;
+@sprite .deny-button {
+	gwt-image: "denyBtnSmall";
 }
 
 .login-button,.cancel-button {
@@ -550,27 +543,17 @@ div.banner-container {
 	margin-right: 20px;
 }
 
-.login-button {
-	width: 75px;
-}
-
-.cancel-button {
-	width: 73px;
-}
-
 .login-button a,.cancel-button a {
-	height: 26px;
 	width: 100%;
-	display: inline-block;
 	padding-left: 500px;
 }
 
-.login-button a {
-	background: url(style/images/loginBtn.png);
+@sprite .login-button a {
+	gwt-image: "loginBtn";
 }
 
-.cancel-button a {
-	background: url(style/images/cancelBtn.png);
+@sprite .cancel-button a {
+	gwt-image: "cancelBtn";
 }
 
 div.close-button {
@@ -588,100 +571,6 @@ div.close-button a {
 
 div.close-button a:hover {
 	background: url(style/images/modalCloseBtnSmallHover.png) no-repeat;
-}
-
-.setup {
-	background-color: #dddddd;
-}
-
-.step4-label {
-	padding-left: 130px;
-}
-
-.step4-instructions {
-	font-size: auto ! important;
-	padding-left: 130px;
-}
-
-.setup .form-container {
-	width: 1015px;
-	margin: 0 auto 20px;
-	padding-bottom: 80px;
-}
-
-.setup .form-title {
-	display: none;
-}
-
-.setup .step-1,.setup .step-2,.setup .step-3,.setup .step-4 {
-	border-right: 1px solid #bbb;
-	width: 90px ! important;
-	margin-top: 20px;
-}
-
-.setup .step-1 {
-	background: url(style/images/step-1.png) no-repeat 30px 0;
-	height: 190px ! important;
-	margin-bottom: -230px;
-}
-
-.setup .step-2 {
-	background: url(style/images/step-2.png) no-repeat 30px 0;
-	height: 140px ! important;
-	margin-bottom: -180px;
-}
-
-.setup .step-3 {
-	background: url(style/images/step-3.png) no-repeat 30px 0;
-	height: 80px ! important;
-	margin-bottom: -120px;
-}
-
-.setup .step-4 {
-	background: url(style/images/step-4.png) no-repeat 30px 0;
-	height: 155px ! important;
-	margin-bottom: -195px;
-}
-
-.setup .form-label {
-	float: none;
-	height: auto;
-	display: block;
-	font-size: 22px;
-	font-weight: normal;
-	text-align: left;
-	width: auto;
-}
-
-.setup .form-instructions,.setup .form-user-association .group-check-box,.setup .form-user-association .gwt-TextBox,.setup .form-user-association .form-instructions
-	{
-	margin-left: 0;
-}
-
-.setup .form-cancel-button {
-	display: none;
-}
-
-.setup .form-element {
-	padding-left: 130px;
-}
-
-.setup .form-submit-button {
-	margin-left: 0;
-	padding-left: 130px;
-}
-
-.setup .form-submit-button a,.setup .form-submit-button {
-	width: 181px;
-}
-
-.setup .form-submit-button a {
-	background-image: url(style/images/complete-setup-btn.png);
-}
-
-.setup .form-user-association .access-groups,.setup .form-sub-success,.setup .form-sub-error,.setup .person-lookup-form-element .person-container
-	{
-	margin-left: 0;
 }
 
 .welcome-to-eureka {
@@ -1175,26 +1064,21 @@ div.gadget-zone-chrome-title-bar td.gwt-MenuItem {
 	zoom: 1;
 }
 
-.notification-bar .message {
+@sprite .notification-bar .message {
+	gwt-image: "feedbackMessageBoxCenter";
 	color: #343434;
 	width: auto;
-	height: 36px;
-	background: transparent url(style/images/feedbackMessageBoxCenter.png);
 	vertical-align: top;
 	padding-left: 15px;
 	padding-right: 5px;
 }
 
-.notification-bar .notification-left {
-	background: transparent url(style/images/feedbackMessageBoxLeft.png);
-	height: 36px;
-	width: 5px;
+@sprite .notification-bar .notification-left {
+	gwt-image: "feedbackMessageBoxLeft";
 }
 
-.notification-bar .notification-right {
-	background: transparent url(style/images/feedbackMessageBoxRight.png);
-	height: 36px;
-	width: 8px;
+@sprite .notification-bar .notification-right {
+	gwt-image: "feedbackMessageBoxRight";
 }
 
 .master-notifier {
@@ -2086,9 +1970,8 @@ body .post-to-stream .over-character-limit {
 	top: 2px;
 }
 
-body .attach-link .verifying-link {
-	background-image: url(style/images/wait-spinner.gif);
-	height: 31px;
+@sprite body .attach-link .verifying-link {
+	gwt-image: "waitSpinner";
 }
 
 .attach-link input {
@@ -2553,7 +2436,6 @@ body .previous-arrow:hover {
 	-moz-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
-.
 .gadget-zone-chrome-title-bar {
 	background-color: white;
 }
@@ -2571,13 +2453,12 @@ body .previous-arrow:hover {
 	width: 100%;
 }
 
-.gadgets-gadget-loading {
+@sprite .gadgets-gadget-loading {
+	gwt-image: "waitSpinner";
 	width: 100%;
 	height: 100px;
 	padding-top: 50px;
 	text-align: center;
-	background: url(style/images/wait-spinner.gif) no-repeat center center;
-	display: inline-block;
 }
 
 .gadgets-gadget-user-prefs-dialog {
@@ -3178,9 +3059,8 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 	display: inline-block;
 }
 
-.form-verifying-spinny,.form-submit-spinny,.wait-spinner {
-	background-image: url(style/images/wait-spinner.gif);
-	background-repeat: no-repeat;
+@sprite .form-verifying-spinny,.form-submit-spinny,.wait-spinner {
+	gwt-image: "waitSpinner";
 }
 
 .wait-spinner {
@@ -3219,12 +3099,12 @@ body .modal-content-panel .form-processing-spinny {
 	margin-top: -10px;
 }
 
-.form-sub-success {
-	background-image: url(style/images/verifyGoodIcon.png);
+@sprite .form-sub-success {
+	gwt-image: "verifyGoodIcon";
 }
 
-.form-sub-error {
-	background-image: url(style/images/verifyErrorIcon.png);
+@sprite .form-sub-error {
+	gwt-image: "verifyErrorIcon";
 }
 
 .form-user-association .gwt-TextBox {
@@ -3440,77 +3320,54 @@ body .shortname-form-element input {
 	margin-left: -2px;
 }
 
-.edit-button a {
+@sprite .edit-button a {
+	gwt-image: "editBtnSmall";
 	text-indent: -1000em;
-	background: transparent url(style/images/editBtnSmall.png) repeat scroll
-		0 0;
-	width: 58px;
-	height: 16px;
 	overflow: hidden;
-	display: inline-block;
 }
 
 .search-button a {
+	gwt-image: "searchIconSmGold";
 	text-indent: -1000em;
-	background: transparent url(style/images/search-icon-sm-gold.png) repeat
-		scroll 0 0;
-	width: 58px;
-	height: 16px;
 	overflow: hidden;
-	display: inline-block;
 }
 
 .edit-button,.search-button {
 	display: inline-block;
 }
 
-.delete-button a {
+@sprite .delete-button a {
+	gwt-image: "deleteBtnSmall";
 	text-indent: -1000em;
-	background: transparent url(style/images/deleteBtnSmall.png) repeat
-		scroll 0 0;
-	width: 58px;
-	height: 16px;
 	overflow: hidden;
-	display: inline-block;
 }
 
 .delete-button {
 	display: inline-block;
 }
 
-.done-button a {
+@sprite .done-button a {
+	gwt-image: "doneBtnSmall";
 	text-indent: -1000em;
-	background: transparent url(style/images/doneBtnSmall.png) repeat scroll
-		0 0;
-	width: 58px;
-	height: 16px;
 	overflow: hidden;
-	display: inline-block;
 }
 
 .done-button {
 	display: inline-block;
 }
 
-.add-button a {
+@sprite .add-button a {
+	gwt-image: "addBtnSmall";
 	text-indent: -1000em;
-	background: transparent url(style/images/addBtnSmall.png) repeat scroll
-		0 0;
-	width: 58px;
-	height: 16px;
 	overflow: hidden;
-	display: inline-block;
 }
 
 .add-button {
 	display: inline-block;
 }
 
-.add-button-submit {
-	background: transparent url(style/images/addBtnLarge.png) no-repeat;
-	height: 26px;
-	width: 77px;
-	display: inline-block;
+@sprite .add-button-submit {
+	gwt-image: "addBtnLarge";
 	text-indent: -100px;
 	overflow: hidden;
 	vertical-align: middle;
@@ -3547,10 +3404,9 @@ body .shortname-form-element input {
 	display: none;
 }
 
-.filters .filter:hover .filter-seperator,.filters .filter.active .filter-seperator
-	{
-	background-image:
-		url(style/images/activitypageListItemOverlayActive.png) ! important;
+@sprite .filters .filter:hover .filter-seperator,.filters .filter.active .filter-seperator
+{
+	gwt-image: "activitypageListItemOverlayActive";
 	right: 50px;
 }
 
@@ -4292,22 +4148,17 @@ body .organization-suborgs:hover {
 	z-index: 100;
 }
 
-body .create-organization-link {
-	background-image: url(style/images/createOrganizationBtn.png);
-	width: 143px;
-	display: block;
+@sprite body .create-organization-link {
+	gwt-image: "createOrganizationBtn";
 }
 
-body .create-group-link {
-	background-image: url(style/images/createGroupBtn.png);
-	width: 100px;
-	display: block;
+@sprite body .create-group-link {
+	gwt-image: "createGroupBtn";
 }
 
-.request-group-access {
+@sprite .request-group-access {
+	gwt-image: "privateIcon";
 	padding-left: 20px;
-	background: transparent url(style/images/private-icon.png) no-repeat
-		scroll 0 0;
 	clear: both;
 	display: block;
 	height: 22px;
@@ -4599,20 +4450,16 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 	margin-top: 20px;
 }
 
-.profile-add-sub-org {
-	background: transparent url(style/images/createSubOrgBtn.png) no-repeat;
+@sprite .profile-add-sub-org {
+	gwt-image: "createSubOrgBtn";
 	margin: 0px 20px -27px 765px;
-	width: 99px;
-	height: 27px;
 	position: relative;
 	z-index: 100;
 }
 
-.profile-add-group {
-	background: transparent url(style/images/createGroupBtn.png) no-repeat;
+@sprite .profile-add-group {
+	gwt-image: "createGroupBtn";
 	margin: 0px 20px -27px 871px;
-	width: 99px;
-	height: 27px;
 	position: relative;
 	z-index: 100;
 }
@@ -4735,14 +4582,12 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 	padding-bottom: 5px;
 }
 
-.profile-connection-count {
-	background-image: url('style/images/connectionsInactiveBtn.png');
+@sprite .profile-connection-count {
+	gwt-image: "connectionsInactiveBtn";
 	font-family: Verdana;
 	font-size: 14px;
 	font-weight: bold;
 	color: #666666;
-	width: 54px;
-	height: 26px;
 	display: inline-block;
 	padding-top: 7px;
 	cursor: pointer;
@@ -4752,8 +4597,8 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 	margin-bottom: 10px;
 }
 
-.profile-connection-count:hover {
-	background-image: url('style/images/connectionsActiveBtn.png');
+@sprite .profile-connection-count:hover {
+	gwt-image: "connectionsActiveBtn";
 }
 
 .profile-connection-label {
@@ -4781,9 +4626,8 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 	min-height: 15px;
 }
 
-.profile-location {
-	background-image: url('style/images/locationIcon.png');
-	background-repeat: no-repeat;
+@sprite .profile-location {
+	gwt-image: "locationIcon";
 }
 
 .profile-location a {
@@ -4791,20 +4635,20 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 	text-decoration: none;
 }
 
-.profile-email {
-	background: url('style/images/emailIcon.png') no-repeat 0px 0px;
+@sprite .profile-email {
+	gwt-image: "emailIcon";
 }
 
-.profile-work-phone {
-	background: url('style/images/phoneIcon.png') no-repeat 3px 0px;
+@sprite .profile-work-phone {
+	gwt-image: "phoneIcon";
 }
 
-.profile-cell-phone {
-	background: url('style/images/celllcon.png') no-repeat 5px 0px;
+@sprite .profile-cell-phone {
+	gwt-image: "cellIcon";
 }
 
-.profile-fax {
-	background: url('style/images/faxIcon.png') no-repeat 2px 0px;
+@sprite .profile-fax {
+	gwt-image: "faxIcon";
 }
 
 .profile-page-container {
@@ -5275,10 +5119,8 @@ div.stream-container div.layout-container {
 	display: none;
 }
 
-.profile-website {
-	background-image: url(style/images/websiteIcon.png);
-	background-repeat: no-repeat;
-	background-position: 0px;
+@sprite .profile-website {
+	gwt-image: "websiteIcon";
 	padding-left: 20px;
 	text-align: left;
 	text-decoration: none;
@@ -5385,18 +5227,18 @@ div.stream-container div.layout-container {
 	cursor: pointer;
 }
 
-.checklist-complete-sen>div.checklist-progress-bar {
+@sprite .checklist-complete-sen>div.checklist-progress-bar {
+	gwt-image: "progressBarShadow";
 	height: 15px;
 	width: 213px;
 	border-left: 1px solid #AAAAAA;
 	border-right: 1px solid #AAAAAA;
 	margin-bottom: 10px;
 	margin-top: 10px;
-	background: url(style/images/progressBarShadow.png);
 }
 
-.checklist-progress-bar>div {
-	background: url(style/images/progressBarFill.png);
+@sprite .checklist-progress-bar>div {
+	gwt-image: "progressBarFill";
 	height: 15px;
 }
 
@@ -5722,11 +5564,9 @@ body .gallery-search-results-list .options-panel {
 	margin-left: 28px;
 }
 
-.gadget-meta-data .apply-gadget a,.gadget-meta-data .apply-theme {
-	background: url(style/images/addThemeGadgetBtnSmall.png);
+@sprite .gadget-meta-data .apply-gadget a,.gadget-meta-data .apply-theme {
+	gwt-image: "addThemeGadgetBtnSmall";
 	display: block;
-	height: 18px;
-	width: 58px;
 	margin-top: 10px;
 	text-indent: -1000em;
 }
@@ -5735,15 +5575,13 @@ body .gallery-search-results-list .options-panel {
 	margin-top: 0;
 }
 
-.gadget-meta-data .apply-theme {
-	background: url(style/images/applyBtnSmall.png);
+@sprite .gadget-meta-data .apply-theme {
+	gwt-image: "applyBtnSmall";
 	cursor: pointer;
 }
 
-.gadget-meta-data .apply-gadget.active {
-	background: url(style/images/addedButton.png);
-	height: 17px;
-	width: 61px;
+@sprite .gadget-meta-data .apply-gadget.active {
+	gwt-image: "addedButton";
 	margin-top: 9px;
 }
 
@@ -5751,10 +5589,8 @@ body .gallery-search-results-list .options-panel {
 	display: none;
 }
 
-.gadget-meta-data .apply-theme.active {
-	background: url(style/images/appliedButton.png);
-	height: 17px;
-	width: 68px;
+@sprite .gadget-meta-data .apply-theme.active {
+	gwt-image: "appliedButton";
 }
 
 .broken-feed-indicator {
@@ -5847,34 +5683,6 @@ li.yui-carousel-item-selected:active,li.yui-carousel-item-selected:focus,li.yui-
 
 .small-theme .apply-theme {
 	margin-top: 0 !important;
-}
-
-.open-gallery-button,.open-gallery-button-pressed {
-	display: block;
-	width: 40px;
-	margin-right: 25px;
-	float: right;
-	zoom: 1;
-}
-
-.open-gallery-button a,.open-gallery-button-pressed a {
-	display: block;
-	height: 48px;
-	width: 40px;
-	padding-left: 0;
-	z-index: 500;
-	text-indent: 1000em;
-	zoom: 1;
-}
-
-.open-gallery-button a {
-	background: transparent url(style/images/gallery-btn.png) no-repeat
-		scroll 0 0;
-}
-
-.open-gallery-button-pressed a {
-	background: transparent url(style/images/gallery-btn-pressed.png)
-		no-repeat scroll 0 0;
 }
 
 .full-gallery-link {
@@ -6014,10 +5822,9 @@ body .stream-page-container>div.form-error-box {
 	width: 154px;
 }
 
-.filters .header .addbutton {
-	background: url(style/images/plus-icon.png);
-	background-position: 7px 6px;
-	background-repeat: no-repeat;
+@sprite .filters .header .addbutton {
+	gwt-image: "plusIcon";
+	height: 11px;
 	overflow: hidden;
 	width: 23px;
 	display: inline-block;
@@ -6025,6 +5832,12 @@ body .stream-page-container>div.form-error-box {
 	padding-top: 2px;
 	font-weight: normal;
 	font-size: 12px;
+}
+
+.filters .header .addbutton .gwt-Anchor
+{
+	position: relative;
+	top: -5px;
 }
 
 .filters .hide {
@@ -6190,19 +6003,18 @@ body .stream-page-container>div.form-error-box {
 	margin-top: -25px;
 }
 
-.filters .show-more {
+@sprite .filters .show-more {
+	gwt-image: "triangleRight";
 	border-top: 1px solid #CCCCCC;
 	font-size: 10px;
 	margin-top: 3px;
 	padding-bottom: 5px;
 	padding-left: 15px;
 	padding-top: 2px;
-	background: url(style/images/triangle-right.png);
-	background-repeat: no-repeat;
-	background-position: 3px 6px;
 	text-decoration: none;
 	width: 100%;
 	display: inline-block;
+	offset-left: 10px;
 }
 
 .filters .show-more.show-less {
@@ -6253,7 +6065,7 @@ body .stream-page-container>div.form-error-box {
 
 body .dragdrop-proxy {
 	opacity: 1;
-	filter: alpha(opacity =       100);
+	filter: literal("alpha(opacity = 100)");
 	min-height: 115px;
 }
 
@@ -6499,9 +6311,8 @@ body .user-bar li div.notif-count:hover {
 	border-top: 1px solid #999;
 }
 
-.notif-wait {
-	background: transparent url(style/images/wait-spinner.gif) no-repeat
-		center center;
+@sprite .notif-wait {
+	gwt-image: "waitSpinner";
 	width: 600px;
 	height: 350px;
 }
@@ -6701,7 +6512,7 @@ table.empty-zone div.layout-spacer {
 	display: block !important;
 	background: white;
 	opacity: 0.4;
-	filter: alpha(opacity =       40);
+	filter: literal("alpha(opacity = 40)");
 }
 
 table.header-zone div.layout-spacer {
@@ -7723,16 +7534,14 @@ body .stream-view-dialog .delete-button {
 	cursor: pointer;
 }
 
-.label-button-wait-spinner {
-	background: transparent url('style/images/wait-spinner.gif') no-repeat
-		scroll center center;
+@sprite .label-button-wait-spinner {
+	gwt-image: "waitSpinner";
 }
 
-.wait-active {
-	background: transparent url('style/images/wait-spinner.gif') no-repeat
-		scroll center center;
+@sprite .wait-active {
+	gwt-image: "waitSpinner";
 }
-
+	            
 .wait-active>* {
 	visibility: hidden;
 }
@@ -8430,7 +8239,7 @@ IE SPECIFIC CSS.
 	
 	.form-disable {
 		background-color: #FFFFFF;
-		filter: alpha(opacity =       0);
+		filter: literal("alpha(opacity = 0)");
 	}
 	
 	.gadgets-gadget-user-prefs-dialog .input-box {

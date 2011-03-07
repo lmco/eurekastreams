@@ -6,6 +6,6 @@
 	<inherits name="org.eurekastreams.server.Domain" />
 	<inherits name='com.allen_sauer.gwt.dnd.gwt-dnd' />
     <inherits name='net.sf.gilead.Gilead4Gwt'/>
-    <set-property name="user.agent" value="gecko1_8"/>    
+    <set-property name="user.agent" value="gecko1_8,ie6"/>    
 	<entry-point class='org.eurekastreams.web.client.ui.pages.master.ApplicationEntryPoint' />
 </module>

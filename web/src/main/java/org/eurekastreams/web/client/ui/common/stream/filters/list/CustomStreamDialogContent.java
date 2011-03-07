@@ -200,7 +200,7 @@ public class CustomStreamDialogContent implements DialogContent
 
         if (mode.equals(Method.UPDATE))
         {
-            Anchor deleteButton = new Anchor(StaticResourceBundle.INSTANCE.coreCss().delete());
+            Anchor deleteButton = new Anchor("delete");
             deleteButton.addClickHandler(new ClickHandler()
             {
                 public void onClick(final ClickEvent event)
