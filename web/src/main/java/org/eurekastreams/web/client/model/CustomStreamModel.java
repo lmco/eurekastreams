@@ -29,8 +29,6 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.user.client.Window;
 
 /**
  * Custom stream model.
