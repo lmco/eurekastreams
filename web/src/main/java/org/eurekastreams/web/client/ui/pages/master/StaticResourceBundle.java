@@ -143,6 +143,12 @@ public interface StaticResourceBundle extends ClientBundle
     @Source("style/images/modalCloseBtnHover.png")
     ImageResource modalCloseBtnHover();
 
+    @Source("style/images/modalCloseBtnSmall.png")
+    ImageResource modalCloseBtnSmall();
+
+    @Source("style/images/modalCloseBtnSmallHover.png")
+    ImageResource modalCloseBtnSmallHover();
+
     @Source("style/images/createOrganizationBtn.png")
     ImageResource createOrganizationBtn();
 
@@ -209,7 +215,7 @@ public interface StaticResourceBundle extends ClientBundle
 
     @Source("style/images/addBtnSmall.png")
     ImageResource addBtnSmall();
-
+    
     @Source("style/images/addBtnLarge.png")
     ImageResource addBtnLarge();
 
@@ -253,7 +259,16 @@ public interface StaticResourceBundle extends ClientBundle
 
     @Source("style/images/triangle-right.png")
     ImageResource triangleRight();
-    
+
     @Source("style/images/plus-icon.png")
     ImageResource plusIcon();
+
+    @Source("style/images/selectBtnInactive.png")
+    ImageResource selectBtnInactive();
+
+    @Source("style/images/selectBtnActive.png")
+    ImageResource selectBtnActive();
+
+    @Source("style/images/deleteBtn.png")
+    ImageResource deleteBtn();
 }

@@ -162,6 +162,7 @@ public class PersonalProfilePanel extends FlowPanel
         RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().profile());
 
         ActionProcessor inProcessor = Session.getInstance().getActionProcessor();
+        inProcessor.setQueueRequests(true);
         about = new AboutPanel(accountId);
         portalPageContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profilePageContainer());
         profileSettingsLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().configureTab());
@@ -191,7 +192,6 @@ public class PersonalProfilePanel extends FlowPanel
                     }
                 });
 
-        inProcessor.setQueueRequests(true);
         PersonalInformationModel.getInstance().fetch(accountId, false);
         AllPopularHashTagsModel.getInstance().fetch(null, true);
         inProcessor.fireQueuedRequests();

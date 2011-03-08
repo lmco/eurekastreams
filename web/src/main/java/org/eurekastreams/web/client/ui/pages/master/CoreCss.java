@@ -2156,9 +2156,6 @@ public interface CoreCss extends CssResource
     @ClassName("welcome-email-checkbox")
     String welcomeEmailCheckbox();
 
-    @ClassName("welcome-to-eureka")
-    String welcomeToEureka();
-
     @ClassName("yui-ac")
     String yuiAc();
 

@@ -33,6 +33,7 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -133,6 +134,7 @@ public class FilterListPanel extends FlowPanel
             Anchor addView = new Anchor("add");
             FlowPanel addButton = new FlowPanel();
             addButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().filterAddButton());
+            addButton.insert(new HTML(""), 0);
             addButton.add(addView);
             addView.addClickListener(new ClickListener()
             {
@@ -230,6 +232,7 @@ public class FilterListPanel extends FlowPanel
     {
         final FilterListPanel thisBuffered = this;
         addedHiddenLine = true;
+        
         showMore.setStyleName(StaticResourceBundle.INSTANCE.coreCss().showMore());
         showMore.addClickListener(new ClickListener()
         {

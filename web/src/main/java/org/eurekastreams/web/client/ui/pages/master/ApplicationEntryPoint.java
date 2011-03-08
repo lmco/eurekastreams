@@ -54,7 +54,6 @@ import org.eurekastreams.web.client.ui.common.dialog.lookup.EmployeeLookupConten
 import org.eurekastreams.web.client.ui.common.dialog.message.MessageDialogContent;
 import org.eurekastreams.web.client.ui.common.dialog.tos.TermsOfServiceDialogContent;
 import org.eurekastreams.web.client.ui.pages.accessdenied.AccessDeniedContent;
-import org.eurekastreams.web.client.ui.pages.setup.SystemSetupPanel;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -135,11 +134,7 @@ public class ApplicationEntryPoint implements EntryPoint
         session.setEventBus(EventBus.getInstance());
         session.setPeriodicEventManager(new PeriodicEventManager(APP_IDLE_TIMEOUT, new TimerFactory(), processor));
 
-        if (History.getToken().equals("setup"))
-        {
-            RootPanel.get().add(new SystemSetupPanel());
-        }
-        else if (History.getToken().equals("requestaccess"))
+        if (History.getToken().equals("requestaccess"))
         {
             RootPanel.get().add(new AccessDeniedContent());
         }
