@@ -21,6 +21,14 @@
 @external .gwt-*;
 @external .gadgets-gadget;
 @external .dragdrop*;
+@external .onecolumn;
+@external .twocolumn;
+@external .twocolumnleftwide;
+@external .twocolumnrightwide;
+@external .threecolumnleftwideheader;
+@external .threecolumnrightwideheader;
+@external .threecolumn;
+@external .notif-entry*;
 
 * {
 	outline: none;
@@ -191,8 +199,14 @@ body .main-contents .header-container {
 	color: white;
 }
 
-.main-nav .active {
-	background-position: 0 -35px;
+@if user.agent ie6 ie8 {
+	.main-nav .active {
+		background-position-y: -35px;
+	}
+} @else {
+	.main-nav .active {
+		background-position: 0 -35px;
+	}	
 }
 
 .external-header-button,.nav-bar-button {
@@ -563,26 +577,14 @@ div.close-button {
 	width: 20px;
 }
 
-div.close-button a {
+@sprite div.close-button a {
 	display: block;
 	padding-top: 20px;
-	background: url(style/images/modalCloseBtnSmall.png) no-repeat;
+	gwt-image: "modalCloseBtnSmall";
 }
 
-div.close-button a:hover {
-	background: url(style/images/modalCloseBtnSmallHover.png) no-repeat;
-}
-
-.welcome-to-eureka {
-	background: transparent url(style/images/welcome-icon-large.png)
-		no-repeat scroll 0 0;
-	height: 129px;
-	padding-left: 367px;
-	color: #333;
-	font-size: 18px;
-	margin: 20px auto 0;
-	padding-top: 35px;
-	width: 650px;
+@sprite div.close-button a:hover {
+	gwt-image: "modalCloseBtnSmallHover"
 }
 
 .login-content-container {
@@ -727,12 +729,12 @@ div.close-button a:hover {
 	text-indent: 1000em;
 }
 
-.lookup-select-button-inactive {
-	background: url(style/images/selectBtnInactive.png);
+@sprite .lookup-select-button-inactive {
+	gwt-image: "selectBtnInactive";
 }
 
-.lookup-select-button-active {
-	background: url(style/images/selectBtnActive.png);
+@sprite .lookup-select-button-active {
+	gwt-image: "selectBtnActive";
 }
 
 .lookup-cancel-button {
@@ -757,15 +759,12 @@ div.close-button a:hover {
 	margin: 0px;
 }
 
-.modal-content-panel .delete-button {
-	background: url("style/images/deleteBtn.png") repeat scroll 0 0
-		transparent;
+@sprite .modal-content-panel .delete-button {
+	gwt-image: "deleteBtn";
 	float: right;
-	height: 25px;
 	position: relative;
 	text-indent: 1000em;
 	top: -25px;
-	width: 77px;
 	margin-bottom: -10px;
 }
 
@@ -4620,13 +4619,16 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 	font-family: Verdana;
 	font-size: 12px;
 	text-align: left;
-	padding-left: 30px;
 	margin-bottom: 10px;
 	color: #333333;
 	min-height: 15px;
 }
 
-@sprite .profile-location {
+.profile-contact-info .gwt-Label {
+	padding-left: 30px;	
+}
+
+@sprite .profile-location div:first-child {
 	gwt-image: "locationIcon";
 }
 
@@ -4635,20 +4637,32 @@ a.gadget-zone-chrome-title-bar-restore-button:hover {
 	text-decoration: none;
 }
 
-@sprite .profile-email {
+@sprite .profile-email div:first-child {
 	gwt-image: "emailIcon";
+	float: left;
+	margin-right: 6px;
+	margin-left: 5px;
 }
 
-@sprite .profile-work-phone {
+@sprite .profile-work-phone div:first-child {
 	gwt-image: "phoneIcon";
+	float: left;
+	margin-left: 8px;
+	margin-right: 8px;
 }
 
-@sprite .profile-cell-phone {
+@sprite .profile-cell-phone div:first-child {
 	gwt-image: "cellIcon";
+	float: left;
+	margin-right: 11px;
+	margin-left: 11px;
 }
 
-@sprite .profile-fax {
+@sprite .profile-fax div:first-child {
 	gwt-image: "faxIcon";
+	float: left;
+	margin-left: 7px;
+	margin-right: 7px;
 }
 
 .profile-page-container {
@@ -5119,9 +5133,11 @@ div.stream-container div.layout-container {
 	display: none;
 }
 
-@sprite .profile-website {
+@sprite .profile-website div:first-child {
 	gwt-image: "websiteIcon";
-	padding-left: 20px;
+	float: left;
+}
+.profile-website {
 	text-align: left;
 	text-decoration: none;
 	display: block;
@@ -5822,11 +5838,13 @@ body .stream-page-container>div.form-error-box {
 	width: 154px;
 }
 
-@sprite .filters .header .addbutton {
+@sprite .filters .header .addbutton span
+{
 	gwt-image: "plusIcon";
-	height: 11px;
+}
+
+.filters .header .addbutton {
 	overflow: hidden;
-	width: 23px;
 	display: inline-block;
 	padding-left: 23px;
 	padding-top: 2px;
@@ -6003,8 +6021,13 @@ body .stream-page-container>div.form-error-box {
 	margin-top: -25px;
 }
 
-@sprite .filters .show-more {
+@sprite .filters .show-more div:first-child {
 	gwt-image: "triangleRight";
+	float: left;
+}
+
+.filters .show-more 
+{
 	border-top: 1px solid #CCCCCC;
 	font-size: 10px;
 	margin-top: 3px;
@@ -6274,9 +6297,15 @@ li.notif-count-list-item {
 	background-repeat: repeat-y;
 }
 
-body .user-bar li div.notif-count:hover {
-	background-position: 0 35px;
-	cursor: pointer;
+@if user.agent ie6 ie8 {
+	body .user-bar li div.notif-count:hover {
+		background-position-y: 35px;
+	}
+} @else {
+	body .user-bar li div.notif-count:hover {
+		background-position: 0 35px;
+		cursor: pointer;
+	}
 }
 
 .notif-modal {

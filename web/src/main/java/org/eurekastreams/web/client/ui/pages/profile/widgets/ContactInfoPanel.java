@@ -44,26 +44,31 @@ public class ContactInfoPanel extends FlowPanel
             // Email should never be null, but just in case
             if (person.getEmail() != null)
             {
+                FlowPanel emailWrapper = new FlowPanel();
                 HTML emailLink = new HTML("<a href=\"mailto:" + person.getEmail() + "\">" + person.getPreferredName()
                         + " " + person.getLastName() + "</a>");
-                emailLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileEmail());
+                emailWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileEmail());
                 emailLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileContactInfo());
-                this.add(emailLink);
+                emailWrapper.add(new HTML(""));
+                emailWrapper.add(emailLink);
+                this.add(emailWrapper);
             }
 
             if (person.getWorkPhone() != null)
             {
-                this.add(buildPhoneLabel(person.getWorkPhone(), "profile-work-phone"));
+                this.add(buildPhoneLabel(person.getWorkPhone(), StaticResourceBundle.INSTANCE.coreCss()
+                        .profileWorkPhone()));
             }
 
             if (person.getCellPhone() != null)
             {
-                this.add(buildPhoneLabel(person.getCellPhone(), "profile-cell-phone"));
+                this.add(buildPhoneLabel(person.getCellPhone(), StaticResourceBundle.INSTANCE.coreCss()
+                        .profileCellPhone()));
             }
 
             if (person.getFax() != null)
             {
-                this.add(buildPhoneLabel(person.getFax(), "profile-fax"));
+                this.add(buildPhoneLabel(person.getFax(), StaticResourceBundle.INSTANCE.coreCss().profileFax()));
             }
         }
     }
@@ -77,11 +82,14 @@ public class ContactInfoPanel extends FlowPanel
      *            the label's style
      * @return new label
      */
-    private Label buildPhoneLabel(final String text, final String style)
+    private FlowPanel buildPhoneLabel(final String text, final String style)
     {
+        FlowPanel labelWrapper = new FlowPanel();
         Label label = new Label(text);
-        label.addStyleName(style);
+        labelWrapper.addStyleName(style);
         label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileContactInfo());
-        return label;
+        labelWrapper.add(new HTML(""));
+        labelWrapper.add(label);
+        return labelWrapper;
     }
 }

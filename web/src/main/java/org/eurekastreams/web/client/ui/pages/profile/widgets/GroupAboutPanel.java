@@ -21,6 +21,7 @@ import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 
 /**
@@ -73,13 +74,16 @@ public class GroupAboutPanel extends FlowPanel
         title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileOrgTitle());
         this.add(title);
 
+        FlowPanel urlContainer = new FlowPanel();
+        urlContainer.add(new HTML(""));
         Anchor url = new Anchor("Website", inUrl, "_NEW");
-        url.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileWebsite());
+        urlContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().profileWebsite());
         if (inUrl == null)
         {
-            url.addStyleName(StaticResourceBundle.INSTANCE.coreCss().noValue());
+            urlContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().noValue());
         }
-        this.add(url);
+        urlContainer.add(url);
+        this.add(urlContainer);
 
         if (inDescription != null && !inDescription.equals(""))
         {
