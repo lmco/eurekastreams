@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +22,13 @@ import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
-import net.sf.gilead.pojo.gwt.LightEntity;
+import org.eurekastreams.commons.model.WrappedLightEntity;
 
 /**
  * Object representing the person following a group relationship.
- * 
  */
 @Entity
-public class GroupFollower extends LightEntity implements Serializable
+public class GroupFollower extends WrappedLightEntity implements Serializable
 {
     /**
      * Serial version uid.
@@ -219,7 +218,7 @@ public class GroupFollower extends LightEntity implements Serializable
             }
             GroupFollowerPk target = (GroupFollowerPk) obj;
 
-            return (target.followingId == this.followingId) && (target.followerId == this.followerId);
+            return (target.followingId == followingId) && (target.followerId == followerId);
         }
     }
 

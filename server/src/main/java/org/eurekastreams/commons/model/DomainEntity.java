@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +22,12 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
-import net.sf.gilead.pojo.gwt.LightEntity;
-
 /**
  * The parent class for all domain entities. Contains the unique id key and
  * version property.
  */
 @MappedSuperclass
-public abstract class DomainEntity extends LightEntity
+public abstract class DomainEntity extends WrappedLightEntity
 {
     /**
      * Serial version uid.
@@ -78,7 +76,7 @@ public abstract class DomainEntity extends LightEntity
      */
     protected void setVersion(final long newVersion)
     {
-        this.version = newVersion;
+        version = newVersion;
     }
 
     /**
@@ -101,7 +99,7 @@ public abstract class DomainEntity extends LightEntity
      */
     protected void setId(final long newId)
     {
-        this.id = newId;
+        id = newId;
     }
 
     /**
@@ -119,6 +117,6 @@ public abstract class DomainEntity extends LightEntity
                     this.getClass().getName().lastIndexOf('.') + 1)
                     + "#";
         }
-        return toStringBase + this.id;
+        return toStringBase + id;
     }
 }
