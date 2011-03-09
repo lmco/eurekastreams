@@ -30,13 +30,13 @@ import org.eurekastreams.server.search.modelview.TabDTO;
 
 /**
  * DTO to Person transformer. Temporary solution until we refactor.
- * 
+ *
  */
 public class PersonPagePropertiesDTOToPersonTransformer
 {
     /**
      * Transform a PersonPagePropertiesDTO to a Person object.
-     * 
+     *
      * @param dto
      *            the dto.
      * @return the person.
@@ -69,6 +69,8 @@ public class PersonPagePropertiesDTOToPersonTransformer
                 Gadget gadget = new Gadget(gadgetDef, gadgetDTO.getZoneNumber(), gadgetDTO.getZoneIndex(), null,
                         gadgetDTO.getGadgetUserPref());
                 gadget.setId(gadgetDTO.getId());
+                gadget.setMaximized(gadgetDTO.isMaximized());
+                gadget.setMinimized(gadgetDTO.isMinimized());
                 gadgets.add(gadget);
             }
 
