@@ -639,7 +639,7 @@
         </constructor-arg>
     </bean>
     
-    <!-- Mapper to get organization ids by short name -->
+    <!-- Mapper to get group ids by short name -->
     <bean id="getDomainGroupIdsByShortNamesMapper" class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
         <!-- Cache mapper -->
         <constructor-arg>

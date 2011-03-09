@@ -50,7 +50,8 @@ public class GroupFollower extends WrappedLightEntity implements Serializable
     /**
      * Whether to receive notifications after new activities are posted to this group.
      */
-    private boolean receiveNewActivityNotifications = true;
+    @Basic
+    private Boolean receiveNewActivityNotifications = true;
 
     /**
      * Constructor.
@@ -113,7 +114,7 @@ public class GroupFollower extends WrappedLightEntity implements Serializable
     /**
      * @return the receiveNewActivityNotifications
      */
-    public boolean receiveNewActivityNotifications()
+    public boolean getReceiveNewActivityNotifications()
     {
         return receiveNewActivityNotifications;
     }
@@ -134,6 +135,11 @@ public class GroupFollower extends WrappedLightEntity implements Serializable
     @Embeddable
     public static class GroupFollowerPk implements Serializable
     {
+        /**
+         * Serial version uid.
+         */
+        private static final long serialVersionUID = -6415173783140689235L;
+
         /**
          * Follower id.
          */
