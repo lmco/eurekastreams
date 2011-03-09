@@ -556,7 +556,7 @@
 	
 
 	<!-- Smithers and Burns follow group 1 -->
-	<GroupFollower followerId="99" followingId="1" groupstreamindex="0" receiveNewActivityNotifications="true" />
+	<GroupFollower followerId="99" followingId="1" groupstreamindex="0" receivenewactivitynotifications="false" />
 	<GroupFollower followerId="98" followingId="1" groupstreamindex="0" receiveNewActivityNotifications="true" />
 	
 	<!-- Fordp follows groups 1, 2, and 3 -->
