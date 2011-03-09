@@ -29,8 +29,9 @@
 @external .threecolumnrightwideheader;
 @external .threecolumn;
 @external .notif-entry*;
+@external .maximized;
 
-* {
+* {	
 	outline: none;
 }
 
