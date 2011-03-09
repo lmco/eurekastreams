@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,16 @@
  */
 package org.eurekastreams.web.client.model.requests;
 
+import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.eurekastreams.server.domain.Gadget;
 import org.eurekastreams.server.domain.Layout;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.domain.Theme;
@@ -37,7 +40,7 @@ import org.junit.Test;
 
 /**
  * Test for PersonPagePropertiesDTOToPersonTransformer.
- * 
+ *
  */
 public class PersonPagePropertiesDTOToPersonTransformerTest
 {
@@ -54,32 +57,32 @@ public class PersonPagePropertiesDTOToPersonTransformerTest
     /**
      * mocked tab for testing results.
      */
-    private PersonPagePropertiesDTO ppp = context.mock(PersonPagePropertiesDTO.class);
+    private final PersonPagePropertiesDTO ppp = context.mock(PersonPagePropertiesDTO.class);
 
     /**
      * {@link TabDTO}.
      */
-    private TabDTO tab = context.mock(TabDTO.class);
+    private final TabDTO tab = context.mock(TabDTO.class);
 
     /**
      * {@link GadgetDTO}.
      */
-    private GadgetDTO gadget = context.mock(GadgetDTO.class);
+    private final GadgetDTO gadget = context.mock(GadgetDTO.class);
 
     /**
      * {@link GadgetDefinitionDTO}.
      */
-    private GadgetDefinitionDTO gadgetDef = context.mock(GadgetDefinitionDTO.class);
+    private final GadgetDefinitionDTO gadgetDef = context.mock(GadgetDefinitionDTO.class);
 
     /**
      * {@link Theme}.
      */
-    private Theme theme = context.mock(Theme.class);
+    private final Theme theme = context.mock(Theme.class);
 
     /**
      * System under test.
      */
-    private PersonPagePropertiesDTOToPersonTransformer sut = new PersonPagePropertiesDTOToPersonTransformer();
+    private final PersonPagePropertiesDTOToPersonTransformer sut = new PersonPagePropertiesDTOToPersonTransformer();
 
     /**
      * Test.
@@ -126,6 +129,12 @@ public class PersonPagePropertiesDTOToPersonTransformerTest
                 oneOf(gadget).getGadgetUserPref();
                 will(returnValue("userPref"));
 
+                allowing(gadget).isMaximized();
+                will(returnValue(Boolean.TRUE));
+
+                allowing(gadget).isMinimized();
+                will(returnValue(false));
+
                 allowing(gadget).getGadgetDefinition();
                 will(returnValue(gadgetDef));
 
@@ -145,6 +154,9 @@ public class PersonPagePropertiesDTOToPersonTransformerTest
         assertNull(p.getTheme());
         assertEquals(1, p.getStartTabGroup().getTabs().size());
         assertEquals(1, p.getStartTabGroup().getTabs().get(0).getGadgets().size());
+        Gadget gadget1 = p.getStartTabGroup().getTabs().get(0).getGadgets().get(0);
+        assertEquals(Boolean.TRUE, gadget1.isMaximized());
+        assertFalse(gadget1.isMinimized());
 
         context.assertIsSatisfied();
     }
@@ -194,6 +206,12 @@ public class PersonPagePropertiesDTOToPersonTransformerTest
                 oneOf(gadget).getGadgetUserPref();
                 will(returnValue("userPref"));
 
+                allowing(gadget).isMaximized();
+                will(returnValue(Boolean.FALSE));
+
+                allowing(gadget).isMinimized();
+                will(returnValue(true));
+
                 allowing(gadget).getGadgetDefinition();
                 will(returnValue(gadgetDef));
 
@@ -213,6 +231,9 @@ public class PersonPagePropertiesDTOToPersonTransformerTest
         assertEquals(p.getTheme().getCssFile(), "/ThemeCssFile");
         assertEquals(1, p.getStartTabGroup().getTabs().size());
         assertEquals(1, p.getStartTabGroup().getTabs().get(0).getGadgets().size());
+        Gadget gadget1 = p.getStartTabGroup().getTabs().get(0).getGadgets().get(0);
+        assertEquals(Boolean.FALSE, gadget1.isMaximized());
+        assertTrue(gadget1.isMinimized());
 
         context.assertIsSatisfied();
     }

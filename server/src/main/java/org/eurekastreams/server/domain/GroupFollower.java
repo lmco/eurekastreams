@@ -28,10 +28,14 @@ import net.sf.gilead.pojo.gwt.LightEntity;
  * Object representing the person following a group relationship.
  * 
  */
-@SuppressWarnings("serial")
 @Entity
 public class GroupFollower extends LightEntity implements Serializable
 {
+    /**
+     * Serial version uid.
+     */
+    private static final long serialVersionUID = 2197093976396575034L;
+
     /**
      * Instance of FollowerPk (Composite primary key object) for this class.
      */
@@ -43,6 +47,11 @@ public class GroupFollower extends LightEntity implements Serializable
      */
     @Basic
     private int groupStreamIndex = 0;
+
+    /**
+     * Whether to receive notifications after new activities are posted to this group.
+     */
+    private boolean receiveNewActivityNotifications = true;
 
     /**
      * Constructor.
@@ -86,7 +95,8 @@ public class GroupFollower extends LightEntity implements Serializable
     }
 
     /**
-     * @param inGroupStreamIndex the group stream index to set
+     * @param inGroupStreamIndex
+     *            the group stream index to set
      */
     public void setGroupStreamIndex(final int inGroupStreamIndex)
     {
@@ -99,6 +109,23 @@ public class GroupFollower extends LightEntity implements Serializable
     public int getGroupStreamIndex()
     {
         return groupStreamIndex;
+    }
+
+    /**
+     * @return the receiveNewActivityNotifications
+     */
+    public boolean receiveNewActivityNotifications()
+    {
+        return receiveNewActivityNotifications;
+    }
+
+    /**
+     * @param inReceiveNewActivityNotifications
+     *            the receiveNewActivityNotifications to set
+     */
+    public void setReceiveNewActivityNotifications(final boolean inReceiveNewActivityNotifications)
+    {
+        receiveNewActivityNotifications = inReceiveNewActivityNotifications;
     }
 
     /**
@@ -167,6 +194,7 @@ public class GroupFollower extends LightEntity implements Serializable
          * 
          * @return The generated hashcode.
          */
+        @Override
         public int hashCode()
         {
             int hashCode = 0;
@@ -182,6 +210,7 @@ public class GroupFollower extends LightEntity implements Serializable
          *            The object to compare to this one.
          * @return True if obj is equal to this one, false otherwise.
          */
+        @Override
         public boolean equals(final Object obj)
         {
             if (!(obj instanceof GroupFollowerPk))
