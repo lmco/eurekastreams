@@ -16,11 +16,18 @@
 
 package org.eurekastreams.server.action.request.stream;
 
+import java.io.Serializable;
+
 /**
  * Request for ChangeGroupActivitySubscriptionExecution.
  */
-public class ChangeGroupActivitySubscriptionExecutionRequest
+public class ChangeGroupActivitySubscriptionExecutionRequest implements Serializable
 {
+    /**
+     * Serial version uid.
+     */
+    private static final long serialVersionUID = -3057266450773584546L;
+
     /**
      * The short name of the group.
      */
@@ -30,6 +37,22 @@ public class ChangeGroupActivitySubscriptionExecutionRequest
      * Whether the user wants to receive new activity notifications.
      */
     private Boolean receiveNewActivityNotifications;
+
+    /**
+     * Constructor.
+     * 
+     * @param inGroupShortName
+     *            The short name of the group.
+     * @param inReceiveNewActivityNotifications
+     *            Whether the user wants to receive new activity notifications.
+     */
+    public ChangeGroupActivitySubscriptionExecutionRequest(final String inGroupShortName,
+            final Boolean inReceiveNewActivityNotifications)
+    {
+        super();
+        groupShortName = inGroupShortName;
+        receiveNewActivityNotifications = inReceiveNewActivityNotifications;
+    }
 
     /**
      * @return the groupShortName
