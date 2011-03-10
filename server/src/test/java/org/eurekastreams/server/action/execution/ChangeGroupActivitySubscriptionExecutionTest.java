@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
-import org.eurekastreams.server.action.request.stream.ChangeGroupActivitySubscriptionExecutionRequest;
+import org.eurekastreams.server.action.request.stream.ChangeGroupActivitySubscriptionRequest;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.ChangeGroupActivitySubscriptionMapperRequest;
 import org.jmock.Expectations;
@@ -73,6 +73,11 @@ public class ChangeGroupActivitySubscriptionExecutionTest
             groupIdsFromShortNamesMapper, changeNotificationPreferenceMapper);
 
     /**
+     * Principal.
+     */
+    private final Principal principal = context.mock(Principal.class);
+
+    /**
      * Test with invalid request type.
      */
     @Test
@@ -99,8 +104,8 @@ public class ChangeGroupActivitySubscriptionExecutionTest
     {
         final String groupShortName = "foobar";
 
-        final ChangeGroupActivitySubscriptionExecutionRequest request = //
-        new ChangeGroupActivitySubscriptionExecutionRequest(groupShortName, true);
+        final ChangeGroupActivitySubscriptionRequest request = //
+        new ChangeGroupActivitySubscriptionRequest(groupShortName, true);
 
         context.checking(new Expectations()
         {
@@ -110,6 +115,12 @@ public class ChangeGroupActivitySubscriptionExecutionTest
 
                 oneOf(groupIdsFromShortNamesMapper).execute(with(any(ArrayList.class)));
                 will(returnValue(new ArrayList<Long>()));
+
+                allowing(actionContext).getPrincipal();
+                will(returnValue(principal));
+
+                allowing(principal).getAccountId();
+                will(returnValue("snuts"));
             }
         });
 
@@ -128,13 +139,12 @@ public class ChangeGroupActivitySubscriptionExecutionTest
         final long personId = 2138L;
         final ArrayList<Long> groupIds = new ArrayList<Long>();
         final long groupId = 82L;
-        final Principal principal = context.mock(Principal.class);
         final boolean shouldReceiveNotifications = true;
 
         groupIds.add(groupId);
 
-        final ChangeGroupActivitySubscriptionExecutionRequest request = //
-        new ChangeGroupActivitySubscriptionExecutionRequest(groupShortName, shouldReceiveNotifications);
+        final ChangeGroupActivitySubscriptionRequest request = //
+        new ChangeGroupActivitySubscriptionRequest(groupShortName, shouldReceiveNotifications);
 
         changeNotificationPreferenceMapper.execute(null);
         context.checking(new Expectations()
@@ -146,11 +156,14 @@ public class ChangeGroupActivitySubscriptionExecutionTest
                 oneOf(groupIdsFromShortNamesMapper).execute(with(any(ArrayList.class)));
                 will(returnValue(groupIds));
 
-                oneOf(actionContext).getPrincipal();
+                allowing(actionContext).getPrincipal();
                 will(returnValue(principal));
 
                 oneOf(principal).getId();
                 will(returnValue(personId));
+
+                allowing(principal).getAccountId();
+                will(returnValue("snuts"));
             }
         });
 
@@ -173,13 +186,12 @@ public class ChangeGroupActivitySubscriptionExecutionTest
         final long personId = 2138L;
         final ArrayList<Long> groupIds = new ArrayList<Long>();
         final long groupId = 82L;
-        final Principal principal = context.mock(Principal.class);
         final boolean shouldReceiveNotifications = false;
 
         groupIds.add(groupId);
 
-        final ChangeGroupActivitySubscriptionExecutionRequest request = //
-        new ChangeGroupActivitySubscriptionExecutionRequest(groupShortName, shouldReceiveNotifications);
+        final ChangeGroupActivitySubscriptionRequest request = //
+        new ChangeGroupActivitySubscriptionRequest(groupShortName, shouldReceiveNotifications);
 
         changeNotificationPreferenceMapper.execute(null);
         context.checking(new Expectations()
@@ -191,11 +203,14 @@ public class ChangeGroupActivitySubscriptionExecutionTest
                 oneOf(groupIdsFromShortNamesMapper).execute(with(any(ArrayList.class)));
                 will(returnValue(groupIds));
 
-                oneOf(actionContext).getPrincipal();
+                allowing(actionContext).getPrincipal();
                 will(returnValue(principal));
 
                 oneOf(principal).getId();
                 will(returnValue(personId));
+
+                allowing(principal).getAccountId();
+                will(returnValue("snuts"));
             }
         });
 

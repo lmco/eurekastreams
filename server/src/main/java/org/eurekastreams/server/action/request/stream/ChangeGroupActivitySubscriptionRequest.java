@@ -21,7 +21,7 @@ import java.io.Serializable;
 /**
  * Request for ChangeGroupActivitySubscriptionExecution.
  */
-public class ChangeGroupActivitySubscriptionExecutionRequest implements Serializable
+public class ChangeGroupActivitySubscriptionRequest implements Serializable
 {
     /**
      * Serial version uid.
@@ -39,6 +39,13 @@ public class ChangeGroupActivitySubscriptionExecutionRequest implements Serializ
     private Boolean receiveNewActivityNotifications;
 
     /**
+     * Default constructor.
+     */
+    public ChangeGroupActivitySubscriptionRequest()
+    {
+    }
+
+    /**
      * Constructor.
      * 
      * @param inGroupShortName
@@ -46,7 +53,7 @@ public class ChangeGroupActivitySubscriptionExecutionRequest implements Serializ
      * @param inReceiveNewActivityNotifications
      *            Whether the user wants to receive new activity notifications.
      */
-    public ChangeGroupActivitySubscriptionExecutionRequest(final String inGroupShortName,
+    public ChangeGroupActivitySubscriptionRequest(final String inGroupShortName,
             final Boolean inReceiveNewActivityNotifications)
     {
         super();

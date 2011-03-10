@@ -29,6 +29,7 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
 
 /**
  * Custom stream model.
@@ -74,7 +75,7 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
      */
     public void insert(final HashMap<String, Serializable> request)
     {
-        JSONObject json = StreamJsonRequestFactory.getEmptyRequest();
+        JSONObject json = JSONParser.parse((String) request.get("stream")).isObject();
 
         if (!"".equals(request.get(StreamJsonRequestFactory.SEARCH_KEY)))
         {
@@ -102,7 +103,7 @@ public class CustomStreamModel extends BaseModel implements Fetchable<Serializab
      */
     public void update(final HashMap<String, Serializable> request)
     {
-        JSONObject json = StreamJsonRequestFactory.getEmptyRequest();
+        JSONObject json = JSONParser.parse((String) request.get("stream")).isObject();
 
         if (!"".equals(request.get(StreamJsonRequestFactory.SEARCH_KEY)))
         {

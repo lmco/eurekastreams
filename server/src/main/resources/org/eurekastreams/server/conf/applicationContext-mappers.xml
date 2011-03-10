@@ -2544,5 +2544,7 @@
 		class="org.eurekastreams.server.persistence.mappers.db.GetReadOnlyStreamsDbMapper" />
     
     <bean id="getPersonAdditionalProperties" class="org.eurekastreams.server.persistence.mappers.db.GetAllPersonAdditionalProperties" />
+
+    <bean id="changeGroupActivitySubscriptionDbMapper" class="org.eurekastreams.server.persistence.mappers.db.ChangeGroupActivitySubscriptionDbMapper" />
     
 </beans>
