@@ -80,7 +80,8 @@ public class GadgetDragHandler implements DragHandler
                 new ReorderGadgetRequest(tabId, new Long(gadgetZone.getGadgetData().getId()),
                         dropPanel.getZoneNumber(), new Integer(dropPanel.getVisibleGadgetPosition(gadgetZone))));
 
-        gadgetZone.rerender();
+        // Not rerendering here because FF has an issue with rpc communitcations breaking afterwards.
+        // gadgetZone.rerender();
     }
 
     /**

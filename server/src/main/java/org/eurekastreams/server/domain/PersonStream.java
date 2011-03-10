@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,16 +23,15 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import net.sf.gilead.pojo.gwt.LightEntity;
+import org.eurekastreams.commons.model.WrappedLightEntity;
 
 /**
  * Object representing the person following a group relationship.
- * 
  */
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "Person_Stream")
-public class PersonStream extends LightEntity implements Serializable
+public class PersonStream extends WrappedLightEntity implements Serializable
 {
     /**
      * Instance of FollowerPk (Composite primary key object) for this class.
@@ -167,6 +166,7 @@ public class PersonStream extends LightEntity implements Serializable
          * 
          * @return The generated hashcode.
          */
+        @Override
         public int hashCode()
         {
             int hashCode = 0;
@@ -182,6 +182,7 @@ public class PersonStream extends LightEntity implements Serializable
          *            The object to compare to this one.
          * @return True if obj is equal to this one, false otherwise.
          */
+        @Override
         public boolean equals(final Object obj)
         {
             if (!(obj instanceof PersonStreamPk))
@@ -190,7 +191,7 @@ public class PersonStream extends LightEntity implements Serializable
             }
             PersonStreamPk target = (PersonStreamPk) obj;
 
-            return (target.personId == this.personId) && (target.streamId == this.streamId);
+            return (target.personId == personId) && (target.streamId == streamId);
         }
     }
 }

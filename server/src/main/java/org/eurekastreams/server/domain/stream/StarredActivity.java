@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,7 @@ import javax.persistence.Entity;
 import javax.persistence.PostPersist;
 import javax.persistence.PostUpdate;
 
-import net.sf.gilead.pojo.gwt.LightEntity;
-
+import org.eurekastreams.commons.model.WrappedLightEntity;
 import org.eurekastreams.server.domain.EntityCacheUpdater;
 
 /**
@@ -34,7 +33,7 @@ import org.eurekastreams.server.domain.EntityCacheUpdater;
  */
 @SuppressWarnings("serial")
 @Entity
-public class StarredActivity extends LightEntity implements Serializable
+public class StarredActivity extends WrappedLightEntity implements Serializable
 {
     /**
      * Instance of StarredActivityPk (Composite primary key object) for this class.
@@ -222,7 +221,7 @@ public class StarredActivity extends LightEntity implements Serializable
             }
             StarredActivityPk target = (StarredActivityPk) obj;
 
-            return (target.activityId == this.activityId) && (target.personId == this.personId);
+            return (target.activityId == activityId) && (target.personId == personId);
         }
     }
 

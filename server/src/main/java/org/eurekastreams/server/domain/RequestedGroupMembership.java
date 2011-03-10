@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,13 @@ import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
-import net.sf.gilead.pojo.gwt.LightEntity;
+import org.eurekastreams.commons.model.WrappedLightEntity;
 
 /**
  * A request for membership in a (private) group.
  */
 @Entity(name = "GroupMembershipRequests")
-public class RequestedGroupMembership extends LightEntity implements Serializable
+public class RequestedGroupMembership extends WrappedLightEntity implements Serializable
 {
     /** Fingerprint. */
     private static final long serialVersionUID = 1380361014138832647L;
@@ -138,6 +138,7 @@ public class RequestedGroupMembership extends LightEntity implements Serializabl
          *
          * @return The generated hashcode.
          */
+        @Override
         public int hashCode()
         {
             int hashCode = 0;
@@ -153,6 +154,7 @@ public class RequestedGroupMembership extends LightEntity implements Serializabl
          *            The object to compare to this one.
          * @return True if obj is equal to this one, false otherwise.
          */
+        @Override
         public boolean equals(final Object obj)
         {
             if (!(obj instanceof JoinPk))
@@ -161,7 +163,7 @@ public class RequestedGroupMembership extends LightEntity implements Serializabl
             }
             JoinPk target = (JoinPk) obj;
 
-            return (target.groupId == this.groupId) && (target.personId == this.personId);
+            return (target.groupId == groupId) && (target.personId == personId);
         }
     }
 }
