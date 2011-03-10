@@ -114,6 +114,9 @@ public class StreamSearchComposite extends FlowPanel
      */
     private String lastRequest = "";
 
+    /**
+     * Wrapper for add gadget link.
+     */
     private final FlowPanel addGadgetLinkWrapper = new FlowPanel();
 
     /** Link to add a gadget for the displayed stream. */
