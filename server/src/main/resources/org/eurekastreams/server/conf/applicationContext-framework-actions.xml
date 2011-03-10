@@ -1327,6 +1327,18 @@
         <constructor-arg value="true" />
     </bean>
     
+    <bean id="changeGroupNewActivityNotificationPreference" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ChangeGroupActivitySubscriptionExecution">
+                <constructor-arg ref="getDomainGroupIdsByShortNamesMapper" />
+                <constructor-arg ref="changeGroupActivitySubscriptionDbMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+    </bean>
+    
     <bean id="getCurrentUserFollowingStatus" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />

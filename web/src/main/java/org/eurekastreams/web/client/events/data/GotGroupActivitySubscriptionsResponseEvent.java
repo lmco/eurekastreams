@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.eurekastreams.web.client.events.data;
 
+import java.util.ArrayList;
+
 /**
- * Response event object.
- * 
+ * Event that's fired with the short names of the groups that a person is subscribed to.
  */
-public class InsertedGroupMemberResponseEvent extends BaseDataResponseEvent<Integer>
+public class GotGroupActivitySubscriptionsResponseEvent extends BaseDataResponseEvent<ArrayList<String>>
 {
     /**
-     * Default constructor.
+     * Constructor.
      * 
      * @param inResponse
-     *            response/
+     *            ArrayList of the group short names the current user is subscribed to
      */
-    public InsertedGroupMemberResponseEvent(final Integer inResponse)
+    public GotGroupActivitySubscriptionsResponseEvent(final ArrayList<String> inResponse)
     {
         super(inResponse);
     }
-
 }

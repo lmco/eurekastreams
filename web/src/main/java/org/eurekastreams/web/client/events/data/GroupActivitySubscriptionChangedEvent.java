@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,22 @@
  */
 package org.eurekastreams.web.client.events.data;
 
+import org.eurekastreams.server.action.request.stream.ChangeGroupActivitySubscriptionRequest;
+
 /**
- * Response event object.
- * 
+ * Event that's fired after a successful ChangeGroupActivitySubscriptionRequest.
  */
-public class InsertedGroupMemberResponseEvent extends BaseDataResponseEvent<Integer>
+public class GroupActivitySubscriptionChangedEvent extends
+        BaseDataResponseEvent<ChangeGroupActivitySubscriptionRequest>
 {
     /**
-     * Default constructor.
+     * Constructor.
      * 
      * @param inResponse
-     *            response/
+     *            the original request
      */
-    public InsertedGroupMemberResponseEvent(final Integer inResponse)
+    public GroupActivitySubscriptionChangedEvent(final ChangeGroupActivitySubscriptionRequest inResponse)
     {
         super(inResponse);
     }
-
 }

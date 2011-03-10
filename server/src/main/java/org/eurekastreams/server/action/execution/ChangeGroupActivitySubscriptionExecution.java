@@ -24,7 +24,7 @@ import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.server.action.request.stream.ChangeGroupActivitySubscriptionExecutionRequest;
+import org.eurekastreams.server.action.request.stream.ChangeGroupActivitySubscriptionRequest;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.ChangeGroupActivitySubscriptionMapperRequest;
 
@@ -75,7 +75,7 @@ public class ChangeGroupActivitySubscriptionExecution implements ExecutionStrate
      * Set the current user's group new activity subscription.
      * 
      * @param inActionContext
-     *            the action context with the ChangeGroupActivitySubscriptionExecutionRequest
+     *            the action context with the ChangeGroupActivitySubscriptionRequest
      * @return false on error/failure, else true
      * @throws ExecutionException
      *             on error
@@ -83,14 +83,22 @@ public class ChangeGroupActivitySubscriptionExecution implements ExecutionStrate
     @Override
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        if (!(inActionContext.getParams() instanceof ChangeGroupActivitySubscriptionExecutionRequest))
+        if (!(inActionContext.getParams() instanceof ChangeGroupActivitySubscriptionRequest))
         {
             log.warn("Invalid request type");
             return new Boolean(false);
         }
+        String accountId = inActionContext.getPrincipal().getAccountId();
 
-        ChangeGroupActivitySubscriptionExecutionRequest request = //
-        (ChangeGroupActivitySubscriptionExecutionRequest) inActionContext.getParams();
+        ChangeGroupActivitySubscriptionRequest request = //
+        (ChangeGroupActivitySubscriptionRequest) inActionContext.getParams();
+
+        if (log.isInfoEnabled())
+        {
+            log.info("Setting group email notification "
+                    + (request.getReceiveNewActivityNotifications() ? "on" : "off") + " for " + accountId
+                    + " and group with short name " + request.getGroupShortName());
+        }
 
         // get the group id
         ArrayList<String> groupShortNames = new ArrayList<String>();
