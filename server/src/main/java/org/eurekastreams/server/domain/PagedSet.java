@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * 
+ *
  */
 package org.eurekastreams.server.domain;
 
@@ -22,16 +22,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.gilead.pojo.gwt.LightEntity;
-
 // TODO merge this with uinnovate's PagedSet and use from commons
 
 /**
  * For returning result sets from a mapper.
- * 
- * @param <T> the class this paged set contains.
+ *
+ * @param <T>
+ *            the class this paged set contains.
  */
-public class PagedSet<T> extends LightEntity implements Serializable
+public class PagedSet<T> implements Serializable
 {
     // TODO generate actual version ID
     /**
@@ -43,33 +42,32 @@ public class PagedSet<T> extends LightEntity implements Serializable
      * start index of a constrained range of data.
      */
     private int fromIndex;
-    
+
     /**
      * end index of a constrained range of data.
      */
     private int toIndex;
-    
+
     /**
-     * total data items. 
+     * total data items.
      */
     private int total;
-    
+
     /**
      * list of ideas.
      */
     private List<T> pagedSet;
-    
+
     /**
      * time it took to perform the search.
      */
     private String elapsedTime;
-    
+
     /**
      * no argument constructor.
-     * 
-     * if from/to were 0/0, those indices would imply
-     * it was returning the first element.
-     * Using -1/-1 keeps it unambiguous that this is an empty set.
+     *
+     * if from/to were 0/0, those indices would imply it was returning the first element. Using -1/-1 keeps it
+     * unambiguous that this is an empty set.
      */
     public PagedSet()
     {
@@ -80,35 +78,16 @@ public class PagedSet<T> extends LightEntity implements Serializable
     }
 
     /**
-     * use this to tell if the range specified is valid. 
-     * 
-     * @param from  
-     * 		the from value
-     * @param to  
-     * 		the to value
-     * 
-     * @return whether the range is valid or not.
-     */
-    public boolean isRangeValid(final int from, final int to)
-    {
-        if ((from > to) || (from < 0) || (to   < 0))
-        {
-            return false;
-        }
-        return true;
-    }
-    
-    /**
      * public constructor.
-     * 
+     *
      * @param from
-     * 		the from value
+     *            the from value
      * @param to
-     * 		the to value
+     *            the to value
      * @param inTotal
-     * 		the total value
+     *            the total value
      * @param set
-     * 		The array list
+     *            The array list
      */
     public PagedSet(final int from, final int to, final int inTotal, final List<T> set)
     {
@@ -116,7 +95,26 @@ public class PagedSet<T> extends LightEntity implements Serializable
         this.toIndex = to;
         this.total = inTotal;
         this.pagedSet = set;
-        
+
+    }
+
+    /**
+     * use this to tell if the range specified is valid.
+     *
+     * @param from
+     *            the from value
+     * @param to
+     *            the to value
+     *
+     * @return whether the range is valid or not.
+     */
+    public boolean isRangeValid(final int from, final int to)
+    {
+        if ((from > to) || (from < 0) || (to < 0))
+        {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -128,7 +126,8 @@ public class PagedSet<T> extends LightEntity implements Serializable
     }
 
     /**
-     * @param inFromIndex the fromIndex to set
+     * @param inFromIndex
+     *            the fromIndex to set
      */
     public void setFromIndex(final int inFromIndex)
     {
@@ -144,7 +143,8 @@ public class PagedSet<T> extends LightEntity implements Serializable
     }
 
     /**
-     * @param inToIndex the inToIndex to set
+     * @param inToIndex
+     *            the inToIndex to set
      */
     public void setToIndex(final int inToIndex)
     {
@@ -160,7 +160,8 @@ public class PagedSet<T> extends LightEntity implements Serializable
     }
 
     /**
-     * @param inTotal the total to set
+     * @param inTotal
+     *            the total to set
      */
     public void setTotal(final int inTotal)
     {
@@ -177,21 +178,20 @@ public class PagedSet<T> extends LightEntity implements Serializable
 
     /**
      * @param inPagedSet
-     * 		the list of entities to set
+     *            the list of entities to set
      */
     public void setPagedSet(final List<T> inPagedSet)
     {
         this.pagedSet = inPagedSet;
     }
-    
+
     /**
-     * if this pagedset is equivalent to the other one.
-     * must pass in a paged set.
-     * 
+     * if this pagedset is equivalent to the other one. must pass in a paged set.
+     *
      * warnings are suppressed because set type information is unavailable at runtime.
-     * 
+     *
      * @param set
-     * 		object to compare.
+     *            object to compare.
      * @return true if this object is equal.
      */
     @SuppressWarnings("unchecked")
@@ -202,25 +202,23 @@ public class PagedSet<T> extends LightEntity implements Serializable
         {
             return false;
         }
-        
+
         if (!(set instanceof PagedSet))
         {
             return false;
         }
-        
+
         PagedSet other = (PagedSet) set;
-        
-        return this.fromIndex == other.fromIndex 
-            && this.toIndex == other.toIndex
-            && this.total == other.total
-            && this.pagedSet.equals(other.pagedSet);
+
+        return this.fromIndex == other.fromIndex && this.toIndex == other.toIndex && this.total == other.total
+                && this.pagedSet.equals(other.pagedSet);
     }
 
-    
     // TODO use org.apache.commons.lang.builder.HashCodeBuilder for a better hashcode
     // this should be done in uinnovate and commons wherever equals()/hashcode() is implemented
     /**
      * for compatibility with equals.
+     *
      * @return int the hashcode value for the list
      */
     @Override
@@ -228,10 +226,10 @@ public class PagedSet<T> extends LightEntity implements Serializable
     {
         return pagedSet.hashCode();
     }
- 
+
     /**
      * Get a string representation of how long the search took.
-     * 
+     *
      * @return a string representation of how long the search took.
      */
     public String getElapsedTime()
@@ -241,7 +239,7 @@ public class PagedSet<T> extends LightEntity implements Serializable
 
     /**
      * sets the number of milliseconds it took to perform the search.
-     * 
+     *
      * @param inElapsedTime
      *            String representing how long the search took
      */

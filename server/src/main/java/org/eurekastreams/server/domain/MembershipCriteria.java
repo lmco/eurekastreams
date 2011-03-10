@@ -44,7 +44,7 @@ public class MembershipCriteria extends DomainEntity implements Serializable
 
     /**
      * Constructor.
-     * 
+     *
      * @param inCriteria
      *            The criteria.
      */

@@ -23,14 +23,14 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import net.sf.gilead.pojo.gwt.LightEntity;
+import org.eurekastreams.commons.model.WrappedLightEntity;
 
 /**
  * Promoted join table to fetch skills for a person, sorted by skillsIndex - this is not to be inserted, only selected.
  */
 @Entity
 @Table(name = "Background_Skills")
-public class PersonBackgroundItemSkill extends LightEntity implements Serializable
+public class PersonBackgroundItemSkill extends WrappedLightEntity implements Serializable
 {
     /**
      * Serial version uid.
@@ -72,7 +72,7 @@ public class PersonBackgroundItemSkill extends LightEntity implements Serializab
 
     /**
      * Constructor.
-     * 
+     *
      * @param inBackgroundId
      *            the background id
      * @param inBackgroundItemId
@@ -95,7 +95,7 @@ public class PersonBackgroundItemSkill extends LightEntity implements Serializab
 
     /**
      * Composite primary key for follower.
-     * 
+     *
      */
     @Embeddable
     public static class PersonBackgroundItemSkillPk implements Serializable
@@ -149,7 +149,7 @@ public class PersonBackgroundItemSkill extends LightEntity implements Serializab
 
         /**
          * Constructor.
-         * 
+         *
          * @param inBackgroundId
          *            the background id
          * @param inBackgroundItemId
@@ -175,7 +175,7 @@ public class PersonBackgroundItemSkill extends LightEntity implements Serializab
 
         /**
          * Override hashCode for comparing pk object.
-         * 
+         *
          * @return The generated hashcode.
          */
         @Override
@@ -190,7 +190,7 @@ public class PersonBackgroundItemSkill extends LightEntity implements Serializab
 
         /**
          * Override equals for comparing pk object.
-         * 
+         *
          * @param obj
          *            The object to compare to this one.
          * @return True if obj is equal to this one, false otherwise.
@@ -204,8 +204,8 @@ public class PersonBackgroundItemSkill extends LightEntity implements Serializab
             }
             PersonBackgroundItemSkillPk target = (PersonBackgroundItemSkillPk) obj;
 
-            return (target.backgroundId == this.backgroundId) && (target.backgroundItemId == this.backgroundItemId)
-                    && (target.sortIndex == this.sortIndex);
+            return (target.backgroundId == backgroundId) && (target.backgroundItemId == backgroundItemId)
+                    && (target.sortIndex == sortIndex);
         }
     }
 
