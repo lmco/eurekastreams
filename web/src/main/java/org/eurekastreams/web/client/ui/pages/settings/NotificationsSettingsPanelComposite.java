@@ -203,13 +203,15 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
                 FlowPanel cellPanel = new FlowPanel();
                 cellPanel.add(new InlineLabel(caption + " "));
 
+                GroupSubscriptionDialogContent dialogContent = new GroupSubscriptionDialogContent();
+                final Dialog dialog = new Dialog(dialogContent);
+
                 InlineLabel manageLink = new InlineLabel("(manage)");
+                manageLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
                 manageLink.addClickHandler(new ClickHandler()
                 {
                     public void onClick(final ClickEvent inArg0)
                     {
-                        GroupSubscriptionDialogContent dialogContent = new GroupSubscriptionDialogContent();
-                        Dialog dialog = new Dialog(dialogContent);
                         dialog.setBgVisible(true);
                         dialog.center();
                     }
@@ -218,7 +220,6 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
                 groupGrid.setWidget(row, 0, cellPanel);
                 break;
             }
-
         }
     }
 

@@ -16,6 +16,7 @@
 package org.eurekastreams.web.client.ui.pages.settings;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
 import org.eurekastreams.server.domain.EntityType;
@@ -24,6 +25,8 @@ import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.GotPersonJoinedGroupsResponseEvent;
+import org.eurekastreams.web.client.events.data.GroupActivitySubscriptionChangedEvent;
+import org.eurekastreams.web.client.model.GroupActivitySubscriptionModel;
 import org.eurekastreams.web.client.model.PersonJoinedGroupsModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.GroupPanel;
@@ -48,7 +51,13 @@ public class GroupSubscriptionDialogContent extends BaseDialogContent
     private PagedSet<DomainGroupModelView> groups;
 
     /** IDs of groups for which user chose to subscribe to notifications. */
-    private ArrayList<Long> subscribedGroupIds;
+    private ArrayList<String> subscribedGroupIds;
+
+    /** Subscribe buttons per group. */
+    private final HashMap<String, Widget> subscribeButtons = new HashMap<String, Widget>();
+
+    /** Unsubscribe buttons per group. */
+    private final HashMap<String, Widget> unsubscribeButtons = new HashMap<String, Widget>();
 
     /**
      * {@inheritDoc}
@@ -70,7 +79,6 @@ public class GroupSubscriptionDialogContent extends BaseDialogContent
         }
         return mainPanel;
     }
-
 
     /**
      * {@inheritDoc}
@@ -101,7 +109,7 @@ public class GroupSubscriptionDialogContent extends BaseDialogContent
         if (subscribedGroupIds == null)
         {
             // TODO
-            subscribedGroupIds = new ArrayList<Long>();
+            subscribedGroupIds = new ArrayList<String>();
             if (groups != null)
             {
                 populate();
@@ -114,12 +122,37 @@ public class GroupSubscriptionDialogContent extends BaseDialogContent
      */
     private void populate()
     {
-        for (DomainGroupModelView group : groups.getPagedSet())
+        Session.getInstance()
+                .getEventBus()
+                .addObserver(GroupActivitySubscriptionChangedEvent.class,
+                        new Observer<GroupActivitySubscriptionChangedEvent>()
+                        {
+                            public void update(final GroupActivitySubscriptionChangedEvent ev)
+                            {
+                                String groupName = ev.getResponse().getGroupShortName();
+                                boolean subscribed = ev.getResponse().getReceiveNewActivityNotifications();
+                                Widget button;
+                                button = subscribeButtons.get(groupName);
+                                if (button != null)
+                                {
+                                    button.setVisible(!subscribed);
+                                }
+                                button = unsubscribeButtons.get(groupName);
+                                if (button != null)
+                                {
+                                    button.setVisible(subscribed);
+                                }
+                            }
+                        });
+
+        for (final DomainGroupModelView group : groups.getPagedSet())
         {
             GroupPanel groupWidget = new GroupPanel(group, true, true, false);
 
             final Label subscribeButton = new Label();
+            subscribeButtons.put(group.getUniqueId(), subscribeButton);
             final Label unsubscribeButton = new Label();
+            unsubscribeButtons.put(group.getUniqueId(), unsubscribeButton);
 
             subscribeButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().groupNotifSubscribeButton());
             unsubscribeButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().groupNotifUnsubscribeButton());
@@ -128,22 +161,18 @@ public class GroupSubscriptionDialogContent extends BaseDialogContent
             {
                 public void onClick(final ClickEvent inArg0)
                 {
-                    subscribeButton.setVisible(false);
-                    unsubscribeButton.setVisible(true);
-                    // TODO Auto-generated method stub
+                    GroupActivitySubscriptionModel.getInstance().insert(group.getUniqueId());
                 }
             });
             unsubscribeButton.addClickHandler(new ClickHandler()
             {
                 public void onClick(final ClickEvent inArg0)
                 {
-                    unsubscribeButton.setVisible(false);
-                    subscribeButton.setVisible(true);
-                    // TODO Auto-generated method stub
+                    GroupActivitySubscriptionModel.getInstance().delete(group.getUniqueId());
                 }
             });
 
-            boolean subscribed = subscribedGroupIds.contains(group.getId());
+            boolean subscribed = subscribedGroupIds.contains(group.getUniqueId());
             subscribeButton.setVisible(!subscribed);
             unsubscribeButton.setVisible(subscribed);
 
