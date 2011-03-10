@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Shows a list of views.
- *
+ * 
  */
 public class FilterListPanel extends FlowPanel
 {
@@ -69,9 +69,14 @@ public class FilterListPanel extends FlowPanel
     private boolean hidden = true;
 
     /**
-     * The show more show less link.
+     * The show more show less container.
      */
-    private Anchor showMore = new Anchor("show more");
+    private FlowPanel showMore = new FlowPanel();
+
+    /**
+     * Show more show less link.
+     */
+    private Anchor showMoreLink = new Anchor("show more");
 
     /**
      * The panel to hold the views.
@@ -105,7 +110,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inViews
      *            the views.
      * @param inHiddenLineIndex
@@ -121,6 +126,8 @@ public class FilterListPanel extends FlowPanel
         views = inViews;
         hiddenLineIndex = inHiddenLineIndex;
         renderer = inRenderer;
+        showMore.add(new HTML(""));
+        showMore.add(showMoreLink);
 
         FlowPanel header = new FlowPanel();
         Label headerLbl = new Label(renderer.getTitle());
@@ -191,8 +198,6 @@ public class FilterListPanel extends FlowPanel
         viewBoundaryPanel.add(panel);
         this.add(viewBoundaryPanel);
 
-
-
         Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
                 new Observer<UpdatedHistoryParametersEvent>()
                 {
@@ -232,9 +237,9 @@ public class FilterListPanel extends FlowPanel
     {
         final FilterListPanel thisBuffered = this;
         addedHiddenLine = true;
-        
+
         showMore.setStyleName(StaticResourceBundle.INSTANCE.coreCss().showMore());
-        showMore.addClickListener(new ClickListener()
+        showMoreLink.addClickListener(new ClickListener()
         {
             public void onClick(final Widget arg0)
             {
@@ -246,7 +251,7 @@ public class FilterListPanel extends FlowPanel
                 {
                     hidden = true;
                     thisBuffered.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().unhide());
-                    showMore.setText("show more");
+                    showMoreLink.setText("show more");
                     showMore.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().showLess());
                 }
             }
@@ -256,7 +261,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * hides the text on the hidden line if its the last one.
-     *
+     * 
      * @param inHiddenLineIndex
      *            the hidden line index.
      */
@@ -278,7 +283,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Activate a filter.
-     *
+     * 
      * @param filter
      *            the filter.
      */
@@ -301,7 +306,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Adds a filter.
-     *
+     * 
      * @param filter
      *            the filter.
      */
@@ -338,7 +343,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Removes a filter.
-     *
+     * 
      * @param filter
      *            the filter.
      */
@@ -359,7 +364,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Updates the filter.
-     *
+     * 
      * @param filter
      *            the filter.
      */
@@ -398,7 +403,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Get drop panel.
-     *
+     * 
      * @return the drop panel.
      */
     public VerticalPanel getDropPanel()
@@ -408,13 +413,14 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Gets the hidden line.
-     *
+     * 
      * @return the hidden line.
      */
     public Integer getHiddenLineIndex()
     {
         return panel.getWidgetIndex(showMore);
     }
+    
 
     /**
      * Unhide.
@@ -423,13 +429,13 @@ public class FilterListPanel extends FlowPanel
     {
         hidden = false;
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().unhide());
-        showMore.setText("show less");
+        showMoreLink.setText("show less");
         showMore.addStyleName(StaticResourceBundle.INSTANCE.coreCss().showLess());
     }
 
     /**
      * Get the views.
-     *
+     * 
      * @return the views.
      */
     public List<StreamFilter> getViews()

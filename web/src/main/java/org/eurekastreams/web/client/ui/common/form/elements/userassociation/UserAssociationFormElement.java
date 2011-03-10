@@ -135,6 +135,7 @@ public class UserAssociationFormElement extends FlowPanel implements FormElement
         requiredLabel.setText("(required)");
 
         FlowPanel radioButtons = new FlowPanel();
+        radioButtons.addStyleName(StaticResourceBundle.INSTANCE.coreCss().radioButtonContainer());
         
         Label searchLDAPBy = new Label("Search by LDAP");
         searchLDAPBy.addStyleName(StaticResourceBundle.INSTANCE.coreCss().searchLdapLabel());

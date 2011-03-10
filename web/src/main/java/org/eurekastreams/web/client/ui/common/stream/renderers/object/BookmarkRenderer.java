@@ -62,7 +62,7 @@ public class BookmarkRenderer implements ObjectRenderer
                 + activity.getBaseObjectProperties().get("targetTitle") + "</a>"
                 + "</div><div class='url'>source: <a href=\"" + sourceUrl + "\" target=\"_blank\">" + sourceUrl
                 + "</a></div>" + "<div class='gwt-Label " + StaticResourceBundle.INSTANCE.coreCss().metaDescription()
-                + "'>" + activity.getBaseObjectProperties().get(".description") + "</div></div>";
+                + "'>" + activity.getBaseObjectProperties().get("description") + "</div></div>";
 
         return new HTML(html);
     }

@@ -1640,8 +1640,12 @@ body .post-expanded-panel .content-warning {
 	font-style: normal !important;
 }
 
-@sprite .search-header .add-as-gadget {
+@sprite .search-header .add-as-gadget div:first-child {
 	gwt-image: "createGadget";
+	float: left;
+}
+
+.search-header .add-as-gadget {
 	float: left;
 	margin-left: 10px;
 	width: 30px;
@@ -1651,12 +1655,17 @@ body .post-expanded-panel .content-warning {
 	overflow: hidden;
 	margin-top: 2px;
 	position: relative;
+	height: 20px;
 	z-index: 11 ! important;
 }
 
-@sprite .search-header .add-as-gadget:hover {
+@sprite .search-header .add-as-gadget:hover div:first-child {
 	gwt-image: "createGadgetHover";
-	text-indent: 35px;
+	float: left;	
+}
+
+.search-header .add-as-gadget:hover {
+	text-indent: 0;
 	width: auto;
 	color: #0066CC;
 }
@@ -2176,8 +2185,7 @@ body .post-to-stream .over-character-limit {
 
 .like-count-widget {
 	zoom: 1;
-	background: transparent url(style/images/like-bg-front.png) no-repeat
-		scroll 0 0;
+	background: transparent url(style/images/like-bg-front.png) no-repeat scroll 0 0;
 	margin-left: 5px;
 	margin-right: 5px;
 	display: inline-block;
@@ -2187,8 +2195,7 @@ body .post-to-stream .over-character-limit {
 }
 
 .users-who-liked-activity-wrapper {
-	background: transparent url(style/images/like-bg-front-hover.png)
-		no-repeat scroll 0 0 ! important;
+	background: transparent url(style/images/like-bg-front-hover.png) no-repeat scroll 0 0 ! important;
 }
 
 .users-who-liked-activity-wrapper .transparent-like-link {
@@ -2200,15 +2207,13 @@ body .post-to-stream .over-character-limit {
 }
 
 .like-count-widget .like-count {
-	background: transparent url(style/images/like-bg-back.png) no-repeat
-		scroll top right;
+	background: transparent url(style/images/like-bg-back.png) no-repeat scroll top right;
 	padding-right: 6px;
 	display: inline-block;
 }
 
 .users-who-liked-activity-wrapper .like-count {
-	background: transparent url(style/images/like-bg-back-hover.png)
-		no-repeat scroll top right;
+	background: transparent url(style/images/like-bg-back-hover.png) no-repeat scroll top right;
 }
 
 .like-count-widget a {
@@ -2229,17 +2234,15 @@ body .post-to-stream .over-character-limit {
 }
 
 .users-who-liked-activity .users-who-liked-activity-header {
-	background: transparent url(style/images/like-modal-top.png) repeat
-		scroll 0 0;
+	background: transparent url(style/images/like-modal-top.png) repeat scroll 0 0;
 	height: 10px;
 	zoom: 1;
 }
 
 .users-who-liked-activity .users-who-liked-activity-body {
-	background: transparent url(style/images/like-modal-bg.png) repeat
-		scroll 0 0;
+	background: transparent url(style/images/like-modal-bg.png) repeat scroll 0 0;
 	padding: 0 10px 5px;
-	zoom: 1;
+	zoom: 1;	
 }
 
 .users-who-liked-activity .gwt-Label {
@@ -2287,8 +2290,8 @@ body .post-to-stream .over-character-limit {
 	color: #fff;
 	zoom: 1;
 	z-index: 101;
-	margin-top: -2px;
 	margin-left: -25px;
+	margin-top: -2px;
 }
 
 .stream-message-item:hover .message-actions-area {
@@ -5137,6 +5140,9 @@ div.stream-container div.layout-container {
 @sprite .profile-website div:first-child {
 	gwt-image: "websiteIcon";
 	float: left;
+	margin-right: 10px;
+	position: relative;
+	top: 2px;
 }
 .profile-website {
 	text-align: left;
@@ -5839,16 +5845,16 @@ body .stream-page-container>div.form-error-box {
 	width: 154px;
 }
 
-@sprite .filters .header .addbutton span
+@sprite .filters .header .addbutton div:first-child
 {
 	gwt-image: "plusIcon";
+	float: left;
+	margin-right: 5px;
 }
 
 .filters .header .addbutton {
 	overflow: hidden;
 	display: inline-block;
-	padding-left: 23px;
-	padding-top: 2px;
 	font-weight: normal;
 	font-size: 12px;
 }
@@ -5856,7 +5862,7 @@ body .stream-page-container>div.form-error-box {
 .filters .header .addbutton .gwt-Anchor
 {
 	position: relative;
-	top: -5px;
+	top: -2px;
 }
 
 .filters .hide {
@@ -6024,6 +6030,8 @@ body .stream-page-container>div.form-error-box {
 
 @sprite .filters .show-more div:first-child {
 	gwt-image: "triangleRight";
+	margin-top: 4px;
+	margin-right: 4px;
 	float: left;
 }
 
@@ -6033,18 +6041,18 @@ body .stream-page-container>div.form-error-box {
 	font-size: 10px;
 	margin-top: 3px;
 	padding-bottom: 5px;
-	padding-left: 15px;
-	padding-top: 2px;
+	padding-left: 5px;
 	text-decoration: none;
 	width: 100%;
 	display: inline-block;
 	offset-left: 10px;
 }
 
-.filters .show-more.show-less {
-	background: url(style/images/triangle-down.png);
-	background-repeat: no-repeat;
-	background-position: 3px 6px;
+@sprite .filters .show-more.show-less div:first-child {
+	gwt-image: "triangleDown";
+	margin-top: 4px;
+	margin-right: 4px;
+	float: left;	
 }
 
 .yui-ac-input.default {
@@ -6081,10 +6089,8 @@ body .stream-page-container>div.form-error-box {
 	display: inline-block;
 }
 
-.show-more.hide-text,.show-less.hide-text {
-	overflow: hidden;
-	text-indent: -1000em;
-	background: none !important;
+.show-more.hide-text *,.show-less.hide-text * {
+	visibility: hidden;
 }
 
 body .dragdrop-proxy {
@@ -7642,6 +7648,8 @@ body .url-validator .required-form-label {
 	display: none;
 }
 
+.radio-button-container {}
+
 .authenticated  .removable-person:hover {
 	position: relative;
 }
@@ -8043,8 +8051,6 @@ IE SPECIFIC CSS.
 	
 	.search-header {
 		position: static !important;
-		padding-bottom: 3px;
-		padding-top: 1px;
 	}
 	
 	.post-to-stream.small {
@@ -8230,6 +8236,7 @@ IE SPECIFIC CSS.
 	
 	.form-user-association .search-ldap-label {
 		display: inline;
+		margin-bottom: -10px;
 	}
 	
 	.form-upload-panel {
@@ -8238,6 +8245,12 @@ IE SPECIFIC CSS.
 		zoom: 1;
 	}
 	
+	.form-user-association .radio-button-container { 
+		margin-top: 5px; 
+		margin-bottom: 10px; 
+		clear: both;
+	}
+		
 	.form-cancel-button a,a.form-cancel-button {
 		margin: 0;
 	}

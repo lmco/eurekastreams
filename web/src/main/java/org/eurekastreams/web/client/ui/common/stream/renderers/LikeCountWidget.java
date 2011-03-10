@@ -225,6 +225,7 @@ public class LikeCountWidget extends Composite
 
         usersWhoLikedPanelWrapper.setVisible(false);
         usersWhoLikedPanelWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().usersWhoLikedActivityWrapper());
+        usersWhoLikedPanelWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().likeCountWidget());
         RootPanel.get().add(usersWhoLikedPanelWrapper);
 
         final FocusPanel innerLikeCountPanel = new FocusPanel();

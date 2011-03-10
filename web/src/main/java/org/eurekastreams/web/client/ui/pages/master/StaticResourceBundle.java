@@ -260,6 +260,9 @@ public interface StaticResourceBundle extends ClientBundle
     @Source("style/images/triangle-right.png")
     ImageResource triangleRight();
 
+    @Source("style/images/triangle-down.png")
+    ImageResource triangleDown();
+
     @Source("style/images/plus-icon.png")
     ImageResource plusIcon();
 

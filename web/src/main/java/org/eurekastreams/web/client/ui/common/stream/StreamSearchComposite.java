@@ -38,6 +38,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.InlineHyperlink;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -113,6 +114,8 @@ public class StreamSearchComposite extends FlowPanel
      */
     private String lastRequest = "";
 
+    private final FlowPanel addGadgetLinkWrapper = new FlowPanel();
+
     /** Link to add a gadget for the displayed stream. */
     private final Hyperlink addGadgetLink;
 
@@ -157,8 +160,11 @@ public class StreamSearchComposite extends FlowPanel
         streamSearch.add(titleWrapper);
 
         addGadgetLink = new InlineHyperlink("create app", "");
-        addGadgetLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addAsGadget());
-        streamSearch.add(addGadgetLink);
+        addGadgetLinkWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addAsGadget());
+        addGadgetLinkWrapper.add(new HTML(""));
+        addGadgetLinkWrapper.add(addGadgetLink);
+
+        streamSearch.add(addGadgetLinkWrapper);
 
         searchTerm.setTitle("search this stream");
         streamSearch.add(searchTerm);

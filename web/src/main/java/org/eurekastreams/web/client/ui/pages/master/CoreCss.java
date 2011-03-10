@@ -2185,4 +2185,7 @@ public interface CoreCss extends CssResource
 
     @ClassName("yui-skin-sam")
     String yuiSkinSam();
+
+    @ClassName("radio-button-container")
+    String radioButtonContainer();
 }
