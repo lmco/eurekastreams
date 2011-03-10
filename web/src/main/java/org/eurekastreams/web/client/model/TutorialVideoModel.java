@@ -15,10 +15,6 @@
  */
 package org.eurekastreams.web.client.model;
 
-import java.util.HashSet;
-
-import org.eurekastreams.server.domain.TutorialVideoDTO;
-
 /**
  * client model for tutorialvideos.
  * 
@@ -49,14 +45,14 @@ public class TutorialVideoModel extends BaseModel implements Fetchable<Long>
      */
     public void fetch(final Long request, final boolean useClientCacheIfAvailable)
     {
-        super.callReadAction("getTutorialVideo", request, new OnSuccessCommand<HashSet<TutorialVideoDTO>>()
-        {
-            public void onSuccess(final HashSet<TutorialVideoDTO> response)
-            {
-                // Note: This is turned off until we update the videos
-                // Session.getInstance().getEventBus().notifyObservers(new GetTutorialVideoResponseEvent(response));
-            }
-        }, useClientCacheIfAvailable);
-
+        // Note: This is turned off until we update the videos
+        // super.callReadAction("getTutorialVideo", request, new OnSuccessCommand<HashSet<TutorialVideoDTO>>()
+        // {
+        // public void onSuccess(final HashSet<TutorialVideoDTO> response)
+        // {
+        // // Note: This is turned off until we update the videos
+        // Session.getInstance().getEventBus().notifyObservers(new GetTutorialVideoResponseEvent(response));
+        // }
+        // }, useClientCacheIfAvailable);
     }
 }
