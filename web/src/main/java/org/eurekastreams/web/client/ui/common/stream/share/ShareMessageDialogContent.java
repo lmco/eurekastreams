@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import java.util.HashMap;
 
 import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.commons.client.ActionRequestImpl;
-import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.server.action.request.stream.PostActivityRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
@@ -31,7 +30,7 @@ import org.eurekastreams.web.client.events.StreamReinitializeRequestEvent;
 import org.eurekastreams.web.client.events.data.GotSystemSettingsResponseEvent;
 import org.eurekastreams.web.client.model.SystemSettingsModel;
 import org.eurekastreams.web.client.ui.Session;
-import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
+import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
 import org.eurekastreams.web.client.ui.common.stream.PostToPanel;
 import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulator;
 import org.eurekastreams.web.client.ui.common.stream.decorators.verb.SharePopulator;
@@ -57,34 +56,29 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The dialog content for sharing.
- * 
+ *
  */
-public class ShareMessageDialogContent implements DialogContent
+public class ShareMessageDialogContent extends BaseDialogContent
 {
-    /**
-     * The command to close the dialog.
-     */
-    private WidgetCommand closeCommand = null;
-
     /**
      * Main flow panel.
      */
-    private FlowPanel body = new FlowPanel();
+    private final FlowPanel body = new FlowPanel();
     /**
      * The processor.
      */
-    private ActionProcessor processor;
+    private final ActionProcessor processor;
 
     /**
      * The message box.
      */
-    private TextArea commentBox = new TextArea();
+    private final TextArea commentBox = new TextArea();
 
     /**
      * The post to panel.
      */
-    private PostToPanel postToPanel;
-    
+    private final PostToPanel postToPanel;
+
     /**
      * Error message.
      */
@@ -98,20 +92,20 @@ public class ShareMessageDialogContent implements DialogContent
     /**
      * Action keys associated with recipient types.
      */
-    private HashMap<EntityType, String> actionKeys = new HashMap<EntityType, String>();
+    private final HashMap<EntityType, String> actionKeys = new HashMap<EntityType, String>();
 
     /** The count down label. */
-    private Label countDown = new Label();
+    private final Label countDown = new Label();
 
     /** Button to share content. */
-    private Hyperlink share;
+    private final Hyperlink share;
 
     /** If share button is inactive. */
     private boolean inactive = false;
 
     /**
      * Default constructor.
-     * 
+     *
      * @param sharedMessage
      *            the shared message.
      */
@@ -129,11 +123,11 @@ public class ShareMessageDialogContent implements DialogContent
         Label loading = new Label("Share this activity to your stream or another stream");
         loading.setStyleName(StaticResourceBundle.INSTANCE.coreCss().formTitle());
         body.add(loading);
-        
+
         errorMsg.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formErrorBox());
         errorMsg.setVisible(false);
         body.add(errorMsg);
-        
+
         postToPanel = new PostToPanel(postScope, true);
         body.add(postToPanel);
 
@@ -222,11 +216,11 @@ public class ShareMessageDialogContent implements DialogContent
                         {
                             recipientType = EntityType.GROUP;
                         }
-    
+
                         PostActivityRequest postRequest = new PostActivityRequest(new ActivityDTOPopulator()
                                 .getActivityDTO("", recipientType, scope.getUniqueKey(),
                                         new SharePopulator(sharedMessage, commentBox.getText()), null));
-    
+
                         processor.makeRequest(new ActionRequestImpl<Integer>(actionKeys.get(recipientType),
                                 postRequest), new AsyncCallback<ActivityDTO>()
                                 {
@@ -235,7 +229,7 @@ public class ShareMessageDialogContent implements DialogContent
                                     {
                                         // TODO handle error.
                                     }
-    
+
                                     public void onSuccess(final ActivityDTO result)
                                     {
                                         close();
@@ -262,7 +256,7 @@ public class ShareMessageDialogContent implements DialogContent
         errorMsg.setText(text);
         errorMsg.setVisible(true);
     }
-    
+
     /**
      * Hides the error.
      */
@@ -270,29 +264,10 @@ public class ShareMessageDialogContent implements DialogContent
     {
         errorMsg.setVisible(false);
     }
-    
-    /**
-     * The command to call to close the dialog.
-     * 
-     * @param command
-     *            the close command.
-     */
-    public void setCloseCommand(final WidgetCommand command)
-    {
-        closeCommand = command;
-    }
-
-    /**
-     * Call the close command.
-     */
-    public void close()
-    {
-        closeCommand.execute();
-    }
 
     /**
      * Gets the body panel.
-     * 
+     *
      * @return the body.
      */
     public Widget getBody()
@@ -302,7 +277,7 @@ public class ShareMessageDialogContent implements DialogContent
 
     /**
      * Gets the CSS name.
-     * 
+     *
      * @return the class.
      */
     public String getCssName()
@@ -312,7 +287,7 @@ public class ShareMessageDialogContent implements DialogContent
 
     /**
      * Gets the title.
-     * 
+     *
      * @return the title.
      */
     public String getTitle()

@@ -20,14 +20,13 @@ import java.util.List;
 
 import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.commons.client.ActionRequestImpl;
-import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.server.action.request.profile.ResizeAvatarRequest;
 import org.eurekastreams.server.domain.AvatarEntity;
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
-import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
+import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
 import org.eurekastreams.web.client.ui.common.form.elements.avatar.strategies.ImageUploadStrategy;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -45,14 +44,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The insides of the image crop dialog.
- *
  */
-public class ImageCropContent implements DialogContent
+public class ImageCropContent extends BaseDialogContent
 {
-    /**
-     * The command to close the dialog.
-     */
-    private WidgetCommand closeCommand = null;
     /**
      * The person object.
      */
@@ -212,27 +206,9 @@ public class ImageCropContent implements DialogContent
     }
 
     /**
-     * The command to call to close the dialog.
-     *
-     * @param command
-     *            the close command.
-     */
-    public void setCloseCommand(final WidgetCommand command)
-    {
-        closeCommand = command;
-    }
-
-    /**
-     * Call the close command.
-     */
-    public void close()
-    {
-        closeCommand.execute();
-    }
-
-    /**
      * Provides a hook to fire off events when the dialog is shown.
      */
+    @Override
     public void show()
     {
         imgCrop = createImageCropper("avatarBase", strategy.getX(), strategy.getY(), strategy.getCropSize());

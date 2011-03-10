@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.eurekastreams.web.client.ui.common.notification;
 
 import java.util.List;
 
-import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.server.domain.ApplicationAlertNotification;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.web.client.events.DialogLinkClickedEvent;
@@ -27,7 +26,7 @@ import org.eurekastreams.web.client.events.data.GotNotificationListResponseEvent
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.NotificationListModel;
 import org.eurekastreams.web.client.ui.Session;
-import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
+import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
 import org.eurekastreams.web.client.ui.common.notification.rendering.NotificationsRenderer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -43,19 +42,16 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Dialog content (i.e. main panel) for showing notifications.
  */
-public class NotificationsDialogContent implements DialogContent
+public class NotificationsDialogContent extends BaseDialogContent
 {
     /** Main panel. */
-    private Panel main = new FlowPanel();
+    private final Panel main = new FlowPanel();
 
     /** Notification list wrapper. */
-    private ScrollPanel scrollPanel = new ScrollPanel();
+    private final ScrollPanel scrollPanel = new ScrollPanel();
 
     /** Notification list. */
-    private Panel listPanel = new FlowPanel();
-
-    /** Close command. */
-    WidgetCommand closeCommand;
+    private final Panel listPanel = new FlowPanel();
 
     /** To unwire the observer when done with dialog. */
     private Observer<DialogLinkClickedEvent> linkClickedObserver;
@@ -135,14 +131,6 @@ public class NotificationsDialogContent implements DialogContent
     /**
      * {@inheritDoc}
      */
-    public void close()
-    {
-        closeCommand.execute();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public Widget getBody()
     {
         return main;
@@ -162,21 +150,6 @@ public class NotificationsDialogContent implements DialogContent
     public String getTitle()
     {
         return "Notifications";
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setCloseCommand(final WidgetCommand command)
-    {
-        closeCommand = command;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void show()
-    {
     }
 
     /**

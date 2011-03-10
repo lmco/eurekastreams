@@ -15,10 +15,9 @@
  */
 package org.eurekastreams.web.client.ui.common.dialog.login;
 
-import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.web.client.events.FormLoginCompleteEvent;
 import org.eurekastreams.web.client.ui.Session;
-import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
+import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -31,25 +30,22 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 
 /**
  * Template for a login dialog.
  */
-public class LoginDialogContent implements DialogContent
+public class LoginDialogContent extends BaseDialogContent
 {
     /** The login form. */
     private final FormPanel loginForm = new FormPanel();
-
-    /** The close command. */
-    private WidgetCommand closeCommand = null;
 
     /** The error label. */
     private final Label errorMessage = new Label("");
@@ -230,17 +226,6 @@ public class LoginDialogContent implements DialogContent
     }
 
     /**
-     * The command to call to close the dialog.
-     *
-     * @param command
-     *            the close command.
-     */
-    public void setCloseCommand(final WidgetCommand command)
-    {
-        closeCommand = command;
-    }
-
-    /**
      * The CSS class to use for this dialog.
      *
      * @return the name of the CSS class to use.
@@ -248,17 +233,6 @@ public class LoginDialogContent implements DialogContent
     public String getCssName()
     {
         return StaticResourceBundle.INSTANCE.coreCss().loginDialog();
-    }
-
-    /**
-     * Call the close command.
-     */
-    public void close()
-    {
-        if (closeCommand != null)
-        {
-            closeCommand.execute();
-        }
     }
 
     /**

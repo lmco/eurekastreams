@@ -7765,6 +7765,43 @@ html,body {
 	height: 100%
 }
 
+.group-notif-subscription-panel
+{
+	width: 500px;
+	height: 400px;
+	overflow: scroll;
+	padding: 20px 20px 0;
+}
+
+.group-notif-subscription-panel .connection-item
+{
+	width: auto;
+}
+
+.group-notif-subscribe-button, .group-notif-unsubscribe-button
+{
+	border: 0;
+	margin-top: 15px;
+	height: 25px;
+	width: 97px;
+	float: right;
+	cursor: pointer;
+}
+
+.group-notif-subscribe-button
+{
+	background-image: url('style/images/followBtn.png');
+}
+
+.group-notif-unsubscribe-button
+{
+	background-image: url('style/images/stopFollowBtn.png');
+}
+
+
+
+
+
 /*/////////////////////////////////////////////////////////////////////////////
 
 IE SPECIFIC CSS.

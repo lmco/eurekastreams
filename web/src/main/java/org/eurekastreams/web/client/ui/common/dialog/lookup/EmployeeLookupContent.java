@@ -15,12 +15,11 @@
  */
 package org.eurekastreams.web.client.ui.common.dialog.lookup;
 
-import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.model.PersonLookupModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.PersonPanel;
-import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
+import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -39,13 +38,10 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Dialog for looking up an employee.
  */
-public class EmployeeLookupContent implements DialogContent
+public class EmployeeLookupContent extends BaseDialogContent
 {
     /** The lookup form. */
     private final FormPanel lookupForm = new FormPanel();
-
-    /** The close command. */
-    private WidgetCommand closeCommand = null;
 
     /** The last name text box. */
     private final TextBox lastName = new TextBox();
@@ -204,25 +200,6 @@ public class EmployeeLookupContent implements DialogContent
     public FormPanel getFormPanel()
     {
         return lookupForm;
-    }
-
-    /**
-     * The command to call to close the dialog.
-     *
-     * @param command
-     *            the close command.
-     */
-    public void setCloseCommand(final WidgetCommand command)
-    {
-        closeCommand = command;
-    }
-
-    /**
-     * Call the close command.
-     */
-    public void close()
-    {
-        closeCommand.execute();
     }
 
     /**
