@@ -24,6 +24,7 @@ import org.eurekastreams.server.domain.PagedSet;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.data.GotGroupActivitySubscriptionsResponseEvent;
 import org.eurekastreams.web.client.events.data.GotPersonJoinedGroupsResponseEvent;
 import org.eurekastreams.web.client.events.data.GroupActivitySubscriptionChangedEvent;
 import org.eurekastreams.web.client.model.GroupActivitySubscriptionModel;
@@ -95,6 +96,7 @@ public class GroupSubscriptionDialogContent extends BaseDialogContent
                         public void update(final GotPersonJoinedGroupsResponseEvent event)
                         {
                             eventBus.removeObserver(event, this);
+
                             groups = event.getResponse();
                             if (subscribedGroupIds != null)
                             {
@@ -108,12 +110,21 @@ public class GroupSubscriptionDialogContent extends BaseDialogContent
         }
         if (subscribedGroupIds == null)
         {
-            // TODO
-            subscribedGroupIds = new ArrayList<String>();
-            if (groups != null)
-            {
-                populate();
-            }
+            eventBus.addObserver(GotGroupActivitySubscriptionsResponseEvent.class,
+                    new Observer<GotGroupActivitySubscriptionsResponseEvent>()
+                    {
+                        public void update(final GotGroupActivitySubscriptionsResponseEvent event)
+                        {
+                            eventBus.removeObserver(event, this);
+
+                            subscribedGroupIds = event.getResponse();
+                            if (groups != null)
+                            {
+                                populate();
+                            }
+                        }
+                    });
+            GroupActivitySubscriptionModel.getInstance().fetch(null, true);
         }
     }
 
@@ -188,7 +199,6 @@ public class GroupSubscriptionDialogContent extends BaseDialogContent
      */
     public String getCssName()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return StaticResourceBundle.INSTANCE.coreCss().groupNotifSubscriptionDialog();
     }
 }

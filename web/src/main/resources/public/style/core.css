@@ -7765,11 +7765,16 @@ html,body {
 	height: 100%
 }
 
-.group-notif-subscription-panel
+.group-notif-subscription-dialog
 {
 	width: 500px;
+}
+
+.group-notif-subscription-panel
+{
 	height: 400px;
-	overflow: scroll;
+	overflow-x: hidden;
+	overflow-y: auto;
 	padding: 20px 20px 0;
 }
 
@@ -7782,22 +7787,19 @@ html,body {
 {
 	border: 0;
 	margin-top: 15px;
-	height: 25px;
-	width: 97px;
 	float: right;
 	cursor: pointer;
 }
 
-.group-notif-subscribe-button
+@sprite .group-notif-subscribe-button
 {
-	background-image: url('style/images/followBtn.png');
+	gwt-image: "subscribeButton"; 
 }
 
-.group-notif-unsubscribe-button
+@sprite .group-notif-unsubscribe-button
 {
-	background-image: url('style/images/stopFollowBtn.png');
+	gwt-image: "unsubscribeButton"; 
 }
-
 
 
 
@@ -9074,3 +9076,8 @@ IE SPECIFIC CSS.
 		display: none;
 	}
 }
+/*/////////////////////////////////////////////////////////////////////////////
+
+END OF IE SPECIFIC CSS.
+
+/////////////////////////////////////////////////////////////////////////////*/

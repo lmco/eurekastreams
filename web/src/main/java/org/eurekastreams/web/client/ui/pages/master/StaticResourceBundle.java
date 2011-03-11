@@ -18,8 +18,8 @@ package org.eurekastreams.web.client.ui.pages.master;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.CssResource.NotStrict;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.ImageResource.ImageOptions;
 import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
@@ -35,7 +35,7 @@ public interface StaticResourceBundle extends ClientBundle
 
     /**
      * Core CSS.
-     * 
+     *
      * @return core.css.
      */
     @Source("style/core.css")
@@ -43,7 +43,7 @@ public interface StaticResourceBundle extends ClientBundle
 
     /**
      * YUI CSS.
-     * 
+     *
      * @return yui-core.css.
      */
     @NotStrict
@@ -215,7 +215,7 @@ public interface StaticResourceBundle extends ClientBundle
 
     @Source("style/images/addBtnSmall.png")
     ImageResource addBtnSmall();
-    
+
     @Source("style/images/addBtnLarge.png")
     ImageResource addBtnLarge();
 
@@ -274,4 +274,10 @@ public interface StaticResourceBundle extends ClientBundle
 
     @Source("style/images/deleteBtn.png")
     ImageResource deleteBtn();
+
+    @Source("style/images/subscribeButton.png")
+    ImageResource subscribeButton();
+
+    @Source("style/images/unsubscribeButton.png")
+    ImageResource unsubscribeButton();
 }
