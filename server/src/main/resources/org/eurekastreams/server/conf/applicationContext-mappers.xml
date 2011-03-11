@@ -2491,6 +2491,9 @@
     
     <bean id="getFollowedGroupIdsForPersonByIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFollowedGroupIdsForPersonByIdDbMapper" />
     
+    <bean id="getFollowerPersonIdsForGroupByIdWithActivityNotificationsDbMapper" 
+        class="org.eurekastreams.server.persistence.mappers.db.GetFollowerPersonIdsForGroupByIdWithActivityNotificationsDbMapper" />
+    
     <bean id="getFollowerPersonIdsForGroupByIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFollowerPersonIdsForGroupByIdDbMapper" />    
     
     <bean id="getFollowerPersonIdsForPersonByIdDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetFollowerPersonIdsForPersonByIdDbMapper" />
