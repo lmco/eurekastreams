@@ -7778,6 +7778,16 @@ html,body {
 	padding: 20px 20px 0;
 }
 
+.group-notif-subscription-help-text
+{
+	border-bottom: 1px solid #BBBBBB;
+	font-size: 12px;
+	font-weight: bold;
+	margin: 0 40px 10px 20px;
+	padding-bottom: 10px;
+}
+
+
 .group-notif-subscription-panel .connection-item
 {
 	width: auto;

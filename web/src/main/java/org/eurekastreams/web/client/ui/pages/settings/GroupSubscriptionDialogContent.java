@@ -16,7 +16,9 @@
 package org.eurekastreams.web.client.ui.pages.settings;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.TreeSet;
 
 import org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest;
 import org.eurekastreams.server.domain.EntityType;
@@ -38,6 +40,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -48,7 +51,10 @@ public class GroupSubscriptionDialogContent extends BaseDialogContent
     /** The main content panel. */
     private FlowPanel mainPanel;
 
-    /** List of gropus user is a member of. */
+    /** The panel containing the list of groups. */
+    private FlowPanel listPanel;
+
+    /** List of groups user is a member of. */
     private PagedSet<DomainGroupModelView> groups;
 
     /** IDs of groups for which user chose to subscribe to notifications. */
@@ -76,7 +82,19 @@ public class GroupSubscriptionDialogContent extends BaseDialogContent
         if (mainPanel == null)
         {
             mainPanel = new FlowPanel();
-            mainPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().groupNotifSubscriptionPanel());
+
+            Label label = new Label("Subscribe to the groups you wish to receive notifications from "
+                    + "and unsubscribe from those you don't.");
+            label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().groupNotifSubscriptionHelpText());
+            mainPanel.add(label);
+
+            listPanel = new FlowPanel();
+            listPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().groupNotifSubscriptionPanel());
+            mainPanel.add(listPanel);
+
+            SimplePanel waitSpinner = new SimplePanel();
+            waitSpinner.addStyleName(StaticResourceBundle.INSTANCE.coreCss().waitSpinner());
+            listPanel.add(waitSpinner);
         }
         return mainPanel;
     }
@@ -124,7 +142,7 @@ public class GroupSubscriptionDialogContent extends BaseDialogContent
                             }
                         }
                     });
-            GroupActivitySubscriptionModel.getInstance().fetch(null, true);
+            GroupActivitySubscriptionModel.getInstance().fetch(null, false);
         }
     }
 
@@ -133,6 +151,7 @@ public class GroupSubscriptionDialogContent extends BaseDialogContent
      */
     private void populate()
     {
+
         Session.getInstance()
                 .getEventBus()
                 .addObserver(GroupActivitySubscriptionChangedEvent.class,
@@ -156,9 +175,33 @@ public class GroupSubscriptionDialogContent extends BaseDialogContent
                             }
                         });
 
-        for (final DomainGroupModelView group : groups.getPagedSet())
+        // remove spinner
+        listPanel.clear();
+
+        // display message if no groups
+        if (groups.getPagedSet().isEmpty())
         {
-            GroupPanel groupWidget = new GroupPanel(group, true, true, false);
+            Label label = new Label("You are not a member of any groups.");
+            label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemEmpty());
+            listPanel.add(label);
+            return;
+        }
+
+        // sort groups by name
+        TreeSet<DomainGroupModelView> orderedGroups = new TreeSet<DomainGroupModelView>(
+                new Comparator<DomainGroupModelView>()
+                {
+                    public int compare(final DomainGroupModelView inO1, final DomainGroupModelView inO2)
+                    {
+                        return inO1.getName().compareToIgnoreCase(inO2.getName());
+                    }
+                });
+        orderedGroups.addAll(groups.getPagedSet());
+
+        // display groups
+        for (final DomainGroupModelView group : orderedGroups)
+        {
+            GroupPanel groupWidget = new GroupPanel(group, false, true, false);
 
             final Label subscribeButton = new Label();
             subscribeButtons.put(group.getUniqueId(), subscribeButton);
@@ -190,7 +233,7 @@ public class GroupSubscriptionDialogContent extends BaseDialogContent
             groupWidget.insert(subscribeButton, 0);
             groupWidget.insert(unsubscribeButton, 1);
 
-            mainPanel.add(groupWidget);
+            listPanel.add(groupWidget);
         }
     }
 

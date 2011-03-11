@@ -2195,6 +2195,9 @@ public interface CoreCss extends CssResource
     @ClassName("group-notif-subscription-panel")
     String groupNotifSubscriptionPanel();
 
+    @ClassName("group-notif-subscription-help-text")
+    String groupNotifSubscriptionHelpText();
+
     @ClassName("group-notif-subscribe-button")
     String groupNotifSubscribeButton();
 

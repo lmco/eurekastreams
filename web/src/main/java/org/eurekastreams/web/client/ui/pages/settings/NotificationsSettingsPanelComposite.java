@@ -77,8 +77,10 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
         PERSONAL_PREF_CATEGORIES.put("Comment is posted to an activity you saved", Category.COMMENT_TO_SAVED_ACTIVITY);
         PERSONAL_PREF_CATEGORIES.put("New follower is added to your stream", Category.FOLLOW_PERSON);
 
+        // Note: Since group coordinators are also members by default (although they can leave), "joined" mostly covers
+        // the "coordinate" case, although it does not allow for the notifications to be different
         GROUP_PREF_CATEGORIES.put("Activity is posted to a group you joined", Category.POST_TO_JOINED_GROUP);
-        GROUP_PREF_CATEGORIES.put("Activity is posted to a group you coordinate", Category.POST_TO_GROUP_STREAM);
+        // GROUP_PREF_CATEGORIES.put("Activity is posted to a group you coordinate", Category.POST_TO_GROUP_STREAM);
         // GROUP_PREF_CATEGORIES.put("Comments", Category.COMMENT_IN_GROUP_STREAM);
         GROUP_PREF_CATEGORIES.put("New member joins a group you coordinate", Category.FOLLOW_GROUP);
         GROUP_PREF_CATEGORIES.put("Group Membership is requested in a private group you coordinate",
@@ -242,12 +244,6 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
 
         // display each category name (one per row)
         int row = 0;
-//        for (Entry<String, Category> category : categories.entrySet())
-//        {
-//            row++;
-//            grid.setText(row, 0, category.getKey());
-//            grid.getRowFormatter().getElement(row).setId("row-" + category.getValue().name());
-//        }
         for (String categoryName : categories.keySet())
         {
             row++;

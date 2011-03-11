@@ -32,9 +32,9 @@ import org.eurekastreams.server.action.execution.notification.translator.Notific
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.domain.NotificationDTO;
+import org.eurekastreams.server.domain.NotificationFilterPreference.Category;
 import org.eurekastreams.server.domain.NotificationFilterPreferenceDTO;
 import org.eurekastreams.server.domain.NotificationType;
-import org.eurekastreams.server.domain.NotificationFilterPreference.Category;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.db.GetNotificationFilterPreferencesByPeopleIds;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -110,7 +110,6 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
     public Serializable execute(final TaskHandlerActionContext<ActionContext> inActionContext)
             throws ExecutionException
     {
-        List<UserActionRequest> asyncRequests = new ArrayList<UserActionRequest>();
         CreateNotificationsRequest currentRequest = (CreateNotificationsRequest) inActionContext.getActionContext()
                 .getParams();
 
@@ -126,6 +125,10 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
         }
         Collection<NotificationDTO> notifications = translator.translate(currentRequest.getActorId(),
                 currentRequest.getDestinationId(), currentRequest.getActivityId());
+        if (notifications == null || notifications.isEmpty())
+        {
+            return Boolean.TRUE;
+        }
 
         // Gets all notification recipients so their preferences can be retrieved using the mapper
         List<Long> allRecipients = new ArrayList<Long>();
@@ -134,6 +137,8 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
             allRecipients.addAll(dto.getRecipientIds());
         }
         List<NotificationFilterPreferenceDTO> recipientFilterPreferences = preferencesMapper.execute(allRecipients);
+
+        List<UserActionRequest> asyncRequests = inActionContext.getUserActionRequests();
 
         for (NotificationDTO notification : notifications)
         {
@@ -187,7 +192,6 @@ public class CreateNotificationsExecution implements TaskHandlerExecutionStrateg
             }
         }
 
-        inActionContext.getUserActionRequests().addAll(asyncRequests);
         return Boolean.TRUE;
     }
 

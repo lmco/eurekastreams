@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,8 @@
  */
 package org.eurekastreams.server.action.execution.notification.translator;
 
-import static org.eurekastreams.commons.test.IsEqualInternally.equalInternally;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,8 +29,6 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.NotificationDTO;
 import org.eurekastreams.server.domain.NotificationType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
-import org.eurekastreams.server.persistence.mappers.requests.FindByIdRequest;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -73,26 +72,20 @@ public class GroupStreamPostTranslatorTest
         }
     };
 
-    /** Mock coordinator mapper. */
-    private DomainMapper<Long, List<Long>> mapper = context.mock(DomainMapper.class, "coordIdMapper");
-
     /** Fixture: Mapper to get list of members of a group. */
-    private DomainMapper<Long, List<Long>> memberMapper = context.mock(DomainMapper.class);
-
-    /** Fixture: Get group mapper. */
-    private FindByIdMapper<DomainGroup> groupFinder = context.mock(FindByIdMapper.class);
+    private final DomainMapper<Long, List<Long>> memberMapper = context.mock(DomainMapper.class);
 
     /** System under test. */
     private GroupStreamPostTranslator sut;
 
     /** Test list of coordinators. */
-    private List<Long> coordinators = Arrays.asList(COORDINATOR1_ID, COORDINATOR2_ID);
+    private final List<Long> coordinators = Arrays.asList(COORDINATOR1_ID, COORDINATOR2_ID);
 
     /** Test list of members. */
-    private List<Long> members = Arrays.asList(MEMBER1_ID, MEMBER2_ID);
+    private final List<Long> members = Arrays.asList(MEMBER1_ID, MEMBER2_ID);
 
     /** Test group. */
-    private DomainGroup group = context.mock(DomainGroup.class);
+    private final DomainGroup group = context.mock(DomainGroup.class);
 
     /**
      * Setup test.
@@ -100,32 +93,7 @@ public class GroupStreamPostTranslatorTest
     @Before
     public void setup()
     {
-        sut = new GroupStreamPostTranslator(mapper, memberMapper, groupFinder);
-
-        final FindByIdRequest request = new FindByIdRequest("DomainGroup", GROUP_ID);
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(groupFinder).execute(with(equalInternally(request)));
-                will(returnValue(group));
-            }
-        });
-    }
-
-    /**
-     * Sets expectations for no notification suppression.
-     */
-    private void setupGroupNoSuppress()
-    {
-        context.checking(new Expectations()
-        {
-            {
-                allowing(group).isSuppressPostNotifToMember();
-                will(returnValue(false));
-                allowing(group).isSuppressPostNotifToCoordinator();
-                will(returnValue(false));
-            }
-        });
+        sut = new GroupStreamPostTranslator(memberMapper);
     }
 
     /**
@@ -134,143 +102,11 @@ public class GroupStreamPostTranslatorTest
     @Test
     public void testTranslateGroupStreamPost()
     {
-        setupGroupNoSuppress();
         context.checking(new Expectations()
         {
             {
-                oneOf(mapper).execute(GROUP_ID);
-                will(returnValue(coordinators));
                 oneOf(memberMapper).execute(GROUP_ID);
                 will(returnValue(members));
-            }
-        });
-
-        Collection<NotificationDTO> notifs = sut.translate(ACTOR_ID, GROUP_ID, ACTIVITY_ID);
-
-        context.assertIsSatisfied();
-
-        Assert.assertNotNull(notifs);
-        Assert.assertEquals(2, notifs.size());
-
-        Iterator<NotificationDTO> iter = notifs.iterator();
-
-        NotificationDTO notif1 = iter.next();
-        Assert.assertEquals(ACTIVITY_ID, notif1.getActivityId());
-        Assert.assertEquals(NotificationType.POST_TO_GROUP_STREAM, notif1.getType());
-        Assert.assertEquals(GROUP_ID, notif1.getDestinationId());
-        Assert.assertEquals(EntityType.GROUP, notif1.getDestinationType());
-        Assert.assertEquals(coordinators, notif1.getRecipientIds());
-        Assert.assertEquals(ACTOR_ID, notif1.getActorId());
-
-        NotificationDTO notif2 = iter.next();
-        Assert.assertEquals(ACTIVITY_ID, notif2.getActivityId());
-        Assert.assertEquals(NotificationType.POST_TO_JOINED_GROUP, notif2.getType());
-        Assert.assertEquals(GROUP_ID, notif2.getDestinationId());
-        Assert.assertEquals(EntityType.GROUP, notif2.getDestinationType());
-        Assert.assertArrayEquals(new Object[] { MEMBER1_ID }, notif2.getRecipientIds().toArray());
-        Assert.assertEquals(ACTOR_ID, notif2.getActorId());
-    }
-
-    /**
-     * Test that the notification is not sent for a coordinator posting to his own group stream.
-     */
-    @Test
-    public void testTranslateOwnGroupStreamPost()
-    {
-        setupGroupNoSuppress();
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(mapper).execute(GROUP_ID);
-                will(returnValue(coordinators));
-                oneOf(memberMapper).execute(GROUP_ID);
-                will(returnValue(Collections.EMPTY_LIST));
-            }
-        });
-
-        Collection<NotificationDTO> notifs = sut.translate(COORDINATOR1_ID, GROUP_ID, ACTIVITY_ID);
-        Assert.assertEquals(1, notifs.size());
-
-        NotificationDTO notif = notifs.iterator().next();
-        Assert.assertEquals(COORDINATOR2_ID, (long) notif.getRecipientIds().get(0));
-
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Test that the notification is not sent for a member posting to his own group stream.
-     */
-    @Test
-    public void testTranslateOwnGroupStreamPostMember()
-    {
-        setupGroupNoSuppress();
-        context.checking(new Expectations()
-        {
-            {
-                oneOf(mapper).execute(GROUP_ID);
-                will(returnValue(Collections.EMPTY_LIST));
-                oneOf(memberMapper).execute(GROUP_ID);
-                will(returnValue(members));
-            }
-        });
-
-        Collection<NotificationDTO> notifs = sut.translate(MEMBER1_ID, GROUP_ID, ACTIVITY_ID);
-        Assert.assertEquals(1, notifs.size());
-
-        NotificationDTO notif = notifs.iterator().next();
-        Assert.assertEquals(1, notif.getRecipientIds().size());
-        Assert.assertEquals(MEMBER2_ID, (long) notif.getRecipientIds().get(0));
-
-        context.assertIsSatisfied();
-    }
-
-    /**
-     * Test creating the notification for the event of posting to a group stream.
-     */
-    @Test
-    public void testTranslateGroupStreamPostDisableBoth()
-    {
-        context.checking(new Expectations()
-        {
-            {
-                allowing(mapper).execute(GROUP_ID);
-                will(returnValue(coordinators));
-                allowing(memberMapper).execute(GROUP_ID);
-                will(returnValue(members));
-
-                allowing(group).isSuppressPostNotifToMember();
-                will(returnValue(true));
-                allowing(group).isSuppressPostNotifToCoordinator();
-                will(returnValue(true));
-            }
-        });
-
-        Collection<NotificationDTO> notifs = sut.translate(ACTOR_ID, GROUP_ID, ACTIVITY_ID);
-
-        context.assertIsSatisfied();
-
-        Assert.assertNotNull(notifs);
-        Assert.assertEquals(0, notifs.size());
-    }
-
-    /**
-     * Test creating the notification for the event of posting to a group stream.
-     */
-    @Test
-    public void testTranslateGroupStreamPostDisableMember()
-    {
-        context.checking(new Expectations()
-        {
-            {
-                allowing(mapper).execute(GROUP_ID);
-                will(returnValue(coordinators));
-                allowing(memberMapper).execute(GROUP_ID);
-                will(returnValue(members));
-
-                allowing(group).isSuppressPostNotifToMember();
-                will(returnValue(true));
-                allowing(group).isSuppressPostNotifToCoordinator();
-                will(returnValue(false));
             }
         });
 
@@ -285,31 +121,25 @@ public class GroupStreamPostTranslatorTest
 
         NotificationDTO notif1 = iter.next();
         Assert.assertEquals(ACTIVITY_ID, notif1.getActivityId());
-        Assert.assertEquals(NotificationType.POST_TO_GROUP_STREAM, notif1.getType());
+        Assert.assertEquals(NotificationType.POST_TO_JOINED_GROUP, notif1.getType());
         Assert.assertEquals(GROUP_ID, notif1.getDestinationId());
         Assert.assertEquals(EntityType.GROUP, notif1.getDestinationType());
-        Assert.assertEquals(coordinators, notif1.getRecipientIds());
+        Assert.assertEquals(members, notif1.getRecipientIds());
         Assert.assertEquals(ACTOR_ID, notif1.getActorId());
     }
 
     /**
-     * Test creating the notification for the event of posting to a group stream.
+     * Test creating the notification for the event of posting to a group stream when there are no members or none with
+     * notifications enabled.
      */
     @Test
-    public void testTranslateGroupStreamPostDisableCoordinator()
+    public void testTranslateGroupStreamPostNoMembers()
     {
         context.checking(new Expectations()
         {
             {
-                allowing(mapper).execute(GROUP_ID);
-                will(returnValue(coordinators));
-                allowing(memberMapper).execute(GROUP_ID);
-                will(returnValue(members));
-
-                allowing(group).isSuppressPostNotifToMember();
-                will(returnValue(false));
-                allowing(group).isSuppressPostNotifToCoordinator();
-                will(returnValue(true));
+                oneOf(memberMapper).execute(GROUP_ID);
+                will(returnValue(Collections.EMPTY_LIST));
             }
         });
 
@@ -317,17 +147,7 @@ public class GroupStreamPostTranslatorTest
 
         context.assertIsSatisfied();
 
-        Assert.assertNotNull(notifs);
-        Assert.assertEquals(1, notifs.size());
-
-        Iterator<NotificationDTO> iter = notifs.iterator();
-
-        NotificationDTO notif2 = iter.next();
-        Assert.assertEquals(ACTIVITY_ID, notif2.getActivityId());
-        Assert.assertEquals(NotificationType.POST_TO_JOINED_GROUP, notif2.getType());
-        Assert.assertEquals(GROUP_ID, notif2.getDestinationId());
-        Assert.assertEquals(EntityType.GROUP, notif2.getDestinationType());
-        Assert.assertArrayEquals(new Object[] { MEMBER1_ID }, notif2.getRecipientIds().toArray());
-        Assert.assertEquals(ACTOR_ID, notif2.getActorId());
+        assertNotNull(notifs);
+        assertTrue(notifs.isEmpty());
     }
 }
