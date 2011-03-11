@@ -20,14 +20,14 @@ import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eurekastreams.server.persistence.mappers.stream.CachedMapperTest;
+import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Tests getting liked activity ids for a given user.
  */
-public class GetLikedActivityIdsByUserIdsDbMapperTest extends CachedMapperTest
+public class GetLikedActivityIdsByUserIdsDbMapperTest extends MapperTest
 {
     /**
      * The user to find liked activities for.
@@ -43,14 +43,13 @@ public class GetLikedActivityIdsByUserIdsDbMapperTest extends CachedMapperTest
      * System under test.
      */
     private GetLikedActivityIdsByUserIdsDbMapper mapper = new GetLikedActivityIdsByUserIdsDbMapper();
-    
+
     /**
      * Setup fixtures.
      */
     @Before
     public void setup()
     {
-        mapper.setCache(getCache());
         mapper.setEntityManager(getEntityManager());
     }
 

@@ -4449,11 +4449,17 @@
     <!-- This class is just a stub for the time being to fulfill the Update and Delete Execution strat requirements for the mapper. -->
     <bean id="domainGroupBannerCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.UpdateCachedDomainGroupBannerIdMapper"/>    
      
-    
-    
-    
-    
-    
+    <!-- this action is kicked off by liking activity (which clears cache list), and just reloads the list into cache, 
+    doesn't need to be a _FORCE_REFRESH, if it has happened already, no need to ping DB again -->
+    <bean id="loadLikedActivityIdsByUserId" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean parent="baseParamListExecuteDomainMapperExecution">
+                <constructor-arg ref="getLikedActivityIdsByUserId" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
     
     <bean id="updatePersonAvatarCachesStrategy" class="org.eurekastreams.server.action.execution.profile.UpdatePersonAvatarCaches"/>
 

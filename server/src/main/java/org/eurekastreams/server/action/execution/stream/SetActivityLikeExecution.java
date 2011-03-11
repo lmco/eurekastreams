@@ -41,7 +41,7 @@ import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Action to add or remove like on activity for current user.
- *
+ * 
  */
 public class SetActivityLikeExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
@@ -72,7 +72,7 @@ public class SetActivityLikeExecution implements TaskHandlerExecutionStrategy<Pr
 
     /**
      * Constructor.
-     *
+     * 
      * @param inInsertLikedActivity
      *            Mapper for liking an activity.
      * @param inDeleteLikedActivity
@@ -111,12 +111,15 @@ public class SetActivityLikeExecution implements TaskHandlerExecutionStrategy<Pr
 
         if (request.getLikeActionType() == LikeActionType.ADD_LIKE)
         {
+            insertLikedActivity.execute(likeActivityData);
+
+            inActionContext.getUserActionRequests().add(
+                    new UserActionRequest("loadLikedActivityIdsByUserId", null, userId));
+
             CreateNotificationsRequest notificationRequest = new CreateNotificationsRequest(RequestType.LIKE, userId,
                     0L, request.getActivityId());
             inActionContext.getUserActionRequests().add(
                     new UserActionRequest(CreateNotificationsRequest.ACTION_NAME, null, notificationRequest));
-
-            insertLikedActivity.execute(likeActivityData);
 
         }
         else
