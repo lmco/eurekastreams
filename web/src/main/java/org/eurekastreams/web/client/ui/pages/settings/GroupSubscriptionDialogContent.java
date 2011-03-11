@@ -187,8 +187,8 @@ public class GroupSubscriptionDialogContent extends BaseDialogContent
             subscribeButton.setVisible(!subscribed);
             unsubscribeButton.setVisible(subscribed);
 
-            groupWidget.add(subscribeButton);
-            groupWidget.add(unsubscribeButton);
+            groupWidget.insert(subscribeButton, 0);
+            groupWidget.insert(unsubscribeButton, 1);
 
             mainPanel.add(groupWidget);
         }
