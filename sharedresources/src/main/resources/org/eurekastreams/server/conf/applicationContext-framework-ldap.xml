@@ -84,6 +84,12 @@
         <constructor-arg value="true"/>
     </bean>
     
+    <bean id="findPersonByAccountIdFilter" class="org.eurekastreams.server.persistence.mappers.ldap.filters.FindByAttribute">
+        <constructor-arg value="none"/>
+        <constructor-arg ref="findPersonByAttributeQueryFilter"/>
+        <constructor-arg value="true"/>
+    </bean>    
+    
     <bean id="findPersonByCnWildcardFilter" class="org.eurekastreams.server.persistence.mappers.ldap.filters.FindByAttribute">
         <constructor-arg value="none"/>
         <constructor-arg ref="findPersonByAttributeQueryFilter"/>
