@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,14 +30,13 @@ import org.junit.Test;
 
 /**
  * Test.
- * 
  */
-public class GetPeopleWhoLikedActivityExecutionTest
+public class GetPeopleWhoLikedItemExecutionTest
 {
     /**
      * System under test.
      */
-    private GetPeopleWhoLikedActivityExecution sut;
+    private GetPeopleWhoLikedItemExecution sut;
 
     /**
      * Context for building mock objects.
@@ -77,7 +76,7 @@ public class GetPeopleWhoLikedActivityExecutionTest
 
         final List<PersonModelView> peopleList = new ArrayList<PersonModelView>();
 
-        sut = new GetPeopleWhoLikedActivityExecution(mapper, peopleMapper);
+        sut = new GetPeopleWhoLikedItemExecution(mapper, peopleMapper);
 
         context.checking(new Expectations()
         {

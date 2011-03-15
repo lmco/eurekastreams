@@ -39,6 +39,8 @@
 	<!-- ========== CACHE KEYS ========== -->
 	
 	<util:constant id="CacheKeys.ORG_IDS_DIRECTLY_COORD_BY_PERSON" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.ORG_IDS_DIRECTLY_COORD_BY_PERSON" />
+	<util:constant id="CacheKeys.LIKERS_BY_RESOURCE_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_RESOURCE_ID" />
+	<util:constant id="CacheKeys.LIKERS_BY_ACTIVITY_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID" />
 	
 	
 	
@@ -2352,10 +2354,6 @@
 	<bean id="indexEntity"
 		class="org.eurekastreams.server.persistence.mappers.IndexEntity" />
 
-	<bean
-		id="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID"
-		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
-
 
 	<bean id="getPeopleWhoLikedActivity"
 		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
@@ -2363,8 +2361,7 @@
 			<bean
 				class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
 				<constructor-arg ref="toStringCacheKeySuffixTransformer" />
-				<constructor-arg
-					ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID" />
+				<constructor-arg ref="CacheKeys.LIKERS_BY_ACTIVITY_ID" />
 				<constructor-arg value="True" />
 				<property name="cache" ref="memcachedCache" />
 			</bean>
@@ -2379,8 +2376,34 @@
 			<!-- Cache refresher -->
 			<bean
 				class="org.eurekastreams.server.persistence.mappers.cache.SetKeyedCollectionCacheMapper">
-				<constructor-arg
-					ref="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID" />
+				<constructor-arg ref="CacheKeys.LIKERS_BY_ACTIVITY_ID" />
+				<property name="cache" ref="memcachedCache" />
+			</bean>
+		</constructor-arg>
+	</bean>
+
+	<bean id="getPeopleWhoLikedResource"
+		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">
+		<constructor-arg>
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.cache.PartialCacheResultsMapper">
+				<constructor-arg ref="toStringCacheKeySuffixTransformer" />
+				<constructor-arg ref="CacheKeys.LIKERS_BY_RESOURCE_ID" />
+				<constructor-arg value="True" />
+				<property name="cache" ref="memcachedCache" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg>
+			<!-- Database mapper to fall back on if not found in cache -->
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.db.resource.GetPeopleWhoLikedResourceDbMapper" />
+		</constructor-arg>
+		<constructor-arg ref="collectionCombiner" />
+		<constructor-arg>
+			<!-- Cache refresher -->
+			<bean
+				class="org.eurekastreams.server.persistence.mappers.cache.SetKeyedCollectionCacheMapper">
+				<constructor-arg ref="CacheKeys.LIKERS_BY_RESOURCE_ID" />
 				<property name="cache" ref="memcachedCache" />
 			</bean>
 		</constructor-arg>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.eurekastreams.server.persistence.mappers.cache;
 
 /**
  * Collection of Cache keys.
- * 
+ *
  */
 public final class CacheKeys
 {
@@ -58,6 +58,11 @@ public final class CacheKeys
      * Key for list of people who liked an activity.
      */
     public static final String LIKERS_BY_ACTIVITY_ID = "LikedByFor:";
+
+    /**
+     * Key for list of people who liked a resource.
+     */
+    public static final String LIKERS_BY_RESOURCE_ID = "LikedByForRs:";
 
     /**
      * Pointer key for person by opensocial id.
