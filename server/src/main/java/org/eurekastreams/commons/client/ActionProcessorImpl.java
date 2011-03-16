@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 /**
  * The queuable action processor takes in requests to the action rpc service. It has the ability to queue up requests
@@ -69,6 +70,7 @@ public class ActionProcessorImpl implements ActionProcessor
     public ActionProcessorImpl(final ActionRPCServiceAsync inService)
     {
         service = inService;
+        ((ServiceDefTarget) service).setServiceEntryPoint("/gwt_rpc");
     }
 
     /**
@@ -187,7 +189,6 @@ public class ActionProcessorImpl implements ActionProcessor
     {
         sessionId = inSessionId;
     }
-    
 
     /**
      * This is just here for tests.

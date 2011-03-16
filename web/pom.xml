@@ -338,9 +338,9 @@
                     <webAppConfig>
                         <contextPath>/</contextPath>
                     </webAppConfig>
-                    <webAppSourceDirectory>${project.build.directory}/${project.build.finalName}/${build.gwt.modulename}</webAppSourceDirectory>
+                    <webAppSourceDirectory>${project.build.directory}/${project.build.finalName}/eureka</webAppSourceDirectory>
                     <contextPath>/</contextPath>
-                    <webXml>${project.build.directory}/${project.build.finalName}/${build.gwt.modulename}/WEB-INF/web.xml</webXml>
+                    <webXml>${project.build.directory}/${project.build.finalName}/eureka/WEB-INF/web.xml</webXml>
                     <requestLog  implementation="org.mortbay.jetty.NCSARequestLog">
 			            <filename>${project.build.directory}/jetty-access.log</filename>
 			            <retainDays>1</retainDays>
@@ -581,12 +581,246 @@
             </properties>
         </profile>
         <profile>
-            <id>gwt-no-cobertura</id>
+            <id>connect-server-project</id>
             <activation>
                 <property>
-                    <name>!cobertura</name>
+                    <name>split</name>
+                    <value>connectserver</value>
                 </property>
             </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <webResources>
+                                <resource>
+                                    <directory>${project.build.directory}/classes/public/gadgets</directory>
+                                    <targetPath>org/eurekastreams/gadgets</targetPath>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.directory}/classes/public</directory>
+                                    <targetPath></targetPath>
+                                    <includes>
+                                        <include>*.*</include>
+                                        <include>plugins/**</include>
+                                        <include>scripts/**</include>
+                                        <include>style/**</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>gadgets</exclude>
+                                    </excludes>
+                                </resource>
+                            </webResources>
+                            <warSourceExcludes>.gwt-tmp/**,WEB-INF/classes/javax/**</warSourceExcludes>
+                            <packagingExcludes>WEB-INF/classes/public/**, WEB-INF/classes/database/**,WEB-INF/classes/db/**,WEB-INF/classes/scripts/**</packagingExcludes>
+                            <warName>${project.build.finalName}</warName>
+                            <!--
+                                this is a workaround because of a bug in
+                                this plugin when performing war
+                                overlays.
+                            -->
+                            <webappDirectory>${project.build.directory}/${project.build.finalName}/eureka</webappDirectory>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>server-project</id>
+            <activation>
+                <property>
+                    <name>split</name>
+                    <value>cdnserver</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>gwt-maven-plugin</artifactId>
+                        <version>2.1.0-1</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.google.gwt</groupId>
+                                <artifactId>gwt-user</artifactId>
+                                <version>${gwtVersion}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>com.google.gwt</groupId>
+                                <artifactId>gwt-dev</artifactId>
+                                <version>${gwtVersion}</version>
+                            </dependency>
+                           <dependency>
+                                <groupId>com.google.gwt</groupId>
+                                <artifactId>gwt-servlet</artifactId>
+                                <version>${gwtVersion}</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <module>org.eurekastreams.web.ApplicationRpcOnly</module>
+                            <logLevel>INFO</logLevel>
+                            <extraJvmArgs>-Xmx1024m</extraJvmArgs>
+                            <gwtVersion>${gwtVersion}</gwtVersion>
+                            <mergedWebXml>${project.build.directory}/web.xml</mergedWebXml>
+                            <webXmlServletPathAsIs>true</webXmlServletPathAsIs>
+                            <runTarget>Application.html</runTarget>
+                            <noServer>true</noServer>
+                            <compileReport>true</compileReport>
+                            <port>8080</port>
+                            <hostedWebapp>ROOT</hostedWebapp>
+                            <style>${build.gwt.compile.style}</style>
+                            <localWorkers>1</localWorkers>
+                       </configuration>
+                        <executions>
+                            <execution>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <webResources>
+                                <resource>
+                                    <directory>${project.build.directory}/classes/public/gadgets</directory>
+                                    <targetPath>org/eurekastreams/gadgets</targetPath>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.directory}/classes/public</directory>
+                                    <targetPath></targetPath>
+                                    <includes>
+                                        <include>*.*</include>
+                                        <include>plugins/**</include>
+                                        <include>scripts/**</include>
+                                        <include>style/**</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>gadgets</exclude>
+                                    </excludes>
+                                </resource>
+                            </webResources>
+                            <warSourceExcludes>.gwt-tmp/**,WEB-INF/classes/javax/**</warSourceExcludes>
+                            <packagingExcludes>WEB-INF/classes/public/**, WEB-INF/classes/database/**,WEB-INF/classes/db/**,WEB-INF/classes/scripts/**</packagingExcludes>
+                            <warName>${project.build.finalName}</warName>
+                            <!--
+                                this is a workaround because of a bug in
+                                this plugin when performing war
+                                overlays.
+                            -->
+                            <webappDirectory>${project.build.directory}/${project.build.finalName}/eureka</webappDirectory>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>client-project</id>
+            <activation>
+                <property>
+                    <name>split</name>
+                    <value>cdnclient</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>gwt-maven-plugin</artifactId>
+                        <version>2.1.0-1</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.google.gwt</groupId>
+                                <artifactId>gwt-user</artifactId>
+                                <version>${gwtVersion}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>com.google.gwt</groupId>
+                                <artifactId>gwt-dev</artifactId>
+                                <version>${gwtVersion}</version>
+                            </dependency>
+                           <dependency>
+                                <groupId>com.google.gwt</groupId>
+                                <artifactId>gwt-servlet</artifactId>
+                                <version>${gwtVersion}</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <module>${build.gwt.modulename}</module>
+                            <logLevel>INFO</logLevel>
+                            <extraJvmArgs>-Xmx1024m</extraJvmArgs>
+                            <gwtVersion>${gwtVersion}</gwtVersion>
+                            <mergedWebXml>${project.build.directory}/web.xml</mergedWebXml>
+                            <webXmlServletPathAsIs>true</webXmlServletPathAsIs>
+                            <runTarget>Application.html</runTarget>
+                            <noServer>true</noServer>
+                            <compileReport>true</compileReport>
+                            <port>8080</port>
+                            <hostedWebapp>ROOT</hostedWebapp>
+                            <style>${build.gwt.compile.style}</style>
+                            <localWorkers>1</localWorkers>
+                       </configuration>
+                        <executions>
+                            <execution>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <webResources>
+                                <resource>
+                                    <directory>${project.build.directory}/classes/public/gadgets</directory>
+                                    <targetPath>org/eurekastreams/gadgets</targetPath>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.directory}/classes/public</directory>
+                                    <targetPath></targetPath>
+                                    <includes>
+                                        <include>*.*</include>
+                                        <include>plugins/**</include>
+                                        <include>scripts/**</include>
+                                        <include>style/**</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>gadgets</exclude>
+                                    </excludes>
+                                </resource>
+                            </webResources>
+                            <warSourceExcludes>.gwt-tmp/**,WEB-INF/classes/javax/**</warSourceExcludes>
+                            <packagingExcludes>WEB-INF/classes/public/**, WEB-INF/classes/database/**,WEB-INF/classes/db/**,WEB-INF/classes/scripts/**,**.jar</packagingExcludes>
+                            <warName>${project.build.finalName}-client</warName>
+                            <!--
+                                this is a workaround because of a bug in
+                                this plugin when performing war
+                                overlays.
+                            -->
+                            <webappDirectory>${project.build.directory}/${project.build.finalName}/eureka</webappDirectory>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>combined-project</id>
+            <activation>
+                <property>
+                    <name>!split</name>
+                </property>
+            </activation>
+            <properties>
+            	<build.web.cdn>.</build.web.cdn>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -647,10 +881,6 @@
                         <configuration>
                             <webResources>
                                 <resource>
-                                    <directory>${project.build.directory}/unpack/lib-java</directory>
-                                    <targetPath>WEB-INF/lib</targetPath>
-                                </resource>
-                                <resource>
                                     <directory>${project.build.directory}/classes/public/gadgets</directory>
                                     <targetPath>org/eurekastreams/gadgets</targetPath>
                                 </resource>
@@ -667,20 +897,7 @@
                                         <exclude>gadgets</exclude>
                                     </excludes>
                                 </resource>
-                                <resource>
-                                    <directory>${project.build.directory}/classes/conf</directory>
-                                    <targetPath>WEB-INF/classes/conf</targetPath>
-                                    <includes>
-                                        <include>log4j.xml</include>
-                                    </includes>
-                                </resource>
                             </webResources>
-                            <!--
-                                This path is where the mergexml goal of
-                                the gwt plugin places the merged web.xml
-                                file.
-                            -->
-                            <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
                             <warSourceExcludes>.gwt-tmp/**,WEB-INF/classes/javax/**</warSourceExcludes>
                             <packagingExcludes>WEB-INF/classes/public/**, WEB-INF/classes/database/**,WEB-INF/classes/db/**,WEB-INF/classes/scripts/**</packagingExcludes>
                             <warName>${project.build.finalName}</warName>
@@ -689,23 +906,7 @@
                                 this plugin when performing war
                                 overlays.
                             -->
-                            <overlays>
-                                <overlay>
-                                    <groupId>org.apache.shindig</groupId>
-                                    <artifactId>shindig-server</artifactId>
-                                    <type>war</type>
-                                    <excludes>
-                                        <exclude>WEB-INF/web.xml</exclude>
-                                        <exclude>WEB-INF/lib/rome-0.9.jar</exclude>
-                                        <exclude>samplecontainer/**</exclude>
-                                        <exclude>sampledata/**</exclude>
-                                        <exclude>container/**</exclude>
-                                    </excludes>
-                                </overlay>
-                            </overlays>
-
-                            <webappDirectory>${project.build.directory}/${project.build.finalName}/${build.gwt.modulename}</webappDirectory>
-
+                            <webappDirectory>${project.build.directory}/${project.build.finalName}/eureka</webappDirectory>
                         </configuration>
                     </plugin>
                 </plugins>

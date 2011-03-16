@@ -1,3 +1,4 @@
+var eurekaScriptsFound = true;
 /*
 *********** yahoo-dom-event.js
 ****************************************************
