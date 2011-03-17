@@ -2066,6 +2066,7 @@
             </bean>
         </constructor-arg>
         <constructor-arg ref="postActivityUpdateStreamsByActorMapper" />
+        <constructor-arg ref="findOrInsertSharedResourceByUniqueKeyMapper" />
     </bean>
 
     <bean id="postPersonActivityExecutionStrategy"
@@ -2082,6 +2083,7 @@
             </bean>
         </constructor-arg>
         <constructor-arg ref="postActivityUpdateStreamsByActorMapper" />
+        <constructor-arg ref="findOrInsertSharedResourceByUniqueKeyMapper" />
     </bean>
 
     <bean id="sendGroupAccessRequestAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">

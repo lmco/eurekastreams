@@ -28,6 +28,7 @@ import org.eurekastreams.server.action.request.stream.PostActivityRequest;
 import org.eurekastreams.server.action.validation.stream.PostActivityTestHelpers;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.domain.stream.SharedResource;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.InsertMapper;
 import org.eurekastreams.server.persistence.mappers.cache.PostActivityUpdateStreamsByActorMapper;
@@ -45,10 +46,10 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link PostActivityExecutionStrategy}.
- *
+ * 
  * Note: There are not tests for failure scenarios since this execution strategy does not have a need to handle any
  * exceptions. They are passed up to the action controller which then wraps them and returns them to the client.
- *
+ * 
  */
 @SuppressWarnings("unchecked")
 public class PostActivityExecutionStrategyTest
@@ -81,7 +82,7 @@ public class PostActivityExecutionStrategyTest
     /**
      * Mocked test instance of the {@link BulkActivitiesMapper}.
      */
-    private final DomainMapper<List<Long>, List<ActivityDTO>>  activitiesMapperMock = context.mock(DomainMapper.class);
+    private final DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapperMock = context.mock(DomainMapper.class);
 
     /**
      * Mocked test instance of the {@link RecipientRetriever}.
@@ -93,6 +94,12 @@ public class PostActivityExecutionStrategyTest
      */
     private final PostActivityUpdateStreamsByActorMapper updateStreamsByActorMapperMock = context
             .mock(PostActivityUpdateStreamsByActorMapper.class);
+
+    /**
+     * Mapper to get or insert shared resources.
+     */
+    private DomainMapper<SharedResource, SharedResource> findOrInsertSharedResourceMapper = context.mock(
+            DomainMapper.class, "findOrInsertSharedResourceMapper");
 
     /**
      * Mocked test instance of a {@link CommentDTO}.
@@ -129,11 +136,12 @@ public class PostActivityExecutionStrategyTest
         // the type of notifications that are sent and that is not tested here, picking person as
         // the default.
         sut = new PostActivityExecutionStrategy(activityInsertMapperMock, commentInsertMapperMock,
-                activitiesMapperMock, recipientRetrieverMock, updateStreamsByActorMapperMock);
+                activitiesMapperMock, recipientRetrieverMock, updateStreamsByActorMapperMock,
+                findOrInsertSharedResourceMapper);
     }
 
     /**
-     * This test ensures a successful execution of the business logic for a {@link Person}.
+     * This test ensures a successful execution of the business logic for a Person.
      */
     @Test
     public void testSuccessfulExecute()
@@ -167,13 +175,62 @@ public class PostActivityExecutionStrategyTest
                 will(returnValue(activityResults));
 
                 oneOf(updateStreamsByActorMapperMock).execute(currentActivity);
-
             }
         });
 
-        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext =
-            new TaskHandlerActionContext<PrincipalActionContext>(
-                actionContext, new ArrayList<UserActionRequest>());
+        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext // 
+        = new TaskHandlerActionContext<PrincipalActionContext>(actionContext, new ArrayList<UserActionRequest>());
+        sut.execute(currentTaskHandlerActionContext);
+
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test submitting an activity with a url.
+     */
+    @Test
+    public void testSuccessfulShareWithLink()
+    {
+        final ActivityDTO currentActivity = PostActivityTestHelpers.buildActivityDTO(
+                PostActivityTestHelpers.DestinationStreamTestState.VALID, false, testComment, DESTINATION_ID);
+        currentActivity.getBaseObjectProperties().put("targetUrl", "http://foo.com");
+
+        final List<ActivityDTO> activityResults = new ArrayList<ActivityDTO>();
+        activityResults.add(currentActivity);
+
+        final PostActivityRequest request = new PostActivityRequest(currentActivity);
+
+        final Principal currentPrincipal = new DefaultPrincipal(ACCOUNT_ID, OPENSOCIAL_ID, USER_ID);
+
+        final ServiceActionContext actionContext = new ServiceActionContext(request, currentPrincipal);
+
+        final SharedResource sr = new SharedResource();
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(recipientRetrieverMock).getParentOrganization(with(currentActivity));
+
+                oneOf(recipientRetrieverMock).getStreamScope(currentActivity);
+
+                oneOf(recipientRetrieverMock).isDestinationStreamPublic(currentActivity);
+
+                oneOf(activityInsertMapperMock).execute(with(any(PersistenceRequest.class)));
+
+                oneOf(activityInsertMapperMock).flush();
+
+                oneOf(activitiesMapperMock).execute(with(any(List.class)));
+                will(returnValue(activityResults));
+
+                oneOf(updateStreamsByActorMapperMock).execute(currentActivity);
+
+                oneOf(findOrInsertSharedResourceMapper).execute(with(any(SharedResource.class)));
+                will(returnValue(sr));
+            }
+        });
+
+        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext //
+        = new TaskHandlerActionContext<PrincipalActionContext>(actionContext, new ArrayList<UserActionRequest>());
         sut.execute(currentTaskHandlerActionContext);
 
         context.assertIsSatisfied();
@@ -222,9 +279,8 @@ public class PostActivityExecutionStrategyTest
             }
         });
 
-        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext =
-            new TaskHandlerActionContext<PrincipalActionContext>(
-                actionContext, new ArrayList<UserActionRequest>());
+        TaskHandlerActionContext<PrincipalActionContext> currentTaskHandlerActionContext //
+        = new TaskHandlerActionContext<PrincipalActionContext>(actionContext, new ArrayList<UserActionRequest>());
         sut.execute(currentTaskHandlerActionContext);
 
         context.assertIsSatisfied();

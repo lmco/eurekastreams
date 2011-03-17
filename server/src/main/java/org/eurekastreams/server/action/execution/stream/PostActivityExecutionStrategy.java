@@ -34,6 +34,8 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.ActivityVerb;
+import org.eurekastreams.server.domain.stream.BaseObjectType;
+import org.eurekastreams.server.domain.stream.SharedResource;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.InsertMapper;
 import org.eurekastreams.server.persistence.mappers.cache.PostActivityUpdateStreamsByActorMapper;
@@ -44,11 +46,10 @@ import org.eurekastreams.server.service.actions.strategies.RecipientRetriever;
 
 /**
  * This class contains the business logic for posting an Activity to the system.
- *
+ * 
  */
 public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
-
     /**
      * Local logger instance.
      */
@@ -81,8 +82,13 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
     private final PostActivityUpdateStreamsByActorMapper updateStreamsByActorMapper;
 
     /**
+     * Mapper to get or insert shared resources.
+     */
+    private DomainMapper<SharedResource, SharedResource> findOrInsertSharedResourceMapper;
+
+    /**
      * Constructor for the PostActivityExecutionStrategy.
-     *
+     * 
      * @param inInsertMapper
      *            - instance of the {@link InsertMapper} for the {@link Activity} object.
      * @param inInsertCommentDAO
@@ -93,29 +99,33 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
      *            - instance of the {@link RecipientRetriever}.
      * @param inUpdateStreamsByActorMapper
      *            - instance of the {@link PostActivityUpdateStreamsByActorMapper}.
+     * @param inFindOrInsertSharedResourceMapper
+     *            mapper to find or insert shared resources
      */
     public PostActivityExecutionStrategy(final InsertMapper<Activity> inInsertMapper,
             final InsertActivityComment inInsertCommentDAO,
             final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper,
             final RecipientRetriever inRecipientRetriever,
-            final PostActivityUpdateStreamsByActorMapper inUpdateStreamsByActorMapper)
+            final PostActivityUpdateStreamsByActorMapper inUpdateStreamsByActorMapper,
+            final DomainMapper<SharedResource, SharedResource> inFindOrInsertSharedResourceMapper)
     {
         insertMapper = inInsertMapper;
         insertCommentDAO = inInsertCommentDAO;
         activitiesMapper = inActivitiesMapper;
         recipientRetriever = inRecipientRetriever;
         updateStreamsByActorMapper = inUpdateStreamsByActorMapper;
+        findOrInsertSharedResourceMapper = inFindOrInsertSharedResourceMapper;
     }
 
     /**
      * {@inheritDoc}.
-     *
+     * 
      * Perform the business logic for posting an {@link Activity} to the system.
-     *
+     * 
      * Create the {@link Activity} object from the provided {@link ActivityDTO}, assign appropriate values, update the
      * cached streams related to the actor (surgical strike) and submit assemble async requests to be submitted to the
      * queue.
-     *
+     * 
      * @return Populated instance of the {@link ActivityDTO} after being persisted.
      */
     @Override
@@ -193,7 +203,7 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
 
     /**
      * Method to convert ActivityDTO to an Activity object.
-     *
+     * 
      * @param inActivityDTO
      *            - ActivityDTO instance to be converted.
      * @return - Activity object populated with the values from the ActivityDTO passed in.
@@ -203,6 +213,7 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
         Activity currentActivity = new Activity();
         currentActivity.setAnnotation(inActivityDTO.getAnnotation());
         // This will only occur in the Share verb scenario.
+
         if (inActivityDTO.getBaseObjectProperties().containsKey("originalActivityId")
                 && (inActivityDTO.getBaseObjectProperties().get("originalActivityId") != null))
         {
@@ -217,6 +228,22 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
                         + inActivityDTO.getBaseObjectProperties().get("originalActivityId"), nex);
             }
         }
+
+        if (inActivityDTO.getBaseObjectProperties().containsKey("targetUrl")
+                && inActivityDTO.getBaseObjectProperties().get("targetUrl") != null)
+        {
+            String url = inActivityDTO.getBaseObjectProperties().get("targetUrl");
+            // has a link to share
+            logger.info("New activity shares link with url: " + url);
+            SharedResource sr = findOrInsertSharedResourceMapper.execute(new SharedResource(BaseObjectType.BOOKMARK,
+                    url));
+            if (sr != null)
+            {
+                logger.info("Found shared resource - id: " + sr.getId());
+                currentActivity.setSharedLink(sr);
+            }
+        }
+
         currentActivity.setBaseObject(inActivityDTO.getBaseObjectProperties());
         currentActivity.setBaseObjectType(inActivityDTO.getBaseObjectType());
         currentActivity.setLocation(inActivityDTO.getLocation());
@@ -235,5 +262,4 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
 
         return currentActivity;
     }
-
 }

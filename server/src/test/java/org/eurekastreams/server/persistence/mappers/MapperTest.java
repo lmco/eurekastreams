@@ -61,7 +61,7 @@ public abstract class MapperTest
     {
         this.entityManager = inEntityManager;
     }
-    
+
     /**
      * Load the DBUnit XML for the all tests in this suite. Override this in the subclass if you want it to load a
      * different dataset file.
