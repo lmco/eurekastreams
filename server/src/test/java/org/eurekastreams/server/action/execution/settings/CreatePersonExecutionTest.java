@@ -39,7 +39,7 @@ import org.junit.Test;
 
 /**
  * Test for CreatePersonExecution.
- *
+ * 
  */
 public class CreatePersonExecutionTest
 {
@@ -141,6 +141,7 @@ public class CreatePersonExecutionTest
                 will(returnValue(persistResourceExecution));
 
                 allowing(persistResourceExecution).execute(with(any(TaskHandlerActionContext.class)));
+                will(returnValue(person));
 
                 allowing(createRequest).getSendEmail();
                 will(returnValue(true));
@@ -194,6 +195,7 @@ public class CreatePersonExecutionTest
                 will(returnValue(persistResourceExecution));
 
                 allowing(persistResourceExecution).execute(with(any(TaskHandlerActionContext.class)));
+                will(returnValue(person));
 
                 allowing(createRequest).getSendEmail();
                 will(returnValue(false));
@@ -244,6 +246,7 @@ public class CreatePersonExecutionTest
                 will(returnValue(persistResourceExecution));
 
                 allowing(persistResourceExecution).execute(with(any(TaskHandlerActionContext.class)));
+                will(returnValue(person));
 
                 allowing(createRequest).getSendEmail();
                 will(returnValue(true));
@@ -294,6 +297,7 @@ public class CreatePersonExecutionTest
                 will(returnValue(persistResourceExecution));
 
                 allowing(persistResourceExecution).execute(with(any(TaskHandlerActionContext.class)));
+                will(returnValue(person));
 
                 allowing(createRequest).getSendEmail();
                 will(returnValue(true));

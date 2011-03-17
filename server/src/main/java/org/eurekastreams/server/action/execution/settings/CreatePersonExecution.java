@@ -40,7 +40,7 @@ import org.eurekastreams.server.service.actions.strategies.ReflectiveUpdater;
 
 /**
  * Strategy for creating person record in the system.
- *
+ * 
  */
 public class CreatePersonExecution implements TaskHandlerExecutionStrategy<ActionContext>
 {
@@ -76,7 +76,7 @@ public class CreatePersonExecution implements TaskHandlerExecutionStrategy<Actio
 
     /**
      * Constructor.
-     *
+     * 
      * @param inCreatePersonActionFactory
      *            action factory persist user updates.
      * @param inPersonMapper
@@ -98,10 +98,10 @@ public class CreatePersonExecution implements TaskHandlerExecutionStrategy<Actio
 
     /**
      * Add person to the system.
-     *
+     * 
      * @param inActionContext
      *            The action context
-     *
+     * 
      * @return true on success.
      */
     @Override
@@ -119,7 +119,7 @@ public class CreatePersonExecution implements TaskHandlerExecutionStrategy<Actio
         final HashMap<String, Serializable> personData = inPerson.getProperties(Boolean.FALSE);
         personData.put("organization", org);
 
-        persistResourceExecution.execute(new TaskHandlerActionContext<PrincipalActionContext>(
+        Person person = (Person) persistResourceExecution.execute(new TaskHandlerActionContext<PrincipalActionContext>(
                 new PrincipalActionContext()
                 {
                     private static final long serialVersionUID = 9196683601970713330L;
@@ -164,6 +164,6 @@ public class CreatePersonExecution implements TaskHandlerExecutionStrategy<Actio
                             inPerson.getEmail(), inPerson.getAccountId())));
         }
 
-        return true;
+        return person;
     }
 }

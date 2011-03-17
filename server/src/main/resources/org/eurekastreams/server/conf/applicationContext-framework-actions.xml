@@ -198,7 +198,21 @@
         </constructor-arg>
         <constructor-arg ref="taskHandler" />
         <constructor-arg value="true" />        
-    </bean> 
+    </bean>     
+    
+    <bean id="createPersonFromLdap" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" /> 
+        <constructor-arg>                
+            <bean class="org.eurekastreams.server.action.execution.CreatePersonFromLdapExecution">
+                <constructor-arg ref="ldapPersonLookupViaAccountIdAttribute" />
+                <constructor-arg ref="getRootOrganizationIdAndShortNameMapper" />
+                <constructor-arg ref="createPersonExecution" />                
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="false" />        
+    </bean>
     
     <bean id="syncGroupActivityRecipientParentOrganization" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
         <constructor-arg ref="noValidationStrategy" />        
@@ -269,18 +283,18 @@
     
     <bean id="createPersonAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
         <constructor-arg ref="noValidationStrategy" />        
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.settings.CreatePersonExecution">
-                <constructor-arg ref="createPersonActionFactory" />
-                <constructor-arg ref="jpaPersonMapper" />
-                <!-- email action ref -->
-                <constructor-arg value="sendWelcomeEmail"/> 
-                <constructor-arg ref="findByIdMapper"/>            
-            </bean>
-        </constructor-arg>
+        <constructor-arg ref="createPersonExecution"/>            
         <constructor-arg ref="taskHandler" />
         <constructor-arg value="false" />        
     </bean>
+    
+    <bean id="createPersonExecution" class="org.eurekastreams.server.action.execution.settings.CreatePersonExecution">
+         <constructor-arg ref="createPersonActionFactory" />
+         <constructor-arg ref="jpaPersonMapper" />
+         <!-- email action ref -->
+         <constructor-arg value="sendWelcomeEmail"/> 
+         <constructor-arg ref="findByIdMapper"/>            
+    </bean>    
     
     <bean id="setPersonLockedStatusAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
         <constructor-arg ref="noValidationStrategy" />        
@@ -3646,6 +3660,10 @@
     <bean id="ldapPersonLookupViaAttribute" class="org.eurekastreams.server.service.actions.strategies.ldap.PersonLookupViaAttribute">
         <constructor-arg ref="findPersonByCnWildcardMapper"/>
     </bean>
+    
+    <bean id="ldapPersonLookupViaAccountIdAttribute" class="org.eurekastreams.server.service.actions.strategies.ldap.PersonLookupViaAttribute">
+        <constructor-arg ref="findPersonByAccountIdMapper"/>
+    </bean>    
     
     <bean id="ldapPersonLookupViaAttributeQuery" class="org.eurekastreams.server.service.actions.strategies.ldap.PersonLookupViaAttribute">
         <constructor-arg ref="findPersonByProvidedLdapQueryMapper"/>

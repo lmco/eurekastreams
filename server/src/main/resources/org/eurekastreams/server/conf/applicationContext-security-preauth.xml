@@ -70,6 +70,8 @@
 		<beans:constructor-arg ref="jpaPersonMapper" />
 		<beans:constructor-arg ref="persistentLoginRepository" />
 		<beans:constructor-arg ref="authorityProvider" />
+		<beans:constructor-arg ref="serviceActionController" />
+        <beans:constructor-arg ref="createPersonFromLdap" />
     </beans:bean>
 
 	<beans:bean id="authorityProvider"

@@ -2442,6 +2442,14 @@
 		<constructor-arg ref="ldapToPersonCallbackFactory" />
 		<constructor-arg ref="pagedLdapSearchStrategy" />
 	</bean>
+	
+    <bean id="findPersonByAccountIdMapper"
+        class="org.eurekastreams.server.persistence.mappers.ldap.LdapLookup">
+        <constructor-arg ref="searchStringLdapTemplateRetriever" />
+        <constructor-arg ref="findPersonByAccountIdFilter" />
+        <constructor-arg ref="ldapToPersonCallbackFactory" />
+        <constructor-arg ref="pagedLdapSearchStrategy" />
+    </bean>	
 
 	<bean id="findPersonByDirectLdapGroupMembershipMapper"
 		class="org.eurekastreams.server.persistence.mappers.ldap.LdapLookup">
