@@ -3146,6 +3146,18 @@
         <constructor-arg value="false" />
     </bean>
     
+    <bean id="setSharedResourceLiked" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.stream.SetSharedResourceLikeExecution">
+                <constructor-arg ref="setLikedSharedResourceStatusDbMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="false" />
+    </bean>
+    
     <bean id="setActivityLiked" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />

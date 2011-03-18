@@ -2582,5 +2582,6 @@
     <bean id="changeGroupActivitySubscriptionDbMapper" class="org.eurekastreams.server.persistence.mappers.db.ChangeGroupActivitySubscriptionDbMapper" />
     
     <bean id="findOrInsertSharedResourceByUniqueKeyMapper" class="org.eurekastreams.server.persistence.mappers.db.FindOrInsertSharedResourceByUniqueKeyDbMapper" />
-    
+
+    <bean id="setLikedSharedResourceStatusDbMapper" class="org.eurekastreams.server.persistence.mappers.db.SetLikedSharedResourceStatusDbMapper" />    
 </beans>
