@@ -15,16 +15,17 @@
  */
 package org.eurekastreams.web.client.events.data;
 
-
 /**
  * Response event object.
- *
+ * 
  */
 public class InsertedGroupMemberResponseEvent extends BaseDataResponseEvent<Integer>
 {
     /**
      * Default constructor.
-     * @param inResponse response/
+     * 
+     * @param inResponse
+     *            response/
      */
     public InsertedGroupMemberResponseEvent(final Integer inResponse)
     {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.filters.list;
 
-import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.server.domain.stream.Stream;
 import org.eurekastreams.web.client.events.CustomStreamCreatedEvent;
 import org.eurekastreams.web.client.events.CustomStreamUpdatedEvent;
@@ -25,7 +24,7 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacade;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.CustomStreamModel;
 import org.eurekastreams.web.client.ui.Session;
-import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
+import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder.Method;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextBoxFormElement;
@@ -43,16 +42,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Dialog content for creating or editing a stream view.
- * 
  */
-public class CustomStreamDialogContent implements DialogContent
+public class CustomStreamDialogContent extends BaseDialogContent
 {
-
-    /**
-     * The command to close the dialog.
-     */
-    private WidgetCommand closeCommand = null;
-
     /**
      * Maximum name length.
      */
@@ -103,7 +95,7 @@ public class CustomStreamDialogContent implements DialogContent
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inStream
      *            the view id.
      */
@@ -124,7 +116,7 @@ public class CustomStreamDialogContent implements DialogContent
 
     /**
      * Constructor for create, i.e. doesnt take in a view.
-     * 
+     *
      */
     public CustomStreamDialogContent()
     {
@@ -147,8 +139,8 @@ public class CustomStreamDialogContent implements DialogContent
         form.turnOffChangeCheck();
         form.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamViewDialogBody());
 
-        Session.getInstance().getEventBus().addObserver(CustomStreamCreatedEvent.class,
-                new Observer<CustomStreamCreatedEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(CustomStreamCreatedEvent.class, new Observer<CustomStreamCreatedEvent>()
                 {
                     public void update(final CustomStreamCreatedEvent arg1)
                     {
@@ -156,8 +148,8 @@ public class CustomStreamDialogContent implements DialogContent
                     }
                 });
 
-        Session.getInstance().getEventBus().addObserver(CustomStreamUpdatedEvent.class,
-                new Observer<CustomStreamUpdatedEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(CustomStreamUpdatedEvent.class, new Observer<CustomStreamUpdatedEvent>()
                 {
                     public void update(final CustomStreamUpdatedEvent arg1)
                     {
@@ -221,27 +213,8 @@ public class CustomStreamDialogContent implements DialogContent
     }
 
     /**
-     * The command to call to close the dialog.
-     * 
-     * @param command
-     *            the close command.
-     */
-    public void setCloseCommand(final WidgetCommand command)
-    {
-        closeCommand = command;
-    }
-
-    /**
-     * Call the close command.
-     */
-    public void close()
-    {
-        closeCommand.execute();
-    }
-
-    /**
      * Gets the body panel.
-     * 
+     *
      * @return the body.
      */
     public Widget getBody()
@@ -251,7 +224,7 @@ public class CustomStreamDialogContent implements DialogContent
 
     /**
      * Gets the CSS name.
-     * 
+     *
      * @return the class.
      */
     public String getCssName()
@@ -261,7 +234,7 @@ public class CustomStreamDialogContent implements DialogContent
 
     /**
      * Gets the title.
-     * 
+     *
      * @return the title.
      */
     public String getTitle()
@@ -276,12 +249,4 @@ public class CustomStreamDialogContent implements DialogContent
             return "";
         }
     }
-
-    /**
-     * On show. Nothing to do here. Carry on.
-     */
-    public void show()
-    {
-    }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ import java.util.Map;
 
 import org.eurekastreams.server.action.response.settings.RetrieveSettingsResponse;
 import org.eurekastreams.server.domain.NotificationFilterPreference;
+import org.eurekastreams.server.domain.NotificationFilterPreference.Category;
 import org.eurekastreams.server.domain.NotificationFilterPreferenceDTO;
 import org.eurekastreams.server.domain.Page;
-import org.eurekastreams.server.domain.NotificationFilterPreference.Category;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ShowNotificationEvent;
 import org.eurekastreams.web.client.events.data.GotPersonalSettingsResponseEvent;
@@ -33,12 +33,15 @@ import org.eurekastreams.web.client.events.data.UpdatedPersonalSettingsResponseE
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.PersonalSettingsModel;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder.Method;
 import org.eurekastreams.web.client.ui.common.form.elements.FormElement;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
@@ -68,14 +71,16 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
     {
         PERSONAL_PREF_CATEGORIES.put("Activity posted to your stream", Category.POST_TO_PERSONAL_STREAM);
         PERSONAL_PREF_CATEGORIES.put("Colleague likes activity you posted to your stream or a group stream",
-		Category.LIKE);
+                Category.LIKE);
         PERSONAL_PREF_CATEGORIES.put("Comment is posted to an activity in your stream or an activity "
                 + "you posted to a group stream", Category.COMMENT);
         PERSONAL_PREF_CATEGORIES.put("Comment is posted to an activity you saved", Category.COMMENT_TO_SAVED_ACTIVITY);
         PERSONAL_PREF_CATEGORIES.put("New follower is added to your stream", Category.FOLLOW_PERSON);
 
+        // Note: Since group coordinators are also members by default (although they can leave), "joined" mostly covers
+        // the "coordinate" case, although it does not allow for the notifications to be different
         GROUP_PREF_CATEGORIES.put("Activity is posted to a group you joined", Category.POST_TO_JOINED_GROUP);
-        GROUP_PREF_CATEGORIES.put("Activity is posted to a group you coordinate", Category.POST_TO_GROUP_STREAM);
+        // GROUP_PREF_CATEGORIES.put("Activity is posted to a group you coordinate", Category.POST_TO_GROUP_STREAM);
         // GROUP_PREF_CATEGORIES.put("Comments", Category.COMMENT_IN_GROUP_STREAM);
         GROUP_PREF_CATEGORIES.put("New member joins a group you coordinate", Category.FOLLOW_GROUP);
         GROUP_PREF_CATEGORIES.put("Group Membership is requested in a private group you coordinate",
@@ -97,8 +102,8 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
         addStyleName(StaticResourceBundle.INSTANCE.coreCss().personalSettings());
 
         // listen for model events
-        Session.getInstance().getEventBus().addObserver(GotPersonalSettingsResponseEvent.class,
-                new Observer<GotPersonalSettingsResponseEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(GotPersonalSettingsResponseEvent.class, new Observer<GotPersonalSettingsResponseEvent>()
                 {
                     public void update(final GotPersonalSettingsResponseEvent ev)
                     {
@@ -124,9 +129,10 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
         form.turnOffChangeCheck();
         setupFormCommands();
 
-        buildNotificationPreferencesSection((Collection<NotificationFilterPreferenceDTO>) inSettings
-                .get(RetrieveSettingsResponse.SETTINGS_NOTIFICATION_FILTERS), (HashMap<String, String>) inSupport
-                .get(RetrieveSettingsResponse.SUPPORT_NOTIFIER_TYPES));
+        buildNotificationPreferencesSection(
+                (Collection<NotificationFilterPreferenceDTO>) inSettings
+                        .get(RetrieveSettingsResponse.SETTINGS_NOTIFICATION_FILTERS),
+                (HashMap<String, String>) inSupport.get(RetrieveSettingsResponse.SUPPORT_NOTIFIER_TYPES));
 
         add(form);
     }
@@ -162,21 +168,20 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
         label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
         panel.add(label);
 
-        label =
-                new Label("Eureka Streams will notify you when new activity has taken place in the groups that "
-                        + "you coordinate or groups that you have joined.");
+        label = new Label("Eureka Streams will notify you when new activity has taken place in the groups that "
+                + "you coordinate or groups that you have joined.");
         label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().instructions());
         panel.add(label);
 
-        panel.add(buildNotificationFilterGrid(notifiers, GROUP_PREF_CATEGORIES, filters));
+        Grid groupGrid = buildNotificationFilterGrid(notifiers, GROUP_PREF_CATEGORIES, filters);
+        panel.add(groupGrid);
 
         label = new Label("My Organizations' Activity and Connections");
         label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formLabel());
         panel.add(label);
 
-        label =
-                new Label("Eureka Streams will notify you when new activity has "
-                        + "taken place in the organizations that you coordinate.");
+        label = new Label("Eureka Streams will notify you when new activity has "
+                + "taken place in the organizations that you coordinate.");
         label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().instructions());
         panel.add(label);
 
@@ -188,6 +193,36 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
         label = new InlineLabel(Session.getInstance().getCurrentPerson().getEmail());
         label.addStyleName(StaticResourceBundle.INSTANCE.coreCss().notifEmailValue());
         panel.add(label);
+
+        // add link for managing groups
+        int row = 0;
+        for (Category category : GROUP_PREF_CATEGORIES.values())
+        {
+            row++;
+            if (Category.POST_TO_JOINED_GROUP.equals(category))
+            {
+                String caption = groupGrid.getText(row, 0);
+                FlowPanel cellPanel = new FlowPanel();
+                cellPanel.add(new InlineLabel(caption + " "));
+
+                GroupSubscriptionDialogContent dialogContent = new GroupSubscriptionDialogContent();
+                final Dialog dialog = new Dialog(dialogContent);
+
+                InlineLabel manageLink = new InlineLabel("(manage)");
+                manageLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkedLabel());
+                manageLink.addClickHandler(new ClickHandler()
+                {
+                    public void onClick(final ClickEvent inArg0)
+                    {
+                        dialog.setBgVisible(true);
+                        dialog.center();
+                    }
+                });
+                cellPanel.add(manageLink);
+                groupGrid.setWidget(row, 0, cellPanel);
+                break;
+            }
+        }
     }
 
     /**
@@ -282,17 +317,20 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
             return;
         }
 
-        Session.getInstance().getEventBus().addObserver(UpdatedPersonalSettingsResponseEvent.class,
-                new Observer<UpdatedPersonalSettingsResponseEvent>()
-                {
-                    public void update(final UpdatedPersonalSettingsResponseEvent arg1)
-                    {
-                        form.onSuccess();
-                        Session.getInstance().getEventBus().notifyObservers(
-                                new ShowNotificationEvent(new Notification("Settings saved")));
-                    }
+        Session.getInstance()
+                .getEventBus()
+                .addObserver(UpdatedPersonalSettingsResponseEvent.class,
+                        new Observer<UpdatedPersonalSettingsResponseEvent>()
+                        {
+                            public void update(final UpdatedPersonalSettingsResponseEvent arg1)
+                            {
+                                form.onSuccess();
+                                Session.getInstance()
+                                        .getEventBus()
+                                        .notifyObservers(new ShowNotificationEvent(new Notification("Settings saved")));
+                            }
 
-                });
+                        });
 
         form.setOnCancelHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.START)));
     }

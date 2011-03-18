@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package org.eurekastreams.server.action.execution.stream;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eurekastreams.commons.actions.ExecutionStrategy;
@@ -25,33 +26,30 @@ import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
-import edu.emory.mathcs.backport.java.util.Collections;
-
 /**
- * Get all the people who like a particular activity.
- * 
+ * Get all the people who like a particular activity or resource.
  */
-public class GetPeopleWhoLikedActivityExecution implements ExecutionStrategy<PrincipalActionContext>
+public class GetPeopleWhoLikedItemExecution implements ExecutionStrategy<PrincipalActionContext>
 {
     /**
      * The mapper.
      */
-    private DecoratedPartialResponseDomainMapper<List<Long>, List<List<Long>>> mapper;
+    private final DecoratedPartialResponseDomainMapper<List<Long>, List<List<Long>>> mapper;
 
     /**
      * People mapper.
      */
-    private DomainMapper<List<Long>, List<PersonModelView>> peopleMapper;
+    private final DomainMapper<List<Long>, List<PersonModelView>> peopleMapper;
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inMapper
      *            the mapper.
      * @param inPeopleMapper
      *            the people mapper.
      */
-    public GetPeopleWhoLikedActivityExecution(
+    public GetPeopleWhoLikedItemExecution(
             final DecoratedPartialResponseDomainMapper<List<Long>, List<List<Long>>> inMapper,
             final DomainMapper<List<Long>, List<PersonModelView>> inPeopleMapper)
     {
@@ -61,7 +59,7 @@ public class GetPeopleWhoLikedActivityExecution implements ExecutionStrategy<Pri
 
     /**
      * Just execute the mapper, it does all the heavy lifting for this action.
-     * 
+     *
      * @param inActionContext
      *            the action context.
      * @return the list of people
@@ -71,8 +69,8 @@ public class GetPeopleWhoLikedActivityExecution implements ExecutionStrategy<Pri
     @Override
     public ArrayList<PersonModelView> execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        List<Long> activityIdList = Collections.singletonList(inActionContext.getParams());
-        List<Long> peopleIdsInterested = mapper.execute(activityIdList).get(0);
+        List<Long> itemIdList = (List) Collections.singletonList(inActionContext.getParams());
+        List<Long> peopleIdsInterested = mapper.execute(itemIdList).get(0);
         List<PersonModelView> people = peopleMapper.execute(peopleIdsInterested);
         return new ArrayList<PersonModelView>(people);
     }

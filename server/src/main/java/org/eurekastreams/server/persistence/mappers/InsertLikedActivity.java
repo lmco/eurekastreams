@@ -23,13 +23,13 @@ import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
 
 /**
  * Insert entry into LikedActivity table.
- *
+ * 
  */
 public class InsertLikedActivity extends CachedDomainMapper
 {
     /**
      * Inserts entry into LikedActivity table.
-     *
+     * 
      * @param inLikedActivity
      *            the {@link LikedActivity} to insert.
      * @return True if successful.
@@ -48,13 +48,12 @@ public class InsertLikedActivity extends CachedDomainMapper
 
         this.getEntityManager().persist(inLikedActivity);
 
-        // sets in cache.
-        getCache().addToTopOfList(
-                CacheKeys.LIKED_BY_PERSON_ID + inLikedActivity.getPersonId(), inLikedActivity.getActivityId());
+        // delete from cache, this list needs to be regenerated ordered.
+        getCache().delete(CacheKeys.LIKED_BY_PERSON_ID + inLikedActivity.getPersonId());
 
-        getCache().addToTopOfList(
-                CacheKeys.LIKERS_BY_ACTIVITY_ID + inLikedActivity.getActivityId(), inLikedActivity.getPersonId());
-        
+        getCache().addToTopOfList(CacheKeys.LIKERS_BY_ACTIVITY_ID + inLikedActivity.getActivityId(),
+                inLikedActivity.getPersonId());
+
         return Boolean.TRUE;
     }
 

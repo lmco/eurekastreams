@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,13 @@
  */
 package org.eurekastreams.web.client.ui.common.dialog.optoutvideo;
 
-import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.server.domain.TutorialVideoDTO;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.PreDialogHideEvent;
 import org.eurekastreams.web.client.model.OptOutVideosModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.FlashWidget;
-import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
+import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicCheckBoxFormElement;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -34,7 +33,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Content for the optoutvideo dialog.
  */
-public class OptOutableVideoDialogContent implements DialogContent
+public class OptOutableVideoDialogContent extends BaseDialogContent
 {
     /**
      * The number to use when setting width to offset for margins.
@@ -61,24 +60,19 @@ public class OptOutableVideoDialogContent implements DialogContent
     private String title = "";
 
     /**
-     * The command to close the dialog.
-     */
-    private WidgetCommand closeCommand = null;
-
-    /**
      * Content body.
      */
-    private FlowPanel body = new FlowPanel();
+    private final FlowPanel body = new FlowPanel();
 
     /**
      * "Don't show again" checkbox.
      */
-    private BasicCheckBoxFormElement dontShowAgain;
+    private final BasicCheckBoxFormElement dontShowAgain;
 
     /**
      * Video details being displayed.
      */
-    private TutorialVideoDTO tutorialVideo;
+    private final TutorialVideoDTO tutorialVideo;
 
     /**
      * The flash content itself.
@@ -148,16 +142,8 @@ public class OptOutableVideoDialogContent implements DialogContent
     }
 
     /**
-     * what to do when you close the dialog.
-     */
-    public void close()
-    {
-        closeCommand.execute();
-    }
-
-    /**
      * Get the body of the DialogContent.
-     * 
+     *
      * @return the body of the dialog.
      */
     public Widget getBody()
@@ -167,7 +153,7 @@ public class OptOutableVideoDialogContent implements DialogContent
 
     /**
      * Get the css of the DialogContent.
-     * 
+     *
      * @return the css name to apply to the dialog.
      */
     public String getCssName()
@@ -177,7 +163,7 @@ public class OptOutableVideoDialogContent implements DialogContent
 
     /**
      * Get the title of the DialogContent.
-     * 
+     *
      * @return the title of the dialog box.
      */
     public String getTitle()
@@ -186,27 +172,8 @@ public class OptOutableVideoDialogContent implements DialogContent
     }
 
     /**
-     * set the close command.
-     * 
-     * @param command
-     *            the command to set the close command to.
-     */
-    public void setCloseCommand(final WidgetCommand command)
-    {
-        closeCommand = command;
-    }
-
-    /**
-     * what to do when you show the box.
-     */
-    public void show()
-    {
-        // Nothing special to do here.
-    }
-
-    /**
      * Stops the video.
-     * 
+     *
      * @param movieName
      *            the name of the movie to stop.
      */

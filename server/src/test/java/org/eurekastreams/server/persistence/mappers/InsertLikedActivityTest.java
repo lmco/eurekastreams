@@ -30,7 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Test for InsertLikedActivity.
- *
+ * 
  */
 public class InsertLikedActivityTest extends MapperTest
 {
@@ -59,25 +59,25 @@ public class InsertLikedActivityTest extends MapperTest
         final long activityId = 6790L;
         final long personId = 99L;
 
-        //verify that entry is not present.
+        // verify that entry is not present.
         Query q = getEntityManager().createQuery(
-        "FROM LikedActivity where personId=:personId and activityId=:activityId").setParameter("personId",
+                "FROM LikedActivity where personId=:personId and activityId=:activityId").setParameter("personId",
                 personId).setParameter("activityId", activityId);
         List<LikedActivity> results = q.getResultList();
         assertTrue(results.size() == 0);
 
-
         String key = CacheKeys.LIKED_BY_PERSON_ID + personId;
-        //verify that cached list is empty
+        // verify that cached list is empty
         assertTrue(insertLikedActivity.getCache().getList(key) == null);
 
-        //insert it.
+        // insert it.
         assertTrue(insertLikedActivity.execute(new LikedActivity(personId, activityId)));
 
-        //verify it's there now.
+        // verify it's there now.
         assertTrue(q.getResultList().size() == 1);
 
-        assertTrue(insertLikedActivity.getCache().getList(key) != null);
+        // verify liked ids by user id is gone.
+        assertTrue(insertLikedActivity.getCache().getList(key) == null);
     }
 
     /**
@@ -91,19 +91,19 @@ public class InsertLikedActivityTest extends MapperTest
         final long activityId = 6789L;
 
         Query q = getEntityManager().createQuery(
-        "FROM LikedActivity where personId=:personId and activityId=:activityId");
+                "FROM LikedActivity where personId=:personId and activityId=:activityId");
         q.setParameter("personId", personId);
         q.setParameter("activityId", activityId);
 
         List<LikedActivity> results = q.getResultList();
 
-        //verify that entry is present.
+        // verify that entry is present.
         assertTrue(results.size() == 1);
 
-        //insert.
+        // insert.
         assertTrue(insertLikedActivity.execute(new LikedActivity(personId, activityId)));
 
-      //verify it's still there and not duplicated.
+        // verify it's still there and not duplicated.
         assertTrue(q.getResultList().size() == 1);
     }
 

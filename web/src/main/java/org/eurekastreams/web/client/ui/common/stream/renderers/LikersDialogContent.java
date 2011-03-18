@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,12 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.renderers;
 
-import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.GotActivityLikersResponseEvent;
 import org.eurekastreams.web.client.model.ActivityLikersModel;
 import org.eurekastreams.web.client.ui.Session;
-import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
+import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
 import org.eurekastreams.web.client.ui.common.pagedlist.PersonRenderer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -30,24 +29,18 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The people who liked the activity modal.
- *
  */
-public class LikersDialogContent implements DialogContent
+public class LikersDialogContent extends BaseDialogContent
 {
-    /**
-     * The command to close the dialog.
-     */
-    private WidgetCommand closeCommand = null;
-
     /**
      * Main flow panel.
      */
-    private FlowPanel body = new FlowPanel();
+    private final FlowPanel body = new FlowPanel();
 
     /**
      * Activity id.
      */
-    private Long activityId;
+    private final Long activityId;
 
     /**
      * Default constructor.
@@ -87,27 +80,9 @@ public class LikersDialogContent implements DialogContent
     }
 
     /**
-     * The command to call to close the dialog.
-     *
-     * @param command
-     *            the close command.
-     */
-    public void setCloseCommand(final WidgetCommand command)
-    {
-        closeCommand = command;
-    }
-
-    /**
-     * Call the close command.
-     */
-    public void close()
-    {
-        closeCommand.execute();
-    }
-
-    /**
      * Show.
      */
+    @Override
     public void show()
     {
         body.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formSubmitSpinny());

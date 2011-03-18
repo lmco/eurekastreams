@@ -1359,6 +1359,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         addNonNullProperty("jobDescription", getJobDescription(), personData);
         addNonNullProperty("title", getTitle(), personData);
         addNonNullProperty("location", getLocation(), personData);
+        addNonNullProperty("accountLocked", isAccountLocked(), personData);
         if (getAdditionalProperties() != null)
         {
             personData.put("additionalProperties", getAdditionalProperties());

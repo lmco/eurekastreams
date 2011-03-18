@@ -17,6 +17,7 @@ package org.eurekastreams.server.action.execution.notification;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -389,6 +390,48 @@ public class CreateNotificationsExecutionTest
         CreateNotificationsRequest request = new CreateNotificationsRequest(RequestType.FOLLOWER, 1, 2, 3);
         sut.execute(TestContextCreator.createTaskHandlerAsyncContext(request));
         context.assertIsSatisfied();
+    }
+
+    /**
+     * Tests when the translator returns null.
+     */
+    @Test
+    public void testExecuteTranslateNull()
+    {
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(followerTranslator).translate(1, 2, 3);
+                will(returnValue(null));
+            }
+        });
+
+        CreateNotificationsRequest request = new CreateNotificationsRequest(RequestType.FOLLOWER, 1, 2, 3);
+        Serializable result = sut.execute(TestContextCreator.createTaskHandlerAsyncContext(request));
+        context.assertIsSatisfied();
+
+        assertEquals(Boolean.TRUE, result);
+    }
+
+    /**
+     * Tests when the translator returns an empty list.
+     */
+    @Test
+    public void testExecuteTranslateNone()
+    {
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(followerTranslator).translate(1, 2, 3);
+                will(returnValue(Collections.EMPTY_LIST));
+            }
+        });
+
+        CreateNotificationsRequest request = new CreateNotificationsRequest(RequestType.FOLLOWER, 1, 2, 3);
+        Serializable result = sut.execute(TestContextCreator.createTaskHandlerAsyncContext(request));
+        context.assertIsSatisfied();
+
+        assertEquals(Boolean.TRUE, result);
     }
 
     /**

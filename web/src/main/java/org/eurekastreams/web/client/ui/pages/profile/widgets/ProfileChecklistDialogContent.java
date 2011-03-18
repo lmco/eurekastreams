@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@ package org.eurekastreams.web.client.ui.pages.profile.widgets;
 
 import java.util.List;
 
-import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
+import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
 import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.profile.Task;
@@ -33,18 +33,13 @@ import com.google.gwt.user.client.ui.Widget;
  * The dialog of the checklist itself.
  *
  */
-public class ProfileChecklistDialogContent implements DialogContent
+public class ProfileChecklistDialogContent extends BaseDialogContent
 {
     /**
      * One hundred. This is due to math using 100 as the number we multiply a probablity with to get a percentage. For
      * more information please see http://en.wikipedia.org/wiki/Percentage
      */
     private final int oneHundred = 100;
-
-    /**
-     * The command to close the dialog.
-     */
-    private WidgetCommand closeCommand = null;
 
     /**
      * The title.
@@ -177,31 +172,5 @@ public class ProfileChecklistDialogContent implements DialogContent
     public String getTitle()
     {
         return title;
-    }
-
-    /**
-     * The command to call to close the dialog.
-     *
-     * @param command
-     *            the close command.
-     */
-    public void setCloseCommand(final WidgetCommand command)
-    {
-        closeCommand = command;
-    }
-
-    /**
-     * Call the close command.
-     */
-    public void close()
-    {
-        closeCommand.execute();
-    }
-
-    /**
-     * Necessary for the interface.
-     */
-    public void show()
-    {
     }
 }

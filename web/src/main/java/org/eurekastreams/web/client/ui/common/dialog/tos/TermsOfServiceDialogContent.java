@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,10 @@
  */
 package org.eurekastreams.web.client.ui.common.dialog.tos;
 
-import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.server.domain.TermsOfServiceDTO;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.ui.Session;
-import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
+import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -36,7 +35,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * The terms of service dialog.
  */
-public class TermsOfServiceDialogContent implements DialogContent
+public class TermsOfServiceDialogContent extends BaseDialogContent
 {
     /**
      * Terms of service.
@@ -49,28 +48,23 @@ public class TermsOfServiceDialogContent implements DialogContent
     FlowPanel body = new FlowPanel();
 
     /**
-     * The close command.
-     */
-    private WidgetCommand closeCommand = null;
-
-    /**
      * Accept button.
      */
-    private Hyperlink acceptTos;
+    private final Hyperlink acceptTos;
 
     /**
      * Cancel button.
      */
-    private Anchor cancelTos;
+    private final Anchor cancelTos;
 
     /**
      * Confirm checkbox.
      */
-    private CheckBox confirmCheckBox;
+    private final CheckBox confirmCheckBox;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inTos
      *            the terms of service.
      * @param readOnly
@@ -119,7 +113,7 @@ public class TermsOfServiceDialogContent implements DialogContent
 
     /**
      * Add a handler to the agree button.
-     * 
+     *
      * @param handler
      *            the handler.
      */
@@ -130,7 +124,7 @@ public class TermsOfServiceDialogContent implements DialogContent
 
     /**
      * Add a value change handler to the checkbox.
-     * 
+     *
      * @param handler
      *            the handler.
      */
@@ -140,16 +134,8 @@ public class TermsOfServiceDialogContent implements DialogContent
     }
 
     /**
-     * Call the close command.
-     */
-    public void close()
-    {
-        closeCommand.execute();
-    }
-
-    /**
      * Get the body.
-     * 
+     *
      * @return the body.s
      */
     public Widget getBody()
@@ -159,7 +145,7 @@ public class TermsOfServiceDialogContent implements DialogContent
 
     /**
      * Get the CSS class for the modal.
-     * 
+     *
      * @return the CSS class.
      */
     public String getCssName()
@@ -169,7 +155,7 @@ public class TermsOfServiceDialogContent implements DialogContent
 
     /**
      * Get the title.
-     * 
+     *
      * @return the title.
      */
     public String getTitle()
@@ -178,27 +164,8 @@ public class TermsOfServiceDialogContent implements DialogContent
     }
 
     /**
-     * The command to call to close the dialog.
-     * 
-     * @param command
-     *            the close command.
-     */
-    public void setCloseCommand(final WidgetCommand command)
-    {
-        closeCommand = command;
-    }
-
-    /**
-     * Called when the modal is shown.
-     */
-    public void show()
-    {
-        // Intentionally left blank.
-    }
-
-    /**
      * Respond to setting the accept checkbox value.
-     * 
+     *
      * @param agree
      *            the value.
      */

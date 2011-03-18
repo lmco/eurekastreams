@@ -24,7 +24,6 @@ import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.web.client.events.DialogLinkClickedEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
-import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.utility.InContextActivityLinkBuilder;
 import org.eurekastreams.web.client.utility.LinkBuilderHelper;
 
@@ -62,7 +61,7 @@ public abstract class NotificationMessageRenderer
 
     /**
      * Notification-specific method for building the message.
-     *
+     * 
      * @param parent
      *            Parent panel into which to build the message.
      * @param notification
@@ -72,7 +71,7 @@ public abstract class NotificationMessageRenderer
 
     /**
      * Renders the message.
-     *
+     * 
      * @param notification
      *            The notification for which to render.
      * @return Widget to display.
@@ -93,7 +92,7 @@ public abstract class NotificationMessageRenderer
 
     /**
      * Gets the profile page for a given entity type.
-     *
+     * 
      * @param type
      *            Entity type.
      * @return Page.
@@ -105,7 +104,7 @@ public abstract class NotificationMessageRenderer
 
     /**
      * Returns the text to display for an activity.
-     *
+     * 
      * @param notification
      *            Notification.
      * @return The text to display for an activity.
@@ -120,7 +119,7 @@ public abstract class NotificationMessageRenderer
             case BOOKMARK:
                 return "link";
             case NOTE:
-                return StaticResourceBundle.INSTANCE.coreCss().message();
+                return "message";
             default:
                 return type.name().toLowerCase();
             }
@@ -131,7 +130,7 @@ public abstract class NotificationMessageRenderer
 
     /**
      * Appends a link to the profile page for the notification's destination entity.
-     *
+     * 
      * @param parent
      *            Parent panel.
      * @param notification
@@ -146,7 +145,7 @@ public abstract class NotificationMessageRenderer
 
     /**
      * Appends a link to the profile page for the notification's destination entity.
-     *
+     * 
      * @param parent
      *            Parent panel.
      * @param notification
@@ -164,7 +163,7 @@ public abstract class NotificationMessageRenderer
 
     /**
      * Appends a link to the profile page for the notification's auxiliary entity.
-     *
+     * 
      * @param parent
      *            Parent panel.
      * @param notification
@@ -179,7 +178,7 @@ public abstract class NotificationMessageRenderer
 
     /**
      * Appends a link to the notification's actor to the given element.
-     *
+     * 
      * @param parent
      *            Parent panel..
      * @param notification
@@ -193,7 +192,7 @@ public abstract class NotificationMessageRenderer
 
     /**
      * Appends a link to the notification's activity to the given element.
-     *
+     * 
      * @param parent
      *            Parent panel..
      * @param notification
@@ -206,7 +205,7 @@ public abstract class NotificationMessageRenderer
 
     /**
      * Appends a link to the notification's activity to the given element.
-     *
+     * 
      * @param parent
      *            Parent panel..
      * @param notification
@@ -218,15 +217,15 @@ public abstract class NotificationMessageRenderer
             final Map<String, String> extraParameters)
     {
         appendLink(parent, getActivityTypeName(notification), activityLinkBuilder.buildActivityPermalinkUrlRequest(
-                notification.getActivityId(), notification.getDestinationType(),
-                notification.getDestinationUniqueId(), extraParameters));
+                notification.getActivityId(), notification.getDestinationType(), notification.getDestinationUniqueId(),
+                extraParameters));
         // Note: Builds the link to display the activity "in context", i.e. on the profile page where the activity is
         // posted.
     }
 
     /**
      * Appends the given text (which will be automatically HTML encoded) to the given element.
-     *
+     * 
      * @param parent
      *            Parent panel..
      * @param text
@@ -239,7 +238,7 @@ public abstract class NotificationMessageRenderer
 
     /**
      * Appends a link (whose text will be automatically HTML encoded) to the given element.
-     *
+     * 
      * @param parent
      *            Parent panel..
      * @param text

@@ -242,6 +242,13 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
     private Long originalActivityId;
 
     /**
+     * The shared link resource, if included.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "linkSharedResourceId")
+    private SharedResource sharedLink;
+
+    /**
      * Only used for query reference, don't load this.
      */
     @ManyToMany(fetch = FetchType.LAZY)
@@ -711,5 +718,22 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
     public String getAppSource()
     {
         return appSource;
+    }
+
+    /**
+     * @return the sharedLink
+     */
+    public SharedResource getSharedLink()
+    {
+        return sharedLink;
+    }
+
+    /**
+     * @param inSharedLink
+     *            the sharedLink to set
+     */
+    public void setSharedLink(final SharedResource inSharedLink)
+    {
+        sharedLink = inSharedLink;
     }
 }

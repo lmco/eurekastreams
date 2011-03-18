@@ -126,7 +126,7 @@ public class SetActivityLikeExecutionTest
         final List<ActivityDTO> activities = Collections.singletonList(activity);
         final List<UserActionRequest> requests = new ArrayList<UserActionRequest>();
         final SetActivityLikeRequest currentRequest = new SetActivityLikeRequest(1L, LikeActionType.ADD_LIKE);
-        
+
         context.checking(new Expectations()
         {
             {
@@ -142,7 +142,7 @@ public class SetActivityLikeExecutionTest
                 allowing(actor).getId();
                 will(returnValue(1L));
 
-                oneOf(contextMock).getUserActionRequests();
+                allowing(contextMock).getUserActionRequests();
                 will(returnValue(requests));
 
                 allowing(contextMock).getActionContext();
@@ -161,7 +161,7 @@ public class SetActivityLikeExecutionTest
 
                 oneOf(activityEntityMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(activityEntity));
-                
+
                 oneOf(activityIndexer).execute(activityEntity);
             }
         });
@@ -180,13 +180,13 @@ public class SetActivityLikeExecutionTest
         final Activity activityEntity = context.mock(Activity.class);
         final List<ActivityDTO> activities = Collections.singletonList(activity);
         final SetActivityLikeRequest currentRequest = new SetActivityLikeRequest(1L, LikeActionType.REMOVE_LIKE);
-        
+
         context.checking(new Expectations()
         {
             {
                 allowing(contextMock).getActionContext();
                 will(returnValue(principalActionContextMock));
-                
+
                 allowing(activity).getId();
                 will(returnValue(1L));
 
@@ -198,7 +198,7 @@ public class SetActivityLikeExecutionTest
 
                 oneOf(principalMock).getId();
                 will(returnValue(5L));
-                
+
                 oneOf(activityMapper).execute(with(any(List.class)));
                 will(returnValue(activities));
 
@@ -206,7 +206,7 @@ public class SetActivityLikeExecutionTest
 
                 oneOf(activityEntityMapper).execute(with(any(FindByIdRequest.class)));
                 will(returnValue(activityEntity));
-                
+
                 oneOf(activityIndexer).execute(activityEntity);
             }
         });

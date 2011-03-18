@@ -812,5 +812,7 @@
        innercontenttitle="Inner Content Title 3" page="START" videoheight="600" videourl="http://google.com"
        videowidth="200" /> 
 	
-
+	<SharedResource id="5" version="1" resourceType="BOOKMARK" uniqueKey="http://foo.com/foo.html" />
+	<SharedResource id="6" version="1" resourceType="BOOKMARK" uniqueKey="http://foo.foo.com/foo.html" />
+	
 </dataset>

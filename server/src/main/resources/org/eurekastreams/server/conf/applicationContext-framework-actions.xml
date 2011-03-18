@@ -198,7 +198,21 @@
         </constructor-arg>
         <constructor-arg ref="taskHandler" />
         <constructor-arg value="true" />        
-    </bean> 
+    </bean>     
+    
+    <bean id="createPersonFromLdap" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" /> 
+        <constructor-arg>                
+            <bean class="org.eurekastreams.server.action.execution.CreatePersonFromLdapExecution">
+                <constructor-arg ref="ldapPersonLookupViaAccountIdAttribute" />
+                <constructor-arg ref="getRootOrganizationIdAndShortNameMapper" />
+                <constructor-arg ref="createPersonExecution" />                
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="false" />        
+    </bean>
     
     <bean id="syncGroupActivityRecipientParentOrganization" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
         <constructor-arg ref="noValidationStrategy" />        
@@ -269,18 +283,18 @@
     
     <bean id="createPersonAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
         <constructor-arg ref="noValidationStrategy" />        
-        <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.settings.CreatePersonExecution">
-                <constructor-arg ref="createPersonActionFactory" />
-                <constructor-arg ref="jpaPersonMapper" />
-                <!-- email action ref -->
-                <constructor-arg value="sendWelcomeEmail"/> 
-                <constructor-arg ref="findByIdMapper"/>            
-            </bean>
-        </constructor-arg>
+        <constructor-arg ref="createPersonExecution"/>            
         <constructor-arg ref="taskHandler" />
         <constructor-arg value="false" />        
     </bean>
+    
+    <bean id="createPersonExecution" class="org.eurekastreams.server.action.execution.settings.CreatePersonExecution">
+         <constructor-arg ref="createPersonActionFactory" />
+         <constructor-arg ref="jpaPersonMapper" />
+         <!-- email action ref -->
+         <constructor-arg value="sendWelcomeEmail"/> 
+         <constructor-arg ref="findByIdMapper"/>            
+    </bean>    
     
     <bean id="setPersonLockedStatusAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
         <constructor-arg ref="noValidationStrategy" />        
@@ -1327,6 +1341,31 @@
         <constructor-arg value="true" />
     </bean>
     
+    <bean id="changeGroupNewActivityNotificationPreference" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.ChangeGroupActivitySubscriptionExecution">
+                <constructor-arg ref="getDomainGroupIdsByShortNamesMapper" />
+                <constructor-arg ref="changeGroupActivitySubscriptionDbMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+    </bean>
+    
+    <bean id="getUserGroupActivitySubscriptions" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.GetSubscribedGroupsExecution">
+                <constructor-arg>
+                    <bean class="org.eurekastreams.server.persistence.mappers.db.GetSubscribedGroupsDbMapper" />
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+    </bean>
+    
     <bean id="getCurrentUserFollowingStatus" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
@@ -2027,6 +2066,7 @@
             </bean>
         </constructor-arg>
         <constructor-arg ref="postActivityUpdateStreamsByActorMapper" />
+        <constructor-arg ref="findOrInsertSharedResourceByUniqueKeyMapper" />
     </bean>
 
     <bean id="postPersonActivityExecutionStrategy"
@@ -2043,6 +2083,7 @@
             </bean>
         </constructor-arg>
         <constructor-arg ref="postActivityUpdateStreamsByActorMapper" />
+        <constructor-arg ref="findOrInsertSharedResourceByUniqueKeyMapper" />
     </bean>
 
     <bean id="sendGroupAccessRequestAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
@@ -3127,8 +3168,21 @@
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
             <bean
-                class="org.eurekastreams.server.action.execution.stream.GetPeopleWhoLikedActivityExecution">
+                class="org.eurekastreams.server.action.execution.stream.GetPeopleWhoLikedItemExecution">
                 <constructor-arg ref="getPeopleWhoLikedActivity" />
+                <constructor-arg ref="getPersonsByIdsMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+    </bean>
+
+    <bean id="getResourceLikers" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean
+                class="org.eurekastreams.server.action.execution.stream.GetPeopleWhoLikedItemExecution">
+                <constructor-arg ref="getPeopleWhoLikedResource" />
                 <constructor-arg ref="getPersonsByIdsMapper" />
             </bean>
         </constructor-arg>
@@ -3608,6 +3662,10 @@
     <bean id="ldapPersonLookupViaAttribute" class="org.eurekastreams.server.service.actions.strategies.ldap.PersonLookupViaAttribute">
         <constructor-arg ref="findPersonByCnWildcardMapper"/>
     </bean>
+    
+    <bean id="ldapPersonLookupViaAccountIdAttribute" class="org.eurekastreams.server.service.actions.strategies.ldap.PersonLookupViaAttribute">
+        <constructor-arg ref="findPersonByAccountIdMapper"/>
+    </bean>    
     
     <bean id="ldapPersonLookupViaAttributeQuery" class="org.eurekastreams.server.service.actions.strategies.ldap.PersonLookupViaAttribute">
         <constructor-arg ref="findPersonByProvidedLdapQueryMapper"/>
@@ -4437,11 +4495,17 @@
     <!-- This class is just a stub for the time being to fulfill the Update and Delete Execution strat requirements for the mapper. -->
     <bean id="domainGroupBannerCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.UpdateCachedDomainGroupBannerIdMapper"/>    
      
-    
-    
-    
-    
-    
+    <!-- this action is kicked off by liking activity (which clears cache list), and just reloads the list into cache, 
+    doesn't need to be a _FORCE_REFRESH, if it has happened already, no need to ping DB again -->
+    <bean id="loadLikedActivityIdsByUserId" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean parent="baseParamListExecuteDomainMapperExecution">
+                <constructor-arg ref="getLikedActivityIdsByUserId" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
     
     <bean id="updatePersonAvatarCachesStrategy" class="org.eurekastreams.server.action.execution.profile.UpdatePersonAvatarCaches"/>
 

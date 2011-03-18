@@ -20,19 +20,16 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import org.eurekastreams.server.domain.stream.LikedActivity;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.persistence.mappers.stream.CachedDomainMapper;
+import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 /**
  * Gets a list of Liked activity ids for a given user.
  */
-public class GetLikedActivityIdsByUserIdsDbMapper extends CachedDomainMapper implements
-        DomainMapper<List<Long>, List<List<Long>>>
+public class GetLikedActivityIdsByUserIdsDbMapper extends BaseArgDomainMapper<List<Long>, List<List<Long>>>
 {
     /**
-     * Looks in the cache for Liked activities. If data is not cached, goes to database.
-     *
+     * Gets the list of liked activity ids for each user.
+     * 
      * @param userIds
      *            the user ids to find likes for.
      * @return the list of liked activity ids for each user.
@@ -42,23 +39,13 @@ public class GetLikedActivityIdsByUserIdsDbMapper extends CachedDomainMapper imp
     {
         List<List<Long>> results = new ArrayList<List<Long>>();
 
-        List<Long> keys;
-        
         for (long userId : userIds)
         {
-            Query q = getEntityManager()
-                    .createQuery("from LikedActivity where personId = :id ORDER BY activityId DESC").setParameter("id",
-                            userId);
-            
-            List<LikedActivity> items = q.getResultList();
+            Query q = getEntityManager().createQuery(
+                    "SELECT la.pk.activityId FROM LikedActivity la WHERE la.pk.personId = :id "
+                            + "ORDER BY la.pk.activityId DESC").setParameter("id", userId);
 
-            keys = new ArrayList<Long>();
-            for (LikedActivity f : items)
-            {
-                keys.add(f.getActivityId());
-            }
-            
-            results.add(keys);
+            results.add(q.getResultList());
         }
 
         return results;

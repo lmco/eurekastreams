@@ -17,7 +17,6 @@ package org.eurekastreams.web.client.ui.common.dialog.orglookup;
 
 import java.util.HashMap;
 
-import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.server.domain.OrganizationTreeDTO;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.model.OrganizationModelViewModel;
@@ -28,7 +27,7 @@ import org.eurekastreams.web.client.ui.common.avatar.AvatarDisplayPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Background;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
-import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
+import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -46,13 +45,8 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Org lookup modal.
  */
-public class OrgLookupContent implements DialogContent
+public class OrgLookupContent extends BaseDialogContent
 {
-    /**
-     * The close command.
-     */
-    private WidgetCommand closeCommand = null;
-
     /**
      * The lookup form.
      */
@@ -102,7 +96,7 @@ public class OrgLookupContent implements DialogContent
      * Org container.
      */
     private final FlowPanel orgTreeContainer = new FlowPanel();
-    
+
     /**
      * Org description panel.
      */
@@ -220,14 +214,6 @@ public class OrgLookupContent implements DialogContent
     }
 
     /**
-     * Close the modal.
-     */
-    public void close()
-    {
-        closeCommand.execute();
-    }
-
-    /**
      * Get the modal body.
      *
      * @return the body.
@@ -255,25 +241,6 @@ public class OrgLookupContent implements DialogContent
     public String getTitle()
     {
         return "Select Organization";
-    }
-
-    /**
-     * Injects the close command.
-     *
-     * @param command
-     *            the close command.
-     */
-    public void setCloseCommand(final WidgetCommand command)
-    {
-        closeCommand = command;
-    }
-
-    /**
-     * Called on show.
-     */
-    public void show()
-    {
-        // Intentionally left blank.
     }
 
     /**

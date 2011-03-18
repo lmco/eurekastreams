@@ -45,9 +45,7 @@
         </entry>
         <entry key="GROUP_STREAM_POST">
             <bean class="org.eurekastreams.server.action.execution.notification.translator.GroupStreamPostTranslator">
-                <constructor-arg ref="getGroupCoordinatorIdsByGroupIdMapper" />
-                <constructor-arg ref="getFollowerPersonIdsForGroupByIdMapper" />
-                <constructor-arg ref="findByIdMapper" />
+                <constructor-arg ref="getFollowerPersonIdsForGroupByIdWithActivityNotificationsDbMapper" />
             </bean>
         </entry>
         <entry key="FLAG_ACTIVITY">

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -174,7 +174,7 @@ public class ActivityDTO extends ModelView implements Serializable
     private String appSource;
 
     /**
-     * If the activity is liked by teh current user.
+     * If the activity is liked by the current user.
      */
     private Boolean liked = false;
 
@@ -544,7 +544,7 @@ public class ActivityDTO extends ModelView implements Serializable
      */
     public void setFirstComment(final CommentDTO inFirstComment)
     {
-        this.firstComment = inFirstComment;
+        firstComment = inFirstComment;
     }
 
     /**
@@ -561,7 +561,7 @@ public class ActivityDTO extends ModelView implements Serializable
      */
     public void setLastComment(final CommentDTO inLastComment)
     {
-        this.lastComment = inLastComment;
+        lastComment = inLastComment;
     }
 
     /**
@@ -578,7 +578,7 @@ public class ActivityDTO extends ModelView implements Serializable
      */
     public void setCommentCount(final int inCommentCount)
     {
-        this.commentCount = inCommentCount;
+        commentCount = inCommentCount;
     }
 
     /**
@@ -664,7 +664,7 @@ public class ActivityDTO extends ModelView implements Serializable
      */
     public void setComments(final List<CommentDTO> inComments)
     {
-        this.comments = inComments;
+        comments = inComments;
     }
 
     /**
@@ -681,7 +681,7 @@ public class ActivityDTO extends ModelView implements Serializable
      */
     public void setDeletable(final Boolean inDeletable)
     {
-        this.deletable = inDeletable;
+        deletable = inDeletable;
     }
 
     /**

@@ -20,6 +20,9 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 
+import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
+import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
+import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.persistence.PersonMapper;
 import org.eurekastreams.server.search.modelview.AuthenticationType;
 import org.eurekastreams.server.service.security.persistentlogin.PersistentLoginRepository;
@@ -35,7 +38,7 @@ import org.springframework.security.userdetails.UsernameNotFoundException;
 
 /**
  * Test class for UserDetailsServiceImpl.
- *
+ * 
  */
 public class UserDetailsServiceImplTest
 {
@@ -50,12 +53,22 @@ public class UserDetailsServiceImplTest
     };
 
     /**
+     * {@link ActionController}.
+     */
+    private ActionController serviceActionController = context.mock(ActionController.class);
+
+    /**
+     * Action to create user from LDAP.
+     */
+    private TaskHandlerServiceAction createUserfromLdapAction = context.mock(TaskHandlerServiceAction.class);;
+
+    /**
      * Test constructor rejects null PersonMapper.
      */
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorNullPersonMapper()
     {
-        new UserDetailsServiceImpl(null, null, null);
+        new UserDetailsServiceImpl(null, null, null, null, null);
     }
 
     /**
@@ -76,7 +89,8 @@ public class UserDetailsServiceImplTest
             }
         });
 
-        UserDetailsServiceImpl sut = new UserDetailsServiceImpl(personMapper, loginRepo, null);
+        UserDetailsServiceImpl sut = new UserDetailsServiceImpl(personMapper, loginRepo, null, serviceActionController,
+                createUserfromLdapAction);
         sut.setAuthenticationType(AuthenticationType.FORM);
         ExtendedUserDetails result = (ExtendedUserDetails) sut.loadUserByUsername("username");
         assertNotNull("Should return UserDetailsObject", result);
@@ -108,7 +122,8 @@ public class UserDetailsServiceImplTest
             }
         });
 
-        UserDetailsServiceImpl sut = new UserDetailsServiceImpl(personMapper, loginRepo, authProvider);
+        UserDetailsServiceImpl sut = new UserDetailsServiceImpl(personMapper, loginRepo, authProvider,
+                serviceActionController, createUserfromLdapAction);
         UserDetails result = sut.loadUserByUsername("username");
         assertNotNull("Should return UserDetailsObject", result);
         assertEquals(1, result.getAuthorities().length);
@@ -131,7 +146,8 @@ public class UserDetailsServiceImplTest
             }
         });
 
-        UserDetailsServiceImpl sut = new UserDetailsServiceImpl(personMapper, null, null);
+        UserDetailsServiceImpl sut = new UserDetailsServiceImpl(personMapper, null, null, serviceActionController,
+                createUserfromLdapAction);
         sut.loadUserByUsername("username");
         context.assertIsSatisfied();
     }
@@ -149,11 +165,28 @@ public class UserDetailsServiceImplTest
             {
                 oneOf(personMapper).findByAccountId(with("username"));
                 will(returnValue(null));
+
+                oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)),
+                        with(any(TaskHandlerServiceAction.class)));
+                will(returnValue(null));
             }
         });
 
-        UserDetailsServiceImpl sut = new UserDetailsServiceImpl(personMapper, null, null);
+        UserDetailsServiceImpl sut = new UserDetailsServiceImpl(personMapper, null, null, serviceActionController,
+                createUserfromLdapAction);
         sut.loadUserByUsername("username");
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Test that expected exception is tossed.
+     */
+    @Test(expected = UsernameNotFoundException.class)
+    public void testLoadUserByUsernameSkipProcessing()
+    {
+        UserDetailsServiceImpl sut = new UserDetailsServiceImpl(context.mock(PersonMapper.class), null, null,
+                serviceActionController, createUserfromLdapAction);
+        sut.loadUserByUsername("<NOTSET>");
         context.assertIsSatisfied();
     }
 

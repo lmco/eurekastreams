@@ -2188,4 +2188,19 @@ public interface CoreCss extends CssResource
 
     @ClassName("radio-button-container")
     String radioButtonContainer();
+
+    @ClassName("group-notif-subscription-dialog")
+    String groupNotifSubscriptionDialog();
+
+    @ClassName("group-notif-subscription-panel")
+    String groupNotifSubscriptionPanel();
+
+    @ClassName("group-notif-subscription-help-text")
+    String groupNotifSubscriptionHelpText();
+
+    @ClassName("group-notif-subscribe-button")
+    String groupNotifSubscribeButton();
+
+    @ClassName("group-notif-unsubscribe-button")
+    String groupNotifUnsubscribeButton();
 }

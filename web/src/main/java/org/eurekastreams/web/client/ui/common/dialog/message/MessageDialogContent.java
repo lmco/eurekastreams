@@ -16,7 +16,7 @@
 package org.eurekastreams.web.client.ui.common.dialog.message;
 
 import org.eurekastreams.commons.client.ui.WidgetCommand;
-import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
+import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Label;
@@ -25,13 +25,8 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Template for a login dialog.
  */
-public class MessageDialogContent implements DialogContent
+public class MessageDialogContent extends BaseDialogContent
 {
-    /**
-     * The close command.
-     */
-    private WidgetCommand closeCommand = null;
-
     /**
      * The show command.
      */
@@ -100,17 +95,6 @@ public class MessageDialogContent implements DialogContent
     }
 
     /**
-     * The command to call to close the dialog.
-     *
-     * @param command
-     *            the close command.
-     */
-    public void setCloseCommand(final WidgetCommand command)
-    {
-        closeCommand = command;
-    }
-
-    /**
      * The CSS class to use for this dialog.
      *
      * @return the name of the CSS class to use.
@@ -118,17 +102,6 @@ public class MessageDialogContent implements DialogContent
     public String getCssName()
     {
         return StaticResourceBundle.INSTANCE.coreCss().loginDialog();
-    }
-
-    /**
-     * Call the close command.
-     */
-    public void close()
-    {
-        if (closeCommand != null)
-        {
-            closeCommand.execute();
-        }
     }
 
     /**
