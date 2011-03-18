@@ -187,7 +187,6 @@ public class ActionProcessorImpl implements ActionProcessor
     {
         sessionId = inSessionId;
     }
-    
 
     /**
      * This is just here for tests.

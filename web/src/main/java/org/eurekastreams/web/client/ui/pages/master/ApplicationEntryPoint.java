@@ -64,6 +64,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -83,8 +84,7 @@ public class ApplicationEntryPoint implements EntryPoint
     /**
      * The action processor.
      */
-    private final ActionProcessor processor = new ActionProcessorImpl((ActionRPCServiceAsync) GWT
-            .create(ActionRPCService.class));
+    private ActionProcessor processor;
 
     /**
      * The master page.
@@ -127,9 +127,14 @@ public class ApplicationEntryPoint implements EntryPoint
      */
     public void onModuleLoad()
     {
+        ActionRPCServiceAsync service = (ActionRPCServiceAsync) GWT.create(ActionRPCService.class);
+        processor = new ActionProcessorImpl(service);
+
+        ((ServiceDefTarget) service).setServiceEntryPoint("/gwt_rpc");
+
         StaticResourceBundle.INSTANCE.coreCss().ensureInjected();
         StaticResourceBundle.INSTANCE.yuiCss().ensureInjected();
-        
+
         session.setActionProcessor(processor);
         session.setEventBus(EventBus.getInstance());
         session.setPeriodicEventManager(new PeriodicEventManager(APP_IDLE_TIMEOUT, new TimerFactory(), processor));
@@ -517,7 +522,7 @@ public class ApplicationEntryPoint implements EntryPoint
                 });
         });
     }-*/;
-    
+
     /**
      * Get the user agent (for detecting IE7).
      * 
@@ -528,5 +533,4 @@ public class ApplicationEntryPoint implements EntryPoint
         return navigator.userAgent.toLowerCase();
     }-*/;
 
-    
 }

@@ -9,7 +9,7 @@
   <body>
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
     <script type="text/javascript" src="/gadgets/js/core:rpc:eurekastreams-container:shindig-container.js?c=1&container=eureka&debug=0"></script>
-    <script type="text/javascript" language="javascript" src="${build.web.cdn}/eureka.nocache.js?${timestamp}"></script>
+    <script type="text/javascript" language="javascript" src="${build.web.cdn}/${build.gwt.modulename}.nocache.js?${timestamp}"></script>
 	<script type="text/javascript" src="${build.web.cdn}/scripts/external-js-min.js?${timestamp}"></script>
 
 	<!-- Start Piwik Tag -->
@@ -35,11 +35,6 @@
 	<script type="text/javascript">
 	var supportEmailAddress = "${build.email.address.support}";
 	var appVersion = "${build.app.version}";
-
-    if (window.eurekaScriptsFound == undefined)
-    {
-        window.location = "noclient.html";
-    }
 	</script>    
   </body>
 </html>

@@ -21,7 +21,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 /**
  * Provides one endpoint for all service requests.
  */
-@RemoteServiceRelativePath("gwt_rpc")
+@RemoteServiceRelativePath("/gwt_rpc")
 public interface ActionRPCService extends RemoteService
 {
     /**
