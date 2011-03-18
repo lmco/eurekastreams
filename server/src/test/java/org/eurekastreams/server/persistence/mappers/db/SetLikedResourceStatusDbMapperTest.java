@@ -99,6 +99,29 @@ public class SetLikedResourceStatusDbMapperTest extends MapperTest
     }
 
     /**
+     * Test unliking a shared resource when the person liked it, with the resource being the wrong case.
+     */
+    @Test
+    public void testUnlikeWhenLikedWrongCase()
+    {
+        List<LikedSharedResource> likedResources = getEntityManager().createQuery(
+                "FROM LikedSharedResource where pk.personId = :personId AND pk.sharedResourceId = :sharedResourceId")
+                .setParameter("personId", personId).setParameter("sharedResourceId", followedLinkId).getResultList();
+
+        assertEquals(1, likedResources.size());
+        getEntityManager().clear();
+
+        sut.execute(new SetLikedResourceStatusRequest(personId, followedLink.toUpperCase(), BaseObjectType.BOOKMARK,
+                false));
+
+        likedResources = getEntityManager().createQuery(
+                "FROM LikedSharedResource where pk.personId = :personId AND pk.sharedResourceId = :sharedResourceId")
+                .setParameter("personId", personId).setParameter("sharedResourceId", followedLinkId).getResultList();
+
+        assertEquals(0, likedResources.size());
+    }
+
+    /**
      * Test unliking a shared resource when when not previously liked.
      */
     @Test
@@ -135,6 +158,29 @@ public class SetLikedResourceStatusDbMapperTest extends MapperTest
         getEntityManager().clear();
 
         sut.execute(new SetLikedResourceStatusRequest(personId, unfollowedLink, BaseObjectType.BOOKMARK, true));
+
+        likedResources = getEntityManager().createQuery(
+                "FROM LikedSharedResource where pk.personId = :personId AND pk.sharedResourceId = :sharedResourceId")
+                .setParameter("personId", personId).setParameter("sharedResourceId", unfollowedLinkId).getResultList();
+
+        assertEquals(1, likedResources.size());
+    }
+
+    /**
+     * Test liking a resource when not previously liked, with the resource being the wrong case.
+     */
+    @Test
+    public void testLikeWhenNotLikedWrongCase()
+    {
+        List<LikedSharedResource> likedResources = getEntityManager().createQuery(
+                "FROM LikedSharedResource where pk.personId = :personId AND pk.sharedResourceId = :sharedResourceId")
+                .setParameter("personId", personId).setParameter("sharedResourceId", unfollowedLinkId).getResultList();
+
+        assertEquals(0, likedResources.size());
+        getEntityManager().clear();
+
+        sut.execute(new SetLikedResourceStatusRequest(personId, unfollowedLink.toUpperCase(), BaseObjectType.BOOKMARK,
+                true));
 
         likedResources = getEntityManager().createQuery(
                 "FROM LikedSharedResource where pk.personId = :personId AND pk.sharedResourceId = :sharedResourceId")
