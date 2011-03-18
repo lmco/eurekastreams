@@ -41,6 +41,9 @@ public class ConnectEntryPoint implements EntryPoint
     private final ActionProcessor processor = new ActionProcessorImpl((ActionRPCServiceAsync) GWT
             .create(ActionRPCService.class));
 
+    /**
+     * Module load.
+     */
     public void onModuleLoad()
     {
         processor.makeRequest(new ActionRequestImpl<PersonModelView>("noOperation", null),
