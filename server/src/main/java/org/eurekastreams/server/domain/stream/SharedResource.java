@@ -74,9 +74,9 @@ public class SharedResource extends DomainEntity implements Serializable
     @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
     @JoinTable(name = "Person_LikedSharedResources",
     // join columns
-    joinColumns = { @JoinColumn(table = "Person", name = "personId") },
+    joinColumns = { @JoinColumn(table = "SharedResource", name = "sharedResourceId") },
     // inverse join columns
-    inverseJoinColumns = { @JoinColumn(table = "SharedResource", name = "sharedResourceId") },
+    inverseJoinColumns = { @JoinColumn(table = "Person", name = "personId") },
     // unique constraints
     uniqueConstraints = { @UniqueConstraint(columnNames = { "personId", "sharedResourceId" }) })
     private List<Person> likedBy;

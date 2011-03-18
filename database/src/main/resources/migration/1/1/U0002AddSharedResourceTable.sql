@@ -15,17 +15,19 @@ insert into db_version (major, minor, patch, scriptname, description) values (1,
     );
 
     alter table Person_LikedSharedResources
-        add constraint FK7111CA7D9A7E3314
-        foreign key (personId)
+        add constraint FK7111CA7D35743B2
+        foreign key (sharedResourceId)
         references SharedResource;
-    
+
+    alter table Person_LikedSharedResources
+        add constraint FK7111CA7D242A4102
+        foreign key (personId)
+        references Person;    
 
     alter table Activity
         add column linkSharedResourceId int8;
 
-        
     alter table Activity
         add constraint FKA126572F442EBFAC
         foreign key (linkSharedResourceId)
         references SharedResource;
-        
