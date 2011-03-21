@@ -693,7 +693,7 @@
                         </configuration>
                         <executions>
                             <execution>
-                                <phase>process-classes</phase>
+                                <phase>verify</phase>
                                 <goals>
                                     <goal>assembly</goal>
                                 </goals>
@@ -804,6 +804,148 @@
                 </plugins>
             </build>
         </profile>
+
+       <!-- CDN build -->
+       <profile>
+            <id>CDN Server RPM Build</id>
+            <activation>
+                <property>
+                    <name>rpm.servercdnbuild</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>rpm-maven-plugin</artifactId>
+                        <version>2.0.1</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>rpm</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <name>eurekastreams-webcdn-server-${rpm.servercdnbuild}</name>
+                            <copyright>2011, Lockheed Martin Corp.</copyright>
+                            <distribution>Eureka Streams</distribution>
+                            <group>Application/Social Media</group>
+                            <icon></icon>
+                            <packager>Social Media Program, Lockheed Martin Corp.</packager>
+                            <prefix>/opt/tomcat6/current/eurekawebapps</prefix>
+                            <defineStatements>
+                                <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
+                            </defineStatements>
+                            <mappings>
+                                <mapping>
+                                    <directory>/opt/tomcat6/current/eurekawebapps</directory>
+                                    <filemode>555</filemode>
+                                    <username>root</username>
+                                    <groupname>root</groupname>
+                                    <sources>
+                                        <source>
+                                            <location>${project.build.directory}/ROOT-server.war</location>
+                                        </source>
+                                    </sources>
+                                </mapping>
+                              </mappings>
+                            <requires>
+                            </requires>
+			                    <preinstallScriptlet>
+			                        <scriptFile>${project.build.directory}/classes/scripts/preinstall.sh</scriptFile>
+			                        <fileEncoding>utf-8</fileEncoding>
+			                     </preinstallScriptlet>
+			                    <postinstallScriptlet>
+			                        <scriptFile>${project.build.directory}/classes/scripts/postinstall.sh</scriptFile>
+			                        <fileEncoding>utf-8</fileEncoding>
+			                    </postinstallScriptlet>
+			                    <preremoveScriptlet>
+			                        <scriptFile>${project.build.directory}/classes/scripts/preremove.sh</scriptFile>
+			                        <fileEncoding>utf-8</fileEncoding>                    
+			                    </preremoveScriptlet>
+			                    <postremoveScriptlet>
+			                        <scriptFile>${project.build.directory}/classes/scripts/postremove.sh</scriptFile>
+			                        <fileEncoding>utf-8</fileEncoding>                    
+			                    </postremoveScriptlet>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>CDN Client RPM Build</id>
+            <activation>
+                <property>
+                    <name>rpm.clientcdnbuild</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>rpm-maven-plugin</artifactId>
+                        <version>2.0.1</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>rpm</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <name>eurekastreams-webcdn-client-${rpm.clientcdnbuild}</name>
+                            <copyright>2011, Lockheed Martin Corp.</copyright>
+                            <distribution>Eureka Streams</distribution>
+                            <group>Application/Social Media</group>
+                            <icon></icon>
+                            <packager>Social Media Program, Lockheed Martin Corp.</packager>
+                            <prefix>/opt/tomcat6/current/eurekawebapps</prefix>
+                            <defineStatements>
+                                <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
+                            </defineStatements>
+                            <mappings>
+                                <mapping>
+                                    <directory>/opt/eurekastatic</directory>
+                                    <filemode>555</filemode>
+                                    <username>root</username>
+                                    <groupname>root</groupname>
+                                    <sources>
+                                        <source>
+                                            <location>${project.build.directory}/ROOT-client</location>
+                                        </source>
+                                    </sources>
+                                </mapping>
+                              </mappings>
+                            <requires>
+                            </requires>
+			                    <preinstallScriptlet>
+			                        <scriptFile>${project.build.directory}/classes/scripts/preinstall.sh</scriptFile>
+			                        <fileEncoding>utf-8</fileEncoding>
+			                     </preinstallScriptlet>
+			                    <postinstallScriptlet>
+			                        <scriptFile>${project.build.directory}/classes/scripts/postinstall.sh</scriptFile>
+			                        <fileEncoding>utf-8</fileEncoding>
+			                    </postinstallScriptlet>
+			                    <preremoveScriptlet>
+			                        <scriptFile>${project.build.directory}/classes/scripts/preremove.sh</scriptFile>
+			                        <fileEncoding>utf-8</fileEncoding>                    
+			                    </preremoveScriptlet>
+			                    <postremoveScriptlet>
+			                        <scriptFile>${project.build.directory}/classes/scripts/postremove.sh</scriptFile>
+			                        <fileEncoding>utf-8</fileEncoding>                    
+			                    </postremoveScriptlet>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+ 
+ 
+       <!-- Non CDN build -->
        <profile>
             <id>RPM Build</id>
             <activation>
