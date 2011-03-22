@@ -599,6 +599,12 @@
 	<StreamItemId id="1009" version="1" />
 	<StreamItemId id="1010" version="1" />
 	<StreamItemId id="1011" version="1" />
+	   
+    <SharedResource id="5" version="1" resourceType="BOOKMARK" uniqueKey="http://foo.com/foo.html" />
+    <SharedResource id="6" version="1" resourceType="BOOKMARK" uniqueKey="http://foo.foo.com/foo.html" />
+    
+    <Person_LikedSharedResources personId="42" sharedResourceId="5" />
+    <Person_LikedSharedResources personId="99" sharedResourceId="5" />
 		
 	<Activity id="6789" version="1" actorId="smithers" actorType="PERSON" baseObject="" baseObjectType="NOTE" 
 		openSocialId="123" postedTime="2009-10-27 06:54:00" updated="2009-10-27 06:55:00"
@@ -624,7 +630,9 @@
     <Activity id="6793" version="1" actorId="smithers" actorType="PERSON" baseObject="" baseObjectType="NOTE"
         openSocialId="234" postedTime="2010-01-27 06:58:00" updated="2010-01-27 06:58:00"
         verb="POST" recipientParentOrgId="5" streamScopeId="874" isDestinationStreamPublic="true" originalActorId="smithers" 
-		originalActorType="PERSON" flagged="false" />
+        originalActorType="PERSON" flagged="false" />
+        
+    
 
 	<Comment id="1" version="0" body="mr burns comment to smithers 1" 
 		timesent="2009-09-04 07:00:00" authorpersonid="99" activityid="6789" />
@@ -811,10 +819,5 @@
     <TutorialVideo id="3" version="1" dialogtitle="Dialog Title 3" innercontent="Inner Content 3" 
        innercontenttitle="Inner Content Title 3" page="START" videoheight="600" videourl="http://google.com"
        videowidth="200" /> 
-	
-	<SharedResource id="5" version="1" resourceType="BOOKMARK" uniqueKey="http://foo.com/foo.html" />
-	<SharedResource id="6" version="1" resourceType="BOOKMARK" uniqueKey="http://foo.foo.com/foo.html" />
-	
-    <Person_LikedSharedResources personId="42" sharedResourceId="5" />
     
 </dataset>
