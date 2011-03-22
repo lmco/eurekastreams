@@ -52,6 +52,14 @@
     <bean id="principalPopulator"
         class="org.eurekastreams.server.action.principal.SpringSecurityPrincipalPopulator" />
         
+    <bean id="springSecurityContextPrincipalPopulatorAllowNull" class="org.eurekastreams.server.action.principal.SpringSecurityContextPrincipalPopulatorAllowNull" />
+        
+    <bean id="dataStorePrincipalPopulator" class="org.eurekastreams.server.action.principal.DataStorePrincipalPopulator" >
+        <constructor-arg ref="getPersonByAccountIdMapperAllowNullResult" />
+        <constructor-arg ref="serviceActionController" />
+        <constructor-arg ref="createPersonFromLdap" /> 
+    </bean>
+        
     <bean id="openSocialPrincipalPopulator" class="org.eurekastreams.server.action.principal.OpenSocialPrincipalPopulator">
         <constructor-arg ref="bulkPeopleByOpenSocialIdMapper" />
         <constructor-arg ref="getPersonByAccountIdMapper" /> 

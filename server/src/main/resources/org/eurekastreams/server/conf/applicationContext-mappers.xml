@@ -693,6 +693,12 @@
 		<constructor-arg ref="getPeopleByAccountIdsMapper" />
 		<constructor-arg value="true" />
 	</bean>
+	
+	<!-- Mapper to get person model view by account id - wraps getPeopleByAccountIdsMapper - returns null when not found -->
+    <bean id="getPersonByAccountIdMapperAllowNullResult" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
+        <constructor-arg ref="getPeopleByAccountIdsMapper" />
+        <constructor-arg value="false" />
+    </bean>
 
 	<bean id="parentOrgActivityIdMapper"
 		class="org.eurekastreams.server.persistence.mappers.chained.DecoratedPartialResponseDomainMapper">

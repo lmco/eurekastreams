@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.net.URLDecoder;
 import java.util.Date;
+import java.util.List;
 
 import net.sf.json.JSONObject;
 
@@ -27,17 +28,13 @@ import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.eurekastreams.commons.actions.context.PrincipalPopulator;
+import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.actions.service.ServiceAction;
 import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
-import org.eurekastreams.commons.client.ActionRequest;
-import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.commons.server.service.ActionController;
-import org.eurekastreams.server.persistence.mappers.DomainMapper;
-import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.eurekastreams.server.service.actions.strategies.ApplicationContextHolder;
-import org.eurekastreams.server.service.restlets.support.AccountIdStrategy;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Status;
@@ -45,10 +42,11 @@ import org.restlet.resource.Representation;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.StringRepresentation;
 import org.restlet.resource.Variant;
+import org.springframework.util.Assert;
 
 /**
  * REST end point for stream filters.
- *
+ * 
  */
 public class ActionResource extends SmpResource
 {
@@ -58,9 +56,9 @@ public class ActionResource extends SmpResource
     private Log log = LogFactory.getLog(ActionResource.class);
 
     /**
-     * Open Social Id. TODO: this should be eliminated when we have OAuth.
+     * User principal.
      */
-    private String accountid;
+    private Principal principal;
 
     /**
      * Service Action Controller.
@@ -70,7 +68,7 @@ public class ActionResource extends SmpResource
     /**
      * Principal populator.
      */
-    private PrincipalPopulator principalPopulator;
+    private List<Transformer<Request, Principal>> principalExtractors;
 
     /**
      * JSONP Callback.
@@ -103,52 +101,38 @@ public class ActionResource extends SmpResource
     private ApplicationContextHolder applicationContextHolder;
 
     /**
-     * Instance of the AccountIdStrategy to be used for retrieving the accountid from the request.
-     */
-    private AccountIdStrategy accountIdParamStrategy;
-
-    /**
-     * Person mapper.
-     */
-    private DomainMapper<String, PersonModelView> getPersonMVByAccountId;
-
-    /**
      * Default constructor.
-     *
+     * 
      * @param inServiceActionController
      *            the action controller.
-     * @param inPrincipalPopulator
-     *            the principal populator.
+     * @param inPrincipalExtractors
+     *            the principal extractors.
      * @param inJsonFactory
      *            the json factory.
-     * @param inApplicationContextHolder app context holder.
-     * @param inGetPersonMVByAccountId get person.
-     * @param inAccountIdParamStrategy - instance of the strategy to use for retrieving the account id.
+     * @param inApplicationContextHolder
+     *            app context holder.
      */
     public ActionResource(final ActionController inServiceActionController,
-            final PrincipalPopulator inPrincipalPopulator, final JsonFactory inJsonFactory,
-            final ApplicationContextHolder inApplicationContextHolder,
-            final DomainMapper<String, PersonModelView> inGetPersonMVByAccountId,
-            final AccountIdStrategy inAccountIdParamStrategy)
+            final List<Transformer<Request, Principal>> inPrincipalExtractors, final JsonFactory inJsonFactory,
+            final ApplicationContextHolder inApplicationContextHolder)
     {
         serviceActionController = inServiceActionController;
-        principalPopulator = inPrincipalPopulator;
+        principalExtractors = inPrincipalExtractors;
         jsonFactory = inJsonFactory;
         applicationContextHolder = inApplicationContextHolder;
-        getPersonMVByAccountId = inGetPersonMVByAccountId;
-        accountIdParamStrategy = inAccountIdParamStrategy;
     }
 
     /**
      * init the params.
-     *
+     * 
      * @param request
      *            the request object.
      */
     @Override
     protected void initParams(final Request request)
     {
-        accountid = accountIdParamStrategy.getAccountId(request);
+        principal = getPrincipal(request);
+        Assert.notNull(principal, "Principal object cannot be null.");
         callback = (String) request.getAttributes().get("callback");
         actionKey = (String) request.getAttributes().get("action");
         requestType = (String) request.getAttributes().get("requestType");
@@ -157,7 +141,7 @@ public class ActionResource extends SmpResource
 
     /**
      * GET the activites.
-     *
+     * 
      * @param variant
      *            the variant.
      * @return the JSON.
@@ -170,40 +154,31 @@ public class ActionResource extends SmpResource
     {
         String jsString = "";
 
-        if(accountid == null)
-        {
-            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, 
-                    "accountid of the caller could not be determined.");
-        }
-        
         try
         {
-            PersonModelView pmv = getPersonMVByAccountId.execute(accountid);
-            Serializable actionParameter = getRequestObject();
-            log.debug("executing action for user: " + accountid);
-            ActionRequest request = new ActionRequestImpl(actionKey, actionParameter);
-            Object springBean = applicationContextHolder.getContext().getBean(request.getActionKey());
-            Serializable result = "empty result";
+            // get the action
+            Object springBean = applicationContextHolder.getContext().getBean(actionKey);
 
+            // get parameter
+            Serializable actionParameter = getRequestObject();
+
+            // create ServiceActionContext.
+            ServiceActionContext actionContext = new ServiceActionContext(actionParameter, principal);
+            actionContext.setActionId(actionKey);
+
+            log.debug("executing action: " + actionKey + " for user: " + principal.getAccountId());
+
+            Serializable result = "empty result";
             if (springBean instanceof ServiceAction)
             {
                 ServiceAction action = (ServiceAction) springBean;
-
-                ServiceActionContext actionContext = new ServiceActionContext(actionParameter, principalPopulator
-                        .getPrincipal(pmv.getOpenSocialId(), ""));
-                actionContext.setActionId(request.getActionKey());
                 result = serviceActionController.execute(actionContext, action);
             }
             else if (springBean instanceof TaskHandlerServiceAction)
             {
                 TaskHandlerServiceAction action = (TaskHandlerServiceAction) springBean;
-
-                ServiceActionContext actionContext = new ServiceActionContext(actionParameter, principalPopulator
-                        .getPrincipal(pmv.getOpenSocialId(), ""));
-                actionContext.setActionId(request.getActionKey());
                 result = serviceActionController.execute(actionContext, action);
             }
-
 
             StringWriter writer = new StringWriter();
             JsonGenerator jsonGenerator = jsonFactory.createJsonGenerator(writer);
@@ -232,10 +207,31 @@ public class ActionResource extends SmpResource
     }
 
     /**
+     * Returns Principal for given account id.
+     * 
+     * @param inRequest
+     *            Request to get principal from.
+     * @return Principal for given account id.
+     */
+    private Principal getPrincipal(final Request inRequest)
+    {
+        Principal result = null;
+        int populatorCount = principalExtractors.size();
+
+        for (int i = 0; (result == null && i < populatorCount); i++)
+        {
+            Transformer<Request, Principal> t = principalExtractors.get(i);
+            result = t.transform(inRequest);
+        }
+        return result;
+    }
+
+    /**
      * Go from JSON to Request object.
-     *
+     * 
      * @return the request object.
-     * @throws Exception possible exceptions.
+     * @throws Exception
+     *             possible exceptions.
      */
     @SuppressWarnings("unchecked")
     private Serializable getRequestObject() throws Exception
