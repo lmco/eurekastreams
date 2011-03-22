@@ -183,7 +183,26 @@
                     </list>
                 </constructor-arg>
     </bean>
-	
+
+    <bean name="actionResource" class="org.eurekastreams.server.service.restlets.ActionResource" scope="prototype">
+        <constructor-arg ref="serviceActionController" />
+        <constructor-arg>
+            <list>
+                <ref bean="springSecurityContextPrincipalPopulatorAllowNull" />
+                <ref bean="oAuthRequestToPrincipalTransformer" />                
+            </list>
+        </constructor-arg>
+        <constructor-arg>
+            <bean class="org.codehaus.jackson.map.MappingJsonFactory" />
+        </constructor-arg>
+        <constructor-arg ref="applicationContextHolder" /> 
+    </bean>     
+    
+    <bean id="oAuthRequestToPrincipalTransformer" class="org.eurekastreams.server.service.restlets.support.OAuthRequestToPrincipalTransformer">
+        <constructor-arg ref="dataStorePrincipalPopulator"/>            
+    </bean>  
+         
+	<!-- 
 	<bean name="actionResource" class="org.eurekastreams.server.service.restlets.ActionResource" scope="prototype">
         <constructor-arg ref="serviceActionController" />
         <constructor-arg ref="openSocialPrincipalPopulator" />
@@ -213,6 +232,7 @@
             </bean>
         </constructor-arg> 
     </bean>   
+     -->
        
 	<bean name="streamResource" class="org.eurekastreams.server.service.restlets.StreamResource" scope="prototype">
 		<constructor-arg ref="getActivitiesByRequest" />
