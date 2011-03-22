@@ -76,6 +76,11 @@ public class LdapToPersonMapper implements AttributesMapper
      * User email attribute name.
      */
     private String emailAttrib;
+    
+    /**
+     * Company attribute.
+     */
+    private String companyAttrib;
 
     /**
      * Additional properties to load.
