@@ -74,7 +74,7 @@ public class StreamScope extends DomainEntity implements Serializable
 
     /**
      * Constructor.
-     *
+     * 
      * @param inScopeType
      *            the scope type
      * @param inUniqueKey
@@ -89,7 +89,7 @@ public class StreamScope extends DomainEntity implements Serializable
 
     /**
      * Constructor.
-     *
+     * 
      * @param inScopeType
      *            the scope type
      * @param inUniqueKey
@@ -106,7 +106,7 @@ public class StreamScope extends DomainEntity implements Serializable
 
     /**
      * Constructor.
-     *
+     * 
      * @param inDisplayName
      *            the display name for the scope.
      * @param inScopeType
@@ -125,7 +125,7 @@ public class StreamScope extends DomainEntity implements Serializable
 
     /**
      * Constructor.
-     *
+     * 
      * @param inDisplayName
      *            the display name for the scope.
      * @param inScopeType
@@ -147,7 +147,7 @@ public class StreamScope extends DomainEntity implements Serializable
 
     /**
      * Set the scope.
-     *
+     * 
      * @param inScopeType
      *            the scope to set
      */
@@ -158,7 +158,7 @@ public class StreamScope extends DomainEntity implements Serializable
 
     /**
      * Get the scope.
-     *
+     * 
      * @return the scope
      */
     public ScopeType getScopeType()
@@ -168,7 +168,7 @@ public class StreamScope extends DomainEntity implements Serializable
 
     /**
      * Set the unique key.
-     *
+     * 
      * @param inUniqueKey
      *            the uniqueKey to set
      */
@@ -179,7 +179,7 @@ public class StreamScope extends DomainEntity implements Serializable
 
     /**
      * Get the unique key.
-     *
+     * 
      * @return the uniqueKey
      */
     public String getUniqueKey()
@@ -225,7 +225,12 @@ public class StreamScope extends DomainEntity implements Serializable
         /**
          * Scoped to starred activities for current user.
          */
-        STARRED
+        STARRED,
+
+        /**
+         * Represents a resource.
+         */
+        RESOURCE
     }
 
     /**
@@ -247,7 +252,7 @@ public class StreamScope extends DomainEntity implements Serializable
 
     /**
      * Equals method comparing object ids.
-     *
+     * 
      * @param obj
      *            The object to compare to this one.
      * @return true if objects are equal, false otherwise.
@@ -261,7 +266,7 @@ public class StreamScope extends DomainEntity implements Serializable
 
     /**
      * Needed for checkstyle.
-     *
+     * 
      * @return the hashcode.
      */
     @Override
@@ -272,7 +277,7 @@ public class StreamScope extends DomainEntity implements Serializable
 
     /**
      * Get the destination (group or person) entity's id.
-     *
+     * 
      * @return the destination (group or person) entity's id.
      */
     public Long getDestinationEntityId()
@@ -282,7 +287,7 @@ public class StreamScope extends DomainEntity implements Serializable
 
     /**
      * Set the destination (group or person) entity's id.
-     *
+     * 
      * @param inDestinationEntityId
      *            the destination (group or person) entity's id.
      */
