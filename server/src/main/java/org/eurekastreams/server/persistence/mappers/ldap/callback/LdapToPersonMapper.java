@@ -36,7 +36,7 @@ public class LdapToPersonMapper implements AttributesMapper
      * Logger.
      */
     private Log log = LogFactory.getLog(LdapToPersonMapper.class);
-    
+
     /**
      * User account attribute name.
      */
@@ -76,7 +76,7 @@ public class LdapToPersonMapper implements AttributesMapper
      * User email attribute name.
      */
     private String emailAttrib;
-    
+
     /**
      * Company attribute.
      */
@@ -131,21 +131,21 @@ public class LdapToPersonMapper implements AttributesMapper
             person.setTitle(title);
             person.setParentOrganization(orgObject);
             person.setEmail(email);
-            
+
             if (additionalProperties != null)
             {
                 HashMap<String, String> propertiesMap = new HashMap<String, String>();
                 for (String property : additionalProperties)
                 {
-                    //Some additional configurated properties may not be available for all users.  Do not 
-                    //halt on those properties, just move on.
+                    // Some additional configurated properties may not be available for all users. Do not
+                    // halt on those properties, just move on.
                     try
                     {
                         propertiesMap.put(property, attrs.get(property).get().toString());
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
-                        if(log.isInfoEnabled())
+                        if (log.isInfoEnabled())
                         {
                             log.info("Additional Property: " + property + " not found for user " + accountId);
                         }
@@ -250,5 +250,14 @@ public class LdapToPersonMapper implements AttributesMapper
     public void setAdditionalProperties(final List<String> inAdditionalProperties)
     {
         this.additionalProperties = inAdditionalProperties;
+    }
+
+    /**
+     * @param inCompanyAttrib
+     *            the companyAttrib to set
+     */
+    public void setCompanyAttrib(final String inCompanyAttrib)
+    {
+        companyAttrib = inCompanyAttrib;
     }
 }
