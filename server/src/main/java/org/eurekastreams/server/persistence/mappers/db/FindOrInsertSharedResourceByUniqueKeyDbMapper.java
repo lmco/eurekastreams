@@ -21,11 +21,13 @@ import javax.persistence.Query;
 
 import org.eurekastreams.server.domain.stream.SharedResource;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
+import org.eurekastreams.server.persistence.mappers.requests.SharedResourceRequest;
 
 /**
  * DB Mapper to get a shared resource by unique key.
  */
-public class FindOrInsertSharedResourceByUniqueKeyDbMapper extends BaseArgDomainMapper<SharedResource, SharedResource>
+public class FindOrInsertSharedResourceByUniqueKeyDbMapper extends
+        BaseArgDomainMapper<SharedResourceRequest, SharedResource>
 {
     /**
      * Find or create a shared resource by type and key.
@@ -36,14 +38,14 @@ public class FindOrInsertSharedResourceByUniqueKeyDbMapper extends BaseArgDomain
      * @return the existing resource or newly inserted one
      */
     @Override
-    public SharedResource execute(final SharedResource inSharedResourceRequest)
+    public SharedResource execute(final SharedResourceRequest inSharedResourceRequest)
     {
         if (inSharedResourceRequest.getResourceType() == null || inSharedResourceRequest.getUniqueKey() == null)
         {
             return null;
         }
         Query q = getEntityManager().createQuery(
-                "FROM SharedResource WHERE resourceType = :resourceType AND " + "uniqueKey = :uniqueKey");
+                "FROM SharedResource WHERE resourceType = :resourceType AND uniqueKey = :uniqueKey");
         q.setParameter("resourceType", inSharedResourceRequest.getResourceType());
         q.setParameter("uniqueKey", inSharedResourceRequest.getUniqueKey().toLowerCase());
         List<SharedResource> resources = q.getResultList();
