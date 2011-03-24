@@ -16,6 +16,7 @@
 package org.eurekastreams.server.domain.stream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
@@ -31,7 +32,7 @@ import org.junit.Test;
 
 /**
  * Activity test class.
- *
+ * 
  */
 public class ActivityTest
 {
@@ -155,6 +156,7 @@ public class ActivityTest
         sut.setOriginalActivityId(originalActivityId);
         sut.setIsDestinationStreamPublic(true);
         sut.setFlagged(true);
+        sut.setShowInStream(false);
     }
 
     /**
@@ -181,5 +183,6 @@ public class ActivityTest
         assertEquals("Original Activity Id not as expected", originalActivityId, sut.getOriginalActivityId());
         assertEquals("Original isDestinationStreamPublic not as expected", true, sut.getIsDestinationStreamPublic());
         assertTrue("Flagged not as expected", sut.isFlagged());
+        assertFalse("show in stream not as expected", sut.getShowInStream());
     }
 }

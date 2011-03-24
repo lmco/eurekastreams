@@ -249,6 +249,12 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
     private SharedResource sharedLink;
 
     /**
+     * Whether the activity is to be displayed in stream (everyone, personal, etc), or just resource streams.
+     */
+    @Basic(optional = false)
+    private Boolean showInStream = true;
+
+    /**
      * Only used for query reference, don't load this.
      */
     @ManyToMany(fetch = FetchType.LAZY)
@@ -735,5 +741,22 @@ public class Activity extends DomainEntity implements Serializable, Cloneable
     public void setSharedLink(final SharedResource inSharedLink)
     {
         sharedLink = inSharedLink;
+    }
+
+    /**
+     * @return the showInStream
+     */
+    public Boolean getShowInStream()
+    {
+        return showInStream;
+    }
+
+    /**
+     * @param inShowInStream
+     *            the showInStream to set
+     */
+    public void setShowInStream(final Boolean inShowInStream)
+    {
+        showInStream = inShowInStream;
     }
 }
