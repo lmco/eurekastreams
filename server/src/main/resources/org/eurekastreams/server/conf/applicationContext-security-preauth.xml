@@ -14,12 +14,14 @@
         <intercept-url pattern="/resources/autocomplete/entities/**" access="ROLE_USER"/>
         <intercept-url pattern="/resources/atom/**" access="ROLE_USER"/>
         <intercept-url pattern="/resources/util/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
-        <intercept-url pattern="/resources/api/**" access="${build.spring.security.apirestletaccess}"/>
+        <intercept-url pattern="/resources/api/**" access="ROLE_DENY_ALL"/>
         <intercept-url pattern="/resources/**" access="ROLE_OAUTH_CLIENT, ROLE_USER"/>
         <intercept-url pattern="/themes/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/rpc" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/rpc/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
         <intercept-url pattern="/eurekastreams/photos/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
+		<intercept-url pattern="/api/0/full/**" access="${build.spring.security.apirestletaccess}"/>
+	    <intercept-url pattern="/api/0/read/**" access="ROLE_OAUTH_CLIENT, ROLE_USER"/>
         <intercept-url pattern="/**" access="ROLE_USER"/>
         <anonymous/>
     </http>
