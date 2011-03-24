@@ -109,7 +109,7 @@
         <build.web.grbaseurl>http://localhost:8081</build.web.grbaseurl>
         <build.web.baseurl>http://localhost:8080</build.web.baseurl>
         <build.web.host>localhost:8080</build.web.host>
-        <build.web.apirestletbean>actionResource</build.web.apirestletbean>
+        <build.web.fullapiprincipalextractors>principalExtractorsRequest</build.web.fullapiprincipalextractors>
         <build.gwt.modulename>org.eurekastreams.web.Application</build.gwt.modulename>
         <build.gwt.compile.style>PRETTY</build.gwt.compile.style>
         <build.gadget.container.name>eureka</build.gadget.container.name>

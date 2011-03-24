@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
@@ -184,23 +185,6 @@
                 </constructor-arg>
     </bean>
 
-    <bean name="actionResource" class="org.eurekastreams.server.service.restlets.ActionResource" scope="prototype">
-        <constructor-arg ref="serviceActionController" />
-        <constructor-arg>
-            <list>
-                <ref bean="springSecurityContextPrincipalPopulatorAllowNull" />
-                <ref bean="oAuthRequestToPrincipalTransformer" />                
-            </list>
-        </constructor-arg>
-        <constructor-arg>
-            <bean class="org.codehaus.jackson.map.MappingJsonFactory" />
-        </constructor-arg>
-        <constructor-arg ref="applicationContextHolder" /> 
-    </bean>     
-    
-    <bean id="oAuthRequestToPrincipalTransformer" class="org.eurekastreams.server.service.restlets.support.OAuthRequestToPrincipalTransformer">
-        <constructor-arg ref="dataStorePrincipalPopulator"/>            
-    </bean>         
        
 	<bean name="streamResource" class="org.eurekastreams.server.service.restlets.StreamResource" scope="prototype">
 		<constructor-arg ref="getActivitiesByRequest" />
@@ -224,7 +208,44 @@
         <constructor-arg ref="getAllPersonAdditionalProperties" />
     </bean>
 	
+	<!-- Eureka API: The Action Resource implements the programmatic API to Eureka. -->
+
+    <bean id="oAuthRequestToPrincipalTransformer" class="org.eurekastreams.server.service.restlets.support.OAuthRequestToPrincipalTransformer">
+        <constructor-arg ref="dataStorePrincipalPopulator"/>            
+    </bean>         
+
+	<util:list id="principalExtractorsContextAndRequest">
+		<ref bean="springSecurityContextPrincipalPopulatorAllowNull" />
+		<ref bean="oAuthRequestToPrincipalTransformer" />                
+	</util:list>
+
+	<util:list id="principalExtractorsRequest">
+		<ref bean="oAuthRequestToPrincipalTransformer" />                
+	</util:list>
+
+    <bean name="actionResourceFull" class="org.eurekastreams.server.service.restlets.ActionResource" scope="prototype">
+        <constructor-arg ref="serviceActionController" />
+        <constructor-arg ref="${build.web.fullapiprincipalextractors}" />
+        <constructor-arg>
+            <bean class="org.codehaus.jackson.map.MappingJsonFactory" />
+        </constructor-arg>
+        <constructor-arg ref="applicationContextHolder" />
+        <constructor-arg value="false" /> 
+    </bean>     
+
+    <bean name="actionResourceReadOnly" class="org.eurekastreams.server.service.restlets.ActionResource" scope="prototype">
+        <constructor-arg ref="serviceActionController" />
+        <constructor-arg ref="principalExtractorsContextAndRequest" />
+        <constructor-arg>
+            <bean class="org.codehaus.jackson.map.MappingJsonFactory" />
+        </constructor-arg>
+        <constructor-arg ref="applicationContextHolder" />
+        <constructor-arg value="true" /> 
+    </bean>     
+    	
+	
 	<!-- The router maps URLs to resources. -->
+	
 	<bean name="restletRouter" class="org.restlet.ext.spring.SpringRouter">
 		<constructor-arg ref="resourceApplication" />
 		<property name="attachments">
@@ -393,9 +414,14 @@
                         <lookup-method name="createResource" bean="personPropertiesResource" />
                     </bean>
                 </entry>
-                <entry key="/api/{accountidFromUrl}/action/{action}/{requestType}/{requestJSON}">
+                <entry key="/api/0/full/{action}/{requestType}/{paramsJSON}">
                     <bean class="org.restlet.ext.spring.SpringFinder">
-                        <lookup-method name="createResource" bean="${build.web.apirestletbean}" />
+                        <lookup-method name="createResource" bean="actionResourceFull" />
+                    </bean>
+                </entry>
+                <entry key="/api/0/read/{action}/{requestType}/{paramsJSON}">
+                    <bean class="org.restlet.ext.spring.SpringFinder">
+                        <lookup-method name="createResource" bean="actionResourceReadOnly" />
                     </bean>
                 </entry>
 			</map>

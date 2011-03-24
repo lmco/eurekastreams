@@ -4,74 +4,266 @@
     PUBLIC "-//tuckey.org//DTD UrlRewrite 3.0//EN" 
     "http://tuckey.org/res/dtds/urlrewrite3.0.dtd">
 
-<urlrewrite>
+<urlrewrite decode-using="null">
 
-	<rule>
-		<name>IB: Convert from /action: to Application HTML</name>
-		<from>^/actions/(.*)$</from>
-		<to last="true">/index.html</to>
-	</rule>
+	<!-- FULL API -->
 	
 	<rule>
-		<name>IB: Convert from /requestaccess to Application HTML</name>
-		<from>^/requestaccess(.*)$</from>
-		<to last="true">/index.html</to>
+		<from>^/api/0/full/authorizeUpdateGroup/(.*)$</from>
+		<to last="true">/resources/api/0/full/authorizeUpdateGroup/String/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/deleteActivity/(.*)$</from>
+		<to last="true">/resources/api/0/full/deleteActivityAction/Long/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/deleteComment/(.*)$</from>
+		<to last="true">/resources/api/0/full/deleteComment/Long/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/deleteStreamForCurrentUser/(.*)$</from>
+		<to last="true">/resources/api/0/full/deleteStreamForCurrentUser/Long/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/flagActivity/(.*)$</from>
+		<to last="true">/resources/api/0/full/flagActivity/Long/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getActivitiesByRequest/(.*)$</from>
+		<to last="true">/resources/api/0/full/getActivitiesByRequest/String/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getActivityById/(.*)$</from>
+		<to last="true">/resources/api/0/full/getActivityById/Long/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getActivityCount/(.*)$</from>
+		<to last="true">/resources/api/0/full/getActivityCount/String/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getActivityLikers/(.*)$</from>
+		<to last="true">/resources/api/0/full/getActivityLikers/Long/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getAllPopularHashTags/(.*)$</from>
+		<to last="true">/resources/api/0/full/getAllPopularHashTags/null/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getBreadcrumbsList/(.*)$</from>
+		<to last="true">/resources/api/0/full/getBreadcrumbsList/org.eurekastreams.server.action.request.profile.GetBreadcrumbsListRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getCurrentUserFollowedGroups/(.*)$</from>
+		<to last="true">/resources/api/0/full/getCurrentUserFollowedGroups/null/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getCurrentUserFollowingStatus/(.*)$</from>
+		<to last="true">/resources/api/0/full/getCurrentUserFollowingStatus/org.eurekastreams.server.action.request.profile.GetCurrentUserFollowingStatusRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getCurrentUserStreams/(.*)$</from>
+		<to last="true">/resources/api/0/full/getCurrentUsersStreams/null/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getDirectorySearchResults/(.*)$</from>
+		<to last="true">/resources/api/0/full/getDirectorySearchResults/org.eurekastreams.server.action.request.directory.GetDirectorySearchResultsRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getDirectorySearchResultsGroups/(.*)$</from>
+		<to last="true">/resources/api/0/full/getDirectorySearchResultsGroups/org.eurekastreams.server.action.request.directory.GetDirectorySearchResultsRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getDirectorySearchResultsPeople/(.*)$</from>
+		<to last="true">/resources/api/0/full/getDirectorySearchResultsPeople/org.eurekastreams.server.action.request.directory.GetDirectorySearchResultsRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getEducation/(.*)$</from>
+		<to last="true">/resources/api/0/full/getEducation/Long/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getEmployment/(.*)$</from>
+		<to last="true">/resources/api/0/full/getEmployment/Long/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getFollowing/(.*)$</from>
+		<to last="true">/resources/api/0/full/getFollowing/org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getFollowingGroups/(.*)$</from>
+		<to last="true">/resources/api/0/full/getFollowingGroups/org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getGroupFollowers/(.*)$</from>
+		<to last="true">/resources/api/0/full/getGroupFollowers/org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getGroupModelView/(.*)$</from>
+		<to last="true">/resources/api/0/full/getGroupModelView/String/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getParsedLinkInformation/(.*)$</from>
+		<to last="true">/resources/api/0/full/getParsedLinkInformation/String/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getPersonFollowers/(.*)$</from>
+		<to last="true">/resources/api/0/full/getPersonFollowers/org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getPersonModelView/(.*)$</from>
+		<to last="true">/resources/api/0/full/getPersonModelView/String/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getPopularHashTagsForStream/(.*)$</from>
+		<to last="true">/resources/api/0/full/getPopularHashTagsForStream/org.eurekastreams.server.action.request.stream.StreamPopularHashTagsRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getRequestsForGroupMembershipByGroup/(.*)$</from>
+		<to last="true">/resources/api/0/full/getRequestsForGroupMembershipByGroupAction/org.eurekastreams.server.action.request.profile.GetRequestForGroupMembershipRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getSystemSettings/(.*)$</from>
+		<to last="true">/resources/api/0/full/getSystemSettings/null/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/modifyStreamForCurrentUser/(.*)$</from>
+		<to last="true">/resources/api/0/full/modifyStreamForCurrentUser/org.eurekastreams.server.domain.stream.Stream/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/postActivityCommentDTO/(.*)$</from>
+		<to last="true">/resources/api/0/full/postActivityCommentAction/org.eurekastreams.server.search.modelview.CommentDTO/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/postGroupActivityDTO/(.*)$</from>
+		<to last="true">/resources/api/0/full/postGroupActivityServiceActionTaskHandler/org.eurekastreams.server.action.request.stream.PostActivityRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/postPersonActivityDTO/(.*)$</from>
+		<to last="true">/resources/api/0/full/postPersonActivityServiceActionTaskHandler/org.eurekastreams.server.action.request.stream.PostActivityRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/setActivityLiked/(.*)$</from>
+		<to last="true">/resources/api/0/full/setActivityLiked/org.eurekastreams.server.action.request.stream.SetActivityLikeRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/setActivityStar/(.*)$</from>
+		<to last="true">/resources/api/0/full/setActivityStar/org.eurekastreams.server.action.request.stream.SetActivityStarRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/setFollowingStatusGroup/(.*)$</from>
+		<to last="true">/resources/api/0/full/setFollowingStatusGroupTaskHandler/org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/setFollowingStatusPerson/(.*)$</from>
+		<to last="true">/resources/api/0/full/setFollowingStatusPersonTaskHandler/org.eurekastreams.server.action.request.profile.SetFollowingStatusRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/setStreamOrder/(.*)$</from>
+		<to last="true">/resources/api/0/full/setStreamOrder//$1</to>
 	</rule>
 
-	<rule>
-		<name>IB: Convert from /directory to Application HTML</name>
-		<from>^/directory(.*)$</from>
-		<to last="true">/index.html</to>
-	</rule>
+	<!-- READ-ONLY API -->
 	
 	<rule>
-		<name>IB: Convert from /setup to Application HTML</name>
-		<from>^/setup(.*)$</from>
-		<to last="true">/index.html</to>
+		<from>^/api/0/read/authorizeUpdateGroup/(.*)$</from>
+		<to last="true">/resources/api/0/read/authorizeUpdateGroup/String/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getActivitiesByRequest/(.*)$</from>
+		<to last="true">/resources/api/0/read/getActivitiesByRequest/String/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getActivityById/(.*)$</from>
+		<to last="true">/resources/api/0/read/getActivityById/Long/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getActivityCount/(.*)$</from>
+		<to last="true">/resources/api/0/read/getActivityCount/String/$1</to>
+	</rule>
+	<!-- The getActivityLikers action is not marked read-only, so it cannot be in the read-only API.  
+		It's probably mismarked, since it shouldn't modify anything considering it's a 'get' action. -->
+<!--	<rule>-->
+<!--		<from>^/api/0/read/getActivityLikers/(.*)$</from>-->
+<!--		<to last="true">/resources/api/0/read/getActivityLikers/Long/$1</to>-->
+<!--	</rule>-->
+	<rule>
+		<from>^/api/0/read/getAllPopularHashTags/(.*)$</from>
+		<to last="true">/resources/api/0/read/getAllPopularHashTags/null/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getBreadcrumbsList/(.*)$</from>
+		<to last="true">/resources/api/0/read/getBreadcrumbsList/org.eurekastreams.server.action.request.profile.GetBreadcrumbsListRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getCurrentUserFollowedGroups/(.*)$</from>
+		<to last="true">/resources/api/0/read/getCurrentUserFollowedGroups/null/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getCurrentUserFollowingStatus/(.*)$</from>
+		<to last="true">/resources/api/0/read/getCurrentUserFollowingStatus/org.eurekastreams.server.action.request.profile.GetCurrentUserFollowingStatusRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getCurrentUserStreams/(.*)$</from>
+		<to last="true">/resources/api/0/read/getCurrentUsersStreams/null/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getDirectorySearchResults/(.*)$</from>
+		<to last="true">/resources/api/0/read/getDirectorySearchResults/org.eurekastreams.server.action.request.directory.GetDirectorySearchResultsRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getDirectorySearchResultsGroups/(.*)$</from>
+		<to last="true">/resources/api/0/read/getDirectorySearchResultsGroups/org.eurekastreams.server.action.request.directory.GetDirectorySearchResultsRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getDirectorySearchResultsPeople/(.*)$</from>
+		<to last="true">/resources/api/0/read/getDirectorySearchResultsPeople/org.eurekastreams.server.action.request.directory.GetDirectorySearchResultsRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getEducation/(.*)$</from>
+		<to last="true">/resources/api/0/read/getEducation/Long/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getEmployment/(.*)$</from>
+		<to last="true">/resources/api/0/read/getEmployment/Long/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getFollowing/(.*)$</from>
+		<to last="true">/resources/api/0/read/getFollowing/org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getFollowingGroups/(.*)$</from>
+		<to last="true">/resources/api/0/read/getFollowingGroups/org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getGroupFollowers/(.*)$</from>
+		<to last="true">/resources/api/0/read/getGroupFollowers/org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getGroupModelView/(.*)$</from>
+		<to last="true">/resources/api/0/read/getGroupModelView/String/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getParsedLinkInformation/(.*)$</from>
+		<to last="true">/resources/api/0/read/getParsedLinkInformation/String/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getPersonFollowers/(.*)$</from>
+		<to last="true">/resources/api/0/read/getPersonFollowers/org.eurekastreams.server.action.request.profile.GetFollowersFollowingRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getPersonModelView/(.*)$</from>
+		<to last="true">/resources/api/0/read/getPersonModelView/String/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getPopularHashTagsForStream/(.*)$</from>
+		<to last="true">/resources/api/0/read/getPopularHashTagsForStream/org.eurekastreams.server.action.request.stream.StreamPopularHashTagsRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getRequestsForGroupMembershipByGroup/(.*)$</from>
+		<to last="true">/resources/api/0/read/getRequestsForGroupMembershipByGroupAction/org.eurekastreams.server.action.request.profile.GetRequestForGroupMembershipRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getSystemSettings/(.*)$</from>
+		<to last="true">/resources/api/0/read/getSystemSettings/null/$1</to>
 	</rule>
 
-	<rule>
-		<name>IB: Convert from /gallery to Application HTML</name>
-		<from>^/gallery(.*)$</from>
-		<to last="true">/index.html</to>
-	</rule>
-
-	<rule>
-		<name>IB: Convert from /channels to Application HTML</name>
-		<from>^/activity(.*)$</from>
-		<to last="true">/index.html</to>
-	</rule>
-	<rule>
-		<name>IB: Convert from /settings to Application HTML</name>
-		<from>^/settings(.*)$</from>
-		<to last="true">/index.html</to>
-	</rule>
-	<rule>
-		<name>IB: Convert from /people to Application HTML</name>
-		<from>^/people/(.*)$</from>
-		<to last="true">/index.html</to>
-	</rule>
-	<rule>
-		<name>IB: Convert from /organizations to Application HTML</name>
-		<from>^/organizations/(.*)$</from>
-		<to last="true">/index.html</to>
-	</rule>
-
-	<rule>
-		<name>IB: Convert from /groups to Application HTML</name>
-		<from>^/groups/(.*)$</from>
-		<to last="true">/index.html</to>
-	</rule>
-	
-	<rule>
-		<name>IB: Convert from /authorize to Application HTML</name>
-		<from>^/authorize(.*)$</from>
-		<to last="true">/index.html</to>
-	</rule>
-	<!--
-		<rule> <name>IB: Redirect from / to Eureka Streams Application</name>
-		<note>This rule is to be at the bottom since it is called the
-		least</note> <from>^/$</from> <to last="true">Application.html</to>
-		</rule>
-	-->
 </urlrewrite>

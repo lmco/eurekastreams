@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ import org.springframework.util.Assert;
  * Custom implementation of Spring's UserDetailsService interface. Loads user details from data store. Currently returns
  * ExtendedUserDetails object that encapsulates Person and PersistentLogin information (plus the standard UserDetails
  * stuff).
- * 
+ *
  */
 public class UserDetailsServiceImpl implements UserDetailsService
 {
@@ -52,17 +52,17 @@ public class UserDetailsServiceImpl implements UserDetailsService
     /**
      * Mapper for Person information.
      */
-    private PersonMapper personMapper;
+    private final PersonMapper personMapper;
 
     /**
      * Mapper for PersistentLoginInformation.
      */
-    private PersistentLoginRepository loginRepository;
+    private final PersistentLoginRepository loginRepository;
 
     /**
      * The AuthorityProvider for this service to use.
      */
-    private AuthorityProvider authorityProvider;
+    private final AuthorityProvider authorityProvider;
 
     /**
      * Authentication type.
@@ -72,12 +72,12 @@ public class UserDetailsServiceImpl implements UserDetailsService
     /**
      * {@link ActionController}.
      */
-    private ActionController serviceActionController;
+    private final ActionController serviceActionController;
 
     /**
      * Action to create user from LDAP.
      */
-    private TaskHandlerServiceAction createUserfromLdapAction;
+    private final TaskHandlerServiceAction createUserfromLdapAction;
 
     /**
      * This username will short circut and fail fast.
@@ -86,7 +86,7 @@ public class UserDetailsServiceImpl implements UserDetailsService
 
     /**
      * Constructor.
-     * 
+     *
      * @param inPersonMapper
      *            The PersonMapper.
      * @param inPersistentLoginRepository
@@ -112,14 +112,15 @@ public class UserDetailsServiceImpl implements UserDetailsService
 
     /**
      * Returns populated UserDetails object for user.
-     * 
+     *
      * @param username
      *            The username.
      * @return Populated UserDetails object for user.
      */
+    @Override
     public UserDetails loadUserByUsername(final String username)
     {
-        if (username == bypassUserName)
+        if (bypassUserName.equalsIgnoreCase(username))
         {
             String errorMessage = "Configured to skip loading user details for " + username;
             log.debug(errorMessage);
