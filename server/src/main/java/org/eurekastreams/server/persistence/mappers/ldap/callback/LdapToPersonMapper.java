@@ -117,9 +117,12 @@ public class LdapToPersonMapper implements AttributesMapper
 
             String middleName = (null != attrs.get(middleNameAttrib)) ? attrs.get(middleNameAttrib).get().toString()
                     : "";
-
+            
             String orgName = (null != attrs.get(orgAttrib)) ? attrs.get(orgAttrib).get().toString() : "";
             Organization orgObject = new Organization(orgName, orgName);
+            
+            String companyName = (null != attrs.get(companyAttrib)) ? attrs.get(companyAttrib).get().toString()
+                    : "";
 
             String title = (null != attrs.get(titleAttrib)) ? attrs.get(titleAttrib).get().toString() : "";
 
@@ -128,6 +131,9 @@ public class LdapToPersonMapper implements AttributesMapper
 
             person = new Person(accountId, firstName, middleName, lastName, preferredName);
 
+            log.debug("Company Name:" + companyName);
+            
+            person.setCompanyName(companyName);
             person.setTitle(title);
             person.setParentOrganization(orgObject);
             person.setEmail(email);

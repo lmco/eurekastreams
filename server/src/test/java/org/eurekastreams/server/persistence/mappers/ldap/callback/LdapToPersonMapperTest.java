@@ -63,6 +63,7 @@ public class LdapToPersonMapperTest
         sut.setOrgAttrib("lmcTopTierDesc");
         sut.setTitleAttrib("title");
         sut.setEmailAttrib("mail");
+        sut.setCompanyAttrib("companyName");
     }
 
     /**
@@ -85,9 +86,10 @@ public class LdapToPersonMapperTest
         final Attribute titleMock = context.mock(Attribute.class, "title");
         final Attribute emailMock = context.mock(Attribute.class, "email");
         final Attribute propMock = context.mock(Attribute.class, "someKey");
-        
-        List<String> props = Collections.singletonList("someKey"); 
-        sut.setAdditionalProperties(props); 
+        final Attribute companyMock = context.mock(Attribute.class, "company");
+
+        List<String> props = Collections.singletonList("someKey");
+        sut.setAdditionalProperties(props);
 
         context.checking(new Expectations()
         {
@@ -110,6 +112,9 @@ public class LdapToPersonMapperTest
                 exactly(2).of(attributeMock).get("middleName");
                 will(returnValue(middleNameMock));
 
+                exactly(2).of(attributeMock).get("companyName");
+                will(returnValue(companyMock));
+
                 exactly(2).of(attributeMock).get("lmcTopTierDesc");
                 will(returnValue(orgMock));
 
@@ -118,9 +123,9 @@ public class LdapToPersonMapperTest
 
                 exactly(2).of(attributeMock).get("mail");
                 will(returnValue(emailMock));
-                
-                exactly(1).of(attributeMock).get("someKey"); 
-                will(returnValue(propMock)); 
+
+                exactly(1).of(attributeMock).get("someKey");
+                will(returnValue(propMock));
 
                 oneOf(givenNameMock).get().toString();
                 will(returnValue("First"));
@@ -134,6 +139,9 @@ public class LdapToPersonMapperTest
                 oneOf(middleNameMock).get().toString();
                 will(returnValue("Middle"));
 
+                oneOf(companyMock).get().toString();
+                will(returnValue("company"));
+
                 oneOf(attributeMock).get("sn");
                 will(returnValue(snMock));
 
@@ -142,9 +150,9 @@ public class LdapToPersonMapperTest
 
                 oneOf(emailMock).get().toString();
                 will(returnValue("something@someorg.com"));
-                
-                oneOf(propMock).get().toString(); 
-                will(returnValue("someValue")); 
+
+                oneOf(propMock).get().toString();
+                will(returnValue("someValue"));
             }
         });
 
@@ -171,9 +179,10 @@ public class LdapToPersonMapperTest
         final Attribute middleNameMock = null;
         final Attribute orgMock = null;
         final Attribute titleMock = null;
+        final Attribute companyMock = null;
 
         sut.setSupportEmail("support@example.com");
-        
+
         context.checking(new Expectations()
         {
             {
@@ -191,6 +200,9 @@ public class LdapToPersonMapperTest
 
                 oneOf(attributeMock).get("givenName");
                 will(returnValue(givenNameMock));
+
+                oneOf(attributeMock).get("companyName");
+                will(returnValue(companyMock));
 
                 oneOf(attributeMock).get("middleName");
                 will(returnValue(middleNameMock));

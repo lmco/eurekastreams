@@ -28,7 +28,7 @@ public class UpdatePersonMapper extends BaseArgDomainMapper<Person, UpdatePerson
 {
     /**
      * Update the person in the DB.
-     *
+     * 
      * @param ldapPerson
      *            {@link Person}.
      * @return {@link UpdatePersonResponse}.
@@ -47,6 +47,16 @@ public class UpdatePersonMapper extends BaseArgDomainMapper<Person, UpdatePerson
         if (!dbPerson.getLastName().equals(ldapPerson.getLastName()))
         {
             dbPerson.setLastName(ldapPerson.getLastName());
+            wasPersonUpdated = true;
+        }
+
+        // Checks to see if company in ldap matches what the db has, updating db if they don't match.
+        if (dbPerson.getCompanyName() == null
+                && ldapPerson.getCompanyName() != null
+                || (dbPerson.getCompanyName() != null 
+                        && !dbPerson.getCompanyName().equals(ldapPerson.getCompanyName())))
+        {
+            dbPerson.setCompanyName(ldapPerson.getCompanyName());
             wasPersonUpdated = true;
         }
 
