@@ -325,6 +325,11 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     private Long bannerEntityId = null;
 
     /**
+     * Company name.
+     */
+    private String companyName;
+
+    /**
      * Get the name of this entity.
      * 
      * @return the name of this entity
@@ -407,6 +412,10 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
         {
             // this should be done as a ClassBridge but ClassBridges can't currently be projected
             setDisplayName((String) properties.get("preferredName") + " " + (String) properties.get("lastName"));
+        }
+        if (properties.containsKey("companyName"))
+        {
+            setCompanyName((String) properties.get("companyName"));
         }
         if (properties.containsKey("lastName"))
         {
@@ -1355,6 +1364,27 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     public void setBannerId(final String inBannerId)
     {
         bannerId = inBannerId;
+    }
+
+    /**
+     * Get the company name.
+     * 
+     * @return the company name.
+     */
+    public String getCompanyName()
+    {
+        return companyName;
+    }
+
+    /**
+     * Set the company name.
+     * 
+     * @param inCompanyName
+     *            the company name.
+     */
+    public void setCompanyName(final String inCompanyName)
+    {
+        companyName = inCompanyName;
     }
 
 }

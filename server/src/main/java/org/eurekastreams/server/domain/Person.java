@@ -171,6 +171,13 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      * Used for validation.
      */
     @Transient
+    public static final String COMPANY_NAME_MESSAGE = "Company name must be between 1 and " + MAX_LAST_NAME_LENGTH
+            + " characters.";
+
+    /**
+     * Used for validation.
+     */
+    @Transient
     public static final String LAST_NAME_MESSAGE = "Last name must be between 1 and " + MAX_LAST_NAME_LENGTH
             + " characters.";
 
@@ -646,6 +653,12 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
      */
     @Basic(optional = true)
     private HashMap<String, String> additionalProperties;
+
+    /**
+     * Company name.
+     */
+    @Length(min = 1, max = MAX_FIRST_NAME_LENGTH, message = COMPANY_NAME_MESSAGE)
+    private String companyName;
 
     /**
      * TODO: This is a patch until we stop sending entities over the line
@@ -1360,6 +1373,8 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         addNonNullProperty("title", getTitle(), personData);
         addNonNullProperty("location", getLocation(), personData);
         addNonNullProperty("accountLocked", isAccountLocked(), personData);
+        addNonNullProperty("companyName", getCompanyName(), personData);
+
         if (getAdditionalProperties() != null)
         {
             personData.put("additionalProperties", getAdditionalProperties());
@@ -1875,6 +1890,7 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         p.setLastName(lastName);
         p.setPreferredName(preferredName);
         p.setJobDescription(getJobDescription());
+        p.setCompanyName(getCompanyName());
 
         if (relatedOrganizations != null)
         {
@@ -1908,5 +1924,26 @@ public class Person extends DomainEntity implements Serializable, AvatarEntity, 
         }
         p.setBiography(biography);
         return p;
+    }
+
+    /**
+     * Get the company name.
+     * 
+     * @return the company name.
+     */
+    public String getCompanyName()
+    {
+        return companyName;
+    }
+
+    /**
+     * Set the company name.
+     * 
+     * @param inCompanyName
+     *            the company name.
+     */
+    public void setCompanyName(final String inCompanyName)
+    {
+        companyName = inCompanyName;
     }
 }

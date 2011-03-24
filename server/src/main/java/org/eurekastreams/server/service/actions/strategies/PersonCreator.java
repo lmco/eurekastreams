@@ -123,6 +123,7 @@ public class PersonCreator implements ResourcePersistenceStrategy<Person>
                 (String) inFields.get("preferredName"));
         person.setEmail((String) inFields.get("email"));
         person.setOpenSocialId(UUID.randomUUID().toString());
+        person.setCompanyName((String) inFields.get("companyName"));
 
         // create and add start page tabs
         TabGroup startTabGroup = new TabGroup();
