@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eurekastreams.commons.model.DomainEntity;
 import org.hibernate.validator.Length;
 
@@ -155,7 +156,9 @@ public class Job extends DomainEntity implements Serializable
 
     /**
      * @return Person that had job.
+     * @note Omit this property when serializing to JSON.
      */
+    @JsonIgnore
     public Person getPerson()
     {
         return person;
@@ -169,7 +172,7 @@ public class Job extends DomainEntity implements Serializable
      */
     public void setCompanyName(final String inCompanyName)
     {
-        this.companyName = inCompanyName;
+        companyName = inCompanyName;
     }
 
     /**
@@ -180,7 +183,7 @@ public class Job extends DomainEntity implements Serializable
      */
     public void setIndustry(final String inIndustry)
     {
-        this.industry = inIndustry;
+        industry = inIndustry;
     }
 
     /**
@@ -191,7 +194,7 @@ public class Job extends DomainEntity implements Serializable
      */
     public void setTitle(final String inTitle)
     {
-        this.title = inTitle;
+        title = inTitle;
     }
 
     /**
@@ -202,7 +205,7 @@ public class Job extends DomainEntity implements Serializable
      */
     public void setDateFrom(final Date inDateFrom)
     {
-        this.dateFrom = inDateFrom;
+        dateFrom = inDateFrom;
     }
 
     /**
@@ -213,7 +216,7 @@ public class Job extends DomainEntity implements Serializable
      */
     public void setDateTo(final Date inDateTo)
     {
-        this.dateTo = inDateTo;
+        dateTo = inDateTo;
     }
 
     /**
@@ -224,14 +227,16 @@ public class Job extends DomainEntity implements Serializable
      */
     public void setDescription(final String inDescription)
     {
-        this.description = inDescription;
+        description = inDescription;
     }
 
     /**
      * Get the owner of the job.
-     *
+     * 
      * @return the owner of the job.
+     * @note Omit this property when serializing to JSON.
      */
+    @JsonIgnore
     public Person getOwner()
     {
         return person;

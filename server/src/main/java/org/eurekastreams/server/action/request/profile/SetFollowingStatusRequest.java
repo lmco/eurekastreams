@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -138,5 +138,50 @@ public class SetFollowingStatusRequest implements Serializable
     public Follower.FollowerStatus getFollowerStatus()
     {
         return followerStatus;
+    }
+
+    /**
+     * @param inFollowerUniqueId
+     *            the followerUniqueId to set
+     */
+    public void setFollowerUniqueId(final String inFollowerUniqueId)
+    {
+        followerUniqueId = inFollowerUniqueId;
+    }
+
+    /**
+     * @param inTargetUniqueId
+     *            the targetUniqueId to set
+     */
+    public void setTargetUniqueId(final String inTargetUniqueId)
+    {
+        targetUniqueId = inTargetUniqueId;
+    }
+
+    /**
+     * @param inTargetEntityType
+     *            the targetEntityType to set
+     */
+    public void setTargetEntityType(final EntityType inTargetEntityType)
+    {
+        targetEntityType = inTargetEntityType;
+    }
+
+    /**
+     * @param inOpenSocialRequest
+     *            the openSocialRequest to set
+     */
+    public void setOpenSocialRequest(final boolean inOpenSocialRequest)
+    {
+        openSocialRequest = inOpenSocialRequest;
+    }
+
+    /**
+     * @param inFollowerStatus
+     *            the followerStatus to set
+     */
+    public void setFollowerStatus(final Follower.FollowerStatus inFollowerStatus)
+    {
+        followerStatus = inFollowerStatus;
     }
 }
