@@ -16,7 +16,6 @@
 package org.eurekastreams.server.search.modelview;
 
 import java.util.List;
-import java.util.Map;
 
 import org.eurekastreams.commons.search.modelview.ModelView;
 
@@ -30,11 +29,6 @@ public class SharedResourceDTO extends ModelView
      * Serial version UID.
      */
     private static final long serialVersionUID = 1752018395400829570L;
-
-    /**
-     * Stream id for this person.
-     */
-    private long streamId = UNINITIALIZED_LONG_VALUE;
 
     /**
      * SharedResource key.
@@ -64,29 +58,7 @@ public class SharedResourceDTO extends ModelView
     /**
      * Stream scope ID, which is nullable, and will be populated when activity is posted to a shared resource.
      */
-    private Long streamScopeId;
-
-    /**
-     * Load this object's properties from the input Map.
-     * 
-     * @param properties
-     *            the Map of the properties to load
-     */
-    @Override
-    public void loadProperties(final Map<String, Object> properties)
-    {
-        // let the parent class get its properties first
-        super.loadProperties(properties);
-
-        if (properties.containsKey("streamId"))
-        {
-            setStreamId((Long) properties.get("streamId"));
-        }
-        if (properties.containsKey("key"))
-        {
-            setKey((String) properties.get("key"));
-        }
-    }
+    private Long streamScopeId = UNINITIALIZED_LONG_VALUE;
 
     /**
      * @return the likeCount
@@ -168,23 +140,6 @@ public class SharedResourceDTO extends ModelView
     public long getId()
     {
         return super.getEntityId();
-    }
-
-    /**
-     * @return the streamId
-     */
-    public long getStreamId()
-    {
-        return streamId;
-    }
-
-    /**
-     * @param inStreamId
-     *            the streamId to set
-     */
-    public void setStreamId(final long inStreamId)
-    {
-        streamId = inStreamId;
     }
 
     /**
