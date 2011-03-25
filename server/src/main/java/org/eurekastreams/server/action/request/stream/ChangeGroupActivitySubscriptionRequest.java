@@ -56,7 +56,6 @@ public class ChangeGroupActivitySubscriptionRequest implements Serializable
     public ChangeGroupActivitySubscriptionRequest(final String inGroupShortName,
             final Boolean inReceiveNewActivityNotifications)
     {
-        super();
         groupShortName = inGroupShortName;
         receiveNewActivityNotifications = inReceiveNewActivityNotifications;
     }

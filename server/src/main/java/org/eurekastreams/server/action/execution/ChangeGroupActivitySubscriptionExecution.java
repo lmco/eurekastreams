@@ -83,8 +83,8 @@ public class ChangeGroupActivitySubscriptionExecution implements ExecutionStrate
     @Override
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        ChangeGroupActivitySubscriptionRequest request = //
-        (ChangeGroupActivitySubscriptionRequest) inActionContext.getParams();
+        ChangeGroupActivitySubscriptionRequest request = (ChangeGroupActivitySubscriptionRequest) inActionContext
+                .getParams();
 
         String accountId = inActionContext.getPrincipal().getAccountId();
 

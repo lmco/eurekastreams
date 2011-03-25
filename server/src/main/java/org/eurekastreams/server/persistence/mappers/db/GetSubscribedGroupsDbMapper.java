@@ -37,6 +37,8 @@ public class GetSubscribedGroupsDbMapper extends BaseArgDomainMapper<Long, Array
     @Override
     public ArrayList<String> execute(final Long inPersonId)
     {
+        // Note: hard-coding isSubscribed to "true" as a parameter rather than in query to ensure it's interpreted
+        // properly - not necessary, just cautious.
         String q = "SELECT shortName FROM DomainGroup WHERE id IN "
                 + "(SELECT pk.followingId FROM GroupFollower WHERE pk.followerId = :personId "
                 + "AND receiveNewActivityNotifications = :isSubscribed)";
