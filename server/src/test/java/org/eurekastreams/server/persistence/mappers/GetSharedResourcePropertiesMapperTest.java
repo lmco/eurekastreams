@@ -16,13 +16,17 @@
 package org.eurekastreams.server.persistence.mappers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.commons.search.modelview.ModelView;
+import org.eurekastreams.commons.test.IsEqualInternally;
 import org.eurekastreams.server.action.request.SharedResourceRequest;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
+import org.eurekastreams.server.persistence.mappers.requests.StreamScopeTypeAndKeyRequest;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.SharedResourceDTO;
 import org.jmock.Expectations;
@@ -46,6 +50,12 @@ public class GetSharedResourcePropertiesMapperTest
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
+
+    /**
+     * Mapper to get a stream scope id from type and key.
+     */
+    private DomainMapper<StreamScopeTypeAndKeyRequest, Long> getStreamScopeIdFromTypeAndKeyMapper = context.mock(
+            DomainMapper.class, "getStreamScopeIdFromTypeAndKeyMapper");;
 
     /**
      * Mapper that gets the ids of people that liked a shared resource.
@@ -75,8 +85,8 @@ public class GetSharedResourcePropertiesMapperTest
     @Before
     public void setup()
     {
-        sut = new GetSharedResourcePropertiesMapper(getPeopleThatSharedResourceMapper,
-                getPeopleThatLikedResourceMapper, getPeopleModelViewsByIdsMapper);
+        sut = new GetSharedResourcePropertiesMapper(getStreamScopeIdFromTypeAndKeyMapper,
+                getPeopleThatSharedResourceMapper, getPeopleThatLikedResourceMapper, getPeopleModelViewsByIdsMapper);
         getPeopleModelViewsByIdsMapper.setCannedResponse(null);
     }
 
@@ -87,11 +97,17 @@ public class GetSharedResourcePropertiesMapperTest
     public void testExecuteWhenSharedResourceDNE()
     {
         final String uniqueKey = "http://foo.com";
+        final Long streamScopeId = null;
         final SharedResourceRequest request = new SharedResourceRequest(uniqueKey);
 
         context.checking(new Expectations()
         {
             {
+                oneOf(getStreamScopeIdFromTypeAndKeyMapper).execute(
+                        with(IsEqualInternally.equalInternally(new StreamScopeTypeAndKeyRequest(ScopeType.RESOURCE,
+                                uniqueKey))));
+                will(returnValue(streamScopeId));
+
                 oneOf(getPeopleThatSharedResourceMapper).execute(with(request));
                 will(returnValue(new ArrayList<Long>()));
 
@@ -101,6 +117,7 @@ public class GetSharedResourcePropertiesMapperTest
         });
 
         SharedResourceDTO result = sut.execute(request);
+        assertNull(result.getStreamScopeId());
         assertEquals(0, result.getLikeCount());
         assertEquals(0, result.getShareCount());
         assertEquals(0, result.getLikersSample().size());
@@ -117,6 +134,7 @@ public class GetSharedResourcePropertiesMapperTest
     public void testExecuteWhenSharedExists()
     {
         final String uniqueKey = "http://foo.com";
+        final Long streamScopeId = 23881L;
         final SharedResourceRequest request = new SharedResourceRequest(uniqueKey);
         final List<Long> sharerIds = new ArrayList<Long>();
         final List<Long> likerIds = new ArrayList<Long>();
@@ -149,6 +167,11 @@ public class GetSharedResourcePropertiesMapperTest
         context.checking(new Expectations()
         {
             {
+                oneOf(getStreamScopeIdFromTypeAndKeyMapper).execute(
+                        with(IsEqualInternally.equalInternally(new StreamScopeTypeAndKeyRequest(ScopeType.RESOURCE,
+                                uniqueKey))));
+                will(returnValue(streamScopeId));
+
                 oneOf(getPeopleThatSharedResourceMapper).execute(with(request));
                 will(returnValue(sharerIds));
 
@@ -171,6 +194,7 @@ public class GetSharedResourcePropertiesMapperTest
         assertTrue(getPeopleModelViewsByIdsMapper.getStoredRequest().contains(7L));
 
         // make sure the top-level properties look right
+        assertEquals(streamScopeId, result.getStreamScopeId());
         assertEquals(5, result.getLikeCount());
         assertEquals(6, result.getShareCount());
         assertEquals(4, result.getLikersSample().size());

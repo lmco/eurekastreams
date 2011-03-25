@@ -42,10 +42,6 @@
 	<util:constant id="CacheKeys.LIKERS_BY_RESOURCE_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_RESOURCE_ID" />
 	<util:constant id="CacheKeys.LIKERS_BY_ACTIVITY_ID" static-field="org.eurekastreams.server.persistence.mappers.cache.CacheKeys.LIKERS_BY_ACTIVITY_ID" />
 	
-	
-	
-	
-	
 	<!--
 		Mapper to get the hash tags from the database - insert if not already
 		in the database
@@ -1669,6 +1665,8 @@
 	<bean id="getStreamScopeById"
 		class="org.eurekastreams.server.persistence.mappers.GetStreamScopeById" />
 
+    <bean id="getStreamScopeIdByTypeAndKey" class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeIdsByTypeAndKeyDbMapper" />
+
 	<bean id="getStreamScopeProxyById"
 		class="org.eurekastreams.server.persistence.mappers.GetStreamScopeProxyById" />		
 
@@ -2596,6 +2594,7 @@
     <bean id="getPeopleWhoLikedResourceDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetPeopleWhoLikedResourceDbMapper" />
 
     <bean id="getSharedResourceByKeyMapper" class="org.eurekastreams.server.persistence.mappers.GetSharedResourcePropertiesMapper">
+        <constructor-arg ref="getStreamScopeIdByTypeAndKey" />
         <constructor-arg ref="getPeopleWhoSharedResourceDbMapper" />
         <constructor-arg ref="getPeopleWhoLikedResourceDbMapper" />
         <constructor-arg ref="getPersonsByIdsMapper" />

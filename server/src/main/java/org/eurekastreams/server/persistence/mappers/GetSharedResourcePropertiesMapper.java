@@ -21,6 +21,8 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.action.request.SharedResourceRequest;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
+import org.eurekastreams.server.persistence.mappers.requests.StreamScopeTypeAndKeyRequest;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.SharedResourceDTO;
 
@@ -34,6 +36,11 @@ public class GetSharedResourcePropertiesMapper extends BaseArgDomainMapper<Share
      * Logger.
      */
     private Log log = LogFactory.make();
+
+    /**
+     * Mapper to get a stream scope id by scope type and unique key.
+     */
+    private DomainMapper<StreamScopeTypeAndKeyRequest, Long> getStreamScopeIdByTypeAndKeyMapper;
 
     /**
      * Mapper that gets the ids of people that liked a shared resource.
@@ -53,6 +60,8 @@ public class GetSharedResourcePropertiesMapper extends BaseArgDomainMapper<Share
     /**
      * Constructor.
      * 
+     * @param inGetStreamScopeIdByTypeAndKeyMapper
+     *            Mapper to get a stream scope id by scope type and unique key.
      * @param inGetPeopleThatSharedResourceMapper
      *            Mapper that gets the ids of people that liked a shared resource.
      * @param inGetPeopleThatLikedResourceMapper
@@ -61,10 +70,12 @@ public class GetSharedResourcePropertiesMapper extends BaseArgDomainMapper<Share
      *            mapper to get person model views
      */
     public GetSharedResourcePropertiesMapper(
+            final DomainMapper<StreamScopeTypeAndKeyRequest, Long> inGetStreamScopeIdByTypeAndKeyMapper,
             final DomainMapper<SharedResourceRequest, List<Long>> inGetPeopleThatSharedResourceMapper,
             final DomainMapper<SharedResourceRequest, List<Long>> inGetPeopleThatLikedResourceMapper,
             final DomainMapper<List<Long>, List<PersonModelView>> inGetPeopleModelViewsByIdsMapper)
     {
+        getStreamScopeIdByTypeAndKeyMapper = inGetStreamScopeIdByTypeAndKeyMapper;
         getPeopleThatSharedResourceMapper = inGetPeopleThatSharedResourceMapper;
         getPeopleThatLikedResourceMapper = inGetPeopleThatLikedResourceMapper;
         getPeopleModelViewsByIdsMapper = inGetPeopleModelViewsByIdsMapper;
@@ -81,6 +92,10 @@ public class GetSharedResourcePropertiesMapper extends BaseArgDomainMapper<Share
     public SharedResourceDTO execute(final SharedResourceRequest inRequest)
     {
         SharedResourceDTO dto = new SharedResourceDTO();
+
+        // get the stream scope id if it exists
+        dto.setStreamScopeId(getStreamScopeIdByTypeAndKeyMapper.execute(new StreamScopeTypeAndKeyRequest(
+                ScopeType.RESOURCE, inRequest.getUniqueKey())));
 
         List<Long> sharedPersonIds = getPeopleThatSharedResourceMapper.execute(inRequest);
         List<Long> likedPersonIds = getPeopleThatLikedResourceMapper.execute(inRequest);
