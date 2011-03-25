@@ -17,8 +17,6 @@ package org.eurekastreams.server.action.request;
 
 import java.io.Serializable;
 
-import org.eurekastreams.server.domain.stream.BaseObjectType;
-
 /**
  * A reusable request representing a shared resource.
  */
@@ -28,11 +26,6 @@ public class SharedResourceRequest implements Serializable
      * Serial version UID.
      */
     private static final long serialVersionUID = -2235934647925339155L;
-
-    /**
-     * Resource type.
-     */
-    private BaseObjectType resourceType;
 
     /**
      * Unique key for the resource.
@@ -49,32 +42,12 @@ public class SharedResourceRequest implements Serializable
     /**
      * Constructor.
      * 
-     * @param inResourceType
-     *            the resource type
      * @param inUniqueKey
      *            the unique key for the resource
      */
-    public SharedResourceRequest(final BaseObjectType inResourceType, final String inUniqueKey)
+    public SharedResourceRequest(final String inUniqueKey)
     {
-        resourceType = inResourceType;
         uniqueKey = inUniqueKey;
-    }
-
-    /**
-     * @return the resourceType
-     */
-    public BaseObjectType getResourceType()
-    {
-        return resourceType;
-    }
-
-    /**
-     * @param inResourceType
-     *            the resourceType to set
-     */
-    public void setResourceType(final BaseObjectType inResourceType)
-    {
-        resourceType = inResourceType;
     }
 
     /**

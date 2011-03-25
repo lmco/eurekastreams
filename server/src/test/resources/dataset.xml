@@ -600,8 +600,8 @@
 	<StreamItemId id="1010" version="1" />
 	<StreamItemId id="1011" version="1" />
 	   
-    <SharedResource id="5" version="1" resourceType="BOOKMARK" uniqueKey="http://foo.com/foo.html" />
-    <SharedResource id="6" version="1" resourceType="BOOKMARK" uniqueKey="http://foo.foo.com/foo.html" />
+    <SharedResource id="5" version="1" uniqueKey="http://foo.com/foo.html" />
+    <SharedResource id="6" version="1" uniqueKey="http://foo.foo.com/foo.html" />
     
     <Person_LikedSharedResources personId="42" sharedResourceId="5" />
     <Person_LikedSharedResources personId="99" sharedResourceId="5" />

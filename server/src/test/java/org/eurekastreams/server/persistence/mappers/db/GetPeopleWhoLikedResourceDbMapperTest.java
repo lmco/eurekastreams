@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.eurekastreams.server.action.request.SharedResourceRequest;
-import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,8 +54,7 @@ public class GetPeopleWhoLikedResourceDbMapperTest extends MapperTest
         final Long personId1 = 42L;
         final Long personId2 = 99L;
 
-        List<Long> peopleIds = sut
-                .execute(new SharedResourceRequest(BaseObjectType.BOOKMARK, "http://foo.com/foo.html"));
+        List<Long> peopleIds = sut.execute(new SharedResourceRequest("http://foo.com/foo.html"));
         assertEquals(2, peopleIds.size());
         assertTrue(peopleIds.contains(personId1));
         assertTrue(peopleIds.contains(personId2));
@@ -68,8 +66,7 @@ public class GetPeopleWhoLikedResourceDbMapperTest extends MapperTest
     @Test
     public void testExecuteWithNoResults()
     {
-        List<Long> peopleIds = sut.execute(new SharedResourceRequest(BaseObjectType.BOOKMARK,
-                "http://foo.foo.com/foo.html"));
+        List<Long> peopleIds = sut.execute(new SharedResourceRequest("http://foo.foo.com/foo.html"));
         assertEquals(0, peopleIds.size());
     }
 
@@ -79,7 +76,7 @@ public class GetPeopleWhoLikedResourceDbMapperTest extends MapperTest
     @Test
     public void testExecuteWithBadResource()
     {
-        List<Long> peopleIds = sut.execute(new SharedResourceRequest(BaseObjectType.BOOKMARK, "http://blah.com"));
+        List<Long> peopleIds = sut.execute(new SharedResourceRequest("http://blah.com"));
         assertEquals(0, peopleIds.size());
     }
 }

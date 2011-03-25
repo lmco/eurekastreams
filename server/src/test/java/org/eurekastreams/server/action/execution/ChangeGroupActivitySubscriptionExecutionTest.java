@@ -80,7 +80,7 @@ public class ChangeGroupActivitySubscriptionExecutionTest
     /**
      * Test with invalid request type.
      */
-    @Test
+    @Test(expected = ClassCastException.class)
     public void testInvalidRequestType()
     {
         context.checking(new Expectations()
@@ -91,9 +91,7 @@ public class ChangeGroupActivitySubscriptionExecutionTest
             }
         });
 
-        assertFalse((Boolean) sut.execute(actionContext));
-
-        context.assertIsSatisfied();
+        sut.execute(actionContext);
     }
 
     /**

@@ -40,19 +40,16 @@ public class FindOrInsertSharedResourceByUniqueKeyDbMapper extends
     @Override
     public SharedResource execute(final SharedResourceRequest inSharedResourceRequest)
     {
-        if (inSharedResourceRequest.getResourceType() == null || inSharedResourceRequest.getUniqueKey() == null)
+        if (inSharedResourceRequest.getUniqueKey() == null)
         {
             return null;
         }
-        Query q = getEntityManager().createQuery(
-                "FROM SharedResource WHERE resourceType = :resourceType AND uniqueKey = :uniqueKey");
-        q.setParameter("resourceType", inSharedResourceRequest.getResourceType());
+        Query q = getEntityManager().createQuery("FROM SharedResource WHERE uniqueKey = :uniqueKey");
         q.setParameter("uniqueKey", inSharedResourceRequest.getUniqueKey().toLowerCase());
         List<SharedResource> resources = q.getResultList();
         if (resources == null || resources.size() == 0)
         {
             SharedResource sr = new SharedResource();
-            sr.setResourceType(inSharedResourceRequest.getResourceType());
             sr.setUniqueKey(inSharedResourceRequest.getUniqueKey().toLowerCase());
             getEntityManager().persist(sr);
             return sr;

@@ -22,8 +22,6 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -33,6 +31,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.eurekastreams.commons.model.DomainEntity;
 import org.eurekastreams.server.domain.Person;
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.Length;
 
 /**
@@ -53,16 +52,10 @@ public class SharedResource extends DomainEntity implements Serializable
     public static final int MAX_UNIQUE_KEY_LENGTH = 2000;
 
     /**
-     * The type of resource.
-     */
-    @Enumerated(EnumType.STRING)
-    @Basic(optional = false)
-    private BaseObjectType resourceType;
-
-    /**
      * Case-insensitive unique key for this resource.
      */
     @Basic(optional = false)
+    @NaturalId(mutable = false)
     @Length(min = 1, max = MAX_UNIQUE_KEY_LENGTH, // 
     message = "A resource identifier must be no more than " + MAX_UNIQUE_KEY_LENGTH + " characters")
     private String uniqueKey;
@@ -91,32 +84,12 @@ public class SharedResource extends DomainEntity implements Serializable
     /**
      * Constructor.
      * 
-     * @param inResourceType
-     *            the type of resource
      * @param inUniqueKey
      *            the unique key
      */
-    public SharedResource(final BaseObjectType inResourceType, final String inUniqueKey)
+    public SharedResource(final String inUniqueKey)
     {
-        resourceType = inResourceType;
         uniqueKey = inUniqueKey;
-    }
-
-    /**
-     * @return the resourceType
-     */
-    public BaseObjectType getResourceType()
-    {
-        return resourceType;
-    }
-
-    /**
-     * @param inResourceType
-     *            the resourceType to set
-     */
-    public void setResourceType(final BaseObjectType inResourceType)
-    {
-        resourceType = inResourceType;
     }
 
     /**

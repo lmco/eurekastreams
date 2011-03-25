@@ -39,10 +39,8 @@ public class GetPeopleWhoSharedResourceDbMapper extends BaseArgDomainMapper<Shar
     {
         List<Long> peopleIds = getEntityManager().createQuery(
                 "SELECT p.id FROM Person p, Activity a WHERE p.accountId = a.actorId AND a.actorType = :actorType "
-                        + "AND a.sharedLink.resourceType = :resourceType AND a.sharedLink.uniqueKey = :uniqueKey")
-                .setParameter("actorType", ActorType.PERSON).setParameter("uniqueKey",
-                        inRequest.getUniqueKey().toLowerCase()).setParameter("resourceType",
-                        inRequest.getResourceType()).getResultList();
+                        + "AND a.sharedLink.uniqueKey = :uniqueKey").setParameter("actorType", ActorType.PERSON)
+                .setParameter("uniqueKey", inRequest.getUniqueKey().toLowerCase()).getResultList();
 
         return peopleIds;
     }

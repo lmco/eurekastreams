@@ -35,7 +35,6 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.ActivityVerb;
-import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.domain.stream.SharedResource;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.InsertMapper;
@@ -236,8 +235,7 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
             String url = inActivityDTO.getBaseObjectProperties().get("targetUrl");
             // has a link to share
             logger.info("New activity shares link with url: " + url);
-            SharedResource sr = findOrInsertSharedResourceMapper.execute(new SharedResourceRequest(
-                    BaseObjectType.BOOKMARK, url));
+            SharedResource sr = findOrInsertSharedResourceMapper.execute(new SharedResourceRequest(url));
             if (sr != null)
             {
                 logger.info("Found shared resource - id: " + sr.getId());

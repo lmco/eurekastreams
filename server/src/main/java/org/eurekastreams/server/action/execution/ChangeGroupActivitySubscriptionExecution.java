@@ -83,15 +83,10 @@ public class ChangeGroupActivitySubscriptionExecution implements ExecutionStrate
     @Override
     public Serializable execute(final PrincipalActionContext inActionContext) throws ExecutionException
     {
-        if (!(inActionContext.getParams() instanceof ChangeGroupActivitySubscriptionRequest))
-        {
-            log.warn("Invalid request type");
-            return new Boolean(false);
-        }
-        String accountId = inActionContext.getPrincipal().getAccountId();
-
         ChangeGroupActivitySubscriptionRequest request = //
         (ChangeGroupActivitySubscriptionRequest) inActionContext.getParams();
+
+        String accountId = inActionContext.getPrincipal().getAccountId();
 
         if (log.isInfoEnabled())
         {

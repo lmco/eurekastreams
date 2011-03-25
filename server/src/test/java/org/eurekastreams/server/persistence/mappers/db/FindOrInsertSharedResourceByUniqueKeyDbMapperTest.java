@@ -21,7 +21,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.eurekastreams.server.action.request.SharedResourceRequest;
-import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.domain.stream.SharedResource;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Test;
@@ -40,8 +39,7 @@ public class FindOrInsertSharedResourceByUniqueKeyDbMapperTest extends MapperTes
         FindOrInsertSharedResourceByUniqueKeyDbMapper sut = new FindOrInsertSharedResourceByUniqueKeyDbMapper();
         sut.setEntityManager(getEntityManager());
 
-        SharedResource sr = sut
-                .execute(new SharedResourceRequest(BaseObjectType.BOOKMARK, "http://foofff.com/foo.html"));
+        SharedResource sr = sut.execute(new SharedResourceRequest("http://foofff.com/foo.html"));
         assertNotNull(sr);
         assertTrue(sr.getId() > 0);
     }
@@ -55,8 +53,7 @@ public class FindOrInsertSharedResourceByUniqueKeyDbMapperTest extends MapperTes
         FindOrInsertSharedResourceByUniqueKeyDbMapper sut = new FindOrInsertSharedResourceByUniqueKeyDbMapper();
         sut.setEntityManager(getEntityManager());
 
-        assertNull(sut.execute(new SharedResourceRequest(BaseObjectType.BOOKMARK, null)));
-        assertNull(sut.execute(new SharedResourceRequest(null, "http://foofff.com/foo.html")));
+        assertNull(sut.execute(new SharedResourceRequest(null)));
     }
 
     /**
@@ -68,9 +65,8 @@ public class FindOrInsertSharedResourceByUniqueKeyDbMapperTest extends MapperTes
         FindOrInsertSharedResourceByUniqueKeyDbMapper sut = new FindOrInsertSharedResourceByUniqueKeyDbMapper();
         sut.setEntityManager(getEntityManager());
 
-        SharedResource sr = sut.execute(new SharedResourceRequest(BaseObjectType.BOOKMARK, "http://foo.com/foo.html"));
+        SharedResource sr = sut.execute(new SharedResourceRequest("http://foo.com/foo.html"));
         assertNotNull(sr);
-        assertEquals(BaseObjectType.BOOKMARK, sr.getResourceType());
         assertEquals(5L, sr.getId());
     }
 
@@ -83,9 +79,8 @@ public class FindOrInsertSharedResourceByUniqueKeyDbMapperTest extends MapperTes
         FindOrInsertSharedResourceByUniqueKeyDbMapper sut = new FindOrInsertSharedResourceByUniqueKeyDbMapper();
         sut.setEntityManager(getEntityManager());
 
-        SharedResource sr = sut.execute(new SharedResourceRequest(BaseObjectType.BOOKMARK, "http://FOO.com/foo.html"));
+        SharedResource sr = sut.execute(new SharedResourceRequest("http://FOO.com/foo.html"));
         assertNotNull(sr);
-        assertEquals(BaseObjectType.BOOKMARK, sr.getResourceType());
         assertEquals(5L, sr.getId());
     }
 }

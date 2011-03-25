@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.action.request.SharedResourceRequest;
-import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.SharedResourceDTO;
 import org.jmock.Expectations;
@@ -88,7 +87,7 @@ public class GetSharedResourcePropertiesMapperTest
     public void testExecuteWhenSharedResourceDNE()
     {
         final String uniqueKey = "http://foo.com";
-        final SharedResourceRequest request = new SharedResourceRequest(BaseObjectType.BOOKMARK, uniqueKey);
+        final SharedResourceRequest request = new SharedResourceRequest(uniqueKey);
 
         context.checking(new Expectations()
         {
@@ -118,7 +117,7 @@ public class GetSharedResourcePropertiesMapperTest
     public void testExecuteWhenSharedExists()
     {
         final String uniqueKey = "http://foo.com";
-        final SharedResourceRequest request = new SharedResourceRequest(BaseObjectType.BOOKMARK, uniqueKey);
+        final SharedResourceRequest request = new SharedResourceRequest(uniqueKey);
         final List<Long> sharerIds = new ArrayList<Long>();
         final List<Long> likerIds = new ArrayList<Long>();
         final List<PersonModelView> people = new ArrayList<PersonModelView>();

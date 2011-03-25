@@ -48,9 +48,8 @@ public class SetLikedSharedResourceStatusDbMapper extends
     {
         // get the shared resource id
         List<Long> sharedResourceIds = getEntityManager().createQuery(
-                "SELECT id FROM SharedResource WHERE uniqueKey = :uniqueKey AND resourceType = :resourceType")
-                .setParameter("uniqueKey", inRequest.getUniqueKey().toLowerCase()).setParameter("resourceType",
-                        inRequest.getSharedResourceType()).getResultList();
+                "SELECT id FROM SharedResource WHERE uniqueKey = :uniqueKey").setParameter("uniqueKey",
+                inRequest.getUniqueKey().toLowerCase()).getResultList();
 
         if (sharedResourceIds == null || sharedResourceIds.size() == 0)
         {

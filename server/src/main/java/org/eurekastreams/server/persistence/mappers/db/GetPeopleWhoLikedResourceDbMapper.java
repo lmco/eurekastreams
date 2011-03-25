@@ -38,8 +38,8 @@ public class GetPeopleWhoLikedResourceDbMapper extends BaseArgDomainMapper<Share
     {
         List<Long> peopleIds = getEntityManager().createQuery(
                 "SELECT p.id FROM Person p, SharedResource sr WHERE p MEMBER OF sr.likedBy "
-                        + "AND sr.resourceType = :resourceType AND uniqueKey = :uniqueKey").setParameter("uniqueKey",
-                inRequest.getUniqueKey()).setParameter("resourceType", inRequest.getResourceType()).getResultList();
+                        + "AND uniqueKey = :uniqueKey").setParameter("uniqueKey", inRequest.getUniqueKey())
+                .getResultList();
 
         return peopleIds;
     }
