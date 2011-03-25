@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.commons.search.modelview.ModelView;
+import org.eurekastreams.server.action.request.SharedResourceRequest;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
-import org.eurekastreams.server.persistence.mappers.requests.SharedResourceRequest;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.SharedResourceDTO;
 import org.jmock.Expectations;

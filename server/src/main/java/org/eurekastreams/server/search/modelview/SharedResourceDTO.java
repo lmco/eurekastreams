@@ -62,6 +62,11 @@ public class SharedResourceDTO extends ModelView
     private List<PersonModelView> sharersSample;
 
     /**
+     * Stream scope ID, which is nullable, and will be populated when activity is posted to a shared resource.
+     */
+    private Long streamScopeId;
+
+    /**
      * Load this object's properties from the input Map.
      * 
      * @param properties
@@ -197,6 +202,23 @@ public class SharedResourceDTO extends ModelView
     public void setKey(final String inKey)
     {
         key = inKey;
+    }
+
+    /**
+     * @return the streamScopeId
+     */
+    public Long getStreamScopeId()
+    {
+        return streamScopeId;
+    }
+
+    /**
+     * @param inStreamScopeId
+     *            the streamScopeId to set
+     */
+    public void setStreamScopeId(final Long inStreamScopeId)
+    {
+        streamScopeId = inStreamScopeId;
     }
 
 }

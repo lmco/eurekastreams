@@ -13,15 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.mappers.requests;
+package org.eurekastreams.server.action.request;
+
+import java.io.Serializable;
 
 import org.eurekastreams.server.domain.stream.BaseObjectType;
 
 /**
- * A reusable request representing a shared request.
+ * A reusable request representing a shared resource.
  */
-public class SharedResourceRequest
+public class SharedResourceRequest implements Serializable
 {
+    /**
+     * Serial version UID.
+     */
+    private static final long serialVersionUID = -2235934647925339155L;
+
     /**
      * Resource type.
      */

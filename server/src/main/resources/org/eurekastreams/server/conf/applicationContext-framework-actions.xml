@@ -4762,9 +4762,17 @@
         <constructor-arg value="true" />
     </bean>
     
-    
-    
-    
+    <!-- Action to get a shared resource by unique key -->
+    <bean id="getSharedResourceByKeyAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean parent="baseParamExecuteDomainMapperExecution">
+                <constructor-arg ref="getSharedResourceByKeyMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
     
     
     

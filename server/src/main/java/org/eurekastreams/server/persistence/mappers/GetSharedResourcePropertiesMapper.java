@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
-import org.eurekastreams.server.persistence.mappers.requests.SharedResourceRequest;
+import org.eurekastreams.server.action.request.SharedResourceRequest;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.SharedResourceDTO;
 

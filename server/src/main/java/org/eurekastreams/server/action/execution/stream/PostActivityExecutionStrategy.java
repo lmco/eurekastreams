@@ -27,6 +27,7 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.action.request.SharedResourceRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
 import org.eurekastreams.server.action.request.stream.PostActivityRequest;
@@ -84,7 +85,7 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
     /**
      * Mapper to get or insert shared resources.
      */
-    private DomainMapper<SharedResource, SharedResource> findOrInsertSharedResourceMapper;
+    private DomainMapper<SharedResourceRequest, SharedResource> findOrInsertSharedResourceMapper;
 
     /**
      * Constructor for the PostActivityExecutionStrategy.
@@ -107,7 +108,7 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
             final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper,
             final RecipientRetriever inRecipientRetriever,
             final PostActivityUpdateStreamsByActorMapper inUpdateStreamsByActorMapper,
-            final DomainMapper<SharedResource, SharedResource> inFindOrInsertSharedResourceMapper)
+            final DomainMapper<SharedResourceRequest, SharedResource> inFindOrInsertSharedResourceMapper)
     {
         insertMapper = inInsertMapper;
         insertCommentDAO = inInsertCommentDAO;
@@ -235,8 +236,8 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
             String url = inActivityDTO.getBaseObjectProperties().get("targetUrl");
             // has a link to share
             logger.info("New activity shares link with url: " + url);
-            SharedResource sr = findOrInsertSharedResourceMapper.execute(new SharedResource(BaseObjectType.BOOKMARK,
-                    url));
+            SharedResource sr = findOrInsertSharedResourceMapper.execute(new SharedResourceRequest(
+                    BaseObjectType.BOOKMARK, url));
             if (sr != null)
             {
                 logger.info("Found shared resource - id: " + sr.getId());

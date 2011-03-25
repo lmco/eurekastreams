@@ -17,8 +17,8 @@ package org.eurekastreams.server.persistence.mappers.db;
 
 import java.util.List;
 
+import org.eurekastreams.server.action.request.SharedResourceRequest;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
-import org.eurekastreams.server.persistence.mappers.requests.SharedResourceRequest;
 
 /**
  * Get the people who liked a resource.

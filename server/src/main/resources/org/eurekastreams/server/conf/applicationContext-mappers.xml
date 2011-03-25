@@ -2589,5 +2589,16 @@
     
     <bean id="findOrInsertSharedResourceByUniqueKeyMapper" class="org.eurekastreams.server.persistence.mappers.db.FindOrInsertSharedResourceByUniqueKeyDbMapper" />
 
-    <bean id="setLikedSharedResourceStatusDbMapper" class="org.eurekastreams.server.persistence.mappers.db.SetLikedSharedResourceStatusDbMapper" />    
+    <bean id="setLikedSharedResourceStatusDbMapper" class="org.eurekastreams.server.persistence.mappers.db.SetLikedSharedResourceStatusDbMapper" />
+    
+    <bean id="getPeopleWhoSharedResourceDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetPeopleWhoSharedResourceDbMapper" />
+
+    <bean id="getPeopleWhoLikedResourceDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetPeopleWhoLikedResourceDbMapper" />
+
+    <bean id="getSharedResourceByKeyMapper" class="org.eurekastreams.server.persistence.mappers.GetSharedResourcePropertiesMapper">
+        <constructor-arg ref="getPeopleWhoSharedResourceDbMapper" />
+        <constructor-arg ref="getPeopleWhoLikedResourceDbMapper" />
+        <constructor-arg ref="getPersonsByIdsMapper" />
+    </bean>
+        
 </beans>

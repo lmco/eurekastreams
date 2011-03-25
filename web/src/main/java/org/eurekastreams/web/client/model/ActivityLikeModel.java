@@ -21,7 +21,7 @@ import org.eurekastreams.web.client.events.EventBus;
 
 /**
  * Model used to like and unlike an activity.
- *
+ * 
  */
 public class ActivityLikeModel extends BaseModel implements Updateable<SetActivityLikeRequest>
 {
@@ -32,7 +32,7 @@ public class ActivityLikeModel extends BaseModel implements Updateable<SetActivi
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
     public static ActivityLikeModel getInstance()
@@ -54,5 +54,4 @@ public class ActivityLikeModel extends BaseModel implements Updateable<SetActivi
             }
         });
     }
-
 }

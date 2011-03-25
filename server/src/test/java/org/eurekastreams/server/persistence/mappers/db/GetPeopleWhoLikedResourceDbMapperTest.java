@@ -20,9 +20,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.eurekastreams.server.action.request.SharedResourceRequest;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
-import org.eurekastreams.server.persistence.mappers.requests.SharedResourceRequest;
 import org.junit.Before;
 import org.junit.Test;
 

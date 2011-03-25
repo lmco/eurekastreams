@@ -19,9 +19,9 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.eurekastreams.server.action.request.SharedResourceRequest;
 import org.eurekastreams.server.domain.stream.SharedResource;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
-import org.eurekastreams.server.persistence.mappers.requests.SharedResourceRequest;
 
 /**
  * DB Mapper to get a shared resource by unique key.

@@ -24,6 +24,7 @@ import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.server.UserActionRequest;
+import org.eurekastreams.server.action.request.SharedResourceRequest;
 import org.eurekastreams.server.action.request.stream.PostActivityRequest;
 import org.eurekastreams.server.action.validation.stream.PostActivityTestHelpers;
 import org.eurekastreams.server.domain.stream.Activity;
@@ -98,7 +99,7 @@ public class PostActivityExecutionStrategyTest
     /**
      * Mapper to get or insert shared resources.
      */
-    private DomainMapper<SharedResource, SharedResource> findOrInsertSharedResourceMapper = context.mock(
+    private DomainMapper<SharedResourceRequest, SharedResource> findOrInsertSharedResourceMapper = context.mock(
             DomainMapper.class, "findOrInsertSharedResourceMapper");
 
     /**
@@ -224,7 +225,7 @@ public class PostActivityExecutionStrategyTest
 
                 oneOf(updateStreamsByActorMapperMock).execute(currentActivity);
 
-                oneOf(findOrInsertSharedResourceMapper).execute(with(any(SharedResource.class)));
+                oneOf(findOrInsertSharedResourceMapper).execute(with(any(SharedResourceRequest.class)));
                 will(returnValue(sr));
             }
         });
