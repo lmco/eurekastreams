@@ -25,6 +25,7 @@ import javax.persistence.Transient;
 
 import org.eurekastreams.commons.model.DomainEntity;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.validator.Length;
 
 /**
  * Scope of an activity/message stream.
@@ -56,6 +57,7 @@ public class StreamScope extends DomainEntity implements Serializable
      */
     @Basic(optional = false)
     @NaturalId
+    @Length(min = 1, max = 2000)
     private String uniqueKey;
 
     /**
