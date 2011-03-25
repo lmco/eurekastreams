@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eurekastreams.commons.model.DomainEntity;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.IndexColumn;
@@ -148,7 +149,9 @@ public class Enrollment extends DomainEntity implements Serializable
 
     /**
      * @return person who enrolled.
+     * @note Omit this property when serializing to JSON.
      */
+    @JsonIgnore
     public Person getPerson()
     {
         return person;
@@ -162,7 +165,7 @@ public class Enrollment extends DomainEntity implements Serializable
      */
     public void setSchoolName(final String inSchoolName)
     {
-        this.schoolName = new BackgroundItem(inSchoolName, BackgroundItemType.SCHOOL_NAME);
+        schoolName = new BackgroundItem(inSchoolName, BackgroundItemType.SCHOOL_NAME);
     }
 
     /**
@@ -173,7 +176,7 @@ public class Enrollment extends DomainEntity implements Serializable
      */
     public void setDegree(final String inDegree)
     {
-        this.degree = inDegree;
+        degree = inDegree;
     }
 
     /**
@@ -195,7 +198,7 @@ public class Enrollment extends DomainEntity implements Serializable
      */
     public void setGradDate(final Date inGradDate)
     {
-        this.gradDate = inGradDate;
+        gradDate = inGradDate;
     }
 
     /**
@@ -217,7 +220,7 @@ public class Enrollment extends DomainEntity implements Serializable
      */
     public void setAdditionalDetails(final String inAdditionalDetails)
     {
-        this.additionalDetails = inAdditionalDetails;
+        additionalDetails = inAdditionalDetails;
     }
 
     /**
