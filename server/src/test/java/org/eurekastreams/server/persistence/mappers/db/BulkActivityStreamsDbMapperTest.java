@@ -65,7 +65,6 @@ public class BulkActivityStreamsDbMapperTest extends MapperTest
 
         List<List<Long>> results = sut.execute(request);
 
-        
         Assert.assertEquals(expectedSize, results.size());
         Assert.assertEquals(1, results.get(0).size());
         Assert.assertEquals(1, results.get(1).size());
@@ -85,5 +84,28 @@ public class BulkActivityStreamsDbMapperTest extends MapperTest
         List<List<Long>> results = sut.execute(request);
 
         Assert.assertEquals(expectedSize, results.get(0).size());
+    }
+
+    /**
+     * Executes a test with a real collider. Verifies correct results.
+     */
+    @Test
+    public void testShowInStreamIgnoredIfAskingForRecipientStreamScopeDirectly()
+    {
+        // set activities showInStream flag to false.
+        getEntityManager().createQuery("UPDATE Activity SET showInStream = :showInStreamFlag").setParameter(
+                "showInStreamFlag", false).executeUpdate();
+
+        final int expectedSize = 2;
+
+        final List<Long> request = new ArrayList<Long>();
+        request.add(1L);
+        request.add(2L);
+
+        List<List<Long>> results = sut.execute(request);
+
+        Assert.assertEquals(expectedSize, results.size());
+        Assert.assertEquals(1, results.get(0).size());
+        Assert.assertEquals(1, results.get(1).size());
     }
 }

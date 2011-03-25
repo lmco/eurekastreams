@@ -23,7 +23,6 @@ import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
 /**
  * Tests GetEveryoneActivityDbMapper.
  */
@@ -49,5 +48,20 @@ public class GetEveryoneActivityDbMapperTest extends MapperTest
         {
             assertEquals((Long) EXPECTED_RESULTS[i], results.get(i));
         }
+    }
+
+    /**
+     * Tests executing.
+     */
+    @Test
+    public void testExecuteObeyShowInStreamFalse()
+    {
+        // set activities showInStream flag to false.
+        getEntityManager().createQuery("UPDATE Activity SET showInStream = :showInStreamFlag").setParameter(
+                "showInStreamFlag", false).executeUpdate();
+
+        List<Long> results = sut.execute(null);
+
+        assertEquals(0, results.size());
     }
 }

@@ -60,9 +60,11 @@ public class OrgActivityIdsDbMapper extends BaseArgDomainMapper<String, List<Lon
 
         descendents.add(orgId);
 
-        String query = "SELECT id FROM Activity WHERE recipientParentOrg.id in (:orgIds) ORDER BY id DESC";
+        String query = "SELECT id FROM Activity WHERE recipientParentOrg.id IN (:orgIds) AND "
+                + "showInStream = :showInStreamFlag ORDER BY id DESC";
 
-        return getEntityManager().createQuery(query).setParameter("orgIds", descendents).getResultList();
+        return getEntityManager().createQuery(query).setParameter("orgIds", descendents).setParameter(
+                "showInStreamFlag", true).getResultList();
     }
 
     /**

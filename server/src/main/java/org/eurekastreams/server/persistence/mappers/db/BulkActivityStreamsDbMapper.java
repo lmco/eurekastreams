@@ -18,6 +18,7 @@ package org.eurekastreams.server.persistence.mappers.db;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
@@ -34,7 +35,7 @@ public class BulkActivityStreamsDbMapper extends BaseArgDomainMapper<List<Long>,
 
     /**
      * Set the max items to return.
-     *
+     * 
      * @param inMaxItems
      *            the max items.
      */
@@ -45,7 +46,7 @@ public class BulkActivityStreamsDbMapper extends BaseArgDomainMapper<List<Long>,
 
     /**
      * Get activities from the database posted to the input stream scope id.
-     *
+     * 
      * @param inRequest
      *            list of stream scope ids to find activity posted to
      * @return a list of lists representing activities posted to stream scopes represented by their input ids
@@ -57,10 +58,20 @@ public class BulkActivityStreamsDbMapper extends BaseArgDomainMapper<List<Long>,
 
         for (Long id : inRequest)
         {
-            String query = "SELECT id FROM Activity WHERE recipientStreamScope.id = :streamId ORDER BY id DESC";
+            // grab activities where recipientStreamScope.id = incoming value OR
+            // the recipientStreamScope type is RESOURCE and the activity's actor (author)'s
+            // streamScopeId = incoming value and showInStream is true. Written as where clauses rather
+            // than inner joins due to need to match actorss id AND type and HQL doesn't support inner
+            // join with ON clauses.
+            String query = "SELECT a.id FROM Activity a, StreamScope actorss, StreamScope recipientss "
+                    + "WHERE a.actorId = actorss.uniqueKey AND a.actorType = actorss.scopeType "
+                    + "AND a.recipientStreamScope.id = recipientss.id " + "AND (a.recipientStreamScope.id = :streamId "
+                    + "OR (recipientss.scopeType = :resourceScopeType AND "
+                    + "actorss.id = :streamId AND a.showInStream = :showInStreamFlag)) ORDER BY id DESC";
 
-            results.add(getEntityManager().createQuery(query).setParameter("streamId", id).setMaxResults(maxItems)
-                    .getResultList());
+            results.add(getEntityManager().createQuery(query).setParameter("streamId", id).setParameter(
+                    "resourceScopeType", ScopeType.RESOURCE).setParameter("showInStreamFlag", true).setMaxResults(
+                    maxItems).getResultList());
         }
 
         return results;

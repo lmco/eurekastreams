@@ -24,7 +24,7 @@ import org.eurekastreams.server.persistence.mappers.DomainMapper;
 
 /**
  * Get all the activities.
- *
+ * 
  */
 public class GetEveryoneActivityDbMapper extends BaseDomainMapper implements DomainMapper<Long, List<Long>>
 {
@@ -35,7 +35,7 @@ public class GetEveryoneActivityDbMapper extends BaseDomainMapper implements Dom
 
     /**
      * Get the activity ids for all people.
-     *
+     * 
      * @param inRequest
      *            ignored
      * @return the most recent MAX_RESULTS activity ids
@@ -43,8 +43,8 @@ public class GetEveryoneActivityDbMapper extends BaseDomainMapper implements Dom
     @Override
     public List<Long> execute(final Long inRequest)
     {
-        String idsQueryString = "select id FROM Activity ORDER BY id DESC";
-        Query idsQuery = getEntityManager().createQuery(idsQueryString);
+        String idsQueryString = "select id FROM Activity WHERE showInStream = :showInStreamFlag ORDER BY id DESC";
+        Query idsQuery = getEntityManager().createQuery(idsQueryString).setParameter("showInStreamFlag", true);
         idsQuery.setMaxResults(MAX_RESULTS);
         return idsQuery.getResultList();
     }

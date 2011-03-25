@@ -20,52 +20,57 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.BaseDomainMapper;
 
 /**
  * Implementation of {@link FollowedActivityIdsLoader}.
- *
+ * 
  */
 public class FollowedActivityIdsLoaderImpl extends BaseDomainMapper implements FollowedActivityIdsLoader
 {
-    
+
     /**
      * {@inheritDoc}
      */
     public List<Long> getFollowedActivityIds(final long inPersonId, final int inMaxResults)
     {
         List<Long> results = new ArrayList<Long>();
-        
+
         results.addAll(getPersonActivityIdsFollowed(inPersonId, inMaxResults));
-        
-        //trim list if needed.
+
+        // trim list if needed.
         if (results.size() > inMaxResults)
         {
             results = results.subList(0, inMaxResults);
         }
-        
-        return results;        
+
+        return results;
     }
 
     /**
      * Returns list of activity ids for people the user is following.
-     * @param inPersonId The user's id.
-     * @param inMaxResults Max. number of ids to return
+     * 
+     * @param inPersonId
+     *            The user's id.
+     * @param inMaxResults
+     *            Max. number of ids to return
      * @return List of activity ids for people the user is following.
      */
     @SuppressWarnings("unchecked")
     private List< ? extends Long> getPersonActivityIdsFollowed(final long inPersonId, final int inMaxResults)
     {
-        String queryString = "SELECT a.id FROM "
-            + "Activity a, "
-            + "Follower f, "
-            + "Person followedPerson "
-            + "WHERE f.pk.followerId = :userId " 
-                        + "AND followedPerson.id = f.pk.followingId " 
-                        + "AND a.recipientStreamScope = followedPerson.streamScope ORDER BY a.id DESC";
-        Query query = getEntityManager().createQuery(queryString).setParameter("userId", inPersonId);
-        query.setMaxResults(inMaxResults);
-        
+        String queryString = "SELECT a.id FROM " + "Activity a, " + "Follower f, " + "Person followedPerson "
+                + "WHERE f.pk.followerId = :userId " + "AND followedPerson.id = f.pk.followingId "
+                + "AND (a.recipientStreamScope = followedPerson.streamScope "
+                + "OR (a.recipientStreamScope.scopeType = :resourceScopeType AND "
+                + "a.actorType = :personScopeType AND a.actorId = followedPerson.streamScope.uniqueKey "
+                + "AND a.showInStream = :showInStreamFlag)) ORDER BY a.id DESC";
+
+        Query query = getEntityManager().createQuery(queryString).setParameter("userId", inPersonId).setParameter(
+                "resourceScopeType", ScopeType.RESOURCE).setParameter("personScopeType", ScopeType.PERSON)
+                .setParameter("showInStreamFlag", true).setMaxResults(inMaxResults);
+
         return query.getResultList();
     }
 }
