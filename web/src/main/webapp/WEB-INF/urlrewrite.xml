@@ -45,10 +45,6 @@
 		<to last="true">/resources/api/0/full/getActivityLikers/Long/$1</to>
 	</rule>
 	<rule>
-		<from>^/api/0/full/getAllPopularHashTags/(.*)$</from>
-		<to last="true">/resources/api/0/full/getAllPopularHashTags/null/$1</to>
-	</rule>
-	<rule>
 		<from>^/api/0/full/getBreadcrumbsList/(.*)$</from>
 		<to last="true">/resources/api/0/full/getBreadcrumbsList/org.eurekastreams.server.action.request.profile.GetBreadcrumbsListRequest/$1</to>
 	</rule>
@@ -59,6 +55,10 @@
 	<rule>
 		<from>^/api/0/full/getCurrentUserFollowingStatus/(.*)$</from>
 		<to last="true">/resources/api/0/full/getCurrentUserFollowingStatus/org.eurekastreams.server.action.request.profile.GetCurrentUserFollowingStatusRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/full/getCurrentUserJoinedGroupsPopularHashTags/(.*)$</from>
+		<to last="true">/resources/api/0/full/getAllPopularHashTags/null/$1</to>
 	</rule>
 	<rule>
 		<from>^/api/0/full/getCurrentUserStreams/(.*)$</from>
@@ -190,10 +190,6 @@
 <!--		<to last="true">/resources/api/0/read/getActivityLikers/Long/$1</to>-->
 <!--	</rule>-->
 	<rule>
-		<from>^/api/0/read/getAllPopularHashTags/(.*)$</from>
-		<to last="true">/resources/api/0/read/getAllPopularHashTags/null/$1</to>
-	</rule>
-	<rule>
 		<from>^/api/0/read/getBreadcrumbsList/(.*)$</from>
 		<to last="true">/resources/api/0/read/getBreadcrumbsList/org.eurekastreams.server.action.request.profile.GetBreadcrumbsListRequest/$1</to>
 	</rule>
@@ -204,6 +200,10 @@
 	<rule>
 		<from>^/api/0/read/getCurrentUserFollowingStatus/(.*)$</from>
 		<to last="true">/resources/api/0/read/getCurrentUserFollowingStatus/org.eurekastreams.server.action.request.profile.GetCurrentUserFollowingStatusRequest/$1</to>
+	</rule>
+	<rule>
+		<from>^/api/0/read/getCurrentUserJoinedGroupsPopularHashTags/(.*)$</from>
+		<to last="true">/resources/api/0/read/getAllPopularHashTags/null/$1</to>
 	</rule>
 	<rule>
 		<from>^/api/0/read/getCurrentUserStreams/(.*)$</from>
