@@ -1665,8 +1665,6 @@
 	<bean id="getStreamScopeById"
 		class="org.eurekastreams.server.persistence.mappers.GetStreamScopeById" />
 
-    <bean id="getStreamScopeIdByTypeAndKey" class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeIdsByTypeAndKeyDbMapper" />
-
 	<bean id="getStreamScopeProxyById"
 		class="org.eurekastreams.server.persistence.mappers.GetStreamScopeProxyById" />		
 
@@ -2606,7 +2604,7 @@
     </bean>
 
     <bean id="getSharedResourceByKeyMapper" class="org.eurekastreams.server.persistence.mappers.GetSharedResourcePropertiesMapper">
-        <constructor-arg ref="getStreamScopeIdByTypeAndKey" />
+        <constructor-arg ref="getStreamScopeIdForResourceScopeTypeByUniqueKey" />
         <constructor-arg ref="getPeopleWhoSharedResourceDbMapper" />
         <constructor-arg ref="getPeopleWhoLikedResourceDbMapper" />
         <constructor-arg ref="getPersonsByIdsMapper" />
