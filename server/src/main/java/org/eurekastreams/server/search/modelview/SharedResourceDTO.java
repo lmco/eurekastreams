@@ -25,10 +25,11 @@ import org.eurekastreams.commons.search.modelview.ModelView;
  */
 public class SharedResourceDTO extends ModelView
 {
+
     /**
-     * Serial version UID.
+     * Serial version id.
      */
-    private static final long serialVersionUID = 1752018395400829570L;
+    private static final long serialVersionUID = -20174090712845648L;
 
     /**
      * SharedResource key.
@@ -58,7 +59,7 @@ public class SharedResourceDTO extends ModelView
     /**
      * Stream scope ID, which is nullable, and will be populated when activity is posted to a shared resource.
      */
-    private Long streamScopeId = UNINITIALIZED_LONG_VALUE;
+    private Long streamScopeId = null;
 
     /**
      * @return the likeCount

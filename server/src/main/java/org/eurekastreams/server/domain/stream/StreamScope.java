@@ -39,6 +39,11 @@ public class StreamScope extends DomainEntity implements Serializable
     private static final long serialVersionUID = -8038373583543778383L;
 
     /**
+     * Max unique key lenght.
+     */
+    private static final int MAX_UNIQUEKEY_LENGTH = 2000;
+
+    /**
      * Display name for the scope.
      */
     @Transient
@@ -57,7 +62,7 @@ public class StreamScope extends DomainEntity implements Serializable
      */
     @Basic(optional = false)
     @NaturalId
-    @Length(min = 1, max = 2000)
+    @Length(min = 1, max = MAX_UNIQUEKEY_LENGTH)
     private String uniqueKey;
 
     /**
