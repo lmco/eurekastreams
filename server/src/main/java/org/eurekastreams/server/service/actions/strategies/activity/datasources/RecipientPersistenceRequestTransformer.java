@@ -43,19 +43,28 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
     private GetDomainGroupsByShortNames groupMapper;
 
     /**
+     * Resource StreamScope id mapper.
+     */
+    private DomainMapper<List<String>, List<Long>> resourceStreamScopeIdMapper;
+
+    /**
      * Constructor.
      * 
      * @param inGetPersonModelViewsByAccountIdsMapper
      *            Mapper for getting PersonModelViews from a list of account ids.
      * @param inGroupMapper
      *            the group mapper.
+     * @param inResourceStreamScopeIdMapper
+     *            Resource StreamScope id mapper.
      */
     public RecipientPersistenceRequestTransformer(
             final DomainMapper<List<String>, List<PersonModelView>> inGetPersonModelViewsByAccountIdsMapper,
-            final GetDomainGroupsByShortNames inGroupMapper)
+            final GetDomainGroupsByShortNames inGroupMapper,
+            final DomainMapper<List<String>, List<Long>> inResourceStreamScopeIdMapper)
     {
         getPersonModelViewsByAccountIdsMapper = inGetPersonModelViewsByAccountIdsMapper;
         groupMapper = inGroupMapper;
+        resourceStreamScopeIdMapper = inResourceStreamScopeIdMapper;
     }
 
     /**
@@ -73,6 +82,7 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
 
         List<String> personIds = new ArrayList<String>();
         List<String> groupIds = new ArrayList<String>();
+        List<String> resourceKeys = new ArrayList<String>();
 
         for (int i = 0; i < recipients.size(); i++)
         {
@@ -87,6 +97,9 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
             case GROUP:
                 groupIds.add(req.getString("name"));
                 break;
+            case RESOURCE:
+                resourceKeys.add(req.getString("name"));
+                break;
             default:
                 throw new RuntimeException("Unhandled type.");
             }
@@ -96,6 +109,11 @@ public class RecipientPersistenceRequestTransformer implements PersistenceDataSo
         final List<DomainGroupModelView> groups = groupMapper.execute(groupIds);
 
         final ArrayList<Long> streamScopeIds = new ArrayList<Long>();
+
+        if (!resourceKeys.isEmpty())
+        {
+            streamScopeIds.addAll(resourceStreamScopeIdMapper.execute(resourceKeys));
+        }
 
         for (PersonModelView person : people)
         {

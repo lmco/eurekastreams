@@ -2592,6 +2592,18 @@
     <bean id="getPeopleWhoSharedResourceDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetPeopleWhoSharedResourceDbMapper" />
 
     <bean id="getPeopleWhoLikedResourceDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetPeopleWhoLikedResourceDbMapper" />
+    
+    <!-- gets single streamScopeId for resource based on StreamScope uniqueKey, returns null exactly one result not found. -->
+    <bean id="getStreamScopeIdForResourceScopeTypeByUniqueKey" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
+        <constructor-arg ref="getStreamScopeIdsForResourceScopeTypeByUniqueKeys" />
+        <constructor-arg value="false" />
+    </bean>
+    
+    <bean id="getStreamScopeIdsForResourceScopeTypeByUniqueKeys" class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeIdsForScopeTypeByUniqueKeys" >
+        <constructor-arg>
+             <value type="org.eurekastreams.server.domain.stream.StreamScope$ScopeType">RESOURCE</value>
+        </constructor-arg>
+    </bean>
 
     <bean id="getSharedResourceByKeyMapper" class="org.eurekastreams.server.persistence.mappers.GetSharedResourcePropertiesMapper">
         <constructor-arg ref="getStreamScopeIdByTypeAndKey" />
