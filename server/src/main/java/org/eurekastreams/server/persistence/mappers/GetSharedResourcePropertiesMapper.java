@@ -28,7 +28,7 @@ import org.eurekastreams.server.search.modelview.SharedResourceDTO;
 
 /**
  * Mapper to get the properties of a shared resource, including shared and liked counts and 4 people from each list.
- * This combines a few mappers
+ * This combines a few mappers.
  */
 public class GetSharedResourcePropertiesMapper extends BaseArgDomainMapper<SharedResourceRequest, SharedResourceDTO>
 {
@@ -138,21 +138,14 @@ public class GetSharedResourcePropertiesMapper extends BaseArgDomainMapper<Share
                 foundPerson = findPersonInList(people, personId);
                 if (foundPerson != null)
                 {
-                    // only copy the fields we need
-                    newPerson = new PersonModelView();
-                    newPerson.setAccountId(foundPerson.getAccountId());
-                    newPerson.setAvatarId(foundPerson.getAvatarId());
-                    newPerson.setEntityId(foundPerson.getEntityId());
-                    newPerson.setDisplayName(foundPerson.getDisplayName());
-
                     // add the DTO to the people collections
                     if (likedPersonIds.contains(personId))
                     {
-                        dto.getLikersSample().add(newPerson);
+                        dto.getLikersSample().add(foundPerson);
                     }
                     if (sharedPersonIds.contains(personId))
                     {
-                        dto.getSharersSample().add(newPerson);
+                        dto.getSharersSample().add(foundPerson);
                     }
                 }
             }

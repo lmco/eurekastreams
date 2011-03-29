@@ -2589,15 +2589,23 @@
 
     <bean id="setLikedSharedResourceStatusDbMapper" class="org.eurekastreams.server.persistence.mappers.db.SetLikedSharedResourceStatusDbMapper" />
     
-    <bean id="getPeopleWhoSharedResourceDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetPeopleWhoSharedResourceDbMapper" />
-
-    <bean id="getPeopleWhoLikedResourceDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetPeopleWhoLikedResourceDbMapper" />
-
+    <bean id="personModelViewAvatarDisplayTransformer" class="org.eurekastreams.server.domain.strategies.PersonModelViewAvatarDisplayTransformer"/>
+    
+    <bean id="getPeopleIdsThatSharedSharedResource" class="org.eurekastreams.server.persistence.mappers.db.GetPeopleWhoSharedResourceDbMapper" />    
+    
+    <bean id="getPeopleIdsThatLikedSharedResource" class="org.eurekastreams.server.persistence.mappers.db.GetPeopleWhoLikedResourceDbMapper" />
+    
+    <!-- Mapper to get PersonModelViews with only the information needed to display avatars -->
+    <bean id="getPersonAvatarDisplayInfoByIdsMapper" class="org.eurekastreams.server.persistence.mappers.DomainMapperTransformer">
+        <constructor-arg ref="getPersonsByIdsMapper" />
+        <constructor-arg ref="personModelViewAvatarDisplayTransformer" />
+    </bean>
+    
     <bean id="getSharedResourceByKeyMapper" class="org.eurekastreams.server.persistence.mappers.GetSharedResourcePropertiesMapper">
         <constructor-arg ref="getStreamScopeIdByTypeAndKey" />
-        <constructor-arg ref="getPeopleWhoSharedResourceDbMapper" />
-        <constructor-arg ref="getPeopleWhoLikedResourceDbMapper" />
-        <constructor-arg ref="getPersonsByIdsMapper" />
+        <constructor-arg ref="getPeopleIdsThatSharedSharedResource" />
+        <constructor-arg ref="getPeopleIdsThatLikedSharedResource" />
+        <constructor-arg ref="getPersonAvatarDisplayInfoByIdsMapper" />
     </bean>
-        
+            
 </beans>

@@ -22,7 +22,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.commons.test.IsEqualInternally;
 import org.eurekastreams.server.action.request.SharedResourceRequest;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
@@ -233,7 +232,6 @@ public class GetSharedResourcePropertiesMapperTest
                 assertEquals("display" + id, p.getDisplayName());
                 assertEquals("avatar" + id, p.getAvatarId());
                 assertEquals(id, p.getId());
-                assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, p.getLastName());
                 return;
             }
         }

@@ -90,12 +90,12 @@
 	
     <bean id="baseParamExecuteDomainMapperExecution" abstract="true" 
     	class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
-        <constructor-arg ref="passThruRequestTransformer" />        
+        <constructor-arg ref="passThruRequestTransformer" />
     </bean>
 
     <bean id="baseParamListExecuteDomainMapperExecution" abstract="true" 
     	class="org.eurekastreams.server.action.execution.ExecuteDomainMapperExecution">
-        <constructor-arg ref="wrapInListRequestTransformer" />        
+        <constructor-arg ref="wrapInListRequestTransformer" />      
     </bean>
 	
 	       
@@ -4777,8 +4777,43 @@
         <constructor-arg value="true" />
     </bean>
     
+    <bean id="getAvatarInfoForPeopleThatLikedSharedResourceAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean parent="baseParamExecuteDomainMapperExecution">
+               <constructor-arg>
+                    <bean class="org.eurekastreams.server.domain.strategies.ChainedMapperWrapperMapper">
+                        <!-- Get the people ids that liked the shared resource -->
+                        <constructor-arg ref="getPeopleIdsThatLikedSharedResource" />
+                        
+                        <!-- Then get the person modelviews that have avatar display info for the ids -->
+                        <constructor-arg ref="getPersonAvatarDisplayInfoByIdsMapper" />
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
     
-    
+    <bean id="getAvatarInfoForPeopleThatSharedSharedResourceAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean parent="baseParamExecuteDomainMapperExecution">
+		        <constructor-arg>
+		            <bean class="org.eurekastreams.server.domain.strategies.ChainedMapperWrapperMapper">
+		                <!-- Get the people ids that shared the shared resource -->  
+		                <constructor-arg ref="getPeopleIdsThatSharedSharedResource" />
+		                
+		                <!-- Then get the person modelviews that have avatar display info for the ids -->
+		                <constructor-arg ref="getPersonAvatarDisplayInfoByIdsMapper" />
+		            </bean>
+		        </constructor-arg>
+		    </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
 
     <!--
         ****************************************************************************************
