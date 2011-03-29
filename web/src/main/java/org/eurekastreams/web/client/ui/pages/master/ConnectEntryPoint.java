@@ -23,12 +23,21 @@ import org.eurekastreams.commons.client.ActionRPCService;
 import org.eurekastreams.commons.client.ActionRPCServiceAsync;
 import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.server.search.modelview.PersonModelView;
-import org.eurekastreams.web.client.ui.common.dialog.Dialog;
-import org.eurekastreams.web.client.ui.common.dialog.message.MessageDialogContent;
+import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.SwitchedHistoryViewEvent;
+import org.eurekastreams.web.client.history.HistoryHandler;
+import org.eurekastreams.web.client.ui.Session;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -36,31 +45,133 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class ConnectEntryPoint implements EntryPoint
 {
     /**
-     * The action processor.
+     * Mandatory ID for the HTML element in which to create the widget.
      */
-    private final ActionProcessor processor = new ActionProcessorImpl((ActionRPCServiceAsync) GWT
-            .create(ActionRPCService.class));
+    private static final String WIDGET_ELEMENT_ID = "widget-rootpanel";
+
+    /** The action processor. */
+    private ActionProcessor processor;
+
+    /** The root panel. */
+    private RootPanel rootPanel;
+
+    /** The session. */
+    private final Session session = Session.getInstance();
+
+    /** For creating the widget pages. */
+    private final ConnectPageFactory pageFactory = new ConnectPageFactory();
 
     /**
      * Module load.
      */
     public void onModuleLoad()
     {
-        processor.makeRequest(new ActionRequestImpl<PersonModelView>("noOperation", null),
-                new AsyncCallback<Serializable>()
+        // The entry point will be invoked on full-app startup, so do nothing if the appropriate widget element is not
+        // found
+        rootPanel = RootPanel.get(WIDGET_ELEMENT_ID);
+        if (rootPanel == null)
+        {
+            return;
+        }
+
+        StaticResourceBundle.INSTANCE.coreCss().ensureInjected();
+        StaticResourceBundle.INSTANCE.yuiCss().ensureInjected();
+
+        ActionRPCServiceAsync service = (ActionRPCServiceAsync) GWT.create(ActionRPCService.class);
+        ((ServiceDefTarget) service).setServiceEntryPoint("/gwt_rpc");
+        processor = new ActionProcessorImpl(service);
+
+        session.setActionProcessor(processor);
+        session.setEventBus(EventBus.getInstance());
+
+        processor.makeRequest(new ActionRequestImpl<Serializable>("noOperation", null), new AsyncCallback<String>()
+        {
+            public void onFailure(final Throwable caught)
+            {
+                onSessionInitFailure(caught);
+            }
+
+            public void onSuccess(final String sessionId)
+            {
+                ActionProcessorImpl.setCurrentSessionId(sessionId);
+
+                // this must be the first action called so that the session is handled correctly
+                processor.makeRequest(new ActionRequestImpl<PersonModelView>("getPersonModelView", null),
+                        new AsyncCallback<PersonModelView>()
+                        {
+                            public void onFailure(final Throwable caught)
+                            {
+                                onPersonFetchFailure(caught);
+                            }
+
+                            public void onSuccess(final PersonModelView person)
+                            {
+                                session.setCurrentPerson(person);
+                                session.setCurrentPersonRoles(person.getRoles());
+
+                                // TODO: do we need this?
+                                session.setHistoryHandler(new HistoryHandler());
+
+                                buildPage();
+                            }
+                        });
+
+            }
+        });
+    }
+
+    /**
+     * Invoked on failure to establish the session.
+     *
+     * @param caught
+     *            Error returned.
+     */
+    private void onSessionInitFailure(final Throwable caught)
+    {
+        // TODO: Something reasonable here
+        Window.alert(caught.toString());
+    }
+
+    /**
+     * Invoked on failure to retrieve person info.
+     *
+     * @param caught
+     *            Error returned.
+     */
+    private void onPersonFetchFailure(final Throwable caught)
+    {
+        // TODO: Something reasonable here
+        Window.alert(caught.toString());
+    }
+
+    /**
+     * Builds a page displaying the desired widget.
+     */
+    private void buildPage()
+    {
+        final EventBus eventBus = Session.getInstance().getEventBus();
+        eventBus.addObserver(SwitchedHistoryViewEvent.class, new Observer<SwitchedHistoryViewEvent>()
+        {
+            public void update(final SwitchedHistoryViewEvent ev)
+            {
+                eventBus.removeObserver(ev, this);
+
+                Widget page = pageFactory.createPage(ev.getPage(), ev.getViews());
+                if (page == null)
                 {
-                    public void onFailure(final Throwable caught)
-                    {
-                        Dialog
-                                .showDialog(new MessageDialogContent("Unable to Establish Connection",
-                                        "Please Refresh."));
-                    }
+                    page = new Label("Unknown or unimplemented widget");
+                }
 
-                    public void onSuccess(final Serializable sessionId)
-                    {
+                rootPanel.add(page);
 
-                        ActionProcessorImpl.setCurrentSessionId((String) sessionId);
-                    }
-                });
+                Window.alert(ev.getPage().toString());
+                // TODO Auto-generated method stub
+            }
+        });
+        eventBus.bufferObservers();
+        History.fireCurrentHistoryState();
+
+        // TODO: something real
+        // Window.alert("yay!");
     }
 }

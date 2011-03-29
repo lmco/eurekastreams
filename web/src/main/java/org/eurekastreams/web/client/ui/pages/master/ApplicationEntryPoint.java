@@ -73,43 +73,39 @@ import com.google.gwt.user.client.ui.RootPanel;
 public class ApplicationEntryPoint implements EntryPoint
 {
     /**
+     * Mandatory ID for the HTML body element to identify that the full app should be created.
+     */
+    private static final String FULL_APP_ELEMENT_ID = "full-app-rootpanel";
+
+    /**
      * Idle timeout in seconds.
      */
     private static final int APP_IDLE_TIMEOUT = 5 * 60;
 
-    /**
-     * Display TOS.
-     */
+    /** Display TOS. */
     private boolean displayTOS = true;
-    /**
-     * The action processor.
-     */
+
+    /** The action processor. */
     private ActionProcessor processor;
 
-    /**
-     * The master page.
-     */
+    /** The root panel. */
+    private RootPanel rootPanel;
+
+    /** The master page. */
     private MasterComposite master;
 
-    /**
-     * The jsni facade.
-     */
+    /** The jsni facade. */
     private final WidgetJSNIFacade jSNIFacade = new WidgetJSNIFacadeImpl();
 
-    /**
-     * The session.
-     */
+    /** The session. */
     private final Session session = Session.getInstance();
 
-    /**
-     * The login dialog.
-     */
+    /** The login dialog. */
     private Dialog loginDialog;
 
-    /**
-     * Employee lookup modal.
-     */
+    /** Employee lookup modal. */
     private static EmployeeLookupContent dialogContent;
+
 
     /**
      * Shows the login.
@@ -127,6 +123,14 @@ public class ApplicationEntryPoint implements EntryPoint
      */
     public void onModuleLoad()
     {
+        // The entry point will be invoked when just a Eureka Connect widget is desired, so do nothing if the
+        // appropriate full-app element is not found
+        rootPanel = RootPanel.get(FULL_APP_ELEMENT_ID);
+        if (rootPanel == null)
+        {
+            return;
+        }
+
         ActionRPCServiceAsync service = (ActionRPCServiceAsync) GWT.create(ActionRPCService.class);
         processor = new ActionProcessorImpl(service);
 
@@ -141,7 +145,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
         if (History.getToken().equals("requestaccess"))
         {
-            RootPanel.get().add(new AccessDeniedContent());
+            rootPanel.add(new AccessDeniedContent());
         }
         else
         {
@@ -178,8 +182,8 @@ public class ApplicationEntryPoint implements EntryPoint
                             }
                             else if (caught.getMessage().contains("LOGIN_DISABLED"))
                             {
-                                RootPanel.get().clear();
-                                RootPanel.get().add(new AccessDeniedContent());
+                                rootPanel.clear();
+                                rootPanel.add(new AccessDeniedContent());
                             }
                             else
                             {
@@ -211,7 +215,7 @@ public class ApplicationEntryPoint implements EntryPoint
                     /* implement the async call back methods */
                     public void onFailure(final Throwable caught)
                     {
-                        RootPanel.get().add(master);
+                        rootPanel.add(master);
 
                         if (caught instanceof SessionException)
                         {
@@ -256,14 +260,14 @@ public class ApplicationEntryPoint implements EntryPoint
                         processor.setQueueRequests(false);
 
                         session.getPeriodicEventManager().start();
-                        RootPanel.get().add(master);
+                        rootPanel.add(master);
                     }
                 });
     }
 
     /**
      * Shows the ToS modal.
-     * 
+     *
      */
     private void displayToS()
     {
@@ -293,7 +297,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires off a gadget change state event.
-     * 
+     *
      * @param id
      *            the gadget id
      * @param view
@@ -309,7 +313,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires of the UpdateGadgetPrefsEvent when called from the gadget container.
-     * 
+     *
      * @param inId
      *            - id of the gadget being updated.
      * @param inPrefs
@@ -323,7 +327,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the save command object.
-     * 
+     *
      * @return the save command
      */
     private static Command getEmployeeSelectedCommand()
@@ -355,7 +359,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Call the handler when the employee lookup is done.
-     * 
+     *
      * @param ntid
      *            the ntid.
      * @param displayName
@@ -371,7 +375,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the people from the server, convert them to JSON, and feed them back to the handler.
-     * 
+     *
      * @param ntids
      *            the ntids.
      * @param callbackIndex
@@ -446,7 +450,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Call the handler with the JSON data.
-     * 
+     *
      * @param data
      *            the data.
      * @param callbackIndex
@@ -459,7 +463,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Returns an additional property value given a key.
-     * 
+     *
      * @param key
      *            the key.
      * @return the value.
@@ -525,7 +529,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the user agent (for detecting IE7).
-     * 
+     *
      * @return the user agent.
      */
     public static native String getUserAgent()
