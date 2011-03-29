@@ -257,6 +257,7 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
         currentActivity.setAppName(inActivityDTO.getAppName());
         currentActivity.setAppSource(inActivityDTO.getAppSource());
         currentActivity.setAppType(inActivityDTO.getAppType());
+        currentActivity.setShowInStream(inActivityDTO.getShowInStream());
 
         return currentActivity;
     }
