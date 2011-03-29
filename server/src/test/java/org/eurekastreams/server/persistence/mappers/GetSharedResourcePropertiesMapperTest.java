@@ -22,10 +22,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eurekastreams.commons.test.IsEqualInternally;
 import org.eurekastreams.server.action.request.SharedResourceRequest;
-import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
-import org.eurekastreams.server.persistence.mappers.requests.StreamScopeTypeAndKeyRequest;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.SharedResourceDTO;
 import org.jmock.Expectations;
@@ -53,8 +50,8 @@ public class GetSharedResourcePropertiesMapperTest
     /**
      * Mapper to get a stream scope id from type and key.
      */
-    private DomainMapper<StreamScopeTypeAndKeyRequest, Long> getStreamScopeIdFromTypeAndKeyMapper = context.mock(
-            DomainMapper.class, "getStreamScopeIdFromTypeAndKeyMapper");;
+    private DomainMapper<String, Long> getResourceStreamScopeIdByKeyMapper = context.mock(DomainMapper.class,
+            "getStreamScopeIdFromTypeAndKeyMapper");
 
     /**
      * Mapper that gets the ids of people that liked a shared resource.
@@ -84,7 +81,7 @@ public class GetSharedResourcePropertiesMapperTest
     @Before
     public void setup()
     {
-        sut = new GetSharedResourcePropertiesMapper(getStreamScopeIdFromTypeAndKeyMapper,
+        sut = new GetSharedResourcePropertiesMapper(getResourceStreamScopeIdByKeyMapper,
                 getPeopleThatSharedResourceMapper, getPeopleThatLikedResourceMapper, getPeopleModelViewsByIdsMapper);
         getPeopleModelViewsByIdsMapper.setCannedResponse(null);
     }
@@ -102,9 +99,7 @@ public class GetSharedResourcePropertiesMapperTest
         context.checking(new Expectations()
         {
             {
-                oneOf(getStreamScopeIdFromTypeAndKeyMapper).execute(
-                        with(IsEqualInternally.equalInternally(new StreamScopeTypeAndKeyRequest(ScopeType.RESOURCE,
-                                uniqueKey))));
+                oneOf(getResourceStreamScopeIdByKeyMapper).execute(with(uniqueKey));
                 will(returnValue(streamScopeId));
 
                 oneOf(getPeopleThatSharedResourceMapper).execute(with(request));
@@ -166,9 +161,7 @@ public class GetSharedResourcePropertiesMapperTest
         context.checking(new Expectations()
         {
             {
-                oneOf(getStreamScopeIdFromTypeAndKeyMapper).execute(
-                        with(IsEqualInternally.equalInternally(new StreamScopeTypeAndKeyRequest(ScopeType.RESOURCE,
-                                uniqueKey))));
+                oneOf(getResourceStreamScopeIdByKeyMapper).execute(with(uniqueKey));
                 will(returnValue(streamScopeId));
 
                 oneOf(getPeopleThatSharedResourceMapper).execute(with(request));

@@ -17,6 +17,7 @@ package org.eurekastreams.server.persistence.mappers.db;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -66,6 +67,16 @@ public class GetStreamScopeIdsForScopeTypeByUniqueKeysTest extends MapperTest
     {
         // this is a valid group ScopeType, so exercise that ScopeType is obeyed.
         assertEquals(0, sut.execute(Arrays.asList("group1")).size());
+    }
+
+    /**
+     * Test execute when the scope does not exists.
+     */
+    @Test
+    public void testEmptyParams()
+    {
+        // this is a valid group ScopeType, so exercise that ScopeType is obeyed.
+        assertEquals(0, sut.execute(new ArrayList<String>()).size());
     }
 
     /**

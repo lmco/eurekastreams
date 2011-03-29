@@ -125,6 +125,7 @@ public class BulkActivitiesDbMapper extends BaseArgDomainMapper<List<Long>, List
         fields.add(getColumn("appId"));
         fields.add(getColumn("appSource"));
         fields.add(getColumn("appName"));
+        fields.add(getColumn("showInStream"));
         criteria.createAlias("recipientStreamScope", "recipStreamScope");
         criteria.setProjection(fields);
         criteria.add(Restrictions.in("this.id", activityIds));

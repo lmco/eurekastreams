@@ -1943,6 +1943,7 @@
                                     class="org.eurekastreams.server.service.actions.strategies.activity.datasources.RecipientPersistenceRequestTransformer">
                                     <constructor-arg ref="getPeopleByAccountIdsMapper" />   
                                     <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+                                    <constructor-arg ref="getStreamScopeIdsForResourceScopeTypeByUniqueKeys" />
                                 </bean>
                             </entry>
                             <entry key="organization">
@@ -2096,6 +2097,24 @@
         <constructor-arg ref="postActivityUpdateStreamsByActorMapper" />
         <constructor-arg ref="findOrInsertSharedResourceByUniqueKeyMapper" />
     </bean>
+    
+    <bean id="postResourceActivityExecutionStrategy"
+        class="org.eurekastreams.server.action.execution.stream.PostActivityExecutionStrategy">
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
+        </constructor-arg>
+        <constructor-arg ref="insertActivityComment" />
+        <constructor-arg ref="bulkActivitiesMapper" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.service.actions.strategies.ResourceRecipientRetriever">
+                <constructor-arg ref="getRootOrganizationIdAndShortNameMapper" />
+                <constructor-arg ref="findByIdMapper" />
+                <constructor-arg ref="getStreamScopeIdForResourceScopeTypeByUniqueKeyExceptionIfNotFound" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="postActivityUpdateStreamsByActorMapper" />
+        <constructor-arg ref="findOrInsertSharedResourceByUniqueKeyMapper" />
+    </bean>    
 
     <bean id="sendGroupAccessRequestAction" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <constructor-arg ref="noValidationStrategy" />

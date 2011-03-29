@@ -86,6 +86,98 @@ public class PostActivityUpdateStreamsByActorMapperTest extends CachedMapperTest
     }
 
     /**
+     * Test.
+     */
+    @Test(expected = RuntimeException.class)
+    public void testExecuteWithResourceNotFound()
+    {
+        final long activityId = 98766L;
+
+        ActivityDTO activity = new ActivityDTO();
+        StreamEntityDTO destinationStream = new StreamEntityDTO();
+        destinationStream.setType(EntityType.RESOURCE);
+        destinationStream.setUniqueIdentifier("FOO");
+        activity.setDestinationStream(destinationStream);
+        activity.setId(activityId);
+
+        sut.execute(activity);
+    }
+
+    /**
+     * Tests execute method with a resource scope.
+     */
+    @Test
+    public void testExecuteWithResource()
+    {
+        final long activityId = 98766L;
+        final long scopeId = 100;
+        final long actorscopeId = 4;
+
+        ActivityDTO activity = new ActivityDTO();
+        StreamEntityDTO destinationStream = new StreamEntityDTO();
+        destinationStream.setType(EntityType.RESOURCE);
+        destinationStream.setUniqueIdentifier("resource1");
+
+        StreamEntityDTO actorStream = new StreamEntityDTO();
+        actorStream.setType(EntityType.PERSON);
+        actorStream.setUniqueIdentifier("mrburns");
+
+        activity.setDestinationStream(destinationStream);
+        activity.setActor(actorStream);
+        activity.setId(activityId);
+
+        final String cacheKey = CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + scopeId;
+        final String actorCacheKey = CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + actorscopeId;
+
+        assertEquals(null, getCache().get(cacheKey));
+        assertEquals(null, getCache().get(actorCacheKey));
+
+        sut.execute(activity);
+        assertEquals(1, getCache().getList(cacheKey).size());
+        assertEquals(activityId, (long) getCache().getList(cacheKey).get(0));
+
+        assertEquals(1, getCache().getList(actorCacheKey).size());
+        assertEquals(activityId, (long) getCache().getList(actorCacheKey).get(0));
+    }
+
+    /**
+     * Tests execute method with a resource scope.
+     */
+    @Test
+    public void testExecuteWithResourceShowInStreamFalse()
+    {
+        final long activityId = 98766L;
+        final long scopeId = 100;
+        final long actorscopeId = 4;
+
+        ActivityDTO activity = new ActivityDTO();
+        activity.setShowInStream(false);
+        StreamEntityDTO destinationStream = new StreamEntityDTO();
+        destinationStream.setType(EntityType.RESOURCE);
+        destinationStream.setUniqueIdentifier("resource1");
+
+        StreamEntityDTO actorStream = new StreamEntityDTO();
+        actorStream.setType(EntityType.PERSON);
+        actorStream.setUniqueIdentifier("mrburns");
+
+        activity.setDestinationStream(destinationStream);
+        activity.setActor(actorStream);
+        activity.setId(activityId);
+
+        final String cacheKey = CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + scopeId;
+        final String actorCacheKey = CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + actorscopeId;
+
+        assertEquals(null, getCache().get(cacheKey));
+        assertEquals(null, getCache().get(actorCacheKey));
+
+        sut.execute(activity);
+        assertEquals(1, getCache().getList(cacheKey).size());
+        assertEquals(activityId, (long) getCache().getList(cacheKey).get(0));
+
+        assertEquals(null, getCache().get(actorCacheKey));
+    }
+
+    /**
      * Tests execute method with an unsupported scope type.
      */
     @Test

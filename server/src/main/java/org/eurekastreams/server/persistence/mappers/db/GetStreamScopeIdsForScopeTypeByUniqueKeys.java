@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
@@ -53,6 +54,12 @@ public class GetStreamScopeIdsForScopeTypeByUniqueKeys extends BaseArgDomainMapp
     @Override
     public List<Long> execute(final List<String> inRequest)
     {
+        // short circuit here as IN clause with emtpy list causes syntax error.
+        if (inRequest == null || inRequest.isEmpty())
+        {
+            return new ArrayList<Long>(0);
+        }
+
         return getEntityManager().createQuery(
                 "SELECT id FROM StreamScope WHERE scopeType = :scopeType AND uniqueKey IN (:uniqueKeys)").setParameter(
                 "scopeType", scopeType).setParameter("uniqueKeys", inRequest).getResultList();

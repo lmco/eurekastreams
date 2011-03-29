@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,7 +91,23 @@ public enum Page implements Serializable
     /**
      * Start page.
      */
-    START("");
+    START(""),
+    /**
+     * Widget for displaying a stream and allowing posts to it. (The name is per the product spec.)
+     */
+    WIDGET_COMMENT("widget-comment"),
+    /**
+     * Widget displaying a read-only view of a stream.
+     */
+    WIDGET_STREAM("widget-stream"),
+    /**
+     * Widget to like or share a resource.
+     */
+    WIDGET_LIKE_SHARE("widget-likeshare"),
+    /**
+     * Widget displaying basic user profile information.
+     */
+    WIDGET_PROFILE_BADGE("widget-profilebadge");
 
     /**
      * human-readable name (ie, "Business Development" as opposed to enum.BD).
