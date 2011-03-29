@@ -194,8 +194,13 @@ public class ActivityDTO extends ModelView implements Serializable
     private List<PersonModelView> likers;
 
     /**
+     * If resource activity should appear in actor's personal stream. Default true for all activities.
+     */
+    private Boolean showInStream = true;
+
+    /**
      * Load this object's properties from the input Map.
-     *
+     * 
      * @param properties
      *            the Map of the properties to load
      */
@@ -328,6 +333,10 @@ public class ActivityDTO extends ModelView implements Serializable
         if (properties.containsKey("likeCount"))
         {
             setLikeCount((Integer) properties.get("likeCount"));
+        }
+        if (properties.containsKey("showInStream"))
+        {
+            setShowInStream((Boolean) properties.get("showInStream"));
         }
 
     }
@@ -521,7 +530,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Gets the name of the entity backing this model view.
-     *
+     * 
      * @return the entity name;
      */
     @Override
@@ -649,7 +658,6 @@ public class ActivityDTO extends ModelView implements Serializable
         destinationStream = inDestinationStream;
     }
 
-
     /**
      * @return the comments
      */
@@ -686,7 +694,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Get whether the destination stream is a public.
-     *
+     * 
      * @return whether the destination stream is public.
      */
     public Boolean getIsDestinationStreamPublic()
@@ -696,7 +704,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Set whether the destination stream is public.
-     *
+     * 
      * @param inIsDestinationStreamPublic
      *            whether the destination stream is public
      */
@@ -826,7 +834,7 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Set the likers.
-     *
+     * 
      * @param inLikers
      *            the likers.
      */
@@ -837,11 +845,28 @@ public class ActivityDTO extends ModelView implements Serializable
 
     /**
      * Get the likers.
-     *
+     * 
      * @return the likers.
      */
     public List<PersonModelView> getLikers()
     {
         return likers;
+    }
+
+    /**
+     * @return the showInStream
+     */
+    public Boolean getShowInStream()
+    {
+        return showInStream;
+    }
+
+    /**
+     * @param inShowInStream
+     *            the showInStream to set
+     */
+    public void setShowInStream(final Boolean inShowInStream)
+    {
+        showInStream = inShowInStream;
     }
 }
