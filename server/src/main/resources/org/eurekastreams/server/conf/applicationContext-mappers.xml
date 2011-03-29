@@ -2141,7 +2141,8 @@
 	<bean id="postActivityUpdateStreamsByActorMapper"
 		class="org.eurekastreams.server.persistence.mappers.cache.PostActivityUpdateStreamsByActorMapper">
 		<constructor-arg ref="getPersonByAccountIdMapper" />
-		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+		<constructor-arg ref="bulkDomainGroupsByShortNameMapper" />	
+		<constructor-arg ref="getStreamScopeIdForResourceScopeTypeByUniqueKeyExceptionIfNotFound" />			
 		<property name="cache" ref="memcachedCache" />
 	</bean>
 
@@ -2591,10 +2592,16 @@
 
     <bean id="getPeopleWhoLikedResourceDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetPeopleWhoLikedResourceDbMapper" />
     
-    <!-- gets single streamScopeId for resource based on StreamScope uniqueKey, returns null exactly one result not found. -->
+    <!-- gets single streamScopeId for resource based on StreamScope uniqueKey, returns null if exactly one result not found. -->
     <bean id="getStreamScopeIdForResourceScopeTypeByUniqueKey" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
         <constructor-arg ref="getStreamScopeIdsForResourceScopeTypeByUniqueKeys" />
         <constructor-arg value="false" />
+    </bean>
+    
+    <!-- gets single streamScopeId for resource based on StreamScope uniqueKey, throws exception if exactly one result not found. -->
+    <bean id="getStreamScopeIdForResourceScopeTypeByUniqueKeyExceptionIfNotFound" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
+        <constructor-arg ref="getStreamScopeIdsForResourceScopeTypeByUniqueKeys" />
+        <constructor-arg value="true" />
     </bean>
     
     <bean id="getStreamScopeIdsForResourceScopeTypeByUniqueKeys" class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeIdsForScopeTypeByUniqueKeys" >

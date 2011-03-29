@@ -41,23 +41,32 @@ public class PostActivityUpdateStreamsByActorMapper extends CachedDomainMapper
     private final GetDomainGroupsByShortNames bulkDomainGroupsByShortNameMapper;
 
     /**
+     * Mapper to get a stream scope id by scope type and unique key.
+     */
+    private DomainMapper<String, Long> getResourceStreamScopeIdByKeyMapper;
+
+    /**
      * Constructor for the {@link PostActivityUpdateStreamsByActorMapper}.
      * 
      * @param inGetPersonModelViewByAccountIdMapper
      *            - Mapper to get a PersonModelView by account id.
      * @param inBulkDomainGroupsByShortNameMapper
      *            - instance of the {@link GetDomainGroupsByShortNames} mapper.
+     * @param inGetResourceStreamScopeIdByKeyMapper
+     *            Mapper to get a stream scope id by scope type and unique key.
      */
     public PostActivityUpdateStreamsByActorMapper(
             final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper,
-            final GetDomainGroupsByShortNames inBulkDomainGroupsByShortNameMapper)
+            final GetDomainGroupsByShortNames inBulkDomainGroupsByShortNameMapper,
+            final DomainMapper<String, Long> inGetResourceStreamScopeIdByKeyMapper)
     {
         getPersonModelViewByAccountIdMapper = inGetPersonModelViewByAccountIdMapper;
         bulkDomainGroupsByShortNameMapper = inBulkDomainGroupsByShortNameMapper;
+        getResourceStreamScopeIdByKeyMapper = inGetResourceStreamScopeIdByKeyMapper;
     }
 
     /**
-     * Post the provided {@link ActivityDTO} into the entity stream related to the actor.
+     * Post the provided {@link ActivityDTO} into the entity stream related to the recipient.
      * 
      * @param activity
      *            - {@link ActivityDTO} to be posted into the streams.
@@ -68,20 +77,33 @@ public class PostActivityUpdateStreamsByActorMapper extends CachedDomainMapper
 
         // Add to the appropriate entity stream.
         EntityType streamType = activity.getDestinationStream().getType();
+        String uniqueKey = activity.getDestinationStream().getUniqueIdentifier();
 
         switch (streamType)
         {
         case GROUP:
-            DomainGroupModelView group = bulkDomainGroupsByShortNameMapper.execute(
-                    Collections.singletonList(activity.getDestinationStream().getUniqueIdentifier())).get(0);
+            DomainGroupModelView group = bulkDomainGroupsByShortNameMapper
+                    .execute(Collections.singletonList(uniqueKey)).get(0);
 
             getCache().addToTopOfList(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + group.getStreamId(), activityId);
             break;
         case PERSON:
-            PersonModelView person = getPersonModelViewByAccountIdMapper.execute(activity.getDestinationStream()
-                    .getUniqueIdentifier());
+            PersonModelView person = getPersonModelViewByAccountIdMapper.execute(uniqueKey);
 
             getCache().addToTopOfList(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + person.getStreamId(), activityId);
+            break;
+        case RESOURCE:
+            getCache().addToTopOfList(
+                    CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + getResourceStreamScopeIdByKeyMapper.execute(uniqueKey),
+                    activityId);
+
+            // if showInStream is true and author is person, add to actors (author)'s stream also.
+            if (activity.getShowInStream() && activity.getActor().getType() == EntityType.PERSON)
+            {
+                PersonModelView actor = getPersonModelViewByAccountIdMapper.execute(activity.getActor()
+                        .getUniqueIdentifier());
+                getCache().addToTopOfList(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + actor.getStreamId(), activityId);
+            }
             break;
         default:
             break;
