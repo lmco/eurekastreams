@@ -30,7 +30,7 @@ import org.eurekastreams.server.service.actions.strategies.activity.ActivityVali
 
 /**
  * This class contains the validation strategy for the PostActivityAction class.
- *
+ * 
  */
 public class PostActivityValidationStrategy implements ValidationStrategy<ServiceActionContext>
 {
@@ -52,8 +52,11 @@ public class PostActivityValidationStrategy implements ValidationStrategy<Servic
 
     /**
      * The constructor for this Validation Strategy.
-     * @param inVerbValidators - Map of configured verb validators.
-     * @param inObjectValidators - Map of configured object validators.
+     * 
+     * @param inVerbValidators
+     *            - Map of configured verb validators.
+     * @param inObjectValidators
+     *            - Map of configured object validators.
      */
     public PostActivityValidationStrategy(final Map<String, ActivityValidator> inVerbValidators,
             final Map<String, ActivityValidator> inObjectValidators)
@@ -84,10 +87,12 @@ public class PostActivityValidationStrategy implements ValidationStrategy<Servic
         }
 
         // All activities must be posted to either a person or group stream.
-        if (!((currentActivity.getDestinationStream().getType() == EntityType.PERSON) || (currentActivity
-                .getDestinationStream().getType() == EntityType.GROUP)))
+        if (!((currentActivity.getDestinationStream().getType() == EntityType.PERSON)
+                || (currentActivity.getDestinationStream().getType() == EntityType.GROUP) || currentActivity
+                .getDestinationStream().getType() == EntityType.RESOURCE))
         {
-            valEx.addError("destination_stream_type", "Activities can only be submitted to Person or Group streams.");
+            valEx.addError("destination_stream_type",
+                    "Activities can only be submitted to Person, Group, or Resource streams.");
             throw valEx;
         }
 

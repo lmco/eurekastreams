@@ -33,7 +33,7 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * Authorization Strategy for Posting an activity.
- *
+ * 
  */
 public class PostActivityAuthorizationStrategy implements AuthorizationStrategy<ServiceActionContext>
 {
@@ -64,7 +64,7 @@ public class PostActivityAuthorizationStrategy implements AuthorizationStrategy<
 
     /**
      * Constructor for the PostActivityAuthorizationStrategy.
-     *
+     * 
      * @param inDomainGroupsByShortNameMapper
      *            - instance of the {@link GetDomainGroupsByShortNames} mapper.
      * @param inGroupCoordMapper
@@ -111,6 +111,9 @@ public class PostActivityAuthorizationStrategy implements AuthorizationStrategy<
             }
             performGroupAuthorization(currentPrincipal, currentRequest.getActivityDTO());
             break;
+        case RESOURCE:
+            // anyone can post to resource stream.
+            break;
         default:
             logger.error("Error occurred Performing authorization to post an Activity to stream, unsupported"
                     + "destination stream type.");
@@ -121,7 +124,7 @@ public class PostActivityAuthorizationStrategy implements AuthorizationStrategy<
 
     /**
      * Helper method to perform Authorization on activity when the destination stream is a Person type.
-     *
+     * 
      * @param inPrincipal
      *            - current {@link Principal} for the Action Context.
      * @param inActivityDTO
@@ -153,7 +156,7 @@ public class PostActivityAuthorizationStrategy implements AuthorizationStrategy<
 
     /**
      * Helper method to perform Authorization on activity when the destination stream is a Group type.
-     *
+     * 
      * @param inPrincipal
      *            - current {@link Principal} for the Action Context.
      * @param inActivityDTO

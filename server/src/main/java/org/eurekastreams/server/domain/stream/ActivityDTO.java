@@ -277,6 +277,10 @@ public class ActivityDTO extends ModelView implements Serializable
             {
                 getDestinationStream().setType(EntityType.GROUP);
             }
+            else if (scopeType == ScopeType.RESOURCE)
+            {
+                getDestinationStream().setType(EntityType.RESOURCE);
+            }
         }
         if (properties.containsKey("destinationStreamUniqueKey"))
         {

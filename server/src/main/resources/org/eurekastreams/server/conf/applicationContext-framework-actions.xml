@@ -2234,6 +2234,15 @@
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
     </bean>
+    
+    <bean id="postResourceActivityServiceActionTaskHandler"
+        class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+        <constructor-arg ref="postActivityValidationStrategy" />
+        <constructor-arg ref="postActivityAuthorizationStrategy" />
+        <constructor-arg ref="postResourceActivityExecutionStrategy" />
+        <constructor-arg value="false" />
+        <constructor-arg ref="taskHandler" />
+    </bean>    
 
     <bean id="postActivityAsyncExecutionStrategy"
         class="org.eurekastreams.server.action.execution.stream.PostActivityAsyncExecutionStrategy">

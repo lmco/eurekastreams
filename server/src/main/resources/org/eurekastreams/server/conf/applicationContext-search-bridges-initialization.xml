@@ -68,6 +68,21 @@
 			</list>
 		</property>
 	</bean>
+	
+	<!--
+        Inject the ActivityRecipientClassBridge with the SharedResourceMapper
+    -->
+    <bean
+        class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetClass"
+            value="org.eurekastreams.server.search.bridge.ActivityRecipientClassBridge" />
+        <property name="targetMethod" value="setGetSharedResourceByUniqueKeyMapper" />
+        <property name="arguments">
+            <list>
+                <ref bean="findOrInsertSharedResourceByUniqueKeyMapper" />
+            </list>
+        </property>
+    </bean>
 
 	<!--
 		Inject the ActivityAuthorClassBridge with the person account ids -> id mapper.
