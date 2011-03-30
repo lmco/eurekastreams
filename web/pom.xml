@@ -585,7 +585,7 @@
             <activation>
                 <property>
                     <name>split</name>
-                    <value>connectserver</value>
+                    <value>server</value>
                 </property>
             </activation>
             <build>

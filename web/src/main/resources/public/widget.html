@@ -8,7 +8,32 @@
   </head>
   <body id="widget-rootpanel">
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
-    <script type="text/javascript" language="javascript" src="${build.web.cdn}/eureka.nocache.js?${timestamp}"></script>
-	<script type="text/javascript" src="${build.web.cdn}/scripts/external-js-min.js?${timestamp}"></script>
+    <script type="text/javascript" language="javascript" src="./eureka.nocache.js?1301422861305"></script>
+	<script type="text/javascript" src="./scripts/external-js-min.js?1301422861305"></script>
+    <script type="text/javascript">
+        function querySt(ji) {
+            hu = window.location.search.substring(1);
+            gy = hu.split("&");
+            for (i=0;i<gy.length;i++) {
+                ft = gy[i].split("=");
+                if (ft[0] == ji) {
+                    return ft[1];
+                }
+            }
+        }
+        var p = unescape(querySt('p'));
+
+        var sendMessage = function(msg) {
+            if (window.postMessage) {
+                parent.postMessage(msg, p);
+            }
+            else {
+                parent.opener.postMessage(msg);
+            }
+        }
+
+        setInterval(function() { sendMessage('{"frameHeight":"' + jQuery('.layout-container').height() + '"}') }, 1500);
+
+    </script>
   </body>
 </html>
