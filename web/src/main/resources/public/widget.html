@@ -8,8 +8,8 @@
   </head>
   <body id="widget-rootpanel">
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
-    <script type="text/javascript" language="javascript" src="./eureka.nocache.js?1301422861305"></script>
-	<script type="text/javascript" src="./scripts/external-js-min.js?1301422861305"></script>
+    <script type="text/javascript" language="javascript" src="${build.web.cdn}/eureka.nocache.js?1301422861305"></script>
+	<script type="text/javascript" src="${build.web.cdn}/scripts/external-js-min.js?1301422861305"></script>
     <script type="text/javascript">
         function querySt(ji) {
             hu = window.location.search.substring(1);
@@ -22,6 +22,7 @@
             }
         }
         var p = unescape(querySt('p'));
+        var id = unescape(querySt('i'));
 
         var sendMessage = function(msg) {
             if (window.postMessage) {
@@ -32,8 +33,8 @@
             }
         }
 
-        setInterval(function() { sendMessage('{"frameHeight":"' + jQuery('.layout-container').height() + '"}') }, 1500);
-
+        // Resize Polling
+        setInterval(function() { sendMessage('{"frameId":"' + id + '","frameHeight":"' + jQuery('.layout-container').height() + '"}') }, 500);
     </script>
   </body>
 </html>
