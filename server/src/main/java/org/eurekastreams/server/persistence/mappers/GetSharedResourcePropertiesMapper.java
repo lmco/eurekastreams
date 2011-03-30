@@ -120,13 +120,13 @@ public class GetSharedResourcePropertiesMapper extends BaseArgDomainMapper<Share
         {
             if (!personIds.contains(id))
             {
+                log.debug("Person id: " + id + " not found in " + personIds.toString());
                 personIds.add(id);
             }
         }
 
         if (personIds.size() > 0)
         {
-            log.info("Getting " + personIds.size() + " people.");
             List<PersonModelView> people = getPeopleModelViewsByIdsMapper.execute(personIds);
             PersonModelView foundPerson, newPerson;
             for (long personId : personIds)

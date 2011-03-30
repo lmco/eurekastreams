@@ -121,102 +121,102 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     /**
      * The date this was added.
      */
-    private Date dateAdded = UNINITIALIZED_DATE_VALUE;
+    private Date dateAdded = null;
 
     /**
      * The account id of this person.
      */
-    private String accountId = UNINITIALIZED_STRING_VALUE;
+    private String accountId = null;
 
     /**
      * The open social id of this person.
      */
-    private String openSocialId = UNINITIALIZED_STRING_VALUE;
+    private String openSocialId = null;
 
     /**
      * The person's title.
      */
-    private String title = UNINITIALIZED_STRING_VALUE;
+    private String title = null;
 
     /**
      * The parent organization's id.
      */
-    private long parentOrganizationId = UNINITIALIZED_LONG_VALUE;
+    private long parentOrganizationId = -1;
 
     /**
      * The parent organization's short name.
      */
-    private String parentOrganizationShortName = UNINITIALIZED_STRING_VALUE;
+    private String parentOrganizationShortName = null;
 
     /**
      * The parent organization's full name.
      */
-    private String parentOrganizationName = UNINITIALIZED_STRING_VALUE;
+    private String parentOrganizationName = null;
 
     /**
      * The person's description.
      */
-    private String description = UNINITIALIZED_STRING_VALUE;
+    private String description = null;
 
     /**
      * The number of people following this person.
      */
-    private int followersCount = UNINITIALIZED_INTEGER_VALUE;
+    private int followersCount = -1;
 
     /**
      * The number of people following this person.
      */
-    private int followingCount = UNINITIALIZED_INTEGER_VALUE;
+    private int followingCount = -1;
 
     /**
      * The number of groups a person is in.
      */
-    private int groupsCount = UNINITIALIZED_INTEGER_VALUE;
+    private int groupsCount = -1;
 
     /**
      * Line index for composite streams.
      */
-    private int compositeStreamHiddenLineIndex = UNINITIALIZED_INTEGER_VALUE;
+    private int compositeStreamHiddenLineIndex = -1;
 
     /**
      * Line index for group streams.
      */
-    private int groupStreamHiddenLineIndex = UNINITIALIZED_INTEGER_VALUE;
+    private int groupStreamHiddenLineIndex = -1;
 
     /**
      * The person's display name.
      */
-    private String displayName = UNINITIALIZED_STRING_VALUE;
+    private String displayName = null;
 
     /**
      * The person's avatar id.
      */
-    private String avatarId = UNINITIALIZED_STRING_VALUE;
+    private String avatarId = null;
 
     /**
      * Avatar crop size.
      */
-    private Integer avatarCropSize = UNINITIALIZED_INTEGER_VALUE;
+    private Integer avatarCropSize = null;
 
     /**
      * Avatar crop value x.
      */
-    private Integer avatarCropX = UNINITIALIZED_INTEGER_VALUE;
+    private Integer avatarCropX = null;
 
     /**
      * Avatar crop value y.
      */
-    private Integer avatarCropY = UNINITIALIZED_INTEGER_VALUE;
+    private Integer avatarCropY = null;
 
     /**
      * The number of updates for this person.
      */
-    private int updatesCount = UNINITIALIZED_INTEGER_VALUE;
+    private int updatesCount = -1;
 
     /**
      * Stream id for this person.
      */
-    private long streamId = UNINITIALIZED_LONG_VALUE;
+    private long streamId = -1;
 
     /**
      * Set of videos a user has opted out of seeing.
@@ -246,7 +246,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     /**
      * Email address for this person.
      */
-    private String email = UNINITIALIZED_STRING_VALUE;
+    private String email = null;
 
     /**
      * List of related organization ids.
@@ -256,7 +256,7 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     /**
      * The date the current user last accepted the terms of service.
      */
-    private Date lastAcceptedTermsOfService = UNINITIALIZED_DATE_VALUE;
+    private Date lastAcceptedTermsOfService = null;
 
     /**
      * Map of additional properties.
@@ -271,32 +271,32 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     /**
      * User's last name.
      */
-    private String lastName = UNINITIALIZED_STRING_VALUE;
+    private String lastName = null;
 
     /**
      * User's preferred name.
      */
-    private String preferredName = UNINITIALIZED_STRING_VALUE;
+    private String preferredName = null;
 
     /**
      * User's job description.
      */
-    private String jobDescription = UNINITIALIZED_STRING_VALUE;
+    private String jobDescription = null;
 
     /**
      * Work phone number.
      */
-    private String workPhone = UNINITIALIZED_STRING_VALUE;
+    private String workPhone = null;
 
     /**
      * Cell phone number.
      */
-    private String cellPhone = UNINITIALIZED_STRING_VALUE;
+    private String cellPhone = null;
 
     /**
      * Fax number.
      */
-    private String fax = UNINITIALIZED_STRING_VALUE;
+    private String fax = null;
 
     /**
      * A person's related organizations - null if not set, empty list if none. Only the id, name, and short name are
@@ -312,12 +312,12 @@ public class PersonModelView extends ModelView implements Serializable, HasEmail
     /**
      * A person's biography.
      */
-    private String biography = UNINITIALIZED_STRING_VALUE;
+    private String biography = null;
 
     /**
      * Banner id.
      */
-    private String bannerId = UNINITIALIZED_STRING_VALUE;
+    private String bannerId = null;
 
     /**
      * Banner entity id - transient, may be set to the person's parent org's banner id.

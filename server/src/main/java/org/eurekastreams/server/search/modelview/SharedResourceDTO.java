@@ -15,17 +15,15 @@
  */
 package org.eurekastreams.server.search.modelview;
 
+import java.io.Serializable;
 import java.util.List;
-
-import org.eurekastreams.commons.search.modelview.ModelView;
 
 /**
  * DTO for SharedResource entity.
  * 
  */
-public class SharedResourceDTO extends ModelView
+public class SharedResourceDTO implements Serializable
 {
-
     /**
      * Serial version id.
      */
@@ -34,17 +32,17 @@ public class SharedResourceDTO extends ModelView
     /**
      * SharedResource key.
      */
-    private String key = UNINITIALIZED_STRING_VALUE;
+    private String key = "NOT SET";
 
     /**
      * The number of people that like the resource.
      */
-    private int likeCount = UNINITIALIZED_INTEGER_VALUE;
+    private int likeCount = -1;
 
     /**
      * The number of people that are sharing the resource.
      */
-    private int shareCount = UNINITIALIZED_INTEGER_VALUE;
+    private int shareCount = -1;
 
     /**
      * A sample of 4 likers - check the like count to see how many there are.
@@ -127,20 +125,6 @@ public class SharedResourceDTO extends ModelView
     public void setSharersSample(final List<PersonModelView> inSharersSample)
     {
         sharersSample = inSharersSample;
-    }
-
-    @Override
-    protected String getEntityName()
-    {
-        return "SharedResource";
-    }
-
-    /**
-     * @return id of SharedResource.
-     */
-    public long getId()
-    {
-        return super.getEntityId();
     }
 
     /**
