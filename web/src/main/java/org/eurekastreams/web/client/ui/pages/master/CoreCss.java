@@ -469,6 +469,9 @@ public interface CoreCss extends CssResource
 
     String email();
 
+    @ClassName("embedded-widget")
+    String embeddedWidget();
+
     String employee();
 
     @ClassName("employee-lookup-dialog")
@@ -484,6 +487,9 @@ public interface CoreCss extends CssResource
 
     @ClassName("empty-list")
     String emptyList();
+
+    @ClassName("empty-stream")
+    String emptyStream();
 
     @ClassName("empty-zone")
     String emptyZone();
@@ -1301,6 +1307,7 @@ public interface CoreCss extends CssResource
     @ClassName("nav-bar-button")
     String navBarButton();
 
+    @ClassName("navpanel")
     String navpanel();
 
     @ClassName("NESTED")
@@ -1773,8 +1780,8 @@ public interface CoreCss extends CssResource
     @ClassName("search-description")
     String searchDescription();
 
-    @ClassName("search-header")
-    String searchHeader();
+    @ClassName("search-box")
+    String searchBox();
 
     @ClassName("search-ldap-label")
     String searchLdapLabel();
@@ -1957,6 +1964,9 @@ public interface CoreCss extends CssResource
 
     @ClassName("stream-settings-tab-content")
     String streamSettingsTabContent();
+
+    @ClassName("stream-titlebar")
+    String streamTitlebar();
 
     @ClassName("stream-title-fader")
     String streamTitleFader();

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,14 +44,14 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Page for Stream.
- * 
+ *
  */
 public class StreamContent extends Composite
 {
     /**
      * The div where the stream lives.
      */
-    private FlowPanel streamPanel = new FlowPanel();
+    private final FlowPanel streamPanel = new FlowPanel();
     /**
      * The main panel.
      */
@@ -65,7 +65,7 @@ public class StreamContent extends Composite
     /**
      * The filters div.
      */
-    private FlowPanel filters = new FlowPanel();
+    private final FlowPanel filters = new FlowPanel();
 
     /**
      * Error label.
@@ -80,20 +80,20 @@ public class StreamContent extends Composite
     /**
      * List container.
      */
-    private FlowPanel listContainer = new FlowPanel();
+    private final FlowPanel listContainer = new FlowPanel();
     /**
      * Group container.
      */
-    private FlowPanel groupContainer = new FlowPanel();
+    private final FlowPanel groupContainer = new FlowPanel();
 
     /**
      * The stream view list panel.
      */
-    private FilterListPanel streanViewListWidget = null;
+    private FilterListPanel streamViewListWidget = null;
 
     /**
      * Default constructor.
-     * 
+     *
      */
     public StreamContent()
     {
@@ -132,9 +132,9 @@ public class StreamContent extends Composite
                         {
                             selectFirstView = true;
 
-                            if (null != streanViewListWidget)
+                            if (null != streamViewListWidget)
                             {
-                                streanViewListWidget.activateFilter(streanViewListWidget.getViews().get(0));
+                                streamViewListWidget.activateFilter(streamViewListWidget.getViews().get(0));
                             }
                         }
                     }
@@ -144,17 +144,17 @@ public class StreamContent extends Composite
         Session.getInstance().getEventBus().addObserver(GotCurrentUserCustomStreamsResponseEvent.class,
                 new Observer<GotCurrentUserCustomStreamsResponseEvent>()
                 {
-
                     public void update(final GotCurrentUserCustomStreamsResponseEvent event)
                     {
-                        streanViewListWidget = new FilterListPanel(event.getResponse().getStreamFilters(), event
+                                streamViewListWidget = new FilterListPanel(event.getResponse().getStreamFilters(),
+                                        event
                                 .getResponse().getHiddenLineIndex(), new CustomStreamRenderer(), false);
 
-                        listContainer.add(streanViewListWidget);
+                                listContainer.add(streamViewListWidget);
 
                         if (selectFirstView)
                         {
-                            streanViewListWidget.activateFilter(event.getResponse().getStreamFilters().get(0));
+                                    streamViewListWidget.activateFilter(event.getResponse().getStreamFilters().get(0));
                         }
                         Session.getInstance().getEventBus().notifyObservers(
                                 new StreamViewsLoadedEvent(event.getResponse().getStreamFilters()));
@@ -162,7 +162,6 @@ public class StreamContent extends Composite
                         streamView.setStreamScope(new StreamScope(ScopeType.PERSON, Session.getInstance()
                                 .getCurrentPerson().getAccountId()), true);
                     }
-
                 });
 
         Session.getInstance().getEventBus().addObserver(GotCurrentUserGroupStreamsResponseEvent.class,

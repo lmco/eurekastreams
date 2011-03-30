@@ -81,7 +81,7 @@
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-dev</artifactId>
             <version>${gwtVersion}</version>
-            <scope>provided</scope>
+            <scope>test</scope>
        </dependency>
        <dependency>
             <groupId>org.springframework</groupId>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
-import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
@@ -29,9 +28,6 @@ import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -42,95 +38,24 @@ import com.google.gwt.user.client.ui.Label;
  */
 public class StreamSortPanel extends Composite
 {
-    /**
-     * The widget.
-     */
-    private FlowPanel widget = new FlowPanel();
-
-    /**
-     * The sort type.
-     */
+    /** The sort type. */
     private String sort = "date";
 
-    /**
-     * The active sort.
-     */
+    /** The active sort. */
     private Anchor activeSort = null;
 
-    /**
-     * Map of the links to the sorts.
-     */
+    /** Map of the links to the sorts. */
     final Map<String, Anchor> linkMap = new HashMap<String, Anchor>();
-
-    /**
-     * Stream to URL transformer.
-     */
-    private StreamToUrlTransformer streamUrlTransformer = new StreamToUrlTransformer();
 
     /**
      * Constructor.
      */
     public StreamSortPanel()
     {
-        initWidget(widget);
-
-        widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navpanel());
-
         FlowPanel options = new FlowPanel();
         options.addStyleName(StaticResourceBundle.INSTANCE.coreCss().options());
 
-        widget.add(options);
-
-        final Anchor atomLink = new Anchor();
-        atomLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamAtomLink());
-        atomLink.setTarget("_NEW");
-        widget.add(atomLink);
-
-        EventBus.getInstance().addObserver(StreamRequestEvent.class, new Observer<StreamRequestEvent>()
-        {
-            public void update(final StreamRequestEvent event)
-            {
-                atomLink.setVisible(Session.getInstance().getParameterValue("search") == null
-                        || Session.getInstance().getParameterValue("search").length() == 0);
-
-                if (event.getStreamId() != null)
-                {
-                    atomLink.setHref("/resources/atom/stream/saved/" + event.getStreamId());
-                }
-                else
-                {
-                    JSONObject query = JSONParser.parse(event.getJson()).isObject().get("query").isObject();
-
-                    if (query.containsKey("organization"))
-                    {
-                        atomLink.setHref("/resources/atom/stream/query/organization/"
-                                + query.get("organization").isString().stringValue());
-                    }
-                    else if (query.containsKey("recipient"))
-                    {
-                        JSONArray recipients = query.get("recipient").isArray();
-                        StringBuilder recipientLink = new StringBuilder();
-                        recipientLink.append("/resources/atom/stream/query/recipient/");
-
-                        for (int i = 0; i < recipients.size(); i++)
-                        {
-                            if (i > 0)
-                            {
-                                recipientLink.append(",");
-                            }
-                            JSONObject entityObject = recipients.get(i).isObject();
-                            recipientLink.append(entityObject.get("type").isString().stringValue());
-                            recipientLink.append(":");
-                            recipientLink.append(entityObject.get("name").isString().stringValue());
-
-                        }
-
-                        atomLink.setHref(recipientLink.toString());
-                    }
-
-                }
-            }
-        });
+        initWidget(options);
 
         Label sortLabel = new Label("Sort:");
         sortLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().gwtLabel());
@@ -198,7 +123,7 @@ public class StreamSortPanel extends Composite
 
     /**
      * Update the selected sort.
-     * 
+     *
      * @param updatedSort
      *            the new sort.
      * @param setHistory
@@ -224,7 +149,7 @@ public class StreamSortPanel extends Composite
 
     /**
      * Get the sort.
-     * 
+     *
      * @return the sort.
      */
     public String getSort()

@@ -1565,7 +1565,14 @@ body .post-expanded-panel .content-warning {
 	
 }
 
-.search-header {
+.empty-stream .search-description,
+.empty-stream .navpanel,
+.empty-stream .stream
+{
+	display: none;
+}
+	
+.stream-titlebar {
 	border-bottom: 1px solid #bbbbbb;
 	margin: 15px 10px 0;
 	padding: 5px;
@@ -1604,7 +1611,7 @@ body .post-expanded-panel .content-warning {
 	vertical-align: text-top;
 }
 
-.search-header .title-wrapper {
+.stream-titlebar .title-wrapper {
 	max-width: 300px;
 	overflow: hidden;
 	height: 20px;
@@ -1615,7 +1622,7 @@ body .post-expanded-panel .content-warning {
 	position: relative;
 }
 
-@sprite .search-header .stream-title-fader {
+@sprite .stream-titlebar .stream-title-fader {
 	gwt-image: "streamHeaderOverlay";
 	top: 0;
 	zoom: 1;
@@ -1625,7 +1632,7 @@ body .post-expanded-panel .content-warning {
 	left: 260px;
 }
 
-.search-header .title {
+.stream-titlebar .title {
 	text-align: left;
 	display: inline-block;
 	zoom: 1;
@@ -1636,16 +1643,28 @@ body .post-expanded-panel .content-warning {
 	padding-right: 12px;
 }
 
-.search-header input.empty-labeled-textbox {
+.navpanel .search-box
+{
+	float: right;
+	margin-top: 5px;
+}
+
+.navpanel .stream-atom-link
+{
+	margin-left: 10px;
+}
+
+.search-box input.empty-labeled-textbox {
 	font-style: normal !important;
 }
 
-@sprite .search-header .add-as-gadget div:first-child {
+
+@sprite .stream-titlebar .add-as-gadget div:first-child {
 	gwt-image: "createGadget";
 	float: left;
 }
 
-.search-header .add-as-gadget {
+.stream-titlebar .add-as-gadget {
 	float: left;
 	margin-left: 10px;
 	width: 30px;
@@ -1659,12 +1678,12 @@ body .post-expanded-panel .content-warning {
 	z-index: 11 ! important;
 }
 
-@sprite .search-header .add-as-gadget:hover div:first-child {
+@sprite .stream-titlebar .add-as-gadget:hover div:first-child {
 	gwt-image: "createGadgetHover";
 	float: left;	
 }
 
-.search-header .add-as-gadget:hover {
+.stream-titlebar .add-as-gadget:hover {
 	text-indent: 0;
 	width: auto;
 	color: #0066CC;
@@ -1684,7 +1703,7 @@ body .post-expanded-panel .content-warning {
 @sprite .stream-atom-link {
 	gwt-image: "feedIcon16";
 	float: right;
-	margin-top: 7px;
+	margin-top: 9px;
 }
 
 div.new-messages-notification {
@@ -1742,6 +1761,11 @@ div.new-messages-notification>div.refresh-stream {
 	color: #126abc;
 	cursor: pointer;
 	margin-right: 10px;
+}
+
+.embedded-widget .save-search, .embedded-widget .stream-titlebar 
+{
+	display: none;
 }
 
 .post-to-stream .post-to-stream-title {
@@ -8071,15 +8095,15 @@ IE SPECIFIC CSS.
 		display: inline;
 	}
 	
-	.search-header .add-as-gadget {
+	.stream-titlebar .add-as-gadget {
 		margin-top: 6px;
 	}
 	
-	.search-header .title {
+	.stream-titlebar .title {
 		display: inline;
 	}
 	
-	.search-header .title-wrapper {
+	.stream-titlebar .title-wrapper {
 		margin-top: 7px;
 	}
 	
@@ -8098,7 +8122,7 @@ IE SPECIFIC CSS.
 		top: 3px;
 	}
 	
-	.search-header {
+	.stream-titlebar {
 		position: static !important;
 	}
 	
@@ -8273,7 +8297,7 @@ IE SPECIFIC CSS.
 		top: 5px;
 	}
 	
-	.search-header input,.search-header .search-list-button {
+	.search-box input,.search-box .search-list-button {
 		position: relative ! important;
 		top: 2px;
 	}

@@ -88,10 +88,20 @@ public class StreamPanel extends FlowPanel
      */
     private PostToStreamComposite postComposite = null;
 
-    /**
-     * Stream search.
-     */
-    private final StreamSearchComposite streamSearch;
+    /** Textbox widget allowing the user to search. */
+    private final StreamSearchBoxWidget searchBoxWidget;
+
+    /** Widget displaying the current search. */
+    private final StreamSearchStatusWidget searchStatusWidget;
+
+    /** Widget to display the stream title. */
+    private final StreamTitleWidget streamTitleWidget;
+
+    /** Widget to add an activity app to the start page containing the stream. */
+    private final StreamAddAppWidget addGadgetWidget;
+
+    /** Panel showing title and add app link. */
+    private final FlowPanel titlePanel = new FlowPanel();
 
     /**
      * The stream name.
@@ -165,16 +175,32 @@ public class StreamPanel extends FlowPanel
         shadowPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postToStreamContainer());
         shadowPanel.setVisible(false);
 
-        streamSearch = new StreamSearchComposite();
+        searchBoxWidget = new StreamSearchBoxWidget();
+        searchStatusWidget = new StreamSearchStatusWidget();
 
         lockedMessage.setVisible(false);
         error.setVisible(false);
 
         postContent.add(shadowPanel);
+
+
+        titlePanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamTitlebar());
+        streamTitleWidget = new StreamTitleWidget();
+        titlePanel.add(streamTitleWidget);
+        addGadgetWidget = new StreamAddAppWidget();
+        titlePanel.add(addGadgetWidget);
+
+        FlowPanel sortSearchRow = new FlowPanel();
+        sortSearchRow.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navpanel());
+        sortSearchRow.add(sortPanel);
+        sortSearchRow.add(new StreamFeedLinkWidget());
+        sortSearchRow.add(searchBoxWidget);
+
         this.add(postContent);
-        this.add(streamSearch);
+        this.add(titlePanel);
+        this.add(searchStatusWidget);
         this.add(new UnseenActivityNotificationPanel());
-        this.add(sortPanel);
+        this.add(sortSearchRow);
         this.add(error);
         this.add(lockedMessage);
         this.add(stream);
@@ -227,9 +253,10 @@ public class StreamPanel extends FlowPanel
                 // Must be sorted by date to request more.
                 jsonObj = StreamJsonRequestFactory.setSort("date", jsonObj);
 
-                if (search.length() > 0)
+                if (!search.isEmpty())
                 {
-                    streamSearch.setSearchTerm(search);
+                    searchBoxWidget.setSearchTerm(search);
+                    searchStatusWidget.setSearchTerm(search);
 
                     jsonObj = StreamJsonRequestFactory.setSearchTerm(search, jsonObj);
                 }
@@ -245,7 +272,6 @@ public class StreamPanel extends FlowPanel
                 PagedSet<ActivityDTO> activity = event.getStream();
 
                 int numberOfActivities = activity.getPagedSet().size();
-
                 if (numberOfActivities > 0)
                 {
                     lastSeenId = activity.getPagedSet().get(numberOfActivities - 1).getId();
@@ -300,11 +326,9 @@ public class StreamPanel extends FlowPanel
                     {
                         setListMode();
                         stream.reinitialize();
-                        boolean showTitleAsLink = false;
-                        String shortName = "";
 
+                        String titleLinkUrl = null;
                         String updatedJson = jsonQuery;
-
                         JSONObject queryObject = JSONParser.parse(updatedJson).isObject().get("query").isObject();
 
                         // Only show cancel option if search is not part of the view.
@@ -314,14 +338,16 @@ public class StreamPanel extends FlowPanel
                         {
                             final String streamSearchText = queryObject.get("keywords").isString().stringValue();
 
-                            streamSearch.setSearchTerm(streamSearchText);
+                            searchBoxWidget.setSearchTerm(search);
+                            searchStatusWidget.setSearchTerm(search);
 
                             updatedJson = StreamJsonRequestFactory.setSearchTerm(streamSearchText,
                                     StreamJsonRequestFactory.getJSONRequest(updatedJson)).toString();
                         }
-                        else if (search.length() > 0)
+                        else if (!search.isEmpty())
                         {
-                            streamSearch.setSearchTerm(search);
+                            searchBoxWidget.setSearchTerm(search);
+                            searchStatusWidget.setSearchTerm(search);
 
                             updatedJson = StreamJsonRequestFactory.setSearchTerm(search,
                                     StreamJsonRequestFactory.getJSONRequest(updatedJson)).toString();
@@ -334,22 +360,22 @@ public class StreamPanel extends FlowPanel
                             JSONArray recipientArr = queryObject.get("recipient").isArray();
                             JSONObject recipientObj = recipientArr.get(0).isObject();
 
-                            if (recipientObj.get("type").isString().stringValue().equals("GROUP"))
+                            // only show the link if viewing a group stream on the activity page
+                            if ("GROUP".equals(recipientObj.get("type").isString().stringValue())
+                                    && Session.getInstance().getUrlPage() == Page.ACTIVITY)
                             {
-                                shortName = recipientObj.get("name").isString().stringValue();
-
-                                // only show the link if viewing the stream on the activity page
-                                if (Session.getInstance().getUrlPage() == Page.ACTIVITY)
-                                {
-                                    showTitleAsLink = true;
-                                }
+                                String shortName = recipientObj.get("name").isString().stringValue();
+                                titleLinkUrl = Session.getInstance().generateUrl(
+                                        new CreateUrlRequest(Page.GROUPS, shortName));
                             }
-                            streamSearch.onSearchCanceled();
+                            searchBoxWidget.onSearchCanceled();
+                            searchStatusWidget.onSearchCanceled();
                         }
 
                         else
                         {
-                            streamSearch.onSearchCanceled();
+                            searchBoxWidget.onSearchCanceled();
+                            searchStatusWidget.onSearchCanceled();
                         }
 
                         sort = sortPanel.getSort();
@@ -357,8 +383,10 @@ public class StreamPanel extends FlowPanel
                         updatedJson = StreamJsonRequestFactory.setSort(sort,
                                 StreamJsonRequestFactory.getJSONRequest(updatedJson)).toString();
 
-                        streamSearch.setTitleText(streamName, shortName, showTitleAsLink);
-                        streamSearch.setCanChange(canChange);
+                        streamTitleWidget.setStreamTitle(streamName, titleLinkUrl);
+                        addGadgetWidget.setStreamTitle(streamName);
+                        searchBoxWidget.setCanChange(canChange);
+                        searchStatusWidget.setCanChange(canChange);
 
                         StreamModel.getInstance().fetch(updatedJson, false);
                     }
@@ -389,7 +417,7 @@ public class StreamPanel extends FlowPanel
      */
     private void setListMode()
     {
-        streamSearch.setVisible(true);
+        titlePanel.setVisible(true);
         postContent.setVisible(true);
         stream.setVisible(true);
         sortPanel.setVisible(true);
@@ -403,7 +431,7 @@ public class StreamPanel extends FlowPanel
     private void setSingleActivityMode()
     {
         sortPanel.setVisible(false);
-        streamSearch.setVisible(false);
+        titlePanel.setVisible(false);
         postContent.setVisible(false);
         stream.setVisible(false);
         EventBus.getInstance().notifyObservers(new ChangeActivityModeEvent(true));
