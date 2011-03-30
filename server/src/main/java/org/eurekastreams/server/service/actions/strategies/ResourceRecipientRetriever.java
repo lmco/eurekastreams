@@ -36,13 +36,12 @@ public class ResourceRecipientRetriever implements RecipientRetriever
     /**
      * Mapper to get organization entity.
      */
-    @SuppressWarnings("unchecked")
-    private FindByIdMapper findByIdMapper;
+    private FindByIdMapper<Organization> findByIdMapper;
 
     /**
      * Mapper to get Resource stream scope id.
      */
-    private DomainMapper<String, Long> streamScopeIdByUniqueKeyMapper;
+    private DomainMapper<String, StreamScope> streamScopeByUniqueKeyMapper;
 
     /**
      * Constructor.
@@ -51,31 +50,28 @@ public class ResourceRecipientRetriever implements RecipientRetriever
      *            Root org id DAO.
      * @param inFindByIdMapper
      *            Mapper to get Org entity (not dto).
-     * @param inStreamScopeIdByUniqueKeyMapper
+     * @param inStreamScopeByUniqueKeyMapper
      *            Mapper to get Resource stream scope id.
      */
     public ResourceRecipientRetriever(final GetRootOrganizationIdAndShortName inRootOrgIdDAO,
-            final FindByIdMapper inFindByIdMapper, final DomainMapper<String, Long> inStreamScopeIdByUniqueKeyMapper)
+            final FindByIdMapper<Organization> inFindByIdMapper,
+            final DomainMapper<String, StreamScope> inStreamScopeByUniqueKeyMapper)
     {
         rootOrgIdDAO = inRootOrgIdDAO;
         findByIdMapper = inFindByIdMapper;
-        streamScopeIdByUniqueKeyMapper = inStreamScopeIdByUniqueKeyMapper;
+        streamScopeByUniqueKeyMapper = inStreamScopeByUniqueKeyMapper;
     }
 
     @Override
     public Organization getParentOrganization(final ActivityDTO inActivityDTO)
     {
-        return (Organization) findByIdMapper.execute(new FindByIdRequest("Organization", rootOrgIdDAO
-                .getRootOrganizationId()));
+        return findByIdMapper.execute(new FindByIdRequest("Organization", rootOrgIdDAO.getRootOrganizationId()));
     }
 
     @Override
     public StreamScope getStreamScope(final ActivityDTO inActivityDTO)
     {
-        // TODO: this could be faster with new mapper to return stream scope entity by unique key, rather than find
-        // id the get the entity by id.
-        return (StreamScope) findByIdMapper.execute(new FindByIdRequest("StreamScope", streamScopeIdByUniqueKeyMapper
-                .execute(inActivityDTO.getDestinationStream().getUniqueIdentifier())));
+        return streamScopeByUniqueKeyMapper.execute(inActivityDTO.getDestinationStream().getUniqueIdentifier());
     }
 
     @Override
