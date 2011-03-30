@@ -206,7 +206,7 @@ function __eurekaConnect__onLoad() {
 		var widget = widgets[i];
 		var widgetType = widget.getAttribute('eureka:widget');
         var frameId =  "__eurekaConnect__Frame-" + widget.getAttribute('eureka:id');
-        widget.innerHTML = "<iframe id='" + frameId + "' style='overflow: hidden' frameborder='0' width='" + widget.getAttribute('eureka:width')  + "' src='" + __eurekaConnect__baseUrl  + "/widget.html?i=" + escape(frameId) + "&p=" + hostUrl + "#widget-" + widgetType + "'></iframe>";
+        widget.innerHTML = "<iframe id='" + frameId + "' scrolling='no' style='overflow: hidden' frameborder='0' width='" + widget.getAttribute('eureka:width')  + "' src='" + __eurekaConnect__baseUrl  + "/widget.html?i=" + escape(frameId) + "&p=" + hostUrl + "#widget-" + widgetType + "'></iframe>";
 
 	}
 }
