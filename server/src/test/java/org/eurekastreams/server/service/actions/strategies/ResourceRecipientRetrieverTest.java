@@ -66,7 +66,7 @@ public class ResourceRecipientRetrieverTest
     /**
      * Mapper to get Resource stream scope id.
      */
-    private DomainMapper<String, Long> streamScopeIdByUniqueKeyMapper = context.mock(DomainMapper.class,
+    private DomainMapper<String, StreamScope> streamScopeByUniqueKeyMapper = context.mock(DomainMapper.class,
             "streamScopeIdByUniqueKeyMapper");
 
     /**
@@ -95,7 +95,7 @@ public class ResourceRecipientRetrieverTest
     @Before
     public void setup()
     {
-        sut = new ResourceRecipientRetriever(rootOrgIdDAO, findByIdMapper, streamScopeIdByUniqueKeyMapper);
+        sut = new ResourceRecipientRetriever(rootOrgIdDAO, findByIdMapper, streamScopeByUniqueKeyMapper);
     }
 
     /**
@@ -134,10 +134,7 @@ public class ResourceRecipientRetrieverTest
                 oneOf(streamEntityDTOMock).getUniqueIdentifier();
                 will(returnValue("ui"));
 
-                oneOf(streamScopeIdByUniqueKeyMapper).execute("ui");
-                will(returnValue(2L));
-
-                oneOf(findByIdMapper).execute(with(any(FindByIdRequest.class)));
+                oneOf(streamScopeByUniqueKeyMapper).execute("ui");
                 will(returnValue(streamScopeMock));
             }
         });
