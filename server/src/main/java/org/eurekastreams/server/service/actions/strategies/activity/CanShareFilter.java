@@ -92,6 +92,9 @@ public class CanShareFilter implements ActivityFilter
             case GROUP:
                 activity.setShareable(groupShareable.get(activity.getDestinationStream().getUniqueIdentifier().trim()));
                 break;
+            case RESOURCE:
+                activity.setShareable(true);
+                break;
             default:
                 throw new IllegalArgumentException(
                         "Attempted to filter Activity with unsupported destination stream type.");

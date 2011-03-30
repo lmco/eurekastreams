@@ -101,7 +101,7 @@ public class PostCachedActivity extends CachedDomainMapper
     {
         StreamEntityDTO destinationStream = activity.getDestinationStream();
         EntityType type = destinationStream.getType();
-        Long parentOrgId;
+        Long parentOrgId = null;
 
         if (type == EntityType.PERSON)
         {
@@ -117,14 +117,16 @@ public class PostCachedActivity extends CachedDomainMapper
             parentOrgId = bulkDomainGroupsByShortNameMapper.execute(
                     Arrays.asList(destinationStream.getUniqueIdentifier())).get(0).getParentOrganizationId();
         }
-        else if (type == EntityType.RESOURCE && activity.getShowInStream()
-                && activity.getActor().getType() == EntityType.PERSON)
+        else if (type == EntityType.RESOURCE && activity.getActor().getType() == EntityType.PERSON)
         {
-            PersonModelView person = getPersonModelViewByAccountIdMapper.execute(activity.getActor()
-                    .getUniqueIdentifier());
-            parentOrgId = person.getParentOrganizationId();
+            if (activity.getShowInStream())
+            {
+                PersonModelView person = getPersonModelViewByAccountIdMapper.execute(activity.getActor()
+                        .getUniqueIdentifier());
+                parentOrgId = person.getParentOrganizationId();
 
-            updateActivitiesByFollowingCacheLists(person.getEntityId(), activity.getId());
+                updateActivitiesByFollowingCacheLists(person.getEntityId(), activity.getId());
+            }
         }
         else
         {
