@@ -177,26 +177,18 @@ function __eurekaConnect__onLoad() {
     }(document,"*","eureka:id");
 
     var __eurekaConnect__receiveMessage = function(event) {
-        var payload = eval( "(" + event.data + ")" );
-        var frame = document.getElementById(payload.frameId);
-        if (frame != null) {
-            frame.height = +payload.frameHeight + 2;
-        }
-        else {
-            console.log("Frame is null: " + payload.frameId);
-        }
+        // We don't want bad message stopping JS execution
+        try {
+            var payload = eval( "(" + event.data + ")" );
+            var frame = document.getElementById(payload.frameId);
+            if (frame != null && payload.frameHeight != null) {
+                frame.height = +payload.frameHeight + 2;
+            }
+        } catch(e) {}
     }
 
     if (window.postMessage) {
         window.addEventListener("message", __eurekaConnect__receiveMessage, false);
-    }
-    else {
-        window.opener = {};
-        window.opener.postMessage = function(msg) {
-            var packet = {};
-            packet.data = msg;
-            __eurekaConnect__receiveMessage(packet);
-        };
     }
 
     var hostUrl = escape(window.location.protocol + "//" + window.location.host);
@@ -207,7 +199,18 @@ function __eurekaConnect__onLoad() {
 		var widgetType = widget.getAttribute('eureka:widget');
         var frameId =  "__eurekaConnect__Frame-" + widget.getAttribute('eureka:id');
         widget.innerHTML = "<iframe id='" + frameId + "' scrolling='no' style='overflow: hidden' frameborder='0' width='" + widget.getAttribute('eureka:width')  + "' src='" + __eurekaConnect__baseUrl  + "/widget.html?i=" + escape(frameId) + "&p=" + hostUrl + "#widget-" + widgetType + "'></iframe>";
-
+        if (window.postMessage == null)
+        {
+            var frameElem = document.getElementById(frameId);
+            var send = function(msg) {
+                var packet = {};
+                packet.data = msg;
+                __eurekaConnect__receiveMessage(packet);
+            };
+            var proxy = {};
+            proxy.sendMessage = send;
+            frameElem.contentWindow.opener  = proxy;
+        }
 	}
 }
 

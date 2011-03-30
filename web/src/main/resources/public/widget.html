@@ -32,7 +32,10 @@
                 parent.postMessage(msg, p);
             }
             else {
-                parent.opener.postMessage(msg);
+                proxy = window.opener;
+                if (proxy.sendMessage) {
+                    proxy.sendMessage(msg);
+                }
             }
         }
 
