@@ -22,7 +22,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eurekastreams.commons.search.modelview.ModelView;
 import org.eurekastreams.server.action.request.SharedResourceRequest;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.server.search.modelview.SharedResourceDTO;
@@ -52,7 +51,7 @@ public class GetSharedResourcePropertiesMapperTest
      * Mapper to get a stream scope id from type and key.
      */
     private DomainMapper<String, Long> getResourceStreamScopeIdByKeyMapper = context.mock(DomainMapper.class,
-            "getStreamScopeIdFromTypeAndKeyMapper");;
+            "getStreamScopeIdFromTypeAndKeyMapper");
 
     /**
      * Mapper that gets the ids of people that liked a shared resource.
@@ -226,7 +225,6 @@ public class GetSharedResourcePropertiesMapperTest
                 assertEquals("display" + id, p.getDisplayName());
                 assertEquals("avatar" + id, p.getAvatarId());
                 assertEquals(id, p.getId());
-                assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, p.getLastName());
                 return;
             }
         }

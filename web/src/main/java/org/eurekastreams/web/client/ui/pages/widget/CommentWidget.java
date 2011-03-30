@@ -16,10 +16,16 @@
 package org.eurekastreams.web.client.ui.pages.widget;
 
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.stream.StreamScope;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.StreamRequestEvent;
+import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
+import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Composite;
 
@@ -36,7 +42,8 @@ public class CommentWidget extends Composite
      */
     public CommentWidget(final String view)
     {
-        StreamPanel streamPanel = new StreamPanel(false);
+        final StreamPanel streamPanel = new StreamPanel(false);
+        streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().embeddedWidget());
         initWidget(streamPanel);
 
         // TODO: use legitimate query data here
@@ -44,6 +51,26 @@ public class CommentWidget extends Composite
         String jsonRequest = StreamJsonRequestFactory.addRecipient(EntityType.PERSON, view,
                 StreamJsonRequestFactory.getEmptyRequest()).toString();
 
-        EventBus.getInstance().notifyObservers(new StreamRequestEvent("You won't see this", jsonRequest));
+        EventBus.getInstance().notifyObservers(new StreamRequestEvent("", jsonRequest));
+        streamPanel.setStreamScope(new StreamScope(ScopeType.PERSON, view), true);
+
+        EventBus.getInstance().addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
+        {
+            public void update(final GotStreamResponseEvent event)
+            {
+                // hide everything but the post box if the stream is empty
+                // but distinguish between an empty stream and no search results
+                boolean emptyStream = Session.getInstance().getParameterValue("search") == null
+                        && event.getStream().getPagedSet().isEmpty();
+                if (emptyStream)
+                {
+                    streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().emptyStream());
+                }
+                else
+                {
+                    streamPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().emptyStream());
+                }
+            }
+        });
     }
 }

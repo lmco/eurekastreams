@@ -107,38 +107,61 @@ public class PostCachedActivity extends CachedDomainMapper
         {
             PersonModelView person = getPersonModelViewByAccountIdMapper.execute(destinationStream
                     .getUniqueIdentifier());
-
-            long personId = person.getEntityId();
-
             parentOrgId = person.getParentOrganizationId();
 
-            List<Long> followers = personFollowersMapper.execute(personId);
+            updateActivitiesByFollowingCacheLists(person.getEntityId(), activity.getId());
 
-            for (Long follower : followers)
-            {
-                getCache().addToTopOfList(CacheKeys.ACTIVITIES_BY_FOLLOWING + follower, activity.getId());
-            }
         }
         else if (type == EntityType.GROUP)
         {
             parentOrgId = bulkDomainGroupsByShortNameMapper.execute(
                     Arrays.asList(destinationStream.getUniqueIdentifier())).get(0).getParentOrganizationId();
         }
+        else if (type == EntityType.RESOURCE && activity.getShowInStream()
+                && activity.getActor().getType() == EntityType.PERSON)
+        {
+            PersonModelView person = getPersonModelViewByAccountIdMapper.execute(activity.getActor()
+                    .getUniqueIdentifier());
+            parentOrgId = person.getParentOrganizationId();
+
+            updateActivitiesByFollowingCacheLists(person.getEntityId(), activity.getId());
+        }
         else
         {
             throw new RuntimeException("Unexpected Activity destination stream type: " + type);
         }
 
-        // add to everyone list
-        log.trace("Adding activity id " + activity.getId() + " into everyone activity list.");
-        getCache().addToTopOfList(CacheKeys.EVERYONE_ACTIVITY_IDS, activity.getId());
-
-        // climb up the tree, adding activity to each org
-        for (String orgShortName : getAllParentOrgShortNames(parentOrgId))
+        if (activity.getShowInStream())
         {
-            log.trace("Adding activity id " + activity.getId() + " to organization cache list " + orgShortName);
-            getCache().addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName,
-                    activity.getId());
+            // add to everyone list
+            log.trace("Adding activity id " + activity.getId() + " into everyone activity list.");
+            getCache().addToTopOfList(CacheKeys.EVERYONE_ACTIVITY_IDS, activity.getId());
+
+            // climb up the tree, adding activity to each org
+            for (String orgShortName : getAllParentOrgShortNames(parentOrgId))
+            {
+                log.trace("Adding activity id " + activity.getId() + " to organization cache list " + orgShortName);
+                getCache().addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName,
+                        activity.getId());
+            }
+        }
+    }
+
+    /**
+     * Update the Activities by following cache lists when a stream.
+     * 
+     * @param inPersonId
+     *            person id.
+     * @param inActivityId
+     *            activity id.
+     */
+    private void updateActivitiesByFollowingCacheLists(final long inPersonId, final long inActivityId)
+    {
+        List<Long> followers = personFollowersMapper.execute(inPersonId);
+
+        for (Long follower : followers)
+        {
+            getCache().addToTopOfList(CacheKeys.ACTIVITIES_BY_FOLLOWING + follower, inActivityId);
         }
     }
 

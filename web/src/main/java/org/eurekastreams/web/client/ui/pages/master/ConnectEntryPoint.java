@@ -163,15 +163,9 @@ public class ConnectEntryPoint implements EntryPoint
                 }
 
                 rootPanel.add(page);
-
-                Window.alert(ev.getPage().toString());
-                // TODO Auto-generated method stub
             }
         });
         eventBus.bufferObservers();
         History.fireCurrentHistoryState();
-
-        // TODO: something real
-        // Window.alert("yay!");
     }
 }

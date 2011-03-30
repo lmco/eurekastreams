@@ -152,14 +152,13 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
         insertMapper.flush();
 
         // Force the cache to load the activityDTO in from the db.
-
         List<ActivityDTO> activityResults = activitiesMapper.execute(Arrays.asList(newActivity.getId()));
         persistedActivityDTO = activityResults.get(0);
         actorId = persistedActivityDTO.getActor().getId();
         destinationId = persistedActivityDTO.getDestinationStream().getDestinationEntityId();
         destinationType = persistedActivityDTO.getDestinationStream().getType();
 
-        // update the current user's scoped lists with the newly created activity id.
+        // add activity to destination entity streams
         updateStreamsByActorMapper.execute(persistedActivityDTO);
 
         // Insert the comment that was posted with a shared post.
@@ -258,6 +257,7 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
         currentActivity.setAppName(inActivityDTO.getAppName());
         currentActivity.setAppSource(inActivityDTO.getAppSource());
         currentActivity.setAppType(inActivityDTO.getAppType());
+        currentActivity.setShowInStream(inActivityDTO.getShowInStream());
 
         return currentActivity;
     }

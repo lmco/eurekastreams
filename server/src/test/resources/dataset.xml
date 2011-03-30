@@ -137,7 +137,10 @@
 	<!-- Organization StreamScopes -->
 	<StreamScope id="837433" scopeType="ORGANIZATION" uniqueKey="tstorgname" version="1" destinationEntityId="0" />
 	<StreamScope id="8374533" scopeType="ORGANIZATION" uniqueKey="child1orgname" version="1" destinationEntityId="0" />
-	<StreamScope id="9374533" scopeType="ORGANIZATION" uniqueKey="child2orgname" version="1" destinationEntityId="0" />		
+	<StreamScope id="9374533" scopeType="ORGANIZATION" uniqueKey="child2orgname" version="1" destinationEntityId="0" />	
+	
+	<!-- Resource StreamScope -->
+	<StreamScope id="100" scopeType="RESOURCE" uniqueKey="resource1" version="1" destinationEntityId="0" />	
 	
 	<Organization id="5" version="1" description="Mission Statement"
 		name="Test Organization Name" allUsersCanCreateGroups="true"
