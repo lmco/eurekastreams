@@ -49,13 +49,6 @@ public class UsageMetric implements Serializable
     private long id;
 
     /**
-     * The updated date.
-     */
-    @Basic(optional = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updated;
-
-    /**
      * The id of the Person registering the metric.
      */
     private long actorPersonId;
@@ -69,6 +62,13 @@ public class UsageMetric implements Serializable
      * Whether this metric registers a stream view.
      */
     private boolean isStreamView;
+
+    /**
+     * The created date.
+     */
+    @Basic(optional = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date created;
 
     /**
      * Empty constructor for the framework.
@@ -86,12 +86,16 @@ public class UsageMetric implements Serializable
      *            whether the metric registers a page view.
      * @param inIsStreamView
      *            whether this metric registers a stream view.
+     * @param inCreated
+     *            the date created
      */
-    public UsageMetric(final long inActorPersonId, final boolean inIsPageView, final boolean inIsStreamView)
+    public UsageMetric(final long inActorPersonId, final boolean inIsPageView, final boolean inIsStreamView,
+            final Date inCreated)
     {
         actorPersonId = inActorPersonId;
         isPageView = inIsPageView;
         isStreamView = inIsStreamView;
+        created = inCreated;
     }
 
     /**
@@ -146,23 +150,6 @@ public class UsageMetric implements Serializable
     }
 
     /**
-     * @return the updated
-     */
-    public Date getUpdated()
-    {
-        return updated;
-    }
-
-    /**
-     * @param inUpdated
-     *            the updated to set
-     */
-    public void setUpdated(final Date inUpdated)
-    {
-        updated = inUpdated;
-    }
-
-    /**
      * @return the id
      */
     public long getId()
@@ -177,6 +164,23 @@ public class UsageMetric implements Serializable
     public void setId(final long inId)
     {
         id = inId;
+    }
+
+    /**
+     * @return the created
+     */
+    public Date getCreated()
+    {
+        return created;
+    }
+
+    /**
+     * @param inCreated
+     *            the created to set
+     */
+    public void setCreated(final Date inCreated)
+    {
+        created = inCreated;
     }
 
 }

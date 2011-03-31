@@ -16,11 +16,15 @@
 package org.eurekastreams.server.domain;
 
 import java.io.Serializable;
+import java.util.Date;
 
+import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * Entity representing a day's usage metrics.
@@ -75,6 +79,13 @@ public class DailyUsageSummary implements Serializable
     private long messageCount;
 
     /**
+     * The date.
+     */
+    @Basic(optional = false)
+    @Temporal(TemporalType.DATE)
+    private Date date;
+
+    /**
      * Constructor for ORM.
      */
     public DailyUsageSummary()
@@ -96,18 +107,20 @@ public class DailyUsageSummary implements Serializable
      *            number of people contributing to streams (comment and activities)
      * @param inMessageCount
      *            number of activities and comments posted
+     * @param inDate
+     *            the date
      */
     public DailyUsageSummary(final long inUniqueVisitorCount, final long inPageViewCount,
             final long inStreamViewerCount, final long inStreamViewCount, final long inStreamContributorCount,
-            final long inMessageCount)
+            final long inMessageCount, final Date inDate)
     {
-        super();
         uniqueVisitorCount = inUniqueVisitorCount;
         pageViewCount = inPageViewCount;
         streamViewerCount = inStreamViewerCount;
         streamViewCount = inStreamViewCount;
         streamContributorCount = inStreamContributorCount;
         messageCount = inMessageCount;
+        date = inDate;
     }
 
     /**
@@ -228,4 +241,22 @@ public class DailyUsageSummary implements Serializable
     {
         messageCount = inMessageCount;
     }
+
+    /**
+     * @return the date
+     */
+    public Date getDate()
+    {
+        return date;
+    }
+
+    /**
+     * @param inDate
+     *            the date to set
+     */
+    public void setDate(final Date inDate)
+    {
+        date = inDate;
+    }
+
 }
