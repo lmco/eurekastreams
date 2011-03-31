@@ -83,7 +83,7 @@ public class DailyUsageSummary implements Serializable
      */
     @Basic(optional = false)
     @Temporal(TemporalType.DATE)
-    private Date date;
+    private Date usageDate;
 
     /**
      * Constructor for ORM.
@@ -107,12 +107,12 @@ public class DailyUsageSummary implements Serializable
      *            number of people contributing to streams (comment and activities)
      * @param inMessageCount
      *            number of activities and comments posted
-     * @param inDate
+     * @param inUsageDate
      *            the date
      */
     public DailyUsageSummary(final long inUniqueVisitorCount, final long inPageViewCount,
             final long inStreamViewerCount, final long inStreamViewCount, final long inStreamContributorCount,
-            final long inMessageCount, final Date inDate)
+            final long inMessageCount, final Date inUsageDate)
     {
         uniqueVisitorCount = inUniqueVisitorCount;
         pageViewCount = inPageViewCount;
@@ -120,7 +120,7 @@ public class DailyUsageSummary implements Serializable
         streamViewCount = inStreamViewCount;
         streamContributorCount = inStreamContributorCount;
         messageCount = inMessageCount;
-        date = inDate;
+        usageDate = inUsageDate;
     }
 
     /**
@@ -243,20 +243,19 @@ public class DailyUsageSummary implements Serializable
     }
 
     /**
-     * @return the date
+     * @return the usageDate
      */
-    public Date getDate()
+    public Date getUsageDate()
     {
-        return date;
+        return usageDate;
     }
 
     /**
-     * @param inDate
-     *            the date to set
+     * @param inUsageDate
+     *            the usageDate to set
      */
-    public void setDate(final Date inDate)
+    public void setUsageDate(final Date inUsageDate)
     {
-        date = inDate;
+        usageDate = inUsageDate;
     }
-
 }
