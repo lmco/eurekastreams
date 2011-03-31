@@ -304,8 +304,8 @@ public class PostToStreamComposite extends FlowPanel
            $doc.onmousedown = function() {
                if(!$wnd.overPoster && $wnd.jQuery(".post-button").is(".inactive"))
                {
-                   setTimeout("$wnd.jQuery('#post-to-stream').addClass('small');",500);
-                   setTimeout("$wnd.jQuery('#post-to-stream textarea').val('Something to share?');",500);
+                   setTimeout(function() { $wnd.jQuery('#post-to-stream').addClass('small'); },500);
+                   setTimeout(function() { $wnd.jQuery('#post-to-stream textarea').val('Something to share?'); },500);
                }
                else if($wnd.overPoster && $wnd.jQuery("#post-to-stream").is(".small"))
                {
