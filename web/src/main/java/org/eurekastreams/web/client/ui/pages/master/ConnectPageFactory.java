@@ -15,48 +15,84 @@
  */
 package org.eurekastreams.web.client.ui.pages.master;
 
-import java.util.List;
-
 import org.eurekastreams.server.domain.Page;
+import org.eurekastreams.web.client.history.CreateUrlRequest;
+import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
+import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.widget.CommentWidget;
 
-import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Creates a page given a page and view.
- *
  */
 public class ConnectPageFactory
 {
+    // /**
+    // * Creates a page given a page and view.
+    // *
+    // * @param page
+    // * the page.
+    // * @param views
+    // * the views.
+    // * @return the page widget.
+    // */
+    // public Widget createPage(final Page page, final List<String> views)
+    // {
+    // RootPanel.get().setStyleName("");
+    //
+    // String view = "";
+    // if (!views.isEmpty())
+    // {
+    // view = views.get(0);
+    // }
+    //
+    // switch (page)
+    // {
+    // case WIDGET_COMMENT:
+    // return new CommentWidget(view);
+    // case WIDGET_LIKE_SHARE:
+    // case WIDGET_PROFILE_BADGE:
+    // case WIDGET_STREAM:
+    // default:
+    // return null;
+    // }
+    // }
+
     /**
-     * Creates a page given a page and view.
+     * Creates a widget and sets the history to match it.
      *
-     * @param page
-     *            the page.
-     * @param views
-     *            the views.
-     * @return the page widget.
+     * @param widgetName
+     *            Name of widget desired.
+     * @param util
+     *            For getting URL parameters.
+     * @return The widget (or null).
      */
-    public Widget createPage(final Page page, final List<String> views)
+    public Widget createPageWithHistory(final String widgetName, final WidgetJSNIFacadeImpl util)
     {
-        RootPanel.get().setStyleName("");
-
-        String view = "";
-        if (!views.isEmpty())
+        if ("comment".equals(widgetName))
         {
-            view = views.get(0);
+            String resourceId = util.getParameter("resourceUrl");
+            setHistory(new CreateUrlRequest(Page.WIDGET_COMMENT, resourceId));
+            return new CommentWidget(resourceId);
         }
-
-        switch (page)
+        else
         {
-        case WIDGET_COMMENT:
-            return new CommentWidget(view);
-        case WIDGET_LIKE_SHARE:
-        case WIDGET_PROFILE_BADGE:
-        case WIDGET_STREAM:
-        default:
             return null;
         }
     }
+
+    /**
+     * Sets URL and triggers history.
+     *
+     * @param request
+     *            Description of URL to build.
+     */
+    private void setHistory(final CreateUrlRequest request)
+    {
+        String token = Session.getInstance().generateUrl(request);
+        History.newItem(token, true);
+    }
+
 }

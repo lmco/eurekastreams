@@ -37,7 +37,9 @@
         }
 
         // Resize Polling
-        setInterval(function() { sendMessage('{"frameId":"' + id + '","frameHeight":"' + jQuery('.layout-container').height() + '"}') }, 200);
+        if (id && id != "undefined") {
+        	setInterval(function() { sendMessage('{"frameId":"' + id + '","frameHeight":"' + jQuery('.layout-container').height() + '"}') }, 200);
+        }
     </script>
   </body>
 </html>

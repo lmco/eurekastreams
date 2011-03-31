@@ -24,18 +24,15 @@ import org.eurekastreams.commons.client.ActionRPCServiceAsync;
 import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
-import org.eurekastreams.web.client.events.Observer;
-import org.eurekastreams.web.client.events.SwitchedHistoryViewEvent;
 import org.eurekastreams.web.client.history.HistoryHandler;
+import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.Session;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -108,8 +105,6 @@ public class ConnectEntryPoint implements EntryPoint
                             {
                                 session.setCurrentPerson(person);
                                 session.setCurrentPersonRoles(person.getRoles());
-
-                                // TODO: do we need this?
                                 session.setHistoryHandler(new HistoryHandler());
 
                                 buildPage();
@@ -147,25 +142,90 @@ public class ConnectEntryPoint implements EntryPoint
     /**
      * Builds a page displaying the desired widget.
      */
-    private void buildPage()
+     private void buildPage()
     {
-        final EventBus eventBus = Session.getInstance().getEventBus();
-        eventBus.addObserver(SwitchedHistoryViewEvent.class, new Observer<SwitchedHistoryViewEvent>()
+        Session.getInstance().getEventBus().bufferObservers();
+
+        WidgetJSNIFacadeImpl util = new WidgetJSNIFacadeImpl();
+
+        String widgetName = util.getParameter("widget");
+        if (widgetName != null)
         {
-            public void update(final SwitchedHistoryViewEvent ev)
+            Widget widget = pageFactory.createPageWithHistory(widgetName, util);
+            if (widget != null)
             {
-                eventBus.removeObserver(ev, this);
-
-                Widget page = pageFactory.createPage(ev.getPage(), ev.getViews());
-                if (page == null)
-                {
-                    page = new Label("Unknown or unimplemented widget");
-                }
-
-                rootPanel.add(page);
+                rootPanel.add(widget);
+                return;
             }
-        });
-        eventBus.bufferObservers();
-        History.fireCurrentHistoryState();
+        }
+
+        // TODO: better error handling
+        Window.alert("Widget name invalid or missing.");
     }
+
+// /**
+    // * Builds a page displaying the desired widget.
+    // */
+    // private void buildPage()
+    // {
+    // final EventBus eventBus = Session.getInstance().getEventBus();
+    // eventBus.addObserver(SwitchedHistoryViewEvent.class, new Observer<SwitchedHistoryViewEvent>()
+    // {
+    // public void update(final SwitchedHistoryViewEvent ev)
+    // {
+    // eventBus.removeObserver(ev, this);
+    //
+    // Widget page = pageFactory.createPage(ev.getPage(), ev.getViews());
+    // if (page == null)
+    // {
+    // page = new Label("Unknown or unimplemented widget");
+    // }
+    //
+    // rootPanel.add(page);
+    // }
+    // });
+    //
+    // eventBus.bufferObservers();
+    //
+    // // ///////////////////////
+    // WidgetJSNIFacadeImpl util = new WidgetJSNIFacadeImpl();
+    // String widgetName = util.getParameter("widget");
+    //
+    // if ("comment".equals(widgetName))
+    // {
+    // String resourceId = util.getParameter("resourceUrl");
+    // setHistory(new CreateUrlRequest(Page.WIDGET_COMMENT, resourceId));
+    // }
+    // }
+    //
+    // private void setHistory(final CreateUrlRequest request)
+    // {
+    // String token = Session.getInstance().generateUrl(request);
+    // History.newItem(token, true);
+    // }
+
+    // /**
+    // * Builds a page displaying the desired widget.
+    // */
+    // private void buildPage()
+    // {
+    // final EventBus eventBus = Session.getInstance().getEventBus();
+    // eventBus.addObserver(SwitchedHistoryViewEvent.class, new Observer<SwitchedHistoryViewEvent>()
+    // {
+    // public void update(final SwitchedHistoryViewEvent ev)
+    // {
+    // eventBus.removeObserver(ev, this);
+    //
+    // Widget page = pageFactory.createPage(ev.getPage(), ev.getViews());
+    // if (page == null)
+    // {
+    // page = new Label("Unknown or unimplemented widget");
+    // }
+    //
+    // rootPanel.add(page);
+    // }
+    // });
+    // eventBus.bufferObservers();
+    // History.fireCurrentHistoryState();
+    // }
 }
