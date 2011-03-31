@@ -24,8 +24,8 @@
                 }
             }
         }
-        var p = unescape(querySt('p'));
-        var id = unescape(querySt('i'));
+        var p = unescape(querySt('__p'));
+        var id = unescape(querySt('id'));
 
         var sendMessage = function(msg) {
             if (window.postMessage) {
@@ -39,9 +39,25 @@
             }
         }
 
+        var lastHeight = 0;
+        var layoutElem = null;
+
         // Resize Polling
         if (id && id != "undefined") {
-        	setInterval(function() { sendMessage('{"frameId":"' + id + '","frameHeight":"' + jQuery('.layout-container').height() + '"}') }, 200);
+        	setInterval(function() { 
+                if (layoutElem) {
+                    var height = layoutElem.height();
+                    if (height != lastHeight)
+                    {
+                        sendMessage('{"frameId":"' + id + '","frameHeight":"' + height + '"}') 
+                        lastHeight = height;
+                    }
+                }
+                else {
+                    layoutElem = jQuery('.layout-container');
+                }
+
+            }, 250);
         }
     </script>
   </body>

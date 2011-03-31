@@ -73,7 +73,7 @@ public class ConnectPageFactory
     {
         if ("comment".equals(widgetName))
         {
-            String resourceId = util.getParameter("resourceUrl");
+            String resourceId = util.getParameter("resourceurl");
             setHistory(new CreateUrlRequest(Page.WIDGET_COMMENT, resourceId));
             return new CommentWidget(resourceId);
         }
