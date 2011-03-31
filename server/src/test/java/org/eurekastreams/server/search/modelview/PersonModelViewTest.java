@@ -277,30 +277,30 @@ public class PersonModelViewTest
 
     /**
      * Test helper method to assert the default values.
-     *
+     * 
      * @param sut
      *            the SUT
      */
     private void assertDefaultValues(final PersonModelView sut)
     {
-        assertEquals(ModelView.UNINITIALIZED_DATE_VALUE, sut.getDateAdded());
-        assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getAccountId());
-        assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getTitle());
-        assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getParentOrganizationName());
-        assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getParentOrganizationShortName());
-        assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getDescription());
-        assertEquals(ModelView.UNINITIALIZED_INTEGER_VALUE, sut.getFollowersCount());
+        assertEquals(null, sut.getDateAdded());
+        assertEquals(null, sut.getAccountId());
+        assertEquals(null, sut.getTitle());
+        assertEquals(null, sut.getParentOrganizationName());
+        assertEquals(null, sut.getParentOrganizationShortName());
+        assertEquals(null, sut.getDescription());
+        assertEquals(-1, sut.getFollowersCount());
         assertEquals(ModelView.UNINITIALIZED_FLOAT_VALUE, sut.getSearchIndexScore(), 0);
-        assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getLastName());
-        assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getPreferredName());
-        assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getDisplayName());
-        assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getAvatarId());
-        assertEquals(ModelView.UNINITIALIZED_INTEGER_VALUE, sut.getUpdatesCount());
-        assertEquals(ModelView.UNINITIALIZED_LONG_VALUE, sut.getStreamId());
-        assertEquals(ModelView.UNINITIALIZED_DATE_VALUE, sut.getLastAcceptedTermsOfService());
+        assertEquals(null, sut.getLastName());
+        assertEquals(null, sut.getPreferredName());
+        assertEquals(null, sut.getDisplayName());
+        assertEquals(null, sut.getAvatarId());
+        assertEquals(-1, sut.getUpdatesCount());
+        assertEquals(-1, sut.getStreamId());
+        assertEquals(null, sut.getLastAcceptedTermsOfService());
         assertEquals(false, sut.getTosAcceptance());
         assertEquals(AuthenticationType.NOTSET, sut.getAuthenticationType());
-        assertEquals(ModelView.UNINITIALIZED_STRING_VALUE, sut.getEmail());
+        assertEquals(null, sut.getEmail());
         assertEquals(true, sut.isCommentable());
         assertEquals(true, sut.isStreamPostable());
         assertNull(sut.getRelatedOrganizationIds());
@@ -309,7 +309,7 @@ public class PersonModelViewTest
 
     /**
      * Test helper method to assert all properties.
-     *
+     * 
      * @param sut
      *            the SUT
      */

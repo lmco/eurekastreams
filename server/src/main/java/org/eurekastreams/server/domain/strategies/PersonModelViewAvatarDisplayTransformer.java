@@ -18,6 +18,8 @@ package org.eurekastreams.server.domain.strategies;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.persistence.mappers.cache.Transformer;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 
@@ -30,6 +32,11 @@ public class PersonModelViewAvatarDisplayTransformer implements
         Transformer<List<PersonModelView>, ArrayList<PersonModelView>>
 {
     /**
+     * Logger instance.
+     */
+    private Log log = LogFactory.make();
+
+    /**
      * Transform the input PersonModelView to one that only contains the necessary fields for avatar display.
      * 
      * @param inPeople
@@ -40,6 +47,8 @@ public class PersonModelViewAvatarDisplayTransformer implements
     public ArrayList<PersonModelView> transform(final List<PersonModelView> inPeople)
     {
         ArrayList<PersonModelView> returnPeople = new ArrayList<PersonModelView>();
+        log.debug("Trimming " + inPeople.size()
+                + " PersonModelViews of all information not necessary for avatar display");
         for (PersonModelView mv : inPeople)
         {
             PersonModelView newPerson = new PersonModelView();

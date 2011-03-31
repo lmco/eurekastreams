@@ -15,7 +15,9 @@
  */
 package org.eurekastreams.server.search.bridge;
 
+import org.eurekastreams.server.action.request.SharedResourceRequest;
 import org.eurekastreams.server.domain.stream.Activity;
+import org.eurekastreams.server.domain.stream.SharedResource;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.stream.GetDomainGroupsByShortNames;
@@ -38,11 +40,16 @@ public class ActivityRecipientClassBridge implements StringBridge
     private static DomainMapper<String, Long> getPersonIdByAccountIdMapper;
 
     /**
+     * Mapper to lookup SharedResource by unique key.
+     */
+    private static DomainMapper<SharedResourceRequest, SharedResource> getSharedResourceByUniqueKeyMapper;
+
+    /**
      * Convert the input Message or Activity object into an ID representing the recipient, either a person or domain
      * group. Both are represented as their ID, prefixed with "P" for person, "G" for group. This bridge temporarily
      * handles both Activity and Message entities during the transition phase from Message to Activity. Message support
      * will be removed when the entity is.
-     *
+     * 
      * @param msgObject
      *            the Message or Activity
      * @return the input Message object into an ID representing the recipient, either a person or domain group - the id
@@ -69,6 +76,9 @@ public class ActivityRecipientClassBridge implements StringBridge
             return "g" + getDomainGroupsByShortNames.fetchId(scope.getUniqueKey());
         case PERSON:
             return "p" + getPersonIdByAccountIdMapper.execute(scope.getUniqueKey());
+        case RESOURCE:
+            return "r" + getSharedResourceByUniqueKeyMapper.execute(//
+                    new SharedResourceRequest(scope.getUniqueKey())).getId();
         default:
             throw new RuntimeException("Unknown/unhandled recipient type: " + scope.getScopeType());
         }
@@ -90,6 +100,16 @@ public class ActivityRecipientClassBridge implements StringBridge
     public static void setGetPersonIdByAccountIdMapper(final DomainMapper<String, Long> inGetPersonIdByAccountIdMapper)
     {
         ActivityRecipientClassBridge.getPersonIdByAccountIdMapper = inGetPersonIdByAccountIdMapper;
+    }
+
+    /**
+     * @param inGetSharedResourceByUniqueKeyMapper
+     *            the mapper to get SharedResource by key.
+     */
+    public static void setGetSharedResourceByUniqueKeyMapper(
+            final DomainMapper<SharedResourceRequest, SharedResource> inGetSharedResourceByUniqueKeyMapper)
+    {
+        ActivityRecipientClassBridge.getSharedResourceByUniqueKeyMapper = inGetSharedResourceByUniqueKeyMapper;
     }
 
 }

@@ -2234,6 +2234,15 @@
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
     </bean>
+    
+    <bean id="postResourceActivityServiceActionTaskHandler"
+        class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+        <constructor-arg ref="postActivityValidationStrategy" />
+        <constructor-arg ref="postActivityAuthorizationStrategy" />
+        <constructor-arg ref="postResourceActivityExecutionStrategy" />
+        <constructor-arg value="false" />
+        <constructor-arg ref="taskHandler" />
+    </bean>    
 
     <bean id="postActivityAsyncExecutionStrategy"
         class="org.eurekastreams.server.action.execution.stream.PostActivityAsyncExecutionStrategy">
@@ -4058,7 +4067,8 @@
         class="org.eurekastreams.server.service.actions.strategies.activity.PopulateActivityDTOLikeData">
         <constructor-arg ref="getLikedActivityIdsByUserId" />
         <constructor-arg ref="getPeopleWhoLikedActivity" />
-        <constructor-arg ref="getPersonsByIdsMapper" />
+        <!-- Only gets the person model view data needed for avatar display -->
+        <constructor-arg ref="getPersonAvatarDisplayInfoByIdsMapper" />
         <constructor-arg value="10" />
     </bean>
     <bean id="deleteFilter"
@@ -4796,7 +4806,7 @@
         <constructor-arg value="true" />
     </bean>
     
-    <bean id="getAvatarInfoForPeopleThatLikedSharedResourceAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
+    <bean id="getPeopleThatLikedSharedResourceAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
@@ -4805,9 +4815,7 @@
                     <bean class="org.eurekastreams.server.domain.strategies.ChainedMapperWrapperMapper">
                         <!-- Get the people ids that liked the shared resource -->
                         <constructor-arg ref="getPeopleIdsThatLikedSharedResource" />
-                        
-                        <!-- Then get the person modelviews that have avatar display info for the ids -->
-                        <constructor-arg ref="getPersonAvatarDisplayInfoByIdsMapper" />
+                        <constructor-arg ref="getPersonsByIdsMapper" />
                     </bean>
                 </constructor-arg>
             </bean>
@@ -4815,7 +4823,7 @@
         <constructor-arg value="true" />
     </bean>
     
-    <bean id="getAvatarInfoForPeopleThatSharedSharedResourceAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
+    <bean id="getPeopleThatSharedSharedResourceAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
@@ -4824,9 +4832,7 @@
 		            <bean class="org.eurekastreams.server.domain.strategies.ChainedMapperWrapperMapper">
 		                <!-- Get the people ids that shared the shared resource -->  
 		                <constructor-arg ref="getPeopleIdsThatSharedSharedResource" />
-		                
-		                <!-- Then get the person modelviews that have avatar display info for the ids -->
-		                <constructor-arg ref="getPersonAvatarDisplayInfoByIdsMapper" />
+		                <constructor-arg ref="getPersonsByIdsMapper" />
 		            </bean>
 		        </constructor-arg>
 		    </bean>

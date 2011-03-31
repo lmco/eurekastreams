@@ -51,8 +51,10 @@ public class GetPeopleWhoSharedResourceDbMapperTest extends MapperTest
                 .getSingleResult();
         Activity act1 = (Activity) getEntityManager().createQuery("FROM Activity WHERE id=6789").getSingleResult();
         Activity act2 = (Activity) getEntityManager().createQuery("FROM Activity WHERE id=6791").getSingleResult();
+        Activity act3 = (Activity) getEntityManager().createQuery("FROM Activity WHERE id=6790").getSingleResult();
         act1.setSharedLink(sr);
         act2.setSharedLink(sr);
+        act3.setSharedLink(sr);
         getEntityManager().flush();
         getEntityManager().clear();
     }
