@@ -58,19 +58,16 @@ public class UsageMetric implements Serializable
     /**
      * The id of the Person registering the metric.
      */
-    @Basic(optional = false)
     private long actorPersonId;
 
     /**
      * Whether the metric registers a page view.
      */
-    @Basic(optional = false)
     private boolean isPageView;
 
     /**
      * Whether this metric registers a stream view.
      */
-    @Basic(optional = false)
     private boolean isStreamView;
 
     /**
