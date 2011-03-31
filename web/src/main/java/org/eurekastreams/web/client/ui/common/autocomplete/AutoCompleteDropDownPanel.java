@@ -110,7 +110,8 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
         if (inElementType == ElementType.TEXTBOX)
         {
-            textWidget = textBox = new TextBox();
+            textBox = new TextBox();
+            textWidget = textBox;
         }
         else
         {
@@ -238,7 +239,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Returns the text widget.
-     * 
+     *
      * @return the text widget.
      */
     protected TextBoxBase getTextWidget()
