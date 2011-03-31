@@ -16,9 +16,10 @@
 package org.eurekastreams.web.client.ui.common.stream;
 
 import org.eurekastreams.server.action.request.stream.PostActivityRequest;
+import org.eurekastreams.server.domain.DomainConversionUtility;
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.MessageAttachmentChangedEvent;
 import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
@@ -41,6 +42,8 @@ import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
@@ -84,6 +87,9 @@ public class PostToStreamComposite extends FlowPanel
     /** error label. */
     private final Label errorMsg = new Label();
 
+    /** panel holding controls below the post box. */
+    private final FlowPanel expandedPanel = new FlowPanel();
+
     /** Current text in the message box. */
     private String messageText = "";
 
@@ -101,7 +107,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param inScope
      *            the scope.
      */
@@ -116,7 +122,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Builds the UI.
-     * 
+     *
      * @param inScope
      *            the scope.
      */
@@ -152,7 +158,7 @@ public class PostToStreamComposite extends FlowPanel
         add(entryPanel);
 
         // below text area: links and post to on one line, then content warning below
-        Panel expandedPanel = new FlowPanel();
+
         expandedPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postExpandedPanel());
 
         postToPanel = new PostToPanel(inScope);
@@ -177,6 +183,19 @@ public class PostToStreamComposite extends FlowPanel
      */
     private void setupEvents()
     {
+        // user clicked in message text box
+        message.addFocusHandler(new FocusHandler()
+        {
+            public void onFocus(final FocusEvent inEvent)
+            {
+                if ((" " + getStyleName() + " ").contains(StaticResourceBundle.INSTANCE.coreCss().small()))
+                {
+                    removeStyleName(StaticResourceBundle.INSTANCE.coreCss().small());
+                    onExpand();
+                }
+            }
+        });
+
         // user typed in message text box
         message.addKeystrokeHandler(new KeyUpHandler()
         {
@@ -296,6 +315,14 @@ public class PostToStreamComposite extends FlowPanel
     }
 
     /**
+     * Invoked when the composite is expanded (due to user clicking on the box).
+     */
+    protected void onExpand()
+    {
+        message.setText("");
+    }
+
+    /**
      * Sets up the magic show/hide for the publisher.
      */
     public static native void setUpMinimizer()
@@ -304,8 +331,8 @@ public class PostToStreamComposite extends FlowPanel
            $doc.onmousedown = function() {
                if(!$wnd.overPoster && $wnd.jQuery(".post-button").is(".inactive"))
                {
-                   setTimeout("$wnd.jQuery('#post-to-stream').addClass('small');",500);
-                   setTimeout("$wnd.jQuery('#post-to-stream textarea').val('Something to share?');",500);
+                   setTimeout(function() { $wnd.jQuery('#post-to-stream').addClass('small'); },500);
+                   setTimeout(function() { $wnd.jQuery('#post-to-stream textarea').val('Something to share?'); },500);
                }
                else if($wnd.overPoster && $wnd.jQuery("#post-to-stream").is(".small"))
                {
@@ -314,16 +341,9 @@ public class PostToStreamComposite extends FlowPanel
 
            };
 
-               $wnd.jQuery("#post-to-stream textarea").focus(function() {
-                   if($wnd.jQuery("#post-to-stream").is(".small")) {
-                       $wnd.jQuery("#post-to-stream").removeClass("small");
-                       $wnd.jQuery("#post-to-stream textarea").val("");
-                   }
-               });
-
-               $wnd.jQuery("#post-to-stream").hover(
-                   function() { $wnd.overPoster = true; },
-                   function() { $wnd.overPoster = false; });
+           $wnd.jQuery("#post-to-stream").hover(
+               function() { $wnd.overPoster = true; },
+               function() { $wnd.overPoster = false; });
        }-*/;
 
     /**
@@ -341,8 +361,18 @@ public class PostToStreamComposite extends FlowPanel
     }
 
     /**
+     * Get the scope.
+     *
+     * @return the scope.
+     */
+    public StreamScope getScope()
+    {
+        return postToPanel.getPostScope();
+    }
+
+    /**
      * Set the scope.
-     * 
+     *
      * @param inScope
      *            the scope.
      */
@@ -452,6 +482,22 @@ public class PostToStreamComposite extends FlowPanel
     }
 
     /**
+     * @return The user-entered text.
+     */
+    protected String getMesssageText()
+    {
+        return messageText;
+    }
+
+    /**
+     * @return The panel below the text entry box.
+     */
+    protected FlowPanel getSubTextboxPanel()
+    {
+        return expandedPanel;
+    }
+
+    /**
      * Posts the message.
      */
     public void postMessage()
@@ -465,12 +511,17 @@ public class PostToStreamComposite extends FlowPanel
             return;
         }
 
-        EntityType recipientType = ScopeType.PERSON.equals(scope.getScopeType()) ? EntityType.PERSON : EntityType.GROUP;
+        EntityType recipientType = DomainConversionUtility.convertToEntityType(scope.getScopeType());
+        if (EntityType.NOTSET.equals(recipientType))
+        {
+            recipientType = EntityType.GROUP;
+        }
 
-        ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator() : new NotePopulator();
-
-        PostActivityRequest postRequest = new PostActivityRequest(activityPopulator.getActivityDTO(messageText,
-                recipientType, scope.getUniqueKey(), new PostPopulator(), objectStrat));
+        ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator()
+                : new NotePopulator();
+        ActivityDTO activity = activityPopulator.getActivityDTO(messageText, recipientType, scope.getUniqueKey(),
+                new PostPopulator(), objectStrat);
+        PostActivityRequest postRequest = new PostActivityRequest(activity);
 
         ActivityModel.getInstance().insert(postRequest);
     }

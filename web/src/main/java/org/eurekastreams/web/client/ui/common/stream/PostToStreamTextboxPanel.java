@@ -22,13 +22,16 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.autocomplete.AutoCompleteDropDownPanel;
 
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
  * Post top panel.
  *
  */
-public class PostToStreamTextboxPanel extends AutoCompleteDropDownPanel
+public class PostToStreamTextboxPanel extends AutoCompleteDropDownPanel implements HasFocusHandlers
 {
     /**
      * Hashtag array.
@@ -44,14 +47,15 @@ public class PostToStreamTextboxPanel extends AutoCompleteDropDownPanel
 
     /**
      * Adds a handler for keypresses.
-     * 
+     *
      * @param handler
      *            the handler.
      */
     public void addKeystrokeHandler(final KeyUpHandler handler)
     {
-        getTextArea().addKeyUpHandler(handler);
+        getTextWidget().addKeyUpHandler(handler);
     }
+
 
     /**
      * Sets up the auto complete.
@@ -133,4 +137,11 @@ public class PostToStreamTextboxPanel extends AutoCompleteDropDownPanel
        }
     }-*/;
 
+    /**
+     * {@inheritDoc}
+     */
+    public HandlerRegistration addFocusHandler(final FocusHandler inHandler)
+    {
+        return getTextWidget().addFocusHandler(inHandler);
+    }
 }

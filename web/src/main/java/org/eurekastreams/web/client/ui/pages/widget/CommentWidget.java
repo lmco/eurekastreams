@@ -15,18 +15,26 @@
  */
 package org.eurekastreams.web.client.ui.pages.widget;
 
+import org.eurekastreams.server.action.request.stream.PostActivityRequest;
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
+import org.eurekastreams.web.client.model.ActivityModel;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.stream.PostToStreamComposite;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
+import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulator;
+import org.eurekastreams.web.client.ui.common.stream.decorators.object.NotePopulator;
+import org.eurekastreams.web.client.ui.common.stream.decorators.verb.PostPopulator;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
@@ -34,6 +42,18 @@ import com.google.gwt.user.client.ui.Composite;
  */
 public class CommentWidget extends Composite
 {
+    /** Unique ID of entity whose stream is displayed. */
+    private final String resourceId;
+
+    /** Description of the resource. */
+    private String resourceTitle;
+
+    /** URL of the site containing the resource. */
+    private String siteUrl;
+
+    /** Description of the site containing the resource. */
+    private String siteTitle;
+
     /**
      * Constructor.
      *
@@ -42,17 +62,14 @@ public class CommentWidget extends Composite
      */
     public CommentWidget(final String view)
     {
-        final StreamPanel streamPanel = new StreamPanel(false);
+        resourceId = view;
+
+        StreamScope streamScope = new StreamScope(ScopeType.RESOURCE, resourceId);
+
+        final StreamPanel streamPanel = new StreamPanel(false, new CommentWidgetPostToStreamComposite(streamScope));
         streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().embeddedWidget());
+        streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectCommentWidget());
         initWidget(streamPanel);
-
-        // TODO: use legitimate query data here
-
-        String jsonRequest = StreamJsonRequestFactory.addRecipient(EntityType.PERSON, view,
-                StreamJsonRequestFactory.getEmptyRequest()).toString();
-
-        EventBus.getInstance().notifyObservers(new StreamRequestEvent("", jsonRequest));
-        streamPanel.setStreamScope(new StreamScope(ScopeType.PERSON, view), true);
 
         EventBus.getInstance().addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
         {
@@ -72,5 +89,63 @@ public class CommentWidget extends Composite
                 }
             }
         });
+
+        String jsonRequest = StreamJsonRequestFactory.addRecipient(EntityType.RESOURCE, resourceId,
+                StreamJsonRequestFactory.getEmptyRequest()).toString();
+
+        EventBus.getInstance().notifyObservers(new StreamRequestEvent("", jsonRequest));
+        streamPanel.setStreamScope(streamScope, true);
+    }
+
+    /**
+     * Custom version of the post composite tailored to post activities to a resource stream.
+     */
+    class CommentWidgetPostToStreamComposite extends PostToStreamComposite
+    {
+        /** Activity populator. */
+        private final ActivityDTOPopulator activityPopulator = new ActivityDTOPopulator();
+
+        /** Checkbox for whether to post to Eureka (used for resource streams). */
+        private final CheckBox postToEurekaCheckBox = new CheckBox("Post to Eureka");
+
+        /**
+         * Constructor.
+         *
+         * @param inScope
+         *            Stream scope.
+         */
+        public CommentWidgetPostToStreamComposite(final StreamScope inScope)
+        {
+            super(inScope);
+
+            postToEurekaCheckBox.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postToEureka());
+            getSubTextboxPanel().insert(postToEurekaCheckBox, 0);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onExpand()
+        {
+            super.onExpand();
+            postToEurekaCheckBox.setValue(true);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void postMessage()
+        {
+            ActivityDTO activity = activityPopulator.getActivityDTO(getMesssageText(), EntityType.RESOURCE,
+                    resourceId, new PostPopulator(), new NotePopulator());
+
+            activity.setShowInStream(postToEurekaCheckBox.getValue());
+            // TODO: put other fields in
+
+            PostActivityRequest postRequest = new PostActivityRequest(activity);
+            ActivityModel.getInstance().insert(postRequest);
+        }
     }
 }

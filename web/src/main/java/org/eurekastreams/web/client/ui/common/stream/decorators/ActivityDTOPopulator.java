@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 
 /**
  * base activity DTO populator. Takes in the verb and object strategies and returns the Activity DTO.
- * 
  */
 public class ActivityDTOPopulator
 {
@@ -63,7 +62,6 @@ public class ActivityDTOPopulator
         if (objectPopulator != null)
         {
             objectPopulator.populate(activity);
-
         }
 
         return activity;
