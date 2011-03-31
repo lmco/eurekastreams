@@ -196,9 +196,28 @@ function __eurekaConnect__onLoad() {
 	for (i in widgets)
 	{
 		var widget = widgets[i];
-		var widgetType = widget.getAttribute('eureka:widget');
-        var frameId =  "__eurekaConnect__Frame-" + widget.getAttribute('eureka:id');
-        widget.innerHTML = "<iframe id='" + frameId + "' scrolling='no' style='overflow: hidden' frameborder='0' width='" + widget.getAttribute('eureka:width')  + "' src='" + __eurekaConnect__baseUrl  + "/widget.html?i=" + escape(frameId) + "&p=" + hostUrl + "#widget-" + widgetType + "'></iframe>";
+        var widgetAttributes = widget.attributes;
+        var attribString = "";
+        widget.setAttribute('eureka:id', "__eurekaConnect__Frame-" + widget.getAttribute('eureka:id'));
+        var frameId = widget.getAttribute('eureka:id');
+
+        for (a in widgetAttributes) {
+            var attrib = widgetAttributes[a];
+            try {
+                if (attrib.name.indexOf('eureka') > -1)
+                {
+                    attribString += '&';
+                    attribString += encodeURIComponent(attrib.name.substring(7)).toLowerCase();
+                    attribString += '='
+                    attribString += encodeURIComponent(attrib.value);
+                }
+            }
+            catch(e) {}
+        }
+
+        widget.innerHTML = "<iframe id='" + frameId + "' scrolling='no' style='overflow: hidden' frameborder='0' width='" + 
+            widget.getAttribute('eureka:width')  + "' src='" + __eurekaConnect__baseUrl  + "/widget.html?&__p=" + hostUrl + attribString + "'></iframe>";
+
         if (window.postMessage == null)
         {
             var frameElem = document.getElementById(frameId);

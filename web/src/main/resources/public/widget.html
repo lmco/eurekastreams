@@ -11,8 +11,8 @@
   </head>
   <body id="widget-rootpanel">
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
-    <script type="text/javascript" language="javascript" src="${build.web.cdn}/eureka.nocache.js?1301422861305"></script>
-	<script type="text/javascript" src="${build.web.cdn}/scripts/external-js-min.js?1301422861305"></script>
+    <script type="text/javascript" language="javascript" src="${build.web.cdn}/eureka.nocache.js?${timestamp}"></script>
+	<script type="text/javascript" src="${build.web.cdn}/scripts/external-js-min.js?${timestamp}"></script>
     <script type="text/javascript">
         function querySt(ji) {
             hu = window.location.search.substring(1);
@@ -24,8 +24,8 @@
                 }
             }
         }
-        var p = unescape(querySt('p'));
-        var id = unescape(querySt('i'));
+        var p = unescape(querySt('__p'));
+        var id = unescape(querySt('id'));
 
         var sendMessage = function(msg) {
             if (window.postMessage) {
@@ -39,9 +39,25 @@
             }
         }
 
+        var lastHeight = 0;
+        var layoutElem = null;
+
         // Resize Polling
         if (id && id != "undefined") {
-        	setInterval(function() { sendMessage('{"frameId":"' + id + '","frameHeight":"' + jQuery('.layout-container').height() + '"}') }, 200);
+        	setInterval(function() { 
+                if (layoutElem && layoutElem.height()) {
+                    var height = layoutElem.height();
+                    if (height != lastHeight)
+                    {
+                        sendMessage('{"frameId":"' + id + '","frameHeight":"' + height + '"}') 
+                        lastHeight = height;
+                    }
+                }
+                else {
+                    layoutElem = jQuery('.layout-container');
+                }
+
+            }, 250);
         }
     </script>
   </body>

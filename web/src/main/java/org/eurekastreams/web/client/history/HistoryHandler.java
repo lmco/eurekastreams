@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.web.client.history;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ import org.eurekastreams.web.client.events.SwitchedHistoryViewEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
+import org.eurekastreams.web.client.model.UsageMetricModel;
 import org.eurekastreams.web.client.ui.Session;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -42,7 +44,7 @@ import com.google.gwt.user.client.History;
  * current view of this, not change it. It also eats an UpdateHistoryEvent which allows a view to change the history w/o
  * directly touching it, and involves helper methods to create history tokens so that manual Hyperlinks can be made
  * without hardcoding URLs.
- *
+ * 
  */
 public class HistoryHandler implements ValueChangeHandler<String>
 {
@@ -115,7 +117,7 @@ public class HistoryHandler implements ValueChangeHandler<String>
 
     /**
      * On Value Change.
-     *
+     * 
      * @param historyToken
      *            the history token.
      */
@@ -206,13 +208,19 @@ public class HistoryHandler implements ValueChangeHandler<String>
             }
 
             Session.getInstance().getEventBus().notifyObservers(new UpdatedHistoryParametersEvent(values));
+
+            // pass page/values info to metrics model to determine metrics to record.
+            HashMap<String, Serializable> map = new HashMap<String, Serializable>();
+            map.put(UsageMetricModel.PAGE_KEY, page);
+            map.put(UsageMetricModel.VALUES_KEY, values);
+            UsageMetricModel.getInstance().insert(map);
         }
         fireValueChange = true;
     }
 
     /**
      * OnValueChange gets called when the history changes.
-     *
+     * 
      * @param event
      *            the event.
      */
@@ -223,7 +231,7 @@ public class HistoryHandler implements ValueChangeHandler<String>
 
     /**
      * Helper method since I need to do this twice in the method above.
-     *
+     * 
      * @param token
      *            the token.
      */
@@ -245,7 +253,7 @@ public class HistoryHandler implements ValueChangeHandler<String>
 
     /**
      * Gets a history token given the params.
-     *
+     * 
      * @param request
      *            the request.
      * @return the token.
@@ -313,7 +321,7 @@ public class HistoryHandler implements ValueChangeHandler<String>
     /**
      * Get the value of a current parameter. NOTE: Do NOT use this to "monitor" the history param, only to grab a one
      * time instance of it. Use the UpdatedHistoryParametersEvent to listen to a parameter.
-     *
+     * 
      * @param key
      *            the key.
      * @return the value.
@@ -325,7 +333,7 @@ public class HistoryHandler implements ValueChangeHandler<String>
 
     /**
      * Gets the views.
-     *
+     * 
      * @return the views.
      */
     public List<String> getViews()

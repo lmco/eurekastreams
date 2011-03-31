@@ -20,6 +20,7 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.widget.CommentWidget;
+import org.eurekastreams.web.client.ui.pages.widget.UserProfileBadgeWidget;
 
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Widget;
@@ -77,6 +78,11 @@ public class ConnectPageFactory
             setHistory(new CreateUrlRequest(Page.WIDGET_COMMENT, resourceId));
             return new CommentWidget(resourceId);
         }
+        else if ("badge".equals(widgetName))
+        {
+            String accountId = util.getParameter("accountid");
+            return new UserProfileBadgeWidget(accountId);
+        }        
         else
         {
             return null;

@@ -143,6 +143,30 @@
         <constructor-arg value="true" />
     </bean>
     
+    <bean id="registerUsageMetric" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+        <!-- Validation -->
+        <constructor-arg ref="noValidationStrategy" />
+        <!-- Authorization -->
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.RegisterUserMetricExecution"/>
+        </constructor-arg>
+        <constructor-arg value="true" />
+        <constructor-arg ref="taskHandler" />
+    </bean> 
+    
+    <bean id="persistUserMetricAsyncAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />        
+        <constructor-arg>
+            <bean parent="baseParamExecuteDomainMapperExecution">
+                <constructor-arg>
+		            <bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
+		        </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />   
+    </bean> 
+    
     <bean id="updateMembershipTaskHandler" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
         <!-- Validation -->
         <constructor-arg ref="noValidationStrategy" />
