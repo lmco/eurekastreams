@@ -88,7 +88,7 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
 
     /**
      * Constructor.
-     *
+     * 
      * @param inGroupByShortNameDAO
      *            Groups by shortName DAO.
      * @param inGroupFollowersDAO
@@ -123,7 +123,7 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
 
     /**
      * Determines if user has permission to modify (Post|Comment|View on) an activity.
-     *
+     * 
      * @param inActionContext
      *            the action context
      */
@@ -153,6 +153,9 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
             case GROUP:
                 performGroupAuthorization(inActionContext.getPrincipal(), activity);
                 break;
+            case RESOURCE:
+                // anyone can post comment to resource stream activity.
+                break;
             default:
                 throw new AuthorizationException("This Action only accepts activities for accepted destination types.");
             }
@@ -162,7 +165,7 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
 
     /**
      * Helper method to perform group authorization.
-     *
+     * 
      * @param inUser
      *            - UserDetails of the user making the request.
      * @param inActivity
@@ -218,7 +221,7 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
 
     /**
      * Returns the Entity's configuration for stream posting or commenting based on the passed in entity context.
-     *
+     * 
      * @param inEntity
      *            The entity to check.
      * @param inInteractionType
@@ -243,7 +246,7 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
 
     /**
      * Helper method to perform Person authorization.
-     *
+     * 
      * @param inUser
      *            - UserDetails of the user making the request.
      * @param inActivity
@@ -260,7 +263,7 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
                     targetStreamOwnerAccountId);
 
             // Test if the user is the owner of the stream being posted to
-            if(isActorTheStreamOwner)
+            if (isActorTheStreamOwner)
             {
                 return;
             }
