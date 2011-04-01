@@ -2237,4 +2237,7 @@ public interface CoreCss extends CssResource
 
     @ClassName("eureka-connect-widget-root")
     String eurekaConnectWidgetRoot();
+
+    @ClassName("eureka-connect-widget-loading")
+    String eurekaConnectLoading();
 }

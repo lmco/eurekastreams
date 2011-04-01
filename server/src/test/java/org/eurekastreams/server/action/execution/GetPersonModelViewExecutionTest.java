@@ -16,12 +16,16 @@
 package org.eurekastreams.server.action.execution;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.Date;
 import java.util.HashSet;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
+import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
+import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators;
@@ -127,10 +131,23 @@ public class GetPersonModelViewExecutionTest
     private String accountId = "accountid";
 
     /**
+     * {@link ActionController}.
+     */
+    private final ActionController serviceActionController = // 
+    context.mock(ActionController.class);
+
+    /**
+     * Action to create user from LDAP.
+     */
+    private final TaskHandlerServiceAction createUserfromLdapAction = // 
+    context.mock(TaskHandlerServiceAction.class);
+
+    /**
      * System under test.
      */
     private GetPersonModelViewExecution sut = new GetPersonModelViewExecution(orgCoordinatorDAO, orgCoordinatorDAOUp,
-            rootOrgDAO, getPersonModelViewByAccountIdMapper, toSAcceptanceStrategy, getBannerIdStrategy);
+            rootOrgDAO, getPersonModelViewByAccountIdMapper, toSAcceptanceStrategy, getBannerIdStrategy,
+            serviceActionController, createUserfromLdapAction);
 
     /**
      * Pre-test setup.
@@ -280,6 +297,113 @@ public class GetPersonModelViewExecutionTest
         assertEquals(false, result.getRoles().contains(Role.ROOT_ORG_COORDINATOR));
         assertEquals(false, result.getTosAcceptance());
         assertEquals(AuthenticationType.FORM, result.getAuthenticationType());
+
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Perform action when person is pulled from LDAP.
+     * 
+     * @throws Exception
+     *             the exception.
+     */
+    @Test
+    public void performActionFromLdap() throws Exception
+    {
+        final PersonModelView retPerson = new PersonModelView();
+        retPerson.setRoles(new HashSet<Role>());
+        retPerson.setEntityId(4L);
+        retPerson.setParentOrganizationId(9L);
+        final Date personLastAcceptedTOSDate = new Date();
+        retPerson.setLastAcceptedTermsOfService(personLastAcceptedTOSDate);
+
+        final Person personMock = context.mock(Person.class);
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(actionContext).getParams();
+                will(returnValue(null));
+
+                allowing(actionContext).getPrincipal();
+                will(returnValue(actionContextPrincipal));
+
+                allowing(actionContextPrincipal).getAccountId();
+                will(returnValue(accountId));
+
+                oneOf(securityContext).getAuthentication();
+                will(returnValue(authentication));
+
+                oneOf(authentication).getPrincipal();
+                will(returnValue(userDetails));
+
+                oneOf(userDetails).getAuthenticationType();
+                will(returnValue(AuthenticationType.FORM));
+
+                oneOf(getPersonModelViewByAccountIdMapper).execute(accountId);
+                will(returnValue(null));
+
+                oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)),
+                        with(createUserfromLdapAction));
+                will(returnValue(personMock));
+
+                oneOf(personMock).toPersonModelView();
+                will(returnValue(retPerson));
+
+                oneOf(toSAcceptanceStrategy).isValidTermsOfServiceAcceptanceDate(with(personLastAcceptedTOSDate));
+                will(returnValue(false));
+
+                allowing(rootOrgDAO).getRootOrganizationId();
+                will(returnValue(0L));
+
+                oneOf(orgCoordinatorDAO).isOrgCoordinatorRecursively(4L, 0L);
+                will(returnValue(false));
+
+                oneOf(orgCoordinatorDAOUp).isOrgCoordinatorRecursively(4L, 0L);
+                will(returnValue(false));
+
+                oneOf(getBannerIdStrategy).getBannerId(9L, retPerson);
+            }
+        });
+
+        sut.execute(actionContext);
+
+        context.assertIsSatisfied();
+    }
+
+    /**
+     * Perform Action when person doesn't exist.
+     * 
+     * @throws Exception
+     *             the exception.
+     */
+    @Test
+    public void performActionNonexistant() throws Exception
+    {
+        context.checking(new Expectations()
+        {
+            {
+                allowing(actionContext).getParams();
+                will(returnValue(null));
+
+                allowing(actionContext).getPrincipal();
+                will(returnValue(actionContextPrincipal));
+
+                allowing(actionContextPrincipal).getAccountId();
+                will(returnValue(accountId));
+
+                oneOf(getPersonModelViewByAccountIdMapper).execute(accountId);
+                will(returnValue(null));
+
+                oneOf(serviceActionController).execute(with(any(ServiceActionContext.class)),
+                        with(createUserfromLdapAction));
+                will(returnValue(null));
+            }
+        });
+
+        PersonModelView result = sut.execute(actionContext);
+
+        assertNull(result);
 
         context.assertIsSatisfied();
     }

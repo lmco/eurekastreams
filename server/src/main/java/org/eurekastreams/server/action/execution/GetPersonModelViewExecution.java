@@ -18,7 +18,10 @@ package org.eurekastreams.server.action.execution;
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
+import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
+import org.eurekastreams.commons.actions.service.TaskHandlerServiceAction;
 import org.eurekastreams.commons.logging.LogFactory;
+import org.eurekastreams.commons.server.service.ActionController;
 import org.eurekastreams.server.domain.Person;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.GetRecursiveOrgCoordinators;
@@ -71,6 +74,16 @@ public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalA
     private final GetBannerIdByParentOrganizationStrategy<Person> getBannerIdStrategy;
 
     /**
+     * {@link ActionController}.
+     */
+    private final ActionController serviceActionController;
+
+    /**
+     * Action to create user from LDAP.
+     */
+    private final TaskHandlerServiceAction createUserfromLdapAction;
+
+    /**
      * Constructor that sets up the mapper.
      * 
      * @param inRecursiveOrgMapperDownTree
@@ -85,13 +98,18 @@ public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalA
      *            the strategy to check if the user's terms of service acceptance is current
      * @param inGetBannerIdStrategy
      *            strategy to get the banner id for the person
+     * @param inServiceActionController
+     *            {@link ActionController}.
+     * @param inCreateUserfromLdapAction
+     *            Action to create user from LDAP.
      */
     public GetPersonModelViewExecution(final GetRecursiveOrgCoordinators inRecursiveOrgMapperDownTree,
             final GetRecursiveOrgCoordinators inRecursiveOrgMapperUpTree,
             final GetRootOrganizationIdAndShortName inRootOrgMapper,
             final DomainMapper<String, PersonModelView> inGetPersonModelViewByAccountIdMapper,
             final TermsOfServiceAcceptanceStrategy inTosAcceptanceStrategy,
-            final GetBannerIdByParentOrganizationStrategy<Person> inGetBannerIdStrategy)
+            final GetBannerIdByParentOrganizationStrategy<Person> inGetBannerIdStrategy,
+            final ActionController inServiceActionController, final TaskHandlerServiceAction inCreateUserfromLdapAction)
     {
         rootOrgMapper = inRootOrgMapper;
         recursiveOrgMapperDownTree = inRecursiveOrgMapperDownTree;
@@ -99,6 +117,8 @@ public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalA
         getPersonModelViewByAccountIdMapper = inGetPersonModelViewByAccountIdMapper;
         toSAcceptanceStrategy = inTosAcceptanceStrategy;
         getBannerIdStrategy = inGetBannerIdStrategy;
+        serviceActionController = inServiceActionController;
+        createUserfromLdapAction = inCreateUserfromLdapAction;
     }
 
     /**
@@ -120,7 +140,35 @@ public class GetPersonModelViewExecution implements ExecutionStrategy<PrincipalA
             log.debug("no account id in the params - using current user's account id: " + accountId);
         }
 
-        PersonModelView person = getPersonModelViewByAccountIdMapper.execute(accountId);
+        PersonModelView person = null;
+        try
+        {
+            person = getPersonModelViewByAccountIdMapper.execute(accountId);
+        }
+        catch (Exception e)
+        {
+            log.debug("Exception loading person" + e);
+        }
+
+        // if user not found in DB, try to create from LDAP
+        if (person == null)
+        {
+            try
+            {
+                person = ((Person) serviceActionController.execute(new ServiceActionContext(accountId, null),
+                        createUserfromLdapAction)).toPersonModelView();
+            }
+            catch (Exception e)
+            {
+                log.debug("Exception loading person" + e);
+            }
+        }
+
+        // If we're still null, just return null.
+        if (person == null)
+        {
+            return null;
+        }
 
         // TODO: fill out other roles here as necessary
         if (recursiveOrgMapperDownTree.isOrgCoordinatorRecursively(person.getEntityId(), rootOrgMapper

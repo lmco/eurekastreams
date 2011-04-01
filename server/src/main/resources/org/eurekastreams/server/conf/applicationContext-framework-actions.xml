@@ -1735,6 +1735,8 @@
                         <constructor-arg value="Person" />
                     </bean>
                 </constructor-arg>
+				<constructor-arg ref="serviceActionController" />
+		        <constructor-arg ref="createPersonFromLdap" />        
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />

@@ -51,50 +51,58 @@ public class UserProfileBadgeWidget extends Composite
         final FlowPanel widget = new FlowPanel();
         widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeContainer());
         initWidget(widget);
-        final AvatarWidget blankAvatar = new AvatarWidget(0, null, EntityType.PERSON, Size.Normal, Background.White);
-        blankAvatar.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeAvatar());
         
-        widget.add(blankAvatar);
+        widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectLoading());
 
-        final Label blankName = new Label(accountId);
-        blankName.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeName());
-        
-        widget.add(blankName);
 
         EventBus.getInstance().addObserver(GotPersonalInformationResponseEvent.class,
                 new Observer<GotPersonalInformationResponseEvent>()
                 {
                     public void update(final GotPersonalInformationResponseEvent event)
                     {
-                        blankAvatar.removeFromParent();
-                        blankName.removeFromParent();
-                        
+                        widget.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectLoading());
                         PersonModelView entity = event.getResponse();
 
-                        AvatarLinkPanel linkPanel = new AvatarLinkPanel(EntityType.PERSON, entity.getAccountId(),
-                                new AvatarWidget(entity.getId(), entity.getAvatarId(), EntityType.PERSON, Size.Normal,
-                                        Background.White));
-                        linkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeAvatar());
+                        if (entity == null)
+                        {
+                            final AvatarWidget blankAvatar = new AvatarWidget(0, null, EntityType.PERSON, Size.Normal,
+                                    Background.White);
+                            blankAvatar
+                                    .addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeAvatar());
 
-                        widget.add(linkPanel);
+                            widget.add(blankAvatar);
 
-                        String linkUrl = "/#"
-                                + Session.getInstance().generateUrl(
-                                        new CreateUrlRequest(Page.PEOPLE, entity.getAccountId()));
+                            final Label blankName = new Label(accountId);
+                            blankName.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeName());
 
-                        Anchor name = new Anchor(entity.getDisplayName(), linkUrl, "_BLANK");
-                        name.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeName());
+                            widget.add(blankName);
+                        }
+                        else
+                        {
+                            AvatarLinkPanel linkPanel = new AvatarLinkPanel(EntityType.PERSON, entity.getAccountId(),
+                                    new AvatarWidget(entity.getId(), entity.getAvatarId(), EntityType.PERSON,
+                                            Size.Normal, Background.White));
+                            linkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeAvatar());
 
-                        Label title = new Label(entity.getTitle());
-                        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeTitle());
+                            widget.add(linkPanel);
 
-                        Label company = new Label(entity.getCompanyName());
-                        company.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeCompany());
+                            String linkUrl = "/#"
+                                    + Session.getInstance().generateUrl(
+                                            new CreateUrlRequest(Page.PEOPLE, entity.getAccountId()));
 
-                        widget.add(name);
-                        widget.add(title);
-                        widget.add(company);
+                            Anchor name = new Anchor(entity.getDisplayName(), linkUrl, "_BLANK");
+                            name.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeName());
 
+                            Label title = new Label(entity.getTitle());
+                            title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeTitle());
+
+                            Label company = new Label(entity.getCompanyName());
+                            company.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeCompany());
+
+                            widget.add(name);
+                            widget.add(title);
+                            widget.add(company);
+                        }
                     }
                 });
 

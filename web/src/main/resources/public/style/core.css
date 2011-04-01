@@ -7875,6 +7875,14 @@ html,body {
 	background-color: white;	
 }
 
+@sprite .eureka-connect-widget-loading  {
+	gwt-image: "waitSpinner";
+	margin: 0 auto;
+	position: relative;
+	top: 15px;
+}
+
+
 /*/////////////////////////////////////////////////////////////////////////////
 
 IE SPECIFIC CSS.

@@ -63,6 +63,7 @@ public class PersonQueryStrategy
         fields.add(getColumn("updatesCount"));
         fields.add(getColumn("email"));
         fields.add(getColumn("commentable"));
+        fields.add(getColumn("companyName"));
         fields.add(getColumn("streamPostable"));
         fields.add(getColumn("additionalProperties"));
         fields.add(getColumn("groupStreamHiddenLineIndex"));
