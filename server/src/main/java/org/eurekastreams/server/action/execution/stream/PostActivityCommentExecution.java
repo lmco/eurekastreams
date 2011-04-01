@@ -37,7 +37,7 @@ import org.eurekastreams.server.search.modelview.CommentDTO;
 
 /**
  * Execution strategy for posting a comment to an activity.
- *
+ * 
  */
 public class PostActivityCommentExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
@@ -54,18 +54,18 @@ public class PostActivityCommentExecution implements TaskHandlerExecutionStrateg
     /**
      * Mapper to get activity dto.
      */
-    private DomainMapper<List<Long>, List<ActivityDTO>>  activitiesMapper;
+    private DomainMapper<List<Long>, List<ActivityDTO>> activitiesMapper;
 
     /**
      * Constructor.
-     *
+     * 
      * @param inInsertCommentDAO
      *            The comment insert DAO.
      * @param inActivitiesMapper
      *            The activities mapper.
      */
     public PostActivityCommentExecution(final InsertActivityComment inInsertCommentDAO,
-            final DomainMapper<List<Long>, List<ActivityDTO>>  inActivitiesMapper)
+            final DomainMapper<List<Long>, List<ActivityDTO>> inActivitiesMapper)
     {
         insertCommentDAO = inInsertCommentDAO;
         activitiesMapper = inActivitiesMapper;
@@ -73,11 +73,11 @@ public class PostActivityCommentExecution implements TaskHandlerExecutionStrateg
 
     /**
      * Posts a comment to an activity.
-     *
+     * 
      * @param inActionContext
      *            {@link PrincipalActionContext}.
      * @return {@link CommentDTO}.
-     *
+     * 
      */
     @Override
     public CommentDTO execute(final TaskHandlerActionContext<PrincipalActionContext> inActionContext)
@@ -97,7 +97,7 @@ public class PostActivityCommentExecution implements TaskHandlerExecutionStrateg
 
     /**
      * Creates and sets UserActionRequests based on comment action.
-     *
+     * 
      * @param personId
      *            current user id.
      * @param activityId
@@ -130,10 +130,16 @@ public class PostActivityCommentExecution implements TaskHandlerExecutionStrateg
             requestType = RequestType.GROUP_COMMENT;
         }
 
+        else if (destinationType == EntityType.RESOURCE)
+        {
+            // TODO: Determine correct action for notifications here.
+            return new ArrayList<UserActionRequest>();
+        }
+
         if (requestType != null)
         {
-            CreateNotificationsRequest notificationRequest =
-                    new CreateNotificationsRequest(requestType, personId, destinationId, commentId);
+            CreateNotificationsRequest notificationRequest = new CreateNotificationsRequest(requestType, personId,
+                    destinationId, commentId);
 
             // create list if it has not already been done.
             queuedRequests = queuedRequests == null ? new ArrayList<UserActionRequest>() : queuedRequests;

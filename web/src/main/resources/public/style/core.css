@@ -1774,9 +1774,24 @@ div.new-messages-notification>div.refresh-stream {
 	margin-bottom: 5px;
 }
 
+.connect-widget-comment .post-to-stream-container .attach-link-container,
+.connect-widget-comment .post-to-stream-container .post-to,
 .profile .post-to-stream-container .post-to {
 	display: none;
 }
+
+.post-to-eureka,
+.connect-widget-comment .post-to-stream.small  .post-to-eureka
+{
+	display: none;
+}
+
+.connect-widget-comment .post-to-eureka
+{
+	display: block;
+	margin-top: 5px;
+}
+
 
 .profile .post-to-stream textarea {
 	margin-bottom: 10px;

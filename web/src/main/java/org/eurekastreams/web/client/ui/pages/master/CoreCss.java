@@ -258,6 +258,9 @@ public interface CoreCss extends CssResource
 
     String confirmed();
 
+    @ClassName("connect-widget-comment")
+    String connectCommentWidget();
+
     @ClassName("connection-button-add")
     String connectionButtonAdd();
 
@@ -1557,6 +1560,9 @@ public interface CoreCss extends CssResource
 
     @ClassName("post-to")
     String postTo();
+
+    @ClassName("post-to-eureka")
+    String postToEureka();
 
     @ClassName("post-to-stream")
     String postToStream();

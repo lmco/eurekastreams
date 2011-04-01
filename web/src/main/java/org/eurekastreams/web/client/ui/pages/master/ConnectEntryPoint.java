@@ -164,6 +164,7 @@ public class ConnectEntryPoint implements EntryPoint
         Window.alert("Widget name invalid or missing.");
     }
 
+
 // /**
     // * Builds a page displaying the desired widget.
     // */

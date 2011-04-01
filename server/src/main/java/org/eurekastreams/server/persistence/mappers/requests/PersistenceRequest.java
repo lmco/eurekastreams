@@ -15,32 +15,40 @@
  */
 package org.eurekastreams.server.persistence.mappers.requests;
 
-import org.eurekastreams.commons.model.DomainEntity;
-
+import java.io.Serializable;
 
 /**
  * MapperRequest for persisting DomainEntities.
- *
- * @param <TEntityType> The DomainEntityType to persist.
+ * 
+ * @param <TEntityType>
+ *            The DomainEntityType to persist.
  */
-public class PersistenceRequest<TEntityType extends DomainEntity> implements MapperRequest<TEntityType>
+public class PersistenceRequest<TEntityType> implements MapperRequest<TEntityType>, Serializable
 {
+    /**
+     * Serial version id.
+     */
+    private static final long serialVersionUID = -6127496935916536179L;
+
     /**
      * Entity to persist.
      */
     private TEntityType entity;
-    
+
     /**
      * Constructor.
-     * @param inEntity Entity to persist.
+     * 
+     * @param inEntity
+     *            Entity to persist.
      */
     public PersistenceRequest(final TEntityType inEntity)
     {
         entity = inEntity;
     }
-    
+
     /**
      * Getter for DomainEntity.
+     * 
      * @return The DomainEntity.
      */
     public TEntityType getDomainEnity()

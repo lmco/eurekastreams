@@ -63,6 +63,7 @@ public class ActivityModel extends BaseModel implements Fetchable<Long>, Deletab
         eventBus = Session.getInstance().getEventBus();
         postActivityActionKeysByType.put(EntityType.GROUP, "postGroupActivityServiceActionTaskHandler");
         postActivityActionKeysByType.put(EntityType.PERSON, "postPersonActivityServiceActionTaskHandler");
+        postActivityActionKeysByType.put(EntityType.RESOURCE, "postResourceActivityServiceActionTaskHandler");
     }
 
     /**

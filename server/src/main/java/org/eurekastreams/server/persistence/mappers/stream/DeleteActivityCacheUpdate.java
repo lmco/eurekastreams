@@ -165,8 +165,7 @@ public class DeleteActivityCacheUpdate extends BaseArgCachedDomainMapper<DeleteA
         getCache().delete(CacheKeys.COMMENT_IDS_BY_ACTIVITY_ID + activityId);
 
         // remove activity id user's "following" lists for everyone following destination stream.
-        List<Long> followingUserIds = getIdsForUsersFollowingDestinationStream(inRequest.getActivity()
-                .getDestinationStream());
+        List<Long> followingUserIds = getIdsForUsersFollowingDestinationStream(inRequest.getActivity());
         for (Long followerId : followingUserIds)
         {
             log.info("Removing activity #" + activityId + " from followed list for person #" + followerId);
@@ -194,28 +193,42 @@ public class DeleteActivityCacheUpdate extends BaseArgCachedDomainMapper<DeleteA
     /**
      * Returns list of user Ids for users that are following the activity's destination stream.
      * 
-     * @param inDestinationStream
-     *            The destination stream of activity being deleted.
+     * @param inActivityDTO
+     *            The activity being deleted.
      * @return List of user Ids for users that are following the activity's destination stream.
      */
-    private List<Long> getIdsForUsersFollowingDestinationStream(final StreamEntityDTO inDestinationStream)
+    private List<Long> getIdsForUsersFollowingDestinationStream(final ActivityDTO inActivityDTO)
     {
+        StreamEntityDTO destinationStream = inActivityDTO.getDestinationStream();
         List<Long> followingUserIds = null;
-        switch (inDestinationStream.getType())
+        switch (destinationStream.getType())
         {
         case PERSON:
-            long personId = getPersonIdByAccountIdMapper.execute(inDestinationStream.getUniqueIdentifier());
+            long personId = getPersonIdByAccountIdMapper.execute(destinationStream.getUniqueIdentifier());
             followingUserIds = userIdsFollowingPersonDAO.execute(personId);
             break;
         case GROUP:
-            long groupId = groupByShortNameDAO.fetchId(inDestinationStream.getUniqueIdentifier());
+            long groupId = groupByShortNameDAO.fetchId(destinationStream.getUniqueIdentifier());
             followingUserIds = userIdsFollowingGroupDAO.execute(groupId);
             break;
+        case RESOURCE:
+            if (inActivityDTO.getActor().getType() == EntityType.PERSON)
+            {
+                inActivityDTO.getActor().getUniqueIdentifier();
+                long actorPersonId = getPersonIdByAccountIdMapper.execute(inActivityDTO.getActor()
+                        .getUniqueIdentifier());
+                followingUserIds = userIdsFollowingPersonDAO.execute(actorPersonId);
+            }
+            else
+            {
+                throw new RuntimeException("Unexpected Actor type for resource activity: "
+                        + inActivityDTO.getActor().getType());
+            }
+            break;
         default:
-            throw new RuntimeException("Unexpected Activity destination stream type: " + inDestinationStream.getType());
+            throw new RuntimeException("Unexpected Activity destination stream type: " + destinationStream.getType());
         }
 
         return followingUserIds;
     }
-
 }

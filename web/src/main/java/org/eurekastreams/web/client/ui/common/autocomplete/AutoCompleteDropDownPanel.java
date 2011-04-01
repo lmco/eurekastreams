@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,16 @@ package org.eurekastreams.web.client.ui.common.autocomplete;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FocusListener;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.TextBoxBase;
 
 /**
  * Auto complete drop down widget.
@@ -65,33 +66,22 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
         void itemSelected(final JavaScriptObject obj);
     }
 
-    /**
-     * The command.
-     */
+    /** The command. */
     private static OnItemSelectedCommand command;
-    /**
-     * The textbox.
-     */
-    private TextBox textBox = new TextBox();
-    /**
-     * The textarea.
-     */
-    private TextArea textArea = new TextArea();
-    /**
-     * The element type to use.
-     */
-    private ElementType elementType = ElementType.TEXTBOX;
-    /**
-     * Clear panel.
-     */
-    private FlowPanel clearPanel = new FlowPanel();
-    /**
-     * Results panel.
-     */
-    private FlowPanel resultsPanel = new FlowPanel();
-    /**
-     * Random identifier.
-     */
+
+    /** Text box/area. */
+    private TextBoxBase textWidget;
+
+    /** The text widget as a textbox (avoid cast). */
+    private TextBox textBox;
+
+    /** Clear panel. */
+    private final FlowPanel clearPanel = new FlowPanel();
+
+    /** Results panel. */
+    private final FlowPanel resultsPanel = new FlowPanel();
+
+    /** Random identifier. */
     private final String rand = String.valueOf(Random.nextInt());
 
     /**
@@ -115,26 +105,24 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
      */
     public AutoCompleteDropDownPanel(final String url, final ElementType inElementType)
     {
-        elementType = inElementType;
-
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().yuiSkinSam());
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().autoComplete());
 
-        // Need to do this to fix an especially nasty IE CSS bug (input margin inheritance)
-        final SimplePanel textWrapper = new SimplePanel();
-
-        if (elementType == ElementType.TEXTBOX)
+        if (inElementType == ElementType.TEXTBOX)
         {
-            textBox.getElement().setAttribute("id", "actb-" + rand);
-            textWrapper.add(textBox);
+            textBox = new TextBox();
+            textWidget = textBox;
         }
         else
         {
-            textArea.getElement().setAttribute("id", "actb-" + rand);
-            textWrapper.add(textArea);
+            textWidget = new TextArea();
         }
+        textWidget.getElement().setAttribute("id", "actb-" + rand);
 
+        // Need to do this to fix an especially nasty IE CSS bug (input margin inheritance)
+        final SimplePanel textWrapper = new SimplePanel();
         textWrapper.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inputWrapper());
+        textWrapper.add(textWidget);
         this.add(textWrapper);
 
         resultsPanel.getElement().setAttribute("id", "acra-" + rand);
@@ -160,42 +148,16 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
      */
     public void setDefaultText(final String text)
     {
-        if (elementType == ElementType.TEXTBOX)
+        textWidget.setText(text);
+        textWidget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().defaultClass());
+        textWidget.addFocusHandler(new FocusHandler()
         {
-            textBox.setText(text);
-            textBox.addStyleName(StaticResourceBundle.INSTANCE.coreCss().defaultClass());
-            textBox.addFocusListener(new FocusListener()
+            public void onFocus(final FocusEvent inEvent)
             {
-
-                public void onFocus(final Widget arg0)
-                {
-                    textBox.setText("");
-                    textBox.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().defaultClass());
-                }
-
-                public void onLostFocus(final Widget arg0)
-                {
-                }
-            });
-        }
-        else
-        {
-            textArea.setText(text);
-            textArea.addStyleName(StaticResourceBundle.INSTANCE.coreCss().defaultClass());
-            textArea.addFocusListener(new FocusListener()
-            {
-
-                public void onFocus(final Widget arg0)
-                {
-                    textArea.setText("");
-                    textArea.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().defaultClass());
-                }
-
-                public void onLostFocus(final Widget arg0)
-                {
-                }
-            });
-        }
+                textWidget.setText("");
+                textWidget.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().defaultClass());
+            }
+        });
     }
 
     /**
@@ -206,8 +168,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
      */
     public void setText(final String text)
     {
-        textBox.setText(text);
-        textArea.setText(text);
+        textWidget.setText(text);
     }
 
     /**
@@ -215,8 +176,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
      */
     public void clearText()
     {
-        textBox.setText("");
-        textArea.setText("");
+        textWidget.setText("");
     }
 
     /**
@@ -238,14 +198,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
      */
     public String getText()
     {
-        if (elementType == ElementType.TEXTBOX)
-        {
-            return textBox.getText();
-        }
-        else
-        {
-            return textArea.getText();
-        }
+        return textWidget.getText();
     }
 
     /**
@@ -285,12 +238,13 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
     }
 
     /**
-     * Returns the text area.
-     * @return the text area.
+     * Returns the text widget.
+     *
+     * @return the text widget.
      */
-    protected TextArea getTextArea()
+    protected TextBoxBase getTextWidget()
     {
-        return textArea;
+        return textWidget;
     }
 
     /**

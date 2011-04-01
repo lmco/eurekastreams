@@ -160,6 +160,21 @@ public class StreamPanel extends FlowPanel
 
     /**
      * Initialize page.
+     * 
+     * @param showRecipients
+     *            if recipients should be shown.
+     * @param inPostToStreamComposite
+     *            Stream posting widget to use.
+     */
+    public StreamPanel(final Boolean showRecipients, final PostToStreamComposite inPostToStreamComposite)
+    {
+        this(showRecipients);
+        postComposite = inPostToStreamComposite;
+        setupPostComposite();
+    }
+
+    /**
+     * Initialize page.
      *
      * @param showRecipients
      *            if recipients should be shown.
@@ -493,8 +508,24 @@ public class StreamPanel extends FlowPanel
     }
 
     /**
+     * Sets up the post composite. If the implementation of the minimizer can be built into the constructor of the post
+     * composite, then this function should be removed.
+     */
+    private void setupPostComposite()
+    {
+        shadowPanel.add(postComposite);
+        DeferredCommand.addCommand(new Command()
+        {
+            public void execute()
+            {
+                postComposite.setUpMinimizer();
+            }
+        });
+    }
+
+    /**
      * Set the stream scope to post to.
-     *
+     * 
      * @param streamScope
      *            the scope.
      * @param postingEnabled
@@ -508,14 +539,7 @@ public class StreamPanel extends FlowPanel
         if (postComposite == null && postingEnabled)
         {
             postComposite = new PostToStreamComposite(streamScope);
-            shadowPanel.add(postComposite);
-            DeferredCommand.addCommand(new Command()
-            {
-                public void execute()
-                {
-                    postComposite.setUpMinimizer();
-                }
-            });
+            setupPostComposite();
         }
         else if (postingEnabled)
         {

@@ -71,7 +71,7 @@ public class UsageMetricModel extends BaseModel implements Insertable<HashMap<St
         }
 
         // specify empty onFailure, don't want user to see anything if error in metrics collection.
-        super.callWriteAction("registerMetric", metric, null, new OnFailureCommand()
+        super.callWriteAction("registerUsageMetric", metric, null, new OnFailureCommand()
         {
             public void onFailure(final Throwable inEx)
             {
