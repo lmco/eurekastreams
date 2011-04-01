@@ -17,6 +17,7 @@ package org.eurekastreams.web.client.model;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.search.modelview.UsageMetricDTO;
@@ -57,9 +58,9 @@ public class UsageMetricModel extends BaseModel implements Insertable<HashMap<St
     public void insert(final HashMap<String, Serializable> request)
     {
         Page page = (Page) request.get(UsageMetricModel.PAGE_KEY);
-        // HashMap<String, String> values = (HashMap<String, String>) request.get(UsageMetricModel.VALUES_KEY);
 
         UsageMetricDTO metric = new UsageMetricDTO();
+        metric.setMetricDetails(generateMetricDetails(request));
 
         switch (page)
         {
@@ -78,5 +79,38 @@ public class UsageMetricModel extends BaseModel implements Insertable<HashMap<St
                 // no-op
             }
         });
+    }
+
+    /**
+     * Generate metric details from incoming request map.
+     * 
+     * @param inRequest
+     *            incoming request map.
+     * @return metric details from incoming request map.
+     */
+    private String generateMetricDetails(final HashMap<String, Serializable> inRequest)
+    {
+        Page page = (Page) inRequest.get(UsageMetricModel.PAGE_KEY);
+        HashMap<String, String> values = (HashMap<String, String>) inRequest.get(UsageMetricModel.VALUES_KEY);
+
+        StringBuffer metricDetails = new StringBuffer();
+        metricDetails.append("Page: ");
+        metricDetails.append(page == null ? "NA" : (page.toString() == "" ? "start" : page.toString()) + " ");
+        metricDetails.append("Values: ");
+
+        if (values != null && !values.isEmpty())
+        {
+            for (Entry<String, String> entry : values.entrySet())
+            {
+                metricDetails.append(entry.getKey() + "=" + entry.getValue() + " ");
+            }
+        }
+        else
+        {
+            metricDetails.append("NA");
+        }
+
+        return metricDetails.toString();
+
     }
 }

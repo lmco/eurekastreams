@@ -94,11 +94,17 @@ public class RegisterUserMetricExecutionTest
                 oneOf(principalActionContextMock).getParams();
                 will(returnValue(um));
 
-                oneOf(um).isStreamView();
+                allowing(um).isStreamView();
                 will(returnValue(true));
+
+                allowing(um).getMetricDetails();
+                will(returnValue("metric details"));
 
                 oneOf(principalMock).getId();
                 will(returnValue(1L));
+
+                oneOf(principalMock).getAccountId();
+                will(returnValue("accountId"));
 
                 allowing(taskHandlerActionContextMock).getUserActionRequests();
                 will(returnValue(uar));

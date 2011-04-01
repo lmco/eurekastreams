@@ -18,9 +18,12 @@ package org.eurekastreams.server.action.execution;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
+import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.domain.UsageMetric;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
@@ -32,6 +35,10 @@ import org.eurekastreams.server.search.modelview.UsageMetricDTO;
  */
 public class RegisterUserMetricExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
+    /**
+     * Local logger instance.
+     */
+    private final Log logger = LogFactory.make();
 
     /**
      * Create UserMetric entity and queue up action to persist it.
@@ -43,8 +50,13 @@ public class RegisterUserMetricExecution implements TaskHandlerExecutionStrategy
     @Override
     public Serializable execute(final TaskHandlerActionContext<PrincipalActionContext> inActionContext)
     {
-        UsageMetric um = new UsageMetric(inActionContext.getActionContext().getPrincipal().getId(), true,
-                ((UsageMetricDTO) inActionContext.getActionContext().getParams()).isStreamView(), new Date());
+        UsageMetricDTO umdto = (UsageMetricDTO) inActionContext.getActionContext().getParams();
+        Principal principal = inActionContext.getActionContext().getPrincipal();
+
+        UsageMetric um = new UsageMetric(principal.getId(), true, umdto.isStreamView(), new Date());
+
+        logger.trace("Registering metric for user: " + principal.getAccountId() + "StreamView: " + umdto.isStreamView()
+                + " MetricDetails: " + umdto.getMetricDetails());
 
         inActionContext.getUserActionRequests().add(
                 new UserActionRequest("persistUserMetricAsyncAction", null, new PersistenceRequest<UsageMetric>(um)));

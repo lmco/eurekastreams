@@ -32,7 +32,12 @@ public class UsageMetricDTO implements Serializable
     /**
      * Stream view flag, default false.
      */
-    boolean streamView = false;
+    private boolean streamView = false;
+
+    /**
+     * Metric Details.
+     */
+    private String metricDetails;
 
     /**
      * Constructor.
@@ -68,6 +73,23 @@ public class UsageMetricDTO implements Serializable
     public void setStreamView(final boolean inStreamView)
     {
         streamView = inStreamView;
+    }
+
+    /**
+     * @return the metricDetails
+     */
+    public String getMetricDetails()
+    {
+        return metricDetails;
+    }
+
+    /**
+     * @param inMetricDetails
+     *            the metricDetails to set
+     */
+    public void setMetricDetails(final String inMetricDetails)
+    {
+        metricDetails = inMetricDetails;
     }
 
 }
