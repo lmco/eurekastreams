@@ -30,6 +30,7 @@
 @external .threecolumn;
 @external .notif-entry*;
 @external .maximized;
+@external .eureka-connect-*;
 
 * {	
 	outline: none;
@@ -7835,8 +7836,29 @@ html,body {
 	gwt-image: "unsubscribeButton"; 
 }
 
+.eureka-connect-badge-avatar {
+	float: left;
+	margin-right: 10px;
+}
 
+.eureka-connect-badge-name {
+	font-size: 18px;
+}
 
+.eureka-connect-badge-title {
+	font-color: black;
+}
+
+.eureka-connect-badge-company {
+}
+
+.eureka-connect-badge-container {
+	height: 87px;	
+}
+
+.eureka-connect-widget-root  {
+	background-color: white;	
+}
 
 /*/////////////////////////////////////////////////////////////////////////////
 

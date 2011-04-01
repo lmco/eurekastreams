@@ -66,6 +66,7 @@ public class ConnectEntryPoint implements EntryPoint
         // The entry point will be invoked on full-app startup, so do nothing if the appropriate widget element is not
         // found
         rootPanel = RootPanel.get(WIDGET_ELEMENT_ID);
+        rootPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectWidgetRoot());
         if (rootPanel == null)
         {
             return;

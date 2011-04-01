@@ -16,16 +16,24 @@
 package org.eurekastreams.web.client.ui.pages.widget;
 
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.Page;
+import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.GotPersonalInformationResponseEvent;
+import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.PersonalInformationModel;
-import org.eurekastreams.web.client.ui.common.avatar.AvatarDisplayPanel;
+import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
+import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Background;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
+import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * The Eureka Connect "profile badge widget" - displays a person's avatar and information.
@@ -41,15 +49,52 @@ public class UserProfileBadgeWidget extends Composite
     public UserProfileBadgeWidget(final String accountId)
     {
         final FlowPanel widget = new FlowPanel();
+        widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeContainer());
         initWidget(widget);
+        final AvatarWidget blankAvatar = new AvatarWidget(0, null, EntityType.PERSON, Size.Normal, Background.White);
+        blankAvatar.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeAvatar());
+        
+        widget.add(blankAvatar);
+
+        final Label blankName = new Label(accountId);
+        blankName.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeName());
+        
+        widget.add(blankName);
 
         EventBus.getInstance().addObserver(GotPersonalInformationResponseEvent.class,
                 new Observer<GotPersonalInformationResponseEvent>()
                 {
                     public void update(final GotPersonalInformationResponseEvent event)
                     {
-                        widget.add(new AvatarDisplayPanel(EntityType.PERSON, event.getResponse().getEntityId(), event
-                                .getResponse().getAvatarId(), Size.Normal, Background.White));
+                        blankAvatar.removeFromParent();
+                        blankName.removeFromParent();
+                        
+                        PersonModelView entity = event.getResponse();
+
+                        AvatarLinkPanel linkPanel = new AvatarLinkPanel(EntityType.PERSON, entity.getAccountId(),
+                                new AvatarWidget(entity.getId(), entity.getAvatarId(), EntityType.PERSON, Size.Normal,
+                                        Background.White));
+                        linkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeAvatar());
+
+                        widget.add(linkPanel);
+
+                        String linkUrl = "/#"
+                                + Session.getInstance().generateUrl(
+                                        new CreateUrlRequest(Page.PEOPLE, entity.getAccountId()));
+
+                        Anchor name = new Anchor(entity.getDisplayName(), linkUrl, "_BLANK");
+                        name.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeName());
+
+                        Label title = new Label(entity.getTitle());
+                        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeTitle());
+
+                        Label company = new Label(entity.getCompanyName());
+                        company.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectBadgeCompany());
+
+                        widget.add(name);
+                        widget.add(title);
+                        widget.add(company);
+
                     }
                 });
 

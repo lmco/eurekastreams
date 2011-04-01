@@ -26,6 +26,8 @@
         }
         var p = unescape(querySt('__p'));
         var id = unescape(querySt('id'));
+        var css = unescape(querySt('css'));
+        var cssurl = unescape(querySt('cssurl'));
 
         var sendMessage = function(msg) {
             if (window.postMessage) {
@@ -41,6 +43,26 @@
 
         var lastHeight = 0;
         var layoutElem = null;
+
+        if (css) {
+            var styleElement = document.createElement("style");
+            styleElement.type = "text/css";
+            if (styleElement.styleSheet) {
+                styleElement.styleSheet.cssText = css;
+            } else {
+                styleElement.appendChild(document.createTextNode(css));
+            }
+            document.body.appendChild(styleElement);
+        }
+
+        if (cssurl) {
+            var styleRef = document.createElement("link")
+            styleRef.setAttribute("rel", "stylesheet")
+            styleRef.setAttribute("type", "text/css")
+            styleRef.setAttribute("href", cssurl)
+            document.body.appendChild(styleRef);
+        }
+
 
         // Resize Polling
         if (id && id != "undefined") {

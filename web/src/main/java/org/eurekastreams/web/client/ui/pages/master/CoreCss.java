@@ -2213,4 +2213,22 @@ public interface CoreCss extends CssResource
 
     @ClassName("group-notif-unsubscribe-button")
     String groupNotifUnsubscribeButton();
+
+    @ClassName("eureka-connect-badge-avatar")
+    String eurekaConnectBadgeAvatar();
+
+    @ClassName("eureka-connect-badge-name")
+    String eurekaConnectBadgeName();
+    
+    @ClassName("eureka-connect-badge-title")
+    String eurekaConnectBadgeTitle();
+    
+    @ClassName("eureka-connect-badge-company")
+    String eurekaConnectBadgeCompany();
+
+    @ClassName("eureka-connect-badge-container")
+    String eurekaConnectBadgeContainer();
+
+    @ClassName("eureka-connect-widget-root")
+    String eurekaConnectWidgetRoot();
 }

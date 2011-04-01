@@ -214,8 +214,13 @@ function __eurekaConnect__onLoad() {
             }
             catch(e) {}
         }
-
-        widget.innerHTML = "<iframe id='" + frameId + "' scrolling='no' style='overflow: hidden' frameborder='0' width='" + 
+   
+        var heightStr = "";
+        if (widget.getAttribute('eureka:height'))
+        {
+            heightStr = "height='" + widget.getAttribute('eureka:height') + "'";
+        }
+        widget.innerHTML = "<iframe id='" + frameId + "' scrolling='no' style='overflow: hidden' frameborder='0' " + heightStr + " width='" + 
             widget.getAttribute('eureka:width')  + "' src='" + __eurekaConnect__baseUrl  + "/widget.html?&__p=" + hostUrl + attribString + "'></iframe>";
 
         if (window.postMessage == null)
