@@ -74,7 +74,7 @@ else
 fi
 
 
-if [[ ! "$exepath" =~ 'scripts$' ]]
+if [[ ! $exepath =~ .*scripts$ ]]
 then
         WriteLog "[ERROR] This script must be executed from within the directory where the scripts reside."
         exit 1
