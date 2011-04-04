@@ -16,13 +16,15 @@
 package org.eurekastreams.server.action.execution.stream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import org.eurekastreams.commons.actions.context.Principal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.server.action.request.SharedResourceRequest;
 import org.eurekastreams.server.action.request.stream.SetSharedResourceLikeRequest;
-import org.eurekastreams.server.domain.stream.BaseObjectType;
+import org.eurekastreams.server.domain.stream.SharedResource;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.SetSharedResourceLikeMapperRequest;
 import org.jmock.Expectations;
@@ -59,12 +61,17 @@ public class SetSharedResourceLikeExecutionTest
     new SetLikedResourceStatusMapperFake();
 
     /**
+     * Mapper to get or insert shared resources.
+     */
+    private final SharedResourceRequestMapperFake findOrInsertSharedResourceMapper = new SharedResourceRequestMapperFake();
+
+    /**
      * Prepare the sut.
      */
     @Before
     public void setup()
     {
-        sut = new SetSharedResourceLikeExecution(setLikedResourceStatusMapper);
+        sut = new SetSharedResourceLikeExecution(setLikedResourceStatusMapper, findOrInsertSharedResourceMapper);
     }
 
     /**
@@ -78,13 +85,13 @@ public class SetSharedResourceLikeExecutionTest
                 .mock(TaskHandlerActionContext.class);
         final PrincipalActionContext principalActionContext = context.mock(PrincipalActionContext.class);
         final Principal principal = context.mock(Principal.class);
-        final SetSharedResourceLikeRequest actionRequest = new SetSharedResourceLikeRequest(BaseObjectType.BOOKMARK,
-                "http://foo.com", true);
+        final SetSharedResourceLikeRequest actionRequest = new SetSharedResourceLikeRequest("http://foo.com", true);
+        final SharedResource sharedResourceFoundOrInserted = new SharedResource("http://foo.com");
+        findOrInsertSharedResourceMapper.setReturnedResource(sharedResourceFoundOrInserted);
 
         context.checking(new Expectations()
         {
             {
-
                 allowing(taskContext).getActionContext();
                 will(returnValue(principalActionContext));
 
@@ -102,10 +109,10 @@ public class SetSharedResourceLikeExecutionTest
         setLikedResourceStatusMapper.setRequest(null);
         sut.execute(taskContext);
 
+        assertEquals("http://foo.com", findOrInsertSharedResourceMapper.getRequest().getUniqueKey());
         assertEquals(personId, setLikedResourceStatusMapper.getRequest().getPersonId());
         assertTrue(setLikedResourceStatusMapper.getRequest().getLikedStatus());
-        assertEquals(BaseObjectType.BOOKMARK, setLikedResourceStatusMapper.getRequest().getSharedResourceType());
-        assertEquals("http://foo.com", setLikedResourceStatusMapper.getRequest().getUniqueKey());
+        assertSame(sharedResourceFoundOrInserted, setLikedResourceStatusMapper.getRequest().getSharedResource());
 
         context.assertIsSatisfied();
     }
@@ -150,6 +157,69 @@ public class SetSharedResourceLikeExecutionTest
         {
             request = inRequest;
         }
+    }
 
+    /**
+     * Fake mapper to store the SharedResourceRequest so the tests can verify it was made properly.
+     */
+    private class SharedResourceRequestMapperFake implements DomainMapper<SharedResourceRequest, SharedResource>
+    {
+        /**
+         * The request last passed into excecute.
+         */
+        private SharedResourceRequest request;
+
+        /**
+         * The shared resource that's returned by the find or insert mapper.
+         */
+        private SharedResource returnedResource;
+
+        /**
+         * execute.
+         * 
+         * @param inRequest
+         *            the request made - store it
+         * @return true
+         */
+        @Override
+        public SharedResource execute(final SharedResourceRequest inRequest)
+        {
+            request = inRequest;
+            return returnedResource;
+        }
+
+        /**
+         * @return the request
+         */
+        public SharedResourceRequest getRequest()
+        {
+            return request;
+        }
+
+        /**
+         * @param inRequest
+         *            the request to set
+         */
+        public void setRequest(final SharedResourceRequest inRequest)
+        {
+            request = inRequest;
+        }
+
+        /**
+         * @return the returnedResource
+         */
+        public SharedResource getReturnedResource()
+        {
+            return returnedResource;
+        }
+
+        /**
+         * @param inReturnedResource
+         *            the returnedResource to set
+         */
+        public void setReturnedResource(final SharedResource inReturnedResource)
+        {
+            returnedResource = inReturnedResource;
+        }
     }
 }

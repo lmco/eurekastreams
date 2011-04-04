@@ -16,8 +16,6 @@
 
 package org.eurekastreams.server.persistence.mappers.db;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.stream.LikedSharedResource;
@@ -43,32 +41,20 @@ public class SetLikedSharedResourceStatusDbMapper extends
      * @return true if successful.
      */
     @Override
-    @SuppressWarnings("unchecked")
     public Boolean execute(final SetSharedResourceLikeMapperRequest inRequest)
     {
-        // get the shared resource id
-        List<Long> sharedResourceIds = getEntityManager().createQuery(
-                "SELECT id FROM SharedResource WHERE uniqueKey = :uniqueKey").setParameter("uniqueKey",
-                inRequest.getUniqueKey().toLowerCase()).getResultList();
-
-        if (sharedResourceIds == null || sharedResourceIds.size() == 0)
-        {
-            log.info("Couldn't find shared resource with type " + inRequest.getSharedResourceType() + " unique key "
-                    + inRequest.getUniqueKey());
-            return null;
-        }
-        long sharedResourceId = sharedResourceIds.get(0);
-
         // delete any existing like - simplifies logic
         getEntityManager().createQuery(
                 "DELETE LikedSharedResource WHERE pk.personId = :personId "
                         + "AND pk.sharedResourceId = :sharedResourceId").setParameter("personId",
-                inRequest.getPersonId()).setParameter("sharedResourceId", sharedResourceId).executeUpdate();
+                inRequest.getPersonId()).setParameter("sharedResourceId", inRequest.getSharedResource().getId())
+                .executeUpdate();
 
         // like if requested
         if (inRequest.getLikedStatus())
         {
-            LikedSharedResource sharedResource = new LikedSharedResource(sharedResourceId, inRequest.getPersonId());
+            LikedSharedResource sharedResource = new LikedSharedResource(inRequest.getSharedResource().getId(),
+                    inRequest.getPersonId());
             getEntityManager().persist(sharedResource);
         }
         return true;

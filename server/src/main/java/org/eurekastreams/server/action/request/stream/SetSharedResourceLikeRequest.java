@@ -17,8 +17,6 @@ package org.eurekastreams.server.action.request.stream;
 
 import java.io.Serializable;
 
-import org.eurekastreams.server.domain.stream.BaseObjectType;
-
 /**
  * Request for setting the like/unlike status of a shared resource for a person.
  */
@@ -28,11 +26,6 @@ public class SetSharedResourceLikeRequest implements Serializable
      * Serial version uid.
      */
     private static final long serialVersionUID = 7571165668395727581L;
-
-    /**
-     * Resource type.
-     */
-    private BaseObjectType resourceType;
 
     /**
      * Resource unique key.
@@ -54,36 +47,15 @@ public class SetSharedResourceLikeRequest implements Serializable
     /**
      * Constructor.
      * 
-     * @param inResourceType
-     *            the resource type
      * @param inUniqueKey
      *            the resource unique key
      * @param inLikes
      *            true if likes, false if unlikes
      */
-    public SetSharedResourceLikeRequest(final BaseObjectType inResourceType, final String inUniqueKey,
-            final boolean inLikes)
+    public SetSharedResourceLikeRequest(final String inUniqueKey, final boolean inLikes)
     {
-        resourceType = inResourceType;
         uniqueKey = inUniqueKey;
         likes = inLikes;
-    }
-
-    /**
-     * @return the resourceType
-     */
-    public BaseObjectType getResourceType()
-    {
-        return resourceType;
-    }
-
-    /**
-     * @param inResourceType
-     *            the resourceType to set
-     */
-    public void setResourceType(final BaseObjectType inResourceType)
-    {
-        resourceType = inResourceType;
     }
 
     /**

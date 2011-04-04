@@ -3217,6 +3217,7 @@
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.stream.SetSharedResourceLikeExecution">
                 <constructor-arg ref="setLikedSharedResourceStatusDbMapper" />
+                <constructor-arg ref="findOrInsertSharedResourceByUniqueKeyMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg ref="taskHandler" />
