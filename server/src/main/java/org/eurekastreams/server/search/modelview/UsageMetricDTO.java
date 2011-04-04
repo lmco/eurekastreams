@@ -30,6 +30,11 @@ public class UsageMetricDTO implements Serializable
     private static final long serialVersionUID = 5498581567113276511L;
 
     /**
+     * Page view flag, default true.
+     */
+    private boolean pageView = true;
+
+    /**
      * Stream view flag, default false.
      */
     private boolean streamView = false;
@@ -38,6 +43,20 @@ public class UsageMetricDTO implements Serializable
      * Metric Details.
      */
     private String metricDetails;
+
+    /**
+     * Constructor.
+     * 
+     * @param inStreamView
+     *            Stream view flag.
+     * @param inPageView
+     *            Page view flag.
+     */
+    public UsageMetricDTO(final boolean inStreamView, final boolean inPageView)
+    {
+        streamView = inStreamView;
+        pageView = inPageView;
+    }
 
     /**
      * Constructor.
@@ -90,6 +109,23 @@ public class UsageMetricDTO implements Serializable
     public void setMetricDetails(final String inMetricDetails)
     {
         metricDetails = inMetricDetails;
+    }
+
+    /**
+     * @return the pageView
+     */
+    public boolean isPageView()
+    {
+        return pageView;
+    }
+
+    /**
+     * @param inPageView
+     *            the pageView to set
+     */
+    public void setPageView(final boolean inPageView)
+    {
+        pageView = inPageView;
     }
 
 }

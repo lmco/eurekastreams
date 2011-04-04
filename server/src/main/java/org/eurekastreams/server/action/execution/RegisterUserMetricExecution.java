@@ -53,10 +53,10 @@ public class RegisterUserMetricExecution implements TaskHandlerExecutionStrategy
         UsageMetricDTO umdto = (UsageMetricDTO) inActionContext.getActionContext().getParams();
         Principal principal = inActionContext.getActionContext().getPrincipal();
 
-        UsageMetric um = new UsageMetric(principal.getId(), true, umdto.isStreamView(), new Date());
+        UsageMetric um = new UsageMetric(principal.getId(), umdto.isPageView(), umdto.isStreamView(), new Date());
 
-        logger.trace("Registering metric for user: " + principal.getAccountId() + "StreamView: " + umdto.isStreamView()
-                + " MetricDetails: " + umdto.getMetricDetails());
+        logger.trace("Registering metric for user: " + principal.getAccountId() + " StreamView:" + umdto.isStreamView()
+                + " PageView:" + umdto.isPageView() + " MetricDetails: " + umdto.getMetricDetails());
 
         inActionContext.getUserActionRequests().add(
                 new UserActionRequest("persistUserMetricAsyncAction", null, new PersistenceRequest<UsageMetric>(um)));

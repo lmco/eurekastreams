@@ -97,6 +97,9 @@ public class RegisterUserMetricExecutionTest
                 allowing(um).isStreamView();
                 will(returnValue(true));
 
+                allowing(um).isPageView();
+                will(returnValue(true));
+
                 allowing(um).getMetricDetails();
                 will(returnValue("metric details"));
 
