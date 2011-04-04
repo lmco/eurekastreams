@@ -34,7 +34,7 @@ import org.junit.Test;
  * Test for RegisterUserMetricExecution.
  * 
  */
-public class RegisterUserMetricExecutionTest
+public class RegisterUsageMetricExecutionTest
 {
     /**
      * Context for building mock objects.
@@ -69,7 +69,7 @@ public class RegisterUserMetricExecutionTest
     /**
      * System under test.
      */
-    private RegisterUserMetricExecution sut = new RegisterUserMetricExecution();
+    private RegisterUsageMetricExecution sut = new RegisterUsageMetricExecution();
 
     /**
      * Test performing the action.

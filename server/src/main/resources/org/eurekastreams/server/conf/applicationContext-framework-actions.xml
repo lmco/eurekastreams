@@ -149,7 +149,7 @@
         <!-- Authorization -->
         <constructor-arg ref="noAuthorizationStrategy" />
         <constructor-arg>
-            <bean class="org.eurekastreams.server.action.execution.RegisterUserMetricExecution"/>
+            <bean class="org.eurekastreams.server.action.execution.RegisterUsageMetricExecution"/>
         </constructor-arg>
         <constructor-arg value="true" />
         <constructor-arg ref="taskHandler" />
