@@ -213,6 +213,7 @@ public class HistoryHandler implements ValueChangeHandler<String>
             HashMap<String, Serializable> map = new HashMap<String, Serializable>();
             map.put(UsageMetricModel.PAGE_KEY, page);
             map.put(UsageMetricModel.VALUES_KEY, values);
+            map.put(UsageMetricModel.VIEWS_KEY, views.isEmpty() ? null : views.get(0));
             UsageMetricModel.getInstance().insert(map);
         }
         fireValueChange = true;

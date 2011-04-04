@@ -43,6 +43,16 @@ public class UsageMetricModel extends BaseModel implements Insertable<HashMap<St
     public static final String VALUES_KEY = "values";
 
     /**
+     * Values key.
+     */
+    public static final String VIEWS_KEY = "views";
+
+    /**
+     * Last viewed page.
+     */
+    private String lastPageView = null;
+
+    /**
      * Gets the singleton.
      * 
      * @return the singleton.
@@ -55,30 +65,82 @@ public class UsageMetricModel extends BaseModel implements Insertable<HashMap<St
     /**
      * {@inheritDoc}
      */
-    public void insert(final HashMap<String, Serializable> request)
+    public void insert(final HashMap<String, Serializable> inRequest)
     {
-        Page page = (Page) request.get(UsageMetricModel.PAGE_KEY);
+        // grab values from param map.
+        Page incomingPage = (Page) inRequest.get(UsageMetricModel.PAGE_KEY);
+        String incomingView = (String) inRequest.get(VIEWS_KEY) == null ? "" : (String) inRequest.get(VIEWS_KEY);
+        String incomingPageView = (incomingPage + incomingView);
 
-        UsageMetricDTO metric = new UsageMetricDTO();
-        metric.setMetricDetails(generateMetricDetails(request));
+        // get metric flags.
+        boolean isStreamView = isStreamView(inRequest);
+        boolean isPageView = !incomingPageView.equalsIgnoreCase(lastPageView);
+
+        // register as last viewed page.
+        lastPageView = incomingPageView;
+
+        // short circuit here if not page or stream view (user bouncing around non-stream tabs).
+        if (isPageView || isStreamView)
+        {
+            // create the metric dto object.
+            UsageMetricDTO metric = new UsageMetricDTO(isPageView, isStreamView);
+            metric.setMetricDetails(generateMetricDetails(inRequest));
+
+            // send it to server.
+            // specify empty onFailure, don't want user to see anything if error in metrics collection.
+            super.callWriteAction("registerUsageMetric", metric, null, new OnFailureCommand()
+            {
+                public void onFailure(final Throwable inEx)
+                {
+                    // no-op
+                }
+            });
+        }
+    }
+
+    /**
+     * Returns true if inRequest info indicates page displays a stream.
+     * 
+     * @param inRequest
+     *            current page Page and parameter values.
+     * @return true if inRequest info indicates page displays a stream, false otherwise.
+     */
+    @SuppressWarnings("unchecked")
+    private boolean isStreamView(final HashMap<String, Serializable> inRequest)
+    {
+        Page page = (Page) inRequest.get(UsageMetricModel.PAGE_KEY);
+        HashMap<String, String> values = (HashMap<String, String>) inRequest.get(UsageMetricModel.VALUES_KEY);
 
         switch (page)
         {
         case ACTIVITY:
-            metric.setStreamView(true);
-            break;
+            return true;
+        case PEOPLE:
+            return isDefaultOrStreamTab(values);
+        case GROUPS:
+            return isDefaultOrStreamTab(values);
+        case ORGANIZATIONS:
+            return isDefaultOrStreamTab(values);
         default:
-            break;
+            return false;
         }
+    }
 
-        // specify empty onFailure, don't want user to see anything if error in metrics collection.
-        super.callWriteAction("registerUsageMetric", metric, null, new OnFailureCommand()
+    /**
+     * Returns true if parameter map is null, empty, or contains tab/Stream key/value.
+     * 
+     * @param inValues
+     *            History parameters.
+     * @return true if values is null, empty, or contains tab/Stream key/value.
+     */
+    private boolean isDefaultOrStreamTab(final HashMap<String, String> inValues)
+    {
+        if (inValues == null || inValues.isEmpty()
+                || (inValues.containsKey("tab") && inValues.get("tab").equalsIgnoreCase("Stream")))
         {
-            public void onFailure(final Throwable inEx)
-            {
-                // no-op
-            }
-        });
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -88,10 +150,12 @@ public class UsageMetricModel extends BaseModel implements Insertable<HashMap<St
      *            incoming request map.
      * @return metric details from incoming request map.
      */
+    @SuppressWarnings("unchecked")
     private String generateMetricDetails(final HashMap<String, Serializable> inRequest)
     {
-        Page page = (Page) inRequest.get(UsageMetricModel.PAGE_KEY);
-        HashMap<String, String> values = (HashMap<String, String>) inRequest.get(UsageMetricModel.VALUES_KEY);
+        Page page = (Page) inRequest.get(PAGE_KEY);
+        HashMap<String, String> values = (HashMap<String, String>) inRequest.get(VALUES_KEY);
+        String views = (String) inRequest.get(VIEWS_KEY);
 
         StringBuffer metricDetails = new StringBuffer();
         metricDetails.append("Page: ");
@@ -110,7 +174,9 @@ public class UsageMetricModel extends BaseModel implements Insertable<HashMap<St
             metricDetails.append("NA");
         }
 
-        return metricDetails.toString();
+        metricDetails.append(" Views: ");
+        metricDetails.append(views == null ? "NA" : views + " ");
 
+        return metricDetails.toString();
     }
 }

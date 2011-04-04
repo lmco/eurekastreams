@@ -30,10 +30,10 @@ import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 import org.eurekastreams.server.search.modelview.UsageMetricDTO;
 
 /**
- * Action to create UserMetric entity and queue up action to persist it.
+ * Action to create UsageMetric entity and queue up action to persist it.
  * 
  */
-public class RegisterUserMetricExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
+public class RegisterUsageMetricExecution implements TaskHandlerExecutionStrategy<PrincipalActionContext>
 {
     /**
      * Local logger instance.
