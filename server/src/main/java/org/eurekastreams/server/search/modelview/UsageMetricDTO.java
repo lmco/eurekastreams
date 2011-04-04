@@ -47,26 +47,15 @@ public class UsageMetricDTO implements Serializable
     /**
      * Constructor.
      * 
-     * @param inStreamView
-     *            Stream view flag.
      * @param inPageView
      *            Page view flag.
+     * @param inStreamView
+     *            Stream view flag.
      */
-    public UsageMetricDTO(final boolean inStreamView, final boolean inPageView)
+    public UsageMetricDTO(final boolean inPageView, final boolean inStreamView)
     {
         streamView = inStreamView;
         pageView = inPageView;
-    }
-
-    /**
-     * Constructor.
-     * 
-     * @param inStreamView
-     *            Stream view flag.
-     */
-    public UsageMetricDTO(final boolean inStreamView)
-    {
-        streamView = inStreamView;
     }
 
     /**
