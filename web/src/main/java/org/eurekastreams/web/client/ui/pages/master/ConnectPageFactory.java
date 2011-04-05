@@ -74,15 +74,18 @@ public class ConnectPageFactory
     {
         if ("comment".equals(widgetName))
         {
-            String resourceId = util.getParameter("resourceurl");
-            setHistory(new CreateUrlRequest(Page.WIDGET_COMMENT, resourceId));
-            return new CommentWidget(resourceId);
+            String resourceUrl = util.getParameter("resourceurl");
+            String resourceTitle = util.getParameter("resourcetitle");
+            String siteUrl = util.getParameter("siteurl");
+            String siteTitle = util.getParameter("sitetitle");
+            setHistory(new CreateUrlRequest(Page.WIDGET_COMMENT, resourceUrl));
+            return new CommentWidget(resourceUrl, resourceUrl, resourceTitle, siteUrl, siteTitle);
         }
         else if ("badge".equals(widgetName))
         {
             String accountId = util.getParameter("accountid");
             return new UserProfileBadgeWidget(accountId);
-        }        
+        }
         else
         {
             return null;

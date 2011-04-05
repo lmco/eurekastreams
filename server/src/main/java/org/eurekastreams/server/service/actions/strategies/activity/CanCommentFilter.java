@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,29 +28,27 @@ import org.eurekastreams.server.search.modelview.PersonModelView;
 
 /**
  * A filter to set the can comment bit to an activityDTO.
- * 
  */
 public class CanCommentFilter implements ActivityFilter
 {
-
     /**
      * Mapper to get PersonModelViews by account ids.
      */
-    private DomainMapper<List<String>, List<PersonModelView>> getPersonModelViewsByAccountIdsMapper;
+    private final DomainMapper<List<String>, List<PersonModelView>> getPersonModelViewsByAccountIdsMapper;
 
     /**
      * DomainGroup model view mapper.
      */
-    private GetDomainGroupsByShortNames groupMapper;
+    private final GetDomainGroupsByShortNames groupMapper;
 
     /**
      * Mapper to get all Coordinators of a Group.
      */
-    private GetAllPersonIdsWhoHaveGroupCoordinatorAccess groupCoordinators;
+    private final GetAllPersonIdsWhoHaveGroupCoordinatorAccess groupCoordinators;
 
     /**
      * Constructor.
-     * 
+     *
      * @param inGetPersonModelViewsByAccountIdsMapper
      *            Mapper to get PersonModelViews by account ids
      * @param inGroupMapper
@@ -70,16 +68,17 @@ public class CanCommentFilter implements ActivityFilter
 
     /**
      * apply the filter.
-     * 
+     *
      * @param activities
      *            The list of activities to filter.
      * @param inCurrentUserAccountId
      *            The currently logged in user's account id.
      */
+    @Override
     public void filter(final List<ActivityDTO> activities, final PersonModelView inCurrentUserAccountId)
     {
         // short-circuit if no work to do.
-        if (activities.size() == 0)
+        if (activities.isEmpty())
         {
             return;
         }
@@ -137,7 +136,7 @@ public class CanCommentFilter implements ActivityFilter
 
     /**
      * Determine if current user is allowed to comment on activites with person destinations.
-     * 
+     *
      * @param inCurrentUserAccountId
      *            Current user's account Id.
      * @param inPersonCommentable
@@ -167,7 +166,7 @@ public class CanCommentFilter implements ActivityFilter
 
     /**
      * Determine if current user is allowed to comment on activites with group destinations.
-     * 
+     *
      * @param inCurrentUserAccountId
      *            Current user's account Id.
      * @param inGroupCommentable

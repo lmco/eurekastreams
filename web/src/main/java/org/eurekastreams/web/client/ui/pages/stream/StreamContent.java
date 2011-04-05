@@ -32,6 +32,7 @@ import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
 import org.eurekastreams.web.client.ui.common.stream.filters.FilterListPanel;
 import org.eurekastreams.web.client.ui.common.stream.filters.group.GroupStreamRenderer;
 import org.eurekastreams.web.client.ui.common.stream.filters.list.CustomStreamRenderer;
+import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.Command;
@@ -104,7 +105,7 @@ public class StreamContent extends Composite
         errorLabel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formErrorBox());
         errorLabel.setVisible(false);
 
-        streamView = new StreamPanel(true);
+        streamView = new StreamPanel(ShowRecipient.ALL);
         streamPanel.add(streamView);
 
         RootPanel.get().addStyleName(StaticResourceBundle.INSTANCE.coreCss().stream());

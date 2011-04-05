@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.web.client.ui.common.stream.renderers.verb;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,8 @@ import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.web.client.ui.common.stream.renderers.AvatarRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.MetadataLinkRenderer;
+import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
+import org.eurekastreams.web.client.ui.common.stream.renderers.StatefulRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer.State;
 import org.eurekastreams.web.client.ui.common.stream.renderers.object.ObjectRenderer;
@@ -52,7 +55,7 @@ public class ShareRenderer implements VerbRenderer
     /**
      * Whether or not to show the recipient.
      */
-    boolean showRecipient;
+    ShowRecipient showRecipient;
 
     /**
      * Setup.
@@ -67,7 +70,8 @@ public class ShareRenderer implements VerbRenderer
      *            the recipient.
      */
     public void setup(final Map<BaseObjectType, ObjectRenderer> inObjectRendererDictionary,
-            final ActivityDTO inActivity, final StreamMessageItemRenderer.State inState, final boolean inShowRecipient)
+            final ActivityDTO inActivity, final StreamMessageItemRenderer.State inState,
+            final ShowRecipient inShowRecipient)
     {
         objectRendererDictionary = inObjectRendererDictionary;
         activity = inActivity;
@@ -154,24 +158,23 @@ public class ShareRenderer implements VerbRenderer
      *
      * @return the list.
      */
-    public List<MetadataLinkRenderer> getMetaDataItemRenderers()
+    public List<StatefulRenderer> getMetaDataItemRenderers()
     {
-        List<MetadataLinkRenderer> renderers = new LinkedList<MetadataLinkRenderer>();
-        renderers.add(new MetadataLinkRenderer("Posted by", activity.getOriginalActor().getUniqueIdentifier(),
-                activity.getOriginalActor().getDisplayName()));
-        return renderers;
+        return Collections.singletonList((StatefulRenderer) new MetadataLinkRenderer("Posted by", activity
+                .getOriginalActor()
+                .getUniqueIdentifier(), activity.getOriginalActor().getDisplayName()));
     }
 
     /**
      * {@inheritDoc}
      */
-    public List<MetadataLinkRenderer> getSourceMetaDataItemRenderers()
+    public List<StatefulRenderer> getSourceMetaDataItemRenderers()
     {
-        List<MetadataLinkRenderer> renderers = new LinkedList<MetadataLinkRenderer>();
+        List<StatefulRenderer> renderers = new LinkedList<StatefulRenderer>();
         renderers.add(new MetadataLinkRenderer("", activity.getActor().getUniqueIdentifier(), activity.getActor()
                 .getDisplayName()));
 
-        if (showRecipient)
+        if (showRecipient == ShowRecipient.ALL)
         {
             StreamEntityDTO stream = activity.getDestinationStream();
             renderers.add(new MetadataLinkRenderer("to", stream.getType(), stream.getUniqueIdentifier(), stream

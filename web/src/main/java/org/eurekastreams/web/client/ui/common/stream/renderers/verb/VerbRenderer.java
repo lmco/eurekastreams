@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,8 @@ import java.util.Map;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
-import org.eurekastreams.web.client.ui.common.stream.renderers.MetadataLinkRenderer;
+import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
+import org.eurekastreams.web.client.ui.common.stream.renderers.StatefulRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.object.ObjectRenderer;
 
@@ -79,14 +80,14 @@ public interface VerbRenderer
      *
      * @return the list.
      */
-    List<MetadataLinkRenderer> getMetaDataItemRenderers();
+    List<StatefulRenderer> getMetaDataItemRenderers();
 
     /**
      * Retern a list of appropriate metadata link renderers for the source (by X to Y).
      *
      * @return the list.
      */
-    List<MetadataLinkRenderer> getSourceMetaDataItemRenderers();
+    List<StatefulRenderer> getSourceMetaDataItemRenderers();
 
     /**
      * Setup.
@@ -98,11 +99,8 @@ public interface VerbRenderer
      * @param state
      *            the state of the activity.
      * @param showRecipient
-     *            the recipient.
+     *            whether to show the recipient.
      */
-    void setup(
-            final Map<BaseObjectType, ObjectRenderer> objectRendererDictionary,
-            final ActivityDTO activity,
-            final StreamMessageItemRenderer.State state,
-            final boolean showRecipient);
+    void setup(final Map<BaseObjectType, ObjectRenderer> objectRendererDictionary, final ActivityDTO activity,
+            final StreamMessageItemRenderer.State state, final ShowRecipient showRecipient);
 }

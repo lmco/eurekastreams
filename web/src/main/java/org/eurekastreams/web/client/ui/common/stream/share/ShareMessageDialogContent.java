@@ -34,6 +34,7 @@ import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
 import org.eurekastreams.web.client.ui.common.stream.PostToPanel;
 import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulator;
 import org.eurekastreams.web.client.ui.common.stream.decorators.verb.SharePopulator;
+import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer.State;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
@@ -131,7 +132,7 @@ public class ShareMessageDialogContent extends BaseDialogContent
         postToPanel = new PostToPanel(postScope, true);
         body.add(postToPanel);
 
-        StreamMessageItemRenderer messageRenderer = new StreamMessageItemRenderer(false, State.READONLY);
+        StreamMessageItemRenderer messageRenderer = new StreamMessageItemRenderer(ShowRecipient.NONE, State.READONLY);
 
         body.add(messageRenderer.render(sharedMessage));
 
@@ -298,6 +299,7 @@ public class ShareMessageDialogContent extends BaseDialogContent
     /**
      * On show, set focus to comment box.
      */
+    @Override
     public void show()
     {
         DeferredCommand.addCommand(new Command()

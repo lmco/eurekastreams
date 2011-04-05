@@ -2034,6 +2034,7 @@
                     <ref bean="likeFilter" />
                     <ref bean="deleteFilter" />
                     <ref bean="savedFilter" />
+                    <ref bean="authorLockedFilter" />
                     <ref bean="serverTimeFilter" />
                 </list>
             </constructor-arg>
@@ -2917,6 +2918,7 @@
                         <ref bean="likeFilter" />
                         <ref bean="deleteFilter" />
                         <ref bean="savedFilter" />
+                        <ref bean="authorLockedFilter" />
                         <ref bean="serverTimeFilter" />
                     </list>
                 </constructor-arg>
@@ -4108,6 +4110,12 @@
     </bean>
     <bean id="serverTimeFilter"
         class="org.eurekastreams.server.service.actions.strategies.activity.PopulateActivityDTOServerDateTime" />
+         
+	<bean id="authorLockedFilter"
+		class="org.eurekastreams.server.service.actions.strategies.activity.IsAuthorLockedFilter">
+		<constructor-arg ref="getPersonsByIdsMapper" />
+	</bean>
+		
             
     <bean id="getActivitiesByRequest" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />

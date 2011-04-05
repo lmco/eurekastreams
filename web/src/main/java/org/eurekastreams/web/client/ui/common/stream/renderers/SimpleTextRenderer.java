@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,36 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.web.client.events;
+package org.eurekastreams.web.client.ui.common.stream.renderers;
 
-import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
+import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Event to change whether we show the recipient.
- *
+ * Renders a literal string.
  */
-public class ChangeShowStreamRecipientEvent
+public class SimpleTextRenderer implements StatefulRenderer
 {
-    /**
-     * New value.
-     */
-    private final ShowRecipient value;
+    /** String to render. */
+    private final String text;
 
     /**
      * Constructor.
-     * @param inValue new value.
+     *
+     * @param inText
+     *            String to render.
      */
-    public ChangeShowStreamRecipientEvent(final ShowRecipient inValue)
+    public SimpleTextRenderer(final String inText)
     {
-        value = inValue;
+        text = inText;
     }
 
     /**
-     * Get the value.
-     * @return the value.
+     * {@inheritDoc}
      */
-    public ShowRecipient getValue()
+    public Widget render()
     {
-        return value;
+        return new InlineLabel(text);
     }
 }

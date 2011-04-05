@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.stream.filters.FilterPanel;
+import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -54,17 +55,17 @@ public class CustomStreamPanel extends Composite implements FilterPanel
     /**
      * Label Container.
      */
-    private FlowPanel labelContainer;
+    private final FlowPanel labelContainer;
 
     /**
      * Label.
      */
-    private Label label;
+    private final Label label;
 
     /**
      * The move handle.
      */
-    private Label moveHandle;
+    private final Label moveHandle;
 
     /**
      * Read only.
@@ -203,7 +204,7 @@ public class CustomStreamPanel extends Composite implements FilterPanel
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().active());
 
         Session.getInstance().getEventBus().notifyObservers(new SwitchedToCustomStreamEvent());
-        Session.getInstance().getEventBus().notifyObservers(new ChangeShowStreamRecipientEvent(true));
+        Session.getInstance().getEventBus().notifyObservers(new ChangeShowStreamRecipientEvent(ShowRecipient.ALL));
     }
 
     /**

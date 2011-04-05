@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.web.client.ui.pages.widget;
 
+import java.util.HashMap;
+
 import org.eurekastreams.server.action.request.stream.PostActivityRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
@@ -32,8 +34,11 @@ import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
 import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulator;
 import org.eurekastreams.web.client.ui.common.stream.decorators.object.NotePopulator;
 import org.eurekastreams.web.client.ui.common.stream.decorators.verb.PostPopulator;
+import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
+import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 
@@ -45,28 +50,38 @@ public class CommentWidget extends Composite
     /** Unique ID of entity whose stream is displayed. */
     private final String resourceId;
 
+    /** URL of resource whose stream is displayed. */
+    private final String resourceUrl;
+
     /** Description of the resource. */
-    private String resourceTitle;
+    private final String resourceTitle;
 
     /** URL of the site containing the resource. */
-    private String siteUrl;
+    private final String siteUrl;
 
     /** Description of the site containing the resource. */
-    private String siteTitle;
+    private final String siteTitle;
 
     /**
      * Constructor.
      *
-     * @param view
+     * @param inResourceId
      *            Unique ID of resource whose stream to display.
      */
-    public CommentWidget(final String view)
+    public CommentWidget(final String inResourceId, final String inResourceUrl, final String inResourceTitle,
+            final String inSiteUrl, final String inSiteTitle)
     {
-        resourceId = view;
+        resourceId = inResourceId;
+        resourceUrl = inResourceUrl;
+        resourceTitle = inResourceTitle;
+        siteUrl = inSiteUrl;
+        siteTitle = inSiteTitle;
 
         StreamScope streamScope = new StreamScope(ScopeType.RESOURCE, resourceId);
 
-        final StreamPanel streamPanel = new StreamPanel(false, new CommentWidgetPostToStreamComposite(streamScope));
+        final StreamPanel streamPanel = new StreamPanel(ShowRecipient.NONE,
+                new CommentWidgetStreamMessageItemRenderer(),
+                new CommentWidgetPostToStreamComposite(streamScope));
         streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().embeddedWidget());
         streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectCommentWidget());
         initWidget(streamPanel);
@@ -98,6 +113,31 @@ public class CommentWidget extends Composite
     }
 
     /**
+     * Custom version of the stream item renderer tailored to change the share behavior.
+     */
+    class CommentWidgetStreamMessageItemRenderer extends StreamMessageItemRenderer
+    {
+        /**
+         * Constructor.
+         */
+        public CommentWidgetStreamMessageItemRenderer()
+        {
+            super(ShowRecipient.NONE);
+            setCreatePermalink(false);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onShare(final ActivityDTO inMsg)
+        {
+            Window.alert("Need to pop up share widget here!");
+            // TODO Auto-generated method stub
+        }
+    }
+
+    /**
      * Custom version of the post composite tailored to post activities to a resource stream.
      */
     class CommentWidgetPostToStreamComposite extends PostToStreamComposite
@@ -107,6 +147,9 @@ public class CommentWidget extends Composite
 
         /** Checkbox for whether to post to Eureka (used for resource streams). */
         private final CheckBox postToEurekaCheckBox = new CheckBox("Post to Eureka");
+
+        /** If user's account is locked (presumably a non-ES user). */
+        private final boolean accountLocked;
 
         /**
          * Constructor.
@@ -118,8 +161,12 @@ public class CommentWidget extends Composite
         {
             super(inScope);
 
-            postToEurekaCheckBox.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postToEureka());
-            getSubTextboxPanel().insert(postToEurekaCheckBox, 0);
+            accountLocked = Session.getInstance().getCurrentPerson().isAccountLocked();
+            if (!accountLocked)
+            {
+                postToEurekaCheckBox.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postToEureka());
+                getSubTextboxPanel().insert(postToEurekaCheckBox, 0);
+            }
         }
 
         /**
@@ -129,7 +176,7 @@ public class CommentWidget extends Composite
         protected void onExpand()
         {
             super.onExpand();
-            postToEurekaCheckBox.setValue(true);
+            postToEurekaCheckBox.setValue(!accountLocked);
         }
 
         /**
@@ -142,7 +189,11 @@ public class CommentWidget extends Composite
                     resourceId, new PostPopulator(), new NotePopulator());
 
             activity.setShowInStream(postToEurekaCheckBox.getValue());
-            // TODO: put other fields in
+            HashMap<String, String> props = activity.getBaseObjectProperties();
+            props.put("resourceUrl", resourceUrl);
+            props.put("resourceTitle", resourceTitle);
+            props.put("siteUrl", siteUrl);
+            props.put("siteTitle", siteTitle);
 
             PostActivityRequest postRequest = new PostActivityRequest(activity);
             ActivityModel.getInstance().insert(postRequest);
