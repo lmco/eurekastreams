@@ -64,9 +64,17 @@ public class CommentWidget extends Composite
 
     /**
      * Constructor.
-     *
+     * 
      * @param inResourceId
      *            Unique ID of resource whose stream to display.
+     * @param inResourceUrl
+     *            Resource's URL.
+     * @param inResourceTitle
+     *            Resource's title.
+     * @param inSiteUrl
+     *            Site's URL (optional).
+     * @param inSiteTitle
+     *            Site's title (optional).
      */
     public CommentWidget(final String inResourceId, final String inResourceUrl, final String inResourceTitle,
             final String inSiteUrl, final String inSiteTitle)

@@ -22,5 +22,10 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public interface StatefulRenderer
 {
+    /**
+     * Renders the item.
+     * 
+     * @return Widget containing the rendered item.
+     */
     Widget render();
 }

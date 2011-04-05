@@ -57,13 +57,14 @@ public class SetSharedResourceLikeExecutionTest
     /**
      * Mocked mapper.
      */
-    private final SetLikedResourceStatusMapperFake setLikedResourceStatusMapper = // 
+    private final SetLikedResourceStatusMapperFake setLikedResourceStatusMapper = //
     new SetLikedResourceStatusMapperFake();
 
     /**
      * Mapper to get or insert shared resources.
      */
-    private final SharedResourceRequestMapperFake findOrInsertSharedResourceMapper = new SharedResourceRequestMapperFake();
+    private final SharedResourceRequestMapperFake findOrInsertSharedResourceMapper = // \n
+    new SharedResourceRequestMapperFake();
 
     /**
      * Prepare the sut.
@@ -120,7 +121,8 @@ public class SetSharedResourceLikeExecutionTest
     /**
      * Fake mapper to store the request so the tests can verify it was made properly.
      */
-    private class SetLikedResourceStatusMapperFake implements DomainMapper<SetSharedResourceLikeMapperRequest, Boolean>
+    private class SetLikedResourceStatusMapperFake implements
+            DomainMapper<SetSharedResourceLikeMapperRequest, Boolean>
     {
         /**
          * The request last passed into excecute.
@@ -129,7 +131,7 @@ public class SetSharedResourceLikeExecutionTest
 
         /**
          * execute.
-         * 
+         *
          * @param inRequest
          *            the request made - store it
          * @return true
@@ -176,7 +178,7 @@ public class SetSharedResourceLikeExecutionTest
 
         /**
          * execute.
-         * 
+         *
          * @param inRequest
          *            the request made - store it
          * @return true
