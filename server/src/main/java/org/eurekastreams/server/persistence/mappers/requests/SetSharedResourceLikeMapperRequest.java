@@ -17,7 +17,7 @@ package org.eurekastreams.server.persistence.mappers.requests;
 
 import java.io.Serializable;
 
-import org.eurekastreams.server.domain.stream.BaseObjectType;
+import org.eurekastreams.server.domain.stream.SharedResource;
 
 /**
  * Request for setting the like/unlike status of a shared resource.
@@ -30,16 +30,6 @@ public class SetSharedResourceLikeMapperRequest implements Serializable
     private static final long serialVersionUID = -9193476106311785978L;
 
     /**
-     * Shared resource unique key.
-     */
-    private String uniqueKey;
-
-    /**
-     * Shared resource type.
-     */
-    private BaseObjectType sharedResourceType;
-
-    /**
      * Whether the user is liking the resource.
      */
     private boolean likedStatus;
@@ -48,6 +38,11 @@ public class SetSharedResourceLikeMapperRequest implements Serializable
      * The id of the person making the request.
      */
     private long personId;
+
+    /**
+     * The shared resource.
+     */
+    private SharedResource sharedResource;
 
     /**
      * Constructor.
@@ -61,54 +56,34 @@ public class SetSharedResourceLikeMapperRequest implements Serializable
      * 
      * @param inPersonId
      *            the id of the person making the request
-     * @param inUniqueKey
-     *            the shared resource unique key
-     * @param inSharedResourceType
-     *            the shared resource type
+     * @param inSharedResource
+     *            the shared resource
      * @param inLikedStatus
      *            true if the user wishes to like, or false to unlike
      */
-    public SetSharedResourceLikeMapperRequest(final long inPersonId, final String inUniqueKey,
-            final BaseObjectType inSharedResourceType, final boolean inLikedStatus)
+    public SetSharedResourceLikeMapperRequest(final long inPersonId, final SharedResource inSharedResource,
+            final boolean inLikedStatus)
     {
         personId = inPersonId;
-        uniqueKey = inUniqueKey;
-        sharedResourceType = inSharedResourceType;
+        sharedResource = inSharedResource;
         likedStatus = inLikedStatus;
     }
 
     /**
-     * @return the uniqueKey
+     * @return the sharedResource
      */
-    public String getUniqueKey()
+    public SharedResource getSharedResource()
     {
-        return uniqueKey;
+        return sharedResource;
     }
 
     /**
-     * @param inUniqueKey
-     *            the uniqueKey to set
+     * @param inSharedResource
+     *            the sharedResource to set
      */
-    public void setUniqueKey(final String inUniqueKey)
+    public void setSharedResource(final SharedResource inSharedResource)
     {
-        uniqueKey = inUniqueKey;
-    }
-
-    /**
-     * @return the sharedResourceType
-     */
-    public BaseObjectType getSharedResourceType()
-    {
-        return sharedResourceType;
-    }
-
-    /**
-     * @param inSharedResourceType
-     *            the sharedResourceType to set
-     */
-    public void setSharedResourceType(final BaseObjectType inSharedResourceType)
-    {
-        sharedResourceType = inSharedResourceType;
+        sharedResource = inSharedResource;
     }
 
     /**

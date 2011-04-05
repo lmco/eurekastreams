@@ -20,7 +20,9 @@ import java.io.Serializable;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
+import org.eurekastreams.server.action.request.SharedResourceRequest;
 import org.eurekastreams.server.action.request.stream.SetSharedResourceLikeRequest;
+import org.eurekastreams.server.domain.stream.SharedResource;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.SetSharedResourceLikeMapperRequest;
 
@@ -35,13 +37,22 @@ public class SetSharedResourceLikeExecution implements TaskHandlerExecutionStrat
     private DomainMapper<SetSharedResourceLikeMapperRequest, Boolean> setLikedResourceStatusMapper;
 
     /**
+     * Mapper to get or insert shared resources.
+     */
+    private DomainMapper<SharedResourceRequest, SharedResource> findOrInsertSharedResourceMapper;
+
+    /**
      * @param inSetLikedResourceStatusMapper
      *            the mapper to use to update the person's liked status of the shared resource
+     * @param inFindOrInsertSharedResourceMapper
+     *            mapper to get or insert shared resources
      */
     public SetSharedResourceLikeExecution(
-            final DomainMapper<SetSharedResourceLikeMapperRequest, Boolean> inSetLikedResourceStatusMapper)
+            final DomainMapper<SetSharedResourceLikeMapperRequest, Boolean> inSetLikedResourceStatusMapper,
+            final DomainMapper<SharedResourceRequest, SharedResource> inFindOrInsertSharedResourceMapper)
     {
         setLikedResourceStatusMapper = inSetLikedResourceStatusMapper;
+        findOrInsertSharedResourceMapper = inFindOrInsertSharedResourceMapper;
     }
 
     /**
@@ -58,8 +69,11 @@ public class SetSharedResourceLikeExecution implements TaskHandlerExecutionStrat
                 .getParams();
         final Long personId = inActionContext.getActionContext().getPrincipal().getId();
 
-        SetSharedResourceLikeMapperRequest mapperRequest = new SetSharedResourceLikeMapperRequest(personId, request
-                .getUniqueKey(), request.getResourceType(), request.getLikes());
+        // find the shared resource
+        SharedResource sr = findOrInsertSharedResourceMapper.execute(new SharedResourceRequest(request.getUniqueKey()));
+
+        SetSharedResourceLikeMapperRequest mapperRequest = new SetSharedResourceLikeMapperRequest(personId, sr, request
+                .getLikes());
 
         setLikedResourceStatusMapper.execute(mapperRequest);
         return new Boolean(true);

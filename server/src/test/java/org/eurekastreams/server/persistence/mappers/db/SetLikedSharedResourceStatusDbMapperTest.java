@@ -19,10 +19,14 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.domain.stream.LikedSharedResource;
+import org.eurekastreams.server.domain.stream.SharedResource;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.eurekastreams.server.persistence.mappers.requests.SetSharedResourceLikeMapperRequest;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,6 +35,16 @@ import org.junit.Test;
  */
 public class SetLikedSharedResourceStatusDbMapperTest extends MapperTest
 {
+    /**
+     * Context for building mock objects.
+     */
+    private final Mockery context = new JUnit4Mockery()
+    {
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
+
     /**
      * System under test.
      */
@@ -44,27 +58,22 @@ public class SetLikedSharedResourceStatusDbMapperTest extends MapperTest
     /**
      * ID of the shared resource link.
      */
-    private final long followedLinkId = 5L;
+    private final long likedLinkId = 5L;
 
     /**
      * ID of the shared resource link.
      */
-    private final long unfollowedLinkId = 6L;
+    private final long unlikedLinkId = 6L;
 
     /**
-     * The link that the person is already following.
+     * Shared resource mock that's followed by the user.
      */
-    private final String followedLink = "http://foo.com/foo.html";
+    private final SharedResource likedSr = context.mock(SharedResource.class, "followed");
 
     /**
-     * The link that the person isn't yet following.
+     * Shared resource mock that's not followed by the user.
      */
-    private final String unfollowedLink = "http://foo.foo.com/foo.html";
-
-    /**
-     * Link that doesn't exist as a shared resource.
-     */
-    private final String linkThatDoesntExist = "http://fooooooooo.com";
+    private final SharedResource unlikedSr = context.mock(SharedResource.class, "not followed");
 
     /**
      * Setup method.
@@ -74,6 +83,17 @@ public class SetLikedSharedResourceStatusDbMapperTest extends MapperTest
     {
         sut = new SetLikedSharedResourceStatusDbMapper();
         sut.setEntityManager(getEntityManager());
+
+        context.checking(new Expectations()
+        {
+            {
+                allowing(likedSr).getId();
+                will(returnValue(likedLinkId));
+
+                allowing(unlikedSr).getId();
+                will(returnValue(unlikedLinkId));
+            }
+        });
     }
 
     /**
@@ -84,39 +104,16 @@ public class SetLikedSharedResourceStatusDbMapperTest extends MapperTest
     {
         List<LikedSharedResource> likedResources = getEntityManager().createQuery(
                 "FROM LikedSharedResource where pk.personId = :personId AND pk.sharedResourceId = :sharedResourceId")
-                .setParameter("personId", personId).setParameter("sharedResourceId", followedLinkId).getResultList();
+                .setParameter("personId", personId).setParameter("sharedResourceId", likedLinkId).getResultList();
 
         assertEquals(1, likedResources.size());
         getEntityManager().clear();
 
-        sut.execute(new SetSharedResourceLikeMapperRequest(personId, followedLink, BaseObjectType.BOOKMARK, false));
+        sut.execute(new SetSharedResourceLikeMapperRequest(personId, likedSr, false));
 
         likedResources = getEntityManager().createQuery(
                 "FROM LikedSharedResource where pk.personId = :personId AND pk.sharedResourceId = :sharedResourceId")
-                .setParameter("personId", personId).setParameter("sharedResourceId", followedLinkId).getResultList();
-
-        assertEquals(0, likedResources.size());
-    }
-
-    /**
-     * Test unliking a shared resource when the person liked it, with the resource being the wrong case.
-     */
-    @Test
-    public void testUnlikeWhenLikedWrongCase()
-    {
-        List<LikedSharedResource> likedResources = getEntityManager().createQuery(
-                "FROM LikedSharedResource where pk.personId = :personId AND pk.sharedResourceId = :sharedResourceId")
-                .setParameter("personId", personId).setParameter("sharedResourceId", followedLinkId).getResultList();
-
-        assertEquals(1, likedResources.size());
-        getEntityManager().clear();
-
-        sut.execute(new SetSharedResourceLikeMapperRequest(personId, followedLink.toUpperCase(),
-                BaseObjectType.BOOKMARK, false));
-
-        likedResources = getEntityManager().createQuery(
-                "FROM LikedSharedResource where pk.personId = :personId AND pk.sharedResourceId = :sharedResourceId")
-                .setParameter("personId", personId).setParameter("sharedResourceId", followedLinkId).getResultList();
+                .setParameter("personId", personId).setParameter("sharedResourceId", likedLinkId).getResultList();
 
         assertEquals(0, likedResources.size());
     }
@@ -129,16 +126,16 @@ public class SetLikedSharedResourceStatusDbMapperTest extends MapperTest
     {
         List<LikedSharedResource> likedResources = getEntityManager().createQuery(
                 "FROM LikedSharedResource where pk.personId = :personId AND pk.sharedResourceId = :sharedResourceId")
-                .setParameter("personId", personId).setParameter("sharedResourceId", unfollowedLinkId).getResultList();
+                .setParameter("personId", personId).setParameter("sharedResourceId", unlikedLinkId).getResultList();
 
         assertEquals(0, likedResources.size());
         getEntityManager().clear();
 
-        sut.execute(new SetSharedResourceLikeMapperRequest(personId, unfollowedLink, BaseObjectType.BOOKMARK, false));
+        sut.execute(new SetSharedResourceLikeMapperRequest(personId, unlikedSr, false));
 
         likedResources = getEntityManager().createQuery(
                 "FROM LikedSharedResource where pk.personId = :personId AND pk.sharedResourceId = :sharedResourceId")
-                .setParameter("personId", personId).setParameter("sharedResourceId", unfollowedLinkId).getResultList();
+                .setParameter("personId", personId).setParameter("sharedResourceId", unlikedLinkId).getResultList();
 
         assertEquals(0, likedResources.size());
 
@@ -152,39 +149,16 @@ public class SetLikedSharedResourceStatusDbMapperTest extends MapperTest
     {
         List<LikedSharedResource> likedResources = getEntityManager().createQuery(
                 "FROM LikedSharedResource where pk.personId = :personId AND pk.sharedResourceId = :sharedResourceId")
-                .setParameter("personId", personId).setParameter("sharedResourceId", unfollowedLinkId).getResultList();
+                .setParameter("personId", personId).setParameter("sharedResourceId", unlikedLinkId).getResultList();
 
         assertEquals(0, likedResources.size());
         getEntityManager().clear();
 
-        sut.execute(new SetSharedResourceLikeMapperRequest(personId, unfollowedLink, BaseObjectType.BOOKMARK, true));
+        sut.execute(new SetSharedResourceLikeMapperRequest(personId, unlikedSr, true));
 
         likedResources = getEntityManager().createQuery(
                 "FROM LikedSharedResource where pk.personId = :personId AND pk.sharedResourceId = :sharedResourceId")
-                .setParameter("personId", personId).setParameter("sharedResourceId", unfollowedLinkId).getResultList();
-
-        assertEquals(1, likedResources.size());
-    }
-
-    /**
-     * Test liking a resource when not previously liked, with the resource being the wrong case.
-     */
-    @Test
-    public void testLikeWhenNotLikedWrongCase()
-    {
-        List<LikedSharedResource> likedResources = getEntityManager().createQuery(
-                "FROM LikedSharedResource where pk.personId = :personId AND pk.sharedResourceId = :sharedResourceId")
-                .setParameter("personId", personId).setParameter("sharedResourceId", unfollowedLinkId).getResultList();
-
-        assertEquals(0, likedResources.size());
-        getEntityManager().clear();
-
-        sut.execute(new SetSharedResourceLikeMapperRequest(personId, unfollowedLink.toUpperCase(),
-                BaseObjectType.BOOKMARK, true));
-
-        likedResources = getEntityManager().createQuery(
-                "FROM LikedSharedResource where pk.personId = :personId AND pk.sharedResourceId = :sharedResourceId")
-                .setParameter("personId", personId).setParameter("sharedResourceId", unfollowedLinkId).getResultList();
+                .setParameter("personId", personId).setParameter("sharedResourceId", unlikedLinkId).getResultList();
 
         assertEquals(1, likedResources.size());
     }
@@ -197,61 +171,18 @@ public class SetLikedSharedResourceStatusDbMapperTest extends MapperTest
     {
         List<LikedSharedResource> likedResources = getEntityManager().createQuery(
                 "FROM LikedSharedResource where pk.personId = :personId AND pk.sharedResourceId = :sharedResourceId")
-                .setParameter("personId", personId).setParameter("sharedResourceId", followedLinkId).getResultList();
+                .setParameter("personId", personId).setParameter("sharedResourceId", likedLinkId).getResultList();
 
         assertEquals(1, likedResources.size());
         getEntityManager().clear();
 
-        sut.execute(new SetSharedResourceLikeMapperRequest(personId, followedLink, BaseObjectType.BOOKMARK, true));
+        sut.execute(new SetSharedResourceLikeMapperRequest(personId, likedSr, true));
 
         likedResources = getEntityManager().createQuery(
                 "FROM LikedSharedResource where pk.personId = :personId AND pk.sharedResourceId = :sharedResourceId")
-                .setParameter("personId", personId).setParameter("sharedResourceId", followedLinkId).getResultList();
+                .setParameter("personId", personId).setParameter("sharedResourceId", likedLinkId).getResultList();
 
         assertEquals(1, likedResources.size());
     }
 
-    /**
-     * Test liking a resource that doesn't exist.
-     */
-    @Test
-    public void testLikingResourceThatDoesntExist()
-    {
-        List<LikedSharedResource> likedResources = getEntityManager().createQuery(
-                "FROM LikedSharedResource where pk.personId = :personId").setParameter("personId", personId)
-                .getResultList();
-
-        assertEquals(1, likedResources.size());
-        getEntityManager().clear();
-
-        sut
-                .execute(new SetSharedResourceLikeMapperRequest(personId, linkThatDoesntExist, BaseObjectType.BOOKMARK,
-                        true));
-
-        likedResources = getEntityManager().createQuery("FROM LikedSharedResource where pk.personId = :personId")
-                .setParameter("personId", personId).getResultList();
-        assertEquals(1, likedResources.size());
-    }
-
-    /**
-     * Test liking a resource that doesn't exist.
-     */
-    @Test
-    public void testUnlikingResourceThatDoesntExist()
-    {
-        List<LikedSharedResource> likedResources = getEntityManager().createQuery(
-                "FROM LikedSharedResource where pk.personId = :personId").setParameter("personId", personId)
-                .getResultList();
-
-        assertEquals(1, likedResources.size());
-        getEntityManager().clear();
-
-        sut.execute(new SetSharedResourceLikeMapperRequest(personId, linkThatDoesntExist, BaseObjectType.BOOKMARK,
-                false));
-
-        likedResources = getEntityManager().createQuery("FROM LikedSharedResource where pk.personId = :personId")
-                .setParameter("personId", personId).getResultList();
-        assertEquals(1, likedResources.size());
-
-    }
 }
