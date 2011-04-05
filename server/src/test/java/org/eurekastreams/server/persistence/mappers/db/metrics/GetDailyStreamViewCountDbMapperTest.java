@@ -16,11 +16,35 @@
 package org.eurekastreams.server.persistence.mappers.db.metrics;
 
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test fixture for GetDailyStreamViewCountDbMapper.
  */
 public class GetDailyStreamViewCountDbMapperTest extends MapperTest
 {
+    /**
+     * System under test.
+     */
+    private GetDailyPageViewCountDbMapper sut;
 
+    /**
+     * Setup.
+     */
+    @Before
+    public void setup()
+    {
+        sut = new GetDailyPageViewCountDbMapper();
+        sut.setEntityManager(getEntityManager());
+    }
+
+    /**
+     * Test execute().
+     */
+    @Test
+    public void testExecute()
+    {
+        return;
+    }
 }
