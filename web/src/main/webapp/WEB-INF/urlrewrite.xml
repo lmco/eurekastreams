@@ -164,6 +164,10 @@
 		<from>^/api/0/full/setStreamOrder/(.*)$</from>
 		<to last="true">/resources/api/0/full/setStreamOrder/org.eurekastreams.server.action.request.stream.SetStreamOrderRequest/$1</to>
 	</rule>
+	<rule>
+        <from>^/api/0/full/registerUsageMetric/(.*)$</from>
+        <to last="true">/resources/api/0/full/registerUsageMetric/org.eurekastreams.server.search.modelview.UsageMetricDTO/$1</to>
+    </rule>
 
 	<!-- READ-ONLY API -->
 	
