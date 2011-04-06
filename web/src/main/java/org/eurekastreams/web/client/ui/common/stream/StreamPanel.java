@@ -191,7 +191,7 @@ public class StreamPanel extends FlowPanel
 
     /**
      * Initialize page.
-     * 
+     *
      * @param inShowRecipients
      *            if recipients should be shown.
      * @param itemRenderer
@@ -370,8 +370,8 @@ public class StreamPanel extends FlowPanel
                         {
                             final String streamSearchText = queryObject.get("keywords").isString().stringValue();
 
-                            searchBoxWidget.setSearchTerm(search);
-                            searchStatusWidget.setSearchTerm(search);
+                            searchBoxWidget.setSearchTerm(streamSearchText);
+                            searchStatusWidget.setSearchTerm(streamSearchText);
 
                             updatedJson = StreamJsonRequestFactory.setSearchTerm(streamSearchText,
                                     StreamJsonRequestFactory.getJSONRequest(updatedJson)).toString();

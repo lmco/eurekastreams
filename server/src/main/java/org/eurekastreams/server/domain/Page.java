@@ -101,6 +101,10 @@ public enum Page implements Serializable
      */
     WIDGET_STREAM("widget-stream"),
     /**
+     * Widget displaying a fully-interactive view of a stream.
+     */
+    WIDGET_FULL_STREAM("widget-fullstream"),
+    /**
      * Widget to like or share a resource.
      */
     WIDGET_LIKE_SHARE("widget-likeshare"),

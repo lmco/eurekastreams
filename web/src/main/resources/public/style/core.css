@@ -1776,6 +1776,7 @@ div.new-messages-notification>div.refresh-stream {
 
 .connect-widget-comment .post-to-stream-container .attach-link-container,
 .connect-widget-comment .post-to-stream-container .post-to,
+.eureka-connect-full-stream .post-to-stream-container .post-to,
 .profile .post-to-stream-container .post-to {
 	display: none;
 }
@@ -7882,6 +7883,9 @@ html,body {
 	top: 15px;
 }
 
+.eureka-connect-full-stream
+{
+}
 
 /*/////////////////////////////////////////////////////////////////////////////
 
