@@ -71,6 +71,12 @@ public class FindOrInsertSharedResourceByUniqueKeyDbMapper extends
             }
 
             getEntityManager().persist(sr);
+
+            if (sr.getStreamScope().getDestinationEntityId() == null)
+            {
+                sr.getStreamScope().setDestinationEntityId(sr.getId());
+            }
+
             return sr;
         }
         return resources.get(0);

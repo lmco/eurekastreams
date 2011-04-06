@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.server.service.actions.strategies;
 
+import org.eurekastreams.server.action.request.SharedResourceRequest;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.SharedResource;
@@ -42,7 +43,7 @@ public class ResourceRecipientRetriever implements RecipientRetriever
     /**
      * Mapper to get Shared Resource.
      */
-    private DomainMapper<String, SharedResource> streamResourceByUniqueKeyMapper;
+    private DomainMapper<SharedResourceRequest, SharedResource> streamResourceByUniqueKeyMapper;
 
     /**
      * Constructor.
@@ -56,7 +57,7 @@ public class ResourceRecipientRetriever implements RecipientRetriever
      */
     public ResourceRecipientRetriever(final GetRootOrganizationIdAndShortName inRootOrgIdDAO,
             final FindByIdMapper<Organization> inFindByIdMapper,
-            final DomainMapper<String, SharedResource> inStreamResourceByUniqueKeyMapper)
+            final DomainMapper<SharedResourceRequest, SharedResource> inStreamResourceByUniqueKeyMapper)
     {
         rootOrgIdDAO = inRootOrgIdDAO;
         findByIdMapper = inFindByIdMapper;
@@ -72,8 +73,8 @@ public class ResourceRecipientRetriever implements RecipientRetriever
     @Override
     public StreamScope getStreamScope(final ActivityDTO inActivityDTO)
     {
-        return streamResourceByUniqueKeyMapper.execute(inActivityDTO.getDestinationStream().getUniqueIdentifier())
-                .getStreamScope();
+        return streamResourceByUniqueKeyMapper.execute(
+                new SharedResourceRequest(inActivityDTO.getDestinationStream().getUniqueIdentifier())).getStreamScope();
     }
 
     @Override

@@ -17,6 +17,7 @@ package org.eurekastreams.server.service.actions.strategies;
 
 import static org.junit.Assert.assertTrue;
 
+import org.eurekastreams.server.action.request.SharedResourceRequest;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.SharedResource;
@@ -67,8 +68,8 @@ public class ResourceRecipientRetrieverTest
     /**
      * Mapper to get Resource stream scope id.
      */
-    private DomainMapper<String, SharedResource> streamResourceByUniqueKeyMapper = context.mock(DomainMapper.class,
-            "streamResourceByUniqueKeyMapper");
+    private DomainMapper<SharedResourceRequest, SharedResource> streamResourceByUniqueKeyMapper = context.mock(
+            DomainMapper.class, "streamResourceByUniqueKeyMapper");
 
     /**
      * Organizaiton mock.
@@ -140,7 +141,7 @@ public class ResourceRecipientRetrieverTest
                 oneOf(streamEntityDTOMock).getUniqueIdentifier();
                 will(returnValue("ui"));
 
-                oneOf(streamResourceByUniqueKeyMapper).execute("ui");
+                oneOf(streamResourceByUniqueKeyMapper).execute(with(any(SharedResourceRequest.class)));
                 will(returnValue(sharedResourceMock));
 
                 oneOf(sharedResourceMock).getStreamScope();
