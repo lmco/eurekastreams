@@ -15,8 +15,10 @@
  */
 package org.eurekastreams.server.service.actions.strategies;
 
+import org.eurekastreams.server.action.request.SharedResourceRequest;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.domain.stream.SharedResource;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.FindByIdMapper;
@@ -39,9 +41,9 @@ public class ResourceRecipientRetriever implements RecipientRetriever
     private FindByIdMapper<Organization> findByIdMapper;
 
     /**
-     * Mapper to get Resource stream scope id.
+     * Mapper to get Shared Resource.
      */
-    private DomainMapper<String, StreamScope> streamScopeByUniqueKeyMapper;
+    private DomainMapper<SharedResourceRequest, SharedResource> streamResourceByUniqueKeyMapper;
 
     /**
      * Constructor.
@@ -50,16 +52,16 @@ public class ResourceRecipientRetriever implements RecipientRetriever
      *            Root org id DAO.
      * @param inFindByIdMapper
      *            Mapper to get Org entity (not dto).
-     * @param inStreamScopeByUniqueKeyMapper
-     *            Mapper to get Resource stream scope id.
+     * @param inStreamResourceByUniqueKeyMapper
+     *            Mapper to get Shared Resource
      */
     public ResourceRecipientRetriever(final GetRootOrganizationIdAndShortName inRootOrgIdDAO,
             final FindByIdMapper<Organization> inFindByIdMapper,
-            final DomainMapper<String, StreamScope> inStreamScopeByUniqueKeyMapper)
+            final DomainMapper<SharedResourceRequest, SharedResource> inStreamResourceByUniqueKeyMapper)
     {
         rootOrgIdDAO = inRootOrgIdDAO;
         findByIdMapper = inFindByIdMapper;
-        streamScopeByUniqueKeyMapper = inStreamScopeByUniqueKeyMapper;
+        streamResourceByUniqueKeyMapper = inStreamResourceByUniqueKeyMapper;
     }
 
     @Override
@@ -71,7 +73,8 @@ public class ResourceRecipientRetriever implements RecipientRetriever
     @Override
     public StreamScope getStreamScope(final ActivityDTO inActivityDTO)
     {
-        return streamScopeByUniqueKeyMapper.execute(inActivityDTO.getDestinationStream().getUniqueIdentifier());
+        return streamResourceByUniqueKeyMapper.execute(
+                new SharedResourceRequest(inActivityDTO.getDestinationStream().getUniqueIdentifier())).getStreamScope();
     }
 
     @Override

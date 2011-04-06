@@ -21,6 +21,8 @@ import javax.persistence.Query;
 
 import org.eurekastreams.server.action.request.SharedResourceRequest;
 import org.eurekastreams.server.domain.stream.SharedResource;
+import org.eurekastreams.server.domain.stream.StreamScope;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 /**
@@ -37,6 +39,7 @@ public class FindOrInsertSharedResourceByUniqueKeyDbMapper extends
      *            is lowercased
      * @return the existing resource or newly inserted one
      */
+    @SuppressWarnings("unchecked")
     @Override
     public SharedResource execute(final SharedResourceRequest inSharedResourceRequest)
     {
@@ -44,14 +47,36 @@ public class FindOrInsertSharedResourceByUniqueKeyDbMapper extends
         {
             return null;
         }
+        String uniqueKey = inSharedResourceRequest.getUniqueKey().toLowerCase();
         Query q = getEntityManager().createQuery("FROM SharedResource WHERE uniqueKey = :uniqueKey");
-        q.setParameter("uniqueKey", inSharedResourceRequest.getUniqueKey().toLowerCase());
+        q.setParameter("uniqueKey", uniqueKey);
         List<SharedResource> resources = q.getResultList();
         if (resources == null || resources.size() == 0)
         {
             SharedResource sr = new SharedResource();
-            sr.setUniqueKey(inSharedResourceRequest.getUniqueKey().toLowerCase());
+            sr.setUniqueKey(uniqueKey);
+
+            // find or create the StreamScope
+            List<StreamScope> scopes = getEntityManager().createQuery(
+                    "From StreamScope WHERE scopeType=:scopeType AND uniqueKey=:uniqueKey").setParameter("scopeType",
+                    ScopeType.RESOURCE).setParameter("uniqueKey", uniqueKey).getResultList();
+
+            if (scopes.size() == 1)
+            {
+                sr.setStreamScope(scopes.get(0));
+            }
+            else
+            {
+                sr.setStreamScope(new StreamScope(ScopeType.RESOURCE, uniqueKey));
+            }
+
             getEntityManager().persist(sr);
+
+            if (sr.getStreamScope().getDestinationEntityId() == null)
+            {
+                sr.getStreamScope().setDestinationEntityId(sr.getId());
+            }
+
             return sr;
         }
         return resources.get(0);

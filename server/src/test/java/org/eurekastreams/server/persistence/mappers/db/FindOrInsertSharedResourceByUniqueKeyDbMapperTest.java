@@ -36,12 +36,18 @@ public class FindOrInsertSharedResourceByUniqueKeyDbMapperTest extends MapperTes
     @Test
     public void testExecuteWithNoMatch()
     {
+        String url = "http://FFFFFF.com/foo.html";
+        String urlLower = url.toLowerCase();
         FindOrInsertSharedResourceByUniqueKeyDbMapper sut = new FindOrInsertSharedResourceByUniqueKeyDbMapper();
         sut.setEntityManager(getEntityManager());
 
-        SharedResource sr = sut.execute(new SharedResourceRequest("http://foofff.com/foo.html"));
+        SharedResource sr = sut.execute(new SharedResourceRequest(url));
         assertNotNull(sr);
+        assertNotNull(sr.getStreamScope());
+        assertEquals(urlLower, sr.getUniqueKey());
+        assertEquals(urlLower, sr.getStreamScope().getUniqueKey());
         assertTrue(sr.getId() > 0);
+        assertTrue(sr.getStreamScope().getId() > 0);
     }
 
     /**
@@ -62,11 +68,13 @@ public class FindOrInsertSharedResourceByUniqueKeyDbMapperTest extends MapperTes
     @Test
     public void testExecuteWithMatch()
     {
+        final long scopeId = 101L;
         FindOrInsertSharedResourceByUniqueKeyDbMapper sut = new FindOrInsertSharedResourceByUniqueKeyDbMapper();
         sut.setEntityManager(getEntityManager());
 
         SharedResource sr = sut.execute(new SharedResourceRequest("http://foo.com/foo.html"));
         assertNotNull(sr);
+        assertEquals(scopeId, sr.getStreamScope().getId());
         assertEquals(5L, sr.getId());
     }
 
@@ -76,10 +84,12 @@ public class FindOrInsertSharedResourceByUniqueKeyDbMapperTest extends MapperTes
     @Test
     public void testExecuteWithMatchWithDifferentCase()
     {
+        final long scopeId = 101L;
         FindOrInsertSharedResourceByUniqueKeyDbMapper sut = new FindOrInsertSharedResourceByUniqueKeyDbMapper();
         sut.setEntityManager(getEntityManager());
 
         SharedResource sr = sut.execute(new SharedResourceRequest("http://FOO.com/foo.html"));
+        assertEquals(scopeId, sr.getStreamScope().getId());
         assertNotNull(sr);
         assertEquals(5L, sr.getId());
     }

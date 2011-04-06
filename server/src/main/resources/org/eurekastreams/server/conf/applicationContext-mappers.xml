@@ -2586,10 +2586,6 @@
     
     <bean id="findOrInsertSharedResourceByUniqueKeyMapper" class="org.eurekastreams.server.persistence.mappers.db.FindOrInsertSharedResourceByUniqueKeyDbMapper" />
     
-    <bean id="findOrInsertSharedResourceStreamScopeByUniqueKeyDbMapper" class="org.eurekastreams.server.persistence.mappers.db.FindOrInsertSharedResourceStreamScopeByUniqueKeyDbMapper">
-        <constructor-arg ref="findOrInsertSharedResourceByUniqueKeyMapper" />
-    </bean>
-
     <bean id="setLikedSharedResourceStatusDbMapper" class="org.eurekastreams.server.persistence.mappers.db.SetLikedSharedResourceStatusDbMapper" />
     
     

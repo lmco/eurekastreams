@@ -110,7 +110,7 @@
 		description="Test Theme 102 Description" bannerId="banner id"
 		authorName="mortimer Snerd" authorEmail="vswatter@gmail.com" name="Test Theme"
 		themeCategoryId="4566" numberOfUsers="100" created="2008-01-01 12:00:00.000" />
-		
+			
     <!-- Core StreamScopes -->
     <StreamScope id="50000" scopeType="PERSONS_FOLLOWED_STREAMS" uniqueKey="follow" version="1" destinationEntityId="0" />
     <StreamScope id="50001" scopeType="PERSONS_PARENT_ORGANIZATION" uniqueKey="parentorg" version="1" destinationEntityId="0" />
@@ -140,7 +140,10 @@
 	<StreamScope id="9374533" scopeType="ORGANIZATION" uniqueKey="child2orgname" version="1" destinationEntityId="0" />	
 	
 	<!-- Resource StreamScope -->
-	<StreamScope id="100" scopeType="RESOURCE" uniqueKey="resource1" version="1" destinationEntityId="0" />	
+	<StreamScope id="100" scopeType="RESOURCE" uniqueKey="resource1" version="1" destinationEntityId="0" />
+	
+	<StreamScope id="101" scopeType="RESOURCE" uniqueKey="http://foo.foo.com/foo.html" version="1" destinationEntityId="0" />
+	<StreamScope id="102" scopeType="RESOURCE" uniqueKey="http://foo.com/foo.html" version="1" destinationEntityId="0" />	
 	
 	<Organization id="5" version="1" description="Mission Statement"
 		name="Test Organization Name" allUsersCanCreateGroups="true"
@@ -603,8 +606,8 @@
 	<StreamItemId id="1010" version="1" />
 	<StreamItemId id="1011" version="1" />
 	   
-    <SharedResource id="5" version="1" uniqueKey="http://foo.com/foo.html" />
-    <SharedResource id="6" version="1" uniqueKey="http://foo.foo.com/foo.html" />
+    <SharedResource id="5" version="1" uniqueKey="http://foo.com/foo.html" streamScopeId="101" />
+    <SharedResource id="6" version="1" uniqueKey="http://foo.foo.com/foo.html" streamScopeId="102" />
     
     <Person_LikedSharedResources personId="42" sharedResourceId="5" />
     <Person_LikedSharedResources personId="99" sharedResourceId="5" />

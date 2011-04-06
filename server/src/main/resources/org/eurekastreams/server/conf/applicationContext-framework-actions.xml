@@ -2136,7 +2136,7 @@
             <bean class="org.eurekastreams.server.service.actions.strategies.ResourceRecipientRetriever">
                 <constructor-arg ref="getRootOrganizationIdAndShortNameMapper" />
                 <constructor-arg ref="findByIdMapper" />
-                <constructor-arg ref="findOrInsertSharedResourceStreamScopeByUniqueKeyDbMapper" />
+                <constructor-arg ref="findOrInsertSharedResourceByUniqueKeyMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg ref="postActivityUpdateStreamsByActorMapper" />
