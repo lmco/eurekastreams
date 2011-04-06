@@ -20,11 +20,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.web.client.ui.common.stream.renderers.AvatarRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.MetadataLinkRenderer;
+import org.eurekastreams.web.client.ui.common.stream.renderers.ResourceDestinationRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StatefulRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
@@ -174,9 +176,16 @@ public class ShareRenderer implements VerbRenderer
         renderers.add(new MetadataLinkRenderer("", activity.getActor().getUniqueIdentifier(), activity.getActor()
                 .getDisplayName()));
 
-        if (showRecipient == ShowRecipient.ALL)
+        StreamEntityDTO stream = activity.getDestinationStream();
+        if (stream.getType() == EntityType.RESOURCE)
         {
-            StreamEntityDTO stream = activity.getDestinationStream();
+            if (showRecipient != ShowRecipient.NONE)
+            {
+                renderers.add(new ResourceDestinationRenderer(activity));
+            }
+        }
+        else if (showRecipient == ShowRecipient.ALL)
+        {
             renderers.add(new MetadataLinkRenderer("to", stream.getType(), stream.getUniqueIdentifier(), stream
                     .getDisplayName()));
         }

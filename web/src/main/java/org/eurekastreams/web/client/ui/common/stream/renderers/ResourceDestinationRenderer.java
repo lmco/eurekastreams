@@ -18,6 +18,7 @@ package org.eurekastreams.web.client.ui.common.stream.renderers;
 import java.util.HashMap;
 
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Anchor;
@@ -59,18 +60,25 @@ public class ResourceDestinationRenderer implements StatefulRenderer
         Panel main = new FlowPanel();
         main.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inlinePanel());
 
-        main.add(new InlineLabel("commented on"));
-        main.add(new Anchor(resourceTitle, resourceUrl));
-        if (resourceTitle != null && !resourceTitle.isEmpty())
+        if (activity.getBaseObjectType() == BaseObjectType.BOOKMARK)
         {
-            if (siteUrl != null && !siteUrl.isEmpty())
+            main.add(new InlineLabel("shared this link to"));
+        }
+        else
+        {
+            main.add(new InlineLabel("commented on"));
+            main.add(new Anchor(resourceTitle, resourceUrl));
+            if (resourceTitle != null && !resourceTitle.isEmpty())
             {
-                main.add(new InlineLabel("from"));
-                main.add(new Anchor(siteTitle, siteUrl));
-            }
-            else
-            {
-                main.add(new InlineLabel("from " + siteTitle));
+                if (siteUrl != null && !siteUrl.isEmpty())
+                {
+                    main.add(new InlineLabel("from"));
+                    main.add(new Anchor(siteTitle, siteUrl));
+                }
+                else
+                {
+                    main.add(new InlineLabel("from " + siteTitle));
+                }
             }
         }
 

@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eurekastreams.commons.formatting.DateFormatter;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.ActivityVerb;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
@@ -56,6 +57,7 @@ import org.eurekastreams.web.client.utility.InContextActivityLinkBuilder;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineHyperlink;
@@ -610,10 +612,30 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
                 if (new WidgetJSNIFacadeImpl().confirm("Are you sure you want to delete this activity?"))
                 {
                     setupDeleteFadeout(msg, mainPanel);
-                    ActivityModel.getInstance().delete(msg.getId());
+                    performDelete(msg);
+
                 }
             }
         });
+    }
+
+    /**
+     * Action to actually do the delete.
+     * 
+     * @param msg
+     *            The activity.
+     */
+    protected void performDelete(final ActivityDTO msg)
+    {
+        if (msg.getDestinationStream().getType() == EntityType.RESOURCE)
+        {
+            // TODO: ask the activity model to hide it
+            Window.alert("Let's just hide activity " + msg.getId());
+        }
+        else
+        {
+            ActivityModel.getInstance().delete(msg.getId());
+        }
     }
 
     /**
@@ -647,5 +669,13 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
     public void setCreatePermalink(final boolean inCreatePermalink)
     {
         createPermalink = inCreatePermalink;
+    }
+
+    /**
+     * @return the objectDictionary
+     */
+    protected Map<BaseObjectType, ObjectRenderer> getObjectDictionary()
+    {
+        return objectDictionary;
     }
 }

@@ -20,6 +20,7 @@ import java.util.HashMap;
 import org.eurekastreams.server.action.request.stream.PostActivityRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.web.client.events.EventBus;
@@ -36,9 +37,9 @@ import org.eurekastreams.web.client.ui.common.stream.decorators.object.NotePopul
 import org.eurekastreams.web.client.ui.common.stream.decorators.verb.PostPopulator;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
+import org.eurekastreams.web.client.ui.common.stream.renderers.object.NoteRenderer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 
@@ -64,7 +65,7 @@ public class CommentWidget extends Composite
 
     /**
      * Constructor.
-     * 
+     *
      * @param inResourceId
      *            Unique ID of resource whose stream to display.
      * @param inResourceUrl
@@ -132,6 +133,7 @@ public class CommentWidget extends Composite
         {
             super(ShowRecipient.NONE);
             setCreatePermalink(false);
+            getObjectDictionary().put(BaseObjectType.BOOKMARK, new NoteRenderer());
         }
 
         /**
@@ -140,8 +142,18 @@ public class CommentWidget extends Composite
         @Override
         protected void onShare(final ActivityDTO inMsg)
         {
-            Window.alert("Need to pop up share widget here!");
-            // TODO Auto-generated method stub
+            // TODO: replace this call with logic to display a share box in a new pop-up window
+            super.onShare(inMsg);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void performDelete(final ActivityDTO inMsg)
+        {
+            // in a resource stream, actually delete the resource item
+            ActivityModel.getInstance().delete(inMsg.getId());
         }
     }
 
