@@ -60,14 +60,16 @@ public class BulkActivityStreamsDbMapper extends BaseArgDomainMapper<List<Long>,
         {
             // grab activities where recipientStreamScope.id = incoming value OR
             // the recipientStreamScope type is RESOURCE and the activity's actor (author)'s
-            // streamScopeId = incoming value and showInStream is true. Written as where clauses rather
+            // streamScopeId = incoming value and showInStream is true, OR the activity's sharedLink is the input stream
+            // scope. Written as where clauses rather
             // than inner joins due to need to match actorss id AND type and HQL doesn't support inner
             // join with ON clauses.
-            String query = "SELECT a.id FROM Activity a, StreamScope actorss "
+            String query = "SELECT a.id FROM Activity a LEFT OUTER JOIN a.sharedLink, StreamScope actorss "
                     + "WHERE a.actorId = actorss.uniqueKey AND a.actorType = actorss.scopeType "
                     + "AND (a.recipientStreamScope.id = :streamId "
                     + "OR (a.recipientStreamScope.scopeType = :resourceScopeType AND "
-                    + "actorss.id = :streamId AND a.showInStream = :showInStreamFlag)) ORDER BY a.id DESC";
+                    + "actorss.id = :streamId AND a.showInStream = :showInStreamFlag) "
+                    + "OR (a.sharedLink != NULL AND a.sharedLink.streamScope.id = :streamId)) ORDER BY a.id DESC";
 
             results.add(getEntityManager().createQuery(query).setParameter("streamId", id).setParameter(
                     "resourceScopeType", ScopeType.RESOURCE).setParameter("showInStreamFlag", true).setMaxResults(

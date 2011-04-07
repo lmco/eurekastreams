@@ -15,11 +15,18 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
 
+import org.eurekastreams.server.domain.stream.Activity;
+import org.eurekastreams.server.domain.stream.SharedResource;
+import org.eurekastreams.server.domain.stream.StreamScope;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -107,5 +114,48 @@ public class BulkActivityStreamsDbMapperTest extends MapperTest
         Assert.assertEquals(expectedSize, results.size());
         Assert.assertEquals(1, results.get(0).size());
         Assert.assertEquals(1, results.get(1).size());
+    }
+
+    /**
+     * Test getting activities from a stream that represents a shared resource that was shared in activities.
+     */
+    @Test
+    public void testWithStreamIdSharedInActivity()
+    {
+        final long activityId = 6789L;
+        final long activityId2 = 6790L;
+
+        final StreamScope scope = new StreamScope(ScopeType.RESOURCE, "http://foo.foo.foo.com");
+        getEntityManager().persist(scope);
+        getEntityManager().flush();
+
+        // an activity that shares the shared resource
+        SharedResource sr = new SharedResource("http://foo.foo.foo.com");
+        sr.setStreamScope(scope);
+        getEntityManager().persist(sr);
+        getEntityManager().flush();
+
+        scope.setDestinationEntityId(sr.getId());
+        getEntityManager().flush();
+
+        Activity act = getEntityManager().find(Activity.class, activityId);
+        act.setSharedLink(sr);
+
+        getEntityManager().flush();
+
+        // an activity that came from the shared resource
+        act = getEntityManager().find(Activity.class, activityId2);
+        act.setRecipientStreamScope(scope);
+
+        getEntityManager().flush();
+
+        final List<Long> request = new ArrayList<Long>();
+        request.add(scope.getId());
+        List<List<Long>> activityIds = sut.execute(request);
+
+        assertEquals(1, activityIds.size());
+        // assertEquals(2, activityIds.get(0).size());
+        assertTrue(activityIds.get(0).contains(activityId));
+        assertTrue(activityIds.get(0).contains(activityId2));
     }
 }
