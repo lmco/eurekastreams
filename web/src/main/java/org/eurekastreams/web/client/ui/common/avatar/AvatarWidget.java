@@ -67,6 +67,15 @@ public class AvatarWidget extends Composite
      */
     public AvatarWidget(final Size size)
     {
+        setSize(size);        
+        initWidget(image);
+    }
+    
+    /**
+     * Set the size of the avatar.
+     * @param size the size;
+     */
+    public void setSize(final Size size) {
         imageSize = size;
         image.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatarImage());
         
@@ -82,8 +91,6 @@ public class AvatarWidget extends Composite
         {
             image.addStyleName(StaticResourceBundle.INSTANCE.coreCss().avatarImageNormal());            
         }
-        
-        initWidget(image);
     }
 
     /**

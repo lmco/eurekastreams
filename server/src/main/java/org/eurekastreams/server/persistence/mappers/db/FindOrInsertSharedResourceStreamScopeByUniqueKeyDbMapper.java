@@ -76,7 +76,8 @@ public class FindOrInsertSharedResourceStreamScopeByUniqueKeyDbMapper extends Ba
         }
 
         // no stream scope found, create StreamScope/StreamResource
-        SharedResource sr = findOrInsertSharedResourceByUniqueKeyMapper.execute(new SharedResourceRequest(inRequest));
+        SharedResource sr = findOrInsertSharedResourceByUniqueKeyMapper.execute(new SharedResourceRequest(inRequest,
+                null));
         StreamScope ss = new StreamScope(ScopeType.RESOURCE, inRequest.toLowerCase());
         ss.setDestinationEntityId(sr.getId());
         getEntityManager().persist(ss);

@@ -1805,16 +1805,11 @@ div.new-messages-notification>div.refresh-stream {
 	padding: 6px 10px;
 	line-height: 1.5em;
 	height: 55px;
-	width: 570px;
 	overflow: auto;
 	border: 1px solid #bbbbbb;
 	font-size: 14px;
 	display: inline-block;
 	zoom: 1;
-}
-
-.profile .post-to-stream textarea {
-	width: 555px;
 }
 
 body .post-to-stream.small textarea {
@@ -7732,30 +7727,22 @@ body .url-validator .required-form-label {
 	margin-left: 0px;
 }
 
-.stream .post-entry-panel .auto-complete textarea {
-	width: 570px;
+.post-entry-panel .auto-complete {
+	display: block;
+	margin-left: 40px;
+	margin-right: 20px;
+	zoom: 1;
 }
 
 .post-entry-panel .auto-complete textarea {
 	color: black;
 	position: relative;
-	width: 560px;
 }
 
-.stream .post-entry-panel .yui-ac-container {
-	width: 588px;
-}
-
-.post-entry-panel .yui-ac-container {
-	width: 578px;
-}
-
-.profile .post-entry-panel .auto-complete textarea {
-	width: 555px;
-}
-
-.profile .post-entry-panel .yui-ac-container {
-	width: 574px;
+.post-entry-avatar {
+	float: left;
+	margin-top: 4px;
+	margin-right: 10px;	
 }
 
 .post-entry-panel .yui-ac-content {
@@ -7882,6 +7869,86 @@ html,body {
 	top: 15px;
 }
 
+.eureka-connect-like-share-container {
+}
+
+body div.eureka-connect-liked-activity-wrapper {
+	margin-left: 5px;
+}
+
+.eureka-connect-share-widget-container {
+	padding: 20px;
+}
+
+.eureka-connect-share-widget-container .post-to {
+	width: auto;
+	text-align: left;
+	margin-left: 15px;t
+}
+
+.eureka-connect-share-widget-container .link-panel {
+	background-color: transparent;
+}
+
+.eureka-connect-like-button, .eureka-connect-unlike-button, .eureka-connect-share-button 
+{ 
+	background-image: url(style/images/right_corner.png);
+	background-position: top right;
+	background-repeat: no-repeat;
+	display: inline-block;
+	padding-right: 5px;
+	margin-top: 10px;
+	cursor: pointer;
+}
+
+.eureka-connect-share-button a.eureka-connect-count, .eureka-connect-like-button a.eureka-connect-count, 
+	.eureka-connect-unlike-button a.eureka-connect-count {
+	background-image: url(style/images/like_right_gradient.png);
+	padding: 3px 5px 0;
+	display: block;
+	height: 24px;
+	float: left;
+}
+
+.eureka-connect-share-button a:first-child {
+	display: block;
+	width: 79px;
+	height: 27px;
+	background-image: url(style/images/share.png);
+	float: left;
+}
+
+.eureka-connect-like-button a:first-child {
+	display: block;
+	width: 79px;
+	height: 27px;
+	background-image: url(style/images/like_left.png);
+	float: left;
+}
+
+.eureka-connect-unlike-button a:first-child {
+	display: block;
+	width: 79px;
+	height: 27px;
+	background-image: url(style/images/unlike.png);
+	float: left;
+}
+
+.eureka-connect-popout-arrow {
+	background-image: url(style/images/popup_indent.png);
+	background-repeat: no-repeat;
+	float: left;
+	width: 20px;
+	height: 20px;
+	margin-left: -30px;
+	margin-top: 5px;
+}
+
+.eureka-connect-liked-activity { }
+
+.eureka-connect-users-who-liked-activity {
+	width: 160px;	
+}
 
 /*/////////////////////////////////////////////////////////////////////////////
 
@@ -7889,6 +7956,14 @@ IE SPECIFIC CSS.
 
 /////////////////////////////////////////////////////////////////////////////*/
 @if user.agent ie6 ie8 { 
+	.eureka-connect-like-button, .eureka-connect-share-button {
+		display: inline;
+		zoom: 1; 
+	}
+	
+	.eureka-connect-liked-activity {
+		margin-top: -30px;
+	}
 
 	.pending-group-membership-item >div {
 		display:inline;
@@ -8973,6 +9048,8 @@ IE SPECIFIC CSS.
 	
 	body .post-to-stream textarea {
 		padding-bottom: 0;
+		position: relative;
+		top: 0;
 	}
 	
 	body div.portal-boundary div.layout-container {

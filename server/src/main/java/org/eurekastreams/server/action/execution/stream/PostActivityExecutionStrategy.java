@@ -234,7 +234,7 @@ public class PostActivityExecutionStrategy implements TaskHandlerExecutionStrate
             String url = inActivityDTO.getBaseObjectProperties().get("targetUrl");
             // has a link to share
             logger.info("New activity shares link with url: " + url);
-            SharedResource sr = findOrInsertSharedResourceMapper.execute(new SharedResourceRequest(url));
+            SharedResource sr = findOrInsertSharedResourceMapper.execute(new SharedResourceRequest(url, null));
             if (sr != null)
             {
                 logger.info("Found shared resource - id: " + sr.getId());

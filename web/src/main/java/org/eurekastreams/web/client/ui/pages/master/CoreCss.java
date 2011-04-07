@@ -2211,6 +2211,9 @@ public interface CoreCss extends CssResource
     @ClassName("group-notif-subscription-panel")
     String groupNotifSubscriptionPanel();
 
+    @ClassName("post-entry-avatar")
+    String postEntryAvatar();
+
     @ClassName("group-notif-subscription-help-text")
     String groupNotifSubscriptionHelpText();
 
@@ -2225,10 +2228,10 @@ public interface CoreCss extends CssResource
 
     @ClassName("eureka-connect-badge-name")
     String eurekaConnectBadgeName();
-    
+
     @ClassName("eureka-connect-badge-title")
     String eurekaConnectBadgeTitle();
-    
+
     @ClassName("eureka-connect-badge-company")
     String eurekaConnectBadgeCompany();
 
@@ -2240,4 +2243,34 @@ public interface CoreCss extends CssResource
 
     @ClassName("eureka-connect-widget-loading")
     String eurekaConnectLoading();
+
+    @ClassName("eureka-connect-like-share-container")
+    String eurekaConnectLikeShareContainer();
+
+    @ClassName("eureka-connect-liked-activity-wrapper")
+    String eurekaConnectLikedActivityWrapper();
+
+    @ClassName("eureka-connect-share-widget-container")
+    String eurekaConnectShareWidgetContainer();
+
+    @ClassName("eureka-connect-count")
+    String eurekaConnectCount();
+
+    @ClassName("eureka-connect-like-button")
+    String eurekaConnectLikeButton();
+
+    @ClassName("eureka-connect-share-button")
+    String eurekaConnectShareButton();
+
+    @ClassName("eureka-connect-popout-arrow")
+    String eurekaConnectPopoutArrow();
+    
+    @ClassName("eureka-connect-liked-activity")
+    String eurekaConnectLikedActivity();
+
+    @ClassName("eureka-connect-unlike-button")
+    String eurekaConnectUnlikeButton();
+
+    @ClassName("eureka-connect-users-who-liked-activity")
+    String eurekaConnectUsersWhoLikedActivity();
 }

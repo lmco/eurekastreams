@@ -60,6 +60,11 @@ public class SharedResourceDTO implements Serializable
     private Long streamScopeId = null;
 
     /**
+     * if the current user liked this resource.
+     */
+    private boolean isLiked;
+
+    /**
      * @return the likeCount
      */
     public int getLikeCount()
@@ -159,6 +164,24 @@ public class SharedResourceDTO implements Serializable
     public void setStreamScopeId(final Long inStreamScopeId)
     {
         streamScopeId = inStreamScopeId;
+    }
+
+    /**
+     * Set if the current user liked this.
+     * 
+     * @param inIsLiked
+     *            if the current user liked this resource.
+     */
+    public void setIsLiked(final boolean inIsLiked)
+    {
+        isLiked = inIsLiked;
+    }
+    
+    /**
+     * @return if the current user liked this resource.
+     */
+    public boolean isLiked() {
+        return isLiked;
     }
 
 }

@@ -112,6 +112,8 @@ public class GetSharedResourcePropertiesMapper extends BaseArgDomainMapper<Share
         {
             likedPersonIds = likedPersonIds.subList(0, 4);
         }
+        
+        dto.setIsLiked(likedPersonIds.contains(inRequest.getPersonId()));
 
         // get the people
         List<Long> personIds = new ArrayList<Long>();

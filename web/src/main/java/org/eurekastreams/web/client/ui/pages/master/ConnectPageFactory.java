@@ -20,6 +20,8 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.widget.CommentWidget;
+import org.eurekastreams.web.client.ui.pages.widget.LikeShareWidget;
+import org.eurekastreams.web.client.ui.pages.widget.ShareWidget;
 import org.eurekastreams.web.client.ui.pages.widget.UserProfileBadgeWidget;
 
 import com.google.gwt.user.client.History;
@@ -63,7 +65,7 @@ public class ConnectPageFactory
 
     /**
      * Creates a widget and sets the history to match it.
-     *
+     * 
      * @param widgetName
      *            Name of widget desired.
      * @param util
@@ -82,7 +84,23 @@ public class ConnectPageFactory
         {
             String accountId = util.getParameter("accountid");
             return new UserProfileBadgeWidget(accountId);
-        }        
+        }
+        else if ("likeshare".equals(widgetName))
+        {
+            String resourceId = util.getParameter("resourceurl");
+            String title = util.getParameter("title");
+            String desc = util.getParameter("desc");
+            String[] thumbs = util.getParameter("thumbs").split(",");
+            return new LikeShareWidget(resourceId, title, desc, thumbs);
+        }
+        else if ("sharedialog".equals(widgetName))
+        {
+            String resourceId = util.getParameter("resourceurl");
+            String title = util.getParameter("title");
+            String desc = util.getParameter("desc");
+            String[] thumbs = util.getParameter("thumbs").split(",");
+            return new ShareWidget(resourceId, title, desc, thumbs);
+        }
         else
         {
             return null;
@@ -91,7 +109,7 @@ public class ConnectPageFactory
 
     /**
      * Sets URL and triggers history.
-     *
+     * 
      * @param request
      *            Description of URL to build.
      */

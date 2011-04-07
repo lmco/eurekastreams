@@ -78,7 +78,7 @@ public class ActivityRecipientClassBridge implements StringBridge
             return "p" + getPersonIdByAccountIdMapper.execute(scope.getUniqueKey());
         case RESOURCE:
             return "r" + getSharedResourceByUniqueKeyMapper.execute(//
-                    new SharedResourceRequest(scope.getUniqueKey())).getId();
+                    new SharedResourceRequest(scope.getUniqueKey(), null)).getId();
         default:
             throw new RuntimeException("Unknown/unhandled recipient type: " + scope.getScopeType());
         }

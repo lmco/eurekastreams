@@ -70,7 +70,8 @@ public class SetSharedResourceLikeExecution implements TaskHandlerExecutionStrat
         final Long personId = inActionContext.getActionContext().getPrincipal().getId();
 
         // find the shared resource
-        SharedResource sr = findOrInsertSharedResourceMapper.execute(new SharedResourceRequest(request.getUniqueKey()));
+        SharedResource sr = findOrInsertSharedResourceMapper.execute(new SharedResourceRequest(request.getUniqueKey(),
+                null));
 
         SetSharedResourceLikeMapperRequest mapperRequest = new SetSharedResourceLikeMapperRequest(personId, sr, request
                 .getLikes());

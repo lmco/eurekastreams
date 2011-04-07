@@ -31,6 +31,8 @@ import org.eurekastreams.web.client.events.errors.ErrorPostingMessageToNullScope
 import org.eurekastreams.web.client.model.ActivityModel;
 import org.eurekastreams.web.client.model.SystemSettingsModel;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
+import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.stream.attach.Attachment;
 import org.eurekastreams.web.client.ui.common.stream.attach.bookmark.AddLinkComposite;
 import org.eurekastreams.web.client.ui.common.stream.attach.bookmark.Bookmark;
@@ -107,7 +109,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param inScope
      *            the scope.
      */
@@ -122,7 +124,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Builds the UI.
-     *
+     * 
      * @param inScope
      *            the scope.
      */
@@ -151,8 +153,13 @@ public class PostToStreamComposite extends FlowPanel
         charsRemaining.addStyleName(StaticResourceBundle.INSTANCE.coreCss().charactersRemaining());
         postInfoContainer.add(charsRemaining);
 
+        AvatarWidget avatar = new AvatarWidget(Session.getInstance().getCurrentPerson(), EntityType.PERSON,
+                Size.VerySmall);
+        avatar.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postEntryAvatar());
+
         Panel entryPanel = new FlowPanel();
         entryPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postEntryPanel());
+        entryPanel.add(avatar);
         entryPanel.add(message);
         entryPanel.add(postInfoContainer);
         add(entryPanel);
@@ -298,20 +305,6 @@ public class PostToStreamComposite extends FlowPanel
                 checkMessageTextChanged();
             }
         });
-
-        // Poll for links. This needs to be done because onChange in a text area in Firefox is only called onBlur.
-        Timer timer = new Timer()
-        {
-            @Override
-            public void run()
-            {
-                if (!getStyleName().contains(StaticResourceBundle.INSTANCE.coreCss().small()))
-                {
-                    checkForLinks();
-                }
-            }
-        };
-        timer.scheduleRepeating(REFRESH_INTERVAL);
     }
 
     /**
@@ -362,7 +355,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Get the scope.
-     *
+     * 
      * @return the scope.
      */
     public StreamScope getScope()
@@ -372,7 +365,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Set the scope.
-     *
+     * 
      * @param inScope
      *            the scope.
      */
@@ -392,48 +385,6 @@ public class PostToStreamComposite extends FlowPanel
             messageText = newText;
 
             Session.getInstance().getEventBus().notifyObservers(MessageTextAreaChangedEvent.getEvent());
-        }
-    }
-
-    /**
-     * Checks for links and sets the model message.
-     */
-    private void checkForLinks()
-    {
-        if (!getStyleName().contains(StaticResourceBundle.INSTANCE.coreCss().small()))
-        {
-            if (attachment == null || !(attachment instanceof Bookmark))
-            {
-                checkMessageTextChanged();
-
-                String tmpLinkText = "";
-                String[] words = messageText.split("\\s+");
-                for (String word : words)
-                {
-                    if (word.startsWith("http://") || word.startsWith("https://"))
-                    {
-                        tmpLinkText = word;
-
-                        // Break after the first link is found.
-                        break;
-                    }
-                    else if (word.startsWith("www."))
-                    {
-                        tmpLinkText = "http://" + word;
-
-                        // Break after the first link is found.
-                        break;
-                    }
-                }
-
-                if (lastFetched != linkText && tmpLinkText == linkText && tmpLinkText.length() > 7)
-                {
-                    lastFetched = linkText;
-                    Session.getInstance().getEventBus().notifyObservers(new ParseLinkEvent(linkText));
-                }
-
-                linkText = tmpLinkText;
-            }
         }
     }
 
@@ -517,8 +468,7 @@ public class PostToStreamComposite extends FlowPanel
             recipientType = EntityType.GROUP;
         }
 
-        ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator()
-                : new NotePopulator();
+        ActivityDTOPopulatorStrategy objectStrat = attachment != null ? attachment.getPopulator() : new NotePopulator();
         ActivityDTO activity = activityPopulator.getActivityDTO(messageText, recipientType, scope.getUniqueKey(),
                 new PostPopulator(), objectStrat);
         PostActivityRequest postRequest = new PostActivityRequest(activity);

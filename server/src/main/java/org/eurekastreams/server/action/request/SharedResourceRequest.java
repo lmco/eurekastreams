@@ -33,6 +33,11 @@ public class SharedResourceRequest implements Serializable
     private String uniqueKey;
 
     /**
+     * The person id.
+     */
+    private Long personId;
+
+    /**
      * Constructor.
      */
     public SharedResourceRequest()
@@ -44,10 +49,13 @@ public class SharedResourceRequest implements Serializable
      * 
      * @param inUniqueKey
      *            the unique key for the resource
+     * @param inPersonId
+     *            the person Id
      */
-    public SharedResourceRequest(final String inUniqueKey)
+    public SharedResourceRequest(final String inUniqueKey, final Long inPersonId)
     {
         uniqueKey = inUniqueKey;
+        personId = inPersonId;
     }
 
     /**
@@ -65,6 +73,16 @@ public class SharedResourceRequest implements Serializable
     public void setUniqueKey(final String inUniqueKey)
     {
         uniqueKey = inUniqueKey;
+    }
+
+    public Long getPersonId()
+    {
+        return personId;
+    }
+
+    public void setPersonId(final Long inPersonId)
+    {
+        personId = inPersonId;
     }
 
 }
