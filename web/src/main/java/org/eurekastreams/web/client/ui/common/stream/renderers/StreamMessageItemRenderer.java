@@ -57,7 +57,6 @@ import org.eurekastreams.web.client.utility.InContextActivityLinkBuilder;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineHyperlink;
@@ -621,7 +620,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Action to actually do the delete.
-     * 
+     *
      * @param msg
      *            The activity.
      */
@@ -629,8 +628,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
     {
         if (msg.getDestinationStream().getType() == EntityType.RESOURCE)
         {
-            // TODO: ask the activity model to hide it
-            Window.alert("Let's just hide activity " + msg.getId());
+            ActivityModel.getInstance().hide(msg.getId());
         }
         else
         {
