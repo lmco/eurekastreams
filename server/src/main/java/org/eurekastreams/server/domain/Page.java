@@ -99,7 +99,7 @@ public enum Page implements Serializable
     /**
      * Widget displaying a read-only view of a stream.
      */
-    WIDGET_STREAM("widget-stream"),
+    WIDGET_READ_STREAM("widget-stream"),
     /**
      * Widget displaying a fully-interactive view of a stream.
      */

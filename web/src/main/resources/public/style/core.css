@@ -7887,6 +7887,24 @@ html,body {
 {
 }
 
+.eureka-connect-read-stream
+{
+}
+
+
+.eureka-connect-read-stream .stream-titlebar,
+.eureka-connect-read-stream .search-description,
+.eureka-connect-read-stream .more-button,
+.eureka-connect-read-stream .navpanel,
+.eureka-connect-read-stream .message-actions-area,
+.eureka-connect-read-stream .message-comment,
+.eureka-connect-read-stream .message-link .url,
+.eureka-connect-read-stream .message-link .meta-description
+{
+	display: none;
+}
+
+
 /*/////////////////////////////////////////////////////////////////////////////
 
 IE SPECIFIC CSS.

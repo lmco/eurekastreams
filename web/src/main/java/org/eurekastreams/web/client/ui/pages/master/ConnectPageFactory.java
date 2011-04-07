@@ -21,6 +21,7 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.widget.CommentWidget;
 import org.eurekastreams.web.client.ui.pages.widget.FullStreamWidget;
+import org.eurekastreams.web.client.ui.pages.widget.ReadStreamWidget;
 import org.eurekastreams.web.client.ui.pages.widget.UserProfileBadgeWidget;
 
 import com.google.gwt.user.client.History;
@@ -79,8 +80,14 @@ public class ConnectPageFactory
             String resourceTitle = util.getParameter("resourcetitle");
             String siteUrl = util.getParameter("siteurl");
             String siteTitle = util.getParameter("sitetitle");
-            setHistory(new CreateUrlRequest(Page.WIDGET_COMMENT, resourceUrl));
+            setHistory(new CreateUrlRequest(Page.WIDGET_COMMENT, "resource"));
             return new CommentWidget(resourceUrl, resourceUrl, resourceTitle, siteUrl, siteTitle);
+        }
+        else if ("readstream".equals(widgetName))
+        {
+            String request = util.getParameter("request");
+            setHistory(new CreateUrlRequest(Page.WIDGET_READ_STREAM, "request"));
+            return new ReadStreamWidget(request);
         }
         else if ("fullstream".equals(widgetName))
         {

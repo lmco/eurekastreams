@@ -2235,6 +2235,9 @@ public interface CoreCss extends CssResource
     @ClassName("eureka-connect-badge-container")
     String eurekaConnectBadgeContainer();
 
+    @ClassName("eureka-connect-read-stream")
+    String eurekaConnectReadStreamWidget();
+
     @ClassName("eureka-connect-full-stream")
     String eurekaConnectFullStreamWidget();
 
