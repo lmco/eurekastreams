@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,6 +63,7 @@ import org.eurekastreams.web.client.ui.common.pagedlist.RemovableGroupMemberPers
 import org.eurekastreams.web.client.ui.common.pagedlist.SingleColumnPagedListRenderer;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
+import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.tabs.SimpleTab;
 import org.eurekastreams.web.client.ui.common.tabs.TabContainerPanel;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
@@ -163,7 +164,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param accountId
      *            the account id.
      */
@@ -222,7 +223,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * We have the Group, so set up the Profile summary.
-     * 
+     *
      * @param inGroup
      *            the group whose profile is being displayed
      */
@@ -311,7 +312,7 @@ public class GroupProfilePanel extends FlowPanel
         leftBarPanel.addChildWidget(connectionsPanel);
         leftBarPanel.addChildWidget(coordinatorPanel);
 
-        final StreamPanel streamContent = new StreamPanel(false);
+        final StreamPanel streamContent = new StreamPanel(ShowRecipient.FOREIGN_ONLY);
         StreamScope groupStreamScope = new StreamScope(group.getName(), ScopeType.GROUP, group.getShortName(), group
                 .getStreamId());
 
@@ -376,7 +377,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Builds the connections tab content.
-     * 
+     *
      * @return The tab.
      */
     private Widget buildConnectionsTabContent()
@@ -450,7 +451,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Creates a new error report box and centers it on the page.
-     * 
+     *
      * @return The error report box, ready to have content added to it.
      */
     private Panel addNewCenteredErrorBox()
@@ -503,7 +504,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Tell the user that this group is restricted.
-     * 
+     *
      * @param inGroup
      *            the restricted access group
      */
@@ -547,7 +548,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Tell the user that this group is pending approval.
-     * 
+     *
      */
     private void showPendingGroupMessage()
     {
@@ -567,7 +568,7 @@ public class GroupProfilePanel extends FlowPanel
 
     /**
      * Builds the admin tab.
-     * 
+     *
      * @return The tab.
      */
     @SuppressWarnings("unchecked")

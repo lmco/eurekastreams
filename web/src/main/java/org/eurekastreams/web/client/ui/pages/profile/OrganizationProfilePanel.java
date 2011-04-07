@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,6 +69,7 @@ import org.eurekastreams.web.client.ui.common.pagedlist.PersonRenderer;
 import org.eurekastreams.web.client.ui.common.pagedlist.SingleColumnPagedListRenderer;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
+import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.common.tabs.SimpleTab;
 import org.eurekastreams.web.client.ui.common.tabs.TabContainerPanel;
@@ -157,7 +158,7 @@ public class OrganizationProfilePanel extends FlowPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param accountId
      *            the account id.
      */
@@ -208,7 +209,7 @@ public class OrganizationProfilePanel extends FlowPanel
 
     /**
      * We have the Person, so set up the Profile summary.
-     * 
+     *
      * @param inOrg
      *            the person whose profile is being displayed
      */
@@ -243,7 +244,7 @@ public class OrganizationProfilePanel extends FlowPanel
         leftBarPanel.addChildWidget(new PeopleListPanel(new HashSet<PersonModelView>(org.getLeaders()), "Leadership",
                 PeopleListPanel.DISPLAY_ALL, null, null, null));
 
-        final StreamPanel streamContent = new StreamPanel(true);
+        final StreamPanel streamContent = new StreamPanel(ShowRecipient.ALL);
         String jsonRequest = StreamJsonRequestFactory.setOrganization(org.getShortName(),
                 StreamJsonRequestFactory.getEmptyRequest()).toString();
 
@@ -322,7 +323,7 @@ public class OrganizationProfilePanel extends FlowPanel
 
     /**
      * Builds the connections tab.
-     * 
+     *
      * @return The tab.
      */
     private SimpleTab buildConnectionsTab()
@@ -394,7 +395,7 @@ public class OrganizationProfilePanel extends FlowPanel
 
     /**
      * Builds the admin tab.
-     * 
+     *
      * @return The tab.
      */
     private SimpleTab buildAdminTab()
@@ -482,7 +483,7 @@ public class OrganizationProfilePanel extends FlowPanel
 
         // prepare the StaticResourceBundle.INSTANCE.coreCss().filters()
         // flagged content StaticResourceBundle.INSTANCE.coreCss().filter()
-        StreamMessageItemRenderer flaggedRenderer = new StreamMessageItemRenderer(true);
+        StreamMessageItemRenderer flaggedRenderer = new StreamMessageItemRenderer(ShowRecipient.ALL);
         flaggedRenderer.setShowManageFlagged(true);
         flaggedRenderer.setShowComment(true);
         BaseActivityLinkBuilder activityLinkBuilder = new InContextActivityLinkBuilder();

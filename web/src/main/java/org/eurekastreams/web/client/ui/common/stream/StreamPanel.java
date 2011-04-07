@@ -41,6 +41,8 @@ import org.eurekastreams.web.client.model.ActivityModel;
 import org.eurekastreams.web.client.model.StreamModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
+import org.eurekastreams.web.client.ui.common.pagedlist.ItemRenderer;
+import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -160,15 +162,18 @@ public class StreamPanel extends FlowPanel
 
     /**
      * Initialize page.
-     * 
+     *
      * @param showRecipients
      *            if recipients should be shown.
+     * @param itemRenderer
+     *            Renderer for activities.
      * @param inPostToStreamComposite
      *            Stream posting widget to use.
      */
-    public StreamPanel(final Boolean showRecipients, final PostToStreamComposite inPostToStreamComposite)
+    public StreamPanel(final ShowRecipient showRecipients, final ItemRenderer<ActivityDTO> itemRenderer,
+            final PostToStreamComposite inPostToStreamComposite)
     {
-        this(showRecipients);
+        this(showRecipients, itemRenderer);
         postComposite = inPostToStreamComposite;
         setupPostComposite();
     }
@@ -179,11 +184,24 @@ public class StreamPanel extends FlowPanel
      * @param showRecipients
      *            if recipients should be shown.
      */
-    public StreamPanel(final Boolean showRecipients)
+    public StreamPanel(final ShowRecipient showRecipients)
+    {
+        this(showRecipients, new StreamMessageItemRenderer(showRecipients));
+    }
+
+    /**
+     * Initialize page.
+     *
+     * @param inShowRecipients
+     *            if recipients should be shown.
+     * @param itemRenderer
+     *            Renderer for activities.
+     */
+    public StreamPanel(final ShowRecipient inShowRecipients, final ItemRenderer<ActivityDTO> itemRenderer)
     {
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().layoutContainer());
 
-        stream = new StreamListPanel(new StreamMessageItemRenderer(showRecipients));
+        stream = new StreamListPanel(itemRenderer);
         stream.addStyleName(StaticResourceBundle.INSTANCE.coreCss().stream());
         stream.setVisible(false);
 
@@ -197,7 +215,6 @@ public class StreamPanel extends FlowPanel
         error.setVisible(false);
 
         postContent.add(shadowPanel);
-
 
         titlePanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamTitlebar());
         streamTitleWidget = new StreamTitleWidget();
@@ -254,7 +271,7 @@ public class StreamPanel extends FlowPanel
             {
                 setSingleActivityMode();
                 activityDetailPanel.clear();
-                activityDetailPanel.add(new ActivityDetailPanel(event.getResponse(), showRecipients));
+                activityDetailPanel.add(new ActivityDetailPanel(event.getResponse(), inShowRecipients));
             }
         });
 
@@ -353,8 +370,8 @@ public class StreamPanel extends FlowPanel
                         {
                             final String streamSearchText = queryObject.get("keywords").isString().stringValue();
 
-                            searchBoxWidget.setSearchTerm(search);
-                            searchStatusWidget.setSearchTerm(search);
+                            searchBoxWidget.setSearchTerm(streamSearchText);
+                            searchStatusWidget.setSearchTerm(streamSearchText);
 
                             updatedJson = StreamJsonRequestFactory.setSearchTerm(streamSearchText,
                                     StreamJsonRequestFactory.getJSONRequest(updatedJson)).toString();
@@ -525,7 +542,7 @@ public class StreamPanel extends FlowPanel
 
     /**
      * Set the stream scope to post to.
-     * 
+     *
      * @param streamScope
      *            the scope.
      * @param postingEnabled

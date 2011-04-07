@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Renders a metadata link like By Joe Smith.
- *
  */
-public class MetadataLinkRenderer
+public class MetadataLinkRenderer implements StatefulRenderer
 {
     /**
      * The label.
@@ -72,7 +71,7 @@ public class MetadataLinkRenderer
 
     /**
      * Constructor to for people.
-     * 
+     *
      * @param inLabel
      *            the label.
      * @param inId
@@ -96,28 +95,42 @@ public class MetadataLinkRenderer
         {
             String url;
 
-            if (type.equals(EntityType.PLUGIN) || type.equals(EntityType.APPLICATION))
+            switch (type)
             {
+            case PERSON:
+                url = Session.getInstance().generateUrl(new CreateUrlRequest(Page.PEOPLE, id));
+                break;
+            case GROUP:
+                url = Session.getInstance().generateUrl(new CreateUrlRequest(Page.GROUPS, id));
+                break;
+            case PLUGIN:
+            case APPLICATION:
                 // TODO: Is this correct for the new URL scheme?
                 url = id;
-            }
-            else
-            {
-                Page page = type.equals(EntityType.GROUP) ? Page.GROUPS : Page.PEOPLE;
-                url = Session.getInstance().generateUrl(new CreateUrlRequest(page, id));
+                break;
+            case RESOURCE:
+            case NOTSET:
+                url = id;
+                break;
+            default:
+                url = null;
             }
 
-            if (label != null && !label.isEmpty())
+            if (url == null || url.isEmpty())
+            {
+                return new InlineLabel(label == null || label.isEmpty() ? name : label + " " + name);
+            }
+            else if (label == null || label.isEmpty())
+            {
+                return new InlineHyperlink(name, url);
+            }
+            else
             {
                 Panel main = new FlowPanel();
                 main.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inlinePanel());
                 main.add(new InlineLabel(label + " "));
                 main.add(new InlineHyperlink(name, url));
                 return main;
-            }
-            else
-            {
-                return new InlineHyperlink(name, url);
             }
         }
         else

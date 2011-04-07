@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package org.eurekastreams.web.client.events;
 
+import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
+
 /**
  * Event to change whether we show the recipient.
  *
@@ -24,13 +26,13 @@ public class ChangeShowStreamRecipientEvent
     /**
      * New value.
      */
-    private boolean value;
+    private final ShowRecipient value;
 
     /**
      * Constructor.
      * @param inValue new value.
      */
-    public ChangeShowStreamRecipientEvent(final boolean inValue)
+    public ChangeShowStreamRecipientEvent(final ShowRecipient inValue)
     {
         value = inValue;
     }
@@ -39,7 +41,7 @@ public class ChangeShowStreamRecipientEvent
      * Get the value.
      * @return the value.
      */
-    public boolean getValue()
+    public ShowRecipient getValue()
     {
         return value;
     }

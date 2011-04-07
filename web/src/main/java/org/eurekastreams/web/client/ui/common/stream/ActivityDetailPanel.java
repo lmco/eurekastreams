@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import org.eurekastreams.web.client.events.data.GotOrganizationModelViewResponse
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.model.OrganizationModelViewModel;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -51,7 +52,7 @@ public class ActivityDetailPanel extends FlowPanel
      * @param showRecipient
      *            show the recipient.
      */
-    public ActivityDetailPanel(final ActivityDTO activity, final boolean showRecipient)
+    public ActivityDetailPanel(final ActivityDTO activity, final ShowRecipient showRecipient)
     {
         final FlowPanel thisBuffered = this;
 
@@ -64,7 +65,7 @@ public class ActivityDetailPanel extends FlowPanel
         renderer.setShowComment(showComment);
         renderer.setShowManageFlagged(manageFlagged);
         renderer.setSingleView(true);
-        
+
         if (activity != null)
         {
             this.add(renderer.render(activity));
@@ -108,7 +109,7 @@ public class ActivityDetailPanel extends FlowPanel
             OrganizationModelViewModel.getInstance().fetch(activity.getRecipientParentOrgId(), true);
         }
     }
-    
+
     /**
      * Shows a "not found" message.
      */

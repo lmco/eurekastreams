@@ -17,8 +17,10 @@ package org.eurekastreams.server.service.actions.strategies;
 
 import static org.junit.Assert.assertTrue;
 
+import org.eurekastreams.server.action.request.SharedResourceRequest;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.domain.stream.SharedResource;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
@@ -66,8 +68,8 @@ public class ResourceRecipientRetrieverTest
     /**
      * Mapper to get Resource stream scope id.
      */
-    private DomainMapper<String, StreamScope> streamScopeByUniqueKeyMapper = context.mock(DomainMapper.class,
-            "streamScopeIdByUniqueKeyMapper");
+    private DomainMapper<SharedResourceRequest, SharedResource> streamResourceByUniqueKeyMapper = context.mock(
+            DomainMapper.class, "streamResourceByUniqueKeyMapper");
 
     /**
      * Organizaiton mock.
@@ -85,6 +87,11 @@ public class ResourceRecipientRetrieverTest
     private StreamEntityDTO streamEntityDTOMock = context.mock(StreamEntityDTO.class);
 
     /**
+     * Shared resource mock.
+     */
+    private SharedResource sharedResourceMock = context.mock(SharedResource.class);
+
+    /**
      * StreamScope mock.
      */
     private StreamScope streamScopeMock = context.mock(StreamScope.class);
@@ -95,7 +102,7 @@ public class ResourceRecipientRetrieverTest
     @Before
     public void setup()
     {
-        sut = new ResourceRecipientRetriever(rootOrgIdDAO, findByIdMapper, streamScopeByUniqueKeyMapper);
+        sut = new ResourceRecipientRetriever(rootOrgIdDAO, findByIdMapper, streamResourceByUniqueKeyMapper);
     }
 
     /**
@@ -134,7 +141,10 @@ public class ResourceRecipientRetrieverTest
                 oneOf(streamEntityDTOMock).getUniqueIdentifier();
                 will(returnValue("ui"));
 
-                oneOf(streamScopeByUniqueKeyMapper).execute("ui");
+                oneOf(streamResourceByUniqueKeyMapper).execute(with(any(SharedResourceRequest.class)));
+                will(returnValue(sharedResourceMock));
+
+                oneOf(sharedResourceMock).getStreamScope();
                 will(returnValue(streamScopeMock));
             }
         });

@@ -678,7 +678,34 @@
         </constructor-arg>
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
-    </bean>    
+    </bean>
+    
+    <bean id="hideResourceActivity" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.authorization.stream.DeleteActivityAuthorization">
+                <constructor-arg ref="bulkActivitiesMapper" />
+                <constructor-arg ref="activityDeletePropertyStrategy" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.stream.HideResourceActivityExecution">
+                <constructor-arg ref="hideResourceActivityMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+        <constructor-arg ref="taskHandler" />
+    </bean>     
+    
+    <bean id="hideResourceActivityCacheUpdate" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean parent="baseParamExecuteDomainMapperExecution">
+                <constructor-arg ref="hideResourceActivityCacheUpdateMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>         
            
     <bean id="renameTab" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg>
@@ -2034,6 +2061,7 @@
                     <ref bean="likeFilter" />
                     <ref bean="deleteFilter" />
                     <ref bean="savedFilter" />
+                    <ref bean="authorLockedFilter" />
                     <ref bean="serverTimeFilter" />
                 </list>
             </constructor-arg>
@@ -2135,7 +2163,7 @@
             <bean class="org.eurekastreams.server.service.actions.strategies.ResourceRecipientRetriever">
                 <constructor-arg ref="getRootOrganizationIdAndShortNameMapper" />
                 <constructor-arg ref="findByIdMapper" />
-                <constructor-arg ref="findOrInsertSharedResourceStreamScopeByUniqueKeyDbMapper" />
+                <constructor-arg ref="findOrInsertSharedResourceByUniqueKeyMapper" />
             </bean>
         </constructor-arg>
         <constructor-arg ref="postActivityUpdateStreamsByActorMapper" />
@@ -2917,6 +2945,7 @@
                         <ref bean="likeFilter" />
                         <ref bean="deleteFilter" />
                         <ref bean="savedFilter" />
+                        <ref bean="authorLockedFilter" />
                         <ref bean="serverTimeFilter" />
                     </list>
                 </constructor-arg>
@@ -4109,6 +4138,12 @@
     </bean>
     <bean id="serverTimeFilter"
         class="org.eurekastreams.server.service.actions.strategies.activity.PopulateActivityDTOServerDateTime" />
+         
+	<bean id="authorLockedFilter"
+		class="org.eurekastreams.server.service.actions.strategies.activity.IsAuthorLockedFilter">
+		<constructor-arg ref="getPersonsByIdsMapper" />
+	</bean>
+		
             
     <bean id="getActivitiesByRequest" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />

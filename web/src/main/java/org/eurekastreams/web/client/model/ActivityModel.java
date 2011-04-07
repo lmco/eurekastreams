@@ -31,7 +31,7 @@ import org.eurekastreams.web.client.ui.common.notifier.Notification;
 
 /**
  * Activity Model.
- *
+ * 
  */
 public class ActivityModel extends BaseModel implements Fetchable<Long>, Deletable<Long>,
         Insertable<PostActivityRequest>
@@ -47,7 +47,7 @@ public class ActivityModel extends BaseModel implements Fetchable<Long>, Deletab
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
     public static ActivityModel getInstance()
@@ -68,7 +68,7 @@ public class ActivityModel extends BaseModel implements Fetchable<Long>, Deletab
 
     /**
      * Retrieves a list of activities for the org.
-     *
+     * 
      * @param inRequest
      *            Request.
      * @param inUseClientCacheIfAvailable
@@ -87,7 +87,7 @@ public class ActivityModel extends BaseModel implements Fetchable<Long>, Deletab
 
     /**
      * Deletes an activity.
-     *
+     * 
      * @param request
      *            Activity id.
      */
@@ -103,26 +103,42 @@ public class ActivityModel extends BaseModel implements Fetchable<Long>, Deletab
     }
 
     /**
+     * Hides an activity.
+     * 
+     * @param request
+     *            Activity id.
+     */
+    public void hide(final Long request)
+    {
+        super.callWriteAction("hideResourceActivity", request, new OnSuccessCommand<Boolean>()
+        {
+            public void onSuccess(final Boolean response)
+            {
+                eventBus.notifyObservers(new DeletedActivityResponseEvent(request));
+            }
+        });
+    }
+
+    /**
      * {@inheritDoc}
      */
     public void insert(final PostActivityRequest inRequest)
     {
-        super.callWriteAction(
-                postActivityActionKeysByType.get(inRequest.getActivityDTO().getDestinationStream().getType()),
-                inRequest, new OnSuccessCommand<ActivityDTO>()
-                {
-                    public void onSuccess(final ActivityDTO result)
-                    {
-                        eventBus.notifyObservers(new MessageStreamAppendEvent(result));
-                    }
-                }, new OnFailureCommand()
-                {
-                    public void onFailure(final Throwable inEx)
-                    {
-                        eventBus.notifyObservers(new ShowNotificationEvent(new Notification(
-                                inEx instanceof AuthorizationException ? "Not allowed to post to this stream."
-                                        : "Error posting to stream.")));
-                    }
-                });
+        super.callWriteAction(postActivityActionKeysByType.get(inRequest.getActivityDTO().getDestinationStream()
+                .getType()), inRequest, new OnSuccessCommand<ActivityDTO>()
+        {
+            public void onSuccess(final ActivityDTO result)
+            {
+                eventBus.notifyObservers(new MessageStreamAppendEvent(result));
+            }
+        }, new OnFailureCommand()
+        {
+            public void onFailure(final Throwable inEx)
+            {
+                eventBus.notifyObservers(new ShowNotificationEvent(new Notification(
+                        inEx instanceof AuthorizationException ? "Not allowed to post to this stream."
+                                : "Error posting to stream.")));
+            }
+        });
     }
 }

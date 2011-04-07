@@ -24,12 +24,16 @@ import org.eurekastreams.commons.client.ActionRPCServiceAsync;
 import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.SwitchedHistoryViewEvent;
 import org.eurekastreams.web.client.history.HistoryHandler;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.Session;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.http.client.UrlBuilder;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -57,6 +61,9 @@ public class ConnectEntryPoint implements EntryPoint
 
     /** For creating the widget pages. */
     private final ConnectPageFactory pageFactory = new ConnectPageFactory();
+
+    /** URL for launching the main app. */
+    private String mainAppLaunchUrl;
 
     /**
      * Module load.
@@ -108,10 +115,35 @@ public class ConnectEntryPoint implements EntryPoint
                                 session.setCurrentPersonRoles(person.getRoles());
                                 session.setHistoryHandler(new HistoryHandler());
 
+                                determineLaunchPage();
+
+                                // catch attempts to go to profile pages and pop them up in a new window
+                                final EventBus eventBus = Session.getInstance().getEventBus();
+                                eventBus.addObserver(SwitchedHistoryViewEvent.class,
+                                        new Observer<SwitchedHistoryViewEvent>()
+                                        {
+                                            public void update(final SwitchedHistoryViewEvent ev)
+                                            {
+                                                switch (ev.getPage())
+                                                {
+                                                case PEOPLE:
+                                                case GROUPS:
+                                                case ORGANIZATIONS:
+                                                    String url = mainAppLaunchUrl + Window.Location.getHash();
+                                                    Window.open(url, "_blank", "");
+                                                    History.back();
+                                                    break;
+                                                default:
+                                                    break;
+                                                }
+                                            }
+                                        });
+
+                                Session.getInstance().getEventBus().bufferObservers();
+
                                 buildPage();
                             }
                         });
-
             }
         });
     }
@@ -143,10 +175,8 @@ public class ConnectEntryPoint implements EntryPoint
     /**
      * Builds a page displaying the desired widget.
      */
-     private void buildPage()
+    private void buildPage()
     {
-        Session.getInstance().getEventBus().bufferObservers();
-
         WidgetJSNIFacadeImpl util = new WidgetJSNIFacadeImpl();
 
         String widgetName = util.getParameter("widget");
@@ -164,70 +194,36 @@ public class ConnectEntryPoint implements EntryPoint
         Window.alert("Widget name invalid or missing.");
     }
 
-
-// /**
-    // * Builds a page displaying the desired widget.
-    // */
-    // private void buildPage()
-    // {
-    // final EventBus eventBus = Session.getInstance().getEventBus();
-    // eventBus.addObserver(SwitchedHistoryViewEvent.class, new Observer<SwitchedHistoryViewEvent>()
-    // {
-    // public void update(final SwitchedHistoryViewEvent ev)
-    // {
-    // eventBus.removeObserver(ev, this);
-    //
-    // Widget page = pageFactory.createPage(ev.getPage(), ev.getViews());
-    // if (page == null)
-    // {
-    // page = new Label("Unknown or unimplemented widget");
-    // }
-    //
-    // rootPanel.add(page);
-    // }
-    // });
-    //
-    // eventBus.bufferObservers();
-    //
-    // // ///////////////////////
-    // WidgetJSNIFacadeImpl util = new WidgetJSNIFacadeImpl();
-    // String widgetName = util.getParameter("widget");
-    //
-    // if ("comment".equals(widgetName))
-    // {
-    // String resourceId = util.getParameter("resourceUrl");
-    // setHistory(new CreateUrlRequest(Page.WIDGET_COMMENT, resourceId));
-    // }
-    // }
-    //
-    // private void setHistory(final CreateUrlRequest request)
-    // {
-    // String token = Session.getInstance().generateUrl(request);
-    // History.newItem(token, true);
-    // }
-
-    // /**
-    // * Builds a page displaying the desired widget.
-    // */
-    // private void buildPage()
-    // {
-    // final EventBus eventBus = Session.getInstance().getEventBus();
-    // eventBus.addObserver(SwitchedHistoryViewEvent.class, new Observer<SwitchedHistoryViewEvent>()
-    // {
-    // public void update(final SwitchedHistoryViewEvent ev)
-    // {
-    // eventBus.removeObserver(ev, this);
-    //
-    // Widget page = pageFactory.createPage(ev.getPage(), ev.getViews());
-    // if (page == null)
-    // {
-    // page = new Label("Unknown or unimplemented widget");
-    // }
-    //
-    // rootPanel.add(page);
-    // }
-    // });
-    // eventBus.bufferObservers();
-    // History.fireCurrentHistoryState();
-    // }
+    /**
+     * Determines the URL to use to launch the main app.
+     */
+    private void determineLaunchPage()
+    {
+        String param = Window.Location.getParameter("_main");
+        if (param != null && !param.isEmpty())
+        {
+            mainAppLaunchUrl = param;
+        }
+        else
+        {
+            String path = Window.Location.getPath();
+            int index = path.lastIndexOf('/');
+            if (index >= 0 && path.length() > index + 1)
+            {
+                UrlBuilder builder = new UrlBuilder();
+                builder.setProtocol(Window.Location.getProtocol());
+                builder.setHost(Window.Location.getHost());
+                try
+                {
+                    builder.setPort(Integer.parseInt(Window.Location.getPort()));
+                }
+                catch (Exception ex)
+                {
+                    int makeCheckstyleShutUp = 1;
+                }
+                builder.setPath(path.substring(0, index));
+                mainAppLaunchUrl = builder.buildString();
+            }
+        }
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 import org.eurekastreams.web.client.ui.common.stream.filters.FilterPanel;
+import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -40,7 +41,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * Group stream panel.
- * 
+ *
  */
 public class GroupStreamPanel extends Composite implements FilterPanel
 {
@@ -52,22 +53,22 @@ public class GroupStreamPanel extends Composite implements FilterPanel
     /**
      * Label Container.
      */
-    private FlowPanel labelContainer;
+    private final FlowPanel labelContainer;
 
     /**
      * Label.
      */
-    private Label label;
+    private final Label label;
 
     /**
      * The move handle.
      */
-    private Label moveHandle;
+    private final Label moveHandle;
 
     /**
      * Renderer.
      */
-    private GroupStreamRenderer renderer;
+    private final GroupStreamRenderer renderer;
 
     /**
      * Switch hangled.
@@ -76,7 +77,7 @@ public class GroupStreamPanel extends Composite implements FilterPanel
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inGroup
      *            the group to render.
      * @param inRenderer
@@ -153,7 +154,7 @@ public class GroupStreamPanel extends Composite implements FilterPanel
 
     /**
      * Set view.
-     * 
+     *
      * @param inView
      *            the view.
      */
@@ -165,7 +166,7 @@ public class GroupStreamPanel extends Composite implements FilterPanel
 
     /**
      * Get item id.
-     * 
+     *
      * @return the item id.
      */
     public Long getItemId()
@@ -175,7 +176,7 @@ public class GroupStreamPanel extends Composite implements FilterPanel
 
     /**
      * Get the move handle.
-     * 
+     *
      * @return the move handle.
      */
     public Label getMoveHandle()
@@ -196,7 +197,8 @@ public class GroupStreamPanel extends Composite implements FilterPanel
                 StreamJsonRequestFactory.getEmptyRequest()).toString();
 
         Session.getInstance().getEventBus().notifyObservers(new StreamRequestEvent(group.getName(), jsonRequest));
-        Session.getInstance().getEventBus().notifyObservers(new ChangeShowStreamRecipientEvent(false));
+        Session.getInstance().getEventBus()
+                .notifyObservers(new ChangeShowStreamRecipientEvent(ShowRecipient.FOREIGN_ONLY));
         Session.getInstance().getEventBus().notifyObservers(new SwitchedToGroupStreamEvent(group));
 
     }
@@ -211,7 +213,7 @@ public class GroupStreamPanel extends Composite implements FilterPanel
 
     /**
      * Returns the filter.
-     * 
+     *
      * @return the filter.
      */
     public StreamFilter getFilter()

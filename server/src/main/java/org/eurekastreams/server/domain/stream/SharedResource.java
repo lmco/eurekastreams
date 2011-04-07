@@ -26,6 +26,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
@@ -73,6 +74,13 @@ public class SharedResource extends DomainEntity implements Serializable
     // unique constraints
     uniqueConstraints = { @UniqueConstraint(columnNames = { "personId", "sharedResourceId" }) })
     private List<Person> likedBy;
+
+    /**
+     * Stream scope representing this shared resource.
+     */
+    @OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST }, optional = false)
+    @JoinColumn(name = "streamScopeId")
+    private StreamScope streamScope;
 
     /**
      * Constructor.
@@ -124,6 +132,23 @@ public class SharedResource extends DomainEntity implements Serializable
     public void setLikedBy(final List<Person> inLikedBy)
     {
         likedBy = inLikedBy;
+    }
+
+    /**
+     * @return the streamScope
+     */
+    public StreamScope getStreamScope()
+    {
+        return streamScope;
+    }
+
+    /**
+     * @param inStreamScope
+     *            the streamScope to set
+     */
+    public void setStreamScope(final StreamScope inStreamScope)
+    {
+        streamScope = inStreamScope;
     }
 
 }

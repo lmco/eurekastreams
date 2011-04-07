@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,6 +53,7 @@ import org.eurekastreams.web.client.ui.common.pagedlist.PagedListPanel;
 import org.eurekastreams.web.client.ui.common.pagedlist.PersonRenderer;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
+import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
 import org.eurekastreams.web.client.ui.common.tabs.SimpleTab;
 import org.eurekastreams.web.client.ui.common.tabs.TabContainerPanel;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
@@ -151,7 +152,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param accountId
      *            the account id.
      */
@@ -200,7 +201,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * We have the Person, so set up the Profile summary.
-     * 
+     *
      * @param inPerson
      *            the person whose profile is being displayed
      */
@@ -289,7 +290,7 @@ public class PersonalProfilePanel extends FlowPanel
             setUpChecklist();
         }
 
-        final StreamPanel streamContent = new StreamPanel(false);
+        final StreamPanel streamContent = new StreamPanel(ShowRecipient.FOREIGN_ONLY);
         streamContent.setStreamScope(new StreamScope(ScopeType.PERSON, personModelView.getAccountId(), personModelView
                 .getStreamId()), (personModelView.isStreamPostable() || (currentUser.getAccountId() == personModelView
                 .getAccountId())));
@@ -321,7 +322,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * Generates a panel to use as the message when a user is locked out of the system.
-     * 
+     *
      * @return the Panel content containing the locked message.
      */
     private Panel generateLockedUserMessage()
@@ -385,7 +386,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * Creates a new error report box and centers it on the page.
-     * 
+     *
      * @return The error report box, ready to have content added to it.
      */
     private Panel addNewCenteredErrorBox()
@@ -476,7 +477,7 @@ public class PersonalProfilePanel extends FlowPanel
 
     /**
      * Creates and sets up the connections tab content.
-     * 
+     *
      * @param inPerson
      *            Person whose profile is being displayed.
      * @return Tab content.

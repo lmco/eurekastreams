@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eurekastreams.commons.formatting.DateFormatter;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.ActivityVerb;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
@@ -58,7 +59,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.InlineHyperlink;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
@@ -72,7 +72,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 {
     /**
      * State.
-     * 
+     *
      */
     public enum State
     {
@@ -94,17 +94,20 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
     /**
      * Show the recipient.
      */
-    private boolean showRecipient;
+    private ShowRecipient showRecipient;
     /**
      * Show the recipient.
      */
-    private boolean showRecipientInStream;
+    private ShowRecipient showRecipientInStream;
 
     /** Show controls for managing flagged content. */
     private boolean showManageFlagged;
 
     /** Render specifically for a single-activity view. */
     private boolean singleView;
+
+    /** If date should be a permalink. */
+    private boolean createPermalink;
 
     /**
      * State.
@@ -131,24 +134,24 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Constructor.
-     * 
+     *
      * @param inShowRecipient
      *            show the recipient.
      */
-    public StreamMessageItemRenderer(final boolean inShowRecipient)
+    public StreamMessageItemRenderer(final ShowRecipient inShowRecipient)
     {
         this(inShowRecipient, State.DEFAULT);
     }
 
     /**
      * Constructor.
-     * 
+     *
      * @param inShowRecipient
-     *            show the receipiant.
+     *            show the recipient.
      * @param inState
      *            state.
      */
-    public StreamMessageItemRenderer(final boolean inShowRecipient, final State inState)
+    public StreamMessageItemRenderer(final ShowRecipient inShowRecipient, final State inState)
     {
         showRecipientInStream = inShowRecipient;
         state = inState;
@@ -173,7 +176,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Sets showComment.
-     * 
+     *
      * @param inShowComment
      *            value to set.
      */
@@ -211,17 +214,17 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Render a message item.
-     * 
+     *
      * @param msg
      *            the message item.
-     * 
+     *
      * @return the rendered item as a FlowPanel.
      */
     public Panel render(final ActivityDTO msg)
     {
         if (msg.getDestinationStream().getUniqueIdentifier().equals(msg.getActor().getUniqueIdentifier()))
         {
-            showRecipient = false;
+            showRecipient = ShowRecipient.FOREIGN_ONLY;
         }
         else
         {
@@ -275,7 +278,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         // row for who posted
         Panel sourceMetaData = new FlowPanel();
         sourceMetaData.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageMetadataSource());
-        for (MetadataLinkRenderer itemRenderer : verbRenderer.getSourceMetaDataItemRenderers())
+        for (StatefulRenderer itemRenderer : verbRenderer.getSourceMetaDataItemRenderers())
         {
             Widget metaDataItem = itemRenderer.render();
             if (metaDataItem != null)
@@ -299,7 +302,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         // additional metadata
         FlowPanel metaData = new FlowPanel();
         metaData.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageMetadataAdditional());
-        for (MetadataLinkRenderer itemRenderer : verbRenderer.getMetaDataItemRenderers())
+        for (StatefulRenderer itemRenderer : verbRenderer.getMetaDataItemRenderers())
         {
             Widget metaDataItem = itemRenderer.render();
             if (metaDataItem != null)
@@ -316,11 +319,19 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
         Panel timestampActions = new FlowPanel();
         timestampActions.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageTimestampActionsArea());
 
-        String permalinkUrl = activityLinkBuilder.buildActivityPermalink(msg.getId(), msg.getDestinationStream()
-                .getType(), msg.getDestinationStream().getUniqueIdentifier());
 
-        DateFormatter dateFormatter = new DateFormatter(new Date());
-        Hyperlink dateLink = new InlineHyperlink(dateFormatter.timeAgo(msg.getPostedTime()), permalinkUrl);
+        String date = new DateFormatter(new Date()).timeAgo(msg.getPostedTime());
+        Widget dateLink;
+        if (createPermalink)
+        {
+            String permalinkUrl = activityLinkBuilder.buildActivityPermalink(msg.getId(), msg.getDestinationStream()
+                    .getType(), msg.getDestinationStream().getUniqueIdentifier());
+            dateLink = new InlineHyperlink(date, permalinkUrl);
+        }
+        else
+        {
+            dateLink = new InlineLabel(date);
+        }
         dateLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageTimestampLink());
         timestampActions.add(dateLink);
 
@@ -375,7 +386,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Builds the action links panel.
-     * 
+     *
      * @param msg
      *            The message.
      * @param mainPanel
@@ -432,10 +443,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
             {
                 public void onClick(final ClickEvent event)
                 {
-                    DialogContent dialogContent = new ShareMessageDialogContent(msg);
-                    Dialog dialog = new Dialog(dialogContent);
-                    dialog.setBgVisible(true);
-                    dialog.center();
+                    onShare(msg);
                 }
             });
         }
@@ -498,8 +506,22 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
     }
 
     /**
+     * Called when user requests to share the activity.
+     *
+     * @param msg
+     *            Activity to share.
+     */
+    protected void onShare(final ActivityDTO msg)
+    {
+        DialogContent dialogContent = new ShareMessageDialogContent(msg);
+        Dialog dialog = new Dialog(dialogContent);
+        dialog.setBgVisible(true);
+        dialog.center();
+    }
+
+    /**
      * Adds a separator (dot).
-     * 
+     *
      * @param panel
      *            Panel to put the separator in.
      */
@@ -512,7 +534,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Sets up the buttons to manage flagged content.
-     * 
+     *
      * @param msg
      *            The activity.
      * @param mainPanel
@@ -572,7 +594,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
 
     /**
      * Wires up the handler for clicking on a delete link/button.
-     * 
+     *
      * @param widget
      *            The delete link/button.
      * @param msg
@@ -589,15 +611,34 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
                 if (new WidgetJSNIFacadeImpl().confirm("Are you sure you want to delete this activity?"))
                 {
                     setupDeleteFadeout(msg, mainPanel);
-                    ActivityModel.getInstance().delete(msg.getId());
+                    performDelete(msg);
+
                 }
             }
         });
     }
 
     /**
+     * Action to actually do the delete.
+     *
+     * @param msg
+     *            The activity.
+     */
+    protected void performDelete(final ActivityDTO msg)
+    {
+        if (msg.getDestinationStream().getType() == EntityType.RESOURCE)
+        {
+            ActivityModel.getInstance().hide(msg.getId());
+        }
+        else
+        {
+            ActivityModel.getInstance().delete(msg.getId());
+        }
+    }
+
+    /**
      * Sets up to remove the activity on deletion.
-     * 
+     *
      * @param msg
      *            The activity.
      * @param mainPanel
@@ -617,5 +658,22 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
                         }
                     }
                 });
+    }
+
+    /**
+     * @param inCreatePermalink
+     *            the createPermalink to set
+     */
+    public void setCreatePermalink(final boolean inCreatePermalink)
+    {
+        createPermalink = inCreatePermalink;
+    }
+
+    /**
+     * @return the objectDictionary
+     */
+    protected Map<BaseObjectType, ObjectRenderer> getObjectDictionary()
+    {
+        return objectDictionary;
     }
 }

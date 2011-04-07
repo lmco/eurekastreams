@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.web.client.ui.common.stream.renderers.AvatarRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.MetadataLinkRenderer;
+import org.eurekastreams.web.client.ui.common.stream.renderers.ResourceDestinationRenderer;
+import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
+import org.eurekastreams.web.client.ui.common.stream.renderers.SimpleTextRenderer;
+import org.eurekastreams.web.client.ui.common.stream.renderers.StatefulRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer.State;
 import org.eurekastreams.web.client.ui.common.stream.renderers.object.ObjectRenderer;
@@ -53,7 +58,7 @@ public class PostRenderer implements VerbRenderer
     /**
      * Whether or not to show the recipient.
      */
-    boolean showRecipient;
+    ShowRecipient showRecipient;
 
     /**
      * Setup.
@@ -68,7 +73,8 @@ public class PostRenderer implements VerbRenderer
      *            the recipient.
      */
     public void setup(final Map<BaseObjectType, ObjectRenderer> inObjectRendererDictionary,
-            final ActivityDTO inActivity, final StreamMessageItemRenderer.State inState, final boolean inShowRecipient)
+            final ActivityDTO inActivity, final StreamMessageItemRenderer.State inState,
+            final ShowRecipient inShowRecipient)
     {
         objectRendererDictionary = inObjectRendererDictionary;
         activity = inActivity;
@@ -160,7 +166,7 @@ public class PostRenderer implements VerbRenderer
      *
      * @return the list.
      */
-    public List<MetadataLinkRenderer> getMetaDataItemRenderers()
+    public List<StatefulRenderer> getMetaDataItemRenderers()
     {
         return Collections.emptyList();
     }
@@ -168,17 +174,32 @@ public class PostRenderer implements VerbRenderer
     /**
      * {@inheritDoc}
      */
-    public List<MetadataLinkRenderer> getSourceMetaDataItemRenderers()
+    public List<StatefulRenderer> getSourceMetaDataItemRenderers()
     {
-        List<MetadataLinkRenderer> renderers = new LinkedList<MetadataLinkRenderer>();
+        List<StatefulRenderer> renderers = new LinkedList<StatefulRenderer>();
 
-        StreamEntityDTO actor = activity.getActor();
-        renderers.add(new MetadataLinkRenderer("", actor.getType(), actor.getUniqueIdentifier(), actor
-                .getDisplayName()));
+        final StreamEntityDTO actor = activity.getActor();
+        StreamEntityDTO stream = activity.getDestinationStream();
 
-        if (showRecipient)
+        if (activity.isLockedAuthor())
         {
-            StreamEntityDTO stream = activity.getDestinationStream();
+            renderers.add(new SimpleTextRenderer(actor.getDisplayName()));
+        }
+        else
+        {
+            renderers.add(new MetadataLinkRenderer("", actor.getType(), actor.getUniqueIdentifier(), actor
+                    .getDisplayName()));
+        }
+
+        if (stream.getType() == EntityType.RESOURCE)
+        {
+            if (showRecipient != ShowRecipient.NONE)
+            {
+                renderers.add(new ResourceDestinationRenderer(activity));
+            }
+        }
+        else if (showRecipient == ShowRecipient.ALL)
+        {
             renderers.add(new MetadataLinkRenderer("to", stream.getType(), stream.getUniqueIdentifier(), stream
                     .getDisplayName()));
         }
