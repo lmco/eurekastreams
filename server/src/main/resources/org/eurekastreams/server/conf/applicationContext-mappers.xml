@@ -2145,6 +2145,17 @@
 		<constructor-arg ref="getStreamScopeIdForResourceScopeTypeByUniqueKeyExceptionIfNotFound" />			
 		<property name="cache" ref="memcachedCache" />
 	</bean>
+	
+	<bean id="hideResourceActivityMapper" class="org.eurekastreams.server.persistence.mappers.db.HideResourceActivityMapper">            
+        <property name="cache" ref="memcachedCache" />
+    </bean>
+	
+    <bean id="hideResourceActivityCacheUpdateMapper" class="org.eurekastreams.server.persistence.mappers.cache.HideResourceActivityCacheUpdateMapper">
+        <constructor-arg ref="activityDTOMapper" />
+        <constructor-arg ref="getPersonByAccountIdMapper" />         
+        <constructor-arg ref="getFollowerPersonIdsForPersonByIdMapper" />            
+        <property name="cache" ref="memcachedCache" />
+    </bean>
 
 	<bean id="updateCachedOrganizationNameMapper"
 		class="org.eurekastreams.server.persistence.UpdateCachedOrganizationName">
@@ -2619,6 +2630,12 @@
         <constructor-arg ref="getStreamScopeIdsForResourceScopeTypeByUniqueKeys" />
         <constructor-arg value="true" />
     </bean>
+    
+    <!-- gets single activityDTO by id, returns null if exactly one result not found. -->
+    <bean id="activityDTOMapper" class="org.eurekastreams.server.persistence.mappers.SingleValueCollectionMapperWrapper">
+        <constructor-arg ref="bulkActivitiesMapper" />
+        <constructor-arg value="false" />
+    </bean>            
     
     <bean id="getStreamScopeIdsForResourceScopeTypeByUniqueKeys" class="org.eurekastreams.server.persistence.mappers.db.GetStreamScopeIdsForScopeTypeByUniqueKeys" >
         <constructor-arg>

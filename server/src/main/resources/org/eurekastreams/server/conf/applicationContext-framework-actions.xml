@@ -678,7 +678,34 @@
         </constructor-arg>
         <constructor-arg value="false" />
         <constructor-arg ref="taskHandler" />
-    </bean>    
+    </bean>
+    
+    <bean id="hideResourceActivity" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.authorization.stream.DeleteActivityAuthorization">
+                <constructor-arg ref="bulkActivitiesMapper" />
+                <constructor-arg ref="activityDeletePropertyStrategy" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.action.execution.stream.HideResourceActivityExecution">
+                <constructor-arg ref="hideResourceActivityMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="false" />
+        <constructor-arg ref="taskHandler" />
+    </bean>     
+    
+    <bean id="hideResourceActivityCacheUpdate" class="org.eurekastreams.commons.actions.async.AsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg>
+            <bean parent="baseParamExecuteDomainMapperExecution">
+                <constructor-arg ref="hideResourceActivityCacheUpdateMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>         
            
     <bean id="renameTab" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg>
