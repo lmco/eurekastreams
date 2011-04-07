@@ -843,6 +843,9 @@ public interface CoreCss extends CssResource
     @ClassName("go-to-support-group-stream-link")
     String goToSupportGroupStreamLink();
 
+    @ClassName("go-to-stream-link")
+    String goToStreamLink();
+
     String group();
 
     @ClassName("group-check-box")

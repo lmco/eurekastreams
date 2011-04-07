@@ -16,11 +16,17 @@
 package org.eurekastreams.web.client.ui.pages.widget;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eurekastreams.server.action.request.stream.PostActivityRequest;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
+import org.eurekastreams.server.domain.stream.ActivityVerb;
 import org.eurekastreams.server.domain.stream.BaseObjectType;
+import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.web.client.events.EventBus;
@@ -35,13 +41,20 @@ import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
 import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulator;
 import org.eurekastreams.web.client.ui.common.stream.decorators.object.NotePopulator;
 import org.eurekastreams.web.client.ui.common.stream.decorators.verb.PostPopulator;
+import org.eurekastreams.web.client.ui.common.stream.renderers.MetadataLinkRenderer;
+import org.eurekastreams.web.client.ui.common.stream.renderers.RenderUtilities;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
+import org.eurekastreams.web.client.ui.common.stream.renderers.StatefulRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
+import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer.State;
 import org.eurekastreams.web.client.ui.common.stream.renderers.object.NoteRenderer;
+import org.eurekastreams.web.client.ui.common.stream.renderers.object.ObjectRenderer;
+import org.eurekastreams.web.client.ui.common.stream.renderers.verb.VerbRenderer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The Eureka Connect "comment widget" - displays a stream for a resource and allows posting.
@@ -134,6 +147,13 @@ public class CommentWidget extends Composite
             super(ShowRecipient.NONE);
             setCreatePermalink(false);
             getObjectDictionary().put(BaseObjectType.BOOKMARK, new NoteRenderer());
+
+            // decorate all the verb renderers
+            for (Entry<ActivityVerb, VerbRenderer> entry : new HashMap<ActivityVerb, VerbRenderer>(getVerbDictionary())
+                    .entrySet())
+            {
+                getVerbDictionary().put(entry.getKey(), new CommentWidgetVerbRenderer(entry.getValue()));
+            }
         }
 
         /**
@@ -218,5 +238,121 @@ public class CommentWidget extends Composite
             PostActivityRequest postRequest = new PostActivityRequest(activity);
             ActivityModel.getInstance().insert(postRequest);
         }
+    }
+
+    /**
+     * Decorator for verb renderers to display the actor line on bookmark activities as "xyz shared this link to zyx".
+     */
+    class CommentWidgetVerbRenderer implements VerbRenderer
+    {
+        /** Decorated renderer. */
+        private final VerbRenderer decorated;
+
+        /** Activity being rendered. */
+        private ActivityDTO activity;
+
+        /**
+         * Constructor.
+         *
+         * @param inDecorated
+         *            Decorated renderer.
+         */
+        public CommentWidgetVerbRenderer(final VerbRenderer inDecorated)
+        {
+            decorated = inDecorated;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public List<StatefulRenderer> getSourceMetaDataItemRenderers()
+        {
+            if (activity.getBaseObjectType() == BaseObjectType.BOOKMARK
+                    && activity.getDestinationStream().getType() != EntityType.RESOURCE)
+            {
+                List<StatefulRenderer> renderers = new LinkedList<StatefulRenderer>();
+
+                RenderUtilities.renderActorName(renderers, activity);
+
+                StreamEntityDTO stream = activity.getDestinationStream();
+                renderers.add(new MetadataLinkRenderer("shared this link to", stream.getType(), stream
+                        .getUniqueIdentifier(), stream.getDisplayName()));
+
+                return renderers;
+            }
+            else
+            {
+                return decorated.getSourceMetaDataItemRenderers();
+            }
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void setup(final Map<BaseObjectType, ObjectRenderer> inObjectRendererDictionary,
+                final ActivityDTO inActivity, final State inState, final ShowRecipient inShowRecipient)
+        {
+            activity = inActivity;
+            decorated.setup(inObjectRendererDictionary, inActivity, inState, inShowRecipient);
+        }
+
+        // boring pass-through methods (decoration)
+
+        /**
+         * {@inheritDoc}
+         */
+        public boolean getAllowComment()
+        {
+            return decorated.getAllowComment();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public boolean getAllowStar()
+        {
+            return decorated.getAllowStar();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public boolean getAllowLike()
+        {
+            return decorated.getAllowLike();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public boolean getAllowShare()
+        {
+            return decorated.getAllowShare();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public Widget getAvatar()
+        {
+            return decorated.getAvatar();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public Widget getContent()
+        {
+            return decorated.getContent();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public List<StatefulRenderer> getMetaDataItemRenderers()
+        {
+            return decorated.getMetaDataItemRenderers();
+        }
+
     }
 }

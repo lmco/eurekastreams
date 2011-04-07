@@ -676,4 +676,12 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
     {
         return objectDictionary;
     }
+
+    /**
+     * @return the verbDictionary
+     */
+    protected Map<ActivityVerb, VerbRenderer> getVerbDictionary()
+    {
+        return verbDictionary;
+    }
 }

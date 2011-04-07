@@ -92,9 +92,8 @@ public class ConnectPageFactory
         else if ("fullstream".equals(widgetName))
         {
             String request = util.getParameter("request");
-            String title = util.getParameter("title");
             setHistory(new CreateUrlRequest(Page.WIDGET_FULL_STREAM, "request"));
-            return new FullStreamWidget(request, title);
+            return new FullStreamWidget(request);
         }
         else if ("badge".equals(widgetName))
         {

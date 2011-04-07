@@ -7918,6 +7918,12 @@ html,body {
 	padding: 1px;
 }
 
+.eureka-connect-read-stream .go-to-stream-link
+{
+	float: right;
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
 
 /*/////////////////////////////////////////////////////////////////////////////
 

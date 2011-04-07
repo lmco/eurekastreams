@@ -26,9 +26,9 @@ import org.eurekastreams.server.domain.stream.BaseObjectType;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.web.client.ui.common.stream.renderers.AvatarRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.MetadataLinkRenderer;
+import org.eurekastreams.web.client.ui.common.stream.renderers.RenderUtilities;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ResourceDestinationRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
-import org.eurekastreams.web.client.ui.common.stream.renderers.SimpleTextRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StatefulRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer.State;
@@ -178,19 +178,9 @@ public class PostRenderer implements VerbRenderer
     {
         List<StatefulRenderer> renderers = new LinkedList<StatefulRenderer>();
 
-        final StreamEntityDTO actor = activity.getActor();
+        RenderUtilities.renderActorName(renderers, activity);
+
         StreamEntityDTO stream = activity.getDestinationStream();
-
-        if (activity.isLockedAuthor())
-        {
-            renderers.add(new SimpleTextRenderer(actor.getDisplayName()));
-        }
-        else
-        {
-            renderers.add(new MetadataLinkRenderer("", actor.getType(), actor.getUniqueIdentifier(), actor
-                    .getDisplayName()));
-        }
-
         if (stream.getType() == EntityType.RESOURCE)
         {
             if (showRecipient != ShowRecipient.NONE)
