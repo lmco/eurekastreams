@@ -2190,7 +2190,7 @@ body .post-to-stream .over-character-limit {
 	margin-top: 5px;
 }
 
-.comment-timestamp,a.message-timestamp-link:link,a.message-timestamp-link:visited,a.message-timestamp-link:active
+.comment-timestamp,.message-timestamp-link,a.message-timestamp-link:link,a.message-timestamp-link:visited,a.message-timestamp-link:active
 	{
 	color: #666;
 }
@@ -7897,11 +7897,25 @@ html,body {
 .eureka-connect-read-stream .more-button,
 .eureka-connect-read-stream .navpanel,
 .eureka-connect-read-stream .message-actions-area,
+.eureka-connect-read-stream .stream-message-item:hover .message-actions-area,
 .eureka-connect-read-stream .message-comment,
 .eureka-connect-read-stream .message-link .url,
-.eureka-connect-read-stream .message-link .meta-description
+.eureka-connect-read-stream .message-link .meta-description,
+.eureka-connect-read-stream .like-count-widget
 {
 	display: none;
+}
+
+.eureka-connect-read-stream .message-metadata-source a
+{
+	font-weight: bold;
+}
+
+.eureka-connect-read-stream .avatar-image-Small 
+{
+	width: 25px;
+	height: 25px;
+	padding: 1px;
 }
 
 

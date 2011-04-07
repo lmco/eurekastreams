@@ -19,6 +19,7 @@ import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
+import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.user.client.ui.Composite;
@@ -36,7 +37,13 @@ public class ReadStreamWidget extends Composite
      */
     public ReadStreamWidget(final String jsonRequest)
     {
-        final StreamPanel streamPanel = new StreamPanel(ShowRecipient.ALL);
+        final StreamPanel streamPanel = new StreamPanel(ShowRecipient.ALL, new StreamMessageItemRenderer(
+                ShowRecipient.ALL)
+        {
+            {
+                setCreatePermalink(false);
+            }
+        });
         streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().embeddedWidget());
         streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectReadStreamWidget());
         initWidget(streamPanel);
