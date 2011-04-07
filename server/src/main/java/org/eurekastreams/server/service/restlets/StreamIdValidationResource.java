@@ -120,6 +120,7 @@ public class StreamIdValidationResource extends SmpResource
         TransactionStatus currentStatus = transManager.getTransaction(transDef);
 
         String response;
+        String typeString = type.toString();
         try
         {
             switch (type)
@@ -133,6 +134,7 @@ public class StreamIdValidationResource extends SmpResource
                 response = groups.size() == 1 ? "VALID " : "INVALID ";
                 break;
             default:
+                typeString = "TYPE";
                 throw new RuntimeException("only accepts person and group types.");
             }
             transManager.commit(currentStatus);
@@ -144,7 +146,7 @@ public class StreamIdValidationResource extends SmpResource
             response = "INVALID ";
         }
 
-        Representation rep = new StringRepresentation(response + type, MediaType.TEXT_HTML);
+        Representation rep = new StringRepresentation(response + typeString, MediaType.TEXT_HTML);
         rep.setExpirationDate(new Date(0L));
         return rep;
     }
