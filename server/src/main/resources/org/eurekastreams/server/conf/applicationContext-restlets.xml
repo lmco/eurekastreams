@@ -242,6 +242,12 @@
         <constructor-arg ref="applicationContextHolder" />
         <constructor-arg value="true" /> 
     </bean>     
+        
+    <bean name="streamIdValidationResource" class="org.eurekastreams.server.service.restlets.StreamIdValidationResource" scope="prototype">
+        <constructor-arg ref="getPersonByAccountIdMapperAllowNullResult" />
+        <constructor-arg ref="bulkDomainGroupsByShortNameMapper" />
+        <constructor-arg ref="transactionManager" />
+    </bean>
     	
 	
 	<!-- The router maps URLs to resources. -->
@@ -412,6 +418,11 @@
                 <entry key="/util/personProperties">
                     <bean class="org.restlet.ext.spring.SpringFinder">
                         <lookup-method name="createResource" bean="personPropertiesResource" />
+                    </bean>
+                </entry>
+                <entry key="/util/streamIdValidation/type/{type}/id/{uniqueKey}">
+                    <bean class="org.restlet.ext.spring.SpringFinder">
+                        <lookup-method name="createResource" bean="streamIdValidationResource" />
                     </bean>
                 </entry>
                 <entry key="/api/0/full/{action}/{requestType}/{paramsJSON}">

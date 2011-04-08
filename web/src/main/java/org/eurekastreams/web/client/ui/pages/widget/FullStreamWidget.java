@@ -39,17 +39,15 @@ public class FullStreamWidget extends Composite
      *
      * @param jsonRequest
      *            Stream query as a JSON string.
-     * @param title
-     *            Title to display on the stream.
      */
-    public FullStreamWidget(final String jsonRequest, final String title)
+    public FullStreamWidget(final String jsonRequest)
     {
         final StreamPanel streamPanel = new StreamPanel(ShowRecipient.ALL);
         streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().embeddedWidget());
         streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectFullStreamWidget());
         initWidget(streamPanel);
 
-        EventBus.getInstance().notifyObservers(new StreamRequestEvent(title, jsonRequest));
+        EventBus.getInstance().notifyObservers(new StreamRequestEvent("", jsonRequest));
         StreamScope postingScope = getPostingScope(jsonRequest);
         if (postingScope != null)
         {

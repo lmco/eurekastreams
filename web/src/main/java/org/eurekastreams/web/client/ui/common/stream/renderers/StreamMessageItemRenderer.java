@@ -107,7 +107,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
     private boolean singleView;
 
     /** If date should be a permalink. */
-    private boolean createPermalink;
+    private boolean createPermalink = true;
 
     /**
      * State.
@@ -675,5 +675,13 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
     protected Map<BaseObjectType, ObjectRenderer> getObjectDictionary()
     {
         return objectDictionary;
+    }
+
+    /**
+     * @return the verbDictionary
+     */
+    protected Map<ActivityVerb, VerbRenderer> getVerbDictionary()
+    {
+        return verbDictionary;
     }
 }
