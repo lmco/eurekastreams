@@ -160,10 +160,10 @@ public class CommentWidget extends Composite
          * {@inheritDoc}
          */
         @Override
-        protected void onShare(final ActivityDTO inMsg)
+        protected void onShare(final ActivityDTO activity)
         {
-            // TODO: replace this call with logic to display a share box in a new pop-up window
-            super.onShare(inMsg);
+            // display share box in a new pop-up window
+            WidgetUtilities.showShareActivityPopup(activity.getId());
         }
 
         /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,9 +103,10 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
      * @param val
      *            The value of the attribute.
      */
-    public static native void nativeSetAttribute(final Element el, final String key, final String val) /*-{
-                                                                         el.setAttribute(key, val);
-                                                             }-*/;
+    public static native void nativeSetAttribute(final Element el, final String key, final String val)
+    /*-{
+    el.setAttribute(key, val);
+    }-*/;
 
     /**
      * Gets an element by its tag name; handy for single elements like HTML, HEAD, BODY. Here to facilitate themes, GWT
@@ -128,10 +129,11 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
      *            The name of the tag.
      * @return The element with that tag name.
      */
-    public static native Element nativeGetElementByTagName(final String tagName) /*-{
-                                                                         var elem = $doc.getElementsByTagName(tagName);
-                                                                         return elem ? elem[0] : null;
-                                                             }-*/;
+    public static native Element nativeGetElementByTagName(final String tagName)
+    /*-{
+    var elem = $doc.getElementsByTagName(tagName);
+    return elem ? elem[0] : null;
+    }-*/;
 
     /**
      * Gets an element by its ID. Here to facilitate themes, GWT doesn't offer a way to insert the &lt;link&gt; element
@@ -183,7 +185,7 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
     public static native Element nativeGetElementById(final String id) /*-{
                                                                          var elem = $doc.getElementById(id);
                                                                          return elem;
-                                                             }-*/;
+                                                                       }-*/;
 
     /**
      * Get the history token.
@@ -237,20 +239,20 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
         return Window.Location.getParameter(key);
     }
 
-//    /**
-//     * @see WidgetJSNIFacade
-//     * @return the last token.
-//     */
-//    public String getLastUrlToken()
-//    {
-//        String[] fullUrlTokens = Window.Location.getHref().split("#");
-//        if (fullUrlTokens.length > 1)
-//        {
-//            String[] urlTokens = fullUrlTokens[1].split("/");
-//            String[] views =
-//        }
-//        return urlTokens[urlTokens.length - 1];
-//    }
+    // /**
+    // * @see WidgetJSNIFacade
+    // * @return the last token.
+    // */
+    // public String getLastUrlToken()
+    // {
+    // String[] fullUrlTokens = Window.Location.getHref().split("#");
+    // if (fullUrlTokens.length > 1)
+    // {
+    // String[] urlTokens = fullUrlTokens[1].split("/");
+    // String[] views =
+    // }
+    // return urlTokens[urlTokens.length - 1];
+    // }
 
     /**
      * Sets a global window value.
@@ -310,8 +312,8 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
      *            the value.
      */
     public static native void nativeSetWindowValue(final String key, final String value) /*-{
-                                                        $wnd[key] = value;
-                                                    }-*/;
+                                                                                         $wnd[key] = value;
+                                                                                         }-*/;
 
     /**
      * {@inheritDoc}
@@ -329,8 +331,8 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
      * @return the value.
      */
     public static native String nativeGetWindowValue(final String key) /*-{
-                 return $wnd[key];
-             }-*/;
+                                                                       return $wnd[key];
+                                                                       }-*/;
 
     /**
      * @see WidgetJSNIFacade
@@ -378,14 +380,16 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
      *            the url of the image.
      */
     public static native void nativeSetBanner(final String url) /*-{
-                                      var elem = $doc.getElementById("banner");
-                                      elem.style.backgroundRepeat="no-repeat";
-                                      elem.style.backgroundImage="url("+url+")";
-                                  }-*/;
+                                                                var elem = $doc.getElementById("banner");
+                                                                elem.style.backgroundRepeat="no-repeat";
+                                                                elem.style.backgroundImage="url("+url+")";
+                                                                }-*/;
 
     /**
      * Clear the banner when none is specified.
-     * @param inBlankBanner - flag to indicate whether a blank banner should be displayed.
+     *
+     * @param inBlankBanner
+     *            - flag to indicate whether a blank banner should be displayed.
      */
     public void clearBanner(final boolean inBlankBanner)
     {
@@ -394,21 +398,24 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
 
     /**
      * JSNI to clear the banner.
-     * @param inBlankBanner - flag to indicate whether to show a blank banner or remove the
-     * banner styling altogether and allow any underlying background image to show through.
+     *
+     * @param inBlankBanner
+     *            - flag to indicate whether to show a blank banner or remove the banner styling altogether and allow
+     *            any underlying background image to show through.
      *
      */
-    public static native void nativeClearBanner(final boolean inBlankBanner) /*-{
-                                      var elem = $doc.getElementById("banner");
-                                      if(inBlankBanner)
-                                      {
-                                          elem.style.backgroundImage="none";
-                                      }
-                                      else
-                                      {
-                                          elem.style.backgroundImage="";
-                                      }
-                                  }-*/;
+    public static native void nativeClearBanner(final boolean inBlankBanner)
+    /*-{
+         var elem = $doc.getElementById("banner");
+         if(inBlankBanner)
+         {
+             elem.style.backgroundImage="none";
+         }
+         else
+         {
+             elem.style.backgroundImage="";
+         }
+     }-*/;
 
     /**
      * Gets the current theme.
@@ -426,8 +433,8 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
      * @return the current theme.
      */
     public static native String nativeGetCurrentTheme() /*-{
-                                   return $wnd.currentThemeUuid;
-                               }-*/;
+                                                        return $wnd.currentThemeUuid;
+                                                        }-*/;
 
     /**
      * Sets the current theme uuid.
@@ -446,9 +453,10 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
      * @param uuid
      *            the theme uuid.
      */
-    public static native void nativeSetCurrentTheme(final String uuid) /*-{
-                                   $wnd.currentThemeUuid = uuid;
-                               }-*/;
+    public static native void nativeSetCurrentTheme(final String uuid)
+    /*-{
+        $wnd.currentThemeUuid = uuid;
+    }-*/;
 
     /**
      * Sets whether or not the tabs are read only.
@@ -476,9 +484,10 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
      *
      * @return the value.
      */
-    public static native boolean nativeGetAreTabsReadOnly() /*-{
-                 return $wnd.areTabsReadOnly;
-             }-*/;
+    public static native boolean nativeGetAreTabsReadOnly()
+    /*-{
+        return $wnd.areTabsReadOnly;
+    }-*/;
 
     /**
      * Sets whether or not the tabs are read only.
@@ -486,9 +495,10 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
      * @param value
      *            the value.
      */
-    public static native void nativeSetAreTabsReadOnly(final boolean value) /*-{
-                 $wnd.areTabsReadOnly = value;
-             }-*/;
+    public static native void nativeSetAreTabsReadOnly(final boolean value)
+    /*-{
+        $wnd.areTabsReadOnly = value;
+    }-*/;
 
     /**
      * Gets the currently logged in viewer.
@@ -505,9 +515,10 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
      *
      * @return the id.
      */
-    public static native String nativeGetViewer() /*-{
-                 return $wnd["VIEWER"];
-             }-*/;
+    public static native String nativeGetViewer()
+    /*-{
+        return $wnd["VIEWER"];
+    }-*/;
 
     /**
      * Redirect to a url.
@@ -529,4 +540,47 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
     {
         return nativeGetWindowValue("ACCOUNTID");
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void close()
+    {
+        nativeClose();
+    }
+
+    /**
+     * Close the current window.
+     */
+    public static native void nativeClose() /*-{ $wnd.close(); }-*/;
+
+    /**
+     * Builds the portion of the Window.open feature string to center a dialog over the current window.
+     *
+     * @param width
+     *            Dialog width.
+     * @param height
+     *            Dialog height.
+     * @return Feature string fragment.
+     */
+    public String getCenteredPopupFeatureString(final int width, final int height)
+    {
+        return nativeGetCenteredPopupFeatureString(width, height);
+    }
+
+    /**
+     * Builds the portion of the Window.open feature string to center a dialog over the current window.
+     *
+     * @param width
+     *            Dialog width.
+     * @param height
+     *            Dialog height.
+     * @return Feature string fragment.
+     */
+    public static native String nativeGetCenteredPopupFeatureString(final int width, final int height)
+    /*-{
+        var top = $wnd.screenY + ($wnd.outerHeight - height) / 2;
+        var left = $wnd.screenX + ($wnd.outerWidth - width) / 2;
+        return "width=" + width + ",height=" + height + ",left=" + left + ",top=" + top;
+    }-*/;
 }
