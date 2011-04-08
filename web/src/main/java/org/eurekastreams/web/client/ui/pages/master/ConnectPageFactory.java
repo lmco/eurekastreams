@@ -117,7 +117,13 @@ public class ConnectPageFactory
             String resourceId = util.getParameter("resourceurl");
             String title = util.getParameter("title");
             String desc = util.getParameter("desc");
-            String[] thumbs = util.getParameter("thumbs").split(",");
+            String thumbStr = util.getParameter("thumbs");
+            String[] thumbs = null;
+            
+            if (thumbStr.length() > 0) {
+                thumbs = thumbStr.split(",");
+            }
+            
             return new ShareWidget(resourceId, title, desc, thumbs);
         }
         else if ("actordialog".equals(widgetName))

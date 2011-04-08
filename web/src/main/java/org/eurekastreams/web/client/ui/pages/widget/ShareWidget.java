@@ -134,7 +134,7 @@ public class ShareWidget extends Composite
         link.setUrl(resourceUrl);
         link.setSource("http://www.eurekastreams.org");
 
-        if (thumbs.length > 0)
+        if (thumbs != null)
         {
             HashSet<String> thumbsSet = new HashSet<String>();
 
