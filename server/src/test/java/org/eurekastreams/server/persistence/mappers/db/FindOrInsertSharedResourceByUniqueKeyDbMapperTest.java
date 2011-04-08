@@ -41,7 +41,7 @@ public class FindOrInsertSharedResourceByUniqueKeyDbMapperTest extends MapperTes
         FindOrInsertSharedResourceByUniqueKeyDbMapper sut = new FindOrInsertSharedResourceByUniqueKeyDbMapper();
         sut.setEntityManager(getEntityManager());
 
-        SharedResource sr = sut.execute(new SharedResourceRequest(url));
+        SharedResource sr = sut.execute(new SharedResourceRequest(url, null));
         assertNotNull(sr);
         assertNotNull(sr.getStreamScope());
         assertEquals(urlLower, sr.getUniqueKey());
@@ -59,7 +59,7 @@ public class FindOrInsertSharedResourceByUniqueKeyDbMapperTest extends MapperTes
         FindOrInsertSharedResourceByUniqueKeyDbMapper sut = new FindOrInsertSharedResourceByUniqueKeyDbMapper();
         sut.setEntityManager(getEntityManager());
 
-        assertNull(sut.execute(new SharedResourceRequest(null)));
+        assertNull(sut.execute(new SharedResourceRequest(null, null)));
     }
 
     /**
@@ -72,7 +72,7 @@ public class FindOrInsertSharedResourceByUniqueKeyDbMapperTest extends MapperTes
         FindOrInsertSharedResourceByUniqueKeyDbMapper sut = new FindOrInsertSharedResourceByUniqueKeyDbMapper();
         sut.setEntityManager(getEntityManager());
 
-        SharedResource sr = sut.execute(new SharedResourceRequest("http://foo.com/foo.html"));
+        SharedResource sr = sut.execute(new SharedResourceRequest("http://foo.com/foo.html", null));
         assertNotNull(sr);
         assertEquals(scopeId, sr.getStreamScope().getId());
         assertEquals(5L, sr.getId());
@@ -88,7 +88,7 @@ public class FindOrInsertSharedResourceByUniqueKeyDbMapperTest extends MapperTes
         FindOrInsertSharedResourceByUniqueKeyDbMapper sut = new FindOrInsertSharedResourceByUniqueKeyDbMapper();
         sut.setEntityManager(getEntityManager());
 
-        SharedResource sr = sut.execute(new SharedResourceRequest("http://FOO.com/foo.html"));
+        SharedResource sr = sut.execute(new SharedResourceRequest("http://FOO.com/foo.html", null));
         assertEquals(scopeId, sr.getStreamScope().getId());
         assertNotNull(sr);
         assertEquals(5L, sr.getId());

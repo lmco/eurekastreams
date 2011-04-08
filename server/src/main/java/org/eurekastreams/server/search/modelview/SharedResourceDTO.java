@@ -176,11 +176,12 @@ public class SharedResourceDTO implements Serializable
     {
         isLiked = inIsLiked;
     }
-    
+
     /**
      * @return if the current user liked this resource.
      */
-    public boolean isLiked() {
+    public boolean isLiked()
+    {
         return isLiked;
     }
 

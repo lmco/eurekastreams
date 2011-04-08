@@ -17,25 +17,35 @@ package org.eurekastreams.web.client.ui.pages.widget;
 
 import java.util.HashSet;
 
-import org.eurekastreams.server.domain.AvatarEntity;
+import org.eurekastreams.server.action.request.stream.PostActivityRequest;
 import org.eurekastreams.server.domain.EntityType;
+import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.LinkInformation;
+import org.eurekastreams.server.domain.DomainConversionUtility;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
+import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.PostReadyEvent;
+import org.eurekastreams.web.client.events.errors.ErrorPostingMessageToNullScopeEvent;
+import org.eurekastreams.web.client.model.ActivityModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.stream.PostToPanel;
-import org.eurekastreams.web.client.ui.common.stream.PostToStreamComposite;
 import org.eurekastreams.web.client.ui.common.stream.PostToStreamTextboxPanel;
+import org.eurekastreams.web.client.ui.common.stream.decorators.ActivityDTOPopulator;
+import org.eurekastreams.web.client.ui.common.stream.decorators.object.BookmarkPopulator;
+import org.eurekastreams.web.client.ui.common.stream.decorators.verb.PostPopulator;
 import org.eurekastreams.web.client.ui.common.stream.thumbnail.ThumbnailSelectorComposite;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.user.client.ui.Composite;
@@ -45,7 +55,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
- * The Eureka Connect "profile badge widget" - displays a person's avatar and information.
+ * The Eureka Connect share dialog widget.
  */
 public class ShareWidget extends Composite
 {
@@ -74,24 +84,33 @@ public class ShareWidget extends Composite
     /** Max length of title. */
     private static final int MAX_LENGTH = 50;
 
+    /** Activity Populator. */
+    private final ActivityDTOPopulator activityPopulator = new ActivityDTOPopulator();
+
     /**
      * Constructor.
      * 
-     * @param accountId
-     *            Unique ID of person to display.
+     * @param resourceUrl
+     *            resource url.
+     * @param inTitle
+     *            the title.
+     * @param desc
+     *            the description.
+     * @param thumbs
+     *            the thumbnails.
      */
     public ShareWidget(final String resourceUrl, final String inTitle, final String desc, final String[] thumbs)
     {
         final FlowPanel widget = new FlowPanel();
         widget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectShareWidgetContainer());
         initWidget(widget);
-        
+
         PersonModelView person = Session.getInstance().getCurrentPerson();
 
         StreamScope defaultStreamScope = new StreamScope(person.getDisplayName(), ScopeType.PERSON, person
                 .getAccountId(), person.getStreamId());
 
-        PostToPanel postToPanel = new PostToPanel(defaultStreamScope);
+        final PostToPanel postToPanel = new PostToPanel(defaultStreamScope);
         widget.add(postToPanel);
 
         displayPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkPanel());
@@ -109,23 +128,23 @@ public class ShareWidget extends Composite
         displayPanel.add(linkPanel);
         widget.add(displayPanel);
 
-        LinkInformation link = new LinkInformation();
+        final LinkInformation link = new LinkInformation();
         link.setDescription(desc);
         link.setTitle(inTitle);
         link.setUrl(resourceUrl);
         link.setSource("http://www.eurekastreams.org");
 
-        HashSet<String> thumbsSet = new HashSet<String>();
-
-        for (String thumb : thumbs)
-        {
-            thumbsSet.add(thumb);
-        }
-
-        link.setImageUrls(thumbsSet);
-
         if (thumbs.length > 0)
         {
+            HashSet<String> thumbsSet = new HashSet<String>();
+
+            for (String thumb : thumbs)
+            {
+                thumbsSet.add(thumb);
+            }
+
+            link.setImageUrls(thumbsSet);
+
             link.setLargestImageUrl(thumbs[0]);
         }
 
@@ -164,7 +183,7 @@ public class ShareWidget extends Composite
 
         AvatarWidget avatar = new AvatarWidget(person, EntityType.PERSON, Size.VerySmall);
         avatar.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postEntryAvatar());
-        
+
         Panel entryPanel = new FlowPanel();
         entryPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().postEntryPanel());
         entryPanel.add(avatar);
@@ -174,6 +193,44 @@ public class ShareWidget extends Composite
         postContainer.add(entryPanel);
 
         widget.add(postContainer);
+
+        EventBus.getInstance().addObserver(MessageStreamAppendEvent.class, new Observer<MessageStreamAppendEvent>()
+        {
+
+            public void update(final MessageStreamAppendEvent arg1)
+            {
+                closeWindow();
+            }
+        });
+
+        postButton.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent event)
+            {
+                StreamScope scope = postToPanel.getPostScope();
+                if (scope == null)
+                {
+                    ErrorPostingMessageToNullScopeEvent error = new ErrorPostingMessageToNullScopeEvent();
+                    error.setErrorMsg("The stream name you entered could not be found");
+                    Session.getInstance().getEventBus().notifyObservers(error);
+                    return;
+                }
+
+                EntityType recipientType = DomainConversionUtility.convertToEntityType(scope.getScopeType());
+                if (EntityType.NOTSET.equals(recipientType))
+                {
+                    recipientType = EntityType.GROUP;
+                }
+
+                BookmarkPopulator objectStrat = new BookmarkPopulator();
+                objectStrat.setLinkInformation(link);
+                ActivityDTO activity = activityPopulator.getActivityDTO(message.getText(), recipientType, scope
+                        .getUniqueKey(), new PostPopulator(), objectStrat);
+                PostActivityRequest postRequest = new PostActivityRequest(activity);
+
+                ActivityModel.getInstance().insert(postRequest);
+            }
+        });
 
         EventBus.getInstance().notifyObservers(new PostReadyEvent("Something"));
     }
@@ -221,4 +278,13 @@ public class ShareWidget extends Composite
 
         linkDesc.setText(addedLink.getDescription());
     }
+
+    /**
+     * Close the window.
+     */
+    public static native void closeWindow()
+    /*-{
+        $wnd.opener.location.href = $wnd.opener.location.href;
+        $wnd.close();
+    }-*/;
 }

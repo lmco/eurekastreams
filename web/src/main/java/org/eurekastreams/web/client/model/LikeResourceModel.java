@@ -22,7 +22,11 @@ import org.eurekastreams.server.action.request.stream.SetSharedResourceLikeReque
 import org.eurekastreams.server.search.modelview.SharedResourceDTO;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.data.GotResourceDTOResponseEvent;
+import org.eurekastreams.web.client.events.data.ResourceLikeChangeEvent;
 
+/**
+ * The like resource mode.
+ */
 public class LikeResourceModel extends BaseModel implements Fetchable<Serializable>,
         Insertable<HashMap<String, Serializable>>
 {
@@ -42,7 +46,15 @@ public class LikeResourceModel extends BaseModel implements Fetchable<Serializab
         return model;
     }
 
-    public void fetch(Serializable request, boolean useClientCacheIfAvailable)
+    /**
+     * Fetch the shared resource DTO.
+     * 
+     * @param request
+     *            the request.
+     * @param useClientCacheIfAvailable
+     *            if cache should be used.
+     */
+    public void fetch(final Serializable request, final boolean useClientCacheIfAvailable)
     {
         super.callReadAction("getSharedResourceByKeyAction", request, new OnSuccessCommand<SharedResourceDTO>()
         {
@@ -53,16 +65,22 @@ public class LikeResourceModel extends BaseModel implements Fetchable<Serializab
         }, useClientCacheIfAvailable);
     }
 
-    public void insert(HashMap<String, Serializable> request)
+    /**
+     * Insert a liker.
+     * 
+     * @param request
+     *            the request.
+     */
+    public void insert(final HashMap<String, Serializable> request)
     {
-        SetSharedResourceLikeRequest likeRequest = new SetSharedResourceLikeRequest(
-                (String) request.get("resourceurl"), (Boolean) request.get("liked"));
+        final SetSharedResourceLikeRequest likeRequest = new SetSharedResourceLikeRequest((String) request
+                .get("resourceurl"), (Boolean) request.get("liked"));
 
         super.callWriteAction("setSharedResourceLiked", likeRequest, new OnSuccessCommand<Boolean>()
         {
             public void onSuccess(final Boolean response)
             {
-
+                EventBus.getInstance().notifyObservers(new ResourceLikeChangeEvent(likeRequest.getLikes()));
             }
         });
     }

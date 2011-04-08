@@ -15,9 +15,6 @@
  */
 package org.eurekastreams.web.client.ui.pages.widget;
 
-import java.io.Serializable;
-import java.util.HashMap;
-
 import org.eurekastreams.server.action.request.SharedResourceRequest;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
@@ -28,22 +25,25 @@ import org.eurekastreams.web.client.ui.common.stream.renderers.ResourceCountWidg
 import org.eurekastreams.web.client.ui.common.stream.renderers.ResourceCountWidget.CountType;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
- * The Eureka Connect "profile badge widget" - displays a person's avatar and information.
+ * The Eureka Connect like and share eureka connect widget.
  */
 public class LikeShareWidget extends Composite
 {
     /**
      * Constructor.
      * 
-     * @param accountId
-     *            Unique ID of person to display.
+     * @param resourceUrl
+     *            resource url.
+     * @param title
+     *            the title.
+     * @param desc
+     *            the description.
+     * @param thumbs
+     *            the thumbnails.
      */
     public LikeShareWidget(final String resourceUrl, final String title, final String desc, final String[] thumbs)
     {
@@ -54,7 +54,7 @@ public class LikeShareWidget extends Composite
         EventBus.getInstance().addObserver(GotResourceDTOResponseEvent.class,
                 new Observer<GotResourceDTOResponseEvent>()
                 {
-                    public void update(GotResourceDTOResponseEvent event)
+                    public void update(final GotResourceDTOResponseEvent event)
                     {
                         widget.add(new ResourceCountWidget(CountType.LIKES, resourceUrl, title, desc, thumbs, event
                                 .getResponse().getLikeCount(), event.getResponse().getLikersSample(), event

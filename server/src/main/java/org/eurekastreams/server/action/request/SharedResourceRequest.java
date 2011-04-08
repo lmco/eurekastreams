@@ -75,11 +75,22 @@ public class SharedResourceRequest implements Serializable
         uniqueKey = inUniqueKey;
     }
 
+    /**
+     * Get the person ID.
+     * 
+     * @return the person Id.
+     */
     public Long getPersonId()
     {
         return personId;
     }
 
+    /**
+     * Set the person id.
+     * 
+     * @param inPersonId
+     *            the person id.
+     */
     public void setPersonId(final Long inPersonId)
     {
         personId = inPersonId;

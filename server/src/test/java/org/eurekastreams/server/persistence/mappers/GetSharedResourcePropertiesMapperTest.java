@@ -94,7 +94,7 @@ public class GetSharedResourcePropertiesMapperTest
     {
         final String uniqueKey = "http://foo.com";
         final Long streamScopeId = null;
-        final SharedResourceRequest request = new SharedResourceRequest(uniqueKey);
+        final SharedResourceRequest request = new SharedResourceRequest(uniqueKey, null);
 
         context.checking(new Expectations()
         {
@@ -129,7 +129,7 @@ public class GetSharedResourcePropertiesMapperTest
     {
         final String uniqueKey = "http://foo.com";
         final Long streamScopeId = 23881L;
-        final SharedResourceRequest request = new SharedResourceRequest(uniqueKey);
+        final SharedResourceRequest request = new SharedResourceRequest(uniqueKey, null);
         final List<Long> sharerIds = new ArrayList<Long>();
         final List<Long> likerIds = new ArrayList<Long>();
         final List<PersonModelView> people = new ArrayList<PersonModelView>();

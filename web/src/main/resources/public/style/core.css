@@ -53,7 +53,7 @@ a {
 
 body,td,div,span,p,.gwt-TextArea,.gwt-TextBox {
 	font-family: "Lucida Sans Unicode", "Lucida Sans", "Verdana", "Tahoma",
-		"Geneva", "Kalimati", sans-serif ! important;
+		"Geneva", "Kalimati", sans-serif;
 }
 
 button {
@@ -7871,6 +7871,7 @@ html,body {
 }
 
 .eureka-connect-like-share-container {
+	padding: 5px;
 }
 
 body div.eureka-connect-liked-activity-wrapper {
@@ -7950,7 +7951,7 @@ body div.eureka-connect-liked-activity-wrapper {
 .eureka-connect-users-who-liked-activity {
 	width: 160px;	
 }
-=======
+
 .eureka-connect-full-stream
 {
 }
@@ -7972,15 +7973,13 @@ body div.eureka-connect-liked-activity-wrapper {
 	display: none;
 }
 
->>>>>>> b9848b6ac99f3215c79cccbacfcddbd5fd9f12ce
-
 /*/////////////////////////////////////////////////////////////////////////////
 
 IE SPECIFIC CSS.
 
 /////////////////////////////////////////////////////////////////////////////*/
 @if user.agent ie6 ie8 { 
-	.eureka-connect-like-button, .eureka-connect-share-button {
+	.eureka-connect-like-button, .eureka-connect-unlike-button, .eureka-connect-share-button {
 		display: inline;
 		zoom: 1; 
 	}

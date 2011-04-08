@@ -22,9 +22,9 @@ import java.util.List;
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest.LikeActionType;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
-import org.eurekastreams.web.client.events.ActivityLikedChangeEvent;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.data.ResourceLikeChangeEvent;
 import org.eurekastreams.web.client.jsni.EffectsFacade;
 import org.eurekastreams.web.client.model.LikeResourceModel;
 import org.eurekastreams.web.client.ui.Session;
@@ -149,6 +149,9 @@ public class ResourceCountWidget extends Composite
      */
     private static final int MAXLIKERSSHOWN = 4;
 
+    /**
+     * The contianer.
+     */
     private Widget containerWidget = null;
 
     /**
@@ -156,7 +159,14 @@ public class ResourceCountWidget extends Composite
      */
     public enum CountType
     {
-        LIKES, SHARES
+        /**
+         * Like count.
+         */
+        LIKES, 
+        /**
+         * Share count.
+         */
+        SHARES
     }
 
     /**
@@ -301,12 +311,24 @@ public class ResourceCountWidget extends Composite
         likeCount = inLikeCount;
 
         likeCountLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectCount());
+        likeCountLink.addClickHandler(new ClickHandler()
+        {
+
+            public void onClick(final ClickEvent event)
+            {
+                String actorType = CountType.LIKES.equals(inCountType) ? "likes" : "shares";
+                Window.open(
+                        "/widget.html?widget=actordialog&actortype=" + actorType + "&resourceurl=" + inResoureceUrl,
+                        "_,blank", "width=400,height=400");
+
+            }
+        });
 
         final FlowPanel likeCountPanel = new FlowPanel();
 
         if (inCountType.equals(CountType.LIKES))
         {
-            FlowPanel likeContainer = new FlowPanel();
+            final FlowPanel likeContainer = new FlowPanel();
             likeContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectLikeButton());
 
             if (thisIsLiked)
@@ -320,10 +342,35 @@ public class ResourceCountWidget extends Composite
 
             Anchor likeLink = new Anchor();
 
+            EventBus.getInstance().addObserver(ResourceLikeChangeEvent.class, new Observer<ResourceLikeChangeEvent>()
+            {
+                public void update(final ResourceLikeChangeEvent event)
+                {
+                    if (event.getResponse())
+                    {
+                        likeContainer
+                                .removeStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectLikeButton());
+                        likeContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectUnlikeButton());
+                        updatePanel(LikeActionType.ADD_LIKE);
+                        currentPanel.showPanel();
+                    }
+                    else
+                    {
+                        likeContainer.removeStyleName(StaticResourceBundle.INSTANCE.coreCss()
+                                .eurekaConnectUnlikeButton());
+                        likeContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectLikeButton());
+                        updatePanel(LikeActionType.REMOVE_LIKE);
+                        currentPanel.showPanel();
+                    }
+
+                    likeCountLink.setText(likeCount.toString());
+                }
+            });
+
             likeLink.addClickHandler(new ClickHandler()
             {
 
-                public void onClick(ClickEvent arg0)
+                public void onClick(final ClickEvent arg0)
                 {
                     thisIsLiked = !thisIsLiked;
                     final HashMap<String, Serializable> request = new HashMap<String, Serializable>();
@@ -347,7 +394,7 @@ public class ResourceCountWidget extends Composite
             Anchor shareLink = new Anchor();
             shareLink.addClickHandler(new ClickHandler()
             {
-                public void onClick(ClickEvent arg0)
+                public void onClick(final ClickEvent arg0)
                 {
                     String thumbsStr = "";
 
@@ -360,10 +407,8 @@ public class ResourceCountWidget extends Composite
                         thumbsStr += thumb;
                     }
 
-                    Window.open(
-                            "/widget.html?widget=sharedialog&width=300&thumbs=http://www.google.com/images/logos/ps_logo2.png&desc="
-                                    + desc + "&title=" + title + "&resourceurl=" + inResoureceUrl, "_,blank",
-                            "width=600,height=400");
+                    Window.open("/widget.html?widget=sharedialog&thumbs=" + thumbsStr + "&desc=" + desc
+                            + "&title=" + title + "&resourceurl=" + inResoureceUrl, "_,blank", "width=800,height=300");
                 }
             });
 
@@ -374,15 +419,6 @@ public class ResourceCountWidget extends Composite
         }
 
         widget.add(likeCountPanel);
-
-        EventBus.getInstance().addObserver(ActivityLikedChangeEvent.class, new Observer<ActivityLikedChangeEvent>()
-        {
-            public void update(final ActivityLikedChangeEvent event)
-            {
-                updatePanel(event.getActionType());
-                currentPanel.showPanel();
-            }
-        });
 
         updatePanel(null);
     }
@@ -397,7 +433,7 @@ public class ResourceCountWidget extends Composite
         currentResourceUrl = thisResourceUrl;
         viewAll.setVisible(false);
         avatarPanel.clear();
-        DOM.setStyleAttribute(usersWhoLikedPanelWrapper.getElement(), "top", widget.getAbsoluteTop() + 10 + "px");
+        DOM.setStyleAttribute(usersWhoLikedPanelWrapper.getElement(), "top", widget.getAbsoluteTop() + 9 + 1 + "px");
         DOM.setStyleAttribute(usersWhoLikedPanelWrapper.getElement(), "left", widget.getAbsoluteLeft()
                 + containerWidget.getElement().getClientWidth() + "px");
 
@@ -425,7 +461,6 @@ public class ResourceCountWidget extends Composite
     {
         if (null != likeActionType)
         {
-            thisIsLiked = !thisIsLiked;
             if (likeActionType == LikeActionType.ADD_LIKE)
             {
                 PersonModelView currentPerson = new PersonModelView();

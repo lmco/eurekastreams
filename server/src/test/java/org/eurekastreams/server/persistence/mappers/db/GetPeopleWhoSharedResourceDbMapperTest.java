@@ -68,7 +68,7 @@ public class GetPeopleWhoSharedResourceDbMapperTest extends MapperTest
         final long personId1 = 98;
         final long personId2 = 42;
         getEntityManager().clear();
-        List<Long> peopleIds = sut.execute(new SharedResourceRequest("http://foo.com/foo.html"));
+        List<Long> peopleIds = sut.execute(new SharedResourceRequest("http://foo.com/foo.html", null));
         assertEquals(2, peopleIds.size());
         assertTrue(peopleIds.contains(personId1));
         assertTrue(peopleIds.contains(personId2));
@@ -80,7 +80,7 @@ public class GetPeopleWhoSharedResourceDbMapperTest extends MapperTest
     @Test
     public void testExecuteWithNoResults()
     {
-        List<Long> peopleIds = sut.execute(new SharedResourceRequest("http://foo.foo.com/foo.html"));
+        List<Long> peopleIds = sut.execute(new SharedResourceRequest("http://foo.foo.com/foo.html", null));
         assertEquals(0, peopleIds.size());
     }
 
@@ -90,6 +90,6 @@ public class GetPeopleWhoSharedResourceDbMapperTest extends MapperTest
     @Test
     public void testExecuteWithBadSharedResource()
     {
-        assertEquals(0, sut.execute(new SharedResourceRequest("http://blah.com")).size());
+        assertEquals(0, sut.execute(new SharedResourceRequest("http://blah.com", null)).size());
     }
 }

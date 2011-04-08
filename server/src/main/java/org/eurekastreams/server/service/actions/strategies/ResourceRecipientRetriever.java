@@ -74,7 +74,8 @@ public class ResourceRecipientRetriever implements RecipientRetriever
     public StreamScope getStreamScope(final ActivityDTO inActivityDTO)
     {
         return streamResourceByUniqueKeyMapper.execute(
-                new SharedResourceRequest(inActivityDTO.getDestinationStream().getUniqueIdentifier())).getStreamScope();
+                new SharedResourceRequest(inActivityDTO.getDestinationStream().getUniqueIdentifier(), null))
+                .getStreamScope();
     }
 
     @Override

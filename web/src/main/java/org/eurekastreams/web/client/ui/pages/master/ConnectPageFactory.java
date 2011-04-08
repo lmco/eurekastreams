@@ -19,12 +19,13 @@ import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.stream.renderers.ResourceCountWidget.CountType;
+import org.eurekastreams.web.client.ui.pages.widget.ActorListWidget;
 import org.eurekastreams.web.client.ui.pages.widget.CommentWidget;
 import org.eurekastreams.web.client.ui.pages.widget.LikeShareWidget;
 import org.eurekastreams.web.client.ui.pages.widget.ShareWidget;
 import org.eurekastreams.web.client.ui.pages.widget.FullStreamWidget;
 import org.eurekastreams.web.client.ui.pages.widget.ReadStreamWidget;
->>>>>>> b9848b6ac99f3215c79cccbacfcddbd5fd9f12ce
 import org.eurekastreams.web.client.ui.pages.widget.UserProfileBadgeWidget;
 
 import com.google.gwt.user.client.History;
@@ -119,6 +120,14 @@ public class ConnectPageFactory
             String desc = util.getParameter("desc");
             String[] thumbs = util.getParameter("thumbs").split(",");
             return new ShareWidget(resourceId, title, desc, thumbs);
+        }
+        else if ("actordialog".equals(widgetName))
+        {
+            String resourceId = util.getParameter("resourceurl");
+            String countTypeStr = util.getParameter("actortype");
+            CountType countType = "likes".equals(countTypeStr) ? CountType.LIKES : CountType.SHARES;
+
+            return new ActorListWidget(countType, resourceId);
         }
         else
         {
