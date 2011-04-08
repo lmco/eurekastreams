@@ -100,21 +100,23 @@ public class PostCachedActivity extends CachedDomainMapper
     public void execute(final Activity activity)
     {
         ScopeType type = activity.getRecipientStreamScope().getScopeType();
+        String recipientUniqueKey = activity.getRecipientStreamScope().getUniqueKey();
+        long activityId = activity.getId();
+
         Long parentOrgId = null;
 
         if (type == ScopeType.PERSON)
         {
-            PersonModelView person = getPersonModelViewByAccountIdMapper.execute(activity.getRecipientStreamScope()
-                    .getUniqueKey());
+            PersonModelView person = getPersonModelViewByAccountIdMapper.execute(recipientUniqueKey);
             parentOrgId = person.getParentOrganizationId();
 
-            updateActivitiesByFollowingCacheLists(person.getEntityId(), activity.getId());
+            updateActivitiesByFollowingCacheLists(person.getEntityId(), activityId);
 
         }
         else if (type == ScopeType.GROUP)
         {
-            parentOrgId = bulkDomainGroupsByShortNameMapper.execute(
-                    Arrays.asList(activity.getRecipientStreamScope().getUniqueKey())).get(0).getParentOrganizationId();
+            parentOrgId = bulkDomainGroupsByShortNameMapper.execute(Arrays.asList(recipientUniqueKey)).get(0)
+                    .getParentOrganizationId();
         }
         else if (type == ScopeType.RESOURCE && activity.getActorType() == EntityType.PERSON)
         {
@@ -123,7 +125,7 @@ public class PostCachedActivity extends CachedDomainMapper
                 PersonModelView person = getPersonModelViewByAccountIdMapper.execute(activity.getActorId());
                 parentOrgId = person.getParentOrganizationId();
 
-                updateActivitiesByFollowingCacheLists(person.getEntityId(), activity.getId());
+                updateActivitiesByFollowingCacheLists(person.getEntityId(), activityId);
             }
         }
         else
@@ -136,23 +138,24 @@ public class PostCachedActivity extends CachedDomainMapper
             // this has a shared link - add this activity id to the top of the shared resource's stream in cache
             log.info("Adding activity with a shared resource (id:" + activity.getSharedLink().getStreamScope().getId()
                     + ") to the top of the shared resource's cached activity stream.");
-            getCache().addToTopOfList(
-                    CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + activity.getSharedLink().getStreamScope().getId(),
-                    activity.getId());
+            getCache()
+                    .addToTopOfList(
+                            CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + activity.getSharedLink().getStreamScope().getId(),
+                            activityId);
         }
 
         if (activity.getShowInStream())
         {
             // add to everyone list
-            log.trace("Adding activity id " + activity.getId() + " into everyone activity list.");
-            getCache().addToTopOfList(CacheKeys.EVERYONE_ACTIVITY_IDS, activity.getId());
+            log.trace("Adding activity id " + activityId + " into everyone activity list.");
+            getCache().addToTopOfList(CacheKeys.EVERYONE_ACTIVITY_IDS, activityId);
 
             // climb up the tree, adding activity to each org
             for (String orgShortName : getAllParentOrgShortNames(parentOrgId))
             {
-                log.trace("Adding activity id " + activity.getId() + " to organization cache list " + orgShortName);
+                log.trace("Adding activity id " + activityId + " to organization cache list " + orgShortName);
                 getCache().addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName,
-                        activity.getId());
+                        activityId);
             }
         }
     }
