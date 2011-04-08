@@ -21,11 +21,15 @@ import java.util.Map.Entry;
 
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.search.modelview.UsageMetricDTO;
+import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
+import org.eurekastreams.web.client.events.data.GotUsageMetricSummaryEvent;
+import org.eurekastreams.web.client.ui.Session;
 
 /**
  * Model to register page views with server.
  */
-public class UsageMetricModel extends BaseModel implements Insertable<HashMap<String, Serializable>>
+public class UsageMetricModel extends BaseModel implements Insertable<HashMap<String, Serializable>>,
+        Fetchable<Integer>
 {
     /**
      * Singleton.
@@ -96,6 +100,21 @@ public class UsageMetricModel extends BaseModel implements Insertable<HashMap<St
                 }
             });
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void fetch(final Integer inRequest, final boolean inUseClientCacheIfAvailable)
+    {
+        super.callReadAction("getUsageMetricSummaryAction", inRequest, new OnSuccessCommand<UsageMetricSummaryDTO>()
+        {
+            public void onSuccess(final UsageMetricSummaryDTO response)
+            {
+                Session.getInstance().getEventBus().notifyObservers(new GotUsageMetricSummaryEvent(response));
+            }
+        }, inUseClientCacheIfAvailable);
+
     }
 
     /**
@@ -179,4 +198,5 @@ public class UsageMetricModel extends BaseModel implements Insertable<HashMap<St
 
         return metricDetails.toString();
     }
+
 }

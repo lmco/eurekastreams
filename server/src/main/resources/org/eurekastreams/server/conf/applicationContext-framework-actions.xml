@@ -4868,6 +4868,17 @@
         <constructor-arg value="true" />
     </bean>
     
+    <bean id="getUsageMetricSummaryAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="noAuthorizationStrategy" />
+        <constructor-arg>
+            <bean parent="baseParamExecuteDomainMapperExecution">
+                <constructor-arg ref="getUsageMetricSummaryDbMapper" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg value="true" />
+    </bean>
+    
     <bean id="getPeopleThatLikedSharedResourceAction" class="org.eurekastreams.commons.actions.service.ServiceAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="noAuthorizationStrategy" />
