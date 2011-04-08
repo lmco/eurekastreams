@@ -148,11 +148,26 @@ public class ResourceCountWidget extends Composite
      * How many do we show before the view all link shows up.
      */
     private static final int MAXLIKERSSHOWN = 4;
+    
+    /**
+     * If the user has mouse over.
+     */
+    private static int hasMousedOver = 0;
 
     /**
      * The contianer.
      */
     private Widget containerWidget = null;
+
+    /**
+     * Resouce url.
+     */
+    private static String resourceUrl;
+
+    /**
+     * Count type.
+     */
+    private static CountType countType;
 
     /**
      * Count Type.
@@ -162,25 +177,41 @@ public class ResourceCountWidget extends Composite
         /**
          * Like count.
          */
-        LIKES, 
+        LIKES,
         /**
          * Share count.
          */
         SHARES
     }
 
+    
+    /**
+     * Timer factory.
+     */
+    private static final TimerFactory timerFactory = new TimerFactory();
+    
+    /**
+     * Timer expiration.
+     */
+    private static final int TIMER_EXPIRATION = 250;
+
+    /**
+     * Timer expiration for intial show.
+     */
+    private static final int INITIAL_TIMER_EXPIRATION = 2500;
+
+    
     /**
      * Setup the floating avatar panel.
      */
     private static void setup()
     {
+        
         // Reimplementing Focus panel, GWT seems to break otherwise.
         usersWhoLikedPanelWrapper = new FlowPanel()
         {
-            private final TimerFactory timerFactory = new TimerFactory();
             private boolean actuallyOut = false;
-            private static final int TIMER_EXPIRATION = 250;
-
+            
             @Override
             public void onBrowserEvent(final Event event)
             {
@@ -205,6 +236,7 @@ public class ResourceCountWidget extends Composite
                 else if (DOM.eventGetType(event) == Event.ONMOUSEOVER)
                 {
                     actuallyOut = false;
+                    hasMousedOver++;
                 }
                 else if (DOM.eventGetType(event) == Event.ONCLICK)
                 {
@@ -212,6 +244,8 @@ public class ResourceCountWidget extends Composite
                 }
             }
         };
+        
+
 
         final Label arrow = new Label();
         arrow.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectPopoutArrow());
@@ -223,11 +257,9 @@ public class ResourceCountWidget extends Composite
         {
             public void onClick(final ClickEvent arg0)
             {
-                DialogContent dialogContent = new LikersDialogContent(0L);
-                Dialog dialog = new Dialog(dialogContent);
-                dialog.setBgVisible(true);
-                dialog.addStyleName(StaticResourceBundle.INSTANCE.coreCss().likerModal());
-                dialog.center();
+                String actorType = CountType.LIKES.equals(countType) ? "likes" : "shares";
+                Window.open("/widget.html?widget=actordialog&actortype=" + actorType + "&resourceurl=" + resourceUrl,
+                        null, "height=400,width=400,status=yes,toolbar=no,menubar=no,location=no");
             }
 
         });
@@ -289,6 +321,8 @@ public class ResourceCountWidget extends Composite
     {
         thisResourceUrl = inResoureceUrl;
         thisIsLiked = inIsLiked;
+        countType = inCountType;
+        resourceUrl = inResoureceUrl;
 
         initWidget(widget);
 
@@ -301,8 +335,9 @@ public class ResourceCountWidget extends Composite
         {
             public void onMouseOver(final MouseOverEvent arg0)
             {
+                countType = inCountType;
+                resourceUrl = inResoureceUrl;
                 showPanel();
-
                 usersWhoLikedPanelWrapper.setVisible(true);
             }
         });
@@ -319,7 +354,7 @@ public class ResourceCountWidget extends Composite
                 String actorType = CountType.LIKES.equals(inCountType) ? "likes" : "shares";
                 Window.open(
                         "/widget.html?widget=actordialog&actortype=" + actorType + "&resourceurl=" + inResoureceUrl,
-                        "_,blank", "width=400,height=400");
+                        null, "height=400,width=400,status=yes,toolbar=no,menubar=no,location=no");
 
             }
         });
@@ -407,8 +442,9 @@ public class ResourceCountWidget extends Composite
                         thumbsStr += thumb;
                     }
 
-                    Window.open("/widget.html?widget=sharedialog&thumbs=" + thumbsStr + "&desc=" + desc
-                            + "&title=" + title + "&resourceurl=" + inResoureceUrl, "_,blank", "width=800,height=300");
+                    Window.open("/widget.html?widget=sharedialog&thumbs=" + thumbsStr + "&desc=" + desc + "&title="
+                            + title + "&resourceurl=" + inResoureceUrl, null,
+                            "height=300,width=800,status=yes,toolbar=no,menubar=no,location=no");
                 }
             });
 
@@ -428,27 +464,54 @@ public class ResourceCountWidget extends Composite
      */
     private void showPanel()
     {
-        currentPanel = this;
-        isLiked = thisIsLiked;
-        currentResourceUrl = thisResourceUrl;
-        viewAll.setVisible(false);
-        avatarPanel.clear();
-        DOM.setStyleAttribute(usersWhoLikedPanelWrapper.getElement(), "top", widget.getAbsoluteTop() + 9 + 1 + "px");
-        DOM.setStyleAttribute(usersWhoLikedPanelWrapper.getElement(), "left", widget.getAbsoluteLeft()
-                + containerWidget.getElement().getClientWidth() + "px");
-
-        for (PersonModelView liker : likers)
+        if (likeCount > 0)
         {
-            avatarPanel.add(new AvatarLinkPanel(EntityType.PERSON, liker.getUniqueId(), liker.getId(), liker
-                    .getAvatarId(), Size.VerySmall, liker.getDisplayName()));
-        }
+            hasMousedOver++;
+            final int hasMouseOverVal = hasMousedOver;
+            currentPanel = this;
+            isLiked = thisIsLiked;
+            currentResourceUrl = thisResourceUrl;
+            viewAll.setVisible(false);
+            avatarPanel.clear();
+            DOM
+                    .setStyleAttribute(usersWhoLikedPanelWrapper.getElement(), "top", widget.getAbsoluteTop() + 9 + 1
+                            + "px");
+            DOM.setStyleAttribute(usersWhoLikedPanelWrapper.getElement(), "left", widget.getAbsoluteLeft()
+                    + containerWidget.getElement().getClientWidth() + "px");
 
-        if (likeCount > MAXLIKERSSHOWN)
-        {
-            viewAll.setVisible(true);
+            for (PersonModelView liker : likers)
+            {
+                avatarPanel.add(new AvatarLinkPanel(EntityType.PERSON, liker.getUniqueId(), liker.getId(), liker
+                        .getAvatarId(), Size.VerySmall, liker.getDisplayName()));
+            }
+
+            if (likeCount > MAXLIKERSSHOWN)
+            {
+                viewAll.setVisible(true);
+            }
+            if (countType.equals(CountType.LIKES))
+            {
+                likedLabel.setText(likeCount + " people liked this");
+
+            }
+            else
+            {
+                likedLabel.setText(likeCount + " people shared this");
+            }
+            innerLikeCountLink.setText(likeCount.toString());
+            
+            timerFactory.runTimer(INITIAL_TIMER_EXPIRATION, new TimerHandler()
+            {
+                public void run()
+                {
+                    if (hasMousedOver == hasMouseOverVal)
+                    {
+                        usersWhoLikedPanelWrapper.setVisible(false);
+                    }
+
+                }
+            });
         }
-        likedLabel.setText(likeCount + " people liked this");
-        innerLikeCountLink.setText(likeCount.toString());
     }
 
     /**
