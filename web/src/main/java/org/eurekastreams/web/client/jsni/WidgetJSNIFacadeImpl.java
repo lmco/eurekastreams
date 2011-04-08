@@ -579,8 +579,38 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
      */
     public static native String nativeGetCenteredPopupFeatureString(final int width, final int height)
     /*-{
-        var top = $wnd.screenY + ($wnd.outerHeight - height) / 2;
-        var left = $wnd.screenX + ($wnd.outerWidth - width) / 2;
+        var left = 0;
+        var top = 0;
+
+        var offsetX = $wnd.screenX;
+        if (offsetX == undefined)
+                offsetX = $wnd.screenLeft;
+        if (offsetX == undefined)
+                left = (screen.availWidth - width) / 2;
+        else
+        {
+            var windowWidth = $wnd.outerWidth;
+            if (windowWidth == undefined)
+                    windowWidth = $wnd.innerWidth;
+            if (windowWidth == undefined)
+                    windowWidth = document.body.clientWidth;
+            left = offsetX + ((windowWidth == undefined) ? 0 : (windowWidth - width) / 2);
+        }
+
+        var offsetY = $wnd.screenY;
+        if (offsetY == undefined)
+                offsetY = $wnd.screenTop;
+        if (offsetY == undefined)
+                top = (screen.availHeight - height) / 2;
+        else
+        {
+            var windowHeight = $wnd.outerHeight;
+            if (windowHeight == undefined)
+                    windowHeight = $wnd.innerHeight;
+            if (windowHeight == undefined)
+                    windowHeight = document.body.clientHeight;
+            top = offsetY + ((windowHeight == undefined) ? 0 : (windowHeight - height) / 2);
+        }
         return "width=" + width + ",height=" + height + ",left=" + left + ",top=" + top;
     }-*/;
 }
