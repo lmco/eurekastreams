@@ -32,8 +32,6 @@ import org.eurekastreams.web.client.ui.TimerFactory;
 import org.eurekastreams.web.client.ui.TimerHandler;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
-import org.eurekastreams.web.client.ui.common.dialog.Dialog;
-import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -148,7 +146,7 @@ public class ResourceCountWidget extends Composite
      * How many do we show before the view all link shows up.
      */
     private static final int MAXLIKERSSHOWN = 4;
-    
+
     /**
      * If the user has mouse over.
      */
@@ -184,12 +182,11 @@ public class ResourceCountWidget extends Composite
         SHARES
     }
 
-    
     /**
      * Timer factory.
      */
-    private static final TimerFactory timerFactory = new TimerFactory();
-    
+    private static TimerFactory timerFactory = new TimerFactory();
+
     /**
      * Timer expiration.
      */
@@ -200,18 +197,17 @@ public class ResourceCountWidget extends Composite
      */
     private static final int INITIAL_TIMER_EXPIRATION = 2500;
 
-    
     /**
      * Setup the floating avatar panel.
      */
     private static void setup()
     {
-        
+
         // Reimplementing Focus panel, GWT seems to break otherwise.
         usersWhoLikedPanelWrapper = new FlowPanel()
         {
             private boolean actuallyOut = false;
-            
+
             @Override
             public void onBrowserEvent(final Event event)
             {
@@ -244,8 +240,6 @@ public class ResourceCountWidget extends Composite
                 }
             }
         };
-        
-
 
         final Label arrow = new Label();
         arrow.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectPopoutArrow());
@@ -499,7 +493,7 @@ public class ResourceCountWidget extends Composite
                 likedLabel.setText(likeCount + " people shared this");
             }
             innerLikeCountLink.setText(likeCount.toString());
-            
+
             timerFactory.runTimer(INITIAL_TIMER_EXPIRATION, new TimerHandler()
             {
                 public void run()
