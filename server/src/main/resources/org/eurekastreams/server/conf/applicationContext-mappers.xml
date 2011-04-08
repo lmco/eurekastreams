@@ -2598,7 +2598,8 @@
     <bean id="findOrInsertSharedResourceByUniqueKeyMapper" class="org.eurekastreams.server.persistence.mappers.db.FindOrInsertSharedResourceByUniqueKeyDbMapper" />
     
     <bean id="setLikedSharedResourceStatusDbMapper" class="org.eurekastreams.server.persistence.mappers.db.SetLikedSharedResourceStatusDbMapper" />
-    
+        
+    <bean id="getUsageMetricSummaryDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetUsageMetricSummaryDbMapper" />
     
     <bean id="personModelViewAvatarDisplayTransformer" class="org.eurekastreams.server.domain.strategies.PersonModelViewAvatarDisplayTransformer"/>
     
