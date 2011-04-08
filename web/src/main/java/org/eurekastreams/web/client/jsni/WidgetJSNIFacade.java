@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -223,4 +223,21 @@ public interface WidgetJSNIFacade
      *            - suppress history event if false.
      */
     void setHistoryToken(String token, boolean issueEvent);
+
+    /**
+     * Close the current window.
+     */
+    void close();
+
+    /**
+     * Builds the portion of the Window.open feature string to center a dialog over the current window.
+     * 
+     * @param width
+     *            Dialog width.
+     * @param height
+     *            Dialog height.
+     * @return Feature string fragment.
+     */
+    String getCenteredPopupFeatureString(int width, int height);
+
 }

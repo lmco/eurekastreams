@@ -15,6 +15,7 @@
  */
 package org.eurekastreams.web.client.ui.pages.widget;
 
+import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.web.client.events.EventBus;
@@ -22,6 +23,7 @@ import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.ui.common.stream.StreamJsonRequestFactory;
 import org.eurekastreams.web.client.ui.common.stream.StreamPanel;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ShowRecipient;
+import org.eurekastreams.web.client.ui.common.stream.renderers.StreamMessageItemRenderer;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.json.client.JSONArray;
@@ -42,7 +44,8 @@ public class FullStreamWidget extends Composite
      */
     public FullStreamWidget(final String jsonRequest)
     {
-        final StreamPanel streamPanel = new StreamPanel(ShowRecipient.ALL);
+        final StreamPanel streamPanel = new StreamPanel(ShowRecipient.ALL,
+                new FullStreamWidgetStreamMessageItemRenderer());
         streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().embeddedWidget());
         streamPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectFullStreamWidget());
         initWidget(streamPanel);
@@ -90,5 +93,29 @@ public class FullStreamWidget extends Composite
             int makeCheckstyleShutUp = 1;
         }
         return null;
+    }
+
+    /**
+     * Custom version of the stream item renderer tailored to change the share behavior.
+     */
+    class FullStreamWidgetStreamMessageItemRenderer extends StreamMessageItemRenderer
+    {
+        /**
+         * Constructor.
+         */
+        public FullStreamWidgetStreamMessageItemRenderer()
+        {
+            super(ShowRecipient.ALL);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onShare(final ActivityDTO activity)
+        {
+            // display share box in a new pop-up window
+            WidgetUtilities.showShareActivityPopup(activity.getId());
+        }
     }
 }
