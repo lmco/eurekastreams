@@ -32,8 +32,6 @@ import org.eurekastreams.web.client.ui.TimerFactory;
 import org.eurekastreams.web.client.ui.TimerHandler;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarLinkPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
-import org.eurekastreams.web.client.ui.common.dialog.Dialog;
-import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -148,7 +146,7 @@ public class ResourceCountWidget extends Composite
      * How many do we show before the view all link shows up.
      */
     private static final int MAXLIKERSSHOWN = 4;
-    
+
     /**
      * If the user has mouse over.
      */
@@ -184,12 +182,11 @@ public class ResourceCountWidget extends Composite
         SHARES
     }
 
-    
     /**
      * Timer factory.
      */
     private static final TimerFactory timerFactory = new TimerFactory();
-    
+
     /**
      * Timer expiration.
      */
@@ -200,18 +197,17 @@ public class ResourceCountWidget extends Composite
      */
     private static final int INITIAL_TIMER_EXPIRATION = 2500;
 
-    
     /**
      * Setup the floating avatar panel.
      */
     private static void setup()
     {
-        
+
         // Reimplementing Focus panel, GWT seems to break otherwise.
         usersWhoLikedPanelWrapper = new FlowPanel()
         {
             private boolean actuallyOut = false;
-            
+
             @Override
             public void onBrowserEvent(final Event event)
             {
@@ -244,8 +240,6 @@ public class ResourceCountWidget extends Composite
                 }
             }
         };
-        
-
 
         final Label arrow = new Label();
         arrow.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectPopoutArrow());
@@ -337,8 +331,11 @@ public class ResourceCountWidget extends Composite
             {
                 countType = inCountType;
                 resourceUrl = inResoureceUrl;
-                showPanel();
-                usersWhoLikedPanelWrapper.setVisible(true);
+                if (likeCount > 0)
+                {
+                    showPanel();
+                    usersWhoLikedPanelWrapper.setVisible(true);
+                }
             }
         });
 
@@ -388,6 +385,7 @@ public class ResourceCountWidget extends Composite
                         likeContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectUnlikeButton());
                         updatePanel(LikeActionType.ADD_LIKE);
                         currentPanel.showPanel();
+                        usersWhoLikedPanelWrapper.setVisible(true);
                     }
                     else
                     {
@@ -396,6 +394,7 @@ public class ResourceCountWidget extends Composite
                         likeContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectLikeButton());
                         updatePanel(LikeActionType.REMOVE_LIKE);
                         currentPanel.showPanel();
+                        usersWhoLikedPanelWrapper.setVisible(false);
                     }
 
                     likeCountLink.setText(likeCount.toString());
@@ -464,54 +463,50 @@ public class ResourceCountWidget extends Composite
      */
     private void showPanel()
     {
-        if (likeCount > 0)
+        hasMousedOver++;
+        final int hasMouseOverVal = hasMousedOver;
+        currentPanel = this;
+        isLiked = thisIsLiked;
+        currentResourceUrl = thisResourceUrl;
+        viewAll.setVisible(false);
+        avatarPanel.clear();
+        DOM.setStyleAttribute(usersWhoLikedPanelWrapper.getElement(), "top", widget.getAbsoluteTop() + 9 + 1 + "px");
+        DOM.setStyleAttribute(usersWhoLikedPanelWrapper.getElement(), "left", widget.getAbsoluteLeft()
+                + containerWidget.getElement().getClientWidth() + "px");
+
+        for (PersonModelView liker : likers)
         {
-            hasMousedOver++;
-            final int hasMouseOverVal = hasMousedOver;
-            currentPanel = this;
-            isLiked = thisIsLiked;
-            currentResourceUrl = thisResourceUrl;
-            viewAll.setVisible(false);
-            avatarPanel.clear();
-            DOM
-                    .setStyleAttribute(usersWhoLikedPanelWrapper.getElement(), "top", widget.getAbsoluteTop() + 9 + 1
-                            + "px");
-            DOM.setStyleAttribute(usersWhoLikedPanelWrapper.getElement(), "left", widget.getAbsoluteLeft()
-                    + containerWidget.getElement().getClientWidth() + "px");
-
-            for (PersonModelView liker : likers)
-            {
-                avatarPanel.add(new AvatarLinkPanel(EntityType.PERSON, liker.getUniqueId(), liker.getId(), liker
-                        .getAvatarId(), Size.VerySmall, liker.getDisplayName()));
-            }
-
-            if (likeCount > MAXLIKERSSHOWN)
-            {
-                viewAll.setVisible(true);
-            }
-            if (countType.equals(CountType.LIKES))
-            {
-                likedLabel.setText(likeCount + " people liked this");
-
-            }
-            else
-            {
-                likedLabel.setText(likeCount + " people shared this");
-            }
-            innerLikeCountLink.setText(likeCount.toString());
-            
-            timerFactory.runTimer(INITIAL_TIMER_EXPIRATION, new TimerHandler()
-            {
-                public void run()
-                {
-                    if (hasMousedOver == hasMouseOverVal)
-                    {
-                        usersWhoLikedPanelWrapper.setVisible(false);
-                    }
-
-                }
-            });
+            avatarPanel.add(new AvatarLinkPanel(EntityType.PERSON, liker.getUniqueId(), liker.getId(), liker
+                    .getAvatarId(), Size.VerySmall, liker.getDisplayName()));
         }
+
+        if (likeCount > MAXLIKERSSHOWN)
+        {
+            viewAll.setVisible(true);
+        }
+        if (countType.equals(CountType.LIKES))
+        {
+            likedLabel.setText(likeCount + " people liked this");
+
+        }
+        else
+        {
+            likedLabel.setText(likeCount + " people shared this");
+        }
+        innerLikeCountLink.setText(likeCount.toString());
+
+        timerFactory.runTimer(INITIAL_TIMER_EXPIRATION, new TimerHandler()
+        {
+            public void run()
+            {
+                if (hasMousedOver == hasMouseOverVal)
+                {
+                    usersWhoLikedPanelWrapper.setVisible(false);
+                }
+
+            }
+        });
+
     }
 
     /**
