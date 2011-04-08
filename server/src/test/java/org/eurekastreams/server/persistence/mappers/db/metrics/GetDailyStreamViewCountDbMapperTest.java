@@ -15,7 +15,11 @@
  */
 package org.eurekastreams.server.persistence.mappers.db.metrics;
 
+import java.util.Date;
+
+import org.eurekastreams.server.domain.UsageMetric;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,6 +32,16 @@ public class GetDailyStreamViewCountDbMapperTest extends MapperTest
      * System under test.
      */
     private GetDailyPageViewCountDbMapper sut;
+
+    /**
+     * April 8th, 2011 in ticks.
+     */
+    private final long apri8th2011 = 1301944331000L;
+
+    /**
+     * April 7th, 2011 in ticks.
+     */
+    private final long april7th2011 = 1302220680000L;
 
     /**
      * Setup.
@@ -45,6 +59,23 @@ public class GetDailyStreamViewCountDbMapperTest extends MapperTest
     @Test
     public void testExecute()
     {
-        return;
+        // right day - 6
+        getEntityManager().persist(new UsageMetric(1L, true, true, new Date(apri8th2011)));
+        getEntityManager().persist(new UsageMetric(3L, true, false, new Date(apri8th2011 + 3)));
+        getEntityManager().persist(new UsageMetric(6L, true, false, new Date(apri8th2011)));
+        getEntityManager().persist(new UsageMetric(2L, true, true, new Date(apri8th2011 + 5)));
+        getEntityManager().persist(new UsageMetric(4L, true, true, new Date(apri8th2011)));
+        getEntityManager().persist(new UsageMetric(5L, true, true, new Date(apri8th2011)));
+
+        // wrong day
+        getEntityManager().persist(new UsageMetric(6L, true, true, new Date(april7th2011)));
+        getEntityManager().persist(new UsageMetric(5L, true, true, new Date(april7th2011)));
+        getEntityManager().persist(new UsageMetric(4L, true, true, new Date(april7th2011)));
+        getEntityManager().persist(new UsageMetric(3L, true, false, new Date(april7th2011)));
+
+        getEntityManager().flush();
+        getEntityManager().clear();
+
+        Assert.assertEquals(6L, (long) sut.execute(new Date(apri8th2011)));
     }
 }

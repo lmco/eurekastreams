@@ -16,8 +16,13 @@
 package org.eurekastreams.server.persistence.mappers.db.metrics;
 
 import java.util.Date;
+import java.util.HashSet;
 
+import javax.persistence.Query;
+
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
+import org.eurekastreams.server.persistence.strategies.DateDayExtractor;
 
 /**
  * DB Mapper to get the stream contributor count of a specific day.
@@ -34,26 +39,27 @@ public class GetDailyStreamContributorCountDbMapper extends BaseArgDomainMapper<
     @Override
     public Long execute(final Date inDay)
     {
-        // Query q;
-        // Date startOfDay, endOfDay;
-        // HashSet<Long> peopleIds = new HashSet<Long>();
-        //
-        // startOfDay = DateDayExtractor.getStartOfDay(inDay);
-        // endOfDay = DateDayExtractor.getEndOfDay(inDay);
-        //
-        // q = getEntityManager().createQuery(
-        // "SELECT DISTINCT(actorId) FROM Activity "
-        // + "WHERE actorType=:actorType AND postedTime >= :startDate AND postedTime <= :endDate)")
-        // .setParameter("startDate", startOfDay).setParameter("endDate", endOfDay).setParameter("actorType",
-        // EntityType.PERSON);
-        // peopleIds.addAll(q.getResultList());
-        //
-        // q = getEntityManager().createQuery(
-        // "SELECT DISTINCT(author.id) FROM Comment WHERE timeSent >= :startDate AND timeSent <= :endDate")
-        // .setParameter("startDate", startOfDay).setParameter("endDate", endOfDay);
-        // peopleIds.addAll(q.getResultList());
-        //
-        // return new Long(peopleIds.size());
-        return 0L;
+        Query q;
+        Date startOfDay, endOfDay;
+        HashSet<String> peopleIds = new HashSet<String>();
+
+        startOfDay = DateDayExtractor.getStartOfDay(inDay);
+        endOfDay = DateDayExtractor.getEndOfDay(inDay);
+
+        q = getEntityManager().createQuery(
+                "SELECT DISTINCT(actorId) FROM Activity "
+                        + "WHERE actorType=:actorType AND postedTime >= :startDate AND postedTime <= :endDate)")
+                .setParameter("startDate", startOfDay).setParameter("endDate", endOfDay).setParameter("actorType",
+                        EntityType.PERSON);
+        peopleIds.addAll(q.getResultList());
+
+        q = getEntityManager().createQuery(
+                "SELECT DISTINCT(author.accountId) FROM Comment WHERE timeSent >= :startDate AND timeSent <= :endDate")
+                .setParameter("startDate", startOfDay).setParameter("endDate", endOfDay);
+        peopleIds.addAll(q.getResultList());
+
+        System.out.println(peopleIds);
+
+        return new Long(peopleIds.size());
     }
 }
