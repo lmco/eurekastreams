@@ -20,9 +20,10 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.domain.stream.Activity;
+import org.eurekastreams.server.domain.stream.SharedResource;
+import org.eurekastreams.server.domain.stream.StreamScope;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.Cache;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
@@ -119,6 +120,9 @@ public class PostCachedActivityTest
                 parentOrgIdsMapper, bulkDomainGroupsByShortNameMapper, orgShortNamesFromIdsMapper);
         sut.setCache(cache);
 
+        final Activity act = context.mock(Activity.class);
+        final StreamScope recipStreamScope = context.mock(StreamScope.class);
+
         context.checking(new Expectations()
         {
             {
@@ -155,16 +159,29 @@ public class PostCachedActivityTest
                         activityId);
                 oneOf(cache).addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName3,
                         activityId);
+
+                // -----
+                // build the activity that we're passing in
+                allowing(act).getId();
+                will(returnValue(activityId));
+
+                allowing(act).getRecipientStreamScope();
+                will(returnValue(recipStreamScope));
+
+                oneOf(recipStreamScope).getUniqueKey();
+                will(returnValue("someAccountId"));
+
+                oneOf(recipStreamScope).getScopeType();
+                will(returnValue(ScopeType.PERSON));
+                // -----
+
+                oneOf(act).getSharedLink();
+                will(returnValue(null));
+
+                oneOf(act).getShowInStream();
+                will(returnValue(true));
             }
         });
-
-        ActivityDTO act = new ActivityDTO();
-        act.setId(activityId);
-        StreamEntityDTO entity = new StreamEntityDTO();
-        entity.setUniqueIdentifier(personAccountId);
-        entity.setType(EntityType.PERSON);
-        entity.setUniqueIdentifier("someAccountId");
-        act.setDestinationStream(entity);
 
         sut.execute(act);
 
@@ -204,6 +221,9 @@ public class PostCachedActivityTest
                 parentOrgIdsMapper, bulkDomainGroupsByShortNameMapper, orgShortNamesFromIdsMapper);
         sut.setCache(cache);
 
+        final Activity act = context.mock(Activity.class);
+        final StreamScope recipStreamScope = context.mock(StreamScope.class);
+
         context.checking(new Expectations()
         {
             {
@@ -236,15 +256,30 @@ public class PostCachedActivityTest
                         activityId);
                 oneOf(cache).addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName3,
                         activityId);
-            }
-        });
 
-        ActivityDTO act = new ActivityDTO();
-        act.setId(activityId);
-        StreamEntityDTO entity = new StreamEntityDTO();
-        entity.setUniqueIdentifier(personAccountId);
-        entity.setType(EntityType.PERSON);
-        act.setDestinationStream(entity);
+                // -----
+                // build the activity that we're passing in
+                allowing(act).getId();
+                will(returnValue(activityId));
+
+                allowing(act).getRecipientStreamScope();
+                will(returnValue(recipStreamScope));
+
+                allowing(recipStreamScope).getUniqueKey();
+                will(returnValue(personAccountId));
+
+                allowing(recipStreamScope).getScopeType();
+                will(returnValue(ScopeType.PERSON));
+                // -----
+
+                allowing(act).getSharedLink();
+                will(returnValue(null));
+
+                allowing(act).getShowInStream();
+                will(returnValue(true));
+            }
+
+        });
 
         sut.execute(act);
 
@@ -278,6 +313,9 @@ public class PostCachedActivityTest
         orgShortNames.add(orgShortName2);
         orgShortNames.add(orgShortName3);
 
+        final Activity act = context.mock(Activity.class);
+        final StreamScope recipStreamScope = context.mock(StreamScope.class);
+
         context.checking(new Expectations()
         {
             {
@@ -301,15 +339,124 @@ public class PostCachedActivityTest
                         activityId);
                 oneOf(cache).addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName3,
                         activityId);
+
+                // -----
+                // build the activity that we're passing in
+                allowing(act).getId();
+                will(returnValue(activityId));
+
+                allowing(act).getRecipientStreamScope();
+                will(returnValue(recipStreamScope));
+
+                allowing(recipStreamScope).getScopeType();
+                will(returnValue(ScopeType.GROUP));
+
+                allowing(recipStreamScope).getUniqueKey();
+                will(returnValue("blah"));
+
+                // -----
+
+                allowing(act).getSharedLink();
+                will(returnValue(null));
+
+                allowing(act).getShowInStream();
+                will(returnValue(true));
             }
         });
+        sut.execute(act);
 
-        ActivityDTO act = new ActivityDTO();
-        StreamEntityDTO entity = new StreamEntityDTO();
-        entity.setType(EntityType.GROUP);
-        act.setDestinationStream(entity);
-        act.setId(activityId);
+        context.assertIsSatisfied();
+    }
 
+    /**
+     * Test execute with a group activity with a shared link.
+     */
+    @Test
+    public void testExecuteGroupActivityWithSharedLink()
+    {
+        final long activityId = 884872L;
+        PostCachedActivity sut = new PostCachedActivity(personFollowersMapper, getPersonModelViewByAccountIdMapper,
+                parentOrgIdsMapper, bulkDomainGroupsByShortNameMapper, orgShortNamesFromIdsMapper);
+        sut.setCache(cache);
+        final long recipientParentOrgId = 877777L;
+        final long sharedResourceScopeId = 3838L;
+
+        final DomainGroupModelView group = new DomainGroupModelView();
+        group.setParentOrganizationId(recipientParentOrgId);
+        final List<DomainGroupModelView> groups = new ArrayList<DomainGroupModelView>();
+        groups.add(group);
+
+        final List<Long> parentOrgIds = context.mock(List.class);
+
+        final List<String> orgShortNames = new ArrayList<String>();
+        final String orgShortName1 = "abcdefg";
+        final String orgShortName2 = "abcdefgh";
+        final String orgShortName3 = "abcdefgi";
+        orgShortNames.add(orgShortName1);
+        orgShortNames.add(orgShortName2);
+        orgShortNames.add(orgShortName3);
+
+        final Activity act = context.mock(Activity.class);
+        final StreamScope recipStreamScope = context.mock(StreamScope.class, "recipStreamScope");
+
+        final SharedResource sharedResource = context.mock(SharedResource.class);
+        final StreamScope sharedResourceStreamScope = context.mock(StreamScope.class, "sharedResourceStreamScope");
+
+        context.checking(new Expectations()
+        {
+            {
+                oneOf(bulkDomainGroupsByShortNameMapper).execute(with(any(List.class)));
+                will(returnValue(groups));
+
+                // everyone list gets the activity id
+                oneOf(cache).addToTopOfList(CacheKeys.EVERYONE_ACTIVITY_IDS, activityId);
+
+                oneOf(parentOrgIdsMapper).execute(recipientParentOrgId);
+                will(returnValue(parentOrgIds));
+
+                oneOf(parentOrgIds).add(recipientParentOrgId);
+
+                oneOf(orgShortNamesFromIdsMapper).execute(parentOrgIds);
+                will(returnValue(orgShortNames));
+
+                oneOf(cache).addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName1,
+                        activityId);
+                oneOf(cache).addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName2,
+                        activityId);
+                oneOf(cache).addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName3,
+                        activityId);
+
+                // -----
+                // build the activity that we're passing in
+                allowing(act).getId();
+                will(returnValue(activityId));
+
+                allowing(act).getRecipientStreamScope();
+                will(returnValue(recipStreamScope));
+
+                allowing(recipStreamScope).getScopeType();
+                will(returnValue(ScopeType.GROUP));
+
+                allowing(recipStreamScope).getUniqueKey();
+                will(returnValue("blah"));
+
+                // -----
+
+                allowing(act).getSharedLink();
+                will(returnValue(sharedResource));
+
+                allowing(sharedResource).getStreamScope();
+                will(returnValue(sharedResourceStreamScope));
+
+                allowing(sharedResourceStreamScope).getId();
+                will(returnValue(sharedResourceScopeId));
+
+                oneOf(cache).addToTopOfList(CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + sharedResourceScopeId, activityId);
+
+                allowing(act).getShowInStream();
+                will(returnValue(true));
+            }
+        });
         sut.execute(act);
 
         context.assertIsSatisfied();
@@ -325,10 +472,28 @@ public class PostCachedActivityTest
                 parentOrgIdsMapper, bulkDomainGroupsByShortNameMapper, orgShortNamesFromIdsMapper);
         sut.setCache(cache);
 
-        ActivityDTO act = new ActivityDTO();
-        StreamEntityDTO entity = new StreamEntityDTO();
-        entity.setType(EntityType.ORGANIZATION);
-        act.setDestinationStream(entity);
+        final Activity act = context.mock(Activity.class);
+        final StreamScope recipStreamScope = context.mock(StreamScope.class);
+
+        context.checking(new Expectations()
+        {
+            {
+
+                // -----
+                // build the activity that we're passing in
+                allowing(act).getId();
+                will(returnValue(3L));
+
+                allowing(act).getRecipientStreamScope();
+                will(returnValue(recipStreamScope));
+
+                allowing(recipStreamScope).getScopeType();
+                will(returnValue(ScopeType.ORGANIZATION));
+
+                allowing(recipStreamScope).getUniqueKey();
+                will(returnValue("blah"));
+            }
+        });
 
         boolean exceptionFired = false;
         try

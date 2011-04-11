@@ -31,10 +31,10 @@ import org.eurekastreams.server.persistence.mappers.stream.PostCachedActivity;
 
 /**
  * This class provides the Async ExecutionStrategy for the PostActivity action.
- *
+ * 
  * Add the activity to cache, extract its hashtags, and store them in the database for each stream that will use them
  * for their popular hashtags.
- *
+ * 
  */
 public class PostActivityAsyncExecutionStrategy implements ExecutionStrategy<AsyncActionContext>
 {
@@ -60,7 +60,7 @@ public class PostActivityAsyncExecutionStrategy implements ExecutionStrategy<Asy
 
     /**
      * Constructor for the PostActivityAsyncExecutionStrategy class.
-     *
+     * 
      * @param inPostCachedActivityMapper
      *            - instance of the {@link PostCachedActivity} mapper that will perform the cache updates.
      * @param inFindByIdMapper
@@ -85,15 +85,14 @@ public class PostActivityAsyncExecutionStrategy implements ExecutionStrategy<Asy
     {
         ActivityDTO currentActivity = ((PostActivityRequest) inActionContext.getParams()).getActivityDTO();
 
-        log.info("Updating caches for activity #" + currentActivity.getId());
-        postCachedActivityMapper.execute(currentActivity);
-
         Activity activity = findByIdMapper.execute(new FindByIdRequest("Activity", currentActivity.getId()));
         if (activity != null)
         {
+            log.info("Updating caches for activity #" + currentActivity.getId());
+            postCachedActivityMapper.execute(activity);
+
             log.info("Activity #" + currentActivity.getId() + " was found - parsing and storing its hashtags");
             storeStreamHashTagStrategy.execute(activity);
-
         }
         return null;
     }

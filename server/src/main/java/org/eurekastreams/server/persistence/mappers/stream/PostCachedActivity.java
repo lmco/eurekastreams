@@ -21,8 +21,8 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.EntityType;
-import org.eurekastreams.server.domain.stream.ActivityDTO;
-import org.eurekastreams.server.domain.stream.StreamEntityDTO;
+import org.eurekastreams.server.domain.stream.Activity;
+import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.cache.CacheKeys;
 import org.eurekastreams.server.persistence.mappers.db.GetOrgShortNamesByIdsMapper;
@@ -97,35 +97,35 @@ public class PostCachedActivity extends CachedDomainMapper
      * @param activity
      *            the activity to be added.
      */
-    public void execute(final ActivityDTO activity)
+    public void execute(final Activity activity)
     {
-        StreamEntityDTO destinationStream = activity.getDestinationStream();
-        EntityType type = destinationStream.getType();
+        ScopeType type = activity.getRecipientStreamScope().getScopeType();
+        String recipientUniqueKey = activity.getRecipientStreamScope().getUniqueKey();
+        long activityId = activity.getId();
+
         Long parentOrgId = null;
 
-        if (type == EntityType.PERSON)
+        if (type == ScopeType.PERSON)
         {
-            PersonModelView person = getPersonModelViewByAccountIdMapper.execute(destinationStream
-                    .getUniqueIdentifier());
+            PersonModelView person = getPersonModelViewByAccountIdMapper.execute(recipientUniqueKey);
             parentOrgId = person.getParentOrganizationId();
 
-            updateActivitiesByFollowingCacheLists(person.getEntityId(), activity.getId());
+            updateActivitiesByFollowingCacheLists(person.getEntityId(), activityId);
 
         }
-        else if (type == EntityType.GROUP)
+        else if (type == ScopeType.GROUP)
         {
-            parentOrgId = bulkDomainGroupsByShortNameMapper.execute(
-                    Arrays.asList(destinationStream.getUniqueIdentifier())).get(0).getParentOrganizationId();
+            parentOrgId = bulkDomainGroupsByShortNameMapper.execute(Arrays.asList(recipientUniqueKey)).get(0)
+                    .getParentOrganizationId();
         }
-        else if (type == EntityType.RESOURCE && activity.getActor().getType() == EntityType.PERSON)
+        else if (type == ScopeType.RESOURCE && activity.getActorType() == EntityType.PERSON)
         {
             if (activity.getShowInStream())
             {
-                PersonModelView person = getPersonModelViewByAccountIdMapper.execute(activity.getActor()
-                        .getUniqueIdentifier());
+                PersonModelView person = getPersonModelViewByAccountIdMapper.execute(activity.getActorId());
                 parentOrgId = person.getParentOrganizationId();
 
-                updateActivitiesByFollowingCacheLists(person.getEntityId(), activity.getId());
+                updateActivitiesByFollowingCacheLists(person.getEntityId(), activityId);
             }
         }
         else
@@ -133,18 +133,29 @@ public class PostCachedActivity extends CachedDomainMapper
             throw new RuntimeException("Unexpected Activity destination stream type: " + type);
         }
 
+        if (activity.getSharedLink() != null)
+        {
+            // this has a shared link - add this activity id to the top of the shared resource's stream in cache
+            log.info("Adding activity with a shared resource (id:" + activity.getSharedLink().getStreamScope().getId()
+                    + ") to the top of the shared resource's cached activity stream.");
+            getCache()
+                    .addToTopOfList(
+                            CacheKeys.ENTITY_STREAM_BY_SCOPE_ID + activity.getSharedLink().getStreamScope().getId(),
+                            activityId);
+        }
+
         if (activity.getShowInStream())
         {
             // add to everyone list
-            log.trace("Adding activity id " + activity.getId() + " into everyone activity list.");
-            getCache().addToTopOfList(CacheKeys.EVERYONE_ACTIVITY_IDS, activity.getId());
+            log.trace("Adding activity id " + activityId + " into everyone activity list.");
+            getCache().addToTopOfList(CacheKeys.EVERYONE_ACTIVITY_IDS, activityId);
 
             // climb up the tree, adding activity to each org
             for (String orgShortName : getAllParentOrgShortNames(parentOrgId))
             {
-                log.trace("Adding activity id " + activity.getId() + " to organization cache list " + orgShortName);
+                log.trace("Adding activity id " + activityId + " to organization cache list " + orgShortName);
                 getCache().addToTopOfList(CacheKeys.ACTIVITY_IDS_FOR_ORG_BY_SHORTNAME_RECURSIVE + orgShortName,
-                        activity.getId());
+                        activityId);
             }
         }
     }

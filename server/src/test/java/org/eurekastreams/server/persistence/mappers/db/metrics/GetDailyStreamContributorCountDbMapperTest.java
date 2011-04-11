@@ -15,7 +15,10 @@
  */
 package org.eurekastreams.server.persistence.mappers.db.metrics;
 
+import java.util.Date;
+
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,7 +30,17 @@ public class GetDailyStreamContributorCountDbMapperTest extends MapperTest
     /**
      * System under test.
      */
-    private GetDailyPageViewCountDbMapper sut;
+    private GetDailyStreamContributorCountDbMapper sut;
+
+    /**
+     * April 8th, 2011 in ticks.
+     */
+    private final long apri8th2011 = 1301944331000L;
+
+    /**
+     * April 7th, 2011 in ticks.
+     */
+    private final long april7th2011 = 1302220680000L;
 
     /**
      * Setup.
@@ -35,7 +48,7 @@ public class GetDailyStreamContributorCountDbMapperTest extends MapperTest
     @Before
     public void setup()
     {
-        sut = new GetDailyPageViewCountDbMapper();
+        sut = new GetDailyStreamContributorCountDbMapper();
         sut.setEntityManager(getEntityManager());
     }
 
@@ -45,6 +58,28 @@ public class GetDailyStreamContributorCountDbMapperTest extends MapperTest
     @Test
     public void testExecute()
     {
-        return;
+        // dataset.xml has 3 people that have commented, 3 people that have posted activities. overlap is 2, total
+        // unique: 4
+        getEntityManager().createQuery("UPDATE Activity set postedTime=:date").setParameter("date",
+                new Date(apri8th2011)).executeUpdate();
+        getEntityManager().createQuery("UPDATE Comment set timeSent=:date").setParameter("date", new Date(apri8th2011))
+                .executeUpdate();
+
+        Assert.assertEquals(4L, (long) sut.execute(new Date(apri8th2011)));
+
+        // push all activities out of the date range
+        getEntityManager().createQuery("UPDATE Activity set postedTime=:date").setParameter("date",
+                new Date(april7th2011)).executeUpdate();
+        Assert.assertEquals(3L, (long) sut.execute(new Date(apri8th2011)));
+
+        // push all comments out of the date range
+        getEntityManager().createQuery("UPDATE Comment set timeSent=:date")
+                .setParameter("date", new Date(april7th2011)).executeUpdate();
+        Assert.assertEquals(0L, (long) sut.execute(new Date(apri8th2011)));
+
+        // now pull back just the comments
+        getEntityManager().createQuery("UPDATE Comment set timeSent=:date").setParameter("date", new Date(apri8th2011))
+                .executeUpdate();
+        Assert.assertEquals(3L, (long) sut.execute(new Date(apri8th2011)));
     }
 }

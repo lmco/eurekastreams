@@ -25,10 +25,12 @@ import org.eurekastreams.web.client.ui.pages.widget.CommentWidget;
 import org.eurekastreams.web.client.ui.pages.widget.FullStreamWidget;
 import org.eurekastreams.web.client.ui.pages.widget.LikeShareWidget;
 import org.eurekastreams.web.client.ui.pages.widget.ReadStreamWidget;
+import org.eurekastreams.web.client.ui.pages.widget.ShareActivityWidget;
 import org.eurekastreams.web.client.ui.pages.widget.ShareWidget;
 import org.eurekastreams.web.client.ui.pages.widget.UserProfileBadgeWidget;
 
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -36,40 +38,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ConnectPageFactory
 {
-    // /**
-    // * Creates a page given a page and view.
-    // *
-    // * @param page
-    // * the page.
-    // * @param views
-    // * the views.
-    // * @return the page widget.
-    // */
-    // public Widget createPage(final Page page, final List<String> views)
-    // {
-    // RootPanel.get().setStyleName("");
-    //
-    // String view = "";
-    // if (!views.isEmpty())
-    // {
-    // view = views.get(0);
-    // }
-    //
-    // switch (page)
-    // {
-    // case WIDGET_COMMENT:
-    // return new CommentWidget(view);
-    // case WIDGET_LIKE_SHARE:
-    // case WIDGET_PROFILE_BADGE:
-    // case WIDGET_STREAM:
-    // default:
-    // return null;
-    // }
-    // }
-
     /**
      * Creates a widget and sets the history to match it.
-     * 
+     *
      * @param widgetName
      *            Name of widget desired.
      * @param util
@@ -119,12 +90,10 @@ public class ConnectPageFactory
             String desc = util.getParameter("desc");
             String thumbStr = util.getParameter("thumbs");
             String[] thumbs = null;
-
-            if (thumbStr.length() > 0)
+            if (!thumbStr.isEmpty())
             {
                 thumbs = thumbStr.split(",");
             }
-
             return new ShareWidget(resourceId, title, desc, thumbs);
         }
         else if ("actordialog".equals(widgetName))
@@ -135,15 +104,28 @@ public class ConnectPageFactory
 
             return new ActorListWidget(countType, resourceId);
         }
-        else
+        else if ("shareactivitydialog".equals(widgetName))
         {
-            return null;
+            String title = util.getParameter("title");
+            Window.setTitle(title == null ? "Share" : title);
+            try
+            {
+                Long activityId = Long.parseLong(util.getParameter("activityid"));
+                return new ShareActivityWidget(activityId);
+            }
+            catch (Exception ex)
+            {
+                // TODO: better error handling
+                return null;
+            }
         }
+
+        return null;
     }
 
     /**
      * Sets URL and triggers history.
-     * 
+     *
      * @param request
      *            Description of URL to build.
      */
@@ -152,5 +134,4 @@ public class ConnectPageFactory
         String token = Session.getInstance().generateUrl(request);
         History.newItem(token, true);
     }
-
 }

@@ -17,7 +17,10 @@ package org.eurekastreams.server.persistence.mappers.db.metrics;
 
 import java.util.Date;
 
+import javax.persistence.Query;
+
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
+import org.eurekastreams.server.persistence.strategies.DateDayExtractor;
 
 /**
  * DB Mapper to get the page view count of a specific day.
@@ -34,17 +37,16 @@ public class GetDailyPageViewCountDbMapper extends BaseArgDomainMapper<Date, Lon
     @Override
     public Long execute(final Date inDay)
     {
-        // Date startOfDay, endOfDay;
-        // Query q;
-        //
-        // startOfDay = DateDayExtractor.getStartOfDay(inDay);
-        // endOfDay = DateDayExtractor.getEndOfDay(inDay);
-        // q = getEntityManager().createQuery(
-        // "SELECT COUNT(*) FROM UsageMetric "
-        // + "WHERE isPageView = true AND created >= :startDate AND created <= :endDate").setParameter(
-        // "startDate", startOfDay).setParameter("endDate", endOfDay);
-        //
-        // return (Long) q.getSingleResult();
-        return 0L;
+        Date startOfDay, endOfDay;
+        Query q;
+
+        startOfDay = DateDayExtractor.getStartOfDay(inDay);
+        endOfDay = DateDayExtractor.getEndOfDay(inDay);
+        q = getEntityManager().createQuery(
+                "SELECT COUNT(*) FROM UsageMetric "
+                        + "WHERE isPageView = true AND created >= :startDate AND created <= :endDate").setParameter(
+                "startDate", startOfDay).setParameter("endDate", endOfDay);
+
+        return (Long) q.getSingleResult();
     }
 }

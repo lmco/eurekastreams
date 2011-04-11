@@ -32,7 +32,7 @@ import org.junit.Test;
 
 /**
  * Test suite for the {@link PostActivityAsyncExecutionStrategy} class.
- *
+ * 
  */
 public class PostActivityAsyncExecutionStrategyTest
 {
@@ -113,8 +113,6 @@ public class PostActivityAsyncExecutionStrategyTest
                 oneOf(findByIdMapper).execute(
                         with(IsEqualInternally.equalInternally(new FindByIdRequest("Activity", 3L))));
                 will(returnValue(null));
-
-                oneOf(postCachedActivityMapperMock).execute(activityDTOMock);
             }
         });
 
@@ -154,7 +152,7 @@ public class PostActivityAsyncExecutionStrategyTest
 
                 oneOf(storeStreamHashTagStrategy).execute(activityMock);
 
-                oneOf(postCachedActivityMapperMock).execute(activityDTOMock);
+                oneOf(postCachedActivityMapperMock).execute(activityMock);
             }
         });
 
