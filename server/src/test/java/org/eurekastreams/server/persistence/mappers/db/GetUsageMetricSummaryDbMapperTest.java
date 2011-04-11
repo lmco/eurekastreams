@@ -67,6 +67,12 @@ public class GetUsageMetricSummaryDbMapperTest extends MapperTest
     @Test
     public void testValues()
     {
+        /**
+         * April 7th, 2011 in ticks.
+         */
+        final long april11th2001 = 987012529000L;
+        final long msInDay = 86400000L;
+
         final long resultValue = 15;
         final long count = 10;
         // clear table.
@@ -83,7 +89,7 @@ public class GetUsageMetricSummaryDbMapperTest extends MapperTest
             foo.setStreamViewCount(count * i);
             foo.setStreamViewerCount(count * i);
             foo.setUniqueVisitorCount(count * i);
-            foo.setUsageDate(new Date());
+            foo.setUsageDate(new Date(april11th2001 + i * msInDay));
 
             getEntityManager().persist(foo);
             getEntityManager().flush();
