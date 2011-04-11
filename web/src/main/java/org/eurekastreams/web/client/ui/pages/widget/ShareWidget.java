@@ -143,7 +143,7 @@ public class ShareWidget extends Composite
         }
         catch (Exception e)
         {
-            // Do nothing.
+            link.setSource(resourceUrl);
         }
 
         if (thumbs != null)
