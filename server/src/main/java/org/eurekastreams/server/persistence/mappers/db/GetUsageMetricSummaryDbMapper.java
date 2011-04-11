@@ -15,6 +15,11 @@
  */
 package org.eurekastreams.server.persistence.mappers.db;
 
+import java.util.List;
+
+import javax.persistence.Query;
+
+import org.eurekastreams.server.domain.DailyUsageSummary;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
 
@@ -31,11 +36,50 @@ public class GetUsageMetricSummaryDbMapper extends BaseArgDomainMapper<Integer, 
      *            number of days to get metrics summary for.
      * @return {@link UsageMetricSummaryDTO} representing given time period.
      */
+    @SuppressWarnings("unchecked")
     @Override
     public UsageMetricSummaryDTO execute(final Integer inRequest)
     {
-        // TODO Generate the real info.
-        return new UsageMetricSummaryDTO();
-    }
+        Query q = getEntityManager().createQuery("FROM DailyUsageSummary ORDER BY id DESC");
+        q.setMaxResults(inRequest);
 
+        List<DailyUsageSummary> results = q.getResultList();
+
+        int numResults = results.size();
+
+        UsageMetricSummaryDTO result = new UsageMetricSummaryDTO();
+        result.setRecordCount(results.size());
+
+        // short-circuit if no results.
+        if (numResults == 0)
+        {
+            return result;
+        }
+
+        long msgCount = 0;
+        long pageViewCount = 0;
+        long streamContributorCount = 0;
+        long streamViewCount = 0;
+        long streamViewerCount = 0;
+        long uniqueVisitorCount = 0;
+
+        for (DailyUsageSummary dus : results)
+        {
+            msgCount += dus.getMessageCount();
+            pageViewCount += dus.getPageViewCount();
+            streamContributorCount += dus.getStreamContributorCount();
+            streamViewCount += dus.getStreamViewCount();
+            streamViewerCount += dus.getStreamViewerCount();
+            uniqueVisitorCount += dus.getUniqueVisitorCount();
+        }
+
+        result.setMessageCount(msgCount / numResults);
+        result.setPageViewCount(pageViewCount / numResults);
+        result.setStreamContributorCount(streamContributorCount / numResults);
+        result.setStreamViewCount(streamViewCount / numResults);
+        result.setStreamViewerCount(streamViewerCount / numResults);
+        result.setUniqueVisitorCount(uniqueVisitorCount / numResults);
+
+        return result;
+    }
 }

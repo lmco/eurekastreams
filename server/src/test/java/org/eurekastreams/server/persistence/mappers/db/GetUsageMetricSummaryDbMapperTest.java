@@ -1,0 +1,109 @@
+/*
+ * Copyright (c) 2011 Lockheed Martin Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.eurekastreams.server.persistence.mappers.db;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Date;
+
+import org.eurekastreams.server.domain.DailyUsageSummary;
+import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
+import org.junit.Before;
+import org.junit.Test;
+
+/**
+ * Test for GetUsageMetricSummaryDbMapper.
+ * 
+ */
+public class GetUsageMetricSummaryDbMapperTest extends MapperTest
+{
+    /**
+     * System under test.
+     */
+    private final GetUsageMetricSummaryDbMapper sut = new GetUsageMetricSummaryDbMapper();
+
+    /**
+     * Setup.
+     */
+    @Before
+    public void setup()
+    {
+        sut.setEntityManager(getEntityManager());
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void test()
+    {
+        getEntityManager().createQuery("DELETE FROM DailyUsageSummary").executeUpdate();
+        getEntityManager().flush();
+
+        UsageMetricSummaryDTO result = sut.execute(3);
+        assertNotNull(result);
+        assertEquals(0, result.getRecordCount());
+    }
+
+    /**
+     * Test.
+     */
+    @Test
+    public void testValues()
+    {
+        final long resultValue = 15;
+        final long count = 10;
+        // clear table.
+        getEntityManager().createQuery("DELETE FROM DailyUsageSummary").executeUpdate();
+        getEntityManager().flush();
+
+        // put in two records, one with 10 for values, one with 20
+        for (int i = 1; i <= 2; i++)
+        {
+            DailyUsageSummary foo = new DailyUsageSummary();
+            foo.setMessageCount(count * i);
+            foo.setPageViewCount(count * i);
+            foo.setStreamContributorCount(count * i);
+            foo.setStreamViewCount(count * i);
+            foo.setStreamViewerCount(count * i);
+            foo.setUniqueVisitorCount(count * i);
+            foo.setUsageDate(new Date());
+
+            getEntityManager().persist(foo);
+            getEntityManager().flush();
+            assertTrue(foo.getId() > 0);
+        }
+
+        getEntityManager().flush();
+        getEntityManager().clear();
+
+        // execute sut.
+        UsageMetricSummaryDTO result = sut.execute(3);
+
+        // verfiy row count and averages.
+        assertNotNull(result);
+        assertEquals(2, result.getRecordCount());
+        assertEquals(resultValue, result.getMessageCount());
+        assertEquals(resultValue, result.getPageViewCount());
+        assertEquals(resultValue, result.getStreamContributorCount());
+        assertEquals(resultValue, result.getStreamViewCount());
+        assertEquals(resultValue, result.getStreamViewerCount());
+        assertEquals(resultValue, result.getUniqueVisitorCount());
+    }
+}
