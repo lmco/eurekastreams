@@ -595,6 +595,11 @@
                         <artifactId>maven-war-plugin</artifactId>
                         <configuration>
                             <webResources>
+				<!-- lib-java allows extensions to be pulled in via shared resources and included in the WAR -->
+                                <resource>
+                                    <directory>${project.build.directory}/unpack/lib-java</directory>
+                                    <targetPath>WEB-INF/lib</targetPath>
+                                </resource>
                                 <resource>
                                     <directory>${project.build.directory}/classes/public/gadgets</directory>
                                     <targetPath>org/eurekastreams/gadgets</targetPath>
@@ -772,6 +777,11 @@
                         <artifactId>maven-war-plugin</artifactId>
                         <configuration>
                             <webResources>
+				<!-- lib-java allows extensions to be pulled in via shared resources and included in the WAR -->
+                                <resource>
+                                    <directory>${project.build.directory}/unpack/lib-java</directory>
+                                    <targetPath>WEB-INF/lib</targetPath>
+                                </resource>
                                 <resource>
                                     <directory>${project.build.directory}/classes/public/gadgets</directory>
                                     <targetPath>org/eurekastreams/gadgets</targetPath>
