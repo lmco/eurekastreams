@@ -185,7 +185,7 @@ public class ResourceCountWidget extends Composite
     /**
      * Timer factory.
      */
-    private static final TimerFactory timerFactory = new TimerFactory();
+    private static TimerFactory timerFactory = new TimerFactory();
 
     /**
      * Timer expiration.
@@ -443,7 +443,7 @@ public class ResourceCountWidget extends Composite
 
                     Window.open("/widget.html?widget=sharedialog&thumbs=" + thumbsStr + "&desc=" + desc + "&title="
                             + title + "&resourceurl=" + inResoureceUrl, null,
-                            "height=300,width=800,status=yes,toolbar=no,menubar=no,location=no");
+                            "height=325,width=800,status=yes,toolbar=no,menubar=no,location=no");
                 }
             });
 
@@ -484,10 +484,10 @@ public class ResourceCountWidget extends Composite
         {
             viewAll.setVisible(true);
         }
+
         if (countType.equals(CountType.LIKES))
         {
             likedLabel.setText(likeCount + " people liked this");
-
         }
         else
         {
@@ -503,7 +503,6 @@ public class ResourceCountWidget extends Composite
                 {
                     usersWhoLikedPanelWrapper.setVisible(false);
                 }
-
             }
         });
 

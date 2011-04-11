@@ -22,10 +22,10 @@ import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.stream.renderers.ResourceCountWidget.CountType;
 import org.eurekastreams.web.client.ui.pages.widget.ActorListWidget;
 import org.eurekastreams.web.client.ui.pages.widget.CommentWidget;
-import org.eurekastreams.web.client.ui.pages.widget.LikeShareWidget;
-import org.eurekastreams.web.client.ui.pages.widget.ShareWidget;
 import org.eurekastreams.web.client.ui.pages.widget.FullStreamWidget;
+import org.eurekastreams.web.client.ui.pages.widget.LikeShareWidget;
 import org.eurekastreams.web.client.ui.pages.widget.ReadStreamWidget;
+import org.eurekastreams.web.client.ui.pages.widget.ShareWidget;
 import org.eurekastreams.web.client.ui.pages.widget.UserProfileBadgeWidget;
 
 import com.google.gwt.user.client.History;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Lockheed Martin Corporation
+ * Copyright (c) 2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,40 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.domain;
+package org.eurekastreams.server.search.modelview;
 
 import java.io.Serializable;
-import java.util.Date;
-
-import javax.persistence.Basic;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
- * Entity representing a day's usage metrics.
+ * Contains Summary usage metrics.
+ * 
  */
-@Entity
-public class DailyUsageSummary implements Serializable
+public class UsageMetricSummaryDTO implements Serializable
 {
-    /**
-     * Serial version uid.
-     */
-    private static final long serialVersionUID = -6570376871385314251L;
 
     /**
-     * Primary key ID field for ORM.
-     * 
-     * Where you set the @Id on entities tells the ORM if you're using field or property-based entity mapping. if you
-     * set it on a private variable, then the ORM will not use getters/setters at all. If you set it on getId(), then
-     * you need to have getters/setters on everything.
+     * Serial version id.
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private static final long serialVersionUID = 5547126202116017950L;
 
     /**
      * The number of unique visitors.
@@ -77,68 +58,6 @@ public class DailyUsageSummary implements Serializable
      * Number of activities and comments posted.
      */
     private long messageCount;
-
-    /**
-     * The date.
-     */
-    @Basic(optional = false)
-    @Temporal(TemporalType.DATE)
-    private Date usageDate;
-
-    /**
-     * Constructor for ORM.
-     */
-    public DailyUsageSummary()
-    {
-    }
-
-    /**
-     * Constructor.
-     * 
-     * @param inUniqueVisitorCount
-     *            the number of unique visitors
-     * @param inPageViewCount
-     *            number of page views
-     * @param inStreamViewerCount
-     *            number of people viewing streams (contributor)
-     * @param inStreamViewCount
-     *            number of streams viewed
-     * @param inStreamContributorCount
-     *            number of people contributing to streams (comment and activities)
-     * @param inMessageCount
-     *            number of activities and comments posted
-     * @param inUsageDate
-     *            the date
-     */
-    public DailyUsageSummary(final long inUniqueVisitorCount, final long inPageViewCount,
-            final long inStreamViewerCount, final long inStreamViewCount, final long inStreamContributorCount,
-            final long inMessageCount, final Date inUsageDate)
-    {
-        uniqueVisitorCount = inUniqueVisitorCount;
-        pageViewCount = inPageViewCount;
-        streamViewerCount = inStreamViewerCount;
-        streamViewCount = inStreamViewCount;
-        streamContributorCount = inStreamContributorCount;
-        messageCount = inMessageCount;
-        usageDate = inUsageDate;
-    }
-
-    /**
-     * @return the id
-     */
-    public long getId()
-    {
-        return id;
-    }
-
-    /**
-     * @param inId
-     *            the id to set
-     */
-    public void setId(final long inId)
-    {
-        id = inId;
-    }
 
     /**
      * @return the uniqueVisitorCount
@@ -242,20 +161,4 @@ public class DailyUsageSummary implements Serializable
         messageCount = inMessageCount;
     }
 
-    /**
-     * @return the usageDate
-     */
-    public Date getUsageDate()
-    {
-        return usageDate;
-    }
-
-    /**
-     * @param inUsageDate
-     *            the usageDate to set
-     */
-    public void setUsageDate(final Date inUsageDate)
-    {
-        usageDate = inUsageDate;
-    }
 }

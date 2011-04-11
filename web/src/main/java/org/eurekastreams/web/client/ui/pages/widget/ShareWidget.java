@@ -88,6 +88,11 @@ public class ShareWidget extends Composite
     private final ActivityDTOPopulator activityPopulator = new ActivityDTOPopulator();
 
     /**
+     * Default text for postbox.
+     */
+    private String defaultText = "Add comment to Post";
+
+    /**
      * Constructor.
      * 
      * @param resourceUrl
@@ -132,7 +137,14 @@ public class ShareWidget extends Composite
         link.setDescription(desc);
         link.setTitle(inTitle);
         link.setUrl(resourceUrl);
-        link.setSource("http://www.eurekastreams.org");
+        try
+        {
+            link.setSource(resourceUrl.substring(0, resourceUrl.indexOf('/', 7)));
+        }
+        catch (Exception e)
+        {
+            // Do nothing.
+        }
 
         if (thumbs != null)
         {
@@ -165,7 +177,7 @@ public class ShareWidget extends Composite
         postInfoContainer.add(postButton);
 
         final PostToStreamTextboxPanel message = new PostToStreamTextboxPanel();
-        message.setText("Add comment to Post");
+        message.setText(defaultText);
 
         // user clicked in message text box
         message.addFocusHandler(new FocusHandler()
@@ -222,9 +234,16 @@ public class ShareWidget extends Composite
                     recipientType = EntityType.GROUP;
                 }
 
+                String messageText = message.getText();
+
+                if (messageText.equals(defaultText))
+                {
+                    messageText = "";
+                }
+
                 BookmarkPopulator objectStrat = new BookmarkPopulator();
                 objectStrat.setLinkInformation(link);
-                ActivityDTO activity = activityPopulator.getActivityDTO(message.getText(), recipientType, scope
+                ActivityDTO activity = activityPopulator.getActivityDTO(messageText, recipientType, scope
                         .getUniqueKey(), new PostPopulator(), objectStrat);
                 PostActivityRequest postRequest = new PostActivityRequest(activity);
 
@@ -284,7 +303,10 @@ public class ShareWidget extends Composite
      */
     public static native void closeWindow()
     /*-{
-        $wnd.opener.location.href = $wnd.opener.location.href;
+        try { 
+            $wnd.opener.location.href = $wnd.opener.location.href; 
+        }
+        catch(e) {}
         $wnd.close();
     }-*/;
 }
