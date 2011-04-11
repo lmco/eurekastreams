@@ -30,6 +30,11 @@ public class UsageMetricSummaryDTO implements Serializable
     private static final long serialVersionUID = 5547126202116017950L;
 
     /**
+     * Number of daily records this summary is based on.
+     */
+    private long recordCount;
+
+    /**
      * The number of unique visitors.
      */
     private long uniqueVisitorCount;
@@ -159,6 +164,23 @@ public class UsageMetricSummaryDTO implements Serializable
     public void setMessageCount(final long inMessageCount)
     {
         messageCount = inMessageCount;
+    }
+
+    /**
+     * @return the recordCount
+     */
+    public long getRecordCount()
+    {
+        return recordCount;
+    }
+
+    /**
+     * @param inRecordCount
+     *            the recordCount to set
+     */
+    public void setRecordCount(final long inRecordCount)
+    {
+        recordCount = inRecordCount;
     }
 
 }
