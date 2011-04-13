@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 /**
  * Represents a page in our system.
- *
+ * 
  */
 public enum Page implements Serializable
 {
@@ -89,6 +89,10 @@ public enum Page implements Serializable
      */
     HELP("help"),
     /**
+     * metrics page.
+     */
+    METRICS("metrics"),
+    /**
      * Start page.
      */
     START(""),
@@ -135,7 +139,7 @@ public enum Page implements Serializable
 
     /**
      * constructor for this enum.
-     *
+     * 
      * @param name
      *            a displayable name.
      */
@@ -153,7 +157,7 @@ public enum Page implements Serializable
     }
 
     /**
-     *
+     * 
      * @param displayableName
      *            to convert.
      * @return the enum corresponding to that string.
