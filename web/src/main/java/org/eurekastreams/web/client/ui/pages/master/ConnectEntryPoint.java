@@ -23,11 +23,14 @@ import org.eurekastreams.commons.client.ActionRPCService;
 import org.eurekastreams.commons.client.ActionRPCServiceAsync;
 import org.eurekastreams.commons.client.ActionRequestImpl;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.search.modelview.UsageMetricDTO;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.StreamRequestEvent;
 import org.eurekastreams.web.client.events.SwitchedHistoryViewEvent;
 import org.eurekastreams.web.client.history.HistoryHandler;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
+import org.eurekastreams.web.client.model.UsageMetricModel;
 import org.eurekastreams.web.client.ui.Session;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -139,6 +142,8 @@ public class ConnectEntryPoint implements EntryPoint
                                             }
                                         });
 
+                                recordStreamViewMetrics();
+
                                 Session.getInstance().getEventBus().bufferObservers();
 
                                 buildPage();
@@ -149,8 +154,24 @@ public class ConnectEntryPoint implements EntryPoint
     }
 
     /**
+     * Record stream view metrics.
+     */
+    private void recordStreamViewMetrics()
+    {
+        Session.getInstance().getEventBus().addObserver(StreamRequestEvent.class, new Observer<StreamRequestEvent>()
+        {
+            public void update(final StreamRequestEvent event)
+            {
+                UsageMetricDTO umd = new UsageMetricDTO(false, true);
+                umd.setMetricDetails(event.getJson());
+                UsageMetricModel.getInstance().insert(umd);
+            }
+        });
+    }
+
+    /**
      * Invoked on failure to establish the session.
-     *
+     * 
      * @param caught
      *            Error returned.
      */
@@ -162,7 +183,7 @@ public class ConnectEntryPoint implements EntryPoint
 
     /**
      * Invoked on failure to retrieve person info.
-     *
+     * 
      * @param caught
      *            Error returned.
      */

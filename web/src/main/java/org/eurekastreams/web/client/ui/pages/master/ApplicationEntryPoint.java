@@ -31,13 +31,16 @@ import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.TermsOfServiceDTO;
 import org.eurekastreams.server.domain.stream.StreamEntityDTO;
 import org.eurekastreams.server.search.modelview.PersonModelView;
+import org.eurekastreams.server.search.modelview.UsageMetricDTO;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.FormLoginCompleteEvent;
 import org.eurekastreams.web.client.events.GadgetStateChangeEvent;
 import org.eurekastreams.web.client.events.Observer;
+import org.eurekastreams.web.client.events.SwitchedHistoryViewEvent;
 import org.eurekastreams.web.client.events.TermsOfServiceAcceptedEvent;
 import org.eurekastreams.web.client.events.UpdateGadgetPrefsEvent;
 import org.eurekastreams.web.client.events.data.GotBulkEntityResponseEvent;
+import org.eurekastreams.web.client.events.data.GotStreamResponseEvent;
 import org.eurekastreams.web.client.events.data.GotSystemSettingsResponseEvent;
 import org.eurekastreams.web.client.history.HistoryHandler;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacade;
@@ -45,6 +48,7 @@ import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.BulkEntityModel;
 import org.eurekastreams.web.client.model.StartTabsModel;
 import org.eurekastreams.web.client.model.SystemSettingsModel;
+import org.eurekastreams.web.client.model.UsageMetricModel;
 import org.eurekastreams.web.client.ui.PeriodicEventManager;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.TimerFactory;
@@ -105,7 +109,6 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /** Employee lookup modal. */
     private static EmployeeLookupContent dialogContent;
-
 
     /**
      * Shows the login.
@@ -250,6 +253,9 @@ public class ApplicationEntryPoint implements EntryPoint
                         // intact for the life of the app
                         StartTabsModel.getInstance();
 
+                        recordStreamViewMetrics();
+                        recordPageViewMetrics();
+
                         session.setHistoryHandler(new HistoryHandler());
                         Session.getInstance().getEventBus().bufferObservers();
                         History.fireCurrentHistoryState();
@@ -267,7 +273,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Shows the ToS modal.
-     *
+     * 
      */
     private void displayToS()
     {
@@ -296,8 +302,46 @@ public class ApplicationEntryPoint implements EntryPoint
     }
 
     /**
+     * Record stream view metrics.
+     */
+    private void recordStreamViewMetrics()
+    {
+        // TODO: This is listening to the stream response event as the request stream event is called
+        // twice on activity page for some reason (profile pages work correctly). Somewhere
+        // this is filtered down to only one call to the server to get the stream, so response
+        // event works fine for metrics, but should track down why request it double-firing.
+        Session.getInstance().getEventBus().addObserver(GotStreamResponseEvent.class,
+                new Observer<GotStreamResponseEvent>()
+                {
+                    public void update(final GotStreamResponseEvent event)
+                    {
+                        UsageMetricDTO umd = new UsageMetricDTO(false, true);
+                        umd.setMetricDetails(event.getJsonRequest());
+                        UsageMetricModel.getInstance().insert(umd);
+                    }
+                });
+    }
+
+    /**
+     * Record page view metrics.
+     */
+    private void recordPageViewMetrics()
+    {
+        Session.getInstance().getEventBus().addObserver(SwitchedHistoryViewEvent.class,
+                new Observer<SwitchedHistoryViewEvent>()
+                {
+                    public void update(final SwitchedHistoryViewEvent event)
+                    {
+                        UsageMetricDTO umd = new UsageMetricDTO(true, false);
+                        umd.setMetricDetails(event.getPage().toString());
+                        UsageMetricModel.getInstance().insert(umd);
+                    }
+                });
+    }
+
+    /**
      * Fires off a gadget change state event.
-     *
+     * 
      * @param id
      *            the gadget id
      * @param view
@@ -313,7 +357,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires of the UpdateGadgetPrefsEvent when called from the gadget container.
-     *
+     * 
      * @param inId
      *            - id of the gadget being updated.
      * @param inPrefs
@@ -327,7 +371,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the save command object.
-     *
+     * 
      * @return the save command
      */
     private static Command getEmployeeSelectedCommand()
@@ -359,7 +403,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Call the handler when the employee lookup is done.
-     *
+     * 
      * @param ntid
      *            the ntid.
      * @param displayName
@@ -375,7 +419,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the people from the server, convert them to JSON, and feed them back to the handler.
-     *
+     * 
      * @param ntids
      *            the ntids.
      * @param callbackIndex
@@ -450,7 +494,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Call the handler with the JSON data.
-     *
+     * 
      * @param data
      *            the data.
      * @param callbackIndex
@@ -463,7 +507,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Returns an additional property value given a key.
-     *
+     * 
      * @param key
      *            the key.
      * @return the value.
@@ -529,7 +573,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the user agent (for detecting IE7).
-     *
+     * 
      * @return the user agent.
      */
     public static native String getUserAgent()
