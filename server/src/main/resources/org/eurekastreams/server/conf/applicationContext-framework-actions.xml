@@ -1553,6 +1553,13 @@
          <constructor-arg ref="taskHandler" />
     </bean>    
     
+    <bean id="generateDailyUsageSummaryAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="generateDailyUsageSummaryExecution" />
+        <constructor-arg value="false" />
+        <constructor-arg ref="taskHandler" />
+    </bean>      
+    
     <!-- TODO  these next 4 keys couldn't be staged in the ac-mappers.xml for some reason?
 -->
     <!-- Standard RSS/ATOM mappers -->
@@ -1604,14 +1611,16 @@
                     <bean class="org.eurekastreams.server.persistence.mappers.UpdateMapper" />
                 </constructor-arg>
                 <constructor-arg>
-                	<list>
-                		<value>www.google.com/reader/public/atom/</value>
-                	</list>
+                    <list>
+                        <value>www.google.com/reader/public/atom/</value>
+                    </list>
                 </constructor-arg>                
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
+
+
 
     <bean id="getPersonIdForFeedSub" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.GetPersonIdForFeedSubscription">
         <constructor-arg ref="getPersonIdByAccountIdMapper" /> 

@@ -18,7 +18,7 @@ package org.eurekastreams.server.action.execution;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.eurekastreams.commons.actions.context.ActionContext;
+import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.date.DayOfWeekStrategy;
 import org.eurekastreams.commons.date.GetDateFromDaysAgoStrategy;
 import org.eurekastreams.server.domain.DailyUsageSummary;
@@ -115,7 +115,7 @@ public class GenerateDailyUsageSummaryExecutionTest
     /**
      * Input to mapper.
      */
-    private final ActionContext actionContext = context.mock(ActionContext.class);
+    private final TaskHandlerActionContext actionContext = context.mock(TaskHandlerActionContext.class);
 
     /**
      * Test execute when we already have data from yesterday.

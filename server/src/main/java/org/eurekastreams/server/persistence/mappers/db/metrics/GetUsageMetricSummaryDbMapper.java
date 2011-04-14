@@ -40,7 +40,9 @@ public class GetUsageMetricSummaryDbMapper extends BaseArgDomainMapper<Integer, 
     @Override
     public UsageMetricSummaryDTO execute(final Integer inRequest)
     {
-        Query q = getEntityManager().createQuery("FROM DailyUsageSummary ORDER BY id DESC");
+        Query q = getEntityManager()
+                .createQuery("FROM DailyUsageSummary WHERE isWeekday = :isWeekday ORDER BY id DESC");
+        q.setParameter("isWeekday", true);
         q.setMaxResults(inRequest);
 
         List<DailyUsageSummary> results = q.getResultList();

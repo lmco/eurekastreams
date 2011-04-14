@@ -19,8 +19,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 import org.apache.commons.logging.Log;
-import org.eurekastreams.commons.actions.ExecutionStrategy;
+import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
+import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.date.DayOfWeekStrategy;
 import org.eurekastreams.commons.date.GetDateFromDaysAgoStrategy;
 import org.eurekastreams.commons.exceptions.ExecutionException;
@@ -32,7 +33,7 @@ import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
 /**
  * Execution strategy to generate the daily usage summary for the previous day.
  */
-public class GenerateDailyUsageSummaryExecution implements ExecutionStrategy<ActionContext>
+public class GenerateDailyUsageSummaryExecution implements TaskHandlerExecutionStrategy<ActionContext>
 {
     /**
      * Logger.
@@ -164,7 +165,8 @@ public class GenerateDailyUsageSummaryExecution implements ExecutionStrategy<Act
      *             when something really, really bad happens
      */
     @Override
-    public Serializable execute(final ActionContext inActionContext) throws ExecutionException
+    public Serializable execute(final TaskHandlerActionContext<ActionContext> inActionContext)
+            throws ExecutionException
     {
         Date yesterday = daysAgoDateStrategy.execute(1);
 
@@ -176,22 +178,39 @@ public class GenerateDailyUsageSummaryExecution implements ExecutionStrategy<Act
             return Boolean.FALSE;
         }
 
+        logger.info("Generating number of unique visitors for " + yesterday);
         long uniqueVisitorCount = getDailyUniqueVisitorCountMapper.execute(yesterday);
+
+        logger.info("Generating number of page views for " + yesterday);
         long pageViewCount = getDailyPageViewCountMapper.execute(yesterday);
-        long streamViewerCount = getDailyStreamViewerCountMapper.execute(yesterday);
+
+        logger.info("Generating number of stream views for " + yesterday);
         long streamViewCount = getDailyStreamViewCountMapper.execute(yesterday);
+
+        logger.info("Generating number of stream viewers for " + yesterday);
+        long streamViewerCount = getDailyStreamViewerCountMapper.execute(yesterday);
+
+        logger.info("Generating number of stream contributors for " + yesterday);
         long streamContributorCount = getDailyStreamContributorCountMapper.execute(yesterday);
+
+        logger.info("Generating number of messages (activities and comments) for " + yesterday);
         long messageCount = getDailyMessageCountMapper.execute(yesterday);
+
+        logger.info("Generating average activity comment time (for those with comments on the same day) for "
+                + yesterday);
         long avgActvityResponeTime = getDailyMessageResponseTimeMapper.execute(yesterday);
+
         boolean isWeekday = dayOfWeekStrategy.isWeekday(yesterday);
 
         data = new DailyUsageSummary(uniqueVisitorCount, pageViewCount, streamViewerCount, streamViewCount,
                 streamContributorCount, messageCount, avgActvityResponeTime, yesterday, isWeekday);
 
         // store this
+        logger.info("Inserting daily usage metric data for " + yesterday);
         insertMapper.execute(new PersistenceRequest<DailyUsageSummary>(data));
 
         // delete old data
+        logger.info("Deleting old daily usage metric data");
         usageMetricDataCleanupMapper.execute(0);
 
         logger.info("Inserted Daily Summary metrics for " + yesterday);
