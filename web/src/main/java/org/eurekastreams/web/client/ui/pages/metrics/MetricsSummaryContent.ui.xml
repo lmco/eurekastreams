@@ -1,16 +1,26 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder' xmlns:g='urn:import:com.google.gwt.user.client.ui'>
 
-<ui:image field="funnelTop" src="style/images/step-1.png" />
-<ui:image field="funnelMiddle" src="style/images/step-2.png" />
-<ui:image field="funnelBottom" src="style/images/step-3.png" />
+<ui:image field="funnelTop" src="style/images/visitors.png" />
+<ui:image field="funnelMiddle" src="style/images/spectators.png" />
+<ui:image field="funnelBottom" src="style/images/contributors.png" />
 
 <ui:style>
+.main
+{
+	margin-top: 60px;
+	margin-left: 30px;
+	margin-right: 60px;
+	margin-bottom: 30px;
+}
 .title
 {
-	border-bottom: solid 1px black;
+	border-bottom: solid 1px #333333;
 	font-size: 24px;
+	margin-bottom: 20px;
+	color: #333333;
+    padding-bottom: 5px;
 }
-.metric, .major-metric, .minor-metric
+.metric
 {
 	width: 100px;
 	margin-right: 10px;
@@ -21,12 +31,30 @@
 }
 .major-metric
 {
-	font-size: 20px;
+	font-size: 28px;
 }
 .minor-metric
 {
+	font-size: 20px;
+}
+.minor-metric-units
+{
+	font-size: 14px;
+	margin-left: 2px;
+}
+.metric-caption
+{
+	color: #666666;
+}
+.major-metric-caption
+{
+	font-size: 22px;
+}
+.minor-metric-caption
+{
 	font-size: 16px;
 }
+
 .funnel
 {
 	display: block;
@@ -38,6 +66,8 @@
 .section
 {
 	overflow: auto;
+	margin-top: 5px;
+	margin-bottom: 5px;
 }
 .section-top
 {
@@ -48,17 +78,40 @@
 .section-bottom
 {
 }
+.section div
+{
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+.line
+{
+	height: 1px;
+	border-top: 1px solid gray;
+}
+.line1
+{
+    margin-left: 20px;
+}
+.line2
+{
+    margin-left: 36px;
+}
 .para
 {
-	font-size: 10px;	
+	color: #333333;
+	font-size: 13px;	
+	padding-top: 30px;
+	padding-left: 30px;
+	padding-right: 20px;
+	padding-bottom: 20px;
 }
 .para-start
 {
-	font-size: 30px;
+	font-size: 24px;
 }
 </ui:style>
 
-<g:HTMLPanel>
+<g:HTMLPanel addStyleNames="{style.main}">
 	
 	<div class="{style.title}">Average Daily Statistics for Eureka Streams</div>
 
@@ -66,46 +119,55 @@
 		<g:Image resource="{funnelTop}" addStyleNames="{style.funnel} {style.funnel-top}" />
 		<div>
 			<span ui:field="uniqueVisitorsUi" class="{style.metric} {style.major-metric}">-</span> 
-			<span>Unique Visitors</span>
+			<span class="{style.metric-caption} {style.major-metric-caption}">Unique Visitors</span>
 		</div>
 		<div>
 			<span ui:field="visitsPerVisitorUi" class="{style.metric} {style.minor-metric}">-</span>
-			<span>Visits Per Visitor</span>
+			<span class="{style.metric-caption} {style.minor-metric-caption}">Visits Per Visitor</span>
 		</div>
 	</div>
+	
+	<div class="{style.line} {style.line1}" />
 	
 	<div class="{style.section} {style.section-middle}">
 		<g:Image resource="{funnelMiddle}" addStyleNames="{style.funnel} {style.funnel-middle}" />
 		<div>
  			<span ui:field="streamViewersUi" class="{style.metric} {style.major-metric}">-</span>
-			<span>People Viewing a Stream</span>
+			<span class="{style.metric-caption} {style.major-metric-caption}">People Viewing a Stream</span>
 		</div>
 		<div>
 			<span ui:field="streamViewsPerSpectatorUi" class="{style.metric} {style.minor-metric}">-</span>
-			<span>Requests to View a Stream Per Spectator</span>
+			<span class="{style.metric-caption} {style.minor-metric-caption}">Requests to View a Stream Per Spectator</span>
 		</div>
 	</div>
+	
+	<div class="{style.line} {style.line2}" />
 	
 	<div class="{style.section} {style.section-bottom}">
 		<g:Image resource="{funnelBottom}" addStyleNames="{style.funnel} {style.funnel-bottom}" />
 		<div>
  			<span ui:field="postersUi" class="{style.metric} {style.major-metric}">-</span>
-			<span>People Posting a Message</span>
+			<span class="{style.metric-caption} {style.major-metric-caption}">People Posting a Message</span>
 		</div>
 		<div>
 			<span ui:field="messagesPerContributorUi" class="{style.metric} {style.minor-metric}">-</span>
-			<span>Messages Per Contributor</span>
+			<span class="{style.metric-caption} {style.minor-metric-caption}">Messages Per Contributor</span>
 		</div>
 		<div>
-			<span ui:field="averageTimeToResponseUi" class="{style.metric} {style.minor-metric}">-</span>
-			<span>Average Time Elapsed for a Response to a Message</span>
+			<span class="{style.metric} {style.minor-metric}"><span ui:field="averageTimeToResponseUi">-</span><span class="{style.minor-metric-units}">min</span></span>
+			<span class="{style.metric-caption} {style.minor-metric-caption}">Average Time Elapsed for a Response to a Message</span>
 		</div>
 	</div>
 	
 	<div class="{style.para}">
-		<span class="{style.para-start}">Measuring Success</span> by doing something more legitimate than just making up numbers that make us look good.
+		<span class="{style.para-start}">Measuring Success</span> by monitoring the ability to convert visitors to the 
+		system into contributors. The graphic above illustrates a basic conversion funnel strategy that highlights the 
+		key conversions that must be made to convert a visitor to a contributor. Unique users that visit the Eureka Streams 
+		Start Page but do not view or post messages to any of the activity streams are considered visitors. These unique 
+		visitors are then converted to unique spectators when they view, but do not contribute, to any of the activity 
+		streams. Unique spectators are then converted to unique contributors when they post a comment or message to an 
+		activity stream.
 	</div>
-	
 	
 </g:HTMLPanel>
 

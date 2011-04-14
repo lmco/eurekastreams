@@ -136,7 +136,8 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
-            <version>2.0.6.RELEASE</version>
+            <version>2.0.4</version>
+			<!-- Using 2.0.4 because 2.0.6 has a bug that results in locked users not getting the access denied page.  See JIRA https://jira.springsource.org/browse/SEC-1606.  Waiting for 2.0.7 to be released. -->
             <exclusions>
                 <exclusion>
                     <groupId>commons-codec</groupId>
