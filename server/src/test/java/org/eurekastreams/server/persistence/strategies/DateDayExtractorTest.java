@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 
+import org.eurekastreams.commons.date.DateDayExtractor;
 import org.junit.Test;
 
 import com.ibm.icu.util.Calendar;

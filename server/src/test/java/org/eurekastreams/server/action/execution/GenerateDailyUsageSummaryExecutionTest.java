@@ -19,10 +19,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 import org.eurekastreams.commons.actions.context.ActionContext;
+import org.eurekastreams.commons.date.DayOfWeekStrategy;
+import org.eurekastreams.commons.date.GetDateFromDaysAgoStrategy;
 import org.eurekastreams.server.domain.DailyUsageSummary;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
-import org.eurekastreams.server.persistence.strategies.GetDateFromDaysAgoStrategy;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -107,6 +108,11 @@ public class GenerateDailyUsageSummaryExecutionTest
             "getDailyMessageResponseTimeMapper");
 
     /**
+     * Day of week strategy.
+     */
+    private DayOfWeekStrategy dayOfWeekStrategy = context.mock(DayOfWeekStrategy.class);
+
+    /**
      * Input to mapper.
      */
     private final ActionContext actionContext = context.mock(ActionContext.class);
@@ -121,7 +127,7 @@ public class GenerateDailyUsageSummaryExecutionTest
                 getDailyUsageSummaryByDateMapper, getDailyMessageCountMapper, getDailyPageViewCountMapper,
                 getDailyStreamContributorCountMapper, getDailyStreamViewCountMapper, getDailyStreamViewerCountMapper,
                 getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper, insertMapper,
-                usageMetricDataCleanupMapper);
+                usageMetricDataCleanupMapper, dayOfWeekStrategy);
 
         final DailyUsageSummary existingSummary = context.mock(DailyUsageSummary.class);
         final Date date = new Date();
@@ -144,16 +150,36 @@ public class GenerateDailyUsageSummaryExecutionTest
     }
 
     /**
-     * Test execute when we don't have data from yesterday.
+     * Test execute when we don't have data from yesterday - is weekday.
      */
     @Test
-    public void testExecuteWithNoDataAlreadyExisting()
+    public void testExecuteWithNoDataAlreadyExistingWhenWeekday()
+    {
+        executeWithNoDataAlreadyExisting(true);
+    }
+
+    /**
+     * Test execute when we don't have data from yesterday - is weekend.
+     */
+    @Test
+    public void testExecuteWithNoDataAlreadyExistingWhenWeekend()
+    {
+        executeWithNoDataAlreadyExisting(false);
+    }
+
+    /**
+     * Test execute when we don't have data from yesterday.
+     * 
+     * @param inIsWeekday
+     *            return value of dayOfWeekStrategy.isWeekday
+     */
+    public void executeWithNoDataAlreadyExisting(final boolean inIsWeekday)
     {
         GenerateDailyUsageSummaryExecution sut = new GenerateDailyUsageSummaryExecution(daysAgoDateStrategy,
                 getDailyUsageSummaryByDateMapper, getDailyMessageCountMapper, getDailyPageViewCountMapper,
                 getDailyStreamContributorCountMapper, getDailyStreamViewCountMapper, getDailyStreamViewerCountMapper,
                 getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper, insertMapper,
-                usageMetricDataCleanupMapper);
+                usageMetricDataCleanupMapper, dayOfWeekStrategy);
 
         final Date date = new Date();
         final long uniqueVisitorCount = 1L;
@@ -195,8 +221,10 @@ public class GenerateDailyUsageSummaryExecutionTest
                 oneOf(getDailyMessageCountMapper).execute(with(date));
                 will(returnValue(messageCount));
 
-                oneOf(usageMetricDataCleanupMapper).execute(with(any(Serializable.class)));
+                oneOf(dayOfWeekStrategy).isWeekday(with(date));
+                will(returnValue(inIsWeekday));
 
+                oneOf(usageMetricDataCleanupMapper).execute(with(any(Serializable.class)));
             }
         });
 
@@ -213,6 +241,7 @@ public class GenerateDailyUsageSummaryExecutionTest
         Assert.assertEquals(avgActivityResponseTime, ds.getAvgActivityResponseTime());
         Assert.assertEquals(messageCount, ds.getMessageCount());
         Assert.assertEquals(date, ds.getUsageDate());
+        Assert.assertEquals(inIsWeekday, ds.isWeekday());
 
         context.assertIsSatisfied();
     }

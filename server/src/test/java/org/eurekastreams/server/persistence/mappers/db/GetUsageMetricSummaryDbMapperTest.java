@@ -23,6 +23,7 @@ import java.util.Date;
 
 import org.eurekastreams.server.domain.DailyUsageSummary;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.persistence.mappers.db.metrics.GetUsageMetricSummaryDbMapper;
 import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
 import org.junit.Before;
 import org.junit.Test;

@@ -21,12 +21,13 @@ import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.ExecutionStrategy;
 import org.eurekastreams.commons.actions.context.ActionContext;
+import org.eurekastreams.commons.date.DayOfWeekStrategy;
+import org.eurekastreams.commons.date.GetDateFromDaysAgoStrategy;
 import org.eurekastreams.commons.exceptions.ExecutionException;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.DailyUsageSummary;
 import org.eurekastreams.server.persistence.mappers.DomainMapper;
 import org.eurekastreams.server.persistence.mappers.requests.PersistenceRequest;
-import org.eurekastreams.server.persistence.strategies.GetDateFromDaysAgoStrategy;
 
 /**
  * Execution strategy to generate the daily usage summary for the previous day.
@@ -94,6 +95,11 @@ public class GenerateDailyUsageSummaryExecution implements ExecutionStrategy<Act
     private DomainMapper<Date, Long> getDailyMessageResponseTimeMapper;
 
     /**
+     * Strategy to determine if a day is a weekday.
+     */
+    private DayOfWeekStrategy dayOfWeekStrategy;
+
+    /**
      * Constructor.
      * 
      * @param inDaysAgoDateStrategy
@@ -118,6 +124,8 @@ public class GenerateDailyUsageSummaryExecution implements ExecutionStrategy<Act
      *            mapper to insert DailyUsageSummary
      * @param inUsageMetricDataCleanupMapper
      *            mapper to delete old UsageMetric data
+     * @param inDayOfWeekStrategy
+     *            dayOfWeekStrategy strategy to determine if a day is a weekday
      */
     public GenerateDailyUsageSummaryExecution(final GetDateFromDaysAgoStrategy inDaysAgoDateStrategy,
             final DomainMapper<Date, DailyUsageSummary> inGetDailyUsageSummaryByDateMapper,
@@ -129,7 +137,8 @@ public class GenerateDailyUsageSummaryExecution implements ExecutionStrategy<Act
             final DomainMapper<Date, Long> inGetDailyUniqueVisitorCountMapper,
             final DomainMapper<Date, Long> inGetDailyMessageResponseTimeMapper,
             final DomainMapper<PersistenceRequest<DailyUsageSummary>, Boolean> inInsertMapper,
-            final DomainMapper<Serializable, Serializable> inUsageMetricDataCleanupMapper)
+            final DomainMapper<Serializable, Serializable> inUsageMetricDataCleanupMapper,
+            final DayOfWeekStrategy inDayOfWeekStrategy)
     {
         daysAgoDateStrategy = inDaysAgoDateStrategy;
         getDailyUsageSummaryByDateMapper = inGetDailyUsageSummaryByDateMapper;
@@ -142,6 +151,7 @@ public class GenerateDailyUsageSummaryExecution implements ExecutionStrategy<Act
         getDailyMessageResponseTimeMapper = inGetDailyMessageResponseTimeMapper;
         insertMapper = inInsertMapper;
         usageMetricDataCleanupMapper = inUsageMetricDataCleanupMapper;
+        dayOfWeekStrategy = inDayOfWeekStrategy;
     }
 
     /**
@@ -173,9 +183,10 @@ public class GenerateDailyUsageSummaryExecution implements ExecutionStrategy<Act
         long streamContributorCount = getDailyStreamContributorCountMapper.execute(yesterday);
         long messageCount = getDailyMessageCountMapper.execute(yesterday);
         long avgActvityResponeTime = getDailyMessageResponseTimeMapper.execute(yesterday);
+        boolean isWeekday = dayOfWeekStrategy.isWeekday(yesterday);
 
         data = new DailyUsageSummary(uniqueVisitorCount, pageViewCount, streamViewerCount, streamViewCount,
-                streamContributorCount, messageCount, avgActvityResponeTime, yesterday);
+                streamContributorCount, messageCount, avgActvityResponeTime, yesterday, isWeekday);
 
         // store this
         insertMapper.execute(new PersistenceRequest<DailyUsageSummary>(data));
