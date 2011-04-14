@@ -104,7 +104,7 @@
       </repository>
       <repository>
         <id>gilead</id>
-        <url>https://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo</url>
+        <url>http://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo</url>
         <snapshots>
             <enabled>false</enabled>
         </snapshots>
