@@ -113,10 +113,10 @@ public class MetricsSummaryContent extends Composite
         double pageViewsPerUniqueVisitor = uniqueVisitorCount == 0 ? 0 : (double) pageViewCount
                 / (double) uniqueVisitorCount;
 
-        double streamViewsPerStreamViewer = uniqueVisitorCount == 0 ? 0 : (double) streamViewCount
+        double streamViewsPerStreamViewer = streamViewerCount == 0 ? 0 : (double) streamViewCount
                 / (double) streamViewerCount;
 
-        double messagesPostedPerStreamContributor = uniqueVisitorCount == 0 ? 0 : (double) messageCount
+        double messagesPostedPerStreamContributor = streamContributorCount == 0 ? 0 : (double) messageCount
                 / (double) streamContributorCount;
 
         NumberFormat formatter = NumberFormat.getFormat("0.0");

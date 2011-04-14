@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.Activity;
 import org.eurekastreams.server.domain.stream.Comment;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
@@ -56,10 +57,26 @@ public class GetDailyMessageCountDbMapperTest extends MapperTest
         final long actId1 = 6789L;
         act = getEntityManager().find(Activity.class, actId1);
         act.setPostedTime(april4th);
+        act.setAppType(EntityType.APPLICATION);
         getEntityManager().persist(act);
 
         final long actId2 = 6790L;
         act = getEntityManager().find(Activity.class, actId2);
+        act.setPostedTime(april4th);
+        act.setAppType(null);
+        getEntityManager().persist(act);
+
+        // an activity not by a person - this should be ignored
+        final long actId3 = 6791L;
+        act = getEntityManager().find(Activity.class, actId3);
+        act.setAppType(EntityType.PLUGIN);
+        act.setPostedTime(april4th);
+        getEntityManager().persist(act);
+
+        // an activity not by a person - this should be ignored
+        final long actId4 = 6793L;
+        act = getEntityManager().find(Activity.class, actId4);
+        act.setAppType(EntityType.PLUGIN);
         act.setPostedTime(april4th);
         getEntityManager().persist(act);
 
