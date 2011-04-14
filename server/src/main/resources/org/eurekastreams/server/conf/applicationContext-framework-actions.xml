@@ -1553,6 +1553,14 @@
          <constructor-arg ref="taskHandler" />
     </bean>    
     
+    <bean id="generateDailyUsageSummary" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="currentUserRootOrgCoordinatorAuthorization" />
+        <constructor-arg ref="generateDailyUsageSummaryExecution" />
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="false" />
+    </bean>
+    
     <bean id="generateDailyUsageSummaryAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg ref="generateDailyUsageSummaryExecution" />
