@@ -89,6 +89,11 @@ public class GenerateDailyUsageSummaryExecution implements ExecutionStrategy<Act
     private DomainMapper<Serializable, Serializable> usageMetricDataCleanupMapper;
 
     /**
+     * Mapper to get day's average activity response time (for those that had responses).
+     */
+    private DomainMapper<Date, Long> getDailyMessageResponseTimeMapper;
+
+    /**
      * Constructor.
      * 
      * @param inDaysAgoDateStrategy
@@ -107,6 +112,8 @@ public class GenerateDailyUsageSummaryExecution implements ExecutionStrategy<Act
      *            Mapper to get a day's stream viewer count.
      * @param inGetDailyUniqueVisitorCountMapper
      *            Mapper to get a day's unique visitor count.
+     * @param inGetDailyMessageResponseTimeMapper
+     *            Mapper to get day's average activity response time (for those that had responses).
      * @param inInsertMapper
      *            mapper to insert DailyUsageSummary
      * @param inUsageMetricDataCleanupMapper
@@ -120,6 +127,7 @@ public class GenerateDailyUsageSummaryExecution implements ExecutionStrategy<Act
             final DomainMapper<Date, Long> inGetDailyStreamViewCountMapper,
             final DomainMapper<Date, Long> inGetDailyStreamViewerCountMapper,
             final DomainMapper<Date, Long> inGetDailyUniqueVisitorCountMapper,
+            final DomainMapper<Date, Long> inGetDailyMessageResponseTimeMapper,
             final DomainMapper<PersistenceRequest<DailyUsageSummary>, Boolean> inInsertMapper,
             final DomainMapper<Serializable, Serializable> inUsageMetricDataCleanupMapper)
     {
@@ -131,6 +139,7 @@ public class GenerateDailyUsageSummaryExecution implements ExecutionStrategy<Act
         getDailyStreamViewCountMapper = inGetDailyStreamViewCountMapper;
         getDailyStreamViewerCountMapper = inGetDailyStreamViewerCountMapper;
         getDailyUniqueVisitorCountMapper = inGetDailyUniqueVisitorCountMapper;
+        getDailyMessageResponseTimeMapper = inGetDailyMessageResponseTimeMapper;
         insertMapper = inInsertMapper;
         usageMetricDataCleanupMapper = inUsageMetricDataCleanupMapper;
     }
@@ -163,9 +172,10 @@ public class GenerateDailyUsageSummaryExecution implements ExecutionStrategy<Act
         long streamViewCount = getDailyStreamViewCountMapper.execute(yesterday);
         long streamContributorCount = getDailyStreamContributorCountMapper.execute(yesterday);
         long messageCount = getDailyMessageCountMapper.execute(yesterday);
+        long avgActvityResponeTime = getDailyMessageResponseTimeMapper.execute(yesterday);
 
         data = new DailyUsageSummary(uniqueVisitorCount, pageViewCount, streamViewerCount, streamViewCount,
-                streamContributorCount, messageCount, yesterday);
+                streamContributorCount, messageCount, avgActvityResponeTime, yesterday);
 
         // store this
         insertMapper.execute(new PersistenceRequest<DailyUsageSummary>(data));

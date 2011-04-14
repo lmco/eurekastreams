@@ -101,6 +101,12 @@ public class GenerateDailyUsageSummaryExecutionTest
             DomainMapper.class, "usageMetricDataCleanupMapper");
 
     /**
+     * Mapper to get day's average activity response time (for those that had responses).
+     */
+    private DomainMapper<Date, Long> getDailyMessageResponseTimeMapper = context.mock(DomainMapper.class,
+            "getDailyMessageResponseTimeMapper");
+
+    /**
      * Input to mapper.
      */
     private final ActionContext actionContext = context.mock(ActionContext.class);
@@ -114,7 +120,8 @@ public class GenerateDailyUsageSummaryExecutionTest
         GenerateDailyUsageSummaryExecution sut = new GenerateDailyUsageSummaryExecution(daysAgoDateStrategy,
                 getDailyUsageSummaryByDateMapper, getDailyMessageCountMapper, getDailyPageViewCountMapper,
                 getDailyStreamContributorCountMapper, getDailyStreamViewCountMapper, getDailyStreamViewerCountMapper,
-                getDailyUniqueVisitorCountMapper, insertMapper, usageMetricDataCleanupMapper);
+                getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper, insertMapper,
+                usageMetricDataCleanupMapper);
 
         final DailyUsageSummary existingSummary = context.mock(DailyUsageSummary.class);
         final Date date = new Date();
@@ -145,7 +152,8 @@ public class GenerateDailyUsageSummaryExecutionTest
         GenerateDailyUsageSummaryExecution sut = new GenerateDailyUsageSummaryExecution(daysAgoDateStrategy,
                 getDailyUsageSummaryByDateMapper, getDailyMessageCountMapper, getDailyPageViewCountMapper,
                 getDailyStreamContributorCountMapper, getDailyStreamViewCountMapper, getDailyStreamViewerCountMapper,
-                getDailyUniqueVisitorCountMapper, insertMapper, usageMetricDataCleanupMapper);
+                getDailyUniqueVisitorCountMapper, getDailyMessageResponseTimeMapper, insertMapper,
+                usageMetricDataCleanupMapper);
 
         final Date date = new Date();
         final long uniqueVisitorCount = 1L;
@@ -154,6 +162,7 @@ public class GenerateDailyUsageSummaryExecutionTest
         final long streamViewCount = 4L;
         final long streamContributorCount = 5L;
         final long messageCount = 6L;
+        final long avgActivityResponseTime = 3L;
 
         context.checking(new Expectations()
         {
@@ -180,6 +189,9 @@ public class GenerateDailyUsageSummaryExecutionTest
                 oneOf(getDailyStreamContributorCountMapper).execute(with(date));
                 will(returnValue(streamContributorCount));
 
+                oneOf(getDailyMessageResponseTimeMapper).execute(with(date));
+                will(returnValue(avgActivityResponseTime));
+
                 oneOf(getDailyMessageCountMapper).execute(with(date));
                 will(returnValue(messageCount));
 
@@ -198,6 +210,7 @@ public class GenerateDailyUsageSummaryExecutionTest
         Assert.assertEquals(streamViewerCount, ds.getStreamViewerCount());
         Assert.assertEquals(streamViewCount, ds.getStreamViewCount());
         Assert.assertEquals(streamContributorCount, ds.getStreamContributorCount());
+        Assert.assertEquals(avgActivityResponseTime, ds.getAvgActivityResponseTime());
         Assert.assertEquals(messageCount, ds.getMessageCount());
         Assert.assertEquals(date, ds.getUsageDate());
 
