@@ -62,6 +62,7 @@ public class GetUsageMetricSummaryDbMapper extends BaseArgDomainMapper<Integer, 
         long streamViewCount = 0;
         long streamViewerCount = 0;
         long uniqueVisitorCount = 0;
+        long avgActivityResponseTime = 0;
 
         for (DailyUsageSummary dus : results)
         {
@@ -71,6 +72,7 @@ public class GetUsageMetricSummaryDbMapper extends BaseArgDomainMapper<Integer, 
             streamViewCount += dus.getStreamViewCount();
             streamViewerCount += dus.getStreamViewerCount();
             uniqueVisitorCount += dus.getUniqueVisitorCount();
+            avgActivityResponseTime += dus.getAvgActivityResponseTime();
         }
 
         result.setMessageCount(msgCount / numResults);
@@ -79,6 +81,7 @@ public class GetUsageMetricSummaryDbMapper extends BaseArgDomainMapper<Integer, 
         result.setStreamViewCount(streamViewCount / numResults);
         result.setStreamViewerCount(streamViewerCount / numResults);
         result.setUniqueVisitorCount(uniqueVisitorCount / numResults);
+        result.setAvgActivityResponseTime(avgActivityResponseTime / numResults);
 
         return result;
     }

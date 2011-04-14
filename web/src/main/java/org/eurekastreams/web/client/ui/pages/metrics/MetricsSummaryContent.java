@@ -76,8 +76,8 @@ public class MetricsSummaryContent extends Composite
         initWidget(binder.createAndBindUi(this));
 
         // get the system settings, asynchronously
-        Session.getInstance().getEventBus()
-                .addObserver(GotUsageMetricSummaryEvent.class, new Observer<GotUsageMetricSummaryEvent>()
+        Session.getInstance().getEventBus().addObserver(GotUsageMetricSummaryEvent.class,
+                new Observer<GotUsageMetricSummaryEvent>()
                 {
                     public void update(final GotUsageMetricSummaryEvent event)
                     {
@@ -92,7 +92,7 @@ public class MetricsSummaryContent extends Composite
 
     /**
      * Build the page.
-     *
+     * 
      * @param inMetrics
      *            the UsageMetricSummaryDTO.
      */
@@ -102,6 +102,7 @@ public class MetricsSummaryContent extends Composite
         long uniqueVisitorCount = inMetrics.getUniqueVisitorCount();
         long streamViewerCount = inMetrics.getStreamViewerCount();
         long streamViewCount = inMetrics.getStreamViewCount();
+        long avgActivityResponseTime = inMetrics.getAvgActivityResponseTime();
 
         // used in calculations
         long streamContributorCount = inMetrics.getStreamContributorCount();
@@ -126,7 +127,7 @@ public class MetricsSummaryContent extends Composite
         streamViewsPerSpectatorUi.setInnerText(formatter.format(streamViewsPerStreamViewer));
         postersUi.setInnerText(Long.toString(streamContributorCount));
         messagesPerContributorUi.setInnerText(formatter.format(messagesPostedPerStreamContributor));
-        averageTimeToResponseUi.setInnerText("1 epoch");
+        averageTimeToResponseUi.setInnerText(Long.toString(avgActivityResponseTime));
     }
 
     /**

@@ -90,6 +90,7 @@ public class GetUsageMetricSummaryDbMapperTest extends MapperTest
             foo.setStreamViewerCount(count * i);
             foo.setUniqueVisitorCount(count * i);
             foo.setUsageDate(new Date(april11th2001 + i * msInDay));
+            foo.setAvgActivityResponseTime(count * i);
 
             getEntityManager().persist(foo);
             getEntityManager().flush();
@@ -111,5 +112,6 @@ public class GetUsageMetricSummaryDbMapperTest extends MapperTest
         assertEquals(resultValue, result.getStreamViewCount());
         assertEquals(resultValue, result.getStreamViewerCount());
         assertEquals(resultValue, result.getUniqueVisitorCount());
+        assertEquals(resultValue, result.getAvgActivityResponseTime());
     }
 }

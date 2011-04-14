@@ -65,6 +65,11 @@ public class UsageMetricSummaryDTO implements Serializable
     private long messageCount;
 
     /**
+     * Avg time (mins) to first comment (for activities that have comments).
+     */
+    private long avgActivityResponseTime;
+
+    /**
      * @return the uniqueVisitorCount
      */
     public long getUniqueVisitorCount()
@@ -181,6 +186,23 @@ public class UsageMetricSummaryDTO implements Serializable
     public void setRecordCount(final long inRecordCount)
     {
         recordCount = inRecordCount;
+    }
+
+    /**
+     * @return the avgActivityResponseTime
+     */
+    public long getAvgActivityResponseTime()
+    {
+        return avgActivityResponseTime;
+    }
+
+    /**
+     * @param inAvgActivityResponseTime
+     *            the avgActivityResponseTime to set
+     */
+    public void setAvgActivityResponseTime(final long inAvgActivityResponseTime)
+    {
+        avgActivityResponseTime = inAvgActivityResponseTime;
     }
 
 }
