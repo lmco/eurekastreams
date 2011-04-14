@@ -1,0 +1,112 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder' xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+
+<ui:image field="funnelTop" src="style/images/step-1.png" />
+<ui:image field="funnelMiddle" src="style/images/step-2.png" />
+<ui:image field="funnelBottom" src="style/images/step-3.png" />
+
+<ui:style>
+.title
+{
+	border-bottom: solid 1px black;
+	font-size: 24px;
+}
+.metric, .major-metric, .minor-metric
+{
+	width: 100px;
+	margin-right: 10px;
+	color: black;
+	font-weight: bold;
+	display: inline-block;
+	text-align: right;
+}
+.major-metric
+{
+	font-size: 20px;
+}
+.minor-metric
+{
+	font-size: 16px;
+}
+.funnel
+{
+	display: block;
+	float: left;
+}
+.funnel-top {} 
+.funnel-middle {}
+.funnel-bottom {}
+.section
+{
+	overflow: auto;
+}
+.section-top
+{
+}
+.section-middle
+{
+}
+.section-bottom
+{
+}
+.para
+{
+	font-size: 10px;	
+}
+.para-start
+{
+	font-size: 30px;
+}
+</ui:style>
+
+<g:HTMLPanel>
+	
+	<div class="{style.title}">Average Daily Statistics for Eureka Streams</div>
+
+	<div class="{style.section} {style.section-top}">
+		<g:Image resource="{funnelTop}" addStyleNames="{style.funnel} {style.funnel-top}" />
+		<div>
+			<span ui:field="uniqueVisitorsUi" class="{style.metric} {style.major-metric}">-</span> 
+			<span>Unique Visitors</span>
+		</div>
+		<div>
+			<span ui:field="visitsPerVisitorUi" class="{style.metric} {style.minor-metric}">-</span>
+			<span>Visits Per Visitor</span>
+		</div>
+	</div>
+	
+	<div class="{style.section} {style.section-middle}">
+		<g:Image resource="{funnelMiddle}" addStyleNames="{style.funnel} {style.funnel-middle}" />
+		<div>
+ 			<span ui:field="streamViewersUi" class="{style.metric} {style.major-metric}">-</span>
+			<span>People Viewing a Stream</span>
+		</div>
+		<div>
+			<span ui:field="streamViewsPerSpectatorUi" class="{style.metric} {style.minor-metric}">-</span>
+			<span>Requests to View a Stream Per Spectator</span>
+		</div>
+	</div>
+	
+	<div class="{style.section} {style.section-bottom}">
+		<g:Image resource="{funnelBottom}" addStyleNames="{style.funnel} {style.funnel-bottom}" />
+		<div>
+ 			<span ui:field="postersUi" class="{style.metric} {style.major-metric}">-</span>
+			<span>People Posting a Message</span>
+		</div>
+		<div>
+			<span ui:field="messagesPerContributorUi" class="{style.metric} {style.minor-metric}">-</span>
+			<span>Messages Per Contributor</span>
+		</div>
+		<div>
+			<span ui:field="averageTimeToResponseUi" class="{style.metric} {style.minor-metric}">-</span>
+			<span>Average Time Elapsed for a Response to a Message</span>
+		</div>
+	</div>
+	
+	<div class="{style.para}">
+		<span class="{style.para-start}">Measuring Success</span> by doing something more legitimate than just making up numbers that make us look good.
+	</div>
+	
+	
+</g:HTMLPanel>
+
+</ui:UiBinder>

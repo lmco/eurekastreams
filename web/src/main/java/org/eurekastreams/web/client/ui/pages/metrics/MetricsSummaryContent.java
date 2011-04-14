@@ -21,63 +21,83 @@ import org.eurekastreams.web.client.events.data.GotUsageMetricSummaryEvent;
 import org.eurekastreams.web.client.model.UsageMetricModel;
 import org.eurekastreams.web.client.ui.Session;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.i18n.client.NumberFormat;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Page for displaying metrics.
- * 
  */
 public class MetricsSummaryContent extends Composite
 {
-    /**
-     * Main panel.
-     */
-    private final FlowPanel panel;
+    /** Default record count. */
+    private static final int DEFAULT_RECORD_COUNT = 30;
 
-    /**
-     * Default record count.
-     */
-    private final int defaultRecordCount = 30;
+    /** Binder for building UI. */
+    private static LocalUiBinder binder = GWT.create(LocalUiBinder.class);
+
+    /** UI element displaying applicable metric. */
+    @UiField
+    SpanElement uniqueVisitorsUi;
+
+    /** UI element displaying applicable metric. */
+    @UiField
+    SpanElement visitsPerVisitorUi;
+
+    /** UI element displaying applicable metric. */
+    @UiField
+    SpanElement streamViewersUi;
+
+    /** UI element displaying applicable metric. */
+    @UiField
+    SpanElement streamViewsPerSpectatorUi;
+
+    /** UI element displaying applicable metric. */
+    @UiField
+    SpanElement postersUi;
+
+    /** UI element displaying applicable metric. */
+    @UiField
+    SpanElement messagesPerContributorUi;
+
+    /** UI element displaying applicable metric. */
+    @UiField
+    SpanElement averageTimeToResponseUi;
 
     /**
      * Default constructor.
      */
     public MetricsSummaryContent()
     {
-        panel = new FlowPanel();
-        // panel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().metrics());
+        initWidget(binder.createAndBindUi(this));
 
         // get the system settings, asynchronously
-        Session.getInstance().getEventBus().addObserver(GotUsageMetricSummaryEvent.class,
-                new Observer<GotUsageMetricSummaryEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(GotUsageMetricSummaryEvent.class, new Observer<GotUsageMetricSummaryEvent>()
                 {
                     public void update(final GotUsageMetricSummaryEvent event)
                     {
                         // got the metrics - remove the observer
-                        Session.getInstance().getEventBus().removeObserver(GotUsageMetricSummaryEvent.class, this);
-                        final UsageMetricSummaryDTO metrics = event.getResponse();
-
-                        buildPage(metrics);
+                        Session.getInstance().getEventBus().removeObserver(event, this);
+                        buildPage(event.getResponse());
                     }
                 });
 
-        UsageMetricModel.getInstance().fetch(defaultRecordCount, true);
-        initWidget(panel);
+        UsageMetricModel.getInstance().fetch(DEFAULT_RECORD_COUNT, true);
     }
 
     /**
      * Build the page.
-     * 
+     *
      * @param inMetrics
      *            the UsageMetricSummaryDTO.
      */
     private void buildPage(final UsageMetricSummaryDTO inMetrics)
     {
-        panel.add(new Label("Based on " + inMetrics.getRecordCount() + " daily records."));
-
         // displayed directly
         long uniqueVisitorCount = inMetrics.getUniqueVisitorCount();
         long streamViewerCount = inMetrics.getStreamViewerCount();
@@ -100,13 +120,19 @@ public class MetricsSummaryContent extends Composite
 
         NumberFormat formatter = NumberFormat.getFormat("0.0");
 
-        panel.add(new Label("uniqueVisitorCount " + uniqueVisitorCount));
-        panel.add(new Label("streamViewerCount " + streamViewerCount));
-        panel.add(new Label("streamViewCount " + streamViewCount));
-        panel.add(new Label("pageViewsPerUniqueVisitor " + formatter.format(pageViewsPerUniqueVisitor)));
-        panel.add(new Label("streamViewsPerStreamViewer " + formatter.format(streamViewsPerStreamViewer)));
-        panel.add(new Label("messagesPostedPerStreamContributor "
-                + formatter.format(messagesPostedPerStreamContributor)));
+        uniqueVisitorsUi.setInnerText(Long.toString(uniqueVisitorCount));
+        visitsPerVisitorUi.setInnerText(formatter.format(pageViewsPerUniqueVisitor));
+        streamViewersUi.setInnerText(Long.toString(streamViewerCount));
+        streamViewsPerSpectatorUi.setInnerText(formatter.format(streamViewsPerStreamViewer));
+        postersUi.setInnerText(Long.toString(streamContributorCount));
+        messagesPerContributorUi.setInnerText(formatter.format(messagesPostedPerStreamContributor));
+        averageTimeToResponseUi.setInnerText("1 epoch");
+    }
 
+    /**
+     * Binder for building UI.
+     */
+    interface LocalUiBinder extends UiBinder<Widget, MetricsSummaryContent>
+    {
     }
 }

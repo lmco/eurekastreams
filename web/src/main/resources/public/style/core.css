@@ -137,8 +137,7 @@ input.empty-labeled-textbox {
 	color: #999999 ! important;
 }
 
-@
-sprite .content-warning {
+@sprite .content-warning {
 	gwt-image: "informationCircleIcon";
 	font-style: italic;
 	color: #666;
@@ -7885,7 +7884,7 @@ body div.eureka-connect-liked-activity-wrapper {
 .eureka-connect-share-widget-container .post-to {
 	width: auto;
 	text-align: left;
-	margin-left: 15px;t
+	margin-left: 15px;
 }
 
 .eureka-connect-share-widget-container .link-panel {
