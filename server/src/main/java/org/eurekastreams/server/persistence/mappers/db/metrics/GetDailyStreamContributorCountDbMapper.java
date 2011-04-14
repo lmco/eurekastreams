@@ -20,9 +20,9 @@ import java.util.HashSet;
 
 import javax.persistence.Query;
 
+import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
-import org.eurekastreams.server.persistence.strategies.DateDayExtractor;
 
 /**
  * DB Mapper to get the stream contributor count of a specific day.

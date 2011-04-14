@@ -24,12 +24,14 @@
     <!-- TaskHandler configuration -->
     <!-- ************************* -->
     
-    <!-- A task action executor executing the action request in-method and in-thread. -->
+    <!-- A task action executor executing the action request in-method and in-thread.
+-->
     <bean id="applicationContextHolder" class="org.eurekastreams.server.service.actions.strategies.ApplicationContextHolder" />
 
     <bean id="taskActionExecutor" class="org.eurekastreams.commons.task.TaskActionExecutor" />
 
-    <!-- A threaded task action executor executing the action request in a single new thread. -->
+    <!-- A threaded task action executor executing the action request in a single new thread.
+-->
     <bean id="threadedTaskActionExecutor" class="org.eurekastreams.commons.task.ThreadedTaskActionExecutor">
             <constructor-arg ref="taskActionExecutor" />
     </bean>
@@ -1119,7 +1121,8 @@
                 	</bean>
                 </constructor-arg>
 <!-- NOTE: getPersonPagePropertiesById_FORCE_REFRESH is currently not available, so we use the mapper above instead.  
-	It only deletes the cached value but doesn't reload, so it should be swapped out when the below is ready. -->
+	It only deletes the cached value but doesn't reload, so it should be swapped out when the below is ready.
+-->
 <!--                <constructor-arg ref="getPersonPagePropertiesById_FORCE_REFRESH" />-->
             </bean>
         </constructor-arg>
@@ -1550,6 +1553,21 @@
          <constructor-arg ref="taskHandler" />
     </bean>    
     
+    <bean id="generateDailyUsageSummary" class="org.eurekastreams.commons.actions.service.TaskHandlerServiceAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="currentUserRootOrgCoordinatorAuthorization" />
+        <constructor-arg ref="generateDailyUsageSummaryExecution" />
+        <constructor-arg ref="taskHandler" />
+        <constructor-arg value="false" />
+    </bean>
+    
+    <bean id="generateDailyUsageSummaryAction" class="org.eurekastreams.commons.actions.async.TaskHandlerAsyncAction">
+        <constructor-arg ref="noValidationStrategy" />
+        <constructor-arg ref="generateDailyUsageSummaryExecution" />
+        <constructor-arg value="false" />
+        <constructor-arg ref="taskHandler" />
+    </bean>      
+    
     <!-- TODO  these next 4 keys couldn't be staged in the ac-mappers.xml for some reason?
 -->
     <!-- Standard RSS/ATOM mappers -->
@@ -1601,14 +1619,16 @@
                     <bean class="org.eurekastreams.server.persistence.mappers.UpdateMapper" />
                 </constructor-arg>
                 <constructor-arg>
-                	<list>
-                		<value>www.google.com/reader/public/atom/</value>
-                	</list>
+                    <list>
+                        <value>www.google.com/reader/public/atom/</value>
+                    </list>
                 </constructor-arg>                
             </bean>
         </constructor-arg>
         <constructor-arg value="false" />
     </bean>
+
+
 
     <bean id="getPersonIdForFeedSub" class="org.eurekastreams.server.service.actions.strategies.activity.plugins.GetPersonIdForFeedSubscription">
         <constructor-arg ref="getPersonIdByAccountIdMapper" /> 
@@ -3309,18 +3329,21 @@
     </bean>
     
     <bean id="personActivityAvatarUpdaterAsyncAction" class="org.eurekastreams.commons.actions.async.AsyncAction">
-        <!-- Update the author avatar ids in cached activities, comments, and embedded comments authored by a user -->
+        <!-- Update the author avatar ids in cached activities, comments, and embedded comments authored by a user
+-->
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
             <bean class="org.eurekastreams.server.action.execution.profile.PersonAuthoredActivitiesAndCommentsCacheUpdater">
-                <!-- Update the author information on all cached activities and comments for a user -->
+                <!-- Update the author information on all cached activities and comments for a user
+-->
             
                 <constructor-arg ref="getActivityIdsAuthoredByOrOriginallyAuthoredByEntityDBMapper" />
                 <constructor-arg ref="getActivityCommentIdsAuthoredByPersonIdDBMapper" />
                 <constructor-arg ref="getActivityIdsWithFirstOrLastCommentsAuthoredByPersonIdDBMapper" />
                 
                 <constructor-arg>
-                    <!-- Update the author's avatar in all cached activities authored by a user -->
+                    <!-- Update the author's avatar in all cached activities authored by a user
+-->
                     <bean class="org.eurekastreams.server.persistence.mappers.cache.UpdateAuthorInfoInCachedActivities">
                         <constructor-arg value="100" />
                         
@@ -3518,7 +3541,8 @@
         <constructor-arg ref="taskHandler" />
     </bean>             
     
-    <!--  Start Page tab types are defined in shared resources so that they can be easily overridden -->
+    <!--  Start Page tab types are defined in shared resources so that they can be easily overridden
+-->
     <bean id="createPersonActionFactory" class="org.eurekastreams.server.action.execution.CreatePersonActionFactory">
         <constructor-arg ref="jpaTabMapper" />
         <constructor-arg ref="jpaOrganizationMapper" />
@@ -4606,11 +4630,13 @@
         <property name="cache" ref="memcachedCache" />
     </bean>
     
-    <!-- This class is just a stub for the time being to fulfill the Update and Delete Execution strat requirements for the mapper. -->
+    <!-- This class is just a stub for the time being to fulfill the Update and Delete Execution strat requirements for the mapper.
+-->
     <bean id="domainGroupBannerCacheMapper" class="org.eurekastreams.server.persistence.mappers.cache.UpdateCachedDomainGroupBannerIdMapper"/>    
      
     <!-- this action is kicked off by liking activity (which clears cache list), and just reloads the list into cache, 
-    doesn't need to be a _FORCE_REFRESH, if it has happened already, no need to ping DB again -->
+    doesn't need to be a _FORCE_REFRESH, if it has happened already, no need to ping DB again
+-->
     <bean id="loadLikedActivityIdsByUserId" class="org.eurekastreams.commons.actions.async.AsyncAction">
         <constructor-arg ref="noValidationStrategy" />
         <constructor-arg>
@@ -4912,6 +4938,29 @@
         </constructor-arg>
         <constructor-arg value="true" />
     </bean>
+    
+    <!-- Execution strategy to generate a daily usage summary record for the previous day - takes no input -->
+    <bean id="generateDailyUsageSummaryExecution" class="org.eurekastreams.server.action.execution.GenerateDailyUsageSummaryExecution">
+        <constructor-arg ref="getDateFromDaysAgoStrategy"/>
+        <constructor-arg ref="getDailyUsageSummaryByDateDbMapper" />
+        <constructor-arg ref="getDailyMessageCountDbMapper" />
+        <constructor-arg ref="getDailyPageViewCountDbMapper" />
+        <constructor-arg ref="getDailyStreamContributorCountDbMapper" />
+        <constructor-arg ref="getDailyStreamViewCountDbMapper" />
+        <constructor-arg ref="getDailyStreamViewerCountDbMapper" />
+        <constructor-arg ref="getDailyUniqueVisitorCountDbMapper" />
+        <constructor-arg ref="getDailyMessageResponseTime" />
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.InsertMapper" />
+        </constructor-arg>
+        <constructor-arg>
+            <bean class="org.eurekastreams.server.persistence.mappers.db.metrics.DeleteOldUsageMetricDataDbMapper">
+                <!-- keep 7 days of data -->
+                <constructor-arg value="7" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg ref="dayOfWeekStrategy" />
+    </bean>
 
     <!--
         ****************************************************************************************
@@ -4937,6 +4986,7 @@
             </bean>
         </constructor-arg>
         <constructor-arg value="true" />
-    </bean>         
+    </bean>
+             
 </beans>
  

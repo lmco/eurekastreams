@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.strategies;
+package org.eurekastreams.commons.date;
 
 import java.util.Date;
 
@@ -54,8 +54,6 @@ public class GetDateFromDaysAgoStrategyTest
 
         // get the milliseconds difference
         long diff = day.getTimeInMillis() - yesterday.getTime() - msInDay;
-
-        System.out.println(diff);
 
         // assert the difference is 24 hours (within a minute, in case this test is ridiculously slow :))
         Assert.assertTrue(diff < msIn1Min);

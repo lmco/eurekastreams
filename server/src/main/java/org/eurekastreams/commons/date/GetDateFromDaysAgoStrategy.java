@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.strategies;
+package org.eurekastreams.commons.date;
 
 import java.util.Date;
 

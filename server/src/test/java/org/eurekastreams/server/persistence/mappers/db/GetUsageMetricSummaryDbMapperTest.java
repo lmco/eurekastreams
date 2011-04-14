@@ -23,6 +23,7 @@ import java.util.Date;
 
 import org.eurekastreams.server.domain.DailyUsageSummary;
 import org.eurekastreams.server.persistence.mappers.MapperTest;
+import org.eurekastreams.server.persistence.mappers.db.metrics.GetUsageMetricSummaryDbMapper;
 import org.eurekastreams.server.search.modelview.UsageMetricSummaryDTO;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,6 +72,7 @@ public class GetUsageMetricSummaryDbMapperTest extends MapperTest
          * April 7th, 2011 in ticks.
          */
         final long april11th2001 = 987012529000L;
+        final long jan1th2001 = 1302804695000L;
         final long msInDay = 86400000L;
 
         final long resultValue = 15;
@@ -91,11 +93,30 @@ public class GetUsageMetricSummaryDbMapperTest extends MapperTest
             foo.setUniqueVisitorCount(count * i);
             foo.setUsageDate(new Date(april11th2001 + i * msInDay));
             foo.setAvgActivityResponseTime(count * i);
+            foo.setWeekday(true);
 
             getEntityManager().persist(foo);
             getEntityManager().flush();
             assertTrue(foo.getId() > 0);
         }
+
+        // throw in some weekend days that will be ignored
+        getEntityManager().persist(
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 1 * msInDay), false));
+        getEntityManager().persist(
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 2 * msInDay), false));
+        getEntityManager().persist(
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 3 * msInDay), false));
+        getEntityManager().persist(
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 4 * msInDay), false));
+        getEntityManager().persist(
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 5 * msInDay), false));
+        getEntityManager().persist(
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 6 * msInDay), false));
+        getEntityManager().persist(
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 7 * msInDay), false));
+        getEntityManager().persist(
+                new DailyUsageSummary(1, 2, 3, 4, 5, 6, 7, new Date(jan1th2001 + 8 * msInDay), false));
 
         getEntityManager().flush();
         getEntityManager().clear();
@@ -114,4 +135,5 @@ public class GetUsageMetricSummaryDbMapperTest extends MapperTest
         assertEquals(resultValue, result.getUniqueVisitorCount());
         assertEquals(resultValue, result.getAvgActivityResponseTime());
     }
+
 }
