@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * Panel for a list of stream scopes.
- *
+ * 
  */
 public class StreamScopeListPanel extends FlowPanel
 {
@@ -37,63 +37,61 @@ public class StreamScopeListPanel extends FlowPanel
      */
     private LinkedList<StreamScope> scopes;
 
-
     /**
      * Default constructor.
-     * @param inScopes the scopes.
+     * 
+     * @param inScopes
+     *            the scopes.
      */
     public StreamScopeListPanel(final LinkedList<StreamScope> inScopes)
     {
         this.setVisible(false);
         this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().streamScopeContainer());
-        this.getElement().setAttribute("id", StaticResourceBundle.INSTANCE.coreCss().streamScopeContainer());
+        this.getElement().setAttribute("id", "stream-scope-container");
         scopes = inScopes;
         render();
 
-        EventBus.getInstance().addObserver(StreamScopeDeletedEvent.getEvent(),
-                new Observer<StreamScopeDeletedEvent>()
+        EventBus.getInstance().addObserver(StreamScopeDeletedEvent.getEvent(), new Observer<StreamScopeDeletedEvent>()
+        {
+            public void update(final StreamScopeDeletedEvent arg1)
+            {
+                int index = 0;
+                for (StreamScope scope : scopes)
                 {
-                    public void update(final StreamScopeDeletedEvent arg1)
+                    if (scope.getUniqueKey().equals(arg1.getScope().getUniqueKey()))
                     {
-                        int index = 0;
-                        for (StreamScope scope : scopes)
-                        {
-                            if (scope.getUniqueKey().equals(
-                                    arg1.getScope().getUniqueKey()))
-                            {
-                                scopes.remove(index);
-                                render();
-                                break;
-                            }
-                            index++;
-                        }
+                        scopes.remove(index);
+                        render();
+                        break;
                     }
-                });
+                    index++;
+                }
+            }
+        });
 
-        EventBus.getInstance().addObserver(StreamScopeAddedEvent.getEvent(),
-                new Observer<StreamScopeAddedEvent>()
+        EventBus.getInstance().addObserver(StreamScopeAddedEvent.getEvent(), new Observer<StreamScopeAddedEvent>()
+        {
+            public void update(final StreamScopeAddedEvent arg1)
+            {
+                boolean scopeFound = false;
+
+                for (StreamScope scope : scopes)
                 {
-                    public void update(final StreamScopeAddedEvent arg1)
+                    if (scope.getUniqueKey().equals(arg1.getScope().getUniqueKey())
+                            && scope.getScopeType().equals(arg1.getScope().getScopeType()))
                     {
-                    	boolean scopeFound = false;
-
-                    	for (StreamScope scope : scopes)
-                    	{
-                    		if (scope.getUniqueKey().equals(arg1.getScope().getUniqueKey())
-                    				&& scope.getScopeType().equals(arg1.getScope().getScopeType()))
-                    		{
-                    			scopeFound = true;
-                    		}
-                    	}
-
-                    	if (!scopeFound)
-                    	{
-                    		scopes.add(arg1.getScope());
-                        	render();
-                        	scrollToBottom();
-                    	}
+                        scopeFound = true;
                     }
-                });
+                }
+
+                if (!scopeFound)
+                {
+                    scopes.add(arg1.getScope());
+                    render();
+                    scrollToBottom();
+                }
+            }
+        });
     }
 
     /**
@@ -101,12 +99,13 @@ public class StreamScopeListPanel extends FlowPanel
      */
     private static native void scrollToBottom()
     /*-{
-            var objDiv = $doc.getElementById(StaticResourceBundle.INSTANCE.coreCss().streamScopeContainer());
+            var objDiv = $doc.getElementById("stream-scope-container");
             objDiv.scrollTop = objDiv.scrollHeight;
     }-*/;
 
     /**
      * Gets the scopes.
+     * 
      * @return the scopes.
      */
     public LinkedList<StreamScope> getScopes()
