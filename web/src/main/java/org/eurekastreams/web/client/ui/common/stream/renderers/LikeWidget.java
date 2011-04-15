@@ -17,6 +17,9 @@ package org.eurekastreams.web.client.ui.common.stream.renderers;
 
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest;
 import org.eurekastreams.server.action.request.stream.SetActivityLikeRequest.LikeActionType;
+import org.eurekastreams.web.client.events.ActivityLikedChangeEvent;
+import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.model.ActivityLikeModel;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -72,7 +75,20 @@ public class LikeWidget extends Composite
                 likeLink.setText(liked ? "Unlike" : "Like");
                 ActivityLikeModel.getInstance().update(new SetActivityLikeRequest(activityId, actionType));
             }
+        });
 
+        // keep above likeLink setting on click as it reduces ui bugs due to event lag, this will respond to like
+        // count widget liking the action and change appropriately.
+        EventBus.getInstance().addObserver(ActivityLikedChangeEvent.class, new Observer<ActivityLikedChangeEvent>()
+        {
+            public void update(final ActivityLikedChangeEvent event)
+            {
+                if (event.getActivityId().equals(activityId) && event.getActionType() == LikeActionType.ADD_LIKE)
+                {
+                    liked = true;
+                    likeLink.setText("Unlike");
+                }
+            }
         });
 
         initWidget(widget);

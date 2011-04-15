@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.eurekastreams.server.persistence.mappers.db;
+package org.eurekastreams.server.persistence.mappers.db.metrics;
 
 import java.util.List;
 
@@ -40,7 +40,9 @@ public class GetUsageMetricSummaryDbMapper extends BaseArgDomainMapper<Integer, 
     @Override
     public UsageMetricSummaryDTO execute(final Integer inRequest)
     {
-        Query q = getEntityManager().createQuery("FROM DailyUsageSummary ORDER BY id DESC");
+        Query q = getEntityManager()
+                .createQuery("FROM DailyUsageSummary WHERE isWeekday = :isWeekday ORDER BY id DESC");
+        q.setParameter("isWeekday", true);
         q.setMaxResults(inRequest);
 
         List<DailyUsageSummary> results = q.getResultList();
@@ -62,6 +64,7 @@ public class GetUsageMetricSummaryDbMapper extends BaseArgDomainMapper<Integer, 
         long streamViewCount = 0;
         long streamViewerCount = 0;
         long uniqueVisitorCount = 0;
+        long avgActivityResponseTime = 0;
 
         for (DailyUsageSummary dus : results)
         {
@@ -71,6 +74,7 @@ public class GetUsageMetricSummaryDbMapper extends BaseArgDomainMapper<Integer, 
             streamViewCount += dus.getStreamViewCount();
             streamViewerCount += dus.getStreamViewerCount();
             uniqueVisitorCount += dus.getUniqueVisitorCount();
+            avgActivityResponseTime += dus.getAvgActivityResponseTime();
         }
 
         result.setMessageCount(msgCount / numResults);
@@ -79,6 +83,7 @@ public class GetUsageMetricSummaryDbMapper extends BaseArgDomainMapper<Integer, 
         result.setStreamViewCount(streamViewCount / numResults);
         result.setStreamViewerCount(streamViewerCount / numResults);
         result.setUniqueVisitorCount(uniqueVisitorCount / numResults);
+        result.setAvgActivityResponseTime(avgActivityResponseTime / numResults);
 
         return result;
     }

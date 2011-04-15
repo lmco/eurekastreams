@@ -2599,7 +2599,20 @@
     
     <bean id="setLikedSharedResourceStatusDbMapper" class="org.eurekastreams.server.persistence.mappers.db.SetLikedSharedResourceStatusDbMapper" />
         
-    <bean id="getUsageMetricSummaryDbMapper" class="org.eurekastreams.server.persistence.mappers.db.GetUsageMetricSummaryDbMapper" />
+    <!-- Metrics -->
+    <bean id="getUsageMetricSummaryDbMapper" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetUsageMetricSummaryDbMapper" />
+    <bean id="getDailyMessageCountDbMapper" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetDailyMessageCountDbMapper" />
+    <bean id="getDailyMessageResponseTime" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetDailyMessageResponseTime" />
+    <bean id="getDailyPageViewCountDbMapper" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetDailyPageViewCountDbMapper" />
+    <bean id="getDailyStreamContributorCountDbMapper" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetDailyStreamContributorCountDbMapper" />
+    <bean id="getDailyStreamViewCountDbMapper" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetDailyStreamViewCountDbMapper" />
+    <bean id="getDailyStreamViewerCountDbMapper" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetDailyStreamViewerCountDbMapper" />
+    <bean id="getDailyUniqueVisitorCountDbMapper" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetDailyUniqueVisitorCountDbMapper" />
+    <bean id="getDailyUsageSummaryByDateDbMapper" class="org.eurekastreams.server.persistence.mappers.db.metrics.GetDailyUsageSummaryByDateDbMapper" />
+    <!-- END Metrics -->
+    
+    <bean id="dayOfWeekStrategy" class="org.eurekastreams.commons.date.DayOfWeekStrategy" />
+    <bean id="getDateFromDaysAgoStrategy" class="org.eurekastreams.commons.date.GetDateFromDaysAgoStrategy" />
     
     <bean id="personModelViewAvatarDisplayTransformer" class="org.eurekastreams.server.domain.strategies.PersonModelViewAvatarDisplayTransformer"/>
     

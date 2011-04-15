@@ -82,11 +82,21 @@ public class DailyUsageSummary implements Serializable
     private long messageCount;
 
     /**
+     * Average response time for activities that have comments.
+     */
+    private long avgActivityResponseTime;
+
+    /**
      * The date.
      */
     @Basic(optional = false)
     @Temporal(TemporalType.DATE)
     private Date usageDate;
+
+    /**
+     * Whether this is a weekday.
+     */
+    private boolean isWeekday;
 
     /**
      * Constructor for ORM.
@@ -110,12 +120,17 @@ public class DailyUsageSummary implements Serializable
      *            number of people contributing to streams (comment and activities)
      * @param inMessageCount
      *            number of activities and comments posted
+     * @param inAvgActivityResponseTime
+     *            Average response time for activities that have comments.
      * @param inUsageDate
      *            the date
+     * @param inIsWeekday
+     *            whether this date is a weekday
      */
     public DailyUsageSummary(final long inUniqueVisitorCount, final long inPageViewCount,
             final long inStreamViewerCount, final long inStreamViewCount, final long inStreamContributorCount,
-            final long inMessageCount, final Date inUsageDate)
+            final long inMessageCount, final long inAvgActivityResponseTime, final Date inUsageDate,
+            final boolean inIsWeekday)
     {
         uniqueVisitorCount = inUniqueVisitorCount;
         pageViewCount = inPageViewCount;
@@ -123,7 +138,9 @@ public class DailyUsageSummary implements Serializable
         streamViewCount = inStreamViewCount;
         streamContributorCount = inStreamContributorCount;
         messageCount = inMessageCount;
+        avgActivityResponseTime = inAvgActivityResponseTime;
         usageDate = inUsageDate;
+        isWeekday = inIsWeekday;
     }
 
     /**
@@ -261,4 +278,39 @@ public class DailyUsageSummary implements Serializable
     {
         usageDate = inUsageDate;
     }
+
+    /**
+     * @return the avgActivityResponseTime
+     */
+    public long getAvgActivityResponseTime()
+    {
+        return avgActivityResponseTime;
+    }
+
+    /**
+     * @param inAvgActivityResponseTime
+     *            the avgActivityResponseTime to set
+     */
+    public void setAvgActivityResponseTime(final long inAvgActivityResponseTime)
+    {
+        avgActivityResponseTime = inAvgActivityResponseTime;
+    }
+
+    /**
+     * @return the isWeekday
+     */
+    public boolean isWeekday()
+    {
+        return isWeekday;
+    }
+
+    /**
+     * @param inIsWeekday
+     *            the isWeekday to set
+     */
+    public void setWeekday(final boolean inIsWeekday)
+    {
+        isWeekday = inIsWeekday;
+    }
+
 }

@@ -21,6 +21,7 @@ import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.web.client.ui.ActionExecutorPanel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.help.HelpContent;
+import org.eurekastreams.web.client.ui.pages.metrics.MetricsSummaryContent;
 import org.eurekastreams.web.client.ui.pages.oauth.OAuthAuthorizeContent;
 import org.eurekastreams.web.client.ui.pages.profile.GroupProfilePanel;
 import org.eurekastreams.web.client.ui.pages.profile.OrganizationProfilePanel;
@@ -41,13 +42,13 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Creates a page given a page and view.
- *
+ * 
  */
 public class PageFactory
 {
     /**
      * Creates a page given a page and view.
-     *
+     * 
      * @param page
      *            the page.
      * @param views
@@ -96,6 +97,8 @@ public class PageFactory
             return new CreateOrganizationPanel(view);
         case HELP:
             return new HelpContent();
+        case METRICS:
+            return new MetricsSummaryContent();
         default:
             return new StartPageContent();
         }

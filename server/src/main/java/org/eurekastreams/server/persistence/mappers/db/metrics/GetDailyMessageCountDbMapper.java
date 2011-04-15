@@ -19,8 +19,9 @@ import java.util.Date;
 
 import javax.persistence.Query;
 
+import org.eurekastreams.commons.date.DateDayExtractor;
+import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
-import org.eurekastreams.server.persistence.strategies.DateDayExtractor;
 
 /**
  * DB Mapper to get the message (activity and comment) count of a specific day.
@@ -46,8 +47,9 @@ public class GetDailyMessageCountDbMapper extends BaseArgDomainMapper<Date, Long
 
         // get the activity count
         q = getEntityManager().createQuery(
-                "SELECT COUNT(*) FROM Activity WHERE postedTime >= :startDate AND postedTime <= :endDate")
-                .setParameter("startDate", startOfDay).setParameter("endDate", endOfDay);
+                "SELECT COUNT(*) FROM Activity WHERE (appType = null OR appType != :plugin) AND "
+                        + "postedTime >= :startDate AND postedTime <= :endDate").setParameter("startDate", startOfDay)
+                .setParameter("endDate", endOfDay).setParameter("plugin", EntityType.PLUGIN);
         activityCount = (Long) q.getSingleResult();
 
         // get the comment count

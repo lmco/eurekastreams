@@ -135,7 +135,7 @@ public class StreamIdValidationResourceTest
         Representation actual = sut.represent(variant);
 
         assertEquals("MediaType should be text/html", MediaType.TEXT_HTML, actual.getMediaType());
-        assertTrue("VALID PERSON".equalsIgnoreCase(actual.getText()));
+        assertTrue(actual.getText().contains("Valid Person"));
 
         context.assertIsSatisfied();
     }
@@ -172,7 +172,7 @@ public class StreamIdValidationResourceTest
         Representation actual = sut.represent(variant);
 
         assertEquals("MediaType should be text/html", MediaType.TEXT_HTML, actual.getMediaType());
-        assertTrue("INVALID PERSON".equalsIgnoreCase(actual.getText()));
+        assertTrue(actual.getText().contains("Invalid Person"));
 
         context.assertIsSatisfied();
     }
@@ -209,7 +209,7 @@ public class StreamIdValidationResourceTest
         Representation actual = sut.represent(variant);
 
         assertEquals("MediaType should be text/html", MediaType.TEXT_HTML, actual.getMediaType());
-        assertTrue("INVALID PERSON".equalsIgnoreCase(actual.getText()));
+        assertTrue(actual.getText().contains("Invalid Person"));
 
         context.assertIsSatisfied();
     }
@@ -243,7 +243,7 @@ public class StreamIdValidationResourceTest
         Representation actual = sut.represent(variant);
 
         assertEquals("MediaType should be text/html", MediaType.TEXT_HTML, actual.getMediaType());
-        assertTrue("INVALID TYPE".equalsIgnoreCase(actual.getText()));
+        assertTrue(actual.getText().contains("Invalid Type"));
 
         context.assertIsSatisfied();
     }

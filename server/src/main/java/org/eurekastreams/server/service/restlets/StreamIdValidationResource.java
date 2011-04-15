@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.EntityType;
@@ -37,7 +38,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
- * Used to verify Person/Group shortNames.
+ * One-off service for Eureka sites used to verify Person/Group shortNames.
  * 
  */
 public class StreamIdValidationResource extends SmpResource
@@ -119,22 +120,22 @@ public class StreamIdValidationResource extends SmpResource
         transDef.setReadOnly(true);
         TransactionStatus currentStatus = transManager.getTransaction(transDef);
 
-        String response;
-        String typeString = type.toString();
+        boolean isValid;
+        String typeString = WordUtils.capitalizeFully(type.toString());
         try
         {
             switch (type)
             {
             case PERSON:
                 PersonModelView pmv = getPersonMVByAccountId.execute(uniqueKey);
-                response = pmv == null ? "INVALID " : "VALID ";
+                isValid = pmv != null;
                 break;
             case GROUP:
                 List<DomainGroupModelView> groups = groupByShortNameDAO.execute(Collections.singletonList(uniqueKey));
-                response = groups.size() == 1 ? "VALID " : "INVALID ";
+                isValid = groups.size() == 1;
                 break;
             default:
-                typeString = "TYPE";
+                typeString = "Type";
                 throw new RuntimeException("only accepts person and group types.");
             }
             transManager.commit(currentStatus);
@@ -143,10 +144,17 @@ public class StreamIdValidationResource extends SmpResource
         {
             log.warn("Error validating id", e);
             transManager.rollback(currentStatus);
-            response = "INVALID ";
+            isValid = false;
         }
 
-        Representation rep = new StringRepresentation(response + typeString, MediaType.TEXT_HTML);
+        String styleColor = isValid ? "green" : "red";
+        String responseString = isValid ? "Valid " : "Invalid ";
+
+        // style the response
+        String styledResponse = "<div style=\"color:" + styleColor + "; font-family:Arial; font-size:smaller\">"
+                + responseString + typeString + "</div>";
+
+        Representation rep = new StringRepresentation(styledResponse, MediaType.TEXT_HTML);
         rep.setExpirationDate(new Date(0L));
         return rep;
     }

@@ -17,6 +17,9 @@ package org.eurekastreams.server.persistence.mappers.db.metrics;
 
 import java.util.Date;
 
+import javax.persistence.Query;
+
+import org.eurekastreams.commons.date.DateDayExtractor;
 import org.eurekastreams.server.persistence.mappers.BaseArgDomainMapper;
 
 /**
@@ -34,16 +37,15 @@ public class GetDailyStreamViewCountDbMapper extends BaseArgDomainMapper<Date, L
     @Override
     public Long execute(final Date inDay)
     {
-        // Query q;
-        // Date startOfDay, endOfDay;
-        //
-        // startOfDay = DateDayExtractor.getStartOfDay(inDay);
-        // endOfDay = DateDayExtractor.getEndOfDay(inDay);
-        // q = getEntityManager().createQuery(
-        // "SELECT COUNT(*) FROM UsageMetric "
-        // + "WHERE isStreamView = true AND created >= :startDate AND created <= :endDate").setParameter(
-        // "startDate", startOfDay).setParameter("endDate", endOfDay);
-        // return (Long) q.getSingleResult();
-        return 0L;
+        Query q;
+        Date startOfDay, endOfDay;
+
+        startOfDay = DateDayExtractor.getStartOfDay(inDay);
+        endOfDay = DateDayExtractor.getEndOfDay(inDay);
+        q = getEntityManager().createQuery(
+                "SELECT COUNT(*) FROM UsageMetric "
+                        + "WHERE isStreamView = true AND created >= :startDate AND created <= :endDate").setParameter(
+                "startDate", startOfDay).setParameter("endDate", endOfDay);
+        return (Long) q.getSingleResult();
     }
 }

@@ -15,7 +15,6 @@
  */
 package org.eurekastreams.web.client.history;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,7 +29,6 @@ import org.eurekastreams.web.client.events.SwitchedHistoryViewEvent;
 import org.eurekastreams.web.client.events.UpdateHistoryEvent;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
-import org.eurekastreams.web.client.model.UsageMetricModel;
 import org.eurekastreams.web.client.ui.Session;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -208,13 +206,6 @@ public class HistoryHandler implements ValueChangeHandler<String>
             }
 
             Session.getInstance().getEventBus().notifyObservers(new UpdatedHistoryParametersEvent(values));
-
-            // pass page/values info to metrics model to determine metrics to record.
-            HashMap<String, Serializable> map = new HashMap<String, Serializable>();
-            map.put(UsageMetricModel.PAGE_KEY, page);
-            map.put(UsageMetricModel.VALUES_KEY, values);
-            map.put(UsageMetricModel.VIEWS_KEY, views.isEmpty() ? null : views.get(0));
-            UsageMetricModel.getInstance().insert(map);
         }
         fireValueChange = true;
     }

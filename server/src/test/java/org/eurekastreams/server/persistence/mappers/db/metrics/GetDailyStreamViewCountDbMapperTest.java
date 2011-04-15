@@ -31,7 +31,7 @@ public class GetDailyStreamViewCountDbMapperTest extends MapperTest
     /**
      * System under test.
      */
-    private GetDailyPageViewCountDbMapper sut;
+    private GetDailyStreamViewCountDbMapper sut;
 
     /**
      * April 8th, 2011 in ticks.
@@ -49,7 +49,7 @@ public class GetDailyStreamViewCountDbMapperTest extends MapperTest
     @Before
     public void setup()
     {
-        sut = new GetDailyPageViewCountDbMapper();
+        sut = new GetDailyStreamViewCountDbMapper();
         sut.setEntityManager(getEntityManager());
     }
 
@@ -59,7 +59,7 @@ public class GetDailyStreamViewCountDbMapperTest extends MapperTest
     @Test
     public void testExecute()
     {
-        // right day - 6
+        // right day - 4
         getEntityManager().persist(new UsageMetric(1L, true, true, new Date(apri8th2011)));
         getEntityManager().persist(new UsageMetric(3L, true, false, new Date(apri8th2011 + 3)));
         getEntityManager().persist(new UsageMetric(6L, true, false, new Date(apri8th2011)));
@@ -76,6 +76,6 @@ public class GetDailyStreamViewCountDbMapperTest extends MapperTest
         getEntityManager().flush();
         getEntityManager().clear();
 
-        Assert.assertEquals(6L, (long) sut.execute(new Date(apri8th2011)));
+        Assert.assertEquals(4L, (long) sut.execute(new Date(apri8th2011)));
     }
 }
