@@ -88,6 +88,13 @@
         </snapshots>
       </repository>
       <repository>
+          <id>ibilio</id>
+          <url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+      </repository>
+      <repository>
         <id>maven-nexus</id>
         <name>Maven Repository - nexus</name>
         <layout>default</layout>
