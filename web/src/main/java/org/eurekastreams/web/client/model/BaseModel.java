@@ -112,18 +112,17 @@ public abstract class BaseModel
             final OnSuccessCommand successCommand, final OnFailureCommand failureCommand,
             final boolean useClientCacheIfAvailable)
     {
-        if (cachedData.get(actionKey) != null
-                && useClientCacheIfAvailable
-                && ((request == null && cachedRequests.get(actionKey) == null) || (areRequestsEqual(
-                        cachedRequests.get(actionKey), request))))
+        if (useClientCacheIfAvailable)
         {
-            successCommand.onSuccess(cachedData.get(actionKey));
+            Serializable cachedResponse = cachedData.get(actionKey);
+            if (cachedResponse != null && areRequestsEqual(cachedRequests.get(actionKey), request))
+            {
+                successCommand.onSuccess(cachedResponse);
+                return;
+            }
         }
-        else
-        {
-            cachedRequests.put(actionKey, request);
-            callAction(actionKey, request, successCommand, failureCommand, useClientCacheIfAvailable);
-        }
+        cachedRequests.put(actionKey, request);
+        callAction(actionKey, request, successCommand, failureCommand, useClientCacheIfAvailable);
     }
 
     /**
@@ -254,16 +253,22 @@ public abstract class BaseModel
      */
     public static native boolean nativeCompareRequest(final Serializable request1, final Serializable request2)
     /*-{
-
-        for(var p in request2)
+        if (!$wnd.es_compareRequests)
         {
-            if (request1[p] != request2[p])
-            {
-                return false;
+            $wnd.es_compareRequests = function(r1,r2) {
+                if (typeof r1 == 'object' && typeof r2 == 'object')
+                {
+                    for(var field in r2)
+                    {
+                        if (!$wnd.es_compareRequests(r1[field],r2[field]))
+                            return false;
+                    }
+                    return true;
+                }
+                else return r1 == r2;
             }
-        }
+       }
 
-        return true;
+       return $wnd.es_compareRequests(request1, request2);
     }-*/;
-
 }
