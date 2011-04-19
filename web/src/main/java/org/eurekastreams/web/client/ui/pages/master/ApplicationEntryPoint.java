@@ -57,7 +57,6 @@ import org.eurekastreams.web.client.ui.common.dialog.login.LoginDialogContent;
 import org.eurekastreams.web.client.ui.common.dialog.lookup.EmployeeLookupContent;
 import org.eurekastreams.web.client.ui.common.dialog.message.MessageDialogContent;
 import org.eurekastreams.web.client.ui.common.dialog.tos.TermsOfServiceDialogContent;
-import org.eurekastreams.web.client.ui.pages.accessdenied.AccessDeniedContent;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -76,6 +75,11 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public class ApplicationEntryPoint implements EntryPoint
 {
+    /**
+     * Relative URL of page to redirect to for users without access.
+     */
+    private static final String ACCESS_DENIED_PAGE = "/requestaccess.html";
+
     /**
      * Mandatory ID for the HTML body element to identify that the full app should be created.
      */
@@ -140,64 +144,55 @@ public class ApplicationEntryPoint implements EntryPoint
         session.setEventBus(EventBus.getInstance());
         session.setPeriodicEventManager(new PeriodicEventManager(APP_IDLE_TIMEOUT, new TimerFactory(), processor));
 
-        if (History.getToken().equals("requestaccess"))
-        {
-            rootPanel.add(new AccessDeniedContent());
-        }
-        else
-        {
-            master = new MasterComposite();
+        master = new MasterComposite();
 
-            EventBus.getInstance().addObserver(FormLoginCompleteEvent.class, new Observer<FormLoginCompleteEvent>()
+        EventBus.getInstance().addObserver(FormLoginCompleteEvent.class, new Observer<FormLoginCompleteEvent>()
+        {
+            public void update(final FormLoginCompleteEvent event)
             {
-                public void update(final FormLoginCompleteEvent event)
+                Window.Location.reload();
+            }
+        });
+
+        EventBus.getInstance().addObserver(TermsOfServiceAcceptedEvent.class,
+                new Observer<TermsOfServiceAcceptedEvent>()
                 {
-                    Window.Location.reload();
-                }
-            });
-
-            EventBus.getInstance().addObserver(TermsOfServiceAcceptedEvent.class,
-                    new Observer<TermsOfServiceAcceptedEvent>()
+                    public void update(final TermsOfServiceAcceptedEvent event)
                     {
-                        public void update(final TermsOfServiceAcceptedEvent event)
-                        {
-                            displayTOS = false;
-                            loadPerson();
-                        }
-                    });
+                        displayTOS = false;
+                        loadPerson();
+                    }
+                });
 
-            setUpGwtFunctions();
+        setUpGwtFunctions();
 
-            processor.makeRequest(new ActionRequestImpl<PersonModelView>("noOperation", null),
-                    new AsyncCallback<Serializable>()
+        processor.makeRequest(new ActionRequestImpl<PersonModelView>("noOperation", null),
+                new AsyncCallback<Serializable>()
+                {
+                    public void onFailure(final Throwable caught)
                     {
-                        public void onFailure(final Throwable caught)
+                        if (caught.getMessage().contains("NO_CREDENTIALS"))
                         {
-                            if (caught.getMessage().contains("NO_CREDENTIALS"))
-                            {
-                                showLogin();
-                            }
-                            else if (caught.getMessage().contains("LOGIN_DISABLED"))
-                            {
-                                rootPanel.clear();
-                                rootPanel.add(new AccessDeniedContent());
-                            }
-                            else
-                            {
-                                Dialog.showCentered(new MessageDialogContent("Unable to Establish Connection",
-                                        "Please Refresh."));
-                            }
+                            showLogin();
                         }
-
-                        public void onSuccess(final Serializable sessionId)
+                        else if (caught.getMessage().contains("LOGIN_DISABLED"))
                         {
-
-                            ActionProcessorImpl.setCurrentSessionId((String) sessionId);
-
-                            loadPerson();
+                            Window.Location.assign(ACCESS_DENIED_PAGE);
                         }
-                    });
-        }
+                        else
+                        {
+                            Dialog.showCentered(new MessageDialogContent("Unable to Establish Connection",
+                                    "Please Refresh."));
+                        }
+                    }
+
+                    public void onSuccess(final Serializable sessionId)
+                    {
+                        ActionProcessorImpl.setCurrentSessionId((String) sessionId);
+
+                        loadPerson();
+                    }
+                });
     }
 
     /**
@@ -216,9 +211,8 @@ public class ApplicationEntryPoint implements EntryPoint
 
                         if (caught instanceof SessionException)
                         {
-                            Dialog
-.showCentered(new MessageDialogContent("Unable to Establish Session",
-                                            "Please Refresh."));
+                            Dialog.showCentered(new MessageDialogContent("Unable to Establish Session",
+                                    "Please Refresh."));
                         }
                         else
                         {
@@ -272,8 +266,8 @@ public class ApplicationEntryPoint implements EntryPoint
     private void displayToS()
     {
 
-        Session.getInstance().getEventBus().addObserver(GotSystemSettingsResponseEvent.class,
-                new Observer<GotSystemSettingsResponseEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(GotSystemSettingsResponseEvent.class, new Observer<GotSystemSettingsResponseEvent>()
                 {
                     public void update(final GotSystemSettingsResponseEvent event)
                     {
@@ -298,8 +292,8 @@ public class ApplicationEntryPoint implements EntryPoint
         // twice on activity page for some reason (profile pages work correctly). Somewhere
         // this is filtered down to only one call to the server to get the stream, so response
         // event works fine for metrics, but should track down why request it double-firing.
-        Session.getInstance().getEventBus().addObserver(GotStreamResponseEvent.class,
-                new Observer<GotStreamResponseEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(GotStreamResponseEvent.class, new Observer<GotStreamResponseEvent>()
                 {
                     public void update(final GotStreamResponseEvent event)
                     {
@@ -315,8 +309,8 @@ public class ApplicationEntryPoint implements EntryPoint
      */
     private void recordPageViewMetrics()
     {
-        Session.getInstance().getEventBus().addObserver(SwitchedHistoryViewEvent.class,
-                new Observer<SwitchedHistoryViewEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(SwitchedHistoryViewEvent.class, new Observer<SwitchedHistoryViewEvent>()
                 {
                     public void update(final SwitchedHistoryViewEvent event)
                     {
@@ -412,8 +406,8 @@ public class ApplicationEntryPoint implements EntryPoint
      */
     public static void bulkGetPeople(final String[] ntids, final int callbackIndex)
     {
-        Session.getInstance().getEventBus().addObserver(GotBulkEntityResponseEvent.class,
-                new Observer<GotBulkEntityResponseEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(GotBulkEntityResponseEvent.class, new Observer<GotBulkEntityResponseEvent>()
                 {
                     public void update(final GotBulkEntityResponseEvent arg1)
                     {
@@ -431,8 +425,8 @@ public class ApplicationEntryPoint implements EntryPoint
                                 if (ntidList.contains(personMV.getAccountId()))
                                 {
                                     AvatarUrlGenerator urlGen = new AvatarUrlGenerator(EntityType.PERSON);
-                                    String imageUrl = urlGen
-                                            .getSmallAvatarUrl(personMV.getId(), personMV.getAvatarId());
+                                    String imageUrl = urlGen.getSmallAvatarUrl(personMV.getId(),
+                                            personMV.getAvatarId());
 
                                     JsArrayString personJSON = (JsArrayString) JavaScriptObject.createObject();
                                     personJSON.set(0, personMV.getAccountId());

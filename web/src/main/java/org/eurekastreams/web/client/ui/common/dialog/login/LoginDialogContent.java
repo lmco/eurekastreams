@@ -194,7 +194,7 @@ public class LoginDialogContent extends BaseDialogContent
                 {
                     errorMessage.setVisible(false);
                     close();
-                    Window.Location.assign("/requestaccess");
+                    Window.Location.assign("/requestaccess.html");
                 }
                 else
                 {
@@ -238,6 +238,7 @@ public class LoginDialogContent extends BaseDialogContent
     /**
      * Provides a hook to fire off events when the dialog is shown.
      */
+    @Override
     public void show()
     {
         username.setText("");
