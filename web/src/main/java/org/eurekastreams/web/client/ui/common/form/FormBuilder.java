@@ -50,14 +50,14 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The Form Builder.
- *
+ * 
  */
 public class FormBuilder extends FlowPanel
 {
     /**
      * Method to call on the BaseModel. (Forms never fetch or delete).
-     *
-     *
+     * 
+     * 
      */
     public enum Method
     {
@@ -140,8 +140,13 @@ public class FormBuilder extends FlowPanel
     private boolean inactive = false;
 
     /**
-     * Default constructor.
-     *
+     * If should scroll to top of window on ValidationExceptionResponseEvent.
+     */
+    private boolean scrollToTopOnValidationError = true;
+
+    /**
+     * Constructor.
+     * 
      * @param title
      *            the form title.
      * @param inBaseModel
@@ -151,6 +156,25 @@ public class FormBuilder extends FlowPanel
      */
     public FormBuilder(final String title, final BaseModel inBaseModel, final Method inMethod)
     {
+        this(title, inBaseModel, inMethod, true);
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param title
+     *            the form title.
+     * @param inBaseModel
+     *            the base model to use to persist data.
+     * @param inMethod
+     *            the method to call on the base model.
+     * @param inScrollToTopOnValidationError
+     *            scroll to top on ValidationExceptionResponseEvent.
+     */
+    public FormBuilder(final String title, final BaseModel inBaseModel, final Method inMethod,
+            final boolean inScrollToTopOnValidationError)
+    {
+        scrollToTopOnValidationError = inScrollToTopOnValidationError;
         baseModel = inBaseModel;
         method = inMethod;
         submitButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().formSubmitButton());
@@ -206,50 +230,52 @@ public class FormBuilder extends FlowPanel
         });
 
         final EventBus eventBus = Session.getInstance().getEventBus();
-        eventBus.addObserver(ValidationExceptionResponseEvent.class,
-                new Observer<ValidationExceptionResponseEvent>()
+        eventBus.addObserver(ValidationExceptionResponseEvent.class, new Observer<ValidationExceptionResponseEvent>()
+        {
+            public void update(final ValidationExceptionResponseEvent event)
+            {
+                List<String> errors = new ArrayList<String>();
+
+                for (FormElement element : data)
                 {
-                    public void update(final ValidationExceptionResponseEvent event)
+                    String error = event.getResponse().getErrors().get(element.getKey());
+                    if (error != null)
                     {
-                        List<String> errors = new ArrayList<String>();
+                        errors.add(error);
+                    }
+                }
 
-                        for (FormElement element : data)
+                if (errors.size() > 0)
+                {
+                    errorBox.clear();
+                    resetSubmitButton();
+
+                    String errorBoxText = new String("Please correct the following errors:<ul>");
+
+                    for (FormElement element : data)
+                    {
+                        String error = event.getResponse().getErrors().get(element.getKey());
+                        if (error != null)
                         {
-                            String error = event.getResponse().getErrors().get(element.getKey());
-                            if (error != null)
-                            {
-                                errors.add(error);
-                            }
+                            errorBox.setVisible(true);
+                            errorBoxText += "<li>" + error + "</li>";
+                            element.onError(error);
                         }
-
-                        if (errors.size() > 0)
+                        else
                         {
-                            errorBox.clear();
-                            resetSubmitButton();
-
-                            String errorBoxText = new String("Please correct the following errors:<ul>");
-
-                            for (FormElement element : data)
-                            {
-                                String error = event.getResponse().getErrors().get(element.getKey());
-                                if (error != null)
-                                {
-                                    errorBox.setVisible(true);
-                                    errorBoxText += "<li>" + error + "</li>";
-                                    element.onError(error);
-                                }
-                                else
-                                {
-                                    element.onSuccess();
-                                }
-                            }
-
-                            errorBoxText += "</ul>";
-                            errorBox.add(new HTML(errorBoxText));
-                            Window.scrollTo(0, 0);
+                            element.onSuccess();
                         }
                     }
-                });
+
+                    errorBoxText += "</ul>";
+                    errorBox.add(new HTML(errorBoxText));
+                    if (scrollToTopOnValidationError)
+                    {
+                        Window.scrollTo(0, 0);
+                    }
+                }
+            }
+        });
 
         eventBus.addObserver(ExceptionResponseEvent.class, new Observer<ExceptionResponseEvent>()
         {
@@ -262,36 +288,33 @@ public class FormBuilder extends FlowPanel
             }
         });
 
-        eventBus.addObserver(PreSwitchedHistoryViewEvent.class,
-                new Observer<PreSwitchedHistoryViewEvent>()
+        eventBus.addObserver(PreSwitchedHistoryViewEvent.class, new Observer<PreSwitchedHistoryViewEvent>()
+        {
+
+            public void update(final PreSwitchedHistoryViewEvent arg1)
+            {
+                if (hasFormChanged())
                 {
-
-                    public void update(final PreSwitchedHistoryViewEvent arg1)
+                    if (new WidgetJSNIFacadeImpl().confirm("The form has been changed. Do you wish to save changes?"))
                     {
-                        if (hasFormChanged())
-                        {
-                            if (new WidgetJSNIFacadeImpl().confirm(
-                                    "The form has been changed. Do you wish to save changes?"))
-                            {
-                                eventBus.notifyObservers(new PreventHistoryChangeEvent());
-                                eventBus.notifyObservers(new SubmitFormIfChangedEvent());
-                            }
-                        }
+                        eventBus.notifyObservers(new PreventHistoryChangeEvent());
+                        eventBus.notifyObservers(new SubmitFormIfChangedEvent());
                     }
-                });
+                }
+            }
+        });
 
-        eventBus.addObserver(SubmitFormIfChangedEvent.class,
-                new Observer<SubmitFormIfChangedEvent>()
+        eventBus.addObserver(SubmitFormIfChangedEvent.class, new Observer<SubmitFormIfChangedEvent>()
+        {
+
+            public void update(final SubmitFormIfChangedEvent arg1)
+            {
+                if (hasFormChanged())
                 {
-
-                    public void update(final SubmitFormIfChangedEvent arg1)
-                    {
-                        if (hasFormChanged())
-                        {
-                            submit();
-                        }
-                    }
-                });
+                    submit();
+                }
+            }
+        });
     }
 
     /**
@@ -304,7 +327,7 @@ public class FormBuilder extends FlowPanel
 
     /**
      * Has the form changed?
-     *
+     * 
      * @return has the form changed?
      */
     private boolean hasFormChanged()
@@ -313,10 +336,10 @@ public class FormBuilder extends FlowPanel
 
         for (FormElement element : data)
         {
-            if (originalValues.containsKey(element.getKey()) && (originalValues.get(element.getKey()) != null
-                    && !originalValues.get(element.getKey()).equals(element.getValue()))
-                    || (element.getValue() != null
-                            && !element.getValue().equals(originalValues.get(element.getKey()))))
+            if (originalValues.containsKey(element.getKey())
+                    && (originalValues.get(element.getKey()) != null && !originalValues.get(element.getKey()).equals(
+                            element.getValue()))
+                    || (element.getValue() != null && !element.getValue().equals(originalValues.get(element.getKey()))))
             {
                 changed = true;
             }
@@ -368,7 +391,7 @@ public class FormBuilder extends FlowPanel
 
     /**
      * Sets the CSS class on the Submit button. Used if you're changing it to say, an update button.
-     *
+     * 
      * @param cssClass
      *            the css class.
      */
@@ -381,7 +404,7 @@ public class FormBuilder extends FlowPanel
     /**
      * Used to inject widgets in the form container itself. Useful if you need to add something after the submit and
      * cancel.
-     *
+     * 
      * @param widget
      *            the widget.
      */
@@ -392,7 +415,7 @@ public class FormBuilder extends FlowPanel
 
     /**
      * Sets the token for when the user clicks cancel.
-     *
+     * 
      * @param token
      *            the token.
      */
@@ -403,7 +426,7 @@ public class FormBuilder extends FlowPanel
 
     /**
      * Gives a command to execute on cancel.
-     *
+     * 
      * @param inOnCancelCommand
      *            the command.
      */
@@ -414,7 +437,7 @@ public class FormBuilder extends FlowPanel
 
     /**
      * Adds a form element to the form.
-     *
+     * 
      * @param element
      *            the form element.
      */
@@ -440,7 +463,7 @@ public class FormBuilder extends FlowPanel
     /**
      * Adds a "last form element". This is a form element that will ALWAYS stay at the bottom of the form Regardless of
      * others added.
-     *
+     * 
      * @param element
      *            the element.
      */
@@ -459,7 +482,7 @@ public class FormBuilder extends FlowPanel
 
     /**
      * Gets the form value from the key.
-     *
+     * 
      * @param key
      *            the key.
      * @return the value.
@@ -509,7 +532,7 @@ public class FormBuilder extends FlowPanel
 
     /**
      * Adds a form label to the form.
-     *
+     * 
      * @param header
      *            the label.
      * @return the label.
@@ -526,7 +549,7 @@ public class FormBuilder extends FlowPanel
 
     /**
      * Adds a widget to the form panel.
-     *
+     * 
      * @param w
      *            the widget to add.
      */

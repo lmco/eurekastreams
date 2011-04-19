@@ -25,6 +25,7 @@ import org.eurekastreams.web.client.model.SystemSettingsModel;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.TimerFactory;
 import org.eurekastreams.web.client.ui.TimerHandler;
+import org.eurekastreams.web.client.ui.common.autocomplete.ExtendedTextArea;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Background;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
@@ -41,6 +42,8 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -120,7 +123,7 @@ public class PostCommentPanel extends FlowPanel
             Label postAComment = new Label("post a comment");
             postAComment.addStyleName(StaticResourceBundle.INSTANCE.coreCss().unactive());
             postAComment.addStyleName(StaticResourceBundle.INSTANCE.coreCss().simulatedTextBox());
-            
+
             postAComment.addClickHandler(new ClickHandler()
             {
                 public void onClick(final ClickEvent event)
@@ -151,7 +154,7 @@ public class PostCommentPanel extends FlowPanel
         FlowPanel body = new FlowPanel();
         body.addStyleName(StaticResourceBundle.INSTANCE.coreCss().body());
 
-        commentBox = new TextArea();
+        commentBox = new ExtendedTextArea();
         body.add(commentBox);
         commentBox.setFocus(true);
 
@@ -258,6 +261,14 @@ public class PostCommentPanel extends FlowPanel
             }
         });
 
+        commentBox.addValueChangeHandler(new ValueChangeHandler<String>()
+        {
+            public void onValueChange(final ValueChangeEvent<String> inArg0)
+            {
+                onCommentChanges();
+            }
+        });
+
         commentBox.addChangeHandler(new ChangeHandler()
         {
             public void onChange(final ChangeEvent event)
@@ -274,8 +285,8 @@ public class PostCommentPanel extends FlowPanel
      *            the element
      */
     public static native void nativeSetFocus(final Element el) /*-{
-                                                           el.focus();
-                                                    }-*/;
+                                                                    el.focus();
+                                                             }-*/;
 
     /**
      * Gets triggered whenever the comment changes.

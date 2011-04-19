@@ -164,7 +164,7 @@
                 gadgets.io.makeRequest(feedUrl,
                     function(results)
                     {
-                        if(!results.error)
+                        if(!results.errors || results.errors.length == 0)
                         {
                             var feed = results.data;
                             if(feed.Entry)
@@ -248,7 +248,7 @@
             gadgets.io.makeRequest(feedUrl,
                 function(results)
                 {
-                    if(!results.error)
+                    if(!results.errors || results.errors.length == 0)
                     {
                         var feed = results.data;
                         var viewParams = {};
