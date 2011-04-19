@@ -466,7 +466,16 @@ div.banner-container {
 	border: 1px solid #666;
 }
 
-.modal-bg,.dim-panel {
+.modal-bg
+{
+	background-color: #333333;
+	-moz-opacity: .50;
+	opacity: .50;
+	filter: literal("alpha(opacity = 50)");
+	z-index: 1000;
+}
+
+.dim-panel {
 	width: 100%;
 	height: 100%;
 	position: fixed;
@@ -2210,7 +2219,6 @@ body .post-to-stream .over-character-limit {
 }
 
 .liker-modal {
-	height: 300px;
 	width: 400px;
 }
 

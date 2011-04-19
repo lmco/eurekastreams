@@ -25,11 +25,12 @@ import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
  * Post top panel.
- *
+ * 
  */
 public class PostToStreamTextboxPanel extends AutoCompleteDropDownPanel implements HasFocusHandlers
 {
@@ -37,6 +38,7 @@ public class PostToStreamTextboxPanel extends AutoCompleteDropDownPanel implemen
      * Hashtag array.
      */
     private JsArrayString hashTagArray;
+
     /**
      * Default constructor.
      */
@@ -47,7 +49,7 @@ public class PostToStreamTextboxPanel extends AutoCompleteDropDownPanel implemen
 
     /**
      * Adds a handler for keypresses.
-     *
+     * 
      * @param handler
      *            the handler.
      */
@@ -56,10 +58,20 @@ public class PostToStreamTextboxPanel extends AutoCompleteDropDownPanel implemen
         getTextWidget().addKeyUpHandler(handler);
     }
 
+    /**
+     * Add a handler for value changed.
+     * 
+     * @param handler
+     *            the handler
+     */
+    public void addValueChangedHandler(final ValueChangeHandler<String> handler)
+    {
+        getTextWidget().addValueChangeHandler(handler);
+    }
 
     /**
      * Sets up the auto complete.
-     *
+     * 
      * @param taId
      *            the text area id.
      * @param acdId
@@ -68,8 +80,7 @@ public class PostToStreamTextboxPanel extends AutoCompleteDropDownPanel implemen
      *            the url.
      */
     @Override
-    protected void setUpAutoComplete(final String taId,
-            final String acdId, final String url)
+    protected void setUpAutoComplete(final String taId, final String acdId, final String url)
     {
 
         Session.getInstance().getEventBus().addObserver(GotAllPopularHashTagsResponseEvent.class,
@@ -92,7 +103,7 @@ public class PostToStreamTextboxPanel extends AutoCompleteDropDownPanel implemen
 
     /**
      * Sets up the auto complete.
-     *
+     * 
      * @param taId
      *            the text area id.
      * @param acdId
@@ -101,13 +112,13 @@ public class PostToStreamTextboxPanel extends AutoCompleteDropDownPanel implemen
      *            the url.
      * @param inResultsListName
      *            the name of the results list returned.
-     *  @param inDelimiter
+     * @param inDelimiter
      *            the item delimiter string.
-     *            @param hashTagArray the hash tag array.
+     * @param hashTagArray
+     *            the hash tag array.
      */
-    private static native void setUpAutoCompleteJSON(final String taId,
-            final String acdId, final String url, final String inResultsListName,
-            final String inDelimiter, final JsArrayString hashTagArray)
+    private static native void setUpAutoCompleteJSON(final String taId, final String acdId, final String url,
+            final String inResultsListName, final String inDelimiter, final JsArrayString hashTagArray)
     /*-{
        var autocompleteConfig={
           config:{

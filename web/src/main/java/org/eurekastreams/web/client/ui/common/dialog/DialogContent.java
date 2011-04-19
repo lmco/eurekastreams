@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package org.eurekastreams.web.client.ui.common.dialog;
-
-import org.eurekastreams.commons.client.ui.WidgetCommand;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -39,17 +37,12 @@ public interface DialogContent
     Widget getBody();
 
     /**
-     * The command to call to close the dialog.
+     * Passes the dialog to the content so it can interact with it.
      *
-     * @param command
-     *            the close command.
+     * @param dialog
+     *            The dialog hosting the content.
      */
-    void setCloseCommand(WidgetCommand command);
-
-    /**
-     * Call the close command.
-     */
-    void close();
+    void setHost(DialogContentHost dialog);
 
     /**
      * Returns the CSS class name to use for this dialog.
@@ -62,4 +55,9 @@ public interface DialogContent
      * Provides a hook to fire off events when the dialog is shown.
      */
     void show();
+
+    /**
+     * Provides a hook to fire off events when the dialog is hidden.
+     */
+    void beforeHide();
 }

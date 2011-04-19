@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,122 +15,77 @@
  */
 package org.eurekastreams.web.client.ui.common.dialog;
 
-import org.eurekastreams.commons.client.ui.WidgetCommand;
+import org.eurekastreams.web.client.events.PreDialogHideEvent;
+import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
-import com.google.gwt.user.client.Event;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.KeyboardListenerAdapter;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Implementation of Dialog.
  */
-public class Dialog extends PopupPanel
+public class Dialog implements DialogContentHost
 {
-    /**
-     * The dialog controller.
-     */
-    private DialogController controller = null;
+    /** The actual dialog widget. */
+    private final PopupPanel popupPanel;
 
-    /**
-     * Close button.
-     */
-    private Anchor closeButton = new Anchor("Close");
-
-    /**
-     * The dialog's content.
-     */
+    /** The dialog's content. */
     private DialogContent dialogContent = null;
 
     /**
-     * The title of the dialog.
-     */
-    private Label title = new Label();
-
-    /**
-     * Command executed on escape.
-     */
-    private WidgetCommand escapeCommand;
-
-    /**
-     * The transparent background..
-     */
-    private static Panel bgPanel = null;
-
-    /**
-     * The content panel.
-     */
-    private FlowPanel modalPanel = new FlowPanel();
-
-    /**
-     * Adds the transparent background for the dialog to the document.
-     */
-    private static void addBg()
-    {
-        if (bgPanel == null)
-        {
-            bgPanel = new FlowPanel();
-            bgPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().modalBg());
-
-            bgPanel.setVisible(false);
-
-            RootPanel.get().add(bgPanel);
-        }
-    }
-
-    /**
      * Default constructor.
-     * 
-     * @param content
+     *
+     * @param inDialogContent
      *            The content of the dialog.
      */
-    public Dialog(final DialogContent content)
-    {
-        super(false, false);
-
-        addBg();
-
-        DialogFactory factory = new DialogFactory(this);
-        controller = (DialogController) factory.getController();
-
-        setContent(content);
-
-        modalPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().modal());
-        setWidget(modalPanel);
-
-        controller.init();
-    }
-
-    /**
-     * Set the content.
-     * 
-     * @param inDialogContent
-     *            the content.
-     */
-    public void setContent(final DialogContent inDialogContent)
+    public Dialog(final DialogContent inDialogContent)
     {
         dialogContent = inDialogContent;
-        modalPanel.clear();
 
-        dialogContent.setCloseCommand(controller.getCloseCommand());
+        final Dialog thisBuffered = this;
 
-        modalPanel.setStyleName(dialogContent.getCssName());
+        popupPanel = new PopupPanel(false, false)
+        {
+            @Override
+            protected void onPreviewNativeEvent(final com.google.gwt.user.client.Event.NativePreviewEvent event)
+            {
+                if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ESCAPE)
+                {
+                    thisBuffered.hide();
+                }
+                super.onPreviewNativeEvent(event);
+            };
+        };
+        popupPanel.setGlassEnabled(true);
+        popupPanel.setGlassStyleName(StaticResourceBundle.INSTANCE.coreCss().modalBg());
 
-        // Title Panel
+        FlowPanel modalPanel = new FlowPanel();
+        modalPanel.addStyleName(dialogContent.getCssName());
+        modalPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().modal());
+
+        // title panel
         FlowPanel titlePanel = new FlowPanel();
         titlePanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().modalTitle());
 
+        Anchor closeButton = new Anchor("Close");
         closeButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().modalClose());
         titlePanel.add(closeButton);
+        closeButton.addClickHandler(new ClickHandler()
+        {
+            public void onClick(final ClickEvent inEvent)
+            {
+                hide();
+            }
+        });
 
-        title.setText(dialogContent.getTitle());
+        Label title = new Label(dialogContent.getTitle());
         titlePanel.add(title);
 
         modalPanel.add(titlePanel);
@@ -140,72 +95,34 @@ public class Dialog extends PopupPanel
         bodyContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().modalContentPanel());
         bodyContainer.add(dialogContent.getBody());
         modalPanel.add(bodyContainer);
+
+        popupPanel.setWidget(modalPanel);
+
+        dialogContent.setHost(this);
     }
 
     /**
-     * Add an event to the close button.
-     * 
-     * @param listener
-     *            a click listener for the button.
+     * Actions to take when the dialog should be hidden.
      */
-    public void addCloseButtonListener(final ClickListener listener)
+    public void hide()
     {
-        closeButton.addClickListener(listener);
+        Session.getInstance().getEventBus().notifyObservers(new PreDialogHideEvent(this));
+        dialogContent.beforeHide();
+        popupPanel.hide();
     }
 
     /**
-     * Adds a keyboard listener to the dialog.
-     * 
-     * @param inEscapeCommand
-     *            the command to execute on escape.
+     * Show the dialog.
      */
-    public void setEscapeCommand(final WidgetCommand inEscapeCommand)
-    {
-        escapeCommand = inEscapeCommand;
-    }
-
-    /**
-     * Fires escape command on escape key press.
-     * 
-     * @param event
-     *            the relevant event.
-     * @return defers to superclass.
-     */
-    @Override
-    public boolean onEventPreview(final Event event)
-    {
-        if (event.getKeyCode() == KeyboardListenerAdapter.KEY_ESCAPE)
-        {
-            escapeCommand.execute();
-        }
-
-        return super.onEventPreview(event);
-    }
-
-    /**
-     * Toggles the background.
-     * 
-     * @param visible
-     *            true to show, false to hide.
-     */
-    public void setBgVisible(final boolean visible)
-    {
-        bgPanel.setVisible(visible);
-    }
-
-    /**
-     * Show the dilaog.
-     */
-    @Override
     public void show()
     {
-        super.show();
+        popupPanel.show();
         dialogContent.show();
     }
 
     /**
      * Returns the content.
-     * 
+     *
      * @return the dialog's content.
      */
     public DialogContent getContent()
@@ -214,18 +131,43 @@ public class Dialog extends PopupPanel
     }
 
     /**
-     * Centers the modal for fixed positioning, and shows it.
+     * Shows the modal centered.
      */
-    @Override
+    public void showCentered()
+    {
+        popupPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+        show();
+        center();
+        popupPanel.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+    }
+
+    /**
+     * Centers the modal for fixed positioning.
+     */
     public void center()
     {
-        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
-        super.show();
-        dialogContent.show();
-        int offsetTop = (Window.getClientHeight() - this.getElement().getScrollHeight()) / 2;
-        int offsetLeft = (Window.getClientWidth() - this.getElement().getScrollWidth()) / 2;
-        this.setPopupPosition(offsetLeft, offsetTop);
-        this.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().hidden());
+        int offsetTop = (Window.getClientHeight() - popupPanel.getElement().getScrollHeight()) / 2;
+        int offsetLeft = (Window.getClientWidth() - popupPanel.getElement().getScrollWidth()) / 2;
+        popupPanel.setPopupPosition(offsetLeft, offsetTop);
+    }
+
+    /**
+     * @return The PopupPanel used to implement the dialog.
+     */
+    protected PopupPanel getPopupPanel()
+    {
+        return popupPanel;
+    }
+
+    /**
+     * Adds a style to the dialog panel.
+     *
+     * @param styleName
+     *            CSS style class name.
+     */
+    public void addStyleName(final String styleName)
+    {
+        popupPanel.addStyleName(styleName);
     }
 
     /**
@@ -234,11 +176,9 @@ public class Dialog extends PopupPanel
      * @param dialogContent
      *            the content.
      */
-    public static void showDialog(final DialogContent dialogContent)
+    public static void showCentered(final DialogContent dialogContent)
     {
         Dialog newDialog = new Dialog(dialogContent);
-        newDialog.setBgVisible(true);
-        newDialog.center();
-        newDialog.getContent().show();
+        newDialog.showCentered();
     }
 }

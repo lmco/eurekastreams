@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * Org lookup form element.
- * 
+ *
  */
 public class OrgLookupFormElement extends FlowPanel implements FormElement
 {
@@ -77,7 +77,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Constructor.
-     * 
+     *
      * @param inTitle
      *            the title.
      * @param subTitle
@@ -140,9 +140,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
                 if (!inReadOnly)
                 {
                     orgLookupContent = new OrgLookupContent(getSaveCommand());
-                    Dialog newDialog = new Dialog(orgLookupContent);
-                    newDialog.setBgVisible(true);
-                    newDialog.center();
+                    Dialog.showCentered(orgLookupContent);
                 }
             }
         };
@@ -176,7 +174,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Get the save command.
-     * 
+     *
      * @return the command.
      */
     private Command getSaveCommand()
@@ -192,7 +190,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Set the org.
-     * 
+     *
      * @param org
      *            the org.
      */
@@ -209,7 +207,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Get the key.
-     * 
+     *
      * @return the key.
      */
     public String getKey()
@@ -219,7 +217,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Get the value.
-     * 
+     *
      * @return the value.
      */
     public Serializable getValue()
@@ -229,7 +227,7 @@ public class OrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Called on error.
-     * 
+     *
      * @param errMessage
      *            the error.
      */

@@ -16,16 +16,12 @@
 package org.eurekastreams.web.client.ui.common.dialog.optoutvideo;
 
 import org.eurekastreams.server.domain.TutorialVideoDTO;
-import org.eurekastreams.web.client.events.Observer;
-import org.eurekastreams.web.client.events.PreDialogHideEvent;
 import org.eurekastreams.web.client.model.OptOutVideosModel;
-import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.FlashWidget;
 import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicCheckBoxFormElement;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
@@ -114,31 +110,19 @@ public class OptOutableVideoDialogContent extends BaseDialogContent
             flashVideo.addStyleName(StaticResourceBundle.INSTANCE.coreCss().content_video());
             body.add(flashVideo);
         }
-
-        Session.getInstance().getEventBus().addObserver(PreDialogHideEvent.class, new Observer<PreDialogHideEvent>()
-        {
-            public void update(final PreDialogHideEvent event)
-            {
-                nativeStop(flashVideo.getVideoName());
-            }
-        });
     }
 
     /**
-     * @return a Clicklistener to be set on dialog close.
+     * {@inheritDoc}
      */
-    public ClickListener closeDialog()
+    @Override
+    public void beforeHide()
     {
-        return new ClickListener()
+        nativeStop(flashVideo.getVideoName());
+        if ((Boolean) dontShowAgain.getValue())
         {
-            public void onClick(final Widget inSender)
-            {
-                if ((Boolean) dontShowAgain.getValue())
-                {
-                    OptOutVideosModel.getInstance().insert(tutorialVideo.getEntityId());
-                }
-            }
-        };
+            OptOutVideosModel.getInstance().insert(tutorialVideo.getEntityId());
+        }
     }
 
     /**

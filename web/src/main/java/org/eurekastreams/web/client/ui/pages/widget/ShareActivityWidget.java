@@ -15,12 +15,12 @@
  */
 package org.eurekastreams.web.client.ui.pages.widget;
 
-import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.data.GotActivityResponseEvent;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.model.ActivityModel;
+import org.eurekastreams.web.client.ui.common.dialog.DialogContentHost;
 import org.eurekastreams.web.client.ui.common.stream.share.ShareMessageDialogContent;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
@@ -48,15 +48,19 @@ public class ShareActivityWidget extends Composite
         {
             public void update(final GotActivityResponseEvent ev)
             {
-                ShareMessageDialogContent dialog = new ShareMessageDialogContent(ev.getResponse());
-                dialog.setCloseCommand(new WidgetCommand()
+                ShareMessageDialogContent dialogContent = new ShareMessageDialogContent(ev.getResponse());
+                dialogContent.setHost(new DialogContentHost()
                 {
-                    public void execute()
+                    public void center()
+                    {
+                    }
+
+                    public void hide()
                     {
                         WidgetJSNIFacadeImpl.nativeClose();
                     }
                 });
-                Widget dialogWidget = dialog.getBody();
+                Widget dialogWidget = dialogContent.getBody();
                 dialogWidget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().embeddedWidget());
                 dialogWidget.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectCommentWidget());
                 main.add(dialogWidget);

@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
-import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 import org.eurekastreams.web.client.ui.pages.profile.Task;
 
@@ -113,7 +112,6 @@ public class ProfileChecklistDialogContent extends BaseDialogContent
      */
     public Widget getBody()
     {
-        final DialogContent thisBuffered = this;
         Label descriptionLbl = new Label(description);
         descriptionLbl.addStyleName(StaticResourceBundle.INSTANCE.coreCss().checklistDesc());
         content.add(descriptionLbl);
@@ -138,7 +136,7 @@ public class ProfileChecklistDialogContent extends BaseDialogContent
             {
                 public void onClick(final Widget arg0)
                 {
-                    thisBuffered.close();
+                    close();
                 }
             });
             taskContainer.add(taskPanel);

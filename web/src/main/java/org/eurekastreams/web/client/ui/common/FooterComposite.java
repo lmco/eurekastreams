@@ -74,9 +74,7 @@ public class FooterComposite extends Composite
         {
             public void onClick(final ClickEvent arg0)
             {
-                dialog.setBgVisible(true);
-                dialog.center();
-                dialog.getContent().show();
+                dialog.showCentered();
             }
         });
 

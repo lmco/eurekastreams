@@ -129,7 +129,7 @@ public class MasterComposite extends Composite
 
     /**
      * Default constructor.
-     * 
+     *
      */
     public MasterComposite()
     {
@@ -163,47 +163,49 @@ public class MasterComposite extends Composite
 
         initWidget(panel);
 
-        Session.getInstance().getEventBus().addObserver(GetTutorialVideoResponseEvent.class,
-                new Observer<GetTutorialVideoResponseEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(GetTutorialVideoResponseEvent.class, new Observer<GetTutorialVideoResponseEvent>()
                 {
                     public void update(final GetTutorialVideoResponseEvent event)
                     {
-                        Dialog dialog = null;
-
                         HashSet<TutorialVideoDTO> tutVids = event.getResponse();
+                        PersonModelView currentPerson = Session.getInstance().getCurrentPerson();
 
                         for (TutorialVideoDTO vid : tutVids)
                         {
                             if (vid.getPage() == currentPage)
                             {
                                 if (currentPage == Page.PEOPLE
-                                        && !(currentViews.contains(Session.getInstance().getCurrentPerson()
-                                                .getAccountId())))
+                                        && !(currentViews.contains(currentPerson.getAccountId())))
                                 {
                                     // if you are on the person profile tab but it's not you then don't show this
                                     // dialog.
                                     break;
                                 }
-                                if (!(Session.getInstance().getCurrentPerson().getOptOutVideos().contains(vid
-                                        .getEntityId())))
+                                if (!(currentPerson.getOptOutVideos().contains(vid.getEntityId())))
                                 {
-                                    OptOutableVideoDialogContent dialogContent = new OptOutableVideoDialogContent(vid);
-                                    dialog = new Dialog(dialogContent);
-                                    dialog.addCloseButtonListener(dialogContent.closeDialog());
-                                    dialog.setBgVisible(true);
-                                    dialog.setModal(true);
-                                    dialog.show();
+                                    final Integer videoWidth = vid.getVideoWidth() != null ? vid.getVideoWidth()
+                                            : OptOutableVideoDialogContent.DEFAULT_VIDEO_WIDTH;
 
-                                    Integer videoWidth = OptOutableVideoDialogContent.DEFAULT_VIDEO_WIDTH;
-                                    if (vid.getVideoWidth() != null)
+                                    OptOutableVideoDialogContent dialogContent = new OptOutableVideoDialogContent(vid);
+                                    Dialog dialog = new Dialog(dialogContent)
                                     {
-                                        videoWidth = vid.getVideoWidth();
-                                    }
-                                    dialog.setWidth(videoWidth + OptOutableVideoDialogContent.CONTENT_WIDTH
-                                            + OptOutableVideoDialogContent.MARGIN_OFFSET + "px");
-                                    dialog.center();
-                                    dialog.setPopupPosition(dialog.getAbsoluteLeft(),
-                                            OptOutableVideoDialogContent.DIALOG_HEIGHT_OFFSET);
+                                        {
+                                            getPopupPanel().setModal(true);
+                                        }
+
+                                        @Override
+                                        public void center()
+                                        {
+                                            getPopupPanel().setWidth(
+                                                    videoWidth + OptOutableVideoDialogContent.CONTENT_WIDTH
+                                                            + OptOutableVideoDialogContent.MARGIN_OFFSET + "px");
+                                            super.center();
+                                            getPopupPanel().setPopupPosition(getPopupPanel().getAbsoluteLeft(),
+                                                    OptOutableVideoDialogContent.DIALOG_HEIGHT_OFFSET);
+                                        }
+                                    };
+                                    dialog.show();
                                 }
                                 break;
                             }
@@ -211,8 +213,8 @@ public class MasterComposite extends Composite
                     }
                 });
 
-        Session.getInstance().getEventBus().addObserver(SwitchedHistoryViewEvent.class,
-                new Observer<SwitchedHistoryViewEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(SwitchedHistoryViewEvent.class, new Observer<SwitchedHistoryViewEvent>()
                 {
                     public void update(final SwitchedHistoryViewEvent event)
                     {
@@ -244,8 +246,8 @@ public class MasterComposite extends Composite
                 if (event.getBannerableEntity() != null)
                 {
                     AvatarUrlGenerator urlGen = new AvatarUrlGenerator(null);
-                    new WidgetJSNIFacadeImpl()
-                            .setBanner(urlGen.getBannerUrl(event.getBannerableEntity().getBannerId()));
+                    new WidgetJSNIFacadeImpl().setBanner(urlGen
+                            .getBannerUrl(event.getBannerableEntity().getBannerId()));
                 }
                 // Start page, the bannerable entity is null, just clear out the banner value
                 // to let the theme take over again.
@@ -260,7 +262,7 @@ public class MasterComposite extends Composite
 
     /**
      * Get the user agent (for detecting IE7).
-     * 
+     *
      * @return the user agent.
      */
     public static native String getUserAgent()
@@ -270,7 +272,7 @@ public class MasterComposite extends Composite
 
     /**
      * Render header and footer.
-     * 
+     *
      */
     public void renderHeaderAndFooter()
     {
@@ -282,7 +284,7 @@ public class MasterComposite extends Composite
 
     /**
      * Get the header composite.
-     * 
+     *
      * @param viewer
      *            the user.
      * @return the header composite.
@@ -292,8 +294,8 @@ public class MasterComposite extends Composite
         panel.add(footerPanel);
         header.render(viewer);
 
-        Session.getInstance().getEventBus().addObserver(GotSystemSettingsResponseEvent.class,
-                new Observer<GotSystemSettingsResponseEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(GotSystemSettingsResponseEvent.class, new Observer<GotSystemSettingsResponseEvent>()
                 {
                     public void update(final GotSystemSettingsResponseEvent event)
                     {

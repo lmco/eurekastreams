@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ public class NotificationCountWidget extends Composite
     private static final String UNREAD_STYLE = "notif-count-unread";
 
     /** The label. */
-    private Label countLabel = new Label();
+    private final Label countLabel = new Label();
 
     /**
      * Constructor.
@@ -92,17 +92,6 @@ public class NotificationCountWidget extends Composite
      */
     public void showDialog()
     {
-        final NotificationsDialogContent dialogContent = new NotificationsDialogContent();
-        Dialog dialog = new Dialog(dialogContent)
-        {
-            @Override
-            public void hide()
-            {
-                dialogContent.beforeClose();
-                super.hide();
-            }
-        };
-        dialog.setBgVisible(true);
-        dialog.center();
+        Dialog.showCentered(new NotificationsDialogContent());
     }
 }

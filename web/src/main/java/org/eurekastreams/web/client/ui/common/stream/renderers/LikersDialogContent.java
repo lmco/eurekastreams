@@ -94,22 +94,29 @@ public class LikersDialogContent extends BaseDialogContent
                 {
                     public void update(final GotActivityLikersResponseEvent event)
                     {
+                        Session.getInstance().getEventBus().removeObserver(event, this);
+
                         body.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formSubmitSpinny());
-                        body.removeStyleName("form-processing-spinny");
+                        body.removeStyleName(StaticResourceBundle.INSTANCE.coreCss().formProcessingSpinny());
+
+                        body.addStyleName(StaticResourceBundle.INSTANCE.coreCss().likersContent());
 
                         PersonRenderer renderer = new PersonRenderer(false);
-
-                        FlowPanel scrollable = new FlowPanel();
-                        scrollable.addStyleName(StaticResourceBundle.INSTANCE.coreCss().likersContent());
-                        body.add(scrollable);
-
                         for (PersonModelView person : event.getResponse())
                         {
-                            scrollable.add(renderer.render(person));
+                            body.add(renderer.render(person));
                         }
 
-                        Session.getInstance().getEventBus().removeObserver(
-                                GotActivityLikersResponseEvent.class, this);
+                        recenter();
+
+                        // FlowPanel scrollable = new FlowPanel();
+                        // scrollable.addStyleName(StaticResourceBundle.INSTANCE.coreCss().likersContent());
+                        // body.add(scrollable);
+                        //
+                        // for (PersonModelView person : event.getResponse())
+                        // {
+                        // scrollable.add(renderer.render(person));
+                        // }
                     }
                 });
     }

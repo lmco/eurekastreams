@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -118,12 +118,7 @@ public class ChecklistProgressBarPanel extends FlowPanel
         {
             public void onClick(final Widget arg0)
             {
-                ProfileChecklistDialogContent dialogContent = new ProfileChecklistDialogContent(title, desc, tasks,
-                        completedTasks, inTarget);
-                Dialog dialog = new Dialog(dialogContent);
-                dialog.setBgVisible(true);
-                dialog.center();
-                dialog.getContent().show();
+                Dialog.showCentered(new ProfileChecklistDialogContent(title, desc, tasks, completedTasks, inTarget));
             }
         });
 

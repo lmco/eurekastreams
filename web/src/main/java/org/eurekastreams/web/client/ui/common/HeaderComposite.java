@@ -17,7 +17,6 @@ package org.eurekastreams.web.client.ui.common;
 
 import java.util.HashMap;
 
-import org.eurekastreams.commons.client.ui.WidgetCommand;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.search.modelview.AuthenticationType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
@@ -25,6 +24,7 @@ import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.SwitchedHistoryViewEvent;
 import org.eurekastreams.web.client.history.CreateUrlRequest;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.DialogFactory;
 import org.eurekastreams.web.client.ui.common.notification.NotificationCountWidget;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * HeaderComposite draws the header bar for the user.
- * 
+ *
  */
 public class HeaderComposite extends Composite
 {
@@ -110,7 +110,7 @@ public class HeaderComposite extends Composite
 
     /**
      * Render the header.
-     * 
+     *
      * @param viewer
      *            - user to display.
      */
@@ -178,7 +178,7 @@ public class HeaderComposite extends Composite
         {
             userNav.add(new Hyperlink("Help", Session.getInstance().generateUrl(new CreateUrlRequest(Page.HELP))));
 
-            final WidgetCommand loginDialog = DialogFactory.getDialog("login", null);
+            final Dialog loginDialog = DialogFactory.getDialog("login");
 
             Hyperlink loginLink = new Hyperlink();
             loginLink.setText("Login");
@@ -186,7 +186,7 @@ public class HeaderComposite extends Composite
             {
                 public void onClick(final Widget arg0)
                 {
-                    loginDialog.execute();
+                    loginDialog.show();
                 }
             });
             loginLink.setTargetHistoryToken(History.getToken());
@@ -247,7 +247,7 @@ public class HeaderComposite extends Composite
 
     /**
      * Sets Site labeling.
-     * 
+     *
      * @param inTemplate
      *            HTML template content to insert in the footer.
      * @param inSiteLabel
@@ -262,7 +262,7 @@ public class HeaderComposite extends Composite
 
     /**
      * Set the top button as active.
-     * 
+     *
      * @param page
      *            the page to activate.
      */
