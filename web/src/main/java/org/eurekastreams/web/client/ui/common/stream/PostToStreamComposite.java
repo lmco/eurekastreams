@@ -16,10 +16,10 @@
 package org.eurekastreams.web.client.ui.common.stream;
 
 import org.eurekastreams.server.action.request.stream.PostActivityRequest;
+import org.eurekastreams.server.domain.DomainConversionUtility;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.StreamScope;
-import org.eurekastreams.server.domain.DomainConversionUtility;
 import org.eurekastreams.web.client.events.EventBus;
 import org.eurekastreams.web.client.events.MessageAttachmentChangedEvent;
 import org.eurekastreams.web.client.events.MessageStreamAppendEvent;
@@ -47,6 +47,8 @@ import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
@@ -200,6 +202,14 @@ public class PostToStreamComposite extends FlowPanel
             }
         });
 
+        message.addValueChangedHandler(new ValueChangeHandler<String>()
+        {
+            public void onValueChange(final ValueChangeEvent<String> newValue)
+            {
+                checkMessageTextChanged();
+            }
+        });
+
         // user typed in message text box
         message.addKeystrokeHandler(new KeyUpHandler()
         {
@@ -259,6 +269,11 @@ public class PostToStreamComposite extends FlowPanel
         {
             public void update(final MessageTextAreaChangedEvent arg1)
             {
+                // the value changed - make sure we're not stuck in the disabled, non-editable mode
+                if ((" " + getStyleName() + " ").contains(StaticResourceBundle.INSTANCE.coreCss().small()))
+                {
+                    removeStyleName(StaticResourceBundle.INSTANCE.coreCss().small());
+                }
                 onRemainingCharactersChanged();
             }
         });
@@ -380,7 +395,6 @@ public class PostToStreamComposite extends FlowPanel
         if (!newText.equals(messageText))
         {
             messageText = newText;
-
             Session.getInstance().getEventBus().notifyObservers(MessageTextAreaChangedEvent.getEvent());
         }
     }

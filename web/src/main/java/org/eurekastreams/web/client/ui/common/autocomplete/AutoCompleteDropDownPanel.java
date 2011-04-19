@@ -25,19 +25,18 @@ import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.TextBoxBase;
 
 /**
  * Auto complete drop down widget.
- *
+ * 
  */
 public abstract class AutoCompleteDropDownPanel extends FlowPanel
 {
     /**
      * The possible form element types.
-     *
+     * 
      */
     public enum ElementType
     {
@@ -53,13 +52,13 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * The command interface for what happens when one selects the item.
-     *
+     * 
      */
     public interface OnItemSelectedCommand
     {
         /**
          * Gets called when the item is selected.
-         *
+         * 
          * @param obj
          *            the javascript object of the selected.
          */
@@ -86,7 +85,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Default constructor.
-     *
+     * 
      * @param url
      *            the resource url.
      */
@@ -97,7 +96,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Default constructor.
-     *
+     * 
      * @param url
      *            the resource url.
      * @param inElementType
@@ -115,7 +114,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
         }
         else
         {
-            textWidget = new TextArea();
+            textWidget = new ExtendedTextArea();
         }
         textWidget.getElement().setAttribute("id", "actb-" + rand);
 
@@ -142,7 +141,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Sets the default text.
-     *
+     * 
      * @param text
      *            the text.
      */
@@ -162,7 +161,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Sets the text.
-     *
+     * 
      * @param text
      *            The text.
      */
@@ -181,7 +180,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Set the maxlength field.
-     *
+     * 
      * @param maxLength
      *            the length to set.
      */
@@ -192,9 +191,8 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Get the text from the text box.
-     *
-     * @return
-     *            The text.
+     * 
+     * @return The text.
      */
     public String getText()
     {
@@ -203,9 +201,8 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Returns the random identifier.
-     *
-     * @return
-     *            the random identifier.
+     * 
+     * @return the random identifier.
      */
     public String getRandomIdentifier()
     {
@@ -214,7 +211,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Set up the command.
-     *
+     * 
      * @param inCommand
      *            the command.
      */
@@ -225,7 +222,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Gets called by the JSNI when the item is selected.
-     *
+     * 
      * @param obj
      *            the javascript object.
      */
@@ -239,7 +236,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Returns the text widget.
-     *
+     * 
      * @return the text widget.
      */
     protected TextBoxBase getTextWidget()
@@ -249,7 +246,7 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
 
     /**
      * Sets up the auto complete.
-     *
+     * 
      * @param taId
      *            the text area id.
      * @param acdId
@@ -257,7 +254,6 @@ public abstract class AutoCompleteDropDownPanel extends FlowPanel
      * @param url
      *            the url.
      */
-    protected abstract void setUpAutoComplete(final String taId,
-            final String acdId, final String url);
+    protected abstract void setUpAutoComplete(final String taId, final String acdId, final String url);
 
 }

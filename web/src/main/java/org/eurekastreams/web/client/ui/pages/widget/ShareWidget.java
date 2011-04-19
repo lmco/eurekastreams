@@ -18,10 +18,10 @@ package org.eurekastreams.web.client.ui.pages.widget;
 import java.util.HashSet;
 
 import org.eurekastreams.server.action.request.stream.PostActivityRequest;
+import org.eurekastreams.server.domain.DomainConversionUtility;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.server.domain.stream.ActivityDTO;
 import org.eurekastreams.server.domain.stream.LinkInformation;
-import org.eurekastreams.server.domain.DomainConversionUtility;
 import org.eurekastreams.server.domain.stream.StreamScope;
 import org.eurekastreams.server.domain.stream.StreamScope.ScopeType;
 import org.eurekastreams.server.search.modelview.PersonModelView;
