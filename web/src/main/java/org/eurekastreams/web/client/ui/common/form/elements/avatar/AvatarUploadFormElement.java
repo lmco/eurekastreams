@@ -19,8 +19,8 @@ import org.eurekastreams.commons.client.ActionProcessor;
 import org.eurekastreams.server.domain.AvatarUrlGenerator;
 import org.eurekastreams.server.domain.EntityType;
 import org.eurekastreams.web.client.events.ClearUploadedImageEvent;
-import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.ClearUploadedImageEvent.ImageType;
+import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.jsni.WidgetJSNIFacadeImpl;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
@@ -37,11 +37,11 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 
 /**
  * The form element for the avatar upload. Its not a REAL form element because it doesnt save back with the form itself,
@@ -276,8 +276,7 @@ public class AvatarUploadFormElement extends FlowPanel
                     }, hiddenImage.getWidth() + "px", hiddenImage.getHeight() + "px");
 
                     Dialog dialog = new Dialog(imageCropDialog);
-                    dialog.setBgVisible(true);
-                    dialog.center();
+                    dialog.showCentered();
                 }
             });
         }

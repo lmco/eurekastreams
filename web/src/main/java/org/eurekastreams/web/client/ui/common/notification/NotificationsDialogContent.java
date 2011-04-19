@@ -119,7 +119,8 @@ public class NotificationsDialogContent extends BaseDialogContent
     /**
      * Invoked on closing before the dialog is removed from screen.
      */
-    public void beforeClose()
+    @Override
+    public void beforeHide()
     {
         if (linkClickedObserver != null)
         {

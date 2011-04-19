@@ -93,10 +93,7 @@ public class StreamSearchStatusWidget extends Composite
                 newStream.setRequest(lastRequest);
 
                 Session.getInstance().getEventBus().notifyObservers(new HideNotificationEvent());
-                CustomStreamDialogContent dialogContent = new CustomStreamDialogContent(newStream);
-                Dialog dialog = new Dialog(dialogContent);
-                dialog.setBgVisible(true);
-                dialog.center();
+                Dialog.showCentered(new CustomStreamDialogContent(newStream));
             }
         });
 

@@ -15,42 +15,50 @@
  */
 package org.eurekastreams.web.client.ui.common.dialog;
 
-import org.eurekastreams.commons.client.ui.WidgetCommand;
 
 /**
  * Base dialog content. Allows boilerplate code to not need to be reimplemented.
  */
 public abstract class BaseDialogContent implements DialogContent
 {
-    /** Close command. */
-    WidgetCommand closeCommand;
+    /** Hosting dialog. */
+    private DialogContentHost hostDialog;
 
     /**
-     * Injects the command to call to close the dialog.
-     * 
-     * @param inCommand
-     *            the close command.
+     * {@inheritDoc}
      */
-    public void setCloseCommand(final WidgetCommand inCommand)
+    public void setHost(final DialogContentHost inDialog)
     {
-        closeCommand = inCommand;
+        hostDialog = inDialog;
     }
 
     /**
-     * Closes the dialog via the close command.
+     * Tells the host dialog to close itself.
      */
     public void close()
     {
-        if (closeCommand != null)
-        {
-            closeCommand.execute();
-        }
+        hostDialog.hide();
+    }
+
+    /**
+     * Tells the host dialog to recenter itself (after content has changed size).
+     */
+    protected void recenter()
+    {
+        hostDialog.center();
     }
 
     /**
      * Provides a do-nothing implementation of show for dialogs which do not need to take any action on show.
      */
     public void show()
+    {
+    }
+
+    /**
+     * Provides a do-nothing implementation of show for dialogs which do not need to take any action on hide.
+     */
+    public void beforeHide()
     {
     }
 }

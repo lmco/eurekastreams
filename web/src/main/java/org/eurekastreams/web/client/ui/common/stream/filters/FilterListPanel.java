@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import org.eurekastreams.web.client.events.Observer;
 import org.eurekastreams.web.client.events.UpdatedHistoryParametersEvent;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
-import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
@@ -40,7 +39,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Shows a list of views.
- * 
+ *
  */
 public class FilterListPanel extends FlowPanel
 {
@@ -51,7 +50,7 @@ public class FilterListPanel extends FlowPanel
     /**
      * The tab boundary panel. Absolute panel is needed because gwt-dnd only accepts them.
      */
-    private AbsolutePanel viewBoundaryPanel = new AbsolutePanel();
+    private final AbsolutePanel viewBoundaryPanel = new AbsolutePanel();
 
     /**
      * The active item.
@@ -61,7 +60,7 @@ public class FilterListPanel extends FlowPanel
     /**
      * The cache of the list, to look stuff up by ID on.
      */
-    private HashMap<Long, FilterPanel> listCache = new HashMap<Long, FilterPanel>();
+    private final HashMap<Long, FilterPanel> listCache = new HashMap<Long, FilterPanel>();
 
     /**
      * Whether or not the list panel is hidden.
@@ -71,27 +70,27 @@ public class FilterListPanel extends FlowPanel
     /**
      * The show more show less container.
      */
-    private FlowPanel showMore = new FlowPanel();
+    private final FlowPanel showMore = new FlowPanel();
 
     /**
      * Show more show less link.
      */
-    private Anchor showMoreLink = new Anchor("show more");
+    private final Anchor showMoreLink = new Anchor("show more");
 
     /**
      * The panel to hold the views.
      */
-    private VerticalPanel panel = new VerticalPanel();
+    private final VerticalPanel panel = new VerticalPanel();
 
     /**
      * View drag controller.
      */
-    private PickupDragController viewDragController;
+    private final PickupDragController viewDragController;
 
     /**
      * The renderer.
      */
-    private FilterRenderStrategy renderer;
+    private final FilterRenderStrategy renderer;
 
     /**
      * Whether or not weve added the hidden line.
@@ -101,16 +100,16 @@ public class FilterListPanel extends FlowPanel
     /**
      * Hidden line index.
      */
-    private Integer hiddenLineIndex;
+    private final Integer hiddenLineIndex;
 
     /**
      * The views.
      */
-    private List<StreamFilter> views;
+    private final List<StreamFilter> views;
 
     /**
      * Default constructor.
-     * 
+     *
      * @param inViews
      *            the views.
      * @param inHiddenLineIndex
@@ -148,10 +147,7 @@ public class FilterListPanel extends FlowPanel
                 public void onClick(final Widget arg0)
                 {
                     Session.getInstance().getEventBus().notifyObservers(new HideNotificationEvent());
-                    DialogContent dialogContent = renderer.getDialogContent();
-                    Dialog dialog = new Dialog(dialogContent);
-                    dialog.setBgVisible(true);
-                    dialog.center();
+                    Dialog.showCentered(renderer.getDialogContent());
                 }
             });
 
@@ -261,7 +257,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * hides the text on the hidden line if its the last one.
-     * 
+     *
      * @param inHiddenLineIndex
      *            the hidden line index.
      */
@@ -283,7 +279,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Activate a filter.
-     * 
+     *
      * @param filter
      *            the filter.
      */
@@ -306,7 +302,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Adds a filter.
-     * 
+     *
      * @param filter
      *            the filter.
      */
@@ -343,7 +339,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Removes a filter.
-     * 
+     *
      * @param filter
      *            the filter.
      */
@@ -364,7 +360,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Updates the filter.
-     * 
+     *
      * @param filter
      *            the filter.
      */
@@ -403,7 +399,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Get drop panel.
-     * 
+     *
      * @return the drop panel.
      */
     public VerticalPanel getDropPanel()
@@ -413,14 +409,14 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Gets the hidden line.
-     * 
+     *
      * @return the hidden line.
      */
     public Integer getHiddenLineIndex()
     {
         return panel.getWidgetIndex(showMore);
     }
-    
+
 
     /**
      * Unhide.
@@ -435,7 +431,7 @@ public class FilterListPanel extends FlowPanel
 
     /**
      * Get the views.
-     * 
+     *
      * @return the views.
      */
     public List<StreamFilter> getViews()

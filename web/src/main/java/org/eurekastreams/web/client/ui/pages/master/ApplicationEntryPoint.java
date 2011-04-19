@@ -104,9 +104,6 @@ public class ApplicationEntryPoint implements EntryPoint
     /** The session. */
     private final Session session = Session.getInstance();
 
-    /** The login dialog. */
-    private Dialog loginDialog;
-
     /** Employee lookup modal. */
     private static EmployeeLookupContent dialogContent;
 
@@ -115,10 +112,7 @@ public class ApplicationEntryPoint implements EntryPoint
      */
     private void showLogin()
     {
-        loginDialog = new Dialog(new LoginDialogContent());
-        loginDialog.setBgVisible(true);
-        loginDialog.center();
-        loginDialog.getContent().show();
+        Dialog.showCentered(new LoginDialogContent());
     }
 
     /**
@@ -190,7 +184,7 @@ public class ApplicationEntryPoint implements EntryPoint
                             }
                             else
                             {
-                                Dialog.showDialog(new MessageDialogContent("Unable to Establish Connection",
+                                Dialog.showCentered(new MessageDialogContent("Unable to Establish Connection",
                                         "Please Refresh."));
                             }
                         }
@@ -223,12 +217,12 @@ public class ApplicationEntryPoint implements EntryPoint
                         if (caught instanceof SessionException)
                         {
                             Dialog
-                                    .showDialog(new MessageDialogContent("Unable to Establish Session",
+.showCentered(new MessageDialogContent("Unable to Establish Session",
                                             "Please Refresh."));
                         }
                         else
                         {
-                            Dialog.showDialog(new MessageDialogContent("Unable to Establish Connection",
+                            Dialog.showCentered(new MessageDialogContent("Unable to Establish Connection",
                                     "Please Refresh."));
                         }
                     }
@@ -273,7 +267,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Shows the ToS modal.
-     * 
+     *
      */
     private void displayToS()
     {
@@ -285,14 +279,8 @@ public class ApplicationEntryPoint implements EntryPoint
                     {
                         if (displayTOS)
                         {
-
-                            TermsOfServiceDialogContent tosDialog = new TermsOfServiceDialogContent(
-                                    new TermsOfServiceDTO(event.getResponse().getTermsOfService()), false);
-
-                            final Dialog dialog = new Dialog(tosDialog);
-                            dialog.setBgVisible(true);
-                            dialog.center();
-                            dialog.getContent().show();
+                            Dialog.showCentered(new TermsOfServiceDialogContent(new TermsOfServiceDTO(event
+                                    .getResponse().getTermsOfService()), false));
                         }
                     }
 
@@ -341,7 +329,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires off a gadget change state event.
-     * 
+     *
      * @param id
      *            the gadget id
      * @param view
@@ -357,7 +345,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Fires of the UpdateGadgetPrefsEvent when called from the gadget container.
-     * 
+     *
      * @param inId
      *            - id of the gadget being updated.
      * @param inPrefs
@@ -371,7 +359,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the save command object.
-     * 
+     *
      * @return the save command
      */
     private static Command getEmployeeSelectedCommand()
@@ -395,15 +383,12 @@ public class ApplicationEntryPoint implements EntryPoint
     public static void launchEmployeeLookup()
     {
         dialogContent = new EmployeeLookupContent(getEmployeeSelectedCommand());
-        Dialog newDialog = new Dialog(dialogContent);
-        newDialog.setBgVisible(true);
-        newDialog.center();
-        newDialog.getContent().show();
+        Dialog.showCentered(dialogContent);
     }
 
     /**
      * Call the handler when the employee lookup is done.
-     * 
+     *
      * @param ntid
      *            the ntid.
      * @param displayName
@@ -419,7 +404,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the people from the server, convert them to JSON, and feed them back to the handler.
-     * 
+     *
      * @param ntids
      *            the ntids.
      * @param callbackIndex
@@ -494,7 +479,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Call the handler with the JSON data.
-     * 
+     *
      * @param data
      *            the data.
      * @param callbackIndex
@@ -507,7 +492,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Returns an additional property value given a key.
-     * 
+     *
      * @param key
      *            the key.
      * @return the value.
@@ -573,7 +558,7 @@ public class ApplicationEntryPoint implements EntryPoint
 
     /**
      * Get the user agent (for detecting IE7).
-     * 
+     *
      * @return the user agent.
      */
     public static native String getUserAgent()

@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * Org lookup form element.
- * 
+ *
  */
 public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
 {
@@ -67,7 +67,7 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Constructor.
-     * 
+     *
      * @param inTitle
      *            the title.
      * @param subTitle
@@ -117,11 +117,8 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
             public void onClick(final ClickEvent event)
             {
                 orgLookupContent = new OrgLookupContent(getSaveCommand(selectedOrgName, selectedLabel));
-                Dialog newDialog = new Dialog(orgLookupContent);
-                newDialog.setBgVisible(true);
-                newDialog.center();
+                Dialog.showCentered(orgLookupContent);
             }
-
         });
 
         this.add(select);
@@ -150,7 +147,7 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Constructor.
-     * 
+     *
      * @param inTitle
      *            the title.
      * @param subTitle
@@ -203,8 +200,7 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
             {
                 orgLookupContent = new OrgLookupContent(getSaveCommand(selectedOrgName, selectedLabel));
                 Dialog newDialog = new Dialog(orgLookupContent);
-                newDialog.setBgVisible(true);
-                newDialog.center();
+                newDialog.showCentered();
             }
 
         });
@@ -235,12 +231,12 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Get the save command.
-     * 
+     *
      * @param selectedOrgName
      *            the selected org name label.
      * @param selectedLabel
      *            the label that goes with the selected org
-     * 
+     *
      * @return the command.
      */
     private Command getSaveCommand(final Label selectedOrgName, final Label selectedLabel)
@@ -256,7 +252,7 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Add a related org.
-     * 
+     *
      * @param org
      *            the org.
      */
@@ -291,7 +287,7 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Get the key.
-     * 
+     *
      * @return the key.
      */
     public String getKey()
@@ -301,7 +297,7 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Get the value.
-     * 
+     *
      * @return the value.
      */
     public Serializable getValue()
@@ -311,7 +307,7 @@ public class MultiOrgLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Called on error.
-     * 
+     *
      * @param errMessage
      *            the error.
      */

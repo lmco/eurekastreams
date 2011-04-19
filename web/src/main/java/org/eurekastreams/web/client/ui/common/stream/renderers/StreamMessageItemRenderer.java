@@ -37,7 +37,6 @@ import org.eurekastreams.web.client.model.FlaggedActivityModel;
 import org.eurekastreams.web.client.model.requests.UpdateActivityFlagRequest;
 import org.eurekastreams.web.client.ui.Session;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
-import org.eurekastreams.web.client.ui.common.dialog.DialogContent;
 import org.eurekastreams.web.client.ui.common.notifier.Notification;
 import org.eurekastreams.web.client.ui.common.pagedlist.ItemRenderer;
 import org.eurekastreams.web.client.ui.common.stream.comments.CommentsListPanel;
@@ -513,10 +512,7 @@ public class StreamMessageItemRenderer implements ItemRenderer<ActivityDTO>
      */
     protected void onShare(final ActivityDTO msg)
     {
-        DialogContent dialogContent = new ShareMessageDialogContent(msg);
-        Dialog dialog = new Dialog(dialogContent);
-        dialog.setBgVisible(true);
-        dialog.center();
+        Dialog.showCentered(new ShareMessageDialogContent(msg));
     }
 
     /**

@@ -15,7 +15,7 @@
  */
 package org.eurekastreams.web.client.jsni;
 
-import org.eurekastreams.commons.client.ui.WidgetCommand;
+import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.DialogFactory;
 
 import com.google.gwt.http.client.URL;
@@ -202,8 +202,8 @@ public class WidgetJSNIFacadeImpl implements WidgetJSNIFacade
      */
     public void showLogin()
     {
-        final WidgetCommand loginDialog = DialogFactory.getDialog("login", null);
-        loginDialog.execute();
+        final Dialog loginDialog = DialogFactory.getDialog("login");
+        loginDialog.show();
     }
 
     /**

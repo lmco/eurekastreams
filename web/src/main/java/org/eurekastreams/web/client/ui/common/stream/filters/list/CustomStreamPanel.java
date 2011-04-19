@@ -128,10 +128,7 @@ public class CustomStreamPanel extends Composite implements FilterPanel
                 public void onClick(final ClickEvent event)
                 {
                     Session.getInstance().getEventBus().notifyObservers(new HideNotificationEvent());
-                    CustomStreamDialogContent dialogContent = new CustomStreamDialogContent(stream);
-                    Dialog dialog = new Dialog(dialogContent);
-                    dialog.setBgVisible(true);
-                    dialog.center();
+                    Dialog.showCentered(new CustomStreamDialogContent(stream));
                     event.stopPropagation();
                 }
             });

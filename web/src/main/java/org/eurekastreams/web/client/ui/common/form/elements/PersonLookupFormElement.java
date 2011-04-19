@@ -20,8 +20,8 @@ import java.util.HashSet;
 
 import org.eurekastreams.server.search.modelview.PersonModelView;
 import org.eurekastreams.web.client.ui.common.EditPanel;
-import org.eurekastreams.web.client.ui.common.PersonPanel;
 import org.eurekastreams.web.client.ui.common.EditPanel.Mode;
+import org.eurekastreams.web.client.ui.common.PersonPanel;
 import org.eurekastreams.web.client.ui.common.dialog.Dialog;
 import org.eurekastreams.web.client.ui.common.dialog.lookup.EmployeeLookupContent;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
@@ -66,7 +66,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Constructor.
-     * 
+     *
      * @param inTitle
      *            title for the dialog
      * @param inLookupText
@@ -100,9 +100,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
             public void onClick(final Widget arg0)
             {
                 dialogContent = new EmployeeLookupContent(getSaveCommand());
-                Dialog newDialog = new Dialog(dialogContent);
-                newDialog.setBgVisible(true);
-                newDialog.center();
+                Dialog.showCentered(dialogContent);
             }
         });
 
@@ -129,7 +127,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Add a person looked up in the modal to the display.
-     * 
+     *
      * @param inPerson
      *            the newly looked-up person
      */
@@ -161,7 +159,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Remove a person from the display panel.
-     * 
+     *
      * @param personToBeRemoved
      *            the person object
      * @param panelToBeRemoved
@@ -175,7 +173,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Get the save command object.
-     * 
+     *
      * @return the save command
      */
     private Command getSaveCommand()
@@ -192,7 +190,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Getter.
-     * 
+     *
      * @return the key
      */
     public String getKey()
@@ -202,7 +200,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Returns the collection of Persons who were selected.
-     * 
+     *
      * @return the collection
      */
     public HashSet<PersonModelView> getValue()
@@ -212,7 +210,7 @@ public class PersonLookupFormElement extends FlowPanel implements FormElement
 
     /**
      * Gets called if this element has an error.
-     * 
+     *
      * @param errMessage
      *            the error Message.
      */

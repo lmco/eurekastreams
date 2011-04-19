@@ -214,8 +214,7 @@ public class NotificationsSettingsPanelComposite extends FlowPanel
                 {
                     public void onClick(final ClickEvent inArg0)
                     {
-                        dialog.setBgVisible(true);
-                        dialog.center();
+                        dialog.showCentered();
                     }
                 });
                 cellPanel.add(manageLink);
