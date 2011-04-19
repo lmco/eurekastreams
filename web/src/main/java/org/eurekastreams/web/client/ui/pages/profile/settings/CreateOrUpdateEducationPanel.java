@@ -149,12 +149,12 @@ public class CreateOrUpdateEducationPanel extends FlowPanel
 
         if (education == null)
         {
-            form = new FormBuilder("Add School", PersonalEducationModel.getInstance(), Method.INSERT);
+            form = new FormBuilder("Add School", PersonalEducationModel.getInstance(), Method.INSERT, false);
             degree = new BasicDropDownFormElement("Degree", "degree", degrees, "", "", true);
         }
         else
         {
-            form = new FormBuilder("Edit School", PersonalEducationModel.getInstance(), Method.UPDATE);
+            form = new FormBuilder("Edit School", PersonalEducationModel.getInstance(), Method.UPDATE, false);
             form.addStyleName(StaticResourceBundle.INSTANCE.coreCss().editSchool());
             degree = new BasicDropDownFormElement("Degree", "degree", degrees, education.getDegree(), "", true);
 
