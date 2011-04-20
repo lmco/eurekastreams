@@ -137,16 +137,15 @@ input.empty-labeled-textbox {
 	color: #999999 ! important;
 }
 
-@sprite .content-warning {
-	gwt-image: "informationCircleIcon";
+.content-warning {
 	font-style: italic;
 	color: #666;
-	padding-left: 20px;
-	z-index: 1 ! important;
 }
 
-.content-warning>* {
-	z-index: 2 ! important;
+@sprite .content-warning > div:first-child {
+	gwt-image: "informationCircleIcon";
+	margin-right: 5px;
+	display: inline-block;
 }
 
 img {
@@ -9295,6 +9294,12 @@ IE SPECIFIC CSS.
 	.stream-view-dialog-body .form-element:first-child .form-instructions {
 		display: none;
 	}
+	
+	.content-warning > div:first-child {
+		display: inline;
+		zoom: 1;
+	}
+
 }
 /*/////////////////////////////////////////////////////////////////////////////
 

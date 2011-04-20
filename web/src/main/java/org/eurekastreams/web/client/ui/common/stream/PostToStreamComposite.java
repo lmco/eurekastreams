@@ -50,8 +50,10 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Post a message to the stream.
@@ -101,14 +103,14 @@ public class PostToStreamComposite extends FlowPanel
     private String lastFetched = "";
 
     /** The link text. */
-    private String linkText = "";
+    private final String linkText = "";
 
     /** Activity Populator. */
     private final ActivityDTOPopulator activityPopulator = new ActivityDTOPopulator();
 
     /**
      * Constructor.
-     * 
+     *
      * @param inScope
      *            the scope.
      */
@@ -123,7 +125,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Builds the UI.
-     * 
+     *
      * @param inScope
      *            the scope.
      */
@@ -172,8 +174,9 @@ public class PostToStreamComposite extends FlowPanel
         links = new AddLinkComposite();
         expandedPanel.add(links);
 
-        contentWarning = new Label();
+        contentWarning = new InlineLabel();
         contentWarningContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().contentWarning());
+        contentWarningContainer.add(new SimplePanel());
         contentWarningContainer.add(contentWarning);
         expandedPanel.add(contentWarningContainer);
 
@@ -367,7 +370,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Get the scope.
-     * 
+     *
      * @return the scope.
      */
     public StreamScope getScope()
@@ -377,7 +380,7 @@ public class PostToStreamComposite extends FlowPanel
 
     /**
      * Set the scope.
-     * 
+     *
      * @param inScope
      *            the scope.
      */
