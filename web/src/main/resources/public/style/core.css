@@ -734,7 +734,6 @@ div.close-button {
 
 .lookup-select-button-inactive,.lookup-select-button-active {
 	width: 77px;
-	margin-right: 20px;
 	height: 25px;
 	text-indent: 1000em;
 }
@@ -748,6 +747,7 @@ div.close-button {
 }
 
 .lookup-cancel-button {
+	margin-left: 10px;
 	margin-top: 3px;
 }
 
@@ -1671,6 +1671,12 @@ body .post-expanded-panel .content-warning {
 @sprite .stream-titlebar .add-as-gadget div:first-child {
 	gwt-image: "createGadget";
 	float: left;
+}
+
+.stream-titlebar .add-as-gadget a
+{
+	margin-left: 5px;
+	margin-top: -2px;
 }
 
 .stream-titlebar .add-as-gadget {
@@ -3020,6 +3026,7 @@ body .form-user-association .access-groups>div>div.form-small-delete-button
 	font-size: 11px;
 	background: url(style/images/plus-icon.png) no-repeat left 2px;
 	padding-left: 15px;
+	clear: both;
 }
 
 .form-lookup-button:hover {
@@ -5857,7 +5864,7 @@ body .stream-page-container>div.form-error-box {
 	overflow: hidden;
 	text-indent: -1000em;
 	float: right;
-	margin-top: -1px;
+	margin-top: 1px;
 }
 
 @sprite .stream-list-item .move-handle:hover {
@@ -6337,8 +6344,9 @@ li.notif-count-list-item {
 	position: relative;
 }
 
-@sprite body .user-bar li div.notif-count {
-	gwt-image: "navNotification";
+body .user-bar li div.notif-count {
+	background-image: url('style/images/navNotification.png');
+	height: 35px;
 	display: inline-block;
 	padding-left: 31px;
 	padding-right: 5px;
@@ -6349,15 +6357,9 @@ li.notif-count-list-item {
 	background-repeat: repeat-y;
 }
 
-@if user.agent ie6 ie8 {
-	body .user-bar li div.notif-count:hover {
-		background-position-y: 35px;
-	}
-} @else {
-	body .user-bar li div.notif-count:hover {
-		background-position: 0 35px;
-		cursor: pointer;
-	}
+body .user-bar li div.notif-count:hover {
+	background-position: 0 35px;
+	cursor: pointer;
 }
 
 .notif-modal {
@@ -8151,7 +8153,6 @@ IE SPECIFIC CSS.
 	
 	.org-lookup-form-element .form-lookup-button {
 		float: left;
-		margin-left: 220px;
 	}
 	
 	.login-button,.cancel-button {
@@ -8282,6 +8283,7 @@ IE SPECIFIC CSS.
 	}
 	
 	.stream-titlebar .title-wrapper {
+		zoom: 1;
 		margin-top: 7px;
 	}
 	
