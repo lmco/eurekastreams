@@ -199,4 +199,16 @@ public class ActionRPCServiceImpl extends RemoteServiceServlet implements Action
         return user;
     }
 
+    /**
+     * Overridden checkPermutationStrongName - disabled to avoid failure due to firefox bug that prevents GWT XSRF
+     * request headers.
+     * 
+     * @throws SecurityException
+     *             will never be thrown.
+     */
+    @Override
+    protected void checkPermutationStrongName() throws SecurityException
+    {
+        // do nothing - avoids failure due to firefox bug that prevents GWT XSRF request headers
+    }
 }
