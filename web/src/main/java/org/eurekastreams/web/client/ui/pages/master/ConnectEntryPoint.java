@@ -76,11 +76,11 @@ public class ConnectEntryPoint implements EntryPoint
         // The entry point will be invoked on full-app startup, so do nothing if the appropriate widget element is not
         // found
         rootPanel = RootPanel.get(WIDGET_ELEMENT_ID);
-        rootPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectWidgetRoot());
         if (rootPanel == null)
         {
             return;
         }
+        rootPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().eurekaConnectWidgetRoot());
 
         StaticResourceBundle.INSTANCE.coreCss().ensureInjected();
         StaticResourceBundle.INSTANCE.yuiCss().ensureInjected();
@@ -171,7 +171,7 @@ public class ConnectEntryPoint implements EntryPoint
 
     /**
      * Invoked on failure to establish the session.
-     * 
+     *
      * @param caught
      *            Error returned.
      */
@@ -183,7 +183,7 @@ public class ConnectEntryPoint implements EntryPoint
 
     /**
      * Invoked on failure to retrieve person info.
-     * 
+     *
      * @param caught
      *            Error returned.
      */
