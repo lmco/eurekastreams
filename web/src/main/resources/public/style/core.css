@@ -2178,8 +2178,9 @@ body .post-to-stream .over-character-limit {
 	font-size: 14px;
 }
 
-.message-metadata-source>* :first-child {
-	margin-left: 5px;
+.message-metadata-source *
+{
+	margin-right: 5px;
 }
 
 .message-metadata-additional {

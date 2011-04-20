@@ -128,7 +128,7 @@ public class MetadataLinkRenderer implements StatefulRenderer
             {
                 Panel main = new FlowPanel();
                 main.addStyleName(StaticResourceBundle.INSTANCE.coreCss().inlinePanel());
-                main.add(new InlineLabel(label + " "));
+                main.add(new InlineLabel(label)); // omit trailing space, since that's handled by CSS margins
                 main.add(new InlineHyperlink(name, url));
                 return main;
             }
