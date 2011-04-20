@@ -18,6 +18,7 @@ package org.eurekastreams.web.client.ui.pages.profile.settings;
 import java.io.Serializable;
 import java.util.HashSet;
 
+import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Page;
 import org.eurekastreams.server.search.modelview.DomainGroupModelView;
 import org.eurekastreams.server.search.modelview.OrganizationModelView;
@@ -38,6 +39,7 @@ import org.eurekastreams.web.client.ui.common.form.FormBuilder;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder.Method;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicRadioButtonFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicRadioButtonGroupFormElement;
+import org.eurekastreams.web.client.ui.common.form.elements.BasicTextAreaFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.BasicTextBoxFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.OrgLookupFormElement;
 import org.eurekastreams.web.client.ui.common.form.elements.PersonModelViewLookupFormElement;
@@ -54,8 +56,7 @@ import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Panel;
 
 /**
- * Organization panel.
- * 
+ * Panel to create a group.
  */
 public class CreateGroupPanel extends SettingsPanel
 {
@@ -102,7 +103,7 @@ public class CreateGroupPanel extends SettingsPanel
 
     /**
      * Constructor.
-     * 
+     *
      * @param parentOrgShortName
      *            parent org shortname.
      */
@@ -124,7 +125,7 @@ public class CreateGroupPanel extends SettingsPanel
 
     /**
      * Set the parent org.
-     * 
+     *
      * @param parentOrg
      *            parent org.
      */
@@ -134,16 +135,6 @@ public class CreateGroupPanel extends SettingsPanel
 
         this.clearContentPanel();
         this.setPreviousPage(new CreateUrlRequest(Page.ORGANIZATIONS, parentOrg.getShortName()), "< Return to Profile");
-
-        PersonModelView currentPerson = Session.getInstance().getCurrentPerson();
-        String coordinstructions = "The group coordinators"
-                + " will be responsible for setting up the group profile, setting group permissions, "
-                + "and managing group access";
-        PersonModelViewLookupFormElement personLookupFormElement = new PersonModelViewLookupFormElement(
-                "Group Coordinators", "Add Coordinator", coordinstructions, DomainGroupModelView.COORDINATORS_KEY,
-                new HashSet<PersonModelView>(), true);
-
-        personLookupFormElement.addPerson(currentPerson);
 
         final FormBuilder form = new FormBuilder("", GroupModel.getInstance(), Method.INSERT);
 
@@ -180,17 +171,14 @@ public class CreateGroupPanel extends SettingsPanel
 
         final BasicTextBoxFormElement groupName = new BasicTextBoxFormElement(50, false, "Group Name",
                 DomainGroupModelView.NAME_KEY, "", "", true);
-
+        form.addFormElement(groupName);
         DeferredCommand.addCommand(new Command()
         {
-
             public void execute()
             {
                 groupName.setFocus();
             }
         });
-
-        form.addFormElement(groupName);
 
         form.addFormDivider();
 
@@ -198,21 +186,28 @@ public class CreateGroupPanel extends SettingsPanel
                 DomainGroupModelView.SHORT_NAME_KEY, "", "http://" + Window.Location.getHost() + "/groups/",
                 "Please restrict your group's name in the web address "
                         + "to 20 lower case alpha numeric characters without spaces.", true);
-
         shortName.addStyleName(StaticResourceBundle.INSTANCE.coreCss().groupShortName());
-
         form.addFormElement(shortName);
-        form.addOnCancelCommand(new Command()
-        {
-            public void execute()
-            {
-                History.back();
-            }
-        });
 
         form.addFormDivider();
 
+        form.addFormElement(new BasicTextAreaFormElement(DomainGroup.MAX_DESCRIPTION_LENGTH, "Description",
+                DomainGroupModelView.DESCRIPTION_KEY, "",
+                "Enter a few sentences that describe the purpose of your group's stream.  "
+                        + "This description will appear beneath your avatar "
+                        + "and in the profile search results pages.", true));
+
+        form.addFormDivider();
+
+        String coordinstructions = "The group coordinators"
+                + " will be responsible for setting up the group profile, setting group permissions, "
+                + "and managing group access";
+        PersonModelViewLookupFormElement personLookupFormElement = new PersonModelViewLookupFormElement(
+                "Group Coordinators", "Add Coordinator", coordinstructions, DomainGroupModelView.COORDINATORS_KEY,
+                new HashSet<PersonModelView>(), true);
+        personLookupFormElement.addPerson(Session.getInstance().getCurrentPerson());
         form.addFormElement(personLookupFormElement);
+
         form.addFormDivider();
 
         /**
@@ -235,10 +230,20 @@ public class CreateGroupPanel extends SettingsPanel
         privateButton.addToInstructions(extraInstructions);
 
         form.addFormElement(radioButtonGroup);
+
         form.addClear();
 
         form.addFormDivider();
         panel.add(form);
 
+        // -- events ---
+
+        form.addOnCancelCommand(new Command()
+        {
+            public void execute()
+            {
+                History.back();
+            }
+        });
     }
 }
