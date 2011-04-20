@@ -40,12 +40,12 @@ public class DateFormatter
     private static final int MILLISECONDS_PER_DAY = (24 * 60 * 60 * 1000);
 
     /** Names of week days. */
-    private static final String[] DAY_OF_WEEK_NAMES =
-            { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+    private static final String[] DAY_OF_WEEK_NAMES = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
+            "Friday", "Saturday" };
 
     /** Names of months. */
-    private static final String[] MONTH_NAMES =
-            { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+    private static final String[] MONTH_NAMES = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct",
+            "Nov", "Dec" };
 
     /** For converting Java years. */
     private static final int YEAR_BASE = 1900;
@@ -65,7 +65,7 @@ public class DateFormatter
 
     /**
      * Constructor.
-     *
+     * 
      * @param inBaseDate
      *            the date to base the 'ago' on - usually should be set as new Date().
      */
@@ -76,7 +76,7 @@ public class DateFormatter
 
     /**
      * Creates a formatted representation of a given date/time, using the supplied current date/time as a reference.
-     *
+     * 
      * @param theDate
      *            The date to represent.
      * @param nowDate
@@ -117,7 +117,7 @@ public class DateFormatter
 
         if (deltaMilliseconds < MILLISECONDS_PER_MINUTE)
         {
-            sb.append("Less than 1 minute ago");
+            sb.append("Less than one minute ago");
         }
         else if (deltaMilliseconds < 2 * MILLISECONDS_PER_MINUTE)
         {
@@ -165,7 +165,7 @@ public class DateFormatter
 
     /**
      * Appends the day of week to the string being built.
-     *
+     * 
      * @param sb
      *            String builder.
      * @param theDate
@@ -179,7 +179,7 @@ public class DateFormatter
 
     /**
      * Appends the date to the string being built.
-     *
+     * 
      * @param sb
      *            String builder.
      * @param theDate
@@ -202,7 +202,7 @@ public class DateFormatter
 
     /**
      * Appends the time of day to the string being built.
-     *
+     * 
      * @param sb
      *            String builder.
      * @param theDate
@@ -240,7 +240,7 @@ public class DateFormatter
 
     /**
      * Creates a formatted representation of a given date/time, using the supplied current date/time as a reference.
-     *
+     * 
      * @param theDate
      *            The date to represent.
      * @return Formatted date.
@@ -252,7 +252,7 @@ public class DateFormatter
 
     /**
      * Creates a formatted representation of a given date/time, using the supplied current date/time as a reference.
-     *
+     * 
      * @param theDate
      *            The date to represent.
      * @param brief

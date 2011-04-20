@@ -32,7 +32,7 @@ public class DateFormatterTest
 {
     /**
      * Test formatting.
-     *
+     * 
      * @throws ParseException
      *             Only if the test data is messed up.
      */
@@ -42,8 +42,8 @@ public class DateFormatterTest
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         Map<String, String> datesToTest = new HashMap<String, String>();
-        datesToTest.put("2010-05-11 16:00:29", "Less than 1 minute ago");
-        datesToTest.put("2010-05-11 15:59:31", "Less than 1 minute ago");
+        datesToTest.put("2010-05-11 16:00:29", "Less than one minute ago");
+        datesToTest.put("2010-05-11 15:59:31", "Less than one minute ago");
 
         datesToTest.put("2010-05-11 15:59:30", "1 minute ago");
         datesToTest.put("2010-05-11 15:58:31", "1 minute ago");
@@ -122,8 +122,8 @@ public class DateFormatterTest
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         Map<String, String> datesToTest = new HashMap<String, String>();
-        datesToTest.put("2010-05-11 16:00:29", "Less than 1 minute ago");
-        datesToTest.put("2010-05-11 15:59:31", "Less than 1 minute ago");
+        datesToTest.put("2010-05-11 16:00:29", "Less than one minute ago");
+        datesToTest.put("2010-05-11 15:59:31", "Less than one minute ago");
 
         datesToTest.put("2010-05-11 15:59:30", "1 minute ago");
         datesToTest.put("2010-05-11 15:58:31", "1 minute ago");
@@ -163,6 +163,6 @@ public class DateFormatterTest
     {
         Date date = new Date();
         String result = new DateFormatter().timeAgo(date);
-        assertEquals("Default constructor should initialize with current time.", "Less than 1 minute ago", result);
+        assertEquals("Default constructor should initialize with current time.", "Less than one minute ago", result);
     }
 }
