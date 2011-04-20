@@ -581,7 +581,7 @@ public class GalleryContent extends SettingsPanel
 
         if (method.equals(Method.UPDATE))
         {
-            form.setSubmitButtonClass("form-update-button");
+            form.setSubmitButtonClass(StaticResourceBundle.INSTANCE.coreCss().formUpdateButton());
         }
 
         form.setOnCancelHistoryToken(Session.getInstance().generateUrl(new CreateUrlRequest(Page.GALLERY, urlParams)));

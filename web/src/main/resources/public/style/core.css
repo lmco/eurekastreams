@@ -2173,7 +2173,7 @@ body .post-to-stream .over-character-limit {
 }
 
 .message-metadata-source>* :first-child {
-	margin-right: 5px;
+	margin-left: 5px;
 }
 
 .message-metadata-additional {
@@ -2416,7 +2416,8 @@ body .post-to-stream .over-character-limit {
 
 body .next-arrow-disabled {
 	background: transparent url(style/images/linkImgPagingRight.png)
-		no-repeat scroll 0 -38px;
+		no-repeat scroll 0 -38px ! important;
+	cursor: inherit ! important;
 }
 
 body .next-arrow:hover {
@@ -2432,7 +2433,8 @@ body .next-arrow:hover {
 
 body .previous-arrow-disabled {
 	background: transparent url(style/images/linkImgPagingLeft.png)
-		no-repeat scroll 0 -38px;
+		no-repeat scroll 0 -38px ! important;
+	cursor: inherit ! important;
 }
 
 body .previous-arrow:hover {
@@ -3691,7 +3693,7 @@ body .options>li>.option-title:hover {
 	min-width: 490px;
 	margin: 5px 10px 20px;
 	border-bottom: 1px solid #CCCCCC;
-	padding: 0px 10px 10px;
+	padding: 0px 10px 13px;
 }
 
 .empty-list .top-pager,.empty-list .bottom-pager {
@@ -6892,9 +6894,14 @@ body .stream-view-dialog .delete-button {
 	display: inline-block;
 }
 
+.gadget-zone.maximized:hover .gadget-button.gadget-help,.gadget-zone.maximized:hover .gadget-button.gadget-minimize,.gadget-zone.maximized:hover .gadget-button.gadget-refresh,.gadget-zone.maximized:hover .gadget-button.gadget-edit,.gadget-zone.maximized:hover .gadget-button.gadget-close
+	{
+	display: none ! important;
+}
+
 .gadget-zone.maximized .gadget-button.gadget-help,.gadget-zone.maximized .gadget-button.gadget-minimize,.gadget-zone.maximized .gadget-button.gadget-refresh,.gadget-zone.maximized .gadget-button.gadget-edit,.gadget-zone.maximized .gadget-button.gadget-close
 	{
-	display: none;
+	display: none ! important;
 }
 
 .gadget-restore {
@@ -8688,6 +8695,9 @@ IE SPECIFIC CSS.
 		float: left;
 	}
 	
+	.navpanel {
+		padding: 0px 10px 10px;
+	}
 	.sort-option {
 		position: relative;
 		top: -5px;
@@ -8945,6 +8955,10 @@ IE SPECIFIC CSS.
 		top: -25px;
 		z-index: 2001;
 		zoom: 1;
+	}
+	
+	.auto-complete.form-element .yui-ac-content {
+		margin-top: 55px ! important;
 	}
 	
 	.modal-content-panel .form-container>div>.scope-form-element>.yui-ac>.yui-ac-container>.yui-ac-content

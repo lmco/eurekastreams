@@ -453,6 +453,7 @@ public class StreamPanel extends FlowPanel
         postContent.setVisible(true);
         stream.setVisible(true);
         sortPanel.setVisible(true);
+        searchStatusWidget.setVisible(true);
         activityDetailPanel.clear();
         EventBus.getInstance().notifyObservers(new ChangeActivityModeEvent(false));
     }
@@ -466,6 +467,7 @@ public class StreamPanel extends FlowPanel
         titlePanel.setVisible(false);
         postContent.setVisible(false);
         stream.setVisible(false);
+        searchStatusWidget.setVisible(false);
         EventBus.getInstance().notifyObservers(new ChangeActivityModeEvent(true));
     }
 
