@@ -1434,11 +1434,11 @@ Eureka.shareLink = function(title, url)
                    {
                        if(!result.hadError())
                        {
-                           eurekastreams.core.triggerShowNotificationEvent("News Item Shared");
+                           eurekastreams.core.triggerShowNotificationEvent("Item Shared");
                        }
                        else
                        {
-                           eurekastreams.core.triggerShowNotificationEvent("Error Sharing News Item");
+                           eurekastreams.core.triggerShowNotificationEvent("Error Sharing Item");
                        }
                    });
 }

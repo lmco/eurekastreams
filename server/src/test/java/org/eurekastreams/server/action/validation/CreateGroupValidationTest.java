@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 
-
 import org.eurekastreams.commons.actions.context.ActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
 import org.eurekastreams.server.domain.DomainGroup;
@@ -37,14 +36,14 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
 /**
- * 
+ *
  * Test for CreateGroupValidation class.
- * 
+ *
  */
 public class CreateGroupValidationTest
 {
     /** Used for mocking objects. */
-    private JUnit4Mockery context = new JUnit4Mockery()
+    private final JUnit4Mockery context = new JUnit4Mockery()
     {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -54,22 +53,18 @@ public class CreateGroupValidationTest
     /**
      * {@link ActionContext}.
      */
-    private ActionContext actionContext = context.mock(ActionContext.class);
+    private final ActionContext actionContext = context.mock(ActionContext.class);
 
-    /**
-     * {@link DomainGroupMapper}.
-     */
-    private GetDomainGroupsByShortNames groupMapperMock = context.mock(GetDomainGroupsByShortNames.class);
-    
-    /**
-     * {@link OrganizationMapper}.
-     */
-    private GetOrganizationsByShortNames orgMapperMock = context.mock(GetOrganizationsByShortNames.class);
+    /** Group mapper. */
+    private final GetDomainGroupsByShortNames groupMapperMock = context.mock(GetDomainGroupsByShortNames.class);
+
+    /** Org mapper. */
+    private final GetOrganizationsByShortNames orgMapperMock = context.mock(GetOrganizationsByShortNames.class);
 
     /**
      * {@link CreateGroupValidation} system under test.
      */
-    private CreateGroupValidation sut = new CreateGroupValidation(groupMapperMock, orgMapperMock);
+    private final CreateGroupValidation sut = new CreateGroupValidation(groupMapperMock, orgMapperMock);
 
     /**
      * Test validateParams() with valid inputs.
@@ -87,8 +82,10 @@ public class CreateGroupValidationTest
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
 
         formData.put(DomainGroupModelView.NAME_KEY, ValidationTestHelper.generateString(DomainGroup.MAX_NAME_LENGTH));
-        formData.put(DomainGroupModelView.SHORT_NAME_KEY, ValidationTestHelper
-                .generateString(DomainGroup.MAX_SHORT_NAME_LENGTH));
+        formData.put(DomainGroupModelView.SHORT_NAME_KEY,
+                ValidationTestHelper.generateString(DomainGroup.MAX_SHORT_NAME_LENGTH));
+        formData.put(DomainGroupModelView.DESCRIPTION_KEY,
+                ValidationTestHelper.generateString(DomainGroup.MAX_DESCRIPTION_LENGTH));
         formData.put(DomainGroupModelView.ORG_PARENT_KEY, "isgs");
         formData.put(DomainGroupModelView.PRIVACY_KEY, true);
         formData.put(DomainGroupModelView.COORDINATORS_KEY, coordinators);
@@ -119,10 +116,12 @@ public class CreateGroupValidationTest
 
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
 
-        formData.put(DomainGroupModelView.NAME_KEY, ValidationTestHelper
-                .generateString(DomainGroup.MAX_NAME_LENGTH + 1));
-        formData.put(DomainGroupModelView.SHORT_NAME_KEY, ValidationTestHelper
-                .generateString(DomainGroup.MAX_SHORT_NAME_LENGTH + 1));
+        formData.put(DomainGroupModelView.NAME_KEY,
+                ValidationTestHelper.generateString(DomainGroup.MAX_NAME_LENGTH + 1));
+        formData.put(DomainGroupModelView.SHORT_NAME_KEY,
+                ValidationTestHelper.generateString(DomainGroup.MAX_SHORT_NAME_LENGTH + 1));
+        formData.put(DomainGroupModelView.DESCRIPTION_KEY,
+                ValidationTestHelper.generateString(DomainGroup.MAX_DESCRIPTION_LENGTH + 1));
         formData.put(DomainGroupModelView.ORG_PARENT_KEY, null);
         formData.put(DomainGroupModelView.COORDINATORS_KEY, coordinators);
 
@@ -141,13 +140,14 @@ public class CreateGroupValidationTest
         catch (ValidationException ve)
         {
             context.assertIsSatisfied();
-            assertEquals(5, ve.getErrors().size());
+            assertEquals(6, ve.getErrors().size());
             assertTrue(ve.getErrors().containsValue(DomainGroup.SHORT_NAME_LENGTH_MESSAGE));
             assertTrue(ve.getErrors().containsValue(DomainGroup.NAME_LENGTH_MESSAGE));
+            assertTrue(ve.getErrors().containsValue(DomainGroup.DESCRIPTION_LENGTH_MESSAGE));
             assertTrue(ve.getErrors().containsValue(DomainGroup.MIN_COORDINATORS_MESSAGE));
             assertTrue(ve.getErrors().containsValue(CreateGroupValidation.MUST_HAVE_PARENT_ORG_MESSAGE));
             assertTrue(ve.getErrors().containsValue(ValidationHelper.UNEXPECTED_DATA_ERROR_MESSAGE));
-            
+
             throw ve;
         }
         context.assertIsSatisfied();
@@ -163,10 +163,12 @@ public class CreateGroupValidationTest
 
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
 
-        formData.put(DomainGroupModelView.NAME_KEY, ValidationTestHelper
-                .generateString(DomainGroup.MAX_NAME_LENGTH + 1));
-        formData.put(DomainGroupModelView.SHORT_NAME_KEY, ValidationTestHelper
-                .generateString(DomainGroup.MAX_SHORT_NAME_LENGTH));
+        formData.put(DomainGroupModelView.NAME_KEY,
+                ValidationTestHelper.generateString(DomainGroup.MAX_NAME_LENGTH + 1));
+        formData.put(DomainGroupModelView.SHORT_NAME_KEY,
+                ValidationTestHelper.generateString(DomainGroup.MAX_SHORT_NAME_LENGTH));
+        formData.put(DomainGroupModelView.DESCRIPTION_KEY,
+                ValidationTestHelper.generateString(DomainGroup.MAX_DESCRIPTION_LENGTH));
         formData.put(DomainGroupModelView.ORG_PARENT_KEY, "nonehere");
         formData.put(DomainGroupModelView.COORDINATORS_KEY, coordinators);
         formData.put(DomainGroupModelView.PRIVACY_KEY, true);
@@ -207,9 +209,11 @@ public class CreateGroupValidationTest
 
         final HashMap<String, Serializable> formData = new HashMap<String, Serializable>();
 
-        formData.put(DomainGroupModelView.NAME_KEY, ValidationTestHelper
-                .generateString(DomainGroup.MAX_NAME_LENGTH + 1));
+        formData.put(DomainGroupModelView.NAME_KEY,
+                ValidationTestHelper.generateString(DomainGroup.MAX_NAME_LENGTH + 1));
         formData.put(DomainGroupModelView.SHORT_NAME_KEY, "S UO|?DOG");
+        formData.put(DomainGroupModelView.DESCRIPTION_KEY,
+                ValidationTestHelper.generateString(DomainGroup.MAX_DESCRIPTION_LENGTH));
         formData.put(DomainGroupModelView.ORG_PARENT_KEY, null);
         formData.put(DomainGroupModelView.COORDINATORS_KEY, coordinators);
         formData.put(DomainGroupModelView.PRIVACY_KEY, true);

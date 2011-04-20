@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Lockheed Martin Corporation
+ * Copyright (c) 2010-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,12 +38,12 @@ public class CreateGroupValidation implements ValidationStrategy<ActionContext>
     /**
      * {@link GetDomainGroupsByShortNames}.
      */
-    private GetDomainGroupsByShortNames groupMapper;
+    private final GetDomainGroupsByShortNames groupMapper;
 
     /**
      * {@link GetOrganizationsByShortNames}.
      */
-    private GetOrganizationsByShortNames orgMapper;
+    private final GetOrganizationsByShortNames orgMapper;
 
     /**
      * @param inGroupMapper
@@ -82,6 +82,7 @@ public class CreateGroupValidation implements ValidationStrategy<ActionContext>
      *
      */
     static final String PRIVACY_KEY_MESSAGE = "Privacy key excepted.";
+
     /**
      * {@inheritDoc}
      */
@@ -93,8 +94,9 @@ public class CreateGroupValidation implements ValidationStrategy<ActionContext>
 
         ValidationException ve = new ValidationException();
         ValidationHelper vHelper = new ValidationHelper();
-        String groupName = (String) vHelper
-                .getAndCheckStringFieldExist(fields, DomainGroupModelView.NAME_KEY, true, ve);
+
+        String groupName = (String) vHelper.getAndCheckStringFieldExist(fields, DomainGroupModelView.NAME_KEY, true,
+                ve);
         if (groupName == null || groupName.isEmpty())
         {
             ve.addError(DomainGroupModelView.NAME_KEY, DomainGroup.NAME_REQUIRED);
@@ -123,8 +125,21 @@ public class CreateGroupValidation implements ValidationStrategy<ActionContext>
             }
         }
 
-        String orgShortName = (String) vHelper.getAndCheckStringFieldExist(fields, DomainGroupModelView.ORG_PARENT_KEY,
+        String groupDesc = (String) vHelper.getAndCheckStringFieldExist(fields, DomainGroupModelView.DESCRIPTION_KEY,
                 true, ve);
+        if (groupDesc == null || groupDesc.isEmpty())
+        {
+            ve.addError(DomainGroupModelView.DESCRIPTION_KEY, DomainGroup.DESCRIPTION_REQUIRED);
+        }
+        else
+        {
+            vHelper.stringMeetsRequirments(DomainGroupModelView.DESCRIPTION_KEY, groupDesc, ve,
+                    DomainGroup.DESCRIPTION_LENGTH_MESSAGE, DomainGroup.MAX_DESCRIPTION_LENGTH,
+                    DomainGroup.DESCRIPTION_LENGTH_MESSAGE, null, null);
+        }
+
+        String orgShortName = (String) vHelper.getAndCheckStringFieldExist(fields,
+                DomainGroupModelView.ORG_PARENT_KEY, true, ve);
         if (vHelper.stringMeetsRequirments(DomainGroupModelView.ORG_PARENT_KEY, orgShortName, ve,
                 MUST_HAVE_PARENT_ORG_MESSAGE, null, null, null, null))
         {

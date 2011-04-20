@@ -9174,10 +9174,6 @@ IE SPECIFIC CSS.
 		margin-top: 9px;
 	}
 	
-	.yui-ac-container {
-		position: absolute ! important;
-	}
-	
 	body .profile-page-container .post-to .yui-ac-container {
 		margin-left: -150px;
 	}
