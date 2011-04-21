@@ -2299,6 +2299,19 @@ body .post-to-stream .over-character-limit {
 	zoom: 1;
 }
 
+.eureka-connect-users-who-liked-activity.users-who-liked-activity .users-who-liked-activity-header
+ {
+	background-image: url(style/images/like-modal-narrow-top.png);
+}
+.eureka-connect-users-who-liked-activity.users-who-liked-activity .users-who-liked-activity-body
+ {
+	background-image: url(style/images/like-modal-narrow-bg.png);
+}
+.eureka-connect-users-who-liked-activity.users-who-liked-activity .users-who-liked-activity-footer
+ {
+	background-image: url(style/images/like-modal-narrow-bottom.png);
+}
+
 .users-who-liked-activity-wrapper {
 	position: absolute ! important;
 	margin-left: -25px;
