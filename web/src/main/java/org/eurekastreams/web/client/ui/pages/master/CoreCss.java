@@ -517,10 +517,6 @@ public interface CoreCss extends CssResource
     @ClassName("eureka-logo-small")
     String eurekaLogoSmall();
 
-    String expandable();
-
-    String expanded();
-
     String explanation();
 
     @ClassName("extended-info")
@@ -1822,8 +1818,6 @@ public interface CoreCss extends CssResource
     @ClassName("section-header")
     String sectionHeader();
 
-    String selected();
-
     @ClassName("selected-option")
     String selectedOption();
 
@@ -2273,7 +2267,7 @@ public interface CoreCss extends CssResource
 
     @ClassName("eureka-connect-popout-arrow")
     String eurekaConnectPopoutArrow();
-    
+
     @ClassName("eureka-connect-liked-activity")
     String eurekaConnectLikedActivity();
 
