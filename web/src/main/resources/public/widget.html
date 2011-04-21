@@ -10,6 +10,7 @@
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
     <script type="text/javascript" language="javascript" src="${build.web.cdn}/eureka.nocache.js?${timestamp}"></script>
 	<script type="text/javascript" src="${build.web.cdn}/scripts/external-js-min.js?${timestamp}"></script>
+	<script type="text/javascript" src="${build.web.cdn}/scripts/easyXDM.min.js"></script>
     <script type="text/javascript">
         function querySt(ji) {
             hu = window.location.search.substring(1);
@@ -22,20 +23,16 @@
             }
         }
         var p = unescape(querySt('__p'));
-        var id = unescape(querySt('id'));
         var css = unescape(querySt('css'));
         var cssurl = unescape(querySt('cssurl'));
 
+        var socket = new easyXDM.Socket({
+            swf: '${build.web.cdn}/scripts/easyxdm.swf'
+        });
+	
+
         var sendMessage = function(msg) {
-            if (window.postMessage) {
-                parent.postMessage(msg, p);
-            }
-            else {
-                proxy = window.opener;
-                if (proxy.sendMessage) {
-                    proxy.sendMessage(msg);
-                }
-            }
+            socket.postMessage(msg);
         }
 
         var lastHeight = 0;
@@ -60,15 +57,18 @@
             document.body.appendChild(styleRef);
         }
 
-
         // Resize Polling
-        if (id && id != "undefined") {
+        if (p && p != "undefined") {
         	setInterval(function() { 
                 if (layoutElem && layoutElem.height()) {
                     var height = layoutElem.height();
                     if (height != lastHeight)
                     {
-                        sendMessage('{"frameId":"' + id + '","frameHeight":"' + height + '"}') 
+                        if (window.postMessage) {
+                            sendMessage('{"frameHeight":"' + height + '"}') 
+                        } else {
+                            sendMessage('{"frameHeight":"' + height + 5 + '"}') 
+                        }
                         lastHeight = height;
                     }
                 }
