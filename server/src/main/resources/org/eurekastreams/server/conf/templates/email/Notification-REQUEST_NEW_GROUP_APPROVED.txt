@@ -1,8 +1,15 @@
-Your request to create the $(aux.name) group has been approved.
+Your request to create the $(aux.name) group has been approved.  Here are a few things to help you get started...
 
-Please click on the link below to go to your group stream page, 
-click the checklist button in the lower left hand corner, 
-and complete your group's profile.
+- Fill out your group profile
+To edit your group profile click the configure button on the right side of the profile page.  Giving the group a concise description of what the group is and how it is to be used will both help make it discoverable and inform members how to use the group.  Use the Overview section to add a longer description and to add links to related streams and resources.
+
+- Add some sample posts
+Before inviting people to the stream, add some posts of the nature you expect to see.  For a project team group this will likely be status updates, lessons learned, and links to useful resources.  For a discussion group you will want to be mindful that your objective is not only to inform but to engage employees in conversation.  Whenever possible, post open-ended questions around topics that you think will prompt people to respond.
+
+- Email your target audience
+Sending an email directly to your target audience inviting them to participate in the stream and to fill out their profiles is an effective way to get a group on board.  Include in the email the specific uses for the stream.
+
+Here's the link to your group. Time to get started!
 $(eureka.web.baseurl)#$(aux.page)/$(aux.uniqueid)
 
 Thank You,
@@ -10,4 +17,4 @@ Eureka Streams
 
 ---
 
-To find out more information, visit $(eureka.infosite.url)
+To find out more information, visit $(eureka.infosite.url).  Post questions to $(eureka.web.baseurl)#groups/$(settings.support.uniqueid)
