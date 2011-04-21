@@ -19,27 +19,31 @@ import java.util.HashMap;
 
 import org.eurekastreams.server.domain.OrganizationTreeDTO;
 import org.eurekastreams.web.client.events.EventBus;
+import org.eurekastreams.web.client.events.OrgSelectedEvent;
 import org.eurekastreams.web.client.model.OrganizationModelViewModel;
 import org.eurekastreams.web.client.model.OrganizationTreeModel;
 import org.eurekastreams.web.client.ui.Session;
-import org.eurekastreams.web.client.ui.common.ULPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarDisplayPanel;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget;
-import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Background;
 import org.eurekastreams.web.client.ui.common.avatar.AvatarWidget.Size;
 import org.eurekastreams.web.client.ui.common.dialog.BaseDialogContent;
 import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -78,28 +82,14 @@ public class OrgLookupContent extends BaseDialogContent
     private AvatarWidget logoImage;
 
     /**
-     * The list of orgs.
-     */
-    private final ULPanel orgList = new ULPanel();
-
-    /**
      * The selected org title.
      */
     private final Label orgTitle = new Label();
 
-    /**
-     * The selected org overview.
-     */
+    /** The selected org overview. */
     private final Label orgOverview = new Label();
 
-    /**
-     * Org container.
-     */
-    private final FlowPanel orgTreeContainer = new FlowPanel();
-
-    /**
-     * Org description panel.
-     */
+    /** Org description panel. */
     FlowPanel orgDescriptionPanel;
 
     /** Command to invoke to save data. */
@@ -107,6 +97,15 @@ public class OrgLookupContent extends BaseDialogContent
 
     /** The MVVM View Model for this control. */
     private final OrgLookupViewModel viewModel;
+
+    /** Org tree widget. */
+    private final Tree orgTree = new Tree();
+
+    /** Scrolling panel for the org tree. */
+    private ScrollPanel orgTreePanel;
+
+    /** Index to determine the widget for a given org. */
+    private final HashMap<OrganizationTreeDTO, TreeItem> orgToNodeIndex = new HashMap<OrganizationTreeDTO, TreeItem>();
 
     /**
      * Constructor.
@@ -165,17 +164,17 @@ public class OrgLookupContent extends BaseDialogContent
         cancel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().lookupCancelButton());
         buttonArea.add(cancel);
 
-        orgTreeContainer.addStyleName(StaticResourceBundle.INSTANCE.coreCss().orgTreeContainer());
-
-        orgTreeContainer.add(orgList);
-        lookupPanel.add(orgTreeContainer);
+        orgTree.addStyleName(StaticResourceBundle.INSTANCE.coreCss().orgTree());
+        orgTreePanel = new ScrollPanel(orgTree);
+        orgTreePanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().orgTreeContainer());
+        lookupPanel.add(orgTreePanel);
 
         lookupPanelContainer.add(lookupPanel);
 
         orgDescriptionPanel = new FlowPanel();
         orgDescriptionPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().orgDescription());
 
-        logoImage = new AvatarWidget(Size.Small, Background.Gray);
+        logoImage = new AvatarWidget(Size.Small);
         orgDescriptionPanel.add(new AvatarDisplayPanel(logoImage));
 
         FlowPanel descriptionTextContainer = new FlowPanel();
@@ -203,12 +202,20 @@ public class OrgLookupContent extends BaseDialogContent
      */
     private void setupEvents()
     {
-
         cancel.addClickHandler(new ClickHandler()
         {
             public void onClick(final ClickEvent inArg0)
             {
                 close();
+            }
+        });
+
+        orgTree.addSelectionHandler(new SelectionHandler<TreeItem>()
+        {
+            public void onSelection(final SelectionEvent<TreeItem> ev)
+            {
+                EventBus.getInstance().notifyObservers(
+                        new OrgSelectedEvent((OrganizationTreeDTO) ev.getSelectedItem().getUserObject()));
             }
         });
     }
@@ -265,6 +272,26 @@ public class OrgLookupContent extends BaseDialogContent
                                                                            element.scrollTop = i;
                                                                            }-*/;
 
+    /**
+     * Create the tree item for an org recursively.
+     *
+     * @param org
+     *            The org.
+     * @return The tree item.
+     */
+    private TreeItem createOrgTreeItem(final OrganizationTreeDTO org)
+    {
+        TreeItem item = new TreeItem();
+        item.setText(org.getDisplayName());
+        item.setUserObject(org);
+        orgToNodeIndex.put(org, item);
+        for (OrganizationTreeDTO orgChild : org.getChildren())
+        {
+            item.addItem(createOrgTreeItem(orgChild));
+        }
+        return item;
+    }
+
     /* ---- package-scope methods for use by the MVVM View Model only ---- */
 
     /**
@@ -272,25 +299,27 @@ public class OrgLookupContent extends BaseDialogContent
      *
      * @param rootOrg
      *            Root org.
-     * @param treeIndex
-     *            Index of org to widget to fill.
      */
-    void populateOrgTree(final OrganizationTreeDTO rootOrg,
-            final HashMap<OrganizationTreeDTO, OrganizationTreeItemComposite> treeIndex)
+    void populateOrgTree(final OrganizationTreeDTO rootOrg)
     {
-        new OrganizationTreeItemComposite(rootOrg, null, orgList, treeIndex, EventBus.getInstance());
+        orgTree.clear();
+        orgToNodeIndex.clear();
+        orgTree.addItem(createOrgTreeItem(rootOrg));
     }
 
     /**
-     * Scrolls the display to the given org in the tree.
+     * Selects a given org in the tree and scrolls the display to it.
      *
-     * @param orgWidget
-     *            Widget representing the org.
+     * @param org
+     *            Org whose widget to scroll to.
      */
-    void scrollToOrgWidget(final Widget orgWidget)
+    void selectAndScrollToOrg(final OrganizationTreeDTO org)
     {
-        int pixels = orgWidget.getAbsoluteTop() - orgList.getAbsoluteTop();
-        scrollTopNative(orgTreeContainer.getElement(), pixels);
+        TreeItem item = orgToNodeIndex.get(org);
+        orgTree.setSelectedItem(item, true);
+        orgTree.ensureSelectedItemVisible();
+        int pixels = item.getAbsoluteTop() - orgTree.getAbsoluteTop();
+        scrollTopNative(orgTreePanel.getElement(), pixels);
     }
 
     /**
