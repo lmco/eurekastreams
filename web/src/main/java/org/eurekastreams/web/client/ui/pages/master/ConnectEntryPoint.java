@@ -40,6 +40,7 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -177,8 +178,8 @@ public class ConnectEntryPoint implements EntryPoint
      */
     private void onSessionInitFailure(final Throwable caught)
     {
-        // TODO: Something reasonable here
-        Window.alert(caught.toString());
+        final Label errLabel = new Label("Unable to connect to Eureka Streams.");
+        RootPanel.get(WIDGET_ELEMENT_ID).add(errLabel);
     }
 
     /**
@@ -189,8 +190,8 @@ public class ConnectEntryPoint implements EntryPoint
      */
     private void onPersonFetchFailure(final Throwable caught)
     {
-        // TODO: Something reasonable here
-        Window.alert(caught.toString());
+        final Label errLabel = new Label("Unable to connect to Eureka Streams.");
+        RootPanel.get(WIDGET_ELEMENT_ID).add(errLabel);
     }
 
     /**
@@ -211,8 +212,8 @@ public class ConnectEntryPoint implements EntryPoint
             }
         }
 
-        // TODO: better error handling
-        Window.alert("Widget name invalid or missing.");
+        final Label errLabel = new Label("Unable to connect to load widget.");
+        RootPanel.get(WIDGET_ELEMENT_ID).add(errLabel);
     }
 
     /**

@@ -206,7 +206,8 @@ public class ActivityAuthorizationStrategy implements AuthorizationStrategy<Serv
                 return;
             }
 
-            if (groupFollowersDAO.execute(cachedGroup.getId()).contains(senderId) && cachedGroup.isStreamPostable())
+            if (groupFollowersDAO.execute(cachedGroup.getId()).contains(senderId)
+                    && isStreamInteractionAuthorized(cachedGroup, type))
             {
                 // user is a follower
                 return;

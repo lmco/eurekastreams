@@ -37,6 +37,7 @@ import org.eurekastreams.commons.test.IsEqualInternally;
 import org.eurekastreams.server.action.execution.profile.SetFollowingGroupStatusExecution;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
+import org.eurekastreams.server.domain.BackgroundItem;
 import org.eurekastreams.server.domain.DomainGroup;
 import org.eurekastreams.server.domain.Organization;
 import org.eurekastreams.server.domain.Person;
@@ -256,6 +257,7 @@ public class GroupCreatorTest
         personMock = context.mock(Person.class);
         orgMock = context.mock(Organization.class);
         final StreamScope streamScope = context.mock(StreamScope.class);
+        
 
         final long id = 1L;
         final String newName = "NEW org name here";
@@ -272,11 +274,15 @@ public class GroupCreatorTest
 
                 oneOf(groupMock).getCoordinators();
 
+                allowing(groupMock).getParentOrganization();
+                will(returnValue(orgMock));
+                
+                allowing(orgMock).getCapabilities();
+                will(returnValue(new ArrayList<BackgroundItem>()));
+
                 oneOf(groupMapperMock).findByShortName("blah");
                 will(returnValue(null));
 
-                oneOf(groupMock).getParentOrganization();
-                will(returnValue(orgMock));
                 oneOf(orgMock).getAllUsersCanCreateGroups();
                 will(returnValue(false));
                 oneOf(orgMock).isCoordinator(with(any(String.class)));
@@ -384,8 +390,12 @@ public class GroupCreatorTest
                 oneOf(groupMapperMock).findByShortName("blah");
                 will(returnValue(null));
 
-                oneOf(groupMock).getParentOrganization();
+                allowing(groupMock).getParentOrganization();
                 will(returnValue(orgMock));
+                
+                allowing(orgMock).getCapabilities();
+                will(returnValue(new ArrayList<BackgroundItem>()));
+                
                 oneOf(orgMock).getAllUsersCanCreateGroups();
                 will(returnValue(false));
                 oneOf(orgMock).isCoordinator(with(any(String.class)));
@@ -480,8 +490,12 @@ public class GroupCreatorTest
                 oneOf(groupMapperMock).findByShortName("blah");
                 will(returnValue(null));
 
-                oneOf(groupMock).getParentOrganization();
+                allowing(groupMock).getParentOrganization();
                 will(returnValue(orgMock));
+                
+                allowing(orgMock).getCapabilities();
+                will(returnValue(new ArrayList<BackgroundItem>()));
+
                 oneOf(orgMock).getAllUsersCanCreateGroups();
                 will(returnValue(true));
                 oneOf(groupMock).setPending(false);

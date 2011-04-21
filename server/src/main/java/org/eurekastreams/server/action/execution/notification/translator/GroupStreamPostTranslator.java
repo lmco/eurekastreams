@@ -50,9 +50,12 @@ public class GroupStreamPostTranslator implements NotificationTranslator
     public Collection<NotificationDTO> translate(final long inActorId, final long inDestinationId,
             final long inActivityId)
     {
+        // NOTE: This code assumes that the mapper returns a list which can be safely altered, specificially that it is
+        // not used elsewhere (e.g. stored off) and supports removing elements.
         List<Long> memberIdsToNotify = memberMapper.execute(inDestinationId);
+        memberIdsToNotify.remove(inActorId);
         return memberIdsToNotify.isEmpty() ? Collections.EMPTY_LIST : Collections.singletonList(new NotificationDTO(
-                memberIdsToNotify,
-                NotificationType.POST_TO_JOINED_GROUP, inActorId, inDestinationId, EntityType.GROUP, inActivityId));
+                memberIdsToNotify, NotificationType.POST_TO_JOINED_GROUP, inActorId, inDestinationId,
+                EntityType.GROUP, inActivityId));
     }
 }

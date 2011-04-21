@@ -101,9 +101,6 @@ public interface StaticResourceBundle extends ClientBundle
     @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
     ImageResource globalNavBg();
 
-    @Source("style/images/navNotification.png")
-    ImageResource navNotification();
-
     @Source("style/images/streamHeaderOverlay.png")
     ImageResource streamHeaderOverlay();
 

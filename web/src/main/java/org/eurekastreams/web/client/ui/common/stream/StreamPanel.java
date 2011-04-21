@@ -159,6 +159,17 @@ public class StreamPanel extends FlowPanel
      * Panel to hold a message when the subject is locked.
      */
     private final FlowPanel lockedMessage = new FlowPanel();
+    
+    /**
+     * Sort/search row.
+     */
+    private final FlowPanel sortSearchRow = new FlowPanel();
+
+    
+    /**
+     * Feed link widget.
+     */
+    private final StreamFeedLinkWidget feedLinkWidget = new StreamFeedLinkWidget();
 
     /**
      * Initialize page.
@@ -222,10 +233,9 @@ public class StreamPanel extends FlowPanel
         addGadgetWidget = new StreamAddAppWidget();
         titlePanel.add(addGadgetWidget);
 
-        FlowPanel sortSearchRow = new FlowPanel();
         sortSearchRow.addStyleName(StaticResourceBundle.INSTANCE.coreCss().navpanel());
         sortSearchRow.add(sortPanel);
-        sortSearchRow.add(new StreamFeedLinkWidget());
+        sortSearchRow.add(feedLinkWidget);
         sortSearchRow.add(searchBoxWidget);
 
         this.add(postContent);
@@ -453,6 +463,10 @@ public class StreamPanel extends FlowPanel
         postContent.setVisible(true);
         stream.setVisible(true);
         sortPanel.setVisible(true);
+        searchStatusWidget.setVisible(true);
+        searchBoxWidget.setVisible(true);
+        feedLinkWidget.setVisible(true);
+        sortSearchRow.setVisible(true);
         activityDetailPanel.clear();
         EventBus.getInstance().notifyObservers(new ChangeActivityModeEvent(false));
     }
@@ -466,6 +480,10 @@ public class StreamPanel extends FlowPanel
         titlePanel.setVisible(false);
         postContent.setVisible(false);
         stream.setVisible(false);
+        searchStatusWidget.setVisible(false);
+        searchBoxWidget.setVisible(false);
+        feedLinkWidget.setVisible(false);
+        sortSearchRow.setVisible(false);
         EventBus.getInstance().notifyObservers(new ChangeActivityModeEvent(true));
     }
 

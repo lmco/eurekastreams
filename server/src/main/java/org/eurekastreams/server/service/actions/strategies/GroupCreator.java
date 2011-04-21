@@ -19,12 +19,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.actions.TaskHandlerExecutionStrategy;
 import org.eurekastreams.commons.actions.context.DefaultPrincipal;
 import org.eurekastreams.commons.actions.context.PrincipalActionContext;
 import org.eurekastreams.commons.actions.context.TaskHandlerActionContext;
 import org.eurekastreams.commons.actions.context.service.ServiceActionContext;
 import org.eurekastreams.commons.exceptions.ValidationException;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.commons.server.UserActionRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest;
 import org.eurekastreams.server.action.request.notification.CreateNotificationsRequest.RequestType;
@@ -48,6 +50,12 @@ import org.eurekastreams.server.persistence.mappers.cache.OrganizationHierarchyC
  */
 public class GroupCreator extends GroupPersister
 {
+
+    /**
+     * Logger.
+     */
+    private Log log = LogFactory.make();
+
     /**
      * Key value for organization shortName.
      */
@@ -84,7 +92,7 @@ public class GroupCreator extends GroupPersister
 
     /**
      * Constructor.
-     *
+     * 
      * @param inGroupMapper
      *            The Group Mapper
      * @param inOrgMapper
@@ -113,7 +121,7 @@ public class GroupCreator extends GroupPersister
 
     /**
      * Returns DomainGroup based on id passed in inFields.
-     *
+     * 
      * @param inActionContext
      *            The action context.
      * @param inFields
@@ -148,7 +156,7 @@ public class GroupCreator extends GroupPersister
 
     /**
      * Persists new group object.
-     *
+     * 
      * @param inGroup
      *            The group.
      * @param inFields
@@ -198,7 +206,12 @@ public class GroupCreator extends GroupPersister
         inGroup.setCreatedBy(personMapper.findByAccountId(creatorUserName));
 
         getGroupMapper().insert(inGroup);
-        
+
+        if (inGroup.getParentOrganization().getCapabilities() != null)
+        {
+            inGroup.getParentOrganization().getCapabilities().size();
+        }
+
         // sets the destination entity id for the group's stream scope
         inGroup.getStreamScope().setDestinationEntityId(inGroup.getId());
 
@@ -238,7 +251,7 @@ public class GroupCreator extends GroupPersister
     // isCoordinator method to recursively look.
     /**
      * Get whiter the user is a coordinator for this org or it's sub orgs.
-     *
+     * 
      * @param org
      *            The org object you are currently on.
      * @param accountId

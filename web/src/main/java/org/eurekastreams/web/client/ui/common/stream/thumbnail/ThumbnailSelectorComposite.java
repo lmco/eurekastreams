@@ -118,8 +118,11 @@ public class ThumbnailSelectorComposite extends FlowPanel
         {
             public void onClick(final ClickEvent inArg0)
             {
-                selectedIndex++;
-                updateImage();
+                if (selectedIndex < (thumbnailUrls.size() - 1))
+                {
+                    selectedIndex++;
+                    updateImage();
+                }
             }
         });
 
@@ -134,7 +137,7 @@ public class ThumbnailSelectorComposite extends FlowPanel
 
     /**
      * Sets the link information for which the control will display thumbnails.
-     *
+     * 
      * @param inLink
      *            Link information.
      */
@@ -168,7 +171,7 @@ public class ThumbnailSelectorComposite extends FlowPanel
 
     /**
      * Gets the paging controls.
-     *
+     * 
      * @return the paging controls.
      */
     public FlowPanel getPagingControlls()
