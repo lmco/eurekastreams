@@ -735,6 +735,7 @@ div.close-button {
 	width: 77px;
 	height: 25px;
 	text-indent: 1000em;
+	margin-right: 10px;
 }
 
 @sprite .lookup-select-button-inactive {
@@ -823,10 +824,18 @@ div.close-button {
 	width: 730px;
 }
 
+.org-name
+{
+}
+
 .org-lookup-container {
 	height: 275px;
 	padding: 5px 20px 20px;
-	position: relative;
+}
+
+.org-lookup-container  .lookup 
+{
+	margin-bottom: 10px;
 }
 
 .org-lookup-container .search-list {
@@ -835,38 +844,11 @@ div.close-button {
 
 .org-lookup-container .button-area {
 	clear: both;
-	position: relative;
-	top: 10px;
-}
-
-.org-tree .selected>.org-name {
-	background-color: #ffe488;
-}
-
-.org-tree .org-name {
-	padding: 2px;
-	margin-left: 12px;
-	padding-left: 5px;
 }
 
 .org-description-text .org-overview {
 	font-size: 11px;
 	color: #666;
-}
-
-.org-lookup-container .org-tree-container {
-	height: 160px;
-	width: 400px;
-	padding: 5px;
-	overflow: auto;
-	border: 1px solid #bbb;
-	position: relative;
-	background-color: white;
-}
-
-body .org-tree-container>.org-tree {
-	padding: 0;
-	margin: 0;
 }
 
 .org-description {
@@ -880,31 +862,20 @@ body .org-tree-container>.org-tree {
 	margin-right: 10px;
 }
 
-body .org-lookup-container .org-tree .expandable {
-	display: inline-block;
-	zoom: 1;
-	width: 11px;
-	height: 11px;
-	background: transparent url(style/images/plus.png) no-repeat scroll 0 0;
-	margin-right: 5px;
-	position: relative;
-	top: 5px;
-	float: left;
+.org-tree-container
+{
+	width: 400px;
+	height: 160px;
+	background-color: white;
+	border: 1px solid #BBB;
 }
-
-body .org-lookup-container .org-tree .expanded {
-	background: transparent url(style/images/minus.png) no-repeat scroll 0 0
-		! important;
-}
-
-.org-lookup-container .org-tree {
-	list-style: none;
-	padding-left: 20px;
-}
-
-.org-lookup-container .org-tree div {
-	display: block;
+.org-tree .gwt-TreeItem
+{
 	cursor: pointer;
+}
+.org-tree .gwt-TreeItem-selected
+{
+	background-color: #FFE488;
 }
 
 .multi-org-form-element-item,.org-lookup-form-element .editable-item {
@@ -2326,6 +2297,19 @@ body .post-to-stream .over-character-limit {
 		scroll 0 0;
 	height: 9px;
 	zoom: 1;
+}
+
+.eureka-connect-users-who-liked-activity.users-who-liked-activity .users-who-liked-activity-header
+ {
+	background-image: url(style/images/like-modal-narrow-top.png);
+}
+.eureka-connect-users-who-liked-activity.users-who-liked-activity .users-who-liked-activity-body
+ {
+	background-image: url(style/images/like-modal-narrow-bg.png);
+}
+.eureka-connect-users-who-liked-activity.users-who-liked-activity .users-who-liked-activity-footer
+ {
+	background-image: url(style/images/like-modal-narrow-bottom.png);
 }
 
 .users-who-liked-activity-wrapper {
@@ -8247,10 +8231,6 @@ IE SPECIFIC CSS.
 		display: inline;
 	}
 	
-	body .org-lookup-container .org-tree .expandable {
-		display: inline;
-	}
-	
 	.selected-org-name {
 		display: inline;
 	}
@@ -9265,16 +9245,6 @@ IE SPECIFIC CSS.
 	
 	.post-expanded-panel {
 		z-index: 89 ! important;
-	}
-	
-	body .org-tree {
-		margin-left: 0;
-	}
-	
-	.org-tree .org-name {
-		position: relative;
-		top: -15px;
-		margin-bottom: -15px;
 	}
 	
 	.org-lookup-form-element .form-instructions {

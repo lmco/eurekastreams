@@ -17,7 +17,6 @@ package org.eurekastreams.web.client.ui.common.dialog.orglookup;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.eurekastreams.server.domain.EntityType;
@@ -57,16 +56,12 @@ public class OrgLookupViewModel
     /** The selected org. */
     private OrganizationTreeDTO selectedOrg;
 
-    /** The index matching the DTOs to the corresponding widget. */
-    private final HashMap<OrganizationTreeDTO, OrganizationTreeItemComposite> treeIndex = // \n
-    new HashMap<OrganizationTreeDTO, OrganizationTreeItemComposite>();
-
     /** Orgs in search order. */
     private final List<OrganizationTreeDTO> orgList = new ArrayList<OrganizationTreeDTO>();
 
     /**
      * Constructor.
-     * 
+     *
      * @param inView
      *            View to manage.
      * @param inOrgTreeModel
@@ -131,8 +126,8 @@ public class OrgLookupViewModel
                 OrganizationTreeDTO rootOrg = ev.getResponse();
                 orgList.clear();
                 addOrgToSearchList(rootOrg);
-                treeIndex.clear();
-                view.populateOrgTree(rootOrg, treeIndex);
+                // treeIndex.clear();
+                view.populateOrgTree(rootOrg);
             }
         });
 
@@ -181,9 +176,7 @@ public class OrgLookupViewModel
             {
                 if (org.getDisplayName().toLowerCase().startsWith(searchText))
                 {
-                    final OrganizationTreeItemComposite orgWidget = treeIndex.get(org);
-                    orgWidget.select();
-                    view.scrollToOrgWidget(orgWidget);
+                    view.selectAndScrollToOrg(org);
                     return;
                 }
             }
@@ -192,7 +185,7 @@ public class OrgLookupViewModel
 
     /**
      * Add organization and children to search list.
-     * 
+     *
      * @param org
      *            the org.
      */

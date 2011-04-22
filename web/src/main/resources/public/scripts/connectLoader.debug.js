@@ -180,7 +180,7 @@ function __eurekaConnect__onLoad() {
             var src;
             if (src = scripts[i].getAttribute("src")) {
                 if (src.match(myName)) {
-                    return src.substring(0, src.indexOf('/',7));
+                    return src.substring(0, src.indexOf('/',9));
                 }
             }
         }
@@ -233,18 +233,16 @@ function __eurekaConnect__onLoad() {
             catch(e) {}
         }
    
-        var heightStr = "";
+        var opts = { 'scrolling' : 'no', 'width' : widget.getAttribute('eureka:width') };
         if (widget.getAttribute('eureka:height'))
         {
-            heightStr = "height='" + widget.getAttribute('eureka:height') + "'";
+           opts.height = widget.getAttribute('eureka:height');
         }
-  //      widget.innerHTML = "<iframe id='" + frameId + "' scrolling='no' style='overflow: hidden' frameborder='0' " + heightStr + " width='" + 
-   //         widget.getAttribute('eureka:width')  + "' src='" + __eurekaConnect__baseUrl  + "/widget.html?&__p=" + hostUrl + attribString + "'></iframe>";
 
         new easyXDM.Socket({
             remote:  __eurekaConnect__baseUrl  + "/widget.html?&__p=" + hostUrl + attribString,
             container: widget,
-            props: { 'scrolling' : 'no', 'width' : widget.getAttribute('eureka:width') },
+            props: opts,
             swf: __eurekaConnect__baseUrl + '/scripts/easyxdm.swf',
             onMessage: function(message, origin){
                 __eurekaConnect__receiveMessage(message, this.container.getElementsByTagName('iframe')[0]);

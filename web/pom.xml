@@ -620,14 +620,20 @@
                                 </resource>
                             </webResources>
                             <warSourceExcludes>.gwt-tmp/**,WEB-INF/classes/javax/**</warSourceExcludes>
-                            <packagingExcludes>WEB-INF/classes/public/**, WEB-INF/classes/database/**,WEB-INF/classes/db/**,WEB-INF/classes/scripts/**</packagingExcludes>
+                            <packagingExcludes>WEB-INF/classes/public/**,WEB-INF/classes/database/**,WEB-INF/classes/db/**,WEB-INF/classes/scripts/**</packagingExcludes>
                             <warName>${project.build.finalName}</warName>
-                            <!--
-                                this is a workaround because of a bug in
-                                this plugin when performing war
-                                overlays.
-                            -->
-                            <webappDirectory>${project.build.directory}/${project.build.finalName}/eureka</webappDirectory>
+							<webappDirectory>${project.build.directory}/${project.build.finalName}/eureka</webappDirectory>
+							<!-- Exclude the slf4j JDK 1.4 logging adapter to force slf4j logging to use log4j. -->
+							<overlays>
+                                <overlay>
+                                    <groupId>org.apache.shindig</groupId>
+                                    <artifactId>shindig-server</artifactId>
+                                    <type>war</type>
+                                    <excludes>
+                                        <exclude>WEB-INF/lib/slf4j-jdk14-*.jar</exclude>
+                                    </excludes>
+                                </overlay>
+                            </overlays>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -802,14 +808,20 @@
                                 </resource>
                             </webResources>
                             <warSourceExcludes>.gwt-tmp/**,WEB-INF/classes/javax/**</warSourceExcludes>
-                            <packagingExcludes>WEB-INF/classes/public/**, WEB-INF/classes/database/**,WEB-INF/classes/db/**,WEB-INF/classes/scripts/**</packagingExcludes>
+                            <packagingExcludes>WEB-INF/classes/public/**,WEB-INF/classes/database/**,WEB-INF/classes/db/**,WEB-INF/classes/scripts/**</packagingExcludes>
                             <warName>${project.build.finalName}</warName>
-                            <!--
-                                this is a workaround because of a bug in
-                                this plugin when performing war
-                                overlays.
-                            -->
                             <webappDirectory>${project.build.directory}/${project.build.finalName}/eureka</webappDirectory>
+							<!-- Exclude the slf4j JDK 1.4 logging adapter to force slf4j logging to use log4j. -->
+							<overlays>
+                                <overlay>
+                                    <groupId>org.apache.shindig</groupId>
+                                    <artifactId>shindig-server</artifactId>
+                                    <type>war</type>
+                                    <excludes>
+                                        <exclude>WEB-INF/lib/slf4j-jdk14-*.jar</exclude>
+                                    </excludes>
+                                </overlay>
+                            </overlays>
                         </configuration>
                     </plugin>
                 </plugins>
