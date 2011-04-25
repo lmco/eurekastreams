@@ -51,6 +51,7 @@ import org.eurekastreams.web.client.model.StartTabsModel;
 import org.eurekastreams.web.client.model.ThemeDefinitionCategoriesModel;
 import org.eurekastreams.web.client.model.ThemeModel;
 import org.eurekastreams.web.client.ui.Session;
+import org.eurekastreams.web.client.ui.common.Pager;
 import org.eurekastreams.web.client.ui.common.SettingsPanel;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder;
 import org.eurekastreams.web.client.ui.common.form.FormBuilder.Method;
@@ -172,8 +173,26 @@ public class GalleryContent extends SettingsPanel
         themeTab = new PagedListPanel("themes", new SingleColumnPagedListRenderer());
 
         portalPage = new TabContainerPanel("galleryTab");
-        portalPage.addTab(new SimpleTab("Apps", gadgetTab));
-        portalPage.addTab(new SimpleTab("Themes", themeTab));
+
+        // setup the params to set when the tab is activated
+        Map<String, String> gadgetTabParams = new HashMap<String, String>();
+        gadgetTabParams.put(PagedListPanel.URL_PARAM_LIST_ID, "gadgets");
+        gadgetTabParams.put(Pager.URL_PARAM_START_INDEX, "0");
+
+        SimpleTab gadgetSimpleTab = new SimpleTab("Apps", gadgetTab);
+        gadgetSimpleTab.setParamsToSet(gadgetTabParams);
+        gadgetSimpleTab.setParamsToClear(Pager.URL_PARAM_END_INDEX);
+        portalPage.addTab(gadgetSimpleTab);
+
+        // setup the params to set when the tab is activated
+        Map<String, String> themeTabParams = new HashMap<String, String>();
+        themeTabParams.put(PagedListPanel.URL_PARAM_LIST_ID, "themes");
+        themeTabParams.put(Pager.URL_PARAM_START_INDEX, "0");
+
+        SimpleTab themeSimpleTab = new SimpleTab("Themes", themeTab);
+        themeSimpleTab.setParamsToSet(themeTabParams);
+        themeSimpleTab.setParamsToClear(Pager.URL_PARAM_START_INDEX, Pager.URL_PARAM_END_INDEX);
+        portalPage.addTab(themeSimpleTab);
 
         galleryPortalContainer.add(portalPage);
         portalPage.init();
@@ -597,8 +616,8 @@ public class GalleryContent extends SettingsPanel
 
         form.addFormDivider();
 
-        form.addFormElement(new BasicTextBoxFormElement("App XML:", "url",
-                defaultUrl, "Enter the link to the xml file", true));
+        form.addFormElement(new BasicTextBoxFormElement("App XML:", "url", defaultUrl,
+                "Enter the link to the xml file", true));
 
         form.addFormDivider();
 

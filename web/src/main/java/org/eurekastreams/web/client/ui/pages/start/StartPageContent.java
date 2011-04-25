@@ -103,8 +103,8 @@ public class StartPageContent extends FlowPanel
 
         final FlowPanel thisBuffered = this;
 
-        Session.getInstance().getEventBus().addObserver(GotStartPageTabsResponseEvent.class,
-                new Observer<GotStartPageTabsResponseEvent>()
+        Session.getInstance().getEventBus()
+                .addObserver(GotStartPageTabsResponseEvent.class, new Observer<GotStartPageTabsResponseEvent>()
                 {
                     public void update(final GotStartPageTabsResponseEvent event)
                     {
@@ -126,8 +126,8 @@ public class StartPageContent extends FlowPanel
                         Session.getInstance().getEventBus().notifyObservers(new SetBannerEvent());
 
                         // Make the tabs draggable. The GadgetTabContent will handle making the gadgets draggable.
-                        tabs.makeTabsDraggable(new TabDragHandler(), new NoInsertAtEndIndexDropController(tabs
-                                .getTabDropZone()));
+                        tabs.makeTabsDraggable(new TabDragHandler(),
+                                new NoInsertAtEndIndexDropController(tabs.getTabDropZone()));
 
                         // Loop through the tabs and add them to the container.
                         for (Tab tab : tabsResponse)
@@ -183,13 +183,15 @@ public class StartPageContent extends FlowPanel
 
                         thisBuffered.addStyleName(StaticResourceBundle.INSTANCE.coreCss().portalBoundary());
 
-                        Session.getInstance().getEventBus().addObserver(ThemeChangedEvent.getEvent(),
-                                new Observer<ThemeChangedEvent>()
+                        Session.getInstance().getEventBus()
+                                .addObserver(ThemeChangedEvent.getEvent(), new Observer<ThemeChangedEvent>()
                                 {
                                     public void update(final ThemeChangedEvent arg1)
                                     {
-                                        Session.getInstance().getEventBus().notifyObservers(
-                                                new UpdateHistoryEvent(new CreateUrlRequest(Page.START)));
+                                        Session.getInstance()
+                                                .getEventBus()
+                                                .notifyObservers(
+                                                        new UpdateHistoryEvent(new CreateUrlRequest(Page.START)));
                                         Location.reload();
                                     }
                                 });
@@ -197,126 +199,148 @@ public class StartPageContent extends FlowPanel
                         HashMap<String, String> params = new HashMap<String, String>();
                         params.put("tab", Long.toString(tabDomainObjects.get(0).getId()));
                         params.put("galleryTab", "Apps");
+                        params.put("listId", "gadgets");
                         settings.setTargetHistoryToken(Session.getInstance().generateUrl(
                                 new CreateUrlRequest(Page.GALLERY, params)));
 
                         // Respond to history changes.
-                        Session.getInstance().getEventBus().addObserver(UpdatedHistoryParametersEvent.class,
-                                new Observer<UpdatedHistoryParametersEvent>()
-                                {
-                                    public void update(final UpdatedHistoryParametersEvent event)
-                                    {
-                                        // Note: parameters do not need to be decoded here - that's already done by
-                                        // HistoryHandler before it published the event
-
-                                        if (event.getParameters().get("tab")
-                                        // line break
-                                        != null)
+                        Session.getInstance()
+                                .getEventBus()
+                                .addObserver(UpdatedHistoryParametersEvent.class,
+                                        new Observer<UpdatedHistoryParametersEvent>()
                                         {
-                                            HashMap<String, String> params = new HashMap<String, String>();
-                                            params.put("tab", event.getParameters().get("tab"));
+                                            public void update(final UpdatedHistoryParametersEvent event)
+                                            {
+                                                // Note: parameters do not need to be decoded here -that's already done
+                                                // by
+                                                // HistoryHandler before it published the event
 
-                                            params.put("galleryTab", "Apps");
-                                            settings.setTargetHistoryToken(Session.getInstance().generateUrl(
-                                                    new CreateUrlRequest(Page.GALLERY, params)));
-                                        }
+                                                if (event.getParameters().get("tab")
+                                                // line break
+                                                != null)
+                                                {
+                                                    HashMap<String, String> params = new HashMap<String, String>();
+                                                    params.put("tab", event.getParameters().get("tab"));
 
-                                        if (event.getParameters().get("action").equals("addGadget"))
-                                        {
-                                            String prefs = event.getParameters().get("prefs");
-                                            String url = event.getParameters().get("url");
+                                                    params.put("galleryTab", "Apps");
+                                                    settings.setTargetHistoryToken(Session.getInstance().generateUrl(
+                                                            new CreateUrlRequest(Page.GALLERY, params)));
+                                                }
 
-                                            // Clear current action
-                                            event.getParameters().put("action", "");
-                                            event.getParameters().put("url", "");
-                                            event.getParameters().put("prefs", "");
-                                            EventBus.getInstance().notifyObservers(
-                                                    new UpdatedHistoryParametersEvent(event.getParameters()));
+                                                if (event.getParameters().get("action").equals("addGadget"))
+                                                {
+                                                    String prefs = event.getParameters().get("prefs");
+                                                    String url = event.getParameters().get("url");
 
-                                            GadgetModel.getInstance().insert(
-                                                    new AddGadgetToStartPageRequest(url, tabsResponse.get(0).getId(),
-                                                            prefs));
-                                        }
-                                        else if (event.getParameters().get("action").equals("setTheme"))
-                                        {
-                                            // Clear current action
-                                            EventBus.getInstance().notifyObservers(
-                                                    new UpdatedHistoryParametersEvent(event.getParameters()));
-                                            String url = event.getParameters().get("url");
-                                            ThemeModel.getInstance().set(url);
-                                        }
-                                    }
-                                }, true);
+                                                    // Clear current action
+                                                    event.getParameters().put("action", "");
+                                                    event.getParameters().put("url", "");
+                                                    event.getParameters().put("prefs", "");
+                                                    EventBus.getInstance().notifyObservers(
+                                                            new UpdatedHistoryParametersEvent(event.getParameters()));
+
+                                                    GadgetModel.getInstance().insert(
+                                                            new AddGadgetToStartPageRequest(url, tabsResponse.get(0)
+                                                                    .getId(), prefs));
+                                                }
+                                                else if (event.getParameters().get("action").equals("setTheme"))
+                                                {
+                                                    // Clear current action
+                                                    EventBus.getInstance().notifyObservers(
+                                                            new UpdatedHistoryParametersEvent(event.getParameters()));
+                                                    String url = event.getParameters().get("url");
+                                                    ThemeModel.getInstance().set(url);
+                                                }
+                                            }
+                                        }, true);
 
                         // Respond to new tabs.
-                        Session.getInstance().getEventBus().addObserver(InsertedStartTabResponseEvent.class,
-                                new Observer<InsertedStartTabResponseEvent>()
-                                {
-                                    public void update(final InsertedStartTabResponseEvent event)
-                                    {
-                                        Session.getInstance().getEventBus()
-                                                .notifyObservers(new HideNotificationEvent());
-
-                                        newTab.getTextBox().setVisible(false);
-                                        newTab.getLabel().setVisible(true);
-
-                                        StartPageTab tab = new StartPageTab(event.getResponse());
-                                        tabs.insertTab(tab, event.getResponse().getTabIndex());
-
-                                        // If more than 8 tabs (the new tab counts as 1) disable the new tab.
-                                        if (tabs.getSize() >= Person.TAB_LIMIT + 1)
+                        Session.getInstance()
+                                .getEventBus()
+                                .addObserver(InsertedStartTabResponseEvent.class,
+                                        new Observer<InsertedStartTabResponseEvent>()
                                         {
-                                            tabs.removeTab(newTab.getIdentifier());
-                                        }
+                                            public void update(final InsertedStartTabResponseEvent event)
+                                            {
+                                                Session.getInstance().getEventBus()
+                                                        .notifyObservers(new HideNotificationEvent());
 
-                                        // If 2 tabs are present (the new tab counts as 1) re-enable the remove.
-                                        if (tabs.getSize() == 3)
+                                                newTab.getTextBox().setVisible(false);
+                                                newTab.getLabel().setVisible(true);
+
+                                                StartPageTab tab = new StartPageTab(event.getResponse());
+                                                tabs.insertTab(tab, event.getResponse().getTabIndex());
+
+                                                // If more than 8 tabs (the new tab counts as 1) disable the new tab.
+                                                if (tabs.getSize() >= Person.TAB_LIMIT + 1)
+                                                {
+                                                    tabs.removeTab(newTab.getIdentifier());
+                                                }
+
+                                                // If 2 tabs are present (the new tab counts as 1) re-enable the remove.
+                                                if (tabs.getSize() == 3)
+                                                {
+                                                    ((StartPageTab) tabs.getTab(0)).enableRemove();
+                                                }
+
+                                                // The start page tab is ready.
+                                                Session.getInstance().getEventBus()
+                                                        .notifyObservers(new StartPageTabReadyEvent(tab));
+
+                                                Session.getInstance()
+                                                        .getEventBus()
+                                                        .notifyObservers(
+                                                                new UpdateHistoryEvent(new CreateUrlRequest("tab", tab
+                                                                        .getIdentifier(), true)));
+                                            }
+                                        });
+
+                        Session.getInstance()
+                                .getEventBus()
+                                .addObserver(DeletedStartPageTabResponseEvent.class,
+                                        new Observer<DeletedStartPageTabResponseEvent>()
                                         {
-                                            ((StartPageTab) tabs.getTab(0)).enableRemove();
-                                        }
+                                            public void update(final DeletedStartPageTabResponseEvent event)
+                                            {
+                                                tabs.removeTab(String.valueOf(event.getResponse().getId()));
+                                                tabs.addTab(newTab);
+                                                Session.getInstance()
+                                                        .getEventBus()
+                                                        .notifyObservers(
+                                                                new ShowNotificationEvent(new Notification(
+                                                                        new UndoDeleteNotification(event.getResponse()
+                                                                                .getTabName(), new ClickHandler()
+                                                                        {
+                                                                            public void onClick(
+                                                                                    final ClickEvent clickEvent)
+                                                                            {
+                                                                                StartTabsModel.getInstance()
+                                                                                        .undoDelete(
+                                                                                                event.getResponse()
+                                                                                                        .getId());
+                                                                                Session.getInstance()
+                                                                                        .getEventBus()
+                                                                                        .notifyObservers(
+                                                                                         new HideNotificationEvent());
+                                                                            }
+                                                                        }), "")));
 
-                                        // The start page tab is ready.
-                                        Session.getInstance().getEventBus().notifyObservers(
-                                                new StartPageTabReadyEvent(tab));
+                                                // Highlight the first tab
+                                                Session.getInstance()
+                                                        .getEventBus()
+                                                        .notifyObservers(
+                                                                new UpdateHistoryEvent(
+                                                                        new CreateUrlRequest("tab",
+                                                                                ((StartPageTab) tabs.getTab(0))
+                                                                                        .getIdentifier(), true)));
 
-                                        Session.getInstance().getEventBus().notifyObservers(
-                                                new UpdateHistoryEvent(new CreateUrlRequest("tab", tab.getIdentifier(),
-                                                        true)));
-                                    }
-                                });
-
-                        Session.getInstance().getEventBus().addObserver(DeletedStartPageTabResponseEvent.class,
-                                new Observer<DeletedStartPageTabResponseEvent>()
-                                {
-                                    public void update(final DeletedStartPageTabResponseEvent event)
-                                    {
-                                        tabs.removeTab(String.valueOf(event.getResponse().getId()));
-                                        tabs.addTab(newTab);
-                                        Session.getInstance().getEventBus().notifyObservers(
-                                                new ShowNotificationEvent(new Notification(new UndoDeleteNotification(
-                                                        event.getResponse().getTabName(), new ClickHandler()
-                                                        {
-                                                            public void onClick(final ClickEvent clickEvent)
-                                                            {
-                                                                StartTabsModel.getInstance().undoDelete(
-                                                                        event.getResponse().getId());
-                                                                Session.getInstance().getEventBus().notifyObservers(
-                                                                        new HideNotificationEvent());
-                                                            }
-                                                        }), "")));
-
-                                        // Highlight the first tab
-                                        Session.getInstance().getEventBus().notifyObservers(
-                                                new UpdateHistoryEvent(new CreateUrlRequest("tab", ((StartPageTab) tabs
-                                                        .getTab(0)).getIdentifier(), true)));
-
-                                        // Only one tab left (the new tab counts as 1). Disable remove.
-                                        if (tabs.getSize() == 2)
-                                        {
-                                            ((StartPageTab) tabs.getTab(0)).disableRemove();
-                                        }
-                                    }
-                                });
+                                                // Only one tab left (the new tab counts as 1). Disable remove.
+                                                if (tabs.getSize() == 2)
+                                                {
+                                                    ((StartPageTab) tabs.getTab(0)).disableRemove();
+                                                }
+                                            }
+                                        });
                     }
                 });
 

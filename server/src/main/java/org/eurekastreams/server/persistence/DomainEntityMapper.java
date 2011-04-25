@@ -22,7 +22,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.commons.logging.Log;
 import org.eurekastreams.commons.hibernate.QueryOptimizer;
+import org.eurekastreams.commons.logging.LogFactory;
 import org.eurekastreams.server.domain.PagedSet;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
@@ -30,12 +32,17 @@ import org.hibernate.search.Search;
 
 /**
  * Parent class for domain entity mappers.
- *
+ * 
  * @param <T>
  *            the type of domain entity this class maps
  */
 public abstract class DomainEntityMapper<T>
 {
+    /**
+     * Logger.
+     */
+    private Log log = LogFactory.make();
+
     /**
      * The QueryOptimizer to use for specialized functions.
      */
@@ -43,7 +50,7 @@ public abstract class DomainEntityMapper<T>
 
     /**
      * Constructor.
-     *
+     * 
      * @param inQueryOptimizer
      *            the QueryOptimizer to use for specialized functions.
      */
@@ -54,7 +61,7 @@ public abstract class DomainEntityMapper<T>
 
     /**
      * Get the QueryOptimizer to use for specialized functions.
-     *
+     * 
      * @return the QueryOptimizer to use for specialized functions.
      */
     protected QueryOptimizer getQueryOptimizer()
@@ -69,7 +76,7 @@ public abstract class DomainEntityMapper<T>
 
     /**
      * Getter for entityManager.
-     *
+     * 
      * @return The entityManager.
      */
     protected EntityManager getEntityManager()
@@ -79,7 +86,7 @@ public abstract class DomainEntityMapper<T>
 
     /**
      * Set the entity manager to use for all ORM operations.
-     *
+     * 
      * @param inEntityManager
      *            the EntityManager to use for all ORM operations.
      */
@@ -91,14 +98,14 @@ public abstract class DomainEntityMapper<T>
 
     /**
      * Get the domain entity name for the generic query operations.
-     *
+     * 
      * @return the domain entity name for the generic query operations.
      */
     protected abstract String getDomainEntityName();
 
     /**
      * Insert the domain entity.
-     *
+     * 
      * @param domainEntity
      *            The domainEntity to operate on.
      */
@@ -126,7 +133,7 @@ public abstract class DomainEntityMapper<T>
 
     /**
      * Refresh the domain entity.
-     *
+     * 
      * @param domainEntity
      *            the domain entity.
      */
@@ -137,10 +144,10 @@ public abstract class DomainEntityMapper<T>
 
     /**
      * Find the domain entity by id.
-     *
+     * 
      * @param domainEntityId
      *            ID of the entity to look up
-     *
+     * 
      * @return the entity with the input
      */
     @SuppressWarnings("unchecked")
@@ -154,7 +161,7 @@ public abstract class DomainEntityMapper<T>
 
     /**
      * Find the domain entity by id.
-     *
+     * 
      * @param domainEntityId
      *            ID of the entity to look up
      * @return the entity with the input
@@ -167,7 +174,7 @@ public abstract class DomainEntityMapper<T>
     /**
      * Get a PagedSet of type V, built from the input query string, with the count determined by the input
      * countQueryString (more efficient than the version of this query without it).
-     *
+     * 
      * @param <V>
      *            the type of objects to return
      * @param from
@@ -245,7 +252,7 @@ public abstract class DomainEntityMapper<T>
 
     /**
      * Get a PagedSet of type V, built from the input query string.
-     *
+     * 
      * @param <V>
      *            the type of objects to return
      * @param from
@@ -263,6 +270,8 @@ public abstract class DomainEntityMapper<T>
             final HashMap<String, Object> parameters)
     {
         PagedSet<V> results = new PagedSet<V>();
+
+        log.debug("from: " + from + ", to: " + to);
 
         if (!results.isRangeValid(from, to))
         {
@@ -295,8 +304,10 @@ public abstract class DomainEntityMapper<T>
         int validTo = to;
         if (to >= total)
         {
+            log.debug("to>=total - to: " + to + ", total: " + total);
             validTo = total - 1;
         }
+        log.debug("Query: " + queryString + ", total: " + total + ", validTo: " + validTo);
 
         // query to get the actual results
         Query select = entityManager.createQuery(queryString);
@@ -306,7 +317,14 @@ public abstract class DomainEntityMapper<T>
         }
 
         select.setFirstResult(from);
-        select.setMaxResults(validTo - from + 1);
+        int maxResults = validTo - from + 1;
+        if (maxResults <= 0)
+        {
+            log.debug("Maxresults would have been negative or zero - "
+                    + "most likely an error on the client - returning no records");
+            return results;
+        }
+        select.setMaxResults(maxResults);
 
         ArrayList<V> resultList = (ArrayList<V>) select.getResultList();
 
@@ -320,11 +338,11 @@ public abstract class DomainEntityMapper<T>
 
     /**
      * get paged result set of type T.
-     *
+     * 
      * Subclasses are expected to construct an appropriate parameterized query string.
-     *
+     * 
      * suppression of type check warnings is because the JPA call doesn't support generics.
-     *
+     * 
      * @param from
      *            the from index to return, inclusive. This is not an index like the PK index, this is more like an
      *            array index, the array being the set of returned results from the query.
@@ -345,11 +363,11 @@ public abstract class DomainEntityMapper<T>
 
     /**
      * get paged result set of type T.
-     *
+     * 
      * Subclasses are expected to construct an appropriate parameterized query string.
-     *
+     * 
      * suppression of type check warnings is because the JPA call doesn't support generics.
-     *
+     * 
      * @param from
      *            the from index to return, inclusive. This is not an index like the PK index, this is more like an
      *            array index, the array being the set of returned results from the query.
@@ -373,7 +391,7 @@ public abstract class DomainEntityMapper<T>
 
     /**
      * Get the FullTextSession for reindexing entities in the search index.
-     *
+     * 
      * @return the FullTextSession to use for reindexing in the search index
      */
     protected FullTextSession getFullTextSession()
