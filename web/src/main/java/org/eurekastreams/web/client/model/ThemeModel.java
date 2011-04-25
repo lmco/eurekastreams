@@ -28,8 +28,6 @@ import org.eurekastreams.web.client.events.data.InsertedThemeResponseEvent;
 import org.eurekastreams.web.client.events.data.UpdatedThemeResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
 
-import com.google.gwt.user.client.Window;
-
 /**
  * Theme Model.
  * 
@@ -139,7 +137,6 @@ public class ThemeModel extends BaseModel implements Insertable<HashMap<String, 
      */
     public void fetch(final GetGalleryItemsRequest request, final boolean useClientCacheIfAvailable)
     {
-        Window.alert("About to get sorted themes");
         super.callReadAction("getSortedThemeGalleryItems", request, new OnSuccessCommand<PagedSet<Theme>>()
         {
             public void onSuccess(final PagedSet<Theme> response)
@@ -149,4 +146,5 @@ public class ThemeModel extends BaseModel implements Insertable<HashMap<String, 
         }, useClientCacheIfAvailable);
 
     }
+
 }
