@@ -34,7 +34,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A simple tab. Just a name and a content widget. Can't be simpler than that. Oh, it also supports dragging and
  * dropping. I guess its not THAT simple.
- *
+ * 
  */
 public class SimpleTab extends FlowPanel
 {
@@ -73,8 +73,13 @@ public class SimpleTab extends FlowPanel
     private String[] paramsToClear = {};
 
     /**
+     * Parameters to set when this tab is selected.
+     */
+    private Map<String, String> paramsToSet = null;
+
+    /**
      * Constructor with no contents. (Sometimes tabs do other things when clicked.)
-     *
+     * 
      * @param inIdentifier
      *            the identifier of the tab (also used as the title).
      */
@@ -85,7 +90,7 @@ public class SimpleTab extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param inIdentifier
      *            the identifier of the tab (also used as the title).
      * @param inContents
@@ -98,7 +103,7 @@ public class SimpleTab extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param inIdentifier
      *            the identifier of the tab.
      * @param inTitle
@@ -130,8 +135,19 @@ public class SimpleTab extends FlowPanel
     }
 
     /**
+     * Set the params that will be added when this tab is selected.
+     * 
+     * @param inParamsToSet
+     *            the paramsToSet to set
+     */
+    public void setParamsToSet(final Map<String, String> inParamsToSet)
+    {
+        paramsToSet = inParamsToSet;
+    }
+
+    /**
      * Set whether the tab is draggable.
-     *
+     * 
      * @param inDraggable
      *            draggable.
      */
@@ -142,7 +158,7 @@ public class SimpleTab extends FlowPanel
 
     /**
      * Init the tab.
-     *
+     * 
      * @param key
      *            the history token key.
      */
@@ -161,8 +177,17 @@ public class SimpleTab extends FlowPanel
                     {
                         params.put(paramsToClear[i], null);
                     }
-                    Session.getInstance().getEventBus()
-                            .notifyObservers(new UpdateHistoryEvent(new CreateUrlRequest(params, false)));
+
+                    if (paramsToSet != null)
+                    {
+                        length = paramsToSet.keySet().size();
+                        for (String key : paramsToSet.keySet())
+                        {
+                            params.put(key, paramsToSet.get(key));
+                        }
+                    }
+                    Session.getInstance().getEventBus().notifyObservers(
+                            new UpdateHistoryEvent(new CreateUrlRequest(params, false)));
                 }
             }
         });
@@ -170,7 +195,7 @@ public class SimpleTab extends FlowPanel
 
     /**
      * Make this tab draggable.
-     *
+     * 
      * @param dragController
      *            the drag controller.
      */
@@ -184,7 +209,7 @@ public class SimpleTab extends FlowPanel
 
     /**
      * Set the contents manually.
-     *
+     * 
      * @param inContents
      *            the contents.
      */
@@ -195,7 +220,7 @@ public class SimpleTab extends FlowPanel
 
     /**
      * Get the contents.
-     *
+     * 
      * @return the contents.
      */
     public Widget getContents()
@@ -205,7 +230,7 @@ public class SimpleTab extends FlowPanel
 
     /**
      * Gets the label for subclasses.
-     *
+     * 
      * @return the label.
      */
     public Label getLabel()
@@ -215,7 +240,7 @@ public class SimpleTab extends FlowPanel
 
     /**
      * Gets the panel for subclasses.
-     *
+     * 
      * @return the panel.
      */
     protected FlowPanel getPanel()
@@ -225,7 +250,7 @@ public class SimpleTab extends FlowPanel
 
     /**
      * Gets the focuspanel for subclasses.
-     *
+     * 
      * @return the focuspanel.
      */
     protected FocusPanel getFocusPanel()
@@ -236,7 +261,7 @@ public class SimpleTab extends FlowPanel
     /**
      * The identifier of the tab is how it is keyed in the system. Also, what will be displayed in the URL when clicked.
      * *IT MUST BE UNIQUE ACROSS ALL TABS*
-     *
+     * 
      * @return the identifier.
      */
     public String getIdentifier()
@@ -262,7 +287,7 @@ public class SimpleTab extends FlowPanel
 
     /**
      * Renames the tab.
-     *
+     * 
      * @param inTitle
      *            New name.
      */
