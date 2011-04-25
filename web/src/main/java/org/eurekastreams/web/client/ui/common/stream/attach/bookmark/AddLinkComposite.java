@@ -58,9 +58,6 @@ public class AddLinkComposite extends FlowPanel
     /** The display link panel. */
     private final FlowPanel displayPanel = new FlowPanel();
 
-    /** The link panel. */
-    private final FlowPanel linkPanel = new FlowPanel();
-
     /** Thumbnail selector. */
     private final ThumbnailSelectorComposite selector = new ThumbnailSelectorComposite();
 
@@ -96,33 +93,26 @@ public class AddLinkComposite extends FlowPanel
     private static final String INCOMPLETE_INFO_URL_MESSAGE = "Details about URL could not be retrieved.  "
             + "Please confirm it was entered correctly.";
 
-
-
     /**
      * Constructor.
      */
     public AddLinkComposite()
     {
-        /*
-         * Add the widgets.
-         */
+        // add the three main widgets
         add(addLink);
         add(displayPanel);
         add(addPanel);
 
-        this.addStyleName(StaticResourceBundle.INSTANCE.coreCss().attachLinkContainer());
+        addStyleName(StaticResourceBundle.INSTANCE.coreCss().attachLinkContainer());
 
-        /*
-         * Hide the other panels.
-         */
+        // only one is visible at a time, so hide the others
         addPanel.setVisible(false);
         displayPanel.setVisible(false);
 
         addLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().showAttachLinkPanel());
 
-        /**
-         * Setup the add panel.
-         */
+        // -- Setup the add link panel (field to enter URL) --
+
         addPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().attachLink());
         closeAddButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().close());
         addPanel.add(closeAddButton);
@@ -135,24 +125,25 @@ public class AddLinkComposite extends FlowPanel
         addPanel.add(fetchLink);
         fetchLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().addButtonSubmit());
 
-        /*
-         * Setup the display pane.
-         */
-        closeDisplayButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().close());
-        displayPanel.add(closeDisplayButton);
-        displayPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkPanel());
-        linkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageLink());
+        // -- Setup the link display panel (thumbnail selector, field to update title) --
+
+        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().attachLinkTitleEntry());
         linkUrlDisplay.addStyleName(StaticResourceBundle.INSTANCE.coreCss().url());
         linkDesc.addStyleName(StaticResourceBundle.INSTANCE.coreCss().metaDescription());
-        linkPanel.add(selector);
-        linkPanel.add(titleLink);
-        linkPanel.add(linkUrlDisplay);
-        linkPanel.add(linkDesc);
-        linkPanel.add(selector.getPagingControlls());
-        displayPanel.add(linkPanel);
-        titleLink.add(title);
 
-        titleLink.addStyleName(StaticResourceBundle.INSTANCE.coreCss().attachLinkTitleEntry());
+        FlowPanel linkInfoPanel = new FlowPanel();
+        linkInfoPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageLink());
+        linkInfoPanel.add(title);
+        linkInfoPanel.add(linkUrlDisplay);
+        linkInfoPanel.add(linkDesc);
+
+        closeDisplayButton.addStyleName(StaticResourceBundle.INSTANCE.coreCss().close());
+
+        displayPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkPanel());
+        displayPanel.add(closeDisplayButton);
+        displayPanel.add(selector);
+        displayPanel.add(linkInfoPanel);
+        displayPanel.add(selector.getPagingControls());
 
         EventBus eventBus = Session.getInstance().getEventBus();
         eventBus.addObserver(ParseLinkEvent.getEvent(), new Observer<ParseLinkEvent>()
@@ -275,9 +266,9 @@ public class AddLinkComposite extends FlowPanel
 
         selector.setLink(addedLink);
 
-        if (addedLink.getImageUrls().size() > 0)
+        if (!addedLink.getImageUrls().isEmpty())
         {
-            linkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hasThumbnail());
+            displayPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hasThumbnail());
         }
 
         linkUrlDisplay.setText("source: " + addedLink.getSource());

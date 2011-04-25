@@ -59,12 +59,8 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class ShareWidget extends Composite
 {
-
     /** The display link panel. */
     private final FlowPanel displayPanel = new FlowPanel();
-
-    /** The link panel. */
-    private final FlowPanel linkPanel = new FlowPanel();
 
     /** Thumbnail selector. */
     private final ThumbnailSelectorComposite selector = new ThumbnailSelectorComposite();
@@ -90,11 +86,11 @@ public class ShareWidget extends Composite
     /**
      * Default text for postbox.
      */
-    private String defaultText = "Add comment to Post";
+    private final String defaultText = "Add comment to Post";
 
     /**
      * Constructor.
-     * 
+     *
      * @param resourceUrl
      *            resource url.
      * @param inTitle
@@ -118,19 +114,23 @@ public class ShareWidget extends Composite
         final PostToPanel postToPanel = new PostToPanel(defaultStreamScope);
         widget.add(postToPanel);
 
+        // -- Setup the link display panel (thumbnail selector, field to update title) --
+
+        title.addStyleName(StaticResourceBundle.INSTANCE.coreCss().attachLinkTitleEntry());
+        linkUrlDisplay.addStyleName(StaticResourceBundle.INSTANCE.coreCss().url());
+        linkDesc.addStyleName(StaticResourceBundle.INSTANCE.coreCss().metaDescription());
+
+        FlowPanel linkInfoPanel = new FlowPanel();
+        linkInfoPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageLink());
+        linkInfoPanel.add(title);
+        linkInfoPanel.add(linkUrlDisplay);
+        linkInfoPanel.add(linkDesc);
+
         displayPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().linkPanel());
+        displayPanel.add(selector);
+        displayPanel.add(linkInfoPanel);
+        displayPanel.add(selector.getPagingControls());
 
-        linkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().messageLink());
-
-        linkPanel.add(selector);
-        linkPanel.add(titleLink);
-        linkPanel.add(linkUrlDisplay);
-        linkPanel.add(linkDesc);
-        linkPanel.add(selector.getPagingControlls());
-        displayPanel.add(linkPanel);
-        titleLink.add(title);
-
-        displayPanel.add(linkPanel);
         widget.add(displayPanel);
 
         final LinkInformation link = new LinkInformation();
@@ -256,7 +256,7 @@ public class ShareWidget extends Composite
 
     /**
      * Called when a link is added to the message.
-     * 
+     *
      * @param link
      *            the link that was added.
      */
@@ -271,9 +271,9 @@ public class ShareWidget extends Composite
 
         selector.setLink(addedLink);
 
-        if (addedLink.getImageUrls().size() > 0)
+        if (!addedLink.getImageUrls().isEmpty())
         {
-            linkPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hasThumbnail());
+            displayPanel.addStyleName(StaticResourceBundle.INSTANCE.coreCss().hasThumbnail());
         }
 
         linkUrlDisplay.setText("source: " + addedLink.getSource());
@@ -303,8 +303,8 @@ public class ShareWidget extends Composite
      */
     public static native void closeWindow()
     /*-{
-        try { 
-            $wnd.opener.location.href = $wnd.opener.location.href; 
+        try {
+            $wnd.opener.location.href = $wnd.opener.location.href;
         }
         catch(e) {}
         $wnd.close();

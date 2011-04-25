@@ -1818,7 +1818,7 @@ body .post-to-stream.small .content-warning {
 }
 
 .post-to-stream.small .show-attach-link-panel,.post-to-stream.small .attach-link,.post-to-stream.small .post-to,.post-to-stream.small .characters-remaining,.post-to-stream.small .link-panel
-	{
+{
 	display: none;
 }
 
@@ -1926,7 +1926,8 @@ body .post-to-stream .over-character-limit {
 }
 
 .attach-link {
-	padding: 0 10px 20px;
+	padding: 10px;
+	padding-bottom: 20px;
 	background-color: #EEE;
 }
 
@@ -1934,34 +1935,30 @@ body .post-to-stream .over-character-limit {
 	background: transparent url(style/images/modalCloseBtnSmall.png)
 		no-repeat scroll 0 0;
 	text-indent: 1000em;
-	width: 21px;
-	height: 21px;
+	width: 15px;
+	height: 15px;
 	overflow: hidden;
 	cursor: pointer;
-}
-
-.attach-link>.close,.link-panel>.close {
-	position: absolute !important;
-	top: 5px;
-	right: 5px;
-}
-
-.search-description>.close {
 	float: right;
 }
 
-.attach-link-title-entry {
-	
+.link-panel > .close
+{
+	margin-top: -15px;
+	margin-right: -15px;
 }
 
-.attach-link-title-entry>input {
+.attach-link > .close
+{
+	margin-top: -5px;
+	margin-right: -5px;
+}
+
+
+.attach-link-title-entry {
 	padding: 3px;
 	height: 16px;
 	border: 1px solid #BBB;
-}
-
-.attach-link-container {
-	position: relative;
 }
 
 .attach-link-container>.link-panel,.attach-link-container>.attach-link {
@@ -1970,14 +1967,12 @@ body .post-to-stream .over-character-limit {
 }
 
 .profile .attach-link-container>.link-panel,.profile .attach-link-container>.attach-link
-	{
+{
 	margin-right: 2px;
 }
 
 .attach-link .title {
 	font-weight: bold;
-	width: 70px;
-	padding-top: 10px;
 }
 
 .show-attach-link-panel {
@@ -1988,15 +1983,14 @@ body .post-to-stream .over-character-limit {
 .post-to-stream .show-attach-link-panel {
 	bottom: 0px;
 	padding-left: 20px;
-	background: url(style/images/postLinkBtnActive.png) no-repeat scroll 0 0
-		;
+	background: url(style/images/postLinkBtnActive.png) no-repeat scroll 0 0;
 	height: 22px;
 	width: 100px;
 }
 
 .attach-link .add-button-submit {
-	position: relative;
-	top: 2px;
+	display: inline-block;
+	margin-top: -4px;
 }
 
 @sprite body .attach-link .verifying-link {
@@ -2006,8 +2000,7 @@ body .post-to-stream .over-character-limit {
 .attach-link input {
 	border: 1px solid #bbbbbb;
 	padding: 5px;
-	position: relative;
-	top: 4px;
+	margin-top: 4px;
 	width: 80%;
 	margin-right: 5px;
 }
@@ -2389,7 +2382,6 @@ body .post-to-stream .over-character-limit {
 }
 
 .previous-arrow,.next-arrow {
-	position: relative;
 	cursor: pointer;
 	height: 19px;
 	width: 30px;
@@ -2437,9 +2429,7 @@ body .previous-arrow:hover {
 	clear: both;
 	padding-top: 10px;
 	color: #666666;
-	position: relative;
-	top: 10px;
-	margin-bottom: 10px;
+	margin-top: 10px;
 }
 
 .thumbnail-selector-controls input {
@@ -9098,13 +9088,11 @@ IE SPECIFIC CSS.
 	body .stream-message-item .message-metadata a {
 		margin-left: 5px;
 	}
-	
-	body .thumbnail-selector-controls {
-		padding-top: 5px;
-	}
-	
-	body .attach-link .add-button-submit {
-		top: -3px;
+
+	.attach-link .add-button-submit {
+		display: inline;
+		zoom: 1;
+		margin-top: -13px;
 	}
 	
 	body .post-to-stream textarea {
@@ -9198,10 +9186,6 @@ IE SPECIFIC CSS.
 	
 	.stream .stream-container .shadow-container {
 		z-index: 900;
-	}
-	
-	.stream .stream-container  * {
-		position: relative;
 	}
 	
 	.stream .stream-container>* {
