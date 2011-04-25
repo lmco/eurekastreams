@@ -310,7 +310,7 @@ public class AddLinkComposite extends FlowPanel
     {
         // very basic url validation
         final EventBus eventBus = Session.getInstance().getEventBus();
-        if (inLinkUrl == null || inLinkUrl.isEmpty() || !inLinkUrl.contains("."))
+        if (inLinkUrl == null || inLinkUrl.isEmpty() || !inLinkUrl.contains("://"))
         {
             ErrorPostingMessageToNullScopeEvent error = new ErrorPostingMessageToNullScopeEvent();
             error.setErrorMsg("You must supply a valid url (example: http://www.example.com)");
