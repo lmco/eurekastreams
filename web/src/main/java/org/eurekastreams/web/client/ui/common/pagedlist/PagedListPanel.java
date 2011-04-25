@@ -36,6 +36,7 @@ import org.eurekastreams.web.client.ui.pages.master.StaticResourceBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -217,22 +218,27 @@ public class PagedListPanel extends FlowPanel
                         // or not, so we have to try to process it.
                         HashMap<String, String> parms = event.getParameters();
                         String eventListId = parms.get(URL_PARAM_LIST_ID);
+                        Window.alert("debug 1 - eventListId: " + eventListId + " - listId: " + listId);
                         if (eventListId == null)
                         {
+                            Window.alert("debug 2 - listId: " + listId);
                             if (inContextParam != null && inContextParamValue != null
                                     && !inContextParamValue.equals(parms.get(inContextParam)))
                             {
+                                Window.alert("debug 3 - listId: " + listId);
                                 return;
                             }
                         }
                         else if (!listId.equals(eventListId))
                         {
+                            Window.alert("debug 4 - listId: " + listId);
                             return;
                         }
 
                         // store state if tabs not added yet
                         if (loadedFilters.isEmpty())
                         {
+                            Window.alert("debug 5 - listId: " + listId);
                             storingInitialState = true;
                             initialFilter = parms.get(URL_PARAM_FILTER);
                             initialSortKey = parms.get(URL_PARAM_SORT);
@@ -241,6 +247,7 @@ public class PagedListPanel extends FlowPanel
                         // only handle event if initialized
                         else
                         {
+                            Window.alert("debug 6 - listId: " + listId);
                             updateStateIfChanged(parms.get(URL_PARAM_FILTER), parms.get(URL_PARAM_SORT), parms
                                     .get(Pager.URL_PARAM_START_INDEX), parms.get(Pager.URL_PARAM_END_INDEX), false);
                         }

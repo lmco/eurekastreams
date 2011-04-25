@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.Label;
 /**
  * Pager control. To use this control, subscribe to the PagerUpdatedEvent and access the start and end indexes and
  * refresh your data.
- *
+ * 
  */
 public class Pager extends FlowPanel
 {
@@ -89,7 +89,7 @@ public class Pager extends FlowPanel
 
     /**
      * Default constructor.
-     *
+     * 
      * @param inPagerId
      *            the pager id.
      * @param showPageButtons
@@ -176,7 +176,7 @@ public class Pager extends FlowPanel
     {
         startIndex = 0;
         endIndex = 9;
-        //total = DEFAULT_TOTAL;
+        // total = DEFAULT_TOTAL;
         Session.getInstance().getEventBus().notifyObservers(new PagerUpdatedEvent(this));
     }
 
@@ -227,7 +227,7 @@ public class Pager extends FlowPanel
 
     /**
      * Set the page size. Default is 10.
-     *
+     * 
      * @param inPageSize
      *            page size.
      */
@@ -240,7 +240,7 @@ public class Pager extends FlowPanel
 
     /**
      * Set the total.
-     *
+     * 
      * @param inTotal
      *            the total.
      */
@@ -253,7 +253,7 @@ public class Pager extends FlowPanel
 
     /**
      * Get the start index.
-     *
+     * 
      * @return the start index.
      */
     public Integer getStartIndex()
@@ -263,7 +263,7 @@ public class Pager extends FlowPanel
 
     /**
      * Set the startIndex.
-     *
+     * 
      * @param inStartIndex
      *            the startIndex.
      */
@@ -274,7 +274,7 @@ public class Pager extends FlowPanel
 
     /**
      * Get the end index.
-     *
+     * 
      * @return the end index.
      */
     public Integer getEndIndex()
@@ -284,9 +284,9 @@ public class Pager extends FlowPanel
 
     /**
      * Set the endIndex.
-     *
+     * 
      * @param inEndIndex
-     *          the endIndex.
+     *            the endIndex.
      */
     public void setEndIndex(final Integer inEndIndex)
     {
@@ -295,7 +295,7 @@ public class Pager extends FlowPanel
 
     /**
      * Get the pager id.
-     *
+     * 
      * @return the pager id.
      */
     public String getPagerId()

@@ -27,9 +27,11 @@ import org.eurekastreams.web.client.events.data.InsertedGadgetDefinitionResponse
 import org.eurekastreams.web.client.events.data.UpdatedGadgetDefinitionResponseEvent;
 import org.eurekastreams.web.client.ui.Session;
 
+import com.google.gwt.user.client.Window;
+
 /**
  * Gadget definition model.
- *
+ * 
  */
 public class GadgetDefinitionModel extends BaseModel implements Insertable<HashMap<String, Serializable>>,
         Updateable<HashMap<String, Serializable>>, Deletable<Long>, Fetchable<GetGalleryItemsRequest>
@@ -41,7 +43,7 @@ public class GadgetDefinitionModel extends BaseModel implements Insertable<HashM
 
     /**
      * Gets the singleton.
-     *
+     * 
      * @return the singleton.
      */
     public static GadgetDefinitionModel getInstance()
@@ -97,6 +99,7 @@ public class GadgetDefinitionModel extends BaseModel implements Insertable<HashM
      */
     public void fetch(final GetGalleryItemsRequest request, final boolean useClientCacheIfAvailable)
     {
+        Window.alert("About to get sorted gadget gallery items");
         super.callReadAction("getSortedGadgetGalleryItems", request, new OnSuccessCommand<PagedSet<GadgetDefinition>>()
         {
             public void onSuccess(final PagedSet<GadgetDefinition> response)
