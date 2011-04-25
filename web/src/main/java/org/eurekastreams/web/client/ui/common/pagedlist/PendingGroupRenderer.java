@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,6 +81,10 @@ public class PendingGroupRenderer implements ItemRenderer<DomainGroupModelView>
         Label groupName = new Label(group.getName());
         groupName.addStyleName(StaticResourceBundle.INSTANCE.coreCss().displayName());
         groupAbout.add(groupName);
+
+        Label groupDescription = new Label(group.getDescription());
+        groupDescription.addStyleName(StaticResourceBundle.INSTANCE.coreCss().pendingGroupDescription());
+        groupAbout.add(groupDescription);
 
         FlowPanel groupMetaData = new FlowPanel();
         groupMetaData.addStyleName(StaticResourceBundle.INSTANCE.coreCss().connectionItemFollowers());
