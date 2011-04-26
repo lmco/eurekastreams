@@ -60,8 +60,8 @@ import com.google.gwt.user.client.ui.Widget;
 // TODO form needs to handle return input from action. it is not displaying errors back to the user. example.
 // add more then 255 char into the TOS or a String where it should be an Int.
 /**
- * Organization panel.
- *
+ * SystemSettings panel.
+ * 
  */
 public class SystemSettingsPanelComposite extends FlowPanel
 {
@@ -84,7 +84,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
      * Maximum email length.
      */
     private static final int MAX_SITELABEL = 2000;
-    
+
     /**
      * Maximum content warning length.
      */
@@ -127,7 +127,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
      * The membership refresh button.
      */
     private Label membershipRefreshButton;
-    
+
     /**
      * The ToS prompt interval form element.
      */
@@ -140,7 +140,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
 
     /**
      * Constructor.
-     *
+     * 
      * @param inProcessor
      *            The action processor.
      */
@@ -242,6 +242,8 @@ public class SystemSettingsPanelComposite extends FlowPanel
                 {
                     public void update(final GotSystemSettingsResponseEvent event)
                     {
+                        // got the system settings - remove the observer
+                        Session.getInstance().getEventBus().removeObserver(GotSystemSettingsResponseEvent.class, this);
                         generateForm(event.getResponse());
                     }
 
@@ -269,7 +271,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
 
     /**
      * Builds the form.
-     *
+     * 
      * @param systemSettingValues
      *            The system settings to use when preloading the form.
      */
@@ -377,7 +379,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
 
     /**
      * Add the help page elements to the form builder.
-     *
+     * 
      * @param systemSettingValues
      *            the system settings
      * @param form
@@ -415,7 +417,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
 
         helpSupportPhoneNumber.addStyleName(StaticResourceBundle.INSTANCE.coreCss().helpFormElement());
         helpSupportEmailAddress.addStyleName(StaticResourceBundle.INSTANCE.coreCss().helpFormElement());
-        
+
         if (systemSettingValues.getSupportStreamGroupShortName() != null)
         {
             StreamScope scope = new StreamScope(ScopeType.GROUP, systemSettingValues.getSupportStreamGroupShortName());
@@ -431,7 +433,7 @@ public class SystemSettingsPanelComposite extends FlowPanel
 
     /**
      * Setup for refresh button.
-     *
+     * 
      * @return newly configured label/button.
      */
     private Label initializeRefreshButton()
