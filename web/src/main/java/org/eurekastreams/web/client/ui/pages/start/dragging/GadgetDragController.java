@@ -73,7 +73,7 @@ public class GadgetDragController extends PickupDragController
     	"<span class='dragdrop-proxy-content'>" +
     		$wnd.jQuery(".dragdrop-dragging .gadget-zone-chrome-title-bar .title-label").text() + "</span>");
 
-        setTimeout("$wnd.jQuery('.dragdrop-proxy').css('display','inline-block');", 100);
+        setTimeout(function() { $wnd.jQuery('.dragdrop-proxy').css('display','inline-block'); }, 100);
 
 
     }-*/;
