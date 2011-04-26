@@ -89,6 +89,12 @@
        <property name="concurrent" value="false" />
     </bean>
     
+    <!-- Daily Usage Metrics -->
+    <bean id="generateDailyUsageSummaryJob" class="org.eurekastreams.commons.scheduling.ActionSubmitterJob">
+        <constructor-arg value="generateDailyUsageSummaryAction" />
+        <constructor-arg ref="taskHandler" />
+    </bean>
+    
 	<!-- Cache warming job -->
    	<bean id="cacheInitializationJob"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
@@ -153,6 +159,12 @@
         <!-- repeat every 5 minutes (300,000 milliseconds) -->
         <property name="repeatInterval" value="${eureka.jobs.refreshFeedsJobTrigger.repeatInterval}"/>
     </bean> 
+   
+    <!-- Update the daily usage metrics from yesterday - runs at 2:15 am -->
+    <bean id="generateDailyUsageSummaryJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="generateDailyUsageSummaryJob" />
+        <property name="cronExpression" value="0 15 2 * * ?" />
+    </bean> 
     
     <!-- take any feeds that have been stored in the database and memcached and propogate
          them to denormalized memcached lists
@@ -177,6 +189,7 @@
                 <ref bean="gadgetDefUserCountRefreshJobTrigger" />
                 <ref bean="expiredActivitiesCleanupJobTrigger" />
 				<ref bean="pluginDefUserIndexJobTrigger" />
+                <ref bean="generateDailyUsageSummaryJobTrigger" />
             </list> 
         </property>
     </bean>	
