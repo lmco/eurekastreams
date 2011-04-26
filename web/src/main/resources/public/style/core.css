@@ -2299,6 +2299,19 @@ body .post-to-stream .over-character-limit {
 	zoom: 1;
 }
 
+.eureka-connect-users-who-liked-activity.users-who-liked-activity .users-who-liked-activity-header
+ {
+	background-image: url(style/images/like-modal-narrow-top.png);
+}
+.eureka-connect-users-who-liked-activity.users-who-liked-activity .users-who-liked-activity-body
+ {
+	background-image: url(style/images/like-modal-narrow-bg.png);
+}
+.eureka-connect-users-who-liked-activity.users-who-liked-activity .users-who-liked-activity-footer
+ {
+	background-image: url(style/images/like-modal-narrow-bottom.png);
+}
+
 .users-who-liked-activity-wrapper {
 	position: absolute ! important;
 	margin-left: -25px;
@@ -4222,6 +4235,19 @@ body .organization-suborgs:hover {
 .pending-groups-container {
 	overflow: auto;
 	min-height: auto;
+}
+
+.pending-group .description
+{
+	float: left;
+}
+
+.pending-group-description
+{
+	font-size: 12px;
+	color: #333;
+	max-width: 580px;
+	margin-bottom: 3px;
 }
 
 .profile-page .directory-item {
@@ -7173,6 +7199,7 @@ body .stream-view-dialog .delete-button {
 .pending-group-buttons {
 	float: left;
 	clear: both;
+	margin-top: 2px;
 	margin-right: 20px;
 }
 

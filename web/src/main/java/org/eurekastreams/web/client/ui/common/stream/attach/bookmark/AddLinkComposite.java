@@ -96,8 +96,6 @@ public class AddLinkComposite extends FlowPanel
     private static final String INCOMPLETE_INFO_URL_MESSAGE = "Details about URL could not be retrieved.  "
             + "Please confirm it was entered correctly.";
 
-
-
     /**
      * Constructor.
      */
@@ -253,7 +251,7 @@ public class AddLinkComposite extends FlowPanel
 
     /**
      * Called when a link is added to the message.
-     *
+     * 
      * @param link
      *            the link that was added.
      */
@@ -304,7 +302,7 @@ public class AddLinkComposite extends FlowPanel
 
     /**
      * Fetch link.
-     *
+     * 
      * @param inLinkUrl
      *            link url.
      */
@@ -312,7 +310,7 @@ public class AddLinkComposite extends FlowPanel
     {
         // very basic url validation
         final EventBus eventBus = Session.getInstance().getEventBus();
-        if (inLinkUrl == null || inLinkUrl.isEmpty() || !inLinkUrl.contains("."))
+        if (inLinkUrl == null || inLinkUrl.isEmpty() || !inLinkUrl.contains("://"))
         {
             ErrorPostingMessageToNullScopeEvent error = new ErrorPostingMessageToNullScopeEvent();
             error.setErrorMsg("You must supply a valid url (example: http://www.example.com)");
@@ -352,13 +350,14 @@ public class AddLinkComposite extends FlowPanel
                                     }
                                     eventBus.notifyObservers(event);
 
-                                    if (titleBlank
-                                            && (result.getDescription() == null || result.getDescription().isEmpty())
-                                            && result.getImageUrls().isEmpty())
-                                    {
-                                        eventBus.notifyObservers(new ShowNotificationEvent(new Notification(
-                                                INCOMPLETE_INFO_URL_MESSAGE)));
-                                    }
+                                    // no reason to show any errors
+                                    // if (titleBlank
+                                    // && (result.getDescription() == null || result.getDescription().isEmpty())
+                                    // && result.getImageUrls().isEmpty())
+                                    // {
+                                    // eventBus.notifyObservers(new ShowNotificationEvent(new Notification(
+                                    // INCOMPLETE_INFO_URL_MESSAGE)));
+                                    // }
                                 }
                             });
         }

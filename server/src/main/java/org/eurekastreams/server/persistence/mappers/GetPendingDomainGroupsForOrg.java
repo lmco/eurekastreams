@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 Lockheed Martin Corporation
+ * Copyright (c) 2009-2011 Lockheed Martin Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,6 +85,7 @@ public class GetPendingDomainGroupsForOrg extends
         fields.add(getColumn("id"));
         fields.add(getColumn("shortName"));
         fields.add(getColumn("name"));
+        fields.add(getColumn("description"));
         fields.add(Projections.property("publicGroup").as("isPublic"));
 
         fields.add(Projections.property("createdBy.id").as("personCreatedById"));
@@ -114,7 +115,7 @@ public class GetPendingDomainGroupsForOrg extends
         criteria.setMaxResults(inRequest.getMaxResults());
 
         // get the results
-        List<DomainGroupModelView> results = (List<DomainGroupModelView>) criteria.list();
+        List<DomainGroupModelView> results = criteria.list();
 
         // populate info from the cache
         populateCachedFields(results);
@@ -178,7 +179,7 @@ public class GetPendingDomainGroupsForOrg extends
 
     /**
      * Get the IDs of the organizations for which to retrieve pending groups.
-     * 
+     *
      * @param inOrgShortName
      *            The parent org's short name.
      * @return A String of IDs for the orgs.
@@ -194,6 +195,6 @@ public class GetPendingDomainGroupsForOrg extends
      */
     public void setGetPeopleByIdsMapper(final DomainMapper<List<Long>, List<PersonModelView>>inGetPeopleByIdsMapper)
     {
-        this.getPeopleByIdsMapper = inGetPeopleByIdsMapper;
+        getPeopleByIdsMapper = inGetPeopleByIdsMapper;
     }
 }

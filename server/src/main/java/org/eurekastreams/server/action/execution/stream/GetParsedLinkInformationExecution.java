@@ -36,7 +36,7 @@ import org.eurekastreams.server.service.actions.strategies.links.HtmlLinkParser;
 
 /**
  * Retrieve the {@link LinkInformation} for a given url.
- *
+ * 
  */
 public class GetParsedLinkInformationExecution implements ExecutionStrategy<PrincipalActionContext>
 {
@@ -67,7 +67,7 @@ public class GetParsedLinkInformationExecution implements ExecutionStrategy<Prin
 
     /**
      * Constructor.
-     *
+     * 
      * @param inConnection
      *            the file downloader.
      * @param inMapper
@@ -89,7 +89,7 @@ public class GetParsedLinkInformationExecution implements ExecutionStrategy<Prin
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * Retrieve the {@link LinkInformation} associated with the provided url.
      */
     @Override
@@ -159,7 +159,8 @@ public class GetParsedLinkInformationExecution implements ExecutionStrategy<Prin
         }
         catch (Exception ex)
         {
-            throw new ExecutionException("Error occurred parsing link", ex);
+            // no reason to tell the user, s/he wont' care.
+            int dontCare = 0;
         }
         return theLink;
     }

@@ -1507,6 +1507,9 @@ public interface CoreCss extends CssResource
     @ClassName("pending-group-buttons")
     String pendingGroupButtons();
 
+    @ClassName("pending-group-description")
+    String pendingGroupDescription();
+
     @ClassName("pending-group-membership-item")
     String pendingGroupMembershipItem();
 
